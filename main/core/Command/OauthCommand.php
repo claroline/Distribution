@@ -22,6 +22,12 @@ class OauthCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
+    private $params = [
+        'master' => 'master',
+        'host' => 'host',
+        'name' => 'name',
+    ];
+
     protected function configure()
     {
         parent::configure();
@@ -35,40 +41,6 @@ class OauthCommand extends ContainerAwareCommand
                 new InputArgument('name', InputArgument::REQUIRED, 'The platform name'),
             ]
         );
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        $params = [
-            'master' => 'master',
-            'host' => 'host',
-            'name' => 'name',
-        ];
-
-        foreach ($params as $argument => $argumentName) {
-            if (!$input->getArgument($argument)) {
-                $input->setArgument(
-                    $argument, $this->askArgument($output, $argumentName)
-                );
-            }
-        }
-    }
-
-    protected function askArgument(OutputInterface $output, $argumentName)
-    {
-        $argument = $this->getHelper('dialog')->askAndValidate(
-            $output,
-            "Enter the platform {$argumentName}: ",
-            function ($argument) {
-                if (empty($argument)) {
-                    throw new \Exception('This argument is required');
-                }
-
-                return $argument;
-            }
-        );
-
-        return $argument;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -24,6 +24,10 @@ class TranslationDebugCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
+    private $params = [
+        'locale' => 'locale to fill: ',
+    ];
+
     protected function configure()
     {
         $this->setName('claroline:fixup:translations')
@@ -57,38 +61,6 @@ class TranslationDebugCommand extends ContainerAwareCommand
             InputOption::VALUE_NONE,
             'Override the translations file'
         );
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        $params = [
-            'locale' => 'locale to fill: ',
-        ];
-
-        foreach ($params as $argument => $argumentName) {
-            if (!$input->getArgument($argument)) {
-                $input->setArgument(
-                    $argument, $this->askArgument($output, $argumentName)
-                );
-            }
-        }
-    }
-
-    protected function askArgument(OutputInterface $output, $argumentName)
-    {
-        $argument = $this->getHelper('dialog')->askAndValidate(
-            $output,
-            $argumentName,
-            function ($argument) {
-                if (empty($argument)) {
-                    throw new \Exception('This argument is required');
-                }
-
-                return $argument;
-            }
-        );
-
-        return $argument;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

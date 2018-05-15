@@ -27,6 +27,12 @@ class DebugServiceCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
+    private $params = [
+        'owner' => 'The user doing the action: ',
+        'service_name' => 'The service name: ',
+        'method_name' => 'The method name: ',
+    ];
+
     protected function configure()
     {
         $this
@@ -41,40 +47,6 @@ class DebugServiceCommand extends ContainerAwareCommand
             ->addOption(
                 'debug_doctrine_all', 'a', InputOption::VALUE_NONE, 'When set to true, shows the doctrine logs'
             );
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        $params = [
-            'owner' => 'The user doing the action: ',
-            'service_name' => 'The service name: ',
-            'method_name' => 'The method name: ',
-        ];
-
-        foreach ($params as $argument => $argumentName) {
-            if (!$input->getArgument($argument)) {
-                $input->setArgument(
-                    $argument, $this->askArgument($output, $argumentName)
-                );
-            }
-        }
-    }
-
-    protected function askArgument(OutputInterface $output, $argumentName)
-    {
-        $argument = $this->getHelper('dialog')->askAndValidate(
-            $output,
-            $argumentName,
-            function ($argument) {
-                if (empty($argument)) {
-                    throw new \Exception('This argument is required');
-                }
-
-                return $argument;
-            }
-        );
-
-        return $argument;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

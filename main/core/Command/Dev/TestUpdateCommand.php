@@ -25,6 +25,12 @@ class TestUpdateCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
+    private $params = [
+        'from_version' => 'from version: ',
+        'to_version' => 'to version: ',
+        'bundle' => 'bundle: ',
+    ];
+
     protected function configure()
     {
         parent::configure();
@@ -38,40 +44,6 @@ class TestUpdateCommand extends ContainerAwareCommand
                 new InputArgument('to_version', InputArgument::REQUIRED, 'to version'),
             ]
         );
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        $params = [
-            'from_version' => 'from version: ',
-            'to_version' => 'to version: ',
-            'bundle' => 'bundle: ',
-        ];
-
-        foreach ($params as $argument => $argumentName) {
-            if (!$input->getArgument($argument)) {
-                $input->setArgument(
-                    $argument, $this->askArgument($output, $argumentName)
-                );
-            }
-        }
-    }
-
-    protected function askArgument(OutputInterface $output, $argumentName)
-    {
-        $argument = $this->getHelper('dialog')->askAndValidate(
-            $output,
-            $argumentName,
-            function ($argument) {
-                if (null === $argument) {
-                    throw new \Exception('This argument is required');
-                }
-
-                return $argument;
-            }
-        );
-
-        return $argument;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

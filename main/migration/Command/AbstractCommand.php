@@ -23,27 +23,11 @@ abstract class AbstractCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
+    private $params = ['bundle' => 'The bundle name'];
+
     protected function configure()
     {
         $this->addArgument('bundle', InputArgument::REQUIRED, 'The bundle name');
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        if (!$input->getArgument('bundle')) {
-            $bundleName = $this->getHelper('dialog')->askAndValidate(
-                $output,
-                'Enter the bundle name: ',
-                function ($argument) {
-                    if (empty($argument)) {
-                        throw new \Exception('This argument is required');
-                    }
-
-                    return $argument;
-                }
-            );
-            $input->setArgument('bundle', $bundleName);
-        }
     }
 
     protected function getManager(OutputInterface $output)
