@@ -57,7 +57,7 @@ abstract class AbstractCrudController extends AbstractApiController
     public function findAction(Request $request, $class)
     {
         $query = $request->query->all();
-        $data = $this->finder->fetch($class, 0, 2, $query['filters']);
+        $data = $this->finder->fetch($class, $query['filters'], [], 0, 2);
 
         switch (count($data)) {
             case 0:
