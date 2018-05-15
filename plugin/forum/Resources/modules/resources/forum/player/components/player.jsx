@@ -36,7 +36,7 @@ const PlayerComponent = (props) =>
     ]}
   />
 
-Player.propTypes = {
+PlayerComponent.propTypes = {
   newSubject: T.func.isRequired,
   closeSubjectForm: T.func.isRequired,
   openSubject: T.func.isRequired

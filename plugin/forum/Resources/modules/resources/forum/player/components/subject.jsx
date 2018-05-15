@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
-import {PropTypes as T} from 'prop-types'
-
+import trim from 'lodash/trim'
 
 import {trans} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
@@ -44,9 +44,8 @@ class SubjectComponent extends Component {
   }
 
   createNewMessage(message) {
-    this.props.createMessage(this.props.subject.id, message)
-    // TODO : vider le value du champ une fois le message crée
-    // props.content = ''
+    const content = trim(message)
+    this.props.createMessage(this.props.subject.id, content)
   }
 
   showSubjectForm(message) {

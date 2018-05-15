@@ -18,7 +18,7 @@ const Subject = {
       updated: T.string.isRequired,
       sticky: T.bool.isRequired
     }),
-    restrictions: T.shae({})
+    restrictions: T.shape({})
   },
   defaultProps: {
 

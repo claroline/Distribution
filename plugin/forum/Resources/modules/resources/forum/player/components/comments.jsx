@@ -5,15 +5,12 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
-
 import {Action as ActionTypes} from '#/main/core/layout/action/prop-types'
 import {User as UserTypes} from '#/main/core/user/prop-types'
-
 import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action.jsx'
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 
 class CommentForm extends Component {

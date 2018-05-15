@@ -9,7 +9,6 @@ import {Button} from '#/main/app/action/components/button'
 import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {MetricCard} from '#/main/core/layout/components/metric-card'
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {UserMessage} from '#/main/core/user/message/components/user-message'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -111,8 +110,8 @@ const OverviewComponent = props =>
     </section>
   </div>
 
-Overview.propTypes = {
-  forum: T.shape(ForumType.propTypes).isRequired
+OverviewComponent.propTypes = {
+  forum: T.shape(ForumType.propTypes)
 }
 
 const Overview = connect(
