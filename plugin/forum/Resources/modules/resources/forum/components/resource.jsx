@@ -9,6 +9,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
 
+import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {Overview} from '#/plugin/forum/resources/forum/overview/components/overview'
 import {Editor} from '#/plugin/forum/resources/forum/editor/components/editor'
@@ -82,10 +83,9 @@ const Resource = props => {
 }
 
 Resource.propTypes = {
-  forum: T.object.isRequired,
+  forum: T.shape(ForumType.propTypes).isRequired,
   editable: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
-
   saveForm: T.func.isRequired
 }
 

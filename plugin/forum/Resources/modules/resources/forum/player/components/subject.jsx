@@ -16,6 +16,7 @@ import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
+import {Subject as SubjectType} from '#/plugin/forum/resources/forum/player/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
@@ -216,11 +217,17 @@ class SubjectComponent extends Component {
 }
 
 SubjectComponent.propTypes = {
-  subject: T.shape({
-    id: T.string
-  }),
+  subject: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
-  createComment: T.func.isRequired
+  createComment: T.func.isRequired,
+  invalidated: T.bool.isRequired,
+  loaded: T.bool.isRequired,
+  reload: T.func.isRequired,
+  showModal: T.func,
+  subjectForm: T.shape({
+    showSubjectForm: T.bool.isRequired
+  }),
+  messages: T.shape({})
 }
 
 const Subject =  connect(

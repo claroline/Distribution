@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {PropTypes as T} from 'prop-types'
 
 
 import {Routes} from '#/main/core/router'
@@ -34,6 +35,12 @@ const PlayerComponent = (props) =>
       }
     ]}
   />
+
+Player.propTypes = {
+  newSubject: T.func.isRequired,
+  closeSubjectForm: T.func.isRequired,
+  openSubject: T.func.isRequired
+}
 
 const Player = connect(
   state =>({

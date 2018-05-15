@@ -1,8 +1,10 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
+import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {constants} from '#/plugin/forum/resources/forum/constants'
 
 const Editor = () =>
@@ -95,7 +97,9 @@ const Editor = () =>
     ]}
   />
 
-
+Editor.propTypes = {
+  forum: T.shape(ForumType.propTypes).isRequired
+}
 
 export {
   Editor

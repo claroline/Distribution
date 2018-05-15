@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
@@ -10,6 +11,7 @@ import {MetricCard} from '#/main/core/layout/components/metric-card'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 
+import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
 
@@ -109,6 +111,9 @@ const OverviewComponent = props =>
     </section>
   </div>
 
+Overview.propTypes = {
+  forum: T.shape(ForumType.propTypes).isRequired
+}
 
 const Overview = connect(
   (state) => ({

@@ -14,7 +14,6 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {constants} from '#/plugin/forum/resources/forum/constants'
-import {actions} from '#/plugin/forum/resources/forum/player/actions'
 
 const SubjectFormWrapper = (props) =>
   <div>
@@ -48,14 +47,12 @@ SubjectFormWrapper.propTypes = {
    * @type {object}
    */
   user: T.shape(UserTypes.propTypes),
-
   /**
    * The action of the button
    *
    * @type {func}
    */
   callback: T.func.isRequired,
-
   /**
    * The content of the wrapper
    *
@@ -139,7 +136,7 @@ const SubjectForm = withRouter(connect(
   (dispatch, ownProps) => ({
     saveForm(forumId) {
       dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
-        ownProps.history.push('/subjects/')
+        ownProps.history.push('/subjects/show/5afd8728-fc8e-49cc-a852-58f63969d426')
       })
     }
   })

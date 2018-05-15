@@ -6,7 +6,6 @@ import {makeId} from '#/main/core/scaffolding/id'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 
