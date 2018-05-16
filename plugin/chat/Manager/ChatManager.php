@@ -395,4 +395,27 @@ class ChatManager
 
         return $chatRoom;
     }
+
+    /**
+     * Find all content for a given user and the replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceChatUserUser(User $from, User $to)
+    {
+        $chatUsers = $this->chatUserRepo->findByUser($from);
+
+        if (count($chatUsers) > 0) {
+            foreach ($chatUsers as $chatUser) {
+                $chatUser->setUser($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($chatUsers);
+    }
 }

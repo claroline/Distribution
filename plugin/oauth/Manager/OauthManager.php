@@ -21,6 +21,7 @@ use Claroline\CoreBundle\Manager\UserManager;
 use Doctrine\ORM\EntityManager;
 use Icap\OAuthBundle\Entity\OauthUser;
 use Icap\OAuthBundle\Model\Configuration;
+use Icap\OAuthBundle\Repository\OauthUserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -64,6 +65,9 @@ class OauthManager
 
     private $authenticator;
 
+    /** @var OauthUserRepository */
+    private $oauthUserManager;
+
     /**
      * @DI\InjectParams({
      *      "entityManager"         = @DI\Inject("doctrine.orm.entity_manager"),
@@ -103,6 +107,7 @@ class OauthManager
         $this->registrationManager = $registrationManager;
         $this->authenticationHandler = $authenticationHandler;
         $this->authenticator = $authenticator;
+        $this->oauthUserManager = $entityManager->getRepository('Icap\OAuthBundle\Entity\OauthUser');
     }
 
     /**
