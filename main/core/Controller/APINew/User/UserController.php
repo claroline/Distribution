@@ -292,17 +292,17 @@ class UserController extends AbstractCrudController
     }
 
     /**
-    * @Route(
-    *    "/list/managed/workspace",
-    *    name="apiv2_user_list_managed_workspace"
-    * )
-    * @Method("GET")
-    * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-    *
-    * @param Workspace $workspace
-    *
-    * @return JsonResponse
-    */
+     * @Route(
+     *    "/list/managed/workspace",
+     *    name="apiv2_user_list_managed_workspace"
+     * )
+     * @Method("GET")
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
     public function listManagedWorkspaceAction(User $user, Request $request)
     {
         $managedWorkspaces = $this->finder->fetch(
