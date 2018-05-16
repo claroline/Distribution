@@ -86,26 +86,26 @@ class LoaderTest extends \PHPUnit\Framework\TestCase
 
     public function nonExistentBundleClassProvider()
     {
-        return array(
-            array('Invalid\UnloadableBundleClass1\InvalidUnloadableBundleClass1'),
-            array('Invalid\UnloadableBundleClass2\InvalidUnloadableBundleClass2'),
-            array('Invalid\UnloadableBundleClass3\InvalidUnloadableBundleClass3'),
-            array('Invalid\UnloadableBundleClass4\InvalidUnloadableBundleClass4'),
-        );
+        return [
+            ['Invalid\UnloadableBundleClass1\InvalidUnloadableBundleClass1'],
+            ['Invalid\UnloadableBundleClass2\InvalidUnloadableBundleClass2'],
+            ['Invalid\UnloadableBundleClass3\InvalidUnloadableBundleClass3'],
+            ['Invalid\UnloadableBundleClass4\InvalidUnloadableBundleClass4'],
+        ];
     }
 
     public function nonInstantiableBundleClassProvider()
     {
-        return array(
-            array('Invalid\UnloadableBundleClass5\InvalidUnloadableBundleClass5'),
-            array('Invalid\UnloadableBundleClass6\InvalidUnloadableBundleClass6'),
-        );
+        return [
+            ['Invalid\UnloadableBundleClass5\InvalidUnloadableBundleClass5'],
+            ['Invalid\UnloadableBundleClass6\InvalidUnloadableBundleClass6'],
+        ];
     }
 
     public function unexpectedBundleTypeProvider()
     {
-        return array(
-            array('Invalid\UnexpectedBundleType\InvalidUnexpectedBundleType'),
-        );
+        return [
+            ['Invalid\UnexpectedBundleType\InvalidUnexpectedBundleType'],
+        ];
     }
 }

@@ -8,8 +8,8 @@
 
 namespace Icap\DropzoneBundle\Tests\Entity;
 
-use Icap\DropzoneBundle\Entity\Dropzone;
 use DateTime;
+use Icap\DropzoneBundle\Entity\Dropzone;
 
 class DropzoneTest extends \PHPUnit\Framework\TestCase
 {
@@ -63,7 +63,7 @@ class DropzoneTest extends \PHPUnit\Framework\TestCase
         $dz7->setEndAllowDrop($dateEnd8);
         $dz7->setPeerReview(true);
 
-        return array($dz0, $dz1, $dz2, $dz3, $dz4, $dz5, $dz6, $dz7);
+        return [$dz0, $dz1, $dz2, $dz3, $dz4, $dz5, $dz6, $dz7];
     }
 
     public function testisNotStarted()

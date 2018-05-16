@@ -16,7 +16,7 @@ class ReaderProviderTest extends \PHPUnit\Framework\TestCase
     public function testGetReaderThrowsAnExceptionIfFormatIsUnknown()
     {
         $this->setExpectedException('Claroline\RssReaderBundle\Library\UnknownFormatException');
-        $parser = new ReaderProvider(array());
+        $parser = new ReaderProvider([]);
         $parser->getReaderFor('<unknown/>');
     }
 
@@ -27,7 +27,7 @@ class ReaderProviderTest extends \PHPUnit\Framework\TestCase
             ->method('supports')
             ->with('someFormat')
             ->will($this->returnValue(true));
-        $parser = new ReaderProvider(array($mockReader));
+        $parser = new ReaderProvider([$mockReader]);
         $reader = $parser->getReaderFor('<someFormat/>');
         $this->assertEquals($mockReader, $reader);
     }
