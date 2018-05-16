@@ -1,11 +1,11 @@
 import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
 import {makePageReducer} from '#/main/core/layout/page/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
 import {
   LOAD_OVERVIEW,
   LOAD_AUDIENCE,
   LOAD_RESOURCES,
-  LOAD_WIDGETS,
-  LOAD_TOP_ACTIONS
+  LOAD_WIDGETS
 } from '#/main/core/administration/analytics/actions'
 
 const reducer = makePageReducer([], {
@@ -41,14 +41,11 @@ const reducer = makePageReducer([], {
       [LOAD_WIDGETS]: (state, action) => action.data
     })
   }),
-  topActions: combineReducers({
-    loaded: makeReducer(false, {
-      [LOAD_TOP_ACTIONS] : () => true
-    }),
-    data: makeReducer({}, {
-      [LOAD_TOP_ACTIONS]: (state, action) => action.data
-    })
-  })
+  topActions: makeListReducer('topActions',
+    { filters: [{property: 'type', value: 'top_users_connections'}] },
+    {},
+    { selectable: false }
+  )
 })
 
 export {reducer}

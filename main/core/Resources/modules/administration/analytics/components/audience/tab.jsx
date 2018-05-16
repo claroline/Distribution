@@ -2,11 +2,64 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {Grid, Row, Col} from 'react-bootstrap'
+import {merge} from 'lodash'
 
 import {trans} from '#/main/core/translation'
 import {LineChart} from '#/main/core/layout/chart/line/components/line-chart.jsx'
 import {actions} from '#/main/core/administration/analytics/actions'
 import {DashboardCard} from '#/main/core/layout/dashboard/index'
+import {Form} from '#/main/core/data/form/components/form.jsx'
+import {Button} from '#/main/core/layout/button/components/button'
+
+const FilterForm = (props) =>
+  <Form
+    level={3}
+    data={props.data}
+    errors={{}}
+    title={trans('show')}
+    pendingChanges={false}
+    validating={false}
+    setErrors={() => {}}
+    className={'dashboard-filter-form'}
+    updateProp={props.updateProp}
+    sections={[
+      {
+        id: 'general',
+        title: '',
+        primary: true,
+        fields: [
+          {
+            name: 'unique',
+            type: 'boolean',
+            label: trans('unique_connections')
+          }, {
+            name: 'dateLog',
+            type: 'date',
+            label: trans('activity_rule_form_activeFrom'),
+            required: true
+          }, {
+            name: 'dateTo',
+            type: 'date',
+            label: trans('activity_rule_form_activeUntil'),
+            required: true
+          }
+        ]
+      }
+    ]}
+  >
+    <Button
+      className={'btn-primary'}
+      onClick={props.submitForm}
+    >
+      {trans('show_actions')}
+    </Button>
+  </Form>
+
+FilterForm.propTypes = {
+  'updateProp': T.func.isRequired,
+  'submitForm': T.func.isRequired,
+  'data': T.object.isRequired
+}
 
 class Tab extends Component {
   constructor(props) {
@@ -15,6 +68,28 @@ class Tab extends Component {
     if (!props.audience.loaded) {
       props.getAudienceData()
     }
+    this.state = {
+      filters: {}
+    }
+    this.updateProp = this.updateProp.bind(this)
+    this.filterAudienceData = this.filterAudienceData.bind(this)
+  }
+  
+  updateProp(propName, propValue) {
+    const filters = merge({}, this.state.filters, {[propName]: propValue})
+    this.setState(() => ({filters: filters}))
+  }
+  
+  filterAudienceData() {
+    this.props.getAudienceData(this.state.filters)
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.audience.loaded) {
+      this.setState({filters: nextProps.audience.data.filters})
+    }
+    
+    this.setState(nextProps)
   }
   
   render() {
@@ -31,6 +106,17 @@ class Tab extends Component {
                 <span>{trans('users_connected_once')}</span>
               </span>
             </div>
+          </Col>
+        </Row>
+        }
+        {this.props.audience.data.filters &&
+        <Row>
+          <Col xs={12} md={4}>
+            <FilterForm
+              updateProp={this.updateProp}
+              submitForm={this.filterAudienceData}
+              data={this.state.filters}
+            />
           </Col>
         </Row>
         }
@@ -97,8 +183,8 @@ const TabContainer = connect(
     audience: state.audience
   }),
   dispatch => ({
-    getAudienceData() {
-      dispatch(actions.getAudienceData())
+    getAudienceData(filters = {}) {
+      dispatch(actions.getAudienceData(filters))
     }
   })
 )(Tab)

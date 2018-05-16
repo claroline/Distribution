@@ -56,6 +56,10 @@ class Tab extends Component {
           <Row>
             <Col xs={12} md={6}>
               <DashboardCard title={trans('account_general_statistics')} icon={'fa-user'}>
+                <div className="dashboard-standout text-center">
+                  <span className="dashboard-standout-text-lg">{this.props.overview.data.totalUsers}</span>
+                  <span className="dashboard-standout-text-sm">{trans('user_accounts')}</span>
+                </div>
                 <DashboardTable
                   definition={[
                     {

@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Tool\Administration;
 
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\AnalyticsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
@@ -9,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/tools/admin/analytics", name="admin_tool_analytics")
@@ -19,8 +21,12 @@ class AnalyticsController
     /** @var AnalyticsManager */
     private $analyticsManager;
 
+    /** @var User */
+    private $loggedUser;
+
     /**
      * @DI\InjectParams({
+     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
      *     "analyticsManager"       = @DI\Inject("claroline.manager.analytics_manager")
      * })
      *
@@ -29,8 +35,10 @@ class AnalyticsController
      * @param AnalyticsManager $analyticsManager
      */
     public function __construct(
+        TokenStorageInterface $tokenStorage,
         AnalyticsManager $analyticsManager
     ) {
+        $this->loggedUser = $tokenStorage->getToken()->getUser();
         $this->analyticsManager = $analyticsManager;
     }
 
@@ -51,6 +59,7 @@ class AnalyticsController
             ],
         ]);
         $usersCount = $this->analyticsManager->userRolesData();
+        $totalUsers = array_shift($usersCount)['total'];
 
         return new JsonResponse([
             'activity' => $lastMonthActions,
@@ -60,6 +69,7 @@ class AnalyticsController
                 'download' => $mostDownloadedResources,
             ],
             'users' => $usersCount,
+            'totalUsers' => $totalUsers,
         ]);
     }
 
@@ -78,8 +88,9 @@ class AnalyticsController
         $totalConnections = array_sum(array_map(function ($item) {
             return $item['yData'];
         }, $connections));
-        $activeUsersForPeriod = $this->analyticsManager->countActiveUsers([], true);
+        $activeUsersForPeriod = $this->analyticsManager->countActiveUsers($query, true);
         $activeUsers = $this->analyticsManager->countActiveUsers();
+        $dates = array_column($connections, 'xData');
 
         return new JsonResponse([
             'activity' => [
@@ -89,6 +100,13 @@ class AnalyticsController
             'users' => [
                 'all' => $activeUsers,
                 'period' => $activeUsersForPeriod,
+            ],
+            'filters' => [
+                'dateLog' => $dates[0],
+                'dateTo' => $dates[sizeof($connections) - 1],
+                'unique' => isset($query['filters']['unique']) ?
+                    filter_var($query['filters']['unique'], FILTER_VALIDATE_BOOLEAN) :
+                    false,
             ],
         ]);
     }
@@ -129,5 +147,12 @@ class AnalyticsController
     public function topActionsAction(Request $request)
     {
         return new JsonResponse($this->analyticsManager->getTopActions($request->query->all()));
+    }
+
+    public function addOrganizationFilter($query)
+    {
+        if (!$this->loggedUser->hasRole('ROLE_ADMIN')) {
+            $query['hiddenFilters']['organisation'] = $this->loggedUser->getOrganizations(false);
+        }
     }
 }

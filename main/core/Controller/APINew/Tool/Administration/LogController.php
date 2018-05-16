@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\Controller\APINew\Tool\Administration;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\LogManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
@@ -14,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/tools/admin/logs", name="admin_tool_logs")
@@ -30,8 +32,12 @@ class LogController
     /** @var LogManager */
     private $logManager;
 
+    /** @var User */
+    private $loggedUser;
+
     /**
      * @DI\InjectParams({
+     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
      *     "finder"                 = @DI\Inject("claroline.api.finder"),
      *     "serializer"             = @DI\Inject("claroline.api.serializer"),
      *     "logManager"             = @DI\Inject("claroline.log.manager")
@@ -44,10 +50,12 @@ class LogController
      * @param LogManager         $logManager
      */
     public function __construct(
+        TokenStorageInterface $tokenStorage,
         FinderProvider $finder,
         SerializerProvider $serializer,
         LogManager $logManager
     ) {
+        $this->loggedUser = $tokenStorage->getToken()->getUser();
         $this->finder = $finder;
         $this->serializer = $serializer;
         $this->logManager = $logManager;
@@ -166,5 +174,12 @@ class LogController
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\Log\Log';
+    }
+
+    public function addOrganizationFilter($query)
+    {
+        if (!$this->loggedUser->hasRole('ROLE_ADMIN')) {
+            $query['hiddenFilters']['organisation'] = $this->loggedUser->getOrganizations(false);
+        }
     }
 }

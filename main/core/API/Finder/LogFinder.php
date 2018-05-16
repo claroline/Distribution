@@ -69,6 +69,9 @@ class LogFinder implements FinderInterface
                 case 'action':
                     $this->filterAction($filterValue, $qb);
                     break;
+                case 'unique':
+                case 'type':
+                    break;
                 default:
                     if (is_string($filterValue)) {
                         $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
