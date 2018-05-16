@@ -268,6 +268,23 @@ class DatabaseWriter
             $this->updateTheme($themeConfiguration, $plugin);
         }
 
+        //remove admin tools
+        $installedActions = $this->em->getRepository('ClarolineCoreBundle:Action\AdditionalAction')->findAll();
+        $actions = $processedConfiguration['additional_action'];
+        $actionsName = array_map(function ($action) {
+            return $action['action'];
+        }, $actions);
+
+        $toRemove = array_filter($installedActions, function ($action) use ($actionsName) {
+            return !in_array($action->getAction(), $actionsName);
+        });
+
+        foreach ($toRemove as $action) {
+            $this->log('Removing action '.$action->getAction());
+            $this->em->remove($action);
+        }
+
+        //remove additional actions
         $installedAdminTools = $this->em->getRepository('ClarolineCoreBundle:Tool\AdminTool')
           ->findBy(['plugin' => $plugin]);
         $adminTools = $processedConfiguration['admin_tools'];

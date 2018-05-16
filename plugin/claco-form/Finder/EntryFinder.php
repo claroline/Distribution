@@ -279,22 +279,20 @@ class EntryFinder implements FinderInterface
                     $qb->setParameter("value{$parsedFilterName}", $filterValue);
                     break;
                 case FieldFacet::DATE_TYPE:
+                case FieldFacet::FILE_TYPE:
                     break;
-                case FieldFacet::COUNTRY_TYPE:
-                    $countries = $this->locationManager->getCountries();
-                    $pattern = "/$filterValue/i";
-                    $keys = [];
+                case FieldFacet::CHOICE_TYPE:
+                    $options = $field->getDetails();
+                    $multiple = isset($options['multiple']) && $options['multiple'];
 
-                    foreach ($countries as $key => $country) {
-                        if (preg_match($pattern, $country)) {
-                            $keys[] = $key;
-                        }
+                    if ($multiple) {
+                        $qb->andWhere("UPPER(fvffv{$parsedFilterName}.arrayValue) LIKE :value{$parsedFilterName}");
+                    } else {
+                        $qb->andWhere("UPPER(fvffv{$parsedFilterName}.stringValue) LIKE :value{$parsedFilterName}");
                     }
-                    $qb->andWhere("fvffv{$parsedFilterName}.stringValue IN (:value{$parsedFilterName})");
-                    $qb->setParameter("value{$parsedFilterName}", $keys);
+                    $qb->setParameter("value{$parsedFilterName}", '%'.strtoupper($filterValue).'%');
                     break;
-                case FieldFacet::CHECKBOXES_TYPE:
-                case FieldFacet::CASCADE_SELECT_TYPE:
+                case FieldFacet::CASCADE_TYPE:
                     $qb->andWhere("UPPER(fvffv{$parsedFilterName}.arrayValue) LIKE :value{$parsedFilterName}");
                     $qb->setParameter("value{$parsedFilterName}", '%'.strtoupper($filterValue).'%');
                     break;
@@ -330,8 +328,16 @@ class EntryFinder implements FinderInterface
                 case FieldFacet::DATE_TYPE:
                     $qb->orderBy("fvffv{$parsedSortBy}.dateValue", $direction);
                     break;
-                case FieldFacet::CHECKBOXES_TYPE:
-                case FieldFacet::CASCADE_SELECT_TYPE:
+                case FieldFacet::CHOICE_TYPE:
+                    $options = $field->getDetails();
+
+                    if (isset($options['multiple']) && $options['multiple']) {
+                        $qb->orderBy("fvffv{$parsedSortBy}.arrayValue", $direction);
+                    } else {
+                        $qb->orderBy("fvffv{$parsedSortBy}.stringValue", $direction);
+                    }
+                    break;
+                case FieldFacet::CASCADE_TYPE:
                     $qb->orderBy("fvffv{$parsedSortBy}.arrayValue", $direction);
                     break;
                 default:

@@ -229,9 +229,20 @@ class WorkspaceManager
     public function createWorkspace(Workspace $workspace)
     {
         if (0 === count($workspace->getOrganizations())) {
-            $organizationManager = $this->container->get('claroline.manager.organization.organization_manager');
-            $default = $organizationManager->getDefault();
-            $workspace->addOrganization($default);
+            if (
+                $this->container->get('security.token_storage')->getToken() &&
+                $this->container->get('security.token_storage')->getToken()->getUser() &&
+                $this->container->get('security.token_storage')->getToken()->getUser()->getMainOrganization()
+            ) {
+                //we want a min organization
+                $workspace->addOrganization($this->container->get('security.token_storage')->getToken()->getUser()->getMainOrganization());
+                $this->om->persist($workspace);
+                $this->om->flush();
+            } else {
+                $organizationManager = $this->container->get('claroline.manager.organization.organization_manager');
+                $default = $organizationManager->getDefault();
+                $workspace->addOrganization($default);
+            }
         }
 
         $ch = $this->container->get('claroline.config.platform_config_handler');
