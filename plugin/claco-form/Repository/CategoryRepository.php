@@ -40,7 +40,7 @@ class CategoryRepository extends EntityRepository
             SELECT c
             FROM Claroline\ClacoFormBundle\Entity\Category c
             JOIN c.managers m
-            AND m = :manager
+            WHERE m = :manager
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('manager', $manager);

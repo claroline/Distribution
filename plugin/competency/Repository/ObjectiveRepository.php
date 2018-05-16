@@ -71,9 +71,9 @@ class ObjectiveRepository extends EntityRepository
 
     public function findAllByUser(User $user)
     {
-        return $this->createQueryBuilder()
+        return $this->_em->createQueryBuilder()
             ->select('o')
-            ->from('HeVinci\CompetencyBundle\Entity\Objective')
+            ->from('HeVinci\CompetencyBundle\Entity\Objective', 'o')
             ->join('o.users', 'u')
             ->where('u = :user')
             ->setParameter(':user', $user)
