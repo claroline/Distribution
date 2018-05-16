@@ -5,19 +5,25 @@ import {
   SUBJECT_LOAD,
   SUBJECT_FORM_OPEN,
   SUBJECT_FORM_CLOSE,
+  SUBJECT_EDIT,
   MESSAGES_SORT_TOGGLE
 } from '#/plugin/forum/resources/forum/player/actions'
 
 
 const reducer = combineReducers({
   form: makeFormReducer('subjects.form', {
-    showSubjectForm: false
+    showSubjectForm: false,
+    editingSubject: false
   }, {
     showSubjectForm: makeReducer(false, {
       [SUBJECT_FORM_OPEN]: () => true,
       [SUBJECT_FORM_CLOSE]: () => false
+    }),
+    editingSubject: makeReducer(false, {
+      [SUBJECT_EDIT]: () => true
     })
   }),
+
   list: makeListReducer('subjects.list', {
     // sortBy: [{property: 'meta.sticky', direction: -1}]
   }),

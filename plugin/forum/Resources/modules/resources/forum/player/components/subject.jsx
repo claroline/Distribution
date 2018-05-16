@@ -5,6 +5,7 @@ import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 import trim from 'lodash/trim'
 
+import {withRouter} from '#/main/core/router'
 import {trans} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
 import {Button} from '#/main/app/action/components/button'
@@ -44,13 +45,14 @@ class SubjectComponent extends Component {
     }
   }
 
+  editSubject(subjectId) {
+    this.props.subjectEdition()
+    this.props.history.push(`/subjects/form/${subjectId}`)
+  }
+
   createNewMessage(message) {
     const content = trim(message)
     this.props.createMessage(this.props.subject.id, content)
-  }
-
-  showSubjectForm(message) {
-
   }
 
   showMessageForm(message) {
@@ -63,13 +65,11 @@ class SubjectComponent extends Component {
   }
 
   createNewComment(messageId, comment) {
-    console.log(messageId)
     this.props.createComment(messageId, comment)
     this.setState({showNewCommentForm: null})
   }
 
   deleteMessage(messageId) {
-    console.log(messageId)
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_message', {}, 'forum'),
       question: trans('remove_post_confirm_message', {}, 'forum'),
@@ -100,8 +100,11 @@ class SubjectComponent extends Component {
             {!this.props.subjectForm.showSubjectForm &&
               <h3 className="h2">{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h3>
             }
-            {this.props.subjectForm.showSubjectForm &&
+            {(this.props.subjectForm.showSubjectForm && !this.props.subjectForm.editingSubject) &&
               <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
+            }
+            {this.props.subjectForm.editingSubject &&
+              <h3 className="h2">{trans('subject_edition', {}, 'forum')}</h3>
             }
             {!isEmpty(this.props.subject.tags)&&
               <div className="tag">
@@ -126,14 +129,13 @@ class SubjectComponent extends Component {
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit'),
                 displayed: true,
-                action: () => props.showSubjectForm(this.props.subject)
+                action: () => this.editSubject(this.props.subject.id)
               }
             ]}
           />
         }
         {!isEmpty(this.props.messages)&&
           <div>
-            {console.log(this.props.sortOrder)}
             <MessagesSort
               messages={this.props.messages}
               sortOrder={this.props.sortOrder}
@@ -234,17 +236,19 @@ SubjectComponent.propTypes = {
   reload: T.func.isRequired,
   showModal: T.func,
   subjectForm: T.shape({
-    showSubjectForm: T.bool.isRequired
+    showSubjectForm: T.bool.isRequired,
+    editingSubject: T.bool.isRequired
   }),
   messages: T.arrayOf(T.shape({})),
   sortOrder: T.number.isRequired
 }
 
-const Subject =  connect(
+const Subject =  withRouter(connect(
   state => ({
     subject: select.subject(state),
     subjectForm: formSelect.form(state, 'subjects.form'),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
+    // sortedMessages
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
     sortOrder: listSelect.list(state, 'subjects.messages').sortOrder
@@ -265,12 +269,12 @@ const Subject =  connect(
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
+    },
+    subjectEdition() {
+      dispatch(actions.subjectEdition())
     }
-    // showSubjectForm(subject) {
-    //   dispatch(actions.showSubjectForm(subject))
-    // }
   })
-)(SubjectComponent)
+)(SubjectComponent))
 
 export {
   Subject

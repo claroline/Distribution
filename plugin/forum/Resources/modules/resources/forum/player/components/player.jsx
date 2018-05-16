@@ -31,7 +31,12 @@ const PlayerComponent = (props) =>
       },{
         path: '/subjects/show/:id',
         component: Subject,
-        onEnter: (params) => props.openSubject(params.id)
+        onEnter: (params) => props.openSubject(params.id),
+        onLeave: () => {
+          if(props.subject.showSubjectForm){
+            props.closeSubjectForm()
+          }
+        }
       }
     ]}
   />
@@ -39,12 +44,15 @@ const PlayerComponent = (props) =>
 PlayerComponent.propTypes = {
   newSubject: T.func.isRequired,
   closeSubjectForm: T.func.isRequired,
-  openSubject: T.func.isRequired
+  openSubject: T.func.isRequired,
+  subject: T.shape({
+    showSubjectForm: T.bool.isRequired
+  }).isRequired
 }
 
 const Player = connect(
   state => ({
-    subject: formSelect.data(formSelect.form(state, 'subjects.form'))
+    subject: formSelect.form(state, 'subjects.form')
   }),
   dispatch => ({
     newSubject(id) {

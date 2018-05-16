@@ -65,7 +65,7 @@ const SubjectFormComponent = (props) =>
   <div>
     <SubjectFormWrapper
       user={currentUser()}
-      callback={() => props.saveForm(props.forumId)}
+      callback={() => props.saveForm(props.forumId, props.subject.editingSubject, props.subject.data.id)}
     >
       <FormContainer
         level={3}
@@ -131,13 +131,20 @@ const SubjectFormComponent = (props) =>
 const SubjectForm = withRouter(connect(
   state => ({
     forumId: select.forumId(state),
-    subject: formSelect.data(formSelect.form(state, 'subjects.form'))
+    subject: formSelect.form(state, 'subjects.form')
   }),
   (dispatch, ownProps) => ({
-    saveForm(forumId) {
-      dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
-        ownProps.history.push('/subjects/show/5afd8728-fc8e-49cc-a852-58f63969d426')
-      })
+    saveForm(forumId, editingSubject, subjectId) {
+      if(editingSubject) {
+        dispatch(formActions.saveForm('subjects.form', ['apiv2_forum_subject_update', {id: subjectId}])).then(() => {
+          ownProps.history.push('/subjects')
+        })
+      } else {
+        dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
+          ownProps.history.push('/subjects')
+        })
+      }
+
     }
   })
 )(SubjectFormComponent))
