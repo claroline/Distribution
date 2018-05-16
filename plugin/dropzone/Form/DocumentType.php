@@ -12,7 +12,7 @@ class DocumentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['documentType'] == 'text') {
+        if ($options['documentType'] == TextType::class) {
             $this->setName('icap_dropzone_document_file_form_text');
             $builder->add('document', 'tinymce', array(
                 'required' => true,

@@ -15,7 +15,7 @@ class PathWidgetConfigType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options = [])
     {
-        $builder->add('status', 'choice', [
+        $builder->add('status', ChoiceType::class, [
             'choices' => [
                 'draft' => 'draft',
                 'published' => 'published',
@@ -30,7 +30,7 @@ class PathWidgetConfigType extends AbstractType
             'required' => false,
         ]);
 
-        $builder->add('tags', 'text', [
+        $builder->add('tags', TextType::class, [
             'mapped' => false,
             'required' => false,
         ]);

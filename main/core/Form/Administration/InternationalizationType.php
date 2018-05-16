@@ -32,7 +32,7 @@ class InternationalizationType extends AbstractType
     {
         $builder->add(
             'locales',
-            'choice', [
+            ChoiceType::class, [
                 'choices' => $this->availableLocales,
                 'label' => 'languages',
                 'expanded' => true,

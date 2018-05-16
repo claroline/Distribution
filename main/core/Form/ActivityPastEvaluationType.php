@@ -21,7 +21,7 @@ class ActivityPastEvaluationType extends AbstractType
     {
         $builder->add(
             'status',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     'unknown' => 'unknown',
@@ -57,7 +57,7 @@ class ActivityPastEvaluationType extends AbstractType
         );
         $builder->add(
             'score',
-            'text',
+            TextType::class,
             array('required' => false, 'label' => 'evaluation')
         );
         $builder->add(

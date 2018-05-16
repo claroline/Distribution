@@ -45,7 +45,7 @@ class ActivityEvaluationType extends AbstractType
 
         $builder->add(
             'status',
-            'choice',
+            ChoiceType::class,
             $statusOptions
         );
         $builder->add(
@@ -79,7 +79,7 @@ class ActivityEvaluationType extends AbstractType
         );
         $builder->add(
             'score',
-            'text',
+            TextType::class,
             array(
                 'required' => false,
                 'label' => 'evaluation',

@@ -22,12 +22,12 @@ class RequestFriendType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array('constraints' => new NotBlank(), 'label' => 'name')
         );
         $builder->add(
             'host',
-            'text',
+            TextType::class,
             array('constraints' => new NotBlank(), 'label' => 'host')
         );
     }

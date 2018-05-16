@@ -24,7 +24,7 @@ class IconSetType extends AbstractType
         $builder
             ->add(
                 'name',
-                'text',
+                TextType::class,
                 [
                     'label' => 'name',
                 ]

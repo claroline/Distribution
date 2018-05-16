@@ -39,7 +39,7 @@ class MessageType extends AbstractType
         $builder
             ->add(
                 'to',
-                'text',
+                TextType::class,
                 array(
                     'data' => $this->username,
                     'required' => true,
@@ -52,7 +52,7 @@ class MessageType extends AbstractType
             )
             ->add(
                 'object',
-                'text',
+                TextType::class,
                 array('data' => $this->object, 'required' => true)
             )
             ->add(

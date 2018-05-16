@@ -54,7 +54,7 @@ class TinyMceUploadModalType extends AbstractType
         if (count($this->destinations) > 1) {
             $builder->add(
                 'destination',
-                'choice',
+                ChoiceType::class,
                 array(
                     'label' => 'destination',
                     'mapped' => false,
@@ -65,7 +65,7 @@ class TinyMceUploadModalType extends AbstractType
         if ($this->uncompress) {
             $builder->add(
                 'uncompress',
-                'checkbox',
+                CheckboxType::class,
                 array(
                     'label' => 'uncompress_file',
                     'mapped' => false,
@@ -75,7 +75,7 @@ class TinyMceUploadModalType extends AbstractType
         }
         $builder->add(
             'published',
-            'checkbox',
+            CheckboxType::class,
             array(
                 'label' => 'published',
                 'required' => true,

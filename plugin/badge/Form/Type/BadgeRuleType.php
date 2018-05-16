@@ -71,16 +71,16 @@ class BadgeRuleType extends AbstractType
                     'choices_as_values' => true,
                 )
             )
-            ->add('isUserReceiver', 'checkbox')
+            ->add('isUserReceiver', CheckboxType::class)
             ->add('occurrence', 'integer', array('attr' => array('class' => 'input-sm')))
-            ->add('result', 'text')
+            ->add('result', TextType::class)
             ->add('resource', 'resourcePicker', array(
                     'required' => false,
                 )
             )
             ->add(
                 'resultComparison',
-                'choice',
+                ChoiceType::class,
                 array('choices' => BadgeRule::getResultComparisonTypes())
             );
 

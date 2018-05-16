@@ -27,7 +27,7 @@ class TimeSlotType extends AngularType
         $builder
             ->add('start', 'datetime', array('label' => 'start', 'required' => true))
             ->add('end', 'datetime', array('label' => 'end', 'required' => true))
-            ->add('description', 'text', array('label' => 'description', 'required' => false));
+            ->add('description', TextType::class, array('label' => 'description', 'required' => false));
     }
 
     public function getName()

@@ -20,10 +20,10 @@ class ForumType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('constraints' => new NotBlank(), 'attr' => array('autofocus' => true)));
+        $builder->add('name', TextType::class, array('constraints' => new NotBlank(), 'attr' => array('autofocus' => true)));
         $builder->add(
             'activateNotifications',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(true => 'yes', false => 'no'),
                 'expanded' => false,

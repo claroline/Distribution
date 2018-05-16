@@ -23,7 +23,7 @@ class ButtonGroupSelectType extends AbstractType
 {
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
 
     public function getName()

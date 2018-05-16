@@ -18,7 +18,7 @@ class DeleteChapterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['hasChildren'] == true) {
-            $builder->add('deletechildren', 'checkbox', array(
+            $builder->add('deletechildren', CheckboxType::class, array(
                 'required' => false,
                 'mapped' => false,
             ));

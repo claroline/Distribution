@@ -55,7 +55,7 @@ class LogWorkspaceWidgetConfigType extends AbstractType
             )
             ->add(
                 'amount',
-                'choice',
+                ChoiceType::class,
                 array(
                     'choices' => array(
                         '1' => '1',

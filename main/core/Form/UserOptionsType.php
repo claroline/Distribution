@@ -19,7 +19,7 @@ class UserOptionsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('desktopBackgroundColor', 'text', array('required' => false));
+        $builder->add('desktopBackgroundColor', TextType::class, array('required' => false));
     }
 
     public function getName()

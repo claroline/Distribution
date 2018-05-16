@@ -28,7 +28,7 @@ class WorkspaceTagType extends AbstractType
     {
         $builder->add(
             'tags',
-            'text',
+            TextType::class,
             [
                 'mapped' => false,
                 'required' => false,

@@ -29,7 +29,7 @@ class TeamParamsType extends AbstractType
         );
         $builder->add(
             'isPublic',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     true => 'public',
@@ -40,12 +40,12 @@ class TeamParamsType extends AbstractType
         );
         $builder->add(
             'selfRegistration',
-            'checkbox',
+            CheckboxType::class,
             array('required' => true)
         );
         $builder->add(
             'selfUnregistration',
-            'checkbox',
+            CheckboxType::class,
             array('required' => true)
         );
     }

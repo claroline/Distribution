@@ -21,7 +21,7 @@ class ActivityParametersType extends AbstractType
     {
         $builder->add(
             'withTutor',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(0 => 'no', 1 => 'yes'),
                 'required' => false,
@@ -39,7 +39,7 @@ class ActivityParametersType extends AbstractType
         );
         $builder->add(
             'who',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     'individual' => 'individual',
@@ -52,7 +52,7 @@ class ActivityParametersType extends AbstractType
         );
         $builder->add(
             'where',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     'anywhere' => 'anywhere',
@@ -73,7 +73,7 @@ class ActivityParametersType extends AbstractType
         );
         $builder->add(
             'evaluation_type',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     'manual' => 'evaluation-manual',

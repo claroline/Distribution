@@ -22,7 +22,7 @@ class LtiResourceType extends AbstractType
         ]);
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             [
                 'label' => 'name_app',
                 'attr' => ['autofocus' => true],
@@ -30,7 +30,7 @@ class LtiResourceType extends AbstractType
         );
         $builder->add(
             'openInNewTab',
-            'checkbox',
+            CheckboxType::class,
             [
                 'label' => 'open_application_in_a_new_window',
             ]

@@ -12,7 +12,7 @@ class AppType extends AbstractType
     {
         $builder
             ->add(
-                'title', 'text', [
+                'title', TextType::class, [
                     'label' => ' ',
                     'attr' => ['style' => 'height:34px; ',
                         'class' => 'form-control',
@@ -21,7 +21,7 @@ class AppType extends AbstractType
                 ]
             )
             ->add(
-                'url', 'text', [
+                'url', TextType::class, [
                     'label' => ' ',
                     'attr' => ['style' => 'height:34px; ',
                         'class' => 'form-control',
@@ -30,7 +30,7 @@ class AppType extends AbstractType
                 ]
             )
             ->add(
-                'appkey', 'text', [
+                'appkey', TextType::class, [
                     'label' => ' ',
                     'required' => false,
                     'attr' => ['style' => 'height:34px; ',
@@ -40,7 +40,7 @@ class AppType extends AbstractType
                 ]
             )
             ->add(
-                'secret', 'text', [
+                'secret', TextType::class, [
                     'label' => ' ',
                     'required' => false,
                     'attr' => ['style' => 'height:34px; ',

@@ -21,7 +21,7 @@ class AdminTicketType extends AbstractType
         );
         $builder->add(
             'contactPhone',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'contact_phone',
@@ -29,7 +29,7 @@ class AdminTicketType extends AbstractType
         );
         $builder->add(
             'title',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'title',

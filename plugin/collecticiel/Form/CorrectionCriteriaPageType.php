@@ -35,7 +35,7 @@ class CorrectionCriteriaPageType extends AbstractType
 
             $builder
                 ->add('goBack', 'hidden', array('mapped' => false))
-                ->add($criterion->getId(), 'choice', $params);
+                ->add($criterion->getId(), ChoiceType::class, $params);
         }
     }
 

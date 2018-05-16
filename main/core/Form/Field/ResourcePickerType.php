@@ -55,7 +55,7 @@ class ResourcePickerType extends TextType
 
     public function getParent()
     {
-        return 'text';
+        return TextType::class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

@@ -37,7 +37,7 @@ class ResourceLogFilterType extends AbstractType
         $builder
             ->add(
                 'action',
-                'choice',
+                ChoiceType::class,
                 [
                     'label' => 'Show actions for',
                     'attr' => ['class' => 'input-sm'],

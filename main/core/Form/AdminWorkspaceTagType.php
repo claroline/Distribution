@@ -23,7 +23,7 @@ class AdminWorkspaceTagType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array(
                 'constraints' => array(
                     new NotBlank(),

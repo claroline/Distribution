@@ -47,7 +47,7 @@ class FileType extends AbstractType
         if ($this->uncompress) {
             $builder->add(
                 'uncompress',
-                'checkbox',
+                CheckboxType::class,
                 array(
                     'label' => 'uncompress_file',
                     'mapped' => false,
@@ -57,7 +57,7 @@ class FileType extends AbstractType
         }
         $builder->add(
             'published',
-            'checkbox',
+            CheckboxType::class,
             array(
                 'required' => true,
                 'mapped' => false,

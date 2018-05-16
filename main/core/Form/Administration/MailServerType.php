@@ -74,7 +74,7 @@ class MailServerType extends AbstractType
         $builder
             ->add(
                 'mailer_transport',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [
                       'sendmail' => 'sendmail',
@@ -88,7 +88,7 @@ class MailServerType extends AbstractType
             )
             ->add(
                 'mailer_host',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
                     'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['host']],
@@ -98,7 +98,7 @@ class MailServerType extends AbstractType
             )
             ->add(
                 'mailer_username',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
                     'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['username']],
@@ -118,7 +118,7 @@ class MailServerType extends AbstractType
             )
             ->add(
                 'mailer_auth_mode',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [null => '', 'plain' => 'plain', 'login' => 'login', 'cram-md5' => 'cram-md5'],
                     'required' => false,
@@ -129,7 +129,7 @@ class MailServerType extends AbstractType
             )
             ->add(
                 'mailer_encryption',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [null => '', 'tls' => 'tls', 'ssl' => 'ssl'],
                     'required' => false,
@@ -150,7 +150,7 @@ class MailServerType extends AbstractType
             )
             ->add(
                 'mailer_api_key',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
                     'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['api_key']],
@@ -160,7 +160,7 @@ class MailServerType extends AbstractType
             )
             ->add(
                 'mailer_tag',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
                     'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['tag']],

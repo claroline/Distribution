@@ -29,7 +29,7 @@ class IndexingType extends AbstractType
     {
         $builder->add(
             'google_meta_tag',
-            'text',
+            TextType::class,
             array(
                 'label' => 'google_tag_validation',
                 'constraints' => array(

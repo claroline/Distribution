@@ -40,10 +40,10 @@ class HomeTabType extends AngularType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', ['constraints' => new NotBlank(), 'label' => 'name']);
+        $builder->add('name', TextType::class, ['constraints' => new NotBlank(), 'label' => 'name']);
         $builder->add(
             'color',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'mapped' => false,
@@ -56,7 +56,7 @@ class HomeTabType extends AngularType
         if ($this->type === 'admin') {
             $builder->add(
                 'visible',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [
                         'yes' => true,
@@ -72,7 +72,7 @@ class HomeTabType extends AngularType
             );
             $builder->add(
                 'locked',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [
                         'yes' => true,
@@ -109,7 +109,7 @@ class HomeTabType extends AngularType
         } elseif ($this->type === 'workspace' && !is_null($this->workspace)) {
             $builder->add(
                 'visible',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [
                         'yes' => true,

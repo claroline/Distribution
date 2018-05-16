@@ -19,7 +19,7 @@ class StatusType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'name',
@@ -28,7 +28,7 @@ class StatusType extends AbstractType
         );
         $builder->add(
             'code',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'code',

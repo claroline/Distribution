@@ -21,7 +21,7 @@ class ActivityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array('label' => 'name', 'constraints' => new NotBlank(), 'attr' => array('autofocus' => true)))
+            ->add('title', TextType::class, array('label' => 'name', 'constraints' => new NotBlank(), 'attr' => array('autofocus' => true)))
             ->add('description', 'tinymce', array('required' => false, 'label' => 'description'))
             ->add(
                 'primaryResource',
@@ -34,7 +34,7 @@ class ActivityType extends AbstractType
                 )
             )->add(
                 'published',
-                'checkbox',
+                CheckboxType::class,
                 array(
                     'required' => true,
                     'mapped' => false,

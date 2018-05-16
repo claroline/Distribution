@@ -17,23 +17,23 @@ class WebsitePageType extends AbstractType
         $builder
             ->add(
                 'title',
-                'text'
+                TextType::class
             )
             ->add(
                 'type',
-                'text'
+                TextType::class
             )
             ->add(
                 'description',
-                'text'
+                TextType::class
             )
             ->add(
                 'visible',
-                'checkbox'
+                CheckboxType::class
             )
             ->add(
                 'isSection',
-                'checkbox'
+                CheckboxType::class
             )
             ->add(
                 'richText',
@@ -45,7 +45,7 @@ class WebsitePageType extends AbstractType
             )
             ->add(
                 'target',
-                'choice',
+                ChoiceType::class,
                 array(
                     'choices' => array(
                         'embed' => 0,
@@ -64,7 +64,7 @@ class WebsitePageType extends AbstractType
             )
             ->add(
                 'resourceNodeType',
-                'text'
+                TextType::class
             )
         ;
     }

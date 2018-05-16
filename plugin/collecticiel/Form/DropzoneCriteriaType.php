@@ -17,7 +17,7 @@ class DropzoneCriteriaType extends AbstractType
             ))
 
 // Ajout du nom du critère
-            ->add('name', 'text', array(
+            ->add('name', TextType::class, array(
                 'constraints' => new NotBlank(),
                 'required' => true,
             ))

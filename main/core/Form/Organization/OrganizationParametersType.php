@@ -26,7 +26,7 @@ class OrganizationParametersType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array('required' => true, 'label' => 'name'))
+            ->add('name', TextType::class, array('required' => true, 'label' => 'name'))
             ->add('email', 'email', array('required' => false, 'label' => 'email'))
             ->add(
                 'locations',

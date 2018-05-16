@@ -28,7 +28,7 @@ class ResourceIconType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array('label' => 'name', 'disabled' => true)
         );
         $builder->add(
@@ -52,7 +52,7 @@ class ResourceIconType extends AbstractType
         );
         $builder->add(
             'creator',
-            'text',
+            TextType::class,
             array(
                 'data' => $this->creator,
                 'mapped' => false,

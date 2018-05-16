@@ -42,7 +42,7 @@ class BaseContentType extends BaseType
             }
         }
 
-        $builder->add('title', 'text', array('data' => $title));
+        $builder->add('title', TextType::class, array('data' => $title));
         if (isset($options['theme_options']['tinymce']) && !$options['theme_options']['tinymce']) {
             $builder->add(
                 'content',

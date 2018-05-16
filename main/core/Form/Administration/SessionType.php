@@ -39,7 +39,7 @@ class SessionType extends AbstractType
         $builder
             ->add(
                 'session_storage_type',
-                'choice',
+                ChoiceType::class,
                 array(
                     'choices' => array(
                         'native' => 'files',
@@ -55,7 +55,7 @@ class SessionType extends AbstractType
         $builder
             ->add(
                 'session_db_dsn',
-                'text',
+                TextType::class,
                 array(
                     'label' => 'DSN',
                     'required' => false,
@@ -67,7 +67,7 @@ class SessionType extends AbstractType
             )
             ->add(
                 'session_db_user',
-                'text',
+                TextType::class,
                 array(
                     'label' => 'user',
                     'required' => false,
@@ -90,7 +90,7 @@ class SessionType extends AbstractType
             )
             ->add(
                 'session_db_table',
-                'text',
+                TextType::class,
                 array(
                     'label' => 'db_table',
                     'required' => false,
@@ -102,7 +102,7 @@ class SessionType extends AbstractType
             )
             ->add(
                 'session_db_id_col',
-                'text',
+                TextType::class,
                 array(
                     'label' => 'id_col',
                     'required' => false,
@@ -114,7 +114,7 @@ class SessionType extends AbstractType
             )
             ->add(
                 'session_db_data_col',
-                'text',
+                TextType::class,
                 array(
                     'label' => 'data_col',
                     'required' => false,
@@ -126,7 +126,7 @@ class SessionType extends AbstractType
             )
             ->add(
                 'session_db_time_col',
-                'text',
+                TextType::class,
                 array(
                     'label' => 'time_col',
                     'required' => false,

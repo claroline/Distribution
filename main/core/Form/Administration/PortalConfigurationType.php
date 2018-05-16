@@ -45,7 +45,7 @@ class PortalConfigurationType extends AbstractType
         $builder
             ->add(
                 'portalResources',
-                'choice',
+                ChoiceType::class,
                 array(
                     'required' => false,
                     'choices' => $this->choices,

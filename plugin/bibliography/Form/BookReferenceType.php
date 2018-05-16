@@ -13,7 +13,7 @@ class BookReferenceType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'name',
@@ -27,7 +27,7 @@ class BookReferenceType extends AbstractType
 
         $builder->add(
             'isbn',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'attr' => [
@@ -43,7 +43,7 @@ class BookReferenceType extends AbstractType
 
         $builder->add(
             'author',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'author',
@@ -82,7 +82,7 @@ class BookReferenceType extends AbstractType
 
         $builder->add(
             'publisher',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'attr' => [
@@ -94,7 +94,7 @@ class BookReferenceType extends AbstractType
 
         $builder->add(
             'printer',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'attr' => [

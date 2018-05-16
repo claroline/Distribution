@@ -43,7 +43,7 @@ class ResourcePropertiesType extends AbstractType
             'attr' => $attrParams,
         ];
 
-        $builder->add('name', 'text', ['label' => 'name']);
+        $builder->add('name', TextType::class, ['label' => 'name']);
         $builder->add(
             'newIcon',
             'file',
@@ -75,17 +75,17 @@ class ResourcePropertiesType extends AbstractType
         );
         $builder->add(
             'published',
-            'checkbox',
+            CheckboxType::class,
             ['required' => true, 'label' => 'published']
         );
         $builder->add(
             'publishedToPortal',
-            'checkbox',
+            CheckboxType::class,
             ['required' => false, 'label' => 'published_to_portal']
         );
         $builder->add(
             'hidden',
-            'checkbox',
+            CheckboxType::class,
             ['label' => 'hidden']
         );
         $builder->add('description', 'textarea', [
@@ -123,7 +123,7 @@ class ResourcePropertiesType extends AbstractType
         );
         $builder->add(
             'creator',
-            'text',
+            TextType::class,
             [
                 'data' => $this->creator,
                 'mapped' => false,
@@ -133,7 +133,7 @@ class ResourcePropertiesType extends AbstractType
         );
         $builder->add(
             'license',
-            'text',
+            TextType::class,
             [
                 'label' => 'license',
                 'required' => false,
@@ -141,7 +141,7 @@ class ResourcePropertiesType extends AbstractType
         );
         $builder->add(
             'author',
-            'text',
+            TextType::class,
             [
                 'label' => 'author',
                 'required' => false,
@@ -149,7 +149,7 @@ class ResourcePropertiesType extends AbstractType
         );
         $builder->add(
             'deletable',
-            'checkbox',
+            CheckboxType::class,
             ['required' => true, 'label' => 'deletable']
         );
     }

@@ -22,7 +22,7 @@ class DirectoryType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array(
                 'constraints' => new NotBlank(),
                 'label' => 'name',
@@ -31,7 +31,7 @@ class DirectoryType extends AbstractType
         );
         $builder->add(
             'published',
-            'checkbox',
+            CheckboxType::class,
             array(
                 'required' => true,
                 'mapped' => false,

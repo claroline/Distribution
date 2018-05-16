@@ -12,10 +12,10 @@ class DocumentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['documentType'] == 'text') {
+        if ($options['documentType'] == TextType::class) {
             $this->setName('innova_collecticiel_document_file_form_text');
 
-            $builder->add('title', 'text', array(
+            $builder->add('title', TextType::class, array(
                           'required' => true, )
                         );
             $builder->add('document', 'tinymce', array(

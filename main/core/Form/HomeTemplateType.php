@@ -34,7 +34,7 @@ class HomeTemplateType extends AbstractType
     {
         $builder->add(
             'template',
-            'choice',
+            ChoiceType::class,
             array(
                 'required' => false,
                 'choices' => $this->templates,

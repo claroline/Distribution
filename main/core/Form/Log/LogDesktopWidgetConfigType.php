@@ -25,14 +25,14 @@ class LogDesktopWidgetConfigType extends AbstractType
             foreach ($workspaces as $workspace) {
                 $builder->add(
                     $workspace->getId(),
-                    'checkbox',
+                    CheckboxType::class,
                     array('required' => false, 'label' => $workspace->getName())
                 );
             }
         }
         $builder->add(
             'amount',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     '1' => '1',

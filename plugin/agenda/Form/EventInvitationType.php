@@ -29,7 +29,7 @@ class EventInvitationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', [
+            ->add('title', TextType::class, [
                 'label' => 'form.title',
                 'required' => true,
             ])
@@ -38,7 +38,7 @@ class EventInvitationType extends AbstractType
                 'label' => 'form.description',
             ])
 
-            ->add('status', 'choice', [
+            ->add('status', ChoiceType::class, [
                 'choices' => [
                     EventInvitation::JOIN => $this->trans->trans('invitation_join_label', [], 'agenda'),
                     EventInvitation::MAYBE => $this->trans->trans('invitation_maybe_label', [], 'agenda'),

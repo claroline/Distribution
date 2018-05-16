@@ -21,7 +21,7 @@ class TeamType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array('required' => true)
         );
         $builder->add(
@@ -51,7 +51,7 @@ class TeamType extends AbstractType
         );
         $builder->add(
             'isPublic',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     true => 'public',
@@ -63,7 +63,7 @@ class TeamType extends AbstractType
         );
         $builder->add(
             'selfRegistration',
-            'checkbox',
+            CheckboxType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'advanced-param'),
@@ -71,7 +71,7 @@ class TeamType extends AbstractType
         );
         $builder->add(
             'selfUnregistration',
-            'checkbox',
+            CheckboxType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'advanced-param'),

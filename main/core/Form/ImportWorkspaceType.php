@@ -23,12 +23,12 @@ class ImportWorkspaceType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             ['label' => 'name', 'constraints' => [new NotBlank()]]
         );
         $builder->add(
             'code',
-            'text',
+            TextType::class,
             ['label' => 'code', 'constraints' => [new NotBlank()]]
         );
         $builder->add(
@@ -50,22 +50,22 @@ class ImportWorkspaceType extends AbstractType
         );
         $builder->add(
             'displayable',
-            'checkbox',
+            CheckboxType::class,
             ['required' => false, 'label' => 'displayable_in_workspace_list']
         );
         $builder->add(
             'selfRegistration',
-            'checkbox',
+            CheckboxType::class,
             ['required' => false, 'label' => 'public_registration']
         );
         $builder->add(
             'registrationValidation',
-            'checkbox',
+            CheckboxType::class,
             ['required' => false, 'label' => 'registration_validation']
         );
         $builder->add(
             'selfUnregistration',
-            'checkbox',
+            CheckboxType::class,
             ['required' => false, 'label' => 'public_unregistration']
         );
     }

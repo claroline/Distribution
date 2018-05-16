@@ -22,12 +22,12 @@ class OauthClientType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array('constraints' => new NotBlank(), 'label' => 'name')
         );
         $builder->add(
             'allowed_grant_types',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => array(
                     'authorization_code' => '_authorization_code',
@@ -45,7 +45,7 @@ class OauthClientType extends AbstractType
         );
         $builder->add(
             'uri',
-            'text',
+            TextType::class,
             array('label' => 'uri')
         );
     }

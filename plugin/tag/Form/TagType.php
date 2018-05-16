@@ -21,7 +21,7 @@ class TagType extends AbstractType
     {
         $builder->add(
             'tags',
-            'text',
+            TextType::class,
             ['mapped' => false]
         );
     }

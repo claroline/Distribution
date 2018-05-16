@@ -41,7 +41,7 @@ class CourseType extends AbstractType
 
         $builder->add(
             'title',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'title',
@@ -50,7 +50,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'code',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'label' => 'code',
@@ -78,7 +78,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'publicRegistration',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => ['yes' => true, 'no' => false],
                 'choices_as_values' => true,
@@ -88,7 +88,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'publicUnregistration',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => ['yes' => true, 'no' => false],
                 'choices_as_values' => true,
@@ -98,7 +98,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'defaultSessionDuration',
-            'text',
+            TextType::class,
             [
                 'required' => true,
                 'constraints' => [new Range(['min' => 0]), new NotBlank()],
@@ -108,7 +108,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'withSessionEvent',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => ['yes' => true, 'no' => false],
                 'choices_as_values' => true,
@@ -131,7 +131,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'tutorRoleName',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'attr' => ['class' => 'role-name-txt'],
@@ -140,7 +140,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'learnerRoleName',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'attr' => ['class' => 'role-name-txt'],
@@ -159,7 +159,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'userValidation',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => ['yes' => true, 'no' => false],
                 'choices_as_values' => true,
@@ -169,7 +169,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'organizationValidation',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => ['yes' => true, 'no' => false],
                 'choices_as_values' => true,
@@ -179,7 +179,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'registrationValidation',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => ['yes' => true, 'no' => false],
                 'choices_as_values' => true,

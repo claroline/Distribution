@@ -63,7 +63,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'defaultMode',
-            'choice',
+            ChoiceType::class,
             [
                 'multiple' => false,
                 'choices' => [
@@ -76,7 +76,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'openSessionsColor',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'mapped' => false,
@@ -88,7 +88,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'closedSessionsColor',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'mapped' => false,
@@ -100,7 +100,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'unstartedSessionsColor',
-            'text',
+            TextType::class,
             [
                 'required' => false,
                 'mapped' => false,
@@ -112,7 +112,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'displayClosedSessions',
-            'checkbox',
+            CheckboxType::class,
             [
                 'mapped' => false,
                 'data' => isset($this->extra['displayClosedSessions']) ? $this->extra['displayClosedSessions'] : true,
@@ -122,7 +122,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'displayUnstartedSessions',
-            'checkbox',
+            CheckboxType::class,
             [
                 'mapped' => false,
                 'data' => isset($this->extra['displayUnstartedSessions']) ? $this->extra['displayUnstartedSessions'] : true,
@@ -132,7 +132,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'disableClosedSessionsWs',
-            'checkbox',
+            CheckboxType::class,
             [
                 'mapped' => false,
                 'data' => isset($this->extra['disableClosedSessionsWs']) ? $this->extra['disableClosedSessionsWs'] : false,
@@ -141,7 +141,7 @@ class MyCoursesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'disableUnstartedSessionsWs',
-            'checkbox',
+            CheckboxType::class,
             [
                 'mapped' => false,
                 'data' => isset($this->extra['disableUnstartedSessionsWs']) ? $this->extra['disableUnstartedSessionsWs'] : false,

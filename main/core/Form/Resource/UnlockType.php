@@ -20,7 +20,7 @@ class UnlockType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('code', 'text', ['label' => 'code', 'constraints' => new NotBlank()]);
+        $builder->add('code', TextType::class, ['label' => 'code', 'constraints' => new NotBlank()]);
     }
 
     public function getName()

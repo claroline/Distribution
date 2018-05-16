@@ -15,7 +15,7 @@ class MediaResourceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', ['required' => true])
+        $builder->add('name', TextType::class, ['required' => true])
                 ->add('file', 'file', ['required' => true, 'mapped' => false, 'constraints' => [
                     new NotBlank(),
                     new File([

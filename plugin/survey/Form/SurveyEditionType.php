@@ -43,12 +43,12 @@ class SurveyEditionType extends AbstractType
         );
         $builder->add(
             'hasPublicResult',
-            'checkbox',
+            CheckboxType::class,
             array('required' => true)
         );
         $builder->add(
             'allowAnswerEdition',
-            'checkbox',
+            CheckboxType::class,
             array('required' => true)
         );
     }

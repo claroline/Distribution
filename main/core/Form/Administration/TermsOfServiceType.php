@@ -41,7 +41,7 @@ class TermsOfServiceType extends AbstractType
         )
         ->add(
             'active',
-            'checkbox',
+            CheckboxType::class,
             array(
                 'required' => false,
                 'mapped' => false,

@@ -39,15 +39,15 @@ class ReservationType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('start', 'text', [
+        $builder->add('start', TextType::class, [
             'label' => 'agenda.form.start_date',
         ]);
 
-        $builder->add('end', 'text', [
+        $builder->add('end', TextType::class, [
             'label' => 'agenda.form.end_date',
         ]);
 
-        $builder->add('duration', 'text', [
+        $builder->add('duration', TextType::class, [
             'label' => 'agenda.form.duration',
             'attr' => [
                 'placeholder' => 'hh:mm',

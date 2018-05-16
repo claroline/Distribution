@@ -29,14 +29,14 @@ class ResourceNameType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             ['label' => 'name', 'constraints' => new NotBlank(), 'attr' => ['autofocus' => true]]
         );
 
         if ($this->withPublication) {
             $builder->add(
                 'published',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'publish_resource',
                     'required' => true,

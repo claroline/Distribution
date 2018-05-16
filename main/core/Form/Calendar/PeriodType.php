@@ -27,8 +27,8 @@ class PeriodType extends AngularType
         $builder
             ->add('start', 'datetime', array('label' => 'start', 'required' => true))
             ->add('end', 'datetime', array('label' => 'end', 'required' => true))
-            ->add('name', 'text', array('label' => 'name', 'required' => false))
-            ->add('description', 'text', array('label' => 'description', 'required' => false))
+            ->add('name', TextType::class, array('label' => 'name', 'required' => false))
+            ->add('description', TextType::class, array('label' => 'description', 'required' => false))
             ->add('year', 'entity', array(
                     'class' => 'ClarolineCoreBundle:Calendar\Year',
                     'property' => 'name',

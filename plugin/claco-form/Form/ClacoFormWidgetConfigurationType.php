@@ -52,7 +52,7 @@ class ClacoFormWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'showCreatorPicture',
-            'checkbox',
+            CheckboxType::class,
             [
                 'mapped' => false,
                 'data' => $showCreatorPicture,
@@ -61,7 +61,7 @@ class ClacoFormWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'showFieldLabel',
-            'checkbox',
+            CheckboxType::class,
             [
                 'mapped' => false,
                 'data' => $showFieldLabel,

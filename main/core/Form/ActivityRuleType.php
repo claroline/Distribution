@@ -45,7 +45,7 @@ class ActivityRuleType extends AbstractType
 
         $builder->add(
             'action',
-            'choice',
+            ChoiceType::class,
             array(
                 'choices' => $actions,
                 'required' => true,
@@ -81,7 +81,7 @@ class ActivityRuleType extends AbstractType
         );
         $builder->add(
             'isResultVisible',
-            'checkbox',
+            CheckboxType::class,
             array('required' => false)
         );
         $builder->add(

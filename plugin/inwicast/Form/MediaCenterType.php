@@ -27,11 +27,11 @@ class MediaCenterType extends AbstractType
     {
         $builder
             ->add('url', 'url', ['required' => true])
-            ->add('driver', 'text', ['required' => true])
-            ->add('host', 'text', ['required' => true])
-            ->add('port', 'text', ['required' => true])
-            ->add('dbname', 'text', ['required' => true])
-            ->add('user', 'text', ['required' => true])
+            ->add('driver', TextType::class, ['required' => true])
+            ->add('host', TextType::class, ['required' => true])
+            ->add('port', TextType::class, ['required' => true])
+            ->add('dbname', TextType::class, ['required' => true])
+            ->add('user', TextType::class, ['required' => true])
             ->add('password', 'password', ['required' => true]);
     }
 

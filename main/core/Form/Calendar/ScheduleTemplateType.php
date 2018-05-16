@@ -27,7 +27,7 @@ class ScheduleTemplateType extends AngularType
         $builder
             ->add('day', 'integer', array('label' => 'start', 'required' => true))
             ->add('name', 'string', array('label' => 'name', 'required' => true))
-            ->add('description', 'text', array('label' => 'description', 'required' => false))
+            ->add('description', TextType::class, array('label' => 'description', 'required' => false))
             ->add('startHour', 'integer', array('label' => 'openHour', 'required' => true))
             ->add('endHour', 'integer', array('label' => 'endHour', 'required' => true));
     }

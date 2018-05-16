@@ -38,7 +38,7 @@ class NotificationPluginConfigurationType extends AbstractType
                     'theme_options' => array('control_width' => 'col-md-2'),
                 )
             )
-            ->add('purgeEnabled', 'checkbox',
+            ->add('purgeEnabled', CheckboxType::class,
                 array(
                     'required' => false,
                     'label' => 'purge_enabled',

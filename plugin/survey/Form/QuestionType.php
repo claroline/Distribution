@@ -21,7 +21,7 @@ class QuestionType extends AbstractType
     {
         $builder->add(
             'title',
-            'text'
+            TextType::class
         );
         $builder->add(
             'question',
@@ -29,7 +29,7 @@ class QuestionType extends AbstractType
         );
         $builder->add(
             'type',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => [
                     'simple_text' => 'simple_text',
@@ -43,12 +43,12 @@ class QuestionType extends AbstractType
         );
         $builder->add(
             'commentAllowed',
-            'checkbox',
+            CheckboxType::class,
             ['required' => true]
         );
         $builder->add(
             'commentLabel',
-            'text',
+            TextType::class,
             ['required' => false]
         );
     }

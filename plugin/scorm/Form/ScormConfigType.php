@@ -22,7 +22,7 @@ class ScormConfigType extends AbstractType
     {
         $builder->add(
             'hideTopBar',
-            'checkbox',
+            CheckboxType::class,
             [
                 'label' => 'hide_top_bar',
                 'translation_domain' => 'scorm',
@@ -30,7 +30,7 @@ class ScormConfigType extends AbstractType
         );
         $builder->add(
             'exitMode',
-            'choice',
+            ChoiceType::class,
             [
                 'choices' => [
                     'workspace_opening' => ScormResource::WORKSPACE_OPEN,

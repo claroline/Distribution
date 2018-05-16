@@ -41,9 +41,9 @@ class BaseProfileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('firstName', 'text', ['label' => 'first_name'])
-            ->add('lastName', 'text', ['label' => 'last_name'])
-            ->add('username', 'text', [
+        $builder->add('firstName', TextType::class, ['label' => 'first_name'])
+            ->add('lastName', TextType::class, ['label' => 'last_name'])
+            ->add('username', TextType::class, [
                 'label' => 'username',
                 'attr' => [
                     'placeholder' => 'your_platform_id',
@@ -64,7 +64,7 @@ class BaseProfileType extends AbstractType
                 ]
             )
             ->add('email', 'email', ['label' => 'email'])
-            ->add('locale', 'choice', ['choices' => $this->langs, 'required' => false, 'label' => 'language']);
+            ->add('locale', ChoiceType::class, ['choices' => $this->langs, 'required' => false, 'label' => 'language']);
 
         $content = $this->termsOfService->getTermsOfService(false);
 
@@ -77,7 +77,7 @@ class BaseProfileType extends AbstractType
                     'data' => $content->getContent(),
                 ]
             )
-            ->add('accepted_terms', 'checkbox', ['label' => 'terms_of_service_acceptance']);
+            ->add('accepted_terms', CheckboxType::class, ['label' => 'terms_of_service_acceptance']);
         }
 
         foreach ($this->facets as $facet) {

@@ -23,7 +23,7 @@ class ScormType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array(
                 'required' => true,
                 'constraints' => new NotBlank(),

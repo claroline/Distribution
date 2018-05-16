@@ -23,14 +23,14 @@ class MailType extends AbstractType
         $builder
             ->add(
                 'receiver',
-                'text',
+                TextType::class,
                 array(
                     'required' => true,
                     'constraints' => new Email(),
                     'label' => 'receiver',
                 )
             )
-            ->add('object', 'text', array('label' => 'object'))
+            ->add('object', TextType::class, array('label' => 'object'))
             ->add('content', 'tinymce', array('label' => 'content'));
     }
 

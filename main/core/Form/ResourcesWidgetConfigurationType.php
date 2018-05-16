@@ -46,7 +46,7 @@ class ResourcesWidgetConfigurationType extends AbstractType
     {
         $builder->add(
             'mode',
-            'choice',
+            ChoiceType::class,
             [
                 'mapped' => false,
                 'multiple' => false,
@@ -84,7 +84,7 @@ class ResourcesWidgetConfigurationType extends AbstractType
         );
         $builder->add(
             'tags',
-            'text',
+            TextType::class,
             [
                 'mapped' => false,
                 'required' => false,

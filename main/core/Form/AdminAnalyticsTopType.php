@@ -21,7 +21,7 @@ class AdminAnalyticsTopType extends AbstractType
     {
         $builder
             ->add(
-                'top_type', 'choice', array(
+                'top_type', ChoiceType::class, array(
                     'label' => 'show',
                     'attr' => array(
                         'class' => 'input-sm',

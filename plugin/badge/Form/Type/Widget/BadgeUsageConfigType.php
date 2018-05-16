@@ -27,7 +27,7 @@ class BadgeUsageConfigType extends AbstractType
                     'control_width' => 'col-md-2',
                 ),
             ))
-            ->add('simple_view', 'checkbox', array(
+            ->add('simple_view', CheckboxType::class, array(
                 'required' => false,
                 'theme_options' => array(
                     'label_width' => 'col-md-7',

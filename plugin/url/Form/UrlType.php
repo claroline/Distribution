@@ -13,7 +13,7 @@ class UrlType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
+            TextType::class,
             array(
                 'required' => true,
                 'label' => 'name',

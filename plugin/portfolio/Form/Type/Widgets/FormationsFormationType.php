@@ -19,7 +19,7 @@ class FormationsFormationType extends AbstractType
                 'required' => false,
                 'mapped' => false,
             ))
-            ->add('name', 'text', array(
+            ->add('name', TextType::class, array(
                 'required' => false,
                 'mapped' => false,
             ))
@@ -28,11 +28,11 @@ class FormationsFormationType extends AbstractType
                 'property' => 'name',
                 'required' => false,
             ))
-            ->add('uri', 'text', array(
+            ->add('uri', TextType::class, array(
                 'required' => false,
                 'mapped' => false,
             ))
-            ->add('uriLabel', 'text', array(
+            ->add('uriLabel', TextType::class, array(
                 'required' => false,
                 'mapped' => false,
             ));

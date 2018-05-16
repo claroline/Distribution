@@ -51,12 +51,12 @@ class WidgetEditType extends AbstractType
         );
         $builder->add(
             'isDisplayableInDesktop',
-            'checkbox',
+            CheckboxType::class,
             ['label' => 'displayable_in_desktop', 'required' => true]
         );
         $builder->add(
             'isDisplayableInWorkspace',
-            'checkbox',
+            CheckboxType::class,
             ['label' => 'displayable_in_workspace', 'required' => true]
         );
         $builder->add(

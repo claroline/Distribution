@@ -33,7 +33,7 @@ class Select2Type extends AbstractType
 
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
 
     public function configureOptions(OptionsResolver $resolver)

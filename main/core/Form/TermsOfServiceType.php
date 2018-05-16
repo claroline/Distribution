@@ -28,7 +28,7 @@ class TermsOfServiceType extends AbstractType
 
         $builder
             ->add('scroll', 'scroll', array('label' => 'term_of_service', 'data' => $content))
-            ->add('terms_of_service', 'checkbox', array('mapped' => false, 'label' => 'terms_of_service_acceptance'));
+            ->add('terms_of_service', CheckboxType::class, array('mapped' => false, 'label' => 'terms_of_service_acceptance'));
     }
 
     public function getName()
