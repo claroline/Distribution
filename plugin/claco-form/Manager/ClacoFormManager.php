@@ -1013,13 +1013,16 @@ class ClacoFormManager
                 if (FieldFacet::FILE_TYPE === $field->getType()) {
                     /* TODO: change this when FILE_TYPE can accept an array of files again */
                     $file = $fieldFacetValue->getValue();
-                    $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$file['url'];
-                    $fileParts = explode('/', $file['url']);
-                    $fileName = count($fileParts) > 0 ? $fileParts[count($fileParts) - 1] : $file['name'];
-                    $archive->addFile(
-                        $filePath,
-                        'files'.DIRECTORY_SEPARATOR.$entry->getId().DIRECTORY_SEPARATOR.$fileName
-                    );
+
+                    if (!empty($file) && is_array($file)) {
+                        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$file['url'];
+                        $fileParts = explode('/', $file['url']);
+                        $fileName = count($fileParts) > 0 ? $fileParts[count($fileParts) - 1] : $file['name'];
+                        $archive->addFile(
+                            $filePath,
+                            'files'.DIRECTORY_SEPARATOR.$entry->getId().DIRECTORY_SEPARATOR.$fileName
+                        );
+                    }
                 }
             }
         }
