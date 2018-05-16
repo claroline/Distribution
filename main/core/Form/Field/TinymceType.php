@@ -45,12 +45,8 @@ class TinymceType extends TextareaType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['attr' => $this->defaultAttributes]);
-        $resolver->setNormalizer(
-            [
-                'attr' => function (Options $options, $value) {
-                    return array_merge($this->defaultAttributes, $value);
-                },
-            ]
-        );
+        $resolver->setNormalizer('attr', function (Options $options, $value) {
+            return array_merge($this->defaultAttributes, $value);
+        });
     }
 }
