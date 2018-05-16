@@ -1747,4 +1747,23 @@ class UserManager
             $this->objectManager->endFlushSuite();
         }
     }
+
+    /**
+     * Merges two users and transfers every resource to the kept user.
+     *
+     * @param User $from
+     * @param User $to
+     */
+    public function transferRoles(User $from, User $to)
+    {
+        $roles = $from->getEntityRoles();
+
+        foreach ($roles as $role) {
+            $to->addRole($role);
+        }
+
+        $this->objectManager->flush();
+
+        return count($roles);
+    }
 }

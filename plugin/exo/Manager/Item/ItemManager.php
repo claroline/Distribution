@@ -418,4 +418,27 @@ class ItemManager
 
         $definition->parseContents($contentParser, $itemData);
     }
+
+    /**
+     * Find all content for a given user and the replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceUser(User $from, User $to)
+    {
+        $items = $this->repository->findByCreator($from);
+
+        if (count($items) > 0) {
+            foreach ($items as $item) {
+                $item->setCreator($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($items);
+    }
 }
