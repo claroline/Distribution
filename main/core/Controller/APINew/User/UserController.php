@@ -242,7 +242,7 @@ class UserController extends AbstractCrudController
     {
         $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
           [] :
-          ['workspaces' => array_map(function (Organization $organization) {
+          ['workspace' => array_map(function (Organization $organization) {
               return $organization->getUuid();
           }, $user->getAdministratedOrganizations()->toArray())];
 
