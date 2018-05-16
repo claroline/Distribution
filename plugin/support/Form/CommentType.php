@@ -19,11 +19,11 @@ class CommentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            ContentType::class,,
+            ContentType::class,
             'tinymce',
             [
                 'required' => true,
-                'label' => ContentType::class,,
+                'label' => ContentType::class,
                 'translation_domain' => 'platform',
             ]
         );

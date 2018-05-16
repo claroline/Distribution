@@ -20,12 +20,12 @@ class MailLayoutType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            ContentType::class,,
-            ContentType::class,,
+            ContentType::class,
+            ContentType::class,
             array(
                 'data' => $builder->getData(),
                 'theme_options' => array('contentTitle' => false),
-                'label' => ContentType::class,,
+                'label' => ContentType::class,
             )
         );
     }

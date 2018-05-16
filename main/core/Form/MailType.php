@@ -31,7 +31,7 @@ class MailType extends AbstractType
                 )
             )
             ->add('object', TextType::class, array('label' => 'object'))
-            ->add(ContentType::class,, 'tinymce', array('label' => 'content'));
+            ->add(ContentType::class, 'tinymce', array('label' => 'content'));
     }
 
     public function getName()

@@ -45,7 +45,7 @@ class BaseContentType extends BaseType
         $builder->add('title', TextType::class, array('data' => $title));
         if (isset($options['theme_options']['tinymce']) && !$options['theme_options']['tinymce']) {
             $builder->add(
-                ContentType::class,,
+                ContentType::class,
                 'textarea',
                 array(
                     'attr' => array('class' => 'form-control', 'rows' => '3'),
@@ -54,7 +54,7 @@ class BaseContentType extends BaseType
                 )
             );
         } else {
-            $builder->add(ContentType::class,, 'tinymce', array('data' => $content));
+            $builder->add(ContentType::class, 'tinymce', array('data' => $content));
         }
     }
 
