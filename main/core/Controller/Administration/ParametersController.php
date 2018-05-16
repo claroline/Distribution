@@ -272,13 +272,17 @@ class ParametersController extends Controller
     public function appearanceFormAction()
     {
         $platformConfig = $this->configHandler->getPlatformConfig();
+
+        $options = [
+          'themes' => $this->themeManager->listThemeNames(true),
+          'icons' => $this->iconSetManager->listIconSetNamesByType(IconSetTypeEnum::RESOURCE_ICON_SET),
+          'lockedParams' => $this->configHandler->getLockedParameters(),
+        ];
+
         $form = $this->formFactory->create(
-            new AdminForm\AppearanceType(
-                $this->themeManager->listThemeNames(true),
-                $this->iconSetManager->listIconSetNamesByType(IconSetTypeEnum::RESOURCE_ICON_SET),
-                $this->configHandler->getLockedParameters()
-            ),
-            $platformConfig
+            AdminForm\AppearanceType::class,
+            $platformConfig,
+            $options
         );
 
         if ($this->request->isMethod('POST')) {
