@@ -8,7 +8,7 @@
     <form role="form"
         class="form-horizontal"
         action="{{ path('oauth_request_friend_submit') }}"
-        method="post" {{ form_enctype(form) }}
+        method="post" enctype="multipart/form-data"
         id="form_request_friend"
     >
         <div class="modal-body">
