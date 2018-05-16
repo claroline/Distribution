@@ -11,7 +11,7 @@ namespace Icap\DropzoneBundle\Tests\Entity;
 use Icap\DropzoneBundle\Entity\Dropzone;
 use DateTime;
 
-class DropzoneTest extends \PHPUnit_Framework_TestCase
+class DropzoneTest extends \PHPUnit\Framework\TestCase
 {
     private function createFixturesDropzones()
     {

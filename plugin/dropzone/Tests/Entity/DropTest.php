@@ -12,7 +12,7 @@ use Icap\DropzoneBundle\Entity\Correction;
 use Icap\DropzoneBundle\Entity\Drop;
 use DateTime;
 
-class DropTest extends \PHPUnit_Framework_TestCase
+class DropTest extends \PHPUnit\Framework\TestCase
 {
     public function testgetCalculatedGrade()
     {

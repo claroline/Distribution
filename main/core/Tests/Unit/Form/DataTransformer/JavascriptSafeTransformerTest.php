@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Form\DataTransformer;
 
-class JavascriptSafeTransformerTest extends \PHPUnit_Framework_TestCase
+class JavascriptSafeTransformerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider inputProvider

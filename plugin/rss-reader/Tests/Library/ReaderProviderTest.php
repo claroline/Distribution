@@ -11,7 +11,7 @@
 
 namespace Claroline\RssReaderBundle\Library;
 
-class ReaderProviderTest extends \PHPUnit_Framework_TestCase
+class ReaderProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetReaderThrowsAnExceptionIfFormatIsUnknown()
     {
