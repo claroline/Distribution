@@ -84,11 +84,11 @@ const UsersList = props =>
         dangerous: true
       },
       {
+        type: 'link',
         icon: 'fa fa-fw fa-compress',
         label: t('merge_accounts'),
-        context: 'selection',
-        action: (rows) => window.location = `#/users/merge/${rows[0].id}/${rows[1].id}`,
-        displayed: (rows) => rows.length === 2,
+        target: `/users/merge/${rows[0].id}/${rows[1].id}`,
+        displayed: rows.length === 2,
         dangerous: true
       },
       ...Configuration.getUsersAdministrationActions().map(action => action.options.modal ? {

@@ -7,7 +7,7 @@ import merge from 'lodash/merge'
 import {getTypeOrDefault} from '#/main/core/data/index'
 
 import {Table} from '#/main/core/layout/table/components/table'
-import {Button} from '#/main/core/layout/button/components/button'
+import {CallbackButton} from '#/main/app/button/components/callback'
 
 const RowDataCell = props => {
 
@@ -42,11 +42,11 @@ const ComparisonTable = props =>
         <td />
         {props.data.map((elem, index) =>
           <td key={index}>
-            <Button
-              onClick={() => props.action.action(elem, props.data)}
+            <CallbackButton
+              callback={() => props.action.action(elem, props.data)}
               disabled={props.action.disabled(elem, props.data)}>
               {props.action.text(elem)}
-            </Button>
+            </CallbackButton>
           </td>)}
       </tr>
     </tfoot>}
