@@ -29,7 +29,6 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class LogManager
 {
-    const LOG_PER_PAGE = 40;
     const CSV_LOG_BATCH = 1000;
 
     private $container;
@@ -110,10 +109,16 @@ class LogManager
     {
         // get filters
         $filters = FinderProvider::parseQueryParams($finderParams)['allFilters'];
-        $unique = isset($filters['unique']) ? $filters['unique'] : false;
+        $unique = isset($filters['unique']) ? filter_var($filters['unique'], FILTER_VALIDATE_BOOLEAN) : false;
         $data = $this->logRepository->fetchChartData($filters, $unique);
         $minDate = isset($filters['dateLog']) ? $filters['dateLog'] : null;
+        if (is_string($minDate)) {
+            $minDate = new \DateTime($minDate);
+        }
         $maxDate = isset($filters['dateTo']) ? $filters['dateTo'] : null;
+        if (is_string($maxDate)) {
+            $maxDate = new \DateTime($maxDate);
+        }
 
         return $this->formatDataForChart($data, $minDate, $maxDate);
     }
@@ -181,8 +186,8 @@ class LogManager
         $allFilters = $queryParams['allFilters'];
         $filters = $queryParams['filters'];
         $sortBy = $queryParams['sortBy'];
-        $minDate = isset($filters['dateLog']) ? (new \DateTime($filters['dateLog']))->setTime(0, 0, 0, 0) : null;
-        $maxDate = isset($filters['dateTo']) ? (new \DateTime($filters['dateTo']))->setTime(0, 0, 0, 0) : null;
+        $minDate = isset($filters['dateLog']) ? (new \DateTime($filters['dateLog']))->setTime(0, 0, 0) : null;
+        $maxDate = isset($filters['dateTo']) ? (new \DateTime($filters['dateTo']))->setTime(0, 0, 0) : null;
 
         $totalUsers = intval($this->logRepository->fetchUserActionsList($allFilters, true));
         $userList = $this->logRepository->fetchUserActionsList($allFilters, false, $page, $limit, $sortBy);

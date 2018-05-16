@@ -232,13 +232,12 @@ class AnalyticsManager
         return $filters;
     }
 
-    // TODO Remove any old methods not required after refactoring
-
     public function getTopActions(array $finderParams = [])
     {
-        $topType = isset($finderParams['type']) ? $finderParams['type'] : 'top_users_connections';
         $finderParams['filters'] = isset($finderParams['filters']) ? $finderParams['filters'] : [];
-        $finderParams['limit'] = isset($finderParams['limit']) ? $finderParams['limit'] : 10;
+        $topType = isset($finderParams['filters']['type']) ? $finderParams['filters']['type'] : 'top_users_connections';
+        unset($finderParams['filters']['type']);
+        $finderParams['limit'] = isset($finderParams['limit']) ? intval($finderParams['limit']) : 10;
         switch ($topType) {
             case 'top_extension':
                 $listData = $this->resourceRepo->findMimeTypesWithMostResources($finderParams['limit']);
@@ -273,9 +272,19 @@ class AnalyticsManager
                 $finderParams['filters']['action'] = LogUserLoginEvent::ACTION;
                 $finderParams['sortBy'] = '-actions';
                 $listData = $this->logManager->getUserActionsList($finderParams);
+                $listData = $listData['data'];
                 break;
         }
 
-        return $listData;
+        return [
+            'data' => $listData,
+            'filters' => [
+                ['property' => 'type', 'value' => $topType],
+            ],
+            'page' => 0,
+            'pageSize' => $finderParams['limit'],
+            'sortBy' => [],
+            'totalResults' => count($listData),
+        ];
     }
 }
