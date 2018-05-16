@@ -1055,9 +1055,6 @@ class ClacoFormManager
                     $fieldFacet = $field->getFieldFacet();
 
                     switch ($fieldFacet->getType()) {
-                        case FieldFacet::DATE_TYPE:
-                            $value = $fieldValues[$field->getId()]->format('d/m/Y');
-                            break;
                         case FieldFacet::CASCADE_TYPE:
                             $value = implode(', ', $fieldValues[$field->getId()]);
                             break;
