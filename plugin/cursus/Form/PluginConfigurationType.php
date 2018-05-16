@@ -72,8 +72,8 @@ class PluginConfigurationType extends AbstractType
             $endOptions
         );
         $builder->add(
-            'content',
-            'content',
+            ContentType::class,,
+            ContentType::class,,
             [
                 'data' => $builder->getData(),
                 'theme_options' => ['contentTitle' => true],

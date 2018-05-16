@@ -26,7 +26,7 @@ class SimpleTextType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('content', 'tinymce');
+        $builder->add(ContentType::class,, 'tinymce');
     }
 
     public function getName()

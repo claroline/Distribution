@@ -20,11 +20,11 @@ class MailInscriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'content',
-            'content',
+            ContentType::class,,
+            ContentType::class,,
             array(
                 'data' => $builder->getData(),
-                'label' => 'content',
+                'label' => ContentType::class,,
             )
         );
     }

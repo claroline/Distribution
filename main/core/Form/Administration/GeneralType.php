@@ -70,7 +70,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'description',
-                'content',
+                ContentType::class,,
                 [
                     'data' => $this->description,
                     'mapped' => false,

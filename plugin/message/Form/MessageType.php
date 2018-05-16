@@ -56,7 +56,7 @@ class MessageType extends AbstractType
                 array('data' => $this->object, 'required' => true)
             )
             ->add(
-                'content',
+                ContentType::class,,
                 'tinymce',
                 array('required' => true)
             );

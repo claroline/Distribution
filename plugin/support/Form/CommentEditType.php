@@ -19,11 +19,11 @@ class CommentEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'content',
+            ContentType::class,,
             'tinymce',
             [
                 'required' => true,
-                'label' => 'content',
+                'label' => ContentType::class,,
                 'translation_domain' => 'platform',
             ]
         );

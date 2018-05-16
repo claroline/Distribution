@@ -40,7 +40,7 @@ class PostType extends AbstractType
                     )),
                 )
             )
-            ->add('content', 'tinymce', array(
+            ->add(ContentType::class,, 'tinymce', array(
                     'attr' => array(
                         'style' => 'height: 300px;',
                     ),

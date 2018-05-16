@@ -21,7 +21,7 @@ class SendMailType extends AbstractType
     {
         $builder
             ->add('object', TextType::class, array('label' => 'object'))
-            ->add('content', 'tinymce', array('label' => 'message'));
+            ->add(ContentType::class,, 'tinymce', array('label' => 'message'));
     }
 
     public function getName()

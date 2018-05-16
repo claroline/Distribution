@@ -31,7 +31,7 @@ class TermsOfServiceType extends AbstractType
     {
         $builder->add(
             'termsOfService',
-            'content',
+            ContentType::class,,
             array(
                 'required' => false,
                 'data' => $builder->getData(),
