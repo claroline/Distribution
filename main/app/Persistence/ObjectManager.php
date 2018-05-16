@@ -27,7 +27,7 @@ class ObjectManager extends ObjectManagerDecorator
 {
     use LoggableTrait;
 
-    private $logger;
+    private $monolog;
     private $flushSuiteLevel = 0;
     private $supportsTransactions = false;
     private $hasEventManager = false;
@@ -53,7 +53,7 @@ class ObjectManager extends ObjectManagerDecorator
             = $this->hasEventManager
             = $this->hasUnitOfWork
             = $om instanceof EntityManagerInterface;
-        $this->logger = $logger;
+        $this->monolog = $logger;
     }
 
     /**
@@ -263,7 +263,7 @@ class ObjectManager extends ObjectManagerDecorator
         $objects = $query->getResult();
 
         if (($entityCount = count($objects)) !== ($idCount = count($list))) {
-            $this->logger->warning("{$entityCount} out of {$idCount} ids don't match any existing object");
+            $this->monolog->warning("{$entityCount} out of {$idCount} ids don't match any existing object");
         }
 
         if ($orderStrict) {
