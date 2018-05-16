@@ -107,10 +107,7 @@ class ObjectManagerTest extends MockeryTestCase
         $om->endFlushSuite();
     }
 
-    /**
-     * @expectedException \Claroline\AppBundle\Persistence\MissingObjectException
-     */
-    public function testFindByIdsThrowsAnExceptionIfSomeEntitiesCannotBeRetreived()
+    public function testFindByLogsStuff()
     {
         $oom = $this->mock('Doctrine\ORM\EntityManager');
         $query = $this->getQuery();
