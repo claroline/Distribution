@@ -27,7 +27,7 @@ class AbilityType extends AbstractType
         }
 
         $builder
-            ->add('name', 'textarea', [
+            ->add('name', TextareaType::class, [
                 'label' => 'description',
                 'attr' => ['class' => 'form-control'],
             ])

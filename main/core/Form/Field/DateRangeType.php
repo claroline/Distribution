@@ -11,16 +11,17 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
+use Claroline\CoreBundle\Form\DataTransformer\DateRangeToTextTransformer;
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Claroline\CoreBundle\Form\DataTransformer\DateRangeToTextTransformer;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.form.daterange")
- * @DI\FormType(alias = "daterange")
+ * @Tag("form.type")
  */
 class DateRangeType extends AbstractType
 {
@@ -59,9 +60,9 @@ class DateRangeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 }

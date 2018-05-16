@@ -88,7 +88,7 @@ class ResourcePropertiesType extends AbstractType
             CheckboxType::class,
             ['label' => 'hidden']
         );
-        $builder->add('description', 'textarea', [
+        $builder->add('description', TextareaType::class, [
             'label' => 'description',
             'attr' => [
                 'class' => 'form-control',

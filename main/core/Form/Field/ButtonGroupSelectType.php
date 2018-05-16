@@ -11,13 +11,14 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
+use JMS\DiExtraBundle\Annotation as DI;
+use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.form.buttongroupselect")
- * @DI\FormType(alias = "buttongroupselect")
+ * @Tag("form.type")
  */
 class ButtonGroupSelectType extends AbstractType
 {
@@ -35,9 +36,9 @@ class ButtonGroupSelectType extends AbstractType
     {
         $resolver
         ->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 }

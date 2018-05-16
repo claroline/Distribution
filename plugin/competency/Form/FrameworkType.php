@@ -18,7 +18,7 @@ class FrameworkType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', TextType::class, ['label' => 'name'])
-            ->add('description', 'textarea', [
+            ->add('description', TextareaType::class, [
                 'label' => 'description',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [new NotBlank()],

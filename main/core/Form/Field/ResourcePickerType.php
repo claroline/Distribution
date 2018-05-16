@@ -12,10 +12,10 @@
 namespace Claroline\CoreBundle\Form\Field;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use JMS\DiExtraBundle\Annotation\FormType;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @Service()
- * @FormType(alias = "resourcePicker")
+ * @Tag("form.type")
  *
  * Required because the normalizer anonymous function screws up PHPMD
  * @SuppressWarnings(PHPMD)
@@ -109,7 +109,7 @@ class ResourcePickerType extends TextType
     {
         if ($form->getData() instanceof ResourceNode) {
             return $form->getData();
-        } elseif ($form->getData() && $form->getData() !== '') {
+        } elseif ($form->getData() && '' !== $form->getData()) {
             return $this->resourceManager->getById($form->getData());
         }
     }

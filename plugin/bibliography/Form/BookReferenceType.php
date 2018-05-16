@@ -56,7 +56,7 @@ class BookReferenceType extends AbstractType
 
         $builder->add(
             'description',
-            'textarea',
+            TextareaType::class,
             [
                 'required' => false,
                 'attr' => [
@@ -69,7 +69,7 @@ class BookReferenceType extends AbstractType
 
         $builder->add(
             'abstract',
-            'textarea',
+            TextareaType::class,
             [
                 'required' => false,
                 'attr' => [

@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Form\Field;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -23,7 +24,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.form.honeypot")
- * @DI\FormType(alias = "honeypot")
+ * @Tag("form.type")
  */
 class HoneypotType extends AbstractType
 {

@@ -54,7 +54,7 @@ class ReservationType extends AbstractType
             ],
         ]);
 
-        $builder->add('comment', 'textarea', [
+        $builder->add('comment', TextareaType::class, [
             'label' => 'agenda.form.comment',
             'required' => false,
             'max_length' => 255,

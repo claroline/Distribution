@@ -49,7 +49,7 @@ class TicketType extends AbstractType
         if ($this->mode === 1) {
             $builder->add(
                 'description',
-                'textarea',
+                TextareaType::class,
                 [
                     'required' => false,
                     'label' => 'additional_infos',

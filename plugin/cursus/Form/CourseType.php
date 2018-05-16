@@ -59,7 +59,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'description',
-            'textarea',
+            TextareaType::class,
             [
                 'required' => false,
                 'label' => 'description',

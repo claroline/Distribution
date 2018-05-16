@@ -12,10 +12,10 @@
 namespace Claroline\CoreBundle\Form\Field;
 
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
-use JMS\DiExtraBundle\Annotation\FormType;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @Service("claroline.form.organization_picker")
- * @FormType(alias = "organization_picker")
+ * @Tag("form.type")
  *
  * Required because the normalizer anonymous function screws up PHPMD
  * @SuppressWarnings(PHPMD)

@@ -11,13 +11,14 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\AbstractType;
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\DiExtraBundle\Annotation\Tag;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @DI\Service("claroline.form.select2")
- * @DI\FormType(alias = "select2")
+ * @Tag("form.type")
  */
 class Select2Type extends AbstractType
 {
@@ -40,9 +41,9 @@ class Select2Type extends AbstractType
     {
         $resolver
             ->setDefaults(
-                array(
+                [
                     'translation_domain' => 'platform',
-                )
+                ]
             );
     }
 }

@@ -87,7 +87,7 @@ class ActivityEvaluationType extends AbstractType
         );
         $builder->add(
             'comment',
-            'textarea',
+            TextareaType::class,
             array(
                 'attr' => array('rows' => 5),
                 'required' => false,

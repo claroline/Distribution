@@ -11,14 +11,14 @@
 
 namespace Claroline\CoreBundle\Form\Field;
 
+use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Component\Form\Extension\Core\Type\BaseType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\FormType;
 
 /**
  * @Service("claroline.form.scroll")
- * @FormType(alias = "scroll")
+ * @Tag("form.type")
  */
 class ScrollType extends BaseType
 {
@@ -30,11 +30,11 @@ class ScrollType extends BaseType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                'attr' => array('class' => 'content-scroll'),
+            [
+                'attr' => ['class' => 'content-scroll'],
                 'mapped' => false,
                 'read_only' => true,
-            )
+            ]
         );
     }
 }

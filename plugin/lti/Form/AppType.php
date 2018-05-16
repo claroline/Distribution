@@ -50,7 +50,7 @@ class AppType extends AbstractType
                 ]
             )
             ->add(
-                'description', 'textarea', [
+                'description', TextareaType::class, [
                     'label' => ' ',
                     'required' => false,
                     'attr' => ['style' => 'height:34px; ',
