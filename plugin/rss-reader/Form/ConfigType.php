@@ -19,7 +19,7 @@ class ConfigType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('url', TextType::class);
+        $builder->add(UrlType::class, TextType::class);
     }
 
     public function getName()

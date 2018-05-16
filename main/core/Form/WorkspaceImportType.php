@@ -23,8 +23,8 @@ class WorkspaceImportType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'file',
-            'file',
+            FileType::class,
+            FileType::class,
             array(
                 'label' => 'workspace',
                 'required' => true,

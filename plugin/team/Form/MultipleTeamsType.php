@@ -43,7 +43,7 @@ class MultipleTeamsType extends AbstractType
         );
         $builder->add(
             'nbTeams',
-            'integer',
+            IntegerType::class,
             array(
                 'attr' => array('min' => 1),
                 'required' => true,
@@ -65,7 +65,7 @@ class MultipleTeamsType extends AbstractType
         );
         $builder->add(
             'maxUsers',
-            'integer',
+            IntegerType::class,
             array(
                 'attr' => array('min' => 0),
                 'required' => false,

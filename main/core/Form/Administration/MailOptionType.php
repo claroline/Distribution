@@ -29,7 +29,7 @@ class MailOptionType extends AbstractType
         $builder
             ->add(
                 'mailerFrom',
-                'email',
+                EmailType::class,
                 array(
                     'required' => false,
                     'label' => 'mailer_from',

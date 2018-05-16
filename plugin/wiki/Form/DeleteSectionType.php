@@ -24,7 +24,7 @@ class DeleteSectionType extends AbstractType
                         'mapped' => false,
                     ));
                 } else {
-                    $form->add('children', 'hidden', array(
+                    $form->add('children', HiddenType::class, array(
                         'required' => false,
                         'mapped' => false,
                     ));

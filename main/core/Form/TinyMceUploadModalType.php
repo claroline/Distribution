@@ -37,12 +37,12 @@ class TinyMceUploadModalType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'hidden', array('data' => 'tmpname'));
+        $builder->add('name', HiddenType::class, array('data' => 'tmpname'));
         $builder->add(
-            'file',
-            'hidden',
+            FileType::class,
+            HiddenType::class,
             array(
-                'label' => 'file',
+                'label' => FileType::class,
                 'required' => true,
                 'mapped' => false,
                 'constraints' => array(

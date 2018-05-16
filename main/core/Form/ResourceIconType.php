@@ -33,7 +33,7 @@ class ResourceIconType extends AbstractType
         );
         $builder->add(
             'newIcon',
-            'file',
+            FileType::class,
             array(
                 'required' => false,
                 'mapped' => false,

@@ -27,7 +27,7 @@ class OrganizationParametersType extends AngularType
     {
         $builder
             ->add('name', TextType::class, array('required' => true, 'label' => 'name'))
-            ->add('email', 'email', array('required' => false, 'label' => 'email'))
+            ->add(EmailType::class, EmailType::class, array('required' => false, 'label' => 'email'))
             ->add(
                 'locations',
                 'entity',

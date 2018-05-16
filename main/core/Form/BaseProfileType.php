@@ -63,7 +63,7 @@ class BaseProfileType extends AbstractType
                     ],
                 ]
             )
-            ->add('email', 'email', ['label' => 'email'])
+            ->add(EmailType::class, EmailType::class, ['label' => 'email'])
             ->add('locale', ChoiceType::class, ['choices' => $this->langs, 'required' => false, 'label' => 'language']);
 
         $content = $this->termsOfService->getTermsOfService(false);

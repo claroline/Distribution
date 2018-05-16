@@ -32,7 +32,7 @@ class TicketType extends AbstractType
         );
         $builder->add(
             'contactMail',
-            'email',
+            EmailType::class,
             [
                 'required' => true,
                 'label' => 'contact_email',

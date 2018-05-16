@@ -30,10 +30,10 @@ class FileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'hidden', array('data' => 'tmpname'));
+        $builder->add('name', HiddenType::class, array('data' => 'tmpname'));
         $builder->add(
-            'file',
-            'file',
+            FileType::class,
+            FileType::class,
             array(
                 'required' => true,
                 'mapped' => false,
@@ -41,7 +41,7 @@ class FileType extends AbstractType
                     new NotBlank(),
                     new File(),
                 ),
-                'label' => 'file',
+                'label' => FileType::class,
            )
         );
         if ($this->uncompress) {

@@ -31,10 +31,10 @@ class IconSetType extends AbstractType
             )
             ->add(
                 'iconsZipFile',
-                'file',
+                FileType::class,
                 [
                     'required' => false,
-                    'label' => 'file',
+                    'label' => FileType::class,
                 ]
             );
     }

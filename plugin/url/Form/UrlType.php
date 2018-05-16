@@ -22,8 +22,8 @@ class UrlType extends AbstractType
         );
 
         $builder->add(
-            'url',
-            'url',
+            UrlType::class,
+            UrlType::class,
             array(
                 'required' => true,
                 'label' => 'Url',

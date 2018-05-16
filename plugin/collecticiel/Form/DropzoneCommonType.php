@@ -24,14 +24,14 @@ class DropzoneCommonType extends AbstractType
         $builder
             ->add(
                 'stayHere',
-                'hidden',
+                HiddenType::class,
                 [
                     'mapped' => false,
                 ]
             )
             ->add(
                 'autoCloseForManualStates',
-                'hidden',
+                HiddenType::class,
                 [
                     'mapped' => false,
                 ]
@@ -121,7 +121,7 @@ class DropzoneCommonType extends AbstractType
             )
 
             // Notation maxi. Ajout de cette zone, demande JJQ. InnovaERV
-            ->add('maximumNotation', 'integer',
+            ->add('maximumNotation', IntegerType::class,
                 [
                     'required' => true,
                     'attr' => [

@@ -25,7 +25,7 @@ class PathWidgetConfigType extends AbstractType
             'required' => false,
         ]);
 
-        $builder->add('removeTags', 'hidden', [
+        $builder->add('removeTags', HiddenType::class, [
             'mapped' => false,
             'required' => false,
         ]);

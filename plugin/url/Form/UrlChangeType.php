@@ -12,8 +12,8 @@ class UrlChangeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $option)
     {
         $builder->add(
-            'url',
-            'url',
+            UrlType::class,
+            UrlType::class,
             array(
                 'required' => true,
                 'label' => 'Url',

@@ -27,8 +27,8 @@ class YearType extends AngularType
         $builder
             ->add('start', 'datetime', array('label' => 'start', 'required' => true))
             ->add('end', 'datetime', array('label' => 'end', 'required' => true))
-            ->add('openHour', 'integer', array('label' => 'openHour', 'required' => false))
-            ->add('closeHour', 'integer', array('label' => 'closeHour', 'required' => false))
+            ->add('openHour', IntegerType::class, array('label' => 'openHour', 'required' => false))
+            ->add('closeHour', IntegerType::class, array('label' => 'closeHour', 'required' => false))
             ->add('organization', 'entity', array(
                     'class' => 'ClarolineCoreBundle:Organization\Organization',
                     'property' => 'name',

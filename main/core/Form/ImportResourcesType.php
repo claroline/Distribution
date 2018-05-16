@@ -22,10 +22,10 @@ class ImportResourcesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'file',
-            'file',
+            FileType::class,
+            FileType::class,
             array(
-                'label' => 'file',
+                'label' => FileType::class,
                 'required' => true,
                 'mapped' => false,
                 'constraints' => array(

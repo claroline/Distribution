@@ -81,7 +81,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'supportEmail',
-                'email',
+                EmailType::class,
                 [
                     'label' => 'support_email',
                     'disabled' => isset($this->lockedParams['support_email']),
@@ -206,7 +206,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'accountDuration',
-                'integer',
+                IntegerType::class,
                 [
                     'label' => 'account_duration_label',
                     'required' => false,
@@ -223,7 +223,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'portfolioUrl',
-                'url',
+                UrlType::class,
                 [
                     'label' => 'portfolio_url',
                     'required' => false,
@@ -251,7 +251,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'maxUploadResources',
-                'integer',
+                IntegerType::class,
                 [
                     'required' => false,
                     'label' => 'count_resources',
@@ -260,7 +260,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'maxWorkspaceUsers',
-                'integer',
+                IntegerType::class,
                 [
                     'required' => false,
                     'label' => 'workspaces_max_users',

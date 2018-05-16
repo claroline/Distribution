@@ -41,7 +41,7 @@ class ExternalSourceConfigurationType extends AbstractType
             )
             ->add(
                 'port',
-                'number',
+                NumberType::class,
                 [
                     'required' => false,
                     'label' => 'port',

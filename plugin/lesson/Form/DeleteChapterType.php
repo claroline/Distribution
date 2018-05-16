@@ -23,7 +23,7 @@ class DeleteChapterType extends AbstractType
                 'mapped' => false,
             ));
         } else {
-            /*            $builder ->add('children', 'hidden', array(
+            /*            $builder ->add('children', HiddenType::class, array(
                 'required' => false,
                 'mapped' => false
             ));*/

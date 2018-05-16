@@ -31,7 +31,7 @@ class TeamEditType extends AbstractType
         );
         $builder->add(
             'maxUsers',
-            'integer',
+            IntegerType::class,
             array(
                 'attr' => array('min' => 0),
                 'required' => false,

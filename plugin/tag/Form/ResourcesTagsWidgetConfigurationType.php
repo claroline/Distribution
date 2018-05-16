@@ -34,7 +34,7 @@ class ResourcesTagsWidgetConfigurationType extends AbstractType
 
         $builder->add(
             'nbTags',
-            'integer',
+            IntegerType::class,
             array(
                 'required' => true,
                 'mapped' => false,

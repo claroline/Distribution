@@ -21,11 +21,11 @@ class AppType extends AbstractType
                 ]
             )
             ->add(
-                'url', TextType::class, [
+                UrlType::class, TextType::class, [
                     'label' => ' ',
                     'attr' => ['style' => 'height:34px; ',
                         'class' => 'form-control',
-                        'placeholder' => 'url',
+                        'placeholder' => UrlType::class,
                     ],
                 ]
             )

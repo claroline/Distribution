@@ -76,7 +76,7 @@ class BadgeRuleType extends AbstractType
                 )
             )
             ->add('isUserReceiver', CheckboxType::class)
-            ->add('occurrence', 'integer', array('attr' => array('class' => 'input-sm')))
+            ->add('occurrence', IntegerType::class, array('attr' => array('class' => 'input-sm')))
             ->add('result', TextType::class)
             ->add('resource', 'resourcePicker', array(
                     'required' => false,

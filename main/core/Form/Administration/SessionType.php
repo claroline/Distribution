@@ -139,7 +139,7 @@ class SessionType extends AbstractType
 
         $builder->add(
             'cookie_lifetime',
-            'number',
+            NumberType::class,
             array(
                 'required' => true,
                 'label' => 'cookie_lifetime',

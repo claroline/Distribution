@@ -40,7 +40,7 @@ class LdapType extends AbstractType
                 'constraints' => [new NotBlank()],
             ]
         )
-        ->add('port', 'number', ['label' => 'port'])
+        ->add('port', NumberType::class, ['label' => 'port'])
         ->add('dn', TextType::class, ['label' => 'distinguished_name'])
         ->add('user', TextType::class, ['label' => 'username'])
         ->add('password', 'password', ['label' => 'password', 'always_empty' => false])

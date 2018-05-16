@@ -15,7 +15,7 @@ class FormationsFormationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', 'integer', array(
+            ->add('id', IntegerType::class, array(
                 'required' => false,
                 'mapped' => false,
             ))

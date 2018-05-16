@@ -30,7 +30,7 @@ class ActivityParametersType extends AbstractType
         );
         $builder->add(
             'max_duration',
-            'integer',
+            IntegerType::class,
             array(
                 'attr' => array('min' => 1),
                 'required' => false,
@@ -64,7 +64,7 @@ class ActivityParametersType extends AbstractType
         );
         $builder->add(
             'max_attempts',
-            'integer',
+            IntegerType::class,
             array(
                 'attr' => array('min' => 1),
                 'required' => false,

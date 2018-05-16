@@ -12,10 +12,10 @@
 namespace Claroline\CoreBundle\Form\Administration;
 
 use Claroline\CoreBundle\Manager\PortalManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class PortalConfigurationType.
@@ -46,28 +46,28 @@ class PortalConfigurationType extends AbstractType
             ->add(
                 'portalResources',
                 ChoiceType::class,
-                array(
+                [
                     'required' => false,
                     'choices' => $this->choices,
                     'label' => 'portal_resources_configuration',
                     'expanded' => true,
                     'multiple' => true,
                     'choices_as_values' => true,
-                    'empty_data' => array(),
-                )
+                    'empty_data' => [],
+                ]
             )
             ->add(
                 'portalHiddenHelpField',
-                'hidden'
+                HiddenType::class
             );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 

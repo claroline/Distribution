@@ -25,7 +25,7 @@ class WidgetEditType extends AbstractType
     {
         $builder->add(
             'defaultWidth',
-            'integer',
+            IntegerType::class,
             [
                 'label' => 'width',
                 'required' => true,
@@ -38,7 +38,7 @@ class WidgetEditType extends AbstractType
         );
         $builder->add(
             'defaultHeight',
-            'integer',
+            IntegerType::class,
             [
                 'label' => 'height',
                 'required' => true,

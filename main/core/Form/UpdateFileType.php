@@ -21,14 +21,14 @@ class UpdateFileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'hidden', array('data' => 'tmpname'));
+        $builder->add('name', HiddenType::class, array('data' => 'tmpname'));
         $builder->add(
-            'file',
-            'file',
+            FileType::class,
+            FileType::class,
             array(
                 'required' => true,
                 'mapped' => false,
-                'label' => 'file',
+                'label' => FileType::class,
                 'constraints' => array(
                     new NotBlank(),
                     new File(),

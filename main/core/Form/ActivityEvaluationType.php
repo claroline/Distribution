@@ -50,7 +50,7 @@ class ActivityEvaluationType extends AbstractType
         );
         $builder->add(
             'numScore',
-            'integer',
+            IntegerType::class,
             array(
                 'read_only' => true,
                 'required' => false,
@@ -70,7 +70,7 @@ class ActivityEvaluationType extends AbstractType
         );
         $builder->add(
             'attemptsCount',
-            'integer',
+            IntegerType::class,
             array(
                 'read_only' => true,
                 'required' => false,

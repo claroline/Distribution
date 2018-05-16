@@ -37,7 +37,7 @@ class ActivityPastEvaluationType extends AbstractType
         );
         $builder->add(
             'numScore',
-            'integer',
+            IntegerType::class,
             array(
                 'read_only' => true,
                 'required' => false,

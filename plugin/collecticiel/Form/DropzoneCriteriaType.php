@@ -12,7 +12,7 @@ class DropzoneCriteriaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('goBack', 'hidden', array(
+            ->add('goBack', HiddenType::class, array(
                 'mapped' => false,
             ))
 
@@ -22,7 +22,7 @@ class DropzoneCriteriaType extends AbstractType
                 'required' => true,
             ))
 
-            ->add('recalculateGrades', 'hidden', array('mapped' => false));
+            ->add('recalculateGrades', HiddenType::class, array('mapped' => false));
     }
 
     public function getName()

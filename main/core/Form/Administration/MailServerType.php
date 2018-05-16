@@ -140,7 +140,7 @@ class MailServerType extends AbstractType
             )
             ->add(
                 'mailer_port',
-                'number',
+                NumberType::class,
                 [
                     'required' => false,
                     'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['port']],

@@ -31,8 +31,8 @@ class ScormType extends AbstractType
             )
         );
         $builder->add(
-            'file',
-            'file',
+            FileType::class,
+            FileType::class,
             array(
                 'required' => true,
                 'mapped' => false,

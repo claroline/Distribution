@@ -33,12 +33,12 @@ class ImportWorkspaceType extends AbstractType
         );
         $builder->add(
             'workspace',
-            'file',
-            ['label' => 'file', 'mapped' => false, 'required' => false, 'constraints' => [new FileUpload()]]
+            FileType::class,
+            ['label' => FileType::class, 'mapped' => false, 'required' => false, 'constraints' => [new FileUpload()]]
         );
         $builder->add(
             'fileUrl',
-            'url',
+            UrlType::class,
             ['label' => 'URL', 'mapped' => false, 'required' => false]
         );
         $builder->add(

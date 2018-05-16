@@ -54,7 +54,7 @@ class ActivityRuleType extends AbstractType
         );
         $builder->add(
             'occurrence',
-            'integer',
+            IntegerType::class,
             array(
                 'attr' => array('min' => 1),
                 'required' => true,
@@ -63,7 +63,7 @@ class ActivityRuleType extends AbstractType
         );
         $builder->add(
             'result',
-            'integer',
+            IntegerType::class,
             array(
                 'attr' => array('min' => 0),
                 'required' => false,
@@ -72,7 +72,7 @@ class ActivityRuleType extends AbstractType
         );
         $builder->add(
             'resultMax',
-            'integer',
+            IntegerType::class,
             array(
                 'label' => '/',
                 'attr' => array('min' => 1),

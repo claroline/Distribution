@@ -68,7 +68,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'icon',
-            'file',
+            FileType::class,
             [
                 'required' => false,
                 'mapped' => false,
@@ -149,7 +149,7 @@ class CourseType extends AbstractType
         );
         $builder->add(
             'maxUsers',
-            'integer',
+            IntegerType::class,
             [
                 'required' => false,
                 'constraints' => [new Range(['min' => 0])],

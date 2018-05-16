@@ -25,11 +25,11 @@ class ScheduleTemplateType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('day', 'integer', array('label' => 'start', 'required' => true))
+            ->add('day', IntegerType::class, array('label' => 'start', 'required' => true))
             ->add('name', 'string', array('label' => 'name', 'required' => true))
             ->add('description', TextType::class, array('label' => 'description', 'required' => false))
-            ->add('startHour', 'integer', array('label' => 'openHour', 'required' => true))
-            ->add('endHour', 'integer', array('label' => 'endHour', 'required' => true));
+            ->add('startHour', IntegerType::class, array('label' => 'openHour', 'required' => true))
+            ->add('endHour', IntegerType::class, array('label' => 'endHour', 'required' => true));
     }
 
     public function getName()

@@ -32,7 +32,7 @@ class ResultType extends AbstractType
                 'constraints' => new NotBlank(),
                 'attr' => ['autofocus' => true],
             ])
-            ->add('total', 'integer', [
+            ->add('total', IntegerType::class, [
                 'label' => 'maximum_mark',
                 'translation_domain' => 'results',
                 'constraints' => [new NotBlank(), new Range(['min' => 1])],

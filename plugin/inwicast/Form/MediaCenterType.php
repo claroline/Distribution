@@ -26,7 +26,7 @@ class MediaCenterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('url', 'url', ['required' => true])
+            ->add(UrlType::class, UrlType::class, ['required' => true])
             ->add('driver', TextType::class, ['required' => true])
             ->add('host', TextType::class, ['required' => true])
             ->add('port', TextType::class, ['required' => true])

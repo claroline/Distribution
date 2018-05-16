@@ -32,7 +32,7 @@ class CasServerConfigurationType extends AbstractType
             )
             ->add(
                 'login_url',
-                'url',
+                UrlType::class,
                 [
                     'constraints' => new NotBlank(),
                     'label' => 'cas_login_url',
@@ -40,7 +40,7 @@ class CasServerConfigurationType extends AbstractType
             )
             ->add(
                 'logout_url',
-                'url',
+                UrlType::class,
                 [
                     'constraints' => new NotBlank(),
                     'label' => 'cas_logout_url',
@@ -48,7 +48,7 @@ class CasServerConfigurationType extends AbstractType
             )
             ->add(
                 'validation_url',
-                'url',
+                UrlType::class,
                 [
                     'constraints' => new NotBlank(),
                     'label' => 'cas_validation_url',

@@ -40,7 +40,7 @@ class ClacoFormWidgetConfigurationType extends AbstractType
 
         $builder->add(
             'nbEntries',
-            'integer',
+            IntegerType::class,
             [
                 'mapped' => false,
                 'data' => $nbEntries,

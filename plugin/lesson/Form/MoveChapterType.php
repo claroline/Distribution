@@ -77,7 +77,7 @@ class MoveChapterType extends AbstractType
                         'required' => false,
                         'mapped' => false,
                     ))
-                    ->add('firstposition', 'hidden', array(
+                    ->add('firstposition', HiddenType::class, array(
                         'required' => false,
                         'mapped' => false,
                         'data' => 'false',

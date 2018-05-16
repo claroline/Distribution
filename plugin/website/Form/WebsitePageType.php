@@ -40,7 +40,7 @@ class WebsitePageType extends AbstractType
                 'textarea'
             )
             ->add(
-                'url',
+                UrlType::class,
                 'url'
             )
             ->add(

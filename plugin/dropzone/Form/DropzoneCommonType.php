@@ -21,10 +21,10 @@ class DropzoneCommonType extends AbstractType
         );
 
         $builder
-            ->add('stayHere', 'hidden', array(
+            ->add('stayHere', HiddenType::class, array(
                 'mapped' => false,
             ))
-            ->add('autoCloseForManualStates', 'hidden', array(
+            ->add('autoCloseForManualStates', HiddenType::class, array(
                 'mapped' => false,
             ))
             ->add('instruction', 'tinymce', array(
@@ -46,7 +46,7 @@ class DropzoneCommonType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
             ))
-            ->add('expectedTotalCorrection', 'integer', array('required' => true))
+            ->add('expectedTotalCorrection', IntegerType::class, array('required' => true))
 
             ->add('displayNotationToLearners', CheckboxType::class, array('required' => false))
             ->add('diplayCorrectionsToLearners', CheckboxType::class, array('required' => false))
@@ -54,7 +54,7 @@ class DropzoneCommonType extends AbstractType
             ->add('displayNotationMessageToLearners', CheckboxType::class, array('required' => false))
             ->add('successMessage', 'tinymce', array('required' => false))
             ->add('failMessage', 'tinymce', array('required' => false))
-            ->add('minimumScoreToPass', 'integer', array('required' => true))
+            ->add('minimumScoreToPass', IntegerType::class, array('required' => true))
 
             ->add('manualPlanning', ChoiceType::class, array(
                 'required' => true,

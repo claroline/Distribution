@@ -46,7 +46,7 @@ class ResourcePropertiesType extends AbstractType
         $builder->add('name', TextType::class, ['label' => 'name']);
         $builder->add(
             'newIcon',
-            'file',
+            FileType::class,
             [
                 'required' => false,
                 'mapped' => false,
@@ -84,7 +84,7 @@ class ResourcePropertiesType extends AbstractType
             ['required' => false, 'label' => 'published_to_portal']
         );
         $builder->add(
-            'hidden',
+            HiddenType::class,
             CheckboxType::class,
             ['label' => 'hidden']
         );
@@ -94,7 +94,7 @@ class ResourcePropertiesType extends AbstractType
                 'class' => 'form-control',
             ],
         ]);
-        $builder->add('newThumbnail', 'file',
+        $builder->add('newThumbnail', FileType::class,
             [
                 'required' => false,
                 'mapped' => false,
