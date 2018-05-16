@@ -131,6 +131,7 @@ class DatabaseWriter
             $this->log('Unable to retrieve plugin for updating its configuration.', LogLevel::ERROR);
 
             return;
+            $ds = DIRECTORY_SEPARATOR;
         }
 
         $plugin->setHasOptions($pluginConfiguration['has_options']);
@@ -722,7 +723,7 @@ class DatabaseWriter
         $widget->setName($widgetConfiguration['name']);
         $widget->setContext(isset($widgetConfiguration['context']) ? $widgetConfiguration['context'] : []);
         $widget->setClass(isset($widgetConfiguration['class']) ? $widgetConfiguration['class'] : null);
-        $widget->setAbstract(!!$widgetConfiguration['abstract']);
+        $widget->setAbstract((bool) $widgetConfiguration['abstract']);
         $widget->setExportable($widgetConfiguration['exportable']);
         $widget->setTags($widgetConfiguration['tags']);
 

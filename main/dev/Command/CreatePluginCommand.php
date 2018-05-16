@@ -183,21 +183,18 @@ class CreatePluginCommand extends ContainerAwareCommand
     {
         $newPath = $rootDir.'/Controller/'.$bundle.'Controller.php';
         rename($rootDir.'/Controller/BundleController.tpl', $newPath);
-        $content = file_get_contents($newPath);
     }
 
     private function editBundleClass($rootDir, $vendor, $bundle)
     {
         $newPath = $rootDir.'/'.$vendor.$bundle.'Bundle.php';
         rename($rootDir.'/VendorBundleBundle.tpl', $newPath);
-        $content = file_get_contents($newPath);
     }
 
     private function editExtensionClass($rootDir, $vendor, $bundle)
     {
         $newPath = $rootDir.'/DependencyInjection/'.$vendor.$bundle.'Extension.php';
         rename($rootDir.'/DependencyInjection/VendorBundleExtension.tpl', $newPath);
-        $content = file_get_contents($newPath);
     }
 
     private function editComposer($rootDir, $vendor, $bundle)
@@ -278,8 +275,6 @@ class CreatePluginCommand extends ContainerAwareCommand
     private function addResourceTypeForm($rootDir, $vendor, $bundle, $rType)
     {
         $templateDir = $this->getTemplateDirectory('optional/resource');
-        $newPath = $rootDir.'/Form/'.$rType.'Type.php';
-        $content = file_get_contents($templateDir.'/form.tpl');
         $viewDir = $rootDir.'/Resources/views/'.$rType;
         $fs = new Filesystem();
         $fs->mkdir($viewDir);
@@ -462,7 +457,7 @@ class CreatePluginCommand extends ContainerAwareCommand
         if (!$rootDir) {
             $rootDir = $source;
         }
-        $ds = DIRECTORY_SEPARATOR;
+
         $iterator = new \DirectoryIterator($source);
 
         foreach ($iterator as $element) {
