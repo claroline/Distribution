@@ -179,7 +179,9 @@ AnnounceForm.propTypes = {
     id: T.string.isRequired,
     translationKey: T.string.isRequired
   })).isRequired,
-  updateProperty: T.func.isRequired
+  updateProperty: T.func.isRequired,
+  save: T.func.isRequired,
+  aggregateId: T.integer.isRequired
 }
 
 AnnounceForm.defaultProps = {
@@ -203,7 +205,6 @@ function mapDispatchToProps(dispatch) {
     },
     save(aggregateId, announce) {
       dispatch(
-        //formActions.saveForm('announcement', ['claro_announcement_update', {aggregateId: id}])
         actions.saveAnnounce(aggregateId, announce)
       )
     }
