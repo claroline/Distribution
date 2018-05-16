@@ -202,6 +202,7 @@ class ParametersSerializer
             'profile' => [
                 'roles_confidential' => $parameters['profile_roles_confidential'],
                 'roles_locked' => $parameters['profile_roles_locked'],
+                'roles_edition' => $parameters['profile_roles_edition'],
             ],
         ];
 
@@ -488,7 +489,7 @@ class ParametersSerializer
     {
         if (isset($data['tos'])) {
             $this->buildParameter('tos.enabled', 'terms_of_service', $parameters, $data);
-            $contentTos = $this->finder->fetch('Claroline\CoreBundle\Entity\Content', 0, 10, ['type' => 'termsOfService']);
+            $contentTos = $this->finder->fetch('Claroline\CoreBundle\Entity\Content', ['type' => 'termsOfService'], [], 0, 10);
 
             if (0 === count($contentTos)) {
                 $contentTos = new Content();
@@ -506,6 +507,7 @@ class ParametersSerializer
     {
         $this->buildParameter('profile.roles_confidential', 'profile_roles_confidential', $parameters, $data);
         $this->buildParameter('profile.roles_locked', 'profile_roles_locked', $parameters, $data);
+        $this->buildParameter('profile.roles_edition', 'profile_roles_edition', $parameters, $data);
     }
 
     private function buildParameter($serializedPath, $parametersPath, array &$parameters, array $data)
