@@ -197,7 +197,7 @@ class UserSerializer
             /** @var FieldFacetValue $field */
             foreach ($fields as $field) {
                 // we just flatten field facets in the base user structure
-                $serialized[$field->getFieldFacet()->getUuid()] = $field->getValue();
+                $serializedUser[$field->getFieldFacet()->getUuid()] = $field->getValue();
             }
         }
 
