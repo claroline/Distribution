@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HomeTemplateType extends AbstractType
 {
@@ -48,7 +48,7 @@ class HomeTemplateType extends AbstractType
         return 'home_template_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array('translation_domain' => 'platform'));
     }

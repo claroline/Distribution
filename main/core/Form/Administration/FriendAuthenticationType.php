@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Form\Administration;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FriendAuthenticationType extends AbstractType
 {
@@ -39,7 +39,7 @@ class FriendAuthenticationType extends AbstractType
         return 'friend_authentication_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
                 'translation_domain' => 'platform',

@@ -13,7 +13,7 @@ namespace Claroline\SurveyBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class QuestionType extends AbstractType
 {
@@ -58,7 +58,7 @@ class QuestionType extends AbstractType
         return 'question_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['translation_domain' => 'survey']);
     }

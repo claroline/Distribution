@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Form\Calendar;
 
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class LeaveType extends AngularType
@@ -46,7 +46,7 @@ class LeaveType extends AngularType
         $this->forApi = true;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $default = array('translation_domain' => 'platform');
         if ($this->forApi) {

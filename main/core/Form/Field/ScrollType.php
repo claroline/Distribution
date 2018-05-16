@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\Extension\Core\Type\BaseType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\FormType;
 
@@ -27,7 +27,7 @@ class ScrollType extends BaseType
         return 'scroll';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array(

@@ -17,7 +17,7 @@ use Claroline\CoreBundle\Manager\LocaleManager;
 use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class BaseProfileType extends AbstractType
@@ -91,7 +91,7 @@ class BaseProfileType extends AbstractType
         return 'profile_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
         ->setDefaults(

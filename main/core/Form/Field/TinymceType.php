@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Form\Field;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Claroline\CoreBundle\Form\DataTransformer\JavascriptSafeTransformer;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -41,7 +41,7 @@ class TinymceType extends TextareaType
         return 'textarea';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array('attr' => $this->defaultAttributes));
         $resolver->setNormalizers(

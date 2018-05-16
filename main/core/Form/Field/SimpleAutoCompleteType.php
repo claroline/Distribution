@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Form\Field;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -41,7 +41,7 @@ class SimpleAutoCompleteType extends AbstractType
         $view->vars['extraDatas'] = $options['extraDatas'];
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array(

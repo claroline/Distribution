@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Form\Administration;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class OauthClientType extends AbstractType
 {
@@ -55,7 +55,7 @@ class OauthClientType extends AbstractType
         return 'oauth_client_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array('translation_domain' => 'platform'));
     }

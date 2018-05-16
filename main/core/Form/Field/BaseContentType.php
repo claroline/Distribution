@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\Extension\Core\Type\BaseType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\FormType;
 
@@ -58,7 +58,7 @@ class BaseContentType extends BaseType
         }
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array('required' => false, 'mapped' => false));
     }

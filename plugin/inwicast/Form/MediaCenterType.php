@@ -14,7 +14,7 @@ namespace Icap\InwicastBundle\Form;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class MediacenterType.
@@ -45,7 +45,7 @@ class MediaCenterType extends AbstractType
         return 'inwicast_plugin_type_mediacenter';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             [

@@ -10,7 +10,7 @@ use FormaLibre\ReservationBundle\Validator\Constraints\ReservationModify;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -97,7 +97,7 @@ class ReservationType extends AbstractType
         return 'reservation_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         if ($this->editMode) {
             $resolver->setDefaults(

@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -31,7 +31,7 @@ class ButtonGroupSelectType extends AbstractType
         return 'buttongroupselect';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
         ->setDefaults(

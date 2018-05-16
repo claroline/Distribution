@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActivityEvaluationType extends AbstractType
 {
@@ -101,7 +101,7 @@ class ActivityEvaluationType extends AbstractType
         return 'activity_evaluation_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             array('translation_domain' => 'platform')

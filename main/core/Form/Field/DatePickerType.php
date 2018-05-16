@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Form\Field;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Manager\LocaleManager;
 
@@ -45,7 +45,7 @@ class DatePickerType extends AbstractType
         );
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $lang = (php_sapi_name() === 'cli') ? 'en' : $this->localeManager->getUserLocale($this->container->get('request_stack')->getMasterRequest());
         $resolver->setDefaults(

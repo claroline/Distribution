@@ -14,7 +14,7 @@ namespace Claroline\CursusBundle\Form;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PluginConfigurationType extends AbstractType
 {
@@ -86,7 +86,7 @@ class PluginConfigurationType extends AbstractType
         return 'cursus_plugin_configuration_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['translation_domain' => 'cursus']);
     }

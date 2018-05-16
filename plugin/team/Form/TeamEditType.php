@@ -13,7 +13,7 @@ namespace Claroline\TeamBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TeamEditType extends AbstractType
 {
@@ -65,7 +65,7 @@ class TeamEditType extends AbstractType
         return 'team_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array('translation_domain' => 'team'));
     }
