@@ -27,7 +27,12 @@ const PlayerComponent = (props) =>
             props.newSubject(params.id)
           }
         },
-        onLeave: () => props.closeSubjectForm()
+        onLeave: () => {
+          props.closeSubjectForm()
+          if(props.subject.editingSubject){
+            props.stopEditingSubject()
+          }
+        }
       },{
         path: '/subjects/show/:id',
         component: Subject,
@@ -44,9 +49,11 @@ const PlayerComponent = (props) =>
 PlayerComponent.propTypes = {
   newSubject: T.func.isRequired,
   closeSubjectForm: T.func.isRequired,
+  stopEditingSubject: T.func.isRequired,
   openSubject: T.func.isRequired,
   subject: T.shape({
-    showSubjectForm: T.bool.isRequired
+    showSubjectForm: T.bool.isRequired,
+    editingSubject: T.bool.isRequired
   }).isRequired
 }
 
@@ -63,6 +70,9 @@ const Player = connect(
     },
     closeSubjectForm() {
       dispatch(actions.closeSubjectForm())
+    },
+    stopEditingSubject(){
+      dispatch(actions.stopEditingSubject())
     }
   })
 )(PlayerComponent)

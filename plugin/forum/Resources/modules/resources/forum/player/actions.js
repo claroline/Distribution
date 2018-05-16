@@ -18,12 +18,14 @@ export const SUBJECT_FORM_OPEN = 'SUBJECT_FORM_OPEN'
 export const SUBJECT_FORM_CLOSE = 'SUBJECT_FORM_CLOSE'
 export const MESSAGES_SORT_TOGGLE = 'MESSAGES_SORT_TOGGLE'
 export const SUBJECT_EDIT = 'SUBJECT_EDIT'
+export const SUBJECT_STOP_EDIT = 'SUBJECT_STOP_EDIT'
 export const actions = {}
 
 actions.toggleMessagesSort = makeActionCreator(MESSAGES_SORT_TOGGLE)
 actions.openSubjectForm = makeActionCreator(SUBJECT_FORM_OPEN)
 actions.closeSubjectForm = makeActionCreator(SUBJECT_FORM_CLOSE)
 actions.subjectEdition = makeActionCreator(SUBJECT_EDIT)
+actions.stopEditingSubject = makeActionCreator(SUBJECT_STOP_EDIT)
 
 actions.newSubject = (id) => (dispatch) => {
   dispatch(actions.openSubjectForm())

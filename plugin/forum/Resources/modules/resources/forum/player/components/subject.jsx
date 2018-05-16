@@ -77,6 +77,14 @@ class SubjectComponent extends Component {
     })
   }
 
+  deleteComment(commentId) {
+    this.props.showModal(MODAL_DELETE_CONFIRM, {
+      title: trans('delete_comment', {}, 'forum'),
+      question: trans('remove_comment_confirm_message', {}, 'forum'),
+      handleConfirm: () => this.props.deleteData(commentId)
+    })
+  }
+
 
   render() {
     if (isEmpty(this.props.subject) && !this.props.subjectForm.showSubjectForm) {
@@ -176,12 +184,12 @@ class SubjectComponent extends Component {
                             icon: 'fa fa-fw fa-pencil',
                             label: trans('edit'),
                             displayed: true,
-                            action: () => this.showMessageForm(message)
+                            action: () => this.showCommentForm(message)
                           }, {
                             icon: 'fa fa-fw fa-trash-o',
                             label: trans('delete'),
                             displayed: true,
-                            action: () => this.deleteMessage(message.id),
+                            action: () => this.deleteComment(comment.id),
                             dangerous: true
                           }
                         ]}
@@ -255,7 +263,6 @@ const Subject =  withRouter(connect(
   }),
   dispatch => ({
     createMessage(subjectId, content) {
-      // à la réussite cabler avec invalidateData (comme pour delete)
       dispatch(actions.createMessage(subjectId, content))
     },
     createComment(messageId, comment) {
@@ -265,7 +272,7 @@ const Subject =  withRouter(connect(
       dispatch(modalActions.showModal(type, props))
     },
     deleteData(id) {
-      dispatch(listActions.deleteData('subjects.messages', 'apiv2_forum_api_message_delete_bulk', [{id: id}]))
+      dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))

@@ -6,6 +6,7 @@ import {
   SUBJECT_FORM_OPEN,
   SUBJECT_FORM_CLOSE,
   SUBJECT_EDIT,
+  SUBJECT_STOP_EDIT,
   MESSAGES_SORT_TOGGLE
 } from '#/plugin/forum/resources/forum/player/actions'
 
@@ -20,7 +21,8 @@ const reducer = combineReducers({
       [SUBJECT_FORM_CLOSE]: () => false
     }),
     editingSubject: makeReducer(false, {
-      [SUBJECT_EDIT]: () => true
+      [SUBJECT_EDIT]: () => true,
+      [SUBJECT_STOP_EDIT]: () => false
     })
   }),
 

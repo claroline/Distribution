@@ -137,14 +137,13 @@ const SubjectForm = withRouter(connect(
     saveForm(forumId, editingSubject, subjectId) {
       if(editingSubject) {
         dispatch(formActions.saveForm('subjects.form', ['apiv2_forum_subject_update', {id: subjectId}])).then(() => {
-          ownProps.history.push('/subjects')
+          ownProps.history.push(`/subjects/show/${subjectId}`)
         })
       } else {
         dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
           ownProps.history.push('/subjects')
         })
       }
-
     }
   })
 )(SubjectFormComponent))
