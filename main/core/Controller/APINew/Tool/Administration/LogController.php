@@ -80,9 +80,11 @@ class LogController
      */
     public function listAction(Request $request)
     {
+        $query = $this->addOrganizationFilter($request->query->all());
+
         return new JsonResponse($this->finder->search(
             $this->getClass(),
-            $request->query->all(),
+            $query,
             []
         ));
     }
@@ -97,7 +99,7 @@ class LogController
     public function listCsvAction(Request $request)
     {
         // Filter data, but return all of them
-        $query = $request->query->all();
+        $query = $this->addOrganizationFilter($request->query->all());
         $dateStr = date('YmdHis');
 
         return new StreamedResponse(function () use ($query) {
@@ -117,7 +119,8 @@ class LogController
      */
     public function listChartAction(Request $request)
     {
-        $chartData = $this->logManager->getChartData($request->query->all());
+        $query = $this->addOrganizationFilter($request->query->all());
+        $chartData = $this->logManager->getChartData($query);
 
         return new JsonResponse($chartData);
     }
@@ -131,7 +134,8 @@ class LogController
      */
     public function userActionsListAction(Request $request)
     {
-        $userList = $this->logManager->getUserActionsList($request->query->all());
+        $query = $this->addOrganizationFilter($request->query->all());
+        $userList = $this->logManager->getUserActionsList($query);
 
         return new JsonResponse($userList);
     }
@@ -146,7 +150,7 @@ class LogController
     public function userActionsListCsvAction(Request $request)
     {
         // Filter data, but return all of them
-        $query = $request->query->all();
+        $query = $this->addOrganizationFilter($request->query->all());
         $dateStr = date('YmdHis');
 
         return new StreamedResponse(function () use ($query) {
@@ -176,10 +180,12 @@ class LogController
         return 'Claroline\CoreBundle\Entity\Log\Log';
     }
 
-    public function addOrganizationFilter($query)
+    private function addOrganizationFilter($query)
     {
         if (!$this->loggedUser->hasRole('ROLE_ADMIN')) {
-            $query['hiddenFilters']['organisation'] = $this->loggedUser->getOrganizations(false);
+            $query['hiddenFilters']['organization'] = $this->loggedUser->getAdministratedOrganizations();
         }
+
+        return $query;
     }
 }

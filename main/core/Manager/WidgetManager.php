@@ -691,29 +691,29 @@ class WidgetManager
     /**
      * @return int
      */
-    public function getNbWidgetInstances()
+    public function getNbWidgetInstances($organizations = null)
     {
-        return $this->widgetInstanceRepo->countWidgetInstances();
+        return $this->widgetInstanceRepo->countWidgetInstances(null, $organizations);
     }
 
     /**
      * @return int
      */
-    public function getNbWorkspaceWidgetInstances()
+    public function getNbWorkspaceWidgetInstances($organizations = null)
     {
-        return $this->widgetInstanceRepo->countWidgetInstances('workspace');
+        return $this->widgetInstanceRepo->countWidgetInstances('workspace', $organizations);
     }
 
     /**
      * @return int
      */
-    public function getNbDesktopWidgetInstances()
+    public function getNbDesktopWidgetInstances($organizations = null)
     {
-        return $this->widgetInstanceRepo->countWidgetInstances('desktop');
+        return $this->widgetInstanceRepo->countWidgetInstances('desktop', $organizations);
     }
 
-    public function countWidgetsByType()
+    public function countWidgetsByType($organizations = null)
     {
-        return $this->widgetInstanceRepo->countByType();
+        return $this->widgetInstanceRepo->countByType($organizations);
     }
 }

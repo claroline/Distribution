@@ -81,7 +81,7 @@ class LogSerializer
         if (!is_null($log->getWorkspace())) {
             $workspace = [
                 'id' => $log->getWorkspace()->getId(),
-                'name' => $details['workspace']['name'],
+                'name' => isset($details['workspace']['name']) ? $details['workspace']['name'] : $details['workspaceName'],
             ];
         }
 

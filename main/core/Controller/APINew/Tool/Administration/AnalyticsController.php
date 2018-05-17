@@ -49,16 +49,14 @@ class AnalyticsController
      */
     public function overviewAction()
     {
-        $lastMonthActions = $this->analyticsManager->getDailyActions();
-        $mostViewedWS = $this->analyticsManager->topWorkspaceByAction(['limit' => 5]);
-        $mostViewedMedia = $this->analyticsManager->topResourcesByAction(['limit' => 5], true);
-        $mostDownloadedResources = $this->analyticsManager->topResourcesByAction([
-            'limit' => 5,
-            'filters' => [
-                'action' => 'resource-export',
-            ],
-        ]);
-        $usersCount = $this->analyticsManager->userRolesData();
+        $query = $this->addOrganizationFilter([]);
+        $lastMonthActions = $this->analyticsManager->getDailyActions($query);
+        $query['limit'] = 5;
+        $mostViewedWS = $this->analyticsManager->topWorkspaceByAction($query);
+        $mostViewedMedia = $this->analyticsManager->topResourcesByAction($query, true);
+        $query['filters']['action'] = 'resource-export';
+        $mostDownloadedResources = $this->analyticsManager->topResourcesByAction($query);
+        $usersCount = $this->analyticsManager->userRolesData($this->getLoggedUserOrganizations());
         $totalUsers = array_shift($usersCount)['total'];
 
         return new JsonResponse([
@@ -82,8 +80,8 @@ class AnalyticsController
      */
     public function audienceAction(Request $request)
     {
-        $query = $request->query->all();
-        $query['hiddenFilters'] = ['action' => 'user-login'];
+        $query = $this->addOrganizationFilter($request->query->all());
+        $query['hiddenFilters']['action'] = 'user-login';
         $connections = $this->analyticsManager->getDailyActions($query);
         $totalConnections = array_sum(array_map(function ($item) {
             return $item['yData'];
@@ -118,9 +116,13 @@ class AnalyticsController
      */
     public function resourcesAction()
     {
-        $wsCount = $this->analyticsManager->countNonPersonalWorkspaces();
-        $resourceCount = $this->analyticsManager->getResourceTypesCount();
-        $otherResources = $this->analyticsManager->getOtherResourceTypesCount();
+        $organizations = $this->getLoggedUserOrganizations();
+        $wsCount = $this->analyticsManager->countNonPersonalWorkspaces($organizations);
+        $resourceCount = $this->analyticsManager->getResourceTypesCount(null, $organizations);
+        $otherResources = [];
+        if ($organizations === null) {
+            $otherResources = $this->analyticsManager->getOtherResourceTypesCount();
+        }
 
         return new JsonResponse([
             'resources' => $resourceCount,
@@ -136,7 +138,9 @@ class AnalyticsController
      */
     public function widgetsAction()
     {
-        return new JsonResponse($this->analyticsManager->getWidgetsData());
+        $organizations = $this->getLoggedUserOrganizations();
+
+        return new JsonResponse($this->analyticsManager->getWidgetsData($organizations));
     }
 
     /**
@@ -146,13 +150,27 @@ class AnalyticsController
      */
     public function topActionsAction(Request $request)
     {
-        return new JsonResponse($this->analyticsManager->getTopActions($request->query->all()));
+        $query = $this->addOrganizationFilter($request->query->all());
+
+        return new JsonResponse($this->analyticsManager->getTopActions($query));
     }
 
-    public function addOrganizationFilter($query)
+    private function addOrganizationFilter($query)
+    {
+        $organizations = $this->getLoggedUserOrganizations();
+        if ($organizations !== null) {
+            $query['hiddenFilters']['organization'] = $this->loggedUser->getAdministratedOrganizations();
+        }
+
+        return $query;
+    }
+
+    private function getLoggedUserOrganizations()
     {
         if (!$this->loggedUser->hasRole('ROLE_ADMIN')) {
-            $query['hiddenFilters']['organisation'] = $this->loggedUser->getOrganizations(false);
+            return $this->loggedUser->getAdministratedOrganizations();
         }
+
+        return null;
     }
 }
