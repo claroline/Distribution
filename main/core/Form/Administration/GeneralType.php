@@ -350,24 +350,18 @@ class GeneralType extends AbstractType
         });
     }
 
-    public function getName()
-    {
-        return 'platform_parameters_form';
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-                'translation_domain' => 'platform',
-                'date_format' => DateType::HTML5_FORMAT,
-                'langs' => ['en' => 'en', 'fr' => 'fr'],
-                'role' => null,
-                'description' => '',
-                'locale' => 'en',
-                'lockedParams' => [],
-                'targetLoginUrls' => [],
-            ]
-        );
+            'translation_domain' => 'platform',
+            'date_format' => DateType::HTML5_FORMAT,
+            'langs' => ['en' => 'en', 'fr' => 'fr'],
+            'role' => null,
+            'description' => '',
+            'locale' => 'en',
+            'lockedParams' => [],
+            'targetLoginUrls' => [],
+        ]);
     }
 
     private function buildRedirectOptions()
