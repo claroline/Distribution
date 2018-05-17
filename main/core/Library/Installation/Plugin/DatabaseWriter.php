@@ -297,6 +297,23 @@ class DatabaseWriter
             $this->updateTheme($themeConfiguration, $plugin);
         }
 
+        //remove admin tools
+        $installedActions = $this->em->getRepository('ClarolineCoreBundle:Action\AdditionalAction')->findAll();
+        $actions = $processedConfiguration['additional_action'];
+        $actionsName = array_map(function ($action) {
+            return $action['action'];
+        }, $actions);
+
+        $toRemove = array_filter($installedActions, function ($action) use ($actionsName) {
+            return !in_array($action->getAction(), $actionsName);
+        });
+
+        foreach ($toRemove as $action) {
+            $this->log('Removing action '.$action->getAction());
+            $this->em->remove($action);
+        }
+
+        //remove additional actions
         /** @var AdminTool[] $installedAdminTools */
         $installedAdminTools = $this->em->getRepository('ClarolineCoreBundle:Tool\AdminTool')
           ->findBy(['plugin' => $plugin]);
@@ -666,7 +683,7 @@ class DatabaseWriter
         $widget->setName($widgetConfiguration['name']);
         $widget->setContext(isset($widgetConfiguration['context']) ? $widgetConfiguration['context'] : []);
         $widget->setClass(isset($widgetConfiguration['class']) ? $widgetConfiguration['class'] : null);
-        $widget->setAbstract(!!$widgetConfiguration['abstract']);
+        $widget->setAbstract((bool) $widgetConfiguration['abstract']);
         $widget->setExportable($widgetConfiguration['exportable']);
         $widget->setTags($widgetConfiguration['tags']);
 

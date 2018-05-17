@@ -113,7 +113,7 @@ class WorkspaceSerializer
                     'administrate' => $this->authorization->isGranted('ADMINISTRATE', $workspace),
                     'export' => $this->authorization->isGranted('EXPORT', $workspace)
                 ],
-                'meta' => $this->getMeta($workspace),
+                'meta' => $this->getMeta($workspace, $options),
                 'opening' => $this->getOpening($workspace),
                 'display' => $this->getDisplay($workspace),
                 'restrictions' => $this->getRestrictions($workspace),
@@ -142,7 +142,7 @@ class WorkspaceSerializer
                 ->findBy(['workspace' => $workspace]);
 
             $serialized['groups'] = array_map(function (Group $group) {
-                return $this->serializer->serialize($group, [Options::SERIALIZE_MINIMAL]);
+                return $this->serializer->serialize($group, [Options::SERIALIZE_MINIMAL, Options::NO_COUNT]);
             }, $groups);
         }
 
@@ -154,19 +154,25 @@ class WorkspaceSerializer
      *
      * @return array
      */
-    private function getMeta(Workspace $workspace)
+    private function getMeta(Workspace $workspace, array $options)
     {
-        return [
+        $data = [
             'slug' => $workspace->getSlug(),
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),
             'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
-            'creator' => $workspace->getCreator() ? $this->serializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
-            'usedStorage' => $this->workspaceManager->getUsedStorage($workspace),
-            'totalUsers' => $this->workspaceManager->countUsers($workspace, true),
-            'totalResources' => $this->workspaceManager->countResources($workspace),
+            'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
+            'usedStorage' => $this->ut->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
         ];
+
+        if (!in_array(Options::NO_COUNT, $options)) {
+            //this query is very slow
+            $data['totalUsers'] = $this->workspaceManager->countUsers($workspace, true);
+            $data['totalResources'] = $this->workspaceManager->countResources($workspace);
+        }
+
+        return $data;
     }
 
     private function getOpening(Workspace $workspace)
@@ -280,6 +286,13 @@ class WorkspaceSerializer
                 $data['registration']['defaultRole']
             );
             $workspace->setDefaultRole($defaultRole);
+        }
+
+        if (isset($data['extra']) && isset($data['extra']['model'])) {
+            $workspace->setWorkspaceModel($this->serializer->deserialize(
+              'Claroline\CoreBundle\Entity\Workspace\Workspace',
+              $data['extra']['model']
+            ));
         }
 
         $this->sipe('uuid', 'setUuid', $data, $workspace);

@@ -137,7 +137,7 @@ const Workspace = connect(
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
-          url: ['apiv2_user_list'],
+          url: ['apiv2_user_list_managed_workspace'],
           autoload: true
         },
         handleSelect: (selected) => dispatch(actions.addManagers(workspace.uuid, selected, managerRole.id))
