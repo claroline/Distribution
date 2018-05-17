@@ -190,16 +190,17 @@ class ParametersController extends Controller
             );
         }
         $form = $this->formFactory->create(
-            new AdminForm\GeneralType(
-                $this->localeManager->getAvailableLocales(),
-                $role,
-                $descriptions,
-                $this->translator->trans('date_form_format', [], 'platform'),
-                $this->localeManager->getUserLocale($request),
-                $this->configHandler->getLockedParameters(),
-                $targetLoginUrls
-            ),
-            $platformConfig
+            AdminForm\GeneralType::class,
+            $platformConfig,
+            [
+                'langs' => $this->localeManager->getAvailableLocales(),
+                'role' => $role,
+                'description' => $descriptions,
+                'date_format' => $this->translator->trans('date_form_format', [], 'platform'),
+                'locale' => $this->localeManager->getUserLocale($request),
+                'lockedParams' => $this->configHandler->getLockedParameters(),
+                'targetLoginUrls' => $targetLoginUrls,
+            ]
         );
 
         if ($this->request->isMethod('POST')) {
