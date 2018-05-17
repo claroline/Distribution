@@ -1,7 +1,6 @@
 import {PropTypes as T} from 'prop-types'
 
 import {Action} from '#/main/app/action/prop-types'
-//import {getTypes} from '#/main/core/data'
 
 const DataProperty = {
   propTypes: {
@@ -27,7 +26,6 @@ const DataProperty = {
      *
      * @type {string}
      */
-    /*type: T.oneOf(Object.keys(getTypes())),*/
     type: T.string,
 
     /**

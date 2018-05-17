@@ -4,7 +4,7 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
-import {Route, NavLink, Switch} from '#/main/core/router'
+import {Route, NavLink, Switch} from '#/main/app/router'
 import {RoutedPage, RoutedPageContent} from '#/main/core/layout/router'
 
 const PageHeader = props =>

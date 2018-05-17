@@ -29,6 +29,9 @@ class Updater120000 extends Updater
     public function postUpdate()
     {
         $this->updatePlatformParameters();
+
+        $this->removeTool('parameters');
+        $this->removeTool('claroline_activity_tool');
     }
 
     private function updatePlatformParameters()
@@ -57,6 +60,17 @@ class Updater120000 extends Updater
 
             $this->config->setParameter($newName, $userName);
             $this->config->removeParameter($oldName);
+        }
+    }
+
+    private function removeTool($toolName)
+    {
+        $this->log(sprintf('Removing `%s` tool...', $toolName));
+
+        $tool = $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $toolName]);
+        if (!empty($tool)) {
+            $this->om->remove($tool);
+            $this->om->flush();
         }
     }
 }

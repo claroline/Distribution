@@ -1,5 +1,5 @@
 import {bootstrap} from '#/main/app/bootstrap'
-import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
+import {makePageReducer} from '#/main/core/layout/page/reducer'
 
 import {
   objectivesReducers,
@@ -17,16 +17,13 @@ bootstrap(
   MyObjectivesTool,
 
   // app store configuration
-  {
+  makePageReducer({
     // app reducers
     objectives: objectivesReducers,
     objectivesCompetencies: objectivesReducers,
     competencies: competenciesReducers,
-    competency: competencyReducers,
-
-    // generic reducers
-    modal: modalReducer
-  },
+    competency: competencyReducers
+  }),
 
   // transform data attributes for redux store
   (initialData) => {

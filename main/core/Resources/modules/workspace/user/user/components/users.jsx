@@ -7,7 +7,7 @@ import {trans} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {getUserList} from '#/main/core/workspace/user/user/components/user-list.jsx'
 import {actions} from '#/main/core/workspace/user/user/actions'
 
@@ -45,9 +45,11 @@ const Users = connect(
   dispatch => ({
     unregister(users, workspace) {
       dispatch(
-        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+        modalActions.showModal(MODAL_CONFIRM, {
+          icon: 'fa fa-fw fa-trash-o',
           title: trans('unregister_users'),
           question: trans('unregister_users'),
+          dangerous: true,
           handleConfirm: () => dispatch(actions.unregister(users, workspace))
         })
       )

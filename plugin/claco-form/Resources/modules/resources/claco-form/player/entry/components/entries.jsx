@@ -8,7 +8,7 @@ import {url} from '#/main/core/api/router'
 import {trans, transChoice} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {DataCard} from '#/main/core/data/components/data-card'
@@ -25,9 +25,11 @@ const authenticatedUser = currentUser()
 
 class EntriesComponent extends Component {
   deleteEntries(entries) {
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
+    this.props.showModal(MODAL_CONFIRM, {
+      icon: 'fa fa-fw fa-trash-o',
       title: transChoice('delete_selected_entries', entries.length, {count: entries.length}, 'clacoform'),
       question: transChoice('delete_selected_entries_confirm_message', entries.length, {count: entries.length}, 'clacoform'),
+      dangerous: true,
       handleConfirm: () => this.props.deleteEntries(entries)
     })
   }

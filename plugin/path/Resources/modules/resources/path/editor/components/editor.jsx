@@ -4,9 +4,9 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
-import {Routes} from '#/main/core/router'
+import {Routes} from '#/main/app/router'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 import {constants as listConst} from '#/main/core/data/list/constants'
 
@@ -144,9 +144,11 @@ const Editor = connect(
     },
     removeStep(step) {
       dispatch(
-        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+        modalActions.showModal(MODAL_CONFIRM, {
+          icon: 'fa fa-fw fa-trash-o',
           title: trans('step_delete_title', {}, 'path'),
           question: trans('step_delete_confirm', {}, 'path'),
+          dangerous: true,
           handleConfirm: () => dispatch(actions.removeStep(step.id))
         })
       )

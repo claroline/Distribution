@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {t, trans} from '#/main/core/translation'
 
-import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder.jsx'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
@@ -105,9 +105,11 @@ const Announces = connect(
   dispatch => ({
     removePost(aggregateId, announcePost) {
       dispatch(
-        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+        modalActions.showModal(MODAL_CONFIRM, {
+          icon: 'fa fa-fw fa-trash-o',
           title: trans('remove_announce', {}, 'announcement'),
           question: trans('remove_announce_confirm', {}, 'announcement'),
+          dangerous: true,
           handleConfirm: () => dispatch(actions.removeAnnounce(aggregateId, announcePost))
         })
       )

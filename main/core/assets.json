@@ -11,8 +11,6 @@
       "transfer-management": "administration/transfer",
       "plugin-management": "administration/plugins/module",
       "portal": "resource/portal",
-      "desktop-home": "desktopHome/desktopHome",
-      "admin-home-tabs-config": "adminHomeTabsConfig/adminHomeTabsConfig",
       "resource-icon-set-list": "administration/appearance/icon/resource-icon-set-list/module",
       "resource-icon-item-list": "administration/appearance/icon/resource-icon-item-list/module",
       "scheduled-task-management": "administration/scheduled-task",
@@ -23,15 +21,14 @@
       "contacts-tool": "user/contact",
       "resources-tool": "tools/resources/bootstrap",
       "workspace-user-management": "workspace/user",
-      "workspace-parameters-management": "workspace/parameters",
       "text-resource": "resources/text/bootstrap",
-      "directory-resource": "resources/directory/bootstrap"
+      "directory-resource": "resources/directory/bootstrap",
+      "workspace-toolbar": "workspace/toolbar/bootstrap"
     }
   },
 
   "styles": {
     "entry": {
-      "home": "tools/home.less",
       "home-tool": "tools/home.less",
       "theme-management": "tools/theme-management.less",
       "portal": "portal/portal.less"

@@ -5,13 +5,12 @@ import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
-import Modal from 'react-bootstrap/lib/Modal'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Popover from 'react-bootstrap/lib/Popover'
 
 import {t}         from '#/main/core/translation'
 import {t_res}     from '#/main/core/resource/translation'
-import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
+import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {
   getSimpleAccessRule,
@@ -155,7 +154,7 @@ SimpleAccessRule.propTypes = {
 }
 
 const SimpleTab = props =>
-  <Modal.Body>
+  <div className="modal-body">
     <p>{t_res('resource_access_rights')}</p>
 
     <div className="resource-rights-simple">
@@ -171,7 +170,7 @@ const SimpleTab = props =>
         {t_res('resource_rights_custom_help')}
       </p>
     }
-  </Modal.Body>
+  </div>
 
 SimpleTab.propTypes = {
   currentMode: T.string,
@@ -231,7 +230,7 @@ class EditRightsModal extends Component {
 
   render() {
     return (
-      <BaseModal
+      <Modal
         icon="fa fa-fw fa-lock"
         title={t_res('edit-rights')}
         className="resource-edit-rights-modal"
@@ -287,7 +286,7 @@ class EditRightsModal extends Component {
         >
           {t('save')}
         </button>
-      </BaseModal>
+      </Modal>
     )
   }
 }

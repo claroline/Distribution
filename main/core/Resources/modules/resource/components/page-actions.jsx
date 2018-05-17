@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {matchPath, withRouter} from '#/main/core/router'
+import {matchPath, withRouter} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 import {number} from '#/main/app/intl'
 import {t_res} from '#/main/core/resource/translation'
@@ -10,7 +10,6 @@ import {currentUser} from '#/main/core/user/current'
 
 import {getSimpleAccessRule, hasCustomRules} from '#/main/core/resource/rights'
 
-/*import {MODAL_DELETE_CONFIRM}      from '#/main/core/layout/modal'*/
 import {MODAL_RESOURCE_PROPERTIES} from '#/main/core/resource/components/modal/edit-properties'
 import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/resource/components/modal/edit-rights'
 
@@ -246,7 +245,7 @@ function getMoreActions(resourceNode, props) {
     className="dropdown-link-danger"
     onClick={e => {
       e.stopPropagation()
-      props.showModal(MODAL_DELETE_CONFIRM, {
+      props.showModal(MODAL_CONFIRM, {
         title: t_res('delete'),
         question: t_res('delete_confirm_question'),
         handleConfirm: () => true

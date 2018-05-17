@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {generateUrl} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
@@ -83,9 +83,11 @@ const DocumentRow = props =>
         <span
           className="fa fa-fw fa-trash pointer-hand"
           onClick={() => {
-            props.showModal(MODAL_DELETE_CONFIRM, {
+            props.showModal(MODAL_CONFIRM, {
+              icon: 'fa fa-fw fa-trash-o',
               title: trans('delete_document', {}, 'dropzone'),
               question: trans('delete_document_confirm_message', {}, 'dropzone'),
+              dangerous: true,
               handleConfirm: () => props.deleteDocument(props.document.id)
             })
           }}

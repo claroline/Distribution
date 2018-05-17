@@ -5,7 +5,7 @@ import {actions as alertActions} from '#/main/core/layout/alert/actions'
 import {select as alertSelect} from '#/main/core/layout/alert/selectors'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {select as modalSelect} from '#/main/core/layout/modal/selectors'
+import {select as modalSelect} from '#/main/app/overlay/modal/selectors'
 
 import {select as pageSelect} from '#/main/core/layout/page/selectors'
 
@@ -53,9 +53,6 @@ function mapDispatchToProps(dispatch) {
     },
 
     // modal
-    showModal(modalType, modalProps) {
-      dispatch(modalActions.showModal(modalType, modalProps))
-    },
     fadeModal() {
       dispatch(modalActions.fadeModal())
     },
@@ -84,9 +81,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     props.removeAlert = dispatchProps.removeAlert
   }
 
+  props.hasModals = stateProps.hasModals
   if (stateProps.hasModals) {
     props.modal = stateProps.modal
-    props.showModal = dispatchProps.showModal
     props.fadeModal = dispatchProps.fadeModal
     props.hideModal = dispatchProps.hideModal
   }

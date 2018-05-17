@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceTag;
@@ -462,13 +463,13 @@ class WorkspaceController extends Controller
     /**
      * Renders the left tool bar. Not routed.
      *
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:workspace:toolbar.html.twig")
      *
      * @param Workspace $workspace
      *
      * @return array
      */
-    public function renderToolListAction(Workspace $workspace)
+    public function renderToolbarAction(Workspace $workspace)
     {
         $orderedTools = [];
         $roleHasAccess = []; // for impersonation
@@ -488,7 +489,11 @@ class WorkspaceController extends Controller
                     ->getWorkspaceRoleWithToolAccess($workspace);
 
                 foreach ($workspaceRolesWithAccess as $workspaceRole) {
-                    $roleHasAccess[$workspaceRole->getId()] = $workspaceRole;
+                    $roleHasAccess[] = [ // TODO : use role serializer
+                        'id' => $workspaceRole->getUuid(),
+                        'name' => $workspaceRole->getName(),
+                        'translationKey' => $workspaceRole->getTranslationKey(),
+                    ];
                 }
             } else {
                 // gets accessible tools by user
@@ -499,9 +504,14 @@ class WorkspaceController extends Controller
 
         return [
             'hasManagerAccess' => $hasManagerAccess,
-            'orderedTools' => $orderedTools,
+            'tools' => array_map(function (OrderedTool $orderedTool) { // todo : create a serializer
+                return [
+                    'icon' => $orderedTool->getTool()->getClass(),
+                    'name' => $orderedTool->getTool()->getName(),
+                ];
+            }, $orderedTools),
             'workspace' => $workspace,
-            'roleHasAccess' => $roleHasAccess,
+            'roles' => $roleHasAccess, // todo : retrieve from workspace
             'hideToolsMenu' => $hideToolsMenu,
         ];
     }

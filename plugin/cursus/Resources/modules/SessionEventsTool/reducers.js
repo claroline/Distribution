@@ -1,5 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep'
-import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
+
+import {makeReducer} from '#/main/core/scaffolding/reducer'
+import {makePageReducer} from '#/main/core/layout/page/reducer'
+
 import {VIEW_USER} from './enums'
 
 import {
@@ -245,7 +248,7 @@ const setEventsReducers = {
   }
 }
 
-export const reducers = combineReducers({
+export const reducers = makePageReducer({
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
   disableRegistration: makeReducer(initialState['disableRegistration'], mainReducers),

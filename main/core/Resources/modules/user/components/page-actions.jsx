@@ -2,9 +2,9 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
-import {withRouter, matchPath} from '#/main/core/router'
+import {withRouter, matchPath} from '#/main/app/router'
 
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_CHANGE_PASSWORD, MODAL_CHANGE_PUBLIC_URL, MODAL_SEND_MESSAGE} from '#/main/core/user/modals'
 import {
   PageGroupActions,
@@ -75,7 +75,12 @@ const UserPageActions = props => {
       icon: 'fa fa-fw fa-trash-o',
       label: t('delete'),
       displayed: props.user.rights.current.delete,
-      callback: () =>  props.showModal(MODAL_DELETE_CONFIRM),
+      callback: () =>  props.showModal(MODAL_CONFIRM, {
+        icon: 'fa fa-fw fa-trash-o',
+        title: t('user_delete_confirm_title'),
+        question: t('user_delete_confirm_message'),
+        dangerous: true
+      }),
       dangerous: true
     }
   ])

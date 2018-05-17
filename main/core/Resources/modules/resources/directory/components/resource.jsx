@@ -9,7 +9,7 @@ import {RoutedPageContent} from '#/main/core/layout/router'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
 
-import {NavLink} from '#/main/core/router'
+import {NavLink} from '#/main/app/router'
 
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
 import {Player} from '#/main/core/resources/text/player/components/player'

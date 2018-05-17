@@ -2,14 +2,14 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {withRouter} from '#/main/core/router'
+import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/core/api/router'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {TooltipLink} from '#/main/core/layout/button/components/tooltip-link.jsx'
 import {UserMicro} from '#/main/core/user/components/micro.jsx'
@@ -574,9 +574,11 @@ const Entry = withRouter(connect(
   (dispatch, ownProps) => ({
     deleteEntry(entry) {
       dispatch(
-        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+        modalActions.showModal(MODAL_CONFIRM, {
+          icon: 'fa fa-fw fa-trash-o',
           title: trans('delete_entry', {}, 'clacoform'),
           question: trans('delete_entry_confirm_message', {title: entry.title}, 'clacoform'),
+          dangerous: true,
           handleConfirm: () => {
             dispatch(actions.deleteEntries([entry]))
             ownProps.history.push('/entries')

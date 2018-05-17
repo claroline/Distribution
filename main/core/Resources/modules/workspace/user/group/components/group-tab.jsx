@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {matchPath, Routes, withRouter} from '#/main/core/router'
+import {matchPath, Routes, withRouter} from '#/main/app/router'
 import {currentUser} from '#/main/core/user/current'
 
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'

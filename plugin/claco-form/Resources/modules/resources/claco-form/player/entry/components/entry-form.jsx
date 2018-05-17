@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 
 import {mount} from '#/main/app/mount'
 import {makePageReducer} from '#/main/core/layout/page/reducer'
-import {withRouter} from '#/main/core/router'
+import {withRouter} from '#/main/app/router'
 import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {select as resourceSelect} from '#/main/core/resource/selectors'

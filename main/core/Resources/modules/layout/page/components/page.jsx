@@ -1,13 +1,12 @@
 import React from 'react'
-import get from 'lodash/get'
 import classes from 'classnames'
 
 import {asset} from '#/main/core/scaffolding/asset'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {makeModal} from '#/main/core/layout/modal'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
-import {FlyingAlerts} from '#/main/core/layout/alert/components/flying-alerts.jsx'
+import {ModalOverlay} from '#/main/app/overlay/modal/components/overlay'
+import {FlyingAlerts} from '#/main/core/layout/alert/components/flying-alerts'
 
 const PageWrapper = props => !props.embedded ?
   <main className={props.className}>
@@ -43,15 +42,15 @@ const Page = props =>
       <FlyingAlerts alerts={props.alerts} removeAlert={props.removeAlert}/>
     }
 
-    {get(props, 'modal.type') && makeModal(
-      props.modal.type,
-      props.modal.props,
-      props.modal.fading,
-      props.fadeModal,
-      props.hideModal
-    )}
-
     {props.children}
+
+    {props.hasModals &&
+      <ModalOverlay
+        modal={props.modal}
+        fadeModal={props.fadeModal}
+        hideModal={props.hideModal}
+      />
+    }
   </PageWrapper>
 
 implementPropTypes(Page, PageTypes, {

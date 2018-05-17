@@ -3,7 +3,7 @@ import set from 'lodash/set'
 
 import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
-import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
+import {makePageReducer} from '#/main/core/layout/page/reducer'
 
 import {validate} from '#/plugin/drop-zone/plugin/configuration/validator'
 
@@ -73,11 +73,10 @@ const toolsTotalResultsReducer = makeReducer({}, {
   }
 })
 
-const reducer = {
+const reducer = makePageReducer({
   toolForm: toolFormReducer,
-  tools: makeListReducer('tools', {}, {data: toolsReducer, totalResults: toolsTotalResultsReducer}),
-  modal: modalReducer
-}
+  tools: makeListReducer('tools', {}, {data: toolsReducer, totalResults: toolsTotalResultsReducer})
+})
 
 export {
   reducer

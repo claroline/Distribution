@@ -1,6 +1,6 @@
 
 import {connectPage} from '#/main/core/layout/page/connect'
-import {Page} from '#/main/core/layout/page/components/page.jsx'
+import {Page} from '#/main/core/layout/page/components/page'
 
 /**
  * Connected container for pages.

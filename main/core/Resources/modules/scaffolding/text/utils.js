@@ -11,7 +11,7 @@ function toKey(text) {
     // removes all non alpha-numeric chars
     .replace(/[^a-zA-Z0-9\- ]/g, '')
     // replaces whitespaces by hyphen
-    .replace(' ', '-')
+    .replace(/\s/g, '-')
     // removes uppercase
     .toLowerCase()
     // shorten text

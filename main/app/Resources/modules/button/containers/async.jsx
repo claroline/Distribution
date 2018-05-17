@@ -21,7 +21,7 @@ import {CallbackButton} from '#/main/app/button/components/callback'
  */
 const AsyncButtonComponent = props =>
   <CallbackButton
-    {...omit(props, 'request')}
+    {...omit(props, 'request', 'executeRequest')}
     callback={() => props.executeRequest(props.request)}
   >
     {props.children}

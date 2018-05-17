@@ -20,5 +20,8 @@
   "unfollow": "Unfollow",
   "unpublish": "Unpublish",
   "unregister": "Unregister",
-  "deselect": "Deselect"
+  "deselect": "Deselect",
+  "view_as": "Show as",
+  "configure": "Configure",
+  "show_about": "Show information"
 }

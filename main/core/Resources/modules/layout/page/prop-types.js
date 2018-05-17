@@ -1,5 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 
+import {Modal as ModalTypes} from '#/main/app/overlay/modal/prop-types'
+
 const Page = {
   propTypes: {
     className: T.string,
@@ -21,11 +23,10 @@ const Page = {
     removeAlert: T.func,
 
     // modal management
-    modal: T.shape({
-      type: T.string,
-      fading: T.bool.isRequired,
-      props: T.object.isRequired
-    }),
+    hasModals: T.bool,
+    modal: T.shape(
+      ModalTypes.propTypes
+    ),
     fadeModal: T.func,
     hideModal: T.func
   },

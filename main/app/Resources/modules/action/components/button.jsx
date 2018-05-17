@@ -27,7 +27,8 @@ const Button = props => props.tooltip ?
       confirm={props.confirm ? Object.assign({}, props.confirm, {
         // append some defaults from action spec
         icon: props.icon,
-        title: props.confirm.title || props.label
+        title: props.confirm.title || props.label,
+        button: props.confirm.button || props.label
       }) : undefined}
     >
       {props.icon &&
@@ -42,7 +43,8 @@ const Button = props => props.tooltip ?
     confirm={props.confirm ? Object.assign({}, props.confirm, {
       // append some defaults from action spec
       icon: props.icon,
-      title: props.confirm.title || props.label
+      title: props.confirm.title || props.label,
+      button: props.confirm.button || props.label
     }) : undefined}
   >
     {props.icon &&

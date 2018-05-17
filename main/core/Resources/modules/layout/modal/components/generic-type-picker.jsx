@@ -1,9 +1,8 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import Modal from 'react-bootstrap/lib/Modal'
 
-import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
+import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 class GenericTypePicker extends Component {
   constructor(props) {
@@ -26,11 +25,11 @@ class GenericTypePicker extends Component {
 
   render() {
     return (
-      <BaseModal
+      <Modal
         {...this.props}
         className="generic-type-picker"
       >
-        <Modal.Body>
+        <div className="modal-body">
           <div className="types-list" role="listbox">
             {this.props.types.map((type, index) =>
               <div
@@ -58,8 +57,8 @@ class GenericTypePicker extends Component {
               <p>{this.state.currentDesc}</p>
             }
           </div>
-        </Modal.Body>
-      </BaseModal>
+        </div>
+      </Modal>
     )
   }
 }

@@ -2,11 +2,10 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import Modal from 'react-bootstrap/lib/Modal'
 import {listItemNames, getDefinition} from './../../../../items/item-types'
 import {Icon} from './../../../../items/components/icon.jsx'
 import {t, tex, trans} from '#/main/core/translation'
-import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
+import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {generateUrl} from '#/main/core/api/router'
 
@@ -91,8 +90,8 @@ class ImportItems extends Component {
 
   render(){
     return(
-      <BaseModal {...this.props} className="import-items-modal">
-        <Modal.Body>
+      <Modal {...this.props} className="import-items-modal">
+        <div className="modal-body">
           <div className="form-group">
             <input
               id="searchText"
@@ -107,7 +106,7 @@ class ImportItems extends Component {
               <h4>{t('no_search_results')}</h4>
             </div>
           }
-        </Modal.Body>
+        </div>
         {this.state.questions.length > 0 &&
           <table className="table table-responsive table-striped question-list-table">
             <tbody>
@@ -125,15 +124,15 @@ class ImportItems extends Component {
             </tbody>
           </table>
         }
-        <Modal.Footer>
+        <div className="modal-footer">
           <button className="btn btn-default" onClick={this.props.fadeModal}>
             {t('cancel')}
           </button>
           <button className="btn btn-primary" disabled={this.state.selected.length === 0} onClick={this.handleClick.bind(this)}>
             {t('ok')}
           </button>
-        </Modal.Footer>
-      </BaseModal>
+        </div>
+      </Modal>
     )
   }
 }

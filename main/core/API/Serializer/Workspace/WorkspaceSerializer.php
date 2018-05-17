@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Workspace;
 
-use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
@@ -16,6 +15,7 @@ use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.serializer.workspace")
@@ -24,6 +24,9 @@ use JMS\DiExtraBundle\Annotation as DI;
 class WorkspaceSerializer
 {
     use SerializerTrait;
+
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
 
     /** @var ObjectManager */
     private $om;
@@ -41,23 +44,27 @@ class WorkspaceSerializer
      * WorkspaceSerializer constructor.
      *
      * @DI\InjectParams({
+     *     "authorization"    = @DI\Inject("security.authorization_checker"),
      *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
      *     "serializer"       = @DI\Inject("claroline.api.serializer"),
      *     "utilities"        = @DI\Inject("claroline.utilities.misc")
      * })
      *
-     * @param ObjectManager      $om
-     * @param WorkspaceManager   $workspaceManager
-     * @param SerializerProvider $serializer
-     * @param ClaroUtilities     $utilities
+     * @param AuthorizationCheckerInterface $authorization
+     * @param ObjectManager                 $om
+     * @param WorkspaceManager              $workspaceManager
+     * @param SerializerProvider            $serializer
+     * @param ClaroUtilities                $utilities
      */
     public function __construct(
+        AuthorizationCheckerInterface $authorization,
         ObjectManager $om,
         WorkspaceManager $workspaceManager,
         SerializerProvider $serializer,
         ClaroUtilities $utilities)
     {
+        $this->authorization = $authorization;
         $this->om = $om;
         $this->workspaceManager = $workspaceManager;
         $this->serializer = $serializer;
@@ -100,6 +107,12 @@ class WorkspaceSerializer
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
+                'permissions' => [ // TODO it should be available in list mode too, but will decrease perfs, should be tested
+                    'open' => $this->authorization->isGranted('OPEN', $workspace),
+                    'delete' => $this->authorization->isGranted('DELETE', $workspace),
+                    'administrate' => $this->authorization->isGranted('ADMINISTRATE', $workspace),
+                    'export' => $this->authorization->isGranted('EXPORT', $workspace)
+                ],
                 'meta' => $this->getMeta($workspace),
                 'opening' => $this->getOpening($workspace),
                 'display' => $this->getDisplay($workspace),
@@ -107,7 +120,7 @@ class WorkspaceSerializer
                 'registration' => $this->getRegistration($workspace),
                 'notifications' => $this->getNotifications($workspace),
                 'roles' => array_map(function (Role $role) {
-                    return [
+                    return [ // TODO : use role serializer
                         'id' => $role->getUuid(),
                         'name' => $role->getName(),
                         'translationKey' => $role->getTranslationKey(),

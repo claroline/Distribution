@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {withRouter} from '#/main/core/router'
+import {withRouter} from '#/main/app/router'
 import {url} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 

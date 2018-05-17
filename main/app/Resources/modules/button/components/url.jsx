@@ -25,7 +25,7 @@ const UrlButton = props => {
 
   return (
     <a
-      {...omit(props, 'displayed', 'primary', 'dangerous', 'size', 'target', 'confirm')}
+      {...omit(props, 'active', 'displayed', 'primary', 'dangerous', 'size', 'target', 'confirm')}
       role="link"
       tabIndex={props.tabIndex}
       href={!props.disabled ? target : ''}

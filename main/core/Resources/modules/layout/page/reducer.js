@@ -5,7 +5,7 @@ import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
 
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as alertReducer} from '#/main/core/layout/alert/reducer'
-import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
+import {reducer as modalReducer} from '#/main/app/overlay/modal/reducer'
 
 import {constants} from '#/main/core/layout/page/constants'
 

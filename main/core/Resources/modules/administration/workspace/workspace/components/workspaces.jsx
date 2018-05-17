@@ -5,9 +5,10 @@ import {connect} from 'react-redux'
 import Configuration from '#/main/core/library/Configuration/Configuration'
 import {trans, transChoice, Translator} from '#/main/core/translation'
 
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_CONFIRM, MODAL_URL} from '#/main/core/layout/modal'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+
+import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {actions} from '#/main/core/administration/workspace/workspace/actions'
 import {WorkspaceList} from '#/main/core/administration/workspace/workspace/components/workspace-list.jsx'
@@ -27,7 +28,7 @@ const WorkspacesList = props =>
         type: 'modal',
         icon: action.icon,
         label: action.name(Translator),
-        modal: [MODAL_URL, {
+        modal: [MODAL_URL, { // FIXME
           url: action.url(rows[0].id)
         }],
         context: 'row'

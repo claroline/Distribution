@@ -1,2 +1,2 @@
 
-export * from '#/main/app/dnd/components/context'
+export * from '#/main/app/overlay/dnd/components/context'

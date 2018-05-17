@@ -4,9 +4,13 @@ import {PropTypes as T} from 'prop-types'
 import {viewComponents} from '../views'
 import {selectors} from '../selectors'
 
+import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
+
 let SessionEventsToolLayout = props =>
   <div>
     {React.createElement(viewComponents[props.viewMode])}
+
+    <ModalOverlay />
   </div>
 
 SessionEventsToolLayout.propTypes = {

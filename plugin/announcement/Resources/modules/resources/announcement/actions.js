@@ -1,5 +1,5 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {navigate} from '#/main/core/router'
+import {navigate} from '#/main/app/router'
 
 import {API_REQUEST} from '#/main/core/api/actions'
 
