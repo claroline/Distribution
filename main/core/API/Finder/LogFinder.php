@@ -40,8 +40,10 @@ class LogFinder implements FinderInterface
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'doer.name':
-                    $userJoin = true;
-                    $qb->join('obj.doer', 'doer');
+                    if (!$userJoin) {
+                        $userJoin = true;
+                        $qb->join('obj.doer', 'doer');
+                    }
                     $qb->andWhere($qb->expr()->orX(
                         $qb->expr()->like('UPPER(doer.firstName)', ':doer'),
                         $qb->expr()->like('UPPER(doer.lastName)', ':doer'),
@@ -68,6 +70,15 @@ class LogFinder implements FinderInterface
                     break;
                 case 'action':
                     $this->filterAction($filterValue, $qb);
+                    break;
+                case 'organization':
+                    if (!$userJoin) {
+                        $userJoin = true;
+                        $qb->join('obj.doer', 'doer');
+                    }
+                    $qb->join('doer.userOrganizationReferences', 'orgaRef')
+                        ->andWhere('orgaRef.organization IN (:organizations)')
+                        ->setParameter('organizations', $filterValue);
                     break;
                 case 'unique':
                 case 'type':

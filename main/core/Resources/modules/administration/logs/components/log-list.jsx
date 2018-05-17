@@ -11,6 +11,7 @@ const List = (props) =>
     actions={props.actions}
     chart={props.chart}
     getChartData={props.getChartData}
+    queryString={props.queryString}
   />
 
 List.propTypes = {

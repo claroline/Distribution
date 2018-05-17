@@ -901,12 +901,12 @@ class UserManager
         return $this->userRepo->count();
     }
 
-    public function countUsersForPlatformRoles()
+    public function countUsersForPlatformRoles($organizations = null)
     {
         $roles = $this->roleManager->getAllPlatformRoles();
         $roleNames = array_map(function ($r) {return $r->getName(); }, $roles);
         $usersInRoles = [];
-        $usersInRoles[] = ['name' => 'user_accounts', 'total' => floatval($this->userRepo->countUsers())];
+        $usersInRoles[] = ['name' => 'user_accounts', 'total' => floatval($this->userRepo->countUsers($organizations))];
         foreach ($roles as $role) {
             $restrictionRoleNames = null;
             if ('ROLE_USER' === $role->getName()) {
@@ -918,7 +918,7 @@ class UserManager
             }
             $usersInRoles[] = [
                 'name' => $role->getTranslationKey(),
-                'total' => floatval($this->userRepo->countUsersByRole($role, $restrictionRoleNames)),
+                'total' => floatval($this->userRepo->countUsersByRole($role, $restrictionRoleNames, $organizations)),
             ];
         }
 
@@ -942,9 +942,9 @@ class UserManager
      *
      * @return User[]
      */
-    public function getUsersEnrolledInMostWorkspaces($max)
+    public function getUsersEnrolledInMostWorkspaces($max, $organizations = null)
     {
-        return $this->userRepo->findUsersEnrolledInMostWorkspaces($max);
+        return $this->userRepo->findUsersEnrolledInMostWorkspaces($max, $organizations);
     }
 
     /**
@@ -952,9 +952,9 @@ class UserManager
      *
      * @return User[]
      */
-    public function getUsersOwnersOfMostWorkspaces($max)
+    public function getUsersOwnersOfMostWorkspaces($max, $organizations = null)
     {
-        return $this->userRepo->findUsersOwnersOfMostWorkspaces($max);
+        return $this->userRepo->findUsersOwnersOfMostWorkspaces($max, $organizations);
     }
 
     /**

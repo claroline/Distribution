@@ -88,9 +88,9 @@ class AnalyticsManager
         $this->logRepository = $objectManager->getRepository('ClarolineCoreBundle:Log\Log');
     }
 
-    public function getResourceTypesCount(Workspace $workspace = null)
+    public function getResourceTypesCount(Workspace $workspace = null, $organizations = null)
     {
-        $resourceTypes = $this->resourceTypeRepo->countResourcesByType($workspace);
+        $resourceTypes = $this->resourceTypeRepo->countResourcesByType($workspace, $organizations);
         $chartData = [];
         foreach ($resourceTypes as $type) {
             $chartData["rt-${type['id']}"] = [
@@ -157,22 +157,22 @@ class AnalyticsManager
         return $this->logRepository->findTopResourcesByAction($queryParams['allFilters'], $queryParams['limit']);
     }
 
-    public function userRolesData()
+    public function userRolesData($organizations = null)
     {
-        return $this->userManager->countUsersForPlatformRoles();
+        return $this->userManager->countUsersForPlatformRoles($organizations);
     }
 
-    public function countNonPersonalWorkspaces()
+    public function countNonPersonalWorkspaces($organizations = null)
     {
-        return $this->workspaceManager->getNbNonPersonalWorkspaces();
+        return $this->workspaceManager->getNbNonPersonalWorkspaces($organizations);
     }
 
-    public function getWidgetsData()
+    public function getWidgetsData($organizations = null)
     {
-        $all = floatval($this->widgetManager->getNbWidgetInstances());
-        $ws = floatval($this->widgetManager->getNbWorkspaceWidgetInstances());
-        $desktop = floatval($this->widgetManager->getNbDesktopWidgetInstances());
-        $list = $this->widgetManager->countWidgetsByType();
+        $all = floatval($this->widgetManager->getNbWidgetInstances($organizations));
+        $ws = floatval($this->widgetManager->getNbWorkspaceWidgetInstances($organizations));
+        $desktop = floatval($this->widgetManager->getNbDesktopWidgetInstances($organizations));
+        $list = $this->widgetManager->countWidgetsByType($organizations);
 
         return [
             'all' => $all,
@@ -237,13 +237,16 @@ class AnalyticsManager
         $finderParams['filters'] = isset($finderParams['filters']) ? $finderParams['filters'] : [];
         $topType = isset($finderParams['filters']['type']) ? $finderParams['filters']['type'] : 'top_users_connections';
         unset($finderParams['filters']['type']);
+        $organizations = isset($finderParams['hiddenFilters']['organization']) ?
+            $finderParams['hiddenFilters']['organization'] :
+            null;
         $finderParams['limit'] = isset($finderParams['limit']) ? intval($finderParams['limit']) : 10;
         switch ($topType) {
             case 'top_extension':
-                $listData = $this->resourceRepo->findMimeTypesWithMostResources($finderParams['limit']);
+                $listData = $this->resourceRepo->findMimeTypesWithMostResources($finderParams['limit'], $organizations);
                 break;
             case 'top_workspaces_resources':
-                $listData = $this->workspaceManager->getWorkspacesWithMostResources($finderParams['limit']);
+                $listData = $this->workspaceManager->getWorkspacesWithMostResources($finderParams['limit'], $organizations);
                 break;
             case 'top_workspaces_connections':
                 $finderParams['filters']['action'] = LogWorkspaceToolReadEvent::ACTION;
@@ -258,10 +261,10 @@ class AnalyticsManager
                 $listData = $this->topResourcesByAction($finderParams);
                 break;
             case 'top_users_workspaces_enrolled':
-                $listData = $this->userManager->getUsersEnrolledInMostWorkspaces($finderParams['limit']);
+                $listData = $this->userManager->getUsersEnrolledInMostWorkspaces($finderParams['limit'], $organizations);
                 break;
             case 'top_users_workspaces_owners':
-                $listData = $this->userManager->getUsersOwnersOfMostWorkspaces($finderParams['limit']);
+                $listData = $this->userManager->getUsersOwnersOfMostWorkspaces($finderParams['limit'], $organizations);
                 break;
             case 'top_media_views':
                 $finderParams['filters']['action'] = LogResourceReadEvent::ACTION;
