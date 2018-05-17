@@ -12,6 +12,8 @@
 namespace Claroline\CoreBundle\Form\Log;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,23 +28,23 @@ class LogDesktopWidgetConfigType extends AbstractType
                 $builder->add(
                     $workspace->getId(),
                     CheckboxType::class,
-                    array('required' => false, 'label' => $workspace->getName())
+                    ['required' => false, 'label' => $workspace->getName()]
                 );
             }
         }
         $builder->add(
             'amount',
             ChoiceType::class,
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     '1' => '1',
                     '5' => '5',
                     '10' => '10',
                     '15' => '15',
                     '20' => '20',
-                ),
+                ],
                 'required' => true,
-            )
+            ]
         );
     }
 
@@ -54,10 +56,10 @@ class LogDesktopWidgetConfigType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                'workspaces' => array(),
+            [
+                'workspaces' => [],
                 'translation_domain' => 'log',
-            )
+            ]
         );
     }
 }

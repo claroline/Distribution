@@ -12,16 +12,17 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HomeTemplateType extends AbstractType
 {
-    private $templates = array();
+    private $templates = [];
 
     public function __construct($templatesDir)
     {
-        $contents = is_dir($templatesDir) ? scandir($templatesDir) : array();
+        $contents = is_dir($templatesDir) ? scandir($templatesDir) : [];
 
         foreach ($contents as $content) {
             if (!is_dir($content)) {
@@ -35,11 +36,11 @@ class HomeTemplateType extends AbstractType
         $builder->add(
             'template',
             ChoiceType::class,
-            array(
+            [
                 'required' => false,
                 'choices' => $this->templates,
                 'label' => 'template',
-            )
+            ]
         );
     }
 
@@ -50,6 +51,6 @@ class HomeTemplateType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

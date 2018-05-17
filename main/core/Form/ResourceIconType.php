@@ -12,6 +12,8 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,36 +31,36 @@ class ResourceIconType extends AbstractType
         $builder->add(
             'name',
             TextType::class,
-            array('label' => 'name', 'disabled' => true)
+            ['label' => 'name', 'disabled' => true]
         );
         $builder->add(
             'newIcon',
             FileType::class,
-            array(
+            [
                 'required' => false,
                 'mapped' => false,
                 'label' => 'icon',
-            )
+            ]
         );
         $builder->add(
             'creationDate',
             'date',
-            array(
+            [
                 'disabled' => true,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
                 'label' => 'creation_date',
-            )
+            ]
         );
         $builder->add(
             'creator',
             TextType::class,
-            array(
+            [
                 'data' => $this->creator,
                 'mapped' => false,
                 'disabled' => true,
                 'label' => 'creator',
-            )
+            ]
         );
     }
 
@@ -69,6 +71,6 @@ class ResourceIconType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Form\Administration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -20,7 +21,7 @@ class IndexingType extends AbstractType
 {
     private $lockedParams;
 
-    public function __construct(array $lockedParams = array())
+    public function __construct(array $lockedParams = [])
     {
         $this->lockedParams = $lockedParams;
     }
@@ -30,16 +31,16 @@ class IndexingType extends AbstractType
         $builder->add(
             'google_meta_tag',
             TextType::class,
-            array(
+            [
                 'label' => 'google_tag_validation',
-                'constraints' => array(
-                   new Regex(array(
+                'constraints' => [
+                   new Regex([
                        'pattern' => "/^\<meta name=\x22google-site-verification\x22 content=\x22\bUA-\d{4,10}-\d{1,4}\b\x22( \/)?\>$/",
                        'message' => 'google_meta_tag_error',
-                   )),
-                ),
+                   ]),
+                ],
                 'disabled' => isset($this->lockedParams['google_meta_tag']),
-            )
+            ]
         );
     }
 
@@ -50,6 +51,6 @@ class IndexingType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

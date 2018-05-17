@@ -14,6 +14,8 @@ namespace Claroline\CoreBundle\Form;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\Angular\AngularType;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -53,7 +55,7 @@ class HomeTabType extends AngularType
             ]
         );
 
-        if ($this->type === 'admin') {
+        if ('admin' === $this->type) {
             $builder->add(
                 'visible',
                 ChoiceType::class,
@@ -106,7 +108,7 @@ class HomeTabType extends AngularType
                     'required' => false,
                 ]
             );
-        } elseif ($this->type === 'workspace' && !is_null($this->workspace)) {
+        } elseif ('workspace' === $this->type && !is_null($this->workspace)) {
             $builder->add(
                 'visible',
                 ChoiceType::class,

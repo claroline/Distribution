@@ -12,20 +12,24 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TinyMceUploadModalType extends AbstractType
 {
     private $uncompress;
     private $destinations;
 
-    public function __construct($destinations = array(), $uncompress = false)
+    public function __construct($destinations = [], $uncompress = false)
     {
         $this->uncompress = $uncompress;
-        $this->destinations = array();
+        $this->destinations = [];
 
         foreach ($destinations as $destination) {
             $nodeId = $destination->getResourceNode()->getId();
@@ -37,51 +41,51 @@ class TinyMceUploadModalType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', HiddenType::class, array('data' => 'tmpname'));
+        $builder->add('name', HiddenType::class, ['data' => 'tmpname']);
         $builder->add(
             FileType::class,
             HiddenType::class,
-            array(
+            [
                 'label' => FileType::class,
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
-                ),
-           )
+                ],
+           ]
         );
         if (count($this->destinations) > 1) {
             $builder->add(
                 'destination',
                 ChoiceType::class,
-                array(
+                [
                     'label' => 'destination',
                     'mapped' => false,
                     'choices' => $this->destinations,
-                )
+                ]
             );
         }
         if ($this->uncompress) {
             $builder->add(
                 'uncompress',
                 CheckboxType::class,
-                array(
+                [
                     'label' => 'uncompress_file',
                     'mapped' => false,
                     'required' => false,
-                )
+                ]
             );
         }
         $builder->add(
             'published',
             CheckboxType::class,
-            array(
+            [
                 'label' => 'published',
                 'required' => true,
                 'mapped' => false,
-                'attr' => array('checked' => 'checked'),
-           )
+                'attr' => ['checked' => 'checked'],
+           ]
         );
     }
 
@@ -94,9 +98,9 @@ class TinyMceUploadModalType extends AbstractType
     {
         $resolver
         ->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
-                )
+                ]
         );
     }
 }

@@ -29,11 +29,11 @@ class MaintenanceMessageType extends AbstractType
         $builder->add(
             'message',
             'tinymce',
-            array(
+            [
                 'required' => false,
                 'mapped' => false,
                 'data' => $this->message,
-            )
+            ]
         );
     }
 
@@ -44,6 +44,6 @@ class MaintenanceMessageType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

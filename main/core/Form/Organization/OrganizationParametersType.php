@@ -11,9 +11,11 @@
 
 namespace Claroline\CoreBundle\Form\Organization;
 
+use Claroline\CoreBundle\Form\Angular\AngularType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Claroline\CoreBundle\Form\Angular\AngularType;
 
 class OrganizationParametersType extends AngularType
 {
@@ -26,26 +28,26 @@ class OrganizationParametersType extends AngularType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, array('required' => true, 'label' => 'name'))
-            ->add(EmailType::class, EmailType::class, array('required' => false, 'label' => 'email'))
+            ->add('name', TextType::class, ['required' => true, 'label' => 'name'])
+            ->add('email', EmailType::class, ['required' => false, 'label' => 'email'])
             ->add(
                 'locations',
                 'entity',
-                array(
+                [
                     'label' => 'locations',
                     'class' => 'Claroline\CoreBundle\Entity\Organization\Location',
                     'expanded' => true,
                     'multiple' => true,
                     'property' => 'name',
-                )
+                ]
             )
             ->add(
                 'administrators',
                 'userpicker',
-                array(
+                [
                     'multiple' => true,
                     'label' => 'administrators',
-                )
+                ]
             );
     }
 
@@ -61,7 +63,7 @@ class OrganizationParametersType extends AngularType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

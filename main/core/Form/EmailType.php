@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType as Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
@@ -21,12 +22,12 @@ class EmailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            EmailType::class,
-            EmailType::class,
+            'email',
+            Type::class,
             [
                 'required' => true,
                 'constraints' => new Email(),
-                'label' => EmailType::class,
+                'label' => self::class,
             ]
         );
     }

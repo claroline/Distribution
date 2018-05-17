@@ -11,7 +11,9 @@
 
 namespace Claroline\CoreBundle\Form;
 
+use Claroline\CoreBundle\Form\Field\ContentType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,8 +22,8 @@ class SendMailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('object', TextType::class, array('label' => 'object'))
-            ->add(ContentType::class, 'tinymce', array('label' => 'message'));
+            ->add('object', TextType::class, ['label' => 'object'])
+            ->add(ContentType::class, 'tinymce', ['label' => 'message']);
     }
 
     public function getName()
@@ -31,6 +33,6 @@ class SendMailType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

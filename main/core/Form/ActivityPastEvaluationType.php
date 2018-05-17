@@ -12,6 +12,8 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,52 +24,52 @@ class ActivityPastEvaluationType extends AbstractType
         $builder->add(
             'status',
             ChoiceType::class,
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'unknown' => 'unknown',
                     'not_attempted' => 'not_attempted',
                     'completed' => 'completed',
                     'incomplete' => 'incomplete',
                     'passed' => 'passed',
                     'failed' => 'failed',
-                ),
+                ],
                 'required' => false,
                 'label' => 'status',
-            )
+            ]
         );
         $builder->add(
             'numScore',
             IntegerType::class,
-            array(
+            [
                 'read_only' => true,
                 'required' => false,
                 'label' => 'score',
-            )
+            ]
         );
         $builder->add(
             'date',
             'datetime',
-            array(
+            [
                 'read_only' => true,
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd H:m:s',
                 'label' => 'date',
-            )
+            ]
         );
         $builder->add(
             'score',
             TextType::class,
-            array('required' => false, 'label' => 'evaluation')
+            ['required' => false, 'label' => 'evaluation']
         );
         $builder->add(
             'comment',
             TextareaType::class,
-            array(
-                'attr' => array('rows' => 5),
+            [
+                'attr' => ['rows' => 5],
                 'required' => false,
                 'label' => 'comment',
-            )
+            ]
         );
     }
 
@@ -79,7 +81,7 @@ class ActivityPastEvaluationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array('translation_domain' => 'platform')
+            ['translation_domain' => 'platform']
         );
     }
 }

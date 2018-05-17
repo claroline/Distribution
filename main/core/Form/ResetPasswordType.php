@@ -32,12 +32,12 @@ class ResetPasswordType extends AbstractType
         $builder->add(
             'plainPassword',
             'repeated',
-            array(
+            [
                 'type' => 'password',
                 'invalid_message' => 'password_mismatch',
-                'first_options' => array('label' => 'new_password'),
-                'second_options' => array('label' => 'repeat_password'),
-            )
+                'first_options' => ['label' => 'new_password'],
+                'second_options' => ['label' => 'repeat_password'],
+            ]
         );
     }
 
@@ -49,9 +49,9 @@ class ResetPasswordType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 }

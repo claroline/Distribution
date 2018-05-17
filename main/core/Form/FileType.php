@@ -12,10 +12,13 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FileType extends AbstractType
 {
@@ -30,40 +33,40 @@ class FileType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', HiddenType::class, array('data' => 'tmpname'));
+        $builder->add('name', HiddenType::class, ['data' => 'tmpname']);
         $builder->add(
-            FileType::class,
-            FileType::class,
-            array(
+            'file',
+            self::class,
+            [
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
-                ),
-                'label' => FileType::class,
-           )
+                ],
+                'label' => self::class,
+           ]
         );
         if ($this->uncompress) {
             $builder->add(
                 'uncompress',
                 CheckboxType::class,
-                array(
+                [
                     'label' => 'uncompress_file',
                     'mapped' => false,
                     'required' => false,
-                )
+                ]
             );
         }
         $builder->add(
             'published',
             CheckboxType::class,
-            array(
+            [
                 'required' => true,
                 'mapped' => false,
-                'attr' => array('checked' => 'checked'),
+                'attr' => ['checked' => 'checked'],
                 'label' => 'publish_resource',
-           )
+           ]
         );
     }
 
@@ -79,7 +82,7 @@ class FileType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $default = array('translation_domain' => 'platform');
+        $default = ['translation_domain' => 'platform'];
         if ($this->forApi) {
             $default['csrf_protection'] = false;
         }

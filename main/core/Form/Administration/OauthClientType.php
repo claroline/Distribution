@@ -11,10 +11,12 @@
 
 namespace Claroline\CoreBundle\Form\Administration;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OauthClientType extends AbstractType
 {
@@ -23,30 +25,30 @@ class OauthClientType extends AbstractType
         $builder->add(
             'name',
             TextType::class,
-            array('constraints' => new NotBlank(), 'label' => 'name')
+            ['constraints' => new NotBlank(), 'label' => 'name']
         );
         $builder->add(
             'allowed_grant_types',
             ChoiceType::class,
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     'authorization_code' => '_authorization_code',
                     'password' => '_password',
                     'refresh_token' => '_refresh_token',
                     'token' => '_token',
                     'client_credentials' => '_client_credentials',
-                ),
+                ],
                 'disabled' => isset($this->lockedParams['mailer_transport']),
                 'label' => 'grant_type',
                 'multiple' => true,
                 'constraints' => new NotBlank(),
                 'expanded' => true,
-            )
+            ]
         );
         $builder->add(
             'uri',
             TextType::class,
-            array('label' => 'uri')
+            ['label' => 'uri']
         );
     }
 
@@ -57,6 +59,6 @@ class OauthClientType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }
