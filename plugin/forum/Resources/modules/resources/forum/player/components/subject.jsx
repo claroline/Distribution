@@ -34,7 +34,8 @@ class SubjectComponent extends Component {
     }
 
     this.state = {
-      showCommentForm: null
+      showCommentForm: null,
+      showNewCommentForm: null
     }
   }
 
@@ -50,8 +51,8 @@ class SubjectComponent extends Component {
     this.props.history.push(`/subjects/form/${subjectId}`)
   }
 
-  showCommentForm(messageId) {
-    this.setState({showCommentForm: messageId})
+  showNewCommentForm(messageId) {
+    this.setState({showNewCommentForm: messageId})
   }
 
   createNewMessage(message) {
@@ -183,49 +184,64 @@ class SubjectComponent extends Component {
                       user={currentUser()}
                       allowHtml={true}
                       submitLabel={trans('send')}
+                      content={message.content}
                       submit={(content) => this.props.updateMessage(message.id, content)}
                       cancel={() => this.setState({showMessageForm: null})}
                     />
                   }
                   <div className="answer-comment-container">
                     {message.children.map(comment =>
-                      <Comment
-                        key={comment.id}
-                        user={comment.meta.creator}
-                        date={comment.meta.created}
-                        content={comment.content}
-                        allowHtml={true}
-                        actions={[
-                          {
-                            icon: 'fa fa-fw fa-pencil',
-                            label: trans('edit'),
-                            displayed: true,
-                            action: () => this.showCommentForm(message)
-                          }, {
-                            icon: 'fa fa-fw fa-trash-o',
-                            label: trans('delete'),
-                            displayed: true,
-                            action: () => this.deleteComment(comment.id),
-                            dangerous: true
-                          }
-                        ]}
-                      />
+                      <div key={comment.id}>
+                        {!this.state.showCommentForm === comment.id &&
+                          <Comment
+                            user={comment.meta.creator}
+                            date={comment.meta.created}
+                            content={comment.content}
+                            allowHtml={true}
+                            actions={[
+                              {
+                                icon: 'fa fa-fw fa-pencil',
+                                label: trans('edit'),
+                                displayed: true,
+                                action: () => this.showCommentForm(comment.id)
+                              }, {
+                                icon: 'fa fa-fw fa-trash-o',
+                                label: trans('delete'),
+                                displayed: true,
+                                action: () => this.deleteComment(comment.id),
+                                dangerous: true
+                              }
+                            ]}
+                          />
+                        }
+                        {this.state.showCommentForm === comment.id &&
+                          <CommentForm
+                            user={currentUser()}
+                            allowHtml={true}
+                            submitLabel={trans('add_comment')}
+                            content={comment.content}
+                            submit={(comment) => this.updateComment(comment.id, comment)}
+                            cancel={() => this.setState({showCommentForm: null})}
+                          />
+                        }
+                      </div>
                     )}
-                    {!this.state.showCommentForm &&
+                    {!this.state.showNewCommentForm &&
                       <div className="comment-link-container">
                         <Button
                           label={trans('comment', {}, 'actions')}
                           type="callback"
-                          callback={() => this.showCommentForm(message.id)}
+                          callback={() => this.showNewCommentForm(message.id)}
                           className='comment-link'
                         />
                       </div>
                     }
-                    {this.state.showCommentForm === message.id &&
+                    {this.state.showNewCommentForm === message.id &&
                       <CommentForm
                         user={currentUser()}
                         allowHtml={true}
                         submitLabel={trans('add_comment')}
+                        // content={comment.content}
                         submit={(comment) => this.createNewComment(message.id, comment)}
                         cancel={() => this.setState({showCommentForm: null})}
                       />

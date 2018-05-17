@@ -44,7 +44,6 @@ class Message extends AbstractMessage
      *     targetEntity="Claroline\ForumBundle\Entity\Message",
      *     mappedBy="parent"
      * )
-     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $children;
 
