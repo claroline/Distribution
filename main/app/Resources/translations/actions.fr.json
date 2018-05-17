@@ -1,6 +1,7 @@
 {
   "add": "Ajouter",
   "click_here": "Cliquez ici",
+  "comment": "Laisser un commentaire",
   "copy": "Copier",
   "enable": "Activer",
   "export": "Exporter",
@@ -13,6 +14,7 @@
   "publish": "Publier",
   "register": "Inscrire",
   "replace": "Remplacer",
+  "reply": "Répondre",
   "restart": "Recommencer",
   "select": "Sélectionner",
   "send": "Envoyer",
@@ -20,6 +22,5 @@
   "unfollow": "Ne plus suivre",
   "unpublish": "Dépublier",
   "unregister": "Désinscrire",
-  "deselect": "Déselectionner",
-  "comment": "Laisser un commentaire"
+  "deselect": "Déselectionner"
 }

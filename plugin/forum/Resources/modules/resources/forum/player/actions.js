@@ -25,11 +25,12 @@ actions.toggleMessagesSort = makeActionCreator(MESSAGES_SORT_TOGGLE)
 actions.openSubjectForm = makeActionCreator(SUBJECT_FORM_OPEN)
 actions.closeSubjectForm = makeActionCreator(SUBJECT_FORM_CLOSE)
 actions.subjectEdition = makeActionCreator(SUBJECT_EDIT)
-actions.stopEditingSubject = makeActionCreator(SUBJECT_STOP_EDIT)
+actions.stopSubjectEdition = makeActionCreator(SUBJECT_STOP_EDIT)
 
-actions.newSubject = (id) => (dispatch) => {
+actions.newSubject = (id = null) => (dispatch) => {
   dispatch(actions.openSubjectForm())
   if (id) {
+    dispatch(actions.subjectEdition())
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_forum_subject_get', {id}],
@@ -41,7 +42,10 @@ actions.newSubject = (id) => (dispatch) => {
   } else {
     dispatch(formActions.resetForm(
       'subjects.form',
-      merge({}, SubjectTypes.defaultProps, {meta: {creator: currentUser()}}),
+      merge({}, SubjectTypes.defaultProps, {
+        id: makeId(),
+        meta: {creator: currentUser()}
+      }),
       true
     ))
   }
@@ -64,6 +68,7 @@ actions.openSubject = (id) => (dispatch, getState) => {
   if (subject.id !== id) {
     dispatch(actions.loadSubject({id: id}))
     dispatch(actions.fetchSubject(id))
+    dispatch(listActions.invalidateData('subjects.messages'))
   }
 }
 
@@ -82,6 +87,24 @@ actions.createMessage = (subjectId, content) => ({
           updated: now()
         },
         comments: []
+      })
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.messageUpdate = (id, content) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_message_update', {id: id}],
+    request: {
+      method: 'POST',
+      body: JSON.stringify({
+        content: content,
+        meta: {
+          updated: now()
+        }
       })
     },
     success: (data, dispatch) => {

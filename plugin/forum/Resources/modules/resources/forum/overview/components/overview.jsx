@@ -44,7 +44,7 @@ const OverviewComponent = props =>
             <Button
               label={trans('create_subject', {}, 'forum')}
               type="link"
-              target="/subjects/form/:id?"
+              target="/subjects/form"
               className="btn btn-block"
             />
           </section>

@@ -71,13 +71,12 @@ class SubjectsList extends Component {
               type: 'string',
               label: trans('tags'),
               displayed: true
+            }, {
+              name: 'meta.creator',
+              type: 'string',
+              label: trans('creator'),
+              displayed: true
             }
-            // }, {
-            //   name: 'meta.creator',
-            //   type: 'string',
-            //   label: trans('creator'),
-            //   displayed: true
-            // }
           ]}
           actions={(rows) => [
             {
@@ -88,13 +87,13 @@ class SubjectsList extends Component {
               context: 'row'
             }, {
               type: 'callback',
-              icon: 'fa fa-fw fa-paperclip',
+              icon: 'fa fa-fw fa-thumb-tack',
               label: trans('stick', {}, 'forum'),
               callback: () => this.props.stickSubject(rows[0]),
               displayed: !rows[0].meta.sticky
             }, {
               type: 'callback',
-              icon: 'fa fa-fw fa-unlink',
+              icon: 'fa fa-fw fa-thumb-tack',
               label: trans('unstick', {}, 'forum'),
               callback: () => this.props.unStickSubject(rows[0]),
               displayed: rows[0].meta.sticky

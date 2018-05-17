@@ -10,6 +10,16 @@ const subject = createSelector(
   (subjects) => subjects.current
 )
 
+const editingSubject = createSelector(
+  [subjects],
+  (subjects) => subjects.form.editingSubject
+)
+
+const showSubjectForm = createSelector(
+  [subjects],
+  (subjects) => subjects.form.showSubjectForm
+)
+
 const forumId = createSelector(
   [forum],
   (forum) => forum.id
@@ -33,5 +43,8 @@ export const select = {
   subject,
   messages,
   forumId,
-  sortedMessages
+  sortedMessages,
+  showSubjectForm,
+  editingSubject
+
 }

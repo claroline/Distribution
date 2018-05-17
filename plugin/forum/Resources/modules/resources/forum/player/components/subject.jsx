@@ -12,7 +12,8 @@ import {Button} from '#/main/app/action/components/button'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+//  main app modals confirm
+import {MODAL_CONFIRM} from '#/main/core/layout/modal'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
@@ -33,8 +34,7 @@ class SubjectComponent extends Component {
     }
 
     this.state = {
-      showMessageForm: false,
-      showNewCommentForm: null
+      showCommentForm: null
     }
   }
 
@@ -50,27 +50,29 @@ class SubjectComponent extends Component {
     this.props.history.push(`/subjects/form/${subjectId}`)
   }
 
+  showCommentForm(messageId) {
+    this.setState({showCommentForm: messageId})
+  }
+
   createNewMessage(message) {
     const content = trim(message)
     this.props.createMessage(this.props.subject.id, content)
   }
 
-  showMessageForm(message) {
-    // this.setState({showNewCommentForm: messageId})
-    console.log(message)
-  }
-
-  showCommentForm(messageId) {
-    this.setState({showNewCommentForm: messageId})
+  editMessage(messageId, content) {
+    this.setState({showMessageForm: messageId})
+    this.props.messageEdition(messageId, content)
   }
 
   createNewComment(messageId, comment) {
     this.props.createComment(messageId, comment)
-    this.setState({showNewCommentForm: null})
+    this.setState({showCommentForm: null})
   }
 
   deleteMessage(messageId) {
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
+    this.props.showModal(MODAL_CONFIRM, {
+      dangerous: true,
+      icon: 'fa fa-fw fa-trash-o',
       title: trans('delete_message', {}, 'forum'),
       question: trans('remove_post_confirm_message', {}, 'forum'),
       handleConfirm: () => this.props.deleteData(messageId)
@@ -78,7 +80,9 @@ class SubjectComponent extends Component {
   }
 
   deleteComment(commentId) {
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
+    this.props.showModal(MODAL_CONFIRM, {
+      dangerous: true,
+      icon: 'fa fa-fw fa-trash-o',
       title: trans('delete_comment', {}, 'forum'),
       question: trans('remove_comment_confirm_message', {}, 'forum'),
       handleConfirm: () => this.props.deleteData(commentId)
@@ -87,7 +91,7 @@ class SubjectComponent extends Component {
 
 
   render() {
-    if (isEmpty(this.props.subject) && !this.props.subjectForm.showSubjectForm) {
+    if (isEmpty(this.props.subject) && !this.props.showSubjectForm) {
       return(
         <span>Loading</span>
       )
@@ -105,14 +109,14 @@ class SubjectComponent extends Component {
             />
           </div>
           <div>
-            {!this.props.subjectForm.showSubjectForm &&
+            {(!this.props.showSubjectForm && !this.props.editingSubject) &&
               <h3 className="h2">{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h3>
             }
-            {(this.props.subjectForm.showSubjectForm && !this.props.subjectForm.editingSubject) &&
-              <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
+            {(this.props.showSubjectForm && this.props.editingSubject) &&
+              <h3 className="h2">{this.props.subjectForm.title}<small> {get(this.props.subjectForm, 'meta.messages') || 0} réponse(s)</small></h3>
             }
-            {this.props.subjectForm.editingSubject &&
-              <h3 className="h2">{trans('subject_edition', {}, 'forum')}</h3>
+            {(this.props.showSubjectForm && !this.props.editingSubject) &&
+              <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
             }
             {!isEmpty(this.props.subject.tags)&&
               <div className="tag">
@@ -123,10 +127,10 @@ class SubjectComponent extends Component {
             }
           </div>
         </header>
-        {this.props.subjectForm.showSubjectForm &&
+        {this.props.showSubjectForm &&
           <SubjectForm />
         }
-        {!this.props.subjectForm.showSubjectForm &&
+        {!this.props.showSubjectForm &&
           <UserMessage
             user={get(this.props.subject, 'meta.creator')}
             date={get(this.props.subject, 'meta.created') || ''}
@@ -142,6 +146,7 @@ class SubjectComponent extends Component {
             ]}
           />
         }
+        <hr/>
         {!isEmpty(this.props.messages)&&
           <div>
             <MessagesSort
@@ -151,6 +156,7 @@ class SubjectComponent extends Component {
             <ul className="posts">
               {this.props.messages.map(message =>
                 <li key={message.id} className="post">
+                  {this.state.showMessageForm !== message.id &&
                   <UserMessage
                     user={message.meta.creator}
                     date={message.meta.created}
@@ -161,7 +167,7 @@ class SubjectComponent extends Component {
                         icon: 'fa fa-fw fa-pencil',
                         label: trans('edit'),
                         displayed: true,
-                        action: () => this.showMessageForm(message)
+                        action: () => this.editMessage(message.id, message.content)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
@@ -171,6 +177,16 @@ class SubjectComponent extends Component {
                       }
                     ]}
                   />
+                  }
+                  {this.state.showMessageForm === message.id &&
+                    <UserMessageForm
+                      user={currentUser()}
+                      allowHtml={true}
+                      submitLabel={trans('send')}
+                      submit={(content) => this.props.updateMessage(message.id, content)}
+                      cancel={() => this.setState({showMessageForm: null})}
+                    />
+                  }
                   <div className="answer-comment-container">
                     {message.children.map(comment =>
                       <Comment
@@ -195,7 +211,7 @@ class SubjectComponent extends Component {
                         ]}
                       />
                     )}
-                    {!this.state.showNewCommentForm &&
+                    {!this.state.showCommentForm &&
                       <div className="comment-link-container">
                         <Button
                           label={trans('comment', {}, 'actions')}
@@ -205,28 +221,29 @@ class SubjectComponent extends Component {
                         />
                       </div>
                     }
-                    {this.state.showNewCommentForm === message.id &&
+                    {this.state.showCommentForm === message.id &&
                       <CommentForm
                         user={currentUser()}
                         allowHtml={true}
                         submitLabel={trans('add_comment')}
                         submit={(comment) => this.createNewComment(message.id, comment)}
-                        cancel={() => this.setState({showNewCommentForm: null})}
+                        cancel={() => this.setState({showCommentForm: null})}
                       />
                     }
                   </div>
                 </li>
               )}
             </ul>
+            <hr/>
           </div>
+
         }
-        {!this.props.subjectForm.showSubjectForm &&
+        {!this.props.showSubjectForm &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
-            submitLabel={trans('send')}
+            submitLabel={trans('reply', {}, 'actions')}
             submit={(message) => this.createNewMessage(message)}
-            // cancel={() => this.setState({showNewMessageForm: false})}
           />
         }
       </section>
@@ -236,6 +253,7 @@ class SubjectComponent extends Component {
 
 SubjectComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
+  subjectForm: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
   deleteData: T.func.isRequired,
   createComment: T.func.isRequired,
@@ -243,10 +261,8 @@ SubjectComponent.propTypes = {
   loaded: T.bool.isRequired,
   reload: T.func.isRequired,
   showModal: T.func,
-  subjectForm: T.shape({
-    showSubjectForm: T.bool.isRequired,
-    editingSubject: T.bool.isRequired
-  }),
+  showSubjectForm: T.bool.isRequired,
+  editingSubject: T.bool.isRequired,
   messages: T.arrayOf(T.shape({})),
   sortOrder: T.number.isRequired
 }
@@ -254,7 +270,9 @@ SubjectComponent.propTypes = {
 const Subject =  withRouter(connect(
   state => ({
     subject: select.subject(state),
-    subjectForm: formSelect.form(state, 'subjects.form'),
+    subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
+    editingSubject: select.editingSubject(state),
+    showSubjectForm: select.showSubjectForm(state),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
     // sortedMessages
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
@@ -279,6 +297,9 @@ const Subject =  withRouter(connect(
     },
     subjectEdition() {
       dispatch(actions.subjectEdition())
+    },
+    messageEdition(id) {
+      dispatch(actions.messageEdition(id))
     }
   })
 )(SubjectComponent))

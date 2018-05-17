@@ -47,6 +47,7 @@ class UserMessageForm extends Component {
               }
             </div>
 
+            {this.props.cancel &&
             <div className="user-message-actions">
               <TooltipAction
                 id="close"
@@ -57,6 +58,7 @@ class UserMessageForm extends Component {
                 action={this.props.cancel}
               />
             </div>
+            }
           </div>
 
           {React.createElement(
@@ -74,7 +76,10 @@ class UserMessageForm extends Component {
           <button
             className="btn btn-block btn-primary btn-save btn-emphasis"
             disabled={!this.state.pendingChanges || !this.state.content}
-            onClick={() => this.props.submit(this.state.content)}
+            onClick={() => {
+              this.props.submit(this.state.content)
+              this.setState({pendingChanges: false, content: ''})
+            }}
           >
             {this.props.submitLabel}
           </button>

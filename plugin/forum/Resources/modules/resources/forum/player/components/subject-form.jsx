@@ -6,6 +6,7 @@ import {withRouter} from '#/main/core/router'
 import {trans} from '#/main/core/translation'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {User as UserTypes} from '#/main/core/user/prop-types'
+import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action'
 import {Button} from '#/main/app/action/components/button'
 import {currentUser} from '#/main/core/user/current'
 import {FormContainer} from '#/main/core/data/form/containers/form'
@@ -25,13 +26,25 @@ const SubjectFormWrapper = (props) =>
           <div className="user-message-info">
             {props.user.name}
           </div>
+          {(props.editingSubject && props.cancel) &&
+            <div className="user-message-actions">
+              <TooltipAction
+                id="close"
+                className="btn-link-default"
+                position="bottom"
+                icon="fa fa-fw fa-times"
+                label={trans('cancel')}
+                action={props.cancel}
+              />
+            </div>
+          }
         </div>
         <div className="user-message-content embedded-form-section">
           {props.children}
         </div>
         <Button
-          className="btn btn-block btn-save"
-          label={trans('post_the_subject', {}, 'forum')}
+          className="btn btn-block btn-save btn-emphasis"
+          label={props.editingSubject ? trans('save') : trans('post_the_subject', {}, 'forum')}
           type="callback"
           callback={props.callback}
           primary={true}
@@ -58,14 +71,19 @@ SubjectFormWrapper.propTypes = {
    *
    * @type {node}
    */
-  children: T.node.isRequired
+  children: T.node.isRequired,
+
+  cancel: T.func,
+  editingSubject: T.bool.isRequired
 }
 
 const SubjectFormComponent = (props) =>
   <div>
     <SubjectFormWrapper
       user={currentUser()}
-      callback={() => props.saveForm(props.forumId, props.subject.editingSubject, props.subject.data.id)}
+      callback={() => props.saveForm(props.forumId, props.editingSubject, props.subject.id)}
+      cancel={() => props.history.push(`/subjects/show/${props.subject.id}`)}
+      editingSubject={props.editingSubject}
     >
       <FormContainer
         level={3}
@@ -106,7 +124,8 @@ const SubjectFormComponent = (props) =>
                 label: trans('messages_sort_display', {}, 'forum'),
                 options: {
                   noEmpty: true,
-                  choices: constants.MESSAGE_SORT_DISPLAY
+                  choices: constants.MESSAGE_SORT_DISPLAY,
+                  condensed: true
                 }
               }, {
                 name: 'sticked',
@@ -131,7 +150,8 @@ const SubjectFormComponent = (props) =>
 const SubjectForm = withRouter(connect(
   state => ({
     forumId: select.forumId(state),
-    subject: formSelect.form(state, 'subjects.form')
+    subject: formSelect.data(formSelect.form(state, 'subjects.form')),
+    editingSubject: select.editingSubject(state)
   }),
   (dispatch, ownProps) => ({
     saveForm(forumId, editingSubject, subjectId) {
@@ -141,7 +161,7 @@ const SubjectForm = withRouter(connect(
         })
       } else {
         dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
-          ownProps.history.push('/subjects')
+          ownProps.history.push(`/subjects/show/${subjectId}`)
         })
       }
     }
