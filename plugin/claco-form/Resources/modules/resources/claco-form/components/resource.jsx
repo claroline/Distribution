@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import moment from 'moment'
 
 import {currentUser} from '#/main/core/user/current'
 import {makeId} from '#/main/core/scaffolding/id'
@@ -150,7 +151,7 @@ const Resource = props =>
           path: '/entry/form/:id?',
           component: EntryForm,
           onEnter: (params) => {
-            props.openEntryForm(params.id, props.clacoForm.id)
+            props.openEntryForm(params.id, props.clacoForm.id, props.clacoForm.fields)
 
             if (params.id) {
               props.loadEntryUser(params.id)
@@ -197,7 +198,7 @@ const ClacoFormResource = connect(
     saveForm(id) {
       dispatch(formActions.saveForm('clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
     },
-    openEntryForm(id, clacoFormId) {
+    openEntryForm(id, clacoFormId, fields = []) {
       const defaultValue = {
         id: makeId(),
         values: {},
@@ -208,6 +209,11 @@ const ClacoFormResource = connect(
         categories: [],
         keywords: []
       }
+      fields.forEach(f => {
+        if (f.type === 'date') {
+          defaultValue.values[f.id] = moment().format('YYYY-MM-DDTHH:mm:ss')
+        }
+      })
 
       dispatch(entryActions.openForm('entries.current', id, defaultValue))
     },
