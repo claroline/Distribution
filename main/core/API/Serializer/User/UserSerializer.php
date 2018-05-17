@@ -157,19 +157,32 @@ class UserSerializer
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $userRoles = array_map(function (Role $role) {
+                return [
+                    'id' => $role->getUuid(),
+                    'type' => $role->getType(),
+                    'name' => $role->getName(),
+                    'translationKey' => $role->getTranslationKey(),
+                    'workspace' => $role->getWorkspace() ? ['id' => $role->getWorkspace()->getUuid()] : null,
+                    'context' => 'user',
+                ];
+            }, $user->getEntityRoles(false));
+            $groupRoles = array_map(function (Role $role) {
+                return [
+                    'id' => $role->getUuid(),
+                    'type' => $role->getType(),
+                    'name' => $role->getName(),
+                    'translationKey' => $role->getTranslationKey(),
+                    'workspace' => $role->getWorkspace() ? ['id' => $role->getWorkspace()->getUuid()] : null,
+                    'context' => 'group',
+                ];
+            }, $user->getGroupRoles());
+
             $serializedUser = array_merge($serializedUser, [
                 'meta' => $this->serializeMeta($user),
                 'restrictions' => $this->serializeRestrictions($user),
                 'rights' => $this->serializeRights($user),
-                'roles' => array_map(function (Role $role) {
-                    return [
-                        'id' => $role->getUuid(),
-                        'type' => $role->getType(),
-                        'name' => $role->getName(),
-                        'translationKey' => $role->getTranslationKey(),
-                        'workspace' => $role->getWorkspace() ? ['id' => $role->getWorkspace()->getUuid()] : null,
-                    ];
-                }, $user->getEntityRoles()),
+                'roles' => array_merge($userRoles, $groupRoles),
                 'groups' => array_map(function (Group $group) {
                     return [
                         'id' => $group->getUuid(),
