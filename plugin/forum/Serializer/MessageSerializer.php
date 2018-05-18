@@ -82,6 +82,7 @@ class MessageSerializer
           'id' => $message->getSubject()->getId(),
         ];
 
+
         return $data;
     }
 
@@ -113,6 +114,8 @@ class MessageSerializer
             $parent = $this->om->getRepository($this->getClass())->findOneByUuid($data['parent']['id']);
             $message->setParent($parent);
         }
+
+
 
         return $message;
     }

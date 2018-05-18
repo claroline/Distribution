@@ -76,6 +76,7 @@ class MessageSerializer
             'creator' => $this->serializeCreator($message, $options),
             'created' => $message->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $message->getModificationDate()->format('Y-m-d\TH:i:s'),
+            'blocked' => $message->isBlocked()
         ];
     }
 
@@ -134,17 +135,17 @@ class MessageSerializer
 
             if (isset($data['meta']['creator'])) {
                 $message->setAuthor($data['meta']['creator']['name']);
-            }
+                $creator = $this->serializerProvider->deserialize(
+                    'Claroline\CoreBundle\Entity\User',
+                    $data['meta']['creator']
+                );
 
-            $creator = $this->serializerProvider->deserialize(
-                'Claroline\CoreBundle\Entity\User',
-                $data['meta']['creator']
-            );
-
-            if ($creator) {
-                $message->setCreator($creator);
+                if ($creator) {
+                    $message->setCreator($creator);
+                }
             }
         }
+        $this->sipe('meta.blocked', 'setIsBlocked', $data, $message);
 
         return $message;
     }

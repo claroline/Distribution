@@ -52,6 +52,11 @@ class Message extends AbstractMessage
      */
     protected $isVisible = true;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isBlocked = false;
+
     public function setSubject(Subject $subject)
     {
         $this->subject = $subject;
@@ -85,5 +90,15 @@ class Message extends AbstractMessage
     public function getChildren()
     {
         return $this->children;
+    }
+
+    public function setIsBlocked($bool)
+    {
+        $this->isBlocked = $bool;
+    }
+
+    public function isBlocked()
+    {
+        return $this->isBlocked;
     }
 }

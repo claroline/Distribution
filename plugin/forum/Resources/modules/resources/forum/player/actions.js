@@ -130,18 +130,18 @@ actions.createComment = (messageId, comment) => ({
   }
 })
 
-// actions.blockMessage = (messageId) => ({
-//   [API_REQUEST]: {
-//     url: ['apiv2_forum_message_update', {id: messageId}],
-//     request: {
-//       body: JSON.stringify(Object.assign({}, subject, {meta: {blocked:true}})),
-//       method: 'PUT'
-//     },
-//     success: (data, dispatch) => {
-//       dispatch(listActions.invalidateData('subjects.messages'))
-//     }
-//   }
-// })
+actions.blockMessage = (message) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_message_update', {id: message.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, message, {meta: {blocked:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
 
 actions.stickSubject = (subject) => ({
   [API_REQUEST]: {

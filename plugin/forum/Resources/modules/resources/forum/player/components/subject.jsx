@@ -168,7 +168,7 @@ class SubjectComponent extends Component {
                         icon: 'fa fa-fw fa-ban',
                         label: trans('block', {}, 'forum'),
                         displayed: true,
-                        action: () => this.props.blockMessage(message.id)
+                        action: () => this.props.blockMessage(message)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
@@ -208,7 +208,7 @@ class SubjectComponent extends Component {
                                 icon: 'fa fa-fw fa-ban',
                                 label: trans('block', {}, 'forum'),
                                 displayed: true,
-                                action: () => this.props.blockComment(comment.id)
+                                action: () => this.props.blockComment(comment)
                               }, {
                                 icon: 'fa fa-fw fa-trash-o',
                                 label: trans('delete'),
@@ -277,6 +277,7 @@ SubjectComponent.propTypes = {
   subjectForm: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
+  blockMessage: T.func.isRequired,
   deleteData: T.func.isRequired,
   createComment: T.func.isRequired,
   subjectEdition: T.func.isRequired,
@@ -324,8 +325,8 @@ const Subject =  withRouter(connect(
     editContent(id, content) {
       dispatch(actions.editContent(id, content))
     },
-    blockMessage(messageId) {
-      dispatch(actions.blockMessage(messageId))
+    blockMessage(message) {
+      dispatch(actions.blockMessage(message))
     }
   })
 )(SubjectComponent))
