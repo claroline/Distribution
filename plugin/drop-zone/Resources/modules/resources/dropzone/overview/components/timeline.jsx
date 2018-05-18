@@ -1,8 +1,8 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import moment from 'moment'
 
+import {displayDate} from '#/main/core/scaffolding/date'
 import {trans} from '#/main/core/translation'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
@@ -39,7 +39,7 @@ const Timeline = props =>
     >
       <span>
         {trans('dropzone_start', {}, 'dropzone')} : {props.planning.type === constants.PLANNING_TYPE_AUTO && props.planning.drop && props.planning.drop.length > 0 ?
-          <b>{moment(props.planning.drop[0]).format('DD/MM/YYYY HH:mm')}</b> :
+          <b>{displayDate(props.planning.drop[0])}</b> :
           <b>-</b>
         }
       </span>
@@ -76,7 +76,7 @@ const Timeline = props =>
     >
         <span>
           {trans('dropzone_end', {}, 'dropzone')} : {props.planning.type === constants.PLANNING_TYPE_AUTO && props.planning.drop && props.planning.drop.length > 1 ?
-            <b>{moment(props.planning.drop[1]).format('DD/MM/YYYY HH:mm')}</b> :
+            <b>{displayDate(props.planning.drop[1])}</b> :
             <b>-</b>
           }
         </span>
