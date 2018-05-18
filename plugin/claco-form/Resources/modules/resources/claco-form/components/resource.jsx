@@ -1,10 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import moment from 'moment'
 
 import {currentUser} from '#/main/core/user/current'
 import {makeId} from '#/main/core/scaffolding/id'
+import {now} from '#/main/core/scaffolding/date'
 import {url} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 import {RoutedPageContent} from '#/main/core/layout/router'
@@ -211,7 +211,7 @@ const ClacoFormResource = connect(
       }
       fields.forEach(f => {
         if (f.type === 'date') {
-          defaultValue.values[f.id] = moment().format('YYYY-MM-DDTHH:mm:ss')
+          defaultValue.values[f.id] = now()
         }
       })
 
