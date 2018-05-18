@@ -10,7 +10,6 @@ import {getTypeOrDefault} from '#/main/core/data'
 import {DataDetailsSection as DataDetailsSectionTypes} from '#/main/core/data/details/prop-types'
 import {createDetailsDefinition} from '#/main/core/data/details/utils'
 
-// todo add `calculated` value like Forms and Lists
 // todo there are big c/c from Form component but I don't know if we can do better
 
 const DataDetailsField = props => {
@@ -68,7 +67,7 @@ const DataDetails = props => {
               <DataDetailsField
                 {...field}
                 key={field.name}
-                data={get(props.data, field.name)}
+                data={field.calculated ? field.calculated(props.data) : get(props.data, field.name)}
               />
             )}
           </div>
@@ -91,7 +90,7 @@ const DataDetails = props => {
                 <DataDetailsField
                   {...field}
                   key={field.name}
-                  data={get(props.data, field.name)}
+                  data={field.calculated ? field.calculated(props.data) : get(props.data, field.name)}
                 />
               )}
             </Section>
