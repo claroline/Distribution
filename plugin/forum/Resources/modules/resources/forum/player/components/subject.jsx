@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
-import trim from 'lodash/trim'
 
 import {withRouter} from '#/main/core/router'
 import {trans} from '#/main/core/translation'
@@ -51,22 +50,18 @@ class SubjectComponent extends Component {
     this.props.history.push(`/subjects/form/${subjectId}`)
   }
 
-  showNewCommentForm(messageId) {
-    this.setState({showNewCommentForm: messageId})
-  }
-
-  createNewMessage(message) {
-    const content = trim(message)
-    this.props.createMessage(this.props.subject.id, content)
-  }
-
-  editMessage(messageId, content) {
-    this.setState({showMessageForm: messageId})
-    this.props.messageEdition(messageId, content)
+  updateMessage(messageId, content) {
+    this.props.editContent(messageId, content)
+    this.setState({showMessageForm: null})
   }
 
   createNewComment(messageId, comment) {
     this.props.createComment(messageId, comment)
+    this.setState({showNewCommentForm: null})
+  }
+
+  updateComment(commentId, content) {
+    this.props.editContent(commentId, content)
     this.setState({showCommentForm: null})
   }
 
@@ -168,7 +163,12 @@ class SubjectComponent extends Component {
                         icon: 'fa fa-fw fa-pencil',
                         label: trans('edit'),
                         displayed: true,
-                        action: () => this.editMessage(message.id, message.content)
+                        action: () => this.setState({showMessageForm: message.id})
+                      }, {
+                        icon: 'fa fa-fw fa-ban',
+                        label: trans('block', {}, 'forum'),
+                        displayed: true,
+                        action: () => this.props.blockMessage(message.id)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
@@ -183,16 +183,16 @@ class SubjectComponent extends Component {
                     <UserMessageForm
                       user={currentUser()}
                       allowHtml={true}
-                      submitLabel={trans('send')}
+                      submitLabel={trans('save')}
                       content={message.content}
-                      submit={(content) => this.props.updateMessage(message.id, content)}
+                      submit={(content) => this.updateMessage(message.id, content)}
                       cancel={() => this.setState({showMessageForm: null})}
                     />
                   }
                   <div className="answer-comment-container">
                     {message.children.map(comment =>
                       <div key={comment.id}>
-                        {!this.state.showCommentForm === comment.id &&
+                        {this.state.showCommentForm !== comment.id &&
                           <Comment
                             user={comment.meta.creator}
                             date={comment.meta.created}
@@ -203,7 +203,12 @@ class SubjectComponent extends Component {
                                 icon: 'fa fa-fw fa-pencil',
                                 label: trans('edit'),
                                 displayed: true,
-                                action: () => this.showCommentForm(comment.id)
+                                action: () => this.setState({showCommentForm: comment.id})
+                              }, {
+                                icon: 'fa fa-fw fa-ban',
+                                label: trans('block', {}, 'forum'),
+                                displayed: true,
+                                action: () => this.props.blockComment(comment.id)
                               }, {
                                 icon: 'fa fa-fw fa-trash-o',
                                 label: trans('delete'),
@@ -220,7 +225,7 @@ class SubjectComponent extends Component {
                             allowHtml={true}
                             submitLabel={trans('add_comment')}
                             content={comment.content}
-                            submit={(comment) => this.updateComment(comment.id, comment)}
+                            submit={(content) => this.updateComment(comment.id, content)}
                             cancel={() => this.setState({showCommentForm: null})}
                           />
                         }
@@ -231,7 +236,7 @@ class SubjectComponent extends Component {
                         <Button
                           label={trans('comment', {}, 'actions')}
                           type="callback"
-                          callback={() => this.showNewCommentForm(message.id)}
+                          callback={() => this.setState({showNewCommentForm: message.id})}
                           className='comment-link'
                         />
                       </div>
@@ -243,7 +248,7 @@ class SubjectComponent extends Component {
                         submitLabel={trans('add_comment')}
                         // content={comment.content}
                         submit={(comment) => this.createNewComment(message.id, comment)}
-                        cancel={() => this.setState({showCommentForm: null})}
+                        cancel={() => this.setState({showNewCommentForm: null})}
                       />
                     }
                   </div>
@@ -259,7 +264,7 @@ class SubjectComponent extends Component {
             user={currentUser()}
             allowHtml={true}
             submitLabel={trans('reply', {}, 'actions')}
-            submit={(message) => this.createNewMessage(message)}
+            submit={(message) => this.props.createMessage(this.props.subject.id, message)}
           />
         }
       </section>
@@ -271,8 +276,10 @@ SubjectComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
   subjectForm: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
+  editContent: T.func.isRequired,
   deleteData: T.func.isRequired,
   createComment: T.func.isRequired,
+  subjectEdition: T.func.isRequired,
   invalidated: T.bool.isRequired,
   loaded: T.bool.isRequired,
   reload: T.func.isRequired,
@@ -314,8 +321,11 @@ const Subject =  withRouter(connect(
     subjectEdition() {
       dispatch(actions.subjectEdition())
     },
-    messageEdition(id) {
-      dispatch(actions.messageEdition(id))
+    editContent(id, content) {
+      dispatch(actions.editContent(id, content))
+    },
+    blockMessage(messageId) {
+      dispatch(actions.blockMessage(messageId))
     }
   })
 )(SubjectComponent))

@@ -14,6 +14,7 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 
 export const SUBJECT_LOAD = 'SUBJECT_LOAD'
 export const MESSAGES_LOAD = 'MESSAGES_LOAD'
+export const MESSAGE_UPDATE = 'MESSAGE_UPDATE'
 export const SUBJECT_FORM_OPEN = 'SUBJECT_FORM_OPEN'
 export const SUBJECT_FORM_CLOSE = 'SUBJECT_FORM_CLOSE'
 export const MESSAGES_SORT_TOGGLE = 'MESSAGES_SORT_TOGGLE'
@@ -34,8 +35,8 @@ actions.newSubject = (id = null) => (dispatch) => {
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_forum_subject_get', {id}],
-        success: (response, dispatch) => {
-          dispatch(formActions.resetForm('subjects.form', response, false))
+        success: (data, dispatch) => {
+          dispatch(formActions.resetForm('subjects.form', data, false))
         }
       }
     })
@@ -56,8 +57,8 @@ actions.loadSubject = makeActionCreator(SUBJECT_LOAD, 'subject')
 actions.fetchSubject = (id) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_subject_get', {id}],
-    success: (response, dispatch) => {
-      dispatch(actions.loadSubject(response))
+    success: (data, dispatch) => {
+      dispatch(actions.loadSubject(data))
     }
   }
 })
@@ -95,17 +96,12 @@ actions.createMessage = (subjectId, content) => ({
   }
 })
 
-actions.messageUpdate = (id, content) => ({
+actions.editContent = (id, content) => ({
   [API_REQUEST]: {
-    url: ['apiv2_forum_message_update', {id: id}],
+    url: ['claroline_forum_api_message_updatemessagecontent', {id: id}],
     request: {
-      method: 'POST',
-      body: JSON.stringify({
-        content: content,
-        meta: {
-          updated: now()
-        }
-      })
+      method: 'PUT',
+      body: JSON.stringify({content: content})
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.messages'))
@@ -133,6 +129,19 @@ actions.createComment = (messageId, comment) => ({
     }
   }
 })
+
+// actions.blockMessage = (messageId) => ({
+//   [API_REQUEST]: {
+//     url: ['apiv2_forum_message_update', {id: messageId}],
+//     request: {
+//       body: JSON.stringify(Object.assign({}, subject, {meta: {blocked:true}})),
+//       method: 'PUT'
+//     },
+//     success: (data, dispatch) => {
+//       dispatch(listActions.invalidateData('subjects.messages'))
+//     }
+//   }
+// })
 
 actions.stickSubject = (subject) => ({
   [API_REQUEST]: {
