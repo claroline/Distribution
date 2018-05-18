@@ -22,41 +22,41 @@ class TeamEditType extends AbstractType
         $builder->add(
             'name',
             'text',
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'description',
             'tinymce',
-            array('required' => false)
+            ['required' => false]
         );
         $builder->add(
             'maxUsers',
             'integer',
-            array(
-                'attr' => array('min' => 0),
+            [
+                'attr' => ['min' => 0],
                 'required' => false,
-            )
+            ]
         );
         $builder->add(
             'isPublic',
             'choice',
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     true => 'public',
                     false => 'private',
-                ),
+                ],
                 'required' => true,
-            )
+            ]
         );
         $builder->add(
             'selfRegistration',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'selfUnregistration',
             'checkbox',
-            array('required' => true)
+            ['required' => true]
         );
     }
 
@@ -67,6 +67,6 @@ class TeamEditType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'team'));
+        $resolver->setDefaults(['translation_domain' => 'team']);
     }
 }
