@@ -22,7 +22,7 @@ import {
   Entry as EntryType,
   EntryUser as EntryUserType
 } from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
