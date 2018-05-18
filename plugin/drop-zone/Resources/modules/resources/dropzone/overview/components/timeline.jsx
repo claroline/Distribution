@@ -74,12 +74,12 @@ const Timeline = props =>
       title={constants.PLANNING_STATES.all[constants.STATE_FINISHED]}
       active={constants.STATE_FINISHED === props.state}
     >
-        <span>
-          {trans('dropzone_end', {}, 'dropzone')} : {props.planning.type === constants.PLANNING_TYPE_AUTO && props.planning.drop && props.planning.drop.length > 1 ?
-            <b>{displayDate(props.planning.drop[1])}</b> :
-            <b>-</b>
-          }
-        </span>
+      <span>
+        {trans('dropzone_end', {}, 'dropzone')} : {props.planning.type === constants.PLANNING_TYPE_AUTO && props.planning.drop && props.planning.drop.length > 1 ?
+          <b>{displayDate(props.planning.drop[1])}</b> :
+          <b>-</b>
+        }
+      </span>
     </EvaluationStatus>
   </ul>
 
