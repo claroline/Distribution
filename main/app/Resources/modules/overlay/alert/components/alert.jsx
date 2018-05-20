@@ -4,7 +4,7 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {Alert as AlertTypes} from '#/main/app/overlay/alert/prop-types'
 import {constants as actionConstants} from '#/main/app/action/constants'
-import {Expire} from '#/main/core/layout/components/expire'
+import {Expire} from '#/main/app/components/expire'
 
 import {constants} from '#/main/app/overlay/alert/constants'
 

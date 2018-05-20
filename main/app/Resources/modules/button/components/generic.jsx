@@ -8,6 +8,7 @@ import {CallbackButton} from '#/main/app/button/components/callback'
 import {DownloadButton} from '#/main/app/button/components/download'
 import {EmailButton} from '#/main/app/button/components/email'
 import {LinkButton} from '#/main/app/button/components/link'
+import {MenuButton} from '#/main/app/button/components/menu'
 import {PopoverButton} from '#/main/app/button/components/popover'
 import {UrlButton} from '#/main/app/button/components/url'
 import {AsyncButton} from '#/main/app/button/containers/async'
@@ -20,6 +21,7 @@ const ACTION_BUTTONS = {
   download: DownloadButton,
   email: EmailButton,
   link: LinkButton,
+  menu: MenuButton,
   modal: ModalButton,
   popover: PopoverButton,
   url: UrlButton
@@ -38,15 +40,9 @@ const GenericButton = props => {
 }
 
 GenericButton.propTypes = {
-  type: T.oneOf([
-    'async',
-    'callback',
-    'download',
-    'email',
-    'link',
-    'modal',
-    'url'
-  ]).isRequired
+  type: T.oneOf(
+    Object.keys(ACTION_BUTTONS)
+  ).isRequired
 }
 
 export {

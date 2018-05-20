@@ -17,6 +17,7 @@ const Action = {
       'download',
       'email',
       'link',
+      'menu',
       'modal',
       'url'
     ]).isRequired,
@@ -94,6 +95,23 @@ const LinkAction = {
   }
 }
 
+const MenuAction = {
+  propTypes: {
+    menu: T.shape({
+      label: T.string,
+      position: T.oneOf(['top', 'bottom']),
+      align: T.oneOf(['left', 'right']),
+      items: T.arrayOf(T.shape(
+        Action.propTypes
+      )).isRequired
+    }).isRequired
+  },
+  defaultProps: {
+    position: 'bottom',
+    align: 'left'
+  }
+}
+
 const ModalAction = {
   propTypes: {
     modal: T.arrayOf([
@@ -122,6 +140,7 @@ export {
   DownloadAction,
   EmailAction,
   LinkAction,
+  MenuAction,
   ModalAction,
   UrlAction
 }

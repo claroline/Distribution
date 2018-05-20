@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
-class GenericTypePicker extends Component {
+class SelectionModal extends Component {
   constructor(props) {
     super(props)
 
@@ -63,7 +63,7 @@ class GenericTypePicker extends Component {
   }
 }
 
-GenericTypePicker.propTypes = {
+SelectionModal.propTypes = {
   types: T.arrayOf(T.shape({
     label: T.string.isRequired,
     icon: T.node.isRequired, // either a FontAwesome class string or a custom icon component
@@ -74,5 +74,5 @@ GenericTypePicker.propTypes = {
 }
 
 export {
-  GenericTypePicker
+  SelectionModal
 }

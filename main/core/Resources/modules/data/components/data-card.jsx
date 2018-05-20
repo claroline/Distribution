@@ -4,7 +4,7 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {getPlainText} from '#/main/core/data/types/html/utils'
 import {number} from '#/main/app/intl'
-import {DropdownButton} from '#/main/app/action/components/dropdown-button'
+import {Button} from '#/main/app/action/components/button'
 import {GenericButton} from '#/main/app/button/components/generic'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {Heading} from '#/main/core/layout/components/heading'
@@ -145,12 +145,18 @@ const DataCard = props =>
     </CardContent>
 
     {0 !== props.actions.length &&
-      <DropdownButton
+      <Button
         id={`actions-${props.id}`}
-        tooltip="left"
         className="data-actions-btn btn btn-link"
-        pullRight={true}
-        actions={props.actions}
+        type="menu"
+        tooltip="left"
+        icon="fa fa-fw fa-ellipsis-v"
+        label={trans('show-actions', {}, 'actions')}
+        menu={{
+          label: trans('actions'),
+          align: 'right',
+          items: props.actions
+        }}
       />
     }
   </div>

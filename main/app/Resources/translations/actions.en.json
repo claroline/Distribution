@@ -23,5 +23,7 @@
   "deselect": "Deselect",
   "view-as": "Show as",
   "configure": "Configure",
-  "show-info": "Show information"
+  "show-info": "Show information",
+  "show-actions": "Show available actions",
+  "show-more-actions": "Show more actions"
 }
