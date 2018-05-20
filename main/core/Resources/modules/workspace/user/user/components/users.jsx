@@ -6,7 +6,7 @@ import {trans} from '#/main/core/translation'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {getUserList} from '#/main/core/workspace/user/user/components/user-list.jsx'
 import {actions} from '#/main/core/workspace/user/user/actions'

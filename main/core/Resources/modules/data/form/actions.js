@@ -5,9 +5,9 @@ import {makeInstanceActionCreator} from '#/main/core/scaffolding/actions'
 
 import {tval} from '#/main/core/translation'
 import {API_REQUEST} from '#/main/core/api/actions'
-import {actions as alertActions} from '#/main/core/layout/alert/actions'
-import {constants as alertConstants} from '#/main/core/layout/alert/constants'
-import {constants as actionConstants} from '#/main/core/layout/action/constants'
+import {actions as alertActions} from '#/main/app/overlay/alert/store'
+import {constants as alertConstants} from '#/main/app/overlay/alert/constants'
+import {constants as actionConstants} from '#/main/app/action/constants'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 export const FORM_RESET          = 'FORM_RESET'

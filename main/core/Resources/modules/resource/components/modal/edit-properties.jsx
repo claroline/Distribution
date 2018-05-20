@@ -4,9 +4,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import set from 'lodash/set'
 
 import {trans}     from '#/main/core/translation'
-import {DataFormModal} from '#/main/core/data/form/modals/components/data-form.jsx'
+import {DataFormModal} from '#/main/core/data/form/modals/components/data-form'
 
-import {t_res}     from '#/main/core/resource/translation'
 import {constants} from '#/main/core/resource/constants'
 
 const MODAL_RESOURCE_PROPERTIES = 'MODAL_RESOURCE_PROPERTIES'
@@ -43,11 +42,9 @@ class EditPropertiesModal extends Component {
     return (
       <DataFormModal
         {...this.props}
-        title={t_res('edit-properties')}
+        title={trans('edit-properties', {}, 'resource')}
         data={this.state.resourceNode}
-        save={this.props.save}
         onChange={this.onChange}
-        fadeModal={this.props.fadeModal}
         sections={[
           {
             title: trans('general'),
@@ -66,24 +63,24 @@ class EditPropertiesModal extends Component {
             fields: [
               {
                 name: 'meta.description',
-                label: t_res('resource_description'),
+                label: trans('description'),
                 type: 'string',
                 options: {
                   long: true
                 }
               }, {
                 name: 'meta.published',
-                label: t_res('resource_not_published'),
+                label: trans('resource_not_published', {}, 'resource'),
                 type: 'boolean',
                 options: {
-                  labelChecked: t_res('resource_published')
+                  labelChecked: trans('resource_published', {}, 'resource')
                 }
               }, {
                 name: 'meta.portal',
-                label: t_res('resource_portal_not_published'),
+                label: trans('resource_portal_not_published', {}, 'resource'),
                 type: 'boolean',
                 options: {
-                  labelChecked: t_res('resource_portal_published')
+                  labelChecked: trans('resource_portal_published', {}, 'resource')
                 }
               }
             ]
@@ -100,20 +97,20 @@ class EditPropertiesModal extends Component {
                 }
               }, {
                 name: 'display.showIcon',
-                label: t_res('resource_showIcon'),
-                help: t_res('resource_showIcon_help'),
+                label: trans('resource_showIcon', {}, 'resource'),
+                help: trans('resource_showIcon_help'),
                 type: 'boolean'
               }, {
                 name: 'display.fullscreen',
-                label: t_res('resource_fullscreen'),
+                label: trans('resource_fullscreen', {}, 'resource'),
                 type: 'boolean'
               }, {
                 name: 'display.closable',
-                label: t_res('resource_closable'),
+                label: trans('resource_closable', {}, 'resource'),
                 type: 'boolean'
               }, {
                 name: 'display.closeTarget',
-                label: t_res('resource_close_target'),
+                label: trans('resource_close_target', {}, 'resource'),
                 type: 'choice',
                 required: true,
                 options: {
@@ -156,7 +153,7 @@ class EditPropertiesModal extends Component {
                 ]
               }, {
                 name: 'restrictions.enableCode',
-                label: t_res('resource_access_code'),
+                label: trans('resource_access_code', {}, 'resource'),
                 type: 'boolean',
                 calculated: (node) => node.restrictions.enableCode || !!node.restrictions.code,
                 onChange: activated => {
@@ -175,7 +172,7 @@ class EditPropertiesModal extends Component {
                 ]
               }, {
                 name: 'restrictions.enableIps',
-                label: t_res('resource_access_ips'),
+                label: trans('resource_access_ips', {}, 'resource'),
                 type: 'boolean',
                 calculated: (node) => node.restrictions.enableIps || 0 !== node.restrictions.allowedIps.length,
                 onChange: activated => {
@@ -191,7 +188,7 @@ class EditPropertiesModal extends Component {
                     required: true,
                     displayed: (node) => node.restrictions.enableIps || 0 !== node.restrictions.allowedIps.length,
                     options: {
-                      placeholder: t_res('resource_no_allowed_ip'),
+                      placeholder: trans('resource_no_allowed_ip', {}, 'resource'),
                       multiple: true
                     }
                   }
@@ -200,15 +197,15 @@ class EditPropertiesModal extends Component {
             ]
           }, {
             icon: 'fa fa-fw fa-copyright',
-            title: t_res('resource_authors_license'),
+            title: trans('resource_authors_license', {}, 'resource'),
             fields: [
               {
                 name: 'meta.authors',
-                label: t_res('resource_authors'),
+                label: trans('resource_authors', {}, 'resource'),
                 type: 'string'
               }, {
                 name: 'meta.license',
-                label: t_res('resource_license'),
+                label: trans('resource_license', {}, 'resource'),
                 type: 'string'
               }
             ]

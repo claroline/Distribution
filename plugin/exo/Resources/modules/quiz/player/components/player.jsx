@@ -7,7 +7,7 @@ import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/app/router'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {getDefinition, isQuestionType} from './../../../items/item-types'

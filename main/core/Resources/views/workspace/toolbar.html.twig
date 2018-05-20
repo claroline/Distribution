@@ -2,7 +2,7 @@
     <aside
         class="workspace-toolbar-container app-toolbar"
         data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"
+        data-opened-tool="{{ current }}"
         data-tools="{{ tools | json_encode | raw | escape }}"
-        data-roles="{{ roles | json_encode | raw | escape }}"
     ></aside>
 {% endif %}

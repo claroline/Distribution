@@ -10,7 +10,6 @@ import {MenuItem} from '#/main/core/app/components/menu-item'
 // PropTypes
 import {Action} from '#/main/core/app/prop-types'
 
-
 // public module api
 export {
   Action         as ActionTypes,

@@ -7,7 +7,7 @@ import {makeSortable} from './../../utils/sortable'
 import {t, tex} from '#/main/core/translation'
 import {ValidationStatus} from './../../quiz/editor/components/validation-status.jsx'
 import {getContentDefinition} from './../content-types'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONTENT} from './content-modal.jsx'
 import {ContentThumbnailDragPreview} from './content-thumbnail-drag-preview.jsx'
 

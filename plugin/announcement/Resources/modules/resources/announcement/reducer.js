@@ -3,9 +3,6 @@ import set from 'lodash/set'
 
 import {makeReducer} from '#/main/core/scaffolding/reducer'
 
-// generic reducers
-import {makeResourceReducer} from '#/main/core/resource/reducer'
-
 import {validate} from './validator'
 import {
   ANNOUNCE_DETAIL_OPEN,
@@ -115,7 +112,7 @@ const announcementDetailReducer = makeReducer(null, {
   [ANNOUNCE_DETAIL_RESET]: () => null
 })
 
-const reducer = makeResourceReducer({}, {
+const reducer = {
   currentPage: pageReducer,
   sortOrder: sortReducer,
   announcement: announcementReducer,
@@ -124,7 +121,7 @@ const reducer = makeResourceReducer({}, {
   announcementDetail: announcementDetailReducer,
 
   workspaceRoles: makeReducer({}, {})
-})
+}
 
 export {
   reducer

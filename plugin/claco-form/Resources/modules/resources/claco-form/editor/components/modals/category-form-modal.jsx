@@ -6,7 +6,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker.jsx'

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
-import {createStore} from '#/main/core/scaffolding/store'
+import {createStore} from '#/main/app/store'
 import {registerModals} from '#/main/core/layout/modal'
 import {makeRouter} from './router'
 import {reducers} from './reducers'
@@ -12,6 +12,8 @@ import {SessionEventsToolLayout} from './components/session-events-tool-layout.j
 import {EventCommentsModal} from './components/event-comments-modal.jsx'
 import {EventSetFormModal} from './components/event-set-form-modal.jsx'
 import {EventSetRegistrationModal} from './components/event-set-registration-modal.jsx'
+
+// TODO : rewrite using last core components
 
 class SessionEventsTool {
   constructor(workspaceId, canEdit, sessions, events, eventsUsers) {

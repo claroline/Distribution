@@ -1,8 +1,9 @@
 import {connect} from 'react-redux'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+
+import {actions} from '#/main/app/overlay/modal/store'
 
 /**
- * HOC to give a component access to the modals methods
+ * HOC to give a component access to the modals methods.
  * It works like `withRouter` from 'react-router', and injects :
  *
  * - showModal(modal)
@@ -12,7 +13,7 @@ function withModal(Component) {
     null,
     (dispatch) => ({
       showModal(modalType, modalProps) {
-        dispatch(modalActions.showModal(modalType, modalProps))
+        dispatch(actions.showModal(modalType, modalProps))
       }
     })
   )(Component)

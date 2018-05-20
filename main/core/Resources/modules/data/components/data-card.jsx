@@ -107,7 +107,9 @@ CardContent.defaultProps = {
  * @constructor
  */
 const DataCard = props =>
-  <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`, props.className)}>
+  <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`, props.className, {
+    'data-card-clickable': props.primaryAction && !props.primaryAction.disabled
+  })}>
     <CardHeader
       id={props.id}
       icon={props.icon}

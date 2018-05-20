@@ -6,7 +6,7 @@ import isEmpty from 'lodash/isEmpty'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/core/api/router'
 
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 import {select as formSelect} from '#/main/core/data/form/selectors'

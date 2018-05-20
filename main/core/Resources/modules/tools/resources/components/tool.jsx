@@ -11,15 +11,15 @@ import {
   PageContent
 } from '#/main/core/layout/page'
 import {
-  RoutedPageContainer
-} from '#/main/core/layout/router'
+  ToolPageContainer
+} from '#/main/core/tool/containers/page'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceExplorer} from '#/main/core/resource/components/explorer'
 import {ResourcePageActions} from '#/main/core/resource/components/page-actions'
 
 const Tool = props =>
-  <RoutedPageContainer>
+  <ToolPageContainer>
     <PageHeader
       title={trans('resources', {}, 'tools')}
       subtitle={props.current && props.current.name}
@@ -65,7 +65,7 @@ const Tool = props =>
         }}
       />
     </PageContent>
-  </RoutedPageContainer>
+  </ToolPageContainer>
 
 Tool.propTypes = {
   root: T.shape(

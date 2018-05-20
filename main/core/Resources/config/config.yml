@@ -75,7 +75,7 @@ plugin:
           class: cog
 
         - name: user_management
-          class: users
+          class: user
 
         - name: workspace_management
           class: book

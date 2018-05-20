@@ -1,7 +1,7 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {generateUrl} from '#/main/core/api/router'
 import {API_REQUEST} from '#/main/core/api/actions'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {isValid} from '#/plugin/drop-zone/plugin/configuration/validator'
 

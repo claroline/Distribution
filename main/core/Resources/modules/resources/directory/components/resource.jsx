@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {select as formSelect} from '#/main/core/data/form/selectors'
@@ -36,7 +35,6 @@ const Resource = props =>
         }, {
           path: '/edit',
           component: Editor,
-          canEnter: () => props.canEdit,
           onEnter: () => props.resetForm(props.text)
         }
       ]}
@@ -45,11 +43,6 @@ const Resource = props =>
 
 Resource.propTypes = {
   text: T.shape(TextTypes.propTypes).isRequired,
-  resource: T.shape({
-    id: T.string.isRequired,
-    autoId: T.number.isRequired
-  }).isRequired,
-  canEdit: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
   resetForm: T.func.isRequired,
   saveForm: T.func.isRequired
@@ -58,8 +51,6 @@ Resource.propTypes = {
 const TextResource = connect(
   state => ({
     text: state.text,
-    resource: state.resourceNode,
-    canEdit: resourceSelect.editable(state),
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'textForm'))
   }),
   (dispatch) => ({

@@ -1,21 +1,44 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
 
+import {url} from '#/main/core/api'
+import {trans} from '#/main/core/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
-// path('claro_workspace_open', {'workspaceId': workspace.getId()}) }}?view_as={{ role.getName()
+import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
-const ImpersonnationModal = props =>
+import {RoleCard} from '#/main/core/user/data/components/role-card'
+
+const ImpersonationModal = props =>
   <Modal
-    title="Impersonnation"
+    {...omit(props, 'workspace')}
+    icon="fa fa-fw fa-user-secret"
+    title={trans('view-as', {}, 'actions')}
   >
-
+    <div className="modal-body">
+      {props.workspace.roles.map(role =>
+        <RoleCard
+          key={role.name}
+          className="component-container"
+          data={role}
+          primaryAction={{
+            type: 'url',
+            label: trans('view-as', {}, 'actions'),
+            target: url(['claro_workspace_open', {workspaceId: props.workspace.id}], {view_as: role.name})
+          }}
+        />
+      )}
+    </div>
   </Modal>
 
-ImpersonnationModal.propTypes = {
-
+ImpersonationModal.propTypes = {
+  workspace: T.shape(
+    WorkspaceTypes.propTypes
+  ).isRequired,
+  fadeModal: T.func.isRequired
 }
 
 export {
-  ImpersonnationModal
+  ImpersonationModal
 }

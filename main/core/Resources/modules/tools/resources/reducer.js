@@ -1,8 +1,7 @@
 import {makeReducer} from '#/main/core/scaffolding/reducer'
-import {makeToolReducer} from '#/main/core/tool/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 
-export const reducer = makeToolReducer({}, {
+export const reducer = {
   root: makeReducer(null, {
 
   }),
@@ -10,4 +9,4 @@ export const reducer = makeToolReducer({}, {
 
   }),
   resources: makeListReducer('resources')
-})
+}

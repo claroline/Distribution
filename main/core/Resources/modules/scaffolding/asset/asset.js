@@ -1,4 +1,4 @@
-import {platformConfig} from '#/main/core/platform'
+import {param} from '#/main/app/config'
 /**
  * Manages assets.
  *
@@ -32,7 +32,7 @@ const Asset = {
    * @return {string}
    */
   theme(assetName) {
-    return `/themes/${platformConfig('theme.name')}/${assetName}.css`
+    return `/themes/${param('theme.name')}/${assetName}.css`
   }
 
 }

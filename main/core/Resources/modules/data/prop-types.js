@@ -52,10 +52,14 @@ const DataCell = {
 
 const DataDetails = {
   propTypes: {
-    data: T.any
+    id: T.string.isRequired,
+    data: T.any,
+    label: T.string,
+    hideLabel: T.bool
   },
   defaultTypes: {
-    data: null
+    data: null,
+    hideLabel: false
   }
 }
 

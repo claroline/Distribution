@@ -8,7 +8,7 @@ import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {ProfileNav} from '#/main/core/user/profile/components/nav.jsx'
 import {ProfileFacets} from '#/main/core/user/profile/components/facets.jsx'

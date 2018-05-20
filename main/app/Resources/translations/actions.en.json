@@ -21,7 +21,7 @@
   "unpublish": "Unpublish",
   "unregister": "Unregister",
   "deselect": "Deselect",
-  "view_as": "Show as",
+  "view-as": "Show as",
   "configure": "Configure",
-  "show_about": "Show information"
+  "show-info": "Show information"
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import invariant from 'invariant'
+import omit from 'lodash/omit'
 
 // imports implemented button types
 import {CallbackButton} from '#/main/app/button/components/callback'
@@ -33,7 +34,7 @@ const ACTION_BUTTONS = {
 const GenericButton = props => {
   invariant(undefined !== ACTION_BUTTONS[props.type], `You have requested a non existent button "${props.type}".`)
 
-  return React.createElement(ACTION_BUTTONS[props.type], props)
+  return React.createElement(ACTION_BUTTONS[props.type], omit(props, 'type'))
 }
 
 GenericButton.propTypes = {

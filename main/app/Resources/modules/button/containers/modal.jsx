@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {withModal} from '#/main/app/overlay/modal'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {CallbackButton} from '#/main/app/button/components/callback'
 
@@ -55,14 +55,7 @@ implementPropTypes(ModalButtonComponent, ButtonTypes, {
   showModal: T.func.isRequired
 })
 
-const ModalButton = connect(
-  null,
-  (dispatch) => ({
-    showModal(modalType, modalProps) {
-      dispatch(modalActions.showModal(modalType, modalProps))
-    }
-  })
-)(ModalButtonComponent)
+const ModalButton = withModal(ModalButtonComponent)
 
 export {
   ModalButton

@@ -63,8 +63,8 @@ class EmbeddedResource extends Component {
                   const initialData = this.state.initialData(responseData)
 
                   // force some values in the embedded store
-                  initialData.embedded = true
-                  initialData.resourceLifecycle = this.props.lifecycle
+                  initialData.resource.embedded = true
+                  initialData.resource.lifecycle = this.props.lifecycle
 
                   mount(this.mountNode, this.state.component, this.state.store, initialData)
                 }

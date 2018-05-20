@@ -1,65 +1,80 @@
-import {makeActionCreator} from '#/main/core/scaffolding/actions'
+import {trans} from '#/main/core/translation'
 
-import {API_REQUEST} from '#/main/core/api/actions'
+// TODO : move in directory resource
+const CreateAction = new ResourceAction('create', {
+  type: 'modal',
+  label: trans('create', {}, 'actions'),
+  icon: 'fa fa-fw fa-plus',
+  primary: true
+}, (resourceNodes) => ({
+  modal: [MODAL_RESOURCE_CREATE, {
+    availableTypes: resourceNodes[0].permissions.create
+  }]
+}))
 
-import {select} from '#/main/core/resource/selectors'
-
-export const RESOURCE_UPDATE_NODE          = 'RESOURCE_UPDATE_NODE'
-export const RESOURCE_UPDATE_PUBLICATION   = 'RESOURCE_UPDATE_PUBLICATION'
-export const RESOURCE_UPDATE_NOTIFICATIONS = 'RESOURCE_UPDATE_NOTIFICATIONS'
-
-export const actions = {}
-
-actions.update              = makeActionCreator(RESOURCE_UPDATE_NODE, 'resourceNode')
-actions.updatePublication   = makeActionCreator(RESOURCE_UPDATE_PUBLICATION)
-actions.updateNotifications = makeActionCreator(RESOURCE_UPDATE_NOTIFICATIONS)
-
-actions.triggerLifecycleAction = (action) => (dispatch, getState) => {
-  const lifecycleActions = select.resourceLifecycle(getState())
-
-  // checks if the current resource implements the action
-  if (lifecycleActions[action]) {
-    // dispatch the implemented action with resourceNode as param (don't know if this is useful)
-    return lifecycleActions[action](
-      select.resourceNode(getState())
-    )
+const DeleteAction = new ResourceAction('delete', {
+  type: 'async',
+  label: trans('delete', {}, 'actions'),
+  icon: 'fa fa-fw fa-trash-o',
+  dangerous: true,
+  bulk: true
+}, (resourceNodes) => ({
+  confirm: {
+    title: trans('resources_delete_confirm'),
+    message: trans('resources_delete_message')
   }
-}
+}))
 
-actions.updateNode = (resourceNode) => ({
-  [API_REQUEST]: {
-    url: ['claro_resource_node_update', {id: resourceNode.id}],
-    request: {
-      method: 'PUT',
-      body: JSON.stringify(resourceNode)
-    },
-    success: (data, dispatch) => dispatch(actions.update(data))
-  }
+const EditAction = new ResourceAction('edit', {
+  type: 'url',
+  icon: 'fa fa-fw fa-pencil',
+  label: trans('edit', {}, 'actions'),
+  primary: true
+}, (resourceNode) => ({
+
+}))
+
+const ConfigureAction = new ResourceAction('edit-properties', {
+  type: 'modal',
+  icon: 'fa fa-fw fa-cog',
+  label: trans('configure', {}, 'actions'),
+  bulk: true
+}, (resourceNodes) => ({
+  modal: [MODAL_RESOURCE_PROPERTIES, {
+    resourceNode: 1 === resourceNodes.length && resourceNodes[0],
+    bulk: 1 < resourceNodes.length
+  }]
+}))
+
+const EditRightsAction = new ResourceAction('edit-rights', {
+  type: 'modal',
+  label: trans('edit-rights'),
+  bulk: true
+}, (resourceNodes) => ({
+  icon: 'fa fa-fw fa-lock',
+  info: 'This will permits to display current state (for rights or published)',
+  modal: [MODAL_RESOURCE_RIGHTS, {
+    resourceNode: 1 === resourceNodes.length && resourceNodes[0],
+    bulk: 1 < resourceNodes.length
+  }]
+}))
+
+const ExportAction = new ResourceAction('export', {
+  type: 'async',
+  label: trans('download', {}, 'actions'),
+  bulk: true
+}, (resourceNodes) => {
+
 })
 
-actions.togglePublication = (resourceNode) => ({
-  [API_REQUEST]: {
-    type: resourceNode.meta.published ? 'unpublish' : 'publish',
-    url: [
-      resourceNode.meta.published ? 'claro_resource_node_unpublish' : 'claro_resource_node_publish',
-      {id: resourceNode.id}
-    ],
-    request: {
-      method: 'PUT'
-    },
-    success: (data, dispatch) => dispatch(actions.updatePublication())
-  }
-})
-
-actions.toggleNotifications = (resourceNode) => ({
-  [API_REQUEST]: {
-    url: [
-      resourceNode.notifications.enabled ? 'icap_notification_resource_disable' : 'icap_notification_resource_enable',
-      {resourceId: resourceNode.autoId, resourceClass: window.btoa(resourceNode.meta.class)}
-    ],
-    request: {
-      method: 'PUT'
-    },
-    success: (data, dispatch) => dispatch(actions.updateNotifications())
-  }
-})
+const OpenAction = new ResourceAction('open', {
+  type: 'url',
+  label: trans('open', {}, 'actions'),
+  primary: true
+}, (resourceNodes) => ({
+  icon: 'fa fa-fw fa-play',
+  target: ['claro_resource_open', {
+    node: resourceNodes[0].autoId,
+    resourceType: resourceNodes[0].meta.type
+  }]
+}))

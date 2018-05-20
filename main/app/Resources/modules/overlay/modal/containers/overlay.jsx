@@ -1,13 +1,14 @@
 import {connect} from 'react-redux'
 
-import {actions} from '#/main/core/layout/modal/actions'
-import {select} from '#/main/app/overlay/modal/selectors'
+// the store to use
+import {actions, selectors} from '#/main/app/overlay/modal/store'
 
+// the component to connect
 import {ModalOverlay as ModalOverlayComponent} from '#/main/app/overlay/modal/components/overlay'
 
 const ModalOverlay = connect(
   (state) => ({
-    modal: select.modal(state)
+    modal: selectors.modal(state)
   }),
   (dispatch) => ({
     fadeModal() {

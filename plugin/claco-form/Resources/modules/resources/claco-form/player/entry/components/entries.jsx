@@ -7,13 +7,14 @@ import {constants as intlConstants} from '#/main/app/intl/constants'
 import {url} from '#/main/core/api/router'
 import {trans, transChoice} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {DataCard} from '#/main/core/data/components/data-card'
 import {constants as listConstants} from '#/main/core/data/list/constants'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
@@ -512,8 +513,8 @@ EntriesComponent.propTypes = {
 
 const Entries = connect(
   (state) => ({
-    canEdit: resourceSelect.editable(state),
-    canAdministrate: resourceSelect.administrable(state),
+    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
+    canAdministrate: hasPermission('administrate', resourceSelect.resourceNode(state)),
     fields: select.fields(state),
     canGeneratePdf: state.canGeneratePdf,
     clacoFormId: state.clacoForm.id,

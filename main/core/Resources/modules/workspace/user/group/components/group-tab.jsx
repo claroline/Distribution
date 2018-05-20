@@ -7,7 +7,7 @@ import {matchPath, Routes, withRouter} from '#/main/app/router'
 import {currentUser} from '#/main/core/user/current'
 
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {PageActions, PageAction} from '#/main/core/layout/page'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 

@@ -5,7 +5,7 @@ import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/core/api/router'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'

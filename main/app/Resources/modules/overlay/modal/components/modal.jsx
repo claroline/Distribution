@@ -1,7 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import {Modal as BaseModal} from 'react-bootstrap/lib/Modal'
+import BaseModal from 'react-bootstrap/lib/Modal'
 
 const Modal = props =>
   <BaseModal
@@ -44,7 +44,7 @@ Modal.propTypes = {
 
 // required when testing prop-types on code instrumented by istanbul
 // @see https://github.com/facebook/jest/issues/1824#issuecomment-250478026
-Modal.displayName = 'BaseModal'
+Modal.displayName = 'Modal'
 
 export {
   Modal

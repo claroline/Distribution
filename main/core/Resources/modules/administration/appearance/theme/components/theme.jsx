@@ -10,7 +10,7 @@ import {t, trans, transChoice} from '#/main/core/translation'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions} from '#/main/core/administration/appearance/theme/actions'
 
 import {select} from '#/main/core/administration/appearance/theme/selectors'

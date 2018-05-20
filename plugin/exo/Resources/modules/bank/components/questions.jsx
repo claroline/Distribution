@@ -8,7 +8,7 @@ import {generateUrl} from '#/main/core/api/router'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_SHARE} from '#/plugin/exo/bank/components/modal/share.jsx'
 
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions} from '#/plugin/exo/bank/actions'
 
 import {

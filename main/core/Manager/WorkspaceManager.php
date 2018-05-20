@@ -1303,6 +1303,19 @@ class WorkspaceManager
         return false;
     }
 
+    /**
+     * Gets the list of role which have access to the workspace.
+     * (either workspace roles or a platform role with ws tool access)
+     *
+     * @param Workspace $workspace
+     *
+     * @return Role[]
+     */
+    public function getRolesWithAccess(Workspace $workspace)
+    {
+        return $this->roleManager->getWorkspaceRoleWithToolAccess($workspace);
+    }
+
     //used for cli copy debug tool
     public function copyFromCode(Workspace $workspace, $code)
     {

@@ -1,15 +1,14 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-
 import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
+// todo : create and use abstraction
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Popover from 'react-bootstrap/lib/Popover'
 
-import {t}         from '#/main/core/translation'
-import {t_res}     from '#/main/core/resource/translation'
+import {trans}  from '#/main/core/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {
@@ -36,7 +35,7 @@ const CreatePermission = props =>
           title={
             <label className="checkbox-inline">
               <input type="checkbox" />
-              {t('resource_type')}
+              {trans('resource_type')}
             </label>
           }
         >
@@ -48,7 +47,7 @@ const CreatePermission = props =>
                     type="checkbox"
                     checked={props.permission[resourceType]}
                   />
-                  {t_res(resourceType)}
+                  {trans(resourceType, {}, 'resource')}
                 </label>
               </li>
             )}
@@ -69,7 +68,7 @@ CreatePermission.propTypes = {
 const RolePermissions = props =>
   <tr>
     <th scope="row">
-      {t(props.role.key)}
+      {trans(props.role.key)}
     </th>
 
     {Object.keys(props.permissions).map(permission =>
@@ -105,12 +104,12 @@ const AdvancedTab = props =>
     <table className="table table-striped table-hover resource-rights-advanced">
       <thead>
         <tr>
-          <th scope="col">{t('role')}</th>
+          <th scope="col">{trans('role')}</th>
           {Object.keys(props.permissions['ROLE_USER'].permissions).map(permission =>
             ('create' !== permission || !isEmpty(props.permissions['ROLE_USER'].permissions[permission])) &&
             <th key={`${permission}-header`} scope="col">
               <div className="permission-name-container">
-                <span className="permission-name">{t_res(permission)}</span>
+                <span className="permission-name">{trans(permission, {}, 'resource')}</span>
               </div>
             </th>
           )}
@@ -143,7 +142,7 @@ const SimpleAccessRule = props =>
     onClick={() => props.toggleMode(props.mode)}
   >
     <span className={classes('simple-right-icon', props.icon)} />
-    <span className="simple-right-label">{t_res('resource_rights_'+props.mode)}</span>
+    <span className="simple-right-label">{trans('resource_rights_'+props.mode, {}, 'resource')}</span>
   </button>
 
 SimpleAccessRule.propTypes = {
@@ -155,7 +154,7 @@ SimpleAccessRule.propTypes = {
 
 const SimpleTab = props =>
   <div className="modal-body">
-    <p>{t_res('resource_access_rights')}</p>
+    <p>{trans('resource_access_rights', {}, 'resource')}</p>
 
     <div className="resource-rights-simple">
       <SimpleAccessRule mode="all" icon="fa fa-globe" {...props} />
@@ -167,7 +166,7 @@ const SimpleTab = props =>
     {props.customRules &&
       <p className="resource-custom-rules-info">
         <span className="fa fa-asterisk" />
-        {t_res('resource_rights_custom_help')}
+        {trans('resource_rights_custom_help', {}, 'resource')}
       </p>
     }
   </div>
@@ -232,7 +231,7 @@ class EditRightsModal extends Component {
     return (
       <Modal
         icon="fa fa-fw fa-lock"
-        title={t_res('edit-rights')}
+        title={trans('edit-rights', {}, 'resource')}
         className="resource-edit-rights-modal"
         {...this.props}
       >
@@ -246,7 +245,7 @@ class EditRightsModal extends Component {
                 this.setState({activeTab: 'simple'})
               }}
             >
-              {t('simple')}
+              {trans('simple')}
             </a>
           </li>
 
@@ -259,7 +258,7 @@ class EditRightsModal extends Component {
                 this.setState({activeTab: 'advanced'})
               }}
             >
-              {t('advanced')}
+              {trans('advanced')}
             </a>
           </li>
         </ul>
@@ -284,7 +283,7 @@ class EditRightsModal extends Component {
           disabled={!this.state.pendingChanges}
           onClick={this.save}
         >
-          {t('save')}
+          {trans('save', {}, 'actions')}
         </button>
       </Modal>
     )

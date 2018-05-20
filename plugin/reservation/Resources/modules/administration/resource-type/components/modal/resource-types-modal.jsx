@@ -6,7 +6,7 @@ import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {actions as listActions} from '#/main/core/data/list/actions'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.jsx'

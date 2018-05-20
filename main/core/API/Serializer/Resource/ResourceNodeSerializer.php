@@ -116,7 +116,7 @@ class ResourceNodeSerializer
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             if (!empty($resourceNode->getWorkspace())) { // TODO : check if this is really required
-                $serializedNode['workspace'] = [
+                $serializedNode['workspace'] = [ // TODO : use workspace serializer with minimal option
                     'id' => $resourceNode->getWorkspace()->getUuid(),
                     'name' => $resourceNode->getWorkspace()->getName(),
                     'code' => $resourceNode->getWorkspace()->getCode(),

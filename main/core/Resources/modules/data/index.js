@@ -159,7 +159,8 @@ function validateDefinition(definition) {
 function setDefinitionDefaults(definition) {
   return Object.assign({
     meta: {
-      creatable: false
+      creatable: false,
+      noLabel: false
     },
 
     /**

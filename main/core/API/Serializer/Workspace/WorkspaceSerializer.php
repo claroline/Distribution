@@ -40,6 +40,9 @@ class WorkspaceSerializer
     /** @var ClaroUtilities */
     private $utilities;
 
+    /** @var FileUtilities */
+    private $fileUt;
+
     /**
      * WorkspaceSerializer constructor.
      *
@@ -48,7 +51,8 @@ class WorkspaceSerializer
      *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
      *     "serializer"       = @DI\Inject("claroline.api.serializer"),
-     *     "utilities"        = @DI\Inject("claroline.utilities.misc")
+     *     "utilities"        = @DI\Inject("claroline.utilities.misc"),
+     *     "fileUt"           = @DI\Inject("claroline.utilities.file")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
@@ -56,19 +60,22 @@ class WorkspaceSerializer
      * @param WorkspaceManager              $workspaceManager
      * @param SerializerProvider            $serializer
      * @param ClaroUtilities                $utilities
+     * @param FileUtilities                 $fileUt
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         ObjectManager $om,
         WorkspaceManager $workspaceManager,
         SerializerProvider $serializer,
-        ClaroUtilities $utilities)
+        ClaroUtilities $utilities,
+        FileUtilities $fileUt)
     {
         $this->authorization = $authorization;
         $this->om = $om;
         $this->workspaceManager = $workspaceManager;
         $this->serializer = $serializer;
         $this->utilities = $utilities;
+        $this->fileUt = $fileUt;
     }
 
     /**
@@ -120,12 +127,8 @@ class WorkspaceSerializer
                 'registration' => $this->getRegistration($workspace),
                 'notifications' => $this->getNotifications($workspace),
                 'roles' => array_map(function (Role $role) {
-                    return [ // TODO : use role serializer
-                        'id' => $role->getUuid(),
-                        'name' => $role->getName(),
-                        'translationKey' => $role->getTranslationKey(),
-                    ];
-                }, $workspace->getRoles()->toArray()),
+                    return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
+                }, $this->workspaceManager->getRolesWithAccess($workspace)),
                 'managers' => array_map(function (User $manager) {
                     return $this->serializer->serialize($manager, [Options::SERIALIZE_MINIMAL]);
                 }, $this->workspaceManager->getManagers($workspace)),
@@ -162,14 +165,14 @@ class WorkspaceSerializer
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),
             'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
-            'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
-            'usedStorage' => $this->ut->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
+            'creator' => $workspace->getCreator() ? $this->serializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
         ];
 
         if (!in_array(Options::NO_COUNT, $options)) {
             //this query is very slow
             $data['totalUsers'] = $this->workspaceManager->countUsers($workspace, true);
             $data['totalResources'] = $this->workspaceManager->countResources($workspace);
+            $data['usedStorage'] = $this->workspaceManager->getUsedStorage($workspace);
         }
 
         return $data;

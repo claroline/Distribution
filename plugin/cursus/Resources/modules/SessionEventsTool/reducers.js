@@ -1,7 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer} from '#/main/core/scaffolding/reducer'
-import {makePageReducer} from '#/main/core/layout/page/reducer'
 
 import {VIEW_USER} from './enums'
 
@@ -248,7 +247,7 @@ const setEventsReducers = {
   }
 }
 
-export const reducers = makePageReducer({
+export const reducers = {
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
   disableRegistration: makeReducer(initialState['disableRegistration'], mainReducers),
@@ -265,4 +264,4 @@ export const reducers = makePageReducer({
   teachers: makeReducer(initialState['teachers'], teachersReducers),
   teachersLoaded: makeReducer(initialState['teachersLoaded'], teachersLoadedReducers),
   setEvents: makeReducer(initialState['setEvents'], setEventsReducers)
-})
+}

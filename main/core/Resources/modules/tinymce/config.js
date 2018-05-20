@@ -3,7 +3,7 @@ import '#/main/core/tinymce/langs'
 import '#/main/core/tinymce/themes'
 
 import {locale} from '#/main/app/intl/locale'
-import {platformConfig} from '#/main/core/platform'
+import {param} from '#/main/app/config'
 import {asset, theme} from '#/main/core/scaffolding/asset'
 
 const config = {
@@ -35,7 +35,7 @@ const config = {
   // plugin : paste
   paste_data_images: true,
   paste_preprocess: (plugin, args) => {
-    if (platformConfig('openGraph.enabled') && args.content) {
+    if (param('openGraph.enabled') && args.content) {
       // todo check if url
       const link = args.content.trim()
 

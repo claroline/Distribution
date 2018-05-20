@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
 
 import {ResourceOverview} from '#/main/core/resource/components/overview.jsx'

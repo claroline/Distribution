@@ -22,6 +22,7 @@ const restrictStorage   = (workspace) => workspace.restrictions.enableMaxStorage
 
 // TODO : finish implementation (open resource / open tool)
 // TODO : add tools
+// TODO : add bg color
 
 const WorkspaceFormComponent = (props) =>
   <div>
@@ -102,7 +103,7 @@ const WorkspaceFormComponent = (props) =>
               name: 'meta.model',
               label: trans('model'),
               type: 'boolean',
-              disabled: true
+              disabled: !props.new
             }, {
               name: 'meta.personal',
               label: trans('personal'),

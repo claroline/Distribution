@@ -5,8 +5,9 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 
 import {actions} from '#/plugin/announcement/resources/announcement/actions'
 import {select} from '#/plugin/announcement/resources/announcement/selectors'
@@ -38,8 +39,8 @@ const Announce = connect(
   state => ({
     aggregateId: select.aggregateId(state),
     announcement: select.detail(state),
-    editable: resourceSelect.editable(state),
-    deletable: resourceSelect.deletable(state)
+    editable: hasPermission('edit', resourceSelect.resourceNode(state)),
+    deletable: hasPermission('delete', resourceSelect.resourceNode(state))
   }),
   dispatch => ({
     removePost(aggregateId, announcePost) {

@@ -4,7 +4,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import quizSelect from './../../selectors'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {selectors as paperSelect} from './../selectors'
 import {tex, t} from '#/main/core/translation'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box.jsx'
@@ -106,7 +107,7 @@ Papers.propTypes = {
 const ConnectedPapers = connect(
   (state) => ({
     quiz: quizSelect.quiz(state),
-    admin: resourceSelect.editable(state) || quizSelect.papersAdmin(state),
+    admin: hasPermission('edit', resourceSelect.resourceNode(state)) || quizSelect.papersAdmin(state),
     papers: paperSelect.papers(state)
   })
 )(Papers)

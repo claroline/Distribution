@@ -6,7 +6,7 @@ import Configuration from '#/main/core/library/Configuration/Configuration'
 import {trans, transChoice, Translator} from '#/main/core/translation'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 

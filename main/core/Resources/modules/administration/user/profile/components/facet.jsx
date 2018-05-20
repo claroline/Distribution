@@ -6,7 +6,7 @@ import omit from 'lodash/omit'
 import {t} from '#/main/core/translation'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'

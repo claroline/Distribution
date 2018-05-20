@@ -5,9 +5,6 @@ import {asset} from '#/main/core/scaffolding/asset'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
-import {ModalOverlay} from '#/main/app/overlay/modal/components/overlay'
-import {FlyingAlerts} from '#/main/core/layout/alert/components/flying-alerts'
-
 const PageWrapper = props => !props.embedded ?
   <main className={props.className}>
     {props.children}
@@ -38,19 +35,7 @@ const Page = props =>
       embedded: props.embedded
     })}
   >
-    {props.alerts && 0 !== props.alerts.length &&
-      <FlyingAlerts alerts={props.alerts} removeAlert={props.removeAlert}/>
-    }
-
     {props.children}
-
-    {props.hasModals &&
-      <ModalOverlay
-        modal={props.modal}
-        fadeModal={props.fadeModal}
-        hideModal={props.hideModal}
-      />
-    }
   </PageWrapper>
 
 implementPropTypes(Page, PageTypes, {

@@ -6,9 +6,10 @@ import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/core/api/router'
 import {displayDate} from '#/main/core/scaffolding/date'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {TooltipLink} from '#/main/core/layout/button/components/tooltip-link.jsx'
@@ -548,7 +549,7 @@ const Entry = withRouter(connect(
     entry: formSelect.data(formSelect.form(state, 'entries.current')),
     entryUser: select.entryUser(state),
 
-    canEdit: resourceSelect.editable(state),
+    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canEditEntry: select.canEditCurrentEntry(state),
     canViewEntry: select.canOpenCurrentEntry(state),
     canAdministrate: select.canAdministrate(state),

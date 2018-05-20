@@ -3,7 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {generateUrl} from '#/main/core/api/router'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 
 import {Track as TrackTypes} from '#/plugin/video-player/resources/video/prop-types'
 
@@ -40,10 +41,10 @@ PlayerComponent.propTypes = {
 
 const Player = connect(
   state => ({
-    resource: state.resourceNode,
+    resource: resourceSelect.resourceNode(state),
     url: state.url,
     tracks: state.tracks,
-    canDownload: resourceSelect.exportable(state)
+    canDownload: hasPermission('export', resourceSelect.resourceNode(state))
   })
 )(PlayerComponent)
 

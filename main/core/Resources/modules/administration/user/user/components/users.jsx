@@ -6,7 +6,7 @@ import {t, Translator} from '#/main/core/translation'
 import Configuration from '#/main/core/library/Configuration/Configuration'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CHANGE_PASSWORD} from '#/main/core/user/modals/components/change-password.jsx'
 //import {MODAL_URL} from '#/main/core/layout/modal'
 import {actions as userActions} from '#/main/core/user/actions'

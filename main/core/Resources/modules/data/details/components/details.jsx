@@ -4,52 +4,75 @@ import classes from 'classnames'
 import get from 'lodash/get'
 import merge from 'lodash/merge'
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
+import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Heading} from '#/main/core/layout/components/heading'
 import {Sections, Section} from '#/main/core/layout/components/sections'
+import {FormGroup} from '#/main/core/layout/form/components/group/form-group'
 import {getTypeOrDefault} from '#/main/core/data'
 import {DataDetailsSection as DataDetailsSectionTypes} from '#/main/core/data/details/prop-types'
 import {createDetailsDefinition} from '#/main/core/data/details/utils'
 
-// todo add `calculated` value like Forms and Lists
 // todo there are big c/c from Form component but I don't know if we can do better
 
 const DataDetailsField = props => {
   const typeDef = getTypeOrDefault(props.type)
 
   return (
-    <div className="form-group">
-      {!props.hideLabel &&
-        <label className="control-label" htmlFor={props.name}>{props.label}</label>
+    <div id={props.name} className={props.className}>
+      {(!props.value && false !== props.value) &&
+        <span className="data-details-empty">{trans('empty_value')}</span>
       }
 
-      <div id={props.name}>
-        {!props.data &&
-          <span className="data-details-empty">{t('empty_value')}</span>
-        }
-
-        {props.data && (typeDef.components.details ?
-          React.createElement(typeDef.components.details, merge({}, props.options, {
-            id: props.name,
-            label: props.label,
-            hideLabel: props.hideLabel,
-            data: props.data
-          }))
-          :
-          typeDef.render ? typeDef.render(props.data, props.options || {}) : props.data
-        )}
-      </div>
+      {(props.value || false === props.value)  && (typeDef.components.details ?
+        React.createElement(typeDef.components.details, merge({}, props.options, {
+          id: props.name,
+          label: props.label,
+          hideLabel: props.hideLabel,
+          data: props.value // todo rename into `value` in implementations later
+        }))
+        :
+        typeDef.render ? typeDef.render(props.value, props.options || {}) : props.value
+      )}
     </div>
   )
 }
 
 DataDetailsField.propTypes = {
-  data: T.any,
+  value: T.any,
   name: T.string.isRequired,
   type: T.string,
   label: T.string.isRequired,
   hideLabel: T.bool,
-  displayed: T.bool,
+  options: T.object
+}
+
+const DataDetailsGroup = props => {
+  const typeDef = getTypeOrDefault(props.type)
+
+  return (typeDef.meta && typeDef.meta.noLabel) ?
+    <DataDetailsField
+      {...props}
+      className="form-group"
+    /> :
+    <FormGroup
+      id={props.name}
+      label={props.label}
+      hideLabel={props.hideLabel}
+      help={props.help}
+    >
+      <DataDetailsField
+        {...props}
+      />
+    </FormGroup>
+}
+
+DataDetailsGroup.propTypes = {
+  value: T.any,
+  name: T.string.isRequired,
+  type: T.string,
+  label: T.string.isRequired,
+  hideLabel: T.bool,
   options: T.object
 }
 
@@ -75,17 +98,17 @@ const DataDetails = props => {
       }
 
       {primarySections.map(primarySection =>
-        <div key={primarySection.id} className="panel panel-default">
+        <div key={toKey(primarySection.title)} className="panel panel-default primary-section">
           <div className="panel-body">
             <Heading level={hLevel} displayed={false}>
               {primarySection.title}
             </Heading>
 
             {primarySection.fields.map(field =>
-              <DataDetailsField
+              <DataDetailsGroup
                 {...field}
                 key={field.name}
-                data={get(props.data, field.name)}
+                value={field.calculated ? field.calculated(props.data) : get(props.data, field.name)}
               />
             )}
           </div>
@@ -100,16 +123,15 @@ const DataDetails = props => {
         >
           {otherSections.map(section =>
             <Section
-              key={section.id}
-              id={section.id}
+              key={toKey(section.title)}
               icon={section.icon}
               title={section.title}
             >
               {section.fields.map(field =>
-                <DataDetailsField
+                <DataDetailsGroup
                   {...field}
                   key={field.name}
-                  data={get(props.data, field.name)}
+                  value={field.calculated ? field.calculated(props.data) : get(props.data, field.name)}
                 />
               )}
             </Section>

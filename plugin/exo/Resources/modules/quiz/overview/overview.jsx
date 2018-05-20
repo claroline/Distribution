@@ -8,7 +8,8 @@ import {tex} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {select} from '#/plugin/exo/quiz/selectors'
 import {
   correctionModes,
@@ -240,7 +241,7 @@ OverviewComponent.propTypes = {
 const Overview = connect(
   (state) => ({
     empty: select.empty(state),
-    editable: resourceSelect.editable(state),
+    editable: hasPermission('edit', resourceSelect.resourceNode(state)),
     quiz: select.quiz(state)
   })
 )(OverviewComponent)

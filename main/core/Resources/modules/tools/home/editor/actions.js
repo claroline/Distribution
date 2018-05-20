@@ -2,7 +2,7 @@ import {trans} from '#/main/core/translation'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
 
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_ADD_WIDGET} from '#/main/core/widget/modals/components/add-widget'
 import {MODAL_EDIT_WIDGET} from '#/main/core/widget/modals/components/edit-widget'

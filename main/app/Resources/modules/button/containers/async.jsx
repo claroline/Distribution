@@ -4,7 +4,7 @@ import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {API_REQUEST} from '#/main/core/api/actions'
-import {ApiRequest as ApiRequestTypes} from '#/main/core/api/prop-types'
+import {ApiRequest as ApiRequestTypes} from '#/main/app/api/prop-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 
 import {CallbackButton} from '#/main/app/button/components/callback'

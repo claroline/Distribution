@@ -26,8 +26,7 @@ const RoleList = {
       label: trans('name'),
       displayed: true
     }, {
-      name: 'meta.type',
-      alias: 'type',
+      name: 'type',
       type: 'choice',
       label: trans('type'),
       options: {

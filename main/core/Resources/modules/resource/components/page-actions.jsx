@@ -5,7 +5,6 @@ import classes from 'classnames'
 import {matchPath, withRouter} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 import {number} from '#/main/app/intl'
-import {t_res} from '#/main/core/resource/translation'
 import {currentUser} from '#/main/core/user/current'
 
 import {getSimpleAccessRule, hasCustomRules} from '#/main/core/resource/rights'
@@ -28,7 +27,7 @@ import {
 const PublishAction = props =>
   <PageAction
     type="callback"
-    label={t_res(props.resourceNode.meta.published ? 'resource_unpublish' : 'resource_publish')}
+    label={trans(props.resourceNode.meta.published ? 'resource_unpublish' : 'resource_publish', {}, 'resource')}
     icon={classes(props.resourceNode.meta.published ? 'fa-eye' : 'fa-eye-slash', 'fa')}
     callback={props.togglePublication}
   >
@@ -90,7 +89,7 @@ const ManageRightsAction = props => {
   return (
     <PageAction
       type="modal"
-      label={t_res(title)}
+      label={trans(title, {}, 'resource')}
       icon={classes('fa', icon)}
       modal={[MODAL_RESOURCE_RIGHTS, {
         resourceNode: props.resourceNode,
@@ -137,8 +136,8 @@ function getMoreActions(resourceNode, props) {
       id: 'resource-edit-properties',
       type: 'modal',
       icon: 'fa fa-fw fa-cog',
-      label: t_res('edit-properties'),
-      group: t_res('resource_management'),
+      label: trans('edit-properties', {}, 'resource'),
+      group: trans('resource_management', {}, 'resource'),
       //displayed: resourceNode.rights.current.administrate,
       modal: [MODAL_RESOURCE_PROPERTIES, {
         resourceNode: resourceNode,
@@ -148,8 +147,8 @@ function getMoreActions(resourceNode, props) {
       id: 'resource-open-tracking',
       type: 'url',
       icon: 'fa fa-fw fa-line-chart',
-      label: t_res('open-tracking'),
-      group: t_res('resource_management'),
+      label: trans('open-tracking', {}, 'resource'),
+      group: trans('resource_management', {}, 'resource'),
       //displayed: resourceNode.rights.current.administrate,
       target: ['claro_resource_action', {
         resourceType: resourceNode.meta.type,
@@ -163,7 +162,7 @@ function getMoreActions(resourceNode, props) {
       type: 'callback',
       icon: 'fa fa-fw fa-bell-o',
       label: trans('follow', {}, 'actions'),
-      group: t_res('resource_notifications'),
+      group: trans('resource_notifications', {}, 'resource'),
       displayed: authenticatedUser && !resourceNode.notifications.enabled,
       callback: () => props.toggleNotifications(resourceNode)
     }, {
@@ -171,7 +170,7 @@ function getMoreActions(resourceNode, props) {
       type: 'callback',
       icon: 'fa fa-fw fa-bell',
       label: trans('unfollow', {}, 'actions'),
-      group: t_res('resource_notifications'),
+      group: trans('resource_notifications', {}, 'resource'),
       displayed: authenticatedUser && resourceNode.notifications.enabled,
       callback: () => props.toggleNotifications(resourceNode)
     },
@@ -246,14 +245,14 @@ function getMoreActions(resourceNode, props) {
     onClick={e => {
       e.stopPropagation()
       props.showModal(MODAL_CONFIRM, {
-        title: t_res('delete'),
-        question: t_res('delete_confirm_question'),
+        title: trans('delete', {}, 'actions'),
+        question: trans('delete_confirm_question'),
         handleConfirm: () => true
       })
     }}
   >
     <span className="fa fa-fw fa-trash" />
-    {t_res('delete')}
+    {trans('delete', {}, 'actions')}
   </MenuItem>*/
 }
 
@@ -268,7 +267,7 @@ const ManagementGroup = props => {
       {(props.editor && !editorOpened /*&& props.resourceNode.rights.current.edit*/) &&
         <PageAction
           type="link"
-          label={props.editor.label || t_res('edit')}
+          label={props.editor.label || trans('edit', {}, 'actions')}
           icon={props.editor.icon || 'fa fa-pencil'}
           primary={true}
           target={props.editor.path}
@@ -278,7 +277,7 @@ const ManagementGroup = props => {
       {(props.editor && editorOpened /*&& props.resourceNode.rights.current.edit*/) &&
         <PageAction
           type="callback"
-          label={t_res('save')}
+          label={trans('save', {}, 'actions')}
           icon="fa fa-floppy-o"
           primary={true}
           disabled={props.editor.save.disabled}
@@ -364,7 +363,7 @@ const ResourcePageActions = props => {
 
         {0 !== moreActions.length &&
           <MoreAction
-            menuLabel={t_res(props.resourceNode.meta.type)}
+            menuLabel={trans(props.resourceNode.meta.type, {}, 'resource')}
             actions={moreActions}
           />
         }

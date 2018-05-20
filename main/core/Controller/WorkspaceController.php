@@ -472,7 +472,6 @@ class WorkspaceController extends Controller
     public function renderToolbarAction(Workspace $workspace)
     {
         $orderedTools = [];
-        $roleHasAccess = []; // for impersonation
 
         $hasManagerAccess = $this->workspaceManager->isManager($workspace, $this->tokenStorage->getToken());
         $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
@@ -483,18 +482,6 @@ class WorkspaceController extends Controller
                 $orderedTools = $this->toolManager->getOrderedToolsByWorkspace($workspace);
                 // always display tools to managers
                 $hideToolsMenu = false;
-
-                // gets Workspace roles for impersonation
-                $workspaceRolesWithAccess = $this->roleManager
-                    ->getWorkspaceRoleWithToolAccess($workspace);
-
-                foreach ($workspaceRolesWithAccess as $workspaceRole) {
-                    $roleHasAccess[] = [ // TODO : use role serializer
-                        'id' => $workspaceRole->getUuid(),
-                        'name' => $workspaceRole->getName(),
-                        'translationKey' => $workspaceRole->getTranslationKey(),
-                    ];
-                }
             } else {
                 // gets accessible tools by user
                 $currentRoles = $this->utils->getRoles($this->tokenStorage->getToken());
@@ -503,7 +490,7 @@ class WorkspaceController extends Controller
         }
 
         return [
-            'hasManagerAccess' => $hasManagerAccess,
+            'current' => null, // todo
             'tools' => array_map(function (OrderedTool $orderedTool) { // todo : create a serializer
                 return [
                     'icon' => $orderedTool->getTool()->getClass(),
@@ -511,7 +498,6 @@ class WorkspaceController extends Controller
                 ];
             }, $orderedTools),
             'workspace' => $workspace,
-            'roles' => $roleHasAccess, // todo : retrieve from workspace
             'hideToolsMenu' => $hideToolsMenu,
         ];
     }
