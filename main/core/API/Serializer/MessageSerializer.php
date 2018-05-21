@@ -11,7 +11,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.serializer.message")
- * @DI\Tag("claroline.serializer")
+ *
  */
 class MessageSerializer
 {
@@ -76,7 +76,6 @@ class MessageSerializer
             'creator' => $this->serializeCreator($message, $options),
             'created' => $message->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $message->getModificationDate()->format('Y-m-d\TH:i:s'),
-            'blocked' => $message->isBlocked()
         ];
     }
 
@@ -114,7 +113,6 @@ class MessageSerializer
 
         return $parent;
     }
-
     /**
      * Deserializes data into a Forum entity.
      *
@@ -145,7 +143,6 @@ class MessageSerializer
                 }
             }
         }
-        $this->sipe('meta.blocked', 'setIsBlocked', $data, $message);
 
         return $message;
     }

@@ -7,7 +7,6 @@ import {
   SUBJECT_FORM_CLOSE,
   SUBJECT_EDIT,
   SUBJECT_STOP_EDIT,
-  MESSAGE_UPDATE,
   MESSAGES_SORT_TOGGLE
 } from '#/plugin/forum/resources/forum/player/actions'
 

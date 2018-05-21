@@ -16,9 +16,6 @@ class SubjectsList extends Component {
     super(props)
   }
 
-  editSubject(subject) {
-    console.log(subject)
-  }
 
   render() {
     return (
@@ -86,6 +83,12 @@ class SubjectsList extends Component {
               target: '/subjects/show/'+rows[0].id,
               context: 'row'
             }, {
+              type: 'link',
+              icon: 'fa fa-fw fa-pencil',
+              label: trans('edit'),
+              target: '/subjects/form/'+rows[0].id,
+              context: 'row'
+            }, {
               type: 'callback',
               icon: 'fa fa-fw fa-thumb-tack',
               label: trans('stick', {}, 'forum'),
@@ -98,11 +101,17 @@ class SubjectsList extends Component {
               callback: () => this.props.unStickSubject(rows[0]),
               displayed: rows[0].meta.sticky
             }, {
-              type: 'link',
-              icon: 'fa fa-fw fa-pencil',
-              label: trans('edit'),
-              target: '/subjects/form/'+rows[0].id,
-              context: 'row'
+              type: 'callback',
+              icon: 'fa fa-fw fa-times-circle-o',
+              label: trans('close_subject', {}, 'forum'),
+              callback: () => this.props.closeSubject(rows[0]),
+              displayed: !rows[0].meta.closed
+            }, {
+              type: 'callback',
+              icon: 'fa fa-fw fa-check-circle-o',
+              label: trans('open_subject', {}, 'forum'),
+              callback: () => this.props.unCloseSubject(rows[0]),
+              displayed: rows[0].meta.closed
             }
           ]}
           card={(props) =>
@@ -132,6 +141,12 @@ const Subjects = connect(
     },
     unStickSubject(subject) {
       dispatch(actions.unStickSubject(subject))
+    },
+    closeSubject(subject) {
+      dispatch(actions.closeSubject(subject))
+    },
+    unCloseSubject(subject) {
+      dispatch(actions.unCloseSubject(subject))
     }
   })
 )(SubjectsList)

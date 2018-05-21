@@ -152,6 +152,7 @@ actions.stickSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
     }
   }
 })
@@ -165,6 +166,35 @@ actions.unStickSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.closeSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {closed:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.unCloseSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {closed:false}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
     }
   }
 })

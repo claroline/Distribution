@@ -106,7 +106,15 @@ class SubjectComponent extends Component {
           </div>
           <div>
             {(!this.props.showSubjectForm && !this.props.editingSubject) &&
-              <h3 className="h2">{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h3>
+              <h3 className="h2">
+                {get(this.props.subject, 'meta.closed') &&
+                  <span>[{trans('closed_subject', {}, 'forum')}] </span>
+                }
+                {get(this.props.subject, 'meta.sticky') &&
+                  <span>[{trans('stuck', {}, 'forum')}] </span>
+                }
+                {this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small>
+              </h3>
             }
             {(this.props.showSubjectForm && this.props.editingSubject) &&
               <h3 className="h2">{this.props.subjectForm.title}<small> {get(this.props.subjectForm, 'meta.messages') || 0} réponse(s)</small></h3>
@@ -138,6 +146,32 @@ class SubjectComponent extends Component {
                 label: trans('edit'),
                 displayed: true,
                 action: () => this.editSubject(this.props.subject.id)
+              }, {
+                icon: 'fa fa-fw fa-thumb-tack',
+                label: trans('stick', {}, 'forum'),
+                displayed: !(get(this.props.subject, 'meta.sticky')),
+                action: () => this.props.stickSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-thumb-tack',
+                label: trans('unstick', {}, 'forum'),
+                displayed: (get(this.props.subject, 'meta.sticky')),
+                action: () => this.props.unStickSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-times-circle-o',
+                label: trans('close_subject', {}, 'forum'),
+                displayed: !(get(this.props.subject, 'meta.closed')),
+                action: () => this.props.closeSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-check-circle-o',
+                label: trans('open_subject', {}, 'forum'),
+                displayed: (get(this.props.subject, 'meta.closed')),
+                action: () => this.props.unClosedSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-trash-o',
+                label: trans('delete'),
+                displayed: true,
+                action: () => console.log(this.props.subject),
+                dangerous: true
               }
             ]}
           />
@@ -208,7 +242,7 @@ class SubjectComponent extends Component {
                                 icon: 'fa fa-fw fa-ban',
                                 label: trans('block', {}, 'forum'),
                                 displayed: true,
-                                action: () => this.props.blockComment(comment)
+                                action: () => console.log(comment)
                               }, {
                                 icon: 'fa fa-fw fa-trash-o',
                                 label: trans('delete'),
@@ -259,7 +293,7 @@ class SubjectComponent extends Component {
           </div>
 
         }
-        {!this.props.showSubjectForm &&
+        {!this.props.showSubjectForm || !get(this.props.subject, 'meta.closed') &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
@@ -321,6 +355,18 @@ const Subject =  withRouter(connect(
     },
     subjectEdition() {
       dispatch(actions.subjectEdition())
+    },
+    stickSubject(subject) {
+      dispatch(actions.stickSubject(subject))
+    },
+    unStickSubject(subject) {
+      dispatch(actions.unStickSubject(subject))
+    },
+    closeSubject(subject) {
+      dispatch(actions.closeSubject(subject))
+    },
+    unCloseSubject(subject) {
+      dispatch(actions.unCloseSubject(subject))
     },
     editContent(id, content) {
       dispatch(actions.editContent(id, content))
