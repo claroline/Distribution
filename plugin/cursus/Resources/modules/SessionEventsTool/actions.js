@@ -324,13 +324,12 @@ actions.acceptSessionEventUser = (sessionEventUserId) => ({
 actions.displayMainView = () => (dispatch, getState) => {
   const state = getState()
   const mode = state['canEdit'] ? VIEW_MANAGER : VIEW_USER
-  dispatch(actions.updateViewMode(mode))
+
 }
 
 actions.displaySessionEvent = (sessionEventId) => {
   return (dispatch) => {
     dispatch(actions.fetchSessionEvent(sessionEventId))
-    dispatch(actions.updateViewMode(VIEW_EVENT))
   }
 }
 
