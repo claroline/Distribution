@@ -7,7 +7,7 @@ import Configuration from '#/main/core/library/Configuration/Configuration'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_CHANGE_PASSWORD} from '#/main/core/user/modals/components/change-password.jsx'
+import {MODAL_USER_PASSWORD} from '#/main/core/user/modals/password'
 //import {MODAL_URL} from '#/main/core/layout/modal'
 import {actions as userActions} from '#/main/core/user/actions'
 
@@ -118,17 +118,19 @@ const Users = connect(
       dispatch(actions.enable(user))
     },
     disable(user) {
+      // todo add confirm
       dispatch(actions.disable(user))
     },
     createWorkspace(user) {
       dispatch(actions.createWorkspace(user))
     },
     deleteWorkspace(user) {
+      // todo add confirm
       dispatch(actions.deleteWorkspace(user))
     },
     updatePassword(user) {
       dispatch(
-        modalActions.showModal(MODAL_CHANGE_PASSWORD, {
+        modalActions.showModal(MODAL_USER_PASSWORD, {
           changePassword: (password) => dispatch(userActions.updatePassword(user, password))
         })
       )

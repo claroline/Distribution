@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'

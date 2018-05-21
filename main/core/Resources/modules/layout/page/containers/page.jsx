@@ -26,7 +26,7 @@ const PageContainer = props =>
 
 PageContainer.propTypes = {
   embedded: T.bool,
-  children: T.element
+  children: T.node.isRequired
 }
 
 export {

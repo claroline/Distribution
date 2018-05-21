@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty'
 // TODO : remove the use of navigate()
 
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {API_REQUEST} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/app/api'
 import {actions as resourceActions} from '#/main/core/resource/store'
 
 import quizSelectors from './../selectors'

@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {currentUser} from '#/main/core/user/current'
 import {makeId} from '#/main/core/scaffolding/id'
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {selectors as resourceSelect} from '#/main/core/resource/store'

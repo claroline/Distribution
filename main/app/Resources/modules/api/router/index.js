@@ -6,36 +6,22 @@ import isString from 'lodash/isString'
 
 /**
  * Generates URL based on symfony exposed route.
+ * If a string url is passed argument, it will just return it.
  *
- * @param {string}  route      - the name of the route
- * @param {object}  parameters - the route parameters map
- * @param {boolean} absolute   - Do we want the absolute URL ?
- *
- * @return {string}
- *
- * @deprecated use `url()` instead
- */
-function generateUrl(route, parameters = {}, absolute = false) {
-  return Routing.generate(route, parameters, absolute)
-}
-
-/**
- *
- * @param target
+ * @param {string|Array} target
  *
  * @return {string}
  *
  * @internal
- * @deprecated use `url()` instead
  */
 function getUrl(target) {
-  invariant(target && (isString(target) || Array.isArray(target)), '`target` should be a string or an array')
+  invariant(target && (isString(target) || Array.isArray(target)), '`target` must be a string or an array')
 
   if (isString(target)) {
     return target
   }
 
-  return generateUrl(target[0], target[1] ? target[1] : {}, !!target[2])
+  return Routing.generate(target[0], target[1] ? target[1] : {}, !!target[2])
 }
 
 /**
@@ -92,7 +78,5 @@ function url(target, queryParams = {}) {
 }
 
 export {
-  url,
-  generateUrl,
-  getUrl
+  url
 }

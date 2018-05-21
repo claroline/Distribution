@@ -4,7 +4,7 @@ import set from 'lodash/set'
 import {makeInstanceActionCreator} from '#/main/core/scaffolding/actions'
 
 import {tval} from '#/main/core/translation'
-import {API_REQUEST} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/app/api'
 import {actions as alertActions} from '#/main/app/overlay/alert/store'
 import {constants as alertConstants} from '#/main/app/overlay/alert/constants'
 import {constants as actionConstants} from '#/main/app/action/constants'

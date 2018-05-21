@@ -1,6 +1,8 @@
 
 import {RoutedPage} from '#/main/core/layout/router/components/page'
 
+import {PageContainer} from '#/main/core/layout/page/containers/page'
+
 // todo : remove me
 
 /**
@@ -9,7 +11,7 @@ import {RoutedPage} from '#/main/core/layout/router/components/page'
  * @param props
  * @constructor
  */
-const RoutedPageContainer = RoutedPage
+const RoutedPageContainer = PageContainer
 
 export {
   RoutedPageContainer

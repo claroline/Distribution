@@ -4,9 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {DataFormModal} from '#/main/core/data/form/modals/components/data-form'
 
-const MODAL_CHANGE_PASSWORD = 'MODAL_CHANGE_PASSWORD'
-
-const ChangePasswordModal = props =>
+const PasswordModal = props =>
   <DataFormModal
     {...props}
     icon="fa fa-fw fa-lock"
@@ -29,11 +27,10 @@ const ChangePasswordModal = props =>
     ]}
   />
 
-ChangePasswordModal.propTypes = {
+PasswordModal.propTypes = {
   changePassword: T.func.isRequired
 }
 
 export {
-  MODAL_CHANGE_PASSWORD,
-  ChangePasswordModal
+  PasswordModal
 }

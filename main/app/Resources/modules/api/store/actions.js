@@ -1,5 +1,5 @@
 import {makeActionCreator} from '#/main/app/store/actions'
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api/router'
 
 import {actions as alertActions} from '#/main/app/overlay/alert/store'
 

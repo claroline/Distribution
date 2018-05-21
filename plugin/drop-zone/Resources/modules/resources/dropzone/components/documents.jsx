@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
@@ -59,7 +59,7 @@ const DocumentRow = props =>
 
     <td className="document-data">
       {props.document.type === constants.DOCUMENT_TYPE_FILE &&
-        <a href={generateUrl('claro_dropzone_document_download', {document: props.document.id})}>
+        <a href={url(['claro_dropzone_document_download', {document: props.document.id}])}>
           {props.document.data.name}
         </a>
       }
@@ -73,7 +73,7 @@ const DocumentRow = props =>
       }
 
       {props.document.type === constants.DOCUMENT_TYPE_RESOURCE &&
-        <a href={generateUrl('claro_resource_open_short', {node: props.document.data.actualId})}>
+        <a href={url(['claro_resource_open_short', {node: props.document.data.actualId}])}>
           {props.document.data.name}
         </a>
       }

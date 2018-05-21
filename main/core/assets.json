@@ -22,6 +22,7 @@
       "workspace-user-management": "workspace/user",
       "text-resource": "resources/text/bootstrap",
       "directory-resource": "resources/directory/bootstrap",
+      "administration-toolbar": "administration/toolbar",
       "workspace-toolbar": "workspace/toolbar"
     }
   },

@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import invariant from 'invariant'
 
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 import {theme} from '#/main/core/scaffolding/asset'
 import {mount, unmount} from '#/main/app/mount'
 

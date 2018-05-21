@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {currentUser} from '#/main/core/user/current'
 import {constants as intlConstants} from '#/main/app/intl/constants'
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 import {trans, transChoice} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'

@@ -1,7 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {transChoice} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 
 import {GenericButton} from '#/main/app/button/components/generic'

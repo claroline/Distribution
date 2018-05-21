@@ -6,8 +6,8 @@ import {listItemNames, getDefinition} from './../../../../items/item-types'
 import {Icon} from './../../../../items/components/icon.jsx'
 import {t, tex, trans} from '#/main/core/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
-import {API_REQUEST} from '#/main/core/api/actions'
-import {generateUrl} from '#/main/core/api/router'
+import {API_REQUEST} from '#/main/app/api'
+import {url} from '#/main/app/api'
 
 
 export const MODAL_IMPORT_ITEMS = 'MODAL_IMPORT_ITEMS'
@@ -24,7 +24,7 @@ actions.getQuestions = (filter, onSuccess) => {
   return (dispatch) => {
     dispatch({
       [API_REQUEST]: {
-        url: generateUrl('question_list') + queryString,
+        url: url(['question_list']) + queryString,
         request: {
           method: 'GET'
         },

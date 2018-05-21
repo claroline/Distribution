@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
-import {url} from '#/main/core/api'
+import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {copy} from '#/main/core/scaffolding/clipboard'
 import {Button} from '#/main/app/action/components/button'
@@ -61,15 +61,7 @@ const AboutModal = props =>
           title: trans('general'),
           primary: true,
           fields: [
-            /*{
-              name: 'code',
-              label: trans('code'),
-              type: 'string'
-            }, {
-              name: 'meta.description',
-              label: trans('description'),
-              type: 'string'
-            }, */{
+            {
               name: 'meta.model',
               label: 'Cet espace d\'activités n\'est pas un modèle.',
               type: 'boolean',

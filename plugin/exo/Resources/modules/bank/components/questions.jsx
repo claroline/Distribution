@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t, tex, trans, transChoice} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_SHARE} from '#/plugin/exo/bank/components/modal/share.jsx'
@@ -32,7 +31,7 @@ const QuestionsPage = props =>
       <DataListContainer
         name="questions"
         fetch={{
-          url: generateUrl('question_list')
+          url: ['question_list']
         }}
         definition={[
           {

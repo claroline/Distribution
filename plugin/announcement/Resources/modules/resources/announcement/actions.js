@@ -1,7 +1,7 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {navigate} from '#/main/app/router'
 
-import {API_REQUEST} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/app/api'
 
 import {isValid} from './validator'
 

@@ -2,14 +2,12 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
-import {url} from '#/main/core/api'
+import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {DataFormModal} from '#/main/core/data/form/modals/components/data-form'
 
-const MODAL_CHANGE_PUBLIC_URL = 'MODAL_CHANGE_PUBLIC_URL'
-
-class ChangePublicUrlModal extends Component {
+class PublicUrlModal extends Component {
   constructor(props) {
     super(props)
 
@@ -67,12 +65,11 @@ class ChangePublicUrlModal extends Component {
   }
 }
 
-ChangePublicUrlModal.propTypes = {
+PublicUrlModal.propTypes = {
   url: T.string,
   changeUrl: T.func.isRequired
 }
 
 export {
-  MODAL_CHANGE_PUBLIC_URL,
-  ChangePublicUrlModal
+  PublicUrlModal
 }

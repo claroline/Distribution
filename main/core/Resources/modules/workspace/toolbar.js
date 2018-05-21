@@ -2,7 +2,7 @@
  * A workspace toolbar.
  *
  * NB.
- * This is a standard app for now because it's our main react context.
+ * This is a standard app for now because it's out of our main react context.
  * It will be removed when the workspace container will be available
  * (only the component will be kept)
  */

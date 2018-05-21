@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
 
@@ -19,7 +19,7 @@ const PlayerComponent = props =>
     {props.tracks.map(t =>
       <track
         key={`track-${t.id}`}
-        src={generateUrl('api_get_video_track_stream', {'track': t.autoId})}
+        src={url(['api_get_video_track_stream', {track: t.autoId}])}
         label={t.meta.label}
         kind={t.meta.kind}
         srcLang={t.meta.lang}

@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 

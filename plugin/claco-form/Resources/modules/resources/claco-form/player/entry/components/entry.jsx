@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'

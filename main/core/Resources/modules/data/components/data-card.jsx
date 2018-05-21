@@ -3,6 +3,7 @@ import classes from 'classnames'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {getPlainText} from '#/main/core/data/types/html/utils'
+import {trans} from '#/main/core/translation'
 import {number} from '#/main/app/intl'
 import {Button} from '#/main/app/action/components/button'
 import {GenericButton} from '#/main/app/button/components/generic'

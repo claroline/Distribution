@@ -1,6 +1,6 @@
 import invariant from 'invariant'
 
-import {makeActionCreator} from '#/main/core/scaffolding/actions'
+import {makeActionCreator} from '#/main/app/store/actions'
 
 import {constants as actionConstants} from '#/main/app/action/constants'
 import {constants} from '#/main/app/overlay/alert/constants'
