@@ -13,7 +13,6 @@ namespace Claroline\AnnouncementBundle\Manager;
 
 use Claroline\AnnouncementBundle\API\Serializer\AnnouncementSerializer;
 use Claroline\AnnouncementBundle\Entity\Announcement;
-use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Entity\AnnouncementsWidgetConfig;
 use Claroline\AnnouncementBundle\Repository\AnnouncementRepository;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -106,29 +105,6 @@ class AnnouncementManager
     }
 
     /**
-     * Creates a new Announcement.
-     *
-     * @param AnnouncementAggregate $aggregate
-     * @param array                 $data
-     * @param bool                  $withLog
-     *
-     * @return Announcement
-     */
-    public function create(AnnouncementAggregate $aggregate, array $data, $withLog = true)
-    {
-        $this->om->startFlushSuite();
-
-        $announce = new Announcement();
-        $announce->setAggregate($aggregate);
-
-        $this->update($announce, $data, 'LogAnnouncementCreate', $withLog);
-
-        $this->om->endFlushSuite();
-
-        return $announce;
-    }
-
-    /**
      * Updates an Announcement.
      *
      * @param Announcement $announcement
@@ -149,6 +125,7 @@ class AnnouncementManager
         $roles = isset($data['roles']) && count($data['roles']) > 0 ? $this->om->findList('Claroline\CoreBundle\Entity\Role', 'uuid', $data['roles']) : [];
 
         // send message if needed
+        /*
         switch ($data['meta']['notifyUsers']) {
             case 0:
                 $this->unscheduleMessage($announcement);
@@ -166,46 +143,11 @@ class AnnouncementManager
                     $roles
                 );
                 break;
-        }
+        }*/
 
         $this->om->endFlushSuite();
-
-        // log
-        if ($withLog) {
-            $this->eventDispatcher->dispatch(
-                'log',
-                'Claroline\\AnnouncementBundle\\Event\\Log\\'.$logEvent.'Event',
-                [$announcement->getAggregate(), $announcement]
-            );
-        }
 
         return $announcement;
-    }
-
-    /**
-     * Deletes an Announcement.
-     *
-     * @param Announcement $announcement
-     * @param bool         $withLog
-     */
-    public function delete(Announcement $announcement, $withLog = true)
-    {
-        $this->om->startFlushSuite();
-
-        // delete scheduled task is any
-        $this->unscheduleMessage($announcement);
-
-        // log deletion
-        if ($withLog) {
-            $this->eventDispatcher->dispatch(
-                'log',
-                'Claroline\\AnnouncementBundle\\Event\\Log\\LogAnnouncementDeleteEvent',
-                [$announcement->getAggregate(), $announcement]
-            );
-        }
-        // do remove
-        $this->om->remove($announcement);
-        $this->om->endFlushSuite();
     }
 
     public function getVisibleAnnouncementsByWorkspace(Workspace $workspace, array $roles)

@@ -13,6 +13,8 @@ namespace Claroline\AnnouncementBundle\Listener\Resource;
 
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
+use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
@@ -49,6 +51,8 @@ class AnnouncementListener
     private $manager;
     /** @var RoleSerializer */
     private $roleSerializer;
+    /** @var Crud */
+    private $crud;
 
     /**
      * AnnouncementListener constructor.
@@ -60,7 +64,8 @@ class AnnouncementListener
      *     "requestStack"   = @DI\Inject("request_stack"),
      *     "templating"     = @DI\Inject("templating"),
      *     "manager"        = @DI\Inject("claroline.manager.announcement_manager"),
-     *     "roleSerializer" = @DI\Inject("claroline.serializer.role")
+     *     "roleSerializer" = @DI\Inject("claroline.serializer.role"),
+     *     "crud"            = @DI\Inject("claroline.api.crud")
      * })
      *
      * @param FormFactory         $formFactory
@@ -69,7 +74,8 @@ class AnnouncementListener
      * @param RequestStack        $requestStack
      * @param TwigEngine          $templating
      * @param AnnouncementManager $manager
-     * @param RoleSerializer      $roleSerializer
+     * @param RoleSerializer      $roleSerializer,
+     * @param Crud                $crud
      */
     public function __construct(
         FormFactory $formFactory,
@@ -78,7 +84,8 @@ class AnnouncementListener
         RequestStack $requestStack,
         TwigEngine $templating,
         AnnouncementManager $manager,
-        RoleSerializer $roleSerializer
+        RoleSerializer $roleSerializer,
+        Crud $crud
     ) {
         $this->formFactory = $formFactory;
         $this->httpKernel = $httpKernel;
@@ -87,6 +94,7 @@ class AnnouncementListener
         $this->templating = $templating;
         $this->manager = $manager;
         $this->roleSerializer = $roleSerializer;
+        $this->crud = $crud;
     }
 
     /**
@@ -201,10 +209,15 @@ class AnnouncementListener
         $this->om->persist($copy);
 
         $announcements = $aggregate->getAnnouncements();
+
         foreach ($announcements as $announcement) {
             $newAnnouncement = $this->manager->serialize($announcement);
-            $this->manager->create($copy, $newAnnouncement, false);
+            $this->crud->create('Claroline\AnnouncementBundle\Entity\Announcement', $newAnnouncement, [
+              'announcement_aggregate' => $copy,
+              Options::NO_LOG => Options::NO_LOG,
+            ]);
         }
+
         $this->om->endFlushSuite();
 
         $event->setCopy($copy);

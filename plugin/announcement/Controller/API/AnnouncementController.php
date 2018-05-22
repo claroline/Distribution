@@ -5,6 +5,8 @@ namespace Claroline\AnnouncementBundle\Controller\API;
 use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
+use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -32,14 +34,18 @@ class AnnouncementController
      * AnnouncementController constructor.
      *
      * @DI\InjectParams({
-     *     "manager" = @DI\Inject("claroline.manager.announcement_manager")
+     *     "manager"    = @DI\Inject("claroline.manager.announcement_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "crud"       = @DI\Inject("claroline.api.crud")
      * })
      *
-     * @param AnnouncementManager $manager
+     * @param AnnouncementManager $managersuppression
      */
-    public function __construct(AnnouncementManager $manager)
+    public function __construct(AnnouncementManager $manager, SerializerProvider $serializer, Crud $crud)
     {
         $this->manager = $manager;
+        $this->serializer = $serializer;
+        $this->crud = $crud;
     }
 
     /**
@@ -57,16 +63,14 @@ class AnnouncementController
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
 
-        try {
-            $announcement = $this->manager->create($aggregate, json_decode($request->getContent(), true));
+        $announcement = $this->crud->create($this->getClass(), $this->decodeRequest($request), [
+          'announcement_aggregate' => $aggregate,
+        ]);
 
-            return new JsonResponse(
-                $this->manager->serialize($announcement),
-                201
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($announcement),
+            201
+        );
     }
 
     /**
@@ -90,15 +94,14 @@ class AnnouncementController
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
 
-        try {
-            $this->manager->update($announcement, json_decode($request->getContent(), true));
+        $announcement = $this->crud->update($this->getClass(), $this->decodeRequest($request), [
+          'announcement_aggregate' => $aggregate,
+        ]);
 
-            return new JsonResponse(
-                $this->manager->serialize($announcement)
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($announcement),
+            201
+        );
     }
 
     /**
@@ -121,13 +124,32 @@ class AnnouncementController
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
 
-        try {
-            $this->manager->delete($announcement);
+        $this->crud->delete($announcement, [
+          'announcement_aggregate' => $aggregate,
+        ]);
 
-            return new JsonResponse(null, 204);
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
-        }
+        return new JsonResponse(null, 204);
+    }
+
+    /**
+     * Sends an announce (in current implementation, it's sent by email).
+     *
+     * @EXT\Route("/{id}/send", name="claro_announcement_send")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter(
+     *      "announcement",
+     *      class="ClarolineAnnouncementBundle:Announcement",
+     *      options={"mapping": {"id": "uuid"}}
+     * )
+     *
+     * @param AnnouncementAggregate $aggregate
+     * @param Announcement          $announcement
+     *
+     * @return JsonResponse
+     */
+    public function validateSendAction(AnnouncementAggregate $aggregate, Announcement $announcement)
+    {
+        $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
     }
 
     /**
@@ -157,5 +179,21 @@ class AnnouncementController
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
+    }
+
+    public function getClass()
+    {
+        return 'Claroline\AnnouncementBundle\Entity\Announcement';
+    }
+
+    protected function decodeRequest(Request $request)
+    {
+        $decodedRequest = json_decode($request->getContent(), true);
+
+        if (null === $decodedRequest) {
+            throw new InvalidDataException('Invalid request content sent.', []);
+        }
+
+        return $decodedRequest;
     }
 }
