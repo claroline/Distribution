@@ -5,7 +5,6 @@ import {trans} from '#/main/core/translation'
 import {select} from '#/main/core/data/list/selectors'
 import {generateUrl} from '#/main/core/api/router'
 import {
-  navigate,
   matchPath,
   withRouter
 } from '#/main/core/router'
@@ -31,12 +30,16 @@ const Actions = (props) => {
   if (matchPath(props.location.pathname, {path: '/', exact: true})) {
     moreActions = moreActions.concat([
       {
-        action: '#/users',
+        type: 'link',
+        target: '/users',
         label: trans('user_tracking', {}, 'log'),
         icon: 'fa fa-users'
       },
       {
-        action: generateUrl('apiv2_admin_tool_logs_list_csv') + props.logsQuery,
+        type: 'download',
+        file: {
+          url: generateUrl('apiv2_admin_tool_logs_list_csv') + props.logsQuery
+        },
         label: trans('download_csv_list', {}, 'log'),
         icon: 'fa fa-download'
       }
@@ -46,12 +49,17 @@ const Actions = (props) => {
   if (matchPath(props.location.pathname, {path: '/users', exact: true})) {
     moreActions = moreActions.concat([
       {
-        action: '#/',
+        type: 'link',
+        target: '/',
+        exact: true,
         label: trans('list', {}, 'platform'),
         icon: 'fa fa-list'
       },
       {
-        action: generateUrl('apiv2_admin_tool_logs_list_users_csv') + props.usersQuery,
+        type: 'download',
+        file: {
+          url: generateUrl('apiv2_admin_tool_logs_list_users_csv') + props.usersQuery
+        },
         label: trans('download_csv_list', {}, 'log'),
         icon: 'fa fa-download'
       }
@@ -63,9 +71,12 @@ const Actions = (props) => {
         matchPath(props.location.pathname, {path: '/log/:id'}) &&
         <PageAction
           id={'back-to-list'}
-          title={trans('back', {}, 'platform')}
+          label={trans('back')}
+          title={trans('back')}
           icon={'fa fa-share fa-flip-horizontal'}
-          action={() => navigate('/')}
+          type={'link'}
+          target={'/'}
+          exact={true}
         />
       }
       {moreActions.length > 0 && <MoreAction actions = {moreActions}/>}
