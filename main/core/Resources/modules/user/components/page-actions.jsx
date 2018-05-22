@@ -6,7 +6,6 @@ import {withRouter, matchPath} from '#/main/app/router'
 
 import {hasPermission} from '#/main/core/user/permissions'
 
-import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_USER_PASSWORD, MODAL_USER_PUBLIC_URL, MODAL_USER_MESSAGE} from '#/main/core/user/modals'
 import {
   PageGroupActions,
@@ -82,7 +81,7 @@ const UserPageActions = props => {
         url: ['apiv2_user_delete_bulk', {ids: [props.user.id]}],
         request: {
           method: 'DELETE'
-        },
+        }
         //success: () => window.location = url(['claro_desktop_open']) todo redirect
       },
       dangerous: true,
@@ -134,6 +133,7 @@ const UserPageActions = props => {
 
 UserPageActions.propTypes = {
   user: T.shape({
+    id: T.string.isRequired,
     meta: T.shape({
       publicUrl: T.string.isRequired,
       publicUrlTuned: T.bool

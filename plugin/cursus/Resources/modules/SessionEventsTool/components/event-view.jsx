@@ -248,12 +248,12 @@ class EventView extends Component {
                     <div className="table-responsive">
                       <table className="table table-stripped">
                         <thead>
-                        <tr>
-                          <th>{t('last_name')}</th>
-                          <th>{t('first_name')}</th>
-                          <th>{t('status')}</th>
-                          <th>{t('actions')}</th>
-                        </tr>
+                          <tr>
+                            <th>{t('last_name')}</th>
+                            <th>{t('first_name')}</th>
+                            <th>{t('status')}</th>
+                            <th>{t('actions')}</th>
+                          </tr>
                         </thead>
                         <tbody>
                           {this.props.participants.map((p, idx) =>

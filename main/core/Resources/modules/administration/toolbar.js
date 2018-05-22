@@ -17,7 +17,7 @@ import {AdministrationToolbar} from '#/main/core/administration/components/toolb
 bootstrap(
   '.administration-toolbar-container',
   connect(
-    (state) => ({
+    () => ({
       /*tools: selectors.tools(state),
       openedTool: selectors.openedTool(state)*/
     })

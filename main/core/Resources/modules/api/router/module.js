@@ -1,3 +1,5 @@
+/* global Routing */
+
 import angular from 'angular/index'
 
 function generateUrl(route, parameters = {}, absolute = false) {

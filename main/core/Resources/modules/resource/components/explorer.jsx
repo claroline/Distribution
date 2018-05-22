@@ -1,6 +1,5 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {SummarizedContent} from '#/main/core/layout/summary/components/content'

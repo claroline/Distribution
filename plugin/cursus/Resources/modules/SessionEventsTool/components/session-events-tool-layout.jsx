@@ -4,6 +4,8 @@ import {PropTypes as T} from 'prop-types'
 import {selectors} from '../selectors'
 import {actions} from '../actions'
 
+import {Router} from '#/main/app/router'
+
 import {ManagerView} from './manager-view.jsx'
 import {UserView} from './user-view.jsx'
 import {EventView} from './event-view.jsx'
@@ -30,17 +32,14 @@ let SessionEventsToolLayout = props =>
   </div>
 
 SessionEventsToolLayout.propTypes = {
-  canEdit: T.bool
-}
-
-function mapStateToProps(state) {
-  return {
-    canEdit: selectors.canEdit(state)
-  }
+  canEdit: T.bool,
+  fetch: T.func.isRequired
 }
 
 SessionEventsToolLayout = connect(
-  mapStateToProps,
+  (state) => ({
+    canEdit: selectors.canEdit(state)
+  }),
   (dispatch) => ({
     fetch(id) {
       dispatch(actions.fetchSessionEvent(id))
@@ -48,4 +47,6 @@ SessionEventsToolLayout = connect(
   })
 )(SessionEventsToolLayout)
 
-export {SessionEventsToolLayout}
+export {
+  SessionEventsToolLayout
+}

@@ -44,7 +44,8 @@ DataDetailsField.propTypes = {
   type: T.string,
   label: T.string.isRequired,
   hideLabel: T.bool,
-  options: T.object
+  options: T.object,
+  className: T.string
 }
 
 const DataDetailsGroup = props => {
@@ -73,7 +74,8 @@ DataDetailsGroup.propTypes = {
   type: T.string,
   label: T.string.isRequired,
   hideLabel: T.bool,
-  options: T.object
+  options: T.object,
+  help: T.oneOfType([T.string, T.arrayOf(T.string)])
 }
 
 const DataDetails = props => {

@@ -13,12 +13,12 @@ import {HelpBlock} from '#/main/core/layout/form/components/help-block.jsx'
  * @deprecated only used in claco-form
  */
 const UserPickerModal = props =>
-  <BaseModal {...props}>
+  <Modal {...props}>
     <div className="modal-body">
       {props.help && <HelpBlock help={props.help} />}
       <UserTypeahead {...props}/>
     </div>
-  </BaseModal>
+  </Modal>
 
 UserPickerModal.propTypes = {
   bsStyle: T.oneOf(['info', 'warning', 'success', 'danger']).isRequired,

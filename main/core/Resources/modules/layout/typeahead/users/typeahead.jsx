@@ -83,8 +83,8 @@ export class UserTypeahead extends Component {
         method: 'GET' ,
         credentials: 'include'
       })
-      .then(response => response.json())
-      .then(results => this.setState({results: results.data, isFetching: false}))
+        .then(response => response.json())
+        .then(results => this.setState({results: results.data, isFetching: false}))
     }
   }
 

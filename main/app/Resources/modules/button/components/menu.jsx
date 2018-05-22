@@ -47,47 +47,47 @@ const MenuButton = props => {
 
   // only display button if there are actions
   return (
-      <MenuOverlay
-        id={`${props.id}-menu`}
-        position={props.menu.position}
-        align={props.menu.align}
+    <MenuOverlay
+      id={`${props.id}-menu`}
+      position={props.menu.position}
+      align={props.menu.align}
+    >
+      <CallbackButton
+        {...omit(props, 'menu')}
+        className={classes('dropdown-toggle', props.className)}
+        bsRole="toggle"
+        disabled={0 === displayedActions.length}
+        callback={() => true}
       >
-        <CallbackButton
-          {...omit(props, 'menu')}
-          className={classes('dropdown-toggle', props.className)}
-          bsRole="toggle"
-          disabled={0 === displayedActions.length}
-          callback={() => true}
-        >
-          {props.children}
-        </CallbackButton>
+        {props.children}
+      </CallbackButton>
 
-        <Menu>
-          {(props.menu.label && 0 !== unclassifiedActions.length) &&
-            <MenuItem header={true}>{props.menu.label}</MenuItem>
-          }
+      <Menu>
+        {(props.menu.label && 0 !== unclassifiedActions.length) &&
+          <MenuItem header={true}>{props.menu.label}</MenuItem>
+        }
 
-          {unclassifiedActions.map((action) =>
+        {unclassifiedActions.map((action) =>
+          <MenuAction key={toKey(action.label)} {...action} />
+        )}
+
+        {Object.keys(groupActions).map((group) => [
+          <MenuItem key={toKey(group)} header={true}>{group}</MenuItem>,
+          ...groupActions[group].map((action) =>
             <MenuAction key={toKey(action.label)} {...action} />
-          )}
+          )
+        ])}
 
-          {Object.keys(groupActions).map((group) => [
-            <MenuItem key={toKey(group)} header={true}>{group}</MenuItem>,
-            ...groupActions[group].map((action) =>
-              <MenuAction key={toKey(action.label)} {...action} />
-            )
-          ])}
+        {((0 !== unclassifiedActions.length || 0 !== Object.keys(groupActions).length) && 0 !== dangerousActions.length) &&
+          <MenuItem divider={true} />
+        }
 
-          {((0 !== unclassifiedActions.length || 0 !== Object.keys(groupActions).length) && 0 !== dangerousActions.length) &&
-            <MenuItem divider={true} />
-          }
-
-          {dangerousActions.map((action) =>
-            <MenuAction key={toKey(action.label)} {...action} />
-          )}
-        </Menu>
-      </MenuOverlay>
-    )
+        {dangerousActions.map((action) =>
+          <MenuAction key={toKey(action.label)} {...action} />
+        )}
+      </Menu>
+    </MenuOverlay>
+  )
 }
 
 implementPropTypes(MenuButton, ButtonTypes, {

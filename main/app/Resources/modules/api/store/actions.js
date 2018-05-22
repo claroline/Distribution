@@ -81,7 +81,7 @@ actions.uploadFile = (file, uploadUrl = ['apiv2_file_upload'], onSuccess = () =>
   formData.append('sourceType', 'uploadedfile')
 
   return ({
-    [API_REQUEST]: {
+    [constants.API_REQUEST]: {
       url: uploadUrl,
       type: 'upload',
       request: {
@@ -94,7 +94,7 @@ actions.uploadFile = (file, uploadUrl = ['apiv2_file_upload'], onSuccess = () =>
 }
 
 actions.deleteFile = (fileId, onSuccess = () => {}) => ({
-  [API_REQUEST]: {
+  [constants.API_REQUEST]: {
     url: url(['apiv2_publicfile_delete_bulk'], {ids: [fileId]}),
     request: {
       method: 'DELETE'

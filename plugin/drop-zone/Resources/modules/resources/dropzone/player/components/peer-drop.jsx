@@ -87,7 +87,7 @@ function mapStateToProps(state) {
     user: select.user(state),
     dropzone: select.dropzone(state),
     drop: select.peerDrop(state),
-    myTeamId: select.myTeamId(state),
+    myTeamId: select.myTeamId(state)
   }
 }
 

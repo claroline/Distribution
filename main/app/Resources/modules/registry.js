@@ -6,7 +6,7 @@ const registries = {}
 
 const supportedEvents = ['get', 'add', 'remove']
 
-// todo find a way to valid entries
+// todo find a way to validate entries
 
 /**
  * Declares a new registry.
@@ -90,7 +90,7 @@ function declareRegistry(registryName) {
 
     on(event, callback) {
       invariant(-1 !== supportedEvents.indexOf(event), log(`Event "${event}" is not supported.`))
-      invariant(typeof callback === 'function', log(`Event callback must be a function.`))
+      invariant(typeof callback === 'function', log(`Event "${event}" callback must be a function.`))
 
       if (!events[registryName][event]) {
         events[registryName][event] = []
@@ -100,7 +100,12 @@ function declareRegistry(registryName) {
     },
 
     off(event, callback) {
-      // TODO : implement
+      if (events[registryName][event]) {
+        const pos = events[registryName][event].indexOf(callback)
+        if (-1 !== pos) {
+          events[registryName][event].splice(pos, 1)
+        }
+      }
     }
   }
 }

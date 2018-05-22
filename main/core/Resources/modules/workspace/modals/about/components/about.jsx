@@ -67,7 +67,7 @@ const AboutModal = props =>
               type: 'boolean',
               options: {
                 icon: 'fa fa-fw fa-object-group',
-                labelChecked: 'Cette espace d\'activités est un modèle.',
+                labelChecked: 'Cette espace d\'activités est un modèle.'
               }
             }, {
               name: 'meta.personal',
@@ -75,7 +75,7 @@ const AboutModal = props =>
               type: 'boolean',
               options: {
                 icon: 'fa fa-fw fa-user',
-                labelChecked: 'Cet espace d\'activités est un espace personnel.',
+                labelChecked: 'Cet espace d\'activités est un espace personnel.'
               }
             }, {
               name: 'registration.selfRegistration',
@@ -83,7 +83,7 @@ const AboutModal = props =>
               type: 'boolean',
               options: {
                 icon: 'fa fa-fw fa-user-plus',
-                labelChecked: 'Les inscriptions sont publiques.',
+                labelChecked: 'Les inscriptions sont publiques.'
               }
             }, {
               name: 'registration.selfUnregistration',
@@ -91,7 +91,7 @@ const AboutModal = props =>
               type: 'boolean',
               options: {
                 icon: 'fa fa-fw fa-user-times',
-                labelChecked: 'Les désinscriptions sont publiques.',
+                labelChecked: 'Les désinscriptions sont publiques.'
               }
             }
           ]

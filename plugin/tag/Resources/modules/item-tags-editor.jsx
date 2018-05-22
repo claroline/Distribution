@@ -94,8 +94,8 @@ class TagsEditor extends Component {
         method: 'GET' ,
         credentials: 'include'
       })
-      .then(response => response.json())
-      .then(results => this.setState({results: results, isFetching: false}))
+        .then(response => response.json())
+        .then(results => this.setState({results: results, isFetching: false}))
     } else {
       this.setState({results: [], isFetching: false})
     }
@@ -182,10 +182,6 @@ TagsEditor.propTypes = {
   }).isRequired,
   updateItemTags: T.func.isRequired,
   updateCallback: T.func.isRequired
-}
-
-TagsEditor.defaultProps = {
-  updateCallback: () => {}
 }
 
 function mapStateToProps() {

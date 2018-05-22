@@ -22,7 +22,7 @@ const UrlDisplay = (props) =>
       label={trans('clipboard_copy')}
       className="btn-link"
       icon="fa fa-fw fa-clipboard"
-      callback={() => copy(props.value)}
+      callback={() => copy(props.data)}
     />
   </div>
 

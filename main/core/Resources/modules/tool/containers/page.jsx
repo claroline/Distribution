@@ -6,7 +6,9 @@ import {selectors} from '#/main/core/tool/store'
 import {PageContainer} from '#/main/core/layout/page/containers/page'
 
 const ToolPageContainer = connect(
-
+  (state) => ({
+    editable: selectors.editable(state)
+  })
 )(PageContainer)
 
 export {

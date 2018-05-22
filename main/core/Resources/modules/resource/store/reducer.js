@@ -1,3 +1,5 @@
+import merge from 'lodash/merge'
+
 import {makeReducer} from '#/main/core/scaffolding/reducer'
 
 import {

@@ -5,8 +5,6 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 
 import {
-  PageAction,
-  PageActions,
   PageHeader,
   PageContent
 } from '#/main/core/layout/page'
@@ -51,7 +49,7 @@ const Tool = props =>
             }
           } else {
             // changes the target of the list to add current directory in URL
-            const fetchUrl = ['apiv2_resource_list', {parent: resourceNode.id}]
+            {/*const fetchUrl = ['apiv2_resource_list', {parent: resourceNode.id}]*/}
 
 
             action = {

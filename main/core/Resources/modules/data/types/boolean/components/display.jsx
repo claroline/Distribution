@@ -2,8 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {parseBool} from '#/main/core/data/types/boolean/utils'
-
 const BooleanDisplay = (props) =>
   <div className={classes('boolean-display', {
     true: props.data,

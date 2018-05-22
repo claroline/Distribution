@@ -1,5 +1,4 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'

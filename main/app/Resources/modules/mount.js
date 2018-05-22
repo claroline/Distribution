@@ -40,12 +40,12 @@ function mount(container, rootComponent, reducers = null, initialData = {}) {
   }
 
   // Render app
-  /*try {*/
+  try {
     ReactDOM.render(appRoot, container)
-  /*} catch (error) {
+  } catch (error) {
     // rethrow errors (in some case they are swallowed)
     throw error
-  }*/
+  }
 }
 
 function unmount(container) {

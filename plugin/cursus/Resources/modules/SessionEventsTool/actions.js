@@ -4,7 +4,6 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 import {trans} from '#/main/core/translation'
-import {VIEW_MANAGER, VIEW_USER, VIEW_EVENT} from './enums'
 
 export const SESSION_EVENTS_LOAD = 'SESSION_EVENTS_LOAD'
 export const SESSION_EVENT_LOAD = 'SESSION_EVENT_LOAD'
@@ -321,11 +320,7 @@ actions.acceptSessionEventUser = (sessionEventUserId) => ({
   }
 })
 
-actions.displayMainView = () => (dispatch, getState) => {
-  const state = getState()
-  const mode = state['canEdit'] ? VIEW_MANAGER : VIEW_USER
-
-}
+actions.displayMainView = () => {}
 
 actions.displaySessionEvent = (sessionEventId) => {
   return (dispatch) => {

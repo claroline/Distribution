@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 
 import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'

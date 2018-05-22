@@ -80,9 +80,9 @@ class UserView extends Component {
                   if (rowData.eventSet) {
                     return (
                       <button className="btn btn-default" onClick={() => this.showSessionEventSet(rowData.eventSet)}>
-                          <span className="label label-info">
-                            {rowData.eventSet['name']}
-                          </span>
+                        <span className="label label-info">
+                          {rowData.eventSet['name']}
+                        </span>
                         &nbsp;
                         {trans('self_register_to_session_event_set', {}, 'cursus')}
                       </button>

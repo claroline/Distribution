@@ -324,8 +324,8 @@ class ContentPanel extends Component {
             item={this.props.item}
             validating={this.props.validating}
             onChange={(propertyPath, value) =>
-                this.props.handleContentItemUpdate(this.props.item.id, propertyPath, value)
-              }
+              this.props.handleContentItemUpdate(this.props.item.id, propertyPath, value)
+            }
           >
             {React.createElement(
               getContentDefinition(this.props.item.type).editor.component,
@@ -611,6 +611,8 @@ StepEditor.propTypes = {
   handleItemMove: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
+  handleItemDetailUpdate: T.func.isRequired,
+  handleContentItemDetailUpdate: T.func.isRequired,
   handleItemHintsUpdate: T.func.isRequired,
   handleItemsImport: T.func.isRequired,
   handleContentItemCreate: T.func.isRequired,

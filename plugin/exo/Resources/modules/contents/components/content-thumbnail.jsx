@@ -61,12 +61,34 @@ Actions.propTypes = {
   handleExpand: T.func
 }
 
-let ContentThumbnail = props => {
-  return props.connectDropTarget(
-      <span
-        className={classes('content-thumbnail', {'active': props.active})}
-        style={{opacity: props.isDragging ? 0 : 1}}
-        onClick={() => {
+let ContentThumbnail = props => props.connectDropTarget(
+  <span
+    className={classes('content-thumbnail', {'active': props.active})}
+    style={{opacity: props.isDragging ? 0 : 1}}
+    onClick={() => {
+      props.showModal(MODAL_CONTENT, {
+        fadeModal: () => props.fadeModal(),
+        hideModal: () => props.hideModal(),
+        data: props.data,
+        type: props.type
+      })
+    }}
+  >
+    <span className="content-thumbnail-topbar">
+      {props.hasErrors &&
+      <ValidationStatus
+        id={`${props.id}-thumb-tip`}
+        validating={props.validating}
+      />
+      }
+      <Actions
+        hasDeleteBtn={props.canDelete}
+        hasEditBtn={props.canEdit}
+        hasSortBtn={props.canSort}
+        hasExpandBtn={getContentDefinition(props.type).type === 'video'}
+        handleEdit={props.handleEdit}
+        handleDelete={props.handleDelete}
+        handleExpand={() => {
           props.showModal(MODAL_CONTENT, {
             fadeModal: () => props.fadeModal(),
             hideModal: () => props.hideModal(),
@@ -74,42 +96,17 @@ let ContentThumbnail = props => {
             type: props.type
           })
         }}
-      >
-        <span className="content-thumbnail-topbar">
-          {props.hasErrors &&
-            <ValidationStatus
-              id={`${props.id}-thumb-tip`}
-              validating={props.validating}
-            />
-          }
-          <Actions
-            hasDeleteBtn={props.canDelete}
-            hasEditBtn={props.canEdit}
-            hasSortBtn={props.canSort}
-            hasExpandBtn={getContentDefinition(props.type).type === 'video'}
-            handleEdit={props.handleEdit}
-            handleDelete={props.handleDelete}
-            handleExpand={() => {
-              props.showModal(MODAL_CONTENT, {
-                fadeModal: () => props.fadeModal(),
-                hideModal: () => props.hideModal(),
-                data: props.data,
-                type: props.type
-              })
-            }}
-            {...props}
-          />
-        </span>
-        <span className="content-thumbnail-content">
-          {React.createElement(
-            getContentDefinition(props.type).thumbnail,
-            {data: props.data, type: props.type}
-          )}
-        </span>
-      </span>
-    )
-
-}
+        {...props}
+      />
+    </span>
+    <span className="content-thumbnail-content">
+      {React.createElement(
+        getContentDefinition(props.type).thumbnail,
+        {data: props.data, type: props.type}
+      )}
+    </span>
+  </span>
+)
 
 ContentThumbnail.propTypes = {
   id: T.string.isRequired,

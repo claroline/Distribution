@@ -1,24 +1,17 @@
 /* global window */
 
-import React, {Component} from 'react'
+import {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 // taken from bootstrap
-const SCREEN_XS_MAX = 768;
-const SCREEN_SM_MAX = 992;
-const SCREEN_MD_MAX = 1200;
+const SCREEN_XS_MAX = 768
+const SCREEN_SM_MAX = 992
+const SCREEN_MD_MAX = 1200
 
 const SIZE_XS = 'xs'
 const SIZE_SM = 'sm'
 const SIZE_MD = 'md'
 const SIZE_LG = 'lg'
-
-const SCREEN_SIZES = [
-  SIZE_XS,
-  SIZE_SM,
-  SIZE_MD,
-  SIZE_LG
-]
 
 /**
  * A component that have different rendering based on
@@ -43,7 +36,7 @@ class Responsive extends Component
     window.addEventListener('resize', this.resize)
   }
 
-  componentWillUpdate() {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.resize)
   }
 

@@ -12,8 +12,10 @@ const MenuOverlay = props =>
   </Dropdown>
 
 MenuOverlay.propTypes = {
+  id: T.string.isRequired,
   position: T.oneOf(['top', 'bottom']),
-  align: T.oneOf(['left', 'right'])
+  align: T.oneOf(['left', 'right']),
+  children: T.element.isRequired
 }
 
 MenuOverlay.defaultProps = {

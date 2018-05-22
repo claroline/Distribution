@@ -7,6 +7,8 @@ import {Toolbar} from '#/main/app/overlay/toolbar/components/toolbar'
 import {MODAL_WORKSPACE_ABOUT} from '#/main/core/workspace/modals/about'
 import {MODAL_WORKSPACE_IMPERSONATION} from '#/main/core/workspace/modals/impersonation'
 
+// todo implement
+
 const AdministrationToolbar = props =>
   <Toolbar
     active={props.openedTool}
@@ -18,14 +20,14 @@ const AdministrationToolbar = props =>
         icon: 'fa fa-info',
         label: trans('show-info', {}, 'actions'),
         modal: [MODAL_WORKSPACE_ABOUT, {
-          workspace: props.workspace
+
         }]
       }, {
         type: 'modal',
         icon: 'fa fa-user-secret',
         label: trans('view-as', {}, 'actions'),
         modal: [MODAL_WORKSPACE_IMPERSONATION, {
-          workspace: props.workspace
+
         }]
       }
     ]}

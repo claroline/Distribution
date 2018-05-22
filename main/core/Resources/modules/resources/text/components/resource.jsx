@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {select as formSelect} from '#/main/core/data/form/selectors'

@@ -154,11 +154,11 @@ class EventCommentsModal  extends Component {
                   />
                   <br/>
                   <button className="btn btn-primary" onClick={() => this.validateNewComment(false)}>
-                      {t('ok')}
+                    {t('ok')}
                   </button>
                   &nbsp;
                   <button className="btn btn-default" onClick={() => this.switchCreationForm(false)}>
-                      {t('cancel')}
+                    {t('cancel')}
                   </button>
                 </div> :
                 <button className="btn btn-default" onClick={() => this.switchCreationForm(true)}>
@@ -193,11 +193,11 @@ class EventCommentsModal  extends Component {
                             />
                             <br/>
                             <button className="btn btn-primary" onClick={() => this.validateEditionComment()}>
-                                {t('ok')}
+                              {t('ok')}
                             </button>
                             &nbsp;
                             <button className="btn btn-default" onClick={() => this.switchEditionForm(0, null)}>
-                                {t('cancel')}
+                              {t('cancel')}
                             </button>
                           </td>
                         </tr>

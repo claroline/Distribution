@@ -57,7 +57,7 @@ const ThemesPage = props =>
           }, {
             type: 'callback',
             icon: 'fa fa-fw fa-trash-o',
-            label: t('delete'),
+            label: trans('delete', {}, 'actions'),
             disabled: !rows.find(row => row.meta.custom), // at least one theme should be deletable
             callback: () => props.removeThemes(rows),
             dangerous: true
