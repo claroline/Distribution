@@ -12,6 +12,7 @@
 namespace Claroline\InstallationBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\InstallationBundle\Additional\AdditionalInstallerInterface;
 use Claroline\InstallationBundle\Bundle\InstallableInterface;
 use Claroline\InstallationBundle\Fixtures\FixtureLoader;
@@ -77,6 +78,12 @@ class InstallationManager
             $this->fixtureLoader->load($bundle, $fixturesDir);
         }
 
+        // Load configuration
+        if ($bundle instanceof PluginBundleInterface) {
+            $this->log('Saving configuration...');
+            $this->container->get('claroline.plugin.recorder')->register($bundle);
+        }
+
         if ($additionalInstaller) {
             $this->log('Launching post-installation actions...');
             $additionalInstaller->postInstall();
@@ -113,6 +120,12 @@ class InstallationManager
         if ($bundle->hasMigrations()) {
             $this->log('Executing migrations...');
             $this->migrationManager->upgradeBundle($bundle, Migrator::VERSION_FARTHEST);
+        }
+
+        // Update configuration
+        if ($bundle instanceof PluginBundleInterface) {
+            $this->log('Updating configuration...');
+            $this->container->get('claroline.plugin.recorder')->update($bundle);
         }
 
         if ($additionalInstaller) {

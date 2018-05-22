@@ -113,9 +113,9 @@ class Installer
     {
         $this->baseInstaller->install($plugin);
 
-        $this->log('Saving configuration...');
-        $this->validatePlugin($plugin);
-        $pluginEntity = $this->recorder->register($plugin, $this->validator->getPluginConfiguration());
+        $pluginEntity = $this->pluginManager->getPluginByShortName(
+            $this->pluginManager->getPluginShortName($plugin)
+        );
 
         if (!$this->pluginManager->isReady($pluginEntity) || !$this->pluginManager->isActivatedByDefault($pluginEntity)) {
             $errors = $this->pluginManager->getMissingRequirements($pluginEntity);
@@ -165,13 +165,7 @@ class Installer
     {
         $this->checkInstallationStatus($plugin, true);
 
-        $this->validator->activeUpdateMode();
-        $this->validatePlugin($plugin);
-        $this->validator->deactivateUpdateMode();
-
-        $this->log('Updating plugin configuration...');
         $this->baseInstaller->update($plugin, $currentVersion, $targetVersion);
-        $this->recorder->update($plugin, $this->validator->getPluginConfiguration());
 
         // updates plugin version
         $this->versionManager->setLogger($this->logger);
@@ -197,35 +191,15 @@ class Installer
         }
     }
 
-    public function validatePlugin(PluginBundleInterface $plugin)
-    {
-        $this->log('Validating configuration...');
-        $errors = $this->validator->validate($plugin);
-
-        if (0 !== count($errors)) {
-            $report = "Plugin '{$plugin->getNamespace()}' cannot be installed, due to the "
-                .'following validation errors :'.PHP_EOL;
-
-            foreach ($errors as $error) {
-                $report .= $error->getMessage().PHP_EOL;
-            }
-
-            throw new \Exception($report);
-        }
-    }
-
     public function updateAllConfigurations()
     {
         $bundles = $this->pluginManager->getInstalledBundles();
 
         foreach ($bundles as $bundle) {
             $this->log('Updating configuration for '.get_class($bundle['instance']));
-            $this->validator->activeUpdateMode();
-            $this->validatePlugin($bundle['instance']);
-            $this->validator->deactivateUpdateMode();
             $this->log('Plugin validated: proceed to database changes...');
             $this->om->clear();
-            $this->recorder->update($bundle['instance'], $this->validator->getPluginConfiguration());
+            $this->recorder->update($bundle['instance']);
         }
     }
 }

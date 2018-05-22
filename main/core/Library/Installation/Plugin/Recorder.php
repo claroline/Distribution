@@ -26,20 +26,29 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class Recorder
 {
+    /** @var DatabaseWriter */
     private $dbWriter;
+
+    /** @var Validator */
+    private $validator;
 
     /**
      * Recorder constructor.
      *
-     * @param DatabaseWriter $dbWriter
-     *
      * @DI\InjectParams({
-     *     "dbWriter" = @DI\Inject("claroline.plugin.recorder_database_writer")
+     *     "dbWriter"  = @DI\Inject("claroline.plugin.recorder_database_writer"),
+     *     "validator" = @DI\Inject("claroline.plugin.validator")
      * })
+     *
+     * @param DatabaseWriter $dbWriter
+     * @param Validator      $validator
      */
-    public function __construct(DatabaseWriter $dbWriter)
+    public function __construct(
+        DatabaseWriter $dbWriter,
+        Validator $validator)
     {
         $this->dbWriter = $dbWriter;
+        $this->validator = $validator;
     }
 
     /**
@@ -56,24 +65,26 @@ class Recorder
      * Registers a plugin.
      *
      * @param PluginBundleInterface $plugin
-     * @param array $pluginConfiguration
      *
      * @return Plugin
      */
-    public function register(PluginBundleInterface $plugin, array $pluginConfiguration)
+    public function register(PluginBundleInterface $plugin)
     {
-        return $this->dbWriter->insert($plugin, $pluginConfiguration);
+        $this->validate($plugin, false);
+
+        return $this->dbWriter->insert($plugin, $this->validator->getPluginConfiguration());
     }
 
     /**
      * Update configuration for a plugin.
      *
      * @param PluginBundleInterface $plugin
-     * @param array                 $pluginConfiguration
      */
-    public function update(PluginBundleInterface $plugin, array $pluginConfiguration)
+    public function update(PluginBundleInterface $plugin)
     {
-        $this->dbWriter->update($plugin, $pluginConfiguration);
+        $this->validate($plugin, true);
+
+        $this->dbWriter->update($plugin, $this->validator->getPluginConfiguration());
     }
 
     /**
@@ -97,6 +108,26 @@ class Recorder
     public function isRegistered(PluginBundleInterface $plugin)
     {
         return $this->dbWriter->isSaved($plugin);
+    }
+
+    public function validate(PluginBundleInterface $plugin, $update = false)
+    {
+        if ($update) {
+            $this->validator->activeUpdateMode();
+        }
+        $errors = $this->validator->validate($plugin);
+        $this->validator->deactivateUpdateMode();
+
+        if (0 !== count($errors)) {
+            $report = "Plugin '{$plugin->getNamespace()}' cannot be installed, due to the "
+                .'following validation errors :'.PHP_EOL;
+
+            foreach ($errors as $error) {
+                $report .= $error->getMessage().PHP_EOL;
+            }
+
+            throw new \Exception($report);
+        }
     }
 
     public function setLogger($logger)
