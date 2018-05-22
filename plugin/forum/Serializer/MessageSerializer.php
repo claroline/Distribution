@@ -82,7 +82,7 @@ class MessageSerializer
           'id' => $message->getSubject()->getId(),
         ];
 
-        $data['meta']['blocked'] = $message->isBlocked();
+        $data['meta']['flagged'] = $message->isFlagged();
 
         return $data;
     }
@@ -116,7 +116,7 @@ class MessageSerializer
             $message->setParent($parent);
         }
 
-        $this->sipe('meta.blocked', 'setIsBlocked', $data, $message);
+        $this->sipe('meta.flagged', 'setflagged', $data, $message);
 
         return $message;
     }

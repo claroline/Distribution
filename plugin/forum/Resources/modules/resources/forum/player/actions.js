@@ -130,11 +130,11 @@ actions.createComment = (messageId, comment) => ({
   }
 })
 
-actions.blockMessage = (message) => ({
+actions.flagMessage = (message) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_message_update', {id: message.id}],
     request: {
-      body: JSON.stringify(Object.assign({}, message, {meta: {blocked:true}})),
+      body: JSON.stringify(Object.assign({}, message, {meta: {flagged:true}})),
       method: 'PUT'
     },
     success: (data, dispatch) => {

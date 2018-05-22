@@ -167,6 +167,16 @@ class SubjectComponent extends Component {
                 displayed: (get(this.props.subject, 'meta.closed')),
                 action: () => this.props.unClosedSubject(this.props.subject)
               }, {
+                icon: 'fa fa-fw fa-flag',
+                label: trans('flag', {}, 'forum'),
+                displayed: !(get(this.props.subject, 'meta.flagged')),
+                action: () => this.props.flagSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-flag-o',
+                label: trans('unflag', {}, 'forum'),
+                displayed: (get(this.props.subject, 'meta.flagged')),
+                action: () => this.props.unFlagSubject(this.props.subject)
+              },{
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 displayed: true,
@@ -199,10 +209,10 @@ class SubjectComponent extends Component {
                         displayed: true,
                         action: () => this.setState({showMessageForm: message.id})
                       }, {
-                        icon: 'fa fa-fw fa-ban',
-                        label: trans('block', {}, 'forum'),
+                        icon: 'fa fa-fw fa-flag',
+                        label: trans('flag', {}, 'forum'),
                         displayed: true,
-                        action: () => this.props.blockMessage(message)
+                        action: () => this.props.flagMessage(message)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
@@ -239,8 +249,8 @@ class SubjectComponent extends Component {
                                 displayed: true,
                                 action: () => this.setState({showCommentForm: comment.id})
                               }, {
-                                icon: 'fa fa-fw fa-ban',
-                                label: trans('block', {}, 'forum'),
+                                icon: 'fa fa-fw fa-flag ',
+                                label: trans('flag', {}, 'forum'),
                                 displayed: true,
                                 action: () => console.log(comment)
                               }, {
@@ -293,7 +303,7 @@ class SubjectComponent extends Component {
           </div>
 
         }
-        {!this.props.showSubjectForm || !get(this.props.subject, 'meta.closed') &&
+        {(!this.props.showSubjectForm || !get(this.props.subject, 'meta.closed')) &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
@@ -311,7 +321,10 @@ SubjectComponent.propTypes = {
   subjectForm: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
-  blockMessage: T.func.isRequired,
+  flagMessage: T.func.isRequired,
+  unFlagMessage: T.func.isRequired,
+  flagSubject: T.func.isRequired,
+  unFlagSubject: T.func.isRequired,
   deleteData: T.func.isRequired,
   createComment: T.func.isRequired,
   subjectEdition: T.func.isRequired,
@@ -371,8 +384,14 @@ const Subject =  withRouter(connect(
     editContent(id, content) {
       dispatch(actions.editContent(id, content))
     },
-    blockMessage(message) {
-      dispatch(actions.blockMessage(message))
+    flagMessage(message) {
+      dispatch(actions.flagMessage(message))
+    },
+    flagSubject(subject) {
+      dispatch(actions.flagSubject(subject))
+    },
+    unFlagSubject(subject) {
+      dispatch(actions.unFlagSubject(subject))
     }
   })
 )(SubjectComponent))

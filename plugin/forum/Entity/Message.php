@@ -55,7 +55,7 @@ class Message extends AbstractMessage
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $isBlocked = false;
+    protected $flagged = false;
 
     public function setSubject(Subject $subject)
     {
@@ -92,13 +92,13 @@ class Message extends AbstractMessage
         return $this->children;
     }
 
-    public function setIsBlocked($bool)
+    public function setflagged($bool)
     {
-        $this->isBlocked = $bool;
+        $this->isFlagged = $bool;
     }
 
-    public function isBlocked()
+    public function isFlagged()
     {
-        return $this->isBlocked;
+        return $this->isFlagged;
     }
 }
