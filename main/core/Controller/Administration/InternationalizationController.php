@@ -42,7 +42,11 @@ class InternationalizationController extends Controller
         $availableLocales = $localeManager->getImplementedLocales();
         $activatedLocales = $localeManager->retrieveAvailableLocales();
 
-        $form = $this->createForm(new InternationalizationType($activatedLocales, $availableLocales));
+        $form = $this->createForm(
+          InternationalizationType::class,
+          null,
+          ['activatedLocales' => $activatedLocales, 'availableLocales' => $availableLocales]
+        );
 
         return [
             'form' => $form->createView(),
@@ -54,7 +58,7 @@ class InternationalizationController extends Controller
      *
      * @EXT\Route("", name="claro_admin_i18n_submit")
      * @EXT\Method("POST")
-     * @EXT\Template("ClarolineCoreBundle:Administration:Internationalization\form.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration:internationalization\form.html.twig")
      *
      * @return array|RedirectResponse
      */
@@ -65,7 +69,11 @@ class InternationalizationController extends Controller
         $availableLocales = $localeManager->getImplementedLocales();
         $activatedLocales = $localeManager->retrieveAvailableLocales();
 
-        $form = $this->createForm(new InternationalizationType($activatedLocales, $availableLocales));
+        $form = $this->createForm(
+          InternationalizationType::class,
+          null,
+          ['activatedLocales' => $activatedLocales, 'availableLocales' => $availableLocales]
+        );
 
         $form->handleRequest($this->get('request_stack')->getMasterRequest());
         if ($form->isValid()) {

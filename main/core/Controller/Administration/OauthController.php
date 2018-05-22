@@ -60,7 +60,7 @@ class OauthController extends Controller
      *     name="claro_admin_oauth_claroline",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\list.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
@@ -84,7 +84,7 @@ class OauthController extends Controller
      *     name="claro_admin_oauth_clients",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\clients.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
@@ -104,14 +104,14 @@ class OauthController extends Controller
      *     name="claro_admin_oauth_client_form",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\modal_create_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function modalCreateFormAction()
     {
-        $form = $this->get('form.factory')->create(new OauthClientType());
+        $form = $this->get('form.factory')->create(OauthClientType::class);
 
         return ['form' => $form->createView()];
     }
@@ -122,14 +122,14 @@ class OauthController extends Controller
      *     name="claro_admin_oauth_form_edit",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\modal_edit_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function modalEditFormAction(Client $client)
     {
-        $form = $this->get('form.factory')->create(new OauthClientType(), $client);
+        $form = $this->get('form.factory')->create(OauthClientType::class, $client);
 
         return ['form' => $form->createView(), 'client' => $client];
     }
@@ -140,14 +140,14 @@ class OauthController extends Controller
      *     name="claro_admin_oauth_client_create",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template("ClarolineCoreBundle:Administration:oauth\modalCreateForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\modal_create_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function createClientAction()
     {
-        $form = $this->get('form.factory')->create(new OauthClientType());
+        $form = $this->get('form.factory')->create(OauthClientType::class);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -177,14 +177,14 @@ class OauthController extends Controller
      *     name="claro_admin_oauth_client_edit",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template("ClarolineCoreBundle:Administration:oauth\modalEditForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\modal_edit_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function editClientAction(Client $client)
     {
-        $form = $this->get('form.factory')->create(new OauthClientType(), $client);
+        $form = $this->get('form.factory')->create(OauthClientType::class, $client);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -232,14 +232,14 @@ class OauthController extends Controller
      *     options = {"expose"=true}
      * )
      *
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\request_friend_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function requestFriendFormAction()
     {
-        $form = $this->get('form.factory')->create(new RequestFriendType());
+        $form = $this->get('form.factory')->create(RequestFriendType::class);
 
         return ['form' => $form->createView()];
     }
@@ -250,14 +250,14 @@ class OauthController extends Controller
      *     name="oauth_request_friend_submit",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template("ClarolineCoreBundle:Administration:Oauth\requestFriendForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\request_friend_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function requestFriendSubmitAction()
     {
-        $form = $this->get('form.factory')->create(new RequestFriendType(), new FriendRequest());
+        $form = $this->get('form.factory')->create(RequestFriendType::class, new FriendRequest());
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -412,14 +412,14 @@ class OauthController extends Controller
      *     options = {"expose"=true}
      * )
      *
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:administration/oauth:friend_authentication_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function friendAuthenticationFormAction(FriendRequest $friend)
     {
-        $form = $this->get('form.factory')->create(new FriendAuthenticationType(), $friend);
+        $form = $this->get('form.factory')->create(FriendAuthenticationType::class, $friend);
 
         return ['form' => $form->createView(), 'friend' => $friend];
     }
@@ -431,14 +431,14 @@ class OauthController extends Controller
      *     options = {"expose"=true}
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Administration:Oauth\friendAuthenticationForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration:oauth\friend_authentication_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return Response
      */
     public function friendAuthenticationSubmitAction(FriendRequest $friend)
     {
-        $form = $this->get('form.factory')->create(new FriendAuthenticationType(), $friend);
+        $form = $this->get('form.factory')->create(FriendAuthenticationType::class, $friend);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
