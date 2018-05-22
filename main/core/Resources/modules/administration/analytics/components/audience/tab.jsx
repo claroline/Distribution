@@ -9,7 +9,7 @@ import {LineChart} from '#/main/core/layout/chart/line/components/line-chart.jsx
 import {actions} from '#/main/core/administration/analytics/actions'
 import {DashboardCard} from '#/main/core/layout/dashboard/index'
 import {Form} from '#/main/core/data/form/components/form.jsx'
-import {Button} from '#/main/core/layout/button/components/button'
+import {CallbackButton} from '#/main/app/button/components/callback'
 
 const FilterForm = (props) =>
   <Form
@@ -47,12 +47,12 @@ const FilterForm = (props) =>
       }
     ]}
   >
-    <Button
-      className={'btn-primary'}
-      onClick={props.submitForm}
+    <CallbackButton
+      className={'btn btn-primary'}
+      callback={props.submitForm}
     >
       {trans('show_actions')}
-    </Button>
+    </CallbackButton>
   </Form>
 
 FilterForm.propTypes = {

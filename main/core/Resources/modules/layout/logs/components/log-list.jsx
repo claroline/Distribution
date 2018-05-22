@@ -51,9 +51,11 @@ class LogList extends Component {
             url: props.listUrl,
             autoload: true
           }}
-          open={{
-            action: (row) => `#/log/${row.id}`
-          }}
+          primaryAction={(row) =>({
+            label: trans('date'),
+            type: 'link',
+            target: `/log/${row.id}`
+          })}
           delete={false}
           definition={[
             {

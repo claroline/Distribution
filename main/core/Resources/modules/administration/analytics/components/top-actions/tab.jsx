@@ -23,11 +23,12 @@ class Tab extends Component {
     const defaultDefinition = [
       {
         name: 'type',
-        type: 'enum',
+        type: 'choice',
         label: trans('type'),
         displayable: false,
         filterable: true,
         options: {
+          multiple: false,
           choices: topTypes
         }
       }, {
@@ -194,7 +195,7 @@ class Tab extends Component {
         ]
         break
     }
-    
+
     return definition.concat(defaultDefinition)
   }
   
@@ -206,10 +207,8 @@ class Tab extends Component {
           url: ['apiv2_admin_tool_analytics_top_actions'],
           autoload: true
         }}
-        open={null}
-        delete={false}
         definition={this.getDefinition()}
-    
+
         display={{
           available : [listConst.DISPLAY_TABLE],
           current: listConst.DISPLAY_TABLE

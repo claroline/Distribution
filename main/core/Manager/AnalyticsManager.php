@@ -279,6 +279,12 @@ class AnalyticsManager
                 break;
         }
 
+        foreach ($listData as $idx => &$data) {
+            if (!isset($data['id'])) {
+                $data['id'] = "top-{$idx}";
+            }
+        }
+
         return [
             'data' => $listData,
             'filters' => [
@@ -286,7 +292,7 @@ class AnalyticsManager
             ],
             'page' => 0,
             'pageSize' => $finderParams['limit'],
-            'sortBy' => [],
+            'sortBy' => null,
             'totalResults' => count($listData),
         ];
     }
