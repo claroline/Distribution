@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {copy} from '#/main/core/scaffolding/clipboard'
+import {copy} from '#/main/app/clipboard'
 import {PageContent} from '#/main/core/layout/page'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 

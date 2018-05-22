@@ -56,7 +56,7 @@ class InstallationManager
         $this->environment = $environment;
     }
 
-    public function install(InstallableInterface $bundle, $insertPlugin = true)
+    public function install(InstallableInterface $bundle)
     {
         $this->fixtureLoader->setLogger($this->logger);
         $this->log(sprintf('<comment>Installing %s %s... </comment>', $bundle->getName(), $bundle->getVersion()));
@@ -80,19 +80,6 @@ class InstallationManager
         if ($additionalInstaller) {
             $this->log('Launching post-installation actions...');
             $additionalInstaller->postInstall();
-        }
-
-        if ($insertPlugin) {
-            $this->container->get('claroline.manager.version_manager')->setLogger($this->logger);
-            $version = $this->container->get('claroline.manager.version_manager')->register($bundle);
-            $validator = $this->container->get('claroline.plugin.validator');
-            $installer = $this->container->get('claroline.plugin.installer');
-            $dbWriter = $this->container->get('claroline.plugin.recorder_database_writer');
-            $dbWriter->setLogger($this->logger);
-            $this->log('Parsing config.yml file for '.get_class($bundle).'...');
-            $installer->validatePlugin($bundle);
-            $dbWriter->insert($bundle, $validator->getPluginConfiguration());
-            $version = $this->container->get('claroline.manager.version_manager')->execute($version);
         }
 
         if ($fixturesDir = $bundle->getPostInstallFixturesDirectory($this->environment)) {

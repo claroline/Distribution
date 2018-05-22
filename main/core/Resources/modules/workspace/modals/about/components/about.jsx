@@ -4,7 +4,7 @@ import omit from 'lodash/omit'
 
 import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
-import {copy} from '#/main/core/scaffolding/clipboard'
+import {copy} from '#/main/app/clipboard'
 import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {DataDetails} from '#/main/core/data/details/components/details'

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
@@ -9,12 +10,13 @@ import {Toolbar} from '#/main/app/overlay/toolbar/components/toolbar'
 
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {hasPermission} from '#/main/core/workspace/permissions'
+import {select} from '#/main/core/workspace/selectors'
 
 import {MODAL_WORKSPACE_ABOUT} from '#/main/core/workspace/modals/about'
 import {MODAL_WORKSPACE_IMPERSONATION} from '#/main/core/workspace/modals/impersonation'
 import {MODAL_WORKSPACE_PARAMETERS} from '#/main/core/workspace/modals/parameters'
 
-const WorkspaceToolbar = props =>
+const WorkspaceToolbarComponent = props =>
   <Toolbar
     active={props.openedTool}
     primary={props.tools[0]}
@@ -72,7 +74,7 @@ const WorkspaceToolbar = props =>
     ]}
   />
 
-WorkspaceToolbar.propTypes = {
+WorkspaceToolbarComponent.propTypes = {
   workspace: T.shape(
     WorkspaceTypes.propTypes
   ).isRequired,
@@ -83,6 +85,16 @@ WorkspaceToolbar.propTypes = {
     open: T.oneOfType([T.array, T.string])
   }))
 }
+
+// todo : remove the container when the toolbar will be moved in the main app
+// (that's why it's in the components folder)
+const WorkspaceToolbar = connect(
+  (state) => ({
+    workspace: select.workspace(state),
+    tools: select.tools(state),
+    openedTool: select.openedTool(state)
+  })
+)(WorkspaceToolbarComponent)
 
 export {
   WorkspaceToolbar

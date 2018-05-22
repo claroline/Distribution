@@ -111,11 +111,11 @@ class Installer
      */
     public function install(PluginBundleInterface $plugin)
     {
-        $this->validatePlugin($plugin);
+        $this->baseInstaller->install($plugin);
 
         $this->log('Saving configuration...');
+        $this->validatePlugin($plugin);
         $pluginEntity = $this->recorder->register($plugin, $this->validator->getPluginConfiguration());
-        $this->baseInstaller->install($plugin, false);
 
         if (!$this->pluginManager->isReady($pluginEntity) || !$this->pluginManager->isActivatedByDefault($pluginEntity)) {
             $errors = $this->pluginManager->getMissingRequirements($pluginEntity);

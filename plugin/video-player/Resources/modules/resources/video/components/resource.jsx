@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
-import {copy} from '#/main/core/scaffolding/clipboard'
+import {copy} from '#/main/app/clipboard'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {RoutedPageContent} from '#/main/core/layout/router'
