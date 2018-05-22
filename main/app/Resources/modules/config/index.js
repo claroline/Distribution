@@ -1,2 +1,12 @@
+/**
+ * Configuration module.
+ */
 
-export {param} from '#/main/app/config/parameters'
+import {asset, theme} from '#/main/app/config/asset'
+import {param} from '#/main/app/config/parameters'
+
+export {
+  asset,
+  theme,
+  param
+}

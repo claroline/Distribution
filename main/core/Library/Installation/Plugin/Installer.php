@@ -111,7 +111,6 @@ class Installer
      */
     public function install(PluginBundleInterface $plugin)
     {
-        $this->checkInstallationStatus($plugin, false);
         $this->validatePlugin($plugin);
 
         $this->log('Saving configuration...');
