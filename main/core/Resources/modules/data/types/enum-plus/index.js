@@ -19,7 +19,6 @@ const enumPlusDefinition = {
   validate: (value, options) => !isChoiceValid(options.choices, value, options.transDomain),
   components: {
     search: EnumPlusSearch
-    //form: SelectGroup
   }
 }
 
