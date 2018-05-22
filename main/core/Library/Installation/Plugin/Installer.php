@@ -111,10 +111,9 @@ class Installer
      */
     public function install(PluginBundleInterface $plugin)
     {
-        $this->versionManager->setLogger($this->logger);
-        $version = $this->versionManager->register($plugin);
         $this->checkInstallationStatus($plugin, false);
         $this->validatePlugin($plugin);
+
         $this->log('Saving configuration...');
         $pluginEntity = $this->recorder->register($plugin, $this->validator->getPluginConfiguration());
         $this->baseInstaller->install($plugin, false);
@@ -138,6 +137,8 @@ class Installer
             $this->pluginManager->disable($pluginEntity);
         }
 
+        $this->versionManager->setLogger($this->logger);
+        $version = $this->versionManager->register($plugin);
         $this->versionManager->execute($version);
     }
 
