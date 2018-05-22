@@ -26,9 +26,11 @@ class Tab extends Component {
         type: 'choice',
         label: trans('type'),
         displayable: false,
+        displayed: false,
         filterable: true,
         options: {
           multiple: false,
+          unique: false,
           choices: topTypes
         }
       }, {
@@ -36,6 +38,7 @@ class Tab extends Component {
         type: 'date',
         label: trans('activity_rule_form_activeFrom'),
         displayable: false,
+        displayed: false,
         filterable: true,
         options: {
           time: true
@@ -45,6 +48,7 @@ class Tab extends Component {
         type: 'date',
         label: trans('activity_rule_form_activeUntil'),
         displayable: false,
+        displayed: false,
         filterable: true,
         options: {
           time: true
@@ -61,6 +65,7 @@ class Tab extends Component {
             label: trans('type'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           }, {
@@ -69,6 +74,7 @@ class Tab extends Component {
             label: trans('total'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false
           }
         ]
@@ -81,6 +87,7 @@ class Tab extends Component {
             label: trans('name'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           }, {
@@ -89,6 +96,7 @@ class Tab extends Component {
             label: trans('code'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           }, {
@@ -97,6 +105,7 @@ class Tab extends Component {
             label: trans('total'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false
           }
         ]
@@ -109,6 +118,7 @@ class Tab extends Component {
             label: trans('name'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           }, {
@@ -117,6 +127,7 @@ class Tab extends Component {
             label: trans('code'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           }, {
@@ -125,6 +136,7 @@ class Tab extends Component {
             label: trans('actions'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false
           }
         ]
@@ -139,6 +151,7 @@ class Tab extends Component {
             label: trans('name'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           }, {
@@ -147,6 +160,7 @@ class Tab extends Component {
             label: trans('actions'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false
           }
         ]
@@ -160,6 +174,7 @@ class Tab extends Component {
             label: trans('name'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           }, {
@@ -168,6 +183,7 @@ class Tab extends Component {
             label: trans('total'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false
           }
         ]
@@ -181,6 +197,7 @@ class Tab extends Component {
             label: trans('user'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false,
             primary: true
           },
@@ -190,6 +207,7 @@ class Tab extends Component {
             label: trans('actions'),
             filterable: false,
             displayable: true,
+            displayed: true,
             sortable: false
           }
         ]
