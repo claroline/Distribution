@@ -38,6 +38,22 @@ const sortedMessages = createSelector(
   })
 )
 
+const flaggedMessages = createSelector(
+  [messages],
+  (messages) => messages.filter(message => true === message.meta.flagged)
+)
+
+const tagsCount = createSelector(
+  [forum],
+  (forum) => forum.meta.tags.reduce((obj, tag) => {
+    if (!obj[tag]) {
+      obj[tag] = 0
+    }
+    obj[tag]++
+    return obj
+  })
+)
+
 export const select = {
   forum,
   subject,
@@ -45,6 +61,7 @@ export const select = {
   forumId,
   sortedMessages,
   showSubjectForm,
-  editingSubject
-
+  editingSubject,
+  flaggedMessages,
+  tagsCount
 }

@@ -154,7 +154,7 @@ class SubjectComponent extends Component {
               }, {
                 icon: 'fa fa-fw fa-thumb-tack',
                 label: trans('unstick', {}, 'forum'),
-                displayed: (get(this.props.subject, 'meta.sticky')),
+                displayed: get(this.props.subject, 'meta.sticky'),
                 action: () => this.props.unStickSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-times-circle-o',
@@ -171,12 +171,14 @@ class SubjectComponent extends Component {
                 label: trans('flag', {}, 'forum'),
                 displayed: !(get(this.props.subject, 'meta.flagged')),
                 action: () => this.props.flagSubject(this.props.subject)
-              }, {
-                icon: 'fa fa-fw fa-flag-o',
-                label: trans('unflag', {}, 'forum'),
-                displayed: (get(this.props.subject, 'meta.flagged')),
-                action: () => this.props.unFlagSubject(this.props.subject)
-              },{
+              },
+              // {
+              //   icon: 'fa fa-fw fa-flag-o',
+              //   label: trans('unflag', {}, 'forum'),
+              //   displayed: (get(this.props.subject, 'meta.flagged')),
+              //   action: () => this.props.unFlagSubject(this.props.subject)
+              // },
+              {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 displayed: true,
@@ -212,7 +214,7 @@ class SubjectComponent extends Component {
                         icon: 'fa fa-fw fa-flag',
                         label: trans('flag', {}, 'forum'),
                         displayed: true,
-                        action: () => this.props.flagMessage(message)
+                        action: () => this.props.flagMessage(message, '3dfc6ea4-8b98-412e-9b28-c08f0962253b')
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
@@ -322,7 +324,7 @@ SubjectComponent.propTypes = {
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
   flagMessage: T.func.isRequired,
-  unFlagMessage: T.func.isRequired,
+  // unFlagMessage: T.func.isRequired,
   flagSubject: T.func.isRequired,
   unFlagSubject: T.func.isRequired,
   deleteData: T.func.isRequired,
@@ -384,8 +386,8 @@ const Subject =  withRouter(connect(
     editContent(id, content) {
       dispatch(actions.editContent(id, content))
     },
-    flagMessage(message) {
-      dispatch(actions.flagMessage(message))
+    flagMessage(message, subjectId) {
+      dispatch(actions.flagMessage(message, subjectId))
     },
     flagSubject(subject) {
       dispatch(actions.flagSubject(subject))

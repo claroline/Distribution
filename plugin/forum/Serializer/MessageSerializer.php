@@ -116,7 +116,7 @@ class MessageSerializer
             $message->setParent($parent);
         }
 
-        $this->sipe('meta.flagged', 'setflagged', $data, $message);
+        $this->sipe('meta.flagged', 'setFlagged', $data, $message);
 
         return $message;
     }

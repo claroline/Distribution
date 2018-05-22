@@ -7,19 +7,13 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 
 const TagCloudComponent = props =>
   <div>
-    {props.forum.meta.tags.reduce((obj, tag) => {
-      if (!obj[tag]) {
-        obj[tag] = 0
-      }
-      obj[tag]++
-      console.log(obj)
-      return obj
-    }, [])
-
+    {props.tagsCount.map(tag => {
+      console.log(tag)
     }
-  </div>
 
-{/* <a href="#" key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</a> */}
+      // <a href="#" key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</a>
+    )}
+  </div>
 
 TagCloudComponent.propTypes = {
   forum: T.shape(ForumType.propTypes)
@@ -27,8 +21,7 @@ TagCloudComponent.propTypes = {
 
 const TagCloud = connect(
   (state) => ({
-    forum: select.forum(state),
-    messages: select.messages(state)
+    tagsCount: select.tagsCount(state)
   })
 )(TagCloudComponent)
 

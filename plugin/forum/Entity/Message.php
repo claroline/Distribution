@@ -92,13 +92,13 @@ class Message extends AbstractMessage
         return $this->children;
     }
 
-    public function setflagged($bool)
+    public function setFlagged($bool)
     {
-        $this->isFlagged = $bool;
+        $this->flagged = $bool;
     }
 
     public function isFlagged()
     {
-        return $this->isFlagged;
+        return $this->flagged;
     }
 }

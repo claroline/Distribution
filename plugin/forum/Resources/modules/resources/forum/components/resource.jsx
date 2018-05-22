@@ -78,7 +78,7 @@ const Resource = props => {
         }, {
           type: 'link',
           icon: 'fa fa-fw fa-gavel',
-          label: trans('moderated_posts', {}, 'forum'),
+          label: trans('moderation', {}, 'forum'),
           target: '/moderation',
           exact: true
         }

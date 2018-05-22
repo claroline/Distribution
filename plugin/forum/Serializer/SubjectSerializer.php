@@ -87,6 +87,7 @@ class SubjectSerializer
             'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
             'sticky' => $subject->isSticked(),
             'closed' => $subject->isClosed(),
+            'flagged' => $subject-> isFlagged(),
         ];
     }
 
@@ -115,6 +116,7 @@ class SubjectSerializer
         $this->sipe('content', 'setContent', $data, $subject);
         $this->sipe('meta.sticky', 'setIsSticked', $data, $subject);
         $this->sipe('meta.closed', 'setIsClosed', $data, $subject);
+        $this->sipe('meta.flagged', 'setFlagged', $data, $subject);
 
         if (isset($data['meta'])) {
             if (isset($data['meta']['updated'])) {

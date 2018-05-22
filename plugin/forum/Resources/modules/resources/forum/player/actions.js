@@ -130,9 +130,9 @@ actions.createComment = (messageId, comment) => ({
   }
 })
 
-actions.flagMessage = (message) => ({
+actions.flagMessage = (message, subjectId) => ({
   [API_REQUEST]: {
-    url: ['apiv2_forum_message_update', {id: message.id}],
+    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
     request: {
       body: JSON.stringify(Object.assign({}, message, {meta: {flagged:true}})),
       method: 'PUT'
@@ -190,6 +190,34 @@ actions.unCloseSubject = (subject) => ({
     url: ['apiv2_forum_subject_update', {id: subject.id}],
     request: {
       body: JSON.stringify(Object.assign({}, subject, {meta: {closed:false}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.flagSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {flagged:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.unFlagSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {flagged:false}})),
       method: 'PUT'
     },
     success: (data, dispatch) => {
