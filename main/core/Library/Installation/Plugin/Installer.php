@@ -114,7 +114,7 @@ class Installer
         $this->baseInstaller->install($plugin);
 
         $pluginEntity = $this->pluginManager->getPluginByShortName(
-            $this->pluginManager->getPluginShortName($plugin)
+            $plugin->getName()
         );
 
         if (!$this->pluginManager->isReady($pluginEntity) || !$this->pluginManager->isActivatedByDefault($pluginEntity)) {

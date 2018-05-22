@@ -25,7 +25,7 @@
             <argument type="service" id="claroline.doctrine_fixture_executor" />
         </service>
 
-        <service id="claroline.symfony_fixture_loader" class="%claroline.symfony_fixture_loader.class%">
+        <service id="claroline.symfony_fixture_loader" class="%claroline.symfony_fixture_loader.class%" shared="false">
             <argument type="service" id="service_container" />
         </service>
 
