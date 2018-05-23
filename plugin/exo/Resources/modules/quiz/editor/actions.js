@@ -11,7 +11,7 @@ import {MODAL_MESSAGE} from '#/main/core/layout/modal'
 import select from '#/plugin/exo/quiz/editor/selectors'
 import {makeId} from '#/plugin/exo/utils/utils'
 import {denormalize} from '#/plugin/exo/quiz/normalizer'
-import {formatItemsForTimer} from '#/plugin/exo/quiz/decorators'
+import {formatQuizForTimer} from '#/plugin/exo/quiz/decorators'
 
 import {ITEM_UPDATE_TAGS} from '#/plugin/tag/actions'
 
@@ -197,7 +197,7 @@ actions.save = () => {
         type: 'warning'
       }))
     } else {
-      const denormalized = formatItemsForTimer(denormalize(state.quiz, state.steps, state.items))
+      const denormalized = formatQuizForTimer(denormalize(state.quiz, state.steps, state.items))
       dispatch({
         [API_REQUEST]: {
           url: ['exercise_update', {id: state.quiz.id}],
