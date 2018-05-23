@@ -913,22 +913,25 @@ class UserManager
         return $this->userRepo->count();
     }
 
-    public function countUsersForPlatformRoles()
+    public function countUsersForPlatformRoles($organizations = null)
     {
         $roles = $this->roleManager->getAllPlatformRoles();
+        $roleNames = array_map(function ($r) {return $r->getName(); }, $roles);
         $usersInRoles = [];
-        $usersInRoles['user_accounts'] = 0;
+        $usersInRoles[] = ['name' => 'user_accounts', 'total' => floatval($this->userRepo->countUsers($organizations))];
         foreach ($roles as $role) {
             $restrictionRoleNames = null;
             if ('ROLE_USER' === $role->getName()) {
+                $restrictionRoleNames = array_diff($roleNames, ['ROLE_USER']);
+            } elseif ('ROLE_WS_CREATOR' !== $role->getName() && 'ROLE_ADMIN' !== $role->getName()) {
                 $restrictionRoleNames = ['ROLE_WS_CREATOR', 'ROLE_ADMIN'];
-            } elseif ('ROLE_WS_CREATOR' === $role->getName()) {
+            } elseif ('ROLE_ADMIN' !== $role->getName()) {
                 $restrictionRoleNames = ['ROLE_ADMIN'];
             }
-            $usersInRoles[$role->getTranslationKey()] = intval(
-                $this->userRepo->countUsersByRole($role, $restrictionRoleNames)
-            );
-            $usersInRoles['user_accounts'] = $this->userRepo->countUsers();
+            $usersInRoles[] = [
+                'name' => $role->getTranslationKey(),
+                'total' => floatval($this->userRepo->countUsersByRole($role, $restrictionRoleNames, $organizations)),
+            ];
         }
 
         return $usersInRoles;
@@ -951,9 +954,9 @@ class UserManager
      *
      * @return User[]
      */
-    public function getUsersEnrolledInMostWorkspaces($max)
+    public function getUsersEnrolledInMostWorkspaces($max, $organizations = null)
     {
-        return $this->userRepo->findUsersEnrolledInMostWorkspaces($max);
+        return $this->userRepo->findUsersEnrolledInMostWorkspaces($max, $organizations);
     }
 
     /**
@@ -961,9 +964,9 @@ class UserManager
      *
      * @return User[]
      */
-    public function getUsersOwnersOfMostWorkspaces($max)
+    public function getUsersOwnersOfMostWorkspaces($max, $organizations = null)
     {
-        return $this->userRepo->findUsersOwnersOfMostWorkspaces($max);
+        return $this->userRepo->findUsersOwnersOfMostWorkspaces($max, $organizations);
     }
 
     /**
