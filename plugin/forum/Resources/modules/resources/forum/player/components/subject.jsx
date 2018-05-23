@@ -20,7 +20,7 @@ import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Subject as SubjectType} from '#/plugin/forum/resources/forum/player/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
-import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
+import {MessageComments} from '#/plugin/forum/resources/forum/player/components/message-comments'
 import {SubjectForm} from '#/plugin/forum/resources/forum/player/components/subject-form'
 import {MessagesSort} from '#/plugin/forum/resources/forum/player/components/messages-sort'
 
@@ -31,10 +31,8 @@ class SubjectComponent extends Component {
     if (this.props.invalidated || !this.props.loaded) {
       this.props.reload(this.props.subject.id)
     }
-
     this.state = {
-      showCommentForm: null,
-      showNewCommentForm: null
+      showMessageForm: null
     }
   }
 
@@ -50,19 +48,20 @@ class SubjectComponent extends Component {
     this.props.history.push(`/subjects/form/${subjectId}`)
   }
 
-  updateMessage(messageId, content) {
-    this.props.editContent(messageId, content)
+  updateMessage(message, content) {
+    this.props.editContent(message, this.props.subject.id, content)
     this.setState({showMessageForm: null})
   }
 
-  createNewComment(messageId, comment) {
-    this.props.createComment(messageId, comment)
-    this.setState({showNewCommentForm: null})
-  }
 
-  updateComment(commentId, content) {
-    this.props.editContent(commentId, content)
-    this.setState({showCommentForm: null})
+  deleteSubject(subjectId) {
+    this.props.showModal(MODAL_CONFIRM, {
+      dangerous: true,
+      icon: 'fa fa-fw fa-trash-o',
+      title: trans('delete_subject', {}, 'forum'),
+      question: trans('remove_subject_confirm_message', {}, 'forum'),
+      handleConfirm: () => this.props.deleteData(subjectId)
+    })
   }
 
   deleteMessage(messageId) {
@@ -74,17 +73,6 @@ class SubjectComponent extends Component {
       handleConfirm: () => this.props.deleteData(messageId)
     })
   }
-
-  deleteComment(commentId) {
-    this.props.showModal(MODAL_CONFIRM, {
-      dangerous: true,
-      icon: 'fa fa-fw fa-trash-o',
-      title: trans('delete_comment', {}, 'forum'),
-      question: trans('remove_comment_confirm_message', {}, 'forum'),
-      handleConfirm: () => this.props.deleteData(commentId)
-    })
-  }
-
 
   render() {
     if (isEmpty(this.props.subject) && !this.props.showSubjectForm) {
@@ -149,22 +137,22 @@ class SubjectComponent extends Component {
               }, {
                 icon: 'fa fa-fw fa-thumb-tack',
                 label: trans('stick', {}, 'forum'),
-                displayed: !(get(this.props.subject, 'meta.sticky')),
+                displayed: !(get(this.props.subject, 'meta.sticky', true)),
                 action: () => this.props.stickSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-thumb-tack',
                 label: trans('unstick', {}, 'forum'),
-                displayed: get(this.props.subject, 'meta.sticky'),
+                displayed: get(this.props.subject, 'meta.sticky', false),
                 action: () => this.props.unStickSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-times-circle-o',
                 label: trans('close_subject', {}, 'forum'),
-                displayed: !(get(this.props.subject, 'meta.closed')),
+                displayed: !(get(this.props.subject, 'meta.closed', true)),
                 action: () => this.props.closeSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-check-circle-o',
                 label: trans('open_subject', {}, 'forum'),
-                displayed: (get(this.props.subject, 'meta.closed')),
+                displayed: (get(this.props.subject, 'meta.closed', false)),
                 action: () => this.props.unClosedSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-flag',
@@ -182,7 +170,7 @@ class SubjectComponent extends Component {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 displayed: true,
-                action: () => console.log(this.props.subject),
+                action: () => this.deleteSubject(this.props.subject.id),
                 dangerous: true
               }
             ]}
@@ -231,73 +219,13 @@ class SubjectComponent extends Component {
                       allowHtml={true}
                       submitLabel={trans('save')}
                       content={message.content}
-                      submit={(content) => this.updateMessage(message.id, content)}
+                      submit={(content) => this.updateMessage(message, content)}
                       cancel={() => this.setState({showMessageForm: null})}
                     />
                   }
-                  <div className="answer-comment-container">
-                    {message.children.map(comment =>
-                      <div key={comment.id}>
-                        {this.state.showCommentForm !== comment.id &&
-                          <Comment
-                            user={comment.meta.creator}
-                            date={comment.meta.created}
-                            content={comment.content}
-                            allowHtml={true}
-                            actions={[
-                              {
-                                icon: 'fa fa-fw fa-pencil',
-                                label: trans('edit'),
-                                displayed: true,
-                                action: () => this.setState({showCommentForm: comment.id})
-                              }, {
-                                icon: 'fa fa-fw fa-flag ',
-                                label: trans('flag', {}, 'forum'),
-                                displayed: true,
-                                action: () => console.log(comment)
-                              }, {
-                                icon: 'fa fa-fw fa-trash-o',
-                                label: trans('delete'),
-                                displayed: true,
-                                action: () => this.deleteComment(comment.id),
-                                dangerous: true
-                              }
-                            ]}
-                          />
-                        }
-                        {this.state.showCommentForm === comment.id &&
-                          <CommentForm
-                            user={currentUser()}
-                            allowHtml={true}
-                            submitLabel={trans('add_comment')}
-                            content={comment.content}
-                            submit={(content) => this.updateComment(comment.id, content)}
-                            cancel={() => this.setState({showCommentForm: null})}
-                          />
-                        }
-                      </div>
-                    )}
-                    {!this.state.showNewCommentForm &&
-                      <div className="comment-link-container">
-                        <Button
-                          label={trans('comment', {}, 'actions')}
-                          type="callback"
-                          callback={() => this.setState({showNewCommentForm: message.id})}
-                          className='comment-link'
-                        />
-                      </div>
-                    }
-                    {this.state.showNewCommentForm === message.id &&
-                      <CommentForm
-                        user={currentUser()}
-                        allowHtml={true}
-                        submitLabel={trans('add_comment')}
-                        // content={comment.content}
-                        submit={(comment) => this.createNewComment(message.id, comment)}
-                        cancel={() => this.setState({showNewCommentForm: null})}
-                      />
-                    }
-                  </div>
+                  <MessageComments
+                    message={message}
+                  />
                 </li>
               )}
             </ul>
@@ -328,7 +256,6 @@ SubjectComponent.propTypes = {
   flagSubject: T.func.isRequired,
   unFlagSubject: T.func.isRequired,
   deleteData: T.func.isRequired,
-  createComment: T.func.isRequired,
   subjectEdition: T.func.isRequired,
   invalidated: T.bool.isRequired,
   loaded: T.bool.isRequired,
@@ -356,14 +283,17 @@ const Subject =  withRouter(connect(
     createMessage(subjectId, content) {
       dispatch(actions.createMessage(subjectId, content))
     },
-    createComment(messageId, comment) {
-      dispatch(actions.createComment(messageId, comment))
-    },
     showModal(type, props) {
       dispatch(modalActions.showModal(type, props))
     },
-    deleteData(id) {
-      dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
+    deleteData(id, ownProps, deleteSubject) {
+      if(deleteSubject) {
+        dispatch(listActions.deleteData('subjects.list', ['apiv2_forum_subject_delete_bulk'], [{id: id}])).then(() => {
+          ownProps.history.push('/subjects')
+        })
+      } else {
+        dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
+      }
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
@@ -383,8 +313,8 @@ const Subject =  withRouter(connect(
     unCloseSubject(subject) {
       dispatch(actions.unCloseSubject(subject))
     },
-    editContent(id, content) {
-      dispatch(actions.editContent(id, content))
+    editContent(message, subjectId, content) {
+      dispatch(actions.editContent(message, subjectId, content))
     },
     flagMessage(message, subjectId) {
       dispatch(actions.flagMessage(message, subjectId))

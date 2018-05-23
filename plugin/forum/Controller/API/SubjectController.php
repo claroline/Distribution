@@ -103,6 +103,7 @@ class SubjectController extends AbstractCrudController
      * @EXT\Route("/{subject}/message/{message}", name="apiv2_forum_subject_message_update")
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("message", class = "ClarolineForumBundle:Message",  options={"message": {"id": "uuid"}})
+     * @EXT\ParamConverter("subject", class = "ClarolineForumBundle:Subject",  options={"subject": {"id": "uuid"}})
      *
      * @ApiDoc(
      *     description="Udate a message in a subject",

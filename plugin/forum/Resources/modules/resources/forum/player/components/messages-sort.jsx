@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {select as listSelect} from '#/main/core/data/list/selectors'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 
@@ -25,7 +26,9 @@ MessagesSortButton.propTypes = {
 }
 
 const MessagesSort = connect(
-  null,
+  state => ({
+    messages: listSelect.data(listSelect.list(state, 'subjects.messages'))
+  }),
   dispatch => ({
     toggleSort() {
       dispatch(actions.toggleMessagesSort())

@@ -96,19 +96,6 @@ actions.createMessage = (subjectId, content) => ({
   }
 })
 
-actions.editContent = (id, content) => ({
-  [API_REQUEST]: {
-    url: ['claroline_forum_api_message_updatemessagecontent', {id: id}],
-    request: {
-      method: 'PUT',
-      body: JSON.stringify({content: content})
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('subjects.messages'))
-    }
-  }
-})
-
 actions.createComment = (messageId, comment) => ({
   [API_REQUEST]: {
     url: ['claroline_forum_api_message_createcomment', {id: messageId}],
@@ -129,6 +116,20 @@ actions.createComment = (messageId, comment) => ({
     }
   }
 })
+
+actions.editContent = (message, subjectId, content) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
+    request: {
+      body: JSON.stringify(Object.assign({}, message, {content: content})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
 
 actions.flagMessage = (message, subjectId) => ({
   [API_REQUEST]: {
