@@ -181,7 +181,10 @@ class StepSerializer implements SerializerInterface
         $stepQuestions = $step->getStepQuestions()->toArray();
 
         return array_map(function (StepItem $stepQuestion) use ($options) {
-            return $this->itemSerializer->serialize($stepQuestion->getQuestion(), $options);
+            $serialized = $this->itemSerializer->serialize($stepQuestion->getQuestion(), $options);
+            $serialized->meta->mandatory = $stepQuestion->isMandatory();
+
+            return $serialized;
         }, $stepQuestions);
     }
 
@@ -220,6 +223,9 @@ class StepSerializer implements SerializerInterface
             } else {
                 // Update order of the Item in the Step
                 $stepQuestion->setOrder($index);
+            }
+            if (isset($itemData->meta->mandatory)) {
+                $stepQuestion->setMandatory($itemData->meta->mandatory);
             }
         }
 

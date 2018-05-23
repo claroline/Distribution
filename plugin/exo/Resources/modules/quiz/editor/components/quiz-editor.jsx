@@ -246,6 +246,7 @@ const Signing = props =>
         help={tex('duration_help')}
         min={0}
         unit={trans('minutes')}
+        required={props.parameters.timeLimited}
         value={props.parameters.duration}
         onChange={duration => props.onChange('parameters.duration', duration)}
         warnOnly={!props.validating}

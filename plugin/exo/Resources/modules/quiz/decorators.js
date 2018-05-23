@@ -57,3 +57,13 @@ export function decorateItem(item, subDecorator = item => item) {
 
   return subDecorator(decorated)
 }
+
+export function formatItemsForTimer(data) {
+  const newData = cloneDeep(data)
+
+  if (newData['parameters']['timeLimited']) {
+    newData['steps'].forEach(step => step.items.forEach(item => item['meta']['mandatory'] = false))
+  }
+
+  return newData
+}
