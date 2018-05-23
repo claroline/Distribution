@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @Route("/tools/admin/analytics", name="admin_tool_analytics")
+ * @Route("/tools/admin/analytics")
  * @SEC\PreAuthorize("canOpenAdminTool('platform_analytics')")
  */
 class AnalyticsController
@@ -120,7 +120,7 @@ class AnalyticsController
         $wsCount = $this->analyticsManager->countNonPersonalWorkspaces($organizations);
         $resourceCount = $this->analyticsManager->getResourceTypesCount(null, $organizations);
         $otherResources = [];
-        if ($organizations === null) {
+        if (null === $organizations) {
             $otherResources = $this->analyticsManager->getOtherResourceTypesCount();
         }
 
@@ -158,7 +158,7 @@ class AnalyticsController
     private function addOrganizationFilter($query)
     {
         $organizations = $this->getLoggedUserOrganizations();
-        if ($organizations !== null) {
+        if (null !== $organizations) {
             $query['hiddenFilters']['organization'] = $this->loggedUser->getAdministratedOrganizations();
         }
 

@@ -46,7 +46,8 @@ class WorkspaceDashboardController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      * @EXT\Template("ClarolineCoreBundle:tool/workspace/dashboard:index.html.twig")
      *

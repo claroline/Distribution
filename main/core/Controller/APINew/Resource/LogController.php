@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @Route("/resource/{resourceId}/logs", name="resource_logs", requirements={"resourceId"="\d+"})
+ * @Route("/resource/{resourceId}/logs", requirements={"resourceId"="\d+"})
  */
 class LogController
 {

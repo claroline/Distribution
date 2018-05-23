@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @Route("/tools/workspace/{workspaceId}/dashboard", name="workspace_tool_dashboard", requirements={"workspaceId"="\d+"})
+ * @Route("/tools/workspace/{workspaceId}/dashboard", requirements={"workspaceId"="\d+"})
  */
 class DashboardController
 {

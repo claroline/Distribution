@@ -106,7 +106,7 @@ class ToolListener
      */
     public function onDisplayWorkspaceAnalytics(DisplayToolEvent $event)
     {
-        $event->setContent($this->workspaceAnalytics($event->getWorkspace()));
+        $event->setContent($this->workspaceAnalytics($event->getWorkspace()->getId()));
     }
 
     /**
@@ -188,17 +188,17 @@ class ToolListener
             'workspaceId' => $workspaceId,
         ];
 
-        $subRequest = $this->container->get('request')->duplicate([], null, $params);
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $response->getContent();
     }
 
-    public function workspaceAnalytics($workspace)
+    public function workspaceAnalytics($workspaceId)
     {
         $params = [
             '_controller' => 'ClarolineCoreBundle:Tool\WorkspaceDashboard:index',
-            'workspaceId' => $workspace->getId(),
+            'workspaceId' => $workspaceId,
         ];
 
         $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate([], null, $params);

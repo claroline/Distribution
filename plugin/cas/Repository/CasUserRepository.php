@@ -56,7 +56,8 @@ class CasUserRepository extends EntityRepository
             ->select('cas.casId')
             ->where('cas.user = :userId')
             ->setParameter('userId', $userId);
+        $res = $qb->getQuery()->getOneOrNullResult();
 
-        return $qb->getQuery()->getOneOrNullResult();
+        return null === $res ? null : $res['casId'];
     }
 }

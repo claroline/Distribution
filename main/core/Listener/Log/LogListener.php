@@ -330,7 +330,7 @@ class LogListener
     public function onLogListItem(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:Log:view_list_item_sentence.html.twig',
+            'ClarolineCoreBundle:log:view_list_item_sentence.html.twig',
             ['log' => $event->getLog()]
         );
 
@@ -346,7 +346,7 @@ class LogListener
     public function onLogDetails(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:Log:view_details.html.twig',
+            'ClarolineCoreBundle:log:view_details.html.twig',
             ['log' => $event->getLog()]
         );
 

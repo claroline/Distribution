@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @Route("/tools/admin/logs", name="admin_tool_logs")
+ * @Route("/tools/admin/logs")
  * @SEC\PreAuthorize("canOpenAdminTool('platform_logs')")
  */
 class LogController

@@ -1,6 +1,8 @@
-{% extends 'ClarolineCoreBundle:Workspace:layout.html.twig' %}
+{% extends 'ClarolineCoreBundle:workspace:layout.html.twig' %}
 
 {% block title %}{{ parent() ~ ' - ' ~ "analytics" | trans({}, "tools") }}{% endblock %}
+
+{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 
 {% block breadcrumb %}
     {{

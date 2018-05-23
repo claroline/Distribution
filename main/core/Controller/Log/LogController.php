@@ -100,7 +100,7 @@ class LogController extends Controller
         }
 
         return $this->render(
-            'ClarolineCoreBundle:Log:view_details.html.twig',
+            'ClarolineCoreBundle:log:view_details.html.twig',
             ['log' => $log]
         );
     }
@@ -135,7 +135,7 @@ class LogController extends Controller
             }
         } else {
             return $this->render(
-                'ClarolineCoreBundle:Log:config_workspace_widget_form.html.twig',
+                'ClarolineCoreBundle:log:config_workspace_widget_form.html.twig',
                 [
                     'form' => $form->createView(),
                     'instance' => $widgetInstance,
@@ -212,7 +212,7 @@ class LogController extends Controller
             $em->flush();
         } else {
             return $this->render(
-                'ClarolineCoreBundle:Log:config_desktop_widget_form.html.twig',
+                'ClarolineCoreBundle:log:config_desktop_widget_form.html.twig',
                 [
                     'form' => $form->createView(),
                     'instance' => $widgetInstance,
