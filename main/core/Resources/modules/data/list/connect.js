@@ -37,6 +37,11 @@ function mapStateToProps(state, ownProps) {
   }
 
   newProps.sortable = listSelect.isSortable(listState)
+  
+  if (listState.readonly) {
+    newProps.readonly = listState.readonly
+  }
+
   if (newProps.sortable) {
     newProps.sortBy = listSelect.sortBy(listState)
   }
@@ -142,6 +147,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     return func
   }
 
+  console.log(stateProps, ownProps)
+
   const props = {
     fetchData: dispatchProps.fetchData,
 
@@ -155,6 +162,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     filterColumns: ownProps.filterColumns,
     display:       ownProps.display,
     translations:  ownProps.translations,
+    readonly:      stateProps.readonly,
     loaded:        stateProps.loaded,
     invalidated:   stateProps.invalidated,
     data:          stateProps.data,

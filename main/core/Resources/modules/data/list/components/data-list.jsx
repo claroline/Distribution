@@ -169,14 +169,16 @@ class DataList extends Component {
 
     return (
       <div className="data-list">
-        <ListHeader
-          disabled={0 === this.props.totalResults}
-          display={displayTool}
-          columns={columnsTool}
-          filters={filtersTool}
-        />
+        {!this.props.readonly &&
+          <ListHeader
+            disabled={0 === this.props.totalResults || this.props.readonly}
+            display={displayTool}
+            columns={columnsTool}
+            filters={filtersTool}
+          />
+        }
 
-        {0 < this.props.totalResults &&
+        {0 !== this.props.totalResults &&
           React.createElement(listConst.DISPLAY_MODES[this.state.display.current].component, Object.assign({},
             listConst.DISPLAY_MODES[this.state.display.current].options,
             {
@@ -192,7 +194,7 @@ class DataList extends Component {
           ))
         }
 
-        {0 < this.props.totalResults &&
+        {0 !== this.props.totalResults &&
           <ListFooter totalResults={this.props.totalResults} pagination={this.props.pagination} />
         }
 

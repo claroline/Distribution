@@ -214,7 +214,6 @@ class AnnouncementListener
         foreach ($announcements as $announcement) {
             $newAnnouncement = $this->manager->serialize($announcement);
             $newAnnouncement['id'] = Uuid::uuid4()->toString();
-            //var_dump($newAnnouncement);
             $this->crud->create('Claroline\AnnouncementBundle\Entity\Announcement', $newAnnouncement, [
               'announcement_aggregate' => $copy,
               Options::NO_LOG => Options::NO_LOG,

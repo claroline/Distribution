@@ -166,7 +166,7 @@ class AnnouncementController
           'totalResults' => count($serialized),
           'page' => 1,
           'pageSize' => count($serialized),
-          'filters' => [],
+          'filters' => $request->query->all()['filters'],
           'sortBy' => [],
         ];
 
