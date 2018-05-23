@@ -7,6 +7,7 @@ use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -36,16 +37,18 @@ class AnnouncementController
      * @DI\InjectParams({
      *     "manager"    = @DI\Inject("claroline.manager.announcement_manager"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "crud"       = @DI\Inject("claroline.api.crud")
+     *     "crud"       = @DI\Inject("claroline.api.crud"),
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param AnnouncementManager $managersuppression
      */
-    public function __construct(AnnouncementManager $manager, SerializerProvider $serializer, Crud $crud)
+    public function __construct(AnnouncementManager $manager, SerializerProvider $serializer, Crud $crud, ObjectManager $om)
     {
         $this->manager = $manager;
         $this->serializer = $serializer;
         $this->crud = $crud;
+        $this->om = $om;
     }
 
     /**
@@ -123,10 +126,7 @@ class AnnouncementController
     public function deleteAction(AnnouncementAggregate $aggregate, Announcement $announcement)
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
-
-        $this->crud->delete($announcement, [
-          'announcement_aggregate' => $aggregate,
-        ]);
+        $this->crud->delete($announcement, ['announcement_aggregate' => $aggregate]);
 
         return new JsonResponse(null, 204);
     }
@@ -134,8 +134,8 @@ class AnnouncementController
     /**
      * Sends an announce (in current implementation, it's sent by email).
      *
-     * @EXT\Route("/{id}/send", name="claro_announcement_send")
-     * @EXT\Method("POST")
+     * @EXT\Route("/{id}/validate", name="claro_announcement_validate")
+     * @EXT\Method("GET")
      * @EXT\ParamConverter(
      *      "announcement",
      *      class="ClarolineAnnouncementBundle:Announcement",
@@ -147,9 +147,27 @@ class AnnouncementController
      *
      * @return JsonResponse
      */
-    public function validateSendAction(AnnouncementAggregate $aggregate, Announcement $announcement)
+    public function validateSendAction(AnnouncementAggregate $aggregate, Announcement $announcement, Request $request)
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
+        $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
+        $users = $this->manager->getVisibleBy($announcement, $roles);
+        $serialized = [];
+
+        foreach ($users as $user) {
+            $serialized[] = $this->serializer->serialize($user);
+        }
+
+        $data = [
+          'data' => $serialized,
+          'totalResults' => count($serialized),
+          'page' => 1,
+          'pageSize' => count($serialized),
+          'filters' => [],
+          'sortBy' => [],
+        ];
+
+        return new JsonResponse($data, 200);
     }
 
     /**
@@ -172,13 +190,9 @@ class AnnouncementController
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
 
-        try {
-            $this->manager->sendMail($announcement);
+        $this->manager->sendMessage($announcement);
 
-            return new JsonResponse(null, 204);
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
-        }
+        return new JsonResponse(null, 204);
     }
 
     public function getClass()
@@ -195,5 +209,17 @@ class AnnouncementController
         }
 
         return $decodedRequest;
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
+     */
+    protected function decodeIdsString(Request $request, $class)
+    {
+        $ids = $request->query->get('ids');
+        $property = is_numeric($ids[0]) ? 'id' : 'uuid';
+
+        return $this->om->findList($class, $property, $ids);
     }
 }

@@ -102,3 +102,13 @@ actions.sendAnnounce = (aggregateId, announce) => ({
     }
   }
 })
+
+actions.validateSend = (aggregateId, announce) => ({
+  [API_REQUEST]: {
+    url: ['claro_announcement_validate', {aggregateId: aggregateId, id: announce.id}],
+    request: {
+      method: 'POST',
+      body: JSON.stringify(announce)
+    }
+  }
+})

@@ -1,22 +1,22 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
 // todo use dynamic form
-import {t, trans} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
-import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
 import {ConditionalSet} from '#/main/core/layout/form/components/fieldset/conditional-set.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
-import {DateGroup}  from '#/main/core/layout/form/components/group/date-group.jsx'
-import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
-import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.jsx'
 import {RadiosGroup}  from '#/main/core/layout/form/components/group/radios-group.jsx'
 import {CheckboxesGroup}  from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
+import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
+import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
+
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+
+import {getUrl} from '#/main/core/api/router'
 import {Announcement as AnnouncementTypes} from './../prop-types'
 import {select} from './../selectors'
 import {actions} from './../actions'
@@ -35,16 +35,11 @@ const SendForm = props =>
             label={trans('announcement_notify_users', {}, 'announcement')}
             choices={{
               0: trans('do_not_send', {}, 'announcement'),
-              1: trans('send_directly', {}, 'announcement'),
-              2: trans('send_at_predefined_date', {}, 'announcement')
+              1: trans('send_directly', {}, 'announcement')
             }}
             value={props.announcement.meta.notifyUsers.toString()}
             onChange={value => {
               props.updateProperty('meta.notifyUsers', parseInt(value))
-
-              if (value === 2 && !props.announcement.meta.notificationDate && props.announcement.restrictions.visibleFrom) {
-                props.updateProperty('meta.notificationDate', props.announcement.restrictions.visibleFrom)
-              }
             }}
           />
 
@@ -63,29 +58,19 @@ const SendForm = props =>
               warnOnly={!props.validating}
               error={get(props.errors, 'roles')}
             />
-
-            {props.announcement.meta.notifyUsers === 2 &&
-          <DateGroup
-            id="announcement-sending-date"
-            label={trans('announcement_sending_date', {}, 'announcement')}
-            value={props.announcement.meta.notificationDate}
-            onChange={(date) => props.updateProperty('meta.notificationDate', date)}
-            time={true}
-            warnOnly={!props.validating}
-            error={get(props.errors, 'meta.notificationDate')}
-          />
-            }
           </ConditionalSet>
         </FormSection>
       </FormSections>
     </form>
     <Button
       primary={true}
-      label={trans('save')}
+      label={trans('validate')}
       type="callback"
       className="btn"
       callback={() => {
-        props.save(props.aggregateId, props.announcement)
+        if (props.announcement.meta.notifyUsers !== 0) {
+          props.validateSend(props.aggregateId, props.announcement)
+        }
       }}
     />
   </div>
@@ -112,9 +97,25 @@ function mapDispatchToProps(dispatch) {
     updateProperty(prop, value) {
       dispatch(actions.updateForm(prop, value))
     },
-    save(aggregateId, announce) {
+    validateSend(aggregateId, announce) {
+      const qs = '?' + announce.roles.map(role => 'ids[]=' + role).join('&')
+
       dispatch(
-        actions.saveAnnounce(aggregateId, announce)
+        modalActions.showModal(MODAL_DATA_LIST, {
+          icon: 'fa fa-fw fa-buildings',
+          title: trans('send'),
+          confirmText: trans('send'),
+          name: 'selected',
+          definition: UserList.definition,
+          card: UserList.card,
+          fetch: {
+            url: getUrl(['claro_announcement_validate', {aggregateId: aggregateId, id: announce.id}]) + qs,
+            autoload: true
+          },
+          handleSelect: () => {
+            dispatch(actions.sendAnnounce(aggregateId, announce))
+          }
+        })
       )
     }
   }

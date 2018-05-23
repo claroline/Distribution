@@ -5,6 +5,9 @@ import {makeReducer} from '#/main/core/scaffolding/reducer'
 
 // generic reducers
 import {makeResourceReducer} from '#/main/core/resource/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
+
+import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 import {validate} from './validator'
 import {
@@ -122,6 +125,8 @@ const reducer = makeResourceReducer({}, {
 
   announcementForm: announcementFormReducer,
   announcementDetail: announcementDetailReducer,
+
+  selected: makeListReducer('selected', {}, {}, {selectable: false, filterable: false, paginated: false, sortable: false}),
 
   workspaceRoles: makeReducer({}, {})
 })

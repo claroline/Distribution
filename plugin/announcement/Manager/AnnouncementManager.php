@@ -122,7 +122,9 @@ class AnnouncementManager
         $this->serializer->deserialize($data, $announcement);
         $this->om->persist($announcement);
 
-        $roles = isset($data['roles']) && count($data['roles']) > 0 ? $this->om->findList('Claroline\CoreBundle\Entity\Role', 'uuid', $data['roles']) : [];
+        $roles =
+            isset($data['roles']) && count($data['roles']) > 0 ?
+            $this->om->findList('Claroline\CoreBundle\Entity\Role', 'uuid', $data['roles']) : [];
 
         // send message if needed
         /*
@@ -303,7 +305,7 @@ class AnnouncementManager
      *
      * @return User[]
      */
-    private function getVisibleBy(Announcement $announce, array $roles = [])
+    public function getVisibleBy(Announcement $announce, array $roles = [])
     {
         $node = $announce->getAggregate()->getResourceNode();
 

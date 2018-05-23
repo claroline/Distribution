@@ -122,6 +122,17 @@ class Announcement
 
     /**
      * @ORM\ManyToOne(
+     *     targetEntity="Claroline\AnnouncementBundle\Entity\AnnouncementSend",
+     *     inversedBy="announcements"
+     * )
+     * @ORM\JoinColumn(name="send_id", onDelete="CASCADE", nullable=false)
+     *
+     * @var AnnouncementAggregate
+     */
+    private $sends;
+
+    /**
+     * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Task\ScheduledTask"
      * )
      * @ORM\JoinColumn(name="task_id", nullable=true)
