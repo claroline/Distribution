@@ -25,6 +25,7 @@ use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use JMS\DiExtraBundle\Annotation as DI;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -212,6 +213,8 @@ class AnnouncementListener
 
         foreach ($announcements as $announcement) {
             $newAnnouncement = $this->manager->serialize($announcement);
+            $newAnnouncement['id'] = Uuid::uuid4()->toString();
+            //var_dump($newAnnouncement);
             $this->crud->create('Claroline\AnnouncementBundle\Entity\Announcement', $newAnnouncement, [
               'announcement_aggregate' => $copy,
               Options::NO_LOG => Options::NO_LOG,
