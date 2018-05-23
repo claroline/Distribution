@@ -1,11 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep'
 import set from 'lodash/set'
 
-import {makeReducer} from '#/main/core/scaffolding/reducer'
-
-// generic reducers
 import {makeResourceReducer} from '#/main/core/resource/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
+import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
 
 import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
@@ -126,7 +124,18 @@ const reducer = makeResourceReducer({}, {
   announcementForm: announcementFormReducer,
   announcementDetail: announcementDetailReducer,
 
-  selected: makeListReducer('selected', {}, {}, {selectable: false, filterable: false, paginated: false, sortable: false}),
+  selected: combineReducers({
+
+    list: makeListReducer(
+      'selected.list',
+      {},
+      {
+        invalidated: makeReducer(false, {
+          ['MODAL_HIDE']: () => true // todo : find better
+        })
+      },
+      {selectable: false, filterable: true, paginated: false, sortable: false})
+  }),
 
   workspaceRoles: makeReducer({}, {})
 })

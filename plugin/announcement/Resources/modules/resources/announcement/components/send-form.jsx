@@ -15,6 +15,7 @@ import {UserList} from '#/main/core/administration/user/user/components/user-lis
 import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {getUrl} from '#/main/core/api/router'
 import {Announcement as AnnouncementTypes} from './../prop-types'
@@ -71,6 +72,7 @@ const SendForm = props =>
         if (props.announcement.meta.notifyUsers !== 0) {
           props.validateSend(props.aggregateId, props.announcement)
         }
+        props.history.push('/')
       }}
     />
   </div>
@@ -98,18 +100,20 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.updateForm(prop, value))
     },
     validateSend(aggregateId, announce) {
-      const qs = '?' + announce.roles.map(role => 'ids[]=' + role).join('&')
+      //const qs = '?' + announce.roles.map(role => 'ids[]=' + role).join('&')
 
+      dispatch(listActions.addFilter('selected.list', 'roles', announce.roles))
       dispatch(
         modalActions.showModal(MODAL_DATA_LIST, {
-          icon: 'fa fa-fw fa-buildings',
+          icon: 'fa fa-fw fa-user',
           title: trans('send'),
           confirmText: trans('send'),
-          name: 'selected',
+          name: 'selected.list',
           definition: UserList.definition,
           card: UserList.card,
+          filters: {roles: announce.roles},
           fetch: {
-            url: getUrl(['claro_announcement_validate', {aggregateId: aggregateId, id: announce.id}]) + qs,
+            url: getUrl(['claro_announcement_validate', {aggregateId: aggregateId, id: announce.id}]),
             autoload: true
           },
           handleSelect: () => {

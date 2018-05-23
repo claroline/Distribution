@@ -150,7 +150,10 @@ class AnnouncementController
     public function validateSendAction(AnnouncementAggregate $aggregate, Announcement $announcement, Request $request)
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
-        $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
+        $ids = $request->query->all()['filters']['roles'];
+        $ids = explode(',', $ids);
+        $roles = $this->om->findList('Claroline\CoreBundle\Entity\Role', 'uuid', $ids);
+        //$roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
         $users = $this->manager->getVisibleBy($announcement, $roles);
         $serialized = [];
 
@@ -186,13 +189,14 @@ class AnnouncementController
      *
      * @return JsonResponse
      */
-    public function sendAction(AnnouncementAggregate $aggregate, Announcement $announcement)
+    public function sendAction(AnnouncementAggregate $aggregate, Announcement $announcement, Request $request)
     {
         $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
+        $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
+        $users = $this->manager->getVisibleBy($announcement, $roles);
+        $this->manager->sendMessage($announcement, $users);
 
-        $this->manager->sendMessage($announcement);
-
-        return new JsonResponse(null, 204);
+        return new JsonResponse(null, 200);
     }
 
     public function getClass()

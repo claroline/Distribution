@@ -15,6 +15,7 @@ use Claroline\AnnouncementBundle\API\Serializer\AnnouncementSerializer;
 use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementsWidgetConfig;
 use Claroline\AnnouncementBundle\Repository\AnnouncementRepository;
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
@@ -64,7 +65,8 @@ class AnnouncementManager
      *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
      *     "serializer"      = @DI\Inject("claroline.serializer.announcement"),
      *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager"),
-     *     "taskManager"     = @DI\Inject("claroline.manager.scheduled_task_manager")
+     *     "taskManager"     = @DI\Inject("claroline.manager.scheduled_task_manager"),
+     *     "finder"          = @DI\Inject("claroline.api.finder")
      * })
      *
      * @param ObjectManager          $om
@@ -78,13 +80,15 @@ class AnnouncementManager
         StrictDispatcher $eventDispatcher,
         AnnouncementSerializer $serializer,
         MailManager $mailManager,
-        ScheduledTaskManager $taskManager
+        ScheduledTaskManager $taskManager,
+        FinderProvider $finder
     ) {
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
         $this->mailManager = $mailManager;
         $this->taskManager = $taskManager;
+        $this->finder = $finder;
 
         $this->announcementRepo = $om->getRepository('ClarolineAnnouncementBundle:Announcement');
         $this->announcementsWidgetConfigRepo = $om->getRepository('ClarolineAnnouncementBundle:AnnouncementsWidgetConfig');
@@ -183,31 +187,14 @@ class AnnouncementManager
     }
 
     /**
-     * Sends an Announcement by email to Users that can access it.
-     *
-     * @param Announcement $announcement
-     * @param array        $roles
-     */
-    public function sendMail(Announcement $announcement, array $roles = [])
-    {
-        $message = $this->getMessage($announcement, $roles);
-        $this->mailManager->send(
-            $message['object'],
-            $message['content'],
-            $message['receivers'],
-            $message['sender']
-        );
-    }
-
-    /**
      * Sends an Announcement by message to Users that can access it.
      *
      * @param Announcement $announcement
      * @param array        $roles
      */
-    public function sendMessage(Announcement $announcement, array $roles = [])
+    public function sendMessage(Announcement $announcement, array $users = [])
     {
-        $message = $this->getMessage($announcement, $roles);
+        $message = $this->getMessage($announcement, $users);
 
         $this->eventDispatcher->dispatch(
             'claroline_message_sending_to_users',
@@ -276,7 +263,7 @@ class AnnouncementManager
      *
      * @return array
      */
-    private function getMessage(Announcement $announce, array $roles = [])
+    private function getMessage(Announcement $announce, array $users = [])
     {
         $resourceNode = $announce->getAggregate()->getResourceNode();
 
@@ -285,11 +272,12 @@ class AnnouncementManager
         if (empty($announce->getTitle()) && !empty($announce->getVisibleFrom())) {
             $object .= ' ['.$announce->getVisibleFrom()->format('Y-m-d H:i').']';
         }
+
         $content = $announce->getContent().'<br>['.$resourceNode->getWorkspace()->getCode().'] '.$resourceNode->getWorkspace()->getName();
 
         return [
             'sender' => $announce->getCreator(),
-            'receivers' => $this->getVisibleBy($announce, $roles),
+            'receivers' => $users,
             'object' => $object,
             'content' => $content,
         ];

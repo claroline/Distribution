@@ -31,10 +31,9 @@ class AnnouncementSend
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\AnnouncementBundle\Entity\AnnouncementAggregate",
-     *     inversedBy="sends"
+     *     targetEntity="Claroline\AnnouncementBundle\Entity\AnnouncementAggregate"
      * )
-     * @ORM\JoinColumn(name="aggregate_id", onDelete="set null", nullable=false)
+     * @ORM\JoinColumn(name="aggregate_id", nullable=false)
      *
      * @var AnnouncementAggregate
      */
