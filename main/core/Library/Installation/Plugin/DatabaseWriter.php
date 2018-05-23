@@ -550,23 +550,8 @@ class DatabaseWriter
 
         $this->log('Updating resource action '.$action['name']);
 
-        if (!empty($action['resource_type'])) {
-            /** @var ResourceType $maskType */
-            $maskType = $this->em
-                ->getRepository('ClarolineCoreBundle:Resource\ResourceType')
-                ->findOneBy(['name' => $action['resource_type']]);
-        } else {
-            // this is some kind of hack for the current implementation. Each mask has a resourcetype so we can't pick null
-            // and directory has all the default perms. Any other resource type would have done the trick anyway
-            /** @var ResourceType $maskType */
-            $maskType = $this->em
-                ->getRepository('ClarolineCoreBundle:Resource\ResourceType')
-                ->findOneBy(['name' => 'directory']);
-        }
-
         // initializes the mask decoder if needed
         $this->mm->createDecoder($action['decoder'], $resourceType);
-        $maskDecoder = $this->mm->encodeMask([$action['decoder'] => true], $maskType);
 
         /** @var MenuAction $resourceAction */
         $resourceAction = $this->em
@@ -578,9 +563,9 @@ class DatabaseWriter
         }
 
         $resourceAction->setName($action['name']);
-        $resourceAction->setMask($maskDecoder);
+        $resourceAction->setDecoder($action['decoder']);
         $resourceAction->setGroup($action['group']);
-        $resourceAction->setBulk($action['bulk']);
+        $resourceAction->setScope($action['scope']);
         $resourceAction->setResourceType($resourceType);
 
         $this->em->persist($resourceAction);

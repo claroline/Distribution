@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Resource;
 
+use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\CoreBundle\Entity\Plugin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,26 +22,21 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ResourceType
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    use Id;
 
     /**
      * @ORM\Column(unique=true)
      */
-    protected $name;
+    private $name;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
-     *     mappedBy="resourceType",
-     *     cascade={"persist"}
-     * )
+     * The entity class of resources of this type.
+     *
+     * @var string
+     *
+     * @ORM\Column(length=256)
      */
-    protected $abstractResources;
+    private $class;
 
     /**
      * @ORM\OneToMany(
@@ -51,7 +47,7 @@ class ResourceType
      *
      * @var ArrayCollection|MaskDecoder[]
      */
-    protected $maskDecoders;
+    private $maskDecoders;
 
     /**
      * @ORM\OneToMany(
@@ -60,55 +56,36 @@ class ResourceType
      *     cascade={"persist"}
      * )
      */
-    protected $actions;
+    private $actions;
 
     /**
      * @ORM\Column(name="is_exportable", type="boolean")
      */
-    protected $isExportable = false;
+    private $exportable = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Plugin")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    protected $plugin;
-
-    /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceRights",
-     *     mappedBy="resourceTypes"
-     * )
-     */
-    protected $rights;
+    private $plugin;
 
     /**
      * @ORM\Column(type="integer")
      */
-    protected $defaultMask = 1;
+    private $defaultMask = 1;
 
     /**
      * @ORM\Column(name="is_enabled", type="boolean")
      */
-    protected $isEnabled = true;
+    private $enabled = true;
 
     /**
-     * Constructor.
+     * ResourceType constructor.
      */
     public function __construct()
     {
-        $this->abstractResources = new ArrayCollection();
         $this->actions = new ArrayCollection();
         $this->maskDecoders = new ArrayCollection();
-    }
-
-    /**
-     * Returns the resource type id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -131,6 +108,26 @@ class ResourceType
         $this->name = $name;
     }
 
+    /**
+     * Returns the resource class name.
+     *
+     * @return string
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Sets the resource class name.
+     *
+     * @param string $class
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
+    }
+
     public function setPlugin(Plugin $plugin)
     {
         $this->plugin = $plugin;
@@ -151,24 +148,14 @@ class ResourceType
         $this->actions->add($action);
     }
 
-    public function getAbstractResources()
+    public function setExportable($exportable)
     {
-        return $this->abstractResources;
-    }
-
-    public function addAbstractResource($abstractResource)
-    {
-        $this->abstractResources->add($abstractResource);
-    }
-
-    public function setExportable($isExportable)
-    {
-        $this->isExportable = $isExportable;
+        $this->exportable = $exportable;
     }
 
     public function isExportable()
     {
-        return $this->isExportable;
+        return $this->exportable;
     }
 
     /**
@@ -203,13 +190,23 @@ class ResourceType
         return $this->defaultMask;
     }
 
+    /**
+     * @param $isEnabled
+     *
+     * @deprecated
+     */
     public function setIsEnabled($isEnabled)
     {
-        $this->isEnabled = $isEnabled;
+        $this->setEnabled($isEnabled);
+    }
+
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
     }
 
     public function isEnabled()
     {
-        return $this->isEnabled;
+        return $this->enabled;
     }
 }

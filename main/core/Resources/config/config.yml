@@ -3,45 +3,68 @@ plugin:
         # Opens a resource
         - name: open
           decoder: open
+          scope: [object]
+          api: [GET]
 
         # Displays common resources info (the one from the node)
-        - name: show-info
+        - name: about
           decoder: open
+          scope: [object]
+          api: [GET]
+
+        # Changes changes the content of a resource
+        - name: edit
+          decoder: edit
+          group: management
+          scope: [object]
+          api: [PUT]
 
         # Exports a resource in a Claroline format (archive + manifest)
         - name: export
-          group: transfer
           decoder: export
-          bulk: true # The action can be executed on multiple resources at once.
+          group: transfer
+          scope: [object, collection] # The action can be executed on multiple resources at once.
+          api: [GET]
+          recursive: true
 
         # Deletes a resource
         - name: delete
-          group: management
           decoder: delete
-          bulk: true # The action can be executed on multiple resources at once.
-
-        # Changes access rights of a resource
-        - name: edit-rights
           group: management
-          decoder: administrate
-          bulk: true # The action can be executed on multiple resources at once.
+          scope: [object, collection] # The action can be executed on multiple resources at once.
+          api: [DELETE]
+          recursive: true
 
         # Changes common resources info (the one from the node)
-        - name: edit-properties
-          group: management
+        - name: configure
           decoder: administrate
-          bulk: true # The action can be executed on multiple resources at once.
+          group: management
+          scope: [object, collection] # The action can be executed on multiple resources at once.
+          api: [PUT]
+          recursive: true
+
+        # Creates a copy of a resource
+        - name: copy
+          decoder: administrate
+          group: management
+          scope: [object, collection] # The action can be executed on multiple resources at once.
+          api: [POST]
+          recursive: true
 
         # Changes the parent of a resource
         - name: move
-          group: management
           decoder: administrate
-          bulk: true # The action can be executed on multiple resources at once.
+          group: management
+          scope: [object, collection] # The action can be executed on multiple resources at once.
+          api: [PUT]
+          recursive: true
 
         # Displays tracking info about the resource
         - name: open-tracking
-          group: log
           decoder: administrate # todo : adds it's own right
+          group: log
+          scope: [object]
+          api: [GET]
 
     resources:
         - name: file
@@ -51,21 +74,21 @@ plugin:
               - name: download
                 decoder: export
                 group: transfer
+                api: [GET]
 
         - name: directory
           class: Claroline\CoreBundle\Entity\Resource\Directory
           exportable: true
           actions:
-              - name: create
+              # Creates a new resource in the directory
+              - name: add
                 decoder: create
                 group: management
+                api: [POST]
 
         - name: text
           class: Claroline\CoreBundle\Entity\Resource\Text
           exportable: true
-
-        - name: resource_shortcut
-          class: Claroline\CoreBundle\Entity\Resource\ResourceShortcut
 
         - name: activity
           class: Claroline\CoreBundle\Entity\Resource\Activity
@@ -169,7 +192,7 @@ plugin:
           is_locked_for_admin: false
           is_anonymous_excluded: false
 
-        - name: resource_manager
+        - name: resources
           class: folder
           is_displayable_in_workspace: true
           is_displayable_in_desktop: true

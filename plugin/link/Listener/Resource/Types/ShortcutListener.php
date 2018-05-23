@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Listener\Resource\Types;
+namespace Claroline\LinkBundle\Listener\Resource;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
+use Claroline\LinkBundle\Entity\Resource\Shortcut;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -28,8 +28,6 @@ use Symfony\Component\Form\FormFactoryInterface;
  * Integrates the "Shortcut" resource.
  *
  * @DI\Service
- *
- * @todo delete all shortcuts when a ResourceNode is deleted.
  */
 class ShortcutListener
 {
@@ -87,46 +85,36 @@ class ShortcutListener
     public function onLoad(LoadResourceEvent $event)
     {
         //
-        $shortcut = $event->getResource();
+        /*$shortcut = $event->getResource();
         $event->setAdditionalData([
             //'directory' => $this->serializer->serialize(),
         ]);
 
-        $event->stopPropagation();
+        $event->stopPropagation();*/
     }
 
     /**
      * Opens a shortcut.
      * It forwards the event to the target of the shortcut.
      *
-     * @DI\Observe("open_resource_shortcut")
+     * @DI\Observe("resource.shortcut.open")
      *
      * @param OpenResourceEvent $event
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        /*$directory = $event->getResource();
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:Directory:index.html.twig',
-            [
-                'directory' => $directory,
-                '_resource' => $directory,
-            ]
-        );
-        $response = new Response($content);
-        $event->setResponse($response);
-        $event->stopPropagation();*/
+
     }
 
     /**
-     * Downloads a shortcut.
+     * Exports a shortcut.
      * It forwards the event to the target of the shortcut.
      *
-     * @DI\Observe("download_resource_shortcut")
+     * @DI\Observe("resource.shortcut.export")
      *
      * @param DownloadResourceEvent $event
      */
-    public function onDownload(DownloadResourceEvent $event)
+    public function onExport(DownloadResourceEvent $event)
     {
 
     }
@@ -134,9 +122,9 @@ class ShortcutListener
     /**
      * Removes a shortcut.
      *
-     * @DI\Observe("delete_resource_shortcut")
+     * @DI\Observe("resource.shortcut.delete")
      *
-     * @param deleteResourceEvent $event
+     * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)
     {
@@ -146,18 +134,18 @@ class ShortcutListener
     /**
      * Copies a shortcut.
      *
-     * @DI\Observe("copy_resource_shortcut")
+     * @DI\Observe("resource.shortcut.copy")
      *
-     * @param copyResourceEvent $event
+     * @param CopyResourceEvent $event
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        /** @var ResourceShortcut $shortcut */
-        $shortcut = $event->getResource();
+        /** @var Shortcut $shortcut */
+        /*$shortcut = $event->getResource();
 
         $copy = new ResourceShortcut();
         $copy->setTarget($shortcut->getTarget());
 
-        $event->setCopy($copy);
+        $event->setCopy($copy);*/
     }
 }

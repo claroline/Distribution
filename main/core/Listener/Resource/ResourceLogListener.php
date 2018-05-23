@@ -19,6 +19,11 @@ class ResourceLogListener
 
     }
 
+    public function onOpen()
+    {
+        //$this->dispatcher->dispatch('log', 'Log\LogResourceRead', [$node]);
+    }
+
     public function onCreate()
     {
         /*$usersToNotify = $workspace && $workspace->getId() ?
@@ -34,7 +39,7 @@ class ResourceLogListener
         // $this->dispatcher->dispatch('log', 'Log\LogResourceCopy', [$newNode, $node]);
     }
 
-    public function onChangePublication()
+    public function onTogglePublication()
     {
         /*$usersToNotify = $node->getWorkspace() && !$node->getWorkspace()->isDisabledNotifications() ?
             $this->container->get('claroline.manager.user_manager')->getUsersByWorkspaces([$node->getWorkspace()], null, null, false) :
@@ -43,7 +48,7 @@ class ResourceLogListener
         $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);*/
     }
 
-    public function onUpdate()
+    public function onConfigure()
     {
         /*$uow = $this->om->getUnitOfWork();
         $uow->computeChangeSets();
@@ -56,6 +61,11 @@ class ResourceLogListener
                 [$node, $changeSet]
             );
         }*/
+    }
+
+    public function onMove()
+    {
+        // $this->dispatcher->dispatch('log', 'Log\LogResourceMove', [$child, $parent]);
     }
 
     public function onDelete()

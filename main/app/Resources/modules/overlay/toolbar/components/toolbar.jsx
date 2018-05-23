@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 // TODO : remove me when toolbar bars will be mounted in the main app
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
+import {AlertOverlay} from '#/main/app/overlay/alert/containers/overlay'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
@@ -75,6 +76,7 @@ const Toolbar = props => {
         </nav>
       }
 
+      <AlertOverlay />
       <ModalOverlay />
     </nav>
   )

@@ -16,6 +16,8 @@ use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -37,14 +39,13 @@ class ResourceController
      *
      * @param ResourceActionManager $actionManager
      */
-    public function __construct(
-        ResourceActionManager $actionManager)
+    public function __construct(ResourceActionManager $actionManager)
     {
         $this->actionManager = $actionManager;
     }
 
     /**
-     * Executes an action an one resource.
+     * Executes an action on one resource.
      *
      * @EXT\Route("/{action}/{id}", name="claro_resource_action_short")
      * @EXT\Route("/{resourceType}/{action}/{id}", name="claro_resource_action")
@@ -52,24 +53,32 @@ class ResourceController
      * @param Request      $request
      * @param ResourceNode $resourceNode
      * @param string       $action
+     *
+     * @return Response
+     *
+     * @throws NotFoundHttpException
      */
     public function singleAction(Request $request, ResourceNode $resourceNode, $action)
     {
-        // retrieves the action
-        $resourceAction = $this->actionManager->get($resourceNode, $action);
-        if (empty($resourceAction)) {
+        if (!$this->actionManager->support($resourceNode, $action, $request->getMethod())) {
             // undefined action
             throw new NotFoundHttpException(
-                sprintf('The action % does not exist.', $action)
+                sprintf('The action %s with method [%s] does not exist for resource %s.', $action, $request->getMethod(), $resourceNode->getResourceType()->getName())
             );
         }
 
-        // checks current user rights
-        //$this->checkPermission($resourceAction->getMask(), $resourceNode, [], true);
+        // check current user rights
+        // $this->checkPermission($resourceAction->getMask(), $resourceNode, [], true);
 
-        // dispatches action event
+        // read request and get user query
+        $parameters = $request->query->all();
+        $content = null;
+        if (!empty($request->getContent())) {
+            $content = json_decode($request->getContent(), true);
+        }
 
-        // grab and return response
+        // dispatch action event
+        return $this->actionManager->execute($resourceNode, $action, $parameters, $content);
     }
 
     public function bulkAction(Request $request)

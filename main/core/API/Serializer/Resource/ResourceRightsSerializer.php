@@ -47,7 +47,7 @@ class ResourceRightsSerializer
     }
 
     /**
-     * Serializes a ResourceType entity for the JSON api.
+     * Serializes a ResourceRights entity for the JSON api.
      *
      * @param ResourceRights $rights - the resource rights to serialize
      *

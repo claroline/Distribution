@@ -53,7 +53,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  * Class ResourceOldController
  * @package Claroline\CoreBundle\Controller
  *
- * @todo restaure used before remove (eg. the action about lock / unlock)
+ * @todo restore used before remove (eg. the action about lock / unlock)
  */
 class ResourceOldController extends Controller
 {
@@ -156,88 +156,6 @@ class ResourceOldController extends Controller
         return new Response($event->getResponseContent());
     }
 
-    /**
-     * @EXT\Route(
-     *     "/create/{resourceType}/{parentId}/published/{published}",
-     *     name="claro_resource_create",
-     *     defaults={"published"=0},
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter(
-     *      "parent",
-     *      class="ClarolineCoreBundle:Resource\ResourceNode",
-     *      options={"id" = "parentId", "strictId" = true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Creates a resource.
-     *
-     * @param string       $resourceType the resource type
-     * @param ResourceNode $parent       the parent
-     * @param User         $user         the user
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function createAction(
-        $resourceType,
-        ResourceNode $parent,
-        User $user,
-        $published = 0
-    ) {
-        $collection = new ResourceCollection([$parent]);
-        $collection->setAttributes(['type' => $resourceType]);
-
-        if (!$this->authorization->isGranted('CREATE', $collection)) {
-            $errors = $collection->getErrors();
-            $content = $this->templating->render(
-                'ClarolineCoreBundle:Resource:errors.html.twig',
-                ['errors' => $errors]
-            );
-
-            $response = new Response($content, 403);
-            $response->headers->add(['XXX-Claroline' => 'resource-error']);
-
-            return $response;
-        }
-
-        $event = $this->dispatcher->dispatch('create_'.$resourceType, 'CreateResource', [$parent, $resourceType]);
-        $isPublished = 1 === intval($published) ? true : $event->isPublished();
-
-        if (count($event->getResources()) > 0) {
-            $nodesArray = [];
-
-            foreach ($event->getResources() as $resource) {
-                if ($event->getProcess()) {
-                    $createdResource = $this->resourceManager->create(
-                        $resource,
-                        $this->resourceManager->getResourceTypeByName($resourceType),
-                        $user,
-                        $parent->getWorkspace(),
-                        $parent,
-                        null,
-                        [],
-                        $isPublished
-                    );
-
-                    $nodesArray[] = $this->resourceManager->toArray(
-                        $createdResource->getResourceNode(),
-                        $this->tokenStorage->getToken()
-                    );
-                } else {
-                    $nodesArray[] = $this->resourceManager->toArray(
-                        $resource->getResourceNode(),
-                        $this->tokenStorage->getToken()
-                    );
-                }
-            }
-
-            return new JsonResponse($nodesArray);
-        }
-
-        return new Response($event->getErrorFormContent());
-    }
 
     /**
      * Opens a resource.
@@ -389,111 +307,6 @@ class ResourceOldController extends Controller
         $this->resourceManager->setPublishedStatus($nodes, false);
 
         return new Response('Resources unpublished', 204);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/move/{newParent}",
-     *     name="claro_resource_move",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter(
-     *     "nodes",
-     *     class="ClarolineCoreBundle:Resource\ResourceNode",
-     *     options={"multipleIds" = true}
-     * )
-     *
-     * Moves many resource (changes their parents). This function takes an array
-     * of parameters which are the ids of the moved resources
-     * (query string: "ids[]=1&ids[]=2" ...).
-     *
-     * @param ResourceNode $newParent
-     * @param array        $nodes
-     *
-     * @throws \RuntimeException
-     *
-     * @return Response
-     */
-    public function moveAction(ResourceNode $newParent, array $nodes)
-    {
-        $collection = new ResourceCollection($nodes);
-        $collection->addAttribute('parent', $newParent);
-
-        if (!$this->authorization->isGranted('MOVE', $collection)) {
-            $errors = $collection->getErrors();
-            $content = $this->templating->render(
-                'ClarolineCoreBundle:Resource:errors.html.twig',
-                ['errors' => $errors]
-            );
-
-            $response = new Response($content, 403);
-            $response->headers->add(['XXX-Claroline' => 'resource-error']);
-
-            return $response;
-        }
-
-        foreach ($nodes as $node) {
-            try {
-                $movedNode = $this->resourceManager->move($node, $newParent);
-                $movedNodes[] = $this->resourceManager->toArray($movedNode, $this->tokenStorage->getToken());
-            } catch (ResourceMoveException $e) {
-                return new Response($this->translator->trans('invalid_move', [], 'error'), 422);
-            }
-        }
-
-        return new JsonResponse($movedNodes);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/custom/{action}/{node}",
-     *     name="claro_resource_action",
-     *     options={"expose"=true}
-     * )
-     *
-     * Handles any custom action (i.e. not defined in this controller) on a
-     * resource of a given type.
-     *
-     * If the ResourceType is null, it's an action (resource action) valides for all type of resources.
-     *
-     * @param string       $action the action
-     * @param ResourceNode $node   the resource
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function customAction($action, ResourceNode $node)
-    {
-        $type = $node->getResourceType();
-        $menuAction = $this->maskManager
-            ->getMenuFromNameAndResourceType($action, $type);
-
-        if (!$menuAction) {
-            throw new \Exception("The menu {$action} doesn't exists");
-        }
-
-        $collection = new ResourceCollection([$node]);
-
-        if (null === $menuAction->getResourceType()) {
-            if (!$this->authorization->isGranted('ROLE_USER')) {
-                throw new AccessDeniedException('You must be log in to execute this action !');
-            }
-            $this->checkAccess('open', $collection);
-            $eventName = 'resource_action_'.$action;
-        } else {
-            $permToCheck = $this->maskManager->getByValue($type, $menuAction->getValue());
-            $this->checkAccess($permToCheck->getName(), $collection);
-            $eventName = $action.'_'.$type->getName();
-        }
-
-        $event = $this->dispatcher->dispatch(
-            $eventName,
-            'CustomActionResource',
-            [$this->resourceManager->getResourceFromNode($node)]
-        );
-
-        return $event->getResponse();
     }
 
     /**
@@ -901,72 +714,6 @@ class ResourceOldController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/copy/{parent}",
-     *     name="claro_resource_copy",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter(
-     *     "nodes",
-     *     class="ClarolineCoreBundle:Resource\ResourceNode",
-     *     options={"multipleIds" = true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Adds multiple resource resource to a workspace.
-     * Needs an array of ids to be functional (query string: "ids[]=1&ids[]=2" ...).
-     *
-     * @param ResourceNode $parent
-     * @param array        $nodes
-     * @param User         $user
-     *
-     * @return Response
-     */
-    public function copyAction(ResourceNode $parent, array $nodes, User $user)
-    {
-        $newNodes = [];
-        $collection = new ResourceCollection($nodes);
-        $collection->addAttribute('parent', $parent);
-
-        if (!$this->authorization->isGranted('COPY', $collection)) {
-            $errors = $collection->getErrors();
-            $content = $this->templating->render(
-                'ClarolineCoreBundle:Resource:errors.html.twig',
-                ['errors' => $errors]
-            );
-
-            $response = new Response($content, 403);
-            $response->headers->add(['XXX-Claroline' => 'resource-error']);
-
-            return $response;
-        }
-
-        $i = 1;
-
-        try {
-            foreach ($nodes as $node) {
-                $newNodes[] = $this->resourceManager->toArray(
-                    $this->resourceManager->copy($node, $parent, $user, $i)->getResourceNode(),
-                    $this->tokenStorage->getToken()
-                );
-                ++$i;
-            }
-        } catch (ResourceNotFoundException $e) {
-            $errors = [$e->getMessage()];
-            $content = $this->templating->render(
-                'ClarolineCoreBundle:Resource:errors.html.twig',
-                ['errors' => $errors]
-            );
-            $response = new Response($content, 403);
-            $response->headers->add(['XXX-Claroline' => 'resource-error']);
-
-            return $response;
-        }
-
-        return new JsonResponse($newNodes);
-    }
-
-    /**
-     * @EXT\Route(
      *     "/filter/{nodeId}",
      *     name="claro_resource_filter",
      *     options={"expose"=true}
@@ -1028,43 +775,6 @@ class ResourceOldController extends Controller
                 'path' => $path,
             ]
         );
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/shortcut/{parent}/create",
-     *     name="claro_resource_create_shortcut",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("creator", options={"authenticatedUser" = true})
-     * @EXT\ParamConverter(
-     *     "nodes",
-     *     class="ClarolineCoreBundle:Resource\ResourceNode",
-     *     options={"multipleIds" = true}
-     * )
-     *
-     * Creates (one or several) shortcuts.
-     * Takes an array of ids to be functionnal (query string: "ids[]=1&ids[]=2" ...).
-     *
-     * @param ResourceNode $parent  the new parent
-     * @param User         $creator the shortcut creator
-     * @param array        $nodes   the resources going to be linked
-     *
-     * @return Response
-     */
-    public function createShortcutAction(ResourceNode $parent, User $creator, array $nodes)
-    {
-        $collection = new ResourceCollection([$parent]);
-        $collection->setAttributes(['type' => 'resource_shortcut']);
-        $this->checkAccess('CREATE', $collection);
-
-        foreach ($nodes as $node) {
-            $shortcut = $this->resourceManager
-                ->makeShortcut($node, $parent, $creator, new ResourceShortcut());
-            $links[] = $this->resourceManager->toArray($shortcut->getResourceNode(), $this->tokenStorage->getToken());
-        }
-
-        return new JsonResponse($links);
     }
 
     /**

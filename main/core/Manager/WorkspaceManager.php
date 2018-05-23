@@ -210,7 +210,7 @@ class WorkspaceManager
      * Creates a workspace.
      *
      * @param Workspace $workspace
-     * @param $template uncompressed template
+     * @param $templateDirectory uncompressed template
      *
      * @return \Claroline\CoreBundle\Entity\Workspace\AbstractWorkspace
      */
@@ -247,9 +247,6 @@ class WorkspaceManager
         }
 
         $ch = $this->container->get('claroline.config.platform_config_handler');
-        if (!$workspace->getGuid()) {
-            $workspace->setGuid(uniqid('', true));
-        }
         $workspace->setMaxUploadResources($ch->getParameter('max_upload_resources'));
         $workspace->setMaxStorageSize($ch->getParameter('max_storage_size'));
         $workspace->setMaxUsers($ch->getParameter('max_workspace_users'));

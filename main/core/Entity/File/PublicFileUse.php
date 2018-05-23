@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="claro_public_file_use")
  *
- * @deprecated I think it's no longer used in the new file management see with @ngodfraind
+ * @deprecated I think it's no longer used in the new file management see with ngodfraind
  */
 class PublicFileUse
 {

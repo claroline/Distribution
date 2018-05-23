@@ -73,52 +73,12 @@ class DirectoryListener
     }
 
     /**
-     * @DI\Observe("create_form_directory")
-     *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new DirectoryType(), new Directory());
-        $response = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'directory',
-            ]
-        );
-        $event->setResponseContent($response);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("create_directory")
+     * @DI\Observe("resource.directory.create")
      *
      * @param CreateResourceEvent $event
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request_stack')->getMasterRequest();
-        $form = $this->formFactory->create(new DirectoryType(), new Directory());
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $published = $form->get('published')->getData();
-            $event->setPublished($published);
-            $event->setResources([$form->getData()]);
-            $event->stopPropagation();
-
-            return;
-        }
-
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'directory',
-            ]
-        );
-        $event->setErrorFormContent($content);
         $event->stopPropagation();
     }
 

@@ -9,8 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Entity\Resource;
+namespace Claroline\LinkBundle\Entity\Resource;
 
+use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(name="claro_resource_shortcut")
  */
-class ResourceShortcut extends AbstractResource
+class Shortcut extends AbstractResource
 {
     /**
      * The targeted resource node.

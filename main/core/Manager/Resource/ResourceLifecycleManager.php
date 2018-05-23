@@ -7,7 +7,9 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\PublicationChangeEvent;
 use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
 
@@ -41,13 +43,41 @@ class ResourceLifecycleManager
         $this->om = $om;
     }
 
-    public function open(ResourceNode $resourceNode)
+    public function create(ResourceNode $resourceNode)
     {
 
     }
 
+    public function open(ResourceNode $resourceNode)
+    {
+        /** @var OpenResourceEvent $event */
+        $event = $this->dispatcher->dispatch(
+            static::eventName('open', $resourceNode),
+            CopyResourceEvent::class,
+            [$this->getResourceFromNode($resourceNode)]
+        );
+
+        return $event;
+    }
+
+    public function edit(ResourceNode $resourceNode)
+    {
+        /** @var OpenResourceEvent $event */
+        $event = $this->dispatcher->dispatch(
+            static::eventName('edit', $resourceNode),
+            CopyResourceEvent::class,
+            [$this->getResourceFromNode($resourceNode)]
+        );
+
+        return $event;
+    }
+
     public function copy(ResourceNode $copiedNode, ResourceNode $originalNode)
     {
+        /*$newNodes = [];
+        $collection = new ResourceCollection($nodes);
+        $collection->addAttribute('parent', $parent);*/
+
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             static::eventName('copy', $copiedNode),
@@ -60,7 +90,8 @@ class ResourceLifecycleManager
 
     public function move()
     {
-
+        /*$collection = new ResourceCollection($nodes);
+        $collection->addAttribute('parent', $newParent);*/
     }
 
     /**
@@ -68,12 +99,24 @@ class ResourceLifecycleManager
      *
      * @return DownloadResourceEvent
      */
-    public function download(ResourceNode $resourceNode)
+    public function export(ResourceNode $resourceNode)
     {
         /** @var DownloadResourceEvent $event */
         $event = $this->dispatcher->dispatch(
-            static::eventName('download', $resourceNode),
+            static::eventName('export', $resourceNode), // old download
             DownloadResourceEvent::class,
+            [$this->getResourceFromNode($resourceNode)]
+        );
+
+        return $event;
+    }
+
+    public function delete(ResourceNode $resourceNode)
+    {
+        /** @var DeleteResourceEvent $event */
+        $event = $this->dispatcher->dispatch(
+            static::eventName('delete', $resourceNode), // old download
+            DeleteResourceEvent::class,
             [$this->getResourceFromNode($resourceNode)]
         );
 
@@ -96,7 +139,7 @@ class ResourceLifecycleManager
     {
         /** @var ResourceEvaluationEvent $event */
         $event = $this->dispatcher->dispatch(
-            'resource_evaluation',
+            'evaluate', // old : resource_evaluation
             ResourceEvaluationEvent::class,
             [$resourceUserEvaluation]
         );
@@ -114,7 +157,7 @@ class ResourceLifecycleManager
      */
     private static function eventName($prefix, ResourceNode $resourceNode)
     {
-        return $prefix.'_'.$resourceNode->getResourceType()->getName();
+        return 'resource.'.$prefix.'.'.$resourceNode->getResourceType()->getName();
     }
 
     /**

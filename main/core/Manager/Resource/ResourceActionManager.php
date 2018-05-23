@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Manager\Resource;
 
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
-use Claroline\CoreBundle\Manager\Resource\MaskManager;
-use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -28,6 +28,9 @@ class ResourceActionManager
     /** @var ObjectManager */
     private $om;
 
+    /** @var StrictDispatcher */
+    private $dispatcher;
+
     /** @var MaskManager */
     private $maskManager;
 
@@ -36,6 +39,11 @@ class ResourceActionManager
 
     /** @var ObjectRepository */
     private $repository;
+
+    /**
+     * @var MenuAction[]
+     */
+    private $genericActions = [];
 
     /**
      * ResourceMenuManager constructor.
@@ -60,6 +68,36 @@ class ResourceActionManager
         $this->rightsManager = $rightsManager;
 
         $this->repository = $this->om->getRepository('ClarolineCoreBundle:Resource\MenuAction');
+
+        // preload the list of actions available for all resource types
+        // it will avoid to have to load it for each not
+        // this is safe to do it because the only way to change action is through
+        // the platform install/update process
+        $this->genericActions = $this->repository->findBy(['resourceType' => null]);
+    }
+
+    public function support(ResourceNode $resourceNode, $actionName, $method)
+    {
+        // todo : implement
+
+        // return $this->dispatcher->hasListeners($eventName);
+
+        return true;
+    }
+
+    public function execute(ResourceNode $resourceNode, $actionName, array $options = [], array $content = null)
+    {
+        // todo : implement
+        $resourceAction = $this->get($resourceNode, $actionName);
+
+        /** @var ResourceActionEvent $event */
+        $event = $this->dispatcher->dispatch(
+            static::eventName($actionName, $resourceAction->getResourceType()),
+            ResourceActionEvent::class,
+            [$options, $content] // todo : pass current resource
+        );
+
+        return $event->getResponse();
     }
 
     /**
@@ -74,17 +112,25 @@ class ResourceActionManager
     }
 
     /**
+     * Gets all actions available for a resource.
+     *
      * @param ResourceNode $resourceNode
      *
      * @return MenuAction[]
      */
     public function all(ResourceNode $resourceNode)
     {
-        //ResourceManager::isResourceActionImplemented(ResourceType $resourceType = null, $actionName)
-        $actions = $this->getMenus($resourceNode);
+        $resourceType = $resourceNode->getResourceType();
 
+        /** @var MenuAction[] $actions */
+        $actions = array_merge(
+            $resourceType->getActions()->toArray(),
+            $this->genericActions
+        );
+
+        // TODO : find a way to move permission checks elsewhere
         $currentPerms = $this->rightsManager->getCurrentPermissionArray($resourceNode);
-        $currentMask = $this->maskManager->encodeMask($currentPerms, $resourceNode->getResourceType());
+        $currentMask = $this->maskManager->encodeMask($currentPerms, $resourceType);
 
         $available = [];
         foreach ($actions as $action) {
@@ -98,27 +144,21 @@ class ResourceActionManager
     }
 
     /**
-     * @param ResourceNode $resourceNode
+     * Generates the names for dispatched events.
      *
-     * @return MenuAction[]
+     * @param string       $actionName
+     * @param ResourceType $resourceType
      *
-     * @deprecated
+     * @return string
      */
-    public function getMenus(ResourceNode $resourceNode)
+    private static function eventName($actionName, ResourceType $resourceType = null)
     {
-        $specificMenus = $resourceNode->getResourceType()->getActions();
+        if (!empty($resourceType)) {
+            // This is an action only available for the current type
+            return 'resource.'.$resourceType->getName().'.'.$actionName;;
+        }
 
-        return array_merge(
-            $specificMenus->toArray(),
-            $this->om->getRepository('ClarolineCoreBundle:Resource\MenuAction')->findBy(['resourceType' => null])
-        );
-    }
-
-    public function getByResourceType(ResourceType $resourceType = null)
-    {
-        return $this
-            ->om
-            ->getRepository('ClarolineCoreBundle:Resource\MenuAction')
-            ->findBy(['resourceType' => $resourceType]);
+        // This is an action available for all resource types
+        return 'resource.'.$actionName;
     }
 }

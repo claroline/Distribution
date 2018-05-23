@@ -18,7 +18,7 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
+//use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\Resource\ResourceThumbnail;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
@@ -162,7 +162,7 @@ class ResourceManager
         $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
         $this->resourceRightsRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceRights');
         $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
-        $this->shortcutRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceShortcut');
+        $this->shortcutRepo = $om->getRepository('ClarolineLinkBundle:Resource\Shortcut');
         $this->directoryRepo = $om->getRepository('ClarolineCoreBundle:Resource\Directory');
     }
 
@@ -349,42 +349,6 @@ class ResourceManager
     }
 
     /**
-     * Creates a shortcut.
-     *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode     $target
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode     $parent
-     * @param \Claroline\CoreBundle\Entity\User                      $creator
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceShortcut $shortcut
-     *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceShortcut
-     *
-     * @deprecated
-     */
-    public function makeShortcut(ResourceNode $target, ResourceNode $parent, User $creator, ResourceShortcut $shortcut)
-    {
-        $shortcut->setName($target->getName());
-
-        if ('Claroline\CoreBundle\Entity\Resource\ResourceShortcut' !== get_class($target)) {
-            $shortcut->setTarget($target);
-        } else {
-            $shortcut->setTarget($target->getTarget());
-        }
-
-        $shortcut = $this->create(
-            $shortcut,
-            $target->getResourceType(),
-            $creator,
-            $parent->getWorkspace(),
-            $parent,
-            $target->getIcon()->getShortcutIcon()
-        );
-
-        $this->dispatcher->dispatch('log', 'Log\LogResourceCreate', [$shortcut->getResourceNode()]);
-
-        return $shortcut;
-    }
-
-    /**
      * Set the right of a resource.
      * If $rights = array(), the $parent node rights will be copied.
      *
@@ -489,7 +453,7 @@ class ResourceManager
 
         foreach ($resourceTypes as $type) {
             //@todo write findByNames method.
-            $rt = $this->resourceTypeRepo->findOneByName($type['name']);
+            $rt = $this->resourceTypeRepo->findOneBy(['name' => $type['name']]);
             if (null === $rt) {
                 $unknownTypes[] = $type['name'];
             } else {
@@ -655,6 +619,8 @@ class ResourceManager
      * @param ResourceNode $target
      *
      * @return bool
+     *
+     * @deprecated
      */
     public function hasLinkTo(ResourceNode $parent, ResourceNode $target)
     {
@@ -857,84 +823,6 @@ class ResourceManager
     }
 
     /**
-     * Convert a resource into an array (mainly used to be serialized and sent to the manager.js as
-     * a json response).
-     *
-     * @param ResourceNode   $node
-     * @param TokenInterface $token
-     * @param bool           $new   - set the 'new' flag to display warning in the resource manager
-     *
-     * @todo check "new" from log
-     * @todo remove me
-     *
-     * @deprecated
-     *
-     * @return array
-     */
-    public function toArray(ResourceNode $node, TokenInterface $token, $new = false)
-    {
-        $resourceArray = [];
-        $resourceArray['id'] = $node->getId();
-        $resourceArray['name'] = $node->getName();
-        $resourceArray['parent_id'] = (null !== $node->getParent()) ? $node->getParent()->getId() : null;
-        $resourceArray['creator_username'] = $node->getCreator()->getUsername();
-        $resourceArray['creator_id'] = $node->getCreator()->getId();
-        $resourceArray['type'] = $node->getResourceType()->getName();
-        $resourceArray['large_icon'] = $node->getIcon()->getRelativeUrl();
-        $resourceArray['path_for_display'] = $node->getPathForDisplay();
-        $resourceArray['mime_type'] = $node->getMimeType();
-        $resourceArray['published'] = $node->isPublished();
-        $resourceArray['deletable'] = $node->isDeletable();
-        $resourceArray['index_dir'] = $node->getIndex();
-        $resourceArray['creation_date'] = $node->getCreationDate()->format('YYYY-MM-DD\TH:m:s');
-        $resourceArray['modification_date'] = $node->getModificationDate()->format('YYYY-MM-DD\TH:m:s');
-        $resourceArray['new'] = $new;
-
-        $isAdmin = false;
-
-        $roles = $this->roleManager->getStringRolesFromToken($token);
-
-        foreach ($roles as $role) {
-            if ('ROLE_ADMIN' === $role) {
-                $isAdmin = true;
-            }
-        }
-
-        if ($isAdmin || ('anon.' !== $token->getUser() && $node->getCreator()->getUsername() === $token->getUser()->getUsername())) {
-            $resourceArray['mask'] = 1023;
-        } else {
-            $resourceArray['mask'] = $this->resourceRightsRepo->findMaximumRights($roles, $node);
-        }
-
-        //the following line is required because we wanted to disable the right edition in personal worksspaces...
-        //this is not required for everything to work properly.
-
-        if (!$node->getWorkspace()) {
-            $resourceArray['enableRightsEdition'] = false;
-        } else {
-            if ($node->getWorkspace()->isPersonal()) {
-                $resourceArray['enableRightsEdition'] = false;
-            } else {
-                $resourceArray['enableRightsEdition'] = true;
-            }
-        }
-
-        if ('file' === $node->getResourceType()->getName()) {
-            if ('Claroline\CoreBundle\Entity\Resource\ResourceShortcut' === $node->getClass()) {
-                $shortcut = $this->getResourceFromNode($node);
-                $realNode = $shortcut->getTarget();
-            } else {
-                $realNode = $node;
-            }
-
-            $file = $this->getResourceFromNode($realNode);
-            $resourceArray['size'] = $file->getFormattedSize();
-        }
-
-        return $resourceArray;
-    }
-
-    /**
      * Removes a resource.
      *
      * @param ResourceNode $resourceNode
@@ -964,63 +852,56 @@ class ResourceManager
             $resource = $this->getResourceFromNode($node);
             /*
              * resChild can be null if a shortcut was removed
-             * @todo: fix shortcut delete. If a target is removed, every link to the target should be removed too.
              */
             if (null !== $resource) {
-                if ('Claroline\CoreBundle\Entity\Resource\ResourceShortcut' !== $node->getClass()) {
-                    // Dispatch DeleteResourceEvent only when soft delete is not enabled
-                    if (!$softDelete) {
-                        $event = $this->dispatcher->dispatch(
-                            "delete_{$node->getResourceType()->getName()}",
-                            'DeleteResource',
-                            [$resource, $softDelete]
-                        );
-                        $eventSoftDelete = $event->isSoftDelete();
+                if (!$softDelete) {
+                    $event = $this->dispatcher->dispatch(
+                        "delete_{$node->getResourceType()->getName()}",
+                        'DeleteResource',
+                        [$resource, $softDelete]
+                    );
+                    $eventSoftDelete = $event->isSoftDelete();
 
-                        foreach ($event->getFiles() as $file) {
-                            if ($softDelete) {
-                                $parts = explode(
-                                    $this->filesDirectory.DIRECTORY_SEPARATOR,
-                                    $file
-                                );
+                    foreach ($event->getFiles() as $file) {
+                        if ($softDelete) {
+                            $parts = explode(
+                                $this->filesDirectory.DIRECTORY_SEPARATOR,
+                                $file
+                            );
 
-                                if (2 === count($parts)) {
-                                    $deleteDir = $this->filesDirectory.
-                                        DIRECTORY_SEPARATOR.
-                                        'DELETED_FILES';
-                                    $dest = $deleteDir.
-                                        DIRECTORY_SEPARATOR.
-                                        $parts[1];
-                                    $additionalDirs = explode(DIRECTORY_SEPARATOR, $parts[1]);
+                            if (2 === count($parts)) {
+                                $deleteDir = $this->filesDirectory.
+                                    DIRECTORY_SEPARATOR.
+                                    'DELETED_FILES';
+                                $dest = $deleteDir.
+                                    DIRECTORY_SEPARATOR.
+                                    $parts[1];
+                                $additionalDirs = explode(DIRECTORY_SEPARATOR, $parts[1]);
 
-                                    for ($i = 0; $i < count($additionalDirs) - 1; ++$i) {
-                                        $deleteDir .= DIRECTORY_SEPARATOR.$additionalDirs[$i];
-                                    }
-
-                                    if (!is_dir($deleteDir)) {
-                                        mkdir($deleteDir, 0777, true);
-                                    }
-                                    rename($file, $dest);
+                                for ($i = 0; $i < count($additionalDirs) - 1; ++$i) {
+                                    $deleteDir .= DIRECTORY_SEPARATOR.$additionalDirs[$i];
                                 }
-                            } else {
-                                unlink($file);
-                            }
 
-                            //It won't work if a resource has no workspace for a reason or an other. This could be a source of bug.
-                            $dir = $this->filesDirectory.
-                                DIRECTORY_SEPARATOR.
-                                'WORKSPACE_'.
-                                $workspace->getId();
-
-                            if (is_dir($dir) && $this->isDirectoryEmpty($dir)) {
-                                rmdir($dir);
+                                if (!is_dir($deleteDir)) {
+                                    mkdir($deleteDir, 0777, true);
+                                }
+                                rename($file, $dest);
                             }
+                        } else {
+                            unlink($file);
+                        }
+
+                        //It won't work if a resource has no workspace for a reason or an other. This could be a source of bug.
+                        $dir = $this->filesDirectory.
+                            DIRECTORY_SEPARATOR.
+                            'WORKSPACE_'.
+                            $workspace->getId();
+
+                        if (is_dir($dir) && $this->isDirectoryEmpty($dir)) {
+                            rmdir($dir);
                         }
                     }
                 }
-
-                // Delete all associated shortcuts
-                $this->deleteAssociatedShortcuts($node);
 
                 if ($softDelete || $eventSoftDelete) {
                     $node->setActive(false);
@@ -1685,36 +1566,6 @@ class ResourceManager
     }
 
     /**
-     * Returns true if the listener is implemented for a resourceType and an action.
-     *
-     * @param ResourceType $resourceType
-     * @param string       $actionName
-     *
-     * @return bool
-     */
-    public function isResourceActionImplemented(ResourceType $resourceType = null, $actionName)
-    {
-        $alwaysTrue = ['rename', 'edit-properties', 'edit-rights', 'open-tracking'];
-
-        if (in_array($actionName, $alwaysTrue)) {
-            return true;
-        }
-
-        if ($resourceType) {
-            //first, directories can be downloaded even if there is no listener attached to it
-            if ('directory' === $resourceType->getName() && 'download' === $actionName) {
-                return true;
-            }
-
-            $eventName = $actionName.'_'.$resourceType->getName();
-        } else {
-            $eventName = 'resource_action_'.$actionName;
-        }
-
-        return $this->dispatcher->hasListeners($eventName);
-    }
-
-    /**
      * @param string $dirName
      *
      * @return bool
@@ -1904,7 +1755,7 @@ class ResourceManager
         }
 
         /** @var ResourceNode $node */
-		$node = $this->container->get('request_stack')->getMasterRequest()->getSession()->get('current_resource_node');
+        $node = $this->container->get('request_stack')->getMasterRequest()->getSession()->get('current_resource_node');
 
         if ($node && $node->getWorkspace()) {
             $root = $this->directoryRepo->findDefaultUploadDirectories($node->getWorkspace());
@@ -1915,17 +1766,6 @@ class ResourceManager
         }
 
         return $defaults;
-    }
-
-    private function deleteAssociatedShortcuts(ResourceNode $resourceNode)
-    {
-        $this->om->startFlushSuite();
-        $shortcuts = $this->shortcutRepo->findByTarget($resourceNode);
-
-        foreach ($shortcuts as $shortcut) {
-            $this->om->remove($shortcut->getResourceNode());
-        }
-        $this->om->endFlushSuite();
     }
 
     public function getLastIndex(ResourceNode $parent)

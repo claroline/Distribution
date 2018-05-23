@@ -541,32 +541,6 @@ class ResourceManagerTest extends MockeryTestCase
         $manager->copy($node, $parent, $user);
     }
 
-    public function testMakeShortcut()
-    {
-        $manager = $this->getManager(['create']);
-        $target = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
-        $parent = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
-        $dirType = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceType');
-        $shortcut = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceShortcut');
-        $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $icon = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
-        $shortcutIcon = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
-        $shortcutNode = new ResourceNode();
-        $shortcut->shouldReceive('getResourceNode')->once()->andReturn($shortcutNode);
-        $creator = $this->mock('Claroline\CoreBundle\Entity\User');
-        $manager->shouldReceive('create')->once()->andReturn($shortcut);
-        $target->shouldReceive('getResourceType')->once()->andReturn($dirType);
-        $target->shouldReceive('getName')->once()->andReturn('name');
-        $target->shouldReceive('getIcon')->andReturn($icon);
-        $icon->shouldReceive('getShortcutIcon')->andReturn($shortcutIcon);
-        $parent->shouldReceive('getWorkspace')->once()->andReturn($workspace);
-        $shortcut->shouldReceive('setName')->once();
-        $shortcut->shouldReceive('setTarget')->once()->with($target);
-        $this->eventDispatcher->shouldReceive('dispatch')->once()
-            ->with('log', 'Log\LogResourceCreate', [$shortcutNode]);
-        $manager->makeShortcut($target, $parent, $creator, $shortcut);
-    }
-
     public function testExport()
     {
         $this->markTestSkipped();

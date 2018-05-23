@@ -30,11 +30,11 @@ class MenuAction
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      *
-     * @var int
+     * @var string
      */
-    private $mask;
+    private $decoder;
 
     /**
      * @ORM\Column(name="group_name", nullable=true)
@@ -44,11 +44,11 @@ class MenuAction
     private $group;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="json_array")
      *
-     * @var string
+     * @var array
      */
-    private $bulk = false;
+    private $scope = [];
 
     /**
      * @ORM\ManyToOne(
@@ -76,6 +76,9 @@ class MenuAction
         $this->name = $name;
     }
 
+    /**
+     * @return ResourceType
+     */
     public function getResourceType()
     {
         return $this->resourceType;
@@ -90,39 +93,19 @@ class MenuAction
     }
 
     /**
-     * @param $value
-     *
-     * @deprecated
+     * @param string $decoder
      */
-    public function setValue($value)
+    public function setDecoder($decoder)
     {
-        $this->mask = $value;
+        $this->decoder = $decoder;
     }
 
     /**
-     * @return int
-     *
-     * @deprecated
+     * @return string
      */
-    public function getValue()
+    public function getDecoder()
     {
-        return $this->mask;
-    }
-
-    /**
-     * @param int $mask
-     */
-    public function setMask($mask)
-    {
-        $this->mask = $mask;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMask()
-    {
-        return $this->mask;
+        return $this->decoder;
     }
 
     /**
@@ -141,13 +124,19 @@ class MenuAction
         return $this->group;
     }
 
-    public function isBulk()
+    /**
+     * @return array
+     */
+    public function getScope()
     {
-        return $this->bulk;
+        return $this->scope;
     }
 
-    public function setBulk($bulk)
+    /**
+     * @param array $scope
+     */
+    public function setScope(array $scope)
     {
-        $this->bulk = $bulk;
+        $this->scope = $scope;
     }
 }

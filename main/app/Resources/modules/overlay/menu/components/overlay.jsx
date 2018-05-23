@@ -15,7 +15,7 @@ MenuOverlay.propTypes = {
   id: T.string.isRequired,
   position: T.oneOf(['top', 'bottom']),
   align: T.oneOf(['left', 'right']),
-  children: T.element.isRequired
+  children: T.node.isRequired
 }
 
 MenuOverlay.defaultProps = {

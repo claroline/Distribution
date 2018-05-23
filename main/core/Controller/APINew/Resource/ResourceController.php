@@ -58,11 +58,6 @@ class ResourceController
         $this->resourceManager = $resourceManager;
     }
 
-    public function createAction($type)
-    {
-
-    }
-
     /**
      * Gets a resource.
      *
@@ -104,16 +99,6 @@ class ResourceController
                 'evaluation' => null, // todo flag evaluated resource types and auto load Evaluation if any
             ], $event->getAdditionalData())
         );
-    }
-
-    public function updateAction(ResourceNode $node, $type)
-    {
-
-    }
-
-    public function deleteAction()
-    {
-
     }
 
     /**
