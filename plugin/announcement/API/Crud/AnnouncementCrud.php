@@ -78,7 +78,6 @@ class AnnouncementCrud
     public function preDelete(DeleteEvent $event)
     {
         $announcement = $event->getObject();
-        $options = $event->getOptions();
         // delete scheduled task is any
         $this->manager->unscheduleMessage($announcement);
 
