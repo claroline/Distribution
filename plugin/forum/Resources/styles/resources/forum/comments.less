@@ -4,7 +4,6 @@
     align-items: flex-start;
     max-width: 100%;
     margin-bottom: 5px;
-    margin-left: 30px;
     background-color: #eee;
     padding: 10px 0 0 10px;
 
@@ -74,4 +73,28 @@
 
 .user-comment-content {
     padding: 15px;
+}
+
+.comment-link-container{
+  display: flex;
+  justify-content: flex-start;
+  .comment-link {
+    padding: 0 10px 0 0;
+    border: 0;
+    .comments-icon {
+      margin-right: 2px
+    }
+  }
+}
+
+
+// the margin-left of this container =>
+// 60px of the profile img + 30px between the profile img and the user-message
+// so that the button can have the widht of the userMessage
+.answer-comment-container {
+  margin: 10px 0 0 90px;
+
+  .comments-title {
+    justify-content: flex-end;
+  }
 }

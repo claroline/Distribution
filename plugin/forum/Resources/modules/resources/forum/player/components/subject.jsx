@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
 import {withRouter} from '#/main/core/router'
-import {trans} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
 import {Button} from '#/main/app/action/components/button'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
@@ -60,7 +60,7 @@ class SubjectComponent extends Component {
       icon: 'fa fa-fw fa-trash-o',
       title: trans('delete_subject', {}, 'forum'),
       question: trans('remove_subject_confirm_message', {}, 'forum'),
-      handleConfirm: () => this.props.deleteData(subjectId)
+      handleConfirm: () => this.props.deleteSubject(subjectId, this.props.history.push)
     })
   }
 
@@ -70,7 +70,7 @@ class SubjectComponent extends Component {
       icon: 'fa fa-fw fa-trash-o',
       title: trans('delete_message', {}, 'forum'),
       question: trans('remove_post_confirm_message', {}, 'forum'),
-      handleConfirm: () => this.props.deleteData(messageId)
+      handleConfirm: () => this.props.deleteMessage(messageId)
     })
   }
 
@@ -101,11 +101,11 @@ class SubjectComponent extends Component {
                 {get(this.props.subject, 'meta.sticky') &&
                   <span>[{trans('stuck', {}, 'forum')}] </span>
                 }
-                {this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small>
+                {this.props.subject.title}<small> {transChoice('replies', get(this.props.subject, 'meta.messages') || 0, {count: get(this.props.subject, 'meta.messages') || 0}, 'forum')}</small>
               </h3>
             }
             {(this.props.showSubjectForm && this.props.editingSubject) &&
-              <h3 className="h2">{this.props.subjectForm.title}<small> {get(this.props.subjectForm, 'meta.messages') || 0} réponse(s)</small></h3>
+              <h3 className="h2">{this.props.subjectForm.title}<small> {transChoice('replies', get(this.props.subject, 'meta.messages') || 0, {count: get(this.props.subject, 'meta.messages') || 0}, 'forum')}</small></h3>
             }
             {(this.props.showSubjectForm && !this.props.editingSubject) &&
               <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
@@ -170,7 +170,7 @@ class SubjectComponent extends Component {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 displayed: true,
-                action: () => this.deleteSubject(this.props.subject.id),
+                action: () => this.deleteSubject([this.props.subject.id]),
                 dangerous: true
               }
             ]}
@@ -202,7 +202,7 @@ class SubjectComponent extends Component {
                         icon: 'fa fa-fw fa-flag',
                         label: trans('flag', {}, 'forum'),
                         displayed: true,
-                        action: () => this.props.flagMessage(message, '3dfc6ea4-8b98-412e-9b28-c08f0962253b')
+                        action: () => this.props.flag(message, this.props.subject.id)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
@@ -231,9 +231,8 @@ class SubjectComponent extends Component {
             </ul>
             <hr/>
           </div>
-
         }
-        {(!this.props.showSubjectForm || !get(this.props.subject, 'meta.closed')) &&
+        {(!get(this.props.subject, 'meta.closed')) &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
@@ -251,11 +250,15 @@ SubjectComponent.propTypes = {
   subjectForm: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
-  flagMessage: T.func.isRequired,
+  flag: T.func.isRequired,
+  stickSubject: T.func.isRequired,
+  unStickSubject: T.func.isRequired,
+  closeSubject: T.func.isRequired,
+  unClosedSubject: T.func.isRequired,
   // unFlagMessage: T.func.isRequired,
   flagSubject: T.func.isRequired,
   unFlagSubject: T.func.isRequired,
-  deleteData: T.func.isRequired,
+  deleteMessage: T.func.isRequired,
   subjectEdition: T.func.isRequired,
   invalidated: T.bool.isRequired,
   loaded: T.bool.isRequired,
@@ -264,7 +267,8 @@ SubjectComponent.propTypes = {
   showSubjectForm: T.bool.isRequired,
   editingSubject: T.bool.isRequired,
   messages: T.arrayOf(T.shape({})),
-  sortOrder: T.number.isRequired
+  sortOrder: T.number.isRequired,
+  history: T.object.isRequired
 }
 
 const Subject =  withRouter(connect(
@@ -286,14 +290,11 @@ const Subject =  withRouter(connect(
     showModal(type, props) {
       dispatch(modalActions.showModal(type, props))
     },
-    deleteData(id, ownProps, deleteSubject) {
-      if(deleteSubject) {
-        dispatch(listActions.deleteData('subjects.list', ['apiv2_forum_subject_delete_bulk'], [{id: id}])).then(() => {
-          ownProps.history.push('/subjects')
-        })
-      } else {
-        dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
-      }
+    deleteSubject(id, push) {
+      dispatch(actions.deleteSubject(id, push))
+    },
+    deleteMessage(id) {
+      dispatch(listActions.deleteMessage('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
@@ -316,8 +317,8 @@ const Subject =  withRouter(connect(
     editContent(message, subjectId, content) {
       dispatch(actions.editContent(message, subjectId, content))
     },
-    flagMessage(message, subjectId) {
-      dispatch(actions.flagMessage(message, subjectId))
+    flag(message, subjectId) {
+      dispatch(actions.flag(message, subjectId))
     },
     flagSubject(subject) {
       dispatch(actions.flagSubject(subject))

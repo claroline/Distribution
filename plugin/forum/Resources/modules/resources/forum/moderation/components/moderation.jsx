@@ -3,7 +3,6 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {TabbedPageContainer} from '#/main/core/layout/tabs'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -43,28 +42,7 @@ const FlaggedMessage = () =>
 
 const ModerationComponent = () =>
   <div>
-    {/* <h2>{trans('moderation', {}, 'forum')}</h2> */}
-    <TabbedPageContainer
-      title={trans('moderation', {}, 'forum')}
-      tabs={[
-        {
-          icon: 'fa fa-flag',
-          title: trans('flagged_messages_subjects', {}, 'forum'),
-          path: '/flagged',
-          content: FlaggedMessage,
-          displayed: true
-        },
-        {
-          icon: 'fa fa-ban',
-          title: trans('moderated_posts', {}, 'forum'),
-          path: '/moderated',
-          // content: UserTab,
-          // //perm check here for creation
-          // actions: permLevel === MANAGER || permLevel === ADMIN ? UserTabActions: null,
-          displayed: true
-        }
-      ]}
-    />
+    Modération
   </div>
 
 const Moderation = connect(

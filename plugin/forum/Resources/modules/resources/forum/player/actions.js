@@ -73,6 +73,18 @@ actions.openSubject = (id) => (dispatch, getState) => {
   }
 }
 
+actions.deleteSubject = (id, push) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_delete_bulk', {id: id}],
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      push('/subjects')
+    }
+  }
+})
 
 actions.createMessage = (subjectId, content) => ({
   [API_REQUEST]: {

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataCard} from '#/main/core/data/components/data-card'
@@ -46,14 +46,19 @@ class SubjectsList extends Component {
               displayed: true,
               primary: true
             }, {
-              name: 'meta.messages',
-              type: 'number',
-              label: trans('posts', {}, 'forum'),
+              name: 'meta.closed',
+              type: 'boolean',
+              label: trans('closed_subject', {}, 'forum'),
               displayed: true
             }, {
               name: 'meta.sticky',
               type: 'boolean',
               label: trans('stuck', {}, 'forum'),
+              displayed: true
+            }, {
+              name: 'meta.messages',
+              type: 'number',
+              label: trans('posts', {}, 'forum'),
               displayed: true
             }, {
               name: 'meta.updated',
@@ -68,12 +73,13 @@ class SubjectsList extends Component {
               type: 'string',
               label: trans('tags'),
               displayed: true
-            }, {
-              name: 'meta.creator',
-              type: 'string',
-              label: trans('creator'),
-              displayed: true
             }
+            // {
+            //   name: 'meta.creator',
+            //   type: 'string',
+            //   label: trans('creator'),
+            //   displayed: true
+            // }
           ]}
           actions={(rows) => [
             {
@@ -120,7 +126,7 @@ class SubjectsList extends Component {
               id={props.data.id}
               icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
               title={props.data.title}
-              subtitle={props.data.meta.messages+' réponse(s)'}
+              subtitle={transChoice('replies', props.data.meta.messages, {count: props.data.meta.messages}, 'forum')}
               // contentText={props.data)}
             />
           }
