@@ -412,9 +412,9 @@ class WorkspaceManager
     /**
      * @return int
      */
-    public function getNbNonPersonalWorkspaces()
+    public function getNbNonPersonalWorkspaces($organizations = null)
     {
-        return $this->workspaceRepo->countNonPersonalWorkspaces();
+        return $this->workspaceRepo->countNonPersonalWorkspaces($organizations);
     }
 
     /**
@@ -619,9 +619,9 @@ class WorkspaceManager
      *
      * @return Workspace[]
      */
-    public function getWorkspacesWithMostResources($max)
+    public function getWorkspacesWithMostResources($max, $organizations = null)
     {
-        return $this->workspaceRepo->findWorkspacesWithMostResources($max);
+        return $this->workspaceRepo->findWorkspacesWithMostResources($max, $organizations);
     }
 
     /**
