@@ -13,6 +13,7 @@ namespace Claroline\AnnouncementBundle\Manager;
 
 use Claroline\AnnouncementBundle\API\Serializer\AnnouncementSerializer;
 use Claroline\AnnouncementBundle\Entity\Announcement;
+use Claroline\AnnouncementBundle\Entity\AnnouncementSend;
 use Claroline\AnnouncementBundle\Entity\AnnouncementsWidgetConfig;
 use Claroline\AnnouncementBundle\Repository\AnnouncementRepository;
 use Claroline\AppBundle\API\FinderProvider;
@@ -108,54 +109,6 @@ class AnnouncementManager
         return $this->serializer->serialize($announcement);
     }
 
-    /**
-     * Updates an Announcement.
-     *
-     * @param Announcement $announcement
-     * @param array        $data
-     * @param string       $logEvent
-     * @param bool         $withLog
-     *
-     * @return Announcement
-     */
-    public function update(Announcement $announcement, array $data, $logEvent = 'LogAnnouncementEdit', $withLog = true)
-    {
-        $this->om->startFlushSuite();
-
-        // deserialize data
-        $this->serializer->deserialize($data, $announcement);
-        $this->om->persist($announcement);
-
-        $roles =
-            isset($data['roles']) && count($data['roles']) > 0 ?
-            $this->om->findList('Claroline\CoreBundle\Entity\Role', 'uuid', $data['roles']) : [];
-
-        // send message if needed
-        /*
-        switch ($data['meta']['notifyUsers']) {
-            case 0:
-                $this->unscheduleMessage($announcement);
-                break;
-            case 1:
-                // directly send message
-                $this->unscheduleMessage($announcement);
-                $this->sendMessage($announcement, $roles);
-                break;
-            case 2:
-                // schedule sending
-                $this->scheduleMessage(
-                    $announcement,
-                    \DateTime::createFromFormat('Y-m-d\TH:i:s', $data['meta']['notificationDate']),
-                    $roles
-                );
-                break;
-        }*/
-
-        $this->om->endFlushSuite();
-
-        return $announcement;
-    }
-
     public function getVisibleAnnouncementsByWorkspace(Workspace $workspace, array $roles)
     {
         if (in_array('ROLE_ADMIN', $roles)
@@ -195,6 +148,17 @@ class AnnouncementManager
     public function sendMessage(Announcement $announcement, array $users = [])
     {
         $message = $this->getMessage($announcement, $users);
+
+        $announcementSend = new AnnouncementSend();
+        $data = $message;
+        $data['receivers'] = array_map(function ($receiver) {
+            return $receiver->getUsername();
+        }, $message['receivers']);
+        $data['sender'] = $message['sender']->getUsername();
+        $announcementSend->setAnnouncement($announcement);
+        $announcementSend->setData($data);
+        $this->om->persist($announcementSend);
+        $this->om->flush();
 
         $this->eventDispatcher->dispatch(
             'claroline_message_sending_to_users',

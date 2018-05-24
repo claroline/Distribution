@@ -31,13 +31,13 @@ class AnnouncementSend
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\AnnouncementBundle\Entity\AnnouncementAggregate"
+     *     targetEntity="Claroline\AnnouncementBundle\Entity\Announcement"
      * )
-     * @ORM\JoinColumn(name="aggregate_id", nullable=false)
+     * @ORM\JoinColumn(name="announcement_id", nullable=true)
      *
-     * @var AnnouncementAggregate
+     * @var Announcement
      */
-    private $aggregate;
+    private $announcement;
 
     /**
      * @ORM\Column(type="json_array", nullable=true)
@@ -54,14 +54,14 @@ class AnnouncementSend
         return $this->id;
     }
 
-    public function setAggregate(AnnouncementAggregate $aggregate)
+    public function setAnnouncement(Announcement $announcement)
     {
-        $this->aggregate = $aggregate;
+        $this->announcement = $announcement;
     }
 
-    public function getAggregate()
+    public function getAnnouncement()
     {
-        return $this->aggregate;
+        return $this->announcement;
     }
 
     public function setData(array $data)
