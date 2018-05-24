@@ -158,16 +158,6 @@ claro_resource:
     resource: "@ClarolineCoreBundle/Controller/ResourceController.php"
     type: annotation
 
-claro_resource_parameters:
-    resource: "@ClarolineCoreBundle/Controller/ResourcePropertiesController.php"
-    prefix: resource
-    type: annotation
-
-claro_resource_rights:
-    resource: "@ClarolineCoreBundle/Controller/ResourceRightsController.php"
-    prefix: resource
-    type: annotation
-
 claro_widget:
     resource: "@ClarolineCoreBundle/Controller/Widget"
     prefix: widget

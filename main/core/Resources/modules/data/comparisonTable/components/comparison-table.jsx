@@ -9,6 +9,8 @@ import {getTypeOrDefault} from '#/main/core/data/index'
 import {Table} from '#/main/core/layout/table/components/table'
 import {CallbackButton} from '#/main/app/button/components/callback'
 
+// TODO remove me and reuse standard table
+
 const RowDataCell = props => {
 
   const typeDef = getTypeOrDefault(props.type)

@@ -7,8 +7,8 @@ import {constants as listConst} from '#/main/core/data/list/constants'
 
 import {t} from '#/main/core/translation'
 import {actions} from '#/main/core/administration/user/user/actions'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_CONFIRM} from '#/main/core/layout/modal'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {currentUser} from '#/main/core/user/current'
 
 import {ComparisonTable} from '#/main/core/data/comparisonTable/components/comparison-table.jsx'

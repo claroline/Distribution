@@ -17,8 +17,10 @@ use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.manager.resource_action")
@@ -28,14 +30,11 @@ class ResourceActionManager
     /** @var ObjectManager */
     private $om;
 
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
+
     /** @var StrictDispatcher */
     private $dispatcher;
-
-    /** @var MaskManager */
-    private $maskManager;
-
-    /** @var RightsManager */
-    private $rightsManager;
 
     /** @var ObjectRepository */
     private $repository;
@@ -50,28 +49,24 @@ class ResourceActionManager
      *
      * @DI\InjectParams({
      *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "maskManager"   = @DI\Inject("claroline.manager.mask_manager"),
-     *     "rightsManager" = @DI\Inject("claroline.manager.rights_manager")
+     *     "authorization" = @DI\Inject("security.authorization_checker")
      * })
      *
-     * @param ObjectManager $om
-     * @param MaskManager $maskManager
-     * @param RightsManager $rightsManager
+     * @param ObjectManager                 $om
+     * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
         ObjectManager $om,
-        MaskManager $maskManager,
-        RightsManager $rightsManager)
+        AuthorizationCheckerInterface $authorization)
     {
         $this->om = $om;
-        $this->maskManager = $maskManager;
-        $this->rightsManager = $rightsManager;
+        $this->authorization = $authorization;
 
         $this->repository = $this->om->getRepository('ClarolineCoreBundle:Resource\MenuAction');
 
         // preload the list of actions available for all resource types
-        // it will avoid to have to load it for each not
-        // this is safe to do it because the only way to change action is through
+        // it will avoid having to load it for each node
+        // this is safe because the only way to change actions is through
         // the platform install/update process
         $this->genericActions = $this->repository->findBy(['resourceType' => null]);
     }
@@ -79,6 +74,8 @@ class ResourceActionManager
     public function support(ResourceNode $resourceNode, $actionName, $method)
     {
         // todo : implement
+        $action = $this->get($resourceNode, $actionName);
+        if (empty($action) || !in_array($method, $action->getApi()))
 
         // return $this->dispatcher->hasListeners($eventName);
 
@@ -87,7 +84,6 @@ class ResourceActionManager
 
     public function execute(ResourceNode $resourceNode, $actionName, array $options = [], array $content = null)
     {
-        // todo : implement
         $resourceAction = $this->get($resourceNode, $actionName);
 
         /** @var ResourceActionEvent $event */
@@ -128,23 +124,27 @@ class ResourceActionManager
             $this->genericActions
         );
 
-        // TODO : find a way to move permission checks elsewhere
-        $currentPerms = $this->rightsManager->getCurrentPermissionArray($resourceNode);
-        $currentMask = $this->maskManager->encodeMask($currentPerms, $resourceType);
-
-        $available = [];
-        foreach ($actions as $action) {
-            if ($action->getMask() & $currentMask) {
-                // The user has the right to access the action
-                $available[] = $action;
-            }
-        }
-
-        return $available;
+        // only get the actions available for the current user
+        return array_filter($actions, function (MenuAction $action) use ($resourceNode) {
+            return $this->hasPermission($resourceNode, $action);
+        });
     }
 
     /**
-     * Generates the names for dispatched events.
+     * Checks if the current user can execute an action on a resource.
+     *
+     * @param ResourceNode $resourceNode
+     * @param MenuAction   $action
+     *
+     * @return bool
+     */
+    private function hasPermission(ResourceNode $resourceNode, MenuAction $action)
+    {
+        return $this->authorization->isGranted($action->getDecoder(), new ResourceCollection([$resourceNode]));
+    }
+
+    /**
+     * Generates the names for resource actions events.
      *
      * @param string       $actionName
      * @param ResourceType $resourceType

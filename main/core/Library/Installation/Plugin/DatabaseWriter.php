@@ -567,6 +567,7 @@ class DatabaseWriter
         $resourceAction->setDecoder($action['decoder']);
         $resourceAction->setGroup($action['group']);
         $resourceAction->setScope($action['scope']);
+        $resourceAction->setApi($action['api']);
         $resourceAction->setResourceType($resourceType);
 
         $this->em->persist($resourceAction);

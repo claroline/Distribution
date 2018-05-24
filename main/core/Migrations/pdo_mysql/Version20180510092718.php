@@ -18,6 +18,7 @@ class Version20180510092718 extends AbstractMigration
             ALTER TABLE claro_menu_action 
             ADD decoder VARCHAR(255) NOT NULL
             ADD scope JSON NOT NULL COMMENT "(DC2Type:json_array)",
+            ADD api JSON NOT NULL COMMENT "(DC2Type:json_array)",
             DROP value,
             DROP async, 
             DROP is_custom, 
@@ -36,6 +37,7 @@ class Version20180510092718 extends AbstractMigration
             ALTER TABLE claro_menu_action 
             DROP decoder,
             DROP scope,
+            DROP api,
             ADD async TINYINT(1) DEFAULT NULL, 
             ADD is_custom TINYINT(1) NOT NULL, 
             ADD is_form TINYINT(1) NOT NULL, 

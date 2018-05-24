@@ -51,6 +51,13 @@ class MenuAction
     private $scope = [];
 
     /**
+     * @ORM\Column(type="json_array")
+     *
+     * @var array
+     */
+    private $api = [];
+
+    /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceType",
      *     inversedBy="actions",
@@ -138,5 +145,21 @@ class MenuAction
     public function setScope(array $scope)
     {
         $this->scope = $scope;
+    }
+
+    /**
+     * @return array
+     */
+    public function getApi()
+    {
+        return $this->api;
+    }
+
+    /**
+     * @param array $api
+     */
+    public function setApi(array $api)
+    {
+        $this->api = $api;
     }
 }

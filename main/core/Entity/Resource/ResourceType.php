@@ -80,6 +80,16 @@ class ResourceType
     private $isEnabled = true;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceRights",
+     *     mappedBy="resourceTypes"
+     * )
+     *
+     * @todo find a way to remove it (it's used in some DQL queries)
+     */
+    protected $rights;
+
+    /**
      * ResourceType constructor.
      */
     public function __construct()

@@ -108,7 +108,7 @@ class ResourceNodeSerializer
                 return [
                     'name' => $resourceAction->getName(),
                     'group' => $resourceAction->getGroup(),
-                    'bulk' => $resourceAction->isBulk(),
+                    'scope' => $resourceAction->getScope(),
                 ];
             }, $this->actionManager->all($resourceNode)),
             'permissions' => $this->rightsManager->getCurrentPermissionArray($resourceNode),
