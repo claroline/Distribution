@@ -37,9 +37,9 @@ function mapStateToProps(state, ownProps) {
   }
 
   newProps.sortable = listSelect.isSortable(listState)
-  
-  if (listState.readonly) {
-    newProps.readonly = listState.readonly
+
+  if (listState.readOnly) {
+    newProps.readOnly = listState.readOnly
   }
 
   if (newProps.sortable) {
@@ -147,8 +147,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     return func
   }
 
-  console.log(stateProps, ownProps)
-
   const props = {
     fetchData: dispatchProps.fetchData,
 
@@ -162,7 +160,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     filterColumns: ownProps.filterColumns,
     display:       ownProps.display,
     translations:  ownProps.translations,
-    readonly:      stateProps.readonly,
+    readOnly:      stateProps.readOnly,
     loaded:        stateProps.loaded,
     invalidated:   stateProps.invalidated,
     data:          stateProps.data,

@@ -163,20 +163,19 @@ class DataList extends Component {
     let filtersTool
     if (this.props.filters) {
       filtersTool = Object.assign({}, this.props.filters, {
-        available: getFilterableProps(this.state.definition)
+        available: getFilterableProps(this.state.definition),
+        readOnly: this.props.readOnly
       })
     }
 
     return (
       <div className="data-list">
-        {!this.props.readonly &&
-          <ListHeader
-            disabled={0 === this.props.totalResults || this.props.readonly}
-            display={displayTool}
-            columns={columnsTool}
-            filters={filtersTool}
-          />
-        }
+        <ListHeader
+          disabled={0 === this.props.totalResults}
+          display={displayTool}
+          columns={columnsTool}
+          filters={filtersTool}
+        />
 
         {0 !== this.props.totalResults &&
           React.createElement(listConst.DISPLAY_MODES[this.state.display.current].component, Object.assign({},

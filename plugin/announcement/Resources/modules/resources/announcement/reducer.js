@@ -134,7 +134,7 @@ const reducer = makeResourceReducer({}, {
           ['MODAL_HIDE']: () => true // todo : find better
         })
       },
-      {selectable: false, filterable: true, readonly: true, paginated: false, sortable: false})
+      {selectable: false, filterable: true, readOnly: true, paginated: false, sortable: false})
   }),
 
   workspaceRoles: makeReducer({}, {})

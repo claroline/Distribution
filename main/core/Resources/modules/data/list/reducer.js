@@ -25,7 +25,7 @@ const defaultState = {
   data: [],
   totalResults: 0,
   filters: [],
-  readonly: false,
+  readOnly: false,
   sortBy: {
     property: null,
     direction: 0
@@ -40,7 +40,7 @@ const invalidatedReducer = makeInstanceReducer(defaultState.invalidated, {
   [LIST_DATA_LOAD]: () => false
 })
 
-const readonlyReducer = makeInstanceReducer(defaultState.readonly, {})
+const readOnlyReducer = makeInstanceReducer(defaultState.readOnly, {})
 
 const loadedReducer = makeInstanceReducer(defaultState.invalidated, {
   [LIST_DATA_LOAD]: () => true
@@ -223,7 +223,7 @@ const baseReducer = {
   selected: selectedReducer,
   page: pageReducer,
   pageSize: pageSizeReducer,
-  readonly: readonlyReducer
+  readOnly: readOnlyReducer
 }
 
 /**
@@ -277,8 +277,8 @@ function makeListReducer(listName, initialState = {}, customReducer = {}, option
     reducer.selected = baseReducer.selected(listName, listState.selected)
   }
 
-  if (listOptions.readonly) {
-    reducer.readonly = baseReducer.readonly(listName, listOptions.readonly)
+  if (listOptions.readOnly) {
+    reducer.readOnly = baseReducer.readOnly(listName, listOptions.readOnly)
   }
 
   if (listOptions.paginated) {
