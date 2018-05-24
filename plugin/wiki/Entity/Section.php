@@ -2,9 +2,10 @@
 
 namespace Icap\WikiBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -15,6 +16,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Section
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -114,6 +117,11 @@ class Section
      */
     protected $parent;
 
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
+
     /**
      * Get id.
      *
@@ -135,11 +143,13 @@ class Section
     /**
      * @param mixed $visible
      *
-     * @return mixed
+     * @return $this
      */
     public function setVisible($visible)
     {
-        return $this->visible = $visible;
+        $this->visible = $visible;
+
+        return $this;
     }
 
     /**
@@ -169,7 +179,7 @@ class Section
      *
      * @param User $author
      *
-     * @return Post
+     * @return $this
      */
     public function setAuthor(User $author = null)
     {
@@ -186,30 +196,6 @@ class Section
     public function getAuthor()
     {
         return $this->author;
-    }
-
-    /**
-     * Set last editor.
-     *
-     * @param User $lastEditor
-     *
-     * @return Post
-     */
-    public function setLastEditor(User $lastEditor = null)
-    {
-        $this->lastEditor = $lastEditor;
-
-        return $this;
-    }
-
-    /**
-     * Get last editor.
-     *
-     * @return User
-     */
-    public function getLastEditor()
-    {
-        return $this->lastEditor;
     }
 
     /**
@@ -265,15 +251,19 @@ class Section
      */
     public function getDeleted()
     {
-        return ($this->deleted === null) ? false : $this->deleted;
+        return (null === $this->deleted) ? false : $this->deleted;
     }
 
     /**
      * @param bool $deleted
+     *
+     * @return $this
      */
     public function setDeleted($deleted)
     {
-        return $this->deleted = $deleted;
+        $this->deleted = $deleted;
+
+        return $this;
     }
 
     /**
@@ -289,19 +279,27 @@ class Section
     /**
      * Returns the resource creation date.
      *
-     * @return \DateTime
+     * @param $deletionDate
+     *
+     * @return $this
      */
     public function setDeletionDate($deletionDate)
     {
-        return $this->deletionDate = $deletionDate;
+        $this->deletionDate = $deletionDate;
+
+        return $this;
     }
 
     /**
      * @param mixed
+     *
+     * @return $this
      */
     public function setLeft($left)
     {
         $this->left = $left;
+
+        return $this;
     }
 
     /**
@@ -314,10 +312,14 @@ class Section
 
     /**
      * @param mixed $level
+     *
+     * @return $this
      */
     public function setLevel($level)
     {
         $this->level = $level;
+
+        return $this;
     }
 
     /**
@@ -330,10 +332,14 @@ class Section
 
     /**
      * @param mixed $right
+     *
+     * @return $this
      */
     public function setRight($right)
     {
         $this->right = $right;
+
+        return $this;
     }
 
     /**
@@ -346,10 +352,14 @@ class Section
 
     /**
      * @param mixed $root
+     *
+     * @return $this
      */
     public function setRoot($root)
     {
         $this->root = $root;
+
+        return $this;
     }
 
     /**
@@ -362,10 +372,14 @@ class Section
 
     /**
      * @param int $position
+     *
+     * @return $this
      */
     public function setPosition($position)
     {
         $this->position = intval($position);
+
+        return $this;
     }
 
     /**
@@ -378,10 +392,14 @@ class Section
 
     /**
      * @param bool $brother
+     *
+     * @return $this
      */
     public function setBrother($brother)
     {
         $this->brother = (bool) $brother;
+
+        return $this;
     }
 
     /**
@@ -394,10 +412,14 @@ class Section
 
     /**
      * @param bool $hasChangedActiveContribution
+     *
+     * @return $this
      */
     public function setHasChangedActiveContribution($hasChangedActiveContribution)
     {
         $this->hasChangedActiveContribution = (bool) $hasChangedActiveContribution;
+
+        return $this;
     }
 
     /**
@@ -409,11 +431,15 @@ class Section
     }
 
     /**
-     * @param bool $brother
+     * @param bool $isAdmin
+     *
+     * @return $this
      */
     public function setIsWikiAdmin($isAdmin)
     {
         $this->isWikiAdmin = (bool) $isAdmin;
+
+        return $this;
     }
 
     /**
@@ -431,7 +457,7 @@ class Section
      *
      * @return section
      */
-    public function setParent(\Icap\WikiBundle\Entity\Section $section)
+    public function setParent(Section $section)
     {
         $this->section = $section;
 
@@ -455,7 +481,7 @@ class Section
      */
     public function isRoot()
     {
-        return $this->getLevel() === 0;
+        return 0 === $this->getLevel();
     }
 
     /**
@@ -490,15 +516,15 @@ class Section
         $oldActiveContribution = $this->getActiveContribution();
         $newActiveContribution = new Contribution();
         $newActiveContribution->setSection($this);
-        if ($oldActiveContribution === null) {
-            if ($user === null) {
+        if (null === $oldActiveContribution) {
+            if (null === $user) {
                 $user = $this->getAuthor();
             }
         } else {
-            if ($user === null) {
+            if (null === $user) {
                 $user = $oldActiveContribution->getContributor();
             }
-            if ($user === null) {
+            if (null === $user) {
                 $user = $this->getAuthor();
             }
             $newActiveContribution->setTitle($oldActiveContribution->getTitle());
@@ -524,12 +550,12 @@ class Section
          * Otherwise return old and new left to mark move up or down in the same parent
          */
         $newLeft = $this->getLeft();
-        $changeSet = array(
-            'parentId' => array($oldParent->getId(), $newParent->getId()),
-            'parentName' => array($oldParent->getActiveContribution()->getTitle(), $newParent->getActiveContribution()->getTitle()),
-            'isParentRoot' => array($oldParent->isRoot(), $newParent->isRoot()),
-            'left' => array($oldLeft, $newLeft),
-        );
+        $changeSet = [
+            'parentId' => [$oldParent->getId(), $newParent->getId()],
+            'parentName' => [$oldParent->getActiveContribution()->getTitle(), $newParent->getActiveContribution()->getTitle()],
+            'isParentRoot' => [$oldParent->isRoot(), $newParent->isRoot()],
+            'left' => [$oldLeft, $newLeft],
+        ];
 
         return $changeSet;
     }
@@ -561,7 +587,7 @@ class Section
      */
     public function createActiveContribution(LifecycleEventArgs $event)
     {
-        if ($this->getActiveContribution() == null) {
+        if (null == $this->getActiveContribution()) {
             $em = $event->getEntityManager();
             $activeContribution = new Contribution();
             $activeContribution->setSection($this);

@@ -1,10 +1,4 @@
-{% set layout = "ClarolineCoreBundle:workspace:layout.html.twig" %}
-
-{% if isDesktop() %}
-    {% set layout = "ClarolineCoreBundle:desktop:layout.html.twig" %}
-{% endif %}
-
-{% extends layout %}
+{% extends "ClarolineCoreBundle:workspace:layout.html.twig" %}
 
 {% block meta %}
     {{ parent() }}

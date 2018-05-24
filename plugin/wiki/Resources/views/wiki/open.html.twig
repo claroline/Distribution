@@ -1,0 +1,14 @@
+{% extends "ClarolineCoreBundle:workspace:layout.html.twig" %}
+
+{% trans_default_domain "icap_wiki" %}
+
+{% block title %}{{ _resource.resourceNode.name }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ url('icap_wiki_view', { wikiId: _resource.id}) }}/" />
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
