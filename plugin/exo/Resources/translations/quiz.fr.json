@@ -602,6 +602,8 @@
     "summative": "Sommatif",
     "temporary_mark": "Note temporaire",
     "test_exit": "Sortie du test",
+    "time_over": "Le temps est écoulé",
+    "time_over_message": "Le temps imparti est écoulé. La copie a été soumise automatiquement.",
     "timer": "Temps restant :",
     "title": "Titre",
     "to_correct": "Corriger",

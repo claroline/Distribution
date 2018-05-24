@@ -603,6 +603,8 @@
     "summative": "Summative",
     "temporary_mark": "Temporary score",
     "test_exit": "Test output",
+    "time_over": "Time over",
+    "time_over_message": "The time is over. The paper has been automatically submitted.",
     "timer": "Remaining time :",
     "title": "Title",
     "to_correct": "Correct",
