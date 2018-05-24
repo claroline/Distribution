@@ -262,6 +262,11 @@ DataList.propTypes = {
   filterColumns: T.bool,
 
   /**
+   * Is the filter in readonly mode.
+   */
+  readOnly: T.bool,
+
+  /**
    * Search filters configuration.
    * Providing this object automatically display the search box component.
    */

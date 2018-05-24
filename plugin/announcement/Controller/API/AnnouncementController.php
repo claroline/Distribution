@@ -153,7 +153,6 @@ class AnnouncementController
         $ids = $request->query->all()['filters']['roles'];
         $ids = explode(',', $ids);
         $roles = $this->om->findList('Claroline\CoreBundle\Entity\Role', 'uuid', $ids);
-        //$roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
         $users = $this->manager->getVisibleBy($announcement, $roles);
         $serialized = [];
 

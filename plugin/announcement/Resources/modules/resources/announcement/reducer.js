@@ -5,8 +5,6 @@ import {makeResourceReducer} from '#/main/core/resource/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
 
-import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
-
 import {validate} from './validator'
 import {
   ANNOUNCE_DETAIL_OPEN,
