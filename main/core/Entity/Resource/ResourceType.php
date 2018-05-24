@@ -77,7 +77,7 @@ class ResourceType
     /**
      * @ORM\Column(name="is_enabled", type="boolean")
      */
-    private $enabled = true;
+    private $isEnabled = true;
 
     /**
      * ResourceType constructor.
@@ -202,11 +202,11 @@ class ResourceType
 
     public function setEnabled($enabled)
     {
-        $this->enabled = $enabled;
+        $this->isEnabled = $enabled;
     }
 
     public function isEnabled()
     {
-        return $this->enabled;
+        return $this->isEnabled;
     }
 }

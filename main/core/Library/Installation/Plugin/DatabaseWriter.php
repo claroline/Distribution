@@ -357,9 +357,10 @@ class DatabaseWriter
         if (null === $resourceType) {
             $resourceType = new ResourceType();
             $resourceType->setName($resourceConfiguration['name']);
-            $resourceType->setPlugin($plugin);
         }
 
+        $resourceType->setClass($resourceConfiguration['class']);
+        $resourceType->setPlugin($plugin);
         $resourceType->setExportable($resourceConfiguration['exportable']);
         $this->em->persist($resourceType);
 
@@ -592,6 +593,7 @@ class DatabaseWriter
         $this->log('Adding resource type '.$resourceConfiguration['name']);
         $resourceType = new ResourceType();
         $resourceType->setName($resourceConfiguration['name']);
+        $resourceType->setClass($resourceConfiguration['class']);
         $resourceType->setExportable($resourceConfiguration['exportable']);
         $resourceType->setPlugin($plugin);
         $this->em->persist($resourceType);

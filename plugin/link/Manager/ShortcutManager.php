@@ -20,7 +20,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 /**
  * Manages resource shortcuts.
  *
- * @DI\Service(claroline.manager.shortcut)
+ * @DI\Service("claroline.manager.shortcut")
  */
 class ShortcutManager
 {
