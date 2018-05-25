@@ -110,6 +110,13 @@ function computeElapsedTime(startDate) {
   return duration._data.seconds + duration._data.minutes * 60 + duration._data.hours * 3600 + duration._data.days * 86400
 }
 
+function getTimeDiff(startDate, endDate) {
+  const diff = moment(endDate).utc().diff(moment(startDate).utc())
+  const duration = moment.duration(diff)
+
+  return duration._data.seconds + duration._data.minutes * 60 + duration._data.hours * 3600 + duration._data.days * 86400
+}
+
 export {
   getApiFormat,
   getDisplayFormat,
@@ -119,5 +126,6 @@ export {
   now,
   apiToDateObject,
   dateToDisplayFormat,
-  computeElapsedTime
+  computeElapsedTime,
+  getTimeDiff
 }

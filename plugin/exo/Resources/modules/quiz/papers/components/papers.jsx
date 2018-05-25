@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import {generateUrl} from '#/main/core/api/router'
 import {tex, trans} from '#/main/core/translation'
+import {getTimeDiff} from '#/main/core/scaffolding/date'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box.jsx'
@@ -55,6 +56,21 @@ const Papers = props =>
           displayed: true,
           filterable: false,
           type: 'datetime'
+        }, {
+          name: 'duration',
+          label: trans('duration'),
+          displayed: true,
+          filterable: false,
+          sortable: false,
+          renderer: (rowData) => {
+            if (rowData.startDate && rowData.endDate) {
+              const duration = getTimeDiff(rowData['startDate'], rowData['endDate'])
+
+              return `${Math.round(duration / 60)}`
+            } else {
+              return '-'
+            }
+          }
         }, {
           name: 'finished',
           label: trans('finished'),
