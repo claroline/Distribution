@@ -116,6 +116,15 @@ class MessageCommentsComponent extends Component {
           />
         }
         <div className="comment-link-container">
+          {this.props.message.children.length !== 0 &&
+            <button
+              type="button"
+              className="btn btn-link btn-sm comment-link"
+              onClick={() => this.toggleComments()}
+            >
+              {this.state.opened ? transChoice('hide_comments',this.props.message.children.length, {count: this.props.message.children.length}, 'forum'): transChoice('show_comments', this.props.message.children.length, {count: this.props.message.children.length}, 'forum')}
+            </button>
+          }
           {!this.state.showNewCommentForm &&
             <button
               type="button"
@@ -123,19 +132,6 @@ class MessageCommentsComponent extends Component {
               className='btn btn-link btn-sm comment-link'
             >
               {trans('comment', {}, 'actions')}
-            </button>
-          }
-          {this.props.message.children.length !== 0 &&
-            <button
-              type="button"
-              className="btn btn-link btn-sm comment-link"
-              onClick={() => this.toggleComments()}
-            >
-              {this.state.opened ? transChoice('hide_comments',this.props.message.children.length, {}, 'forum'): transChoice('show_comments', this.props.message.children.length, {}, 'forum')}
-              <span className="comments-icon">
-                <span className="fa fa-fw fa-comments" />
-                <span className="comments-count">{this.props.message.children.length || '0'}</span>
-              </span>
             </button>
           }
         </div>
@@ -146,7 +142,12 @@ class MessageCommentsComponent extends Component {
 
 MessageCommentsComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
+  message: T.shape({
+    id: T.string.Required,
+    children: T.array.isRequired
+  }).isRequired,
   editContent: T.func.isRequired,
+  opened: T.bool,
   // flagMessage: T.func.isRequired,
   deleteComment: T.func.isRequired,
   createComment: T.func.isRequired,

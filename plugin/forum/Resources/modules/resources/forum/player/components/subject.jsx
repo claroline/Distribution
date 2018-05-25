@@ -153,7 +153,7 @@ class SubjectComponent extends Component {
                 icon: 'fa fa-fw fa-check-circle-o',
                 label: trans('open_subject', {}, 'forum'),
                 displayed: (get(this.props.subject, 'meta.closed', false)),
-                action: () => this.props.unClosedSubject(this.props.subject)
+                action: () => this.props.unCloseSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-flag',
                 label: trans('flag', {}, 'forum'),
@@ -254,7 +254,7 @@ SubjectComponent.propTypes = {
   stickSubject: T.func.isRequired,
   unStickSubject: T.func.isRequired,
   closeSubject: T.func.isRequired,
-  unClosedSubject: T.func.isRequired,
+  unCloseSubject: T.func.isRequired,
   // unFlagMessage: T.func.isRequired,
   flagSubject: T.func.isRequired,
   unFlagSubject: T.func.isRequired,
