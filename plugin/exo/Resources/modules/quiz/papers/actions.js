@@ -1,10 +1,6 @@
-import invariant from 'invariant'
-
 import {API_REQUEST} from '#/main/core/api/actions'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 
-import quizSelectors from '#/plugin/exo/quiz/selectors'
-import {selectors} from '#/plugin/exo/quiz/papers/selectors'
 import {normalize} from '#/plugin/exo/quiz/papers/normalizer'
 
 export const PAPER_ADD = 'PAPER_ADD'

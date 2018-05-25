@@ -7,12 +7,6 @@ import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {ResourceOverview} from '#/main/core/resource/components/overview.jsx'
 
 import {select} from '#/plugin/exo/quiz/selectors'
-import {
-  correctionModes,
-  markModes,
-  quizTypes,
-  SHOW_CORRECTION_AT_DATE
-} from '#/plugin/exo/quiz/enums'
 
 const OverviewComponent = props =>
   <ResourceOverview
