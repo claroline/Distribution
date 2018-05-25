@@ -19,24 +19,18 @@ formName={selectors.STORE_NAME}
 target={(workspace) => ['apiv2_workspace_update', {id: props.workspace.id}]}
 opened={true}
   />
+*/
 
- onEntering={() => props.loadWorkspace(props.workspace)}
-
-<WorkspaceForm name={selectors.STORE_NAME} />*/
-
-const ParametersModalComponent = props => {
-  props.loadWorkspace(props.workspace)
-
-  return (
-    <Modal
-      {...omit(props, 'workspace', 'loadWorkspace')}
-      title={trans('parameters', {}, 'tools')}
-
-    >
-      coucou
-    </Modal>
-  )
-}
+const ParametersModalComponent = props =>
+  <Modal
+    {...omit(props, 'workspace', 'loadWorkspace')}
+    icon="fa fa-fw fa-cog"
+    title={trans('parameters')}
+    subtitle={props.workspace.name}
+    onEntering={() => props.loadWorkspace(props.workspace)}
+  >
+    <WorkspaceForm name={selectors.STORE_NAME} />
+  </Modal>
 
 ParametersModalComponent.propTypes = {
   workspace: T.shape(
@@ -49,11 +43,7 @@ const ParametersModal = connect(
   null,
   (dispatch) => ({
     loadWorkspace(workspace) {
-      //console.log(workspace)
-      dispatch(actions.addAlert('1223', 'pending', 'generic'))
-
-
-      //dispatch(formActions.resetForm(selectors.STORE_NAME, workspace))
+      dispatch(formActions.resetForm(selectors.STORE_NAME, workspace))
     }
   })
 )(ParametersModalComponent)

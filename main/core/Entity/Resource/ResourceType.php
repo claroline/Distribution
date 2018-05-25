@@ -46,17 +46,10 @@ class ResourceType
      * )
      *
      * @var ArrayCollection|MaskDecoder[]
+     *
+     * @todo : we may remove it after checking it's not used
      */
     private $maskDecoders;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\MenuAction",
-     *     mappedBy="resourceType",
-     *     cascade={"persist"}
-     * )
-     */
-    private $actions;
 
     /**
      * @ORM\Column(name="is_exportable", type="boolean")
@@ -94,7 +87,6 @@ class ResourceType
      */
     public function __construct()
     {
-        $this->actions = new ArrayCollection();
         $this->maskDecoders = new ArrayCollection();
     }
 
@@ -146,16 +138,6 @@ class ResourceType
     public function getPlugin()
     {
         return $this->plugin;
-    }
-
-    public function getActions()
-    {
-        return $this->actions;
-    }
-
-    public function addAction(MenuAction $action)
-    {
-        $this->actions->add($action);
     }
 
     public function setExportable($exportable)

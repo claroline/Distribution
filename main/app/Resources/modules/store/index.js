@@ -15,7 +15,6 @@ import {apiMiddleware} from '#/main/app/api/store/middleware'
 
 // pre-configure store for all redux apps
 const middleware = [apiMiddleware, thunk]
-const enhancers = []
 
 // add dev tools
 if (process.env.NODE_ENV !== 'production') { // todo : retrieve current env elsewhere
@@ -23,11 +22,6 @@ if (process.env.NODE_ENV !== 'production') { // todo : retrieve current env else
   middleware.push(
     require('redux-freeze')
   )
-
-  // Register browser extension
-  if (window.devToolsExtension) {
-    enhancers.push(window.devToolsExtension())
-  }
 }
 
 /**
@@ -49,6 +43,14 @@ function createStore(reducers, initialState = {}, customEnhancers = []) {
       }
     })
     return combineReducers(reducers)
+  }
+
+  // register browser extension
+  // we must do it at each store creation in order to register all
+  // of them in the dev console
+  const enhancers = []
+  if (window.devToolsExtension) {
+    enhancers.push(window.devToolsExtension())
   }
 
   const store = baseCreate(

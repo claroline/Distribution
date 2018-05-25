@@ -11,9 +11,12 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Exception\ResourceAccessException;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
-use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +28,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ResourceController
 {
-    use PermissionCheckerTrait;
+    /** @var ResourceManager */
+    private $resourceManager;
 
     /** @var ResourceActionManager */
     private $actionManager;
@@ -34,13 +38,18 @@ class ResourceController
      * ResourceController constructor.
      *
      * @DI\InjectParams({
-     *     "actionManager" = @DI\Inject("claroline.manager.resource_action")
+     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
+     *     "actionManager"   = @DI\Inject("claroline.manager.resource_action")
      * })
      *
+     * @param ResourceManager       $resourceManager
      * @param ResourceActionManager $actionManager
      */
-    public function __construct(ResourceActionManager $actionManager)
+    public function __construct(
+        ResourceManager $resourceManager,
+        ResourceActionManager $actionManager)
     {
+        $this->resourceManager = $resourceManager;
         $this->actionManager = $actionManager;
     }
 
@@ -50,25 +59,29 @@ class ResourceController
      * @EXT\Route("/{action}/{id}", name="claro_resource_action_short")
      * @EXT\Route("/{resourceType}/{action}/{id}", name="claro_resource_action")
      *
-     * @param Request      $request
-     * @param ResourceNode $resourceNode
      * @param string       $action
+     * @param ResourceNode $resourceNode
+     * @param Request      $request
      *
      * @return Response
      *
      * @throws NotFoundHttpException
      */
-    public function singleAction(Request $request, ResourceNode $resourceNode, $action)
+    public function objectAction($action, ResourceNode $resourceNode, Request $request)
     {
+        // retrieve the resource instance
+        $resource = $this->resourceManager->getResourceFromNode($resourceNode);
+
+        // check the requested action exists
         if (!$this->actionManager->support($resourceNode, $action, $request->getMethod())) {
             // undefined action
             throw new NotFoundHttpException(
-                sprintf('The action %s with method [%s] does not exist for resource %s.', $action, $request->getMethod(), $resourceNode->getResourceType()->getName())
+                sprintf('The action %s with method [%s] does not exist for resource type %s.', $action, $request->getMethod(), $resourceNode->getResourceType()->getName())
             );
         }
 
         // check current user rights
-        // $this->checkPermission($resourceAction->getMask(), $resourceNode, [], true);
+        $this->checkAccess($this->actionManager->get($resourceNode, $action), [$resourceNode]);
 
         // read request and get user query
         $parameters = $request->query->all();
@@ -81,8 +94,22 @@ class ResourceController
         return $this->actionManager->execute($resourceNode, $action, $parameters, $content);
     }
 
-    public function bulkAction(Request $request)
+    public function collectionAction(Request $request)
     {
 
+    }
+
+    /**
+     * Checks the current user can execute the action on the requested nodes.
+     *
+     * @param MenuAction $action
+     * @param array      $resourceNodes
+     */
+    private function checkAccess(MenuAction $action, array $resourceNodes)
+    {
+        $collection = new ResourceCollection($resourceNodes);
+        if (!$this->actionManager->hasPermission($action, $collection)) {
+            throw new ResourceAccessException($collection->getErrorsForDisplay(), $collection->getResources());
+        }
     }
 }

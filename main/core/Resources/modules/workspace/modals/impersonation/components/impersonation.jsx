@@ -15,6 +15,7 @@ const ImpersonationModal = props =>
     {...omit(props, 'workspace')}
     icon="fa fa-fw fa-user-secret"
     title={trans('view-as', {}, 'actions')}
+    subtitle={props.workspace.name}
   >
     <div className="modal-body">
       {props.workspace.roles.map(role =>

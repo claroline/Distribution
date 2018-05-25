@@ -6,23 +6,15 @@
  * It will be removed when the workspace container will be available
  * (only the component will be kept)
  */
-import {connect} from 'react-redux'
 
 import {bootstrap} from '#/main/app/bootstrap'
 import {makeReducer} from '#/main/app/store/reducer'
 
 import {WorkspaceToolbar} from '#/main/core/workspace/components/toolbar'
-import {select} from '#/main/core/workspace/selectors'
 
 bootstrap(
   '.workspace-toolbar-container',
-  connect(
-    (state) => ({
-      workspace: select.workspace(state),
-      tools: select.tools(state),
-      openedTool: select.openedTool(state)
-    })
-  )(WorkspaceToolbar),
+  WorkspaceToolbar,
   {
     // the current workspace
     workspace: makeReducer({}, {}),

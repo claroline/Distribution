@@ -17,8 +17,8 @@ const AboutModal = props =>
   <Modal
     {...omit(props, 'workspace')}
     icon="fa fa-fw fa-info"
-    title={props.workspace.name}
-    subtitle={props.workspace.code}
+    title={trans('about')}
+    subtitle={props.workspace.name}
   >
     <div className="modal-link">
       <Button
@@ -48,12 +48,6 @@ const AboutModal = props =>
       />
     </div>
 
-    {props.workspace.meta.description &&
-      <div className="modal-body text-justify" style={{fontStyle: 'italic'}}>
-        {props.workspace.meta.description}
-      </div>
-    }
-
     <DataDetails
       data={props.workspace}
       sections={[
@@ -62,6 +56,14 @@ const AboutModal = props =>
           primary: true,
           fields: [
             {
+              name: 'meta.description',
+              label: trans('description'),
+              type: 'string'
+            }, {
+              name: 'code',
+              label: trans('code'),
+              type: 'string'
+            }, {
               name: 'meta.model',
               label: 'Cet espace d\'activités n\'est pas un modèle.',
               type: 'boolean',

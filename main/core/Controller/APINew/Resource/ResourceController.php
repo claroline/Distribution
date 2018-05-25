@@ -77,12 +77,6 @@ class ResourceController
         // checks the current user can open the resource
         $this->checkAccess('OPEN', new ResourceCollection([$node]));
 
-        // it's a shortcut : checks if User can open the target
-        // IMO, it seems strange the User can open the shortcut but may not open the target
-        // TODO : move it inside the shortcut listener
-        $node = $this->resourceManager->getRealTarget($node);
-        $this->checkAccess('OPEN', new ResourceCollection([$node]));
-
         /** @var LoadResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             'load_'.$type,

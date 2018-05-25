@@ -832,7 +832,6 @@ class ResourceManagerImporter extends Importer implements ConfigurationInterface
         $setParentNull = false
     ) {
         $parentId = $resourceNode->getParent() ? $resourceNode->getParent()->getGuid() : null;
-        $resourceNode = $this->resourceManager->getRealTarget($resourceNode, false);
 
         $data = [];
         $resElement = [];

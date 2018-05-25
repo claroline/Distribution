@@ -9,7 +9,7 @@ namespace Claroline\CoreBundle\Listener\Resource;
  */
 class ResourceLogListener
 {
-    private $eventDispatcher;
+    private $dispatcher;
 
     /**
      * ResourceLogListener constructor.
@@ -19,11 +19,17 @@ class ResourceLogListener
 
     }
 
+    /**
+     * @DI\Observe("resource.open")
+     */
     public function onOpen()
     {
         //$this->dispatcher->dispatch('log', 'Log\LogResourceRead', [$node]);
     }
 
+    /**
+     * @DI\Observe("resource.create")
+     */
     public function onCreate()
     {
         /*$usersToNotify = $workspace && $workspace->getId() ?
@@ -34,11 +40,17 @@ class ResourceLogListener
         $this->eventDispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);*/
     }
 
+    /**
+     * @DI\Observe("resource.copy")
+     */
     public function onCopy()
     {
         // $this->dispatcher->dispatch('log', 'Log\LogResourceCopy', [$newNode, $node]);
     }
 
+    /**
+     * @DI\Observe("resource.toggle-publication")
+     */
     public function onTogglePublication()
     {
         /*$usersToNotify = $node->getWorkspace() && !$node->getWorkspace()->isDisabledNotifications() ?
@@ -48,6 +60,9 @@ class ResourceLogListener
         $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);*/
     }
 
+    /**
+     * @DI\Observe("resource.configure")
+     */
     public function onConfigure()
     {
         /*$uow = $this->om->getUnitOfWork();
@@ -63,11 +78,17 @@ class ResourceLogListener
         }*/
     }
 
+    /**
+     * @DI\Observe("resource.move")
+     */
     public function onMove()
     {
         // $this->dispatcher->dispatch('log', 'Log\LogResourceMove', [$child, $parent]);
     }
 
+    /**
+     * @DI\Observe("resource.delete")
+     */
     public function onDelete()
     {
         /*$this->dispatcher->dispatch(
@@ -77,6 +98,9 @@ class ResourceLogListener
         );*/
     }
 
+    /**
+     * @DI\Observe("resource.export")
+     */
     public function onExport()
     {
         //$this->dispatcher->dispatch('log', 'Log\LogResourceExport', [$node]);

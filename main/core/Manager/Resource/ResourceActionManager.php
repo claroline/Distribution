@@ -20,9 +20,15 @@ use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
+ * ResourceActionManager.
+ * Manages and executes implemented actions on resources.
+ *
+ * NB. Resource actions can be defined through plugins config.yml.
+ *
  * @DI\Service("claroline.manager.resource_action")
  */
 class ResourceActionManager
@@ -42,25 +48,29 @@ class ResourceActionManager
     /**
      * @var MenuAction[]
      */
-    private $genericActions = [];
+    private $actions = [];
 
     /**
      * ResourceMenuManager constructor.
      *
      * @DI\InjectParams({
      *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "authorization" = @DI\Inject("security.authorization_checker")
+     *     "authorization" = @DI\Inject("security.authorization_checker"),
+     *     "dispatcher"    = @DI\Inject("claroline.event.event_dispatcher")
      * })
      *
      * @param ObjectManager                 $om
      * @param AuthorizationCheckerInterface $authorization
+     * @param StrictDispatcher              $dispatcher
      */
     public function __construct(
         ObjectManager $om,
-        AuthorizationCheckerInterface $authorization)
+        AuthorizationCheckerInterface $authorization,
+        StrictDispatcher $dispatcher)
     {
         $this->om = $om;
         $this->authorization = $authorization;
+        $this->dispatcher = $dispatcher;
 
         $this->repository = $this->om->getRepository('ClarolineCoreBundle:Resource\MenuAction');
 
@@ -68,21 +78,31 @@ class ResourceActionManager
         // it will avoid having to load it for each node
         // this is safe because the only way to change actions is through
         // the platform install/update process
-        $this->genericActions = $this->repository->findBy(['resourceType' => null]);
+        $this->actions = $this->repository->findAll();
     }
 
-    public function support(ResourceNode $resourceNode, $actionName, $method)
+    public function support(ResourceNode $resourceNode, string $actionName, string $method): bool
     {
-        // todo : implement
         $action = $this->get($resourceNode, $actionName);
-        if (empty($action) || !in_array($method, $action->getApi()))
 
-        // return $this->dispatcher->hasListeners($eventName);
+        if (empty($action) || !in_array($method, $action->getApi())) {
+            return false;
+        }
 
-        return true;
+        return true; // return $this->dispatcher->hasListeners($eventName);
     }
 
-    public function execute(ResourceNode $resourceNode, $actionName, array $options = [], array $content = null)
+    /**
+     * Executes an action on a resource.
+     *
+     * @param ResourceNode $resourceNode
+     * @param string       $actionName
+     * @param array        $options
+     * @param array        $content
+     *
+     * @return Response
+     */
+    public function execute(ResourceNode $resourceNode, string $actionName, array $options = [], array $content = null): Response
     {
         $resourceAction = $this->get($resourceNode, $actionName);
 
@@ -97,50 +117,64 @@ class ResourceActionManager
     }
 
     /**
+     * Retrieves the correct action instance for resource.
+     *
      * @param ResourceNode $resourceNode
      * @param string       $actionName
      *
      * @return MenuAction
      */
-    public function get(ResourceNode $resourceNode, $actionName)
+    public function get(ResourceNode $resourceNode, string $actionName)
     {
-        // todo : implement
+        $nodeActions = $this->all($resourceNode, false);
+        foreach ($nodeActions as $current) {
+            if ($actionName === $current->getName()) {
+                return $current;
+            }
+        }
+
+        return null;
     }
 
     /**
      * Gets all actions available for a resource.
      *
      * @param ResourceNode $resourceNode
+     * @param bool         $checkPermissions - when true, we only return the actions accessible by the current user
      *
      * @return MenuAction[]
      */
-    public function all(ResourceNode $resourceNode)
+    public function all(ResourceNode $resourceNode, bool $checkPermissions = true): array
     {
         $resourceType = $resourceNode->getResourceType();
 
-        /** @var MenuAction[] $actions */
-        $actions = array_merge(
-            $resourceType->getActions()->toArray(),
-            $this->genericActions
-        );
-
-        // only get the actions available for the current user
-        return array_filter($actions, function (MenuAction $action) use ($resourceNode) {
-            return $this->hasPermission($resourceNode, $action);
+        // get all actions implemented for the resource
+        $actions = array_filter($this->actions, function (MenuAction $action) use ($resourceType) {
+            return empty($action->getResourceType()) || $resourceType->getId() === $action->getResourceType()->getId();
         });
+
+        if ($checkPermissions) {
+            // only get the actions available for the current user
+            $collection = new ResourceCollection([$resourceNode]);
+            return array_filter($actions, function (MenuAction $action) use ($collection) {
+                return $this->hasPermission($action, $collection);
+            });
+        }
+
+        return $actions;
     }
 
     /**
      * Checks if the current user can execute an action on a resource.
      *
-     * @param ResourceNode $resourceNode
-     * @param MenuAction   $action
+     * @param MenuAction         $action
+     * @param ResourceCollection $resourceNodes
      *
      * @return bool
      */
-    private function hasPermission(ResourceNode $resourceNode, MenuAction $action)
+    public function hasPermission(MenuAction $action, ResourceCollection $resourceNodes): bool
     {
-        return $this->authorization->isGranted($action->getDecoder(), new ResourceCollection([$resourceNode]));
+        return $this->authorization->isGranted($action->getDecoder(), $resourceNodes);
     }
 
     /**
@@ -151,7 +185,7 @@ class ResourceActionManager
      *
      * @return string
      */
-    private static function eventName($actionName, ResourceType $resourceType = null)
+    private static function eventName($actionName, ResourceType $resourceType = null): string
     {
         if (!empty($resourceType)) {
             // This is an action only available for the current type

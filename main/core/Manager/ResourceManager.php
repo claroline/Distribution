@@ -18,7 +18,6 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-//use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\Resource\ResourceThumbnail;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
@@ -693,6 +692,8 @@ class ResourceManager
      * @param array $queryParameters
      *
      * @return array
+     *
+     * @deprecated
      */
     public function buildSearchArray($queryParameters)
     {
@@ -954,6 +955,8 @@ class ResourceManager
      * @throws ExportResourceException
      *
      * @return array
+     *
+     * @todo rename into export
      */
     public function download(array $elements, $forceArchive = false)
     {
@@ -995,14 +998,9 @@ class ResourceManager
         foreach ($nodes as $node) {
             //we only download is we can...
             if ($this->container->get('security.authorization_checker')->isGranted('EXPORT', $node)) {
-                $node = $this->getRealTarget($node);
                 $resource = $this->getResourceFromNode($node);
 
                 if ($resource) {
-                    if ('Claroline\CoreBundle\Entity\Resource\ResourceShortcut' === get_class($resource)) {
-                        $node = $resource->getTarget();
-                    }
-
                     $filename = $this->getRelativePath($currentDir, $node).$node->getName();
                     $resource = $this->getResourceFromNode($node);
 
@@ -1790,7 +1788,7 @@ class ResourceManager
                     throw new \Exception('The resource was removed.');
                 }
 
-                return;
+                return null;
             }
             $node = $resource->getTarget();
             if (null === $node) {
@@ -1798,7 +1796,7 @@ class ResourceManager
                     throw new \Exception('The node target was removed.');
                 }
 
-                return;
+                return null;
             }
         }
 

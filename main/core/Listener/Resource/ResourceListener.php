@@ -91,7 +91,7 @@ class ResourceListener
      */
     public function onConfigure(ResourceActionEvent $event)
     {
-        $data = $event->getContent();
+        $data = $event->getData();
 
         // todo deserialize data into the node
     }

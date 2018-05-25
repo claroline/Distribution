@@ -16,19 +16,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * An event which is dispatched when an action is requested on a Resource.
- *
  */
 class ResourceActionEvent extends ResourceEvent
 {
     /**
-     * The content of the action (eg. new data).
+     * The data passed to the action (eg. new data).
      *
-     * NB. Content depends on the requested action, so we can not validate it.
+     * NB. Data depends on the requested action, so we can not validate it.
      * This is the duty of the attached listener to check it gets what it wants.
      *
      * @var array
      */
-    private $content = null;
+    private $data = null;
 
     /**
      * The options of the action (eg. list query string).
@@ -51,26 +50,26 @@ class ResourceActionEvent extends ResourceEvent
      * ResourceActionEvent constructor.
      *
      * @param AbstractResource $resource
-     * @param array            $content
      * @param array            $options
+     * @param array            $data
      */
     public function __construct(
         AbstractResource $resource,
-        array $content = null,
-        array $options = [])
+        array $options = [],
+        array $data = null)
     {
         parent::__construct($resource);
 
-        $this->content = $content;
+        $this->data = $data;
         $this->options = $options;
     }
 
     /**
      * @return array
      */
-    public function getContent()
+    public function getData()
     {
-        return $this->content;
+        return $this->data;
     }
 
     /**
