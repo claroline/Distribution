@@ -127,7 +127,7 @@ class MessageCommentsComponent extends Component {
               {this.state.opened ? transChoice('hide_comments',this.props.message.children.length, {count: this.props.message.children.length}, 'forum'): transChoice('show_comments', this.props.message.children.length, {count: this.props.message.children.length}, 'forum')}
             </button>
           }
-          {!this.state.showNewCommentForm || !get(this.props.subject, 'meta.closed') &&
+          { !this.state.showNewCommentForm /*!get(this.props.subject, 'meta.closed') */&&
             <button
               type="button"
               onClick={() => this.showCommentForm(this.props.message.id)}

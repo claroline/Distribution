@@ -190,7 +190,7 @@ class SubjectComponent extends Component {
                 <li key={message.id} className="post">
                   {this.state.showMessageForm !== message.id &&
                   <UserMessage
-                    user={message.meta.creator}
+                    user={get(message, 'meta.creator')}
                     date={message.meta.created}
                     content={message.content}
                     allowHtml={true}
@@ -249,7 +249,7 @@ class SubjectComponent extends Component {
 
 SubjectComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
-  subjectForm: T.shape(SubjectType.propTypes).isRequired,
+  subjectForm: T.shape(SubjectType.propTypes),
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
   flag: T.func.isRequired,

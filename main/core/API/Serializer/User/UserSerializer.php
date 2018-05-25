@@ -137,11 +137,11 @@ class UserSerializer
             'email' => $user->getEmail(),
             'administrativeCode' => $user->getAdministrativeCode(),
             'phone' => $user->getPhone(),
+            'meta' => $this->serializeMeta($user),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
-                'meta' => $this->serializeMeta($user),
                 'restrictions' => $this->serializeRestrictions($user),
                 'rights' => $this->serializeRights($user),
                 'roles' => array_map(function (Role $role) {
