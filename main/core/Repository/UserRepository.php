@@ -602,8 +602,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             $order;
         $query = $this->_em->createQuery($dql);
         $query
-            ->setParameter('ids', $userIds)
-            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
+            ->setParameter('ids', $userIds);
+        //->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
         return ($getQuery) ? $query : $query->getResult();
     }
@@ -1181,20 +1181,17 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function countByRoles(array $roles, $includeGrps)
     {
         if ($includeGrps) {
-            $dql = 'SELECT count (DISTINCT u)
+            $dql = 'SELECT COUNT(DISTINCT u)
                 From Claroline\CoreBundle\Entity\User u
-                LEFT JOIN u.roles r1
-                LEFT JOIN u.personalWorkspace ws
+                LEFT JOIN u.roles r1 WITH  r1 in (:roles)
                 LEFT JOIN u.groups g
-                LEFT JOIN g.roles r2
-                WHERE r1 in (:roles)
-                AND u.isRemoved = false
-                OR r2 in (:roles)';
+                LEFT JOIN g.roles r2 WITH r2 in (:roles)
+                WHERE u.isRemoved = false';
 
             $query = $this->_em->createQuery($dql);
             $query->setParameter('roles', $roles);
 
-            return (int) $query->getSingleScalarResult();
+            return $query->getSingleScalarResult();
         }
     }
 
@@ -1632,7 +1629,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                 WHERE usr.id NOT IN (
                   SELECT IDENTITY(uo.user) FROM Claroline\CoreBundle\Entity\Organization\UserOrganizationReference uo
                   WHERE uo.isMain = :main
-                )                
+                )
             ')
             ->setParameter('main', true);
         if (!$count && $limit > 0 && $offset > -1) {
