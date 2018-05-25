@@ -1654,6 +1654,11 @@ class UserManager
             $this->createUser($user, false, [], null, null, [], false, false);
         }
 
+        $roleAdmin = $this->roleManager->getRoleByName('ROLE_ADMIN');
+        $user->addRole($roleAdmin);
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
+
         return $user;
     }
 
@@ -1741,5 +1746,24 @@ class UserManager
             $this->objectManager->persist($user);
             $this->objectManager->endFlushSuite();
         }
+    }
+
+    /**
+     * Merges two users and transfers every resource to the kept user.
+     *
+     * @param User $from
+     * @param User $to
+     */
+    public function transferRoles(User $from, User $to)
+    {
+        $roles = $from->getEntityRoles();
+
+        foreach ($roles as $role) {
+            $to->addRole($role);
+        }
+
+        $this->objectManager->flush();
+
+        return count($roles);
     }
 }

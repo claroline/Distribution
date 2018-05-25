@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
@@ -12,6 +13,7 @@ use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\User\DecorateUserEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\FacetManager;
@@ -49,17 +51,22 @@ class UserSerializer
     /** @var ContainerInterface */
     private $container;
 
+    /** @var StrictDispatcher */
+    private $eventDispatcher;
+
     /**
      * UserManager constructor.
      *
      * @DI\InjectParams({
-     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
-     *     "authChecker"    = @DI\Inject("security.authorization_checker"),
-     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *     "config"         = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "facetManager"   = @DI\Inject("claroline.manager.facet_manager"),
-     *     "fileSerializer" = @DI\Inject("claroline.serializer.public_file"),
-     *     "container"      = @DI\Inject("service_container")
+     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
+     *     "authChecker"     = @DI\Inject("security.authorization_checker"),
+     *     "encoderFactory"  = @DI\Inject("security.encoder_factory"),
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "config"          = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
+     *     "fileSerializer"  = @DI\Inject("claroline.serializer.public_file"),
+     *     "container"       = @DI\Inject("service_container"),
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher")
      * })
      *
      * @param TokenStorageInterface         $tokenStorage
@@ -69,6 +76,7 @@ class UserSerializer
      * @param FacetManager                  $facetManager
      * @param PublicFileSerializer          $fileSerializer
      * @param ContainerInterface            $container
+     * @param StrictDispatcher              $eventDispatcher
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
@@ -77,7 +85,8 @@ class UserSerializer
         PlatformConfigurationHandler $config,
         FacetManager $facetManager,
         PublicFileSerializer $fileSerializer,
-        ContainerInterface $container
+        ContainerInterface $container,
+        StrictDispatcher $eventDispatcher
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authChecker = $authChecker;
@@ -86,6 +95,7 @@ class UserSerializer
         $this->facetManager = $facetManager;
         $this->fileSerializer = $fileSerializer;
         $this->container = $container;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -126,7 +136,7 @@ class UserSerializer
             return $this->serializePublic($user);
         }
 
-        $serialized = [
+        $serializedUser = [
             'autoId' => $user->getId(), //for old compatibility purposes
             'id' => $user->getUuid(),
             'name' => $user->getFirstName().' '.$user->getLastName(),
@@ -141,18 +151,32 @@ class UserSerializer
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
-            $serialized = array_merge($serialized, [
+            $userRoles = array_map(function (Role $role) {
+                return [
+                    'id' => $role->getUuid(),
+                    'type' => $role->getType(),
+                    'name' => $role->getName(),
+                    'translationKey' => $role->getTranslationKey(),
+                    'workspace' => $role->getWorkspace() ? ['id' => $role->getWorkspace()->getUuid()] : null,
+                    'context' => 'user',
+                ];
+            }, $user->getEntityRoles(false));
+            $groupRoles = array_map(function (Role $role) {
+                return [
+                    'id' => $role->getUuid(),
+                    'type' => $role->getType(),
+                    'name' => $role->getName(),
+                    'translationKey' => $role->getTranslationKey(),
+                    'workspace' => $role->getWorkspace() ? ['id' => $role->getWorkspace()->getUuid()] : null,
+                    'context' => 'group',
+                ];
+            }, $user->getGroupRoles());
+
+            $serializedUser = array_merge($serializedUser, [
+                'meta' => $this->serializeMeta($user),
                 'restrictions' => $this->serializeRestrictions($user),
                 'rights' => $this->serializeRights($user),
-                'roles' => array_map(function (Role $role) {
-                    return [
-                        'id' => $role->getUuid(),
-                        'type' => $role->getType(),
-                        'name' => $role->getName(),
-                        'translationKey' => $role->getTranslationKey(),
-                        'workspace' => $role->getWorkspace() ? ['id' => $role->getWorkspace()->getUuid()] : null,
-                    ];
-                }, $user->getEntityRoles()),
+                'roles' => array_merge($userRoles, $groupRoles),
                 'groups' => array_map(function (Group $group) {
                     return [
                         'id' => $group->getUuid(),
@@ -164,10 +188,10 @@ class UserSerializer
             $serializer = $this->container->get('claroline.api.serializer');
 
             if ($user->getMainOrganization()) {
-                $serialized['mainOrganization'] = $serializer->serialize($user->getMainOrganization());
+                $serializedUser['mainOrganization'] = $serializer->serialize($user->getMainOrganization());
             }
 
-            $serialized['administratedOrganizations'] = array_map(function ($organization) use ($serializer) {
+            $serializedUser['administratedOrganizations'] = array_map(function ($organization) use ($serializer) {
                 return $serializer->serialize($organization);
             }, $user->getAdministratedOrganizations()->toArray());
         }
@@ -180,11 +204,40 @@ class UserSerializer
             /** @var FieldFacetValue $field */
             foreach ($fields as $field) {
                 // we just flatten field facets in the base user structure
-                $serialized[$field->getFieldFacet()->getUuid()] = $field->getValue();
+                $serializedUser[$field->getFieldFacet()->getUuid()] = $field->getValue();
             }
         }
 
-        return $serialized;
+        return $this->decorate($user, $serializedUser);
+    }
+
+    /**
+     * Dispatches an event to let plugins add some custom data to the serialized user.
+     * For example: CasBundle adds CAS Id to the serialized user.
+     *
+     * @param User  $user           - the original user entity
+     * @param array $serializedUser - the serialized version of the user
+     *
+     * @return array - the decorated user
+     */
+    private function decorate(User $user, array $serializedUser)
+    {
+        $unauthorizedKeys = array_keys($serializedUser);
+
+        /** @var DecorateUserEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            'serialize_user',
+            'User\DecorateUser',
+            [
+                $user,
+                $unauthorizedKeys,
+            ]
+        );
+
+        return array_merge(
+            $serializedUser,
+            $event->getInjectedData()
+        );
     }
 
     /**
@@ -284,6 +337,7 @@ class UserSerializer
             'personalWorkspace' => (bool) $user->getPersonalWorkspace(),
             'removed' => $user->isRemoved(),
             'locale' => $locale,
+            'loggedIn' => $user === $this->tokenStorage->getToken()->getUser(),
         ];
     }
 
@@ -407,15 +461,26 @@ class UserSerializer
             }
         }
 
-        //only add role here. If we want to remove them, use the crud remove method instead
+        //only add groups here. If we want to remove them, use the crud remove method instead
         //it's usefull if we want to create a user with a list of roles
-
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $group) {
                 $group = $this->container->get('claroline.api.serializer')
                     ->deserialize('Claroline\CoreBundle\Entity\Group', $group);
                 if ($group && $group->getId()) {
                     $user->addGroup($group);
+                }
+            }
+        }
+
+        //only add organizations here. If we want to remove them, use the crud remove method instead
+        //it's usefull if we want to create a user with a list of roles
+        if (isset($data['organizations'])) {
+            foreach ($data['organizations'] as $organization) {
+                $organization = $this->container->get('claroline.api.serializer')
+                    ->deserialize('Claroline\CoreBundle\Entity\Organization\Organization', $organization);
+                if ($organization && $organization->getId()) {
+                    $user->addOrganization($organization);
                 }
             }
         }

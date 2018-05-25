@@ -84,6 +84,9 @@ class UserFinder implements FinderInterface
                 case 'name':
                     $qb->andWhere('UPPER(obj.username) LIKE :name OR UPPER(CONCAT(obj.firstName, \' \', obj.lastName)) LIKE :name');
                     $qb->setParameter('name', '%'.strtoupper($filterValue).'%');
+                case 'id':
+                    $qb->andWhere('obj.uuid IN (:userUuids)');
+                    $qb->setParameter('userUuids', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
                 case 'isDisabled':
                     $qb->andWhere('obj.isEnabled = :isEnabled');
@@ -151,15 +154,29 @@ class UserFinder implements FinderInterface
                     $qb->leftJoin('obj.groups', 'wsugrps');
                     $qb->leftJoin('wsugrps.roles', 'guroles');
                     $qb->leftJoin('guroles.workspace', 'grws');
-                    $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->eq('rws.uuid', ':workspaceId'),
-                        $qb->expr()->eq('grws.uuid', ':workspaceId')
-                    ));
+
+                    if (is_array($filterValue)) {
+                        $qb->andWhere($qb->expr()->orX(
+                            $qb->expr()->in('rws.uuid', ':workspaceId'),
+                            $qb->expr()->in('grws.uuid', ':workspaceId')
+                        ));
+                    } else {
+                        $qb->andWhere($qb->expr()->orX(
+                            $qb->expr()->eq('rws.uuid', ':workspaceId'),
+                            $qb->expr()->eq('grws.uuid', ':workspaceId')
+                        ));
+                    }
+
                     $qb->setParameter('workspaceId', $filterValue);
                     break;
                 case 'blacklist':
                     $qb->andWhere("obj.uuid NOT IN (:{$filterName})");
                     $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'groupName':
+                    $qb->join('obj.groups', 'gn');
+                    $qb->andWhere("UPPER(gn.name) LIKE :{$filterName}");
+                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
                     break;
                 default:
                     if (is_bool($filterValue)) {

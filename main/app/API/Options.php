@@ -24,6 +24,8 @@ final class Options
      */
     const NO_FETCH = 'no_fetch';
 
+    const NO_COUNT = 'no_count';
+
     /*
      * Using this option, the serializers will return minmal data (no meta or restrictions)
      */
@@ -45,6 +47,7 @@ final class Options
 
     //do something better with these options
 
+    const NO_LOG = 'no_log';
     const SOFT_DELETE = 'soft_delete';
     const THROW_VALIDATION_EXCEPTION = 'throw_validation_exception';
     const NO_VALIDATE = 'no_validate'; //if validation is too long for huge csv

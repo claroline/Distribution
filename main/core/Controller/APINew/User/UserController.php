@@ -13,11 +13,15 @@ namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\User\MergeUsersEvent;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,6 +33,23 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UserController extends AbstractCrudController
 {
+    /** @var StrictDispatcher */
+    private $eventDispatcher;
+
+    /**
+     * UserController constructor.
+     *
+     * @DI\InjectParams({
+     *    "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher")
+     * })
+     *
+     * @param StrictDispatcher $eventDispatcher
+     */
+    public function __construct(StrictDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     public function getName()
     {
         return 'user';
@@ -205,8 +226,8 @@ class UserController extends AbstractCrudController
 
     /**
      * @Route(
-     *    "/list/managed",
-     *    name="apiv2_user_list_managed"
+     *    "/list/managed/organization",
+     *    name="apiv2_user_list_managed_organization"
      * )
      * @Method("GET")
      * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
@@ -215,7 +236,7 @@ class UserController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function listManagedAction(User $user, Request $request)
+    public function listManagedOrganizationAction(User $user, Request $request)
     {
         $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
           [] :
@@ -232,5 +253,75 @@ class UserController extends AbstractCrudController
     public function getClass()
     {
         return "Claroline\CoreBundle\Entity\User";
+    }
+
+    /**
+     * @Route(
+     *    "/{keep}/{remove}/merge",
+     *    name="apiv2_user_merge"
+     * )
+     * @Method("PUT")
+     * @ParamConverter("keep", options={"mapping": {"keep": "uuid"}})
+     * @ParamConverter("remove", options={"mapping": {"remove": "uuid"}})
+     *
+     * @param User $keep
+     * @param User $remove
+     *
+     * @return JsonResponse
+     */
+    public function mergeUsersAction(User $keep, User $remove)
+    {
+        // Dispatching an event for letting plugins and core do what they need to do
+        /** @var MergeUsersEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            'merge_users',
+            'User\MergeUsers',
+            [
+                $keep,
+                $remove,
+            ]
+        );
+
+        $keep_username = $keep->getUsername();
+        $remove_username = $remove->getUsername();
+
+        // Delete old user
+        $this->crud->deleteBulk([$remove], [Options::SOFT_DELETE]);
+
+        $event->addMessage("[CoreBundle] user removed: $remove_username");
+        $event->addMessage("[CoreBundle] user kept: $keep_username");
+
+        return new JsonResponse($event->getMessages());
+    }
+
+    /**
+     * @Route(
+     *    "/list/managed/workspace",
+     *    name="apiv2_user_list_managed_workspace"
+     * )
+     * @Method("GET")
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function listManagedWorkspaceAction(User $user, Request $request)
+    {
+        $managedWorkspaces = $this->finder->fetch(
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            ['user' => $user->getId(), 'isManager' => true]
+        );
+
+        $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
+          [] :
+          ['workspace' => array_map(function (Workspace $workspace) {
+              return $workspace->getUuid();
+          }, $managedWorkspaces)];
+
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\User',
+            array_merge($request->query->all(), ['hiddenFilters' => $filters])
+        ));
     }
 }

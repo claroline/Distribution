@@ -4,6 +4,8 @@ import {PropTypes as T} from 'prop-types'
 
 import {currentUser} from '#/main/core/user/current'
 import {makeId} from '#/main/core/scaffolding/id'
+import {now} from '#/main/core/scaffolding/date'
+import {url} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
@@ -91,7 +93,30 @@ const Resource = props =>
         {
           path: '/',
           component: getHome(props.defaultHome),
-          exact: true
+          exact: true,
+          onEnter: () => {
+            switch (props.defaultHome) {
+              case 'search':
+                props.loadAllUsedCountries(props.clacoForm.id)
+                break
+              case 'add':
+                props.openEntryForm(null, props.clacoForm.id)
+                break
+              case 'random':
+                fetch(url(['claro_claco_form_entry_random', {clacoForm: props.clacoForm.id}]), {
+                  method: 'GET' ,
+                  credentials: 'include'
+                })
+                  .then(response => response.json())
+                  .then(entryId => {
+                    if (entryId) {
+                      props.openEntryForm(entryId, props.clacoForm.id)
+                      props.loadEntryUser(entryId)
+                    }
+                  })
+                break
+            }
+          }
         }, {
           path: '/menu',
           component: ClacoFormMainMenu
@@ -126,7 +151,7 @@ const Resource = props =>
           path: '/entry/form/:id?',
           component: EntryForm,
           onEnter: (params) => {
-            props.openEntryForm(params.id, props.clacoForm.id)
+            props.openEntryForm(params.id, props.clacoForm.id, props.clacoForm.fields)
 
             if (params.id) {
               props.loadEntryUser(params.id)
@@ -173,7 +198,7 @@ const ClacoFormResource = connect(
     saveForm(id) {
       dispatch(formActions.saveForm('clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
     },
-    openEntryForm(id, clacoFormId) {
+    openEntryForm(id, clacoFormId, fields = []) {
       const defaultValue = {
         id: makeId(),
         values: {},
@@ -184,6 +209,11 @@ const ClacoFormResource = connect(
         categories: [],
         keywords: []
       }
+      fields.forEach(f => {
+        if (f.type === 'date') {
+          defaultValue.values[f.id] = now()
+        }
+      })
 
       dispatch(entryActions.openForm('entries.current', id, defaultValue))
     },
