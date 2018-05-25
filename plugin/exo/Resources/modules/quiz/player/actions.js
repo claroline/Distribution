@@ -1,4 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
+import moment from 'moment'
 
 // TODO : remove the use of navigate()
 
@@ -6,12 +7,11 @@ import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as resourceActions} from '#/main/core/resource/actions'
 
-import quizSelectors from './../selectors'
-import {select as playerSelectors} from './selectors'
-import {generatePaper} from './../papers/generator'
-import {normalize, denormalizeAnswers, denormalize} from './normalizer'
-import moment from 'moment'
-import {actions as paperAction} from '../papers/actions'
+import quizSelectors from '#/plugin/exo/quiz/selectors'
+import {select as playerSelectors} from '#/plugin/exo/quiz/player/selectors'
+import {normalize, denormalizeAnswers, denormalize} from '#/plugin/exo/quiz/player/normalizer'
+import {generatePaper} from '#/plugin/exo/quiz/papers/generator'
+import {actions as paperAction} from '#/plugin/exo/quiz/papers/actions'
 
 export const ATTEMPT_START  = 'ATTEMPT_START'
 export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
@@ -174,7 +174,6 @@ actions.handleAttemptEnd = (paper, navigate) => {
     } else {
       switch (playerSelectors.showCorrectionAt(getState())) {
         case 'validation': {
-          dispatch(paperAction.setCurrentPaper(paper.id))
           navigate('papers/' + paper.id)
           break
         }
@@ -184,7 +183,6 @@ actions.handleAttemptEnd = (paper, navigate) => {
           const showPaper = today.diff(correctionDate, 'days') >= 0
 
           if (showPaper) {
-            dispatch(paperAction.setCurrentPaper(paper.id))
             navigate('papers/' + paper.id)
           } else {
             navigate('overview')

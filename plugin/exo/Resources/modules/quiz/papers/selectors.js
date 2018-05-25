@@ -1,24 +1,10 @@
-import {createSelector} from 'reselect'
-
 import {getDefinition} from '#/plugin/exo/items/item-types'
 
 const quizId = state => state.quiz.id
 const papersFetched = state => state.papers.isFetched
-const currentPaperId = state => state.papers.current
 const papers = state => state.papers.papers
 
-const currentPaper = createSelector(
-  papers,
-  currentPaperId,
-  (papers, currentPaperId) => {
-    return papers[currentPaperId]
-  }
-)
-
-const paperSteps = createSelector(
-  currentPaper,
-  (currentPaper) => currentPaper.structure.steps
-)
+const currentPaper = state => state.papers.current
 
 const showScoreAt = paper => {
   return paper.structure.parameters.showScoreAt
@@ -79,7 +65,6 @@ export const selectors = {
   papers,
   papersFetched,
   currentPaper,
-  paperSteps,
   itemScoreMax,
   paperScoreMax,
   showScoreAt,
