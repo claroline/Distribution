@@ -81,13 +81,13 @@ class SubjectSerializer
 
         return [
             'views' => $subject->getViewCount(),
-            'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', 0, 0, ['subject' => $subject->getUuid(), 'parent' => null], null, true),
+            'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['subject' => $subject->getUuid(), 'parent' => null], null, 0, 0, true),
             'creator' => !empty($subject->getCreator()) ? $this->serializerProvider->serialize($subject->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
             'created' => $subject->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
             'sticky' => $subject->isSticked(),
             'closed' => $subject->isClosed(),
-            'flagged' => $subject-> isFlagged(),
+            'flagged' => $subject->isFlagged(),
         ];
     }
 
