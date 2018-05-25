@@ -193,7 +193,7 @@ PlayerComponent.propTypes = {
   submit: T.func.isRequired,
   finish: T.func.isRequired,
   showHint: T.func.isRequired,
-  showTimerOutMessage: T.func.isRequired
+  showTimeOverMessage: T.func.isRequired
 }
 
 PlayerComponent.defaultProps = {
