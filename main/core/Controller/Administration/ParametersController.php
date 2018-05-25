@@ -16,6 +16,8 @@ use Claroline\CoreBundle\Entity\Icon\IconSetTypeEnum;
 use Claroline\CoreBundle\Entity\SecurityToken;
 use Claroline\CoreBundle\Form\Administration as AdminForm;
 use Claroline\CoreBundle\Form\Administration\MaintenanceMessageType;
+use Claroline\CoreBundle\Form\Administration\SecurityTokenType;
+use Claroline\CoreBundle\Form\Administration\SessionType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\UnwritableException;
 use Claroline\CoreBundle\Library\Installation\Refresher;
@@ -587,11 +589,12 @@ class ParametersController extends Controller
     public function termsOfServiceFormAction()
     {
         $form = $this->formFactory->create(
-            new AdminForm\TermsOfServiceType(
-                $this->configHandler->getParameter('terms_of_service'),
-                $this->configHandler->getLockedParameters()
-            ),
-            $this->termsOfService->getTermsOfService(false)
+            AdminForm\TermsOfServiceType::class,
+            $this->termsOfService->getTermsOfService(false),
+            [
+              'active' => $this->configHandler->getParameter('terms_of_service'),
+              'locked_params' => $this->configHandler->getLockedParameters(),
+            ]
         );
 
         return ['form' => $form->createView()];
@@ -608,11 +611,12 @@ class ParametersController extends Controller
     public function submitTermsOfServiceAction()
     {
         $form = $this->formFactory->create(
-            new AdminForm\TermsOfServiceType(
-                $this->configHandler->getParameter('terms_of_service'),
-                $this->configHandler->getLockedParameters()
-            ),
-            $this->termsOfService->getTermsOfService(false)
+            AdminForm\TermsOfServiceType::class,
+            $this->termsOfService->getTermsOfService(false),
+            [
+              'active' => $this->configHandler->getParameter('terms_of_service'),
+              'locked_params' => $this->configHandler->getLockedParameters(),
+            ]
         );
 
         $form->handleRequest($this->request);
@@ -674,11 +678,11 @@ class ParametersController extends Controller
     {
         $config = $this->configHandler->getPlatformConfig();
         $form = $this->formFactory->create(
-            new AdminForm\SessionType(
-                $config->getSessionStorageType(),
-                $config,
-                $this->configHandler->getLockedParameters()
-            )
+            SessionType::class, null, [
+                'session_type' => $config->getSessionStorageType(),
+                'config' => $config,
+                'locked_params' => $this->configHandler->getLockedParameters(),
+            ]
         );
 
         return ['form' => $form->createView()];
@@ -699,12 +703,13 @@ class ParametersController extends Controller
             $formData['session_storage_type'] :
             $this->configHandler->getParameter('session_storage_type');
         $form = $this->formFactory->create(
-            new AdminForm\SessionType(
-                $storageType,
-                null,
-                $this->configHandler->getLockedParameters()
-            ),
-            $this->configHandler->getPlatformConfig()
+            SessionType::class,
+            $this->configHandler->getPlatformConfig(),
+            [
+                'session_type' => $config->getSessionStorageType(),
+                'config' => $config,
+                'locked_params' => $this->configHandler->getLockedParameters(),
+            ]
         );
         $form->handleRequest($this->request);
 
@@ -897,7 +902,7 @@ class ParametersController extends Controller
     public function securityTokenCreateFormAction()
     {
         $form = $this->formFactory->create(
-            new AdminForm\SecurityTokenType(),
+            SecurityTokenType::class,
             new SecurityToken()
         );
 
@@ -918,7 +923,7 @@ class ParametersController extends Controller
     {
         $securityToken = new SecurityToken();
         $form = $this->formFactory->create(
-            new AdminForm\SecurityTokenType(),
+            SecurityTokenType::class,
             $securityToken
         );
         $form->handleRequest($this->request);
@@ -953,7 +958,7 @@ class ParametersController extends Controller
     public function securityTokenEditFormAction(SecurityToken $securityToken)
     {
         $form = $this->formFactory->create(
-            new AdminForm\SecurityTokenType(),
+            SecurityTokenType::class,
             $securityToken
         );
 
@@ -982,7 +987,7 @@ class ParametersController extends Controller
     public function securityTokenEditAction(SecurityToken $securityToken)
     {
         $form = $this->formFactory->create(
-            new AdminForm\SecurityTokenType(),
+            SecurityTokenType::class,
             $securityToken
         );
         $form->handleRequest($this->request);

@@ -31,11 +31,6 @@ class MaintenanceMessageType extends AbstractType
         );
     }
 
-    public function getName()
-    {
-        return 'maintenance_message_form';
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['translation_domain' => 'platform', 'message' => '']);
