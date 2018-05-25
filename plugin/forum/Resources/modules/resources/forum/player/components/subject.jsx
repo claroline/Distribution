@@ -24,6 +24,8 @@ import {MessageComments} from '#/plugin/forum/resources/forum/player/components/
 import {SubjectForm} from '#/plugin/forum/resources/forum/player/components/subject-form'
 import {MessagesSort} from '#/plugin/forum/resources/forum/player/components/messages-sort'
 
+const authenticatedUser = currentUser()
+
 class SubjectComponent extends Component {
   constructor(props) {
     super(props)
@@ -196,17 +198,17 @@ class SubjectComponent extends Component {
                       {
                         icon: 'fa fa-fw fa-pencil',
                         label: trans('edit'),
-                        displayed: true,
+                        displayed: message.meta.creator.id === authenticatedUser.id,
                         action: () => this.setState({showMessageForm: message.id})
                       }, {
                         icon: 'fa fa-fw fa-flag',
                         label: trans('flag', {}, 'forum'),
-                        displayed: true,
+                        displayed: message.meta.creator.id !== authenticatedUser.id,
                         action: () => this.props.flag(message, this.props.subject.id)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
-                        displayed: true,
+                        displayed:  message.meta.creator.id === authenticatedUser.id,
                         action: () => this.deleteMessage(message.id),
                         dangerous: true
                       }
@@ -232,7 +234,7 @@ class SubjectComponent extends Component {
             <hr/>
           </div>
         }
-        {(!get(this.props.subject, 'meta.closed')) &&
+        {this.props.editingSubject || !get(this.props.subject, 'meta.closed') &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
@@ -278,7 +280,6 @@ const Subject =  withRouter(connect(
     editingSubject: select.editingSubject(state),
     showSubjectForm: select.showSubjectForm(state),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
-    // sortedMessages
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
     sortOrder: listSelect.list(state, 'subjects.messages').sortOrder

@@ -12,7 +12,8 @@ import {ResourcePageContainer} from '#/main/core/resource/containers/page'
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {Overview} from '#/plugin/forum/resources/forum/overview/components/overview'
-import {Moderation} from '#/plugin/forum/resources/forum/moderation/components/moderation'
+import {BlockedMessages} from '#/plugin/forum/resources/forum/moderation/components/blocked-messages'
+import {FlaggedMessages} from '#/plugin/forum/resources/forum/moderation/components/flagged-messages'
 import {Editor} from '#/plugin/forum/resources/forum/editor/components/editor'
 import {Player} from '#/plugin/forum/resources/forum/player/components/player'
 
@@ -32,8 +33,11 @@ const Resource = props => {
       path: '/subjects',
       component: Player
     }, {
-      path: '/moderation',
-      component: Moderation
+      path: '/moderation/flagged',
+      component: FlaggedMessages
+    }, {
+      path: '/moderation/blocked',
+      component: BlockedMessages
     }
 
   ]
@@ -78,8 +82,16 @@ const Resource = props => {
         }, {
           type: 'link',
           icon: 'fa fa-fw fa-gavel',
-          label: trans('moderation', {}, 'forum'),
-          target: '/moderation',
+          label: trans('moderated_posts', {}, 'forum'),
+          group: trans('moderation', {}, 'forum'),
+          target: '/moderation/blocked',
+          exact: true
+        }, {
+          type: 'link',
+          icon: 'fa fa-fw fa-flag',
+          label: trans('flagged_messages_subjects', {}, 'forum'),
+          group: trans('moderation', {}, 'forum'),
+          target: '/moderation/flagged',
           exact: true
         }
       ]}

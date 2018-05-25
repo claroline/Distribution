@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import get from 'lodash/get'
 
 import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
@@ -13,6 +14,7 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
 
+const authenticatedUser = currentUser()
 
 class MessageCommentsComponent extends Component {
   constructor(props) {
@@ -74,17 +76,17 @@ class MessageCommentsComponent extends Component {
                       {
                         icon: 'fa fa-fw fa-pencil',
                         label: trans('edit'),
-                        displayed: true,
+                        displayed: comment.meta.creator.id === authenticatedUser.id,
                         action: () => this.setState({showCommentForm: comment.id})
                       }, {
                         icon: 'fa fa-fw fa-flag ',
                         label: trans('flag', {}, 'forum'),
-                        displayed: true,
+                        displayed: comment.meta.creator.id !== authenticatedUser.id,
                         action: () => this.props.flag(comment, this.props.subject.id)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
-                        displayed: true,
+                        displayed: comment.meta.creator.id === authenticatedUser.id,
                         action: () => this.deleteComment(comment.id),
                         dangerous: true
                       }
@@ -125,7 +127,7 @@ class MessageCommentsComponent extends Component {
               {this.state.opened ? transChoice('hide_comments',this.props.message.children.length, {count: this.props.message.children.length}, 'forum'): transChoice('show_comments', this.props.message.children.length, {count: this.props.message.children.length}, 'forum')}
             </button>
           }
-          {!this.state.showNewCommentForm &&
+          {!this.state.showNewCommentForm || !get(this.props.subject, 'meta.closed') &&
             <button
               type="button"
               onClick={() => this.showCommentForm(this.props.message.id)}

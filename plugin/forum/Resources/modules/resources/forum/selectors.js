@@ -1,10 +1,11 @@
 import {createSelector} from 'reselect'
 
+
 const forum = state => state.forum
 const messages = state => state.subjects.messages
 const sortOrder = state => state.subjects.messages.sortOrder
-
 const subjects = state => state.subjects
+
 const subject = createSelector(
   [subjects],
   (subjects) => subjects.current
@@ -14,7 +15,10 @@ const editingSubject = createSelector(
   [subjects],
   (subjects) => subjects.form.editingSubject
 )
-
+const closedSubject = createSelector(
+  [subject],
+  (subject) => subject.meta.closed
+)
 const showSubjectForm = createSelector(
   [subjects],
   (subjects) => subjects.form.showSubjectForm
@@ -62,6 +66,7 @@ export const select = {
   sortedMessages,
   showSubjectForm,
   editingSubject,
+  closedSubject,
   flaggedMessages,
   tagsCount
 }

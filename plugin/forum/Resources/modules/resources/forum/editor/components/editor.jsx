@@ -1,13 +1,15 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
+import {select} from '#/plugin/forum/resources/forum/selectors'
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {constants} from '#/plugin/forum/resources/forum/constants'
 
-const Editor = () =>
+const EditorComponent = (props) =>
   <FormContainer
     level={3}
     displayLevel={2}
@@ -28,13 +30,13 @@ const Editor = () =>
                 name: 'display.description',
                 type: 'html',
                 label: trans('overview_message', {}, 'forum'),
-                displayed: forum => forum.display.showOverview
+                displayed: props.forum.display.showOverview
               },
               {
                 name: 'display.lastMessages',
                 type: 'number',
                 label: trans('show_last_messages', {}, 'forum'),
-                displayed: forum => forum.display.showOverview
+                displayed: props.forum.display.showOverview
               }
             ]
           }
@@ -77,29 +79,49 @@ const Editor = () =>
         ]
       }, {
         icon: 'fa fa-fw fa-gavel',
-        title: trans('moderation'),
+        title: trans('moderation', {}, 'forum'),
         fields: [
+          {
+            name: 'flag.enabled',
+            type: 'boolean',
+            label: trans('enable_flag', {}, 'forum'),
+            value: true
+          },
           {
             name: 'moderation.enabled',
             type: 'boolean',
-            label: trans('enable_moderation', {}, 'forum')
-            // linked: [
-            //   // {
-            //   //   name: 'enable.superModeration',
-            //   //   type: 'boolean',
-            //   //   label: trans('super_moderation', {}, 'forum'),
-            //   //   displayed: forum => validation
-            //   // }
-            // ]
+            label: trans('enable_moderation', {}, 'forum'),
+            linked: [
+              {
+                name: 'firstMessageModerated',
+                type: 'boolean',
+                label: trans('first_message_moderated', {}, 'forum'),
+                help: trans('first_message_moderated_explenation', {}, 'forum'),
+                displayed: true
+              },
+              {
+                name: 'AllMessagesModerated',
+                type: 'boolean',
+                label: trans('all_message_moderated', {}, 'forum'),
+                help: trans('all_message_moderated_explenation', {}, 'forum'),
+                displayed: true
+              }
+            ]
           }
         ]
       }
     ]}
   />
 
-Editor.propTypes = {
+EditorComponent.propTypes = {
   forum: T.shape(ForumType.propTypes).isRequired
 }
+
+const Editor = connect(
+  (state) => ({
+    forum: select.forum(state)
+  })
+)(EditorComponent)
 
 export {
   Editor
