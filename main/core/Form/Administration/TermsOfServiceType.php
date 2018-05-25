@@ -36,7 +36,7 @@ class TermsOfServiceType extends AbstractType
             [
                 'required' => false,
                 'data' => $builder->getData(),
-                'theme_options' => ['contentTitle' => false],
+                'attr' => ['contentTitle' => false],
                 'label' => 'term_of_service',
             ]
         )

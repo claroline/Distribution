@@ -63,7 +63,7 @@ class SessionType extends AbstractType
                     'label' => 'DSN',
                     'required' => false,
                     'constraints' => $this->notBlankIfExternal(),
-                    'theme_options' => $this->hiddenIfNotExternal(),
+                    'attr' => $this->hiddenIfNotExternal(),
                     'data' => $this->getConfigValue('sessionDbDsn'),
                     'disabled' => isset($this->lockedParams['session_db_dsn']),
                 ]
@@ -75,7 +75,7 @@ class SessionType extends AbstractType
                     'label' => 'user',
                     'required' => false,
                     'constraints' => $this->notBlankIfExternal(),
-                    'theme_options' => $this->hiddenIfNotExternal(),
+                    'attr' => $this->hiddenIfNotExternal(),
                     'data' => $this->getConfigValue('sessionDbUser'),
                     'disabled' => isset($this->lockedParams['session_db_user']),
                 ]
@@ -86,7 +86,7 @@ class SessionType extends AbstractType
                 [
                     'label' => 'password',
                     'required' => false,
-                    'theme_options' => $this->hiddenIfNotExternal(),
+                    'attr' => $this->hiddenIfNotExternal(),
                     'data' => $this->getConfigValue('sessionDbPassword'),
                     'disabled' => isset($this->lockedParams['session_db_password']),
                 ]
@@ -98,7 +98,7 @@ class SessionType extends AbstractType
                     'label' => 'db_table',
                     'required' => false,
                     'constraints' => $this->notBlankIfExternal(),
-                    'theme_options' => $this->hiddenIfNotExternal(),
+                    'attr' => $this->hiddenIfNotExternal(),
                     'data' => $this->getConfigValue('sessionDbTable'),
                     'disabled' => isset($this->lockedParams['session_db_table']),
                 ]
@@ -110,7 +110,7 @@ class SessionType extends AbstractType
                     'label' => 'id_col',
                     'required' => false,
                     'constraints' => $this->notBlankIfExternal(),
-                    'theme_options' => $this->hiddenIfNotExternal(),
+                    'attr' => $this->hiddenIfNotExternal(),
                     'data' => $this->getConfigValue('sessionDbIdCol'),
                     'disabled' => isset($this->lockedParams['session_db_id_col']),
                 ]
@@ -122,7 +122,7 @@ class SessionType extends AbstractType
                     'label' => 'data_col',
                     'required' => false,
                     'constraints' => $this->notBlankIfExternal(),
-                    'theme_options' => $this->hiddenIfNotExternal(),
+                    'attr' => $this->hiddenIfNotExternal(),
                     'data' => $this->getConfigValue('sessionDbDataCol'),
                     'disabled' => isset($this->lockedParams['session_db_data_col']),
                 ]
@@ -134,7 +134,7 @@ class SessionType extends AbstractType
                     'label' => 'time_col',
                     'required' => false,
                     'constraints' => $this->notBlankIfExternal(),
-                    'theme_options' => $this->hiddenIfNotExternal(),
+                    'attr' => $this->hiddenIfNotExternal(),
                     'data' => $this->getConfigValue('sessionDbTimeCol'),
                     'disabled' => isset($this->lockedParams['session_db_time_col']),
                 ]
