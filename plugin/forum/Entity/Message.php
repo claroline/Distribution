@@ -44,7 +44,6 @@ class Message extends AbstractMessage
      *     targetEntity="Claroline\ForumBundle\Entity\Message",
      *     mappedBy="parent"
      * )
-     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $children;
 
@@ -52,6 +51,11 @@ class Message extends AbstractMessage
      * @ORM\Column(type="boolean")
      */
     protected $isVisible = true;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $flagged = false;
 
     public function setSubject(Subject $subject)
     {
@@ -86,5 +90,15 @@ class Message extends AbstractMessage
     public function getChildren()
     {
         return $this->children;
+    }
+
+    public function setFlagged($bool)
+    {
+        $this->flagged = $bool;
+    }
+
+    public function isFlagged()
+    {
+        return $this->flagged;
     }
 }

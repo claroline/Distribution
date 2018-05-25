@@ -3,15 +3,16 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
-import trim from 'lodash/trim'
 
-import {trans} from '#/main/core/translation'
+import {withRouter} from '#/main/core/router'
+import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
 import {Button} from '#/main/app/action/components/button'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+//  main app modals confirm
+import {MODAL_CONFIRM} from '#/main/core/layout/modal'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
@@ -19,8 +20,11 @@ import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Subject as SubjectType} from '#/plugin/forum/resources/forum/player/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
-import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
+import {MessageComments} from '#/plugin/forum/resources/forum/player/components/message-comments'
 import {SubjectForm} from '#/plugin/forum/resources/forum/player/components/subject-form'
+import {MessagesSort} from '#/plugin/forum/resources/forum/player/components/messages-sort'
+
+const authenticatedUser = currentUser()
 
 class SubjectComponent extends Component {
   constructor(props) {
@@ -29,10 +33,8 @@ class SubjectComponent extends Component {
     if (this.props.invalidated || !this.props.loaded) {
       this.props.reload(this.props.subject.id)
     }
-
     this.state = {
-      showMessageForm: false,
-      showNewCommentForm: null
+      showMessageForm: null
     }
   }
 
@@ -43,42 +45,39 @@ class SubjectComponent extends Component {
     }
   }
 
-  createNewMessage(message) {
-    const content = trim(message)
-    this.props.createMessage(this.props.subject.id, content)
+  editSubject(subjectId) {
+    this.props.subjectEdition()
+    this.props.history.push(`/subjects/form/${subjectId}`)
   }
 
-  showSubjectForm(message) {
-
+  updateMessage(message, content) {
+    this.props.editContent(message, this.props.subject.id, content)
+    this.setState({showMessageForm: null})
   }
 
-  showMessageForm(message) {
-    // this.setState({showNewCommentForm: messageId})
-    console.log(message)
-  }
 
-  showCommentForm(messageId) {
-    this.setState({showNewCommentForm: messageId})
-  }
-
-  createNewComment(messageId, comment) {
-    console.log(messageId)
-    this.props.createComment(messageId, comment)
-    this.setState({showNewCommentForm: null})
-  }
-
-  deleteMessage(messageId) {
-    console.log(messageId)
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
-      title: trans('delete_message', {}, 'forum'),
-      question: trans('remove_post_confirm_message', {}, 'forum'),
-      handleConfirm: () => this.props.deleteData(messageId)
+  deleteSubject(subjectId) {
+    this.props.showModal(MODAL_CONFIRM, {
+      dangerous: true,
+      icon: 'fa fa-fw fa-trash-o',
+      title: trans('delete_subject', {}, 'forum'),
+      question: trans('remove_subject_confirm_message', {}, 'forum'),
+      handleConfirm: () => this.props.deleteSubject(subjectId, this.props.history.push)
     })
   }
 
+  deleteMessage(messageId) {
+    this.props.showModal(MODAL_CONFIRM, {
+      dangerous: true,
+      icon: 'fa fa-fw fa-trash-o',
+      title: trans('delete_message', {}, 'forum'),
+      question: trans('remove_post_confirm_message', {}, 'forum'),
+      handleConfirm: () => this.props.deleteMessage(messageId)
+    })
+  }
 
   render() {
-    if (isEmpty(this.props.subject) && !this.props.subjectForm.showSubjectForm) {
+    if (isEmpty(this.props.subject) && !this.props.showSubjectForm) {
       return(
         <span>Loading</span>
       )
@@ -96,10 +95,21 @@ class SubjectComponent extends Component {
             />
           </div>
           <div>
-            {!this.props.subjectForm.showSubjectForm &&
-              <h3 className="h2">{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h3>
+            {(!this.props.showSubjectForm && !this.props.editingSubject) &&
+              <h3 className="h2">
+                {get(this.props.subject, 'meta.closed') &&
+                  <span>[{trans('closed_subject', {}, 'forum')}] </span>
+                }
+                {get(this.props.subject, 'meta.sticky') &&
+                  <span>[{trans('stuck', {}, 'forum')}] </span>
+                }
+                {this.props.subject.title}<small> {transChoice('replies', get(this.props.subject, 'meta.messages') || 0, {count: get(this.props.subject, 'meta.messages') || 0}, 'forum')}</small>
+              </h3>
             }
-            {this.props.subjectForm.showSubjectForm &&
+            {(this.props.showSubjectForm && this.props.editingSubject) &&
+              <h3 className="h2">{this.props.subjectForm.title}<small> {transChoice('replies', get(this.props.subject, 'meta.messages') || 0, {count: get(this.props.subject, 'meta.messages') || 0}, 'forum')}</small></h3>
+            }
+            {(this.props.showSubjectForm && !this.props.editingSubject) &&
               <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
             }
             {!isEmpty(this.props.subject.tags)&&
@@ -111,10 +121,10 @@ class SubjectComponent extends Component {
             }
           </div>
         </header>
-        {this.props.subjectForm.showSubjectForm &&
+        {this.props.showSubjectForm &&
           <SubjectForm />
         }
-        {!this.props.subjectForm.showSubjectForm &&
+        {!this.props.showSubjectForm &&
           <UserMessage
             user={get(this.props.subject, 'meta.creator')}
             date={get(this.props.subject, 'meta.created') || ''}
@@ -125,90 +135,111 @@ class SubjectComponent extends Component {
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit'),
                 displayed: true,
-                action: () => props.showSubjectForm(this.props.subject)
+                action: () => this.editSubject(this.props.subject.id)
+              }, {
+                icon: 'fa fa-fw fa-thumb-tack',
+                label: trans('stick', {}, 'forum'),
+                displayed: !(get(this.props.subject, 'meta.sticky', true)),
+                action: () => this.props.stickSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-thumb-tack',
+                label: trans('unstick', {}, 'forum'),
+                displayed: get(this.props.subject, 'meta.sticky', false),
+                action: () => this.props.unStickSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-times-circle-o',
+                label: trans('close_subject', {}, 'forum'),
+                displayed: !(get(this.props.subject, 'meta.closed', true)),
+                action: () => this.props.closeSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-check-circle-o',
+                label: trans('open_subject', {}, 'forum'),
+                displayed: (get(this.props.subject, 'meta.closed', false)),
+                action: () => this.props.unCloseSubject(this.props.subject)
+              }, {
+                icon: 'fa fa-fw fa-flag',
+                label: trans('flag', {}, 'forum'),
+                displayed: !(get(this.props.subject, 'meta.flagged')),
+                action: () => this.props.flagSubject(this.props.subject)
+              },
+              // {
+              //   icon: 'fa fa-fw fa-flag-o',
+              //   label: trans('unflag', {}, 'forum'),
+              //   displayed: (get(this.props.subject, 'meta.flagged')),
+              //   action: () => this.props.unFlagSubject(this.props.subject)
+              // },
+              {
+                icon: 'fa fa-fw fa-trash-o',
+                label: trans('delete'),
+                displayed: true,
+                action: () => this.deleteSubject([this.props.subject.id]),
+                dangerous: true
               }
             ]}
           />
         }
+        <hr/>
         {!isEmpty(this.props.messages)&&
-          <ul className="posts">
-            {this.props.messages.map(message =>
-              <li key={message.id} className="post">
-                <UserMessage
-                  user={message.meta.creator}
-                  date={message.meta.created}
-                  content={message.content}
-                  allowHtml={true}
-                  actions={[
-                    {
-                      icon: 'fa fa-fw fa-pencil',
-                      label: trans('edit'),
-                      displayed: true,
-                      action: () => this.showMessageForm(message)
-                    }, {
-                      icon: 'fa fa-fw fa-trash-o',
-                      label: trans('delete'),
-                      displayed: true,
-                      action: () => this.deleteMessage(message.id),
-                      dangerous: true
-                    }
-                  ]}
-                />
-                <div className="answer-comment-container">
-                  {message.children.map(comment =>
-                    <Comment
-                      key={comment.id}
-                      user={comment.meta.creator}
-                      date={comment.meta.created}
-                      content={comment.content}
-                      allowHtml={true}
-                      actions={[
-                        {
-                          icon: 'fa fa-fw fa-pencil',
-                          label: trans('edit'),
-                          displayed: true,
-                          action: () => this.showMessageForm(message)
-                        }, {
-                          icon: 'fa fa-fw fa-trash-o',
-                          label: trans('delete'),
-                          displayed: true,
-                          action: () => this.deleteMessage(message.id),
-                          dangerous: true
-                        }
-                      ]}
-                    />
-                  )}
-                  {!this.state.showNewCommentForm &&
-                    <div className="comment-link-container">
-                      <Button
-                        label={trans('comment', {}, 'actions')}
-                        type="callback"
-                        callback={() => this.showCommentForm(message.id)}
-                        className='comment-link'
-                      />
-                    </div>
+          <div>
+            <MessagesSort
+              messages={this.props.messages}
+              sortOrder={this.props.sortOrder}
+            />
+            <ul className="posts">
+              {this.props.messages.map(message =>
+                <li key={message.id} className="post">
+                  {this.state.showMessageForm !== message.id &&
+                  <UserMessage
+                    user={message.meta.creator}
+                    date={message.meta.created}
+                    content={message.content}
+                    allowHtml={true}
+                    actions={[
+                      {
+                        icon: 'fa fa-fw fa-pencil',
+                        label: trans('edit'),
+                        displayed: message.meta.creator.id === authenticatedUser.id,
+                        action: () => this.setState({showMessageForm: message.id})
+                      }, {
+                        icon: 'fa fa-fw fa-flag',
+                        label: trans('flag', {}, 'forum'),
+                        displayed: message.meta.creator.id !== authenticatedUser.id,
+                        action: () => this.props.flag(message, this.props.subject.id)
+                      }, {
+                        icon: 'fa fa-fw fa-trash-o',
+                        label: trans('delete'),
+                        displayed:  message.meta.creator.id === authenticatedUser.id,
+                        action: () => this.deleteMessage(message.id),
+                        dangerous: true
+                      }
+                    ]}
+                  />
                   }
-                  {this.state.showNewCommentForm === message.id &&
-                    <CommentForm
+                  {this.state.showMessageForm === message.id &&
+                    <UserMessageForm
                       user={currentUser()}
                       allowHtml={true}
-                      submitLabel={trans('add_comment')}
-                      submit={(comment) => this.createNewComment(message.id, comment)}
-                      cancel={() => this.setState({showNewCommentForm: null})}
+                      submitLabel={trans('save')}
+                      content={message.content}
+                      submit={(content) => this.updateMessage(message, content)}
+                      cancel={() => this.setState({showMessageForm: null})}
                     />
                   }
-                </div>
-              </li>
-            )}
-          </ul>
+                  <MessageComments
+                    message={message}
+                  />
+                </li>
+              )}
+            </ul>
+            <hr/>
+          </div>
         }
-        {!this.props.subjectForm.showSubjectForm &&
+        {this.props.editingSubject || !get(this.props.subject, 'meta.closed') &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
-            submitLabel={trans('send')}
-            submit={(message) => this.createNewMessage(message)}
-            // cancel={() => this.setState({showNewMessageForm: false})}
+            submitLabel={trans('reply', {}, 'actions')}
+            submit={(message) => this.props.createMessage(this.props.subject.id, message)}
           />
         }
       </section>
@@ -218,48 +249,86 @@ class SubjectComponent extends Component {
 
 SubjectComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
+  subjectForm: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
-  deleteData: T.func.isRequired,
-  createComment: T.func.isRequired,
+  editContent: T.func.isRequired,
+  flag: T.func.isRequired,
+  stickSubject: T.func.isRequired,
+  unStickSubject: T.func.isRequired,
+  closeSubject: T.func.isRequired,
+  unCloseSubject: T.func.isRequired,
+  // unFlagMessage: T.func.isRequired,
+  flagSubject: T.func.isRequired,
+  unFlagSubject: T.func.isRequired,
+  deleteMessage: T.func.isRequired,
+  subjectEdition: T.func.isRequired,
   invalidated: T.bool.isRequired,
   loaded: T.bool.isRequired,
   reload: T.func.isRequired,
   showModal: T.func,
-  subjectForm: T.shape({
-    showSubjectForm: T.bool.isRequired
-  })
+  showSubjectForm: T.bool.isRequired,
+  editingSubject: T.bool.isRequired,
+  messages: T.arrayOf(T.shape({})),
+  sortOrder: T.number.isRequired,
+  history: T.object.isRequired
 }
 
-const Subject =  connect(
+const Subject =  withRouter(connect(
   state => ({
     subject: select.subject(state),
-    subjectForm: formSelect.form(state, 'subjects.form'),
+    subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
+    editingSubject: select.editingSubject(state),
+    showSubjectForm: select.showSubjectForm(state),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
-    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
+    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
+    sortOrder: listSelect.list(state, 'subjects.messages').sortOrder
   }),
   dispatch => ({
     createMessage(subjectId, content) {
-      // à la réussite cabler avec invalidateData (comme pour delete)
       dispatch(actions.createMessage(subjectId, content))
-    },
-    createComment(messageId, comment) {
-      dispatch(actions.createComment(messageId, comment))
     },
     showModal(type, props) {
       dispatch(modalActions.showModal(type, props))
     },
-    deleteData(id) {
-      dispatch(listActions.deleteData('subjects.messages', 'apiv2_forum_api_message_delete_bulk', [{id: id}]))
+    deleteSubject(id, push) {
+      dispatch(actions.deleteSubject(id, push))
+    },
+    deleteMessage(id) {
+      dispatch(listActions.deleteMessage('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
+    },
+    subjectEdition() {
+      dispatch(actions.subjectEdition())
+    },
+    stickSubject(subject) {
+      dispatch(actions.stickSubject(subject))
+    },
+    unStickSubject(subject) {
+      dispatch(actions.unStickSubject(subject))
+    },
+    closeSubject(subject) {
+      dispatch(actions.closeSubject(subject))
+    },
+    unCloseSubject(subject) {
+      dispatch(actions.unCloseSubject(subject))
+    },
+    editContent(message, subjectId, content) {
+      dispatch(actions.editContent(message, subjectId, content))
+    },
+    flag(message, subjectId) {
+      dispatch(actions.flag(message, subjectId))
+    },
+    flagSubject(subject) {
+      dispatch(actions.flagSubject(subject))
+    },
+    unFlagSubject(subject) {
+      dispatch(actions.unFlagSubject(subject))
     }
-    // showSubjectForm(subject) {
-    //   dispatch(actions.showSubjectForm(subject))
-    // }
   })
-)(SubjectComponent)
+)(SubjectComponent))
 
 export {
   Subject

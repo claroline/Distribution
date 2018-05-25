@@ -7,6 +7,7 @@ import {Routes} from '#/main/core/router'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
+import {select} from '#/plugin/forum/resources/forum/selectors'
 import {Subject} from '#/plugin/forum/resources/forum/player/components/subject'
 import {Subjects} from '#/plugin/forum/resources/forum/player/components/subjects'
 
@@ -21,17 +22,27 @@ const PlayerComponent = (props) =>
         path: '/subjects/form/:id?',
         component: Subject,
         onEnter: (params) => {
-          if (params.id === ':id') {
-            props.newSubject()
-          } else {
+          if (params.id) {
             props.newSubject(params.id)
+          } else {
+            props.newSubject()
           }
         },
-        onLeave: () => props.closeSubjectForm()
+        onLeave: () => {
+          props.closeSubjectForm()
+          if(props.editingSubject){
+            props.stopSubjectEdition()
+          }
+        }
       },{
         path: '/subjects/show/:id',
         component: Subject,
-        onEnter: (params) => props.openSubject(params.id)
+        onEnter: (params) => props.openSubject(params.id),
+        onLeave: () => {
+          if(props.showSubjectForm){
+            props.closeSubjectForm()
+          }
+        }
       }
     ]}
   />
@@ -39,12 +50,16 @@ const PlayerComponent = (props) =>
 PlayerComponent.propTypes = {
   newSubject: T.func.isRequired,
   closeSubjectForm: T.func.isRequired,
-  openSubject: T.func.isRequired
+  stopSubjectEdition: T.func.isRequired,
+  openSubject: T.func.isRequired,
+  showSubjectForm: T.bool.isRequired,
+  editingSubject: T.bool.isRequired
 }
 
 const Player = connect(
-  state =>({
-    subject: formSelect.data(formSelect.form(state, 'subjects.form'))
+  state => ({
+    editingSubject: select.editingSubject(state),
+    showSubjectForm: select.showSubjectForm(state)
   }),
   dispatch => ({
     newSubject(id) {
@@ -55,6 +70,9 @@ const Player = connect(
     },
     closeSubjectForm() {
       dispatch(actions.closeSubjectForm())
+    },
+    stopSubjectEdition(){
+      dispatch(actions.stopSubjectEdition())
     }
   })
 )(PlayerComponent)

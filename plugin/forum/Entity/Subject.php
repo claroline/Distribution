@@ -96,6 +96,11 @@ class Subject
     protected $isClosed = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $flagged = false;
+
+    /**
      * @ORM\Column(nullable=true)
      */
     protected $author;
@@ -214,6 +219,16 @@ class Subject
     public function isClosed()
     {
         return $this->isClosed;
+    }
+
+    public function setFlagged($bool)
+    {
+        $this->flagged = $bool;
+    }
+
+    public function isFlagged()
+    {
+        return $this->flagged;
     }
 
     public function getAuthor()

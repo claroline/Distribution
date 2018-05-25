@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataCard} from '#/main/core/data/components/data-card'
@@ -16,9 +16,6 @@ class SubjectsList extends Component {
     super(props)
   }
 
-  editSubject(subject) {
-    console.log(subject)
-  }
 
   render() {
     return (
@@ -49,14 +46,19 @@ class SubjectsList extends Component {
               displayed: true,
               primary: true
             }, {
-              name: 'meta.messages',
-              type: 'number',
-              label: trans('posts', {}, 'forum'),
+              name: 'meta.closed',
+              type: 'boolean',
+              label: trans('closed_subject', {}, 'forum'),
               displayed: true
             }, {
               name: 'meta.sticky',
               type: 'boolean',
               label: trans('stuck', {}, 'forum'),
+              displayed: true
+            }, {
+              name: 'meta.messages',
+              type: 'number',
+              label: trans('posts', {}, 'forum'),
               displayed: true
             }, {
               name: 'meta.updated',
@@ -72,7 +74,7 @@ class SubjectsList extends Component {
               label: trans('tags'),
               displayed: true
             }
-            // }, {
+            // {
             //   name: 'meta.creator',
             //   type: 'string',
             //   label: trans('creator'),
@@ -87,23 +89,35 @@ class SubjectsList extends Component {
               target: '/subjects/show/'+rows[0].id,
               context: 'row'
             }, {
-              type: 'callback',
-              icon: 'fa fa-fw fa-paperclip',
-              label: trans('stick', {}, 'forum'),
-              callback: () => this.props.stickSubject(rows[0]),
-              displayed: !rows[0].meta.sticky
-            }, {
-              type: 'callback',
-              icon: 'fa fa-fw fa-unlink',
-              label: trans('unstick', {}, 'forum'),
-              callback: () => this.props.unStickSubject(rows[0]),
-              displayed: rows[0].meta.sticky
-            }, {
               type: 'link',
               icon: 'fa fa-fw fa-pencil',
               label: trans('edit'),
               target: '/subjects/form/'+rows[0].id,
               context: 'row'
+            }, {
+              type: 'callback',
+              icon: 'fa fa-fw fa-thumb-tack',
+              label: trans('stick', {}, 'forum'),
+              callback: () => this.props.stickSubject(rows[0]),
+              displayed: !rows[0].meta.sticky
+            }, {
+              type: 'callback',
+              icon: 'fa fa-fw fa-thumb-tack',
+              label: trans('unstick', {}, 'forum'),
+              callback: () => this.props.unStickSubject(rows[0]),
+              displayed: rows[0].meta.sticky
+            }, {
+              type: 'callback',
+              icon: 'fa fa-fw fa-times-circle-o',
+              label: trans('close_subject', {}, 'forum'),
+              callback: () => this.props.closeSubject(rows[0]),
+              displayed: !rows[0].meta.closed
+            }, {
+              type: 'callback',
+              icon: 'fa fa-fw fa-check-circle-o',
+              label: trans('open_subject', {}, 'forum'),
+              callback: () => this.props.unCloseSubject(rows[0]),
+              displayed: rows[0].meta.closed
             }
           ]}
           card={(props) =>
@@ -112,7 +126,7 @@ class SubjectsList extends Component {
               id={props.data.id}
               icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
               title={props.data.title}
-              subtitle={props.data.meta.messages+' réponse(s)'}
+              subtitle={transChoice('replies', props.data.meta.messages, {count: props.data.meta.messages}, 'forum')}
               // contentText={props.data)}
             />
           }
@@ -133,6 +147,12 @@ const Subjects = connect(
     },
     unStickSubject(subject) {
       dispatch(actions.unStickSubject(subject))
+    },
+    closeSubject(subject) {
+      dispatch(actions.closeSubject(subject))
+    },
+    unCloseSubject(subject) {
+      dispatch(actions.unCloseSubject(subject))
     }
   })
 )(SubjectsList)

@@ -5,6 +5,7 @@ namespace Claroline\ForumBundle\Controller\API;
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\ForumBundle\Entity\Subject;
+use Claroline\ForumBundle\Entity\Message;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -97,6 +98,32 @@ class SubjectController extends AbstractCrudController
           $this->serializer->serialize($object, $this->options['get']),
           201
       );
+    }
+    /**
+     * @EXT\Route("/{subject}/message/{message}", name="apiv2_forum_subject_message_update")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("message", class = "ClarolineForumBundle:Message",  options={"message": {"id": "uuid"}})
+     * @EXT\ParamConverter("subject", class = "ClarolineForumBundle:Subject",  options={"subject": {"id": "uuid"}})
+     *
+     * @ApiDoc(
+     *     description="Udate a message in a subject",
+     *     parameters={
+     *         "id": {
+     *              "type": {"string", "integer"},
+     *              "description": "The subject id or uuid"
+     *          }
+     *     }
+     * )
+     *
+     * @param string  $id
+     * @param string  $class
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function updateMessage(Subject $subject, Message $message, Request $request)
+    {
+      parent::updateAction($message->getUuid(), $request, 'Claroline\ForumBundle\Entity\Message');
     }
 
     public function getClass()

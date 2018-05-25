@@ -62,6 +62,39 @@ class MessageController extends AbstractCrudController
         );
     }
 
+    /**
+     * @EXT\Route("/{id}/content")
+     * @EXT\Method("PUT")
+     * @ParamConverter("message", options={"mapping": {"id": "uuid"}})
+     *
+     * @ApiDoc(
+     *     description="Udate a message content",
+     *     parameters={
+     *         "id": {
+     *              "type": {"string", "integer"},
+     *              "description": "The message id or uuid"
+     *          }
+     *     }
+     * )
+     *
+     * @param string  $id
+     * @param string  $class
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function updateMessageContent(Message $message, Request $request)
+    {
+        $data = $this->decodeRequest($request);
+        $content = $data['content'];
+        $this->crud->replace($message, 'content', $content);
+
+        return new JsonResponse(
+            $this->serializer->serialize($message, $this->options['get']),
+            200
+        );
+
+    }
     public function getClass()
     {
         return "Claroline\ForumBundle\Entity\Message";

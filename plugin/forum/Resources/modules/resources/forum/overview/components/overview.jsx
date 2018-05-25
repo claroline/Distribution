@@ -12,6 +12,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
+import {TagCloud} from '#/plugin/forum/resources/forum/overview/components/tag-cloud'
 
 
 const OverviewComponent = props =>
@@ -44,10 +45,16 @@ const OverviewComponent = props =>
             <Button
               label={trans('create_subject', {}, 'forum')}
               type="link"
-              target="/subjects/form/:id?"
+              target="/subjects/form"
               className="btn btn-block"
             />
           </section>
+          {!isEmpty(props.forum.meta.tags)&&
+            <div className="tag">
+              <h3 className="h2">{trans('tags')}</h3>
+              <TagCloud />
+            </div>
+          }
         </div>
 
         <div className="resource-column col-md-8">
@@ -80,14 +87,6 @@ const OverviewComponent = props =>
             </div>
           </section>
           <section>
-            {!isEmpty(props.forum.meta.tags)&&
-              <div className="tag">
-                <h3 className="h2">{trans('tags')}</h3>
-                {props.forum.meta.tags.map(tag =>
-                  <a href="#" key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</a>
-                )}
-              </div>
-            }
             <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
             {/* <ul className="posts">
               {console.log(props.messages)}

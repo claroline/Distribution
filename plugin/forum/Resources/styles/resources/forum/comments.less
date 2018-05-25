@@ -3,10 +3,9 @@
     flex-direction: row;
     align-items: flex-start;
     max-width: 100%;
-    margin-bottom: 10px;
-    margin-left: 30px;
+    margin-bottom: 5px;
     background-color: #eee;
-    padding: 10px;
+    padding: 10px 0 0 10px;
 
     .user-avatar {
         max-height: 50px;
@@ -16,11 +15,11 @@
 
 .user-comment-form-container {
     .form-group {
-        padding: 15px;
-        margin: 0;
+        padding-right: 15px;
+        margin: 15px;
     }
     .btn-save-container{
-      margin: 0 15px;
+      margin: 0 30px 10px 15px;
     }
 
 }
@@ -33,6 +32,7 @@
     color: #777;
     font-size: @font-size-small;
     margin: 0 15px;
+    padding-bottom: 10px;
     border-bottom: 1px solid @user-message-inner-border;
 
     .user-comment-info {
@@ -72,5 +72,27 @@
 }
 
 .user-comment-content {
-    padding: 10px 5px 10px 10px;
+    padding: 15px;
+}
+
+.comment-link-container{
+  display: flex;
+  justify-content: flex-end;
+
+  .comment-link {
+    padding: 0 0 0 10px;
+    border: 0;
+  }
+}
+
+
+// the margin-left of this container =>
+// 60px of the profile img + 30px between the profile img and the user-message
+// so that the button can have the widht of the userMessage
+.answer-comment-container {
+  margin: 10px 0 0 90px;
+
+  .comments-title {
+    justify-content: flex-end;
+  }
 }

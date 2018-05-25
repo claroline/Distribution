@@ -62,7 +62,7 @@ class SubjectSerializer
      * @return array
      */
     public function serialize(Subject $subject, array $options = [])
-    {   
+    {
         return [
           'id' => $subject->getUuid(),
           'forum' => [
@@ -78,7 +78,7 @@ class SubjectSerializer
     public function serializeMeta(Subject $subject, array $options = [])
     {
         $finder = $this->container->get('claroline.api.finder');
-        
+
         return [
             'views' => $subject->getViewCount(),
             'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', 0, 0, ['subject' => $subject->getUuid(), 'parent' => null], null, true),
@@ -87,6 +87,7 @@ class SubjectSerializer
             'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
             'sticky' => $subject->isSticked(),
             'closed' => $subject->isClosed(),
+            'flagged' => $subject-> isFlagged(),
         ];
     }
 
@@ -110,10 +111,12 @@ class SubjectSerializer
      */
     public function deserialize($data, Subject $subject, array $options = [])
     {
+        $this->sipe('id', 'setUuid', $data, $subject);
         $this->sipe('title', 'setTitle', $data, $subject);
         $this->sipe('content', 'setContent', $data, $subject);
         $this->sipe('meta.sticky', 'setIsSticked', $data, $subject);
         $this->sipe('meta.closed', 'setIsClosed', $data, $subject);
+        $this->sipe('meta.flagged', 'setFlagged', $data, $subject);
 
         if (isset($data['meta'])) {
             if (isset($data['meta']['updated'])) {

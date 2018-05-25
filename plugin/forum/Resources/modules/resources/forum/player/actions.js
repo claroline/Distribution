@@ -14,29 +14,39 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 
 export const SUBJECT_LOAD = 'SUBJECT_LOAD'
 export const MESSAGES_LOAD = 'MESSAGES_LOAD'
+export const MESSAGE_UPDATE = 'MESSAGE_UPDATE'
 export const SUBJECT_FORM_OPEN = 'SUBJECT_FORM_OPEN'
 export const SUBJECT_FORM_CLOSE = 'SUBJECT_FORM_CLOSE'
-
+export const MESSAGES_SORT_TOGGLE = 'MESSAGES_SORT_TOGGLE'
+export const SUBJECT_EDIT = 'SUBJECT_EDIT'
+export const SUBJECT_STOP_EDIT = 'SUBJECT_STOP_EDIT'
 export const actions = {}
 
+actions.toggleMessagesSort = makeActionCreator(MESSAGES_SORT_TOGGLE)
 actions.openSubjectForm = makeActionCreator(SUBJECT_FORM_OPEN)
 actions.closeSubjectForm = makeActionCreator(SUBJECT_FORM_CLOSE)
+actions.subjectEdition = makeActionCreator(SUBJECT_EDIT)
+actions.stopSubjectEdition = makeActionCreator(SUBJECT_STOP_EDIT)
 
-actions.newSubject = (id) => (dispatch) => {
+actions.newSubject = (id = null) => (dispatch) => {
   dispatch(actions.openSubjectForm())
   if (id) {
+    dispatch(actions.subjectEdition())
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_forum_subject_get', {id}],
-        success: (response, dispatch) => {
-          dispatch(formActions.resetForm('subjects.form', response, false))
+        success: (data, dispatch) => {
+          dispatch(formActions.resetForm('subjects.form', data, false))
         }
       }
     })
   } else {
     dispatch(formActions.resetForm(
       'subjects.form',
-      merge({}, SubjectTypes.defaultProps, {meta: {creator: currentUser()}}),
+      merge({}, SubjectTypes.defaultProps, {
+        id: makeId(),
+        meta: {creator: currentUser()}
+      }),
       true
     ))
   }
@@ -47,8 +57,8 @@ actions.loadSubject = makeActionCreator(SUBJECT_LOAD, 'subject')
 actions.fetchSubject = (id) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_subject_get', {id}],
-    success: (response, dispatch) => {
-      dispatch(actions.loadSubject(response))
+    success: (data, dispatch) => {
+      dispatch(actions.loadSubject(data))
     }
   }
 })
@@ -59,9 +69,22 @@ actions.openSubject = (id) => (dispatch, getState) => {
   if (subject.id !== id) {
     dispatch(actions.loadSubject({id: id}))
     dispatch(actions.fetchSubject(id))
+    dispatch(listActions.invalidateData('subjects.messages'))
   }
 }
 
+actions.deleteSubject = (id, push) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_delete_bulk', {id: id}],
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      push('/subjects')
+    }
+  }
+})
 
 actions.createMessage = (subjectId, content) => ({
   [API_REQUEST]: {
@@ -106,6 +129,33 @@ actions.createComment = (messageId, comment) => ({
   }
 })
 
+actions.editContent = (message, subjectId, content) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
+    request: {
+      body: JSON.stringify(Object.assign({}, message, {content: content})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+
+actions.flagMessage = (message, subjectId) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
+    request: {
+      body: JSON.stringify(Object.assign({}, message, {meta: {flagged:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
 actions.stickSubject = (subject) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_subject_update', {id: subject.id}],
@@ -115,6 +165,7 @@ actions.stickSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
     }
   }
 })
@@ -128,6 +179,63 @@ actions.unStickSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.closeSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {closed:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.unCloseSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {closed:false}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.flagSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {flagged:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.unFlagSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {flagged:false}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+      dispatch(listActions.invalidateData('subjects.messages'))
     }
   }
 })

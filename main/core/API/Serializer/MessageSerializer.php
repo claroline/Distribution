@@ -11,7 +11,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.serializer.message")
- * @DI\Tag("claroline.serializer")
+ *
  */
 class MessageSerializer
 {
@@ -113,7 +113,6 @@ class MessageSerializer
 
         return $parent;
     }
-
     /**
      * Deserializes data into a Forum entity.
      *
@@ -134,15 +133,14 @@ class MessageSerializer
 
             if (isset($data['meta']['creator'])) {
                 $message->setAuthor($data['meta']['creator']['name']);
-            }
+                $creator = $this->serializerProvider->deserialize(
+                    'Claroline\CoreBundle\Entity\User',
+                    $data['meta']['creator']
+                );
 
-            $creator = $this->serializerProvider->deserialize(
-                'Claroline\CoreBundle\Entity\User',
-                $data['meta']['creator']
-            );
-
-            if ($creator) {
-                $message->setCreator($creator);
+                if ($creator) {
+                    $message->setCreator($creator);
+                }
             }
         }
 

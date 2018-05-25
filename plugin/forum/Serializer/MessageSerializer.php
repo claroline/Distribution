@@ -82,6 +82,8 @@ class MessageSerializer
           'id' => $message->getSubject()->getId(),
         ];
 
+        $data['meta']['flagged'] = $message->isFlagged();
+
         return $data;
     }
 
@@ -113,6 +115,8 @@ class MessageSerializer
             $parent = $this->om->getRepository($this->getClass())->findOneByUuid($data['parent']['id']);
             $message->setParent($parent);
         }
+
+        $this->sipe('meta.flagged', 'setFlagged', $data, $message);
 
         return $message;
     }
