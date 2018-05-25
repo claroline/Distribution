@@ -124,8 +124,7 @@ const Resource = props =>
           path: '/papers',
           exact: true,
           component: Papers,
-          disabled: !props.registeredUser,
-          onEnter: () => props.results()
+          disabled: !props.registeredUser
         }, {
           path: '/papers/:id', // todo : declare inside papers module
           component: Paper,

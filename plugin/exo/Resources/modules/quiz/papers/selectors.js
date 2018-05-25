@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 
-import {getDefinition} from './../../items/item-types'
+import {getDefinition} from '#/plugin/exo/items/item-types'
 
 const quizId = state => state.quiz.id
 const papersFetched = state => state.papers.isFetched

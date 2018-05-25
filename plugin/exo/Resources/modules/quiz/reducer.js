@@ -3,7 +3,7 @@ import {makeResourceReducer} from '#/main/core/resource/reducer'
 
 import {reducers as editorReducers} from '#/plugin/exo/quiz/editor/reducers'
 import {reducers as playerReducers} from '#/plugin/exo/quiz/player/reducers'
-import {reducePapers} from '#/plugin/exo/quiz/papers/reducer'
+import {reducer as papersReducer} from '#/plugin/exo/quiz/papers/reducer'
 import {reduceCorrection} from '#/plugin/exo/quiz/correction/reducer'
 
 export const reducer = makeResourceReducer({}, {
@@ -19,7 +19,7 @@ export const reducer = makeResourceReducer({}, {
   paper: playerReducers.paper,
   answers: playerReducers.answers,
 
-  papers: reducePapers,
+  papers: papersReducer,
 
   correction: reduceCorrection
 })
