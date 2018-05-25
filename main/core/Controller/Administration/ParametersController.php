@@ -15,6 +15,7 @@ use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Icon\IconSetTypeEnum;
 use Claroline\CoreBundle\Entity\SecurityToken;
 use Claroline\CoreBundle\Form\Administration as AdminForm;
+use Claroline\CoreBundle\Form\Administration\MaintenanceMessageType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\UnwritableException;
 use Claroline\CoreBundle\Library\Installation\Refresher;
@@ -830,7 +831,7 @@ class ParametersController extends Controller
     public function maintenanceMessageEditFormAction()
     {
         $maintenanceMessage = $this->getMaintenanceMessage();
-        $form = $this->formFactory->create(new AdminForm\MaintenanceMessageType($maintenanceMessage));
+        $form = $this->formFactory->create(MaintenanceMessageType::class, null, ['message' => $maintenanceMessage]);
 
         return ['form' => $form->createView()];
     }
@@ -845,7 +846,7 @@ class ParametersController extends Controller
     public function maintenanceMessageEditAction()
     {
         $maintenanceMessage = $this->getMaintenanceMessage();
-        $form = $this->formFactory->create(new AdminForm\MaintenanceMessageType($maintenanceMessage));
+        $form = $this->formFactory->create(MaintenanceMessageType::class, null, ['message' => $maintenanceMessage]);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
