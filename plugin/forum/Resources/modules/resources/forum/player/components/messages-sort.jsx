@@ -6,6 +6,7 @@ import {trans} from '#/main/core/translation'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
+import {select} from '#/plugin/forum/resources/forum/selectors'
 
 const MessagesSortButton = props =>
   <div className="messages-sort">
@@ -22,12 +23,16 @@ const MessagesSortButton = props =>
 
 MessagesSortButton.propTypes = {
   sortOrder: T.number,
-  toggleSort: T.func.isRequired
+  toggleSort: T.func.isRequired,
+  messages: T. shape({
+    length: T.number.isRequired
+  })
 }
 
 const MessagesSort = connect(
   state => ({
-    messages: listSelect.data(listSelect.list(state, 'subjects.messages'))
+    messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
+    sortOrder: select.sortOrder(state)
   }),
   dispatch => ({
     toggleSort() {
