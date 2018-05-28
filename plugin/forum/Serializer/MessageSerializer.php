@@ -78,9 +78,11 @@ class MessageSerializer
     {
         $data = $this->messageSerializer->serialize($message, $options);
 
-        $data['subject'] = [
-          'id' => $message->getSubject()->getId(),
-        ];
+        if ($message->getSubject()) {
+            $data['subject'] = [
+                'id' => $message->getSubject()->getUuid(),
+            ];
+        }
 
         $data['meta']['flagged'] = $message->isFlagged();
 
