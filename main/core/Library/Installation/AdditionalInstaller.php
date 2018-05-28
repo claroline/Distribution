@@ -418,7 +418,7 @@ class AdditionalInstaller extends BaseInstaller
         $adminOrganization = $om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION');
 
         if (!$adminOrganization) {
-            $adminOrganization = $this->container->get('claroline.manager.role_manager')->createBaseRole('ROLE_ADMIN_ORGANIZATION', 'admin_organization');
+            $this->createRoleAdminOrga();
         }
 
         /** @var AdminTool $tool */
@@ -429,5 +429,25 @@ class AdditionalInstaller extends BaseInstaller
         $om->persist($usermanagement);
         $om->persist($workspacemanagement);
         $om->flush();
+    }
+
+    public function createRoleAdminOrga()
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $this->log('Create role admin organization...');
+
+        $roleManager = $this->container->get('claroline.manager.role_manager');
+
+        $role = $roleManager->createBaseRole('ROLE_ADMIN_ORGANIZATION', 'admin_organization');
+
+        $workspacemanagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('workspace_management');
+        $usermanagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('user_management');
+        $usermanagement->addRole($role);
+        $workspacemanagement->addRole($role);
+        $om->persist($usermanagement);
+        $om->persist($workspacemanagement);
+        $om->flush();
+
+        $this->log('Role admin organization created!');
     }
 }

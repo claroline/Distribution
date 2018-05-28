@@ -31,7 +31,6 @@ class Updater110200 extends Updater
     public function postUpdate()
     {
         $this->setMainOrganizations();
-        $this->createRoleAdminOrga();
     }
 
     public function setMainOrganizations()
@@ -73,26 +72,5 @@ class Updater110200 extends Updater
             $this->om->flush();
             $this->om->clear();
         }
-    }
-
-    public function createRoleAdminOrga()
-    {
-        $this->log('Create role admin organization...');
-
-        $roleManager = $this->container->get('claroline.manager.role_manager');
-
-        if (!$this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION')) {
-            $role = $roleManager->createBaseRole('ROLE_ADMIN_ORGANIZATION', 'admin_organization');
-
-            $workspacemanagement = $this->om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('workspace_management');
-            $usermanagement = $this->om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('user_management');
-            $usermanagement->addRole($role);
-            $workspacemanagement->addRole($role);
-            $this->om->persist($usermanagement);
-            $this->om->persist($workspacemanagement);
-            $this->om->flush();
-        }
-
-        $this->log('Role admin organization created!');
     }
 }
