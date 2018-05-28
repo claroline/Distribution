@@ -177,7 +177,7 @@ class AuthenticationController
      */
     public function sendEmailAction()
     {
-        $form = $this->formFactory->create(EmailType::class;
+        $form = $this->formFactory->create(EmailType::class);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
