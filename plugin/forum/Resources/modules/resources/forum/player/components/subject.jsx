@@ -179,69 +179,70 @@ class SubjectComponent extends Component {
           />
         }
         <hr/>
-        {!isEmpty(this.props.messages)&&
-          <div>
-            <MessagesSort
-              messages={this.props.messages}
-              sortOrder={this.props.sortOrder}
-            />
-            <ul className="posts">
-              {this.props.messages.map(message =>
-                <li key={message.id} className="post">
-                  {this.state.showMessageForm !== message.id &&
-                  <UserMessage
-                    user={get(message, 'meta.creator')}
-                    date={message.meta.created}
-                    content={message.content}
-                    allowHtml={true}
-                    actions={[
-                      {
-                        icon: 'fa fa-fw fa-pencil',
-                        label: trans('edit'),
-                        displayed: message.meta.creator.id === authenticatedUser.id,
-                        action: () => this.setState({showMessageForm: message.id})
-                      }, {
-                        icon: 'fa fa-fw fa-flag',
-                        label: trans('flag', {}, 'forum'),
-                        displayed: message.meta.creator.id !== authenticatedUser.id,
-                        action: () => this.props.flag(message, this.props.subject.id)
-                      }, {
-                        icon: 'fa fa-fw fa-trash-o',
-                        label: trans('delete'),
-                        displayed:  message.meta.creator.id === authenticatedUser.id,
-                        action: () => this.deleteMessage(message.id),
-                        dangerous: true
-                      }
-                    ]}
-                  />
-                  }
-                  {this.state.showMessageForm === message.id &&
-                    <UserMessageForm
-                      user={currentUser()}
-                      allowHtml={true}
-                      submitLabel={trans('save')}
+        <MessagesSort
+          sortOrder={this.props.sortOrder}
+          messages={this.props.messages}
+        >
+          {!isEmpty(this.props.messages)&&
+            <div>
+              <ul className="posts">
+                {this.props.sortedMessages.map(message =>
+                  <li key={message.id} className="post">
+                    {this.state.showMessageForm !== message.id &&
+                    <UserMessage
+                      user={get(message, 'meta.creator')}
+                      date={message.meta.created}
                       content={message.content}
-                      submit={(content) => this.updateMessage(message, content)}
-                      cancel={() => this.setState({showMessageForm: null})}
+                      allowHtml={true}
+                      actions={[
+                        {
+                          icon: 'fa fa-fw fa-pencil',
+                          label: trans('edit'),
+                          displayed: message.meta.creator.id === authenticatedUser.id,
+                          action: () => this.setState({showMessageForm: message.id})
+                        }, {
+                          icon: 'fa fa-fw fa-flag',
+                          label: trans('flag', {}, 'forum'),
+                          displayed: message.meta.creator.id !== authenticatedUser.id,
+                          action: () => this.props.flag(message, this.props.subject.id)
+                        }, {
+                          icon: 'fa fa-fw fa-trash-o',
+                          label: trans('delete'),
+                          displayed:  message.meta.creator.id === authenticatedUser.id,
+                          action: () => this.deleteMessage(message.id),
+                          dangerous: true
+                        }
+                      ]}
                     />
-                  }
-                  <MessageComments
-                    message={message}
-                  />
-                </li>
-              )}
-            </ul>
-            <hr/>
-          </div>
-        }
-        {this.props.editingSubject || !get(this.props.subject, 'meta.closed') &&
-          <UserMessageForm
-            user={currentUser()}
-            allowHtml={true}
-            submitLabel={trans('reply', {}, 'actions')}
-            submit={(message) => this.props.createMessage(this.props.subject.id, message)}
-          />
-        }
+                    }
+                    {this.state.showMessageForm === message.id &&
+                      <UserMessageForm
+                        user={currentUser()}
+                        allowHtml={true}
+                        submitLabel={trans('save')}
+                        content={message.content}
+                        submit={(content) => this.updateMessage(message, content)}
+                        cancel={() => this.setState({showMessageForm: null})}
+                      />
+                    }
+                    <MessageComments
+                      message={message}
+                    />
+                  </li>
+                )}
+              </ul>
+              <hr/>
+            </div>
+          }
+          {this.props.editingSubject || !get(this.props.subject, 'meta.closed') &&
+            <UserMessageForm
+              user={currentUser()}
+              allowHtml={true}
+              submitLabel={trans('reply', {}, 'actions')}
+              submit={(message) => this.props.createMessage(this.props.subject.id, message)}
+            />
+          }
+        </MessagesSort>
       </section>
     )
   }
@@ -278,11 +279,12 @@ const Subject =  withRouter(connect(
     subject: select.subject(state),
     subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
     editingSubject: select.editingSubject(state),
+    sortedMessages: select.sortedMessages(state),
+    sortOrder: select.sortOrder(state),
     showSubjectForm: select.showSubjectForm(state),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
-    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
-    sortOrder: listSelect.list(state, 'subjects.messages').sortOrder
+    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
   }),
   dispatch => ({
     createMessage(subjectId, content) {

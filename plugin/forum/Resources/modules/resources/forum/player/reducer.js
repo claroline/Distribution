@@ -7,7 +7,8 @@ import {
   SUBJECT_FORM_CLOSE,
   SUBJECT_EDIT,
   SUBJECT_STOP_EDIT,
-  MESSAGES_SORT_TOGGLE
+  MESSAGES_SORT_TOGGLE,
+  MESSAGES_PAGE_CHANGE
 } from '#/plugin/forum/resources/forum/player/actions'
 
 
@@ -33,10 +34,14 @@ const reducer = combineReducers({
     [SUBJECT_LOAD]: (state, action) => action.subject
   }),
   messages: makeListReducer('subjects.messages', {
-    sortOrder: -1
+    sortOrder: -1,
+    currentpage: 0
   }, {
     sortOrder: makeReducer(-1, {
       [MESSAGES_SORT_TOGGLE]: (state) => 0-state
+    }),
+    currentPage: makeReducer(0, {
+      [MESSAGES_PAGE_CHANGE]: (state, action) => action.page
     })
   })
 })

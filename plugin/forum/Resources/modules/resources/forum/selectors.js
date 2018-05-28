@@ -5,6 +5,8 @@ const forum = state => state.forum
 const messages = state => state.subjects.messages
 const sortOrder = state => state.subjects.messages.sortOrder
 const subjects = state => state.subjects
+const pageSize = state => state.subjects.messages.pageSize
+const currentPage = state => state.subjects.messages.currentPage
 
 const subject = createSelector(
   [subjects],
@@ -29,9 +31,14 @@ const forumId = createSelector(
   (forum) => forum.id
 )
 
+const pages = createSelector(
+  [messages, pageSize],
+  (messages, pageSize) => Math.ceil(messages.length / pageSize)
+)
+
 const sortedMessages = createSelector(
   [sortOrder, messages],
-  (sortOrder, messages) => messages.slice().sort((a, b) => {
+  (sortOrder, messages) => messages.data.slice().sort((a, b) => {
     if (null === a.meta.updated || a.meta.updated < b.meta.updated) {
       return -1*sortOrder
     } else if (null === b.meta.updated || a.meta.updated > b.meta.updated) {
@@ -40,6 +47,11 @@ const sortedMessages = createSelector(
 
     return 0
   })
+)
+
+const visibleSortedMessages = createSelector(
+  [sortedMessages, pageSize, currentPage, sortOrder],
+  (sortedMessages, pageSize, currentPage) => sortedMessages.slice(currentPage*pageSize, currentPage*pageSize+pageSize)
 )
 
 const flaggedMessages = createSelector(
@@ -63,7 +75,11 @@ export const select = {
   subject,
   messages,
   forumId,
+  pages,
+  currentPage,
+  sortOrder,
   sortedMessages,
+  visibleSortedMessages,
   showSubjectForm,
   editingSubject,
   closedSubject,

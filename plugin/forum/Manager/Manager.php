@@ -28,7 +28,6 @@ use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\ForumBundle\Entity\Category;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
-use Claroline\ForumBundle\Entity\Notification;
 use Claroline\ForumBundle\Entity\Subject;
 use Claroline\ForumBundle\Entity\Widget\LastMessageWidgetConfig;
 use Claroline\ForumBundle\Event\Log\CloseSubjectEvent;
