@@ -15,7 +15,11 @@ export const USER_EVALUATION_UPDATE = 'USER_EVALUATION_UPDATE'
 export const actions = {}
 
 actions.update              = makeActionCreator(RESOURCE_UPDATE_NODE, 'resourceNode')
+
+// todo : remove me (use resource action system)
 actions.updatePublication   = makeActionCreator(RESOURCE_UPDATE_PUBLICATION)
+
+// todo : remove me (use resource action system)
 actions.updateNotifications = makeActionCreator(RESOURCE_UPDATE_NOTIFICATIONS)
 
 actions.triggerLifecycleAction = (action) => (dispatch, getState) => {
@@ -30,6 +34,7 @@ actions.triggerLifecycleAction = (action) => (dispatch, getState) => {
   }
 }
 
+// todo : remove me (use resource action system)
 actions.updateNode = (resourceNode) => ({
   [API_REQUEST]: {
     url: ['claro_resource_node_update', {id: resourceNode.id}],
@@ -41,6 +46,7 @@ actions.updateNode = (resourceNode) => ({
   }
 })
 
+// todo : remove me (use resource action system)
 actions.togglePublication = (resourceNode) => ({
   [API_REQUEST]: {
     type: resourceNode.meta.published ? 'unpublish' : 'publish',
@@ -55,7 +61,7 @@ actions.togglePublication = (resourceNode) => ({
   }
 })
 
-// todo : repair (class is no longer exported). the fix MUST not be to reexport class !!!! use resource type instead
+// todo : remove me (use resource action system)
 actions.toggleNotifications = (resourceNode) => ({
   [API_REQUEST]: {
     url: [

@@ -29,6 +29,9 @@
   "configure": "Configure",
   "show-info": "Show information",
   "show-actions": "Show available actions",
+  "show-followers": "Show followers",
+  "show-logs": "Show tracking",
+  "show-notifications": "Show notifications",
   "show-more-actions": "Show more actions",
   "show-more-tools": "Show more actions"
 }

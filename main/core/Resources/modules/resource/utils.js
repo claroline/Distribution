@@ -3,6 +3,7 @@ import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
 import {param} from '#/main/app/config'
+import {trans} from '#/main/core/translation'
 import {constants} from '#/main/app/action/constants'
 
 // todo load dynamically
@@ -36,7 +37,9 @@ function getActions(resourceNode, scope = null) {
     )
 
     // merge server conf with ui
-    .map(action => merge({}, omit(action, 'permission'), actions[action.name]([resourceNode], scope)))
+    .map(action => merge({}, omit(action, 'permission'), actions[action.name]([resourceNode], scope), {
+      group: trans(action.group, {}, 'resource')
+    }))
 }
 
 function getDefaultAction(resourceNode, scope) {

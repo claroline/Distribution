@@ -29,6 +29,9 @@
   "configure": "Configurer",
   "show-info": "Voir les informations",
   "show-actions": "Voir les actions disponibles",
+  "show-followers": "Voir les abonnés",
+  "show-logs": "Voir le suivi",
+  "show-notifications": "Voir les notifications",
   "show-more-actions": "Voir plus d'actions",
   "show-more-tools": "Voir plus d'outils"
 }

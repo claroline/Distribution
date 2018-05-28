@@ -1653,5 +1653,7 @@
     "upload date": "Upload date",
     "about": "About",
     "created_at": "Created at %date%",
-    "updated_at": "Updated at %date%"
+    "updated_at": "Updated at %date%",
+    "authors": "Authors",
+    "authors_license": "Authors & License"
 }

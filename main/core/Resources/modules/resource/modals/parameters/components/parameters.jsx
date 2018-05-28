@@ -196,15 +196,15 @@ class ParametersModal extends Component {
             ]
           }, {
             icon: 'fa fa-fw fa-copyright',
-            title: trans('resource_authors_license', {}, 'resource'),
+            title: trans('authors_license'),
             fields: [
               {
                 name: 'meta.authors',
-                label: trans('resource_authors', {}, 'resource'),
+                label: trans('authors'),
                 type: 'string'
               }, {
                 name: 'meta.license',
-                label: trans('resource_license', {}, 'resource'),
+                label: trans('license'),
                 type: 'string'
               }
             ]

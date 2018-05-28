@@ -50,9 +50,11 @@ const MoreTools = props =>
         target: tool.open
       }))
     }}
-  >
-    <span className="label label-primary">{props.tools.length}</span>
-  </Button>
+    subscript={{
+      type: 'primary',
+      value: props.tools.length
+    }}
+  />
 
 MoreTools.propTypes = {
   tools: T.arrayOf(T.shape({

@@ -46,6 +46,7 @@ class ResourceTypeSerializer
         return [
             'id' => $resourceType->getId(),
             'name' => $resourceType->getName(),
+            'class' => $resourceType->getClass(),
             'icon' => null, // todo
             'enabled' => $resourceType->isEnabled(),
             'actions' => array_map(function (MenuAction $resourceAction) {

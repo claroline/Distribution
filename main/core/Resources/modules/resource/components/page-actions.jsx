@@ -9,8 +9,8 @@ import {currentUser} from '#/main/core/user/current'
 
 import {getSimpleAccessRule, hasCustomRules} from '#/main/core/resource/rights'
 
-import {MODAL_RESOURCE_PROPERTIES} from '#/main/core/resource/components/modal/edit-properties'
-import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/resource/components/modal/edit-rights'
+import {MODAL_RESOURCE_PARAMETERS} from '#/main/core/resource/modals/parameters'
+import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/resource/modals/rights'
 
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
@@ -139,7 +139,7 @@ function getMoreActions(resourceNode, props) {
       label: trans('edit-properties', {}, 'resource'),
       group: trans('resource_management', {}, 'resource'),
       //displayed: resourceNode.rights.current.administrate,
-      modal: [MODAL_RESOURCE_PROPERTIES, {
+      modal: [MODAL_RESOURCE_PARAMETERS, {
         resourceNode: resourceNode,
         save: props.updateNode
       }]

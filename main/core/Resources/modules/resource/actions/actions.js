@@ -1,6 +1,7 @@
 import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
+import {isAuthenticated} from '#/main/core/user/current'
 
 import {MODAL_RESOURCE_ABOUT} from '#/main/core/resource/modals/about'
 import {MODAL_RESOURCE_PARAMETERS} from '#/main/core/resource/modals/parameters'
@@ -23,7 +24,7 @@ export const actions = {
     type: 'url',
     label: trans('open', {}, 'actions'),
     default: true,
-    icon: 'fa fa-fw fa-play',
+    icon: 'fa fa-fw fa-arrow-circle-o-right',
     target: ['claro_resource_open', {
       node: resourceNodes[0].autoId,
       resourceType: resourceNodes[0].meta.type
@@ -47,7 +48,7 @@ export const actions = {
     target: '/edit'
   }),
 
-  configure: (resourceNodes) => ({
+  configure: (resourceNodes) => ({ // todo collection
     type: 'modal',
     icon: 'fa fa-fw fa-cog',
     label: trans('configure', {}, 'actions'),
@@ -57,7 +58,7 @@ export const actions = {
     }]
   }),
 
-  rights: (resourceNodes) => ({
+  rights: (resourceNodes) => ({ // todo collection
     type: 'modal',
     icon: 'fa fa-fw fa-lock',
     label: trans('edit-rights', {}, 'actions'),
@@ -67,7 +68,7 @@ export const actions = {
     }]
   }),
 
-  publish: (resourceNodes) => ({
+  publish: (resourceNodes) => ({ // todo collection
     type: 'async',
     icon: 'fa fa-fw fa-eye',
     label: trans('publish', {}, 'actions'),
@@ -81,7 +82,7 @@ export const actions = {
       url: ['claro_resource_action', {
         resourceType: resourceNodes[0].meta.type,
         action: 'publish',
-        node: resourceNodes[0].autoId
+        id: resourceNodes[0].id
       }],
       request: {
         method: 'PUT'
@@ -89,7 +90,7 @@ export const actions = {
     }
   }),
 
-  unpublish: (resourceNodes) => ({
+  unpublish: (resourceNodes) => ({ // todo collection
     type: 'async',
     icon: 'fa fa-fw fa-eye-slash',
     label: trans('unpublish', {}, 'actions'),
@@ -103,7 +104,7 @@ export const actions = {
       url: ['claro_resource_action', {
         resourceType: resourceNodes[0].meta.type,
         action: 'unpublish',
-        node: resourceNodes[0].autoId
+        id: resourceNodes[0].id
       }],
       request: {
         method: 'PUT'
@@ -111,7 +112,7 @@ export const actions = {
     }
   }),
 
-  export: (resourceNodes) => ({
+  export: (resourceNodes) => ({ // todo collection
     type: 'async',
     icon: 'fa fa-fw fa-download',
     label: trans('export', {}, 'actions'),
@@ -119,12 +120,12 @@ export const actions = {
       url: ['claro_resource_action', {
         resourceType: resourceNodes[0].meta.type,
         action: 'export',
-        node: resourceNodes[0].autoId
+        id: resourceNodes[0].id
       }]
     }
   }),
 
-  delete: (resourceNodes) => ({
+  delete: (resourceNodes) => ({ // todo collection
     type: 'async',
     icon: 'fa fa-fw fa-trash-o',
     label: trans('delete', {}, 'actions'),
@@ -137,11 +138,67 @@ export const actions = {
       url: ['claro_resource_action', {
         resourceType: resourceNodes[0].meta.type,
         action: 'delete',
-        node: resourceNodes[0].autoId
+        id: resourceNodes[0].id
       }],
       request: {
         method: 'DELETE'
       }
     }
+  }),
+
+  logs: (resourceNodes) => ({
+    type: 'callback', // TODO : it will be section
+    icon: 'fa fa-fw fa-line-chart',
+    label: trans('show-logs', {}, 'actions'),
+    callback: () => true
+  }),
+
+  // todo move in notification bundle
+  follow: (resourceNodes) => ({
+    type: 'async',
+    icon: 'fa fa-fw fa-bell-o',
+    label: trans('follow', {}, 'actions'),
+    displayed: isAuthenticated() && -1 !== resourceNodes.findIndex(node => !get(node, 'notifications.enabled')),
+    request: {
+      url: ['claro_resource_action', {  // todo collection
+        resourceType: resourceNodes[0].meta.type,
+        action: 'follow',
+        id: resourceNodes[0].id
+      }],
+      request: {
+        method: 'PUT'
+      }
+    }
+  }),
+
+  unfollow: (resourceNodes) => ({
+    type: 'async',
+    icon: 'fa fa-fw fa-bell-o-slash',
+    label: trans('unfollow', {}, 'actions'),
+    displayed: isAuthenticated() && -1 !== resourceNodes.findIndex(node => !!get(node, 'notifications.enabled')),
+    request: {
+      url: ['claro_resource_action', {  // todo collection
+        resourceType: resourceNodes[0].meta.type,
+        action: 'unfollow',
+        id: resourceNodes[0].id
+      }],
+      request: {
+        method: 'PUT'
+      }
+    }
+  }),
+
+  notifications: (resourceNodes) => ({
+    type: 'modal',
+    icon: 'fa fa-fw fa-bell',
+    label: trans('show-notifications', {}, 'actions'),
+    modal: []
+  }),
+
+  followers: (resourceNodes) => ({
+    type: 'modal',
+    icon: 'fa fa-fw fa-users',
+    label: trans('show-followers', {}, 'actions'),
+    modal: []
   })
 }

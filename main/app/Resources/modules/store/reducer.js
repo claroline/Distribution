@@ -16,7 +16,7 @@ import {combineReducers} from 'redux'
  *
  * @return {function} - the reducing function.
  */
-function makeReducer(initialState, handlers) {
+function makeReducer(initialState = null, handlers = {}) {
   return (state = initialState, action) => {
     if (handlers.hasOwnProperty(action.type)) {
       return handlers[action.type](state, action)
@@ -39,7 +39,7 @@ function makeReducer(initialState, handlers) {
  *
  * @return {function} - the reducing function.
  */
-function makeInstanceReducer(initialState, handlers) {
+function makeInstanceReducer(initialState = null, handlers = {}) {
   return (instanceName, instanceInitialState = null) => {
     const instanceHandlers = {}
     for (let actionName in handlers) {

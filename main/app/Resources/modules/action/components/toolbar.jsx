@@ -27,11 +27,11 @@ const Toolbar = props => {
             key={`separator-${groupIndex}`}
             className={`${props.className}-separator`}
           />,
-        ...group.map((action, actionIndex) =>
+        ...group.map((action) =>
           <Button
             {...omit(action, 'name')}
             id={action.id || action.name}
-            key={actionIndex}
+            key={action.id || action.name}
             className={`${props.className}-btn`}
             tooltip={props.tooltip}
           />

@@ -44,13 +44,12 @@ const Users = connect(
   }),
   dispatch => ({
     unregister(users, workspace) {
-      dispatch(
-          title: trans('unregister'),
-          question: transChoice('unregister_users_confirm_message', users.length, {'count': users.length}),
-          dangerous: true,
-          handleConfirm: () => dispatch(actions.unregister(users, workspace))
-        })
-      )
+      dispatch(modalActions.showModal(MODAL_CONFIRM, {
+        title: trans('unregister'),
+        question: transChoice('unregister_users_confirm_message', users.length, {'count': users.length}),
+        dangerous: true,
+        handleConfirm: () => dispatch(actions.unregister(users, workspace))
+      }))
     }
   })
 )(UsersList)

@@ -38,7 +38,7 @@ plugin:
           scope: [object, collection]
           api: [PUT]
 
-        # Exports a resource in a Claroline format (archive + manifest)
+        # Exports one or more resources in a Claroline format (archive + manifest)
         - name: export
           decoder: export
           group: transfer
@@ -46,7 +46,7 @@ plugin:
           api: [GET]
           recursive: true
 
-        # Deletes a resource
+        # Deletes a one or more resources
         - name: delete
           decoder: delete
           group: management
@@ -54,7 +54,7 @@ plugin:
           api: [DELETE]
           recursive: true
 
-        # Changes common resources info (the one from the node)
+        # Changes common resources info (the one from the node) for one or more resources
         - name: configure
           decoder: administrate
           group: management
@@ -62,7 +62,7 @@ plugin:
           api: [PUT]
           recursive: true
 
-        # Creates a copy of a resource
+        # Creates a copy of one or more resources
         - name: copy
           decoder: administrate
           group: management
@@ -70,7 +70,7 @@ plugin:
           api: [POST]
           recursive: true
 
-        # Changes the parent of a resource
+        # Changes the parent of one or more resources
         - name: move
           decoder: administrate
           group: management
@@ -79,9 +79,8 @@ plugin:
           recursive: true
 
         # Displays tracking info about the resource
-        - name: open-tracking
+        - name: logs
           decoder: administrate # todo : adds it's own right
-          group: log
           scope: [object]
           api: [GET]
 
