@@ -219,7 +219,7 @@ class StepSerializer implements SerializerInterface
 
             if (empty($stepQuestion)) {
                 // Creation of a new item (we need to link it to the Step)
-                $step->addQuestion($entity);
+                $stepQuestion = $step->addQuestion($entity);
             } else {
                 // Update order of the Item in the Step
                 $stepQuestion->setOrder($index);

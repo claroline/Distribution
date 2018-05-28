@@ -60,6 +60,13 @@ const paperScoreMax = paper => {
   return paperTotalAnswerScore(paper)
 }
 
+const paperItemsCount = paper => {
+  let count = 0
+  paper.structure.steps.forEach(step => count += step.items.length)
+
+  return count
+}
+
 export const selectors = {
   quizId,
   papers,
@@ -71,5 +78,6 @@ export const selectors = {
   showCorrectionAt,
   correctionDate,
   totalScoreOn,
-  paperTotalAnswerScore
+  paperTotalAnswerScore,
+  paperItemsCount
 }

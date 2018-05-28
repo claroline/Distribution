@@ -2,6 +2,7 @@ import {API_REQUEST} from '#/main/core/api/actions'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 
 import {normalize} from '#/plugin/exo/quiz/papers/normalizer'
+import {utils as paperUtils} from '#/plugin/exo/quiz/papers/utils'
 
 export const PAPER_ADD = 'PAPER_ADD'
 export const PAPERS_INIT = 'PAPERS_INIT'
@@ -30,6 +31,11 @@ actions.fetchPapers = quizId => ({
 actions.loadCurrentPaper = (paperId) => ({
   [API_REQUEST]: {
     url: ['apiv2_exopaper_get', {id: paperId}],
-    success: (data, dispatch) => dispatch(actions.setCurrentPaper(data))
+    success: (data, dispatch) => {
+      if (data.structure.parameters.showScoreAt !== 'never' && !data.score && data.score !== 0) {
+        data['score'] = paperUtils.computeScore(data, data.answers)
+      }
+      dispatch(actions.setCurrentPaper(data))
+    }
   }
 })

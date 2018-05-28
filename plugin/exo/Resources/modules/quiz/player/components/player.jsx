@@ -5,16 +5,17 @@ import Panel from 'react-bootstrap/lib/Panel'
 
 import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/core/router'
-
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM, MODAL_MESSAGE} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Timer} from '#/main/core/layout/timer/components/timer'
+import {ProgressBar} from '#/main/core/layout/components/progress-bar'
 
 import {getDefinition, isQuestionType} from '#/plugin/exo/items/item-types'
 import {getContentDefinition} from '#/plugin/exo/contents/content-types'
 import selectQuiz from '#/plugin/exo/quiz/selectors'
 import {select} from '#/plugin/exo/quiz/player/selectors'
+import {selectors as papersSelect} from '#/plugin/exo/quiz/papers/selectors'
 import {actions} from '#/plugin/exo/quiz/player/actions'
 import {ItemPlayer} from '#/plugin/exo/items/components/item-player'
 import {ItemFeedback} from '#/plugin/exo/items/components/item-feedback'
@@ -110,6 +111,16 @@ class PlayerComponent extends Component {
   render() {
     return (
       <div className="quiz-player">
+        {this.props.paper && this.props.paper.structure &&
+          <ProgressBar
+            value={papersSelect.paperItemsCount(this.props.paper) ?
+              Math.floor((Object.values(this.props.allAnswers).filter(a => a.data && a.data.length > 0).length / papersSelect.paperItemsCount(this.props.paper)) * 100) :
+              0
+            }
+            size="xs"
+            type="user"
+          />
+        }
         {this.props.isTimed && this.props.duration > 0 && this.props.paper.startDate &&
           <Timer
             totalTime={this.props.duration * 60}
@@ -175,6 +186,7 @@ PlayerComponent.propTypes = {
   items: T.array.isRequired,
   mandatoryQuestions: T.bool.isRequired,
   answers: T.object.isRequired,
+  allAnswers: T.object.isRequired,
   paper: T.shape({
     id: T.string.isRequired,
     number: T.number.isRequired,
@@ -211,6 +223,7 @@ const Player = withRouter(connect(
     items: select.currentStepItems(state),
     paper: select.paper(state),
     answers: select.currentStepAnswers(state),
+    allAnswers: select.answers(state),
     next: select.next(state),
     previous: select.previous(state),
     showFeedback: select.showFeedback(state),
