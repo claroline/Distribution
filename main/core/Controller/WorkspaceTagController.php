@@ -187,7 +187,7 @@ class WorkspaceTagController extends Controller
             throw new AccessDeniedException();
         }
         $workspaceTag = new WorkspaceTag();
-        $form = $this->formFactory->create(new AdminWorkspaceTagType(), $workspaceTag);
+        $form = $this->formFactory->create(AdminWorkspaceTagType::class, $workspaceTag);
 
         return ['form' => $form->createView()];
     }
@@ -213,7 +213,7 @@ class WorkspaceTagController extends Controller
         }
         $workspaceTag = new WorkspaceTag();
 
-        $form = $this->formFactory->create(new AdminWorkspaceTagType(), $workspaceTag);
+        $form = $this->formFactory->create(AdminWorkspaceTagType::class, $workspaceTag);
         $request = $this->getRequest();
         $form->handleRequest($request);
 
@@ -308,7 +308,7 @@ class WorkspaceTagController extends Controller
             throw new AccessDeniedException();
         }
 
-        $form = $this->formFactory->create(new AdminWorkspaceTagType(), $workspaceTag);
+        $form = $this->formFactory->create(AdminWorkspaceTagType::class, $workspaceTag);
 
         return [
             'form' => $form->createView(),
@@ -339,7 +339,7 @@ class WorkspaceTagController extends Controller
             throw new AccessDeniedException();
         }
 
-        $form = $this->formFactory->create(new AdminWorkspaceTagType(), $workspaceTag);
+        $form = $this->formFactory->create(AdminWorkspaceTagType::class, $workspaceTag);
         $request = $this->getRequest();
         $form->handleRequest($request);
 

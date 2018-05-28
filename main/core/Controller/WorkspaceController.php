@@ -1137,8 +1137,7 @@ class WorkspaceController extends Controller
     public function importFormAction()
     {
         $this->assertIsGranted('ROLE_WS_CREATOR');
-        $importType = new ImportWorkspaceType();
-        $form = $this->container->get('form.factory')->create($importType);
+        $form = $this->container->get('form.factory')->create(ImportWorkspaceType::class);
 
         return ['form' => $form->createView()];
     }
@@ -1157,8 +1156,7 @@ class WorkspaceController extends Controller
     public function importAction()
     {
         $this->assertIsGranted('ROLE_WS_CREATOR');
-        $importType = new ImportWorkspaceType();
-        $form = $this->container->get('form.factory')->create($importType, new Workspace());
+        $form = $this->container->get('form.factory')->create(ImportWorkspaceType::class, new Workspace());
         $form->handleRequest($this->request);
         $modelLog = $this->container->getParameter('kernel.root_dir').'/logs/models.log';
         $logger = FileLogger::get($modelLog);
