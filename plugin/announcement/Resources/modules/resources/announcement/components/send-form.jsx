@@ -9,7 +9,6 @@ import {ConditionalSet} from '#/main/core/layout/form/components/fieldset/condit
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {RadiosGroup}  from '#/main/core/layout/form/components/group/radios-group.jsx'
 import {CheckboxesGroup}  from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
-import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
 
@@ -17,6 +16,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {getUrl} from '#/main/core/api/router'
+import {UserList} from '#/plugin/announcement/resources/announcement/components/user-list.jsx'
 import {Announcement as AnnouncementTypes} from './../prop-types'
 import {select} from './../selectors'
 import {actions} from './../actions'
