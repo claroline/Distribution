@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\ForumBundle\Entity\Subject;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -41,16 +42,21 @@ class SubjectSerializer
 
     /**
      * @DI\InjectParams({
-     *      "provider" = @DI\Inject("claroline.api.serializer"),
-     *      "container" = @DI\Inject("service_container")
+     *     "provider"   = @DI\Inject("claroline.api.serializer"),
+     *     "container"  = @DI\Inject("service_container"),
+     *     "fileUt"     = @DI\Inject("claroline.utilities.file")
      * })
      *
      * @param SerializerProvider $serializer
      */
-    public function __construct(SerializerProvider $provider, ContainerInterface $container)
-    {
+    public function __construct(
+        SerializerProvider $provider,
+        ContainerInterface $container,
+        FileUtilities $fileUt
+    ) {
         $this->serializerProvider = $provider;
         $this->container = $container;
+        $this->fileUt = $fileUt;
     }
 
     /**
@@ -72,6 +78,7 @@ class SubjectSerializer
           'title' => $subject->getTitle(),
           'meta' => $this->serializeMeta($subject, $options),
           'restrictions' => $this->serializeRestrictions($subject, $options),
+          'poster' => $subject->getPoster() ? $this->container->get('claroline.serializer.public_file')->serialize($subject->getPoster()) : null,
         ];
     }
 
@@ -147,6 +154,20 @@ class SubjectSerializer
             if ($forum) {
                 $subject->setForum($forum);
             }
+        }
+
+        if (isset($data['poster'])) {
+            $poster = $this->serializerProvider->deserialize(
+                'Claroline\CoreBundle\Entity\File\PublicFile',
+                $data['poster']
+            );
+            $subject->setPoster($poster);
+
+            $this->fileUt->createFileUse(
+              $poster,
+              'Claroline\CoreBundle\Entity\Workspace',
+              $subject->getUuid()
+          );
         }
 
         return $subject;

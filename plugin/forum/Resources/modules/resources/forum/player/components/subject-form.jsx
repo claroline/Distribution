@@ -135,7 +135,7 @@ const SubjectFormComponent = (props) =>
               }, {
                 name: 'poster',
                 label: trans('poster'),
-                type: 'image',
+                type: 'file',
                 options: {
                   ratio: '3:1'
                 }
