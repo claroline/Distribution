@@ -24,9 +24,8 @@ class Message extends AbstractMessage
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\ForumBundle\Entity\Subject",
      *     inversedBy="messages",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist"}
      * )
-     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $subject;
 
@@ -35,7 +34,6 @@ class Message extends AbstractMessage
      *     targetEntity="Claroline\ForumBundle\Entity\Message",
      *     inversedBy="children"
      * )
-     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $parent;
 

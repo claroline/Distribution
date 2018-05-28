@@ -4,11 +4,12 @@ namespace Claroline\ForumBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\ForumBundle\Entity\Message;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Claroline\ForumBundle\Entity\Message;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * @EXT\Route("/forum_message")
  */
@@ -93,8 +94,8 @@ class MessageController extends AbstractCrudController
             $this->serializer->serialize($message, $this->options['get']),
             200
         );
-
     }
+
     public function getClass()
     {
         return "Claroline\ForumBundle\Entity\Message";
