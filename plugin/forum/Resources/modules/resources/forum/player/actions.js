@@ -54,7 +54,6 @@ actions.newSubject = (id = null) => (dispatch) => {
   }
 }
 
-
 actions.loadSubject = makeActionCreator(SUBJECT_LOAD, 'subject')
 actions.fetchSubject = (id) => ({
   [API_REQUEST]: {

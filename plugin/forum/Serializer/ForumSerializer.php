@@ -79,6 +79,12 @@ class ForumSerializer
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
             ],
+            'flag' => [
+              'enabled' => true,
+            ],
+            'moderation' => [
+              'enabled' => false,
+            ],
             'meta' => [
               'users' => 34, //utilisateur participants
               'subjects' => $finder->fetch('Claroline\ForumBundle\Entity\Subject', ['forum' => $forum->getUuid()], null, 0, 0, true),

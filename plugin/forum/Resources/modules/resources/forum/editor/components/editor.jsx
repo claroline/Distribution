@@ -97,14 +97,14 @@ const EditorComponent = (props) =>
                 type: 'boolean',
                 label: trans('first_message_moderated', {}, 'forum'),
                 help: trans('first_message_moderated_explenation', {}, 'forum'),
-                displayed: true
+                displayed: props.forum.moderation.enabled
               },
               {
                 name: 'AllMessagesModerated',
                 type: 'boolean',
                 label: trans('all_message_moderated', {}, 'forum'),
                 help: trans('all_message_moderated_explenation', {}, 'forum'),
-                displayed: true
+                displayed: props.forum.moderation.enabled
               }
             ]
           }

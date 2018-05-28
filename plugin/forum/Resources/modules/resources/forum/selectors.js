@@ -3,9 +3,10 @@ import {createSelector} from 'reselect'
 
 const forum = state => state.forum
 const messages = state => state.subjects.messages
+const totalResults = state => state.subjects.messages.totalResults
 const sortOrder = state => state.subjects.messages.sortOrder
 const subjects = state => state.subjects
-const pageSize = state => state.subjects.messages.pageSize
+const pageSize= () => 10
 const currentPage = state => state.subjects.messages.currentPage
 
 const subject = createSelector(
@@ -32,8 +33,8 @@ const forumId = createSelector(
 )
 
 const pages = createSelector(
-  [messages, pageSize],
-  (messages, pageSize) => Math.ceil(messages.length / pageSize)
+  [totalResults, pageSize],
+  (totalResults, pageSize) => Math.ceil(totalResults / pageSize)
 )
 
 const sortedMessages = createSelector(
@@ -74,11 +75,11 @@ export const select = {
   forum,
   subject,
   messages,
+  totalResults,
   forumId,
   pages,
   currentPage,
   sortOrder,
-  sortedMessages,
   visibleSortedMessages,
   showSubjectForm,
   editingSubject,

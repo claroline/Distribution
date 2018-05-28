@@ -103,11 +103,11 @@ class SubjectComponent extends Component {
                 {get(this.props.subject, 'meta.sticky') &&
                   <span>[{trans('stuck', {}, 'forum')}] </span>
                 }
-                {this.props.subject.title}<small> {transChoice('replies', get(this.props.subject, 'meta.messages') || 0, {count: get(this.props.subject, 'meta.messages') || 0}, 'forum')}</small>
+                {this.props.subject.title}<small> {transChoice('replies', this.props.totalResults, {count: this.props.totalResults}, 'forum')}</small>
               </h3>
             }
             {(this.props.showSubjectForm && this.props.editingSubject) &&
-              <h3 className="h2">{this.props.subjectForm.title}<small> {transChoice('replies', get(this.props.subject, 'meta.messages') || 0, {count: get(this.props.subject, 'meta.messages') || 0}, 'forum')}</small></h3>
+              <h3 className="h2">{this.props.subjectForm.title}<small> {transChoice('replies', this.props.totalResults, {count: this.props.totalResults}, 'forum')}</small></h3>
             }
             {(this.props.showSubjectForm && !this.props.editingSubject) &&
               <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
@@ -178,52 +178,52 @@ class SubjectComponent extends Component {
             ]}
           />
         }
-        <hr/>
-        <MessagesSort
-          sortOrder={this.props.sortOrder}
-          messages={this.props.messages}
-        >
-          {!isEmpty(this.props.messages)&&
-            <div>
+        {!isEmpty(this.props.messages)&&
+          <div>
+            <hr/>
+            <MessagesSort
+              sortOrder={this.props.sortOrder}
+              messages={this.props.messages}
+            >
               <ul className="posts">
-                {this.props.sortedMessages.map(message =>
+                {this.props.visibleSortedMessages.map(message =>
                   <li key={message.id} className="post">
                     {this.state.showMessageForm !== message.id &&
-                    <UserMessage
-                      user={get(message, 'meta.creator')}
-                      date={message.meta.created}
-                      content={message.content}
-                      allowHtml={true}
-                      actions={[
-                        {
-                          icon: 'fa fa-fw fa-pencil',
-                          label: trans('edit'),
-                          displayed: message.meta.creator.id === authenticatedUser.id,
-                          action: () => this.setState({showMessageForm: message.id})
-                        }, {
-                          icon: 'fa fa-fw fa-flag',
-                          label: trans('flag', {}, 'forum'),
-                          displayed: message.meta.creator.id !== authenticatedUser.id,
-                          action: () => this.props.flag(message, this.props.subject.id)
-                        }, {
-                          icon: 'fa fa-fw fa-trash-o',
-                          label: trans('delete'),
-                          displayed:  message.meta.creator.id === authenticatedUser.id,
-                          action: () => this.deleteMessage(message.id),
-                          dangerous: true
-                        }
-                      ]}
-                    />
+                      <UserMessage
+                        user={get(message, 'meta.creator')}
+                        date={message.meta.created}
+                        content={message.content}
+                        allowHtml={true}
+                        actions={[
+                          {
+                            icon: 'fa fa-fw fa-pencil',
+                            label: trans('edit'),
+                            displayed: message.meta.creator.id === authenticatedUser.id,
+                            action: () => this.setState({showMessageForm: message.id})
+                          }, {
+                            icon: 'fa fa-fw fa-flag',
+                            label: trans('flag', {}, 'forum'),
+                            displayed: message.meta.creator.id !== authenticatedUser.id,
+                            action: () => this.props.flag(message, this.props.subject.id)
+                          }, {
+                            icon: 'fa fa-fw fa-trash-o',
+                            label: trans('delete'),
+                            displayed:  message.meta.creator.id === authenticatedUser.id,
+                            action: () => this.deleteMessage(message.id),
+                            dangerous: true
+                          }
+                        ]}
+                      />
                     }
                     {this.state.showMessageForm === message.id &&
-                      <UserMessageForm
-                        user={currentUser()}
-                        allowHtml={true}
-                        submitLabel={trans('save')}
-                        content={message.content}
-                        submit={(content) => this.updateMessage(message, content)}
-                        cancel={() => this.setState({showMessageForm: null})}
-                      />
+                        <UserMessageForm
+                          user={currentUser()}
+                          allowHtml={true}
+                          submitLabel={trans('save')}
+                          content={message.content}
+                          submit={(content) => this.updateMessage(message, content)}
+                          cancel={() => this.setState({showMessageForm: null})}
+                        />
                     }
                     <MessageComments
                       message={message}
@@ -231,18 +231,18 @@ class SubjectComponent extends Component {
                   </li>
                 )}
               </ul>
-              <hr/>
-            </div>
-          }
-          {this.props.editingSubject || !get(this.props.subject, 'meta.closed') &&
-            <UserMessageForm
-              user={currentUser()}
-              allowHtml={true}
-              submitLabel={trans('reply', {}, 'actions')}
-              submit={(message) => this.props.createMessage(this.props.subject.id, message)}
-            />
-          }
-        </MessagesSort>
+            </MessagesSort>
+          </div>
+        }
+        <hr/>
+        {this.props.showSubjectForm || !get(this.props.subject, 'meta.closed') &&
+          <UserMessageForm
+            user={currentUser()}
+            allowHtml={true}
+            submitLabel={trans('reply', {}, 'actions')}
+            submit={(message) => this.props.createMessage(this.props.subject.id, message)}
+          />
+        }
       </section>
     )
   }
@@ -250,7 +250,7 @@ class SubjectComponent extends Component {
 
 SubjectComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
-  subjectForm: T.shape(SubjectType.propTypes),
+  subjectForm: T.shape({}),
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
   flag: T.func.isRequired,
@@ -279,10 +279,11 @@ const Subject =  withRouter(connect(
     subject: select.subject(state),
     subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
     editingSubject: select.editingSubject(state),
-    sortedMessages: select.sortedMessages(state),
+    visibleSortedMessages: select.visibleSortedMessages(state),
     sortOrder: select.sortOrder(state),
     showSubjectForm: select.showSubjectForm(state),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
+    totalResults: select.totalResults(state),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
   }),

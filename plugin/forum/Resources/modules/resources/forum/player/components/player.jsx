@@ -5,6 +5,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {Routes} from '#/main/core/router'
 import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -17,7 +18,8 @@ const PlayerComponent = (props) =>
       {
         path: '/subjects',
         component: Subjects,
-        exact: true
+        exact: true,
+        onEnter: () => props.loadSubjectList()
       }, {
         path: '/subjects/form/:id?',
         component: Subject,
@@ -53,7 +55,8 @@ PlayerComponent.propTypes = {
   stopSubjectEdition: T.func.isRequired,
   openSubject: T.func.isRequired,
   showSubjectForm: T.bool.isRequired,
-  editingSubject: T.bool.isRequired
+  editingSubject: T.bool.isRequired,
+  loadSubjectList: T.func.isRequired
 }
 
 const Player = connect(
@@ -71,8 +74,11 @@ const Player = connect(
     closeSubjectForm() {
       dispatch(actions.closeSubjectForm())
     },
-    stopSubjectEdition(){
+    stopSubjectEdition() {
       dispatch(actions.stopSubjectEdition())
+    },
+    loadSubjectList() {
+      dispatch(listActions.invalidateData('subjects.list'))
     }
   })
 )(PlayerComponent)

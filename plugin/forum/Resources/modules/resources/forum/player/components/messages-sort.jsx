@@ -15,7 +15,7 @@ const MessagesSortButton = props =>
       <button
         type="button"
         className="btn btn-link"
-        disabled={0 === props.messages.length}
+        disabled={0 === props.totalResults}
         onClick={props.toggleSort}
       >
         {trans(1 === props.sortOrder ? 'from_older_to_newer':'from_newer_to_older', {}, 'forum')}
@@ -58,12 +58,14 @@ MessagesSortButton.propTypes = {
   pages: T.number.isRequired,
   changePage: T.func.isRequired,
   toggleSort: T.func.isRequired,
-  messages: T.arrayOf(T.shape({}))
+  messages: T.arrayOf(T.shape({})),
+  totalResults: T.number.isRequired
 }
 
 const MessagesSort = connect(
   state => ({
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
+    totalResults: select.totalResults(state),
     sortOrder: select.sortOrder(state),
     currentPage: select.currentPage(state),
     pages: select.pages(state)
@@ -73,7 +75,7 @@ const MessagesSort = connect(
       dispatch(actions.toggleMessagesSort())
     },
     changePage(page) {
-      dispatch(actions.changeAnnouncesPage(page))
+      dispatch(actions.changeMessagesPage(page))
     }
   })
 )(MessagesSortButton)
