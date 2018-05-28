@@ -297,7 +297,7 @@ const Subject =  withRouter(connect(
       dispatch(actions.deleteSubject(id, push))
     },
     deleteMessage(id) {
-      dispatch(listActions.deleteMessage('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
+      dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
