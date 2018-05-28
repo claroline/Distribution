@@ -168,7 +168,7 @@ const MessageComments =  connect(
       dispatch(modalActions.showModal(type, props))
     },
     deleteComment(id) {
-      dispatch(listActions.deleteComment('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
+      dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
