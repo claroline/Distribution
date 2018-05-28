@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
@@ -154,6 +155,7 @@ class WorkspaceSerializer
 
     /**
      * @param Workspace $workspace
+     * @param array     $options
      *
      * @return array
      */
@@ -164,12 +166,13 @@ class WorkspaceSerializer
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),
-            'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
+            'created' => DateNormalizer::normalize($workspace->getCreated()),
+            'updated' => DateNormalizer::normalize($workspace->getCreated()), // todo implement
             'creator' => $workspace->getCreator() ? $this->serializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
         ];
 
         if (!in_array(Options::NO_COUNT, $options)) {
-            //this query is very slow
+            // this query is very slow
             $data['totalUsers'] = $this->workspaceManager->countUsers($workspace, true);
             $data['totalResources'] = $this->workspaceManager->countResources($workspace);
             $data['usedStorage'] = $this->workspaceManager->getUsedStorage($workspace);
@@ -209,6 +212,7 @@ class WorkspaceSerializer
         }
 
         return [
+            'color' => !empty($options['background_color']) ? $options['background_color'] : null,
             'showTools' => !isset($options['hide_tools_menu']) || !$options['hide_tools_menu'],
             'showBreadcrumbs' => !isset($options['hide_breadcrumb']) || !$options['hide_breadcrumb'],
             'openResource' => $openResource,
@@ -333,6 +337,7 @@ class WorkspaceSerializer
         if (isset($data['display'])) {
             $workspaceOptions = $this->workspaceManager->getWorkspaceOptions($workspace);
             $workspaceOptions->setDetails([
+                'background_color' => !empty($data['display']['color']) ? $data['display']['color'] : null,
                 'hide_tools_menu' => !$data['display']['showTools'],
                 'hide_breadcrumb' => !$data['display']['showBreadcrumbs'],
                 'use_workspace_opening_resource' => !empty($data['display']['openResource']),

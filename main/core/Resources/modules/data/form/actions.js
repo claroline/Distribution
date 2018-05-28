@@ -78,7 +78,7 @@ actions.saveForm = (formName, target) => (dispatch, getState) => {
             errors.map(error => {
               const errorPath = error.path
                 .replace(/^\/|\/$/g, '') // removes trailing and leading slashes
-                .replace('/', '.') // replaces / by . (for lodash)
+                .replace(/\//g, '.') // replaces / by . (for lodash)
 
               set(formErrors, errorPath, tval(error.message))
             })

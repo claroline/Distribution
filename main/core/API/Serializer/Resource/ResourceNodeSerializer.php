@@ -9,14 +9,12 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
-use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
-use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -43,9 +41,6 @@ class ResourceNodeSerializer
     /** @var MaskManager */
     private $maskManager;
 
-    /** @var ResourceActionManager */
-    private $actionManager;
-
     /** @var RightsManager */
     private $rightsManager;
 
@@ -58,7 +53,6 @@ class ResourceNodeSerializer
      *     "fileSerializer"    = @DI\Inject("claroline.serializer.public_file"),
      *     "userSerializer"    = @DI\Inject("claroline.serializer.user"),
      *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
-     *     "actionManager"     = @DI\Inject("claroline.manager.resource_action"),
      *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
@@ -67,7 +61,6 @@ class ResourceNodeSerializer
      * @param PublicFileSerializer  $fileSerializer
      * @param UserSerializer        $userSerializer
      * @param MaskManager           $maskManager
-     * @param ResourceActionManager $actionManager
      * @param RightsManager         $rightsManager
      */
     public function __construct(
@@ -76,7 +69,6 @@ class ResourceNodeSerializer
         PublicFileSerializer $fileSerializer,
         UserSerializer $userSerializer,
         MaskManager $maskManager,
-        ResourceActionManager $actionManager,
         RightsManager $rightsManager
     ) {
         $this->om = $om;
@@ -85,7 +77,6 @@ class ResourceNodeSerializer
         $this->userSerializer = $userSerializer;
         $this->maskManager = $maskManager;
         $this->rightsManager = $rightsManager;
-        $this->actionManager = $actionManager;
     }
 
     /**
@@ -104,13 +95,6 @@ class ResourceNodeSerializer
             'actualId' => $resourceNode->getId(), // TODO : remove me
             'name' => $resourceNode->getName(),
             'thumbnail' => $resourceNode->getThumbnail() ? $resourceNode->getThumbnail()->getRelativeUrl() : null,
-            'actions' => array_map(function (MenuAction $resourceAction) {
-                return [
-                    'name' => $resourceAction->getName(),
-                    'group' => $resourceAction->getGroup(),
-                    'scope' => $resourceAction->getScope(),
-                ];
-            }, $this->actionManager->all($resourceNode)),
             'permissions' => $this->rightsManager->getCurrentPermissionArray($resourceNode),
         ];
 
@@ -128,7 +112,7 @@ class ResourceNodeSerializer
                 'meta' => $this->serializeMeta($resourceNode),
                 'display' => $this->serializeDisplay($resourceNode),
                 'restrictions' => $this->serializeRestrictions($resourceNode),
-                'rights' => $this->getRights($resourceNode),
+                'rights' => $this->getRights($resourceNode), // todo : remove me
             ]);
         }
 

@@ -2,13 +2,11 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
-import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
-import {copy} from '#/main/app/clipboard'
-import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {DataDetails} from '#/main/core/data/details/components/details'
-import {UserMicro} from '#/main/core/user/components/micro'
+import {ContentMeta} from '#/main/app/content/meta/components/meta'
+import {ContentPublicUrl} from '#/main/app/content/meta/components/public-url'
 
 import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
@@ -20,24 +18,10 @@ const AboutModal = props =>
     title={trans('about')}
     subtitle={props.workspace.name}
   >
-    <div className="modal-link">
-      <Button
-        type="url"
-        label={url(['claro_workspace_subscription_url_generate', {slug: props.workspace.meta.slug}, true])}
-        className="btn-link"
-        target={url(['claro_workspace_subscription_url_generate', {slug: props.workspace.meta.slug}, true])}
-      />
-
-      <Button
-        id={`clipboard-${props.workspace.id}`}
-        type="callback"
-        tooltip="left"
-        label={trans('clipboard_copy')}
-        className="btn-link"
-        icon="fa fa-fw fa-clipboard"
-        callback={() => copy(url(['claro_workspace_subscription_url_generate', {slug: props.workspace.meta.slug}, true]))}
-      />
-    </div>
+    <ContentPublicUrl
+      className="modal-link"
+      url={['claro_workspace_subscription_url_generate', {slug: props.workspace.meta.slug}, true]}
+    />
 
     <div className="modal-body">
       <WorkspaceMetrics
@@ -102,8 +86,8 @@ const AboutModal = props =>
     />
 
     <div className="modal-footer">
-      <UserMicro
-        {...props.workspace.meta.creator}
+      <ContentMeta
+        meta={props.workspace.meta}
       />
     </div>
   </Modal>

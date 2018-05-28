@@ -14,72 +14,78 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions} from '#/main/core/administration/workspace/workspace/actions'
 
 import {WorkspaceForm} from '#/main/core/workspace/components/form'
+import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 const WorkspaceComponent = (props) =>
-  <WorkspaceForm name="workspaces.current">
-    <FormSections level={3}>
-      <FormSection
-        className="embedded-list-section"
-        icon="fa fa-fw fa-building"
-        title={trans('organizations')}
-        disabled={props.new}
-        actions={[
-          {
-            type: 'callback',
-            icon: 'fa fa-fw fa-plus',
-            label: trans('add_organizations'),
-            callback: () => props.pickOrganizations(props.workspace.uuid)
-          }
-        ]}
-      >
-        <DataListContainer
-          name="workspaces.current.organizations"
-          fetch={{
-            url: ['apiv2_workspace_list_organizations', {id: props.workspace.uuid}],
-            autoload: props.workspace.uuid && !props.new
-          }}
-          primaryAction={OrganizationList.open}
-          delete={{
-            url: ['apiv2_workspace_remove_organizations', {id: props.workspace.uuid}]
-          }}
-          definition={OrganizationList.definition}
-          card={OrganizationList.card}
-        />
-      </FormSection>
+  <div>
+    <WorkspaceMetrics
+      workspace={props.workspace}
+    />
+    <WorkspaceForm name="workspaces.current">
+      <FormSections level={3}>
+        <FormSection
+          className="embedded-list-section"
+          icon="fa fa-fw fa-building"
+          title={trans('organizations')}
+          disabled={props.new}
+          actions={[
+            {
+              type: 'callback',
+              icon: 'fa fa-fw fa-plus',
+              label: trans('add_organizations'),
+              callback: () => props.pickOrganizations(props.workspace.uuid)
+            }
+          ]}
+        >
+          <DataListContainer
+            name="workspaces.current.organizations"
+            fetch={{
+              url: ['apiv2_workspace_list_organizations', {id: props.workspace.uuid}],
+              autoload: props.workspace.uuid && !props.new
+            }}
+            primaryAction={OrganizationList.open}
+            delete={{
+              url: ['apiv2_workspace_remove_organizations', {id: props.workspace.uuid}]
+            }}
+            definition={OrganizationList.definition}
+            card={OrganizationList.card}
+          />
+        </FormSection>
 
-      <FormSection
-        className="embedded-list-section"
-        icon="fa fa-fw fa-user"
-        title={trans('managers')}
-        disabled={props.new || isEmpty(props.managerRole)}
-        actions={[
-          {
-            type: 'callback',
-            icon: 'fa fa-fw fa-plus',
-            label: trans('add_managers'),
-            callback: () => props.pickManagers(props.workspace)
-          }
-        ]}
-      >
-        <DataListContainer
-          name="workspaces.current.managers"
-          fetch={{
-            url: ['apiv2_workspace_list_managers', {id: props.workspace.uuid}],
-            autoload: props.workspace.uuid && !props.new
-          }}
-          primaryAction={UserList.open}
-          delete={{
-            url: ['apiv2_role_remove_users', {id: props.managerRole.id}]
-          }}
-          definition={UserList.definition}
-          card={UserList.card}
-        />
-      </FormSection>
-    </FormSections>
-  </WorkspaceForm>
+        <FormSection
+          className="embedded-list-section"
+          icon="fa fa-fw fa-user"
+          title={trans('managers')}
+          disabled={props.new || isEmpty(props.managerRole)}
+          actions={[
+            {
+              type: 'callback',
+              icon: 'fa fa-fw fa-plus',
+              label: trans('add_managers'),
+              callback: () => props.pickManagers(props.workspace)
+            }
+          ]}
+        >
+          <DataListContainer
+            name="workspaces.current.managers"
+            fetch={{
+              url: ['apiv2_workspace_list_managers', {id: props.workspace.uuid}],
+              autoload: props.workspace.uuid && !props.new
+            }}
+            primaryAction={UserList.open}
+            delete={{
+              url: ['apiv2_role_remove_users', {id: props.managerRole.id}]
+            }}
+            definition={UserList.definition}
+            card={UserList.card}
+          />
+        </FormSection>
+      </FormSections>
+    </WorkspaceForm>
+  </div>
 
 WorkspaceComponent.propTypes = {
   new: T.bool.isRequired,

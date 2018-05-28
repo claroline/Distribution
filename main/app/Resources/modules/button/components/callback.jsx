@@ -40,6 +40,7 @@ const CallbackButton = withModal(props =>
           props.showModal(MODAL_CONFIRM, {
             icon: props.confirm.icon,
             title: props.confirm.title,
+            subtitle: props.confirm.subtitle,
             question: props.confirm.message,
             confirmButtonText: props.confirm.button,
             dangerous: props.dangerous,

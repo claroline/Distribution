@@ -4,16 +4,20 @@
   "copy": "Copier",
   "enable": "Activer",
   "export": "Exporter",
+  "edit": "Modifier",
+  "edit-rights": "Gérer les droits",
   "delete": "Supprimer",
   "disable": "Désactiver",
   "download": "Télécharger",
   "follow": "Suivre",
+  "merge": "Fusionner",
   "open": "Ouvrir",
   "paste": "Coller",
   "publish": "Publier",
   "register": "Inscrire",
   "replace": "Remplacer",
   "restart": "Recommencer",
+  "save": "Sauvegarder",
   "select": "Sélectionner",
   "send": "Envoyer",
   "start": "Commencer",
@@ -25,5 +29,6 @@
   "configure": "Configurer",
   "show-info": "Voir les informations",
   "show-actions": "Voir les actions disponibles",
-  "show-more-actions": "Voir plus d'actions"
+  "show-more-actions": "Voir plus d'actions",
+  "show-more-tools": "Voir plus d'outils"
 }

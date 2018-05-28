@@ -1,5 +1,8 @@
-import React from 'react'
+/* global window */
+
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import times from 'lodash/times'
 
 // TODO : remove me when toolbar bars will be mounted in the main app
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
@@ -10,18 +13,13 @@ import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
-/*
- <Responsive
- xs={<ToolbarSmall {...props} />}
- default={<ToolbarDefault {...props} />}
- />
- */
+// todo : force the display of active tool when collapsed
 
 const ToolLink = props =>
   <Button
     className="tool-link"
     type="url"
-    icon={`fa fa-${props.icon}`}
+    icon={`fa fa-fw fa-${props.icon}`}
     label={trans(props.name, {}, 'tools')}
     tooltip="right"
     target={props.target}
@@ -35,51 +33,184 @@ ToolLink.propTypes = {
   active: T.bool
 }
 
-const Toolbar = props => {
-  const displayedActions = props.actions.filter(action => undefined === action.displayed || action.displayed)
+const MoreTools = props =>
+  <Button
+    id="toolbar-more-tools"
+    className="tool-link"
+    type="menu"
+    icon="fa fa-wrench"
+    label={trans('show-more-tools', {}, 'actions')}
+    tooltip="right"
+    menu={{
+      label: trans('tools'),
+      items: props.tools.map(tool => ({
+        type: 'url',
+        icon: `fa fa-fw fa-${tool.icon}`,
+        label: trans(tool.name, {}, 'tools'),
+        target: tool.open
+      }))
+    }}
+  >
+    <span className="label label-primary">{props.tools.length}</span>
+  </Button>
 
-  return (
-    <nav>
-      {props.primary &&
-        <ToolLink
-          icon={props.primary.icon}
-          name={props.primary.name}
-          target={props.primary.open}
-          active={props.active === props.primary.name}
-        />
+MoreTools.propTypes = {
+  tools: T.arrayOf(T.shape({
+    icon: T.string.isRequired,
+    name: T.string.isRequired,
+    open: T.oneOfType([T.array, T.string])
+  })).isRequired
+}
+
+const MoreActions = props =>
+  <Button
+    id="toolbar-more-actions"
+    className="tool-link"
+    type="menu"
+    icon="fa fa-fw fa-ellipsis-v"
+    label={trans('show-more-actions', {}, 'actions')}
+    tooltip="right"
+    menu={{
+      label: trans('actions'),
+      items: props.actions
+    }}
+  />
+
+MoreActions.propTypes = {
+  actions: T.arrayOf(T.shape(
+    ActionTypes.propTypes
+  )).isRequired
+}
+
+class Toolbar extends Component {
+  constructor(props) {
+    super(props)
+
+    this.toolbarContainer = null
+
+    const actions = this.props.actions.filter(action => undefined === action.displayed || action.displayed)
+    this.state = {
+      displayedTools: this.props.tools.length,
+      displayedActions: actions.length
+    }
+
+    this.resize = this.resize.bind(this)
+  }
+
+  componentDidMount() {
+    this.resize()
+
+    window.addEventListener('resize', this.resize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize)
+  }
+
+  resize() {
+    // get available height
+    const height = this.toolbarContainer.offsetHeight
+
+    const actions = this.props.actions.filter(action => undefined === action.displayed || action.displayed)
+
+    // todo : calculate it
+    const linkHeight = 52
+    const additionalSpacing = 10 + 30 // navbar v-padding + tools v-margin
+
+    const availableHeight = height - additionalSpacing
+
+    // calculate the number of link we will can display at once
+    let displayedTools = this.props.tools.length
+    let displayedActions = actions.length
+
+    // calculate the full height needed to render the current toolbar
+    let fullHeight = additionalSpacing + (linkHeight * displayedTools) + (linkHeight * displayedActions)
+    // check if there is enough space to display the full toolbar
+    if (fullHeight > availableHeight) {
+      // we need to collapse some things
+
+      // start by collapsing all actions
+      displayedActions = 0
+
+      // get remaining height for tools
+      // we keep one space in order to add the 'MoreButton' for actions if needed
+      let toolsAvailableHeight = availableHeight - (linkHeight * (actions.length ? 1 : 0))
+      if (this.props.primary) {
+        toolsAvailableHeight -= linkHeight
       }
 
-      {0 !== props.tools.length &&
-        <nav className="tools">
-          {props.tools.map(tool =>
-            <ToolLink
-              key={tool.name}
-              icon={tool.icon}
-              name={tool.name}
-              target={tool.open}
-              active={props.active === tool.name}
-            />
-          )}
-        </nav>
+      // check if there is enough space to display all tools
+      if (linkHeight * displayedTools > toolsAvailableHeight) {
+        // we need to collapse tools
+        // we remove one tool space in order to have space for the 'MoreButton'
+        displayedTools = Math.trunc((toolsAvailableHeight - linkHeight) / linkHeight)
       }
+    }
 
-      {0 !== displayedActions &&
-        <nav className="additional-tools">
-          {displayedActions.map(action =>
-            <Button
-              {...action}
-              key={toKey(action.label)}
-              className="tool-link"
-              tooltip="right"
-            />
-          )}
-        </nav>
-      }
+    this.setState({
+      displayedTools: displayedTools,
+      displayedActions: displayedActions
+    })
+  }
 
-      <AlertOverlay />
-      <ModalOverlay />
-    </nav>
-  )
+  render() {
+    const displayedActions = this.props.actions.filter(action => undefined === action.displayed || action.displayed)
+
+    return (
+      <nav ref={(element) => this.toolbarContainer = element}>
+        {this.props.primary &&
+          <ToolLink
+            icon={this.props.primary.icon}
+            name={this.props.primary.name}
+            target={this.props.primary.open}
+            active={this.props.active === this.props.primary.name}
+          />
+        }
+
+        {0 !== this.props.tools.length &&
+          <nav className="tools">
+            {times(this.state.displayedTools, (i) =>
+              <ToolLink
+                {...this.props.tools[i]}
+
+                key={this.props.tools[i].name}
+                target={this.props.tools[i].open}
+                active={this.props.active === this.props.tools[i].name}
+              />
+            )}
+          </nav>
+        }
+
+        {(0 !== displayedActions.length || this.state.displayedTools !== this.props.tools.length) &&
+          <nav className="additional-tools">
+            {this.state.displayedTools !== this.props.tools.length &&
+              <MoreTools
+                tools={this.props.tools.slice(this.state.displayedTools)}
+              />
+            }
+
+            {times(this.state.displayedActions, (i) =>
+              <Button
+                {...displayedActions[i]}
+                key={toKey(displayedActions[i].label)}
+                className="tool-link"
+                tooltip="right"
+              />
+            )}
+
+            {this.state.displayedActions !== displayedActions.length &&
+              <MoreActions
+                actions={displayedActions.slice(this.state.displayedActions)}
+              />
+            }
+          </nav>
+        }
+
+        <AlertOverlay />
+        <ModalOverlay />
+      </nav>
+    )
+  }
 }
 
 Toolbar.propTypes = {
@@ -97,6 +228,11 @@ Toolbar.propTypes = {
   actions: T.arrayOf(T.shape(
     ActionTypes.propTypes
   ))
+}
+
+Toolbar.defaultProps = {
+  tools: [],
+  actions: []
 }
 
 export {

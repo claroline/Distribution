@@ -19,6 +19,25 @@ plugin:
           scope: [object]
           api: [PUT]
 
+        # Changes and manages the rights of a resource
+        - name: rights
+          decoder: administrate
+          group: management
+          scope: [object, collection]
+          api: [GET, POST]
+
+        - name: publish
+          decoder: administrate
+          group: management
+          scope: [object, collection]
+          api: [PUT]
+
+        - name: unpublish
+          decoder: administrate
+          group: management
+          scope: [object, collection]
+          api: [PUT]
+
         # Exports a resource in a Claroline format (archive + manifest)
         - name: export
           decoder: export

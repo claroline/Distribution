@@ -17,7 +17,7 @@ const PageAction = props =>
   <Button
     {...props}
     tooltip="bottom"
-    className={classes('page-action-btn', props.className)}
+    className={classes('page-actions-btn', props.className)}
   >
     {props.children}
   </Button>

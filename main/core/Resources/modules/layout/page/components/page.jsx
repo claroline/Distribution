@@ -6,10 +6,10 @@ import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-t
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
 const PageWrapper = props => !props.embedded ?
-  <main className={props.className}>
+  <main className={classes('page main', props.className)}>
     {props.children}
   </main> :
-  <section className={props.className}>
+  <section className={classes('page embedded', props.className)}>
     {props.children}
   </section>
 
@@ -29,10 +29,8 @@ PageWrapper.propTypes = {
 const Page = props =>
   <PageWrapper
     embedded={props.embedded}
-    className={classes('page', props.className, {
-      fullscreen: props.fullscreen,
-      main: !props.embedded,
-      embedded: props.embedded
+    className={classes(props.className, {
+      fullscreen: props.fullscreen
     })}
   >
     {props.children}

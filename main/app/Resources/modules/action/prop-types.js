@@ -22,6 +22,10 @@ const Action = {
       'url'
     ]).isRequired,
     icon: T.string,
+    subscript: T.shape({
+      type: T.oneOf(['default', 'primary', 'danger', 'warning']),
+      value: T.oneOfType([T.string, T.number]).isRequired
+    }),
     label: T.string.isRequired,
     group: T.string,
     disabled: T.bool,
@@ -37,6 +41,7 @@ const Action = {
      */
     confirm: T.shape({
       title: T.string,
+      subtitle: T.string,
       message: T.string,
       button: T.string
     })

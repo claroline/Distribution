@@ -2,6 +2,9 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Platform;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceTypeSerializer;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\PluginManager;
@@ -26,6 +29,9 @@ class ClientSerializer
     /** @var RequestStack */
     private $requestStack;
 
+    /** @var ObjectManager */
+    private $om;
+
     /** @var PlatformConfigurationHandler */
     private $config;
 
@@ -35,46 +41,50 @@ class ClientSerializer
     /** @var PluginManager */
     private $pluginManager;
 
-    /** @var PluginSerializer */
-    private $pluginSerializer;
+    /** @var ResourceTypeSerializer */
+    private $resourceTypeSerializer;
 
     /**
      * ClientSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "env"              = @DI\Inject("%kernel.environment%"),
-     *     "tokenStorage"     = @DI\Inject("security.token_storage"),
-     *     "requestStack"     = @DI\Inject("request_stack"),
-     *     "config"           = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "versionManager"   = @DI\Inject("claroline.manager.version_manager"),
-     *     "pluginManager"    = @DI\Inject("claroline.manager.plugin_manager"),
-     *     "pluginSerializer" = @DI\Inject("claroline.serializer.plugin")
+     *     "env"                    = @DI\Inject("%kernel.environment%"),
+     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
+     *     "requestStack"           = @DI\Inject("request_stack"),
+     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
+     *     "config"                 = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "versionManager"         = @DI\Inject("claroline.manager.version_manager"),
+     *     "pluginManager"          = @DI\Inject("claroline.manager.plugin_manager"),
+     *     "resourceTypeSerializer" = @DI\Inject("claroline.serializer.resource_type")
      * })
      *
      * @param string                       $env,
      * @param TokenStorageInterface        $tokenStorage
      * @param RequestStack                 $requestStack
+     * @param ObjectManager                $om
      * @param PlatformConfigurationHandler $config
      * @param VersionManager               $versionManager
      * @param PluginManager                $pluginManager
-     * @param PluginSerializer             $pluginSerializer
+     * @param ResourceTypeSerializer       $resourceTypeSerializer
      */
     public function __construct(
         $env,
         TokenStorageInterface $tokenStorage,
         RequestStack $requestStack,
+        ObjectManager $om,
         PlatformConfigurationHandler $config,
         VersionManager $versionManager,
         PluginManager $pluginManager,
-        PluginSerializer $pluginSerializer
+        ResourceTypeSerializer $resourceTypeSerializer
     ) {
         $this->env = $env;
         $this->tokenStorage = $tokenStorage;
         $this->requestStack = $requestStack;
+        $this->om = $om;
         $this->config = $config;
         $this->versionManager = $versionManager;
         $this->pluginManager = $pluginManager;
-        $this->pluginSerializer = $pluginManager;
+        $this->resourceTypeSerializer = $resourceTypeSerializer;
     }
 
     /**
@@ -119,6 +129,9 @@ class ClientSerializer
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
             ],
+            'resourceTypes' => array_map(function (ResourceType $resourceType) {
+                return $this->resourceTypeSerializer->serialize($resourceType);
+            }, $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll()),
             'plugins' => $this->pluginManager->getEnabled(true),
         ];
     }

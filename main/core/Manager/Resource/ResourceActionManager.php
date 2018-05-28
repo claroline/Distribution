@@ -126,7 +126,7 @@ class ResourceActionManager
      */
     public function get(ResourceNode $resourceNode, string $actionName)
     {
-        $nodeActions = $this->all($resourceNode, false);
+        $nodeActions = $this->all($resourceNode->getResourceType());
         foreach ($nodeActions as $current) {
             if ($actionName === $current->getName()) {
                 return $current;
@@ -137,31 +137,20 @@ class ResourceActionManager
     }
 
     /**
-     * Gets all actions available for a resource.
+     * Gets all actions available for a resource type.
      *
-     * @param ResourceNode $resourceNode
-     * @param bool         $checkPermissions - when true, we only return the actions accessible by the current user
+     * @param ResourceType $resourceType
      *
      * @return MenuAction[]
      */
-    public function all(ResourceNode $resourceNode, bool $checkPermissions = true): array
+    public function all(ResourceType $resourceType): array
     {
-        $resourceType = $resourceNode->getResourceType();
-
         // get all actions implemented for the resource
         $actions = array_filter($this->actions, function (MenuAction $action) use ($resourceType) {
             return empty($action->getResourceType()) || $resourceType->getId() === $action->getResourceType()->getId();
         });
 
-        if ($checkPermissions) {
-            // only get the actions available for the current user
-            $collection = new ResourceCollection([$resourceNode]);
-            return array_filter($actions, function (MenuAction $action) use ($collection) {
-                return $this->hasPermission($action, $collection);
-            });
-        }
-
-        return $actions;
+        return array_values($actions);
     }
 
     /**

@@ -750,6 +750,11 @@ class ToolManager
             ->findOneByName($name);
     }
 
+    /**
+     * @param array $roles
+     *
+     * @return AdminTool[]
+     */
     public function getAdminToolsByRoles(array $roles)
     {
         return $this->om->getRepository('Claroline\CoreBundle\Entity\Tool\AdminTool')->findByRoles($roles);
@@ -761,9 +766,10 @@ class ToolManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $user
+     * @param User $user
+     * @param int $type
      *
-     * @return \Claroline\CoreBundle\Entity\Tool\OrderedTool[]
+     * @return OrderedTool[]
      */
     public function getOrderedToolsByUser(User $user, $type = 0)
     {

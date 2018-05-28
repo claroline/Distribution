@@ -46,6 +46,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -466,10 +467,11 @@ class WorkspaceController extends Controller
      * @EXT\Template("ClarolineCoreBundle:workspace:toolbar.html.twig")
      *
      * @param Workspace $workspace
+     * @param Request   $request
      *
      * @return array
      */
-    public function renderToolbarAction(Workspace $workspace)
+    public function renderToolbarAction(Workspace $workspace, Request $request)
     {
         $orderedTools = [];
 
@@ -489,8 +491,16 @@ class WorkspaceController extends Controller
             }
         }
 
+        $current = null;
+        if ('claro_workspace_open_tool' === $request->get('_route')) {
+            $params = $request->get('_route_params');
+            if (!empty($params['toolName'])) {
+                $current = $params['toolName'];
+            }
+        }
+
         return [
-            'current' => null, // todo
+            'current' => $current,
             'tools' => array_map(function (OrderedTool $orderedTool) use ($workspace) { // todo : create a serializer
                 return [
                     'icon' => $orderedTool->getTool()->getClass(),

@@ -95,7 +95,7 @@
     }
 }
 
-.page-header-poster {
+.page-poster {
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -123,7 +123,7 @@
     padding: 0 floor(@grid-gutter-width / 2);
     white-space: nowrap;
 
-    .page-actions-group {
+    .page-actions-group { // todo remove me (for retro compatibility)
         display: inline-block;
         margin-left: floor(@grid-gutter-width / 2);
 
@@ -132,12 +132,12 @@
         }
     }
 
-    > .page-action-btn:first-child,
-    .page-actions-group .page-action-btn:first-child {
+    > .page-actions-btn:first-child,
+    .page-actions-group .page-actions-btn:first-child {
         margin-left: 0; // absorb first btn margin
     }
 
-    .page-action-btn,
+    .page-actions-btn,
     .dropdown {
         margin-left: .2em;
     }
@@ -147,8 +147,13 @@
     }
 }
 
+.page-actions-separator {
+    display: inline-block;
+    margin: 0 5px;
+}
+
 // Current styles permit to have 7 buttons in one line on 360px screens (without btn groups)
-.page-action-btn {
+.page-actions-btn {
     .button-base();
 
     position: relative; // for buttons with labels
@@ -176,7 +181,7 @@
     }
 
     // puts labels in the bottom right corner
-    .label {
+    .action-subscript {
         position: absolute;
         top: auto; // reset bootstrap default
         bottom: -5px;
@@ -185,11 +190,12 @@
         padding: .2em .4em;
     }
 
-    .fa-asterisk { // ugly selector for custom rights flag
+    // ugly selector for custom rights flag
+    /*.fa-asterisk {
         position: absolute;
         bottom: -5px;
         right: 0;
-    }
+    }*/
 }
 
 .tabbed-page {

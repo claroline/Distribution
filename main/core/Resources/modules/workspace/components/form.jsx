@@ -9,8 +9,6 @@ import {FormContainer} from '#/main/core/data/form/containers/form'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
-import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
-
 // easy selection for restrictions
 const restrictByDates   = (workspace) => workspace.restrictions.enableDates        || (workspace.restrictions.dates && 0 !== workspace.restrictions.dates.length)
 const restrictUsers     = (workspace) => workspace.restrictions.enableMaxUsers     || 0 === workspace.restrictions.maxUsers || !!workspace.restrictions.maxUsers
@@ -19,7 +17,6 @@ const restrictStorage   = (workspace) => workspace.restrictions.enableMaxStorage
 
 // TODO : finish implementation (open resource / open tool)
 // TODO : add tools
-// TODO : add bg color
 
 const WorkspaceFormComponent = (props) =>
   <FormContainer
@@ -76,6 +73,7 @@ const WorkspaceFormComponent = (props) =>
             required: true,
             options: {
               noEmpty: true,
+              condensed: true,
               choices: {
                 tool: trans('open_workspace_tool'),
                 resource: trans('open_workspace_resource')
@@ -109,6 +107,10 @@ const WorkspaceFormComponent = (props) =>
             name: 'thumbnail',
             type: 'image',
             label: trans('thumbnail')
+          }, {
+            name: 'display.color',
+            type: 'color',
+            label: trans('color')
           }, {
             name: 'display.showBreadcrumbs',
             type: 'boolean',

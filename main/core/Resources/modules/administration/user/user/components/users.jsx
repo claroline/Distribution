@@ -82,6 +82,13 @@ const UsersList = props =>
         displayed: rows[0].meta.personalWorkspace,
         callback: () => props.deleteWorkspace(rows[0]),
         dangerous: true
+      }, {
+        type: 'link',
+        icon: 'fa fa-fw fa-compress',
+        label: trans('merge_accounts'),
+        target: rows.length === 2 ? `/users/merge/${rows[0].id}/${rows[1].id}`: '',
+        displayed: rows.length === 2,
+        dangerous: true
       }
     ]}
     definition={UserList.definition}

@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {SummarizedContent} from '#/main/core/layout/summary/components/content'
+import {SummarizedContent} from '#/main/app/content/summary/components/content'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConstants} from '#/main/core/data/list/constants'
 

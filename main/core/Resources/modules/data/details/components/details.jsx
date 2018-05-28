@@ -140,6 +140,8 @@ const DataDetails = props => {
           )}
         </Sections>
       }
+
+      {props.children}
     </div>
   )
 }

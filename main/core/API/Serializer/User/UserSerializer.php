@@ -147,6 +147,7 @@ class UserSerializer
             'email' => $user->getEmail(),
             'administrativeCode' => $user->getAdministrativeCode(),
             'phone' => $user->getPhone(),
+            'publicUrl' => $user->getPublicUrl(), // todo : merge with the one from meta (I do it to have it in minimal)
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {

@@ -68,6 +68,7 @@ const WorkspaceToolbarComponent = props =>
         dangerous: true,
         confirm: {
           title: trans('workspace_delete_confirm_title'),
+          subtitle: props.workspace.name,
           message: trans('workspace_delete_confirm_message')
         }
       }

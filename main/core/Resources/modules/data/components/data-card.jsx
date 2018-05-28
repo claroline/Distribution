@@ -1,5 +1,6 @@
 import React from 'react'
 import classes from 'classnames'
+import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {getPlainText} from '#/main/core/data/types/html/utils'
@@ -81,7 +82,7 @@ const CardContent = props => {
   } else {
     return (
       <GenericButton
-        {...props.action}
+        {...omit(props.action, 'group', 'icon', 'label', 'context', 'scope')}
         className="data-card-content"
       >
         {props.children}
