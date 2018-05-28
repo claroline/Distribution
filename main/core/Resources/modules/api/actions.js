@@ -17,13 +17,19 @@ actions.uploadFile = (file, uploadUrl = ['apiv2_file_upload'], onSuccess = () =>
   formData.append('fileName', file.name)
   formData.append('sourceType', 'uploadedfile')
 
+  const headers = new Headers({
+    //no Content type for automatic detection of boundaries.
+    'X-Requested-With': 'XMLHttpRequest'
+  })
+
   return ({
     [API_REQUEST]: {
       url: uploadUrl,
       type: 'upload',
       request: {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers
       },
       success: (response) => onSuccess(response[0])
     }
