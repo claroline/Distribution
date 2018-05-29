@@ -17,9 +17,9 @@ class Version20180510092718 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_menu_action 
             ADD decoder VARCHAR(255) NOT NULL,
-            ADD scope JSON NOT NULL COMMENT "(DC2Type:json_array)",
-            ADD api JSON NOT NULL COMMENT "(DC2Type:json_array)",
-            DROP value,
+            ADD `scope` LONGTEXT NOT NULL COMMENT "(DC2Type:json_array)",
+            ADD api LONGTEXT NOT NULL COMMENT "(DC2Type:json_array)",
+            DROP `value`,
             DROP async, 
             DROP is_custom, 
             DROP is_form, 
