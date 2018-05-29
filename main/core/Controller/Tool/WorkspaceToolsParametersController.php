@@ -19,7 +19,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\WorkspaceOptionsType;
 use Claroline\CoreBundle\Form\WorkspaceOrderToolEditType;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\ToolRightsManager;
@@ -131,7 +131,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
         $ot = $this->toolManager->getOneByWorkspaceAndTool($workspace, $tool);
 
         return [
-            'form' => $this->formFactory->create(new WorkspaceOrderToolEditType(), $ot)->createView(),
+            'form' => $this->formFactory->create(WorkspaceOrderToolEditType::class, $ot)->createView(),
             'workspace' => $workspace,
             'wot' => $ot,
         ];
@@ -154,7 +154,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
     public function workspaceOrderToolEditAction(Workspace $workspace, OrderedTool $workspaceOrderTool)
     {
         $this->checkAccess($workspace);
-        $form = $this->formFactory->create(new WorkspaceOrderToolEditType(), $workspaceOrderTool);
+        $form = $this->formFactory->create(WorkspaceOrderToolEditType::class, $workspaceOrderTool);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {

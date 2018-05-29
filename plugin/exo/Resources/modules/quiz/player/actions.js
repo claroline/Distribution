@@ -4,8 +4,8 @@ import moment from 'moment'
 // TODO : remove the use of navigate()
 
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {API_REQUEST} from '#/main/core/api/actions'
-import {actions as resourceActions} from '#/main/core/resource/actions'
+import {API_REQUEST} from '#/main/app/api'
+import {actions as resourceActions} from '#/main/core/resource/store'
 
 import quizSelectors from '#/plugin/exo/quiz/selectors'
 import {select as playerSelectors} from '#/plugin/exo/quiz/player/selectors'

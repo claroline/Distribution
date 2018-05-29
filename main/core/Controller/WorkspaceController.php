@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceTag;
@@ -21,7 +22,6 @@ use Claroline\CoreBundle\Event\Log\LogWorkspaceDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Form\ImportWorkspaceType;
-use Claroline\CoreBundle\Form\WorkspaceType;
 use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Library\Security\TokenUpdater;
 use Claroline\CoreBundle\Library\Security\Utilities;
@@ -45,6 +45,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -328,80 +329,6 @@ class WorkspaceController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/new/form",
-     *     name="claro_workspace_creation_form",
-     *     options={"expose"=true}
-     * )
-     *
-     * @EXT\Template()
-     *
-     * Renders the workspace creation form.
-     *
-     * @return array
-     */
-    public function creationFormAction()
-    {
-        $this->assertIsGranted('ROLE_WS_CREATOR');
-        $user = $this->tokenStorage->getToken()->getUser();
-        $workspaceType = new WorkspaceType($user);
-        $form = $this->formFactory->create($workspaceType);
-
-        return ['form' => $form->createView()];
-    }
-
-    /**
-     * Creates a workspace from a form sent by POST.
-     *
-     * @EXT\Route(
-     *     "/",
-     *     name="claro_workspace_create"
-     * )
-     * @EXT\Method("POST")
-     *
-     * @EXT\Template("ClarolineCoreBundle:workspace:creation_form.html.twig")
-     *
-     * @return RedirectResponse | array
-     */
-    public function createAction()
-    {
-        $this->assertIsGranted('ROLE_WS_CREATOR');
-        $user = $this->tokenStorage->getToken()->getUser();
-        $workspaceType = new WorkspaceType($user);
-        $form = $this->formFactory->create($workspaceType, new Workspace());
-        $form->handleRequest($this->request);
-        $modelLog = $this->container->getParameter('kernel.root_dir').'/logs/models.log';
-        $logger = FileLogger::get($modelLog);
-        $this->workspaceManager->setLogger($logger);
-
-        if ($form->isValid()) {
-            $modelFrom = $form->get('modelFrom')->getData();
-            $workspace = $form->getData();
-            $user = $this->tokenStorage->getToken()->getUser();
-            $workspace->setCreator($user);
-
-            if (!$modelFrom) {
-                $modelFrom = $this->workspaceManager->getDefaultModel();
-            }
-
-            $workspace = $this->workspaceManager->copy($modelFrom, $workspace, $workspace->isModel());
-            $this->tokenUpdater->update($this->tokenStorage->getToken());
-            $route = $this->router->generate('claro_workspace_open', ['workspaceId' => $workspace->getId()]);
-
-            $msg = $this->get('translator')->trans(
-                'successfull_workspace_creation',
-                ['%name%' => $form->get('name')->getData()],
-                'platform'
-            );
-            $this->get('request_stack')->getMasterRequest()->getSession()->getFlashBag()->add('success', $msg);
-
-            return new RedirectResponse($route);
-        }
-
-        return ['form' => $form->createView()];
-    }
-
-    /**
-     * @EXT\Route(
      *     "/{workspaceId}",
      *     name="claro_workspace_delete",
      *     options={"expose"=true},
@@ -462,16 +389,16 @@ class WorkspaceController extends Controller
     /**
      * Renders the left tool bar. Not routed.
      *
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:workspace:toolbar.html.twig")
      *
      * @param Workspace $workspace
+     * @param Request   $request
      *
      * @return array
      */
-    public function renderToolListAction(Workspace $workspace)
+    public function renderToolbarAction(Workspace $workspace, Request $request)
     {
         $orderedTools = [];
-        $roleHasAccess = []; // for impersonation
 
         $hasManagerAccess = $this->workspaceManager->isManager($workspace, $this->tokenStorage->getToken());
         $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
@@ -482,14 +409,6 @@ class WorkspaceController extends Controller
                 $orderedTools = $this->toolManager->getOrderedToolsByWorkspace($workspace);
                 // always display tools to managers
                 $hideToolsMenu = false;
-
-                // gets Workspace roles for impersonation
-                $workspaceRolesWithAccess = $this->roleManager
-                    ->getWorkspaceRoleWithToolAccess($workspace);
-
-                foreach ($workspaceRolesWithAccess as $workspaceRole) {
-                    $roleHasAccess[$workspaceRole->getId()] = $workspaceRole;
-                }
             } else {
                 // gets accessible tools by user
                 $currentRoles = $this->utils->getRoles($this->tokenStorage->getToken());
@@ -497,11 +416,24 @@ class WorkspaceController extends Controller
             }
         }
 
+        $current = null;
+        if ('claro_workspace_open_tool' === $request->get('_route')) {
+            $params = $request->get('_route_params');
+            if (!empty($params['toolName'])) {
+                $current = $params['toolName'];
+            }
+        }
+
         return [
-            'hasManagerAccess' => $hasManagerAccess,
-            'orderedTools' => $orderedTools,
+            'current' => $current,
+            'tools' => array_map(function (OrderedTool $orderedTool) use ($workspace) { // todo : create a serializer
+                return [
+                    'icon' => $orderedTool->getTool()->getClass(),
+                    'name' => $orderedTool->getTool()->getName(),
+                    'open' => ['claro_workspace_open_tool', ['workspaceId' => $workspace->getId(), 'toolName' => $orderedTool->getTool()->getName()]],
+                ];
+            }, $orderedTools),
             'workspace' => $workspace,
-            'roleHasAccess' => $roleHasAccess,
             'hideToolsMenu' => $hideToolsMenu,
         ];
     }
@@ -1212,8 +1144,7 @@ class WorkspaceController extends Controller
     public function importFormAction()
     {
         $this->assertIsGranted('ROLE_WS_CREATOR');
-        $importType = new ImportWorkspaceType();
-        $form = $this->container->get('form.factory')->create($importType);
+        $form = $this->container->get('form.factory')->create(ImportWorkspaceType::class);
 
         return ['form' => $form->createView()];
     }
@@ -1232,8 +1163,7 @@ class WorkspaceController extends Controller
     public function importAction()
     {
         $this->assertIsGranted('ROLE_WS_CREATOR');
-        $importType = new ImportWorkspaceType();
-        $form = $this->container->get('form.factory')->create($importType, new Workspace());
+        $form = $this->container->get('form.factory')->create(ImportWorkspaceType::class, new Workspace());
         $form->handleRequest($this->request);
         $modelLog = $this->container->getParameter('kernel.root_dir').'/logs/models.log';
         $logger = FileLogger::get($modelLog);

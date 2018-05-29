@@ -136,63 +136,6 @@ class FileController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/upload/{parent}",
-     *     name="claro_file_upload_with_ajax",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Creates a resource from uploaded file.
-     *
-     * @param int $parentId the parent id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function uploadWithAjaxAction(ResourceNode $parent, User $user)
-    {
-        $parent = $this->resourceManager->getById($parent);
-        $collection = new ResourceCollection([$parent]);
-        $collection->setAttributes(['type' => 'file']);
-        $this->checkAccess('CREATE', $collection);
-        $file = new File();
-        $fileName = $this->request->get('fileName');
-        $tmpFile = $this->request->files->get('file');
-        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        $size = filesize($tmpFile);
-        $ext = strtolower($tmpFile->getClientOriginalExtension());
-        $mimeType = $this->mimeTypeGuesser->guess($ext);
-        $hashName = 'WORKSPACE_'.
-            $parent->getWorkspace()->getId().
-            DIRECTORY_SEPARATOR.
-            $this->ut->generateGuid().
-            '.'.
-            $extension;
-        $destination = $this->fileDir.
-            DIRECTORY_SEPARATOR.
-            'WORKSPACE_'.
-            $parent->getWorkspace()->getId();
-        $tmpFile->move($destination, $hashName);
-        $file->setSize($size);
-        $file->setName($fileName);
-        $file->setHashName($hashName);
-        $file->setMimeType($mimeType);
-        $file = $this->resourceManager->create(
-            $file,
-            $this->resourceManager->getResourceTypeByName('file'),
-            $user,
-            $parent->getWorkspace(),
-            $parent
-        );
-
-        return new JsonResponse(
-            [$this->resourceManager->toArray($file->getResourceNode(), $this->tokenStorage->getToken())]
-        );
-    }
-
-    /**
-     * @EXT\Route(
      *     "/tinymce/upload/{parent}",
      *     name="claro_file_upload_with_tinymce",
      *     options={"expose"=true}
@@ -281,7 +224,7 @@ class FileController extends Controller
         $destinations = $this->resourceManager->getDefaultUploadDestinations();
 
         return [
-            'form' => $this->formFactory->create(new TinyMceUploadModalType($destinations))->createView(),
+            'form' => $this->formFactory->create(TinyMceUploadModalType::class, null, ['destinations' => $destinations])->createView(),
         ];
     }
 
@@ -294,7 +237,7 @@ class FileController extends Controller
     {
         $collection = new ResourceCollection([$file->getResourceNode()]);
         $this->checkAccess('EDIT', $collection);
-        $form = $this->formFactory->create(new UpdateFileType(), new File());
+        $form = $this->formFactory->create(UpdateFileType::class, new File());
 
         return [
             'form' => $form->createView(),
@@ -313,7 +256,7 @@ class FileController extends Controller
     {
         $collection = new ResourceCollection([$file->getResourceNode()]);
         $this->checkAccess('EDIT', $collection);
-        $form = $this->formFactory->create(new UpdateFileType(), new File());
+        $form = $this->formFactory->create(UpdateFileType::class, new File());
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {

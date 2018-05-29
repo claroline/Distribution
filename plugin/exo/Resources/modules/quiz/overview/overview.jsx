@@ -3,7 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans, tex} from '#/main/core/translation'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {ResourceOverview} from '#/main/core/resource/components/overview.jsx'
 
 import {select} from '#/plugin/exo/quiz/selectors'
@@ -39,7 +40,7 @@ OverviewComponent.propTypes = {
 const Overview = connect(
   (state) => ({
     empty: select.empty(state),
-    editable: resourceSelect.editable(state),
+    editable: hasPermission('edit', resourceSelect.resourceNode(state)),
     quiz: select.quiz(state)
   })
 )(OverviewComponent)

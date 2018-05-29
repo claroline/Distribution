@@ -4,9 +4,10 @@ import {connect} from 'react-redux'
 import Panel from 'react-bootstrap/lib/Panel'
 
 import {trans} from '#/main/core/translation'
-import {withRouter} from '#/main/core/router'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_CONFIRM, MODAL_MESSAGE} from '#/main/core/layout/modal'
+import {withRouter} from '#/main/app/router'
+
+import {MODAL_CONFIRM, MODAL_MESSAGE} from '#/main/app/modals/confirm'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Timer} from '#/main/core/layout/timer/components/timer'
 import {ProgressBar} from '#/main/core/layout/components/progress-bar'

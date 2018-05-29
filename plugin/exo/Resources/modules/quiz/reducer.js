@@ -1,12 +1,11 @@
 import {makeReducer} from '#/main/core/scaffolding/reducer'
-import {makeResourceReducer} from '#/main/core/resource/reducer'
 
 import {reducers as editorReducers} from '#/plugin/exo/quiz/editor/reducers'
 import {reducers as playerReducers} from '#/plugin/exo/quiz/player/reducers'
 import {reducer as papersReducer} from '#/plugin/exo/quiz/papers/reducer'
 import {reduceCorrection} from '#/plugin/exo/quiz/correction/reducer'
 
-export const reducer = makeResourceReducer({}, {
+export const reducer = {
   noServer: makeReducer(false, {}),
   quiz: editorReducers.quiz,
   steps: editorReducers.steps,
@@ -22,4 +21,4 @@ export const reducer = makeResourceReducer({}, {
   papers: papersReducer,
 
   correction: reduceCorrection
-})
+}

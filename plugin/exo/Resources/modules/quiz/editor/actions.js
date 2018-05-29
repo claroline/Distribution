@@ -3,10 +3,10 @@ import forOwn from 'lodash/forOwn'
 import times from 'lodash/times'
 
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {API_REQUEST} from '#/main/core/api/actions'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {API_REQUEST} from '#/main/app/api'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {tex} from '#/main/core/translation'
-import {MODAL_MESSAGE} from '#/main/core/layout/modal'
+import {MODAL_ALERT} from '#/main/app/modals/alert'
 
 import select from '#/plugin/exo/quiz/editor/selectors'
 import {makeId} from '#/plugin/exo/utils/utils'
@@ -191,7 +191,7 @@ actions.save = () => {
 
     if (!select.valid(state)) {
       dispatch(actions.quizValidating())
-      dispatch(modalActions.showModal(MODAL_MESSAGE, {
+      dispatch(modalActions.showModal(MODAL_ALERT, {
         title: tex('editor_invalid_no_save'),
         message: tex('editor_invalid_no_save_desc'),
         type: 'warning'

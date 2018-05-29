@@ -5,7 +5,8 @@ import classes from 'classnames'
 import Panel from 'react-bootstrap/lib/Panel'
 
 import {tex} from '#/main/core/translation'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box.jsx'
 
 import quizSelect from '#/plugin/exo/quiz/selectors'
@@ -127,7 +128,7 @@ PaperComponent.propTypes = {
 
 const Paper = connect(
   (state) => ({
-    admin: resourceSelect.editable(state) || quizSelect.papersAdmin(state),
+    admin: hasPermission('edit', resourceSelect.resourceNode(state)) || quizSelect.papersAdmin(state),
     numbering: quizSelect.quizNumbering(state),
     paper: paperSelect.currentPaper(state),
     showExpectedAnswers: quizSelect.papersShowExpectedAnswers(state),

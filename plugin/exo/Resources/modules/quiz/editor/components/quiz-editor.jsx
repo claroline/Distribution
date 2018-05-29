@@ -16,7 +16,7 @@ import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx
 import {NumberGroup} from '#/main/core/layout/form/components/group/number-group.jsx'
 import {RadiosGroup} from '#/main/core/layout/form/components/group/radios-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
-import {AlertBlock} from '#/main/core/layout/alert/components/alert-block.jsx'
+import {AlertBlock} from '#/main/app/alert/components/alert-block'
 
 import {
   correctionModes,
