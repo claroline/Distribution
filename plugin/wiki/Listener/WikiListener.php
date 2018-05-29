@@ -92,9 +92,8 @@ class WikiListener
     public function onOpen(OpenResourceEvent $event)
     {
         $params = [];
-        $params['_controller'] = 'IcapWikiBundle:Wiki:view';
-        $params['wikiId'] = $event->getResource()->getId();
-        $params['_format'] = 'html';
+        $params['_controller'] = 'IcapWikiBundle:Resource\Wiki:open';
+        $params['id'] = $event->getResource()->getId();
         $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
@@ -164,7 +163,7 @@ class WikiListener
                     case 'resource-read':
                         ++$nbOpenings;
 
-                        if ($status === AbstractResourceEvaluation::STATUS_UNKNOWN) {
+                        if (AbstractResourceEvaluation::STATUS_UNKNOWN === $status) {
                             $status = AbstractResourceEvaluation::STATUS_OPENED;
                         }
                         break;

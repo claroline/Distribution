@@ -10,7 +10,7 @@ class ContributionRepository extends EntityRepository
     /**
      * @param Section $section
      *
-     * @return array $contributions
+     * @return \Doctrine\ORM\Query
      */
     public function getSectionHistoryQuery(Section $section)
     {

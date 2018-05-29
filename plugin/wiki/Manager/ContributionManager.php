@@ -65,16 +65,6 @@ class ContributionManager
         return $contributions;
     }
 
-    public function getContributions(Section $section)
-    {
-        return $this->contributionRepository->findAllForSection($section);
-    }
-
-    public function getContribution(Contribution $contribution)
-    {
-        return $this->contributionRepository->findById($contribution->getId());
-    }
-
     /**
      * Find all content for a given user and the replace him by another.
      *

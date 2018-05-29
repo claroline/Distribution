@@ -5,8 +5,8 @@ namespace Icap\WikiBundle\Manager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Icap\WikiBundle\Entity\Section;
-use Icap\WikiBundle\Repository\ContributionRepository;
-use Icap\WikiBundle\Repository\SectionRepository;
+use Icap\WikiBundle\Entity\Wiki;
+use Icap\WikiBundle\Serializer\SectionSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -20,24 +20,25 @@ class SectionManager
     /** @var \Icap\WikiBundle\Repository\SectionRepository */
     protected $sectionRepository;
 
-    protected $contributionRepository;
+    /** @var SectionSerializer */
+    protected $sectionSerializer;
 
     /**
      * @DI\InjectParams({
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "sectionRepository"      = @DI\Inject("icap.wiki.section_repository"),
-     *     "contributionRepository" = @DI\Inject("icap.wiki.contribution_repository")
+     *     "sectionSerializer"      = @DI\Inject("claroline.serializer.wiki.section")
      * })
      *
-     * @param ObjectManager          $om
-     * @param SectionRepository      $sectionRepository
-     * @param ContributionRepository $contributionRepository
+     * @param ObjectManager     $om
+     * @param SectionSerializer $sectionSerializer
      */
-    public function __construct(ObjectManager $om, SectionRepository $sectionRepository, ContributionRepository $contributionRepository)
-    {
+    public function __construct(
+        ObjectManager $om,
+        SectionSerializer $sectionSerializer
+    ) {
         $this->om = $om;
-        $this->sectionRepository = $sectionRepository;
-        $this->contributionRepository = $contributionRepository;
+        $this->sectionRepository = $om->getRepository('Icap\WikiBundle\Entity\Section');
+        $this->sectionSerializer = $sectionSerializer;
     }
 
     /**
@@ -48,6 +49,13 @@ class SectionManager
         return $this->sectionRepository;
     }
 
+    public function getSerializedSectionTree(Wiki $wiki, User $user = null, $isAdmin = false)
+    {
+        $tree = $this->sectionRepository->buildSectionTree($wiki, $user, $isAdmin);
+
+        return $this->sectionSerializer->serializeSectionTreeNode($wiki, $tree[0]);
+    }
+
     public function getArchivedSectionsForPosition(Section $section)
     {
         $sections = $this->getSectionRepository()->findSectionsForPosition($section);
@@ -56,7 +64,7 @@ class SectionManager
         $childrens = [];
         foreach ($sections as $simpleSection) {
             if (isset($childrens[$simpleSection['parentId']])) {
-                $childrens[$simpleSection['parentId']] += 1;
+                ++$childrens[$simpleSection['parentId']];
             } else {
                 $childrens[$simpleSection['parentId']] = 1;
             }

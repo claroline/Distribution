@@ -11,12 +11,12 @@ class SectionRepository extends NestedTreeRepository
 {
     /**
      * @param Wiki $wiki
-     * @param bool $isAdmin
      * @param User $user
+     * @param bool $isAdmin
      *
-     * @return Tree $tree
+     * @return array|string $tree
      */
-    public function buildSectionTree(Wiki $wiki, $isAdmin, User $user = null)
+    public function buildSectionTree(Wiki $wiki, User $user = null, $isAdmin = false)
     {
         $queryBuilder = $this->createQueryBuilder('section')
             ->join('section.activeContribution', 'contribution')
@@ -30,7 +30,7 @@ class SectionRepository extends NestedTreeRepository
                 $queryBuilder->expr()->isNull('section.deleted')
             )
         )->setParameter('deleted', false);
-        if ($isAdmin === false && $user !== null) {
+        if (false === $isAdmin && null !== $user) {
             $queryBuilder
                 ->andWhere(
                     $queryBuilder->expr()->orX(
@@ -39,7 +39,7 @@ class SectionRepository extends NestedTreeRepository
                     )
                 )->setParameter('visible', true)->setParameter('userId', $user->getId());
         }
-        if ($isAdmin === false && $user === null) {
+        if (false === $isAdmin && null === $user) {
             $queryBuilder
                 ->andWhere('section.visible = :visible')
                 ->setParameter('visible', true);
@@ -52,6 +52,8 @@ class SectionRepository extends NestedTreeRepository
 
     /**
      * @param Section $section
+     *
+     * @return array
      */
     public function findSectionsForPosition(Section $section)
     {
@@ -82,20 +84,6 @@ class SectionRepository extends NestedTreeRepository
             ->setParameter('deleted', false);
 
         return $queryBuilder->getQuery()->getArrayResult();
-    }
-
-    public function findDeletedSectionsQuery(Wiki $wiki)
-    {
-        $queryBuilder = $this->createQueryBuilder('section')
-            ->join('section.activeContribution', 'contribution')
-            ->select('section, contribution')
-            ->andWhere('section.root = :rootId')
-            ->andWhere('section.deleted = :deleted')
-            ->orderBy('section.deletionDate', 'ASC')
-            ->setParameter('deleted', true)
-            ->setParameter('rootId', $wiki->getRoot()->getId());
-
-        return $queryBuilder->getQuery();
     }
 
     public function deleteFromTree(Section $section)
@@ -219,11 +207,6 @@ class SectionRepository extends NestedTreeRepository
             ->andWhere('section.id = :sectionId')
             ->setParameter('sectionId', $parent->getId());
         $queryBuilder->getQuery()->getSingleScalarResult();
-    }
-
-    public function findDeletedSections(Wiki $wiki)
-    {
-        return $this->findDeletedSectionsQuery($wiki)->getArrayResult();
     }
 
     public function buildTree(array $nodes, array $options = [])

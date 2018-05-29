@@ -2,6 +2,8 @@
 
 namespace Icap\WikiBundle\Controller\Resource;
 
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Icap\WikiBundle\Entity\Wiki;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -11,6 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  */
 class WikiController extends Controller
 {
+    use PermissionCheckerTrait;
+
     /**
      * @EXT\Route(
      *      "/{id}/open",
@@ -18,14 +22,21 @@ class WikiController extends Controller
      *      name="icap_wiki_open"
      * )
      * @EXT\ParamConverter("wiki", class="IcapWikiBundle:Wiki")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\Template("IcapWikiBundle:wiki:open.html.twig")
      *
-     * @param Wiki $wiki
+     * @param Wiki      $wiki
+     * @param User|null $user
      *
      * @return array
      */
-    public function openAction(Wiki $wiki)
+    public function openAction(Wiki $wiki, User $user = null)
     {
-        return [];
+        $resourceNode = $wiki->getResourceNode();
+        $this->checkPermission('OPEN', $resourceNode, [], true);
+
+        return [
+            '_resource' => $wiki,
+        ];
     }
 }
