@@ -73,12 +73,6 @@ class ResourceActionManager
         $this->dispatcher = $dispatcher;
 
         $this->repository = $this->om->getRepository('ClarolineCoreBundle:Resource\MenuAction');
-
-        // preload the list of actions available for all resource types
-        // it will avoid having to load it for each node
-        // this is safe because the only way to change actions is through
-        // the platform install/update process
-        $this->actions = $this->repository->findAll();
     }
 
     public function support(ResourceNode $resourceNode, string $actionName, string $method): bool
@@ -145,6 +139,10 @@ class ResourceActionManager
      */
     public function all(ResourceType $resourceType): array
     {
+        if (empty($this->actions)) {
+            $this->load();
+        }
+
         // get all actions implemented for the resource
         $actions = array_filter($this->actions, function (MenuAction $action) use ($resourceType) {
             return empty($action->getResourceType()) || $resourceType->getId() === $action->getResourceType()->getId();
@@ -183,5 +181,14 @@ class ResourceActionManager
 
         // This is an action available for all resource types
         return 'resource.'.$actionName;
+    }
+
+    private function load()
+    {
+        // preload the list of actions available for all resource types
+        // it will avoid having to load it for each node
+        // this is safe because the only way to change actions is through
+        // the platform install/update process
+        $this->actions = $this->repository->findAll();
     }
 }
