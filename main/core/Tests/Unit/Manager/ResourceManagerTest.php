@@ -215,7 +215,7 @@ class ResourceManagerTest extends MockeryTestCase
     public function testCheckResourceTypesThrowsException()
     {
         m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->setExpectedException('\Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException');
+        $this->expectException('\Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException');
         $resourceTypes = [['name' => 'idontexist']];
         $this->resourceTypeRepo->shouldReceive('findOneByName')->once()->with('idontexist')->andReturn(null);
         $this->getManager()->checkResourceTypes($resourceTypes);
@@ -224,7 +224,7 @@ class ResourceManagerTest extends MockeryTestCase
 
     public function testCheckResourcePrepared()
     {
-        $this->setExpectedException('\Claroline\CoreBundle\Manager\Exception\MissingResourceNameException');
+        $this->expectException('\Claroline\CoreBundle\Manager\Exception\MissingResourceNameException');
         $resource = $this->mock('Claroline\CoreBundle\Entity\Resource\AbstractResource');
         $resource->shouldReceive('getName')->andReturn(null);
         $this->getManager()->checkResourcePrepared($resource);
@@ -239,7 +239,7 @@ class ResourceManagerTest extends MockeryTestCase
         $manager = $this->getManager(['createRights']);
 
         if ($isExceptionExpected) {
-            $this->setExpectedException('Claroline\CoreBundle\Manager\Exception\RightsException');
+            $this->expectException('Claroline\CoreBundle\Manager\Exception\RightsException');
         }
 
         $manager->shouldReceive('createRights')->times($timesCreate);
