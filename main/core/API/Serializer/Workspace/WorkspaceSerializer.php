@@ -143,7 +143,7 @@ class WorkspaceSerializer
         if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
             $groups = $this->om
                 ->getRepository('Claroline\CoreBundle\Entity\Group')
-                ->findBy(['workspace' => $workspace]);
+                ->findByWorkspace($workspace);
 
             $serialized['groups'] = array_map(function (Group $group) {
                 return $this->serializer->serialize($group, [Options::SERIALIZE_MINIMAL, Options::NO_COUNT]);
