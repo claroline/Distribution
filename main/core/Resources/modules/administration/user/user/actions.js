@@ -3,7 +3,6 @@ import {url} from '#/main/core/api/router'
 import {API_REQUEST} from '#/main/app/api'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
-import {actions as compareActions} from '#/main/core/data/comparisonTable/actions'
 
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
