@@ -15,21 +15,21 @@ class BadgeUsageConfigType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('number_last_awarded_badge', 'integer', array(
-                'theme_options' => array(
+            ->add('number_last_awarded_badge', IntegerType::class, array(
+                'attr' => array(
                     'label_width' => 'col-md-7',
                     'control_width' => 'col-md-2',
                 ),
             ))
-            ->add('number_most_awarded_badge', 'integer', array(
-                'theme_options' => array(
+            ->add('number_most_awarded_badge', IntegerType::class, array(
+                'attr' => array(
                     'label_width' => 'col-md-7',
                     'control_width' => 'col-md-2',
                 ),
             ))
-            ->add('simple_view', 'checkbox', array(
+            ->add('simple_view', CheckboxType::class, array(
                 'required' => false,
-                'theme_options' => array(
+                'attr' => array(
                     'label_width' => 'col-md-7',
                     'control_width' => 'col-md-2',
                 ),

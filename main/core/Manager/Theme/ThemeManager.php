@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Manager\Theme;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\Serializer\ThemeSerializer;
+use Claroline\CoreBundle\API\Serializer\Platform\ThemeSerializer;
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -305,7 +305,13 @@ class ThemeManager
      */
     public function getDefaultTheme()
     {
-        return $this->repository->findOneBy(['default' => true]);
+        $default = $this->repository->findOneBy(['default' => true]);
+
+        if (!$default) {
+            $default = $this->repository->findAll()[0];
+        }
+
+        return $default;
     }
 
     /**

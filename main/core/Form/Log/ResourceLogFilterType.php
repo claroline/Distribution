@@ -6,8 +6,9 @@ use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Manager\EventManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @DI\Service("claroline.form.resourceLogFilter")
@@ -37,11 +38,11 @@ class ResourceLogFilterType extends AbstractType
         $builder
             ->add(
                 'action',
-                'choice',
+                ChoiceType::class,
                 [
                     'label' => 'Show actions for',
                     'attr' => ['class' => 'input-sm'],
-                    'theme_options' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
                     'choices' => $actionChoices,
                 ]
             )
@@ -52,7 +53,7 @@ class ResourceLogFilterType extends AbstractType
                     'label' => 'for_period',
                     'required' => false,
                     'attr' => ['class' => 'input-sm'],
-                    'theme_options' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
                 ]
             )
             ->add(
@@ -63,7 +64,7 @@ class ResourceLogFilterType extends AbstractType
                     'entity_reference' => 'user',
                     'required' => false,
                     'attr' => ['class' => 'input-sm'],
-                    'theme_options' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
                 ]
             )
             ->add(
@@ -74,7 +75,7 @@ class ResourceLogFilterType extends AbstractType
                     'entity_reference' => 'group',
                     'required' => false,
                     'attr' => ['class' => 'input-sm'],
-                    'theme_options' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
                 ]
             );
     }
@@ -84,7 +85,7 @@ class ResourceLogFilterType extends AbstractType
         return '';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['translation_domain' => 'log']);
     }

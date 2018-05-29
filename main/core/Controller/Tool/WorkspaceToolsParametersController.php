@@ -19,7 +19,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\WorkspaceOptionsType;
 use Claroline\CoreBundle\Form\WorkspaceOrderToolEditType;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\ToolRightsManager;
@@ -29,6 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundmaxUsersation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
@@ -51,7 +52,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
      * @DI\InjectParams({
      *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
      *     "formFactory"       = @DI\Inject("form.factory"),
-     *     "request"           = @DI\Inject("request"),
+     *     "request"           = @DI\Inject("request_stack"),
      *     "resourceManager"   = @DI\Inject("claroline.manager.resource_manager"),
      *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
      *     "roleManager"       = @DI\Inject("claroline.manager.role_manager"),
@@ -64,7 +65,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
     public function __construct(
         FormFactory $formFactory,
         ObjectManager $om,
-        Request $request,
+        RequestStack $request,
         ResourceManager $resourceManager,
         RightsManager $rightsManager,
         RoleManager $roleManager,
@@ -75,7 +76,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
     ) {
         $this->formFactory = $formFactory;
         $this->om = $om;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->roleManager = $roleManager;
@@ -90,7 +91,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
      *     "/{workspace}/tools",
      *     name="claro_workspace_tools_roles"
      * )
-     * @EXT\Template("ClarolineCoreBundle:Tool\workspace\parameters:toolRoles.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\workspace\parameters:tool_roles.html.twig")
      *
      * @param Workspace $workspace
      *
@@ -117,7 +118,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
      *     name="claro_workspace_order_tool_edit_form"
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool\workspace\parameters:toolNameModalForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\workspace\parameters:tool_name_modal_form.html.twig")
      *
      * @param Workspace $workspace
      * @param Tool      $tool
@@ -130,7 +131,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
         $ot = $this->toolManager->getOneByWorkspaceAndTool($workspace, $tool);
 
         return [
-            'form' => $this->formFactory->create(new WorkspaceOrderToolEditType(), $ot)->createView(),
+            'form' => $this->formFactory->create(WorkspaceOrderToolEditType::class, $ot)->createView(),
             'workspace' => $workspace,
             'wot' => $ot,
         ];
@@ -143,7 +144,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
      * )
      * @EXT\Method("POST")
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool\workspace\parameters:workspaceOrderToolEdit.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\workspace\parameters:workspace_order_tool_edit.html.twig")
      *
      * @param Workspace   $workspace
      * @param OrderedTool $workspaceOrderTool
@@ -153,7 +154,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
     public function workspaceOrderToolEditAction(Workspace $workspace, OrderedTool $workspaceOrderTool)
     {
         $this->checkAccess($workspace);
-        $form = $this->formFactory->create(new WorkspaceOrderToolEditType(), $workspaceOrderTool);
+        $form = $this->formFactory->create(WorkspaceOrderToolEditType::class, $workspaceOrderTool);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -264,7 +265,7 @@ class WorkspaceToolsParametersController extends AbstractParametersController
      *     "/{workspace}/display/edit",
      *     name="claro_workspace_display_edit"
      * )
-     * @EXT\Template("ClarolineCoreBundle:Tool\workspace\parameters:workspaceDisplayEditForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\workspace\parameters:workspace_display_edit_form.html.twig")
      *
      * @param Workspace $workspace
      */

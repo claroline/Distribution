@@ -14,7 +14,7 @@ namespace Claroline\TeamBundle\Form;
 use Claroline\TeamBundle\Entity\WorkspaceTeamParameters;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class MultipleTeamsType extends AbstractType
@@ -30,8 +30,8 @@ class MultipleTeamsType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
-            [
+            TextType::class,
+            array(
                 'required' => true,
                 'constraints' => new NotBlank(),
             ]
@@ -43,9 +43,9 @@ class MultipleTeamsType extends AbstractType
         );
         $builder->add(
             'nbTeams',
-            'integer',
-            [
-                'attr' => ['min' => 1],
+            IntegerType::class,
+            array(
+                'attr' => array('min' => 1),
                 'required' => true,
                 'constraints' => new NotBlank(),
                 'data' => 1,
@@ -65,17 +65,17 @@ class MultipleTeamsType extends AbstractType
         );
         $builder->add(
             'maxUsers',
-            'integer',
-            [
-                'attr' => ['min' => 0],
+            IntegerType::class,
+            array(
+                'attr' => array('min' => 0),
                 'required' => false,
             ]
         );
         $builder->add(
             'isPublic',
-            'choice',
-            [
-                'choices' => [
+            ChoiceType::class,
+            array(
+                'choices' => array(
                     true => 'public',
                     false => 'private',
                 ],
@@ -86,8 +86,8 @@ class MultipleTeamsType extends AbstractType
         );
         $builder->add(
             'selfRegistration',
-            'checkbox',
-            [
+            CheckboxType::class,
+            array(
                 'required' => true,
                 'data' => $this->params->getSelfRegistration(),
                 'attr' => ['class' => 'advanced-param'],
@@ -95,8 +95,8 @@ class MultipleTeamsType extends AbstractType
         );
         $builder->add(
             'selfUnregistration',
-            'checkbox',
-            [
+            CheckboxType::class,
+            array(
                 'required' => true,
                 'data' => $this->params->getSelfUnregistration(),
                 'attr' => ['class' => 'advanced-param'],
@@ -124,7 +124,7 @@ class MultipleTeamsType extends AbstractType
         return 'team_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['translation_domain' => 'team']);
     }

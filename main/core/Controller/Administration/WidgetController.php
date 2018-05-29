@@ -71,7 +71,7 @@ class WidgetController extends Controller
      *     options={"expose"=true}
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     * @EXT\Template()
+     * @EXT\Template("ClarolineCoreBundle:administration/widget:widgets_management.html.twig")
      */
     public function widgetsManagementAction()
     {
@@ -94,13 +94,13 @@ class WidgetController extends Controller
      *     options={"expose"=true}
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     * @EXT\Template("ClarolineCoreBundle:Administration\Widget:widgetEditModalForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration/widget:widget_edit_modal_form.html.twig")
      *
      * @param Widget $widget
      */
     public function widgetEditFormAction(Widget $widget)
     {
-        $form = $this->formFactory->create(new WidgetEditType(), $widget);
+        $form = $this->formFactory->create(WidgetEditType::class, $widget);
 
         return ['form' => $form->createView(), 'widget' => $widget];
     }
@@ -112,13 +112,13 @@ class WidgetController extends Controller
      *     options={"expose"=true}
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     * @EXT\Template("ClarolineCoreBundle:Administration\Widget:widgetEditModalForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration/widget:widget_edit_modal_form.html.twig")
      *
      * @param Widget $widget
      */
     public function widgetEditAction(Widget $widget)
     {
-        $form = $this->formFactory->create(new WidgetEditType(), $widget);
+        $form = $this->formFactory->create(WidgetEditType::class, $widget);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {

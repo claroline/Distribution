@@ -126,7 +126,7 @@ AnnounceForm.propTypes = {
   })).isRequired,
   updateProperty: T.func.isRequired,
   save: T.func.isRequired,
-  aggregateId: T.number.isRequired
+  aggregateId: T.string.isRequired
 }
 
 AnnounceForm.defaultProps = {

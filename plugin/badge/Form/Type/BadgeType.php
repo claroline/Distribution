@@ -66,15 +66,15 @@ class BadgeType extends AbstractType
 
         $builder
             ->add($translationBuilder)
-            ->add('automatic_award', 'checkbox', array('required' => false))
-            ->add('file', 'file', array('label' => 'badge_form_image'))
-            ->add('is_expiring', 'checkbox', array('required' => false))
-            ->add('expire_duration', 'integer', array('attr' => array(
+            ->add('automatic_award', CheckboxType::class, array('required' => false))
+            ->add(FileType::class, FileType::class, array('label' => 'badge_form_image'))
+            ->add('is_expiring', CheckboxType::class, array('required' => false))
+            ->add('expire_duration', IntegerType::class, array('attr' => array(
                       'class' => 'input-sm',
                       'min' => 1,
                 ),
             ))
-            ->add('expire_period', 'choice',
+            ->add('expire_period', ChoiceType::class,
                 array(
                     'choices' => Badge::getExpirePeriodLabels(),
                     'attr' => array('class' => 'input-sm'),
@@ -97,7 +97,7 @@ class BadgeType extends AbstractType
                             'type' => $this->badgeRuleType,
                             'by_reference' => false,
                             'attr' => array('class' => 'rule-collections'),
-                            'theme_options' => array('label_width' => 'col-md-3'),
+                            'attr' => array('label_width' => 'col-md-3'),
                             'prototype' => true,
                             'allow_add' => true,
                             'allow_delete' => true,

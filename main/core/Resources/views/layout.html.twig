@@ -3,7 +3,7 @@
 {% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 
 {% block stylesheets %}
-    {% include 'ClarolineCoreBundle:Layout:stylesheets.html.twig' %}
+    {% include 'ClarolineCoreBundle:layout:stylesheets.html.twig' %}
 
     {# todo : this should be removed and fully managed in LESS #}
     {% if hideTopBar is defined and hideTopBar and not (has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()) %}
@@ -40,9 +40,9 @@
         {% if (hideTopBar is not defined or not hideTopBar) and not has_role('ROLE_USURPATE_WORKSPACE_ROLE') %}
             {% block topBarRender %}
                 {% if workspace is defined and workspace is not null %}
-                    {% render(controller('ClarolineCoreBundle:Layout:topBar', {'workspaceId': workspace.id})) %}
+                    {{ render(controller('ClarolineCoreBundle:Layout:topBar', {'workspaceId': workspace.id})) }}
                 {% else %}
-                    {% render(controller('ClarolineCoreBundle:Layout:topBar')) %}
+                    {{ render(controller('ClarolineCoreBundle:Layout:topBar')) }}
                 {% endif %}
             {% endblock %}
         {% endif %}
@@ -50,30 +50,19 @@
         {# User impersonated notification #}
         {% block impersonation %}
             {% if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated() %}
-                {% render(controller('ClarolineCoreBundle:Layout:renderWarningImpersonation')) %}
+                {{ render(controller('ClarolineCoreBundle:Layout:renderWarningImpersonation')) }}
             {% endif %}
         {% endblock %}
-
-        {% if hideSidebars is not defined or not hideSidebars %}
-        {# Sidebars #}
-        <div class="hidden-xs">
-            <div id="left-bar" class="sidebar hide">
-                {% block leftbar %}{% endblock %}
-            </div>
-
-            <div id="right-bar" class="sidebar hide">
-                {% block rightbar %}{% endblock %}
-            </div>
-        </div>
-
-        {# FIXME : As is we get the sidebar 2 times in the DOM. Responsivity should be fully managed in LESS #}
-        <div class="menu-xs visible-xs">
-        {{ block("leftbar") }}
-        </div>
-        {% endif %}
     {% endif %}
 
-    <div id="wrap" {% block wrap_attrs %}class="app-content container-fluid"{% endblock %}>
+    {# Toolbar #}
+    {% if hideSidebars is not defined or not hideSidebars %}
+        {% block leftbar %}{% endblock %}
+    {% endif %}
+
+    {# Content #}
+    {# do not use block `wrap_attrs` it will be removed (only used in login) #}
+    <div {% block wrap_attrs %}class="app-content"{% endblock %}>
         {% if (hideBreadcrumb is not defined or not hideBreadcrumb) and not isRenderedInIframe %}
             {% block breadcrumb %}{% endblock %}
         {% endif %}
@@ -81,34 +70,34 @@
         {% block content %}
             <div class="page-container">
                 <main class="page">
-                {% block page %}
-                    <header class="page-header">
-                    {% block page_header %}
-                        <h1>
-                            {% block page_title %}{% endblock %}
-                        </h1>
-                    {% endblock %}
-                    </header>
+                    {% block page %}
+                        <header class="page-header">
+                            {% block page_header %}
+                                <h1 class="page-title">
+                                    {% block page_title %}{% endblock %}
+                                </h1>
+                            {% endblock %}
+                        </header>
 
-                    <div class="page-content">
-                    {% block page_content %}
+                        <div class="page-content">
+                            {% block page_content %}
+                            {% endblock %}
+                        </div>
                     {% endblock %}
-                    </div>
-                {% endblock %}
                 </main>
             </div>
         {% endblock %}
-    </div>
 
-    {% if not isRenderedInIframe and (hideFooter is not defined or not hideFooter) %}
-        {% block footer %}
-            {% render(controller('ClarolineCoreBundle:Layout:footer')) %}
-        {% endblock%}
-    {% endif %}
+        {% if not isRenderedInIframe and (hideFooter is not defined or not hideFooter) %}
+            {% block footer %}
+                {{ render(controller('ClarolineCoreBundle:layout:footer')) }}
+            {% endblock%}
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
 
-    {% include 'ClarolineCoreBundle:Layout:javascripts.html.twig' %}
+    {% include 'ClarolineCoreBundle:layout:javascripts.html.twig' %}
 {% endblock %}

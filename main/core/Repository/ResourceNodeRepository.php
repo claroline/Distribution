@@ -31,7 +31,6 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
 {
     private $container;
     private $builder;
-    private $bundles = [];
 
     public function setContainer(ContainerInterface $container = null)
     {
@@ -55,7 +54,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
         if (preg_match('/^\d+$/', $id)) {
             $qb->where('n.id = :id');
         } else {
-            $qb->where('n.guid = :id');
+            $qb->where('n.uuid = :id');
         }
 
         return $qb
@@ -115,7 +114,8 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
      * @param ResourceNode $parent The id of the parent of the requested children
      * @param array        $roles  [string] $roles  An array of roles
      * @param User         $user   the user opening
-     * @param withLastOpenDate with the last openend node (with the last opened date)
+     * @param bool         $withLastOpenDate with the last openend node (with the last opened date)
+     * @param bool         $canAdministrate
      *
      * @throws \RuntimeException
      * @throw InvalidArgumentException if the array of roles is empty
@@ -323,13 +323,20 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
      *
      * @return array
      */
-    public function findMimeTypesWithMostResources($max)
+    public function findMimeTypesWithMostResources($max, $organizations = null)
     {
         $qb = $this->createQueryBuilder('resource');
         $qb->select('resource.mimeType AS type, COUNT(resource.id) AS total')
             ->where($qb->expr()->isNotNull('resource.mimeType'))
             ->groupBy('resource.mimeType')
             ->orderBy('total', 'DESC');
+
+        if ($organizations !== null) {
+            $qb->leftJoin('resource.workspace', 'ws')
+                ->leftJoin('ws.organizations', 'orgas')
+                ->andWhere('orgas IN (:organizations)')
+                ->setParameter('organizations', $organizations);
+        }
 
         if ($max > 1) {
             $qb->setMaxResults($max);

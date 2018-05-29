@@ -12,17 +12,16 @@
 namespace Claroline\CoreBundle\Controller;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceTag;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Event\Log\LogRoleUnsubscribeEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Form\ImportWorkspaceType;
-use Claroline\CoreBundle\Form\WorkspaceType;
 use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Library\Security\TokenUpdater;
 use Claroline\CoreBundle\Library\Security\Utilities;
@@ -47,6 +46,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -94,7 +94,7 @@ class WorkspaceController extends Controller
      *     "eventDispatcher"           = @DI\Inject("event_dispatcher"),
      *     "formFactory"               = @DI\Inject("form.factory"),
      *     "homeTabManager"            = @DI\Inject("claroline.manager.home_tab_manager"),
-     *     "request"                   = @DI\Inject("request"),
+     *     "request"                   = @DI\Inject("request_stack"),
      *     "resourceManager"           = @DI\Inject("claroline.manager.resource_manager"),
      *     "roleManager"               = @DI\Inject("claroline.manager.role_manager"),
      *     "router"                    = @DI\Inject("router"),
@@ -118,7 +118,7 @@ class WorkspaceController extends Controller
         EventDispatcherInterface $eventDispatcher,
         FormFactory $formFactory,
         HomeTabManager $homeTabManager,
-        Request $request,
+        RequestStack $request,
         ResourceManager $resourceManager,
         RoleManager $roleManager,
         UrlGeneratorInterface $router,
@@ -140,7 +140,7 @@ class WorkspaceController extends Controller
         $this->eventDispatcher = $eventDispatcher;
         $this->formFactory = $formFactory;
         $this->homeTabManager = $homeTabManager;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->resourceManager = $resourceManager;
         $this->roleManager = $roleManager;
         $this->router = $router;
@@ -329,80 +329,6 @@ class WorkspaceController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/new/form",
-     *     name="claro_workspace_creation_form",
-     *     options={"expose"=true}
-     * )
-     *
-     * @EXT\Template()
-     *
-     * Renders the workspace creation form.
-     *
-     * @return array
-     */
-    public function creationFormAction()
-    {
-        $this->assertIsGranted('ROLE_WS_CREATOR');
-        $user = $this->tokenStorage->getToken()->getUser();
-        $workspaceType = new WorkspaceType($user);
-        $form = $this->formFactory->create($workspaceType);
-
-        return ['form' => $form->createView()];
-    }
-
-    /**
-     * Creates a workspace from a form sent by POST.
-     *
-     * @EXT\Route(
-     *     "/",
-     *     name="claro_workspace_create"
-     * )
-     * @EXT\Method("POST")
-     *
-     * @EXT\Template("ClarolineCoreBundle:Workspace:creationForm.html.twig")
-     *
-     * @return RedirectResponse | array
-     */
-    public function createAction()
-    {
-        $this->assertIsGranted('ROLE_WS_CREATOR');
-        $user = $this->tokenStorage->getToken()->getUser();
-        $workspaceType = new WorkspaceType($user);
-        $form = $this->formFactory->create($workspaceType, new Workspace());
-        $form->handleRequest($this->request);
-        $modelLog = $this->container->getParameter('kernel.root_dir').'/logs/models.log';
-        $logger = FileLogger::get($modelLog);
-        $this->workspaceManager->setLogger($logger);
-
-        if ($form->isValid()) {
-            $modelFrom = $form->get('modelFrom')->getData();
-            $workspace = $form->getData();
-            $user = $this->tokenStorage->getToken()->getUser();
-            $workspace->setCreator($user);
-
-            if (!$modelFrom) {
-                $modelFrom = $this->workspaceManager->getDefaultModel();
-            }
-
-            $workspace = $this->workspaceManager->copy($modelFrom, $workspace, $workspace->isModel());
-            $this->tokenUpdater->update($this->tokenStorage->getToken());
-            $route = $this->router->generate('claro_workspace_open', ['workspaceId' => $workspace->getId()]);
-
-            $msg = $this->get('translator')->trans(
-                'successfull_workspace_creation',
-                ['%name%' => $form->get('name')->getData()],
-                'platform'
-            );
-            $this->get('request')->getSession()->getFlashBag()->add('success', $msg);
-
-            return new RedirectResponse($route);
-        }
-
-        return ['form' => $form->createView()];
-    }
-
-    /**
-     * @EXT\Route(
      *     "/{workspaceId}",
      *     name="claro_workspace_delete",
      *     options={"expose"=true},
@@ -412,7 +338,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @param Workspace $workspace
@@ -460,82 +387,53 @@ class WorkspaceController extends Controller
     }
 
     /**
-     * @EXT\Template()
-     *
      * Renders the left tool bar. Not routed.
      *
-     * @param Workspace $workspace
-     * @param int[]     $_breadcrumbs
+     * @EXT\Template("ClarolineCoreBundle:workspace:toolbar.html.twig")
      *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     * @param Workspace $workspace
+     * @param Request   $request
      *
      * @return array
      */
-    public function renderToolListAction(Workspace $workspace, $_breadcrumbs)
+    public function renderToolbarAction(Workspace $workspace, Request $request)
     {
-        //first we add check if some tools will be missing from the navbar and we add them if necessary
-        //lets be sure we loaded everything properly because the pathbundle broke something
-        $workspace = $this->workspaceManager->getWorkspaceByCode($workspace->getCode());
-        $this->toolManager->addMissingWorkspaceTools($workspace);
+        $orderedTools = [];
 
-        if (!empty($_breadcrumbs)) {
-            //for manager.js, id = 0 => "no root".
-            if (0 !== $_breadcrumbs[0]) {
-                $rootId = $_breadcrumbs[0];
-            } else {
-                $rootId = $_breadcrumbs[1];
-            }
-            $workspace = $this->resourceManager->getNode($rootId)->getWorkspace();
-        }
-
-        $currentRoles = $this->utils->getRoles($this->tokenStorage->getToken());
-        //do I need to display every tools.
-        $hasManagerAccess = false;
-        $managerRole = $this->roleManager->getManagerRole($workspace);
-
-        foreach ($currentRoles as $role) {
-            //We check if $managerRole exists as an error proof condition.
-            //If something went wrong and it doesn't exists anymore,
-            //restorations tools should be used at this point
-            if ($managerRole && $managerRole->getName() === $role) {
-                $hasManagerAccess = true;
-            }
-        }
-
-        if ($this->authorization->isGranted('ROLE_ADMIN')) {
-            $hasManagerAccess = true;
-        }
-
-        if ($workspace->isModel()) {
-            $orderedTools = array_filter($this->toolManager->getOrderedToolsByWorkspace($workspace), function ($orderedTool) {
-                return in_array($orderedTool->getTool()->getName(), ['home', 'resource_manager', 'users', 'parameters']);
-            });
-            $hideToolsMenu = false;
-        } else {
-            //if manager or admin, show every tools
+        $hasManagerAccess = $this->workspaceManager->isManager($workspace, $this->tokenStorage->getToken());
+        $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
+        if ($hasManagerAccess || !$hideToolsMenu) {
+            // load tool list
             if ($hasManagerAccess) {
+                // gets all available tools
                 $orderedTools = $this->toolManager->getOrderedToolsByWorkspace($workspace);
+                // always display tools to managers
                 $hideToolsMenu = false;
             } else {
-                //otherwise only shows the relevant tools
+                // gets accessible tools by user
+                $currentRoles = $this->utils->getRoles($this->tokenStorage->getToken());
                 $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
-                $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
             }
         }
 
-        $roleHasAccess = [];
-        $workspaceRolesWithAccess = $this->roleManager
-            ->getWorkspaceRoleWithToolAccess($workspace);
-
-        foreach ($workspaceRolesWithAccess as $workspaceRole) {
-            $roleHasAccess[$workspaceRole->getId()] = $workspaceRole;
+        $current = null;
+        if ('claro_workspace_open_tool' === $request->get('_route')) {
+            $params = $request->get('_route_params');
+            if (!empty($params['toolName'])) {
+                $current = $params['toolName'];
+            }
         }
 
         return [
-            'hasManagerAccess' => $hasManagerAccess,
-            'orderedTools' => $orderedTools,
+            'current' => $current,
+            'tools' => array_map(function (OrderedTool $orderedTool) use ($workspace) { // todo : create a serializer
+                return [
+                    'icon' => $orderedTool->getTool()->getClass(),
+                    'name' => $orderedTool->getTool()->getName(),
+                    'open' => ['claro_workspace_open_tool', ['workspaceId' => $workspace->getId(), 'toolName' => $orderedTool->getTool()->getName()]],
+                ];
+            }, $orderedTools),
             'workspace' => $workspace,
-            'roleHasAccess' => $roleHasAccess,
             'hideToolsMenu' => $hideToolsMenu,
         ];
     }
@@ -550,7 +448,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Opens a tool.
@@ -571,137 +470,7 @@ class WorkspaceController extends Controller
             $this->workspaceManager->addRecentWorkspaceForUser($this->tokenStorage->getToken()->getUser(), $workspace);
         }
 
-        if ('resource_manager' === $toolName) {
-            $this->session->set('isDesktop', false);
-        }
-
         return new Response($event->getContent());
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{workspaceId}/tab/{homeTabId}/picker",
-     *     name="claro_workspace_home_tab_widget_list_picker",
-     *     options={"expose"=true}
-     * )
-     *
-     * @EXT\ParamConverter(
-     *      "workspace",
-     *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
-     * )
-     * Returns a list with all visible registered widgets for a homeTab of a workspace.
-     *
-     * @param Workspace $workspace
-     * @param int       $homeTabId
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function listWidgetsForPickerAction(
-        Workspace $workspace,
-        $homeTabId
-    ) {
-        $response = new JsonResponse('', 401);
-        $isGranted = $this->authorization->isGranted('OPEN', $workspace);
-
-        if (true === $isGranted) {
-            $widgetData = [];
-            $widgetHomeTabConfigs = $this->homeTabManager
-                ->getVisibleWidgetConfigsByTabIdAndWorkspace($homeTabId, $workspace);
-            foreach ($widgetHomeTabConfigs as $widgetHomeTabConfig) {
-                array_push($widgetData, $widgetHomeTabConfig->getWidgetInstance()->serializeForWidgetPicker());
-            }
-            $data = [
-                'items' => $widgetData,
-            ];
-
-            $response->setData($data)->setStatusCode(200);
-        }
-
-        return $response;
-    }
-
-    /**
-     * Returns the html iframe to embed a widget.
-     *
-     * @EXT\Route(
-     *     "/{workspaceId}/tab/{homeTabId}/widget/{widgetId}/embed",
-     *     name="claro_widget_embed",
-     *     options={"expose"=true}
-     * )
-     *
-     * @todo simplify route params
-     *
-     * @param int $workspaceId
-     * @param int $homeTabId
-     * @param int $widgetId
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function embedWidgetAction($workspaceId, $homeTabId, $widgetId)
-    {
-        return new Response(
-            $this->templating->render(
-                'ClarolineCoreBundle:Widget:embed/iframe.html.twig',
-                [
-                    'widgetId' => $widgetId,
-                    'workspaceId' => $workspaceId,
-                    'homeTabId' => $homeTabId,
-                ]
-            )
-        );
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{workspaceId}/tab/{homeTabId}/widget/{widgetId}/embeded",
-     *     name="claro_workspace_hometab_embeded_widget",
-     *     options={"expose"=true}
-     * )
-     *
-     * @EXT\ParamConverter(
-     *      "workspace",
-     *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
-     * )
-     *
-     * Returns the widget's html content
-     *
-     * @param Workspace $workspace
-     * @param int       $homeTabId
-     * @param int       $widgetId
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getEmbededWidgetAction(
-        Workspace $workspace,
-        $homeTabId,
-        $widgetId
-    ) {
-        $this->assertIsGranted('OPEN', $workspace);
-
-        $widgetConfig = $this->homeTabManager
-            ->getVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace($widgetId, $homeTabId, $workspace);
-
-        $widget = null;
-
-        if (!empty($widgetConfig)) {
-            $widgetInstance = $widgetConfig->getWidgetInstance();
-            $event = $this->eventDispatcher->dispatch("widget_{$widgetInstance->getWidget()->getName()}", new DisplayWidgetEvent($widgetInstance));
-            $widget = [
-                'title' => $widgetInstance->getName(),
-                'content' => $event->getContent(),
-            ];
-        }
-
-        return new Response(
-            $this->templating->render(
-                'ClarolineCoreBundle:Widget:embed/widget.html.twig',
-                [
-                    'widget' => $widget,
-                ]
-            )
-        );
     }
 
     /**
@@ -864,7 +633,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspaceTag",
      *      class="ClarolineCoreBundle:Workspace\WorkspaceTag",
-     *      options={"id" = "workspaceTagId", "strictId" = true}
+     *      options={"id" = "workspaceTagId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @EXT\Template()
@@ -895,7 +665,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspaceTag",
      *      class="ClarolineCoreBundle:Workspace\WorkspaceTag",
-     *      options={"id" = "workspaceTagId", "strictId" = true}
+     *      options={"id" = "workspaceTagId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @EXT\Template()
@@ -1035,12 +806,14 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      * @EXT\ParamConverter(
      *      "user",
      *      class="ClarolineCoreBundle:User",
-     *      options={"id" = "userId", "strictId" = true}
+     *      options={"id" = "userId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Removes an user from a workspace.
@@ -1087,7 +860,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspaceTag",
      *      class="ClarolineCoreBundle:Workspace\WorkspaceTag",
-     *      options={"id" = "workspaceTagId", "strictId" = true}
+     *      options={"id" = "workspaceTagId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @EXT\Template()
@@ -1238,7 +1012,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Returns the list of visible tabs for a workspace
@@ -1277,7 +1052,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Adds a workspace to the favourite list.
@@ -1368,8 +1144,7 @@ class WorkspaceController extends Controller
     public function importFormAction()
     {
         $this->assertIsGranted('ROLE_WS_CREATOR');
-        $importType = new ImportWorkspaceType();
-        $form = $this->container->get('form.factory')->create($importType);
+        $form = $this->container->get('form.factory')->create(ImportWorkspaceType::class);
 
         return ['form' => $form->createView()];
     }
@@ -1388,8 +1163,7 @@ class WorkspaceController extends Controller
     public function importAction()
     {
         $this->assertIsGranted('ROLE_WS_CREATOR');
-        $importType = new ImportWorkspaceType();
-        $form = $this->container->get('form.factory')->create($importType, new Workspace());
+        $form = $this->container->get('form.factory')->create(ImportWorkspaceType::class, new Workspace());
         $form->handleRequest($this->request);
         $modelLog = $this->container->getParameter('kernel.root_dir').'/logs/models.log';
         $logger = FileLogger::get($modelLog);
@@ -1439,7 +1213,7 @@ class WorkspaceController extends Controller
 
         return new Response(
             $this->templating->render(
-                'ClarolineCoreBundle:Workspace:importForm.html.twig',
+                'ClarolineCoreBundle:workspace:import_form.html.twig',
                 ['form' => $form->createView()]
             )
         );

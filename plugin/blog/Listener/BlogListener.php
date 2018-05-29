@@ -3,22 +3,24 @@
 namespace Icap\BlogBundle\Listener;
 
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Form\BlogType;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class BlogListener extends ContainerAware
+class BlogListener
 {
+    use ContainerAwareTrait;
+
     /**
      * @param CreateFormResourceEvent $event
      */
@@ -41,7 +43,7 @@ class BlogListener extends ContainerAware
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $form = $this->container->get('form.factory')->create(new BlogType(), new Blog());
         $form->bind($request);
 
@@ -210,7 +212,7 @@ class BlogListener extends ContainerAware
                     case 'resource-read':
                         ++$nbOpenings;
 
-                        if ($status === AbstractResourceEvaluation::STATUS_UNKNOWN) {
+                        if (AbstractResourceEvaluation::STATUS_UNKNOWN === $status) {
                             $status = AbstractResourceEvaluation::STATUS_OPENED;
                         }
                         break;

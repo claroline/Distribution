@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Manager\EventManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @DI\Service("claroline.form.adminLogFilter")
@@ -48,7 +48,7 @@ class AdminLogFilterType extends AbstractType
                     'attr' => ['class' => 'input-sm'],
                     'choices' => $actionChoices,
                     'choices_as_values' => true,
-                    'theme_options' => ['label_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3'],
                 ]
             )
             ->add(
@@ -58,7 +58,7 @@ class AdminLogFilterType extends AbstractType
                     'label' => 'for_period',
                     'required' => false,
                     'attr' => ['class' => 'input-sm'],
-                    'theme_options' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
                 ]
             )
             ->add(
@@ -69,7 +69,7 @@ class AdminLogFilterType extends AbstractType
                     'entity_reference' => 'user',
                     'required' => false,
                     'attr' => ['class' => 'input-sm'],
-                    'theme_options' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
                 ]
             )
             ->add(
@@ -80,7 +80,7 @@ class AdminLogFilterType extends AbstractType
                     'entity_reference' => 'group',
                     'required' => false,
                     'attr' => ['class' => 'input-sm'],
-                    'theme_options' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
+                    'attr' => ['label_width' => 'col-md-3', 'control_width' => 'col-md-3'],
                 ]
             );
     }
@@ -90,7 +90,7 @@ class AdminLogFilterType extends AbstractType
         return '';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
         ->setDefaults(

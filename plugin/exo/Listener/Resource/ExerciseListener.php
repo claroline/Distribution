@@ -2,13 +2,13 @@
 
 namespace UJM\ExoBundle\Listener\Resource;
 
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\PublicationChangeEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\PublicationChangeEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\ScormBundle\Event\ExportScormResourceEvent;
@@ -79,7 +79,7 @@ class ExerciseListener
     {
         /** @var FormInterface $form */
         $form = $this->container->get('form.factory')->create(new ExerciseType());
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
 
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -149,7 +149,7 @@ class ExerciseListener
             ->isGranted('EDIT', new ResourceCollection([$exercise->getResourceNode()]));
 
         $content = $this->container->get('templating')->render(
-            'UJMExoBundle:Exercise:open.html.twig', [
+            'UJMExoBundle:exercise:open.html.twig', [
                 '_resource' => $exercise,
                 'quiz' => $this->container->get('ujm_exo.manager.exercise')->serialize(
                     $exercise,

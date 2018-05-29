@@ -13,8 +13,9 @@
 namespace Claroline\CoreBundle\Form\Administration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SecurityTokenType extends AbstractType
 {
@@ -22,27 +23,22 @@ class SecurityTokenType extends AbstractType
     {
         $builder->add(
             'clientName',
-            'text',
+            TextType::class,
             ['label' => 'client_name']
         );
         $builder->add(
             'clientIp',
-            'text',
+            TextType::class,
             ['label' => 'client_ip']
         );
         $builder->add(
             'token',
-            'text',
+            TextType::class,
             ['label' => 'token']
         );
     }
 
-    public function getName()
-    {
-        return 'security_token_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             ['translation_domain' => 'platform']

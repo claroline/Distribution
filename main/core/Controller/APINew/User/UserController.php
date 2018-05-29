@@ -240,7 +240,7 @@ class UserController extends AbstractCrudController
     {
         $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
           [] :
-          ['recursiveOrXOrganization' => array_map(function (Organization $organization) {
+          ['workspace' => array_map(function (Organization $organization) {
               return $organization->getUuid();
           }, $user->getAdministratedOrganizations()->toArray())];
 
@@ -305,6 +305,8 @@ class UserController extends AbstractCrudController
      * @param Workspace $workspace
      *
      * @return JsonResponse
+     *
+     * @todo move in workspace api
      */
     public function listManagedWorkspaceAction(User $user, Request $request)
     {

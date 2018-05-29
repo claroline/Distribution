@@ -8,6 +8,8 @@ use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
+use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
+use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +34,11 @@ class UserListener
     /** @var ProfileSerializer */
     private $profileSerializer;
 
+    /** @var ResourceNodeManager */
+    private $resourceNodeManager;
+
+    private $userManager;
+
     /**
      * UserListener constructor.
      *
@@ -39,24 +46,32 @@ class UserListener
      *     "templating"           = @DI\Inject("templating"),
      *     "finder"               = @DI\Inject("claroline.api.finder"),
      *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
-     *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile")
+     *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile"),
+     *     "resourceNodeManager"  = @DI\Inject("claroline.manager.resource_node"),
+     *     "userManager"          = @DI\Inject("claroline.manager.user_manager")
      * })
      *
      * @param TwigEngine           $templating
      * @param FinderProvider       $finder
      * @param ParametersSerializer $parametersSerializer
      * @param ProfileSerializer    $profileSerializer
+     * @param ResourceNodeManager  $resourceNodeManager
+     * @param UserManager          $userManager
      */
     public function __construct(
         TwigEngine $templating,
         FinderProvider $finder,
         ParametersSerializer $parametersSerializer,
-        ProfileSerializer $profileSerializer)
-    {
+        ProfileSerializer $profileSerializer,
+        ResourceNodeManager $resourceNodeManager,
+        UserManager $userManager
+    ) {
         $this->templating = $templating;
         $this->finder = $finder;
         $this->parametersSerializer = $parametersSerializer;
         $this->profileSerializer = $profileSerializer;
+        $this->resourceNodeManager = $resourceNodeManager;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -69,7 +84,7 @@ class UserListener
     public function onDisplayTool(OpenAdministrationToolEvent $event)
     {
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Administration:User\index.html.twig', [
+            'ClarolineCoreBundle:administration:user\index.html.twig', [
                 // todo : put it in the async load of form
                 'parameters' => $this->parametersSerializer->serialize(),
                 'profile' => $this->profileSerializer->serialize(),

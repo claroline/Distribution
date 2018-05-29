@@ -12,91 +12,87 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TinyMceUploadModalType extends AbstractType
 {
-    private $uncompress;
-    private $destinations;
-
-    public function __construct($destinations = array(), $uncompress = false)
-    {
-        $this->uncompress = $uncompress;
-        $this->destinations = array();
-
-        foreach ($destinations as $destination) {
-            $nodeId = $destination->getResourceNode()->getId();
-            $this->destinations[$nodeId] = $destination->getResourceNode()->getPathForDisplay();
-        }
-
-        $this->destinations['others'] = 'others';
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'hidden', array('data' => 'tmpname'));
+        $destinations = [];
+
+        foreach ($options['destinations'] as $destination) {
+            $nodeId = $destination->getResourceNode()->getId();
+            $destinations[$nodeId] = $destination->getResourceNode()->getPathForDisplay();
+        }
+
+        $destinations['others'] = 'others';
+
+        $builder->add('name', HiddenType::class, ['data' => 'tmpname']);
         $builder->add(
-            'file',
-            'hidden',
-            array(
-                'label' => 'file',
+            FileType::class,
+            HiddenType::class,
+            [
+                'label' => FileType::class,
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
-                ),
-           )
+                ],
+           ]
         );
-        if (count($this->destinations) > 1) {
+
+        if (count($destinations) > 1) {
             $builder->add(
                 'destination',
-                'choice',
-                array(
+                ChoiceType::class,
+                [
                     'label' => 'destination',
                     'mapped' => false,
-                    'choices' => $this->destinations,
-                )
+                    'choices' => $destinations,
+                ]
             );
         }
-        if ($this->uncompress) {
+
+        if ($options['uncompress']) {
             $builder->add(
                 'uncompress',
-                'checkbox',
-                array(
+                CheckboxType::class,
+                [
                     'label' => 'uncompress_file',
                     'mapped' => false,
                     'required' => false,
-                )
+                ]
             );
         }
+
         $builder->add(
             'published',
-            'checkbox',
-            array(
+            CheckboxType::class,
+            [
                 'label' => 'published',
                 'required' => true,
                 'mapped' => false,
-                'attr' => array('checked' => 'checked'),
-           )
+                'attr' => ['checked' => 'checked'],
+           ]
         );
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'file_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver
-        ->setDefaults(
-            array(
+        $resolver->setDefaults(
+            [
                 'translation_domain' => 'platform',
-                )
+                'destinations' => [],
+                'uncompress' => false,
+            ]
         );
     }
 }

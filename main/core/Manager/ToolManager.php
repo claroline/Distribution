@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
@@ -36,6 +35,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ToolManager
 {
+    // todo adds a config in tools to avoid this
+    const WORKSPACE_MODEL_TOOLS = ['home', 'resource_manager', 'users'];
+
     /** @var OrderedToolRepository */
     private $orderedToolRepo;
     /** @var RoleRepository */
@@ -46,8 +48,6 @@ class ToolManager
     private $userRepo;
 
     private $adminToolRepo;
-    /** @var EventDispatcher */
-    private $ed;
     /** @var ClaroUtilities */
     private $utilities;
     /** @var ObjectManager */
@@ -65,7 +65,6 @@ class ToolManager
      * Constructor.
      *
      * @DI\InjectParams({
-     *     "ed"                = @DI\Inject("claroline.event.event_dispatcher"),
      *     "utilities"         = @DI\Inject("claroline.utilities.misc"),
      *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
      *     "roleManager"       = @DI\Inject("claroline.manager.role_manager"),
@@ -75,7 +74,6 @@ class ToolManager
      * })
      */
     public function __construct(
-        StrictDispatcher $ed,
         ClaroUtilities $utilities,
         ObjectManager $om,
         RoleManager $roleManager,
@@ -89,7 +87,6 @@ class ToolManager
         $this->adminToolRepo = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool');
         $this->pwsToolConfigRepo = $om->getRepository('ClarolineCoreBundle:Tool\PwsToolConfig');
         $this->userRepo = $om->getRepository('ClarolineCoreBundle:User');
-        $this->ed = $ed;
         $this->utilities = $utilities;
         $this->om = $om;
         $this->roleManager = $roleManager;
@@ -438,10 +435,6 @@ class ToolManager
      */
     public function removeDesktopTool(Tool $tool, User $user, $type = 0)
     {
-        if ('parameters' === $tool->getName()) {
-            throw new UnremovableToolException('You cannot remove the parameter tool from the desktop.');
-        }
-
         $orderedTool = $this->orderedToolRepo->findOneBy(
             ['user' => $user, 'tool' => $tool, 'type' => $type]
         );
@@ -671,45 +664,61 @@ class ToolManager
     }
 
     /**
-     * @param string[]                                         $roles
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param string[]  $roles
+     * @param Workspace $workspace
+     * @param int       $type
      *
-     * @return \Claroline\CoreBundle\Entity\Tool\OrderedTool[]
+     * @return OrderedTool[]
      */
-    public function getOrderedToolsByWorkspaceAndRoles(
-        Workspace $workspace,
-        array $roles,
-        $type = 0
-    ) {
+    public function getOrderedToolsByWorkspaceAndRoles(Workspace $workspace, array $roles, $type = 0)
+    {
         if ($workspace->isPersonal()) {
-            return $this->orderedToolRepo->findPersonalDisplayableByWorkspaceAndRoles(
+            $tools = $this->orderedToolRepo->findPersonalDisplayableByWorkspaceAndRoles(
                 $workspace,
                 $roles,
                 $type
             );
+        } else {
+            $tools = $this->orderedToolRepo->findByWorkspaceAndRoles($workspace, $roles, $type);
         }
 
-        return $this->orderedToolRepo->findByWorkspaceAndRoles($workspace, $roles, $type);
+        if ($workspace->isModel()) {
+            $tools = array_filter($tools, function (OrderedTool $orderedTool) {
+                return in_array($orderedTool->getTool()->getName(), static::WORKSPACE_MODEL_TOOLS);
+            });
+        }
+
+        return $tools;
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param Workspace $workspace
+     * @param int       $type
      *
-     * @return \Claroline\CoreBundle\Entity\Tool\OrderedTool[]
+     * @return OrderedTool[]
      */
     public function getOrderedToolsByWorkspace(Workspace $workspace, $type = 0)
     {
         // pre-load associated tools to save some requests
         $this->toolRepo->findDisplayedToolsByWorkspace($workspace, $type);
 
+        // load workspace tools
         if ($workspace->isPersonal()) {
-            return $this->orderedToolRepo->findPersonalDisplayable($workspace, $type);
+            $tools = $this->orderedToolRepo->findPersonalDisplayable($workspace, $type);
+        } else {
+            $tools = $this->orderedToolRepo->findBy(
+                ['workspace' => $workspace, 'type' => $type],
+                ['order' => 'ASC']
+            );
         }
 
-        return $this->orderedToolRepo->findBy(
-            ['workspace' => $workspace, 'type' => $type],
-            ['order' => 'ASC']
-        );
+        if ($workspace->isModel()) {
+            $tools = array_filter($tools, function (OrderedTool $orderedTool) {
+                return in_array($orderedTool->getTool()->getName(), static::WORKSPACE_MODEL_TOOLS);
+            });
+        }
+
+        return $tools;
     }
 
     /**
@@ -741,6 +750,11 @@ class ToolManager
             ->findOneByName($name);
     }
 
+    /**
+     * @param array $roles
+     *
+     * @return AdminTool[]
+     */
     public function getAdminToolsByRoles(array $roles)
     {
         return $this->om->getRepository('Claroline\CoreBundle\Entity\Tool\AdminTool')->findByRoles($roles);
@@ -752,9 +766,10 @@ class ToolManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $user
+     * @param User $user
+     * @param int $type
      *
-     * @return \Claroline\CoreBundle\Entity\Tool\OrderedTool[]
+     * @return OrderedTool[]
      */
     public function getOrderedToolsByUser(User $user, $type = 0)
     {
@@ -1074,11 +1089,7 @@ class ToolManager
         $type = 0,
         $executeQuery = true
     ) {
-        $excludedToolNames[] = 'home';
-
-        if (1 === $type) {
-            $excludedToolNames[] = 'parameters';
-        }
+        $excludedToolNames[] = 'home'; // maybe not
 
         return $this->orderedToolRepo->findConfigurableDesktopOrderedToolsByUser(
             $user,
@@ -1093,11 +1104,7 @@ class ToolManager
         array $excludedToolNames = [],
         $executeQuery = true
     ) {
-        $excludedToolNames[] = 'home';
-
-        if (1 === $type) {
-            $excludedToolNames[] = 'parameters';
-        }
+        $excludedToolNames[] = 'home'; // maybe not
 
         return $this->orderedToolRepo->findConfigurableDesktopOrderedToolsByTypeForAdmin(
             $excludedToolNames,
@@ -1111,11 +1118,7 @@ class ToolManager
         array $excludedToolNames = [],
         $executeQuery = true
     ) {
-        $excludedToolNames[] = 'home';
-
-        if (1 === $type) {
-            $excludedToolNames[] = 'parameters';
-        }
+        $excludedToolNames[] = 'home'; // maybe not
 
         return $this->orderedToolRepo->findLockedConfigurableDesktopOrderedToolsByTypeForAdmin(
             $excludedToolNames,

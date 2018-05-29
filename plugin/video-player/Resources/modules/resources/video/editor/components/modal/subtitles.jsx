@@ -4,12 +4,11 @@ import cloneDeep from 'lodash/cloneDeep'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
-import Modal from 'react-bootstrap/lib/Modal'
 
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {constants as formConst} from '#/main/core/layout/form/constants'
-import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {constants as intlConst} from '#/main/app/intl/constants'
+import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {FileGroup} from '#/main/core/layout/form/components/group/file-group.jsx'
@@ -22,7 +21,7 @@ export const MODAL_VIDEO_SUBTITLES = 'MODAL_VIDEO_SUBTITLES'
 
 function generateLangs() {
   const langs = {}
-  Object.keys(formConst.LANGS).forEach(key => langs[key] = formConst.LANGS[key]['nativeName'])
+  Object.keys(intlConst.LANGS).forEach(key => langs[key] = intlConst.LANGS[key]['nativeName'])
 
   return langs
 }
@@ -100,7 +99,7 @@ class Subtitles extends Component {
     switch (property) {
       case 'lang':
         track['meta']['lang'] = value || ''
-        track['meta']['label'] = value ? formConst.LANGS[value]['nativeName'] : ''
+        track['meta']['label'] = value ? intlConst.LANGS[value]['nativeName'] : ''
         break
       case 'default':
         track['meta']['default'] = value
@@ -156,12 +155,12 @@ class Subtitles extends Component {
 
   render() {
     return (
-      <BaseModal
+      <Modal
         title={trans('subtitles')}
         icon="fa fa-fw fa-list"
         {...this.props}
       >
-        <Modal.Body>
+        <div className="modal-body">
           <div className="alert alert-info">
             {trans('subtitle_format_message')}
           </div>
@@ -245,12 +244,12 @@ class Subtitles extends Component {
               {trans('add_subtitle')}
             </button>
           }
-        </Modal.Body>
+        </div>
 
         <button className="modal-btn btn btn-default" onClick={this.props.hideModal}>
           {trans('close')}
         </button>
-      </BaseModal>
+      </Modal>
     )
   }
 }
@@ -270,9 +269,11 @@ const SubtitlesModal = connect(
   }),
   (dispatch) => ({
     saveSubtitle: (track) => dispatch(actions.saveSubtitle(track)),
-    deleteSubtitle: id => dispatch(modalActions.showModal(MODAL_DELETE_CONFIRM, {
+    deleteSubtitle: id => dispatch(modalActions.showModal(MODAL_CONFIRM, {
+      icon: 'fa fa-fa-trash-o',
       title: trans('delete_subtitle'),
       question: trans('delete_subtitle_confirm_message'),
+      dangerous: true,
       handleConfirm: () => dispatch(actions.deleteSubtitle(id))
     })),
     hideModal: () => dispatch(modalActions.hideModal())

@@ -38,6 +38,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -61,7 +62,7 @@ class HomeTabController extends Controller
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "homeTabManager"  = @DI\Inject("claroline.manager.home_tab_manager"),
      *     "pluginManager"   = @DI\Inject("claroline.manager.plugin_manager"),
-     *     "request"         = @DI\Inject("request"),
+     *     "request"         = @DI\Inject("request_stack"),
      *     "serializer"      = @DI\Inject("jms_serializer"),
      *     "widgetManager"   = @DI\Inject("claroline.manager.widget_manager")
      * })
@@ -71,7 +72,7 @@ class HomeTabController extends Controller
         EventDispatcherInterface $eventDispatcher,
         HomeTabManager $homeTabManager,
         PluginManager $pluginManager,
-        Request $request,
+        RequestStack $request,
         Serializer $serializer,
         WidgetManager $widgetManager
     ) {
@@ -80,7 +81,7 @@ class HomeTabController extends Controller
         $this->eventDispatcher = $eventDispatcher;
         $this->homeTabManager = $homeTabManager;
         $this->pluginManager = $pluginManager;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->serializer = $serializer;
         $this->widgetManager = $widgetManager;
     }
@@ -91,7 +92,7 @@ class HomeTabController extends Controller
      *     name="claro_admin_home_tabs_configuration",
      *     options = {"expose"=true}
      * )
-     * @EXT\Template("ClarolineCoreBundle:Administration\HomeTab:adminHomeTabsConfig.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration/home_tab:admin_home_tabs_config.html.twig")
      *
      * Displays the admin homeTabs configuration page.
      *
@@ -162,7 +163,7 @@ class HomeTabController extends Controller
      */
     public function postAdminHomeTabCreationAction($homeTabType = 'desktop')
     {
-        $isDesktop = ($homeTabType === 'desktop');
+        $isDesktop = ('desktop' === $homeTabType);
         $type = $isDesktop ? 'admin_desktop' : 'admin_workspace';
         $formType = new HomeTabType('admin');
         $formType->enableApi();
@@ -214,7 +215,7 @@ class HomeTabController extends Controller
             ];
 
             return $this->apiManager->handleFormView(
-                'ClarolineCoreBundle:API:HomeTab\adminHomeTabCreateForm.html.twig',
+                'ClarolineCoreBundle:api:home_tab\admin_home_tab_create_form.html.twig',
                 $form,
                 $options
             );
@@ -247,7 +248,7 @@ class HomeTabController extends Controller
         $form = $this->createForm($formType, $homeTab);
 
         return $this->apiManager->handleFormView(
-            'ClarolineCoreBundle:API:HomeTab\adminHomeTabEditForm.html.twig',
+            'ClarolineCoreBundle:api:home_tab\admin_home_tab_edit_form.html.twig',
             $form
         );
     }
@@ -311,7 +312,7 @@ class HomeTabController extends Controller
             ];
 
             return $this->apiManager->handleFormView(
-                'ClarolineCoreBundle:API:HomeTab\adminHomeTabEditForm.html.twig',
+                'ClarolineCoreBundle:api:home_tab\admin_home_tab_edit_form.html.twig',
                 $form,
                 $options
             );
@@ -418,7 +419,7 @@ class HomeTabController extends Controller
         $form = $this->createForm($formType);
 
         return $this->apiManager->handleFormView(
-            'ClarolineCoreBundle:API:Widget\widgetInstanceCreateForm.html.twig',
+            'ClarolineCoreBundle:api:widget\widget_instance_create_form.html.twig',
             $form
         );
     }
@@ -436,7 +437,7 @@ class HomeTabController extends Controller
     public function postAdminWidgetInstanceCreationAction(HomeTab $homeTab, $homeTabType = 'desktop')
     {
         $this->checkAdminHomeTab($homeTab, $homeTabType);
-        $isDesktop = ($homeTabType === 'desktop');
+        $isDesktop = ('desktop' === $homeTabType);
         $formType = new WidgetInstanceConfigType('admin', $this->bundles);
         $formType->enableApi();
         $form = $this->createForm($formType);
@@ -486,7 +487,7 @@ class HomeTabController extends Controller
             ];
 
             return $this->apiManager->handleFormView(
-                'ClarolineCoreBundle:API:Widget\widgetInstanceCreateForm.html.twig',
+                'ClarolineCoreBundle:api:widget\widget_instance_create_form.html.twig',
                 $form,
                 $options
             );
@@ -520,7 +521,7 @@ class HomeTabController extends Controller
         $form = $this->createForm($formType, $widgetInstance);
 
         return $this->apiManager->handleFormView(
-            'ClarolineCoreBundle:API:Widget\widgetInstanceEditForm.html.twig',
+            'ClarolineCoreBundle:api:widget\widget_instance_edit_form.html.twig',
             $form,
             ['extra_infos' => $widget->isConfigurable(), 'form_view' => ['instance' => $widgetInstance]]
         );
@@ -591,7 +592,7 @@ class HomeTabController extends Controller
             ];
 
             return $this->apiManager->handleFormView(
-                'ClarolineCoreBundle:API:Widget\widgetInstanceEditForm.html.twig',
+                'ClarolineCoreBundle:api:widget\widget_instance_edit_form.html.twig',
                 $form,
                 $options
             );
@@ -685,7 +686,7 @@ class HomeTabController extends Controller
 
     private function checkAdminAccessForWidgetHomeTabConfig(WidgetHomeTabConfig $whtc)
     {
-        if ($whtc->getType() !== 'admin' ||
+        if ('admin' !== $whtc->getType() ||
             !is_null($whtc->getUser()) ||
             !is_null($whtc->getWorkspace())) {
             throw new AccessDeniedException();

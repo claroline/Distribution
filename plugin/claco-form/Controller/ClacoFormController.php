@@ -39,6 +39,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -81,7 +82,7 @@ class ClacoFormController extends Controller
      *     "locationManager"       = @DI\Inject("claroline.manager.organization.location_manager"),
      *     "pdfManager"            = @DI\Inject("claroline.manager.pdf_manager"),
      *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "request"               = @DI\Inject("request"),
+     *     "request"               = @DI\Inject("request_stack"),
      *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
      *     "templating"            = @DI\Inject("templating"),
      *     "translator"            = @DI\Inject("translator"),
@@ -105,7 +106,7 @@ class ClacoFormController extends Controller
         LocationManager $locationManager,
         PdfManager $pdfManager,
         PlatformConfigurationHandler $platformConfigHandler,
-        Request $request,
+        RequestStack $request,
         RoleManager $roleManager,
         TwigEngine $templating,
         TranslatorInterface $translator,
@@ -127,7 +128,7 @@ class ClacoFormController extends Controller
         $this->locationManager = $locationManager;
         $this->pdfManager = $pdfManager;
         $this->platformConfigHandler = $platformConfigHandler;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->roleManager = $roleManager;
         $this->templating = $templating;
         $this->translator = $translator;
@@ -993,7 +994,9 @@ class ClacoFormController extends Controller
      */
     public function downloadAction(Entry $entry, Field $field)
     {
-        if ($field->getType() !== FieldFacet::FILE_TYPE) {
+        $field = $fieldValue->getField();
+
+        if (FieldFacet::FILE_TYPE !== $field->getType()) {
             return new JsonResponse(null, 404);
         }
         $fieldValue = $this->clacoFormManager->getFieldValueByEntryAndField($entry, $field);

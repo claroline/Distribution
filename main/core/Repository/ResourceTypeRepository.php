@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Repository;
 
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -47,11 +49,12 @@ class ResourceTypeRepository extends EntityRepository implements ContainerAwareI
     /**
      * Returns the number of existing resources for each resource type.
      *
-     * @param null $workspace
+     * @param Workspace $workspace
+     * @param null $organizations
      *
      * @return array
      */
-    public function countResourcesByType($workspace = null)
+    public function countResourcesByType($workspace = null, $organizations = null)
     {
         $qb = $this
             ->createQueryBuilder('type')
@@ -69,13 +72,22 @@ class ResourceTypeRepository extends EntityRepository implements ContainerAwareI
                 ->setParameter('workspace', $workspace);
         }
 
+        if ($organizations !== null) {
+            $qb->leftJoin('Claroline\CoreBundle\Entity\Workspace\Workspace', 'ws', 'WITH', 'ws = rs.workspace')
+                ->join('ws.organizations', 'orgas')
+                ->andWhere('orgas IN (:organizations)')
+                ->setParameter('organizations', $organizations);
+        }
+
         return $qb->getQuery()->getResult();
     }
 
     /**
      * Returns all the resource types introduced by plugins.
      *
-     * @return array[ResourceType]
+     * @param bool $filterEnabled - when true, it will only return resource types for enabled plugins
+     *
+     * @return ResourceType[]
      */
     public function findAll($filterEnabled = true)
     {
@@ -84,8 +96,7 @@ class ResourceTypeRepository extends EntityRepository implements ContainerAwareI
         }
 
         $dql = '
-          SELECT rt, ma FROM Claroline\CoreBundle\Entity\Resource\ResourceType rt
-          LEFT JOIN rt.actions ma
+          SELECT rt FROM Claroline\CoreBundle\Entity\Resource\ResourceType rt
           LEFT JOIN rt.plugin p
           WHERE (CONCAT(p.vendorName, p.bundleName) IN (:bundles)
           OR rt.plugin is NULL)

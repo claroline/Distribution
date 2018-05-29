@@ -12,44 +12,37 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HomeTemplateType extends AbstractType
 {
-    private $templates = array();
-
-    public function __construct($templatesDir)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $contents = is_dir($templatesDir) ? scandir($templatesDir) : array();
+        $templates = [];
+
+        $contents = is_dir($options['dir']) ? scandir($options['dir']) : [];
 
         foreach ($contents as $content) {
             if (!is_dir($content)) {
-                $this->templates[$content] = $content;
+                $templates[$content] = $content;
             }
         }
-    }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
         $builder->add(
             'template',
-            'choice',
-            array(
+            ChoiceType::class,
+            [
                 'required' => false,
-                'choices' => $this->templates,
+                'choices' => $templates,
                 'label' => 'template',
-            )
+            ]
         );
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'home_template_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform', 'dir' => tmp_dir()]);
     }
 }

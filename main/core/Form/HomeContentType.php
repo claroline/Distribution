@@ -12,48 +12,46 @@
 namespace Claroline\CoreBundle\Form;
 
 use Claroline\CoreBundle\Entity\Content;
+use Claroline\CoreBundle\Form\Field\ContentType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HomeContentType extends AbstractType
 {
-    private $name = 'content';
     private $type;
     private $father;
 
-    public function __construct($id, $type = null, $father = null)
+    public function __construct()
     {
-        if ($id) {
-            $this->name .= $id;
-        }
-
-        $this->type = $type;
-        $this->father = $father;
+        $this->name = 'content';
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ('menu' === $this->type && !$this->father) {
+        if ($options['id']) {
+            $this->name .= $options['id'];
+        }
+        if ('menu' === $options['type'] && $options['father']) {
             $builder->add(
                 $this->name,
-                'content',
+                ContentType::class,
                 [
                     'data' => $builder->getData(),
-                    'theme_options' => [
+                    'attr' => [
                         'titlePlaceHolder' => 'menu_title',
                         'contentText' => false,
                         'tinymce' => false,
                     ],
                 ]
             );
-        } elseif ('menu' === $this->type) {
+        } elseif ('menu' === $options['type']) {
             $builder->add(
                 $this->name,
-                'content',
+                ContentType::class,
                 [
                     'data' => $builder->getData(),
-                    'theme_options' => [
+                    'attr' => [
                         'titlePlaceHolder' => 'link_title',
                         'textPlaceHolder' => 'link_address',
                         'tinymce' => false,
@@ -61,19 +59,18 @@ class HomeContentType extends AbstractType
                 ]
             );
         } else {
-            $builder->add($this->name, 'content', ['data' => $builder->getData()]);
+            $builder->add($this->name, ContentType::class, ['data' => $builder->getData()]);
         }
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'home_content_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(
-            ['translation_domain' => 'platform', 'validation_groups' => ['registration', 'Default']]
-        );
+        $resolver->setDefaults([
+            'id' => null,
+            'type' => null,
+            'father' => null,
+            'translation_domain' => 'platform',
+            'validation_groups' => ['registration', 'Default'],
+        ]);
     }
 }

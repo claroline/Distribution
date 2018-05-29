@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\Form\Administration\PortalConfigurationType;
 use Claroline\CoreBundle\Library\Configuration\UnwritableException;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -22,7 +23,7 @@ class PortalConfigurationController extends Controller
 {
     /**
      * @EXT\Route("/parameters", name="claro_admin_portal_parameters")
-     * @EXT\Template("ClarolineCoreBundle:Administration\Portal:index.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration/portal:index.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -30,10 +31,10 @@ class PortalConfigurationController extends Controller
     public function indexAction(Request $request)
     {
         $portalManager = $this->get('claroline.manager.portal_manager');
-        $data = array(
+        $data = [
             'portalResources' => $portalManager->getPortalEnabledResourceTypes(),
-        );
-        $form = $this->createForm('portal_configuration_form', $data);
+        ];
+        $form = $this->createForm(PortalConfigurationType::class, null, ['choices' => $data]);
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             if ($form->isValid()) {
@@ -45,7 +46,7 @@ class PortalConfigurationController extends Controller
                         new FormError(
                             $this->get('translator')->trans(
                                 'unwritable_file_exception',
-                                array('%path%' => $e->getPath()),
+                                ['%path%' => $e->getPath()],
                                 'platform'
                             )
                         )
@@ -57,16 +58,16 @@ class PortalConfigurationController extends Controller
             }
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
-        );
+        ];
     }
 
     protected function addFlashMessage($message, $type = 'success')
     {
         $this->get('session')->getFlashBag()->add(
             $type,
-            $this->get('translator')->trans($message, array(), 'platform')
+            $this->get('translator')->trans($message, [], 'platform')
         );
     }
 }

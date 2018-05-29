@@ -2,7 +2,13 @@
 
 namespace Icap\WebsiteBundle\Form;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,64 +23,56 @@ class WebsitePageType extends AbstractType
         $builder
             ->add(
                 'title',
-                'text'
+                TextType::class
             )
             ->add(
                 'type',
-                'text'
+                TextType::class
             )
             ->add(
                 'description',
-                'text'
+                TextType::class
             )
             ->add(
                 'visible',
-                'checkbox'
+                CheckboxType::class
             )
             ->add(
                 'isSection',
-                'checkbox'
+                CheckboxType::class
             )
             ->add(
                 'richText',
-                'textarea'
+                TextareaType::class
             )
             ->add(
                 'url',
-                'url'
+                UrlType::class
             )
             ->add(
                 'target',
-                'choice',
-                array(
-                    'choices' => array(
+                ChoiceType::class,
+                [
+                    'choices' => [
                         'embed' => 0,
                         'new_window' => 1,
-                    ),
+                    ],
                     'choices_as_values' => true,
-                )
+                ]
             )
             ->add(
                 'resourceNode',
-                'entity',
-                array(
+                EntityType::class,
+                [
                     'class' => 'ClarolineCoreBundle:Resource\ResourceNode',
                     'choice_label' => 'id',
-                )
+                ]
             )
             ->add(
                 'resourceNodeType',
-                'text'
+                TextType::class
             )
         ;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'icap_website_page_type';
     }
 
     /**
@@ -82,11 +80,11 @@ class WebsitePageType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Icap\WebsiteBundle\Entity\WebsitePage',
             'translation_domain' => 'icap_website',
             'csrf_protection' => false,
             'intention' => 'create_website_page',
-        ));
+        ]);
     }
 }

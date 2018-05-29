@@ -13,33 +13,34 @@ namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
+//TODO FORM
 class AdminAnalyticsConnectionsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add(
-                'unique', 'buttongroupselect', array(
+                'unique', 'buttongroupselect', [
                     'label' => 'show',
-                    'attr' => array('class' => 'input-sm'),
-                    'choices' => array(
+                    'attr' => ['class' => 'input-sm'],
+                    'choices' => [
                         'false' => 'connections',
                         'true' => 'unique_connections',
-                    ),
-                    'theme_options' => array('label_width' => 'col-md-2', 'control_width' => 'col-md-3'),
-                )
+                    ],
+                    'attr' => ['label_width' => 'col-md-2', 'control_width' => 'col-md-3'],
+                ]
             )
             ->add(
                 'range',
                 'daterange',
-                array(
+                [
                     'label' => 'for_period',
                     'required' => false,
-                    'attr' => array('class' => 'input-sm'),
-                    'theme_options' => array('label_width' => 'col-md-2', 'control_width' => 'col-md-3'),
-                )
+                    'attr' => ['class' => 'input-sm'],
+                    'attr' => ['label_width' => 'col-md-2', 'control_width' => 'col-md-3'],
+                ]
             );
     }
 
@@ -48,14 +49,14 @@ class AdminAnalyticsConnectionsType extends AbstractType
         return 'admin_analytics_connections_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
         ->setDefaults(
-            array(
+            [
                 'translation_domain' => 'platform',
                 'csrf_protection' => false,
-            )
+            ]
         );
     }
 }

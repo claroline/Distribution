@@ -1124,6 +1124,7 @@
     "select_workspace_to_link": "Select workspace to link",
     "select_workspaces_for_registration": "Select workspaces for registration",
     "selected_users": "Selected users",
+    "select_value": "Select a value...",
     "selected_workspaces_for_registration": "Selected workspaces for registration",
     "selected_workspaces_will_be_put_in_it": "Selected workspaces will will be available in it",
     "self_registration": "Self-registration",
@@ -1613,7 +1614,6 @@
     "register_groups": "Register groups",
     "add_workspaces": "Add workspaces",
     "pending_registrations": "Pending registrations",
-
     "self_registration_platform_help": "Users will be able to register themselves on the platform.",
     "self_registration_workspace_help": "Users will be able to register themselves in the workspace.",
     "activate_self_unregistration": "Enable self-unregistrations",
@@ -1651,5 +1651,10 @@
     "success": "Success",
     "log": "Log",
     "execution_date": "Execution date",
-    "upload date": "Upload date"
+    "upload date": "Upload date",
+    "about": "About",
+    "created_at": "Created at %date%",
+    "updated_at": "Updated at %date%",
+    "authors": "Authors",
+    "authors_license": "Authors & License"
 }

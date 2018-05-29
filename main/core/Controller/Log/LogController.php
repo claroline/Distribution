@@ -11,22 +11,23 @@
 
 namespace Claroline\CoreBundle\Controller\Log;
 
-use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
+use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Entity\Log\LogHiddenWorkspaceWidgetConfig;
+use Claroline\CoreBundle\Entity\Log\LogWidgetConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
+use Claroline\CoreBundle\Form\Log\LogDesktopWidgetConfigType;
+use Claroline\CoreBundle\Manager\ToolManager;
+use Claroline\CoreBundle\Manager\WorkspaceManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Claroline\CoreBundle\Form\Log\LogDesktopWidgetConfigType;
-use Claroline\CoreBundle\Entity\Log\Log;
-use Claroline\CoreBundle\Entity\Log\LogHiddenWorkspaceWidgetConfig;
-use Claroline\CoreBundle\Manager\ToolManager;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
-use Claroline\CoreBundle\Entity\Log\LogWidgetConfig;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Controller of the user profile.
@@ -74,8 +75,9 @@ class LogController extends Controller
      * )
      * @EXT\ParamConverter(
      *      "log",
-     *           class="ClarolineCoreBundle:Log\Log",
-     *           options={"id" = "logId", "strictId" = true}
+     *      class="ClarolineCoreBundle:Log\Log",
+     *      options={"id" = "logId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Displays the public profile of an user.
@@ -98,8 +100,8 @@ class LogController extends Controller
         }
 
         return $this->render(
-            'ClarolineCoreBundle:Log:view_details.html.twig',
-            array('log' => $log)
+            'ClarolineCoreBundle:log:view_details.html.twig',
+            ['log' => $log]
         );
     }
 
@@ -113,7 +115,7 @@ class LogController extends Controller
     public function updateLogWorkspaceWidgetConfig(WidgetInstance $widgetInstance)
     {
         if (!$this->authorization->isGranted('edit', $widgetInstance)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedHttpException();
         }
 
         $config = $this->get('claroline.log.manager')->getLogConfig($widgetInstance);
@@ -133,11 +135,11 @@ class LogController extends Controller
             }
         } else {
             return $this->render(
-                'ClarolineCoreBundle:Log:config_workspace_widget_form.html.twig',
-                array(
+                'ClarolineCoreBundle:log:config_workspace_widget_form.html.twig',
+                [
                     'form' => $form->createView(),
                     'instance' => $widgetInstance,
-                )
+                ]
             );
         }
 
@@ -158,7 +160,7 @@ class LogController extends Controller
     public function updateLogDesktopWidgetConfig(WidgetInstance $widgetInstance)
     {
         if (!$this->authorization->isGranted('edit', $widgetInstance)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedHttpException();
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -166,20 +168,20 @@ class LogController extends Controller
 
         if ($widgetInstance->isAdmin()) {
             $user = null;
-            $hiddenConfigs = array();
-            $workspaces = array();
+            $hiddenConfigs = [];
+            $workspaces = [];
         } else {
             $user = $this->tokenStorage->getToken()->getUser();
             $hiddenConfigs = $em->getRepository('ClarolineCoreBundle:Log\LogHiddenWorkspaceWidgetConfig')
-                ->findBy(array('user' => $user));
+                ->findBy(['user' => $user]);
             $workspaces = $this->workspaceManager
-                ->getWorkspacesByUserAndRoleNames($user, array('ROLE_WS_COLLABORATOR', 'ROLE_WS_MANAGER'));
+                ->getWorkspacesByUserAndRoleNames($user, ['ROLE_WS_COLLABORATOR', 'ROLE_WS_MANAGER']);
         }
 
         $form = $this->get('form.factory')->create(
             new LogDesktopWidgetConfigType(),
             null,
-            array('workspaces' => $workspaces)
+            ['workspaces' => $workspaces]
         );
         $form->bind($this->getRequest());
 
@@ -197,7 +199,7 @@ class LogController extends Controller
             $em->flush();
 
             foreach ($data as $workspaceId => $visible) {
-                if ($workspaceId != 'amount' && $visible !== true) {
+                if ('amount' != $workspaceId && true !== $visible) {
                     $hiddenConfig = new LogHiddenWorkspaceWidgetConfig();
                     $hiddenConfig->setUser($user);
                     $hiddenConfig->setWorkspaceId($workspaceId);
@@ -210,11 +212,11 @@ class LogController extends Controller
             $em->flush();
         } else {
             return $this->render(
-                'ClarolineCoreBundle:Log:config_desktop_widget_form.html.twig',
-                array(
+                'ClarolineCoreBundle:log:config_desktop_widget_form.html.twig',
+                [
                     'form' => $form->createView(),
                     'instance' => $widgetInstance,
-                )
+                ]
             );
         }
 

@@ -11,39 +11,28 @@
 
 namespace Claroline\CoreBundle\Form\Administration;
 
+use Claroline\CoreBundle\Form\Field\TinymceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MaintenanceMessageType extends AbstractType
 {
-    private $message;
-
-    public function __construct($message = '')
-    {
-        $this->message = $message;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
             'message',
-            'tinymce',
-            array(
+            TinymceType::class,
+            [
                 'required' => false,
                 'mapped' => false,
-                'data' => $this->message,
-            )
+                'data' => $options['message'],
+            ]
         );
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'maintenance_message_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform', 'message' => '']);
     }
 }

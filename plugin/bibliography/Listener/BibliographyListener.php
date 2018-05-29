@@ -3,11 +3,11 @@
 namespace Icap\BibliographyBundle\Listener;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Icap\BibliographyBundle\Entity\BookReference;
 use Icap\BibliographyBundle\Form\BookReferenceType;
@@ -195,7 +195,7 @@ class BibliographyListener
     {
         $params = [];
         $params['_controller'] = 'IcapBibliographyBundle:BookReference:pluginConfigureForm';
-        $subRequest = $this->container->get('request')->duplicate([], null, $params);
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate([], null, $params);
         $response = $this->container->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
         $event->stopPropagation();

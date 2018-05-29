@@ -4,12 +4,12 @@ namespace Innova\VideoRecorderBundle\EventListener\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\DownloadResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Innova\VideoRecorderBundle\Manager\VideoRecorderManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -41,7 +41,7 @@ class VideoRecorderListener
      * @DI\Observe("open_innova_video_recorder")
      * Fired when a ResourceNode of type VideoFile is opened
      *
-     * @param \Claroline\CoreBundle\Event\OpenResourceEvent $event
+     * @param \Claroline\CoreBundle\Event\Resource\OpenResourceEvent $event
      *
      * @throws \Exception
      */
@@ -66,7 +66,7 @@ class VideoRecorderListener
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $formData = $request->request->all();
         $video = $request->files->get('video');
 
@@ -111,7 +111,7 @@ class VideoRecorderListener
     {
         $params = [];
         $params['_controller'] = 'InnovaVideoRecorderBundle:VideoRecorder:pluginConfigureForm';
-        $subRequest = $this->container->get('request')->duplicate([], null, $params);
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate([], null, $params);
         $response = $this->container->get('http_kernel')->handle($subRequest, KernelInterface::SUB_REQUEST);
         $event->setResponse($response);
         $event->stopPropagation();

@@ -18,13 +18,13 @@ class ContributionType extends AbstractType
                 $form = $event->getForm();
                 $data = $event->getData();
                 if ($data === null || $data->getSection() === null || $data->getSection()->isRoot() === false) {
-                    $form->add('title', 'text', array(
-                            'theme_options' => array('label_width' => 'col-md-1', 'control_width' => 'col-md-11'),
+                    $form->add('title', TextType::class, array(
+                            'attr' => array('label_width' => 'col-md-1', 'control_width' => 'col-md-11'),
                         )
                     );
                 }
-                $form->add('text', 'tinymce', array(
-                    'theme_options' => array('label_width' => 'col-md-1', 'control_width' => 'col-md-11'),
+                $form->add(TextType::class, 'tinymce', array(
+                    'attr' => array('label_width' => 'col-md-1', 'control_width' => 'col-md-11'),
                     'attr' => array(
                           'id' => 'icap_wiki_section_text',
                         ),

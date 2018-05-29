@@ -31,10 +31,11 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -58,7 +59,7 @@ class AuthenticationController
 
     /**
      * @DI\InjectParams({
-     *     "request"        = @DI\Inject("request"),
+     *     "request"        = @DI\Inject("request_stack"),
      *     "userManager"    = @DI\Inject("claroline.manager.user_manager"),
      *     "encoderFactory" = @DI\Inject("security.encoder_factory"),
      *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
@@ -72,7 +73,7 @@ class AuthenticationController
      * })
      */
     public function __construct(
-        Request $request,
+        RequestStack $request,
         UserManager $userManager,
         EncoderFactory $encoderFactory,
         ObjectManager $om,
@@ -84,7 +85,7 @@ class AuthenticationController
         PlatformConfigurationHandler $ch,
         StrictDispatcher $dispatcher
     ) {
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->userManager = $userManager;
         $this->encoderFactory = $encoderFactory;
         $this->om = $om;
@@ -113,7 +114,7 @@ class AuthenticationController
      */
     public function loginAction()
     {
-        $lastUsername = $this->request->getSession()->get(SecurityContext::LAST_USERNAME);
+        $lastUsername = $this->request->getSession()->get(Security::LAST_USERNAME);
         $user = $this->userManager->getUserByUsername($lastUsername);
         $selfRegistrationAllowed = $this->ch->getParameter('allow_self_registration');
         $showRegisterButton = $this->ch->getParameter('register_button_at_login');
@@ -127,10 +128,10 @@ class AuthenticationController
             ];
         }
 
-        if ($this->request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $this->request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+        if ($this->request->attributes->has(Security::AUTHENTICATION_ERROR)) {
+            $error = $this->request->attributes->get(Security::AUTHENTICATION_ERROR);
         } else {
-            $error = $this->request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
+            $error = $this->request->getSession()->get(Security::AUTHENTICATION_ERROR);
         }
 
         return [
@@ -148,12 +149,12 @@ class AuthenticationController
      *     name="claro_security_forgot_password",
      *     options={"expose"=true}
      * )
-     * @Template("ClarolineCoreBundle:Authentication:forgotPassword.html.twig")
+     * @Template("ClarolineCoreBundle:authentication:forgot_password.html.twig")
      */
     public function forgotPasswordAction()
     {
         if ($this->mailManager->isMailerAvailable()) {
-            $form = $this->formFactory->create(new EmailType());
+            $form = $this->formFactory->create(EmailType::class);
 
             return ['form' => $form->createView()];
         }
@@ -172,11 +173,11 @@ class AuthenticationController
      *     options={"expose"=true}
      * )
      * @Method("POST")
-     * @Template("ClarolineCoreBundle:Authentication:forgotPassword.html.twig")
+     * @Template("ClarolineCoreBundle:authentication:forgot_password.html.twig")
      */
     public function sendEmailAction()
     {
-        $form = $this->formFactory->create(new EmailType());
+        $form = $this->formFactory->create(EmailType::class);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -222,7 +223,7 @@ class AuthenticationController
      *     options={"expose"=true}
      * )
      *
-     * @Template("ClarolineCoreBundle:Authentication:resetPassword.html.twig")
+     * @Template("ClarolineCoreBundle:authentication:reset_password.html.twig")
      */
     public function resetPasswordAction($hash)
     {
@@ -234,7 +235,7 @@ class AuthenticationController
             ];
         }
 
-        $form = $this->formFactory->create(new ResetPasswordType(), $user);
+        $form = $this->formFactory->create(ResetPasswordType::class, $user);
         $currentTime = time();
 
         // the link is valid for 24h
@@ -256,12 +257,12 @@ class AuthenticationController
      * )
      * @Method("POST")
      *
-     * @Template("ClarolineCoreBundle:Authentication:resetPassword.html.twig")
+     * @Template("ClarolineCoreBundle:authentication:reset_password.html.twig")
      */
     public function newPasswordAction($hash)
     {
         $user = $this->userManager->getByResetPasswordHash($hash);
-        $form = $this->formFactory->create(new ResetPasswordType(), $user);
+        $form = $this->formFactory->create(ResetPasswordType::class, $user);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -292,7 +293,7 @@ class AuthenticationController
      * )
      * @Method("GET")
      *
-     * @Template("ClarolineCoreBundle:Authentication:resetPassword.html.twig")
+     * @Template("ClarolineCoreBundle:authentication:reset_password.html.twig")
      */
     public function validateEmailAction($hash)
     {
@@ -380,7 +381,7 @@ class AuthenticationController
      * )
      * @Method("GET")
      * @SEC\PreAuthorize("hasRole('ROLE_USER')")
-     * @Template("ClarolineCoreBundle:Authentication:authenticated.html.twig")
+     * @Template("ClarolineCoreBundle:authentication:authenticated.html.twig")
      */
     public function triggerAuthenticationAction($hash)
     {

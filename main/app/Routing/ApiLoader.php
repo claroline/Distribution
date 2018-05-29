@@ -114,6 +114,7 @@ class ApiLoader extends Loader
                     $class = null;
                     $found = false;
                     $prefix = '';
+                    $routeNamePrefix = '';
                     $ignore = [];
 
                     //Find via ApiMeta annotation
@@ -132,6 +133,11 @@ class ApiLoader extends Loader
 
                             if (0 === strpos($prefix, '/')) {
                                 $prefix = substr($prefix, 1);
+                            }
+
+                            $routeNamePrefix = $annotation->getName();
+                            if (empty($routeNamePrefix)) {
+                                $routeNamePrefix = $prefix;
                             }
                         }
                     }
@@ -187,7 +193,7 @@ class ApiLoader extends Loader
                             }
 
                             // add the new route to the route collection:
-                            $routeName = 'apiv2_'.$prefix.'_'.$this->toUnderscore($name);
+                            $routeName = 'apiv2_'.$routeNamePrefix.'_'.$this->toUnderscore($name);
                             $routes->add($routeName, $route);
                         }
                     }

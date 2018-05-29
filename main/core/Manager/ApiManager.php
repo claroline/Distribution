@@ -168,7 +168,7 @@ class ApiManager
         $view = View::create($form, $formHttpCode);
         $view->setTemplate($template);
         $view->setTemplateData($parameters);
-        $view->setFormat($this->container->get('request')->getRequestFormat());
+        $view->setFormat($this->container->get('request_stack')->getMasterRequest()->getRequestFormat());
 
         return $this->viewHandler->handle($view);
     }
@@ -181,12 +181,12 @@ class ApiManager
     private function createSerialized($data, $serializerGroup)
     {
         $context = new SerializationContext();
-        $format = $this->container->get('request')->getRequestFormat();
+        $format = $this->container->get('request_stack')->getMasterRequest()->getRequestFormat();
         $format = 'html' === $format ? 'json' : $format;
         $context->setGroups($serializerGroup);
         $content = $this->container->get('serializer')->serialize($data, $format, $context);
         $response = new Response($content);
-        $response->headers->set('Content-Type', $this->container->get('request')->getMimeType($format));
+        $response->headers->set('Content-Type', $this->container->get('request_stack')->getMasterRequest()->getMimeType($format));
 
         return $response;
     }
@@ -198,7 +198,7 @@ class ApiManager
      */
     public function getParameters($name, $class)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $data = $entities = [];
 
         if ($request->request->has($name)) {
@@ -223,7 +223,7 @@ class ApiManager
      */
     public function getParametersByUuid($name, $class)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $data = $entities = [];
 
         if ($request->request->has($name)) {

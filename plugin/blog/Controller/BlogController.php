@@ -151,7 +151,7 @@ class BlogController extends BaseController
      */
     public function rssAction(Blog $blog)
     {
-        $baseUrl = $this->get('request')->getSchemeAndHttpHost();
+        $baseUrl = $this->get('request_stack')->getMasterRequest()->getSchemeAndHttpHost();
 
         $feed = [
             'title' => $blog->getResourceNode()->getName(),
@@ -229,7 +229,6 @@ class BlogController extends BaseController
     /**
      * @Route("/configure/{blogId}", name="icap_blog_configure", requirements={"blogId" = "\d+"})
      * @ParamConverter("blog", class="IcapBlogBundle:Blog", options={"id" = "blogId"})
-     * @Template()
      */
     public function configureAction(Blog $blog)
     {

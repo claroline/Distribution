@@ -11,43 +11,41 @@
 
 namespace Claroline\CoreBundle\Form;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
+//FORM TODO
 class DirectoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
             'name',
-            'text',
-            array(
+            TextType::class,
+            [
                 'constraints' => new NotBlank(),
                 'label' => 'name',
-                'attr' => array('autofocus' => true),
-            )
+                'attr' => ['autofocus' => true],
+            ]
         );
         $builder->add(
             'published',
-            'checkbox',
-            array(
+            CheckboxType::class,
+            [
                 'required' => true,
                 'mapped' => false,
-                'attr' => array('checked' => 'checked'),
+                'attr' => ['checked' => 'checked'],
                 'label' => 'publish_resource',
-            )
+            ]
         );
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'directory_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

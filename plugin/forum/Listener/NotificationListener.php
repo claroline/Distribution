@@ -5,13 +5,15 @@ namespace Claroline\ForumBundle\Listener;
 use Claroline\CoreBundle\Event\Notification\NotificationUserParametersEvent;
 use Icap\NotificationBundle\Event\Notification\NotificationCreateDelegateViewEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * @DI\Service()
  */
-class NotificationListener extends ContainerAware
+class NotificationListener
 {
+    use ContainerAwareTrait;
+
     /**
      * Constructor.
      *

@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use RuntimeException;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
-use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\Role\Role as BaseRole;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  * @DoctrineAssert\UniqueEntity("name")
  */
-class Role implements RoleInterface
+class Role extends BaseRole
 {
     use UuidTrait;
 
@@ -85,22 +85,6 @@ class Role implements RoleInterface
      * @var ArrayCollection
      */
     protected $users;
-
-    /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Facet\Facet",
-     *     mappedBy="roles"
-     * )
-     */
-    protected $facets;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Facet\GeneralFacetPreference",
-     *     mappedBy="role"
-     * )
-     */
-    protected $generalFacetPreference;
 
     /**
      * @ORM\ManyToMany(
@@ -193,7 +177,6 @@ class Role implements RoleInterface
 
         $this->users = new ArrayCollection();
         $this->groups = new ArrayCollection();
-        $this->facets = new ArrayCollection();
         $this->toolRights = new ArrayCollection();
         $this->pwsToolConfig = new ArrayCollection();
         $this->profileProperties = new ArrayCollection();

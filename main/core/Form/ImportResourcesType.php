@@ -12,8 +12,9 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -23,26 +24,21 @@ class ImportResourcesType extends AbstractType
     {
         $builder->add(
             'file',
-            'file',
-            array(
-                'label' => 'file',
+            FileType::class,
+            [
+                'label' => FileType::class,
                 'required' => true,
                 'mapped' => false,
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank(),
                     new File(),
-                ),
-           )
+                ],
+           ]
         );
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'resources_import_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

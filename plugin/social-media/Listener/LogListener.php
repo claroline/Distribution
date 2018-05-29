@@ -5,7 +5,7 @@
  * (c) Claroline Consortium <consortium@claroline.net>
  *
  * Author: Panagiotis TSAVDARIS
- * 
+ *
  * Date: 5/13/15
  */
 
@@ -13,15 +13,17 @@ namespace Icap\SocialmediaBundle\Listener;
 
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Class LogListener.
  *
  * @DI\Service
  */
-class LogListener extends ContainerAware
+class LogListener
 {
+    use ContainerAwareTrait;
+
     /**
      * @DI\InjectParams({
      *      "container" = @DI\Inject("service_container")
@@ -44,8 +46,8 @@ class LogListener extends ContainerAware
     public function onCreateLogListItem(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
-            'IcapSocialmediaBundle:Log:log_list_item.html.twig',
-            array('log' => $event->getLog())
+            'IcapSocialmediaBundle:log:log_list_item.html.twig',
+            ['log' => $event->getLog()]
         );
 
         $event->setResponseContent($content);
@@ -62,14 +64,14 @@ class LogListener extends ContainerAware
     public function onCreateLogDetails(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
-            'IcapSocialmediaBundle:Log:log_details.html.twig',
-            array(
+            'IcapSocialmediaBundle:log:log_details.html.twig',
+            [
                 'log' => $event->getLog(),
                 'listItemView' => $this->container->get('templating')->render(
-                    'IcapSocialmediaBundle:Log:log_list_item.html.twig',
-                    array('log' => $event->getLog())
+                    'IcapSocialmediaBundle:log:log_list_item.html.twig',
+                    ['log' => $event->getLog()]
                 ),
-            )
+            ]
         );
 
         $event->setResponseContent($content);

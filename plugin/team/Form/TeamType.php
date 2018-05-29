@@ -13,7 +13,7 @@ namespace Claroline\TeamBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TeamType extends AbstractType
 {
@@ -21,8 +21,8 @@ class TeamType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
-            ['required' => true]
+            TextType::class,
+            array('required' => true)
         );
         $builder->add(
             'description',
@@ -43,17 +43,17 @@ class TeamType extends AbstractType
         );
         $builder->add(
             'maxUsers',
-            'integer',
-            [
-                'attr' => ['min' => 0],
+            IntegerType::class,
+            array(
+                'attr' => array('min' => 0),
                 'required' => false,
             ]
         );
         $builder->add(
             'isPublic',
-            'choice',
-            [
-                'choices' => [
+            ChoiceType::class,
+            array(
+                'choices' => array(
                     true => 'public',
                     false => 'private',
                 ],
@@ -63,16 +63,16 @@ class TeamType extends AbstractType
         );
         $builder->add(
             'selfRegistration',
-            'checkbox',
-            [
+            CheckboxType::class,
+            array(
                 'required' => true,
                 'attr' => ['class' => 'advanced-param'],
             ]
         );
         $builder->add(
             'selfUnregistration',
-            'checkbox',
-            [
+            CheckboxType::class,
+            array(
                 'required' => true,
                 'attr' => ['class' => 'advanced-param'],
             ]
@@ -99,7 +99,7 @@ class TeamType extends AbstractType
         return 'team_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(['translation_domain' => 'team']);
     }

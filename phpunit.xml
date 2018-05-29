@@ -10,7 +10,7 @@
     processIsolation            = "false"
     stopOnFailure               = "false"
     syntaxCheck                 = "false"
-    bootstrap                   = "../../../app/bootstrap.php.cache" >
+    bootstrap                   = "../../../app/autoload.php" >
 
     <php>
         <server name="KERNEL_DIR" value="../../../app/" />
@@ -37,7 +37,7 @@
             <directory>plugin/collecticiel/Tests/</directory>
             <directory>plugin/message/Tests/</directory>
             <directory>plugin/notification/Tests/</directory>
-            <directory>plugin/competency/Tests/</directory>
+            <!-- <directory>plugin/competency/Tests/</directory> -->
             <directory>plugin/cursus/Tests/</directory>
             <directory>plugin/dropzone/Tests/</directory>
             <directory>plugin/favourite/Tests/</directory>

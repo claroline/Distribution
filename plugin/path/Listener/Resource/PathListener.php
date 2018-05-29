@@ -8,11 +8,11 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -170,7 +170,7 @@ class PathListener
         $form = $this->container->get('form.factory')->create(new ResourceNameType(true), new Path());
 
         // Try to process the form data
-        $form->handleRequest($this->container->get('request'));
+        $form->handleRequest($this->container->get('request_stack')->getMasterRequest());
         if ($form->isValid()) {
             $event->setPublished(
                 $form->get('published')->getData()

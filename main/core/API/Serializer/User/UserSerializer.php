@@ -60,7 +60,6 @@ class UserSerializer
      * @DI\InjectParams({
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "authChecker"     = @DI\Inject("security.authorization_checker"),
-     *     "encoderFactory"  = @DI\Inject("security.encoder_factory"),
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "config"          = @DI\Inject("claroline.config.platform_config_handler"),
      *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
@@ -133,6 +132,7 @@ class UserSerializer
     public function serialize(User $user, array $options = [])
     {
         if (isset($options['public']) && $options['public']) {
+            // TODO : remove me (only used by BBBPlugin and it's not maintained)
             return $this->serializePublic($user);
         }
 
@@ -148,6 +148,8 @@ class UserSerializer
             'administrativeCode' => $user->getAdministrativeCode(),
             'phone' => $user->getPhone(),
             'meta' => $this->serializeMeta($user),
+            'publicUrl' => $user->getPublicUrl(), // todo : merge with the one from meta (I do it to have it in minimal)
+
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {

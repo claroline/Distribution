@@ -12,9 +12,12 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
+//FORM TODO
 class ResourceIconType extends AbstractType
 {
     private $creator;
@@ -28,37 +31,37 @@ class ResourceIconType extends AbstractType
     {
         $builder->add(
             'name',
-            'text',
-            array('label' => 'name', 'disabled' => true)
+            TextType::class,
+            ['label' => 'name', 'disabled' => true]
         );
         $builder->add(
             'newIcon',
-            'file',
-            array(
+            FileType::class,
+            [
                 'required' => false,
                 'mapped' => false,
                 'label' => 'icon',
-            )
+            ]
         );
         $builder->add(
             'creationDate',
             'date',
-            array(
+            [
                 'disabled' => true,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
                 'label' => 'creation_date',
-            )
+            ]
         );
         $builder->add(
             'creator',
-            'text',
-            array(
+            TextType::class,
+            [
                 'data' => $this->creator,
                 'mapped' => false,
                 'disabled' => true,
                 'label' => 'creator',
-            )
+            ]
         );
     }
 
@@ -67,8 +70,8 @@ class ResourceIconType extends AbstractType
         return 'resource_icon_form';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }

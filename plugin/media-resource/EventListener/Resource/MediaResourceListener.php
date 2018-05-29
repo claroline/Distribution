@@ -2,17 +2,16 @@
 
 namespace Innova\MediaResourceBundle\EventListener\Resource;
 
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Innova\MediaResourceBundle\Entity\MediaResource;
 use Innova\MediaResourceBundle\Form\Type\MediaResourceType;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -21,19 +20,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  *
  *  @DI\Service()
  */
-class MediaResourceListener extends ContainerAware
+class MediaResourceListener
 {
-    protected $container;
+    use ContainerAwareTrait;
 
-    /**
-     * @DI\InjectParams({
-     *      "container" = @DI\Inject("service_container")
-     * })
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+    protected $container;
 
     /**
      * @DI\Observe("innova_media_resource_administrate_innova_media_resource")
@@ -81,7 +72,7 @@ class MediaResourceListener extends ContainerAware
         // Create form
         $form = $this->container->get('form.factory')->create(new MediaResourceType(), new MediaResource());
         // Try to process form
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $form->submit($request);
         if ($form->isValid()) {
             $mediaResource = $form->getData();
@@ -139,7 +130,7 @@ class MediaResourceListener extends ContainerAware
      *
      * @DI\Observe("copy_innova_media_resource")
      *
-     * @param \Claroline\CoreBundle\Event\CopyResourceEvent $event
+     * @param \Claroline\CoreBundle\Event\Resource\CopyResourceEvent $event
      *
      * @throws \Exception
      */

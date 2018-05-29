@@ -12,46 +12,33 @@
 namespace Claroline\CoreBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ResetPasswordType extends AbstractType
 {
-    private $resetPwd = null;
-
-    public function __construct($resetPwd = false)
-    {
-        $this->resetPwd = $resetPwd;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($this->resetPwd) {
-            $builder->add('password', 'password');
+        if ($options['reset']) {
+            $builder->add('password', PasswordType::class);
         }
+
         $builder->add(
             'plainPassword',
-            'repeated',
-            array(
-                'type' => 'password',
+            RepeatedType::class,
+            [
+                'type' => PasswordType::class,
                 'invalid_message' => 'password_mismatch',
-                'first_options' => array('label' => 'new_password'),
-                'second_options' => array('label' => 'repeat_password'),
-            )
+                'first_options' => ['label' => 'new_password'],
+                'second_options' => ['label' => 'repeat_password'],
+            ]
         );
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'reset_pwd_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(
-            array(
-                'translation_domain' => 'platform',
-            )
-        );
+        $resolver->setDefaults(['translation_domain' => 'platform', 'reset' => false]);
     }
 }

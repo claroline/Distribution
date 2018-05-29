@@ -12,170 +12,147 @@
 namespace Claroline\CoreBundle\Form\Administration;
 
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Form\Field\ContentType;
 use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
 use Claroline\CoreBundle\Validator\Constraints\DomainName;
 use Claroline\CoreBundle\Validator\Constraints\FileSize;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GeneralType extends AbstractType
 {
-    private $langs;
-    private $role;
-    private $description;
-    private $dateFormat;
-    private $language;
-    private $lockedParams;
-    private $targetLoginUrls;
-
-    public function __construct(
-        array $langs,
-        $role,
-        $description,
-        $dateFormat,
-        $language,
-        array $lockedParams = [],
-        array $targetLoginUrls = []
-    ) {
-        $this->role = $role;
-        $this->description = $description;
-        $this->dateFormat = $dateFormat;
-        $this->language = $language;
-
-        if (!empty($langs)) {
-            $this->langs = $langs;
-        } else {
-            $this->langs = ['en' => 'en', 'fr' => 'fr'];
-        }
-        $this->lockedParams = $lockedParams;
-        $this->targetLoginUrls = $targetLoginUrls;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add(
                 'name',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['name']),
+                    'disabled' => isset($options['lockedParams']['name']),
                     'label' => 'name',
                 ]
             )
             ->add(
                 'description',
-                'content',
+                ContentType::class,
                 [
-                    'data' => $this->description,
+                    'data' => $options['description'],
                     'mapped' => false,
                     'required' => false,
                     'label' => 'description',
-                    'theme_options' => ['contentTitle' => false, 'tinymce' => false],
+                    'attr' => ['contentTitle' => false, 'tinymce' => false],
                 ]
             )
             ->add(
                 'supportEmail',
-                'email',
+                EmailType::class,
                 [
                     'label' => 'support_email',
-                    'disabled' => isset($this->lockedParams['support_email']),
+                    'disabled' => isset($options['lockedParams']['support_email']),
                 ]
             )
             ->add(
                 'domainName',
-                'text',
+                TextType::class,
                 [
                     'label' => 'domain_name',
-                    'disabled' => isset($this->lockedParams['domain_name']),
+                    'disabled' => isset($options['lockedParams']['domain_name']),
                     'constraints' => new DomainName(),
                     'required' => false,
                 ]
             )
             ->add(
                 'sslEnabled',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'required' => false,
                     'label' => 'ssl_enabled',
-                    'disabled' => isset($this->lockedParams['ssl_enabled']),
+                    'disabled' => isset($options['lockedParams']['ssl_enabled']),
                 ]
             )
             ->add(
                 'allowSelfRegistration',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['allow_self_registration']),
+                    'disabled' => isset($options['lockedParams']['allow_self_registration']),
                     'label' => 'self_registration',
                 ]
             )
             ->add(
                 'registerButtonAtLogin',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['register_button_at_login']),
+                    'disabled' => isset($options['lockedParams']['register_button_at_login']),
                     'label' => 'show_register_button_in_login_page',
                 ]
             )
             ->add(
                 'defaultRole',
-                'entity',
+                EntityType::class,
                 [
                     'mapped' => false,
-                    'data' => $this->role,
+                    'data' => $options['role'],
                     'class' => 'Claroline\CoreBundle\Entity\Role',
                     'choice_translation_domain' => true,
                     'expanded' => false,
                     'multiple' => false,
-                    'property' => 'translationKey',
+                    //'property' => 'translationKey',
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('r')
                                 ->where('r.type = '.Role::PLATFORM_ROLE)
                                 ->andWhere("r.name != 'ROLE_ANONYMOUS'");
                     },
-                    'disabled' => isset($this->lockedParams['default_role']),
+                    'disabled' => isset($options['lockedParams']['default_role']),
                     'label' => 'default_role',
                 ]
             )
             ->add(
                 'localeLanguage',
-                'choice',
+                ChoiceType::class,
                 [
-                    'choices' => $this->langs,
-                    'disabled' => isset($this->lockedParams['locale_language']),
+                    'choices' => $options['langs'],
+                    'disabled' => isset($options['lockedParams']['locale_language']),
                     'label' => 'default_language',
                 ]
             )
             ->add(
                 'formCaptcha',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'display_captcha',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['form_captcha']),
+                    'disabled' => isset($options['lockedParams']['form_captcha']),
                 ]
             )
             ->add(
                 'formHoneypot',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'use_honeypot',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['form_honeypot']),
+                    'disabled' => isset($options['lockedParams']['form_honeypot']),
                 ]
             )
             ->add(
                 'loginTargetRoute',
-                'choice',
+                ChoiceType::class,
                 [
-                    'choices' => $this->targetLoginUrls,
+                    'choices' => $options['targetLoginUrls'],
                     'choices_as_values' => true,
                     'expanded' => false,
                     'multiple' => false,
@@ -184,7 +161,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'redirectAfterLoginOption',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => $this->buildRedirectOptions(),
                     'attr' => [
@@ -198,7 +175,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'redirectAfterLoginUrl',
-                'text',
+                TextType::class,
                 [
                     'label' => 'redirect_after_login_url',
                     'required' => false,
@@ -206,7 +183,7 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'accountDuration',
-                'integer',
+                IntegerType::class,
                 [
                     'label' => 'account_duration_label',
                     'required' => false,
@@ -214,91 +191,91 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'anonymousPublicProfile',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'show_profile_for_anonymous',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['anonymous_public_profile']),
+                    'disabled' => isset($options['lockedParams']['anonymous_public_profile']),
                 ]
             )
             ->add(
                 'portfolioUrl',
-                'url',
+                UrlType::class,
                 [
                     'label' => 'portfolio_url',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['portfolio_url']),
+                    'disabled' => isset($options['lockedParams']['portfolio_url']),
                 ]
             )
             ->add(
                 'isNotificationActive',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'activate_notifications',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['is_notification_active']),
+                    'disabled' => isset($options['lockedParams']['is_notification_active']),
                 ]
             )
             ->add(
                 'maxStorageSize',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
                     'label' => 'max_storage_size',
                     'constraints' => [new FileSize()],
-                    'disabled' => isset($this->lockedParams['max_storage_size']),
+                    'disabled' => isset($options['lockedParams']['max_storage_size']),
                 ]
             )
             ->add(
                 'maxUploadResources',
-                'integer',
+                IntegerType::class,
                 [
                     'required' => false,
                     'label' => 'count_resources',
-                    'disabled' => isset($this->lockedParams['max_upload_resources']),
+                    'disabled' => isset($options['lockedParams']['max_upload_resources']),
                 ]
             )
             ->add(
                 'maxWorkspaceUsers',
-                'integer',
+                IntegerType::class,
                 [
                     'required' => false,
                     'label' => 'workspaces_max_users',
-                    'disabled' => isset($this->lockedParams['max_workspace_users']),
+                    'disabled' => isset($options['lockedParams']['max_workspace_users']),
                 ]
             )
             ->add(
                 'showHelpButton',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'show_help_button',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['show_help_button']),
+                    'disabled' => isset($options['lockedParams']['show_help_button']),
                 ]
             )
             ->add(
                 'helpUrl',
-                'text',
+                TextType::class,
                 [
                     'label' => 'help_url',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['help_url']),
+                    'disabled' => isset($options['lockedParams']['help_url']),
                 ]
             )
             ->add(
                 'sendMailAtWorkspaceRegistration',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['send_mail_at_workspace_registration']),
+                    'disabled' => isset($options['lockedParams']['send_mail_at_workspace_registration']),
                     'label' => 'send_mail_at_workspace_registration',
                 ]
             )
             ->add(
                 'registrationMailValidation',
-                'choice',
+                ChoiceType::class,
                 [
-                    'disabled' => isset($this->lockedParams['registration_mail_validation']),
+                    'disabled' => isset($options['lockedParams']['registration_mail_validation']),
                     'label' => 'registration_mail_validation',
                     'choices' => [
                         PlatformDefaults::REGISTRATION_MAIL_VALIDATION_PARTIAL => 'send_mail_info',
@@ -308,83 +285,83 @@ class GeneralType extends AbstractType
             )
             ->add(
                 'defaultWorkspaceTag',
-                'text',
+                TextType::class,
                 [
                     'label' => 'default_workspace_tag',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['default_workspace_tag']),
+                    'disabled' => isset($options['lockedParams']['default_workspace_tag']),
                 ]
             )
             ->add(
                 'enableOpengraph',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'enable_opengraph',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['default_workspace_tag']),
+                    'disabled' => isset($options['lockedParams']['default_workspace_tag']),
                 ]
             )
             ->add(
                 'isPdfExportActive',
-                'checkbox',
+                CheckboxType::class,
                 [
                     'label' => 'activate_pdf_export',
                     'required' => false,
-                    'disabled' => isset($this->lockedParams['is_pdf_export_active']),
+                    'disabled' => isset($options['lockedParams']['is_pdf_export_active']),
                 ]
             )
             ->add(
                 'tmpDir',
-                'text',
+                TextType::class,
                 [
                     'label' => 'temporary_directory',
-                    'disabled' => isset($this->lockedParams['tmp_dir']),
+                    'disabled' => isset($options['lockedParams']['tmp_dir']),
                 ]
             );
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
 
             $form
                 ->add(
                     'platformInitDate',
-                    'datepicker',
+                    DateType::class,
                     [
                         'input' => 'timestamp',
                         'label' => 'platform_init_date',
                         'required' => false,
-                        'format' => $this->dateFormat,
-                        'language' => $this->language,
-                        'disabled' => isset($this->lockedParams['platform_init_date']),
+                        'format' => $options['date_format'],
+                        //'language' => $options['locale'],
+                        'disabled' => isset($options['lockedParams']['platform_init_date']),
                     ]
                 )
                 ->add(
                     'platformLimitDate',
-                    'datepicker',
+                    DateType::class,
                     [
                         'input' => 'timestamp',
                         'label' => 'platform_expiration_date',
                         'required' => false,
-                        'format' => $this->dateFormat,
-                        'language' => $this->language,
-                        'disabled' => isset($this->lockedParams['platform_limit_date']),
+                        'format' => $options['date_format'],
+                        //'language' => $options['locale'],
+                        'disabled' => isset($options['lockedParams']['platform_limit_date']),
                     ]
                 );
         });
     }
 
-    public function getName()
-    {
-        return 'platform_parameters_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-                'translation_domain' => 'platform',
-                'date_format' => DateType::HTML5_FORMAT,
-            ]
-        );
+            'translation_domain' => 'platform',
+            'date_format' => DateType::HTML5_FORMAT,
+            'langs' => ['en' => 'en', 'fr' => 'fr'],
+            'role' => null,
+            'description' => '',
+            'locale' => 'en',
+            'lockedParams' => [],
+            'targetLoginUrls' => [],
+        ]);
     }
 
     private function buildRedirectOptions()

@@ -13,11 +13,11 @@ namespace Claroline\CoreBundle\Listener\Resource\Types;
 
 use Claroline\CoreBundle\Entity\Resource\Revision;
 use Claroline\CoreBundle\Entity\Resource\Text;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Form\TextType;
 use Claroline\ScormBundle\Event\ExportScormResourceEvent;
@@ -74,7 +74,7 @@ class TextListener implements ContainerAwareInterface
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $em = $this->container->get('doctrine.orm.entity_manager');
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $keys = array_keys($request->request->all());

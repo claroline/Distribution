@@ -12,69 +12,21 @@
 namespace Claroline\CoreBundle\Form\Administration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MailServerType extends AbstractType
 {
-    private $formDisplay;
-    private $transport;
-    private $lockedParams;
-
-    public function __construct($transport, array $lockedParams = [])
-    {
-        $this->transport = $transport;
-        $this->formDisplay = [
-            'sendmail' => [
-                'host' => false,
-                'username' => false,
-                'password' => false,
-                'auth_mode' => false,
-                'encryption' => false,
-                'port' => false,
-                'api_key' => false,
-                'tag' => false,
-            ],
-            'gmail' => [
-                'host' => false,
-                'username' => true,
-                'password' => true,
-                'auth_mode' => false,
-                'encryption' => false,
-                'port' => false,
-                'api_key' => false,
-                'tag' => false,
-            ],
-            'smtp' => [
-                'host' => true,
-                'username' => true,
-                'password' => true,
-                'auth_mode' => true,
-                'encryption' => true,
-                'port' => true,
-                'api_key' => false,
-                'tag' => false,
-            ],
-            'postal' => [
-                'host' => true,
-                'username' => false,
-                'password' => false,
-                'auth_mode' => false,
-                'encryption' => false,
-                'port' => false,
-                'api_key' => true,
-                'tag' => true,
-            ],
-        ];
-        $this->lockedParams = $lockedParams;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add(
                 'mailer_transport',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [
                       'sendmail' => 'sendmail',
@@ -82,101 +34,142 @@ class MailServerType extends AbstractType
                       'gmail' => 'gmail',
                       'postal' => 'postal',
                     ],
-                    'disabled' => isset($this->lockedParams['mailer_transport']),
+                    'disabled' => isset($options['lockedParams']['mailer_transport']),
                     'label' => 'transport',
                 ]
             )
             ->add(
                 'mailer_host',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['host']],
-                    'disabled' => isset($this->lockedParams['mailer_host']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['host']],
+                    'disabled' => isset($options['lockedParams']['mailer_host']),
                     'label' => 'host',
                 ]
             )
             ->add(
                 'mailer_username',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['username']],
-                    'disabled' => isset($this->lockedParams['mailer_username']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['username']],
+                    'disabled' => isset($options['lockedParams']['mailer_username']),
                     'label' => 'username',
                 ]
             )
             ->add(
                 'mailer_password',
-                'password',
+                PasswordType::class,
                 [
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['password']],
-                    'disabled' => isset($this->lockedParams['mailer_password']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['password']],
+                    'disabled' => isset($options['lockedParams']['mailer_password']),
                     'label' => 'password',
                 ]
             )
             ->add(
                 'mailer_auth_mode',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [null => '', 'plain' => 'plain', 'login' => 'login', 'cram-md5' => 'cram-md5'],
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['auth_mode']],
-                    'disabled' => isset($this->lockedParams['mailer_auth_mode']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['auth_mode']],
+                    'disabled' => isset($options['lockedParams']['mailer_auth_mode']),
                     'label' => 'auth_mode',
                 ]
             )
             ->add(
                 'mailer_encryption',
-                'choice',
+                ChoiceType::class,
                 [
                     'choices' => [null => '', 'tls' => 'tls', 'ssl' => 'ssl'],
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['encryption']],
-                    'disabled' => isset($this->lockedParams['mailer_encryption']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['encryption']],
+                    'disabled' => isset($options['lockedParams']['mailer_encryption']),
                     'label' => 'encryption',
                 ]
             )
             ->add(
                 'mailer_port',
-                'number',
+                NumberType::class,
                 [
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['port']],
-                    'disabled' => isset($this->lockedParams['mailer_port']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['port']],
+                    'disabled' => isset($options['lockedParams']['mailer_port']),
                     'label' => 'port',
                 ]
             )
             ->add(
                 'mailer_api_key',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['api_key']],
-                    'disabled' => isset($this->lockedParams['mailer_api_key']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['api_key']],
+                    'disabled' => isset($options['lockedParams']['mailer_api_key']),
                     'label' => 'api_key',
                 ]
             )
             ->add(
                 'mailer_tag',
-                'text',
+                TextType::class,
                 [
                     'required' => false,
-                    'theme_options' => ['display_row' => $this->formDisplay[$this->transport]['tag']],
-                    'disabled' => isset($this->lockedParams['mailer_tag']),
+                    'attr' => ['display_row' => $options['formDisplay'][$options['transport']]['tag']],
+                    'disabled' => isset($options['lockedParams']['mailer_tag']),
                     'label' => 'tag',
                 ]
             );
     }
 
-    public function getName()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return 'platform_parameters_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(['translation_domain' => 'platform']);
+        $resolver->setDefaults([
+          'translation_domain' => 'platform',
+          'transport' => 'sendmail',
+          'lockedParams' => [],
+          'formDisplay' => [
+                'sendmail' => [
+                    'host' => false,
+                    'username' => false,
+                    'password' => false,
+                    'auth_mode' => false,
+                    'encryption' => false,
+                    'port' => false,
+                    'api_key' => false,
+                    'tag' => false,
+                ],
+                'gmail' => [
+                    'host' => false,
+                    'username' => true,
+                    'password' => true,
+                    'auth_mode' => false,
+                    'encryption' => false,
+                    'port' => false,
+                    'api_key' => false,
+                    'tag' => false,
+                ],
+                'smtp' => [
+                    'host' => true,
+                    'username' => true,
+                    'password' => true,
+                    'auth_mode' => true,
+                    'encryption' => true,
+                    'port' => true,
+                    'api_key' => false,
+                    'tag' => false,
+                ],
+                'postal' => [
+                    'host' => true,
+                    'username' => false,
+                    'password' => false,
+                    'auth_mode' => false,
+                    'encryption' => false,
+                    'port' => false,
+                    'api_key' => true,
+                    'tag' => true,
+                ],
+            ],
+        ]);
     }
 }

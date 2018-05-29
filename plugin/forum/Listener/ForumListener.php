@@ -12,21 +12,22 @@
 namespace Claroline\ForumBundle\Listener;
 
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\DeleteUserEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\ResourceCreatedEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Form\ForumType;
-use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ForumListener extends ContainerAware
+class ForumListener
 {
+    use ContainerAwareTrait;
+
     public function onCreateForm(CreateFormResourceEvent $event)
     {
         $form = $this->container->get('form.factory')->create(new ForumType(), new Forum());
@@ -43,7 +44,7 @@ class ForumListener extends ContainerAware
 
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $form = $this->container->get('form.factory')->create(new ForumType(), new Forum());
         $form->handleRequest($request);
 
@@ -111,10 +112,6 @@ class ForumListener extends ContainerAware
             }
             $em->flush();
         }
-    }
-
-    public function onResourceCreated(ResourceCreatedEvent $event)
-    {
     }
 
     public function onGenerateResourceTracking(GenericDataEvent $event)

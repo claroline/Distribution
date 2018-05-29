@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 // TODO : do not redirect to a controller, directly renders the tool template
 
 /**
- *  @DI\Service()
+ * @DI\Service()
  */
 class AdministrationToolListener
 {
@@ -45,7 +45,7 @@ class AdministrationToolListener
     public function onOpenPlatformParameters(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration\Parameters:index',
+            '_controller' => 'ClarolineCoreBundle:Administration/Parameters:index',
         ], $event);
     }
 
@@ -57,7 +57,7 @@ class AdministrationToolListener
     public function onOpenRegistrationToWorkspace(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration\WorkspaceRegistration:registrationManagement',
+            '_controller' => 'ClarolineCoreBundle:Administration/WorkspaceRegistration:registrationManagement',
         ], $event);
     }
 
@@ -69,7 +69,7 @@ class AdministrationToolListener
     public function opDesktopAndHome(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration\DesktopConfiguration:adminDesktopConfigMenu',
+            '_controller' => 'ClarolineCoreBundle:Administration/DesktopConfiguration:adminDesktopConfigMenu',
         ], $event);
     }
 
@@ -81,7 +81,7 @@ class AdministrationToolListener
     public function onOpenDesktopTools(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration\Tools:showTool',
+            '_controller' => 'ClarolineCoreBundle:Administration/Tools:showTool',
         ], $event);
     }
 
@@ -93,8 +93,7 @@ class AdministrationToolListener
     public function onOpenPlatformLogs(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration\Logs:logList',
-            'page' => 1,
+            '_controller' => 'ClarolineCoreBundle:Administration/Logs:index',
         ], $event);
     }
 
@@ -106,7 +105,7 @@ class AdministrationToolListener
     public function onOpenPlatformAnalytics(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration\Analytics:analytics',
+            '_controller' => 'ClarolineCoreBundle:Administration/Analytics:index',
         ], $event);
     }
 
@@ -118,7 +117,7 @@ class AdministrationToolListener
     public function onOpenWidgetsManagement(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration\Widget:widgetsManagement',
+            '_controller' => 'ClarolineCoreBundle:Administration/Widget:widgetsManagement',
         ], $event);
     }
 

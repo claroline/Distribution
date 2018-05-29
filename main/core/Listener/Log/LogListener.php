@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Listener\Log;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
+use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogGroupDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogNotRepeatableInterface;
@@ -98,8 +99,7 @@ class LogListener
                     $doer = $token->getUser();
                     $doerType = Log::doerTypeUser;
                 }
-                if ($this->container->isScopeActive('request')) {
-                    $request = $this->container->get('request');
+                if ($request = $this->container->get('request_stack')->getMasterRequest()) {
                     $doerSessionId = $request->getSession()->getId();
                     $doerIp = $request->getClientIp();
                 } else {
@@ -234,7 +234,7 @@ class LogListener
         }
 
         if ($event instanceof LogNotRepeatableInterface) {
-            $request = $this->container->get('request');
+            $request = $this->container->get('request_stack')->getMasterRequest();
             $session = $request->getSession();
 
             $is = false;
@@ -301,6 +301,7 @@ class LogListener
 
             // Increment view count if viewer is not creator of the resource
             if (is_null($user) || is_string($user) || $user !== $event->getResource()->getCreator()) {
+                // TODO : add me in an event on the resource 'open'
                 $this->resourceNodeManager->addView($event->getResource());
             }
             if ($logCreated && !empty($user) && 'anon.' !== $user && 'directory' !== $event->getResource()->getResourceType()->getName()) {
@@ -320,6 +321,38 @@ class LogListener
                 );
             }
         }
+    }
+
+    /**
+     * @DI\Observe("create_log_list_item")
+     *
+     * @param LogCreateDelegateViewEvent $event
+     */
+    public function onLogListItem(LogCreateDelegateViewEvent $event)
+    {
+        $content = $this->container->get('templating')->render(
+            'ClarolineCoreBundle:log:view_list_item_sentence.html.twig',
+            ['log' => $event->getLog()]
+        );
+
+        $event->setResponseContent($content);
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("create_log_details")
+     *
+     * @param LogCreateDelegateViewEvent $event
+     */
+    public function onLogDetails(LogCreateDelegateViewEvent $event)
+    {
+        $content = $this->container->get('templating')->render(
+            'ClarolineCoreBundle:log:view_details.html.twig',
+            ['log' => $event->getLog()]
+        );
+
+        $event->setResponseContent($content);
+        $event->stopPropagation();
     }
 
     public function disable()

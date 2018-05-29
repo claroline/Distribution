@@ -12,45 +12,37 @@
 namespace Claroline\CoreBundle\Form\Administration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InternationalizationType extends AbstractType
 {
-    private $activatedLocales = [];
-    private $availableLocales = [];
-
-    public function __construct(array $activatedLocales, array $availableLocales)
-    {
-        $this->activatedLocales = $activatedLocales;
-        foreach ($availableLocales as $available) {
-            $this->availableLocales[$available] = $available;
-        }
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $availables = [];
+        foreach ($options['availableLocales'] as $available) {
+            $availables[$available] = $available;
+        }
+
         $builder->add(
             'locales',
-            'choice', [
-                'choices' => $this->availableLocales,
+            ChoiceType::class, [
+                'choices' => $availables,
                 'label' => 'languages',
                 'expanded' => true,
                 'multiple' => true,
-                'data' => $this->activatedLocales,
+                'data' => $options['activatedLocales'],
             ]
         );
     }
 
-    public function getName()
-    {
-        return 'i18n_form';
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'translation_domain' => 'platform',
+            'activatedLocales' => [],
+            'availableLocales' => [],
         ]);
     }
 }

@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Listener\Tool;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Menu\ConfigureMenuEvent;
@@ -106,7 +106,7 @@ class ToolListener
      */
     public function onDisplayWorkspaceAnalytics(DisplayToolEvent $event)
     {
-        $event->setContent($this->workspaceAnalytics($event->getWorkspace()));
+        $event->setContent($this->workspaceAnalytics($event->getWorkspace()->getId()));
     }
 
     /**
@@ -171,7 +171,7 @@ class ToolListener
         //otherwise only parameters exists so we return the parameters page.
         $params['_controller'] = 'ClarolineCoreBundle:Tool\DesktopParameters:desktopParametersMenu';
 
-        $subRequest = $this->container->get('request')->duplicate(
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate(
             [],
             null,
             $params
@@ -183,23 +183,25 @@ class ToolListener
 
     public function workspaceLogs($workspaceId)
     {
-        /** @var \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace */
-        $workspace = $this->workspaceManager->getWorkspaceById($workspaceId);
-
-        return $this->templating->render(
-            'ClarolineCoreBundle:Tool/workspace/logs:logList.html.twig',
-            $this->container->get('claroline.log.manager')->getWorkspaceList($workspace, 1)
-        );
-    }
-
-    public function workspaceAnalytics($workspace)
-    {
         $params = [
-            '_controller' => 'ClarolineCoreBundle:WorkspaceAnalytics:showTraffic',
-            'workspaceId' => $workspace->getId(),
+            '_controller' => 'ClarolineCoreBundle:Tool\WorkspaceLog:index',
+            'workspaceId' => $workspaceId,
         ];
 
-        $subRequest = $this->container->get('request')->duplicate([], null, $params);
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate([], null, $params);
+        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+
+        return $response->getContent();
+    }
+
+    public function workspaceAnalytics($workspaceId)
+    {
+        $params = [
+            '_controller' => 'ClarolineCoreBundle:Tool\WorkspaceDashboard:index',
+            'workspaceId' => $workspaceId,
+        ];
+
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $response->getContent();
@@ -214,7 +216,7 @@ class ToolListener
      */
     public function onDisplay(DisplayToolEvent $event)
     {
-        $subRequest = $this->container->get('request')->duplicate(
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate(
             [], null,
             [
                 '_controller' => 'ClarolineCoreBundle:Workspace:usersManagement',

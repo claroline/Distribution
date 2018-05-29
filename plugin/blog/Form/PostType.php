@@ -33,18 +33,18 @@ class PostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array(
-                    'theme_options' => array('control_width' => 'col-md-12'),
+            ->add('title', TextType::class, array(
+                    'attr' => array('control_width' => 'col-md-12'),
                     'constraints' => new Assert\NotBlank(array(
                         'message' => 'blog_post_need_title',
                     )),
                 )
             )
-            ->add('content', 'tinymce', array(
+            ->add(ContentType::class, 'tinymce', array(
                     'attr' => array(
                         'style' => 'height: 300px;',
                     ),
-                    'theme_options' => array('control_width' => 'col-md-12'),
+                    'attr' => array('control_width' => 'col-md-12'),
                     'constraints' => new Assert\NotBlank(array(
                         'message' => 'blog_post_need_content',
                     )),

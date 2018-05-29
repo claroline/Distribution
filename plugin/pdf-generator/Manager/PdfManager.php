@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\ForumBundle\Repository\PdfRepository;
 use Claroline\PdfGeneratorBundle\Entity\Pdf;
 use JMS\DiExtraBundle\Annotation as DI;
-use Knp\Bundle\SnappyBundle\Snappy\LoggableGenerator;
+use Knp\Snappy\Pdf as PdfSnappy;
 
 /**
  * @DI\Service("claroline.manager.pdf_manager")
@@ -36,7 +36,7 @@ class PdfManager
      */
     public function __construct(
         ObjectManager $om,
-        LoggableGenerator $snappy,
+        PdfSnappy $snappy,
         $pdfDir,
         $ut
     ) {

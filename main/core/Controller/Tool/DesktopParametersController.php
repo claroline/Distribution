@@ -25,6 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -43,7 +44,7 @@ class DesktopParametersController extends Controller
     /**
      * @DI\InjectParams({
      *     "formFactory"  = @DI\Inject("form.factory"),
-     *     "request"      = @DI\Inject("request"),
+     *     "request"      = @DI\Inject("request_stack"),
      *     "urlGenerator" = @DI\Inject("router"),
      *     "toolManager"  = @DI\Inject("claroline.manager.tool_manager"),
      *     "ed"           = @DI\Inject("claroline.event.event_dispatcher"),
@@ -52,14 +53,14 @@ class DesktopParametersController extends Controller
      */
     public function __construct(
         FormFactoryInterface $formFactory,
-        Request $request,
+        RequestStack $request,
         UrlGeneratorInterface $router,
         ToolManager $toolManager,
         StrictDispatcher $ed,
         ObjectManager $om
     ) {
         $this->formFactory = $formFactory;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->router = $router;
         $this->toolManager = $toolManager;
         $this->ed = $ed;
@@ -72,7 +73,7 @@ class DesktopParametersController extends Controller
      *     name="claro_desktop_parameters_menu"
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool\desktop\parameters:desktopParametersMenu.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\desktop\parameters:desktop_parameters_menu.html.twig")
      * @EXT\ParamConverter("user", options={"authenticatedUser"=true})
      *
      * Displays the desktop tools configuration menu page.
@@ -93,7 +94,7 @@ class DesktopParametersController extends Controller
      *     defaults={"type"=0}
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool\desktop\parameters:toolProperties.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\desktop\parameters:tool_properties.html.twig")
      * @EXT\ParamConverter("user", options={"authenticatedUser"=true})
      *
      * Displays the tools configuration page.
@@ -234,7 +235,7 @@ class DesktopParametersController extends Controller
      *     name="claro_user_options_edit_form"
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool\desktop\parameters:userOptionsEditForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\desktop\parameters:user_options_edit_form.html.twig")
      * @EXT\ParamConverter("user", options={"authenticatedUser"=true})
      *
      * Displays the user options form page.
@@ -257,7 +258,7 @@ class DesktopParametersController extends Controller
         }
 
         $form = $this->formFactory->create(
-            new UserOptionsType(),
+            UserOptionsType::class,
             $options
         );
 
@@ -270,7 +271,7 @@ class DesktopParametersController extends Controller
      *     name="claro_user_options_edit"
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool\desktop\parameters:userOptionsEditForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool\desktop\parameters:user_options_edit_form.html.twig")
      * @EXT\ParamConverter("user", options={"authenticatedUser"=true})
      *
      * Edit user options.
@@ -282,7 +283,7 @@ class DesktopParametersController extends Controller
     public function desktopParametersUserOptionsEditAction(UserOptions $options)
     {
         $form = $this->formFactory->create(
-            new UserOptionsType(),
+            UserOptionsType::class,
             $options
         );
         $form->handleRequest($this->request);

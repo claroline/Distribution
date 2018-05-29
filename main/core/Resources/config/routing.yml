@@ -1,9 +1,9 @@
 claro_security_login_check:
-    pattern: /login_check
+    path: /login_check
     options: { expose: true }
 
 claro_security_logout:
-    pattern: /logout
+    path: /logout
 
 claro_oauth_authorize:
     resource: "@ClarolineCoreBundle/Controller/OauthController.php"
@@ -26,21 +26,21 @@ claro_theme:
     type: annotation
 
 claro_content_typeerror:
-    pattern: /content/typeerror
+    path: /content/typeerror
     options: { expose: true }
     defaults:
         _controller: FrameworkBundle:Template:template
         template: 'ClarolineCoreBundle:Home:typeerror.html.twig'
 
 claro_content_confirm:
-    pattern: /content/confirm
+    path: /content/confirm
     options: { expose: true }
     defaults:
         _controller: FrameworkBundle:Template:template
         template: 'ClarolineCoreBundle:Home:confirm.html.twig'
 
 claro_content_link:
-    pattern: /content/link
+    path: /content/link
     options: { expose: true }
     defaults:
         _controller: FrameworkBundle:Template:template
@@ -55,13 +55,8 @@ claro_log:
     prefix: log
     type: annotation
 
-claro_log_admin:
-    resource: "@ClarolineCoreBundle/Controller/Log/AdministrationController.php"
-    prefix: admin
-    type: annotation
-
 claro_log_workspace:
-    resource: "@ClarolineCoreBundle/Controller/Log/Tool/WorkspaceController.php"
+    resource: "@ClarolineCoreBundle/Controller/Tool/WorkspaceLogController.php"
     prefix: workspaces
     type: annotation
 
@@ -116,9 +111,14 @@ claro_workspace_tool_tools_properties:
     prefix: workspaces/tool/properties
     type: annotation
 
-claro_workspace_analytics:
-    prefix: workspace/analytics
-    resource: "@ClarolineCoreBundle/Controller/WorkspaceAnalyticsController.php"
+claro_workspace_tool_home:
+    resource: "@ClarolineCoreBundle/Controller/Tool/HomeController.php"
+    prefix: workspaces/tool/home
+    type: annotation
+
+claro_workspace_dashboard:
+    prefix: workspace/dashboard
+    resource: "@ClarolineCoreBundle/Controller/Tool/WorkspaceDashboardController.php"
     type: annotation
 
 claro_admin:
@@ -148,39 +148,19 @@ claro_resources_node_api:
     options:
         expose: true
 
+# todo : remove me
+claro_resource_old:
+    resource: "@ClarolineCoreBundle/Controller/ResourceOldController.php"
+    prefix: /old
+    type: annotation
+
 claro_resource:
     resource: "@ClarolineCoreBundle/Controller/ResourceController.php"
-    prefix: resource
-    type: annotation
-
-claro_resource_icon:
-    resource: "@ClarolineCoreBundle/Controller/ResourceIconController.php"
-    prefix: resource_icon
-    type: annotation
-
-claro_resource_parameters:
-    resource: "@ClarolineCoreBundle/Controller/ResourcePropertiesController.php"
-    prefix: resource
-    type: annotation
-
-claro_resource_rights:
-    resource: "@ClarolineCoreBundle/Controller/ResourceRightsController.php"
-    prefix: resource
-    type: annotation
-
-claro_tool_resoure_manager:
-    resource: "@ClarolineCoreBundle/Controller/Tool/ResourceManagerController.php"
-    prefix: resource
     type: annotation
 
 claro_widget:
     resource: "@ClarolineCoreBundle/Controller/Widget"
     prefix: widget
-    type: annotation
-
-claro_mail:
-    resource: "@ClarolineCoreBundle/Controller/MailController.php"
-    prefix: email
     type: annotation
 
 claro_activity:
@@ -189,7 +169,7 @@ claro_activity:
     type: annotation
 
 claro_activity_remove_resource_confirm:
-    pattern: /activity/remove
+    path: /activity/remove
     options: { expose: true }
     defaults:
         _controller: FrameworkBundle:Template:template
@@ -255,14 +235,6 @@ claro_plugin_api:
     resource: "@ClarolineCoreBundle/Controller/API/Admin/PluginController.php"
     prefix: api
     type: rest
-    defaults: {_format: json}
-    options:
-        expose: true
-
-claro_resources_api:
-    resource: "@ClarolineCoreBundle/Controller/API/Resource/ResourceController.php"
-    type: rest
-    prefix: api
     defaults: {_format: json}
     options:
         expose: true

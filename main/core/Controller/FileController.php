@@ -30,7 +30,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -65,7 +65,7 @@ class FileController extends Controller
      *     "formFactory"     = @DI\Inject("form.factory"),
      *     "homeExtension"   = @DI\Inject("claroline.twig.home_extension"),
      *     "mimeTypeGuesser" = @DI\Inject("claroline.utilities.mime_type_guesser"),
-     *     "request"         = @DI\Inject("request"),
+     *     "requestStack"         = @DI\Inject("request_stack"),
      *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
      *     "roleManager"     = @DI\Inject("claroline.manager.role_manager"),
      *     "session"         = @DI\Inject("session"),
@@ -82,7 +82,7 @@ class FileController extends Controller
         FormFactoryInterface $formFactory,
         HomeExtension $homeExtension,
         MimeTypeGuesser $mimeTypeGuesser,
-        Request $request,
+        RequestStack $request,
         ResourceManager $resourceManager,
         RoleManager $roleManager,
         SessionInterface $session,
@@ -97,7 +97,7 @@ class FileController extends Controller
         $this->formFactory = $formFactory;
         $this->homeExtension = $homeExtension;
         $this->mimeTypeGuesser = $mimeTypeGuesser;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->resourceManager = $resourceManager;
         $this->roleManager = $roleManager;
         $this->session = $session;
@@ -132,63 +132,6 @@ class FileController extends Controller
         $response->headers->set('Content-Type', $node->getMimeType());
 
         return $response;
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/upload/{parent}",
-     *     name="claro_file_upload_with_ajax",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * Creates a resource from uploaded file.
-     *
-     * @param int $parentId the parent id
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function uploadWithAjaxAction(ResourceNode $parent, User $user)
-    {
-        $parent = $this->resourceManager->getById($parent);
-        $collection = new ResourceCollection([$parent]);
-        $collection->setAttributes(['type' => 'file']);
-        $this->checkAccess('CREATE', $collection);
-        $file = new File();
-        $fileName = $this->request->get('fileName');
-        $tmpFile = $this->request->files->get('file');
-        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-        $size = filesize($tmpFile);
-        $ext = strtolower($tmpFile->getClientOriginalExtension());
-        $mimeType = $this->mimeTypeGuesser->guess($ext);
-        $hashName = 'WORKSPACE_'.
-            $parent->getWorkspace()->getId().
-            DIRECTORY_SEPARATOR.
-            $this->ut->generateGuid().
-            '.'.
-            $extension;
-        $destination = $this->fileDir.
-            DIRECTORY_SEPARATOR.
-            'WORKSPACE_'.
-            $parent->getWorkspace()->getId();
-        $tmpFile->move($destination, $hashName);
-        $file->setSize($size);
-        $file->setName($fileName);
-        $file->setHashName($hashName);
-        $file->setMimeType($mimeType);
-        $file = $this->resourceManager->create(
-            $file,
-            $this->resourceManager->getResourceTypeByName('file'),
-            $user,
-            $parent->getWorkspace(),
-            $parent
-        );
-
-        return new JsonResponse(
-            [$this->resourceManager->toArray($file->getResourceNode(), $this->tokenStorage->getToken())]
-        );
     }
 
     /**
@@ -274,14 +217,14 @@ class FileController extends Controller
     /**
      * @EXT\Route("uploadmodal", name="claro_upload_modal", options = {"expose" = true})
      *
-     * @EXT\Template("ClarolineCoreBundle:Resource:uploadModal.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:resource:upload_modal.html.twig")
      */
     public function uploadModalAction()
     {
         $destinations = $this->resourceManager->getDefaultUploadDestinations();
 
         return [
-            'form' => $this->formFactory->create(new TinyMceUploadModalType($destinations))->createView(),
+            'form' => $this->formFactory->create(TinyMceUploadModalType::class, null, ['destinations' => $destinations])->createView(),
         ];
     }
 
@@ -294,7 +237,7 @@ class FileController extends Controller
     {
         $collection = new ResourceCollection([$file->getResourceNode()]);
         $this->checkAccess('EDIT', $collection);
-        $form = $this->formFactory->create(new UpdateFileType(), new File());
+        $form = $this->formFactory->create(UpdateFileType::class, new File());
 
         return [
             'form' => $form->createView(),
@@ -307,13 +250,13 @@ class FileController extends Controller
     /**
      * @EXT\Route("/update/{file}", name="update_file", options = {"expose" = true})
      *
-     * @EXT\Template("ClarolineCoreBundle:File:updateFileForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:file:update_file_form.html.twig")
      */
     public function updateFileAction(File $file)
     {
         $collection = new ResourceCollection([$file->getResourceNode()]);
         $this->checkAccess('EDIT', $collection);
-        $form = $this->formFactory->create(new UpdateFileType(), new File());
+        $form = $this->formFactory->create(UpdateFileType::class, new File());
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {

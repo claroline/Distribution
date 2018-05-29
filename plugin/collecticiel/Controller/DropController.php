@@ -66,7 +66,7 @@ class DropController extends DropzoneBaseController
 
         if ($this->getRequest()->isMethod('POST')) {
             $form->handleRequest($this->getRequest());
-            if (count($drop->getDocuments()) === 0) {
+            if (0 === count($drop->getDocuments())) {
                 $form->addError(new FormError('Add at least one document'));
             }
             if ($form->isValid()) {
@@ -469,7 +469,7 @@ class DropController extends DropzoneBaseController
 
             // Boucle pour calcul si le document X a un commentaire déposé par l'enseignant
             foreach ($drop->getDocuments() as $document2) {
-                if ($document2->getValidate() === 1) {
+                if (1 === $document2->getValidate()) {
                     $documentId = $document2->getId();
                     // Ajout pour savoir si le document a un commentaire lu par l'enseignant
                     $commentReadForATeacherOrNot = $commentRepo->commentReadForATeacherOrNot($currentUser, $documentId);
@@ -513,7 +513,7 @@ class DropController extends DropzoneBaseController
             }
         }
 
-        if (count($pager) === 0) {
+        if (0 === count($pager)) {
             $this->getRequest()->getSession()->getFlashBag()->add('success', $translator->trans('No copy waiting for correction', [], 'innova_collecticiel'));
         }
 
@@ -570,9 +570,9 @@ class DropController extends DropzoneBaseController
         $form = $this->createForm(new DropType(), $drop);
 
         $previousPath = 'innova_collecticiel_drops_by_user_paginated';
-        if ($tab === 1) {
+        if (1 === $tab) {
             $previousPath = 'innova_collecticiel_drops_by_date_paginated';
-        } elseif ($tab === 2) {
+        } elseif (2 === $tab) {
             $previousPath = 'innova_collecticiel_drops_awaiting_paginated';
         }
 
@@ -593,9 +593,9 @@ class DropController extends DropzoneBaseController
             }
         }
 
-        $view = 'InnovaCollecticielBundle:Drop:dropsDelete.html.twig';
+        $view = 'InnovaCollecticielBundle:drop:drops_delete.html.twig';
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $view = 'InnovaCollecticielBundle:Drop:dropsDeleteModal.html.twig';
+            $view = 'InnovaCollecticielBundle:drop:drops_delete_modal.html.twig';
         }
 
         return $this->render($view, [
@@ -667,9 +667,9 @@ class DropController extends DropzoneBaseController
         // check  if the User is allowed to open the dropZone.
         $this->get('innova.manager.dropzone_voter')->isAllowToOpen($dropzone);
         // getting the userId to check if the current drop owner match with the loggued user.
-        $userId = $this->get('security.context')->getToken()->getUser()->getId();
+        $userId = $this->get('security.token_storage')->getToken()->getUser()->getId();
         $collection = new ResourceCollection([$dropzone->getResourceNode()]);
-        $isAllowedToEdit = $this->get('security.context')->isGranted('EDIT', $collection);
+        $isAllowedToEdit = $this->get('security.authorization_checker')->isGranted('EDIT', $collection);
 
         // getting the data
         $dropSecure = $this->getDoctrine()
@@ -677,7 +677,7 @@ class DropController extends DropzoneBaseController
             ->getDropAndValidEndedCorrectionsAndDocumentsByUser($dropzone, $drop->getId(), $userId);
 
         // if there is no result ( user is not the owner, or the drop has not ended Corrections , show 404)
-        if (count($dropSecure) === 0) {
+        if (0 === count($dropSecure)) {
             if ($drop->getUser()->getId() !== $userId) {
                 throw new AccessDeniedException();
             }
@@ -720,18 +720,17 @@ class DropController extends DropzoneBaseController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route(
-     *                                                            "/unlock/drop/{dropId}",
-     *                                                            name="innova_collecticiel_unlock_drop",
-     *                                                            requirements={"resourceId" = "\d+", "dropId" = "\d+"}
-     *                                                            )
+     *     "/unlock/drop/{dropId}",
+     *     name="innova_collecticiel_unlock_drop",
+     *     requirements={"resourceId" = "\d+", "dropId" = "\d+"}
+     * )
      * @ParamConverter("drop", class="InnovaCollecticielBundle:Drop", options={"id" = "dropId"})
      * @ParamConverter("user", options={
-     *                                                            "authenticatedUser" = true,
-     *                                                            "messageEnabled" = true,
-     *                                                            "messageTranslationKey" = "This action requires authentication. Please login.",
-     *                                                            "messageTranslationDomain" = "innova_collecticiel"
-     *                                                            })
-     * @Template()
+     *     "authenticatedUser" = true,
+     *     "messageEnabled" = true,
+     *     "messageTranslationKey" = "This action requires authentication. Please login.",
+     *     "messageTranslationDomain" = "innova_collecticiel"
+     * })
      */
     public function unlockDropAction(Drop $drop, User $user)
     {
@@ -785,7 +784,7 @@ class DropController extends DropzoneBaseController
             throw new AccessDeniedException();
         }
 
-        if ($curent_user_correction === null || $curent_user_correction->getId() !== $correction->getId()) {
+        if (null === $curent_user_correction || $curent_user_correction->getId() !== $correction->getId()) {
             throw new AccessDeniedException();
         }
         $form = $this->createForm(new CorrectionReportType(), $correction);
@@ -815,9 +814,9 @@ class DropController extends DropzoneBaseController
             }
         }
 
-        $view = 'InnovaCollecticielBundle:Drop:reportDrop.html.twig';
+        $view = 'InnovaCollecticielBundle:drop:report_drop.html.twig';
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $view = 'InnovaCollecticielBundle:Drop:reportDropModal.html.twig';
+            $view = 'InnovaCollecticielBundle:drop:report_drop_modal.html.twig';
         }
 
         return $this->render($view, [
@@ -846,7 +845,6 @@ class DropController extends DropzoneBaseController
      * @ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
      * @ParamConverter("drop", class="InnovaCollecticielBundle:Drop", options={"id" = "dropId"})
      * @ParamConverter("correction", class="InnovaCollecticielBundle:Correction", options={"id" = "correctionId"})
-     * @Template()
      */
     public function removeReportAction(Dropzone $dropzone, Drop $drop, Correction $correction, $invalidate)
     {
@@ -856,7 +854,7 @@ class DropController extends DropzoneBaseController
         $em = $this->getDoctrine()->getManager();
         $correction->setReporter(false);
 
-        if ($invalidate === 1) {
+        if (1 === $invalidate) {
             $correction->setValid(false);
         }
 
@@ -864,7 +862,7 @@ class DropController extends DropzoneBaseController
         $em->flush();
 
         $correctionRepo = $this->getDoctrine()->getRepository('InnovaCollecticielBundle:Correction');
-        if ($correctionRepo->countReporter($dropzone, $drop) === 0) {
+        if (0 === $correctionRepo->countReporter($dropzone, $drop)) {
             $drop->setReported(false);
             $em->persist($drop);
             $em->flush();
@@ -891,7 +889,6 @@ class DropController extends DropzoneBaseController
      *      requirements={"resourceId" = "\d+", "dropId" = "\d+"}
      * )
      * @ParamConverter("dropzone", class="InnovaCollecticielBundle:Dropzone", options={"id" = "resourceId"})
-     * @Template()
      */
     public function autoCloseDropsConfirmationAction(Dropzone $dropzone)
     {
@@ -899,8 +896,8 @@ class DropController extends DropzoneBaseController
         $this->get('innova.manager.dropzone_voter')->isAllowToEdit($dropzone);
 
         $view = $this->getRequest()->isXmlHttpRequest()
-          ? 'InnovaCollecticielBundle:Dropzone:confirmCloseUnterminatedDropModal.html.twig'
-          : 'InnovaCollecticielBundle:Dropzone:confirmCloseUnterminatedDrop.html.twig';
+          ? 'InnovaCollecticielBundle:dropzone:confirm_closeunterminated_drop_modal.html.twig'
+          : 'InnovaCollecticielBundle:dropzone:confirm_close_unterminated_drop.html.twig';
 
         return $this->render($view, [
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
@@ -1017,23 +1014,22 @@ class DropController extends DropzoneBaseController
      *      name="innova_collecticiel_return_receipt",
      *      options={"expose"=true}
      * )
-     * @Template()
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function returnReceiptAction()
     {
         // Récupération de l'ID de l'accusé de réception choisi
-        $returnReceiptId = $this->get('request')->query->get('returnReceiptId');
+        $returnReceiptId = $this->get('request_stack')->getMasterRequest()->query->get('returnReceiptId');
         $em = $this->getDoctrine()->getManager();
         $receiptRepo = $em->getRepository('InnovaCollecticielBundle:ReturnReceipt');
         $receiptManager = $this->get('innova.manager.returnreceipt_manager');
 
         // Récupération de l'ID du dropzone choisi
-        $dropzoneId = $this->get('request')->query->get('dropzoneId');
+        $dropzoneId = $this->get('request_stack')->getMasterRequest()->query->get('dropzoneId');
         $dropzone = $em->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
         // Récupération des documents sélectionnés
-        $arrayDocsId = $this->get('request')->query->get('arrayDocsId');
+        $arrayDocsId = $this->get('request_stack')->getMasterRequest()->query->get('arrayDocsId');
         // Récupération de l'utilisateur
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $returnReceiptType = $em->getRepository('InnovaCollecticielBundle:ReturnReceiptType')->find($returnReceiptId);
@@ -1049,7 +1045,7 @@ class DropController extends DropzoneBaseController
                 // Nombre de demandes adressées/ Repo : Document
                 $countReceipts = $receiptRepo->haveReturnReceiptOrNotForADocument($user, $dropzone, $document);
                 // S'il y a déjà un accusé de réception alors je le supprime avant de créer le nouveau
-                if ($countReceipts !== 0) {
+                if (0 !== $countReceipts) {
                     $receiptRepo->deleteReturnReceipt($user, $dropzone, $document);
                 }
                 // Création du nouvel accusé de réception
@@ -1076,13 +1072,12 @@ class DropController extends DropzoneBaseController
      *      name="innova_collecticiel_back_link",
      *      options={"expose"=true}
      * )
-     * @Template()
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function backLinkAction()
     {
-        $dropzoneId = $this->get('request')->query->get('dropzoneId');
+        $dropzoneId = $this->get('request_stack')->getMasterRequest()->query->get('dropzoneId');
         $url = $this->generateUrl('innova_collecticiel_drops_awaiting', ['resourceId' => $dropzoneId]);
 
         return new JsonResponse(['link' => $url]);

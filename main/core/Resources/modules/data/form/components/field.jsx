@@ -25,7 +25,7 @@ const FormField = props => {
     )
   } else {
     return React.createElement(typeDef.components.form, merge({}, props.options, {
-      id: props.name,
+      id: props.name.replace(/\./g, '-'),
       label: props.label,
       hideLabel: props.hideLabel,
       disabled: props.disabled,
@@ -62,7 +62,6 @@ FormField.propTypes = {
   error: T.oneOfType([T.string, T.object]), // object is for complex types like collection
   validating: T.bool,
   onChange: T.func,
-  validate: T.func,
   updateProp: T.func,
   setErrors: T.func
 }

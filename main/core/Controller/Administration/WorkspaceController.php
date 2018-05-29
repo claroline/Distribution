@@ -62,7 +62,7 @@ class WorkspaceController extends Controller
     }
 
     /**
-     * @EXT\Template
+     * @EXT\Template("ClarolineCoreBundle:administration/workspace:index.html.twig")
      * @EXT\Route("", name="claro_admin_workspace_list", options={"expose"=true})
      *
      * @return array
@@ -81,23 +81,23 @@ class WorkspaceController extends Controller
 
     /**
      * @EXT\Route("/import/form", name="claro_admin_workspace_import_form", options={"expose"=true})
-     * @EXT\Template
+     * @EXT\Template("ClarolineCoreBundle:administration/workspace:import_workspace_form.html.twig")
      */
     public function importWorkspaceFormAction()
     {
-        $form = $this->createForm(new WorkspaceImportType());
+        $form = $this->createForm(WorkspaceImportType::class);
 
         return ['form' => $form->createView()];
     }
 
     /**
      * @EXT\Route("/import", name="claro_admin_workspace_import")
-     * @EXT\Template("ClarolineCoreBundle:Administration/Workspaces:importWorkspaceForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration/workspace:import_workspace_form.html.twig")
      */
     public function importWorkspaceAction()
     {
-        $form = $this->createForm(new WorkspaceImportType());
-        $form->handleRequest($this->get('request'));
+        $form = $this->createForm(WorkspaceImportType::class);
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $file = $form->get('file')->getData();
