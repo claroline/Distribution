@@ -6,7 +6,8 @@ import Panel from 'react-bootstrap/lib/Panel'
 import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/app/router'
 
-import {MODAL_CONFIRM, MODAL_MESSAGE} from '#/main/app/modals/confirm'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {MODAL_ALERT} from '#/main/app/modals/alert'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Timer} from '#/main/core/layout/timer/components/timer'
@@ -191,7 +192,8 @@ PlayerComponent.propTypes = {
   paper: T.shape({
     id: T.string.isRequired,
     number: T.number.isRequired,
-    startDate: T.string.isRequired
+    startDate: T.string.isRequired,
+    structure: T.object.isRequired
   }).isRequired,
   next: T.object,
   previous: T.object,
@@ -268,7 +270,7 @@ const Player = withRouter(connect(
       }))
     },
     showTimeOverMessage() {
-      dispatch(modalActions.showModal(MODAL_MESSAGE, {
+      dispatch(modalActions.showModal(MODAL_ALERT, {
         title: trans('time_over', {}, 'quiz'),
         message: trans('time_over_message', {}, 'quiz'),
         type: 'info'
