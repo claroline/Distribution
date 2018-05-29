@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
-import {url} from '#/main/app/api'
+//import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 

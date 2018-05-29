@@ -33,7 +33,7 @@ const AboutModal = props =>
     </div>
 
     <DataDetails
-      data={props.workspace}
+      data={props.resourceNode}
       sections={[
         {
           title: trans('general'),
@@ -43,42 +43,6 @@ const AboutModal = props =>
               name: 'meta.description',
               label: trans('description'),
               type: 'string'
-            }, {
-              name: 'code',
-              label: trans('code'),
-              type: 'string'
-            }, {
-              name: 'meta.model',
-              label: 'Cet espace d\'activités n\'est pas un modèle.',
-              type: 'boolean',
-              options: {
-                icon: 'fa fa-fw fa-object-group',
-                labelChecked: 'Cette espace d\'activités est un modèle.'
-              }
-            }, {
-              name: 'meta.personal',
-              label: 'Cet espace d\'activités n\'est pas un espace personnel.',
-              type: 'boolean',
-              options: {
-                icon: 'fa fa-fw fa-user',
-                labelChecked: 'Cet espace d\'activités est un espace personnel.'
-              }
-            }, {
-              name: 'registration.selfRegistration',
-              label: 'Les inscriptions sont gérées par les gestionnaires.',
-              type: 'boolean',
-              options: {
-                icon: 'fa fa-fw fa-user-plus',
-                labelChecked: 'Les inscriptions sont publiques.'
-              }
-            }, {
-              name: 'registration.selfUnregistration',
-              label: 'Les désinscriptions sont gérées par les gestionnaires.',
-              type: 'boolean',
-              options: {
-                icon: 'fa fa-fw fa-user-times',
-                labelChecked: 'Les désinscriptions sont publiques.'
-              }
             }
           ]
         }
