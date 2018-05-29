@@ -49,7 +49,7 @@ ParametersModalComponent.propTypes = {
 
 const ParametersModal = connect(
   (state) => ({
-    saveEnabled: true/*formSelect.saveEnabled(formSelect.form(selectors.STORE_NAME))*/
+    saveEnabled: formSelect.saveEnabled(formSelect.form(selectors.STORE_NAME))
   }),
   (dispatch) => ({
     loadWorkspace(workspace) {

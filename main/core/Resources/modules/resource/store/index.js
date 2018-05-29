@@ -9,8 +9,6 @@ import {actions}   from '#/main/core/resource/store/actions'
 import {reducer}   from '#/main/core/resource/store/reducer'
 import {selectors} from '#/main/core/resource/store/selectors'
 
-console.log('resource reducer')
-
 // append the reducer to the store
 registry.add(selectors.STORE_NAME, reducer)
 

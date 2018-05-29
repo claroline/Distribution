@@ -698,16 +698,12 @@ class ParametersController extends Controller
      */
     public function submitSessionAction()
     {
-        $formData = $this->request->request->get('platform_session_form', []);
-        $storageType = isset($formData['session_storage_type']) ?
-            $formData['session_storage_type'] :
-            $this->configHandler->getParameter('session_storage_type');
         $form = $this->formFactory->create(
             SessionType::class,
             $this->configHandler->getPlatformConfig(),
             [
-                'session_type' => $config->getSessionStorageType(),
-                'config' => $config,
+                'session_type' => $this->configHandler->getSessionStorageType(),
+                'config' => $this->configHandler->getPlatformConfig(),
                 'locked_params' => $this->configHandler->getLockedParameters(),
             ]
         );

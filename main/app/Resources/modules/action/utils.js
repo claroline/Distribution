@@ -57,7 +57,7 @@ function buildToolbar(toolbarConfig, actions) {
               icon: 'fa fa-fw fa-ellipsis-v',
               label: trans('show-more-actions', {}, 'actions'),
               menu: {
-                align: 'right', // I hope it wil not cause problems to not be able to configure it
+                align: 'right' // I hope it wil not cause problems to not be able to configure it
               }
             }
           } else {

@@ -9,7 +9,6 @@ import {PageContent} from '#/main/core/layout/page'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceExplorer} from '#/main/core/resource/components/explorer'
-import {ResourcePageActions} from '#/main/core/resource/components/page-actions'
 
 import {getActions, getDefaultAction} from '#/main/core/resource/utils'
 import {actions} from '#/main/core/tools/resources/store'

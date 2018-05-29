@@ -191,8 +191,7 @@ const UsersMerge = connect(
   }),
   dispatch => ({
     mergeUsers(userToKeep, userToRemove) {
-      console.log('coucou')
-      //dispatch(actions.merge(userToKeep.id, userToRemove.id))
+      dispatch(actions.merge(userToKeep.id, userToRemove.id))
     }
   })
 )(UsersMergeForm)

@@ -283,7 +283,7 @@ WorkspaceFormComponent.propTypes = {
 
 const WorkspaceForm = connect(
   (state, ownProps) => ({
-    new: formSelect.isNew(formSelect.form(state, ownProps.name)),
+    new: formSelect.isNew(formSelect.form(state, ownProps.name))
   }),
   (dispatch, ownProps) =>({
     updateProp(propName, propValue) {

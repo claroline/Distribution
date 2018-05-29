@@ -3,15 +3,16 @@ import {PropTypes as T} from 'prop-types'
 const ResourceType = {
   propTypes: {
     name: T.string.isRequired,
+    class: T.string.isRequired,
     actions: T.arrayOf(T.shape({
       name: T.string.isRequired,
       scope: T.arrayOf(T.oneOf(['object', 'collection'])),
       group: T.string,
       permission: T.string.isRequired
-    })),
+    }))
   },
   defaultProps: {
-
+    actions: []
   }
 }
 

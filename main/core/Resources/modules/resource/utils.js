@@ -4,7 +4,6 @@ import omit from 'lodash/omit'
 
 import {param} from '#/main/app/config'
 import {trans} from '#/main/core/translation'
-import {constants} from '#/main/app/action/constants'
 
 // todo load dynamically
 import {actions} from '#/main/core/resource/actions/actions'

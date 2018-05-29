@@ -8,7 +8,6 @@ import {DataDetails} from '#/main/core/data/details/components/details'
 import {ContentMeta} from '#/main/app/content/meta/components/meta'
 import {ContentPublicUrl} from '#/main/app/content/meta/components/public-url'
 
-import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 
 // todo implement
@@ -18,20 +17,19 @@ const AboutModal = props =>
     {...omit(props, 'workspace')}
     icon="fa fa-fw fa-info"
     title={trans('about')}
-    subtitle={props.workspace.name}
+    subtitle={props.resourceNode.name}
   >
     <ContentPublicUrl
       className="modal-link"
-      url={['claro_workspace_subscription_url_generate', {slug: props.workspace.meta.slug}, true]}
+      url={['claro_resource_action', {
+        resourceType: props.resourceNode.meta.type,
+        action: 'open', // todo : get default from resource action list
+        id: props.resourceNode.id
+      }, true]}
     />
 
     <div className="modal-body">
-      <WorkspaceMetrics
-        workspace={props.workspace}
-        level={5}
-        width={80}
-        height={80}
-      />
+      TODO some metrics about the resource ?
     </div>
 
     <DataDetails
@@ -89,7 +87,7 @@ const AboutModal = props =>
 
     <div className="modal-footer">
       <ContentMeta
-        meta={props.workspace.meta}
+        meta={props.resourceNode.meta}
       />
     </div>
   </Modal>

@@ -31,6 +31,7 @@ const UserMicro = props => !props.link || !props.publicUrl ?
 
 UserMicro.propTypes = {
   name: T.string,
+  className: T.string,
   picture: T.shape({
     url: T.string.isRequired
   }),
