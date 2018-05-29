@@ -119,7 +119,7 @@ class WorkspaceSerializer
                     'open' => $this->authorization->isGranted('OPEN', $workspace),
                     'delete' => $this->authorization->isGranted('DELETE', $workspace),
                     'administrate' => $this->authorization->isGranted('ADMINISTRATE', $workspace),
-                    'export' => $this->authorization->isGranted('EXPORT', $workspace)
+                    'export' => $this->authorization->isGranted('EXPORT', $workspace),
                 ],
                 'meta' => $this->getMeta($workspace, $options),
                 'opening' => $this->getOpening($workspace),
