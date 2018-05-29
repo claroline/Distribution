@@ -1,6 +1,5 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/app/api'
-import {navigate} from '#/main/app/router'
 
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'

@@ -1,5 +1,4 @@
 import {url} from '#/main/core/api/router'
-import {navigate} from '#/main/core/router'
 
 import {API_REQUEST} from '#/main/app/api'
 import {actions as listActions} from '#/main/core/data/list/actions'
