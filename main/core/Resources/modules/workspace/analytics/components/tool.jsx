@@ -5,7 +5,7 @@ import {
   PageContent,
   PageHeader
 } from '#/main/core/layout/page'
-import { Dashboard } from '#/main/core/tools/workspace/dashboard/components/dashboard'
+import { Dashboard } from '#/main/core/workspace/analytics/components/dashboard'
 
 
 const Tool = () =>

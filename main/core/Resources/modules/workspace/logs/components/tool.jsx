@@ -20,8 +20,8 @@ import {
 } from '#/main/core/layout/router'
 
 // app pages
-import {Logs} from '#/main/core/tools/workspace/logs/components/log-list.jsx'
-import {UserLogs} from '#/main/core/tools/workspace/logs/components/user-list.jsx'
+import {Logs} from '#/main/core/workspace/logs/components/log-list.jsx'
+import {UserLogs} from '#/main/core/workspace/logs/components/user-list.jsx'
 import {LogDetails} from '#/main/core/layout/logs'
 import {actions as logActions} from  '#/main/core/layout/logs/actions'
 
@@ -33,7 +33,7 @@ const Actions = (props) => {
         type: 'link',
         target: '/users',
         label: trans('user_tracking', {}, 'log'),
-        icon: 'fa fa-users'
+        icon: 'fa fa-fw fa-users'
       },
       {
         type: 'download',
@@ -41,7 +41,7 @@ const Actions = (props) => {
           url: url(['apiv2_workspace_tool_logs_list_csv', {'workspaceId': props.workspaceId}]) + props.logsQuery
         },
         label: trans('download_csv_list', {}, 'log'),
-        icon: 'fa fa-download'
+        icon: 'fa fa-fw fa-download'
       }
     ])
   }
@@ -53,7 +53,7 @@ const Actions = (props) => {
         target: '/',
         exact: true,
         label: trans('list', {}, 'platform'),
-        icon: 'fa fa-list'
+        icon: 'fa fa-fw fa-list'
       },
       {
         type: 'download',
@@ -61,7 +61,7 @@ const Actions = (props) => {
           url: url(['apiv2_workspace_tool_logs_list_users_csv', {'workspaceId': props.workspaceId}]) + props.usersQuery
         },
         label: trans('download_csv_list', {}, 'log'),
-        icon: 'fa fa-download'
+        icon: 'fa fa-fw fa-download'
       }
     ])
   }

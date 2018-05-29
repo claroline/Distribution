@@ -1,7 +1,7 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {LogTool} from '#/main/core/tools/workspace/logs/components/tool.jsx'
-import {reducer} from '#/main/core/tools/workspace/logs/reducer'
+import {LogTool} from '#/main/core/workspace/logs/components/tool.jsx'
+import {reducer} from '#/main/core/workspace/logs/reducer'
 
 
 // mount the react application

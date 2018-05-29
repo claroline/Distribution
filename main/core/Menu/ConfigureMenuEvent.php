@@ -16,7 +16,8 @@ class ConfigureMenuEvent extends Event
 
     /**
      * @param \Knp\Menu\FactoryInterface $factory
-     * @param \Knp\Menu\ItemInterface    $menu
+     * @param \Knp\Menu\ItemInterface $menu
+     * @param Tool $tool
      */
     public function __construct(
         FactoryInterface $factory,
@@ -45,7 +46,7 @@ class ConfigureMenuEvent extends Event
     }
 
     /**
-     * @return \Claroline\CoreBundle\Entity\Tool
+     * @return Tool
      */
     public function getTool()
     {

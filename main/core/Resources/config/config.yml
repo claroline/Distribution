@@ -127,9 +127,11 @@ plugin:
         - name: desktop_and_home
           class: home
 
+        # todo move as desktop tool
         - name: platform_logs
           class: bars
 
+        # todo move as desktop tool
         - name: platform_analytics
           class: bar-chart-o
 
@@ -223,7 +225,7 @@ plugin:
           is_anonymous_excluded: false
 
         - name: logs
-          class: list
+          class: line-chart
           is_displayable_in_workspace: true
           is_displayable_in_desktop: false
           is_configurable_in_workspace: false
@@ -235,7 +237,7 @@ plugin:
           is_anonymous_excluded: true
 
         - name: analytics
-          class: bar-chart-o
+          class: pie-chart
           is_displayable_in_workspace: true
           is_displayable_in_desktop: false
           is_configurable_in_workspace: false

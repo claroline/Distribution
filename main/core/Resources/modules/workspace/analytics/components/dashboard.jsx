@@ -6,7 +6,7 @@ import {schemeCategory20c} from 'd3-scale'
 import {trans} from '#/main/core/translation'
 import {LineChart} from '#/main/core/layout/chart/line/components/line-chart.jsx'
 import {PieChart} from '#/main/core/layout/chart/pie/components/pie-chart.jsx'
-import {actions} from '#/main/core/tools/workspace/dashboard/actions'
+import {actions} from '#/main/core/workspace/analytics/actions'
 import {DashboardTable, DashboardCard} from '#/main/core/layout/dashboard'
 
 class Dashboard extends Component {
@@ -113,9 +113,9 @@ const DashboardContainer  = connect(
     dashboard: state.dashboard,
     workspaceId: state.workspaceId
   }),
-  disptach => ({
+  dispatch => ({
     getDashboard: (workspaceId) => {
-      disptach(actions.getDashboardData('apiv2_workspace_tool_dashboard', {workspaceId}))
+      dispatch(actions.getDashboardData('apiv2_workspace_tool_dashboard', {workspaceId}))
     }
   })
 )(Dashboard)

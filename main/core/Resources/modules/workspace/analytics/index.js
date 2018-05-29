@@ -1,7 +1,7 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {DashboardTool} from '#/main/core/tools/workspace/dashboard/components/tool.jsx'
-import {reducer} from '#/main/core/tools/workspace/dashboard/reducer'
+import {DashboardTool} from '#/main/core/workspace/analytics/components/tool.jsx'
+import {reducer} from '#/main/core/workspace/analytics/reducer'
 
 
 // mount the react application

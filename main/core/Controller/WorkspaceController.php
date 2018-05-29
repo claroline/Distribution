@@ -217,27 +217,6 @@ class WorkspaceController extends Controller
     }
 
     /**
-     * @EXT\Template()
-     *
-     * Renders the registered workspace list for a user.
-     *
-     * @return Response
-     */
-    public function usersManagementAction(Workspace $workspace)
-    {
-        return [
-            'workspace' => $workspace,
-            'restrictions' => [
-                'hasUserManagementAccess' => $this->authorization->isGranted(
-                    'OPEN', $this->container->get('claroline.persistence.object_manager')
-                      ->getRepository('ClarolineCoreBundle:Tool\AdminTool')
-                      ->findOneByName('user_management')
-                ),
-            ],
-        ];
-    }
-
-    /**
      * @EXT\Route(
      *     "/user/picker",
      *     name="claro_workspace_by_user_picker",
@@ -247,6 +226,8 @@ class WorkspaceController extends Controller
      * Renders the registered workspace list for a user to be used by the picker.
      *
      * @return Response
+     *
+     * @deprecated
      */
     public function listWorkspacesByUserForPickerAction()
     {
@@ -345,6 +326,8 @@ class WorkspaceController extends Controller
      * @param Workspace $workspace
      *
      * @return Response
+     *
+     * @deprecated use the one provided by api
      */
     public function deleteAction(Workspace $workspace)
     {
@@ -537,6 +520,8 @@ class WorkspaceController extends Controller
      *     name="claro_resource_find_role_by_code",
      *     options={"expose"=true}
      * )
+     *
+     * @todo check if it's still used and use finder if yes.
      */
     public function findRoleByWorkspaceCodeAction($code)
     {

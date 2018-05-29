@@ -1,5 +1,5 @@
-import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
-import {LOAD_DASHBOARD} from '#/main/core/tools/workspace/dashboard/actions'
+import {makeReducer, combineReducers} from '#/main/app/store/reducer'
+import {LOAD_DASHBOARD} from '#/main/core/workspace/analytics/actions'
 
 const reducer = {
   workspaceId: makeReducer(null, {}),

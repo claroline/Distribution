@@ -17,7 +17,7 @@ const Tool = props =>
   <Page
     title={trans('resources', {}, 'tools')}
     subtitle={props.current && props.current.name}
-    toolbar="edit rights publish unpublish | fullscreen more"
+    toolbar="edit rights publish unpublish | more"
     actions={props.current && getActions(props.current, 'object')}
   >
     <PageContent>
