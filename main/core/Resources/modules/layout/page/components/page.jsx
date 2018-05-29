@@ -83,7 +83,7 @@ const PageHeader = props => {
     <header
       style={styles}
       className={classes('page-header', props.className, {
-        'page-header-poster': !!props.poster
+        'page-poster': !!props.poster
       })}
     >
       <PageTitle

@@ -16,11 +16,14 @@ bootstrap(
     bookReference: reducer
   },
 
-  initialState => ({
-    resourceNode: initialState.resourceNode,
+  (initialData) => Object.assign({}, initialData, {
     bookReference: {
-      data: initialState.bookReference,
-      originalData: initialState.bookReference
+      data: initialData.bookReference,
+      originalData: initialData.bookReference
+    },
+    resource: {
+      node: initialData.resourceNode,
+      evaluation: initialData.evaluation
     }
   })
 )

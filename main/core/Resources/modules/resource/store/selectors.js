@@ -68,6 +68,7 @@ const isSuccessful = createSelector(
 )
 
 export const selectors = {
+  STORE_NAME,
   resource,
   embedded,
   // lifecycle

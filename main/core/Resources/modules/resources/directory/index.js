@@ -8,5 +8,11 @@ import {reducer} from '#/main/core/resources/text/reducer'
  */
 export const App = () => ({
   component: DirectoryResource,
-  store: reducer
+  store: reducer,
+  initialData: (initialData) => Object.assign({}, initialData, {
+    resource: {
+      node: initialData.resourceNode,
+      evaluation: initialData.evaluation
+    }
+  })
 })

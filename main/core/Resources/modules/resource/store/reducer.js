@@ -1,6 +1,6 @@
 import merge from 'lodash/merge'
 
-import {makeReducer} from '#/main/core/scaffolding/reducer'
+import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 
 import {
   RESOURCE_UPDATE_PUBLICATION,
@@ -9,7 +9,7 @@ import {
   USER_EVALUATION_UPDATE
 } from '#/main/core/resource/store/actions'
 
-const reducer = {
+const reducer = combineReducers({
   embedded: makeReducer(false, {}), // this can not be changed at runtime
 
   /**
@@ -57,7 +57,7 @@ const reducer = {
   lifecycle: makeReducer({}, {
 
   })
-}
+})
 
 
 export {

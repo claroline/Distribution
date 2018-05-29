@@ -61,7 +61,7 @@
                     </a>
                 </li>
 
-                {{ render(controller("ClarolineCoreBundle:Resource:renderBreadcrumbs", {
+                {{ render(controller("ClarolineCoreBundle:ResourceOld:renderBreadcrumbs", {
                     'node': node,
                     '_breadcrumbs': app.request.query.get('_breadcrumbs', {})
                 })) }}

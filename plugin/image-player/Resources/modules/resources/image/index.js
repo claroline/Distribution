@@ -14,5 +14,11 @@ bootstrap(
   {
     // there is no editor for now, so we just init a static store
     image: (state = {}) => state
-  }
+  },
+  (initialData) => (Object.assign({}, initialData, {
+    resource: {
+      node: initialData.resourceNode,
+      evaluation: initialData.evaluation
+    }
+  }))
 )

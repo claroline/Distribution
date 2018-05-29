@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {param} from '#/main/app/config'
 import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
@@ -92,9 +93,9 @@ const EditorComponent = props =>
                   numbering={getNumbering(props.path.display.numbering, props.path.steps, step)}
                   customNumbering={constants.NUMBERING_CUSTOM === props.path.display.numbering}
                   stepPath={getFormDataPart(step.id, props.path.steps)}
-                  pickPrimaryResource={stepId => props.pickResources(stepId, props.resourceTypes, 'primary')}
+                  pickPrimaryResource={stepId => props.pickResources(stepId, 'primary')}
                   removePrimaryResource={props.removePrimaryResource}
-                  pickSecondaryResources={stepId => props.pickResources(stepId, props.resourceTypes, 'secondary')}
+                  pickSecondaryResources={stepId => props.pickResources(stepId, 'secondary')}
                   removeSecondaryResource={props.removeSecondaryResource}
                   updateSecondaryResourceInheritance={props.updateSecondaryResourceInheritance}
                   removeInheritedResource={props.removeInheritedResource}
@@ -110,7 +111,6 @@ const EditorComponent = props =>
   </section>
 
 EditorComponent.propTypes = {
-  resourceTypes: T.array,
   path: T.shape(
     PathTypes.propTypes
   ).isRequired,
@@ -133,7 +133,6 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   state => ({
-    resourceTypes: editorSelect.resourceTypes(state),
     path: editorSelect.path(state),
     steps: flattenSteps(editorSelect.steps(state)),
     copy: editorSelect.stepCopy(state)
@@ -159,7 +158,7 @@ const Editor = connect(
     pasteStep(parentStep = null) {
       dispatch(actions.paste(parentStep ? parentStep.id : null))
     },
-    pickResources(stepId, resourceTypes, usage = 'primary') {
+    pickResources(stepId, usage = 'primary') {
       let icon
       let title
       let callback
@@ -201,7 +200,7 @@ const Editor = connect(
             displayed: true,
             type: 'choice',
             options: {
-              choices: resourceTypes.filter(rt => rt.name != 'directory').reduce(
+              choices: param('resourceTypes').reduce(
                 (choices, rt) => Object.assign(choices, {[rt.name]: trans(rt.name, {}, 'resource')}),
                 {}
               )

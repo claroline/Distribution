@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Form\ImportResourcesType;
 use Claroline\CoreBundle\Form\Resource\UnlockType;
@@ -41,6 +42,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -84,7 +86,7 @@ class ResourceOldController extends Controller
      *     "rightsManager"       = @DI\Inject("claroline.manager.rights_manager"),
      *     "roleManager"         = @DI\Inject("claroline.manager.role_manager"),
      *     "translator"          = @DI\Inject("translator"),
-     *     "request"             = @DI\Inject("request"),
+     *     "requestStack"        = @DI\Inject("request_stack"),
      *     "dispatcher"          = @DI\Inject("claroline.event.event_dispatcher"),
      *     "templating"          = @DI\Inject("templating"),
      *     "logManager"          = @DI\Inject("claroline.log.manager"),
@@ -103,7 +105,7 @@ class ResourceOldController extends Controller
         RightsManager $rightsManager,
         RoleManager $roleManager,
         TranslatorInterface $translator,
-        Request $request,
+        RequestStack $requestStack,
         StrictDispatcher $dispatcher,
         MaskManager $maskManager,
         TwigEngine $templating,
@@ -121,7 +123,7 @@ class ResourceOldController extends Controller
         $this->translator = $translator;
         $this->rightsManager = $rightsManager;
         $this->roleManager = $roleManager;
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
         $this->dispatcher = $dispatcher;
         $this->maskManager = $maskManager;
         $this->templating = $templating;
@@ -210,7 +212,7 @@ class ResourceOldController extends Controller
         }
         $event = $this->dispatcher->dispatch(
             'open_'.$resourceType,
-            'OpenResource',
+            OpenResourceEvent::class,
             [$this->resourceManager->getResourceFromNode($node), $isIframe]
         );
         $this->dispatcher->dispatch('log', 'Log\LogResourceRead', [$node]);
@@ -787,7 +789,7 @@ class ResourceOldController extends Controller
      *
      * @throws Exception
      */
-    public function renderBreadcrumbsAction(ResourceNode $node, array $_breadcrumbs)
+    public function renderBreadcrumbsAction(ResourceNode $node, $_breadcrumbs)
     {
         //this trick will never work with shortcuts to directory
         //we don't support directory links anymore

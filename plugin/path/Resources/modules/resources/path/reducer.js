@@ -48,8 +48,7 @@ const reducer = {
 
       return newState
     }
-  }),
-  resourceTypes: makeReducer({}, {})
+  })
 }
 
 export {
