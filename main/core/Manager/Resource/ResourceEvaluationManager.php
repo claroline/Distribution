@@ -94,6 +94,7 @@ class ResourceEvaluationManager
         $scoreMin = null,
         $scoreMax = null,
         $customScore = null,
+        $progression = null,
         $duration = null,
         $comment = null,
         $data = null,
@@ -110,6 +111,7 @@ class ResourceEvaluationManager
         $evaluation->setScoreMin($scoreMin);
         $evaluation->setScoreMax($scoreMax);
         $evaluation->setCustomScore($customScore);
+        $evaluation->setProgression($progression);
         $evaluation->setDuration($duration);
         $evaluation->setComment($comment);
         $evaluation->setData($data);
@@ -195,6 +197,7 @@ class ResourceEvaluationManager
         $score = $evaluation->getScore();
         $scoreMax = $evaluation->getScoreMax();
         $scoreMin = $evaluation->getScoreMin();
+        $progression = $evaluation->getProgression();
 
         $statusPriority = AbstractResourceEvaluation::STATUS_PRIORITY;
 
@@ -208,7 +211,8 @@ class ResourceEvaluationManager
             $rue->setScoreMax($scoreMax);
             $rue->setScoreMin($scoreMin);
             $rue->setCustomScore($evaluation->getCustomScore());
-        } elseif (!empty($score)) {
+            $rue->setProgression($progression);
+        } elseif (!empty($score) || !is_null($progression)) {
             $newScore = empty($scoreMax) ? $score : $score / $scoreMax;
 
             $rueScore = $rue->getScore() ? $rue->getScore() : 0;
@@ -219,6 +223,11 @@ class ResourceEvaluationManager
                 $rue->setScore($score);
                 $rue->setScoreMax($scoreMax);
                 $rue->setScoreMin($evaluation->getScoreMin());
+            }
+            $rueProgression = $rue->getProgression();
+
+            if (is_null($rueProgression) || $progression > $rueProgression) {
+                $rue->setProgression($progression);
             }
         }
         if ($forceStatus ||
