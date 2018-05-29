@@ -33,9 +33,9 @@ class ResourceNodeRepositoryTest extends RepositoryTestCase
         self::createUser('john', [self::get('ROLE_1'), self::get('ROLE_2')]);
         self::createUser('jane', [self::get('ROLE_2')]);
         self::createUser('manager_ws_1', [self::get(self::$roleManagerName)]);
-        self::createResourceType('t_dir');
-        self::createResourceType('t_file');
-        self::createResourceType('t_link', false);
+        self::createResourceType('t_dir', 'Directory');
+        self::createResourceType('t_file', 'File');
+        self::createResourceType('t_link', 'Link', false);
 
         /*
          * Structure :

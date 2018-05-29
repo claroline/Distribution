@@ -202,10 +202,11 @@ abstract class RepositoryTestCase extends WebTestCase
         self::create($name, $workspace);
     }
 
-    protected static function createResourceType($name, $isExportable = true, Plugin $plugin = null)
+    protected static function createResourceType($name, $class, $isExportable = true, Plugin $plugin = null)
     {
         $type = new ResourceType();
         $type->setName($name);
+        $type->setClass();
         $type->setExportable($isExportable);
 
         if ($plugin) {
