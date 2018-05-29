@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
+import {asset} from '#/main/core/scaffolding/asset'
 import {withRouter} from '#/main/core/router'
 import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
@@ -94,6 +95,9 @@ class SubjectComponent extends Component {
               primary={true}
             />
           </div>
+          {/* {this.props.subject.poster &&
+            <img className="subject-poster img-responsive" alt={this.props.subject.title} src={asset(this.props.subject.poster.url)} />
+          } */}
           <div>
             {(!this.props.showSubjectForm && !this.props.editingSubject) &&
               <h3 className="h2">

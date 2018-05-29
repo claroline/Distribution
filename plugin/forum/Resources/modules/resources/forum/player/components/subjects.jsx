@@ -126,7 +126,7 @@ class SubjectsList extends Component {
               id={props.data.id}
               icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
               title={props.data.title}
-              // poster={props.data.poster.url}
+              poster={props.data.poster ? props.data.poster.url : null}
               subtitle={transChoice('replies', props.data.meta.messages, {count: props.data.meta.messages}, 'forum')}
               // contentText={props.data)}
             />

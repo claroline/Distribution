@@ -166,7 +166,7 @@ actions.stickSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
-      dispatch(listActions.invalidateData('subjects.messages'))
+      dispatch(actions.loadSubject(data))
     }
   }
 })
@@ -180,7 +180,7 @@ actions.unStickSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
-      dispatch(listActions.invalidateData('subjects.messages'))
+      dispatch(actions.loadSubject(data))
     }
   }
 })
@@ -194,7 +194,7 @@ actions.closeSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
-      dispatch(listActions.invalidateData('subjects.messages'))
+      dispatch(actions.loadSubject(data))
     }
   }
 })
@@ -208,7 +208,7 @@ actions.unCloseSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
-      dispatch(listActions.invalidateData('subjects.messages'))
+      dispatch(actions.loadSubject(data))
     }
   }
 })
@@ -222,7 +222,7 @@ actions.flagSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
-      dispatch(listActions.invalidateData('subjects.messages'))
+      dispatch(actions.loadSubject(data))
     }
   }
 })
@@ -236,7 +236,7 @@ actions.unFlagSubject = (subject) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
-      dispatch(listActions.invalidateData('subjects.messages'))
+      dispatch(actions.loadSubject(data))
     }
   }
 })

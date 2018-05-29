@@ -7,27 +7,41 @@ import {UrlButton} from '#/main/app/button/components/url'
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
+
+
+const fontSizeConverter = (count, min, max) => {
+  return Math.round((count - min) * (30 - 14) / (max - min) + 14)
+}
+
+// const counts = Object.values(props.tagsCount).map(count => count)
+// const min = Math.min(...counts)
+// const max = Math.max(...counts)
+const fontSize = (count, min, max) => fontSizeConverter(count, min, max) +'px'
+
+
+// tagsCount is an object with keys=tag and values=count
 const TagCloudComponent = props =>
+
   <div>
-    {console.log(props.tagsCount)}
-    {[props.tagsCount].map(tag =>
-      <div key={tag}>tag</div>
+    {Object.keys(props.tagsCount).map(tag =>
+      <UrlButton
+        type="link"
+        key={tag}
+        className="btn btn-link tag-cloud"
+        target="/subjects"
+        style={{fontSize: fontSize(props.tagsCount[tag], 1, 3)}}
+      >
+        {tag}
+      </UrlButton>
     )}
-    <UrlButton
-      type="link"
-      key={Object.keys(props.tagsCount)}
-      className="btn btn-link tag-cloud"
-      target="/subjects"
-    >
-      {Object.keys(props.tagsCount)}
-      {/* <span style={style}>{Object.keys(props.tagsCount)}</span> */}
-    </UrlButton>
   </div>
 
 
 
+
+
 TagCloudComponent.propTypes = {
-  forum: T.shape(ForumType.propTypes)
+  // tagsCount: T.shape({})
 }
 
 const TagCloud = connect(
