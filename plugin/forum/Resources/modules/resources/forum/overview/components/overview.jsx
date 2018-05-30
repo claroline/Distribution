@@ -54,8 +54,8 @@ const OverviewComponent = props =>
               <h3 className="h2">{trans('tags')}</h3>
               <TagCloud
                 tags={props.tagsCount}
-                minSize="12"
-                maxSize="28"
+                minSize={12}
+                maxSize={28}
               />
             </section>
           }
