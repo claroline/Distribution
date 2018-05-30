@@ -26,6 +26,7 @@ class APISecurityTest extends TransactionalTestCase
         $request = "/oauth/v2/token?client_id={$client->getConcatRandomId()}&client_secret={$client->getSecret()}&grant_type=password&username={$user->getUsername()}&password={$user->getUsername()}";
         $this->client->request('GET', $request);
         $data = json_decode($this->client->getResponse()->getContent(), true);
+        var_dump($data);
         $this->assertTrue(array_key_exists('access_token', $data));
         $token = $data['access_token'];
 
