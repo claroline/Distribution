@@ -780,7 +780,7 @@ class ResourceOldController extends Controller
     }
 
     /**
-     * @EXT\Template("ClarolineCoreBundle:Resource:breadcrumbs.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:resource:breadcrumbs.html.twig")
      *
      * @param ResourceNode $node
      * @param int[]        $_breadcrumbs

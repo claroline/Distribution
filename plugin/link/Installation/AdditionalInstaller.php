@@ -28,11 +28,13 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             // update old resource type
             $coreType->setName('shortcut');
             $coreType->setPlugin($pluginType->getPlugin());
+            // remove extra type
+            $om->remove($pluginType);
+
+            $om->flush();
 
             $om->persist($coreType);
 
-            // remove extra type
-            $om->remove($pluginType);
 
             $om->flush();
         }

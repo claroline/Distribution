@@ -5,9 +5,9 @@ import get from 'lodash/get'
 
 import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
-import {MODAL_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as listActions} from '#/main/core/data/list/actions'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {withModal} from '#/main/app/overlay/modal'
 
 import {Subject as SubjectType} from '#/plugin/forum/resources/forum/player/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -165,7 +165,7 @@ const MessageComments =  connect(
       dispatch(actions.createComment(messageId, comment))
     },
     showModal(type, props) {
-      dispatch(modalActions.showModal(type, props))
+      dispatch(withModal.showModal(type, props))
     },
     deleteComment(id) {
       dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))

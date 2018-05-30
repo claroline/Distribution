@@ -2,9 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-
-import {Routes} from '#/main/core/router'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {Routes} from '#/main/app/router'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'

@@ -10,7 +10,7 @@ import {currentUser} from '#/main/core/user/current'
 import {Button} from '#/main/app/action/components/button'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {withModal} from '#/main/app/overlay/modal'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
@@ -294,7 +294,7 @@ const Subject =  withRouter(connect(
       dispatch(actions.createMessage(subjectId, content))
     },
     showModal(type, props) {
-      dispatch(modalActions.showModal(type, props))
+      dispatch(withModal.showModal(type, props))
     },
     deleteSubject(id, push) {
       dispatch(actions.deleteSubject(id, push))

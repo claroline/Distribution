@@ -23,6 +23,7 @@ use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Form\ForumType;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class ForumListener
 {

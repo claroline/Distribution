@@ -1,5 +1,5 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {url} from '#/main/core/api/router'
+import {url} from '#/main/app/api/router'
 
 export const API_REQUEST = 'API_REQUEST'
 

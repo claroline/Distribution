@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'

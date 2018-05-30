@@ -4,7 +4,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {UrlButton} from '#/main/app/button/components/url'
 
-import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
 

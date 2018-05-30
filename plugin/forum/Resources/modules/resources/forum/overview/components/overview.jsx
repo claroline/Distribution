@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
-import {number} from '#/main/core/intl'
+import {number} from '#/main/app/intl'
 import {Button} from '#/main/app/action/components/button'
 import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {MetricCard} from '#/main/core/layout/components/metric-card'
