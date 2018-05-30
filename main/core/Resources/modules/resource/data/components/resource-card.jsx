@@ -7,6 +7,7 @@ import {displayDate} from '#/main/core/scaffolding/date'
 
 import {DataCard} from '#/main/core/data/components/data-card'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
+import {ResourceIcon} from '#/main/core/resource/components/icon'
 
 import {UserMicro} from '#/main/core/user/components/micro'
 
@@ -15,7 +16,7 @@ const ResourceCard = props =>
     {...props}
     id={props.data.id}
     poster={props.data.thumbnail ? asset(props.data.thumbnail) : null}
-    icon={<img className="icon" src={asset(props.data.meta.icon)} />}
+    icon={<ResourceIcon className="icon" resourceNode={props.data} />}
     title={props.data.name}
     subtitle={trans(props.data.meta.type, {}, 'resource')}
     flags={[

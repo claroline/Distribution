@@ -97,7 +97,9 @@ class ResourceNode
      * )
      * @ORM\JoinColumn(onDelete="SET NULL")
      *
-     * @todo remove me
+     * @deprecated
+     *
+     * @todo remove me with migration (was used to store thumbnails in some cases)
      */
     private $icon;
 
@@ -442,6 +444,8 @@ class ResourceNode
      * Returns the resource icon.
      *
      * @return ResourceIcon
+     *
+     * @deprecated
      */
     public function getIcon()
     {
@@ -452,6 +456,8 @@ class ResourceNode
      * Sets the resource icon.
      *
      * @param ResourceIcon $icon
+     *
+     * @deprecated
      */
     public function setIcon(ResourceIcon $icon)
     {

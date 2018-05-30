@@ -71,7 +71,6 @@ class Page extends Component {
         <PageHeader
           {...omit(this.props, 'className', 'embedded', 'fullscreen', 'children')}
           actions={this.props.actions
-            // add the fullscreen actions (it must be added to the Page toolbar to be added)
             .concat([
               {
                 name: 'fullscreen',
@@ -81,15 +80,17 @@ class Page extends Component {
                   'fa-compress': this.state.fullscreen
                 }),
                 label: trans(this.state.fullscreen ? 'fullscreen_off' : 'fullscreen_on'),
-                callback: this.toggleFullscreen
+                callback: this.toggleFullscreen,
+                // show fullscreen button only if it's defined in the toolbar
+                // todo : find a better way to do it (maybe merge with the way we add `more`)
+                displayed: !!this.props.toolbar && -1 !== this.props.toolbar.indexOf('fullscreen')
               }
             ])
-            // only get displayed actions
             .filter(action => undefined === action.displayed || action.displayed)
           }
         />
 
-        <div className="page-content">
+        <div className="page-content" role="presentation">
           {this.props.children}
         </div>
 

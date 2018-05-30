@@ -181,7 +181,7 @@ class ResourceNodeSerializer
     {
         return [
             'type' => $resourceNode->getResourceType()->getName(), // todo : must be available in MINIMAL mode
-            'mimeType' => $resourceNode->getMimeType(), // todo : maybe too
+            'mimeType' => $resourceNode->getMimeType(), // todo : must be available in MINIMAL mode
             'description' => $resourceNode->getDescription(),
             'created' => DateNormalizer::normalize($resourceNode->getCreationDate()),
             'updated' => DateNormalizer::normalize($resourceNode->getModificationDate()),
@@ -192,7 +192,6 @@ class ResourceNodeSerializer
             'isManager' => $this->rightsManager->isManager($resourceNode), // todo : data about current user should not be here (should be in `rights` section)
             'creator' => $resourceNode->getCreator() ? $this->userSerializer->serialize($resourceNode->getCreator()) : null,
             'views' => $resourceNode->getViewsCount(),
-            'icon' => $resourceNode->getIcon() ? '/'.$resourceNode->getIcon()->getRelativeUrl() : null, // todo : remove me
         ];
     }
 

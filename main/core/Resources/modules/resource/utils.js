@@ -2,7 +2,7 @@ import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
-import {param} from '#/main/app/config'
+import {param, asset} from '#/main/app/config'
 import {trans} from '#/main/core/translation'
 
 // todo load dynamically
@@ -11,11 +11,30 @@ import {actions} from '#/main/core/resource/actions/actions'
 /**
  * Get the type implemented by a resource node.
  *
- * @param resourceNode
+ * @param {object} resourceNode
  */
 function getType(resourceNode) {
   return param('resourceTypes')
     .find(type => type.name === resourceNode.meta.type)
+}
+
+/**
+ * Get the icon of a resource icon.
+ *
+ * @param {object} resourceNode
+ */
+function getIcon(resourceNode) {
+  const icons = param('theme.icons')
+
+  // try to find an icon for the exact mime type
+  let resourceIcon = icons.find(icon => -1 !== icon.mimeTypes.indexOf(resourceNode.meta.mimeType))
+  if (!resourceIcon) {
+    // fallback to an icon for the first mimeType part
+    const type = resourceNode.meta.mimeType.split('/')[0]
+    resourceIcon = icons.find(icon => -1 !== icon.mimeTypes.indexOf(type))
+  }
+
+  return asset(resourceIcon.url)
 }
 
 /**
@@ -47,6 +66,7 @@ function getDefaultAction(resourceNode, scope) {
 
 export {
   getType,
+  getIcon,
   getActions,
   getDefaultAction
 }
