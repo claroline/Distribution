@@ -1,7 +1,4 @@
 import {bootstrap} from '#/main/app/bootstrap'
-import {registerModals} from '#/main/core/layout/modal'
-import {registerType} from '#/main/core/data'
-import {FIELDS_TYPE, fieldsDefinition} from '#/main/core/data/types/fields'
 
 import {LessonResource} from '#/plugin/lesson/resources/lesson/components/resource.jsx'
 
