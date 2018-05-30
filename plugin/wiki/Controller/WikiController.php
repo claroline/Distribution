@@ -4,27 +4,15 @@ namespace Icap\WikiBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Icap\WikiBundle\Entity\Wiki;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class WikiController extends Controller
 {
-    /**
-     * @Route(
-     *      "/{wikiId}.{_format}",
-     *      defaults={"_format":"html"},
-     *      requirements={"wikiId" = "\d+", "_format":"html|pdf"},
-     *      name="icap_wiki_view",
-     *      options = { "expose" = true }
-     * )
-     * @ParamConverter("wiki", class="IcapWikiBundle:Wiki", options={"id" = "wikiId"})
-     */
     public function viewAction(Wiki $wiki, Request $request)
     {
         $format = $request->get('_format');
-        if ($format === 'pdf') {
+        if ('pdf' === $format) {
             $this->checkAccess('EXPORT', $wiki);
         } else {
             $this->checkAccess('OPEN', $wiki);
@@ -43,7 +31,7 @@ class WikiController extends Controller
             'user' => $user,
             'deletedSections' => $deletedSections,
         ], $response);
-        if ($format === 'pdf') {
+        if ('pdf' === $format) {
             return new Response(
                 $this->get('knp_snappy.pdf')->getOutputFromHtml(
                     $response->getContent(),

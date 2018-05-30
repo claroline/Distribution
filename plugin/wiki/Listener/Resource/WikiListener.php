@@ -1,41 +1,81 @@
 <?php
 
-namespace Icap\WikiBundle\Listener;
+namespace Icap\WikiBundle\Listener\Resource;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
-use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
-use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
+use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
+use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Form\WikiType;
+use Icap\WikiBundle\Manager\WikiManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Templating\EngineInterface;
 
 /**
  * @DI\Service()
  */
 class WikiListener
 {
-    private $container;
-    private $httpKernel;
+    use PermissionCheckerTrait;
+
+    /** @var null|\Symfony\Component\HttpFoundation\Request */
     private $request;
+
+    /** @var FormFactoryInterface */
+    private $formFactory;
+
+    /** @var EngineInterface */
+    private $templating;
+
+    /** @var null|\Claroline\CoreBundle\Entity\User */
+    private $user;
+
+    /** @var ObjectManager */
+    private $om;
+
+    /** @var WikiManager */
+    private $wikiManager;
+
+    /** @var ResourceEvaluationManager */
+    private $evaluationManager;
 
     /**
      * @DI\InjectParams({
-     *     "container"    = @DI\Inject("service_container"),
-     *     "httpKernel"   = @DI\Inject("http_kernel"),
-     *     "requestStack" = @DI\Inject("request_stack")
+     *     "formFactory"        = @DI\Inject("form.factory"),
+     *     "templating"         = @DI\Inject("templating"),
+     *     "tokenStorage"       = @DI\Inject("security.token_storage"),
+     *     "objectManager"      = @DI\Inject("claroline.persistence.object_manager"),
+     *     "wikiManager"        = @DI\Inject("icap.wiki.manager"),
+     *     "evaluationManager"  = @DI\Inject("claroline.manager.resource_evaluation_manager"),
+     *     "requestStack"       = @DI\Inject("request_stack")
      * })
      */
-    public function __construct(ContainerInterface $container, HttpKernelInterface $httpKernel, RequestStack $requestStack)
-    {
-        $this->container = $container;
-        $this->httpKernel = $httpKernel;
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        EngineInterface $templating,
+        TokenStorageInterface $tokenStorage,
+        ObjectManager $objectManager,
+        WikiManager $wikiManager,
+        ResourceEvaluationManager $evaluationManager,
+        RequestStack $requestStack
+    ) {
+        $this->formFactory = $formFactory;
+        $this->templating = $templating;
+        $this->user = $tokenStorage->getToken()->getUser();
+        $this->om = $objectManager;
+        $this->wikiManager = $wikiManager;
+        $this->evaluationManager = $evaluationManager;
         $this->request = $requestStack->getCurrentRequest();
     }
 
@@ -46,8 +86,8 @@ class WikiListener
      */
     public function onCreateForm(CreateFormResourceEvent $event)
     {
-        $form = $this->container->get('form.factory')->create(new WikiType(), new Wiki());
-        $content = $this->container->get('templating')->render(
+        $form = $this->formFactory->create(new WikiType(), new Wiki());
+        $content = $this->templating->render(
             'ClarolineCoreBundle:resource:create_form.html.twig',
             [
                 'form' => $form->createView(),
@@ -65,14 +105,14 @@ class WikiListener
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $form = $this->container->get('form.factory')->create(new WikiType(), new Wiki());
+        $form = $this->formFactory->create(new WikiType(), new Wiki());
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $wiki = $form->getData();
             $event->setResources([$wiki]);
         } else {
-            $content = $this->container->get('templating')->render(
+            $content = $this->templating->render(
                 'ClarolineCoreBundle:resource:create_form.html.twig',
                 [
                     'form' => $form->createView(),
@@ -91,13 +131,16 @@ class WikiListener
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        $params = [];
-        $params['_controller'] = 'IcapWikiBundle:Resource\Wiki:open';
-        $params['id'] = $event->getResource()->getId();
-        $subRequest = $this->request->duplicate([], null, $params);
-        $response = $this->httpKernel
-            ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setResponse($response);
+        $resourceNode = $event->getResourceNode();
+        $wiki = $event->getResource();
+        $this->checkPermission('OPEN', $resourceNode, [], true);
+        $content = $this->templating->render(
+            'IcapWikiBundle:wiki:open.html.twig',
+            [
+                '_resource' => $wiki,
+            ]
+        );
+        $event->setResponse(new Response($content));
         $event->stopPropagation();
     }
 
@@ -108,9 +151,8 @@ class WikiListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $em = $this->container->get('claroline.persistence.object_manager');
-        $em->remove($event->getResource());
-        $em->flush();
+        $this->om->remove($event->getResource());
+        $this->om->flush();
         $event->stopPropagation();
     }
 
@@ -122,8 +164,7 @@ class WikiListener
     public function onCopy(CopyResourceEvent $event)
     {
         $wiki = $event->getResource();
-        $loggedUser = $this->container->get('security.token_storage')->getToken()->getUser();
-        $newWiki = $this->container->get('icap.wiki.manager')->copyWiki($wiki, $loggedUser);
+        $newWiki = $this->wikiManager->copyWiki($wiki, $this->user);
         $event->setCopy($newWiki);
         $event->stopPropagation();
     }
@@ -135,14 +176,12 @@ class WikiListener
      */
     public function onGenerateResourceTracking(GenericDataEvent $event)
     {
-        $om = $this->container->get('claroline.persistence.object_manager');
-        $resourceEvalManager = $this->container->get('claroline.manager.resource_evaluation_manager');
         $data = $event->getData();
         $node = $data['resourceNode'];
         $user = $data['user'];
         $startDate = $data['startDate'];
 
-        $logs = $resourceEvalManager->getLogsForResourceTracking(
+        $logs = $this->evaluationManager->getLogsForResourceTracking(
             $node,
             $user,
             ['resource-read', 'resource-icap_wiki-section_create', 'resource-icap_wiki-section_update'],
@@ -151,8 +190,8 @@ class WikiListener
         $nbLogs = count($logs);
 
         if ($nbLogs > 0) {
-            $om->startFlushSuite();
-            $tracking = $resourceEvalManager->getResourceUserEvaluation($node, $user);
+            $this->om->startFlushSuite();
+            $tracking = $this->evaluationManager->getResourceUserEvaluation($node, $user);
             $tracking->setDate($logs[0]->getDateLog());
             $status = AbstractResourceEvaluation::STATUS_UNKNOWN;
             $nbAttempts = 0;
@@ -177,8 +216,8 @@ class WikiListener
             $tracking->setStatus($status);
             $tracking->setNbAttempts($nbAttempts);
             $tracking->setNbOpenings($nbOpenings);
-            $om->persist($tracking);
-            $om->endFlushSuite();
+            $this->om->persist($tracking);
+            $this->om->endFlushSuite();
         }
         $event->stopPropagation();
     }

@@ -4,11 +4,10 @@
 
 {% block title %}{{ _resource.resourceNode.name }}{% endblock %}
 
-{% block meta %}
-    {{ parent() }}
-    <base href="{{ url('icap_wiki_view', { wikiId: _resource.id}) }}/" />
-{% endblock %}
-
 {% block content %}
-
+    <div
+            class="page-container wiki-container"
+            data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
+    >
+    </div>
 {% endblock %}
