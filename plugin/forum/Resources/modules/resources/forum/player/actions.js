@@ -144,7 +144,7 @@ actions.editContent = (message, subjectId, content) => ({
 })
 
 
-actions.flagMessage = (message, subjectId) => ({
+actions.flag = (message, subjectId) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
     request: {
