@@ -1,7 +1,15 @@
 {
   "webpack": {
     "entry": {
-      "list": "lessons/lessons.js"
+      "lesson": "resources/lesson"
+    }
+  },
+
+  "styles": {
+    "entry": {
+      "lesson-resource": "resources/lesson.less",
+      "pdf": "resources/pdf.less"
     }
   }
 }
+
