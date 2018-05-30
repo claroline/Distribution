@@ -31,6 +31,7 @@ class APISecurityTest extends TransactionalTestCase
 
         //are we properly identified ?
         $this->client->request('GET', "/api/connected_user?access_token={$token}");
+        var_dump($this->client->getResponse());
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data['username'], 'user');
