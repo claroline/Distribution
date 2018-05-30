@@ -54,6 +54,9 @@ class Message extends AbstractMessage
      * @ORM\Column(type="boolean")
      */
     protected $flagged = false;
+    
+    //required because we use a "property_exists" somewhere in the crud and it doesn't work otherwise.
+    protected $uuid;
 
     public function setSubject(Subject $subject)
     {
