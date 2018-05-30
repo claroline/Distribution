@@ -112,7 +112,7 @@ class UserRepositoryTest extends RepositoryTestCase
     public function testFindUsersEnrolledInMostWorkspaces()
     {
         $users = self::$repo->findUsersEnrolledInMostWorkspaces(10);
-        $this->assertEquals(4, count($users));
+        $this->assertEquals(3, count($users));
         $this->assertEquals('bob', $users[0]['username']);
         $lastUsers = [$users[1]['username'], $users[2]['username']];
         $this->assertContains('claroline-connect', $lastUsers);

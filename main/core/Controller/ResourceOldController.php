@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Controller;
 
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
@@ -21,14 +20,12 @@ use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Form\ImportResourcesType;
 use Claroline\CoreBundle\Form\Resource\UnlockType;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Manager\Exception\ResourceMoveException;
-use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\FileManager;
 use Claroline\CoreBundle\Manager\LogManager;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
-use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\TransferManager;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -41,7 +38,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -52,8 +48,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class ResourceOldController
- * @package Claroline\CoreBundle\Controller
+ * Class ResourceOldController.
  *
  * @todo restore used before remove (eg. the action about lock / unlock)
  */
@@ -157,7 +152,6 @@ class ResourceOldController extends Controller
 
         return new Response($event->getResponseContent());
     }
-
 
     /**
      * Opens a resource.
@@ -1111,5 +1105,87 @@ class ResourceOldController extends Controller
         }
 
         return $resources;
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/create/{resourceType}/{parentId}/published/{published}",
+     *     name="claro_resource_create",
+     *     defaults={"published"=0},
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter(
+     *      "parent",
+     *      class="ClarolineCoreBundle:Resource\ResourceNode",
+     *      options={"id" = "parentId", "strictId" = true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     *
+     * Creates a resource.
+     *
+     * @param string       $resourceType the resource type
+     * @param ResourceNode $parent       the parent
+     * @param User         $user         the user
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function createAction(
+    $resourceType,
+    ResourceNode $parent,
+    User $user,
+    $published = 0
+) {
+        $collection = new ResourceCollection([$parent]);
+        $collection->setAttributes(['type' => $resourceType]);
+        if (!$this->authorization->isGranted('CREATE', $collection)) {
+            $errors = $collection->getErrors();
+            $content = $this->templating->render(
+            'ClarolineCoreBundle:Resource:errors.html.twig',
+            ['errors' => $errors]
+        );
+            $response = new Response($content, 403);
+            $response->headers->add(['XXX-Claroline' => 'resource-error']);
+
+            return $response;
+        }
+        $event = $this->dispatcher->dispatch('create_'.$resourceType, 'CreateResource', [$parent, $resourceType]);
+        $isPublished = 1 === intval($published) ? true : $event->isPublished();
+        if (count($event->getResources()) > 0) {
+            $nodesArray = [];
+            foreach ($event->getResources() as $resource) {
+                if ($event->getProcess()) {
+                    $createdResource = $this->resourceManager->create(
+                    $resource,
+                    $this->resourceManager->getResourceTypeByName($resourceType),
+                    $user,
+                    $parent->getWorkspace(),
+                    $parent,
+                    null,
+                    [],
+                    $isPublished
+                );
+                    $this->dispatcher->dispatch(
+                    'resource_created_'.$resourceType,
+                    'ResourceCreated',
+                    [$createdResource->getResourceNode()]
+                );
+                    $nodesArray[] = $this->resourceManager->toArray(
+                    $createdResource->getResourceNode(),
+                    $this->tokenStorage->getToken()
+                );
+                } else {
+                    $nodesArray[] = $this->resourceManager->toArray(
+                    $resource->getResourceNode(),
+                    $this->tokenStorage->getToken()
+                );
+                }
+            }
+
+            return new JsonResponse($nodesArray);
+        }
+
+        return new Response($event->getErrorFormContent());
     }
 }
