@@ -1,53 +1,41 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import {scaleLinear} from 'd3-scale'
 
 import {UrlButton} from '#/main/app/button/components/url'
 
-import {select} from '#/plugin/forum/resources/forum/selectors'
 
+// tags is an object with keys=tag and values=count
+const TagCloud = props => {
 
+  const fontSizeConverter = scaleLinear()
+    .range([props.minSize, props.maxSize])
+    .domain([1, Math.max(...Object.values(props.tags))])
 
-const fontSizeConverter = (count, min, max) => {
-  return Math.round((count - min) * (30 - 14) / (max - min) + 14)
+  return (
+    <div className="tag-cloud-container">
+      {Object.keys(props.tags).map(tag =>
+        <UrlButton
+          type="link"
+          key={tag}
+          className="btn btn-link tag-cloud"
+          target="/subjects"
+          style={{fontSize: fontSizeConverter(props.tags[tag], 1, 3)+'px'}}
+        >
+          {tag}
+        </UrlButton>
+      )}
+    </div>
+  )
 }
 
-// const counts = Object.values(props.tagsCount).map(count => count)
-// const min = Math.min(...counts)
-// const max = Math.max(...counts)
-const fontSize = (count, min, max) => fontSizeConverter(count, min, max) +'px'
-
-
-// tagsCount is an object with keys=tag and values=count
-const TagCloudComponent = props =>
-
-  <div>
-    {Object.keys(props.tagsCount).map(tag =>
-      <UrlButton
-        type="link"
-        key={tag}
-        className="btn btn-link tag-cloud"
-        target="/subjects"
-        style={{fontSize: fontSize(props.tagsCount[tag], 1, 3)}}
-      >
-        {tag}
-      </UrlButton>
-    )}
-  </div>
 
 
 
+TagCloud.propTypes = {
 
-
-TagCloudComponent.propTypes = {
-  // tagsCount: T.shape({})
 }
 
-const TagCloud = connect(
-  (state) => ({
-    tagsCount: select.tagsCount(state)
-  })
-)(TagCloudComponent)
 
 export {
   TagCloud

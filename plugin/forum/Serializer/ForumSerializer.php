@@ -89,7 +89,7 @@ class ForumSerializer
               'users' => 34, //utilisateur participants
               'subjects' => $finder->fetch('Claroline\ForumBundle\Entity\Subject', ['forum' => $forum->getUuid()], null, 0, 0, true),
               'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid()], null, 0, 0, true),
-              'tags' => ['tag1', 'tag2', 'tag3', 'tag1', 'tag4', 'tag5', 'tag6', 'tag2', 'tag3', 'tag1', 'tag5', 'tag3'], //ajouter les tags |
+              'tags' => ['tag1', 'tag2', 'tag3', 'tag1', 'tag4', 'tag5', 'tag6', 'tag2', 'tag3', 'tag1', 'tag5', 'tag3', 'tag5', 'tag6', 'tag7', 'tag10', 'tag10', 'tag8'], //ajouter les tags |
             ],
         ];
     }

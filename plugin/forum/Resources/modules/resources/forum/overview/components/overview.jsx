@@ -50,10 +50,14 @@ const OverviewComponent = props =>
             />
           </section>
           {!isEmpty(props.forum.meta.tags)&&
-            <div className="tag">
+            <section>
               <h3 className="h2">{trans('tags')}</h3>
-              <TagCloud />
-            </div>
+              <TagCloud
+                tags={props.tagsCount}
+                minSize="12"
+                maxSize="28"
+              />
+            </section>
           }
         </div>
 
@@ -116,7 +120,8 @@ OverviewComponent.propTypes = {
 const Overview = connect(
   (state) => ({
     forum: select.forum(state),
-    messages: select.messages(state)
+    messages: select.messages(state),
+    tagsCount: select.tagsCount(state)
   })
 )(OverviewComponent)
 

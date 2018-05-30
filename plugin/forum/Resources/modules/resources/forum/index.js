@@ -12,6 +12,10 @@ export const App = () => ({
   store: reducer,
   styles: 'claroline-distribution-plugin-forum-forum-resource',
   initialData: initialData => Object.assign({}, initialData, {
+    resource: {
+      node: initialData.resourceNode,
+      evaluation: initialData.evaluation
+    },
     forumForm: {
       data: initialData.forum
     }

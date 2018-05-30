@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store/selectors'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {RoutedPageContent} from '#/main/core/layout/router'
@@ -23,12 +24,12 @@ const Resource = props => {
     {
       path: '/edit',
       component: Editor,
-      displayed: props.editable
+      disabled: !props.editable
     }, {
       path: '/',
       exact: true,
       component: Overview,
-      displayed: props.forum.display.showOverview
+      disabled: !props.forum.display.showOverview
     }, {
       path: '/subjects',
       component: Player
@@ -115,7 +116,7 @@ Resource.propTypes = {
 const ForumResource = connect(
   (state) => ({
     forum: select.forum(state),
-    editable: resourceSelect.editable(state),
+    editable: hasPermission('edit', resourceSelect.resourceNode(state)),
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'forumForm'))
   }),
   (dispatch) => ({

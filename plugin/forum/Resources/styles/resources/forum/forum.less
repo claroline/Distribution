@@ -6,7 +6,7 @@
 }
 
 .subject-poster {
-    border-radius: @step-poster-border-radius;
+    border-radius: 8px;
     margin-top: @line-height-computed - 4px;
 }
 
@@ -15,8 +15,23 @@
   a {
     margin-right: .2em;
   }
-
 }
+
+.tag-cloud-container{
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+
+  .btn-link {
+    padding: 0;
+  }
+
+  .tag-cloud {
+    border: 0;
+    padding-right: 6px;
+  }
+}
+
 
 .posts {
   list-style: none;
