@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {trans, tex} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
+import {UserEvaluation as UserEvaluationType} from '#/main/core/resource/prop-types'
 import {ResourceOverview} from '#/main/core/resource/components/overview.jsx'
 
 import {select} from '#/plugin/exo/quiz/selectors'
@@ -123,9 +124,7 @@ OverviewComponent.propTypes = {
     parameters: T.object.isRequired,
     picking: T.object.isRequired
   }).isRequired,
-  userEvaluation: T.shape({
-    progression: T.number
-  })
+  userEvaluation: T.shape(UserEvaluationType.propTypes)
 }
 
 const Overview = connect(
