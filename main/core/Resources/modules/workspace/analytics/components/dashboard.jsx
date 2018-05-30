@@ -111,7 +111,7 @@ Dashboard.propTypes = {
 const DashboardContainer  = connect(
   state => ({
     dashboard: state.dashboard,
-    workspaceId: state.workspaceId
+    workspaceId: state.workspace.id
   }),
   dispatch => ({
     getDashboard: (workspaceId) => {

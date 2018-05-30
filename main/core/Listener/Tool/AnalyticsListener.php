@@ -30,7 +30,7 @@ class AnalyticsListener
      *     "templating" = @DI\Inject("templating")
      * })
      *
-     * @param TwigEngine   $templating
+     * @param TwigEngine $templating
      */
     public function __construct(
         TwigEngine $templating

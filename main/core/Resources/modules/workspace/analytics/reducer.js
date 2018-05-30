@@ -2,7 +2,7 @@ import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 import {LOAD_DASHBOARD} from '#/main/core/workspace/analytics/actions'
 
 const reducer = {
-  workspaceId: makeReducer(null, {}),
+  workspace: makeReducer(null, {}),
   dashboard: combineReducers({
     loaded: makeReducer(false, {
       [LOAD_DASHBOARD] : () => true

@@ -16,7 +16,7 @@
 {% block content %}
     <div
         class="page-container dashboard-container"
-        data-workspace-id="{{ workspace.id | json_encode | raw | escape }}"
+        data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

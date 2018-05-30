@@ -41,8 +41,6 @@ class ToolListener
     private $toolManager;
     private $translator;
     private $workspaceManager;
-    const R_U = 'ROLE_USER'; // todo move elsewhere
-    const R_A = 'ROLE_ADMIN'; // todo move elsewhere
 
     /**
      * @DI\InjectParams({

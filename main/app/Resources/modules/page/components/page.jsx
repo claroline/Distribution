@@ -89,7 +89,9 @@ class Page extends Component {
           }
         />
 
-        {this.props.children}
+        <div className="page-content">
+          {this.props.children}
+        </div>
 
         <ModalOverlay />
       </PageWrapper>

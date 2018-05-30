@@ -129,11 +129,11 @@ plugin:
 
         # todo move as desktop tool
         - name: platform_logs
-          class: bars
+          class: line-chart
 
         # todo move as desktop tool
         - name: platform_analytics
-          class: bar-chart-o
+          class: pie-chart
 
         - name: widgets_management
           class: list-alt

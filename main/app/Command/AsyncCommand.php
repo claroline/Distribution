@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\AppBundle\Async;
+namespace Claroline\AppBundle\Command;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Process\Process;

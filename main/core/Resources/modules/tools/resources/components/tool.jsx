@@ -5,7 +5,6 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 
 import {Page} from '#/main/app/page/components/page'
-import {PageContent} from '#/main/core/layout/page'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceExplorer} from '#/main/core/resource/components/explorer'
@@ -20,24 +19,22 @@ const Tool = props =>
     toolbar="edit rights publish unpublish | more"
     actions={props.current && getActions(props.current, 'object')}
   >
-    <PageContent>
-      <ResourceExplorer
-        root={props.root}
-        current={props.current}
-        primaryAction={(resourceNode) => {
-          if ('directory' !== resourceNode.meta.type) {
-            return getDefaultAction(resourceNode, 'object') // todo use action constant
-          } else {
-            // do not open directory, just change the target of the explorer
-            return {
-              label: trans('open', {}, 'actions'),
-              type: 'callback',
-              callback: () => props.changeDirectory(resourceNode)
-            }
+    <ResourceExplorer
+      root={props.root}
+      current={props.current}
+      primaryAction={(resourceNode) => {
+        if ('directory' !== resourceNode.meta.type) {
+          return getDefaultAction(resourceNode, 'object') // todo use action constant
+        } else {
+          // do not open directory, just change the target of the explorer
+          return {
+            label: trans('open', {}, 'actions'),
+            type: 'callback',
+            callback: () => props.changeDirectory(resourceNode)
           }
-        }}
-      />
-    </PageContent>
+        }
+      }}
+    />
   </Page>
 
 Tool.propTypes = {

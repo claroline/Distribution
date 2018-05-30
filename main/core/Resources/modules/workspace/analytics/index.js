@@ -1,8 +1,7 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {DashboardTool} from '#/main/core/workspace/analytics/components/tool.jsx'
+import {DashboardTool} from '#/main/core/workspace/analytics/components/tool'
 import {reducer} from '#/main/core/workspace/analytics/reducer'
-
 
 // mount the react application
 bootstrap(
@@ -13,9 +12,5 @@ bootstrap(
   DashboardTool,
   
   // app store configuration
-  reducer,
-  // initial data
-  initialData => ({
-    workspaceId: initialData.workspaceId
-  })
+  reducer
 )
