@@ -33,9 +33,12 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
 
             $om->flush();
 
+            // remove extra type
+            $om->remove($pluginType);
+            $om->flush();
+
+            // save updated type
             $om->persist($coreType);
-
-
             $om->flush();
         }
     }
