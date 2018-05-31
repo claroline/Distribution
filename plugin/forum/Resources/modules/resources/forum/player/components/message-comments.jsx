@@ -79,10 +79,15 @@ class MessageCommentsComponent extends Component {
                         displayed: comment.meta.creator.id === authenticatedUser.id,
                         action: () => this.setState({showCommentForm: comment.id})
                       }, {
-                        icon: 'fa fa-fw fa-flag ',
+                        icon: 'fa fa-fw fa-flag-o',
                         label: trans('flag', {}, 'forum'),
-                        displayed: comment.meta.creator.id !== authenticatedUser.id,
+                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && !comment.meta.flagged,
                         action: () => this.props.flag(comment, this.props.subject.id)
+                      }, {
+                        icon: 'fa fa-fw fa-flag',
+                        label: trans('unflag', {}, 'forum'),
+                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && comment.meta.flagged,
+                        action: () => this.props.unFlag(comment, this.props.subject.id)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
@@ -150,7 +155,8 @@ MessageCommentsComponent.propTypes = {
   }).isRequired,
   editContent: T.func.isRequired,
   opened: T.bool,
-  // flagMessage: T.func.isRequired,
+  flag: T.func.isRequired,
+  unFlag: T.func.isRequired,
   deleteComment: T.func.isRequired,
   createComment: T.func.isRequired,
   showModal: T.func
@@ -177,6 +183,9 @@ const MessageComments =  connect(
       dispatch(actions.editContent(message, subjectId, content))
     },
     flag(message, subjectId) {
+      dispatch(actions.flag(message, subjectId))
+    },
+    unFlag(message, subjectId) {
       dispatch(actions.flag(message, subjectId))
     }
   })

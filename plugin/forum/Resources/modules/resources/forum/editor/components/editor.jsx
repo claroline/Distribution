@@ -47,7 +47,7 @@ const EditorComponent = (props) =>
         fields: [
           {
             name: 'display.subjectList',
-            type: 'enum',
+            type: 'choice',
             label: trans('subjects_list_display', {}, 'forum'),
             options: {
               noEmpty: true,
@@ -57,13 +57,16 @@ const EditorComponent = (props) =>
         ]
       }, {
         icon: 'fa fa-fw fa-comments',
-        title: trans('forum_settings', {}, 'forum'),
+        title: trans('edition_restriction', {}, 'forum'),
         fields: [
           {
             name: 'forum.lock',
             type: 'date',
             label: trans('locking_date', {}, 'forum'),
-            help: trans('locking_date_explenation', {}, 'forum')
+            help: trans('locking_date_explenation', {}, 'forum'),
+            options: {
+              time: true
+            }
           }
         ]
       }, {

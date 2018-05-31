@@ -12,6 +12,7 @@
     "delete_comment": "Supprimer le commentaire",
     "disable_global_notifications": "Désactiver les notifications par email pour ce forum",
     "edit_message": "Éditer un message",
+    "edition_restriction": "Restrictions d'édition",
     "enable_moderation": "Activer la modération",
     "enable_flag": "Activer la signalisation",
     "first_message_moderated": "Modérer le premier message",
