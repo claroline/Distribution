@@ -1,0 +1,16 @@
+{% extends "ClarolineCoreBundle:resource:layout.html.twig" %}
+
+{% block content %}
+    <div
+        class="page-container scorm-container"
+        data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
+        data-scorm="{{ _resource | api_serialize | json_encode | raw | escape }}"
+    >
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-scorm-resource.js') }}"></script>
+{% endblock %}

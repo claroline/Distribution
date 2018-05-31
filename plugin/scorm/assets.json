@@ -1,6 +1,7 @@
 {
   "webpack": {
     "entry": {
+      "resource": "resources/scorm",
       "results": "Results/results"
     }
   },

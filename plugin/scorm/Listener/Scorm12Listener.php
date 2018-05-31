@@ -111,7 +111,7 @@ class Scorm12Listener
             new Scorm12Resource()
         );
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
+            'ClarolineCoreBundle:resource:create_form.html.twig',
             [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_scorm_12',
@@ -141,7 +141,7 @@ class Scorm12Listener
                 if ($this->isScormArchive($tmpFile)) {
                     $scormResource = $this->container
                         ->get('claroline.manager.scorm_manager')
-                        ->createScorm($tmpFile, $form->get('name')->getData(), '1.2');
+                        ->createScormResource($tmpFile, $form->get('name')->getData(), '1.2');
                     $event->setResources([$scormResource]);
                     $event->stopPropagation();
 
@@ -158,7 +158,7 @@ class Scorm12Listener
             $form->addError(new FormError($errorMsg));
         }
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
+            'ClarolineCoreBundle:resource:create_form.html.twig',
             [
                 'form' => $form->createView(),
                 'resourceType' => $event->getResourceType(),

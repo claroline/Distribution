@@ -12,21 +12,21 @@
 
 namespace Claroline\ScormBundle\Library;
 
-use Claroline\ScormBundle\Entity\Scorm2004Sco;
+use Claroline\ScormBundle\Entity\Sco;
 use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.library.scorm_2004")
+ * @DI\Service("claroline.library.scorm")
  */
-class Scorm2004
+class ScormLib
 {
     /**
      * Looks for the organization to use.
      *
      * @param \DOMDocument $dom
      *
-     * @return array of Scorm2004Sco
+     * @return array of Sco
      *
      * @throws InvalidScormArchiveException If a default organization
      *                                      is defined and not found
@@ -81,22 +81,23 @@ class Scorm2004
      *
      * @param \DOMNode     $source
      * @param \DOMNodeList $resources
+     * @param Sco          $parentSco
      *
-     * @return array of Scorm2004Sco
+     * @return array of Sco
      *
      * @throws InvalidScormArchiveException
      */
     private function parseItemNodes(
         \DOMNode $source,
         \DOMNodeList $resources,
-        Scorm2004Sco $parentSco = null
+        Sco $parentSco = null
     ) {
         $item = $source->firstChild;
         $scos = [];
 
         while (!is_null($item)) {
             if ('item' === $item->nodeName) {
-                $sco = new Scorm2004Sco();
+                $sco = new Sco();
                 $scos[] = $sco;
                 $sco->setScoParent($parentSco);
                 $this->findAttrParams($sco, $item, $resources);
@@ -133,8 +134,8 @@ class Scorm2004
                     if (is_null($href)) {
                         throw new InvalidScormArchiveException('sco_resource_without_href_message');
                     }
-                    $sco = new Scorm2004Sco();
-                    $sco->setIsBlock(false);
+                    $sco = new Sco();
+                    $sco->setBlock(false);
                     $sco->setVisible(true);
                     $sco->setIdentifier($identifier->nodeValue);
                     $sco->setTitle($identifier->nodeValue);
@@ -151,14 +152,14 @@ class Scorm2004
      * Initializes parameters of the SCO defined in attributes of the node.
      * It also look for the associated resource if it is a SCO and not a block.
      *
-     * @param Scorm2004Sco $sco
+     * @param Sco          $sco
      * @param \DOMNode     $item
      * @param \DOMNodeList $resources
      *
      * @throws InvalidScormArchiveException
      */
     private function findAttrParams(
-        Scorm2004Sco $sco,
+        Sco $sco,
         \DOMNode $item,
         \DOMNodeList $resources
     ) {
@@ -187,29 +188,35 @@ class Scorm2004
 
         // check if item is a block or a SCO. A block doesn't define identifierref
         if (is_null($identifierRef)) {
-            $sco->setIsBlock(true);
+            $sco->setBlock(true);
         } else {
-            $sco->setIsBlock(false);
+            $sco->setBlock(false);
             // retrieve entry URL
-            $sco->setEntryUrl(
-                $this->findEntryUrl($identifierRef->nodeValue, $resources)
-            );
+            $sco->setEntryUrl($this->findEntryUrl($identifierRef->nodeValue, $resources));
         }
     }
 
     /**
      * Initializes parameters of the SCO defined in children nodes.
      *
-     * @param Scorm2004Sco $sco
-     * @param \DOMNode     $item
+     * @param Sco      $sco
+     * @param \DOMNode $item
      */
-    private function findNodeParams(Scorm2004Sco $sco, \DOMNode $item)
+    private function findNodeParams(Sco $sco, \DOMNode $item)
     {
         while (!is_null($item)) {
             switch ($item->nodeName) {
                 case 'title':
                     $sco->setTitle($item->nodeValue);
                     break;
+                case 'adlcp:masteryscore':
+                    $sco->setScoreToPassInt($item->nodeValue);
+                    break;
+                case 'adlcp:maxtimeallowed':
+                case 'imsss:attemptAbsoluteDurationLimit':
+                    $sco->setMaxTimeAllowed($item->nodeValue);
+                    break;
+                case 'adlcp:timelimitaction':
                 case 'adlcp:timeLimitAction':
                     $action = strtolower($item->nodeValue);
 
@@ -220,17 +227,18 @@ class Scorm2004
                         $sco->setTimeLimitAction($action);
                     }
                     break;
+                case 'adlcp:datafromlms':
                 case 'adlcp:dataFromLMS':
                     $sco->setLaunchData($item->nodeValue);
                     break;
-                case 'adlcp:completionThreshold':
-                    $sco->setCompletionThreshold($item->nodeValue);
-                    break;
-                case 'imsss:attemptAbsoluteDurationLimit':
-                    $sco->setMaxTimeAllowed($item->nodeValue);
+                case 'adlcp:prerequisites':
+                    $sco->setPrerequisites($item->nodeValue);
                     break;
                 case 'imsss:minNormalizedMeasure':
-                    $sco->setScaledPassingScore($item->nodeValue);
+                    $sco->setScoreToPassDecimal($item->nodeValue);
+                    break;
+                case 'adlcp:completionThreshold':
+                    $sco->setCompletionThreshold($item->nodeValue);
                     break;
             }
             $item = $item->nextSibling;
