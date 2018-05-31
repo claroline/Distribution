@@ -1,0 +1,52 @@
+<?php
+
+namespace Icap\WikiBundle\Serializer;
+
+use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Icap\WikiBundle\Entity\Wiki;
+use JMS\DiExtraBundle\Annotation as DI;
+
+/**
+ * @DI\Service("claroline.serializer.wiki")
+ * @DI\Tag("claroline.serializer")
+ */
+class WikiSerializer
+{
+    use SerializerTrait;
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/wiki/wiki.json';
+    }
+
+    /**
+     * @param Wiki $wiki
+     *
+     * @return array - The serialized representation of a contribution
+     */
+    public function serialize(Wiki $wiki)
+    {
+        return [
+            'id' => $wiki->getUuid(),
+            'mode' => null === $wiki->getMode() ? '0' : ''.$wiki->getMode(),
+            'displaySectionNumbers' => null === $wiki->getDisplaySectionNumbers() ?
+                true :
+                $wiki->getDisplaySectionNumbers(),
+        ];
+    }
+
+    public function deserialize($data, Wiki $wiki = null)
+    {
+        if (empty($wiki)) {
+            $wiki = new Wiki();
+        }
+        $this->sipe('id', 'setUuid', $data, $wiki);
+        $this->sipe('mode', 'setMode', $data, $wiki);
+        $this->sipe('displaySectionNumbers', 'setDisplaySectionNumbers', $data, $wiki);
+
+        return $wiki;
+    }
+}

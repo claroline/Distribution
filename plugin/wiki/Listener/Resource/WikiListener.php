@@ -14,6 +14,7 @@ use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Form\WikiType;
+use Icap\WikiBundle\Manager\SectionManager;
 use Icap\WikiBundle\Manager\WikiManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -47,6 +48,9 @@ class WikiListener
     /** @var WikiManager */
     private $wikiManager;
 
+    /** @var SectionManager */
+    private $sectionManager;
+
     /** @var ResourceEvaluationManager */
     private $evaluationManager;
 
@@ -57,6 +61,7 @@ class WikiListener
      *     "tokenStorage"       = @DI\Inject("security.token_storage"),
      *     "objectManager"      = @DI\Inject("claroline.persistence.object_manager"),
      *     "wikiManager"        = @DI\Inject("icap.wiki.manager"),
+     *     "sectionManager"     = @DI\Inject("icap.wiki.section_manager"),
      *     "evaluationManager"  = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "requestStack"       = @DI\Inject("request_stack")
      * })
@@ -67,6 +72,7 @@ class WikiListener
         TokenStorageInterface $tokenStorage,
         ObjectManager $objectManager,
         WikiManager $wikiManager,
+        SectionManager $sectionManager,
         ResourceEvaluationManager $evaluationManager,
         RequestStack $requestStack
     ) {
@@ -75,6 +81,7 @@ class WikiListener
         $this->user = $tokenStorage->getToken()->getUser();
         $this->om = $objectManager;
         $this->wikiManager = $wikiManager;
+        $this->sectionManager = $sectionManager;
         $this->evaluationManager = $evaluationManager;
         $this->request = $requestStack->getCurrentRequest();
     }
@@ -134,10 +141,13 @@ class WikiListener
         $resourceNode = $event->getResourceNode();
         $wiki = $event->getResource();
         $this->checkPermission('OPEN', $resourceNode, [], true);
+        $isAdmin = $this->checkPermission('EDIT', $resourceNode);
+        $sectionTree = $this->sectionManager->getSerializedSectionTree($wiki, $this->user, $isAdmin);
         $content = $this->templating->render(
             'IcapWikiBundle:wiki:open.html.twig',
             [
                 '_resource' => $wiki,
+                'sectionTree' => $sectionTree,
             ]
         );
         $event->setResponse(new Response($content));
