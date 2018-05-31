@@ -151,7 +151,7 @@ class ScormController extends Controller
         $resourceTypeName = $scorm->getResourceNode()->getResourceType()->getName();
         $collection = new ResourceCollection([$scorm->getResourceNode()]);
 
-        if (!$this->authorization->isGranted($right, $collection) || ($resourceTypeName !== 'claroline_scorm_12' && $resourceTypeName !== 'claroline_scorm_2004')) {
+        if (!$this->authorization->isGranted($right, $collection) || ('claroline_scorm_12' !== $resourceTypeName && 'claroline_scorm_2004' !== $resourceTypeName)) {
             throw new AccessDeniedException();
         }
     }

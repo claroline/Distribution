@@ -58,7 +58,7 @@ class ScoTracking
     protected $scoreMax;
 
     /**
-     * For Scorm 2004 only
+     * For Scorm 2004 only.
      *
      * @ORM\Column(name="score_scaled", type="decimal", precision=10, scale=7, nullable=true)
      */
@@ -70,98 +70,98 @@ class ScoTracking
     protected $lessonStatus;
 
     /**
-     * For Scorm 2004 only
+     * For Scorm 2004 only.
      *
      * @ORM\Column(name="completion_status", nullable=true)
      */
     protected $completionStatus;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="session_time", type="integer", nullable=true)
      */
     protected $sessionTime;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="total_time_int", type="integer", nullable=true)
      */
     protected $totalTimeInt;
 
     /**
-     * For Scorm 2004 only
+     * For Scorm 2004 only.
      *
      * @ORM\Column(name="total_time_string", nullable=true)
      */
     protected $totalTimeString;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(nullable=true)
      */
     protected $entry;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="suspend_data", type="text", nullable=true)
      */
     protected $suspendData;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(nullable=true)
      */
     protected $credit;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="exit_mode", nullable=true)
      */
     protected $exitMode;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="lesson_location", nullable=true)
      */
     protected $lessonLocation;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="lesson_mode", nullable=true)
      */
     protected $lessonMode;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="best_score_raw", type="integer", nullable=true)
      */
     protected $bestScoreRaw;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="best_lesson_status", nullable=true)
      */
     protected $bestLessonStatus;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(name="is_locked", type="boolean", nullable=false)
      */
     protected $isLocked;
 
     /**
-     * For Scorm 2004 only
+     * For Scorm 2004 only.
      *
      * @ORM\Column(type="json_array", nullable=true)
      */
@@ -459,7 +459,7 @@ class ScoTracking
         $pattern = '/^P([0-9]+Y)?([0-9]+M)?([0-9]+D)?T([0-9]+H)?([0-9]+M)?([0-9]+S)?$/';
         $formattedTime = '';
 
-        if (!empty($this->totalTime) && $this->totalTime !== 'PT' && preg_match($pattern, $this->totalTime)) {
+        if (!empty($this->totalTime) && 'PT' !== $this->totalTime && preg_match($pattern, $this->totalTime)) {
             $interval = new \DateInterval($this->totalTime);
             $time = new \DateTime();
             $time->setTimestamp(0);

@@ -101,28 +101,28 @@ class Sco
     protected $block;
 
     /**
-     * Score to pass for Scorm 1.2
+     * Score to pass for Scorm 1.2.
      *
      * @ORM\Column(name="score_int", type="integer", nullable=true)
      */
     protected $scoreToPassInt;
 
     /**
-     * Score to pass for Scorm 2004
+     * Score to pass for Scorm 2004.
      *
      * @ORM\Column(name="score_decimal", type="decimal", precision=10, scale=7, nullable=true)
      */
     protected $scoreToPassDecimal;
 
     /**
-     * For Scorm 2004 only
+     * For Scorm 2004 only.
      *
      * @ORM\Column(name="completion_threshold", type="decimal", precision=10, scale=7, nullable=true)
      */
     protected $completionThreshold;
 
     /**
-     * For Scorm 1.2 only
+     * For Scorm 1.2 only.
      *
      * @ORM\Column(nullable=true)
      */

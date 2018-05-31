@@ -150,7 +150,7 @@ class ScormManager
 
         $scormVersionElements = $dom->getElementsByTagName('schemaversion');
 
-        if ($scormVersionElements->length === 1) {
+        if (1 === $scormVersionElements->length) {
             switch ($scormVersionElements->item(0)->textContent) {
                 case '1.2':
                     $scorm->setVersion(Scorm::SCORM_12);
@@ -217,7 +217,7 @@ class ScormManager
         $scoTracking->setSco($sco);
 
         switch ($version) {
-            case Scorm::SCORM_12 :
+            case Scorm::SCORM_12:
                 $scoTracking->setLessonStatus('not attempted');
                 $scoTracking->setSuspendData('');
                 $scoTracking->setEntry('ab-initio');
@@ -235,7 +235,7 @@ class ScormManager
                     $scoTracking->setIsLocked(true);
                 }
                 break;
-            case Scorm::SCORM_2004 :
+            case Scorm::SCORM_2004:
                 $scoTracking->setTotalTimeString('PT0S');
                 $scoTracking->setCompletionStatus('unknown');
                 $scoTracking->setLessonStatus('unknown');
@@ -249,7 +249,6 @@ class ScormManager
 
         return $scoTracking;
     }
-
 
     /***************
      * Old methods *

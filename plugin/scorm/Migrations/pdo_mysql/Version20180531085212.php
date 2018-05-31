@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2018/05/31 08:52:14
  */
@@ -14,7 +14,7 @@ class Version20180531085212 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_scorm (
                 id INT AUTO_INCREMENT NOT NULL, 
                 version VARCHAR(255) NOT NULL, 
@@ -25,7 +25,7 @@ class Version20180531085212 extends AbstractMigration
                 UNIQUE INDEX UNIQ_B6416871B87FAB32 (resourceNode_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
+        ');
         $this->addSql("
             CREATE TABLE claro_scorm_sco_tracking (
                 id INT AUTO_INCREMENT NOT NULL, 
@@ -57,7 +57,7 @@ class Version20180531085212 extends AbstractMigration
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
         ");
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_scorm_sco (
                 id INT AUTO_INCREMENT NOT NULL, 
                 scorm_id INT NOT NULL, 
@@ -81,61 +81,61 @@ class Version20180531085212 extends AbstractMigration
                 INDEX IDX_296767D048C689D5 (sco_parent_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_scorm 
             ADD CONSTRAINT FK_B6416871B87FAB32 FOREIGN KEY (resourceNode_id) 
             REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_scorm_sco_tracking 
             ADD CONSTRAINT FK_2627E972A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_scorm_sco_tracking 
             ADD CONSTRAINT FK_2627E97218A32826 FOREIGN KEY (sco_id) 
             REFERENCES claro_scorm_sco (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_scorm_sco 
             ADD CONSTRAINT FK_296767D0D75F22BE FOREIGN KEY (scorm_id) 
             REFERENCES claro_scorm (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_scorm_sco 
             ADD CONSTRAINT FK_296767D048C689D5 FOREIGN KEY (sco_parent_id) 
             REFERENCES claro_scorm_sco (id) 
             ON DELETE CASCADE
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE claro_scorm_sco 
             DROP FOREIGN KEY FK_296767D0D75F22BE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_scorm_sco_tracking 
             DROP FOREIGN KEY FK_2627E97218A32826
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_scorm_sco 
             DROP FOREIGN KEY FK_296767D048C689D5
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_scorm
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_scorm_sco_tracking
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_scorm_sco
-        ");
+        ');
     }
 }
