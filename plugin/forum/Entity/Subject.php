@@ -88,12 +88,12 @@ class Subject
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $isSticked = false;
+    protected $sticked = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $isClosed = false;
+    protected $closed = false;
 
     /**
      * @ORM\Column(type="boolean")
@@ -186,14 +186,14 @@ class Subject
         return $this->messages;
     }
 
-    public function setIsSticked($boolean)
+    public function setSticked($boolean)
     {
-        $this->isSticked = $boolean;
+        $this->sticked = $boolean;
     }
 
     public function isSticked()
     {
-        return $this->isSticked;
+        return $this->sticked;
     }
 
     public function setCreationDate($date)
@@ -211,14 +211,14 @@ class Subject
         return $this->updated;
     }
 
-    public function setIsClosed($isClosed)
+    public function setClosed($isClosed)
     {
-        $this->isClosed = $isClosed;
+        $this->closed = $isClosed;
     }
 
     public function isClosed()
     {
-        return $this->isClosed;
+        return $this->closed;
     }
 
     public function setFlagged($bool)

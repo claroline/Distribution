@@ -48,13 +48,14 @@ class Message extends AbstractMessage
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $isVisible = true;
+    protected $visible = true;
 
     /**
      * @ORM\Column(type="boolean")
+     * todo: renommer
      */
     protected $flagged = false;
-    
+
     //required because we use a "property_exists" somewhere in the crud and it doesn't work otherwise.
     protected $uuid;
 
@@ -68,14 +69,14 @@ class Message extends AbstractMessage
         return $this->subject;
     }
 
-    public function setIsVisible($bool)
+    public function setVisible($bool)
     {
-        $this->isVisible = $bool;
+        $this->visible = $bool;
     }
 
     public function isVisible()
     {
-        return $this->isVisible;
+        return $this->visible;
     }
 
     public function setParent(self $parent)

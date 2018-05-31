@@ -5,6 +5,7 @@ namespace Claroline\ForumBundle\Controller\API;
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\ForumBundle\Entity\Forum;
+use Claroline\ForumBundle\Entity\Validation\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -86,15 +87,43 @@ class ForumController extends AbstractCrudController
             $data,
             $this->options['create']
         );
-        
+
         if (is_array($object)) {
             return new JsonResponse($object, 400);
         }
-        
+
         return new JsonResponse(
             $this->serializer->serialize($object, $this->options['get']),
             201
         );
+    }
+
+    /**
+     * @EXT\Route("/unlock/{user}")
+     * @EXT\Method("PATCH")
+     */
+    public function unlockAction(User $user)
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $user->setAccess(true);
+        $om->persist($user);
+        $om->flush();
+
+        return new JsonResponse(true);
+    }
+
+    /**
+     * @EXT\Route("/lock/{user}")
+     * @EXT\Method("PATCH")
+     */
+    public function lockAction(User $user)
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $user->setAccess(false);
+        $om->persist($user);
+        $om->flush();
+
+        return new JsonResponse(true);
     }
 
     public function getClass()

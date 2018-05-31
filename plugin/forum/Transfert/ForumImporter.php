@@ -130,7 +130,7 @@ class ForumImporter extends Importer implements ConfigurationInterface, RichText
                     }
 
                     if (isset($subject['subject']['sticked'])) {
-                        $subjectEntity->setIsSticked($subject['subject']['sticked']);
+                        $subjectEntity->setSticked($subject['subject']['sticked']);
                     }
 
                     if (isset($subject['subject']['creation_date'])) {
