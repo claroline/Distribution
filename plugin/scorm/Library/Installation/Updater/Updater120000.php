@@ -15,9 +15,12 @@ class Updater120000 extends Updater
 
     public function postUpdate()
     {
-        $this->log('Migrating Scorm 1.2 resources...');
-        $this->log('Migrating Scorm 2004 resources...');
+        $scormManager = $this->container->get('claroline.manager.scorm_manager');
 
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $this->log('Migrating Scorm 1.2 resources...');
+        $scormManager->convertAllScorm12();
+
+        $this->log('Migrating Scorm 2004 resources...');
+        $scormManager->convertAllScorm2004();
     }
 }

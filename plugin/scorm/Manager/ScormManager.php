@@ -14,8 +14,10 @@ namespace Claroline\ScormBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\ScormBundle\Entity\Sco;
 use Claroline\ScormBundle\Entity\Scorm;
 use Claroline\ScormBundle\Entity\Scorm12Resource;
@@ -32,6 +34,7 @@ use Claroline\ScormBundle\Library\ScormLib;
 use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -39,6 +42,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ScormManager
 {
+    /** @var Filesystem */
+    private $fileSystem;
     /** @var string */
     private $filesDir;
     /** @var Scorm12 */
@@ -49,6 +54,8 @@ class ScormManager
     private $om;
     /** @var ResourceEvaluationManager */
     private $resourceEvalManager;
+    /** @var ResourceManager */
+    private $resourceManager;
     /** @var ScormLib */
     private $scormLib;
     /** @var string */
@@ -60,52 +67,62 @@ class ScormManager
     private $scorm12ScoTrackingRepo;
     private $scorm2004ResourceRepo;
     private $scorm2004ScoTrackingRepo;
+    private $shortcutRepo;
     private $logRepo;
 
     /**
      * Constructor.
      *
      * @DI\InjectParams({
+     *     "fileSystem"          = @DI\Inject("filesystem"),
      *     "filesDir"            = @DI\Inject("%claroline.param.files_directory%"),
      *     "libsco12"            = @DI\Inject("claroline.library.scorm_12"),
      *     "libsco2004"          = @DI\Inject("claroline.library.scorm_2004"),
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
      *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
+     *     "resourceManager"     = @DI\Inject("claroline.manager.resource_manager"),
      *     "scormLib"            = @DI\Inject("claroline.library.scorm"),
      *     "uploadDir"           = @DI\Inject("%claroline.param.uploads_directory%")
      * })
      *
+     * @param Filesystem                $fileSystem
      * @param string                    $filesDir
      * @param Scorm12                   $libsco12
      * @param Scorm2004                 $libsco2004
      * @param ObjectManager             $om
      * @param ResourceEvaluationManager $resourceEvalManager
+     * @param ResourceManager           $resourceManager
      * @param ScormLib                  $scormLib
      * @param string                    $uploadDir
      */
     public function __construct(
+        Filesystem $fileSystem,
         $filesDir,
         Scorm12 $libsco12,
         Scorm2004 $libsco2004,
         ObjectManager $om,
         ResourceEvaluationManager $resourceEvalManager,
+        ResourceManager $resourceManager,
         ScormLib $scormLib,
         $uploadDir
     ) {
+        $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
         $this->libsco12 = $libsco12;
         $this->libsco2004 = $libsco2004;
         $this->om = $om;
         $this->resourceEvalManager = $resourceEvalManager;
+        $this->resourceManager = $resourceManager;
         $this->scormLib = $scormLib;
         $this->uploadDir = $uploadDir;
 
-        $this->scormResourcesPath = $uploadDir.'/scormresources/';
+        $this->scormResourcesPath = $uploadDir.DIRECTORY_SEPARATOR.'scormresources'.DIRECTORY_SEPARATOR;
 
         $this->scorm12ResourceRepo = $om->getRepository('ClarolineScormBundle:Scorm12Resource');
         $this->scorm12ScoTrackingRepo = $om->getRepository('ClarolineScormBundle:Scorm12ScoTracking');
         $this->scorm2004ResourceRepo = $om->getRepository('ClarolineScormBundle:Scorm2004Resource');
         $this->scorm2004ScoTrackingRepo = $om->getRepository('ClarolineScormBundle:Scorm2004ScoTracking');
+        $this->shortcutRepo = $om->getRepository('ClarolineLinkBundle:Resource\Shortcut');
         $this->logRepo = $om->getRepository('ClarolineCoreBundle:Log\Log');
     }
 
@@ -192,24 +209,6 @@ class ScormManager
         }
     }
 
-    /**
-     * Unzip a given ZIP file into the web resources directory.
-     *
-     * @param \SplFileInfo $file
-     * @param string       $hashName name of the destination directory
-     */
-    private function unzipScormArchive(\SplFileInfo $file, $hashName)
-    {
-        $zip = new \ZipArchive();
-        $zip->open($file);
-        $destinationDir = $this->scormResourcesPath.$hashName;
-        if (!file_exists($destinationDir)) {
-            mkdir($destinationDir, 0777, true);
-        }
-        $zip->extractTo($destinationDir);
-        $zip->close();
-    }
-
     public function createScoTracking(Sco $sco, User $user = null)
     {
         $version = $sco->getScorm()->getVersion();
@@ -248,6 +247,321 @@ class ScormManager
         }
 
         return $scoTracking;
+    }
+
+    /* TODO : copies archive & unzipped files */
+    public function convertAllScorm12($withLogs = true)
+    {
+        $scormType = $this->resourceManager->getResourceTypeByName('claroline_scorm');
+        $allScorm12 = $this->scorm12ResourceRepo->findAll();
+
+        $this->om->startFlushSuite();
+        $i = 1;
+
+        foreach ($allScorm12 as $scorm) {
+            $node = $scorm->getResourceNode();
+
+            if ($node->isActive()) {
+                $scosMapping = [];
+
+                /* Copies ResourceNode */
+                $newNode = new ResourceNode();
+                $newNode->setAccesses($node->getAccesses());
+                $newNode->setAccessibleFrom($node->getAccessibleFrom());
+                $newNode->setAccessibleUntil($node->getAccessibleUntil());
+                $newNode->setAuthor($node->getAuthor());
+                $newNode->setClass('Claroline\ScormBundle\Entity\Scorm');
+                $newNode->setClosable($node->getClosable());
+                $newNode->setCloseTarget($node->getCloseTarget());
+                $newNode->setCreationDate($node->getCreationDate());
+                $newNode->setCreator($node->getCreator());
+                $newNode->setDescription($node->getDescription());
+                $newNode->setFullscreen($node->getFullscreen());
+                $newNode->setIcon($node->getIcon());
+                $newNode->setIndex($node->getIndex());
+                $newNode->setLicense($node->getLicense());
+                $newNode->setMimeType('custom/claroline_scorm');
+                $newNode->setModificationDate($node->getModificationDate());
+                $newNode->setName($node->getName());
+                $newNode->setParent($node->getParent());
+                $newNode->setPathForCreationLog($node->getPathForCreationLog());
+                $newNode->setPublished($node->isPublished());
+                $newNode->setPublishedToPortal($node->isPublishedToPortal());
+                $newNode->setResourceType($scormType);
+                $newNode->setWorkspace($node->getWorkspace());
+
+                /* Copies rights */
+                foreach ($node->getRights() as $rights) {
+                    $newRights = new ResourceRights();
+                    $newRights->setResourceNode($newNode);
+                    $newRights->setMask($rights->getMask());
+                    $newRights->setRole($rights->getRole());
+                    $this->om->persist($newRights);
+                }
+
+                $shortcuts = $this->shortcutRepo->findBy(['target' => $node]);
+
+                /* Updates shortcuts */
+                foreach ($shortcuts as $shortcut) {
+                    $shortcutNode = $shortcut->getResourceNode();
+                    $shortcutNode->setMimeType('custom/claroline_scorm');
+                    $shortcutNode->setResourceType($scormType);
+                    $this->om->persist($shortcutNode);
+
+                    $shortcut->setTarget($newNode);
+                    $this->om->persist($shortcut);
+                }
+                $this->om->persist($newNode);
+
+                /* Copies Scorm resource */
+                $newScorm = new Scorm();
+                $newScorm->setResourceNode($newNode);
+                $newScorm->setVersion(Scorm::SCORM_12);
+                /* TODO : Modify with new path */
+                $newScorm->setHashName($scorm->getHashName());
+
+                /* Copies Scos & creates an array to keep associations */
+                foreach ($scorm->getScos() as $sco) {
+                    $newSco = new Sco();
+                    $newSco->setScorm($newScorm);
+                    $newSco->setEntryUrl($sco->getEntryUrl());
+                    $newSco->setIdentifier($sco->getIdentifier());
+                    $newSco->setTitle($sco->getTitle());
+                    $newSco->setVisible($sco->isVisible());
+                    $newSco->setParameters($sco->getParameters());
+                    $newSco->setPrerequisites($sco->getPrerequisites());
+                    $newSco->setMaxTimeAllowed($sco->getMaxTimeAllowed());
+                    $newSco->setTimeLimitAction($sco->getTimeLimitAction());
+                    $newSco->setLaunchData($sco->getLaunchData());
+                    $newSco->setScoreToPassInt($sco->getMasteryScore());
+                    $newSco->setBlock($sco->getIsBlock());
+                    $this->om->persist($newSco);
+
+                    $scosMapping[$sco->getId()] = $newSco;
+                }
+                /* Maps new Scos parent */
+                foreach ($scorm->getScos() as $sco) {
+                    $scoParent = $sco->getScoParent();
+
+                    if (!empty($scoParent)) {
+                        $newScoParent = $scosMapping[$scoParent->getId()];
+                        $scosMapping[$sco->getId()]->setScoParent($newScoParent);
+                        $this->om->persist($scosMapping[$sco->getId()]);
+                    }
+                }
+
+                /* Copies Scos Trackings */
+                foreach ($scorm->getScos() as $sco) {
+                    $trackings = $this->scorm12ScoTrackingRepo->findBy(['sco' => $sco]);
+
+                    foreach ($trackings as $tracking) {
+                        $newTracking = new ScoTracking();
+                        $newTracking->setSco($scosMapping[$sco->getId()]);
+                        $newTracking->setUser($tracking->getUser());
+                        $newTracking->setScoreRaw($tracking->getScoreRaw());
+                        $newTracking->setScoreMin($tracking->getScoreMin());
+                        $newTracking->setScoreMax($tracking->getScoreMax());
+                        $newTracking->setLessonStatus($tracking->getLessonStatus());
+                        $newTracking->setSessionTime($tracking->getSessionTime());
+                        $newTracking->setTotalTimeInt($tracking->getTotalTime());
+                        $newTracking->setEntry($tracking->getEntry());
+                        $newTracking->setSuspendData($tracking->getSuspendData());
+                        $newTracking->setCredit($tracking->getCredit());
+                        $newTracking->setExitMode($tracking->getExitMode());
+                        $newTracking->setLessonLocation($tracking->getLessonLocation());
+                        $newTracking->setLessonMode($tracking->getLessonMode());
+                        $newTracking->setBestScoreRaw($tracking->getBestScoreRaw());
+                        $newTracking->setBestLessonStatus($tracking->getBestLessonStatus());
+                        $newTracking->setIsLocked($tracking->getIsLocked());
+                        $this->om->persist($newTracking);
+                    }
+                }
+
+                if ($withLogs) {
+                    /* Updates logs */
+                    foreach ($node->getLogs()->toArray() as $log) {
+                        $log->setResourceNode($newNode);
+                        $log->setResourceType($scormType);
+                        $this->om->persist($log);
+                    }
+                }
+
+                $this->om->persist($newScorm);
+
+                /* Soft deletes old resource node */
+                $node->setActive(false);
+                $this->om->persist($node);
+
+                if (0 === $i % 20) {
+                    $this->om->forceFlush();
+                }
+                ++$i;
+            }
+        }
+        $this->om->endFlushSuite();
+    }
+
+    /* TODO : copies archive & unzipped files */
+    public function convertAllScorm2004($withLogs = true)
+    {
+        $scormType = $this->resourceManager->getResourceTypeByName('claroline_scorm');
+        $allScorm2004 = $this->scorm2004ResourceRepo->findAll();
+
+        $this->om->startFlushSuite();
+        $i = 1;
+
+        foreach ($allScorm2004 as $scorm) {
+            $node = $scorm->getResourceNode();
+
+            if ($node->isActive()) {
+                $scosMapping = [];
+
+                /* Copies ResourceNode */
+                $newNode = new ResourceNode();
+                $newNode->setAccesses($node->getAccesses());
+                $newNode->setAccessibleFrom($node->getAccessibleFrom());
+                $newNode->setAccessibleUntil($node->getAccessibleUntil());
+                $newNode->setAuthor($node->getAuthor());
+                $newNode->setClass('Claroline\ScormBundle\Entity\Scorm');
+                $newNode->setClosable($node->getClosable());
+                $newNode->setCloseTarget($node->getCloseTarget());
+                $newNode->setCreationDate($node->getCreationDate());
+                $newNode->setCreator($node->getCreator());
+                $newNode->setDescription($node->getDescription());
+                $newNode->setFullscreen($node->getFullscreen());
+                $newNode->setIcon($node->getIcon());
+                $newNode->setIndex($node->getIndex());
+                $newNode->setLicense($node->getLicense());
+                $newNode->setMimeType('custom/claroline_scorm');
+                $newNode->setModificationDate($node->getModificationDate());
+                $newNode->setName($node->getName());
+                $newNode->setParent($node->getParent());
+                $newNode->setPathForCreationLog($node->getPathForCreationLog());
+                $newNode->setPublished($node->isPublished());
+                $newNode->setPublishedToPortal($node->isPublishedToPortal());
+                $newNode->setResourceType($scormType);
+                $newNode->setWorkspace($node->getWorkspace());
+
+                /* Copies rights */
+                foreach ($node->getRights() as $rights) {
+                    $newRights = new ResourceRights();
+                    $newRights->setResourceNode($newNode);
+                    $newRights->setMask($rights->getMask());
+                    $newRights->setRole($rights->getRole());
+                    $this->om->persist($newRights);
+                }
+
+                $shortcuts = $this->shortcutRepo->findBy(['target' => $node]);
+
+                /* Updates shortcuts */
+                foreach ($shortcuts as $shortcut) {
+                    $shortcutNode = $shortcut->getResourceNode();
+                    $shortcutNode->setMimeType('custom/claroline_scorm');
+                    $shortcutNode->setResourceType($scormType);
+                    $this->om->persist($shortcutNode);
+
+                    $shortcut->setTarget($newNode);
+                    $this->om->persist($shortcut);
+                }
+                $this->om->persist($newNode);
+
+                /* Copies Scorm resource */
+                $newScorm = new Scorm();
+                $newScorm->setResourceNode($newNode);
+                $newScorm->setVersion(Scorm::SCORM_2004);
+                /* TODO : Modify with new path */
+                $newScorm->setHashName($scorm->getHashName());
+
+                /* Copies Scos & creates an array to keep associations */
+                foreach ($scorm->getScos() as $sco) {
+                    $newSco = new Sco();
+                    $newSco->setScorm($newScorm);
+                    $newSco->setEntryUrl($sco->getEntryUrl());
+                    $newSco->setIdentifier($sco->getIdentifier());
+                    $newSco->setTitle($sco->getTitle());
+                    $newSco->setVisible($sco->isVisible());
+                    $newSco->setParameters($sco->getParameters());
+                    $newSco->setMaxTimeAllowed($sco->getMaxTimeAllowed());
+                    $newSco->setTimeLimitAction($sco->getTimeLimitAction());
+                    $newSco->setLaunchData($sco->getLaunchData());
+                    $newSco->setScoreToPassDecimal($sco->getScaledPassingScore());
+                    $newSco->setCompletionThreshold($sco->getCompletionThreshold());
+                    $newSco->setBlock($sco->getIsBlock());
+                    $this->om->persist($newSco);
+
+                    $scosMapping[$sco->getId()] = $newSco;
+                }
+                /* Maps new Scos parent */
+                foreach ($scorm->getScos() as $sco) {
+                    $scoParent = $sco->getScoParent();
+
+                    if (!empty($scoParent)) {
+                        $newScoParent = $scosMapping[$scoParent->getId()];
+                        $scosMapping[$sco->getId()]->setScoParent($newScoParent);
+                        $this->om->persist($scosMapping[$sco->getId()]);
+                    }
+                }
+
+                /* Copies Scos Trackings */
+                foreach ($scorm->getScos() as $sco) {
+                    $trackings = $this->scorm2004ScoTrackingRepo->findBy(['sco' => $sco]);
+
+                    foreach ($trackings as $tracking) {
+                        $newTracking = new ScoTracking();
+                        $newTracking->setSco($scosMapping[$sco->getId()]);
+                        $newTracking->setUser($tracking->getUser());
+                        $newTracking->setScoreRaw($tracking->getScoreRaw());
+                        $newTracking->setScoreMin($tracking->getScoreMin());
+                        $newTracking->setScoreMax($tracking->getScoreMax());
+                        $newTracking->setScoreScaled($tracking->getScoreScaled());
+                        $newTracking->setCompletionStatus($tracking->getCompletionStatus());
+                        $newTracking->setLessonStatus($tracking->getSuccessStatus());
+                        $newTracking->setTotalTimeString($tracking->getTotalTime());
+                        $newTracking->setDetails($tracking->getDetails());
+                        $this->om->persist($newTracking);
+                    }
+                }
+
+                if ($withLogs) {
+                    /* Updates logs */
+                    foreach ($node->getLogs()->toArray() as $log) {
+                        $log->setResourceNode($newNode);
+                        $log->setResourceType($scormType);
+                        $this->om->persist($log);
+                    }
+                }
+
+                $this->om->persist($newScorm);
+
+                /* Soft deletes old resource node */
+                $node->setActive(false);
+                $this->om->persist($node);
+
+                if (0 === $i % 20) {
+                    $this->om->forceFlush();
+                }
+                ++$i;
+            }
+        }
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * Unzip a given ZIP file into the web resources directory.
+     *
+     * @param \SplFileInfo $file
+     * @param string       $hashName name of the destination directory
+     */
+    private function unzipScormArchive(\SplFileInfo $file, $hashName)
+    {
+        $zip = new \ZipArchive();
+        $zip->open($file);
+        $destinationDir = $this->scormResourcesPath.$hashName;
+        if (!file_exists($destinationDir)) {
+            mkdir($destinationDir, 0777, true);
+        }
+        $zip->extractTo($destinationDir);
+        $zip->close();
     }
 
     /***************

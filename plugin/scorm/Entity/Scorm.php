@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\ScormBundle\Repository\ScormRepository")
  * @ORM\Table(name="claro_scorm")
  */
 class Scorm extends AbstractResource
@@ -39,9 +39,9 @@ class Scorm extends AbstractResource
     protected $version;
 
     /**
-     * @ORM\Column(name="file_path")
+     * @ORM\Column(name="hash_name")
      */
-    protected $filePath;
+    protected $hashName;
 
     /**
      * @ORM\OneToMany(
@@ -91,17 +91,17 @@ class Scorm extends AbstractResource
     /**
      * @return string
      */
-    public function getFilePath()
+    public function getHashName()
     {
-        return $this->filePath;
+        return $this->hashName;
     }
 
     /**
-     * @param string $filePath
+     * @param string $hashName
      */
-    public function setFilePath($filePath)
+    public function setHashName($hashName)
     {
-        $this->filePath = $filePath;
+        $this->hashName = $hashName;
     }
 
     /**

@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2018/05/31 08:52:14
+ * Generation date: 2018/05/31 09:19:29
  */
-class Version20180531085212 extends AbstractMigration
+class Version20180531091928 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -18,7 +18,7 @@ class Version20180531085212 extends AbstractMigration
             CREATE TABLE claro_scorm (
                 id INT AUTO_INCREMENT NOT NULL, 
                 version VARCHAR(255) NOT NULL, 
-                file_path VARCHAR(255) NOT NULL, 
+                hash_name VARCHAR(255) NOT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 resourceNode_id INT DEFAULT NULL, 
                 UNIQUE INDEX UNIQ_B6416871D17F50A6 (uuid), 

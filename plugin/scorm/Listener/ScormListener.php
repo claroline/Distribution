@@ -21,6 +21,7 @@ use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
+use Claroline\ScormBundle\Entity\Sco;
 use Claroline\ScormBundle\Entity\Scorm;
 use Claroline\ScormBundle\Form\ScormType;
 use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
@@ -112,8 +113,8 @@ class ScormListener
         $this->translator = $translator;
         $this->resourceEvalManager = $resourceEvalManager;
         $this->uploadDir = $uploadDir;
-//        $this->scormResourcesPath = $this->container
-//            ->getParameter('claroline.param.uploads_directory').'/scormresources/';
+
+        $this->scormResourcesPath = $uploadDir.'/scormresources/';
 
         $this->scormRepo = $om->getRepository('ClarolineScormBundle:Scorm');
         $this->scoTrackingRepo = $om->getRepository('ClarolineScormBundle:ScoTracking');
@@ -198,68 +199,69 @@ class ScormListener
         $event->stopPropagation();
     }
 
-//    /**
-//     * @DI\Observe("delete_claroline_scorm")
-//     *
-//     * @param DeleteResourceEvent $event
-//     */
-//    public function onDelete(DeleteResourceEvent $event)
-//    {
-//        $hashName = $event->getResource()->getHashName();
-//        $scormArchiveFile = $this->filePath.$hashName;
-//        $scormResourcesPath = $this->scormResourcesPath.$hashName;
-//
-//        $nbScorm = (int) ($this->scormResourceRepo->getNbScormWithHashName($hashName));
-//
-//        if (1 === $nbScorm) {
-//            if (file_exists($scormArchiveFile)) {
-//                $event->setFiles([$scormArchiveFile]);
-//            }
-//            if (file_exists($scormResourcesPath)) {
-//                $this->deleteFiles($scormResourcesPath);
-//            }
-//        }
-//        $this->om->remove($event->getResource());
-//        $event->stopPropagation();
-//    }
-//
-//    /**
-//     * @DI\Observe("copy_claroline_scorm")
-//     *
-//     * @param CopyResourceEvent $event
-//     */
-//    public function onCopy(CopyResourceEvent $event)
-//    {
-//        $resource = $event->getResource();
-//        $copy = new Scorm12Resource();
-//        $copy->setHashName($resource->getHashName());
-//        $copy->setName($resource->getName());
-//        $this->om->persist($copy);
-//
-//        $scos = $resource->getScos();
-//
-//        foreach ($scos as $sco) {
-//            if (is_null($sco->getScoParent())) {
-//                $this->copySco($sco, $copy);
-//            }
-//        }
-//
-//        $event->setCopy($copy);
-//        $event->stopPropagation();
-//    }
-//
-//    /**
-//     * @DI\Observe("download_claroline_scorm")
-//     *
-//     * @param DownloadResourceEvent $event
-//     */
-//    public function onDownload(DownloadResourceEvent $event)
-//    {
-//        $event->setItem($this->filePath.$event->getResource()->getHashName());
-//        $event->setExtension('zip');
-//        $event->stopPropagation();
-//    }
-//
+    /**
+     * @DI\Observe("delete_claroline_scorm")
+     *
+     * @param DeleteResourceEvent $event
+     */
+    public function onDelete(DeleteResourceEvent $event)
+    {
+        $hashName = $event->getResource()->getHashName();
+        $scormArchiveFile = $this->filePath.$hashName;
+        $scormResourcesPath = $this->scormResourcesPath.$hashName;
+
+        $nbScorm = (int) ($this->scormResourceRepo->getNbScormWithHashName($hashName));
+
+        if (1 === $nbScorm) {
+            if (file_exists($scormArchiveFile)) {
+                $event->setFiles([$scormArchiveFile]);
+            }
+            if (file_exists($scormResourcesPath)) {
+                $this->deleteFiles($scormResourcesPath);
+            }
+        }
+        $this->om->remove($event->getResource());
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("copy_claroline_scorm")
+     *
+     * @param CopyResourceEvent $event
+     */
+    public function onCopy(CopyResourceEvent $event)
+    {
+        $resource = $event->getResource();
+        $copy = new Scorm();
+        $copy->setHashName($resource->getHashName());
+        $copy->setName($resource->getName());
+        $copy->setVersion($resource->getVersion());
+        $this->om->persist($copy);
+
+        $scos = $resource->getScos();
+
+        foreach ($scos as $sco) {
+            if (is_null($sco->getScoParent())) {
+                $this->copySco($sco, $copy);
+            }
+        }
+
+        $event->setCopy($copy);
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("download_claroline_scorm")
+     *
+     * @param DownloadResourceEvent $event
+     */
+    public function onDownload(DownloadResourceEvent $event)
+    {
+        $event->setItem($this->filePath.$event->getResource()->getHashName());
+        $event->setExtension('zip');
+        $event->stopPropagation();
+    }
+
 //    /**
 //     * @DI\Observe("generate_resource_user_evaluation_claroline_scorm")
 //     *
@@ -378,53 +380,53 @@ class ScormListener
         return true;
     }
 
-//    /**
-//     * Deletes recursively a directory and its content.
-//     *
-//     * @param $dirPath The path to the directory to delete
-//     */
-//    private function deleteFiles($dirPath)
-//    {
-//        foreach (glob($dirPath.'/*') as $content) {
-//            if (is_dir($content)) {
-//                $this->deleteFiles($content);
-//            } else {
-//                unlink($content);
-//            }
-//        }
-//        rmdir($dirPath);
-//    }
-//
-//    /**
-//     * Copy given sco and its children.
-//     *
-//     * @param Scorm12Sco      $sco
-//     * @param Scorm12Resource $resource
-//     * @param Scorm12Sco      $scoParent
-//     */
-//    private function copySco(
-//        Scorm12Sco $sco,
-//        Scorm12Resource $resource,
-//        Scorm12Sco $scoParent = null
-//    ) {
-//        $scoCopy = new Scorm12Sco();
-//        $scoCopy->setScormResource($resource);
-//        $scoCopy->setScoParent($scoParent);
-//        $scoCopy->setEntryUrl($sco->getEntryUrl());
-//        $scoCopy->setIdentifier($sco->getIdentifier());
-//        $scoCopy->setIsBlock($sco->getIsBlock());
-//        $scoCopy->setLaunchData($sco->getLaunchData());
-//        $scoCopy->setMasteryScore($sco->getMasteryScore());
-//        $scoCopy->setMaxTimeAllowed($sco->getMaxTimeAllowed());
-//        $scoCopy->setParameters($sco->getParameters());
-//        $scoCopy->setPrerequisites($sco->getPrerequisites());
-//        $scoCopy->setTimeLimitAction($sco->getTimeLimitAction());
-//        $scoCopy->setTitle($sco->getTitle());
-//        $scoCopy->setVisible($sco->isVisible());
-//        $this->om->persist($scoCopy);
-//
-//        foreach ($sco->getScoChildren() as $scoChild) {
-//            $this->copySco($scoChild, $resource, $scoCopy);
-//        }
-//    }
+    /**
+     * Deletes recursively a directory and its content.
+     *
+     * @param $dirPath The path to the directory to delete
+     */
+    private function deleteFiles($dirPath)
+    {
+        foreach (glob($dirPath.'/*') as $content) {
+            if (is_dir($content)) {
+                $this->deleteFiles($content);
+            } else {
+                unlink($content);
+            }
+        }
+        rmdir($dirPath);
+    }
+
+    /**
+     * Copy given sco and its children.
+     *
+     * @param Sco   $sco
+     * @param Scorm $resource
+     * @param Sco   $scoParent
+     */
+    private function copySco(Sco $sco, Scorm $resource, Sco $scoParent = null)
+    {
+        $scoCopy = new Sco();
+        $scoCopy->setScorm($resource);
+        $scoCopy->setScoParent($scoParent);
+
+        $scoCopy->setEntryUrl($sco->getEntryUrl());
+        $scoCopy->setIdentifier($sco->getIdentifier());
+        $scoCopy->setTitle($sco->getTitle());
+        $scoCopy->setVisible($sco->isVisible());
+        $scoCopy->setParameters($sco->getParameters());
+        $scoCopy->setLaunchData($sco->getLaunchData());
+        $scoCopy->setMaxTimeAllowed($sco->getMaxTimeAllowed());
+        $scoCopy->setTimeLimitAction($sco->getTimeLimitAction());
+        $scoCopy->setBlock($sco->isBlock());
+        $scoCopy->setScoreToPassInt($sco->getScoreToPassInt());
+        $scoCopy->setScoreToPassDecimal($sco->getScoreToPassDecimal());
+        $scoCopy->setCompletionThreshold($sco->getCompletionThreshold());
+        $scoCopy->setPrerequisites($sco->getPrerequisites());
+        $this->om->persist($scoCopy);
+
+        foreach ($sco->getScoChildren() as $scoChild) {
+            $this->copySco($scoChild, $resource, $scoCopy);
+        }
+    }
 }
