@@ -5,11 +5,13 @@ namespace Claroline\ForumBundle\Serializer;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\ForumBundle\Entity\Subject;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @DI\Service("claroline.serializer.forum_subject")
@@ -42,9 +44,10 @@ class SubjectSerializer
 
     /**
      * @DI\InjectParams({
-     *     "provider"   = @DI\Inject("claroline.api.serializer"),
-     *     "container"  = @DI\Inject("service_container"),
-     *     "fileUt"     = @DI\Inject("claroline.utilities.file")
+     *     "provider"        = @DI\Inject("claroline.api.serializer"),
+     *     "container"       = @DI\Inject("service_container"),
+     *     "fileUt"          = @DI\Inject("claroline.utilities.file"),
+     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
      * })
      *
      * @param SerializerProvider $serializer
@@ -52,11 +55,13 @@ class SubjectSerializer
     public function __construct(
         SerializerProvider $provider,
         ContainerInterface $container,
-        FileUtilities $fileUt
+        FileUtilities $fileUt,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->serializerProvider = $provider;
         $this->container = $container;
         $this->fileUt = $fileUt;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -74,6 +79,7 @@ class SubjectSerializer
           'forum' => [
             'id' => $subject->getForum()->getUuid(),
           ],
+          'tags' => $this->serializeTags($subject),
           'content' => $subject->getContent(),
           'title' => $subject->getTitle(),
           'meta' => $this->serializeMeta($subject, $options),
@@ -170,6 +176,51 @@ class SubjectSerializer
           );
         }
 
+        if (isset($data['tags'])) {
+            if (is_string($data['tags'])) {
+                $this->deserializeTags($subject, [$data['tags']]);
+            } else {
+                $this->deserializeTags($subject, $data['tags']);
+            }
+        }
+
         return $subject;
+    }
+
+    private function serializeTags(Subject $subject)
+    {
+        $event = new GenericDataEvent([
+            'class' => 'Claroline\ForumBundle\Entity\Subject',
+            'ids' => [$subject->getUuid()],
+        ]);
+        $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+
+        return $event->getResponse();
+    }
+
+    /**
+     * Deserializes Item tags.
+     *
+     * @param Item  $question
+     * @param array $tags
+     * @param array $options
+     */
+    private function deserializeTags(Subject $subject, array $tags = [], array $options = [])
+    {
+        //  if ($this->hasOption(Transfer::PERSIST_TAG, $options)) {
+        $event = new GenericDataEvent([
+            'tags' => $tags,
+            'data' => [
+                [
+                    'class' => 'Claroline\ForumBundle\Entity\Subject',
+                    'id' => $subject->getUuid(),
+                    'name' => $subject->getTitle(),
+                ],
+            ],
+            'replace' => true,
+        ]);
+
+        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+        //}
     }
 }
