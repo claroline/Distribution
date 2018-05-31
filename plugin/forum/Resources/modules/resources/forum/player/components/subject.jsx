@@ -159,18 +159,16 @@ class SubjectComponent extends Component {
                 displayed: (get(this.props.subject, 'meta.closed', false)),
                 action: () => this.props.unCloseSubject(this.props.subject)
               }, {
-                icon: 'fa fa-fw fa-flag',
+                icon: 'fa fa-fw fa-flag-o',
                 label: trans('flag', {}, 'forum'),
-                displayed: !(get(this.props.subject, 'meta.flagged')),
+                displayed: (get(this.props.subject, 'meta.creator') !== authenticatedUser) && !(get(this.props.subject, 'meta.flagged')),
                 action: () => this.props.flagSubject(this.props.subject)
-              },
-              // {
-              //   icon: 'fa fa-fw fa-flag-o',
-              //   label: trans('unflag', {}, 'forum'),
-              //   displayed: (get(this.props.subject, 'meta.flagged')),
-              //   action: () => this.props.unFlagSubject(this.props.subject)
-              // },
-              {
+              }, {
+                icon: 'fa fa-fw fa-flag',
+                label: trans('unflag', {}, 'forum'),
+                displayed: ((get(this.props.subject, 'meta.creator') !== authenticatedUser) && (get(this.props.subject, 'meta.flagged'))),
+                action: () => this.props.unFlagSubject(this.props.subject)
+              }, {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 displayed: true,
@@ -203,10 +201,15 @@ class SubjectComponent extends Component {
                             displayed: message.meta.creator.id === authenticatedUser.id,
                             action: () => this.setState({showMessageForm: message.id})
                           }, {
-                            icon: 'fa fa-fw fa-flag',
+                            icon: 'fa fa-fw fa-flag-o',
                             label: trans('flag', {}, 'forum'),
-                            displayed: message.meta.creator.id !== authenticatedUser.id,
+                            displayed: (message.meta.creator.id !== authenticatedUser.id) && !message.meta.flagged,
                             action: () => this.props.flag(message, this.props.subject.id)
+                          }, {
+                            icon: 'fa fa-fw fa-flag',
+                            label: trans('unflag', {}, 'forum'),
+                            displayed: (message.meta.creator.id !== authenticatedUser.id) && message.meta.flagged,
+                            action: () => this.props.unFlag(message, this.props.subject.id)
                           }, {
                             icon: 'fa fa-fw fa-trash-o',
                             label: trans('delete'),
@@ -260,7 +263,7 @@ SubjectComponent.propTypes = {
   unStickSubject: T.func.isRequired,
   closeSubject: T.func.isRequired,
   unCloseSubject: T.func.isRequired,
-  // unFlagMessage: T.func.isRequired,
+  unFlag: T.func.isRequired,
   flagSubject: T.func.isRequired,
   unFlagSubject: T.func.isRequired,
   deleteMessage: T.func.isRequired,
@@ -320,17 +323,20 @@ const Subject =  withRouter(connect(
     unCloseSubject(subject) {
       dispatch(actions.unCloseSubject(subject))
     },
+    flagSubject(subject) {
+      dispatch(actions.flagSubject(subject))
+    },
+    unFlagSubject(subject) {
+      dispatch(actions.unFlagSubject(subject))
+    },
     editContent(message, subjectId, content) {
       dispatch(actions.editContent(message, subjectId, content))
     },
     flag(message, subjectId) {
       dispatch(actions.flag(message, subjectId))
     },
-    flagSubject(subject) {
-      dispatch(actions.flagSubject(subject))
-    },
-    unFlagSubject(subject) {
-      dispatch(actions.unFlagSubject(subject))
+    unFlag(message, subjectId) {
+      dispatch(actions.unFlag(message, subjectId))
     }
   })
 )(SubjectComponent))

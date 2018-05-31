@@ -26,7 +26,6 @@ const reducer = combineReducers({
       [SUBJECT_STOP_EDIT]: () => false
     })
   }),
-
   list: makeListReducer('subjects.list', {
     // sortBy: [{property: 'meta.sticky', direction: -1}]
   }),

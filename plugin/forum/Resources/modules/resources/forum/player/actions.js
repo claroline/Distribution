@@ -87,76 +87,6 @@ actions.deleteSubject = (id, push) => ({
   }
 })
 
-actions.createMessage = (subjectId, content) => ({
-  [API_REQUEST]: {
-    url: ['claroline_forum_api_subject_createmessage', {id: subjectId}],
-    request: {
-      method: 'POST',
-      body: JSON.stringify({
-        id: makeId(),
-        content: content,
-        meta: {
-          creator: currentUser(),
-          created: now(),
-          updated: now()
-        },
-        comments: []
-      })
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('subjects.messages'))
-    }
-  }
-})
-
-actions.createComment = (messageId, comment) => ({
-  [API_REQUEST]: {
-    url: ['claroline_forum_api_message_createcomment', {id: messageId}],
-    request: {
-      method: 'POST',
-      body: JSON.stringify({
-        id: makeId(),
-        content: comment,
-        meta: {
-          creator: currentUser(),
-          created: now(),
-          updated: now()
-        }
-      })
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('subjects.messages'))
-    }
-  }
-})
-
-actions.editContent = (message, subjectId, content) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
-    request: {
-      body: JSON.stringify(Object.assign({}, message, {content: content})),
-      method: 'PUT'
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('subjects.messages'))
-    }
-  }
-})
-
-
-actions.flag = (message, subjectId) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
-    request: {
-      body: JSON.stringify(Object.assign({}, message, {meta: {flagged:true}})),
-      method: 'PUT'
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('subjects.messages'))
-    }
-  }
-})
-
 actions.stickSubject = (subject) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_subject_update', {id: subject.id}],
@@ -237,6 +167,89 @@ actions.unFlagSubject = (subject) => ({
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('subjects.list'))
       dispatch(actions.loadSubject(data))
+    }
+  }
+})
+
+actions.createMessage = (subjectId, content) => ({
+  [API_REQUEST]: {
+    url: ['claroline_forum_api_subject_createmessage', {id: subjectId}],
+    request: {
+      method: 'POST',
+      body: JSON.stringify({
+        id: makeId(),
+        content: content,
+        meta: {
+          creator: currentUser(),
+          created: now(),
+          updated: now()
+        },
+        comments: []
+      })
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.createComment = (messageId, comment) => ({
+  [API_REQUEST]: {
+    url: ['claroline_forum_api_message_createcomment', {id: messageId}],
+    request: {
+      method: 'POST',
+      body: JSON.stringify({
+        id: makeId(),
+        content: comment,
+        meta: {
+          creator: currentUser(),
+          created: now(),
+          updated: now()
+        }
+      })
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.editContent = (message, subjectId, content) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
+    request: {
+      body: JSON.stringify(Object.assign({}, message, {content: content})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+
+actions.flag = (message, subjectId) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
+    request: {
+      body: JSON.stringify(Object.assign({}, message, {meta: {flagged:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
+    }
+  }
+})
+
+actions.unFlag = (message, subjectId) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
+    request: {
+      body: JSON.stringify(Object.assign({}, message, {meta: {flagged:false}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.messages'))
     }
   }
 })
