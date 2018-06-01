@@ -4,7 +4,6 @@ namespace Claroline\CoreBundle\Controller\APINew\Model;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 trait HasParentTrait
@@ -19,6 +18,6 @@ trait HasParentTrait
         $parent = $this->find($class, $parent);
         $this->crud->replace($child, 'parent', $parent);
 
-        return new JsonResponse($this->serializer->serialize($child));
+        return $this->sendResponse($this->serializer->serialize($child));
     }
 }

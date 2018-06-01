@@ -26,7 +26,7 @@ trait HasGroupsTrait
      */
     public function listGroupsAction($id, $class, Request $request)
     {
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Group', array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => [$this->getName() => [$id]]]
@@ -52,7 +52,7 @@ trait HasGroupsTrait
         $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
         $this->crud->patch($object, 'group', Crud::COLLECTION_ADD, $groups);
 
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->serializer->serialize($object)
         );
     }
@@ -75,6 +75,6 @@ trait HasGroupsTrait
         $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
         $this->crud->patch($object, 'group', Crud::COLLECTION_REMOVE, $groups);
 
-        return new JsonResponse($this->serializer->serialize($object));
+        return $this->sendResponse($this->serializer->serialize($object));
     }
 }

@@ -21,7 +21,7 @@ trait HasRolesTrait
      */
     public function listRolesAction($id, $class, Request $request)
     {
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => [$this->getName() => [$id]]]
@@ -46,7 +46,7 @@ trait HasRolesTrait
         $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
         $this->crud->patch($object, 'role', Crud::COLLECTION_ADD, $roles);
 
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->serializer->serialize($object)
         );
     }
@@ -67,7 +67,7 @@ trait HasRolesTrait
         $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
         $this->crud->patch($object, 'role', Crud::COLLECTION_REMOVE, $roles);
 
-        return new JsonResponse(
+        return $this->sendResponse(
           $this->serializer->serialize($object)
       );
     }

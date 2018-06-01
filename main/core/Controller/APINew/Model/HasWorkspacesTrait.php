@@ -26,7 +26,7 @@ trait HasWorkspacesTrait
      */
     public function listWorkspacesAction($id, $class, Request $request)
     {
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Workspace\Workspace', array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => [$this->getName() => [$id]]]
@@ -52,7 +52,7 @@ trait HasWorkspacesTrait
         $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
         $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $workspaces);
 
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->serializer->serialize($object)
         );
     }
@@ -75,7 +75,7 @@ trait HasWorkspacesTrait
         $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
         $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $workspaces);
 
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->serializer->serialize($object)
         );
     }

@@ -26,7 +26,7 @@ trait HasUsersTrait
      */
     public function listUsersAction($id, $class, Request $request)
     {
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\User', array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => [$this->getName() => [$id]]]
@@ -52,7 +52,7 @@ trait HasUsersTrait
         $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
         $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $users);
 
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->serializer->serialize($object)
         );
     }
@@ -75,7 +75,7 @@ trait HasUsersTrait
         $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
         $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $users);
 
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->serializer->serialize($object)
         );
     }

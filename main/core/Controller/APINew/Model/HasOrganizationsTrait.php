@@ -26,7 +26,7 @@ trait HasOrganizationsTrait
      */
     public function listOrganizationsAction($id, $class, Request $request)
     {
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Organization\Organization', array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => [$this->getName() => [$id]]]

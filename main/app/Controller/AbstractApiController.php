@@ -5,7 +5,9 @@ namespace Claroline\AppBundle\Controller;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractApiController extends ContainerAware
 {
@@ -30,5 +32,18 @@ abstract class AbstractApiController extends ContainerAware
         }
 
         return $decodedRequest;
+    }
+
+    protected function sendResponse($data, $code = 200)
+    {
+        $request = $this->container->get('request_stack')->getMasterRequest();
+        $debug = $request->query->get('debug');
+
+        if (!$debug) {
+            return new JsonResponse($data, $code);
+        }
+
+        //this is for debug purpose
+        return new Response('<body>'.json_encode($data).'</body>', $code);
     }
 }

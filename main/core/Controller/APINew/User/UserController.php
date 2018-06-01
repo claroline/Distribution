@@ -75,7 +75,7 @@ class UserController extends AbstractCrudController
             throw new \Exception('Workspace already exists');
         }
 
-        return new JsonResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
+        return $this->sendResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
     }
 
     /**
@@ -88,7 +88,7 @@ class UserController extends AbstractCrudController
         $personalWorkspace = $user->getPersonalWorkspace();
         $this->container->get('claroline.manager.workspace_manager')->deleteWorkspace($personalWorkspace);
 
-        return new JsonResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
+        return $this->sendResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
     }
 
     /**
@@ -139,7 +139,7 @@ class UserController extends AbstractCrudController
 
             //error handling
             if (is_array($organization)) {
-                return new JsonResponse($organization, 400);
+                return $this->sendResponse($organization, 400);
             }
         }
 
@@ -150,14 +150,14 @@ class UserController extends AbstractCrudController
 
         //error handling
         if (is_array($user)) {
-            return new JsonResponse($user, 400);
+            return $this->sendResponse($user, 400);
         }
 
         if ($organization) {
             $this->crud->replace($user, 'mainOrganization', $organization);
         }
 
-        return new JsonResponse(
+        return $this->sendResponse(
             $this->serializer->serialize($user, $this->options['get']),
             201
         );
@@ -193,7 +193,7 @@ class UserController extends AbstractCrudController
      */
     public function getCurrentWorkspacesAction(User $user)
     {
-        return new JsonResponse($this->finder->search(
+        return $this->sendResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
             ['filters' => ['user' => $user->getUuid()]],
             $this->options['list']
@@ -220,7 +220,7 @@ class UserController extends AbstractCrudController
               return $organization->getUuid();
           }, $user->getOrganizations())];
 
-        return new JsonResponse($this->finder->search(
+        return $this->sendResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\User',
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
@@ -246,7 +246,7 @@ class UserController extends AbstractCrudController
               return $organization->getUuid();
           }, $user->getAdministratedOrganizations()->toArray())];
 
-        return new JsonResponse($this->finder->search(
+        return $this->sendResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\User',
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
@@ -288,7 +288,7 @@ class UserController extends AbstractCrudController
         $event->addMessage("[CoreBundle] user removed: $remove_username");
         $event->addMessage("[CoreBundle] user kept: $keep_username");
 
-        return new JsonResponse($event->getMessages());
+        return $this->sendResponse($event->getMessages());
     }
 
     /**
@@ -316,7 +316,7 @@ class UserController extends AbstractCrudController
               return $workspace->getUuid();
           }, $managedWorkspaces)];
 
-        return new JsonResponse($this->finder->search(
+        return $this->sendResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\User',
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
