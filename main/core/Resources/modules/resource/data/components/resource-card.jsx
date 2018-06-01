@@ -16,7 +16,7 @@ const ResourceCard = props =>
     {...props}
     id={props.data.id}
     poster={props.data.thumbnail ? asset(props.data.thumbnail) : null}
-    icon={<ResourceIcon className="icon" resourceNode={props.data} />}
+    icon={<ResourceIcon className="icon" mimeType={props.data.meta.mimeType} />}
     title={props.data.name}
     subtitle={trans(props.data.meta.type, {}, 'resource')}
     flags={[

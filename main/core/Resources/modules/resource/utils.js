@@ -21,16 +21,16 @@ function getType(resourceNode) {
 /**
  * Get the icon of a resource icon.
  *
- * @param {object} resourceNode
+ * @param {object} mimeType - the mime type of the resource node
  */
-function getIcon(resourceNode) {
+function getIcon(mimeType) {
   const icons = param('theme.icons')
 
   // try to find an icon for the exact mime type
-  let resourceIcon = icons.find(icon => -1 !== icon.mimeTypes.indexOf(resourceNode.meta.mimeType))
+  let resourceIcon = icons.find(icon => -1 !== icon.mimeTypes.indexOf(mimeType))
   if (!resourceIcon) {
     // fallback to an icon for the first mimeType part
-    const type = resourceNode.meta.mimeType.split('/')[0]
+    const type = mimeType.split('/')[0]
     resourceIcon = icons.find(icon => -1 !== icon.mimeTypes.indexOf(type))
   }
 

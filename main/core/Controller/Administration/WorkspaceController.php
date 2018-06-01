@@ -62,24 +62,6 @@ class WorkspaceController extends Controller
     }
 
     /**
-     * @EXT\Template("ClarolineCoreBundle:administration/workspace:index.html.twig")
-     * @EXT\Route("", name="claro_admin_workspace_list", options={"expose"=true})
-     *
-     * @return array
-     */
-    public function indexAction(Request $request)
-    {
-        $filters = $request->query->get('filters');
-        if ($filters) {
-            $filters = ['model' => false, 'personal' => false];
-        }
-
-        return [
-            'workspaces' => [],
-        ];
-    }
-
-    /**
      * @EXT\Route("/import/form", name="claro_admin_workspace_import_form", options={"expose"=true})
      * @EXT\Template("ClarolineCoreBundle:administration/workspace:import_workspace_form.html.twig")
      */

@@ -8,17 +8,15 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Workspace administration tool.
- *
  * @DI\Service()
  */
-class WorkspaceListener
+class AnalyticsListener
 {
     /** @var TwigEngine */
     private $templating;
 
     /**
-     * WorkspaceListener constructor.
+     * AnalyticsListener constructor.
      *
      * @DI\InjectParams({
      *     "templating" = @DI\Inject("templating")
@@ -27,22 +25,22 @@ class WorkspaceListener
      * @param TwigEngine $templating
      */
     public function __construct(
-        TwigEngine $templating)
-    {
+        TwigEngine $templating
+    ) {
         $this->templating = $templating;
     }
 
     /**
-     * Displays workspace administration tool.
+     * Displays analytics administration tool.
      *
-     * @DI\Observe("administration_tool_workspace_management")
+     * @DI\Observe("administration_tool_platform_analytics")
      *
      * @param OpenAdministrationToolEvent $event
      */
     public function onDisplayTool(OpenAdministrationToolEvent $event)
     {
         $content = $this->templating->render(
-            'ClarolineCoreBundle:administration:workspaces.html.twig'
+            'ClarolineCoreBundle:administration:analytics.html.twig', []
         );
 
         $event->setResponse(new Response($content));
