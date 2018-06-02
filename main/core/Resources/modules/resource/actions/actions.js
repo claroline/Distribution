@@ -8,17 +8,6 @@ import {MODAL_RESOURCE_PARAMETERS} from '#/main/core/resource/modals/parameters'
 import {MODAL_RESOURCE_IMPERSONATION} from '#/main/core/resource/modals/impersonation'
 import {MODAL_RESOURCE_RIGHTS} from '#/main/core/resource/modals/rights'
 
-// TODO : move in directory resource
-/*const CreateAction = new ResourceAction('create', (resourceNodes, scope) => ({
-  type: 'modal',
-  label: trans('create', {}, 'actions'),
-  icon: 'fa fa-fw fa-plus',
-  primary: true,
-  modal: [MODAL_RESOURCE_CREATE, {
-    availableTypes: resourceNodes[0].permissions.create
-  }]
-}))*/
-
 export const actions = {
   open: (resourceNodes) => ({ //
     type: 'url',

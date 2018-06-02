@@ -1655,5 +1655,7 @@
     "created_at": "Created at %date%",
     "updated_at": "Updated at %date%",
     "authors": "Authors",
-    "authors_license": "Authors & License"
+    "authors_license": "Authors & License",
+    "structure": "Organization",
+    "community": "Community"
 }

@@ -5,12 +5,8 @@ import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
 import {param, asset} from '#/main/app/config'
+import {getApps} from '#/main/app/plugins'
 import {trans} from '#/main/core/translation'
-
-// todo load dynamically
-import {actions} from '#/main/core/resource/actions/actions'
-
-import '#/main/app/plugins'
 
 /**
  * Get the type implemented by a resource node.
@@ -49,6 +45,8 @@ function getIcon(mimeType) {
  * @param {boolean}     withDefault  - include the default action (most of the time, it's not useful to get it)
  */
 function getActions(resourceNode, scope = null, withDefault = false) {
+  const asyncActions = getApps('actions')
+
   let nodeActions = getType(resourceNode).actions
     .filter(action =>
         // filter by scope
@@ -56,30 +54,43 @@ function getActions(resourceNode, scope = null, withDefault = false) {
       // filter by permissions
       && !!resourceNode.permissions[action.permission]
       // filter implemented actions only
-      && undefined !== actions[action.name]
+      && undefined !== asyncActions[action.name]
     )
 
-    // merge server conf with ui
-    .map(action => merge({}, omit(action, 'permission'), actions[action.name]([resourceNode], scope), {
+  return Promise.all(
+    nodeActions.map(action => asyncActions[action.name]())
+  ).then((loadedActions) => {
+    // generates action from loaded modules
+    const realActions = {}
+    loadedActions.map(actionModule => {
+      const generated = actionModule.action([resourceNode], scope)
+      realActions[generated.name] = generated
+    })
+
+    // merge server action with ui implementation
+    let finalActions = nodeActions.map(action => merge({}, omit(action, 'permission'), realActions[action.name], {
       group: trans(action.group, {}, 'resource')
     }))
 
-  if (!withDefault) {
-    nodeActions = nodeActions.filter(action => undefined === action.default || !action.default)
-  }
+    if (!withDefault) {
+      finalActions = finalActions.filter(action => undefined === action.default || !action.default)
+    }
 
-  return nodeActions
+    return finalActions
+  })
 }
 
 function getCollectionActions(resourceNodes, scope = null, withDefault = false) {
   // todo fix me
 
-  return intersectionWith(
+  return []
+
+  /*return intersectionWith(
     // grab all actions for all available types
     ...resourceNodes.map(resourceNode => getActions(resourceNode, scope, withDefault)),
     // filter actions only available for all selected resource types
     isEqual
-  )
+  )*/
 }
 
 function getDefaultAction(resourceNode, scope) {

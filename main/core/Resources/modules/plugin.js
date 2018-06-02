@@ -18,9 +18,10 @@ registry.add('core', {
     'unpublish': () => { return import(/* webpackChunkName: "resource-action-unpublish" */ '#/main/core/resource/actions/unpublish') },
 
     // directory resource
-    'add'      : () => { return import(/* webpackChunkName: "resource-action-add" */       '#/main/core/resources/directory/actions/add') }
+    'add'      : () => { return import(/* webpackChunkName: "resource-action-add" */       '#/main/core/resources/directory/actions/add') },
 
     // file resource
+    //'download' : () => { return import(/* webpackChunkName: "resource-action-download" */       '#/main/core/resources/file/actions/download') }
   },
 
   resources: {
@@ -29,7 +30,7 @@ registry.add('core', {
     'ujm_exercise': () => { return import(/* webpackChunkName: "plugin-exo-quiz-resource" */ '#/plugin/exo/resources/quiz') }
   },
 
-  tools: [],
+  tools: {},
 
   widgets: {
     'list': () => { return import(/* webpackChunkName: "core-resource-list-widget" */ '#/main/core/widget/types/list') },

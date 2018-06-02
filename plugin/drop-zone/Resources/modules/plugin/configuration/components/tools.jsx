@@ -40,7 +40,7 @@ class Tools extends Component {
   showForm() {
     this.props.showModal(MODAL_SELECTION, {
       title: trans('tool_type_selection_title', {}, 'dropzone'),
-      types: constants.toolTypes,
+      items: constants.toolTypes,
       handleSelect: (type) => this.handleToolTypeSelection(type)
     })
   }

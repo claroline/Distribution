@@ -87,6 +87,7 @@ plugin:
     resources:
         - name: file
           class: Claroline\CoreBundle\Entity\Resource\File
+          tags: [content]
           exportable: true
           actions:
               - name: download
@@ -96,6 +97,7 @@ plugin:
 
         - name: directory
           class: Claroline\CoreBundle\Entity\Resource\Directory
+          tags: [structure]
           exportable: true
           actions:
               # Creates a new resource in the directory
@@ -106,6 +108,7 @@ plugin:
 
         - name: text
           class: Claroline\CoreBundle\Entity\Resource\Text
+          tags: [content]
           exportable: true
 
         - name: activity

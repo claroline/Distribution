@@ -12,10 +12,11 @@
 namespace Claroline\CoreBundle\Entity\Resource;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
+use Claroline\CoreBundle\Entity\Plugin;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Resource\ResourceActionRepository")
  * @ORM\Table(name="claro_menu_action")
  */
 class MenuAction
@@ -66,6 +67,16 @@ class MenuAction
      * @ORM\JoinColumn(name="resource_type_id", onDelete="SET NULL")
      */
     private $resourceType;
+
+    /**
+     * The plugin which have introduced the action.
+     *
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Plugin")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     *
+     * @var Plugin
+     */
+    private $plugin;
 
     /**
      * @return string
@@ -161,5 +172,21 @@ class MenuAction
     public function setApi(array $api)
     {
         $this->api = $api;
+    }
+
+    /**
+     * @param Plugin $plugin
+     */
+    public function setPlugin(Plugin $plugin)
+    {
+        $this->plugin = $plugin;
+    }
+
+    /**
+     * @return Plugin
+     */
+    public function getPlugin()
+    {
+        return $this->plugin;
     }
 }
