@@ -1,4 +1,4 @@
-import {coreConfiguration} from '#/main/core/plugin'
+//import {coreConfiguration} from '#/main/core/plugin'
 
 function getResource(name) {
   if (!coreConfiguration.resources[name]) {

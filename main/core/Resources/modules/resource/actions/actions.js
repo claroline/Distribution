@@ -20,10 +20,11 @@ import {MODAL_RESOURCE_RIGHTS} from '#/main/core/resource/modals/rights'
 }))*/
 
 export const actions = {
-  open: (resourceNodes) => ({
+  open: (resourceNodes) => ({ //
     type: 'url',
     label: trans('open', {}, 'actions'),
     default: true,
+    primary: true,
     icon: 'fa fa-fw fa-arrow-circle-o-right',
     target: ['claro_resource_open', {
       node: resourceNodes[0].autoId,
@@ -31,7 +32,7 @@ export const actions = {
     }]
   }),
 
-  about: (resourceNodes) => ({
+  about: (resourceNodes) => ({ //
     type: 'modal',
     icon: 'fa fa-fw fa-info',
     label: trans('show-info', {}, 'actions'),
@@ -40,7 +41,7 @@ export const actions = {
     }]
   }),
 
-  edit: (resourceNode) => ({
+  edit: (resourceNode) => ({ //
     type: 'link',
     icon: 'fa fa-fw fa-pencil',
     label: trans('edit', {}, 'actions'),
@@ -48,7 +49,7 @@ export const actions = {
     target: '/edit'
   }),
 
-  configure: (resourceNodes) => ({ // todo collection
+  configure: (resourceNodes) => ({ //
     type: 'modal',
     icon: 'fa fa-fw fa-cog',
     label: trans('configure', {}, 'actions'),
@@ -58,7 +59,7 @@ export const actions = {
     }]
   }),
 
-  rights: (resourceNodes) => ({ // todo collection
+  rights: (resourceNodes) => ({ //
     type: 'modal',
     icon: 'fa fa-fw fa-lock',
     label: trans('edit-rights', {}, 'actions'),
@@ -68,7 +69,7 @@ export const actions = {
     }]
   }),
 
-  publish: (resourceNodes) => ({ // todo collection
+  publish: (resourceNodes) => ({ //
     type: 'async',
     icon: 'fa fa-fw fa-eye',
     label: trans('publish', {}, 'actions'),
@@ -90,7 +91,7 @@ export const actions = {
     }
   }),
 
-  unpublish: (resourceNodes) => ({ // todo collection
+  unpublish: (resourceNodes) => ({ //
     type: 'async',
     icon: 'fa fa-fw fa-eye-slash',
     label: trans('unpublish', {}, 'actions'),
@@ -112,7 +113,7 @@ export const actions = {
     }
   }),
 
-  export: (resourceNodes) => ({ // todo collection
+  export: (resourceNodes) => ({ //
     type: 'async',
     icon: 'fa fa-fw fa-download',
     label: trans('export', {}, 'actions'),
@@ -125,7 +126,7 @@ export const actions = {
     }
   }),
 
-  delete: (resourceNodes) => ({ // todo collection
+  delete: (resourceNodes) => ({ //
     type: 'async',
     icon: 'fa fa-fw fa-trash-o',
     label: trans('delete', {}, 'actions'),
@@ -146,7 +147,7 @@ export const actions = {
     }
   }),
 
-  logs: (resourceNodes) => ({
+  logs: (resourceNodes) => ({ //
     type: 'callback', // TODO : it will be section
     icon: 'fa fa-fw fa-line-chart',
     label: trans('show-logs', {}, 'actions'),

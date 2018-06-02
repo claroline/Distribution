@@ -1,4 +1,6 @@
+import intersectionWith from 'lodash/intersectionWith'
 import isEmpty from 'lodash/isEmpty'
+import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
@@ -7,6 +9,8 @@ import {trans} from '#/main/core/translation'
 
 // todo load dynamically
 import {actions} from '#/main/core/resource/actions/actions'
+
+import '#/main/app/plugins'
 
 /**
  * Get the type implemented by a resource node.
@@ -40,13 +44,14 @@ function getIcon(mimeType) {
 /**
  * Gets the list of available for a resource.
  *
- * @param resourceNode
- * @param scope
+ * @param {object}      resourceNode - the current resource node
+ * @param {string|null} scope        - filter actions with a scope
+ * @param {boolean}     withDefault  - include the default action (most of the time, it's not useful to get it)
  */
-function getActions(resourceNode, scope = null) {
-  return getType(resourceNode).actions
+function getActions(resourceNode, scope = null, withDefault = false) {
+  let nodeActions = getType(resourceNode).actions
     .filter(action =>
-      // filter by scope
+        // filter by scope
       (!scope || isEmpty(action.scope) || -1 !== action.scope.indexOf(scope))
       // filter by permissions
       && !!resourceNode.permissions[action.permission]
@@ -58,15 +63,33 @@ function getActions(resourceNode, scope = null) {
     .map(action => merge({}, omit(action, 'permission'), actions[action.name]([resourceNode], scope), {
       group: trans(action.group, {}, 'resource')
     }))
+
+  if (!withDefault) {
+    nodeActions = nodeActions.filter(action => undefined === action.default || !action.default)
+  }
+
+  return nodeActions
+}
+
+function getCollectionActions(resourceNodes, scope = null, withDefault = false) {
+  // todo fix me
+
+  return intersectionWith(
+    // grab all actions for all available types
+    ...resourceNodes.map(resourceNode => getActions(resourceNode, scope, withDefault)),
+    // filter actions only available for all selected resource types
+    isEqual
+  )
 }
 
 function getDefaultAction(resourceNode, scope) {
-  return getActions(resourceNode, scope).find(action => action.default)
+  return getActions(resourceNode, scope, true).find(action => action.default)
 }
 
 export {
   getType,
   getIcon,
   getActions,
+  getCollectionActions,
   getDefaultAction
 }

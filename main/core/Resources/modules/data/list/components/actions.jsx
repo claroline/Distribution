@@ -5,7 +5,7 @@ import {trans, transChoice} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 
 import {GenericButton} from '#/main/app/button/components/generic'
-import {Button} from '#/main/app/action/components/button'
+import {Toolbar} from '#/main/app/action/components/toolbar'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 const ListPrimaryAction = props => {
@@ -46,18 +46,13 @@ ListPrimaryAction.defaultProps = {
  * @constructor
  */
 const ListActions = props =>
-  <Button
+  <Toolbar
     id={`${props.id}-btn`}
-    className="data-actions-btn btn btn-link"
-    type="menu"
+    className="data-actions"
+    buttonName="btn btn-link"
     tooltip="left"
-    icon="fa fa-fw fa-ellipsis-v"
-    label={trans('show-actions', {}, 'actions')}
-    menu={{
-      label: trans('actions'),
-      align: 'right',
-      items: props.actions
-    }}
+    toolbar="more"
+    actions={props.actions}
   />
 
 ListActions.propTypes = {
@@ -83,17 +78,11 @@ const ListBulkActions = props =>
     </div>
 
     <div className="list-selected-actions">
-      {props.actions
-        .filter(action => undefined === action.displayed || action.displayed)
-        .map((action) =>
-          <Button
-            {...action}
-            key={toKey(action.label)}
-            className="btn btn-link"
-            tooltip="top"
-          />
-        )
-      }
+      <Toolbar
+        buttonName="btn btn-link"
+        tooltip="left"
+        actions={props.actions}
+      />
     </div>
   </div>
 

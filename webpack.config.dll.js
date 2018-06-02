@@ -27,7 +27,6 @@ Encore
   })
   .addPlugin(plugins.dlls())
   .addPlugin(plugins.assetsInfoFile('webpack-dlls.json'))
-  .addPlugin(plugins.clarolineConfiguration())
 
   // Babel configuration
   .configureBabel(babelConfig => {

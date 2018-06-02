@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
@@ -30,9 +31,9 @@ const Toolbar = props => {
         ...group.map((action) =>
           <Button
             {...omit(action, 'name')}
-            id={action.id || action.name}
+            id={`${props.id}${action.id || action.name}`}
             key={action.id || action.name}
-            className={`${props.className}-btn`}
+            className={classes(`${props.className}-btn`, props.buttonName)}
             tooltip={props.tooltip}
           />
         )
@@ -42,17 +43,23 @@ const Toolbar = props => {
 }
 
 Toolbar.propTypes = {
+  id: T.string,
+
   /**
    * The base class of the toolbar (it's used to generate classNames which can be used for styling).
    */
   className: T.string,
 
   /**
+   * The base class for buttons.
+   */
+  buttonName: T.string,
+
+  /**
    * The toolbar display configuration as a string.
    */
   toolbar: T.string,
   tooltip: T.oneOf(['left', 'top', 'right', 'bottom']),
-  collapsed: T.bool, // todo implement
   actions: T.arrayOf(T.shape(
     merge({}, ActionTypes.propTypes, {
       name: T.string

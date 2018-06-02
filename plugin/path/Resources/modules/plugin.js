@@ -1,14 +1,8 @@
+import {registry} from '#/main/app/plugins/registry'
 
-const PATH_PLUGIN = 'path'
-
-const pathConfiguration = {
+registry.add('path', {
   actions: [],
   resources: [],
   tools: [],
   widgets: []
-}
-
-export {
-  PATH_PLUGIN,
-  pathConfiguration
-}
+})

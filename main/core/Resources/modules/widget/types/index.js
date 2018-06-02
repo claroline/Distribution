@@ -1,4 +1,4 @@
-import {coreConfiguration} from '#/main/core/plugin'
+//import {coreConfiguration} from '#/main/core/plugins'
 
 function getWidget(name) {
   if (!coreConfiguration.widgets[name]) {

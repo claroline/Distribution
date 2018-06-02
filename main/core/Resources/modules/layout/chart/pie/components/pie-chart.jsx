@@ -17,8 +17,8 @@ const PieChart = props => {
       width={props.width}
       height={props.width}
       margin={{
-        'top': radius + props.margin.top,
-        'left': radius + props.margin.top
+        top: radius + props.margin.top,
+        left: radius + props.margin.top
       }}
       responsive={props.responsive}
       style={props.style}

@@ -385,7 +385,7 @@ class UserSerializer
 
         return [
             'contact' => !$isOwner,
-            'edit' => ($isOwner && !empty($editRoles)) || $isAdmin,
+            'edit' => $isAdmin || !empty($editRoles),
             'administrate' => $isAdmin,
             'delete' => $isOwner || $isAdmin, // todo check platform param to now if current user can destroy is account
         ];
@@ -457,9 +457,10 @@ class UserSerializer
         }
 
         //only add role here. If we want to remove them, use the crud remove method instead
-        //it's usefull if we want to create a user with a list of roles
+        //it's useful if we want to create a user with a list of roles
         if (isset($data['roles'])) {
             foreach ($data['roles'] as $role) {
+                /** @var Role $role */
                 $role = $this->container->get('claroline.api.serializer')
                     ->deserialize('Claroline\CoreBundle\Entity\Role', $role);
                 if ($role && $role->getId()) {
@@ -469,9 +470,10 @@ class UserSerializer
         }
 
         //only add groups here. If we want to remove them, use the crud remove method instead
-        //it's usefull if we want to create a user with a list of roles
+        //it's useful if we want to create a user with a list of roles
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $group) {
+                /** @var Group $group */
                 $group = $this->container->get('claroline.api.serializer')
                     ->deserialize('Claroline\CoreBundle\Entity\Group', $group);
                 if ($group && $group->getId()) {

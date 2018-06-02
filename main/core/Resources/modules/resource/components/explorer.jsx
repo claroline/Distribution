@@ -9,6 +9,8 @@ import {constants as listConstants} from '#/main/core/data/list/constants'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
+import {getCollectionActions} from '#/main/core/resource/utils'
+
 const ResourceExplorer = props =>
   <SummarizedContent
     className="resources-explorer"
@@ -50,7 +52,7 @@ const ResourceExplorer = props =>
           displayable: false
         }
       ]}
-
+      actions={getCollectionActions}
       card={ResourceCard}
 
       display={{

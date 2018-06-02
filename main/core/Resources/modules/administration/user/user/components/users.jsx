@@ -12,7 +12,7 @@ import {actions as userActions} from '#/main/core/user/actions'
 import {actions} from '#/main/core/administration/user/user/actions'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
-// todo : restore custom actions the same way resource actions
+// todo : restore custom actions the same way resource actions are implemented
 
 const UsersList = props =>
   <DataListContainer
