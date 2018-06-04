@@ -4,12 +4,11 @@ namespace Claroline\ForumBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\ForumBundle\Entity\Subject;
 use Claroline\ForumBundle\Entity\Message;
+use Claroline\ForumBundle\Entity\Subject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @EXT\Route("/forum_subject")
@@ -99,6 +98,7 @@ class SubjectController extends AbstractCrudController
           201
       );
     }
+
     /**
      * @EXT\Route("/{subject}/message/{message}", name="apiv2_forum_subject_message_update")
      * @EXT\Method("PUT")
@@ -121,9 +121,26 @@ class SubjectController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function updateMessage(Subject $subject, Message $message, Request $request)
+    public function updateMessageAction(Subject $subject, Message $message, Request $request)
     {
-      return parent::updateAction($message->getUuid(), $request, 'Claroline\ForumBundle\Entity\Message');
+        return parent::updateAction($message->getUuid(), $request, 'Claroline\ForumBundle\Entity\Message');
+    }
+
+    /**
+     * @EXT\Route("/forum/{forum}/tag/{tag}")
+     */
+    public function findByTagAction($tag)
+    {
+        $options = [
+            'tag' => 'cursus_location',
+            'strict' => true,
+            'class' => 'FormaLibre\ReservationBundle\Entity\Resource',
+            'object_response' => true,
+            'ordered_by' => 'name',
+            'order' => 'ASC',
+        ];
+
+        $event = $this->eventDispatcher->dispatch('claroline_retrieve_tagged_objects', new GenericDataEvent($options));
     }
 
     public function getClass()

@@ -26,14 +26,16 @@ class Message extends AbstractMessage
      *     inversedBy="messages",
      *     cascade={"persist"}
      * )
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
      */
     protected $subject;
 
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\ForumBundle\Entity\Message",
-     *     inversedBy="children"
+     *     inversedBy="children",
      * )
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
      */
     protected $parent;
 
