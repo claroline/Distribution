@@ -21,7 +21,7 @@ class AgendaComponent extends Component {
 
     super(props)
 
-    this.AgendaComponentcalendar = {
+    this.calendar = {
       header: {
         left: 'prev,next, today',
         center: 'title',
@@ -51,15 +51,15 @@ class AgendaComponent extends Component {
       lazyFetching : false,
       fixedWeekCount: false,
       eventLimit: 4,
-      timezone: 'local'/*,
-      eventDrop: onEventDrop,
-      eventDragStart: onEventDragStart,
-      dayClick: renderAddEventForm,
-      eventClick:  onEventClick,
-      eventDestroy: onEventDestroy,
-      eventRender: onEventRender,
-      eventResize: onEventResize,
-      eventResizeStart: onEventResizeStart*/
+      timezone: 'local',
+      eventDrop: props.onEventDrop,
+      eventDragStart: props.onEventDragStart,
+      dayClick: props.onDayClick,
+      eventClick:  props.onEventClick,
+      eventDestroy: props.onEventDestroy,
+      eventRender: props.onEventRender,
+      eventResize: props.onEventResize,
+      eventResizeStart: props.onEventResizeStart
     }
   }
 
@@ -78,8 +78,29 @@ const Agenda = connect(
 
   }),
   dispatch => ({
-    openForm(id = null) {
-      dispatch(actions.open('task', id))
+    onDayClick() {
+      alert('day')
+    },
+    onEventDragStart() {
+      alert('drag')
+    },
+    onEventDrop() {
+      alert('drop')
+    },
+    onEventClick() {
+      alert('click')
+    },
+    onEventDestroy() {
+      alert('destroy')
+    },
+    onEventRender() {
+      alert('render')
+    },
+    onEventResize() {
+      alert('resize')
+    },
+    eventResizeStart() {
+      alert('resizeStart')
     }
   })
 )(AgendaComponent)

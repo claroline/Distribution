@@ -9,16 +9,15 @@ import 'fullcalendar/dist/fullcalendar.js'
 
 //fullcalendar wrapper
 class Calendar extends Component {
-
   constructor(props) {
+
     super(props)
     this.calendarRef
   }
 
-  componentDidMount(){
-    $(this.calendarRef).fullCalendar({
-      events: this.props.events
-    })
+  componentDidMount() {
+    console.log(this.props)
+    $(this.calendarRef).fullCalendar(this.props)
   }
 
   render() {
