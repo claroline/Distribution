@@ -115,7 +115,10 @@ class MessageSerializer
 
         if (isset($data['parent'])) {
             $parent = $this->om->getRepository($this->getClass())->findOneByUuid($data['parent']['id']);
-            $message->setParent($parent);
+
+            if ($parent) {
+                $message->setParent($parent);
+            }
         }
 
         $this->sipe('meta.flagged', 'setFlagged', $data, $message);

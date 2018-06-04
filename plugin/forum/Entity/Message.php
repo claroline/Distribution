@@ -81,7 +81,7 @@ class Message extends AbstractMessage
         return $this->visible;
     }
 
-    public function setParent(self $parent)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }
