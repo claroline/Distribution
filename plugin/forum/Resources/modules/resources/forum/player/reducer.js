@@ -6,9 +6,7 @@ import {
   SUBJECT_FORM_OPEN,
   SUBJECT_FORM_CLOSE,
   SUBJECT_EDIT,
-  SUBJECT_STOP_EDIT,
-  MESSAGES_SORT_TOGGLE,
-  MESSAGES_PAGE_CHANGE
+  SUBJECT_STOP_EDIT
 } from '#/plugin/forum/resources/forum/player/actions'
 
 
@@ -27,21 +25,14 @@ const reducer = combineReducers({
     })
   }),
   list: makeListReducer('subjects.list', {
-    // sortBy: [{property: 'meta.sticky', direction: -1}]
+    sortBy: {property: 'sticked', direction: -1}
   }),
   current: makeReducer({}, {
     [SUBJECT_LOAD]: (state, action) => action.subject
   }),
   messages: makeListReducer('subjects.messages', {
-    sortOrder: -1,
-    currentpage: 0
-  }, {
-    sortOrder: makeReducer(-1, {
-      [MESSAGES_SORT_TOGGLE]: (state) => 0-state
-    }),
-    currentPage: makeReducer(0, {
-      [MESSAGES_PAGE_CHANGE]: (state, action) => action.page
-    })
+    pageSize: 10,
+    sortBy: {property: 'creationDate', direction : -1}
   })
 })
 

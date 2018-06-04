@@ -42,11 +42,13 @@ const SubjectsList = props =>
           primary: true
         }, {
           name: 'meta.closed',
+          alias: 'closed',
           type: 'boolean',
           label: trans('closed_subject', {}, 'forum'),
           displayed: true
         }, {
           name: 'meta.sticky',
+          alias: 'sticked',
           type: 'boolean',
           label: trans('stuck', {}, 'forum'),
           displayed: true

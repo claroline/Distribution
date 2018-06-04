@@ -10,7 +10,7 @@ import {currentUser} from '#/main/core/user/current'
 import {Button} from '#/main/app/action/components/button'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
-import {withModal} from '#/main/app/overlay/modal'
+import {withModal} from '#/main/app/overlay/modal/withModal'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
@@ -56,6 +56,7 @@ class SubjectComponent extends Component {
 
 
   deleteSubject(subjectId) {
+    console.log(subjectId)
     this.props.showModal(MODAL_CONFIRM, {
       dangerous: true,
       icon: 'fa fa-fw fa-trash-o',
@@ -172,7 +173,7 @@ class SubjectComponent extends Component {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 displayed: true,
-                action: () => this.deleteSubject([this.props.subject.id]),
+                action: () => this.deleteSubject(this.props.subject.id),
                 dangerous: true
               }
             ]}
@@ -184,9 +185,14 @@ class SubjectComponent extends Component {
             <MessagesSort
               sortOrder={this.props.sortOrder}
               messages={this.props.messages}
+              totalResults={this.props.totalResults}
+              pages={this.props.pages}
+              toggleSort={() => this.props.toggleSort(this.props.sortOrder)}
+              changePage={() => this.props.changePage(this.props.currentPage + 1)}
+              changePagePrev={() => this.props.changePage(this.props.currentPage - 1)}
             >
               <ul className="posts">
-                {this.props.visibleSortedMessages.map(message =>
+                {this.props.messages.map(message =>
                   <li key={message.id} className="post">
                     {this.state.showMessageForm !== message.id &&
                       <UserMessage
@@ -279,25 +285,23 @@ SubjectComponent.propTypes = {
   history: T.object.isRequired
 }
 
-const Subject =  withRouter(connect(
+const Subject =  withRouter(withModal(connect(
   state => ({
     subject: select.subject(state),
     subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
     editingSubject: select.editingSubject(state),
-    visibleSortedMessages: select.visibleSortedMessages(state),
-    sortOrder: select.sortOrder(state),
+    sortOrder: listSelect.sortBy(listSelect.list(state, 'subjects.messages')).direction,
     showSubjectForm: select.showSubjectForm(state),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
-    totalResults: select.totalResults(state),
+    totalResults: listSelect.totalResults(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
-    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
+    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
+    pages: listSelect.pages(listSelect.list(state, 'subjects.messages')),
+    currentPage: listSelect.currentPage(listSelect.list(state, 'subjects.messages'))
   }),
   dispatch => ({
     createMessage(subjectId, content) {
       dispatch(actions.createMessage(subjectId, content))
-    },
-    showModal(type, props) {
-      dispatch(withModal.showModal(type, props))
     },
     deleteSubject(id, push) {
       dispatch(actions.deleteSubject(id, push))
@@ -307,6 +311,14 @@ const Subject =  withRouter(connect(
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
+    },
+    toggleSort(sortOrder) {
+      dispatch(listActions.updateSortDirection('subjects.messages', -sortOrder))
+      dispatch(listActions.invalidateData('subjects.messages'))
+    },
+    changePage(page) {
+      dispatch(listActions.changePage('subjects.messages', page))
+      dispatch(listActions.invalidateData('subjects.messages'))
     },
     subjectEdition() {
       dispatch(actions.subjectEdition())
@@ -339,7 +351,7 @@ const Subject =  withRouter(connect(
       dispatch(actions.unFlag(message, subjectId))
     }
   })
-)(SubjectComponent))
+)(SubjectComponent)))
 
 export {
   Subject

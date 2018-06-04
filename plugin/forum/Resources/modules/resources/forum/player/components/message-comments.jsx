@@ -7,7 +7,7 @@ import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as listActions} from '#/main/core/data/list/actions'
-import {withModal} from '#/main/app/overlay/modal'
+import {withModal} from '#/main/app/overlay/modal/withModal'
 
 import {Subject as SubjectType} from '#/plugin/forum/resources/forum/player/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -162,16 +162,13 @@ MessageCommentsComponent.propTypes = {
   showModal: T.func
 }
 
-const MessageComments =  connect(
+const MessageComments =  withModal(connect(
   state => ({
     subject: select.subject(state)
   }),
   dispatch => ({
     createComment(messageId, comment) {
       dispatch(actions.createComment(messageId, comment))
-    },
-    showModal(type, props) {
-      dispatch(withModal.showModal(type, props))
     },
     deleteComment(id) {
       dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))
@@ -189,7 +186,7 @@ const MessageComments =  connect(
       dispatch(actions.flag(message, subjectId))
     }
   })
-)(MessageCommentsComponent)
+)(MessageCommentsComponent))
 
 
 export {

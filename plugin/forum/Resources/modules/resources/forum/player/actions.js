@@ -17,14 +17,10 @@ export const MESSAGES_LOAD = 'MESSAGES_LOAD'
 export const MESSAGE_UPDATE = 'MESSAGE_UPDATE'
 export const SUBJECT_FORM_OPEN = 'SUBJECT_FORM_OPEN'
 export const SUBJECT_FORM_CLOSE = 'SUBJECT_FORM_CLOSE'
-export const MESSAGES_SORT_TOGGLE = 'MESSAGES_SORT_TOGGLE'
-export const MESSAGES_PAGE_CHANGE = 'MESSAGES_PAGE_CHANGE'
 export const SUBJECT_EDIT = 'SUBJECT_EDIT'
 export const SUBJECT_STOP_EDIT = 'SUBJECT_STOP_EDIT'
 export const actions = {}
 
-actions.toggleMessagesSort = makeActionCreator(MESSAGES_SORT_TOGGLE)
-actions.changeMessagesPage = makeActionCreator(MESSAGES_PAGE_CHANGE)
 actions.openSubjectForm = makeActionCreator(SUBJECT_FORM_OPEN)
 actions.closeSubjectForm = makeActionCreator(SUBJECT_FORM_CLOSE)
 actions.subjectEdition = makeActionCreator(SUBJECT_EDIT)

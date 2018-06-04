@@ -18,7 +18,7 @@ const FlaggedMessagesComponent = (props) =>
     <DataListContainer
       name="flaggedPosts"
       fetch={{
-        url: ['apiv2_forum_message_list', {id: props.forum.id}],
+        url: url('apiv2_forum_message_list')+'filters[flagged]=true&filters[forum]='+props.forum.id,
         autoload: true
       }}
       delete={{

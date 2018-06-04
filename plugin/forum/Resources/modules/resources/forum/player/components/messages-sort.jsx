@@ -1,14 +1,11 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
+
 
 import {trans} from '#/main/core/translation'
-import {select as listSelect} from '#/main/core/data/list/selectors'
 
-import {actions} from '#/plugin/forum/resources/forum/player/actions'
-import {select} from '#/plugin/forum/resources/forum/selectors'
 
-const MessagesSortButton = props =>
+const MessagesSort = props =>
   <div>
     <div className="messages-sort">
       {trans('list_sort_by')}
@@ -29,7 +26,7 @@ const MessagesSortButton = props =>
             type="button"
             className="btn btn-pagination btn-previous"
             disabled={0 === props.currentPage}
-            onClick={() => props.changePage(props.currentPage - 1)}
+            onClick={props.changePagePrev}
           >
             <span className="fa fa-angle-double-left" aria-hidden="true" />
             <span className="sr-only">
@@ -41,7 +38,7 @@ const MessagesSortButton = props =>
             type="button"
             className="btn btn-pagination btn-next"
             disabled={(props.pages - 1) === props.currentPage}
-            onClick={() => props.changePage(props.currentPage + 1)}
+            onClick={props.changePage}
           >
             {trans(1 === props.sortOrder ? 'newer':'older', {}, 'forum')}
             <span className="fa fa-angle-double-right" aria-hidden="true" />
@@ -51,10 +48,10 @@ const MessagesSortButton = props =>
     }
   </div>
 
-MessagesSortButton.propTypes = {
+MessagesSort.propTypes = {
   sortOrder: T.number.isRequired,
   children: T.node.isRequired,
-  currentPage: T.number.isRequired,
+  currentPage: T.number,
   pages: T.number.isRequired,
   changePage: T.func.isRequired,
   toggleSort: T.func.isRequired,
@@ -62,23 +59,6 @@ MessagesSortButton.propTypes = {
   totalResults: T.number.isRequired
 }
 
-const MessagesSort = connect(
-  state => ({
-    messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
-    totalResults: select.totalResults(state),
-    sortOrder: select.sortOrder(state),
-    currentPage: select.currentPage(state),
-    pages: select.pages(state)
-  }),
-  dispatch => ({
-    toggleSort() {
-      dispatch(actions.toggleMessagesSort())
-    },
-    changePage(page) {
-      dispatch(actions.changeMessagesPage(page))
-    }
-  })
-)(MessagesSortButton)
 
 export {
   MessagesSort
