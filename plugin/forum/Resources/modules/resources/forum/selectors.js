@@ -31,7 +31,6 @@ const forumId = createSelector(
   (forum) => forum.id
 )
 
-
 const flaggedMessages = createSelector(
   [messages],
   (messages) => messages.filter(message => true === message.meta.flagged)

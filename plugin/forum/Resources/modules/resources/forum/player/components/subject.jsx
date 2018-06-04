@@ -56,13 +56,12 @@ class SubjectComponent extends Component {
 
 
   deleteSubject(subjectId) {
-    console.log(subjectId)
     this.props.showModal(MODAL_CONFIRM, {
       dangerous: true,
       icon: 'fa fa-fw fa-trash-o',
       title: trans('delete_subject', {}, 'forum'),
       question: trans('remove_subject_confirm_message', {}, 'forum'),
-      handleConfirm: () => this.props.deleteSubject(subjectId, this.props.history.push)
+      handleConfirm: () => this.props.deleteSubject([subjectId], this.props.history.push)
     })
   }
 
@@ -181,7 +180,6 @@ class SubjectComponent extends Component {
         }
         {!isEmpty(this.props.messages)&&
           <div>
-            <hr/>
             <MessagesSort
               sortOrder={this.props.sortOrder}
               messages={this.props.messages}
@@ -245,7 +243,6 @@ class SubjectComponent extends Component {
             </MessagesSort>
           </div>
         }
-        <hr/>
         {this.props.showSubjectForm || !get(this.props.subject, 'meta.closed') &&
           <UserMessageForm
             user={currentUser()}
@@ -261,7 +258,9 @@ class SubjectComponent extends Component {
 
 SubjectComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
-  subjectForm: T.shape({}),
+  subjectForm: T.shape({
+    title: T.string
+  }),
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
   flag: T.func.isRequired,
@@ -273,6 +272,7 @@ SubjectComponent.propTypes = {
   flagSubject: T.func.isRequired,
   unFlagSubject: T.func.isRequired,
   deleteMessage: T.func.isRequired,
+  deleteSubject: T.func.isRequired,
   subjectEdition: T.func.isRequired,
   invalidated: T.bool.isRequired,
   loaded: T.bool.isRequired,
@@ -281,7 +281,13 @@ SubjectComponent.propTypes = {
   showSubjectForm: T.bool.isRequired,
   editingSubject: T.bool.isRequired,
   messages: T.arrayOf(T.shape({})),
+  totalResults: T.number.isRequired,
   sortOrder: T.number.isRequired,
+  pages: T.number,
+  currentPage: T.number,
+  changePage: T.func,
+  changePagePrev: T.func,
+  toggleSort: T.func.isRequired,
   history: T.object.isRequired
 }
 

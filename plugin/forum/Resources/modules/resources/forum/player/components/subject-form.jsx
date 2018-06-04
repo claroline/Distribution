@@ -128,7 +128,8 @@ const SubjectFormComponent = (props) =>
                   condensed: true
                 }
               }, {
-                name: 'sticked',
+                name: 'meta.sticky',
+                alias: 'sticked',
                 type: 'boolean',
                 label: trans('stick', {}, 'forum'),
                 help: trans('stick_explanation', {}, 'forum')

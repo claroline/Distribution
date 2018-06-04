@@ -54,6 +54,7 @@ MessagesSort.propTypes = {
   currentPage: T.number,
   pages: T.number.isRequired,
   changePage: T.func.isRequired,
+  changePagePrev: T.func.isRequired,
   toggleSort: T.func.isRequired,
   messages: T.arrayOf(T.shape({})),
   totalResults: T.number.isRequired
