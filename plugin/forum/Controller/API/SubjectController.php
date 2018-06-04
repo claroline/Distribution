@@ -5,6 +5,7 @@ namespace Claroline\ForumBundle\Controller\API;
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -129,24 +130,28 @@ class SubjectController extends AbstractCrudController
 
     /**
      * @EXT\Route("/forum/{forum}/tag/{tag}", name="apiv2_search_subjects_tag")
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      */
     public function findByTagAction(Forum $forum, $tag)
     {
         $options = [
             'tag' => $tag,
-            'strict' => true,
+            'strict' => false,
             'class' => 'Claroline\ForumBundle\Entity\Subject',
             'object_response' => true,
-            'ordered_by' => 'name',
-            'order' => 'ASC',
         ];
 
-        $event = $this->eventDispatcher->dispatch('claroline_retrieve_tagged_objects', new GenericDataEvent($options));
+        $event = $this->container->get('event_dispatcher')
+            ->dispatch(
+              'claroline_retrieve_tagged_objects',
+              new GenericDataEvent($options)
+            );
+
         $subjects = $event->getResponse();
 
         return new JsonResponse(
             array_map(function (Subject $subject) {
-                $this->serializer->serialize($subject, $this->options['get']);
+                return $this->serializer->serialize($subject, $this->options['get']);
             }, $subjects),
             200
         );
