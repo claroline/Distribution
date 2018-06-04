@@ -10,6 +10,7 @@ use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Statusable;
 use Icap\BlogBundle\Entity\Tag;
 use Icap\BlogBundle\Exception\TooMuchResultException;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class PostRepository extends EntityRepository
 {
@@ -40,12 +41,12 @@ class PostRepository extends EntityRepository
     public function findAuthorsByBlog(Blog $blog, $executeQuery = true)
     {
         $query = $this->getEntityManager()
-            ->createQuery('
-                SELECT DISTINCT a.id, a.username, a.firstName, a.lastName
+            ->createQuery("
+                SELECT DISTINCT a.uuid, CONCAT(CONCAT(a.firstName, ' '), a.lastName) as name
                 FROM IcapBlogBundle:Post p
                 JOIN p.author a
                 WHERE p.blog = :blogId
-            ')
+            ")
             ->setParameter('blogId', $blog->getId())
         ;
 
@@ -189,19 +190,40 @@ class PostRepository extends EntityRepository
      */
     public function findArchiveDatasByBlog(Blog $blog, $executeQuery = true)
     {
+        $rsm = new ResultSetMapping();
+        $rsm
+        ->addScalarResult('c', 'count')
+        ->addScalarResult('y', 'year')
+        ->addScalarResult('m', 'month');
+        
         $query = $this->getEntityManager()
-            ->createQuery('
-                SELECT p
-                FROM IcapBlogBundle:Post p
-                WHERE p.blog = :blog
-                AND p.publicationDate <= :currentDate
+            ->createNativeQuery('
+                SELECT YEAR(p.publication_date) y, MONTH(p.publication_date) m, count(p.id) c
+                FROM icap__blog_post p
+                WHERE p.blog_id = :blog
+                AND p.publication_date <= :currentDate
                 AND p.status = :status
-                ORDER BY p.publicationDate DESC
-            ')
-            ->setParameter('blog', $blog)
+                GROUP BY y, m
+                ORDER BY p.publication_date DESC
+            ', $rsm)
+            ->setParameter('blog', $blog->getId())
             ->setParameter('currentDate', new \DateTime())
             ->setParameter('status', POST::STATUS_PUBLISHED)
         ;
+        
+        /*$query = $this->getEntityManager()
+        ->createQuery('
+            SELECT p
+            FROM IcapBlogBundle:Post p
+            WHERE p.blog = :blog
+            AND p.publicationDate <= :currentDate
+            AND p.status = :status
+            ORDER BY p.publicationDate DESC
+        ')
+        ->setParameter('blog', $blog)
+        ->setParameter('currentDate', new \DateTime())
+        ->setParameter('status', POST::STATUS_PUBLISHED)
+        ;*/
 
         return $executeQuery ? $query->getResult() : $query;
     }

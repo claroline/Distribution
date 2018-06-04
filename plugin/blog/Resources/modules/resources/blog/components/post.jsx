@@ -12,13 +12,16 @@ import {getPlainText} from '#/main/core/data/types/html/utils'
 import {ActionDropdownButton} from '#/main/core/layout/action/components/dropdown'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {generatePostActions} from '#/plugin/blog/resources/blog/utils.js'
+import {getCommentsNumber} from '#/plugin/blog/resources/blog/utils.js'
 import {actions} from '#/plugin/blog/resources/blog/actions.js'
 import {navigate} from '#/main/core/router'
 import {actions as listActions} from '#/main/core/data/list/actions'
+import {Comments} from '#/plugin/blog/resources/blog/components/comments.jsx'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
 const PostComponent = props =>
-  <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`, props.className)}>
+  <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`, props.className, {'unpublished': !props.post.isPublished})}>
     {props.post.id &&
       <CardContent
         disabled={props.primaryAction && props.primaryAction.disabled}
@@ -45,9 +48,22 @@ const PostComponent = props =>
         }
         {'sm' !== props.size &&
           <div key="data-card-footer" className="data-card-footer">
-            <Footer post={props.post} />
+            <Footer post={props.post} canEdit={props.canEdit} />
           </div>
         }
+        {props.full &&
+          <div className="post-content">
+            <Comments 
+              blogId={props.blogId} 
+              postId={props.post.id} 
+              canComment={props.canComment} 
+              showForm={props.showCommentForm} 
+              opened={props.showComments} 
+              comments={props.post.comments} 
+            />
+          </div>
+        }
+        
       </CardContent>
     }
     <ActionDropdownButton
@@ -58,13 +74,17 @@ const PostComponent = props =>
       pullRight={true}
       actions={[
         {
-          action: () => navigate(`/post/${props.post.slug}/edit`),
+          action: () => navigate(`/${props.post.slug}/edit`),
           label: trans('edit_post_short', {}, 'icap_blog'),
           icon: 'fa fa-pencil'
         },{
           action: () => props.publishPost(props.blogId, props.post.id),
           label: props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog'),
-          icon: props.post.isPublished ? 'fa-eye-slash fa' : 'fa fa-eye'
+          icon: props.post.isPublished ? 'fa fa-eye-slash' : 'fa fa-eye'
+        },{
+          action: () => props.deletePost(props.blogId, props.post.id, props.post.title),
+          label: trans('delete', {}, 'platform'),
+          icon: 'fa fa-trash'
         }
       ]}
     />
@@ -100,21 +120,37 @@ const InfoBar = props =>
         <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} /> <span className="read_more">{props.post.author.firstName} {props.post.author.lastName}</span>
       </span>
     </li>
-    <li><span className="fa fa-calendar"></span> {displayDate(props.post.creationDate, false, true)} </li>
+    <li><span className="fa fa-calendar"></span> {displayDate(props.post.publicationDate, false, true)} </li>
     <li><span className="fa fa-eye"></span> {transChoice('display_views', props.post.viewCounter, {'%count%': props.post.viewCounter}, 'platform')}</li> 
   </ul>
     
 const Footer = props =>
-  <ul className='list-inline'>
-    <li><span className="fa fa-tags"></span></li>
-    {props.post.tags && props.post.tags.length > 0 ? (
-       props.post.tags && props.post.tags.map(tag =>(
-         <PostTag key={tag} tag={tag} />
-        ))
-      ) : (
-        trans('no_tags', {}, 'icap_blog')
-      )}
-  </ul>
+  <div>
+    <ul className='list-inline post-tags pull-left'>
+      <li><span className="fa fa-tags"></span></li>
+      <li>
+      {props.post.tags && props.post.tags.length > 0 ? (
+         props.post.tags && props.post.tags.map(tag =>(
+           <PostTag key={tag} tag={tag} />
+          ))
+        ) : (
+          trans('no_tags', {}, 'icap_blog')
+        )}
+      </li>
+    </ul>
+    <ul className='list-inline pull-right'>
+      <li><span className="fa fa-comments"></span></li>
+      <li>
+        {getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished) > 0
+          ? transChoice('comments_number', getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished), 
+              {'%count%': getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished)}, 'icap_blog')
+          : trans('no_comment', {}, 'icap_blog')}
+        {props.canEdit && props.post.commentsNumberUnpublished 
+          ? transChoice('comments_pending', props.post.commentsNumberUnpublished, {'%count%': props.post.commentsNumberUnpublished}, 'icap_blog')
+          : ''}
+      </li>
+    </ul>
+  </div>
 
 const CardContent = props => {
   if (!props.action || props.disabled) {
@@ -142,11 +178,19 @@ const CardContent = props => {
 
 const PostCardContainer = connect(
   state => ({
-    blogId: state.blog.data.id
+    blogId: state.blog.data.id,
+    canEdit: state.canEdit
   }),
   dispatch => ({
     publishPost: (blogId, postId) => {
       dispatch(actions.publishPost(blogId, postId))
+    },
+    deletePost: (blogId, postId, postName) => {
+      dispatch(modalActions.showModal(MODAL_DELETE_CONFIRM, {
+        title: trans('post_deletion_confirm_title', {}, 'icap_blog'),
+        question: trans('post_deletion_confirm_message', {'postName': postName}, 'icap_blog'),
+        handleConfirm: () => dispatch(actions.deletePost(blogId, postId))
+      }))
     },
     getPostsByAuthor: (blogId, authorName) => {
       dispatch(listActions.addFilter('posts', 'authorName', authorName));
@@ -157,7 +201,9 @@ const PostCardContainer = connect(
   
 const PostContainer = connect(
   state => ({
-      data: state.post
+      canComment: true,
+      data: state.post,
+      full: true
     })
 )(PostCardContainer)
     

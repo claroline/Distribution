@@ -8,8 +8,14 @@
 
 {% block content %}
    <div class="page-container blog-container" 
+     {% if not isAnon %}
+       data-user="{{ user | api_serialize | json_encode | raw | escape }}"
+       data-edit="{{ canEdit | json_encode | raw | escape }}"
+     {% endif %}
      data-blog="{{ _resource | api_serialize | json_encode | raw | escape }}"
      data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
+     data-authors="{{ authors | json_encode | raw | escape }}"
+     data-archives="{{ archives | json_encode | raw | escape }}"
    >
    </div>
 {% endblock %}

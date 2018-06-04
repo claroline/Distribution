@@ -36,10 +36,15 @@ const BlogOptionsComponent = props =>
               name: 'authorizeComment',
               type: 'boolean',
               label: trans('icap_blog_options_form_authorize_comment', {}, 'icap_blog'),
-            },{
-              name: 'authorizeAnonymousComment',
-              type: 'boolean',
-              label: trans('icap_blog_options_form_authorize_anonymous_comment', {}, 'icap_blog'),
+              linked: [
+                {
+                  name: 'authorizeAnonymousComment',
+                  type: 'boolean',
+                  label: trans('icap_blog_options_form_authorize_anonymous_comment', {}, 'icap_blog'),
+                  required: false,
+                  displayed: props.options.authorizeComment
+                }
+              ]
             },{
               name: 'autoPublishPost',
               type: 'boolean',

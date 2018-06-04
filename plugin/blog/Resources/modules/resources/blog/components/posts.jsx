@@ -23,7 +23,7 @@ const PostsList = props =>
         autoload: true
       }}
       open={{
-        action: (row) => `#/post/${row.slug}`
+        action: (row) => `#/${row.slug}`
       }}
       delete={{
         url: ['apiv2_hero_delete_bulk']
@@ -37,9 +37,19 @@ const PostsList = props =>
           displayed: true
         },{
           name: 'publicationDate',
-          label: trans('date', {}, 'platform'),
-          type: 'string',
+          label: trans('icap_blog_post_form_publicationDate', {}, 'icap_blog'),
+          type: 'date',
           displayed: true
+        },{
+          name: 'fromDate',
+          label: trans('icap_blog_post_form_publicationDateFrom', {}, 'icap_blog'),
+          type: 'date',
+          sortable: false
+        },{
+          name: 'toDate',
+          label: trans('icap_blog_post_form_publicationDateTo', {}, 'icap_blog'),
+          type: 'date',
+          sortable: false,
         },{
           name: 'content',
           label: trans('content', {}, 'platform'),
@@ -66,6 +76,7 @@ const PostsList = props =>
 PostsList.propTypes ={
   posts: T.array,
   blogId: T.string,
+  onClick: T.func.isRequired
 }
 
 const PostsContainer = connect(

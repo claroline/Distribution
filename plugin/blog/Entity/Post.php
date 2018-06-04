@@ -101,6 +101,7 @@ class Post extends Statusable
      * @Expose
      * @Groups({"blog_list", "blog_post"})
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post", cascade={"all"})
+     * @ORM\OrderBy({"creationDate" = "DESC"})
      */
     protected $comments;
 

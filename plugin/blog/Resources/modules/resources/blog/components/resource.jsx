@@ -33,8 +33,10 @@ import Panel from 'react-bootstrap/lib/Panel'
 const Blog = props =>
   <ResourcePageContainer
       editor={{
+        icon: 'fa fa-pencil',
+        label: trans('configure_blog', {}, 'icap_blog'),
         opened: props.mode === constants.EDIT_POST || props.mode === constants.CREATE_POST || props.mode === constants.EDIT_OPTIONS,
-        open: '#edit',
+        open: '#/editor',
         save: {
           disabled: !props.saveEnabled,
           action: () => props.save(props.blogId, props.mode, props.postId)
@@ -45,7 +47,7 @@ const Blog = props =>
           icon: 'fa fa-home',
           label: trans('show_overview'),
           action: '#/'
-        },{
+        }, {
           icon: 'fa fa-plus',
           label: trans('new_post', {}, 'icap_blog'),
           action: '#/new'
@@ -53,9 +55,9 @@ const Blog = props =>
       ]}
     >
     <PageContent>
-      <Grid key='blog-grid'>
+      <Grid key="blog-grid" className="blog-page">
         <Row className="show-grid">
-          <Col xs={13} md={9}>
+          <Col xs={13} md={9} className="blog-content">
             <RoutedPageContent routes={[
             {
               path: '/',
@@ -73,23 +75,24 @@ const Blog = props =>
               exact: true,
               onEnter: () => props.createPost()
             }, {
-              path: '/post/:id',
+              path: '/editor',
+              component: BlogOptions,
+              onEnter: (params) => props.editBlogOptions(props.blogId),
+              exact: true,
+            }, {
+              path: '/:id',
               component: Post,
               exact: true,
               onEnter: (params) => props.getPost(props.blogId, params.id)
             }, {
-              path: '/post/:id/edit',
+              path: '/:id/edit',
               component: PostForm,
               exact: true,
               onEnter: (params) => props.editPost(props.blogId, params.id)
-            }, {
-              path: '/edit',
-              component: BlogOptions,
-              onEnter: (params) => props.editBlogOptions(props.blogId)
             }
             ]}/>
           </Col>
-          <Col xs={5} md={3}>
+          <Col xs={5} md={3} className="blog-widgets">
             <Tools />
           </Col>
         </Row>

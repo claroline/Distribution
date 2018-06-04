@@ -11,6 +11,7 @@ use Icap\BlogBundle\Entity\BlogOptions;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Tag;
+use Icap\BlogBundle\Repository\BlogRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -19,21 +20,22 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class BlogManager
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    private $objectManager;
+    private $uploadDir;
+    private $repo;
 
     /**
      * @DI\InjectParams({
-     *      "objectManager" = @DI\Inject("claroline.persistence.object_manager"),
-     *      "uploadDir" = @DI\Inject("%icap.blog.banner_directory%")
+     *      "objectManager"  = @DI\Inject("claroline.persistence.object_manager"),
+     *      "uploadDir"      = @DI\Inject("%icap.blog.banner_directory%"),
+     *      "repo"           = @DI\Inject("icap.blog.blog_repository")
      * })
      */
-    public function __construct(ObjectManager $objectManager, $uploadDir)
+    public function __construct(ObjectManager $objectManager, $uploadDir, BlogRepository $repo)
     {
         $this->objectManager = $objectManager;
         $this->uploadDir = $uploadDir;
+        $this->repo = $repo;
     }
 
     /**
@@ -401,4 +403,26 @@ class BlogManager
         return $options->getBannerBackgroundImage() ? $this->uploadDir.'/'.$options->getBannerBackgroundImage() : null;
         //return $options->getBannerBackgroundImage() ? $this->uploadWebDir.'/'.$options->getBannerBackgroundImage() : null;
     }
+    
+    /**
+     * Get blog by its ID or UUID
+     * 
+     * @param string $id
+     *
+     * @return Blog
+     */
+    public function getBlogByIdOrUuid($id){
+        if (preg_match('/^\d+$/', $id)) {
+            $blog = $this->repo->findOneBy([
+                'id' => $id,
+            ]);
+        } else {
+            $blog = $this->repo->findOneBy([
+                'uuid' => $id,
+            ]);
+        }
+        
+        return $blog;
+    }
+
 }

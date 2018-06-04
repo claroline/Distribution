@@ -5,11 +5,17 @@ namespace Icap\BlogBundle\Controller;
 use Icap\BlogBundle\Entity\Blog;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class PostController extends BaseController
+/**
+ * @EXT\Route("/")
+ */
+class PostController extends Controller
 {
     /**
-     * This function is kept for backwards compatibility and redirects old URLS to the new angularized ones.
+     * This function is kept for backwards compatibility and redirects old pre-angular URLS to the new react ones.
      *
      * @Route(
      *     "/{blogId}/post/view/{postSlug}",
@@ -21,6 +27,7 @@ class PostController extends BaseController
      */
     public function viewAction(Blog $blog, $postSlug)
     {
-        return $this->redirect($this->generateUrl('icap_blog_view', ['blogId' => $blog->getId()]).'#/'.$postSlug);
+        return $this->redirect($this->generateUrl('icap_blog_open', ['blogId' => $blog->getId()]).'#/'.$postSlug);
     }
+
 }

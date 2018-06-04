@@ -2,20 +2,22 @@
 
 namespace Icap\BlogBundle\Controller\API;
 
-use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\AppBundle\Security\ObjectCollection;
 use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Post;
+use Icap\BlogBundle\Entity\Comment;
+use Icap\BlogBundle\Manager\BlogTrackingManager;
+use Icap\BlogBundle\Serializer\PostSerializer;
+use Icap\BlogBundle\Manager\PostManager;
+use Icap\BlogBundle\Serializer\CommentSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Icap\BlogBundle\Serializer\PostSerializer;
-use Icap\BlogBundle\Manager\PostManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Icap\BlogBundle\Manager\BlogTrackingManager;
-use Claroline\AppBundle\Security\ObjectCollection;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @EXT\Route("blog/{blogId}/posts", options={"expose"=true})
@@ -25,9 +27,8 @@ class PostController
 {
     use PermissionCheckerTrait;
 
-    /** @var FinderProvider */
-    private $finder;
     private $postSerializer;
+    private $commentSerializer;
     private $postManager;
     private $trackingManager;
     private $logThreshold;
@@ -36,19 +37,29 @@ class PostController
      * postController constructor.
      *
      * @DI\InjectParams({
-     *     "finder"          = @DI\Inject("claroline.api.finder"),
-     *     "postSerializer"  = @DI\Inject("claroline.serializer.blog.post"),
-     *     "postManager"     = @DI\Inject("icap.blog.manager.post"),
-     *     "trackingManager" = @DI\Inject("icap.blog.manager.tracking"),
-     *     "logThreshold"    = @DI\Inject("%non_repeatable_log_time_in_seconds%")
+     *     "postSerializer"    = @DI\Inject("claroline.serializer.blog.post"),
+     *     "commentSerializer" = @DI\Inject("claroline.serializer.blog.comment"),
+     *     "postManager"       = @DI\Inject("icap.blog.manager.post"),
+     *     "trackingManager"   = @DI\Inject("icap.blog.manager.tracking"),
+     *     "logThreshold"      = @DI\Inject("%non_repeatable_log_time_in_seconds%")
+
      * })
      *
-     * @param FinderProvider $finder
+     * @param PostSerializer $postSerializer
+     * @param commentSerializer $commentSerializer
+     * @param PostManager $postManager
+     * @param BlogTrackingManager $trackingManager
+     * @param $logThreshold
      */
-    public function __construct(FinderProvider $finder, PostSerializer $postSerializer, PostManager $postManager, BlogTrackingManager $trackingManager, $logThreshold)
+    public function __construct(
+        PostSerializer $postSerializer, 
+        CommentSerializer $commentSerializer, 
+        PostManager $postManager, 
+        BlogTrackingManager $trackingManager, 
+        $logThreshold)
     {
-        $this->finder = $finder;
         $this->postSerializer = $postSerializer;
+        $this->commentSerializer = $commentSerializer;
         $this->postManager = $postManager;
         $this->trackingManager = $trackingManager;
         $this->logThreshold = $logThreshold;
@@ -79,12 +90,9 @@ class PostController
         $this->checkPermission('OPEN', $blog->getResourceNode(), [], true);
         
         $parameters = $request->query->all();
-        if (!isset($parameters['hiddenFilters'])) {
-            $parameters['hiddenFilters'] = [];
-        }
 
         //if no edit rights, list only published posts
-        $posts = $this->getPosts(
+        $posts = $this->postManager->getPosts(
             $blog->getId(), 
             $parameters, 
             !$this->authorization->isGranted('EDIT', new ObjectCollection([$blog])), 
@@ -92,57 +100,23 @@ class PostController
 
         return new JsonResponse($posts);
     }
-    
-    public function getPosts($blogId, $filters, $publishedOnly, $abstract){
-        //filter on current blog
-        $filters['hiddenFilters'] = [
-            'blog' => $blogId,
-        ];
-        
-        if($publishedOnly){
-            $filters['hiddenFilters'] = array_merge($filters['hiddenFilters'], array('published' => 'true'));
-        }
-        return $this->finder->search('Icap\BlogBundle\Entity\Post', $filters, [
-           'abstract' => $abstract,
-        ]);
-    }
 
     /**
      * Get blog post.
      *
      * @EXT\Route("/{postId}", name="apiv2_blog_post_get")
      * @EXT\Method("GET")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param Blog $blog
      * @param Post $post
      *
      * @return array
      */
-    public function getAction(Request $request, Blog $blog, $postId)
+    public function getAction(Request $request, Blog $blog, $postId, User $user = null)
     {
         $this->checkPermission('OPEN', $blog->getResourceNode(), [], true);
-        
         $post = $this->postManager->getPostByIdOrSlug($blog, $postId);
-        
-        /*$parameters = $request->query->all();
-        if (!isset($parameters['hiddenFilters'])) {
-            $parameters['hiddenFilters'] = [];
-        }
-        //filter on current blog and post
-        $parameters['hiddenFilters'] = [
-            'blog' => $blog->getId(),
-        ];*/
-
-        //by id
-       /* if (preg_match('/^\d+$/', $postId)) {
-            $parameters['hiddenFilters']['id'] = $postId;
-        //by slug
-        } else {
-            $parameters['hiddenFilters']['slug'] = $postId;
-        }*/
-        
-        //$posts = $this->finder->search('Icap\BlogBundle\Entity\Post', $parameters);
-       // $post = $posts['data'][0];
         if (is_null($post)) {
             throw new NotFoundHttpException();
         }
@@ -157,15 +131,32 @@ class PostController
             $session->set($sessionViewCounterKey, $now);
             $this->postManager->updatePostViewCount($post);
         }
+        
+        $userId = $user !== null ? $user->getId() : null;
+        //if no edit rights, list only published comments and current user ones
+        $canEdit = $this->authorization->isGranted('EDIT', new ObjectCollection([$blog]));
+        $comments = [];
+        if(!$canEdit){
+            $options = [CommentSerializer::INCLUDE_COMMENTS => CommentSerializer::PRELOADED_COMMENTS];
+            $parameters = $request->query->all();
+            $comments = $this->postManager->getComments(
+                $blog->getId(),
+                $post->getId(),
+                $userId,
+                $parameters,
+                !$canEdit)['data'];
+        } else {
+            $options = [CommentSerializer::INCLUDE_COMMENTS => CommentSerializer::FETCH_COMMENTS];
+        }
 
-        return new JsonResponse($this->postSerializer->serialize($post));
+        return new JsonResponse($this->postSerializer->serialize($post, $options, $comments));
     }
     
     /**
      * Create blog post.
      *
      * @EXT\Route("/new", name="apiv2_blog_post_new")
-     * @EXT\Method("PUT")
+     * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param Blog $blog
@@ -180,6 +171,44 @@ class PostController
         $post = $this->postManager->createPost($blog, $this->postSerializer->deserialize($data), $user);
         
         return new JsonResponse($this->postSerializer->serialize($post));
+    }
+    
+    /**
+     * Create a post comment.
+     *
+     * @EXT\Route("/comment{postId}", name="apiv2_blog_comment_new")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     *
+     * @param Blog $blog
+     * @param Post $post
+     * @param User $user
+     *
+     * @return Comment
+     */
+    public function createCommentAction(Request $request, Blog $blog, Post $post, User $user = null)
+    {
+        if ($blog->isCommentsAuthorized() && ($blog->isAuthorizeAnonymousComment() || $user !== null)){
+            $data = [];
+            $data['message'] = $request->get('comment', false);
+            $forcePublication = $this->authorization->isGranted('EDIT', new ObjectCollection([$blog]));
+            $comment = $this->postManager->createComment($blog, $post, $this->commentSerializer->deserialize($data, null, $user), $forcePublication);
+            
+            return new JsonResponse($this->commentSerializer->serialize($comment));
+        } else {
+            throw new AccessDeniedException();
+        }
+    }
+    
+    /**
+     * Is the user logged in or not ?
+     *
+     * @return bool
+     */
+    private function isLoggedIn(User $user)
+    {
+        return is_string($user) ? false : true;
     }
     
     /**
@@ -203,6 +232,136 @@ class PostController
         $post = $this->postManager->updatePost($blog, $post, $this->postSerializer->deserialize($data), $user);
         
         return new JsonResponse($this->postSerializer->serialize($post));
+    }
+    
+    /**
+     * Delete blog post.
+     *
+     * @EXT\Route("/delete/{postId}", name="apiv2_blog_post_delete")
+     * @EXT\Method("DELETE")
+     * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Blog $blog
+     * @param Post $post
+     * @param User $user
+     *
+     * @return array
+     */
+    public function deletePostAction(Request $request, Blog $blog, Post $post, User $user)
+    {
+        $this->checkPermission('EDIT', $blog->getResourceNode(), [], true);
+        $this->postManager->deletePost($blog, $post, $user);
+        
+        return new JsonResponse($post->getId());
+    }
+    
+    /**
+     * Update post comment.
+     *
+     * @EXT\Route("/update/{postId}/comment/{commentId}", name="apiv2_blog_comment_update")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
+     * @EXT\ParamConverter("comment", class="IcapBlogBundle:Comment", options={"mapping": {"commentId": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     *
+     * @param Blog $blog
+     * @param Post $post
+     * @param Comment $comment
+     * @param User $user
+     *
+     * @return array
+     */
+    public function updateCommentAction(Request $request, Blog $blog, Post $post, Comment $comment, User $user = null)
+    {
+        //original author or admin can edit, anon cant edit
+        if ($blog->isCommentsAuthorized() && $this->isLoggedIn($user)){
+            if($user !== $comment->getAuthor()){
+                $this->checkPermission('EDIT', $blog->getResourceNode(), [], true);
+            }
+            $data = $this->decodeRequestData($request);
+            $comment = $this->postManager->updateComment($blog, $post, $comment, $data);
+            return new JsonResponse($this->commentSerializer->serialize($comment));
+        }else{
+            throw new AccessDeniedException();
+        }
+    }
+    
+    /**
+     * Publish post comment.
+     *
+     * @EXT\Route("/update/{postId}/comment/{commentId}/publish", name="apiv2_blog_comment_publish")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
+     * @EXT\ParamConverter("comment", class="IcapBlogBundle:Comment", options={"mapping": {"commentId": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Blog $blog
+     * @param Post $post
+     * @param Comment $comment
+     * @param User $user
+     *
+     * @return array
+     */
+    public function publishCommentAction(Request $request, Blog $blog, Post $post, Comment $comment, User $user)
+    {
+      $this->checkPermission('EDIT', $blog->getResourceNode(), [], true);
+      $comment = $this->postManager->publishComment($blog, $post, $comment);
+      return new JsonResponse($this->commentSerializer->serialize($comment));
+    }
+    
+    /**
+     * unpublish post comment.
+     *
+     * @EXT\Route("/update/{postId}/comment/{commentId}/unpublish", name="apiv2_blog_comment_unpublish")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
+     * @EXT\ParamConverter("comment", class="IcapBlogBundle:Comment", options={"mapping": {"commentId": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Blog $blog
+     * @param Post $post
+     * @param Comment $comment
+     * @param User $user
+     *
+     * @return array
+     */
+    public function unpublishCommentAction(Request $request, Blog $blog, Post $post, Comment $comment, User $user)
+    {
+        $this->checkPermission('EDIT', $blog->getResourceNode(), [], true);
+        $comment = $this->postManager->unpublishComment($blog, $post, $comment);
+        return new JsonResponse($this->commentSerializer->serialize($comment));
+    }
+    
+    /**
+     * Delete post comment.
+     *
+     * @EXT\Route("/delete/{postId}/comment/{commentId}", name="apiv2_blog_comment_delete")
+     * @EXT\Method("DELETE")
+     * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
+     * @EXT\ParamConverter("comment", class="IcapBlogBundle:Comment", options={"mapping": {"commentId": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Blog $blog
+     * @param Post $post
+     * @param Comment $comment
+     * @param User $user
+     *
+     * @return array
+     */
+    public function deleteCommentAction(Request $request, Blog $blog, Post $post, Comment $comment, User $user)
+    {
+        //original author or admin can edit, anon cant edit
+        if ($blog->isCommentsAuthorized() && $this->isLoggedIn($user)){
+            if($user !== $comment->getAuthor()){
+                $this->checkPermission('EDIT', $blog->getResourceNode(), [], true);
+            }
+            
+            $commentId = $this->postManager->deleteComment($blog, $post, $comment);
+            return new JsonResponse($commentId);
+        }else{
+            throw new AccessDeniedException();
+        }
     }
     
     /**
@@ -258,6 +417,25 @@ class PostController
         $post = $this->postManager->updatePost($blog, $this->postSerializer->deserialize($data), $user);
         */
         return new JsonResponse($this->postSerializer->serialize($post));
+    }
+    
+    /**
+     * Gets and Deserializes JSON data from Request.
+     *
+     * @param Request $request
+     *
+     * @return mixed $data
+     */
+    protected function decodeRequestData(Request $request)
+    {
+        $dataRaw = $request->getContent();
+        
+        $data = null;
+        if (!empty($dataRaw)) {
+            $data = json_decode($dataRaw);
+        }
+        
+        return $data;
     }
     
 }

@@ -1,14 +1,10 @@
 icap_blog:
     resource: "@IcapBlogBundle/Controller/Resource/BlogController.php"
     type:     annotation
-
-icap_blogpost_api:
-    resource: "@IcapBlogBundle/Controller/API/ApiController.php"
-    type: rest
-    prefix: api
-    defaults: {_format: json}
-    options:
-        expose: true
+    
+icap_blog_post:
+    resource: "@IcapBlogBundle/Controller/PostController.php"
+    type:     annotation
         
 icap_blog_api:
     resource: "@IcapBlogBundle/Controller/API"

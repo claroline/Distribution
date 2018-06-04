@@ -9,6 +9,7 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
+use Symfony\Component\Translation\TranslatorInterface;
 use Claroline\CoreBundle\Event\Log\LogResourceUpdateEvent;
 use Claroline\CoreBundle\Library\Resource\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
@@ -41,19 +42,25 @@ class BlogTrackingManager
     
     private $eventDispatcher;
     private $evalutionManager;
+    private $translator;
     
     /**
      * Constructor.
      *
      * @DI\InjectParams({
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "evalutionManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
+     *     "eventDispatcher"  = @DI\Inject("event_dispatcher"),
+     *     "evalutionManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
+     *     "translator"       = @DI\Inject("translator")
      * })
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, ResourceEvaluationManager $evalutionManager)
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher, 
+        ResourceEvaluationManager $evalutionManager, 
+        TranslatorInterface $translator)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->evalutionManager = $evalutionManager;
+        $this->translator = $translator;
     }
     
     public function orderPanelsAction(Blog $blog)
@@ -111,8 +118,6 @@ class BlogTrackingManager
         $postDatas = $this->get('icap.blog.post_repository')->findArchiveDatasByBlog($blog);
         $archiveDatas = [];
         
-        $translator = $this->get('translator');
-        
         foreach ($postDatas as $postData) {
             $publicationDate = $postData->getPublicationDate();
             $year = $publicationDate->format('Y');
@@ -121,7 +126,7 @@ class BlogTrackingManager
             if (!isset($archiveDatas[$year][$month])) {
                 $archiveDatas[$year][$month] = [
                     'year' => $year,
-                    'month' => $translator->trans('month.'.date('F', mktime(0, 0, 0, $month, 10)), [], 'platform'),
+                    'month' => $this->translator->trans('month.'.date('F', mktime(0, 0, 0, $month, 10)), [], 'platform'),
                     'count' => 1,
                     'urlParameters' => $year.'/'.$month,
                 ];
@@ -259,7 +264,7 @@ class BlogTrackingManager
      */
     public function dispatchCommentCreateEvent(Post $post, Comment $comment)
     {
-        $event = new LogCommentCreateEvent($post, $comment, $this->get('translator'));
+        $event = new LogCommentCreateEvent($post, $comment, $this->translator);
         
         return $this->dispatch($event);
     }
@@ -286,7 +291,7 @@ class BlogTrackingManager
      */
     public function dispatchCommentUpdateEvent(Post $post, Comment $comment, $changeSet)
     {
-        $event = new LogCommentUpdateEvent($post, $comment, $changeSet, $this->get('translator'));
+        $event = new LogCommentUpdateEvent($post, $comment, $changeSet, $this->translator);
         
         return $this->dispatch($event);
     }
@@ -299,7 +304,7 @@ class BlogTrackingManager
      */
     public function dispatchCommentPublishEvent(Post $post, Comment $comment)
     {
-        $event = new LogCommentPublishEvent($post, $comment, $this->get('translator'));
+        $event = new LogCommentPublishEvent($post, $comment, $this->translator);
         
         return $this->dispatch($event);
     }

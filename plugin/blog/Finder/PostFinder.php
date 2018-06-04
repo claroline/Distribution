@@ -3,6 +3,7 @@
 namespace Icap\BlogBundle\Finder;
 
 use Claroline\AppBundle\API\FinderInterface;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -35,12 +36,50 @@ class PostFinder implements FinderInterface
                             OR UPPER(CONCAT(CONCAT(author.lastName, ' '), author.firstName)) LIKE :{$filterName}
                             ");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+            } else if ($filterName === "publicationDate") {
+                $date = DateNormalizer::denormalize($filterValue);
+                
+                $beginOfDay = clone $date;
+                $beginOfDay->modify('today');
+                $endOfDay = clone $beginOfDay;
+                $endOfDay->modify('tomorrow');
+                $endOfDay->modify('1 second ago');
+                
+                $qb
+                    ->andWhere("obj.{$filterName} >= :beginOfDay")
+                    ->andWhere("obj.{$filterName} <= :endOfDay")
+                    ->setParameter(":beginOfDay", $beginOfDay)
+                    ->setParameter(":endOfDay", $endOfDay);
+            } else if ($filterName === "fromDate") {
+                $date = DateNormalizer::denormalize($filterValue);
+                $beginOfDay = clone $date;
+                $beginOfDay->modify('today');
+                
+                $qb
+                ->andWhere("obj.publicationDate >= :beginOfDay")
+                ->setParameter(":beginOfDay", $beginOfDay);
+            } else if ($filterName === "toDate") {
+                $date = DateNormalizer::denormalize($filterValue);
+                $beginOfDay = clone $date;
+                $beginOfDay->modify('today');
+                $endOfDay = clone $beginOfDay;
+                $endOfDay->modify('tomorrow');
+                $endOfDay->modify('1 second ago');
+                
+                $qb
+                ->andWhere("obj.publicationDate <= :endOfDay")
+                ->setParameter(":endOfDay", $endOfDay);
             } else if (is_string($filterValue)) {
                 $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
             } else {
                 $qb->andWhere("obj.{$filterName} = :{$filterName}");
                 $qb->setParameter($filterName, $filterValue);
+            }
+            
+            //default sort by publicationDate
+            if ($sortBy == null) {
+                $qb->orderBy('obj.publicationDate', 'DESC');
             }
         }
 

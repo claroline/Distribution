@@ -12,8 +12,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 
 /**
  * @EXT\Route("blog/", options={"expose"=true})
@@ -27,8 +25,6 @@ class BlogController
     private $blogSerializer;
     private $blogOptionsSerializer;
     private $blogManager;
-    private $router;
-    private $configHandler;
 
     /**
      * BlogController constructor.
@@ -37,33 +33,25 @@ class BlogController
      *     "finder"                = @DI\Inject("claroline.api.finder"),
      *     "blogSerializer"        = @DI\Inject("claroline.serializer.blog"),
      *     "blogOptionsSerializer" = @DI\Inject("claroline.serializer.blog.options"),
-     *     "blogManager"           = @DI\Inject("icap_blog.manager.blog"),
-     *     "router"                = @DI\Inject("router"),
-     *     "configHandler"         = @DI\Inject("claroline.config.platform_config_handler")
+     *     "blogManager"           = @DI\Inject("icap_blog.manager.blog")
      * })
      *
      * @param FinderProvider $finder
      * @param BlogSerializer $blogSerializer
      * @param BlogOptionsSerializer $blogOptionsSerializer
      * @param BlogManager $blogManager
-     * @param UrlGeneratorInterface $router
-     * @param PlatformConfigurationHandler $configHandler
      */
     public function __construct(
         FinderProvider $finder, 
         BlogSerializer $blogSerializer, 
         BlogOptionsSerializer $blogOptionsSerializer, 
-        BlogManager $blogManager, 
-        UrlGeneratorInterface $router,
-        PlatformConfigurationHandler $configHandler
+        BlogManager $blogManager
       )
     {
         $this->finder = $finder;
         $this->blogSerializer = $blogSerializer;
         $this->blogOptionsSerializer = $blogOptionsSerializer;
         $this->blogManager = $blogManager;
-        $this->router = $router;
-        $this->configHandler = $configHandler;
     }
 
     /**
@@ -118,44 +106,17 @@ class BlogController
     }
     
     /**
-     * @EXT\Route("rss/{blogId}", name="apiv2_blog_rss")
+     * Get all authors for a given blog.
+     *
+     * @EXT\Route("{blogId}", name="apiv2_blog_authors")
      * @EXT\ParamConverter("blog", class="IcapBlogBundle:Blog", options={"mapping": {"blogId": "uuid"}})
      * @EXT\Method("GET")
+     * 
      */
-    public function rssAction(Blog $blog)
+    public function getBlogAuthorsAction(Blog $blog)
     {
-        $baseUrl = $this->router->getContext()->getBaseUrl();
-        //$this->router->generate($route, $parameters, $referenceType);
+        $this->checkPermission('OPEN', $blog->getResourceNode(), [], true);
         
-        $feed = [
-            'title' => $blog->getResourceNode()->getName(),
-            'description' => $blog->getInfos(),
-            'siteUrl' => $baseUrl.$this->router->generate('icap_blog_open', ['blogId' => $blog->getId()]),
-            'feedUrl' => $baseUrl.$this->router->generate('apiv2_blog_rss', ['blogId' => $blog->getId()]),
-            'lang' => $this->configHandler->getParameter('locale_language'),
-        ];
-        
-        /** @var \Icap\BlogBundle\Entity\Post[] $posts */
-        $posts = $this->getDoctrine()->getRepository('IcapBlogBundle:Post')->findRssDatas($blog);
-        
-        $items = [];
-        foreach ($posts as $post) {
-            $items[] = [
-                'title' => $post->getTitle(),
-                'url' => $baseUrl.$this->generateUrl('icap_blog_post_view', ['blogId' => $blog->getId(), 'postSlug' => $post->getSlug()]),
-                'date' => $post->getPublicationDate()->format('d/m/Y h:i:s'),
-                'intro' => $post->getContent(),
-                'author' => $post->getAuthor()->getFirstName() - $post->getAuthor()->getLastName(),
-            ];
-        }
-        
-        return new Response($this->renderView('IcapBlogBundle::rss.html.twig', [
-            'feed' => $feed,
-            'items' => $items,
-        ]), 200, [
-            'Content-Type' => 'application/rss+xml',
-            'charset' => 'utf-8',
-        ]);
+        return $this->blogManager->getAuthors($blog);
     }
-    
 }

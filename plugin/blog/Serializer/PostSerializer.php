@@ -18,6 +18,7 @@ class PostSerializer
     use SerializerTrait;
     
     private $userSerializer;
+    private $commentSerializer;
     private $userRepo;
     private $om;
     
@@ -25,8 +26,9 @@ class PostSerializer
      * PostSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
+     *     "userSerializer"     = @DI\Inject("claroline.serializer.user"),
+      *    "commentSerializer"  = @DI\Inject("claroline.serializer.blog.comment"),
+     *     "om"                 = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param UserSerializer       $userSerializer
@@ -34,9 +36,11 @@ class PostSerializer
      */
     public function __construct(
         UserSerializer $userSerializer,
+        CommentSerializer $commentSerializer,
         ObjectManager $om
         ) {
             $this->userSerializer = $userSerializer;
+            $this->commentSerializer = $commentSerializer;
             $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
             $this->tagRepo = $om->getRepository('Icap\BlogBundle\Entity\Tag');
             $this->om = $om;
@@ -57,19 +61,42 @@ class PostSerializer
     {
         return '#/plugin/blog/post.json';
     }
+    
+    /**
+     * Checks if an option has been passed to the serializer.
+     *
+     * @param $option
+     * @param array $options
+     *
+     * @return bool
+     */
+    private function hasOption($option, array $options = [])
+    {
+        return in_array($option, $options);
+    }
 
     /**
      * @param Post  $post
+     * @param array comments
      * @param array $options
      *
      * @return array - The serialized representation of a post
      */
-    public function serialize(Post $post, array $options = [])
+    public function serialize(Post $post, array $options = [], array $comments = [])
     {
         $tags = [];
         foreach ($post->getTags() as $tag) {
             $tags[] = $tag->getName();
         }
+        
+        //serialize comments
+        if(isset($options[CommentSerializer::INCLUDE_COMMENTS])){
+            if($this->hasOption(CommentSerializer::FETCH_COMMENTS, $options)){
+                $comments = $this->serializePostComments($post, $options);
+            }
+        }
+        $commentsNumber = $post->countComments();
+        $commentsNumberUnpublished = $post->countUnpublishedComments();
 
         return [
             'id' => $post->getUuid(),
@@ -77,14 +104,17 @@ class PostSerializer
             'title' => $post->getTitle(),
             'content' => isset($options['abstract']) && $options['abstract'] ? $post->getAbstract() : $post->getContent(),
             'abstract' => $this->isAbstract($post, $options),
-            'creationDate' => $post->getCreationDate() ? DateNormalizer::normalize($post->getCreationDate()) : null,
+            'creationDate' => $post->getCreationDate() ? DateNormalizer::normalize($post->getCreationDate()) : new \DateTime(),
             'modificationDate' => $post->getModificationDate() ? DateNormalizer::normalize($post->getModificationDate()) : null,
-            'publicationDate' => $post->getPublicationDate() ? DateNormalizer::normalize($post->getPublicationDate()) : null,
+            'publicationDate' => $post->getPublicationDate() ? DateNormalizer::normalize($post->getPublicationDate()) : new \DateTime(),
             'viewCounter' => $post->getViewCounter(),
             'author' => $post->getAuthor() ? $this->userSerializer->serialize($post->getAuthor()) : null,
             'authorName' => $post->getAuthor() ? $post->getAuthor()->getFullName() : null,
             'authorPicture' => $post->getAuthor()->getPicture(),
             'tags' => $tags,
+            'comments' => $comments,
+            'commentsNumber' => $commentsNumber,
+            'commentsNumberUnpublished' => $commentsNumberUnpublished,
             'isPublished' => $post->isPublished(),
         ];
     }
@@ -155,4 +185,24 @@ class PostSerializer
        
         return $post;
     }
+    
+    
+    /**
+     * Serialize post comments
+     *
+     * @param Post $post
+     * @param array $options
+     *
+     * @return array - The serialized representation comments
+     */
+    public function serializePostComments(Post $post, array $options = [])
+    {
+        $comments = [];
+        foreach ($post->getComments() as $comment) {
+            $comments[] = $this->commentSerializer->serialize($comment);
+        }
+        
+        return $comments;
+    }
+    
 }
