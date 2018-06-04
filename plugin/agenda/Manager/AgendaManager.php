@@ -74,43 +74,6 @@ class AgendaManager
         $this->container = $container;
     }
 
-    public function addEvent(Event $event, $workspace = null, array $users = [])
-    {
-        $event->setWorkspace($workspace);
-        $event->setUser($this->tokenStorage->getToken()->getUser());
-        $this->setEventDate($event);
-        $this->om->persist($event);
-        $this->om->flush();
-
-        $this->sendInvitation($event, $users);
-
-        return $event->jsonSerialize();
-    }
-
-    public function updateEvent(Event $event, array $users = [])
-    {
-        $this->setEventDate($event);
-        $this->om->flush();
-
-        $this->sendInvitation($event, $users);
-
-        return $event->jsonSerialize();
-    }
-
-    /**
-     * @param Event $event
-     *
-     * @return bool
-     */
-    public function deleteEvent(Event $event)
-    {
-        $removed = $event->jsonSerialize();
-        $this->om->remove($event);
-        $this->om->flush();
-
-        return $removed;
-    }
-
     public function sendInvitation(Event $event, array $users = [])
     {
         foreach ($users as $key => $user) {
@@ -252,36 +215,6 @@ class AgendaManager
         return $tabs;
     }
 
-    public function displayEvents(Workspace $workspace, $allDay = false)
-    {
-        $events = $this->om->getRepository('ClarolineAgendaBundle:Event')
-            ->findByWorkspaceId($workspace->getId());
-
-        return $this->convertEventsToArray($events);
-    }
-
-    public function updateEndDate(Event $event, $dayDelta = 0, $minDelta = 0)
-    {
-        $event->setEnd($event->getEndInTimestamp() + $this->toSeconds($dayDelta, $minDelta));
-        $this->om->flush();
-
-        return $event->jsonSerialize();
-    }
-
-    public function updateStartDate(Event $event, $dayDelta = 0, $minDelta = 0)
-    {
-        $event->setStart($event->getStartInTimestamp() + $this->toSeconds($dayDelta, $minDelta));
-        $this->om->flush();
-    }
-
-    public function moveEvent(Event $event, $dayDelta, $minuteDelta)
-    {
-        $this->updateStartDate($event, $dayDelta, $minuteDelta);
-        $this->updateEndDate($event, $dayDelta, $minuteDelta);
-
-        return $event->jsonSerialize();
-    }
-
     public function convertEventsToArray(array $events)
     {
         $data = [];
@@ -302,38 +235,6 @@ class AgendaManager
         }
 
         return $data;
-    }
-
-    private function toSeconds($days = 0, $mins = 0)
-    {
-        return $days * 3600 * 24 + $mins * 60;
-    }
-
-    /**
-     * Set the event date.
-     * Only use this method for events created or updated through AgendaType.
-     *
-     * @param Event $event
-     */
-    private function setEventDate(Event $event)
-    {
-        if ($event->isAllDay()) {
-            // If it's a task we set the start date at the beginning of the day
-            if ($event->isTask()) {
-                $event->setStart(strtotime($event->getEndInDateTime()->format('Y-m-d').' 00:00:00'));
-            } else {
-                $event->setStart(strtotime($event->getStartInDateTime()->format('Y-m-d').' 00:00:00'));
-            }
-            $event->setEnd(strtotime($event->getEndInDateTime()->format('Y-m-d').' 24:00:00'));
-        } else {
-            // If it's a task, we subtract 30 min so that the event is not a simple line on the calendar
-            if ($event->isTask()) {
-                $event->setStart($event->getEndInTimestamp() - 30 * 60);
-            } else {
-                $event->setStart($event->getStartInTimestamp());
-            }
-            $event->setEnd($event->getEndInTimestamp());
-        }
     }
 
     public function sortEvents($listEvents)

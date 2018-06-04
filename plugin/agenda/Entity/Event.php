@@ -11,12 +11,11 @@
 
 namespace Claroline\AgendaBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\AgendaBundle\Validator\Constraints\DateRange;
 use Claroline\CoreBundle\Entity\User;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Claroline\AgendaBundle\Validator\Constraints\DateRange;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\AgendaBundle\Repository\EventRepository")
@@ -359,47 +358,5 @@ class Event
     public function getEventInvitations()
     {
         return $this->eventInvitations;
-    }
-
-    public function jsonSerialize(User $user = null)
-    {
-        $guests = [];
-        $invitation = null;
-        foreach ($this->getEventInvitations() as $eventInvitation) {
-            $guests[] = [
-                'user_name' => $eventInvitation->getUser()->getUserName(),
-                'status' => $eventInvitation->getStatus(),
-            ];
-
-            if ($eventInvitation->getUser() === $user) {
-                $invitation = $eventInvitation;
-            }
-        }
-
-        return [
-            'id' => $this->getId(),
-            'title' => $invitation && !is_null($invitation->getTitle()) ? $invitation->getTitle() : $this->getTitle(),
-            'start' => \Datetime::createFromFormat('U', $this->start)->format(\DateTime::ISO8601),
-            'end' => \Datetime::createFromFormat('U', $this->end)->format(\DateTime::ISO8601),
-            'color' => $this->getPriority(),
-            'allDay' => $this->isAllDay(),
-            'isTask' => $this->isTask(),
-            'isTaskDone' => $this->isTaskDone(),
-            'owner' => $this->getUser()->getUsername(),
-            'description' => $invitation && !is_null($invitation->getDescription()) ? $invitation->getDescription() : $this->getDescription(),
-            'workspace_id' => $this->getWorkspace() ? $this->getWorkspace()->getId() : null,
-            'workspace_name' => $this->getWorkspace() ? $this->getWorkspace()->getName() : null,
-            'className' => 'event_'.$this->getId(),
-            'isEditable' => $this->isEditable() !== false && !$invitation,
-            'durationEditable' => !$this->isTask() && $this->isEditable() !== false && !$invitation, // If it's a task, disable resizing
-            'invitations' => $guests,
-            'is_guest' => !is_null($invitation),
-            'event_invitation_status' => [
-                'ignore' => EventInvitation::IGNORE,
-                'join' => EventInvitation::JOIN,
-                'maybe' => EventInvitation::MAYBE,
-                'resign' => EventInvitation::RESIGN,
-            ], //We have to passed the status list of the eventInvitation for the popover render because twig.js doesn't have the constant function
-        ];
     }
 }

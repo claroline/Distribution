@@ -201,7 +201,7 @@ class AgendaListener
         $editableWorkspace = $this->authorization->isGranted(['agenda_', 'edit'], $workspace);
 
         return $this->templating->render(
-            'ClarolineAgendaBundle:Tool:agenda.html.twig',
+            'ClarolineAgendaBundle:tool:agenda.html.twig',
             [
                 'workspace' => $workspace,
                 'editableWorkspaces' => [$workspace->getId() => $editableWorkspace],
@@ -232,7 +232,7 @@ class AgendaListener
         }
 
         return $this->templating->render(
-            'ClarolineAgendaBundle:Tool:agenda.html.twig',
+            'ClarolineAgendaBundle:tool:agenda.html.twig',
             [
                 'filters' => $filters,
                 'editableWorkspaces' => $editableWorkspaces,
