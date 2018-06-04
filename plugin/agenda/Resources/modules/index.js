@@ -4,7 +4,6 @@ import {reducer} from '#/plugin/agenda/reducer'
 import {Agenda} from '#/plugin/agenda/components/agenda.jsx'
 
 
-
 // mount the react application
 bootstrap(
   // app DOM container (also holds initial app data as data attributes)

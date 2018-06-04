@@ -4,6 +4,10 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 
+import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {PageContainer, PageHeader, PageActions} from '#/main/core/layout/page'
+
 import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
 
 function arrayTrans(key) {
@@ -65,9 +69,10 @@ class AgendaComponent extends Component {
 
   render() {
     return (
-      <div>
+      <PageContainer>
+        <PageHeader title={trans('agenda', {}, 'tool')}></PageHeader>
         <Calendar {...this.calendar} />
-      </div>
+      </PageContainer>
     )
   }
 
@@ -79,7 +84,25 @@ const Agenda = connect(
   }),
   dispatch => ({
     onDayClick() {
-      alert('day')
+      dispatch(
+        modalActions.showModal(MODAL_DATA_FORM, {
+          title: 'title',
+          sections: [
+            {
+              title: trans('general'),
+              primary: true,
+              fields: [
+                {
+                  name: 'name',
+                  type: 'string',
+                  label: trans('name'),
+                  required: true
+                }
+              ]
+            }
+          ]
+        })
+      )
     },
     onEventDragStart() {
       alert('drag')
