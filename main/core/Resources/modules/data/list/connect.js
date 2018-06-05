@@ -172,7 +172,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   // create the final list of actions
   // merge standard actions with the delete one
-  props.actions = (rows) => {
+  props.actions = ownProps.actions
+  /*props.actions = (rows) => {
     let actions = []
 
     if (ownProps.actions) {
@@ -199,7 +200,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     }
 
     return actions
-  }
+  }*/
 
   // optional list features
   if (stateProps.filterable) {

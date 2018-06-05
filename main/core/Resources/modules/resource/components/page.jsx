@@ -19,6 +19,17 @@ class ResourcePage extends Component {
     }
 
     this.toggleFullscreen = this.toggleFullscreen.bind(this)
+
+    /*{
+     name: 'fullscreen',
+     type: 'callback',
+     icon: classes('fa fa-fw', {
+     'fa-expand': !this.state.fullscreen,
+     'fa-compress': this.state.fullscreen
+     }),
+     label: trans(this.state.fullscreen ? 'fullscreen_off' : 'fullscreen_on'),
+     callback: this.toggleFullscreen
+     }*/
   }
 
   toggleFullscreen() {

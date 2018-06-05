@@ -13,14 +13,9 @@ import {PageHeader} from '#/main/app/page/components/header'
 
 const PageWrapper = props =>
   <Router embedded={props.embedded}>
-    {!props.embedded ?
-      <main className={classes('page', props.className)}>
-        {props.children}
-      </main> :
-      <section className={classes('page', props.className)}>
-        {props.children}
-      </section>
-    }
+    {React.createElement(!props.embedded ? 'main':'section', {
+      className: classes('page', props.className)
+    }, props.children)}
   </Router>
 
 PageWrapper.propTypes = {
@@ -35,73 +30,33 @@ PageWrapper.propTypes = {
  * For now, modals are managed here.
  * In future version, when the layout will be in React,
  * it'll be moved in higher level.
- *
- * @todo maybe manage fullscreen in redux store
- * It will cause issue when you pass from a fullscreen page to a one that does not support it.
- * (there will be no button to go back in normal mode, maybe add the fullscreen on all page or reset it)
  */
-class Page extends Component {
-  constructor(props) {
-    super(props)
+const Page = props =>
+  <PageWrapper
+    embedded={props.embedded}
+    className={classes(props.size, {
+      fullscreen: props.fullscreen,
+      main: !props.embedded,
+      embedded: props.embedded
+    })}
+  >
+    <AlertOverlay />
 
-    this.state = {
-      fullscreen: !this.props.embedded && this.props.fullscreen
-    }
+    <PageHeader
+      title={props.title}
+      subtitle={props.subtitle}
+      icon={props.icon}
+      poster={props.poster}
+      toolbar={props.toolbar}
+      actions={props.actions}
+    />
 
-    this.toggleFullscreen = this.toggleFullscreen.bind(this)
-  }
+    <div className="page-content" role="presentation">
+      {props.children}
+    </div>
 
-  toggleFullscreen() {
-    this.setState({fullscreen: !this.state.fullscreen})
-  }
-
-  render() {
-    return (
-      <PageWrapper
-        embedded={this.props.embedded}
-        className={classes(this.props.size, {
-          fullscreen: this.state.fullscreen,
-          main: !this.props.embedded,
-          embedded: this.props.embedded
-        })}
-      >
-        <AlertOverlay />
-
-        <PageHeader
-          title={this.props.title}
-          subtitle={this.props.subtitle}
-          icon={this.props.icon}
-          poster={this.props.poster}
-          toolbar={this.props.toolbar}
-          actions={this.props.actions
-            .concat([
-              {
-                name: 'fullscreen',
-                type: 'callback',
-                icon: classes('fa fa-fw', {
-                  'fa-expand': !this.state.fullscreen,
-                  'fa-compress': this.state.fullscreen
-                }),
-                label: trans(this.state.fullscreen ? 'fullscreen_off' : 'fullscreen_on'),
-                callback: this.toggleFullscreen,
-                // show fullscreen button only if it's defined in the toolbar
-                // todo : find a better way to do it (maybe merge with the way we add `more`)
-                displayed: !!this.props.toolbar && -1 !== this.props.toolbar.indexOf('fullscreen')
-              }
-            ])
-            .filter(action => undefined === action.displayed || action.displayed)
-          }
-        />
-
-        <div className="page-content" role="presentation">
-          {this.props.children}
-        </div>
-
-        <ModalOverlay />
-      </PageWrapper>
-    )
-  }
-}
+    <ModalOverlay />
+  </PageWrapper>
 
 
 implementPropTypes(Page, PageTypes, {

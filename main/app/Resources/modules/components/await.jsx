@@ -12,20 +12,26 @@ class Await extends Component {
 
   componentDidMount() {
     this.props.for
-      .then(() => this.setState({status: 'success'}))
+      .then((results) => {
+        if (this.props.then) {
+          this.props.then(results)
+        }
+
+        this.setState({status: 'success'})
+      })
       .catch(() => this.setState({status: 'error'}))
   }
 
   render() {
     switch (this.state.status) {
       case 'pending':
-        return this.placeholder
+        return this.props.placeholder
 
       case 'success':
-        return this.children
+        return this.props.children
 
       case 'error':
-        return this.error
+        return this.props.error || null
     }
   }
 }
@@ -40,6 +46,8 @@ Await.propTypes = {
     then: T.func.isRequired,
     catch: T.func.isRequired
   }),
+  then: T.func,
+
   /**
    * The placeholder to display while waiting.
    */

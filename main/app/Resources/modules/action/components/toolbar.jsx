@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import merge from 'lodash/merge'
@@ -6,6 +6,7 @@ import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
 
+import {Await} from '#/main/app/components/await'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
@@ -17,10 +18,10 @@ import {buildToolbar} from '#/main/app/action/utils'
  * @param props
  * @constructor
  */
-const Toolbar = props => {
+const StaticToolbar = props => {
   const toolbar = buildToolbar(props.toolbar, props.actions)
 
-  return 0 !== toolbar.length && (
+  return (0 !== toolbar.length &&
     <nav role="toolbar" className={props.className}>
       {toolbar.map((group, groupIndex) => [
         0 !== groupIndex &&
@@ -39,7 +40,48 @@ const Toolbar = props => {
         )
       ])}
     </nav>
-  )
+  ) || null
+}
+
+StaticToolbar.propTypes = {
+
+}
+
+class PromisedToolbar extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      actions: []
+    }
+  }
+
+  render() {
+    return (
+      <Await
+        for={this.props.actions}
+        then={actions => this.setState({actions: actions})}
+        placeholder={
+          <div className={this.props.className}>
+            <span className={classes(`${this.props.className}-btn`, this.props.buttonName, 'default')}>
+              <span className="fa fa-fw fa-spinner fa-spin" />
+            </span>
+          </div>
+        }
+      >
+        <StaticToolbar {...this.props} actions={this.state.actions} />
+      </Await>
+    )
+  }
+}
+
+
+const Toolbar = props => {
+  //console.log(props.actions)
+
+  return props.actions instanceof Promise ?
+    <PromisedToolbar {...props} /> :
+    <StaticToolbar {...props} />
 }
 
 Toolbar.propTypes = {

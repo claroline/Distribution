@@ -77,8 +77,8 @@ function getDefaultAction(resourceNode) {
   const defaultAction = getType(resourceNode).actions
     .find(action => action.default)
 
-  if (hasPermission(resourceNode, defaultAction.permission)) {
-    return loadActions([resourceNode], 'object')
+  if (hasPermission(defaultAction.permission, resourceNode)) {
+    return loadActions([resourceNode], [defaultAction], 'object')
       .then(loadActions => loadActions[0] || null)
   }
 

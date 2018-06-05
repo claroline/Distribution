@@ -72,6 +72,12 @@ CardHeader.propTypes = {
  * @constructor
  */
 const CardContent = props => {
+  return (
+    <div className="data-card-content">
+      {props.children}
+    </div>
+  )
+
   if (!props.action || props.action.disabled) {
     // no action defined
     return (

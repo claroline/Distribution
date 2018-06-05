@@ -51,8 +51,11 @@ function getPrimaryAction(item, actionGenerator) {
  */
 function getRowActions(item, actionsGenerator) {
   if (actionsGenerator) {
-    return actionsGenerator([item]) // generates actions
-      .filter(action => !action.context || 'row' === action.context)
+    const actions = actionsGenerator([item])
+    console.log(actions)
+
+    return actions // generates actions
+      //.filter(action => !action.context || 'row' === action.context)
   }
 
   return []
@@ -69,7 +72,7 @@ function getRowActions(item, actionsGenerator) {
 function getBulkActions(selected, actionsGenerator) {
   if (actionsGenerator) {
     return actionsGenerator(selected) // generates actions
-      .filter(action => !action.context || 'selection' === action.context)
+      //.filter(action => !action.context || 'selection' === action.context)
   }
 
   return []
