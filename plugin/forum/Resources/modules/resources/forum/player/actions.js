@@ -72,7 +72,7 @@ actions.openSubject = (id) => (dispatch, getState) => {
 
 actions.deleteSubject = (id, push) => ({
   [API_REQUEST]: {
-    url: ['apiv2_forum_subject_delete_bulk', {id: id}],
+    url: ['apiv2_forum_subject_delete_bulk', {ids: id}],
     request: {
       method: 'DELETE'
     },
