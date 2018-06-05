@@ -4,6 +4,7 @@ namespace Claroline\ForumBundle\Serializer;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\ForumBundle\Entity\Forum;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -89,7 +90,7 @@ class ForumSerializer
               'users' => 34, //utilisateur participants
               'subjects' => $finder->fetch('Claroline\ForumBundle\Entity\Subject', ['forum' => $forum->getUuid()], null, 0, 0, true),
               'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid()], null, 0, 0, true),
-              'tags' => ['tag1', 'tag2', 'tag3', 'tag1', 'tag4', 'tag5', 'tag6', 'tag2', 'tag3', 'tag1', 'tag5', 'tag3', 'tag5', 'tag6', 'tag7', 'tag10', 'tag10', 'tag8'], //ajouter les tags |
+              'tags' => $this->getTags($forum),
             ],
         ];
     }
@@ -117,5 +118,30 @@ class ForumSerializer
         }
 
         return $forum;
+    }
+
+    public function getTags(Forum $forum)
+    {
+        $subjects = $forum->getSubjects();
+        $availables = [];
+        //pas terrible comme manière de procéder mais je n'en ai pas d'autre actuellement
+        //on va dire que c'est une première version
+
+        foreach ($subjects as $subject) {
+            $event = new GenericDataEvent([
+                'class' => 'Claroline\ForumBundle\Entity\Subject',
+                'ids' => [$subject->getUuid()],
+            ]);
+
+            $this->container->get('event_dispatcher')->dispatch(
+                'claroline_retrieve_used_tags_by_class_and_ids',
+                $event
+            );
+
+            $tags = $event->getResponse();
+            $availables = array_merge($availables, $tags);
+        }
+
+        return array_unique($availables);
     }
 }

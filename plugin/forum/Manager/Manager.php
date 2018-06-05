@@ -11,28 +11,20 @@
 
 namespace Claroline\ForumBundle\Manager;
 
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\MailManager;
-use Claroline\CoreBundle\Manager\Resource\MaskManager;
-use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
-use Claroline\CoreBundle\Manager\Resource\RightsManager;
-use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
-use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\ForumBundle\Entity\Category;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
 use Claroline\ForumBundle\Event\Log\SubscribeForumEvent;
 use Claroline\ForumBundle\Event\Log\UnsubscribeForumEvent;
-use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -45,26 +37,12 @@ class Manager
     private $container;
     private $dispatcher;
     private $mailManager;
-    private $maskManager;
-    private $messageManager;
     private $om;
-    private $pagerFactory;
-    private $resourceManager;
-    private $rightsManager;
     private $router;
-    private $securityUtilities;
-    private $tokenStorage;
     private $translator;
-    private $workspaceManager;
     private $resourceEvalManager;
-
-    private $forumRepo;
     private $lastMessageWidgetConfigRepo;
-    private $messageRepo;
-    private $notificationRepo;
-    private $roleRepo;
-    private $subjectRepo;
-    private $userRepo;
+    private $finder;
 
     /**
      * Constructor.
@@ -74,18 +52,10 @@ class Manager
      *     "container"           = @DI\Inject("service_container"),
      *     "dispatcher"          = @DI\Inject("event_dispatcher"),
      *     "mailManager"         = @DI\Inject("claroline.manager.mail_manager"),
-     *     "maskManager"         = @DI\Inject("claroline.manager.mask_manager"),
-     *     "messageManager"      = @DI\Inject("claroline.manager.message_manager"),
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "pagerFactory"        = @DI\Inject("claroline.pager.pager_factory"),
-     *     "resourceManager"     = @DI\Inject("claroline.manager.resource_manager"),
-     *     "rightsManager"       = @DI\Inject("claroline.manager.rights_manager"),
      *     "router"              = @DI\Inject("router"),
-     *     "securityUtilities"   = @DI\Inject("claroline.security.utilities"),
-     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
      *     "translator"          = @DI\Inject("translator"),
-     *     "workspaceManager"    = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
+     *     "finder"              = @DI\Inject("claroline.api.finder")
      * })
      */
     public function __construct(
@@ -93,43 +63,20 @@ class Manager
         ContainerInterface $container,
         EventDispatcherInterface $dispatcher,
         MailManager $mailManager,
-        MaskManager $maskManager,
-        MessageManager $messageManager,
         ObjectManager $om,
-        PagerFactory $pagerFactory,
-        ResourceManager $resourceManager,
-        RightsManager $rightsManager,
         RouterInterface $router,
-        Utilities $securityUtilities,
-        TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        WorkspaceManager $workspaceManager,
-        ResourceEvaluationManager $resourceEvalManager
+        FinderProvider $finder
     ) {
         $this->authorization = $authorization;
         $this->container = $container;
         $this->dispatcher = $dispatcher;
         $this->mailManager = $mailManager;
-        $this->maskManager = $maskManager;
-        $this->messageManager = $messageManager;
         $this->om = $om;
-        $this->pagerFactory = $pagerFactory;
-        $this->resourceManager = $resourceManager;
-        $this->rightsManager = $rightsManager;
         $this->router = $router;
-        $this->securityUtilities = $securityUtilities;
-        $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
-        $this->workspaceManager = $workspaceManager;
-        $this->resourceEvalManager = $resourceEvalManager;
-        $this->forumRepo = $om->getRepository('ClarolineForumBundle:Forum');
         $this->lastMessageWidgetConfigRepo = $om->getRepository('ClarolineForumBundle:Widget\LastMessageWidgetConfig');
-        $this->messageRepo = $om->getRepository('ClarolineForumBundle:Message');
-        $this->notificationRepo = $om->getRepository('ClarolineForumBundle:Notification');
-        $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
-        $this->subjectRepo = $om->getRepository('ClarolineForumBundle:Subject');
-        $this->userRepo = $om->getRepository('ClarolineCoreBundle:User');
-        $this->resourceEvalManager = $resourceEvalManager;
+        $this->finder = $finder;
     }
 
     /**
@@ -221,5 +168,41 @@ class Manager
         $this->om->remove($notification);
         $this->dispatch(new UnsubscribeForumEvent($forum));
         $this->om->endFlushSuite();
+    }
+
+    public function getHotSubjects(Forum $forum)
+    {
+        $date = new \DateTime();
+        $date->modify('-1 week');
+
+        $messages = $this->finder->fetch(
+          'Claroline\ForumBundle\Entity\Message',
+          ['createdAfter' => $date, 'forum' => $forum->getUuid()]
+        );
+
+        $totalMessages = count($messages);
+
+        if (0 === $totalMessages) {
+            return [];
+        }
+
+        $subjects = [];
+
+        foreach ($messages as $message) {
+            $total = isset($subjects[$message->getSubject()->getUuid()]) ?
+              $subjects[$message->getSubject()->getUuid()] + 1 : 0;
+            $subjects[$message->getSubject()->getUuid()] = $total;
+        }
+
+        $totalSubjects = count($subjects);
+        $avg = $totalMessages / $totalSubjects;
+
+        foreach ($subjects as $subject => $count) {
+            if ($count < $avg) {
+                unset($subjects[$subject]);
+            }
+        }
+
+        return array_keys($subjects);
     }
 }
