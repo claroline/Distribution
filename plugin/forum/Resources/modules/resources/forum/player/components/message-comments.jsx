@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import get from 'lodash/get'
 
 import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'

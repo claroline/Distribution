@@ -81,6 +81,7 @@ class MessageSerializer
         if ($message->getSubject()) {
             $data['subject'] = [
                 'id' => $message->getSubject()->getUuid(),
+                'title' => $message->getSubject()->getTitle(),
             ];
         }
 

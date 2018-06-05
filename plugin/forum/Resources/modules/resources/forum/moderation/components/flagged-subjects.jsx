@@ -13,16 +13,16 @@ import {actions as listActions} from '#/main/core/data/list/actions'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
-const FlaggedMessagesComponent = (props) =>
+const FlaggedSubjectsComponent = (props) =>
   <div>
     <DataListContainer
-      name="moderation.flaggedMessages"
+      name="moderation.flaggedSubjects"
       fetch={{
-        url: url(['apiv2_forum_message_list'])+'?filters[flagged]=true&filters[forum]='+props.forum.id,
+        url: url(['apiv2_forum_subject_list'])+'?filters[flagged]=true&filters[forum]='+props.forum.id,
         autoload: true
       }}
       delete={{
-        url: ['apiv2_forum_message_delete_bulk']
+        url: ['apiv2_forum_subject_delete_bulk']
       }}
       display={{
         current: listConst.DISPLAY_LIST_SM
@@ -83,7 +83,7 @@ const FlaggedMessagesComponent = (props) =>
   </div>
 
 
-const FlaggedMessages = connect(
+const FlaggedSubjects = connect(
   state => ({
     forum: select.forum(state),
     subject: select.subject(state)
@@ -94,8 +94,8 @@ const FlaggedMessages = connect(
       dispatch(listActions.invalidateData('moderation.flaggedMessages'))
     }
   })
-)(FlaggedMessagesComponent)
+)(FlaggedSubjectsComponent)
 
 export {
-  FlaggedMessages
+  FlaggedSubjects
 }

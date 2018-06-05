@@ -13,8 +13,6 @@ import {Subject as SubjectTypes} from '#/plugin/forum/resources/forum/player/pro
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
 export const SUBJECT_LOAD = 'SUBJECT_LOAD'
-export const MESSAGES_LOAD = 'MESSAGES_LOAD'
-export const MESSAGE_UPDATE = 'MESSAGE_UPDATE'
 export const SUBJECT_FORM_OPEN = 'SUBJECT_FORM_OPEN'
 export const SUBJECT_FORM_CLOSE = 'SUBJECT_FORM_CLOSE'
 export const SUBJECT_EDIT = 'SUBJECT_EDIT'

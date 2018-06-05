@@ -91,25 +91,13 @@ const EditorComponent = (props) =>
             value: true
           },
           {
-            name: 'moderation.enabled',
-            type: 'boolean',
-            label: trans('enable_moderation', {}, 'forum'),
-            linked: [
-              {
-                name: 'firstMessageModerated',
-                type: 'boolean',
-                label: trans('first_message_moderated', {}, 'forum'),
-                help: trans('first_message_moderated_explenation', {}, 'forum'),
-                displayed: props.forum.moderation.enabled
-              },
-              {
-                name: 'AllMessagesModerated',
-                type: 'boolean',
-                label: trans('all_message_moderated', {}, 'forum'),
-                help: trans('all_message_moderated_explenation', {}, 'forum'),
-                displayed: props.forum.moderation.enabled
-              }
-            ]
+            name: 'moderation',
+            type: 'choice',
+            label: trans('moderation', {}, 'forum'),
+            options: {
+              noEmpty: true,
+              choices: constants.MODERATION_MODES
+            }
           }
         ]
       }

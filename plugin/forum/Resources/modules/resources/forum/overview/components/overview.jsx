@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {number} from '#/main/app/intl'
@@ -9,6 +10,7 @@ import {Button} from '#/main/app/action/components/button'
 import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {MetricCard} from '#/main/core/layout/components/metric-card'
 import {HtmlText} from '#/main/core/layout/components/html-text'
+import {UserMessage} from '#/main/core/user/message/components/user-message'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -90,24 +92,24 @@ const OverviewComponent = props =>
               />
             </div>
           </section>
-          <section>
-            <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
-            {/* <ul className="posts">
-              {console.log(props.messages)}
-              {props.messages.map(message =>
-                <li key={message.id} className="post">
-                  <h4>Nom du sujet <a href="/subject">Voir le sujet</a></h4>
-                  <UserMessage
-                    user={message.meta.creator}
-                    date={message.meta.created}
-                    content={message.content}
-                    allowHtml={true}
-                  />
-                </li>
-              )}
-            </ul> */}
-          </section>
-
+          {!props.lastMessages &&
+            <section>
+              <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
+              <ul className="last-messages">
+                {get(props.lastMessages, 'data').map(message =>
+                  <li key={message.id} className="post">
+                    <h4>Titre<a href="/subject">Voir le sujet</a></h4>
+                    <UserMessage
+                      user={message.meta.creator}
+                      date={message.meta.created}
+                      content={message.content}
+                      allowHtml={true}
+                    />
+                  </li>
+                )}
+              </ul>
+            </section>
+          }
         </div>
       </div>
     </section>
@@ -119,7 +121,9 @@ OverviewComponent.propTypes = {
 
 const Overview = connect(
   (state) => ({
+    subject: select.subject(state),
     forum: select.forum(state),
+    lastMessages: select.lastMessages(state),
     messages: select.messages(state),
     tagsCount: select.tagsCount(state)
   })

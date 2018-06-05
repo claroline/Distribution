@@ -12,9 +12,10 @@ import {ResourcePageContainer} from '#/main/core/resource/containers/page'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
+import {actions} from '#/plugin/forum/resources/forum/actions'
 import {Overview} from '#/plugin/forum/resources/forum/overview/components/overview'
 import {BlockedMessages} from '#/plugin/forum/resources/forum/moderation/components/blocked-messages'
-import {FlaggedMessages} from '#/plugin/forum/resources/forum/moderation/components/flagged-messages'
+import {FlaggedPosts} from '#/plugin/forum/resources/forum/moderation/components/flagged-posts'
 import {Editor} from '#/plugin/forum/resources/forum/editor/components/editor'
 import {Player} from '#/plugin/forum/resources/forum/player/components/player'
 
@@ -29,13 +30,14 @@ const Resource = props => {
       path: '/',
       exact: true,
       component: Overview,
+      onEnter: () => props.loadLastMessages(props.forum.id),
       disabled: !props.forum.display.showOverview
     }, {
       path: '/subjects',
       component: Player
     }, {
       path: '/moderation/flagged',
-      component: FlaggedMessages
+      component: FlaggedPosts
     }, {
       path: '/moderation/blocked',
       component: BlockedMessages
@@ -110,7 +112,8 @@ Resource.propTypes = {
   forum: T.shape(ForumType.propTypes).isRequired,
   editable: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
-  saveForm: T.func.isRequired
+  saveForm: T.func.isRequired,
+  loadLastMessages: T.func.isRequired
 }
 
 const ForumResource = connect(
@@ -120,7 +123,12 @@ const ForumResource = connect(
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'forumForm'))
   }),
   (dispatch) => ({
-    saveForm: (forumId) => dispatch(formActions.saveForm('forumForm', ['apiv2_forum_update', {id: forumId}]))
+    saveForm(forumId) {
+      dispatch(formActions.saveForm('forumForm', ['apiv2_forum_update', {id: forumId}]))
+    },
+    loadLastMessages(forumId) {
+      dispatch(actions.fetchLastMessages(forumId))
+    }
   })
 )(Resource)
 

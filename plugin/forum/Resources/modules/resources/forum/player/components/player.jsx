@@ -55,7 +55,7 @@ PlayerComponent.propTypes = {
   showSubjectForm: T.bool.isRequired,
   editingSubject: T.bool.isRequired,
   loadSubjectList: T.func.isRequired,
-  loadSubjectForm: T.func.isRequired
+  loadSubjectForm: T.func
 }
 
 const Player = connect(

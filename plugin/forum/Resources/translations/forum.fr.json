@@ -13,7 +13,7 @@
     "disable_global_notifications": "Désactiver les notifications par email pour ce forum",
     "edit_message": "Éditer un message",
     "edition_restriction": "Restrictions d'édition",
-    "enable_moderation": "Activer la modération",
+    "no_moderation": "Pas de modération",
     "enable_flag": "Activer la signalisation",
     "first_message_moderated": "Modérer le premier message",
     "first_message_moderated_explenation": "Le premier message d'un utilisateur du forum devra être validé par un modérateur avant d'être publié dans le forum. Les messages suivants ne seront pas modérés.",
@@ -72,6 +72,7 @@
     "reply": "Répondre",
     "reply_message": "Répondre à un message",
     "reply_to": "Répondre à %author%: ",
+    "see_message_context": "Voir le message en contexte",
     "see_subjects": "Voir les sujets",
     "see_subject": "Voir le sujet",
     "show_comments": "{1} Afficher le commentaire|[2,Inf[ Afficher les %count% commentaires",
@@ -94,5 +95,6 @@
     "show_overview": "Afficher la page d'accueil du forum",
     "overview_message": "Message d'accueil",
     "show_last_messages": "Nombre de derniers messages à afficher",
-    "stick_explanation": "Epingler un sujet le fera apparaitre en haut de la liste des sujets"
+    "stick_explanation": "Epingler un sujet le fera apparaitre en haut de la liste des sujets",
+    "subject_title":"Titre du sujet"
 }

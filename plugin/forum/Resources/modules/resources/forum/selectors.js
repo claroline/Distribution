@@ -7,6 +7,7 @@ const totalResults = state => state.subjects.messages.totalResults
 const sortOrder = state => state.subjects.messages.sortOrder
 const subjects = state => state.subjects
 const currentPage = state => state.subjects.messages.currentPage
+const lastMessages = state => state.lastMessages
 
 const subject = createSelector(
   [subjects],
@@ -59,5 +60,6 @@ export const select = {
   editingSubject,
   closedSubject,
   flaggedMessages,
-  tagsCount
+  tagsCount,
+  lastMessages
 }
