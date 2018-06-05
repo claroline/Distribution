@@ -2,15 +2,16 @@ import {API_REQUEST} from '#/main/app/api'
 
 export const actions = {}
 
-actions.create = event => ({
+//calendarElement is required to refresh the calendar since it's outside react
+actions.create = (event, $calendarElement) => ({
   [API_REQUEST]: {
     url: ['apiv2_event_create'],
     request: {
       body: JSON.stringify(event),
       method: 'POST'
     },
-    success: (data, dispatch) => {
-      console.log('success')
+    success: (data) => {
+      $calendarElement.fullCalendar('renderEvent', data)
     }
   }
 })

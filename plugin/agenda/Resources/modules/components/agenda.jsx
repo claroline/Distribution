@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import moment from 'moment'
+
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
@@ -21,6 +23,39 @@ function arrayTrans(key) {
     }
     return transWords
   }
+}
+
+function convertDateTimeToString(value, isAllDay, isEndDate) {
+  return isAllDay && isEndDate ?
+    moment(value).subtract(1, 'minutes').format('DD/MM/YYYY HH:mm'):
+    moment(value).format('DD/MM/YYYY HH:mm')
+}
+
+
+// port from the old code
+function createPopover(event, $element) {
+  /*
+   * In FullCalendar >= 2.3.1, the end date is null if the start date is the same.
+   * In this case, the end date is null when it's a all day event which lasts one day
+   */
+
+  /*
+  if (event.end === null) {
+    event.end = moment(event.start).add(1, 'days')
+  }*/
+
+  event.start.string = convertDateTimeToString(event.start, event.allDay, false)
+  event.end.string = convertDateTimeToString(event.end, event.allDay, true)
+
+  $element
+    .popover({
+      trigger: 'click',
+      title: event.title + '<button class="close">X</button>',
+      content: 'utiliser l\'appli react ici',
+      html: true,
+      container: 'body',
+      placement: 'top'
+    })
 }
 
 const form = [
@@ -145,14 +180,12 @@ const Agenda = connect(
 
   }),
   dispatch => ({
-    onDayClick() {
-      dispatch(
+    onDayClick(calendar) {
+      dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
           title: 'event',
-          onChange: () => console.log('change'),
           save: event => {
-            dispatch(actions.create(event))
-            //reload here
+            dispatch(actions.create(event, calendar))
           },
           sections: form
         })
@@ -166,12 +199,56 @@ const Agenda = connect(
     },
     onEventClick() {
       alert('click')
+      /*
+      dispatch (
+        modalActions.showModal('MODAL_DATA_FORM', {
+          title: 'event',
+          onChange: () => console.log('change'),
+          save: event => {
+            dispatch(actions.create(event))
+            //reload here
+          },
+          sections: form
+        })
+      )*/
     },
     onEventDestroy() {
       alert('destroy')
     },
-    onEventRender() {
-      alert('render')
+    onEventRender(event, $element) {
+      //step 1: find workspace
+      //step 2: find restrictions (according to workspace ?)
+      //step 3: si editable
+
+      /*
+      if (event.editable) {
+        $element.addClass('fc-draggable')
+      }*/
+
+      //event.durationEditable = event.durationEditable && workspacePermissions[workspaceId] && event.isEditable !== false
+
+      /*
+      if (event.isTask) {
+        var eventContent =  $element.find('.fc-content')
+        // Remove the date
+        eventContent.find('.fc-time').remove()
+        $element.css({
+          'background-color': 'rgb(144, 32, 32)',
+          'border-color': 'rgb(144, 32, 32)'
+        })
+        eventContent.prepend('<span class="task fa" data-event-id="' + event.id + '"></span>')
+
+        // Add the checkbox if the task is not done or the check symbol if the task is done
+        var checkbox = eventContent.find('.task')
+        if (event.isTaskDone) {
+          checkbox.addClass('fa-check-square-o')
+          checkbox.next().css('text-decoration', 'line-through')
+        } else {
+          checkbox.addClass('fa-square-o')
+        }
+      }*/
+
+      createPopover(event, $element)
     },
     onEventResize() {
       alert('resize')

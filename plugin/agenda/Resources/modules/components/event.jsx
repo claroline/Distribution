@@ -2,7 +2,9 @@ import React from 'react'
 
 //fullcalendar wrapper
 const Event = props =>
-  <div>event</div>
+  <div>
+
+  </div>
 
 export {
   Event

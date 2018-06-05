@@ -13,10 +13,20 @@ class Calendar extends Component {
 
     super(props)
     this.calendarRef
+
+    this.selfReferencedFc = [
+      'eventDrop',
+      'eventDragStart',
+      'dayClick',
+      'eventClick',
+      'eventDestroy',
+      'eventRender',
+      'eventResize',
+      'eventResizeStart'
+    ]
   }
 
   componentDidMount() {
-    console.log(this.props)
     $(this.calendarRef).fullCalendar(this.props)
   }
 
