@@ -23,7 +23,7 @@ class ImportAgendaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            FileType::class,
+            'file',
             FileType::class,
             [
                 'required' => true,

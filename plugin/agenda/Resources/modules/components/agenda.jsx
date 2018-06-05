@@ -86,19 +86,57 @@ const Agenda = connect(
     onDayClick() {
       dispatch(
         modalActions.showModal(MODAL_DATA_FORM, {
-          title: 'title',
+          title: 'event',
+          onChange: () => console.log('change'),
+          save: () => console.log('save'),
           sections: [
             {
               title: trans('general'),
               primary: true,
-              fields: [
-                {
-                  name: 'name',
-                  type: 'string',
-                  label: trans('name'),
-                  required: true
+              fields: [{
+                name: 'title',
+                type: 'string',
+                label: trans('title'),
+                required: true
+              }, {
+                name: 'description',
+                type: 'textarea',
+                label: trans('description'),
+                required: true
+              }]
+            },
+            {
+              title: trans('properties'),
+              fields: [{
+                name: 'task',
+                type: 'boolean',
+                label: trans('task'),
+                required: true
+              },
+              {
+                name: 'allDay',
+                type: 'boolean',
+                label: trans('allDay'),
+                required: true,
+                options: {
+                  time: true
                 }
-              ]
+              },
+              {
+                name: 'start',
+                type: 'date',
+                label: trans('start'),
+                required: true,
+                options: {
+                  time: true
+                }
+              },
+              {
+                name: 'end',
+                type: 'date',
+                label: trans('end'),
+                required: true
+              }]
             }
           ]
         })
