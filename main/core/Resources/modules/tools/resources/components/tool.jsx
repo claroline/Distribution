@@ -12,49 +12,20 @@ import {ResourceExplorer} from '#/main/core/resource/components/explorer'
 import {getActions, getDefaultAction} from '#/main/core/resource/utils'
 import {actions} from '#/main/core/tools/resources/store'
 
-class Tool extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      actions: []
-    }
-
-    getActions(props.current, 'object').then(loaded => {
-      this.setState({actions: loaded})
-    })
-  }
-
-  render() {
-    const props = this.props
-
-    return (
-      <Page
-        title={trans('resources', {}, 'tools')}
-        subtitle={props.current && props.current.name}
-        toolbar="edit rights publish unpublish | more"
-        actions={props.current && this.state.actions}
-      >
-        <ResourceExplorer
-          root={props.root}
-          current={props.current}
-          primaryAction={(resourceNode) => {
-            if ('directory' !== resourceNode.meta.type) {
-              return getDefaultAction(resourceNode, 'object') // todo use action constant
-            } else {
-              // do not open directory, just change the target of the explorer
-              return {
-                label: trans('open', {}, 'actions'),
-                type: 'callback',
-                callback: () => props.changeDirectory(resourceNode)
-              }
-            }
-          }}
-        />
-      </Page>
-    )
-  }
-}
+const Tool = props =>
+  <Page
+    title={trans('resources', {}, 'tools')}
+    subtitle={props.current && props.current.name}
+    toolbar="edit rights publish unpublish | more"
+    actions={props.current && getActions([props.current], 'object')}
+  >
+    <ResourceExplorer
+      root={props.root}
+      current={props.current}
+      primaryAction={getDefaultAction}
+      changeDirectory={props.changeDirectory}
+    />
+  </Page>
 
 Tool.propTypes = {
   root: T.shape(

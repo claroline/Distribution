@@ -570,6 +570,7 @@ class DatabaseWriter
         $resourceAction->setGroup($action['group']);
         $resourceAction->setScope($action['scope']);
         $resourceAction->setApi($action['api']);
+        $resourceAction->setDefault($action['default']);
         $resourceAction->setResourceType($resourceType);
 
         $this->em->persist($resourceAction);

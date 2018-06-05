@@ -4,6 +4,7 @@ plugin:
         - name: open
           decoder: open
           scope: [object]
+          default: true # This is the default action of the resource (it SHOULD NOT be overridden)
           api: [GET]
 
         # Displays common resources info (the one from the node)
@@ -26,12 +27,14 @@ plugin:
           scope: [object, collection]
           api: [GET, POST]
 
+        # Publishes one ore more resources
         - name: publish
           decoder: administrate
           group: management
           scope: [object, collection]
           api: [PUT]
 
+        # Unpublishes one ore more resources
         - name: unpublish
           decoder: administrate
           group: management
@@ -84,6 +87,11 @@ plugin:
           scope: [object]
           api: [GET]
 
+        - name: notes
+          decoder: open
+          scope: [object]
+          api: [GET, POST, PUT, DELETE]
+
     resources:
         - name: file
           class: Claroline\CoreBundle\Entity\Resource\File
@@ -104,6 +112,12 @@ plugin:
               - name: add
                 decoder: create
                 group: management
+                api: [POST]
+
+              # Imports one or more resources in the directory
+              - name: import
+                decoder: create
+                group: transfer
                 api: [POST]
 
         - name: text

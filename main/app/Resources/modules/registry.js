@@ -4,14 +4,12 @@ import merge from 'lodash/merge'
 const events = {}
 const registries = {}
 
-const supportedEvents = ['get', 'add', 'remove']
-
-// todo find a way to validate entries
+const supportedEvents = ['ready', 'dirty', 'get', 'add', 'remove']
 
 /**
  * Declares a new registry.
  *
- * @param {string} registryName   - the name of the registry
+ * @param {string} registryName - the name of the registry
  *
  * @return {object} - the new registry
  */
@@ -23,7 +21,7 @@ function declareRegistry(registryName) {
   events[registryName] = {}
   registries[registryName] = {}
 
-  function fireEvent(event, entry) {
+  function fireEvent(event, entry = null) {
     if (events[registryName][event]) {
       events[registryName][event].map(callback => {
         callback(entry)
@@ -36,6 +34,24 @@ function declareRegistry(registryName) {
   }
 
   return {
+    isDirty() {
+      // dispatch event
+      fireEvent('dirty')
+
+      // todo set flag
+
+      return this
+    },
+
+    isReady() {
+      // dispatch event
+      fireEvent('ready')
+
+      // todo set flag
+
+      return this
+    },
+
     /**
      * Adds a new entry in the registry.
      *
@@ -50,8 +66,15 @@ function declareRegistry(registryName) {
 
       // dispatch event
       fireEvent('add', entry)
+
+      return this
     },
 
+    /**
+     * Removes an entry from the registry.
+     *
+     * @param {string} entryName - the name of the entry to remove
+     */
     remove(entryName) {
       if (registries[registryName][entryName]) {
         const entry = merge({}, registries[registryName][entryName])
@@ -61,6 +84,8 @@ function declareRegistry(registryName) {
         // dispatch event
         fireEvent('remove', entry)
       }
+
+      return this
     },
 
     /**
@@ -88,6 +113,12 @@ function declareRegistry(registryName) {
       return registries[registryName]
     },
 
+    /**
+     * Binds an event to the registry.
+     *
+     * @param {string}   event
+     * @param {function} callback
+     */
     on(event, callback) {
       invariant(-1 !== supportedEvents.indexOf(event), log(`Event "${event}" is not supported.`))
       invariant(typeof callback === 'function', log(`Event "${event}" callback must be a function.`))
@@ -97,8 +128,16 @@ function declareRegistry(registryName) {
       }
 
       events[registryName][event].push(callback)
+
+      return this
     },
 
+    /**
+     * Unbinds an event from the registry.
+     *
+     * @param {string}   event
+     * @param {function} callback
+     */
     off(event, callback) {
       if (events[registryName][event]) {
         const pos = events[registryName][event].indexOf(callback)
@@ -106,10 +145,17 @@ function declareRegistry(registryName) {
           events[registryName][event].splice(pos, 1)
         }
       }
+
+      return this
     }
   }
 }
 
+function loadRegistries(callback) {
+
+}
+
 export {
-  declareRegistry
+  declareRegistry,
+  loadRegistries
 }

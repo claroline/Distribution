@@ -20,7 +20,7 @@ import {buildToolbar} from '#/main/app/action/utils'
 const Toolbar = props => {
   const toolbar = buildToolbar(props.toolbar, props.actions)
 
-  return (
+  return 0 !== toolbar.length && (
     <nav role="toolbar" className={props.className}>
       {toolbar.map((group, groupIndex) => [
         0 !== groupIndex &&

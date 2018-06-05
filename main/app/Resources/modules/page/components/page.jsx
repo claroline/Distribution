@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import classes from 'classnames'
-import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {trans} from '#/main/core/translation'
@@ -60,7 +59,7 @@ class Page extends Component {
     return (
       <PageWrapper
         embedded={this.props.embedded}
-        className={classes(this.props.className, {
+        className={classes(this.props.size, {
           fullscreen: this.state.fullscreen,
           main: !this.props.embedded,
           embedded: this.props.embedded
@@ -69,7 +68,11 @@ class Page extends Component {
         <AlertOverlay />
 
         <PageHeader
-          {...omit(this.props, 'className', 'embedded', 'fullscreen', 'children')}
+          title={this.props.title}
+          subtitle={this.props.subtitle}
+          icon={this.props.icon}
+          poster={this.props.poster}
+          toolbar={this.props.toolbar}
           actions={this.props.actions
             .concat([
               {

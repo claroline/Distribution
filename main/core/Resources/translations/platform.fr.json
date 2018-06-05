@@ -810,7 +810,6 @@
     "no_filter": "Aucun filtre",
     "no_group": "Aucun groupe",
     "no_home_tab": "Il n'y a aucun onglet",
-    "no_item": "Aucun élément",
     "no_learning_outcomes": "Aucun référentiel de compétences",
     "no_message": "Aucun message",
     "no_model": "Aucun modèle",
@@ -1681,5 +1680,7 @@
     "authors": "Auteurs",
     "authors_license": "Auteurs & License",
     "structure": "Organisation",
-    "community": "Communauté"
+    "community": "Communauté",
+    "management": "Gestion",
+    "transfer": "Transfert"
 }

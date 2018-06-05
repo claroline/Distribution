@@ -59,6 +59,13 @@ class MenuAction
     private $api = [];
 
     /**
+     * @ORM\Column(name="is_default", type="boolean")
+     *
+     * @var bool
+     */
+    private $default = false;
+
+    /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceType",
      *     inversedBy="actions",
@@ -188,5 +195,21 @@ class MenuAction
     public function getPlugin()
     {
         return $this->plugin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param bool $default
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
     }
 }

@@ -28,13 +28,11 @@ class ResourcePage extends Component {
   render() {
     return (
       <PageContainer
-        className="resource-page"
         embedded={this.props.embedded}
         fullscreen={this.state.fullscreen}
       >
         {!this.props.embedded &&
           <PageHeader
-            className="resource-header"
             title={this.props.resourceNode.name}
             poster={this.props.resourceNode.poster ? this.props.resourceNode.poster.url : undefined}
           >

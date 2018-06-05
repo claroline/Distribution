@@ -169,6 +169,7 @@ class Configuration implements ConfigurationInterface
                                 ->arrayNode('api')
                                     ->prototype('scalar')->end()
                                 ->end()
+                                ->booleanNode('default')->defaultValue(false)->end()
                                 ->booleanNode('recursive')->defaultValue(false)->end()
                             ->end()
                          ->end()
@@ -227,6 +228,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('api')
                             ->prototype('scalar')->end()
                         ->end()
+                        ->booleanNode('default')->defaultValue(false)->end()
                         ->booleanNode('recursive')->defaultValue(false)->end()
                         ->scalarNode('resource_type')->defaultNull()->end() // todo : should be an array
                     ->end()

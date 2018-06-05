@@ -55,6 +55,7 @@ class ResourceTypeSerializer
                     'group' => $resourceAction->getGroup(),
                     'scope' => $resourceAction->getScope(),
                     'permission' => $resourceAction->getDecoder(),
+                    'default' => $resourceAction->isDefault(),
                 ];
             }, $this->actionManager->all($resourceType)),
         ];

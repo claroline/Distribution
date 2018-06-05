@@ -4,7 +4,6 @@ const action = (resourceNodes) => ({
   name: 'open',
   type: 'url',
   label: trans('open', {}, 'actions'),
-  default: true,
   primary: true,
   icon: 'fa fa-fw fa-arrow-circle-o-right',
   target: ['claro_resource_open', {

@@ -128,9 +128,11 @@ class ClientSerializer
             'version' => $this->versionManager->getDistributionVersion(),
             'help' => $this->config->getParameter('help_url'),
             'environment' => $this->env,
+            'asset' => null,
             'server' => [
                 'protocol' => $request->isSecure() || $this->config->getParameter('ssl_enabled') ? 'https' : 'http',
                 'host' => $this->config->getParameter('domain_name') ? $this->config->getParameter('domain_name') : $request->getHost(),
+                'path' => $request->getBasePath(),
             ],
             'theme' => [
                 'name' => $this->config->getParameter('theme'),

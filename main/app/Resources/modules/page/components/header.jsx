@@ -36,14 +36,14 @@ PageTitle.propTypes = {
 /**
  * Header of the current page.
  *
- * Contains title, actions and an optional poster image.
+ * Contains title, icon, actions and an optional poster image.
  */
 const PageHeader = props =>
   <header
     style={props.poster && {
       backgroundImage: `url("${asset(props.poster)}")`
     }}
-    className={classes('page-header', props.className, {
+    className={classes('page-header', {
       'page-poster': !!props.poster
     })}
   >
@@ -52,7 +52,11 @@ const PageHeader = props =>
       subtitle={props.subtitle}
     />
 
-    {props.children}
+    {props.icon &&
+      <div className="page-icon">
+        {props.icon}
+      </div>
+    }
 
     {0 !== props.actions.length &&
       <Toolbar
@@ -65,32 +69,14 @@ const PageHeader = props =>
   </header>
 
 PageHeader.propTypes = {
-  /**
-   * The title of the current page.
-   */
   title: T.string.isRequired,
-
-  /**
-   * An optional sub title.
-   *
-   * Mostly used when the current page has sub-sections
-   * example : in quizzes, we have edit/play/papers/etc. sections
-   */
   subtitle: T.string,
-
+  icon: T.oneOfType([T.string, T.element]),
   poster: T.string,
-
   toolbar: T.string,
   actions: T.arrayOf(T.shape(
     ActionTypes.propTypes
-  )),
-
-  /**
-   * Custom children.
-   *
-   * Add your <PageActions> or any custom component here.
-   */
-  children: T.node
+  ))
 }
 
 PageHeader.defaultProps = {

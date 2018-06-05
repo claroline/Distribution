@@ -31,6 +31,9 @@ function parseToolbar(toolbarConfig) {
 function buildToolbar(toolbarConfig, actions) {
   let toolbar = []
 
+  // only get displayed actions
+  actions = actions.filter(action => undefined === action.displayed || !!action.displayed)
+
   // retrieves defined actions groups
   const config = parseToolbar(toolbarConfig)
 
