@@ -6,9 +6,12 @@ import {trans} from '#/main/core/translation'
 
 import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions} from '#/plugin/agenda/actions'
 import {PageContainer, PageHeader, PageActions} from '#/main/core/layout/page'
 
 import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
+import {TaskBar} from '#/plugin/agenda/components/task-bar.jsx'
+import {Event} from '#/plugin/agenda/components/event.jsx'
 
 function arrayTrans(key) {
   if (typeof key === 'object') {
@@ -19,6 +22,60 @@ function arrayTrans(key) {
     return transWords
   }
 }
+
+const form = [
+  {
+    title: trans('general'),
+    primary: true,
+    fields: [{
+      name: 'title',
+      type: 'string',
+      label: trans('title'),
+      required: true
+    }, {
+      name: 'description',
+      type: 'textarea',
+      label: trans('description'),
+      required: true
+    }]
+  },
+  {
+    title: trans('properties'),
+    fields: [{
+      name: 'task',
+      type: 'boolean',
+      label: trans('task'),
+      required: true
+    },
+    {
+      name: 'allDay',
+      type: 'boolean',
+      label: trans('allDay'),
+      required: true,
+      options: {
+        time: true
+      }
+    },
+    {
+      name: 'start',
+      type: 'date',
+      label: trans('start'),
+      required: true,
+      options: {
+        time: true
+      }
+    },
+    {
+      name: 'end',
+      type: 'date',
+      label: trans('end'),
+      required: true,
+      options: {
+        time: true
+      }
+    }]
+  }
+]
 
 class AgendaComponent extends Component {
   constructor(props) {
@@ -47,7 +104,9 @@ class AgendaComponent extends Component {
       dayNames: arrayTrans(['day.sunday', 'day.monday', 'day.tuesday', 'day.wednesday', 'day.thursday', 'day.friday', 'day.saturday']),
       dayNamesShort: arrayTrans(['day.sun', 'day.mon', 'day.tue', 'day.wed', 'day.thu', 'day.fri', 'day.sat']),
       //This is the url which will get the events from ajax the 1st time the calendar is launched
-      //events: showUrl,
+      //aussi il faudra virer le routing.generate ici (filtrer par workspace si il y a)
+      /** @global Routing */
+      events: Routing.generate('apiv2_event_list'), //faudra rajouter les filtres ici (pour le workspace par exemple)
       axisFormat: 'HH:mm',
       timeFormat: 'H:mm',
       agenda: 'h:mm{ - h:mm}',
@@ -71,7 +130,10 @@ class AgendaComponent extends Component {
     return (
       <PageContainer>
         <PageHeader title={trans('agenda', {}, 'tool')}></PageHeader>
-        <Calendar {...this.calendar} />
+        <div>
+          <Calendar {...this.calendar} />
+          <TaskBar />
+        </div>
       </PageContainer>
     )
   }
@@ -85,60 +147,14 @@ const Agenda = connect(
   dispatch => ({
     onDayClick() {
       dispatch(
-        modalActions.showModal(MODAL_DATA_FORM, {
+        modalActions.showModal('MODAL_DATA_FORM', {
           title: 'event',
           onChange: () => console.log('change'),
-          save: () => console.log('save'),
-          sections: [
-            {
-              title: trans('general'),
-              primary: true,
-              fields: [{
-                name: 'title',
-                type: 'string',
-                label: trans('title'),
-                required: true
-              }, {
-                name: 'description',
-                type: 'textarea',
-                label: trans('description'),
-                required: true
-              }]
-            },
-            {
-              title: trans('properties'),
-              fields: [{
-                name: 'task',
-                type: 'boolean',
-                label: trans('task'),
-                required: true
-              },
-              {
-                name: 'allDay',
-                type: 'boolean',
-                label: trans('allDay'),
-                required: true,
-                options: {
-                  time: true
-                }
-              },
-              {
-                name: 'start',
-                type: 'date',
-                label: trans('start'),
-                required: true,
-                options: {
-                  time: true
-                }
-              },
-              {
-                name: 'end',
-                type: 'date',
-                label: trans('end'),
-                required: true
-              }]
-            }
-          ]
+          save: event => {
+            dispatch(actions.create(event))
+            //reload here
+          },
+          sections: form
         })
       )
     },

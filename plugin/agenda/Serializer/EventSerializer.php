@@ -3,8 +3,10 @@
 namespace Claroline\AgendaBundle\Serializer;
 
 use Claroline\AgendaBundle\Entity\Event;
+use Claroline\AgendaBundle\Entity\EventInvitation;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -56,17 +58,17 @@ class EventSerializer
         return [
             'id' => $event->getId(),
             'title' => $invitation && !is_null($event->getTitle()) ? $invitation->getTitle() : $event->getTitle(),
-            'start' => \Datetime::createFromFormat('U', $event->start)->format(\DateTime::ISO8601),
-            'end' => \Datetime::createFromFormat('U', $event->end)->format(\DateTime::ISO8601),
+            'start' => DateNormalizer::normalize($event->getStartInDateTime()),
+            'end' => DateNormalizer::normalize($event->getEndInDateTime()),
             'color' => $event->getPriority(),
             'allDay' => $event->isAllDay(),
-            'owner' => $this->serializer->serialize($event->getOwner()),
+            'owner' => $this->serializer->serialize($event->getUser()),
             'description' => $invitation && !is_null($invitation->getDescription()) ? $invitation->getDescription() : $event->getDescription(),
             'workspace' => $event->getWorkspace() ? $this->serializer->serialize($event->getWorkspace()) : null,
             'className' => 'event_'.$event->getId(),
             'invitations' => $guests,
-            'meta' => $this->serializeMeta($event),
-            'restrictions' => $this->serializeRestrictions($event),
+            'meta' => $this->serializeMeta($event, $invitation),
+            'restrictions' => $this->serializeRestrictions($event, $invitation),
             'invitationStatus' => [
                 'ignore' => EventInvitation::IGNORE,
                 'join' => EventInvitation::JOIN,
@@ -76,7 +78,7 @@ class EventSerializer
         ];
     }
 
-    public function serializeRestrictions($event)
+    public function serializeRestrictions($event, $invitation = null)
     {
         return [
           'isEditable' => false !== $event->isEditable() && !$invitation,
@@ -84,7 +86,7 @@ class EventSerializer
         ];
     }
 
-    public function serializeMeta(Event $event)
+    public function serializeMeta(Event $event, $invitation = null)
     {
         return [
           'isTask' => $event->isTask(),
@@ -115,9 +117,11 @@ class EventSerializer
         //owner set in crud create
 
         if (isset($data['start'])) {
+            $event->setStart(DateNormalizer::denormalize($data['start']));
         }
 
         if (isset($data['end'])) {
+            $event->setEnd(DateNormalizer::denormalize($data['end']));
         }
 
         return $event;

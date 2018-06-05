@@ -33,6 +33,11 @@ class EventFinder implements FinderInterface
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+              case 'workspace':
+                $qb->leftJoin('obj.workspace', 'w');
+                $qb->andWhere('w.uuid = :'.$filterName);
+                $qb->setParameter($filterName, $filterValue);
+              break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
              }
