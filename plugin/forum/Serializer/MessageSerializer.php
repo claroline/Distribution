@@ -85,6 +85,7 @@ class MessageSerializer
         }
 
         $data['meta']['flagged'] = $message->isFlagged();
+        $data['meta']['visible'] = $message->isVisible();
 
         return $data;
     }

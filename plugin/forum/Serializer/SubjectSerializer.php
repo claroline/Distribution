@@ -223,4 +223,8 @@ class SubjectSerializer
         $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
         //}
     }
+
+    private function isHot(Subject $subject)
+    {
+    }
 }
