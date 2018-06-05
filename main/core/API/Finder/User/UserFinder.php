@@ -121,6 +121,8 @@ class UserFinder implements FinderInterface
                 case 'recursiveOrXOrganization':
                     $value = is_array($filterValue) ? $filterValue : [$filterValue];
                     $roots = $this->om->findList('Claroline\CoreBundle\Entity\Organization\Organization', 'uuid', $value);
+		
+		    if (count($roots) > 0) {
 
                     $qb->leftJoin('obj.userOrganizationReferences', 'oref');
                     $qb->leftJoin('oref.organization', 'oparent');
@@ -136,6 +138,11 @@ class UserFinder implements FinderInterface
 
                     $orX = $qb->expr()->orX(...$expr);
                     $qb->andWhere($orX);
+                    } else {
+			//no roots mean no user
+			$qb->andWhere('obj.id = -1');
+			return $qb;
+                    }
                     break;
                 case 'location':
                     $qb->leftJoin('obj.locations', 'l');
