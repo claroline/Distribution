@@ -101,7 +101,7 @@ class SubjectSerializer
             'sticky' => $subject->isSticked(),
             'closed' => $subject->isClosed(),
             'flagged' => $subject->isFlagged(),
-            'hotSubject' => $subject->isHotSubject(),
+            'hot' => $this->isHot($subject),
         ];
     }
 
@@ -131,7 +131,6 @@ class SubjectSerializer
         $this->sipe('meta.sticky', 'setSticked', $data, $subject);
         $this->sipe('meta.closed', 'setClosed', $data, $subject);
         $this->sipe('meta.flagged', 'setFlagged', $data, $subject);
-        $this->sipe('meta.hotSubject', 'setHotSubject', $data, $subject);
 
         if (isset($data['meta'])) {
             if (isset($data['meta']['updated'])) {
@@ -228,5 +227,8 @@ class SubjectSerializer
 
     private function isHot(Subject $subject)
     {
+        $manager = $this->container->get('claroline.manager.forum_manager');
+
+        return in_array($subject->getUuid(), $manager->getHotSubjects($subject->getForum()));
     }
 }

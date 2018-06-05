@@ -101,11 +101,6 @@ class Subject
     protected $flagged = false;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $hotSubject = false;
-
-    /**
      * @ORM\Column(nullable=true)
      */
     protected $author;
@@ -234,16 +229,6 @@ class Subject
     public function isFlagged()
     {
         return $this->flagged;
-    }
-
-    public function setHotSubject($bool)
-    {
-        $this->hotSubject = $bool;
-    }
-
-    public function isHotSubject()
-    {
-        return $this->hotSubject;
     }
 
     public function getAuthor()
