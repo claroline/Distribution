@@ -1,6 +1,7 @@
+import merge from 'lodash/merge'
 import {PropTypes as T} from 'prop-types'
 
-// TODO : use specific action types
+import {constants} from '#/main/app/action/constants'
 
 /**
  * Definition of the action.
@@ -53,6 +54,74 @@ const Action = {
     dangerous: false
   }
 }
+
+const Toolbar = {
+  propTypes: {
+    id: T.string,
+
+    /**
+     * The base class of the toolbar (it's used to generate classNames which can be used for styling).
+     *
+     * @type {string}
+     */
+    className: T.string,
+
+    /**
+     * The base class for buttons.
+     *
+     * @type {string}
+     */
+    buttonName: T.string,
+
+    /**
+     * The toolbar display configuration as a string.
+     *
+     * It uses the same format than tinyMCE.
+     * Example : 'edit publish | like'.
+     *
+     * @type {string}
+     */
+    toolbar: T.string,
+
+    /**
+     * The scope of the toolbar (to know which actions to display)
+     *
+     * @type {string}
+     */
+    scope: T.oneOf(constants.ACTION_SCOPES),
+
+    /**
+     * The position for button tooltips.
+     *
+     * @type {string}
+     */
+    tooltip: T.oneOf(['left', 'top', 'right', 'bottom']),
+
+    /**
+     * The list of actions available in the toolbar.
+     */
+    actions: T.oneOfType([
+      // a regular array of actions
+      T.arrayOf(T.shape(
+        merge({}, Action.propTypes, {
+          name: T.string,
+          scope: T.oneOf(constants.ACTION_SCOPES)
+        })
+      )),
+      // a promise that will resolve a list of actions
+      T.shape({
+        then: T.func.isRequired,
+        catch: T.func.isRequired
+      })
+    ]).isRequired
+  },
+  defaultProps: {
+    className: 'toolbar',
+    tooltip: 'bottom'
+  }
+}
+
+// TODO : use specific action types
 
 const AsyncAction = {
   propTypes: {
@@ -139,6 +208,7 @@ const UrlAction = {
 
 export {
   Action,
+  Toolbar,
 
   AsyncAction,
   CallbackAction,

@@ -1,4 +1,3 @@
-import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 import uniq from 'lodash/uniq'
@@ -19,16 +18,11 @@ function getType(resourceNode) {
     .find(type => type.name === resourceNode.meta.type)
 }
 
-function loadActions(resourceNodes, actions, scope) {
+function loadActions(resourceNodes, actions) {
   const asyncActions = getApps('actions')
 
-  const implementedActions = actions
-    .filter(action =>
-      // only get implemented actions
-      undefined !== asyncActions[action.name]
-      // filter by scope
-      && (!scope || isEmpty(action.scope) || -1 !== action.scope.indexOf(scope))
-    )
+  // only get implemented actions
+  const implementedActions = actions.filter(action => undefined !== asyncActions[action.name])
 
   return Promise.all(
     Object.keys(asyncActions).map(action => asyncActions[action]())
@@ -36,7 +30,7 @@ function loadActions(resourceNodes, actions, scope) {
     // generates action from loaded modules
     const realActions = {}
     loadedActions.map(actionModule => {
-      const generated = actionModule.action(resourceNodes, scope)
+      const generated = actionModule.action(resourceNodes)
       realActions[generated.name] = generated
     })
 
@@ -50,11 +44,10 @@ function loadActions(resourceNodes, actions, scope) {
 /**
  * Gets the list of available actions for a resource.
  *
- * @param {Array}       resourceNodes - the current resource node
- * @param {string|null} scope         - filter actions with a scope
- * @param {boolean}     withDefault   - include the default action (most of the time, it's not useful to get it)
+ * @param {Array}   resourceNodes - the current resource node
+ * @param {boolean} withDefault   - include the default action (most of the time, it's not useful to get it)
  */
-function getActions(resourceNodes, scope = null, withDefault = false) {
+function getActions(resourceNodes, withDefault = false) {
   const resourceTypes = uniq(resourceNodes.map(resourceNode => resourceNode.meta.type))
 
   const collectionActions = resourceTypes
@@ -70,7 +63,7 @@ function getActions(resourceNodes, scope = null, withDefault = false) {
       return accumulator.concat(typeActions)
     }, [])
 
-  return loadActions(resourceNodes, collectionActions, scope, withDefault)
+  return loadActions(resourceNodes, collectionActions, withDefault)
 }
 
 function getDefaultAction(resourceNode) {

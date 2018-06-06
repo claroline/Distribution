@@ -64,6 +64,7 @@ const PageHeader = props =>
         tooltip="bottom"
         toolbar={props.toolbar}
         actions={props.actions}
+        scope="object"
       />
     }
   </header>

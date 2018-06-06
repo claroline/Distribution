@@ -7,8 +7,9 @@ const action = (resourceNodes) => ({
   primary: true,
   icon: 'fa fa-fw fa-arrow-circle-o-right',
   target: ['claro_resource_open', {
-    node: resourceNodes[0].autoId,
-    resourceType: resourceNodes[0].meta.type
+    resourceType: resourceNodes[0].meta.type,
+    action: 'open',
+    id: resourceNodes.id
   }]
 })
 

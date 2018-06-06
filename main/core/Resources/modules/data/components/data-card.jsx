@@ -72,12 +72,6 @@ CardHeader.propTypes = {
  * @constructor
  */
 const CardContent = props => {
-  return (
-    <div className="data-card-content">
-      {props.children}
-    </div>
-  )
-
   if (!props.action || props.action.disabled) {
     // no action defined
     return (
@@ -161,6 +155,7 @@ const DataCard = props =>
         tooltip="left"
         toolbar="more"
         actions={props.actions}
+        scope="object"
       />
     }
   </div>

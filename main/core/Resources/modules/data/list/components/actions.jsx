@@ -53,6 +53,7 @@ const ListActions = props =>
     tooltip="left"
     toolbar="more"
     actions={props.actions}
+    scope="object"
   />
 
 ListActions.propTypes = {
@@ -82,6 +83,7 @@ const ListBulkActions = props =>
         buttonName="btn btn-link"
         tooltip="left"
         actions={props.actions}
+        scope="collection"
       />
     </div>
   </div>

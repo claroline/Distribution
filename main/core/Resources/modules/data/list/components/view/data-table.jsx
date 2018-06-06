@@ -5,7 +5,7 @@ import merge from 'lodash/merge'
 
 import {t} from '#/main/core/translation'
 import {getTypeOrDefault} from '#/main/core/data/index'
-import {getPrimaryAction, getBulkActions, getRowActions, isRowSelected} from '#/main/core/data/list/utils'
+import {getPrimaryAction, getActions, isRowSelected} from '#/main/core/data/list/utils'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {
@@ -171,7 +171,7 @@ const DataTable = props =>
           <td colSpan={props.columns.length + (props.selection ? 1:0) + (props.actions ? 1:0) }>
             <ListBulkActions
               count={props.selection.current.length}
-              actions={getBulkActions(
+              actions={getActions(
                 props.selection.current.map(id => props.data.find(row => id === row.id) || {id: id}),
                 props.actions
               )}
@@ -188,7 +188,7 @@ const DataTable = props =>
           row={row}
           columns={props.columns}
           primaryAction={getPrimaryAction(row, props.primaryAction)}
-          actions={getRowActions(row, props.actions)}
+          actions={getActions([row], props.actions)}
           selected={isRowSelected(row, props.selection ? props.selection.current : [])}
           onSelect={
             props.selection ? () => {

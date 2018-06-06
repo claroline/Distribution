@@ -1,15 +1,19 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {trans} from '#/main/core/translation'
 
 import {Await} from '#/main/app/components/await'
 import {Button} from '#/main/app/action/components/button'
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
+import {
+  Action as ActionTypes,
+  Toolbar as ToolbarTypes
+} from '#/main/app/action/prop-types'
 
+import {constants} from '#/main/app/action/constants'
 import {buildToolbar} from '#/main/app/action/utils'
 
 /**
@@ -19,7 +23,7 @@ import {buildToolbar} from '#/main/app/action/utils'
  * @constructor
  */
 const StaticToolbar = props => {
-  const toolbar = buildToolbar(props.toolbar, props.actions)
+  const toolbar = buildToolbar(props.toolbar, props.actions, props.scope)
 
   return (0 !== toolbar.length &&
     <nav role="toolbar" className={props.className}>
@@ -43,9 +47,15 @@ const StaticToolbar = props => {
   ) || null
 }
 
-StaticToolbar.propTypes = {
-
-}
+implementPropTypes(StaticToolbar, ToolbarTypes, {
+  // a regular array of actions
+  actions: T.arrayOf(T.shape(
+    merge({}, ActionTypes.propTypes, {
+      name: T.string,
+      scope: T.oneOf(constants.ACTION_SCOPES)
+    })
+  ))
+})
 
 class PromisedToolbar extends Component {
   constructor(props) {
@@ -75,45 +85,19 @@ class PromisedToolbar extends Component {
   }
 }
 
+implementPropTypes(PromisedToolbar, ToolbarTypes, {
+  // a promise that will resolve a list of actions
+  actions: T.shape({
+    then: T.func.isRequired,
+    catch: T.func.isRequired
+  })
+})
 
-const Toolbar = props => {
-  //console.log(props.actions)
+const Toolbar = props => props.actions instanceof Promise ?
+  <PromisedToolbar {...props} /> :
+  <StaticToolbar {...props} />
 
-  return props.actions instanceof Promise ?
-    <PromisedToolbar {...props} /> :
-    <StaticToolbar {...props} />
-}
-
-Toolbar.propTypes = {
-  id: T.string,
-
-  /**
-   * The base class of the toolbar (it's used to generate classNames which can be used for styling).
-   */
-  className: T.string,
-
-  /**
-   * The base class for buttons.
-   */
-  buttonName: T.string,
-
-  /**
-   * The toolbar display configuration as a string.
-   */
-  toolbar: T.string,
-  tooltip: T.oneOf(['left', 'top', 'right', 'bottom']),
-  actions: T.arrayOf(T.shape(
-    merge({}, ActionTypes.propTypes, {
-      name: T.string
-    })
-  )).isRequired
-}
-
-Toolbar.defaultProps = {
-  className: 'toolbar',
-  tooltip: 'bottom',
-  collapsed: false
-}
+implementPropTypes(Toolbar, ToolbarTypes)
 
 export {
   Toolbar
