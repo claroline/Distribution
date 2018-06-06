@@ -6,7 +6,10 @@ import merge from 'lodash/merge'
 import {t} from '#/main/core/translation'
 import {getTypeOrDefault} from '#/main/core/data/index'
 import {getPrimaryAction, getActions, isRowSelected} from '#/main/core/data/list/utils'
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
+import {
+  Action as ActionTypes,
+  PromisedAction as PromisedActionTypes
+} from '#/main/app/action/prop-types'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {
   Table,
@@ -118,9 +121,16 @@ DataTableRow.propTypes = {
   primaryAction: T.shape(
     ActionTypes.propTypes
   ),
-  actions: T.arrayOf(T.shape(
-    ActionTypes.propTypes
-  )),
+  actions: T.oneOfType([
+    // a regular array of actions
+    T.arrayOf(T.shape(
+      ActionTypes.propTypes
+    )),
+    // a promise that will resolve a list of actions
+    T.shape(
+      PromisedActionTypes.propTypes
+    )
+  ]),
   selected: T.bool,
   onSelect: T.func
 }

@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
@@ -10,6 +9,7 @@ import {Await} from '#/main/app/components/await'
 import {Button} from '#/main/app/action/components/button'
 import {
   Action as ActionTypes,
+  PromisedAction as PromisedActionTypes,
   Toolbar as ToolbarTypes
 } from '#/main/app/action/prop-types'
 
@@ -50,10 +50,7 @@ const StaticToolbar = props => {
 implementPropTypes(StaticToolbar, ToolbarTypes, {
   // a regular array of actions
   actions: T.arrayOf(T.shape(
-    merge({}, ActionTypes.propTypes, {
-      name: T.string,
-      scope: T.oneOf(constants.ACTION_SCOPES)
-    })
+    ActionTypes.propTypes
   ))
 })
 
@@ -87,10 +84,9 @@ class PromisedToolbar extends Component {
 
 implementPropTypes(PromisedToolbar, ToolbarTypes, {
   // a promise that will resolve a list of actions
-  actions: T.shape({
-    then: T.func.isRequired,
-    catch: T.func.isRequired
-  })
+  actions: T.shape(
+    PromisedActionTypes.propTypes
+  )
 })
 
 const Toolbar = props => props.actions instanceof Promise ?

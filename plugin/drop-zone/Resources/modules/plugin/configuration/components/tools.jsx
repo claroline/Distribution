@@ -146,7 +146,7 @@ class Tools extends Component {
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit_tool', {}, 'dropzone'),
                 callback: () => this.editTool(rows[0]),
-                context: 'row'
+                scope: ['object']
               }
             ]}
           />

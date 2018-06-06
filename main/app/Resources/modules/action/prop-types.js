@@ -1,4 +1,3 @@
-import merge from 'lodash/merge'
 import {PropTypes as T} from 'prop-types'
 
 import {constants} from '#/main/app/action/constants'
@@ -8,10 +7,16 @@ import {constants} from '#/main/app/action/constants'
  */
 const Action = {
   propTypes: {
-    // an unique identifier for the action
-    // most of the time we can generate it from label (that's why it's optional)
-    // but it's not sufficient, for actions on data collection (same action names for each items)
+    /**
+     * An unique identifier for the action
+     *
+     * Most of the time we can generate it from label (that's why it's optional)
+     * but it's not sufficient, for actions on data collection (same action names for each items)
+     *
+     * @type {string}
+     */
     id: T.string,
+    name: T.string,
     type: T.oneOf([
       'async',
       'callback',
@@ -27,8 +32,23 @@ const Action = {
       type: T.oneOf(['default', 'primary', 'danger', 'warning']),
       value: T.oneOfType([T.string, T.number]).isRequired
     }),
+
+    /**
+     * The display label of the action.
+     *
+     * @type {string}
+     */
     label: T.string.isRequired,
     group: T.string,
+
+    /**
+     * The scope of the action.
+     *
+     * @type {string}
+     */
+    scope: T.arrayOf(
+      T.oneOf(constants.ACTION_SCOPES)
+    ),
     disabled: T.bool,
     displayed: T.bool,
     primary: T.bool,
@@ -52,6 +72,13 @@ const Action = {
     displayed: true,
     primary: false,
     dangerous: false
+  }
+}
+
+const PromisedAction = {
+  propTypes: {
+    then: T.func.isRequired,
+    catch: T.func.isRequired
   }
 }
 
@@ -103,16 +130,12 @@ const Toolbar = {
     actions: T.oneOfType([
       // a regular array of actions
       T.arrayOf(T.shape(
-        merge({}, Action.propTypes, {
-          name: T.string,
-          scope: T.oneOf(constants.ACTION_SCOPES)
-        })
+        Action.propTypes
       )),
       // a promise that will resolve a list of actions
-      T.shape({
-        then: T.func.isRequired,
-        catch: T.func.isRequired
-      })
+      T.shape(
+        PromisedAction.propTypes
+      )
     ]).isRequired
   },
   defaultProps: {
@@ -208,6 +231,7 @@ const UrlAction = {
 
 export {
   Action,
+  PromisedAction,
   Toolbar,
 
   AsyncAction,

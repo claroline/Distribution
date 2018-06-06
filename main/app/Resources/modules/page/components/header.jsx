@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {asset} from '#/main/core/scaffolding/asset'
 
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
+import {Action as ActionTypes, PromisedAction as PromisedActionTypes} from '#/main/app/action/prop-types'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 
 /**
@@ -75,9 +75,16 @@ PageHeader.propTypes = {
   icon: T.oneOfType([T.string, T.element]),
   poster: T.string,
   toolbar: T.string,
-  actions: T.arrayOf(T.shape(
-    ActionTypes.propTypes
-  ))
+  actions: T.oneOfType([
+    // a regular array of actions
+    T.arrayOf(T.shape(
+      ActionTypes.propTypes
+    )),
+    // a promise that will resolve a list of actions
+    T.shape(
+      PromisedActionTypes.propTypes
+    )
+  ])
 }
 
 PageHeader.defaultProps = {

@@ -6,7 +6,10 @@ import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-t
 import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox'
 
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
+import {
+  Action as ActionTypes,
+  PromisedAction as PromisedActionTypes
+} from '#/main/app/action/prop-types'
 import {DataListProperty, DataListView} from '#/main/core/data/list/prop-types'
 import {
   getPrimaryAction,
@@ -47,9 +50,16 @@ DataGridItem.propTypes = {
     ActionTypes.propTypes
   ),
 
-  actions: T.arrayOf(
-    T.shape(ActionTypes.propTypes)
-  ),
+  actions: T.oneOfType([
+    // a regular array of actions
+    T.arrayOf(T.shape(
+      ActionTypes.propTypes
+    )),
+    // a promise that will resolve a list of actions
+    T.shape(
+      PromisedActionTypes.propTypes
+    )
+  ]),
 
   card: T.func.isRequired, // It must be a react component.
   selected: T.bool,

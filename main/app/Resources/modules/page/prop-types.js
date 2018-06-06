@@ -1,6 +1,6 @@
 import {PropTypes as T} from 'prop-types'
 
-import {Action} from '#/main/app/action/prop-types'
+import {Action, PromisedAction} from '#/main/app/action/prop-types'
 
 /**
  * The definition of an application page.
@@ -66,9 +66,16 @@ const Page = {
      *
      * @type {Array}
      */
-    actions: T.arrayOf(T.shape(
-      Action.propTypes
-    )),
+    actions: T.oneOfType([
+      // a regular array of actions
+      T.arrayOf(T.shape(
+        Action.propTypes
+      )),
+      // a promise that will resolve a list of actions
+      T.shape(
+        PromisedAction.propTypes
+      )
+    ]),
 
     /**
      * The list of section available for the current page.
