@@ -179,7 +179,7 @@ class SubjectSerializer
 
         if (isset($data['tags'])) {
             if (is_string($data['tags'])) {
-                $this->deserializeTags($subject, [$data['tags']]);
+                $this->deserializeTags($subject, explode(',', $data['tags']));
             } else {
                 $this->deserializeTags($subject, $data['tags']);
             }

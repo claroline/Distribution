@@ -36,7 +36,7 @@ const Resource = props => {
       path: '/subjects',
       component: Player
     }, {
-      path: '/moderation/flagged',
+      path: '/moderation/flagged-messages',
       component: FlaggedPosts
     }, {
       path: '/moderation/blocked',
@@ -94,7 +94,7 @@ const Resource = props => {
           icon: 'fa fa-fw fa-flag',
           label: trans('flagged_messages_subjects', {}, 'forum'),
           group: trans('moderation', {}, 'forum'),
-          target: '/moderation/flagged',
+          target: '/moderation/flagged-messages',
           exact: true
         }
       ]}

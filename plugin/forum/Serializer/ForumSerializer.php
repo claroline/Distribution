@@ -69,7 +69,7 @@ class ForumSerializer
 
         return [
             'id' => $forum->getUuid(),
-            'validationMode' => $forum->getValidationMode(),
+            'moderation' => $forum->getValidationMode(),
             'maxComment' => $forum->getMaxComment(),
             'displayMessage' => $forum->getDisplayMessages(),
             'display' => [
@@ -79,12 +79,6 @@ class ForumSerializer
             ],
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
-            ],
-            'flag' => [
-              'enabled' => true,
-            ],
-            'moderation' => [
-              'enabled' => false,
             ],
             'meta' => [
               'users' => 34, //utilisateur participants
@@ -106,7 +100,7 @@ class ForumSerializer
      */
     public function deserialize($data, Forum $forum, array $options = [])
     {
-        $this->sipe('validationMode', 'setValidationMode', $data, $forum);
+        $this->sipe('moderation', 'setValidationMode', $data, $forum);
         $this->sipe('maxComment', 'setMaxComment', $data, $forum);
         $this->sipe('displayMessage', 'setDisplayMessage', $data, $forum);
         $this->sipe('display.dataList', 'setDataListOptions', $data, $forum);
@@ -142,6 +136,6 @@ class ForumSerializer
             $availables = array_merge($availables, $tags);
         }
 
-        return array_unique($availables);
+        return $availables;
     }
 }

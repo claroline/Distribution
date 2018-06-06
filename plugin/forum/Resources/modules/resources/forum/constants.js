@@ -8,9 +8,9 @@ const DISPLAY_LIST_SM= 'list-sm'
 const DISPLAY_LIST= 'list'
 const DISPLAY_TILES    = 'tiles'
 const DISPLAY_TILES_SM = 'tiles-sm'
-const VALIDATE_NONE = 1
-const VALIDATE_PRIOR_ONCE = 2
-const VALIDATE_PRIOR_ALL = 3
+const VALIDATE_NONE = 'NONE'
+const VALIDATE_PRIOR_ONCE = 'PRIOR_ONCE'
+const VALIDATE_PRIOR_ALL = 'PRIOR_ALL'
 
 const MESSAGE_SORT_DISPLAY = {
   [SORT_DISPLAY_OLDER_TO_NEWER]: trans('from_older_to_newer', {}, 'forum'),

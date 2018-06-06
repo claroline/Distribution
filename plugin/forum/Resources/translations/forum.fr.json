@@ -21,6 +21,8 @@
     "reply": "réponse",
     "field_content_required": "Le champ contenu est requis.",
     "flag": "Signaler",
+    "flagged_messages": "Messages signalés",
+    "flagged_subjects": "Sujets signalés",
     "flagged_messages_subjects": "Sujets et messages signalés",
     "forum": "Forum",
     "forum_back_to_subjects": "Retour aux sujets",

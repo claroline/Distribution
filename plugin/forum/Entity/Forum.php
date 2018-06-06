@@ -25,9 +25,9 @@ class Forum extends AbstractResource
     use UuidTrait;
 
     // TODO : use string instead
-    const VALIDATE_NONE = 1;
-    const VALIDATE_PRIOR_ONCE = 2;
-    const VALIDATE_PRIOR_ALL = 3;
+    const VALIDATE_NONE = "NONE";
+    const VALIDATE_PRIOR_ONCE = "PRIOR_ONCE";
+    const VALIDATE_PRIOR_ALL = "PRIOR_ALL";
 
     /**
      * @ORM\OneToMany(
@@ -39,7 +39,7 @@ class Forum extends AbstractResource
     protected $subjects;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
     protected $validationMode = self::VALIDATE_NONE;
 
