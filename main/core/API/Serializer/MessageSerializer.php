@@ -76,6 +76,8 @@ class MessageSerializer
             'creator' => $this->serializeCreator($message, $options),
             'created' => $message->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $message->getModificationDate()->format('Y-m-d\TH:i:s'),
+            'flagged' => $message->isFlagged(),
+            'visible' => $message->isVisible(),
         ];
     }
 

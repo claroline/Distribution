@@ -124,6 +124,7 @@ class MessageSerializer
         }
 
         $this->sipe('meta.flagged', 'setFlagged', $data, $message);
+        $this->sipe('meta.visible', 'setVisible', $data, $message);
 
         return $message;
     }

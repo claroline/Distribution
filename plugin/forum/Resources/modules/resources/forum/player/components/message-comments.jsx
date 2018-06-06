@@ -63,52 +63,54 @@ class MessageCommentsComponent extends Component {
       <div className="answer-comment-container">
         {(this.state.opened &&
           <div>
-            {this.props.message.children.map(comment =>
-              <div key={comment.id}>
-                {this.state.showCommentForm !== comment.id &&
-                  <Comment
-                    user={comment.meta.creator}
-                    date={comment.meta.created}
-                    content={comment.content}
-                    allowHtml={true}
-                    actions={[
-                      {
-                        icon: 'fa fa-fw fa-pencil',
-                        label: trans('edit'),
-                        displayed: comment.meta.creator.id === authenticatedUser.id,
-                        action: () => this.setState({showCommentForm: comment.id})
-                      }, {
-                        icon: 'fa fa-fw fa-flag-o',
-                        label: trans('flag', {}, 'forum'),
-                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && !comment.meta.flagged,
-                        action: () => this.props.flag(comment, this.props.subject.id)
-                      }, {
-                        icon: 'fa fa-fw fa-flag',
-                        label: trans('unflag', {}, 'forum'),
-                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && comment.meta.flagged,
-                        action: () => this.props.unFlag(comment, this.props.subject.id)
-                      }, {
-                        icon: 'fa fa-fw fa-trash-o',
-                        label: trans('delete'),
-                        displayed: comment.meta.creator.id === authenticatedUser.id,
-                        action: () => this.deleteComment(comment.id),
-                        dangerous: true
-                      }
-                    ]}
-                  />
-                }
-                {this.state.showCommentForm === comment.id &&
-                  <CommentForm
-                    user={currentUser()}
-                    allowHtml={true}
-                    submitLabel={trans('add_comment')}
-                    content={comment.content}
-                    submit={(content) => this.updateComment(comment, content)}
-                    cancel={() => this.setState({showCommentForm: null})}
-                  />
-                }
-              </div>
-            )}
+            {this.props.message.children
+              .filter(comment => true === comment.meta.visible)
+              .map(comment =>
+                <div key={comment.id}>
+                  {this.state.showCommentForm !== comment.id &&
+                    <Comment
+                      user={comment.meta.creator}
+                      date={comment.meta.created}
+                      content={comment.content}
+                      allowHtml={true}
+                      actions={[
+                        {
+                          icon: 'fa fa-fw fa-pencil',
+                          label: trans('edit'),
+                          displayed: comment.meta.creator.id === authenticatedUser.id,
+                          action: () => this.setState({showCommentForm: comment.id})
+                        }, {
+                          icon: 'fa fa-fw fa-flag-o',
+                          label: trans('flag', {}, 'forum'),
+                          displayed: (comment.meta.creator.id !== authenticatedUser.id) && !comment.meta.flagged,
+                          action: () => this.props.flag(comment, this.props.subject.id)
+                        }, {
+                          icon: 'fa fa-fw fa-flag',
+                          label: trans('unflag', {}, 'forum'),
+                          displayed: (comment.meta.creator.id !== authenticatedUser.id) && comment.meta.flagged,
+                          action: () => this.props.unFlag(comment, this.props.subject.id)
+                        }, {
+                          icon: 'fa fa-fw fa-trash-o',
+                          label: trans('delete'),
+                          displayed: comment.meta.creator.id === authenticatedUser.id,
+                          action: () => this.deleteComment(comment.id),
+                          dangerous: true
+                        }
+                      ]}
+                    />
+                  }
+                  {this.state.showCommentForm === comment.id &&
+                    <CommentForm
+                      user={currentUser()}
+                      allowHtml={true}
+                      submitLabel={trans('add_comment')}
+                      content={comment.content}
+                      submit={(content) => this.updateComment(comment, content)}
+                      cancel={() => this.setState({showCommentForm: null})}
+                    />
+                  }
+                </div>
+              )}
           </div>
         )}
         {this.state.showNewCommentForm === this.props.message.id &&

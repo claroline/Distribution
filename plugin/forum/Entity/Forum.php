@@ -24,7 +24,6 @@ class Forum extends AbstractResource
 {
     use UuidTrait;
 
-    // TODO : use string instead
     const VALIDATE_NONE = "NONE";
     const VALIDATE_PRIOR_ONCE = "PRIOR_ONCE";
     const VALIDATE_PRIOR_ALL = "PRIOR_ALL";

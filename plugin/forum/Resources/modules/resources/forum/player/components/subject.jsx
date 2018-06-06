@@ -12,6 +12,7 @@ import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {withModal} from '#/main/app/overlay/modal/withModal'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {MODAL_ALERT} from '#/main/app/modals/alert'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
@@ -47,6 +48,20 @@ class SubjectComponent extends Component {
   editSubject(subjectId) {
     this.props.subjectEdition()
     this.props.history.push(`/subjects/form/${subjectId}`)
+  }
+
+  createMessage(subjectId, content) {
+    this.props.createMessage(subjectId, content)
+    // TODO: change to forum when the state is updated
+    if(this.props.forumForm.moderation === 'PRIOR_ALL' ||
+    this.props.forumForm.moderation === 'PRIOR_ONCE' ) {
+      this.props.showModal(MODAL_ALERT, {
+        title: trans('moderated_posts', {}, 'forum'),
+        message: trans('moderated_posts_explanation', {}, 'forum'),
+        type: 'info'
+      })
+    }
+
   }
 
   updateMessage(message, content) {
@@ -105,11 +120,11 @@ class SubjectComponent extends Component {
                 {get(this.props.subject, 'meta.sticky') &&
                   <span>[{trans('stuck', {}, 'forum')}] </span>
                 }
-                {this.props.subject.title}<small> {transChoice('replies', this.props.totalResults, {count: this.props.totalResults}, 'forum')}</small>
+                {this.props.subject.title}<small> {transChoice('replies', this.props.messages.length, {count: this.props.messages.length}, 'forum')}</small>
               </h3>
             }
             {(this.props.showSubjectForm && this.props.editingSubject) &&
-              <h3 className="h2">{this.props.subjectForm.title}<small> {transChoice('replies', this.props.totalResults, {count: this.props.totalResults}, 'forum')}</small></h3>
+              <h3 className="h2">{this.props.subjectForm.title}<small> {transChoice('replies', this.props.messages.length, {count: this.props.messages.length}, 'forum')}</small></h3>
             }
             {(this.props.showSubjectForm && !this.props.editingSubject) &&
               <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
@@ -248,7 +263,7 @@ class SubjectComponent extends Component {
             user={currentUser()}
             allowHtml={true}
             submitLabel={trans('reply', {}, 'actions')}
-            submit={(message) => this.props.createMessage(this.props.subject.id, message)}
+            submit={(message) => this.createMessage(this.props.subject.id, message)}
           />
         }
       </section>
@@ -293,6 +308,8 @@ SubjectComponent.propTypes = {
 
 const Subject =  withRouter(withModal(connect(
   state => ({
+    // TODO : change for forum
+    forumForm: formSelect.data(formSelect.form(state, 'forumForm')),
     subject: select.subject(state),
     subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
     editingSubject: select.editingSubject(state),

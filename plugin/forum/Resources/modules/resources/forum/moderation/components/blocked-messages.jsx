@@ -67,10 +67,16 @@ const BlockedMessagesComponent = (props) =>
         // if moderation once => validateUser
         {
           type: 'callback',
-          icon: 'fa fa-fw fa-flag',
-          label: trans('unflag', {}, 'forum'),
-          displayed: true,
+          icon: 'fa fa-fw fa-check',
+          label: trans('validate_message', {}, 'forum'),
+          displayed: props.forum.moderation === 'PRIOR_ALL',
           callback: () => props.validateMessage(rows[0], rows[0].subject.id)
+        }, {
+          type: 'callback',
+          icon: 'fa fa-fw fa-check',
+          label: trans('validate_user', {}, 'forum'),
+          displayed: props.forum.moderation === 'PRIOR_ONCE',
+          callback: () => props.validateUser(rows[0], rows[0].subject.id)
         }
       ]}
       card={(props) =>
@@ -94,7 +100,9 @@ const BlockedMessages = connect(
   dispatch => ({
     validateMessage(message, subjectId) {
       dispatch(actions.validateMessage(message, subjectId))
-      dispatch(listActions.invalidateData('moderation.flaggedMessages'))
+    },
+    validateUser(message, subjectId) {
+      dispatch(actions.validateUser(message, subjectId))
     }
   })
 )(BlockedMessagesComponent)
