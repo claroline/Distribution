@@ -35,8 +35,8 @@ Encore
     options.compress = true
     options.beautify = true
   })
-  .addPlugin(plugins.distributionShortcut())
   .addPlugin(plugins.assetsInfoFile())
+  .addPlugin(plugins.distributionShortcut())
   .addPlugin(plugins.scaffoldingDllReference())
   .addPlugin(plugins.reactDllReference())
   .addPlugin(plugins.angularDllReference())
@@ -78,4 +78,4 @@ webpackConfig.externals = shared.externals()
 webpackConfig.output.chunkFilename = '[name].js'
 
 // export the final configuration
-webpackConfig.exports = config
+module.exports = webpackConfig

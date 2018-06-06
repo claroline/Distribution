@@ -4,7 +4,7 @@ import merge from 'lodash/merge'
 const events = {}
 const registries = {}
 
-const supportedEvents = ['ready', 'dirty', 'get', 'add', 'remove']
+const supportedEvents = ['get', 'add', 'remove']
 
 /**
  * Declares a new registry.
@@ -21,7 +21,7 @@ function declareRegistry(registryName) {
   events[registryName] = {}
   registries[registryName] = {}
 
-  function fireEvent(event, entry = null) {
+  function fireEvent(event, entry) {
     if (events[registryName][event]) {
       events[registryName][event].map(callback => {
         callback(entry)
@@ -34,24 +34,6 @@ function declareRegistry(registryName) {
   }
 
   return {
-    isDirty() {
-      // dispatch event
-      fireEvent('dirty')
-
-      // todo set flag
-
-      return this
-    },
-
-    isReady() {
-      // dispatch event
-      fireEvent('ready')
-
-      // todo set flag
-
-      return this
-    },
-
     /**
      * Adds a new entry in the registry.
      *
@@ -151,11 +133,6 @@ function declareRegistry(registryName) {
   }
 }
 
-function loadRegistries(callback) {
-
-}
-
 export {
-  declareRegistry,
-  loadRegistries
+  declareRegistry
 }

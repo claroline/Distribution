@@ -46,8 +46,6 @@ const MenuButton = props => {
     }
   }
 
-  //console.log(unclassifiedActions)
-
   // only display button if there are actions
   return (
     <MenuOverlay

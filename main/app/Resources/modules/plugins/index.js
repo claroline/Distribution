@@ -27,18 +27,6 @@ function getApp(type, name) {
   return all[name]
 }
 
-function loadActions() {
-  const asyncActions = getApps('actions')
-
-  const registeredActions = Object.keys(asyncActions)
-
-  return Promise.all(
-    registeredActions.map(actionName => asyncActions[actionName]())
-  ).then((loadedActions) =>
-    registeredActions.reduce((accumulator, actionName, index) => Object.assign(accumulator, {[actionName]: loadedActions[index].action}), {})
-  )
-}
-
 export {
   getApps,
   getApp
