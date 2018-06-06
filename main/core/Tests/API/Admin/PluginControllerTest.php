@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\Tests\API\Admin;
 
-use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Claroline\CoreBundle\Library\Testing\Persister;
+use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 /**
  * Specific tests for organizations
@@ -44,6 +44,7 @@ class PluginControllerTest extends TransactionalTestCase
     //@url: /api/plugin/{plugin}/disable.{_format}
     public function testDisablePluginAction()
     {
+        //ça se relog pas bien
         $this->logIn($this->admin);
 
         //get the plugin list
@@ -61,6 +62,7 @@ class PluginControllerTest extends TransactionalTestCase
     //@url: /api/plugin/{plugin}/enable.{_format}
     public function testEnablePluginAction()
     {
+        //ça se relog pas bien
         $this->logIn($this->admin);
 
         //get the plugin list

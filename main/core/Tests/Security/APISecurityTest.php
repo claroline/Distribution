@@ -76,12 +76,12 @@ class APISecurityTest extends TransactionalTestCase
         $user = $this->persister->user('user');
 
         $this->client->request(
-            'GET',
-            '/api/connected_user',
-            [],
-            [],
-            ['PHP_AUTH_USER' => $user->getUsername(), 'PHP_AUTH_PW' => $user->getUsername()]
-        );
+                'GET',
+                '/api/connected_user',
+                [],
+                [],
+                ['PHP_AUTH_USER' => $user->getUsername(), 'PHP_AUTH_PW' => $user->getUsername()]
+            );
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $data = json_decode($this->client->getResponse()->getContent(), true);
@@ -93,12 +93,12 @@ class APISecurityTest extends TransactionalTestCase
         $user = $this->persister->user('user');
 
         $this->client->request(
-            'GET',
-            '/api/connected_user',
-            [],
-            [],
-            ['PHP_AUTH_USER' => $user->getUsername(), 'PHP_AUTH_PW' => 'THIS IS NOT MY PW']
-        );
+                'GET',
+                '/api/connected_user',
+                [],
+                [],
+                ['PHP_AUTH_USER' => $user->getUsername(), 'PHP_AUTH_PW' => 'THIS IS NOT MY PW']
+            );
 
         $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data['error'], 'authentication_error');
