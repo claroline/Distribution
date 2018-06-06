@@ -15,6 +15,8 @@ import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
 import {TaskBar} from '#/plugin/agenda/components/task-bar.jsx'
 import {Event} from '#/plugin/agenda/components/event.jsx'
 
+import $ from 'jquery'
+
 function arrayTrans(key) {
   if (typeof key === 'object') {
     var transWords = []
@@ -26,9 +28,10 @@ function arrayTrans(key) {
 }
 
 function convertDateTimeToString(value, isAllDay, isEndDate) {
-  return isAllDay && isEndDate ?
-    moment(value).subtract(1, 'minutes').format('DD/MM/YYYY HH:mm'):
-    moment(value).format('DD/MM/YYYY HH:mm')
+  if (!value)
+    return isAllDay && isEndDate ?
+      moment(value).subtract(1, 'minutes').format('DD/MM/YYYY HH:mm'):
+      moment(value).format('DD/MM/YYYY HH:mm')
 }
 
 
@@ -44,8 +47,8 @@ function createPopover(event, $element) {
     event.end = moment(event.start).add(1, 'days')
   }*/
 
-  event.start.string = convertDateTimeToString(event.start, event.allDay, false)
-  event.end.string = convertDateTimeToString(event.end, event.allDay, true)
+  //event.start.string = convertDateTimeToString(event.start, event.allDay, false)
+  //ent.end.string = convertDateTimeToString(event.end, event.allDay, true)
 
   $element
     .popover({
@@ -176,16 +179,14 @@ class AgendaComponent extends Component {
 }
 
 const Agenda = connect(
-  state => ({
-
-  }),
+  state => ({}),
   dispatch => ({
-    onDayClick(calendar) {
+    onDayClick(calendarRef) {
       dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
           title: 'event',
           save: event => {
-            dispatch(actions.create(event, calendar))
+            dispatch(actions.create(event, calendarRef))
           },
           sections: form
         })

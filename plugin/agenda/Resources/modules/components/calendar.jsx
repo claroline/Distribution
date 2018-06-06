@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import cloneDeep from 'lodash/cloneDeep'
 import $ from 'jquery'
 //import 'moment/min/moment.min.js'
 
@@ -14,20 +15,18 @@ class Calendar extends Component {
     super(props)
     this.calendarRef
 
-    this.selfReferencedFc = [
-      'eventDrop',
-      'eventDragStart',
-      'dayClick',
-      'eventClick',
-      'eventDestroy',
-      'eventRender',
-      'eventResize',
-      'eventResizeStart'
-    ]
+    this.onDayClick = this.onDayClick.bind(this)
+  }
+
+  onDayClick() {
+    this.props.dayClick($(this.calendarRef))
   }
 
   componentDidMount() {
-    $(this.calendarRef).fullCalendar(this.props)
+    const calendarProps = cloneDeep(this.props)
+    calendarProps.dayClick = this.onDayClick
+
+    $(this.calendarRef).fullCalendar(calendarProps)
   }
 
   render() {
