@@ -1,10 +1,6 @@
 icap_blog:
     resource: "@IcapBlogBundle/Controller/Resource/BlogController.php"
     type:     annotation
-    
-icap_blog_post:
-    resource: "@IcapBlogBundle/Controller/PostController.php"
-    type:     annotation
         
 icap_blog_api:
     resource: "@IcapBlogBundle/Controller/API"

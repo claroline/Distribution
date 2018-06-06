@@ -2,8 +2,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {t, trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
+import {PropTypes as T} from 'prop-types'
 
-const Exporters = props =>
+const ExportersComponent = props =>
   <div className="panel panel-default">
     <div className="panel-heading">
       <a target="_blank" href={url(['icap_blog_rss', {blogId: props.blogId}])} className="label label-warning white export-links">
@@ -14,5 +15,15 @@ const Exporters = props =>
       </a>
     </div>
   </div>
+        
+ExportersComponent.propTypes = {
+  blogId: T.string.isRequired,
+}
+
+const Exporters = connect(
+  state => ({
+    blogId: state.blog.data.id,
+  })
+)(ExportersComponent)
 
 export {Exporters}

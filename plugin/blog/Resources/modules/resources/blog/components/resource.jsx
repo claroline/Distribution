@@ -159,4 +159,4 @@ const BlogContainer = connect(
     })
 )(Blog)
       
-export {BlogContainer}
+export {BlogResource}

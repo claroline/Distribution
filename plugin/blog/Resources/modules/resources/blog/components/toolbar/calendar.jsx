@@ -12,11 +12,11 @@ import {getApiFormat, now} from '#/main/core/scaffolding/date'
 
 const BlogCalendarComponent = props =>
   <Panel header="Calendrier" className="calendar">
-    {/*<Calendar
-      selected={now()}
-      onChange={props.searchByDate}
-      time={false}
-    />*/}
+  <Calendar
+    selected={props.calendarSelectedDate}
+    onChange={props.searchByDate}
+    time={false}
+  />
   <Sections accordion>
     {props.archives && Object.keys(props.archives).reverse().map((year) =>(
       <Section id={year} level={2} title={year} key={year} className="archives-year">

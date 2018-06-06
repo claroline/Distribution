@@ -22,15 +22,7 @@ import {
   DELETE_POST_COMMENT,
   CREATE_POST_COMMENT,
   PUBLISH_POST_COMMENT
-  } from '#/plugin/blog/resources/blog/actions'
-
-//action.posts. posts defini dans actions.js via le makeInstanceActionCreator
-
-/*heroes: makeListReducer('heroes', {}, {
-  invalidated: makeReducer(false, {
-    [FORM_SUBMIT_SUCCESS+'/hero']: () => true
-  })
-}),*/
+} from '#/plugin/blog/resources/blog/actions'
 
 const reducer = {
   calendarSelectedDate: makeReducer('', {

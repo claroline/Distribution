@@ -14,7 +14,7 @@ const InformationsComponent = props =>
     <HtmlText className="panel-body">{props.infos}</HtmlText>
   </div>
     
-    InformationsComponent.propTypes = {
+InformationsComponent.propTypes = {
   infos: T.string
 }
 
