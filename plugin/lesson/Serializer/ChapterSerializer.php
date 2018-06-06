@@ -33,6 +33,22 @@ class ChapterSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getClass()
+    {
+        return 'Icap\LessonBundle\Entity\Chapter';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/lesson/section.json';
+    }
+
+    /**
      * Serializes a Chapter entity for the JSON api.
      *
      * @param Chapter $chapter - the Chapter resource to serialize
@@ -43,10 +59,11 @@ class ChapterSerializer
     public function serialize(Chapter $chapter, array $options = [])
     {
         $serialized = [
-            //'id' => $chapter->getUuid(),
-            'autoId' => $chapter->getId(),
+            'id' => $chapter->getUuid(),
             'title' => $chapter->getTitle(),
             'text' => $chapter->getText(),
+            'previousId' => null,
+            'nextId' => null,
         ];
 
         return $serialized;

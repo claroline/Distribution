@@ -1,7 +1,6 @@
 import {makeReducer} from '#/main/core/scaffolding/reducer'
-import {makeResourceReducer} from '#/main/core/resource/reducer'
 
-const reducer = makeResourceReducer({}, {
+const reducer = makeReducer({}, {
   resourceNode: makeReducer({}, {}),
   lesson: makeReducer({}, {}),
   currentChapter: makeReducer({}, {})

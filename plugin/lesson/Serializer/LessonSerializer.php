@@ -33,6 +33,22 @@ class LessonSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getClass()
+    {
+        return 'Icap\LessonBundle\Entity\LEsson';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/lesson/section.json';
+    }
+
+    /**
      * Serializes a Lesson entity for the JSON api.
      *
      * @param Lesson $lesson  - the Lesson resource to serialize
@@ -43,8 +59,7 @@ class LessonSerializer
     public function serialize(Lesson $lesson, array $options = [])
     {
         $serialized = [
-            //'id' => $chapter->getUuid(),
-            'autoId' => $lesson->getId(),
+            'id' => $lesson->getUuid(),
             'title' => $lesson->getResourceNode()->getName(),
         ];
 

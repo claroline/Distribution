@@ -1,23 +1,54 @@
 <?php
 
-namespace Icap\LessonBundle\Listener;
+namespace Icap\LessonBundle\Listener\Resource;
 
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
-use Icap\LessonBundle\Entity\Chapter;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Icap\LessonBundle\Entity\Lesson;
 use Icap\LessonBundle\Form\LessonType;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @DI\Service()
+ */
 class LessonListener
 {
-    use ContainerAwareTrait;
 
-    /*Méthode permettant de créer le formulaire de creation*/
+    private $container;
+
+    /* @var ObjectManager */
+    private $om;
+
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /**
+     * LessonListener constructor.
+     *
+     * @DI\InjectParams({
+     *     "container" = @DI\Inject("service_container")
+     * })
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+        $this->om = $container->get('claroline.persistence.object_manager');
+        $this->serializer = $container->get('claroline.api.serializer');
+    }
+
+    /**
+     * @DI\Observe("create_form_icap_lesson")
+     *
+     * @param CreateFormResourceEvent $event
+     */
     public function onCreateForm(CreateFormResourceEvent $event)
     {
         $form = $this->container->get('form.factory')->create(new LessonType(), new Lesson());
@@ -33,6 +64,11 @@ class LessonListener
         $event->stopPropagation();
     }
 
+    /**
+     * @DI\Observe("create_icap_lesson")
+     *
+     * @param CreateResourceEvent $event
+     */
     public function onCreate(CreateResourceEvent $event)
     {
         $request = $this->container->get('request_stack')->getMasterRequest();
@@ -54,18 +90,32 @@ class LessonListener
         $event->stopPropagation();
     }
 
+    /**
+     * @DI\Observe("open_icap_lesson")
+     *
+     * @param OpenResourceEvent $event
+     */
     public function onOpen(OpenResourceEvent $event)
     {
-        $route = $this->container
-            ->get('router')
-            ->generate(
-                'icap_lesson',
-                ['resourceId' => $event->getResource()->getId()]
-                );
-        $event->setResponse(new RedirectResponse($route));
+        /** @var Path $path */
+        $lesson = $event->getResource();
+
+        $content = $this->container->get('templating')->render(
+            'IcapLessonBundle:lesson:open.html.twig', [
+                '_resource' => $lesson,
+                'lesson' => $this->serializer->serialize($lesson),
+            ]
+        );
+
+        $event->setResponse(new Response($content));
         $event->stopPropagation();
     }
 
+    /**
+     * @DI\Observe("copy_icap_lesson")
+     *
+     * @param CopyResourceEvent $event
+     */
     public function onCopy(CopyResourceEvent $event)
     {
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
@@ -84,6 +134,11 @@ class LessonListener
         $event->stopPropagation();
     }
 
+    /**
+     * @DI\Observe("delete_icap_lesson")
+     *
+     * @param DeleteResourceEvent $event
+     */
     public function onDelete(DeleteResourceEvent $event)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
@@ -91,11 +146,5 @@ class LessonListener
         $om->remove($lesson);
         $om->flush();
         $event->stopPropagation();
-    }
-
-    public function onDownload(DownloadResourceEvent $event)
-    {
-        /*$event->setResponseContent("allo");
-        $event->stopPropagation();*/
     }
 }

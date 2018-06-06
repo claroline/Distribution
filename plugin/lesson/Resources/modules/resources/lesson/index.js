@@ -18,8 +18,6 @@ bootstrap(
 
   // transform data attributes for redux store
   (initialData) => {
-
-
     return {
       lesson: initialData.lesson,
       currentChapter: initialData.chapter,

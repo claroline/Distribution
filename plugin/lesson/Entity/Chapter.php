@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Chapter
 {
-    //use UuidTrait;
+    use UuidTrait;
 
     /**
      * @ORM\Column(type="integer")
@@ -87,6 +87,11 @@ class Chapter
     private $parent;
 
     protected $userPicker = null;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     /**
      * @param mixed $id

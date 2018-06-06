@@ -24,7 +24,7 @@ use JMS\Serializer\Annotation\Expose;
  */
 class Lesson extends AbstractResource
 {
-    //use UuidTrait;
+    use UuidTrait;
 
     /**
      * @ORM\OneToOne(targetEntity="Icap\LessonBundle\Entity\Chapter", cascade={"all"})
@@ -32,6 +32,11 @@ class Lesson extends AbstractResource
      * @Expose
      */
     private $root;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     /**
      * @param mixed $root
