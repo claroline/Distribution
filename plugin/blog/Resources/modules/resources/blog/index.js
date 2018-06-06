@@ -1,13 +1,13 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {BlogResource} from '#/plugin/blog/resources/blog/components/resource'
+import {BlogContainer} from '#/plugin/blog/resources/blog/components/resource.jsx'
 import {reducer} from '#/plugin/blog/resources/blog/reducer'
 
-export const App = () => ({
-  component: BlogResource,
-  store: reducer,
-  styles: 'claroline-distribution-plugin-path-path-resource',
-  initialState: initialState => Object.assign({}, initialState, {
+bootstrap(
+  '.blog-container',
+  BlogContainer,
+  reducer,
+  initialState => ({
     user: initialState.user,
     canEdit: initialState.edit,
     blog: {
@@ -26,4 +26,4 @@ export const App = () => ({
       node: initialState.resourceNode
     }
   })
-})
+)

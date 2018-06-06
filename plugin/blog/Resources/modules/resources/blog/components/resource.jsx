@@ -36,7 +36,7 @@ const Blog = props =>
         icon: 'fa fa-pencil',
         label: trans('configure_blog', {}, 'icap_blog'),
         opened: true,
-        path: '/editor',
+        path: '/edit',
         save: {
           disabled: !props.saveEnabled,
           action: () => props.save(props.blogId, props.mode, props.postId)
@@ -79,7 +79,7 @@ const Blog = props =>
               exact: true,
               onEnter: () => props.createPost()
             }, {
-              path: '/editor',
+              path: '/edit',
               component: BlogOptions,
               onEnter: (params) => props.editBlogOptions(props.blogId),
               exact: true,
@@ -159,4 +159,4 @@ const BlogContainer = connect(
     })
 )(Blog)
       
-export {BlogResource}
+export {BlogContainer}
