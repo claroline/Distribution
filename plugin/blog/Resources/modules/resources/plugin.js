@@ -1,7 +1,7 @@
 
-const PATH_PLUGIN = 'path'
+const BLOG_PLUGIN = 'blog'
 
-const pathConfiguration = {
+const blogConfiguration = {
   actions: [],
   resources: [],
   tools: [],
@@ -9,6 +9,6 @@ const pathConfiguration = {
 }
 
 export {
-  PATH_PLUGIN,
-  pathConfiguration
+  BLOG_PLUGIN,
+  blogConfiguration
 }

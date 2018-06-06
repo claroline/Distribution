@@ -1,8 +1,7 @@
 {
   "webpack": {
     "entry": {
-      "blog": "resources/blog",
-      "app": "app",
+      "resource": "resources/blog/bootstrap",
       "widget-tagcanvas": "widget-tagcanvas"
     }
   },
