@@ -18,15 +18,15 @@ actions.create = (event, calendarRef) => ({
   }
 })
 
-actions.update = event => ({
+actions.update = (event, calendarRef) => ({
   [API_REQUEST]: {
     url: ['apiv2_event_update', {id: event.id}],
     request: {
       body: JSON.stringify(event),
       method: 'PUT'
     },
-    success: (data, dispatch) => {
-      console.log('success')
+    success: (data) => {
+      calendarRef.fullCalendar('renderEvent', data)
     }
   }
 })

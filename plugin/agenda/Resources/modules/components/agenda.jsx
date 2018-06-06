@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 
 import moment from 'moment'
+import cloneDeep from 'lodash/cloneDeep'
 
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
+import {getApiFormat} from '#/main/core/scaffolding/date'
 
 import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
@@ -33,7 +35,6 @@ function convertDateTimeToString(value, isAllDay, isEndDate) {
       moment(value).subtract(1, 'minutes').format('DD/MM/YYYY HH:mm'):
       moment(value).format('DD/MM/YYYY HH:mm')
 }
-
 
 // port from the old code
 function createPopover(event, $element) {
@@ -192,11 +193,15 @@ const Agenda = connect(
         })
       )
     },
-    onEventDragStart() {
-      alert('drag')
+    onEventDragStart(calendarRef) {
+      calendarRef.popover('hide')
     },
-    onEventDrop() {
-      alert('drop')
+    onEventDrop(calendarRef, event, delta, revertFunc, jsEvent, ui, view) {
+      const data = cloneDeep(event)
+      data.start = event.start.format(getApiFormat())
+      data.end = event.end.format(getApiFormat())
+      delete data.source
+      dispatch(actions.update(data, calendarRef))
     },
     onEventClick() {
       alert('click')
@@ -214,17 +219,17 @@ const Agenda = connect(
       )*/
     },
     onEventDestroy() {
-      alert('destroy')
+      //alert('destroy')
     },
-    onEventRender(event, $element) {
+    onEventRender(calendarRef, event, $element) {
       //step 1: find workspace
       //step 2: find restrictions (according to workspace ?)
       //step 3: si editable
 
-      /*
+
       if (event.editable) {
         $element.addClass('fc-draggable')
-      }*/
+      }
 
       //event.durationEditable = event.durationEditable && workspacePermissions[workspaceId] && event.isEditable !== false
 
@@ -249,7 +254,7 @@ const Agenda = connect(
         }
       }*/
 
-      createPopover(event, $element)
+      //createPopover(event, $element)
     },
     onEventResize() {
       alert('resize')

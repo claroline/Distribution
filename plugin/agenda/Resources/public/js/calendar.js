@@ -253,7 +253,7 @@
         $(this).popover('hide')
       })
     })
-    
+
 
   function addEventAndTaskToCalendar(event)
   {
@@ -359,7 +359,7 @@
         container: 'body',
         placement: 'top'
       })
-        
+
   }
 
   function convertDateTimeToString(value, isAllDay, isEndDate)
@@ -444,32 +444,6 @@
     isFormShown = true
   }
 
-  function hideFormHours()
-  {
-    updateDateTimePicker(true)
-  }
-
-  function showFormHours()
-  {
-    updateDateTimePicker()
-  }
-
-  function updateDateTimePicker(showOnlyDate)
-  {
-    $('#agenda_form_start').data('DateTimePicker').destroy()
-    $('#agenda_form_end').data('DateTimePicker').destroy()
-    initializeDateTimePicker(showOnlyDate)
-  }
-
-  function hideStartDate()
-  {
-    $('#agenda_form_start').parent().parent().hide()
-  }
-
-  function showStartDate()
-  {
-    $('#agenda_form_start').parent().parent().show()
-  }
 
   function getQueryVariable(variable)
   {
@@ -529,7 +503,7 @@
       .on('click', '#agenda_form_isTask', function () {
         $('#agenda_form_isTask').is(':checked') ? hideStartDate() : showStartDate()
       })
-        
+
   }
 
   function onImport(event)

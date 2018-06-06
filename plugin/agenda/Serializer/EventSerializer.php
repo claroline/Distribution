@@ -66,6 +66,7 @@ class EventSerializer
             'description' => $invitation && !is_null($invitation->getDescription()) ? $invitation->getDescription() : $event->getDescription(),
             'workspace' => $event->getWorkspace() ? $this->serializer->serialize($event->getWorkspace()) : null,
             'className' => 'event_'.$event->getId(),
+            'editable' => false !== $event->isEditable() && !$invitation,
             'invitations' => $guests,
             'meta' => $this->serializeMeta($event, $invitation),
             'restrictions' => $this->serializeRestrictions($event, $invitation),
@@ -81,7 +82,6 @@ class EventSerializer
     public function serializeRestrictions($event, $invitation = null)
     {
         return [
-          'isEditable' => false !== $event->isEditable() && !$invitation,
           'durationEditable' => !$event->isTask() && false !== $event->isEditable() && !$invitation,
         ];
     }
