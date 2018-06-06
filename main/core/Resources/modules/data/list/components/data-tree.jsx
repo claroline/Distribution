@@ -160,7 +160,6 @@ class DataTreeItem extends Component {
           primaryAction={getPrimaryAction(this.props.data, this.props.primaryAction)}
           onSelect={this.props.onSelect ? () => this.props.onSelect(this.props.data) : undefined}
           toggle={() => this.toggle()}
-          connectDragSource={this.props.connectDragSource}
         />
 
         {this.props.data.children && 0 < this.props.data.children.length &&
@@ -179,7 +178,6 @@ class DataTreeItem extends Component {
                 selected={this.props.selected}
                 onSelect={this.props.onSelect}
                 card={this.props.card}
-                onDrop={this.props.onDrop}
               />
             )}
           </ul>

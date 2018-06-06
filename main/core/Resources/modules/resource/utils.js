@@ -2,7 +2,7 @@ import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 import uniq from 'lodash/uniq'
 
-import {param, asset} from '#/main/app/config'
+import {param} from '#/main/app/config'
 import {getApps} from '#/main/app/plugins'
 import {trans} from '#/main/core/translation'
 

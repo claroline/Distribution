@@ -21,7 +21,7 @@ export {
   constants,
 
   ActionTypes,
-  PromisedActionTypes
+  PromisedActionTypes,
   ToolbarTypes,
 
   Button,

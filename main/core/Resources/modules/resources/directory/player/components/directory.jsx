@@ -1,16 +1,15 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
 import {ResourceExplorer} from '#/main/core/resource/components/explorer'
 
 const DirectoryPlayer = () =>
   <ResourceExplorer
-    primaryAction={(resourceNode) => true}
+    primaryAction={() => true}
   />
 
 DirectoryPlayer.propTypes = {
-
+  directory: T.shape({})
 }
 
 export {

@@ -1,6 +1,6 @@
 import {trans} from '#/main/core/translation'
 
-const action = (resourceNodes) => ({
+const action = () => ({
   name: 'logs',
   type: 'callback', // TODO : it will be section
   icon: 'fa fa-fw fa-line-chart',

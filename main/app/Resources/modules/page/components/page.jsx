@@ -1,14 +1,13 @@
-import React, {Component} from 'react'
+import React from 'react'
 import classes from 'classnames'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {trans} from '#/main/core/translation'
-import {Page as PageTypes} from '#/main/app/page/prop-types'
 
 import {Router} from '#/main/app/router'
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
 import {AlertOverlay} from '#/main/app/overlay/alert/containers/overlay'
 
+import {Page as PageTypes} from '#/main/app/page/prop-types'
 import {PageHeader} from '#/main/app/page/components/header'
 
 const PageWrapper = props =>

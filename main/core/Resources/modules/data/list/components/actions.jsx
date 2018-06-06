@@ -1,12 +1,14 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {trans, transChoice} from '#/main/core/translation'
-import {toKey} from '#/main/core/scaffolding/text/utils'
+import {transChoice} from '#/main/core/translation'
 
 import {GenericButton} from '#/main/app/button/components/generic'
 import {Toolbar} from '#/main/app/action/components/toolbar'
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
+import {
+  Action as ActionTypes,
+  PromisedAction as PromisedActionTypes
+} from '#/main/app/action/prop-types'
 
 const ListPrimaryAction = props => {
   if (!props.action || props.action.disabled) {
@@ -58,9 +60,16 @@ const ListActions = props =>
 
 ListActions.propTypes = {
   id: T.string.isRequired,
-  actions: T.arrayOf(
-    T.shape(ActionTypes.propTypes)
-  ).isRequired
+  actions: T.oneOfType([
+    // a regular array of actions
+    T.arrayOf(T.shape(
+      ActionTypes.propTypes
+    )),
+    // a promise that will resolve a list of actions
+    T.shape(
+      PromisedActionTypes.propTypes
+    )
+  ]).isRequired
 }
 
 /**
@@ -90,9 +99,16 @@ const ListBulkActions = props =>
 
 ListBulkActions.propTypes = {
   count: T.number.isRequired,
-  actions: T.arrayOf(
-    T.shape(ActionTypes.propTypes)
-  ).isRequired
+  actions: T.oneOfType([
+    // a regular array of actions
+    T.arrayOf(T.shape(
+      ActionTypes.propTypes
+    )),
+    // a promise that will resolve a list of actions
+    T.shape(
+      PromisedActionTypes.propTypes
+    )
+  ]).isRequired
 }
 
 export {

@@ -1,6 +1,6 @@
 import {trans} from '#/main/core/translation'
 
-const action = (resourceNodes) => ({
+const action = () => ({
   name: 'shortcuts',
   type: 'modal',
   icon: 'fa fa-fw fa-share',

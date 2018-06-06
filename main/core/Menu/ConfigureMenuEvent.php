@@ -1,5 +1,4 @@
 <?php
-// src/Acme/DemoBundle/Event/ConfigureMenuEvent.php
 
 namespace Claroline\CoreBundle\Menu;
 
@@ -15,9 +14,11 @@ class ConfigureMenuEvent extends Event
     private $tool;
 
     /**
-     * @param \Knp\Menu\FactoryInterface $factory
-     * @param \Knp\Menu\ItemInterface $menu
-     * @param Tool $tool
+     * ConfigureMenuEvent constructor.
+     *
+     * @param FactoryInterface $factory
+     * @param ItemInterface    $menu
+     * @param Tool             $tool
      */
     public function __construct(
         FactoryInterface $factory,
@@ -30,7 +31,7 @@ class ConfigureMenuEvent extends Event
     }
 
     /**
-     * @return \Knp\Menu\FactoryInterface
+     * @return FactoryInterface
      */
     public function getFactory()
     {
@@ -38,7 +39,7 @@ class ConfigureMenuEvent extends Event
     }
 
     /**
-     * @return \Knp\Menu\ItemInterface
+     * @return ItemInterface
      */
     public function getMenu()
     {

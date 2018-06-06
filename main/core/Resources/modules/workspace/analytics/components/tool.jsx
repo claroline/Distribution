@@ -4,7 +4,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {Page} from '#/main/app/page/components/page'
-import {Heading} from '#/main/core/layout/components/heading'
 
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'

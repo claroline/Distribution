@@ -1,6 +1,6 @@
 import {trans} from '#/main/core/translation'
 
-const action = (resourceNodes) => ({
+const action = () => ({
   name: 'move',
   type: 'modal',
   icon: 'fa fa-fw fa-arrows',

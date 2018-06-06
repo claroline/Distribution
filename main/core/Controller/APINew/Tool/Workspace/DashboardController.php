@@ -42,7 +42,6 @@ class DashboardController
     }
 
     /**
-     *
      * @EXT\Route("/", name="apiv2_workspace_tool_dashboard")
      * @EXT\Method("GET")
      * @EXT\ParamConverter(

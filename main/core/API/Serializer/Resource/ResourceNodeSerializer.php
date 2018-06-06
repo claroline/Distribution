@@ -48,20 +48,20 @@ class ResourceNodeSerializer
      * ResourceNodeManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
-     *     "eventDispatcher"   = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "fileSerializer"    = @DI\Inject("claroline.serializer.public_file"),
-     *     "userSerializer"    = @DI\Inject("claroline.serializer.user"),
-     *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
-     *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager")
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "fileSerializer"  = @DI\Inject("claroline.serializer.public_file"),
+     *     "userSerializer"  = @DI\Inject("claroline.serializer.user"),
+     *     "maskManager"     = @DI\Inject("claroline.manager.mask_manager"),
+     *     "rightsManager"   = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
-     * @param ObjectManager         $om
-     * @param StrictDispatcher      $eventDispatcher
-     * @param PublicFileSerializer  $fileSerializer
-     * @param UserSerializer        $userSerializer
-     * @param MaskManager           $maskManager
-     * @param RightsManager         $rightsManager
+     * @param ObjectManager        $om
+     * @param StrictDispatcher     $eventDispatcher
+     * @param PublicFileSerializer $fileSerializer
+     * @param UserSerializer       $userSerializer
+     * @param MaskManager          $maskManager
+     * @param RightsManager        $rightsManager
      */
     public function __construct(
         ObjectManager $om,

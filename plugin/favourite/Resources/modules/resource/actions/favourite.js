@@ -6,6 +6,7 @@ const action = (resourceNodes) => ({ // todo collection
   type: 'async',
   icon: 'fa fa-fw fa-star-o',
   label: trans('add-favourite', {}, 'actions'),
+  displayed: isAuthenticated(),
   request: {
     url: ['claro_resource_action', {
       resourceType: resourceNodes[0].meta.type,

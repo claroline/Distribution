@@ -8,6 +8,7 @@ const ResourceIcon = props =>
   <img className={classes('resource-icon', props.className)} src={icon(props.mimeType)} />
 
 ResourceIcon.propTypes = {
+  className: T.string,
   mimeType: T.string.isRequired
 }
 

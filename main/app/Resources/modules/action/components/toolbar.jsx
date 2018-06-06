@@ -3,7 +3,6 @@ import classes from 'classnames'
 import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {trans} from '#/main/core/translation'
 
 import {Await} from '#/main/app/components/await'
 import {Button} from '#/main/app/action/components/button'

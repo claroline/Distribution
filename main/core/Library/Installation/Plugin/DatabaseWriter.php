@@ -74,14 +74,14 @@ class DatabaseWriter
      *     "iconSetManager"  = @DI\Inject("claroline.manager.icon_set_manager")
      * })
      *
-     * @param ObjectManager $em
-     * @param IconManager $im
-     * @param Filesystem $fileSystem
-     * @param KernelInterface $kernel
-     * @param MaskManager $mm
-     * @param ToolManager $toolManager
+     * @param ObjectManager          $em
+     * @param IconManager            $im
+     * @param Filesystem             $fileSystem
+     * @param KernelInterface        $kernel
+     * @param MaskManager            $mm
+     * @param ToolManager            $toolManager
      * @param ToolMaskDecoderManager $toolMaskManager
-     * @param IconSetManager $iconSetManager
+     * @param IconSetManager         $iconSetManager
      */
     public function __construct(
         ObjectManager $em,
@@ -128,7 +128,7 @@ class DatabaseWriter
 
     /**
      * @param PluginBundleInterface $pluginBundle
-     * @param array $pluginConfiguration
+     * @param array                 $pluginConfiguration
      *
      * @return Plugin|null
      *
@@ -253,8 +253,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $processedConfiguration
-     * @param Plugin       $plugin
+     * @param array                 $processedConfiguration
+     * @param Plugin                $plugin
      * @param PluginBundleInterface $pluginBundle
      */
     private function updateConfiguration($processedConfiguration, Plugin $plugin, PluginBundleInterface $pluginBundle)
@@ -341,8 +341,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resourceConfiguration
-     * @param Plugin       $plugin
+     * @param array                 $resourceConfiguration
+     * @param Plugin                $plugin
      * @param PluginBundleInterface $pluginBundle
      *
      * @return ResourceType
@@ -442,8 +442,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resource
-     * @param ResourceType $resourceType
+     * @param array                 $resource
+     * @param ResourceType          $resourceType
      * @param PluginBundleInterface $pluginBundle
      */
     private function persistIcons(array $resource, ResourceType $resourceType, PluginBundleInterface $pluginBundle)
@@ -481,8 +481,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resource
-     * @param ResourceType $resourceType
+     * @param array                 $resource
+     * @param ResourceType          $resourceType
      * @param PluginBundleInterface $pluginBundle
      */
     private function updateIcons(array $resource, ResourceType $resourceType, PluginBundleInterface $pluginBundle)
@@ -587,8 +587,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resourceConfiguration
-     * @param Plugin       $plugin
+     * @param array                 $resourceConfiguration
+     * @param Plugin                $plugin
      * @param PluginBundleInterface $pluginBundle
      *
      * @return ResourceType
@@ -666,8 +666,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $widgetConfiguration
-     * @param Widget       $widget
+     * @param array  $widgetConfiguration
+     * @param Widget $widget
      *
      * @return Widget
      */

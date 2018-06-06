@@ -4,7 +4,6 @@ import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {getPlainText} from '#/main/core/data/types/html/utils'
-import {trans} from '#/main/core/translation'
 import {number} from '#/main/app/intl'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {GenericButton} from '#/main/app/button/components/generic'
