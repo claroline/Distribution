@@ -6,8 +6,8 @@ import {t, trans, transChoice} from '#/main/core/translation'
 import {actions} from '#/plugin/blog/resources/blog/actions.js'
 import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 const CommentsComponent = props =>
   <div>
@@ -145,7 +145,7 @@ const CommentsComponent = props =>
         dispatch(actions.unpublishComment(blogId, postId, commentId))
       },
       deleteComment: (blogId, postId, commentId) => {
-        dispatch(modalActions.showModal(MODAL_DELETE_CONFIRM, {
+        dispatch(modalActions.showModal(MODAL_CONFIRM, {
           title: trans('comment_deletion_confirm_title', {}, 'icap_blog'),
           question: trans('comment_deletion_confirm_message', {}, 'icap_blog'),
           handleConfirm: () => dispatch(actions.deleteComment(blogId, postId, commentId))

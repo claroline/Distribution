@@ -1,4 +1,4 @@
-import {API_REQUEST} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {constants} from '#/plugin/blog/resources/blog/constants.js'
@@ -41,16 +41,6 @@ actions.updateComment = makeActionCreator(UPDATE_POST_COMMENT, 'comment')
 actions.createComment = makeActionCreator(CREATE_POST_COMMENT, 'comment')
 actions.removeComment = makeActionCreator(DELETE_POST_COMMENT, 'commentId')
 
-/*actions.getPosts = (blogId) => ({
-  [API_REQUEST]: {
-    url:['apiv2_blog_post_list', {blogId}],
-    success: (response, dispatch) => {
-      dispatch(actions.postsLoad(response));
-      dispatch(actions.switchMode(constants.LIST_POSTS))
-    }
-  }
-})*/
-
 actions.getPost = (blogId, postId) => (dispatch) => {
   dispatch(actions.postReset());
   dispatch({[API_REQUEST]: {
@@ -61,14 +51,6 @@ actions.getPost = (blogId, postId) => (dispatch) => {
     success: (response, dispatch) => dispatch(actions.postLoad(response))
   }})
 }
-
-/*actions.editPost = (blogId, slug) => {
-  actions.postReset()
-  return {[API_REQUEST]: {
-    url:['apiv2_blog_post_get', {blogId, slug}],
-    success: (response, dispatch) => dispatch(actions.postEdit(response))
-  }}
-}*/
 
 actions.editPost = (formName, blogId, postId) => (dispatch) => {
   //reset form from previous data

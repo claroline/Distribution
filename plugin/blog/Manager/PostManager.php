@@ -170,6 +170,7 @@ class PostManager
         }
         
         return count($posts);
+    }
     
     /**
      * Create a post.

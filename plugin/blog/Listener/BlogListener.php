@@ -29,7 +29,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class BlogListener
 {
-    use ContainerAwareTrait;
     /** @var FormFactory */
     private $formFactory;
     /** @var HttpKernelInterface */

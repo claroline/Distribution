@@ -9,31 +9,24 @@ import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 import {DataCard} from '#/main/core/data/components/data-card'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 import {getPlainText} from '#/main/core/data/types/html/utils'
-import {ActionDropdownButton} from '#/main/core/layout/action/components/dropdown'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {getCommentsNumber} from '#/plugin/blog/resources/blog/utils.js'
 import {actions} from '#/plugin/blog/resources/blog/actions.js'
-import {navigate} from '#/main/core/router'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {Comments} from '#/plugin/blog/resources/blog/components/comments.jsx'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {Button} from '#/main/app/action/components/button'
 
 const PostComponent = props =>
-  <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`, props.className, {'unpublished': !props.post.isPublished})}>
+  <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`)}>
     {props.post.id &&
-      <CardContent
-        disabled={props.primaryAction && props.primaryAction.disabled}
-        action={props.primaryAction && props.primaryAction.action}
-      >
-        {React.createElement(`h1`, {
-          key: 'post-header',
-          className: 'post-header'
-        }, [
-          props.post.title,
+      <div className="post-container">
+        <h1 key="post-header" className={classes(`post-header`, {'unpublished': !props.post.isPublished})}>
+          <a href={`#/${props.post.slug}`}>{props.post.title}</a>
           <InfoBar blogId={props.blogId} getPostsByAuthor={props.getPostsByAuthor} post={props.post} key={`data-card-subtitle-${props.id}`} />
-        ])}
+        </h1>
       
         {'sm' !== props.size && props.post.content &&
           <div key="data-card-description" className="post-content">
@@ -41,7 +34,9 @@ const PostComponent = props =>
             {props.post.abstract &&
               <div>
                 ...
-                <div className="read_more">{trans('read_more', {}, 'icap_blog')} <span className="fa fa-long-arrow-right"></span></div>
+                <div className="read_more">
+                  <a href={`#/${props.post.slug}`}>{trans('read_more', {}, 'icap_blog')}</a> <span className="fa fa-long-arrow-right"></span>
+                </div>
               </div>
             }
           </div>
@@ -63,30 +58,37 @@ const PostComponent = props =>
             />
           </div>
         }
-        
-      </CardContent>
+      </div>
     }
-    <ActionDropdownButton
-      id={`${props.id}-btn`}
-      className="data-actions-btn btn-link-default"
-      bsStyle="link"
-      noCaret={true}
-      pullRight={true}
-      actions={[
-        {
-          action: () => navigate(`/${props.post.slug}/edit`),
-          label: trans('edit_post_short', {}, 'icap_blog'),
-          icon: 'fa fa-pencil'
-        },{
-          action: () => props.publishPost(props.blogId, props.post.id),
-          label: props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog'),
-          icon: props.post.isPublished ? 'fa fa-eye-slash' : 'fa fa-eye'
-        },{
-          action: () => props.deletePost(props.blogId, props.post.id, props.post.title),
-          label: trans('delete', {}, 'platform'),
-          icon: 'fa fa-trash'
-        }
-      ]}
+    <Button
+      id={`actions-${props.id}`}
+      className="data-actions-btn btn btn-link"
+      type="menu"
+      tooltip="left"
+      icon="fa fa-fw fa-ellipsis-v"
+      label={trans('show-actions', {}, 'actions')}
+      menu={{
+        label: trans('actions'),
+        align: 'right',
+        items: [
+          {
+            type: 'link',
+            target: `/${props.post.slug}/edit`,
+            label: trans('edit_post_short', {}, 'icap_blog'),
+            icon: 'fa fa-pencil'
+          },{
+            type: 'callback',
+            callback: () => props.publishPost(props.blogId, props.post.id),
+            label: props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog'),
+            icon: props.post.isPublished ? 'fa fa-eye-slash' : 'fa fa-eye'
+          },{
+            type: 'callback',
+            callback: () => props.deletePost(props.blogId, props.post.id, props.post.title),
+            label: trans('delete', {}, 'platform'),
+            icon: 'fa fa-trash'
+          }
+        ]
+      }}
     />
   </div>
     
@@ -117,7 +119,8 @@ const InfoBar = props =>
       e.stopPropagation()
     }}>
       <span>
-        <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} /> <span className="read_more">{props.post.author.firstName} {props.post.author.lastName}</span>
+        <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} /> 
+         <a className="read_more">{props.post.author.firstName} {props.post.author.lastName}</a>
       </span>
     </li>
     <li><span className="fa fa-calendar"></span> {displayDate(props.post.publicationDate, false, true)} </li>
@@ -186,7 +189,7 @@ const PostCardContainer = connect(
       dispatch(actions.publishPost(blogId, postId))
     },
     deletePost: (blogId, postId, postName) => {
-      dispatch(modalActions.showModal(MODAL_DELETE_CONFIRM, {
+      dispatch(modalActions.showModal(MODAL_CONFIRM, {
         title: trans('post_deletion_confirm_title', {}, 'icap_blog'),
         question: trans('post_deletion_confirm_message', {'postName': postName}, 'icap_blog'),
         handleConfirm: () => dispatch(actions.deletePost(blogId, postId))

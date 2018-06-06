@@ -1,9 +1,7 @@
 import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
 import cloneDeep from 'lodash/cloneDeep'
-import {makePageReducer} from '#/main/core/layout/page/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
-import {makeResourceReducer} from '#/main/core/resource/reducer'
 import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 import {LIST_FILTER_ADD, LIST_FILTER_REMOVE} from '#/main/core/data/list/actions'
 import {ITEM_UPDATE_TAGS} from '#/plugin/tag/actions.js'
@@ -26,15 +24,6 @@ import {
   PUBLISH_POST_COMMENT
   } from '#/plugin/blog/resources/blog/actions'
 
-/*
- * const reducer = makePageReducer(etat_initial, custom_reducer)
-
- * const reducer = makePageReducer(etat_initial??, {
-  props1: makeReducer(valeur_par_defaut, {})
-})
- * 
- * */
-
 //action.posts. posts defini dans actions.js via le makeInstanceActionCreator
 
 /*heroes: makeListReducer('heroes', {}, {
@@ -43,7 +32,7 @@ import {
   })
 }),*/
 
-const reducer = makeResourceReducer({}, {
+const reducer = {
   calendarSelectedDate: makeReducer('', {
     [LIST_FILTER_ADD+'/posts']: (state, action) => {
       if(action.property === 'publicationDate'){
@@ -129,8 +118,7 @@ const reducer = makeResourceReducer({}, {
       }),
     })
   })
-  //options: makeFormReducer('options')
-})
+}
      /* tags: combineReducers({
         id: makeReducer('new', {}),
         tags: makeReducer([], {}),

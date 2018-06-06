@@ -8,22 +8,18 @@ import {actions} from '#/plugin/blog/resources/blog/actions.js'
 import {Calendar} from '#/main/core/layout/calendar/components/calendar.jsx'
 import {Section, Sections} from '#/main/core/layout/components/sections.jsx'
 import moment from 'moment'
-import {getApiFormat} from '#/main/core/scaffolding/date'
+import {getApiFormat, now} from '#/main/core/scaffolding/date'
 
 const BlogCalendarComponent = props =>
   <Panel header="Calendrier" className="calendar">
-     <Calendar
-      selected={props.calendarSelectedDate}
+    {/*<Calendar
+      selected={now()}
       onChange={props.searchByDate}
-      minDate={props.minDate}
-      maxDate={props.maxDate}
-      time={props.time}
-      minTime={props.minTime}
-      maxTime={props.maxTime}
-    />
+      time={false}
+    />*/}
   <Sections accordion>
     {props.archives && Object.keys(props.archives).reverse().map((year) =>(
-      <Section id={year} level={2} title={year} key={year}>
+      <Section id={year} level={2} title={year} key={year} className="archives-year">
         <ul>
           {props.archives[year] && Object.keys(props.archives[year]).map((month) =>(
             <li className="list-unstyled" key={month}>

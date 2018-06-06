@@ -1,4 +1,4 @@
-import {bootstrap} from '#/main/core/scaffolding/bootstrap'
+import {bootstrap} from '#/main/app/bootstrap'
 
 import {BlogContainer} from '#/plugin/blog/resources/blog/components/resource.jsx'
 import {reducer} from '#/plugin/blog/resources/blog/reducer'
@@ -22,6 +22,8 @@ bootstrap(
     posts: {
       pageSize: initialState.blog.options.postPerPage
     },
-    resourceNode: initialState.resourceNode,
+    resource: {
+      node: initialState.resourceNode
+    }
   })
 )

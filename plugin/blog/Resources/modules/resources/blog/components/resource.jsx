@@ -2,7 +2,6 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
-import {Routes} from '#/main/core/router'
 import {
   PageActions,
   PageAction,
@@ -24,6 +23,7 @@ import {BlogOptions} from '#/plugin/blog/resources/blog/components/blog-options.
 import {actions} from '#/plugin/blog/resources/blog/actions.js'
 import {constants} from '#/plugin/blog/resources/blog/constants.js'
 import {saveEnabled} from '#/plugin/blog/resources/blog/utils.js'
+import {url} from '#/main/app/api'
 
 import Grid from 'react-bootstrap/lib/Grid'
 import Row from 'react-bootstrap/lib/Row'
@@ -35,8 +35,8 @@ const Blog = props =>
       editor={{
         icon: 'fa fa-pencil',
         label: trans('configure_blog', {}, 'icap_blog'),
-        opened: props.mode === constants.EDIT_POST || props.mode === constants.CREATE_POST || props.mode === constants.EDIT_OPTIONS,
-        open: '#/editor',
+        opened: true,
+        path: '/editor',
         save: {
           disabled: !props.saveEnabled,
           action: () => props.save(props.blogId, props.mode, props.postId)
@@ -44,13 +44,17 @@ const Blog = props =>
       }}
       customActions={[
         {
+          type: 'link',
           icon: 'fa fa-home',
           label: trans('show_overview'),
-          action: '#/'
+          target: '/',
+          exact: true
         }, {
+          type: 'link',
           icon: 'fa fa-plus',
           label: trans('new_post', {}, 'icap_blog'),
-          action: '#/new'
+          target: '/new',
+          exact: true
         }
       ]}
     >

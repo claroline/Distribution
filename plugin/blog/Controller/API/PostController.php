@@ -176,7 +176,7 @@ class PostController
     /**
      * Create a post comment.
      *
-     * @EXT\Route("/comment{postId}", name="apiv2_blog_comment_new")
+     * @EXT\Route("/comment/{postId}", name="apiv2_blog_comment_new")
      * @EXT\Method("POST")
      * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})

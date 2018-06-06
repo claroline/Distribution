@@ -10,7 +10,7 @@ import {Section as ClaroSection} from '#/main/core/layout/components/sections.js
 import Button from 'react-bootstrap/lib/Button'
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 import {t, trans} from '#/main/core/translation'
-import {navigate} from '#/main/core/router'
+import {navigate} from '#/main/app/router'
 import {generatePostsActions} from '#/plugin/blog/resources/blog/utils.js'
 
 const PostsList = props =>

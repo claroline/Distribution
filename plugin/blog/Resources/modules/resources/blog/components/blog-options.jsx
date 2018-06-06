@@ -55,11 +55,12 @@ const BlogOptionsComponent = props =>
               label: trans('icap_blog_options_form_auto_publish_comment', {}, 'icap_blog'),
             },{
               name: 'postPerPage',
-              type: 'enum',
+              type: 'choice',
               label: trans('icap_blog_options_form_post_per_page', {}, 'icap_blog'),
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.PAGE_SIZE
               }
             }
@@ -71,11 +72,12 @@ const BlogOptionsComponent = props =>
           fields: [
             {
               name: 'tagCloud',
-              type: 'enum',
+              type: 'choice',
               required: true,
               label: trans('icap_blog_options_form_tag_cloud', {}, 'icap_blog'),
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.TAGCLOUD_TYPE
               }
             },{
