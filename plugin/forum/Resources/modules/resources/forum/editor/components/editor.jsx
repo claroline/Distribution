@@ -85,15 +85,9 @@ const EditorComponent = (props) =>
         title: trans('moderation', {}, 'forum'),
         fields: [
           {
-            name: 'flag.enabled',
-            type: 'boolean',
-            label: trans('enable_flag', {}, 'forum'),
-            value: true
-          },
-          {
             name: 'moderation',
             type: 'choice',
-            label: trans('moderation', {}, 'forum'),
+            label: trans('moderation_type', {}, 'forum'),
             options: {
               noEmpty: true,
               choices: constants.MODERATION_MODES

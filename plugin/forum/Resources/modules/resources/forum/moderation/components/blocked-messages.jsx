@@ -7,7 +7,6 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataCard} from '#/main/core/data/components/data-card'
 import {UserAvatar} from '#/main/core/user/components/avatar'
-import {url} from '#/main/app/api'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -15,10 +14,11 @@ import {actions} from '#/plugin/forum/resources/forum/actions'
 
 const BlockedMessagesComponent = (props) =>
   <div>
+    <h2>{trans('moderated_posts', {}, 'forum')}</h2>
     <DataListContainer
       name="moderation.blockedMessages"
       fetch={{
-        url: url(['apiv2_forum_message_list'])+'?filters[visible]=false&filters[forum]='+props.forum.id,
+        url: ['apiv2_forum_message_blocked_list', {forum: props.forum.id}],
         autoload: true
       }}
       delete={{

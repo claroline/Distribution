@@ -5,6 +5,7 @@ namespace Claroline\ForumBundle\Controller\API;
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\ForumBundle\Entity\Message;
+use Claroline\ForumBundle\Entity\Forum;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -94,6 +95,50 @@ class MessageController extends AbstractCrudController
             $this->serializer->serialize($message, $this->options['get']),
             200
         );
+    }
+
+    /**
+     * @EXT\Route("forum/{forum}/messages/list/flagged", name="apiv2_forum_message_flagged_list")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
+     *
+     *
+     * @param string  $id
+     * @param string  $class
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getFlaggedMessagesAction(Request $request, Forum $forum)
+    {
+      return new JsonResponse(
+        $this->finder->search($this->getClass(), array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['flagged' => true, 'forum' => $forum->getUuid()]]
+            ))
+      );
+    }
+
+    /**
+     * @EXT\Route("forum/{forum}/messages/list/blocked", name="apiv2_forum_message_blocked_list")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
+     *
+     *
+     * @param string  $id
+     * @param string  $class
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getBlockedMessagesAction(Request $request, Forum $forum)
+    {
+      return new JsonResponse(
+        $this->finder->search($this->getClass(), array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['visible' => false, 'forum' => $forum->getUuid()]]
+            ))
+      );
     }
 
     public function getClass()

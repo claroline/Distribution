@@ -32,9 +32,9 @@ const forumId = createSelector(
   (forum) => forum.id
 )
 
-const flaggedMessages = createSelector(
+const visibleMessages = createSelector(
   [messages],
-  (messages) => messages.filter(message => true === message.meta.flagged)
+  (messages) => messages.data.filter(message => true === message.meta.visible)
 )
 
 const tagsCount = createSelector(
@@ -59,7 +59,7 @@ export const select = {
   showSubjectForm,
   editingSubject,
   closedSubject,
-  flaggedMessages,
+  visibleMessages,
   tagsCount,
   lastMessages
 }

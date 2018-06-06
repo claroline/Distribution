@@ -7,10 +7,12 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataCard} from '#/main/core/data/components/data-card'
 import {UserAvatar} from '#/main/core/user/components/avatar'
-
+import {currentUser} from '#/main/core/user/current'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
+
+const authenticatedUser = currentUser()
 
 const SubjectsList = props =>
 
@@ -103,7 +105,19 @@ const SubjectsList = props =>
           label: trans('unstick', {}, 'forum'),
           callback: () => props.unStickSubject(rows[0]),
           displayed: rows[0].meta.sticky
-        }, {
+        },
+        // {
+        //   icon: 'fa fa-fw fa-flag-o',
+        //   label: trans('flag', {}, 'forum'),
+        //   displayed: ((rows[0].subject.meta.creator !== authenticatedUser) && !(rows[0].meta.flagged)),
+        //   callback: () => props.flagSubject(rows[0])
+        // }, {
+        //   icon: 'fa fa-fw fa-flag',
+        //   label: trans('unflag', {}, 'forum'),
+        //   displayed: ((rows[0].subject.meta.creator !== authenticatedUser) && (rows[0].meta.flagged)),
+        //   callback: () => props.unFlagSubject(rows[0])
+        // },
+        {
           type: 'callback',
           icon: 'fa fa-fw fa-times-circle-o',
           label: trans('close_subject', {}, 'forum'),
@@ -149,6 +163,12 @@ const Subjects = connect(
     },
     unCloseSubject(subject) {
       dispatch(actions.unCloseSubject(subject))
+    },
+    flagSubject(subject) {
+      dispatch(actions.flagSubject(subject))
+    },
+    unFlagSubject(subject) {
+      dispatch(actions.unFlagSubject(subject))
     }
   })
 )(SubjectsList)

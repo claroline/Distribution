@@ -7,7 +7,6 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataCard} from '#/main/core/data/components/data-card'
 import {UserAvatar} from '#/main/core/user/components/avatar'
-import {url} from '#/main/app/api'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
@@ -22,7 +21,7 @@ const FlaggedMessagesComponent = (props) =>
       <DataListContainer
         name="moderation.flaggedMessages"
         fetch={{
-          url: url(['apiv2_forum_message_list'])+'?filters[flagged]=true&filters[forum]='+props.forum.id,
+          url: ['apiv2_forum_message_flagged_list', {forum: props.forum.id}],
           autoload: true
         }}
         delete={{

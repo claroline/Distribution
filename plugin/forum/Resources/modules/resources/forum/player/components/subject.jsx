@@ -298,7 +298,7 @@ const Subject =  withRouter(withModal(connect(
     editingSubject: select.editingSubject(state),
     sortOrder: listSelect.sortBy(listSelect.list(state, 'subjects.messages')).direction,
     showSubjectForm: select.showSubjectForm(state),
-    messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
+    messages: select.visibleMessages(state),
     totalResults: listSelect.totalResults(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),

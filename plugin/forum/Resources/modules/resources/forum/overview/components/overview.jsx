@@ -124,7 +124,6 @@ const Overview = connect(
     subject: select.subject(state),
     forum: select.forum(state),
     lastMessages: select.lastMessages(state),
-    messages: select.messages(state),
     tagsCount: select.tagsCount(state)
   })
 )(OverviewComponent)

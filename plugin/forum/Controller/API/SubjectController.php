@@ -157,6 +157,28 @@ class SubjectController extends AbstractCrudController
         );
     }
 
+    /**
+     * @EXT\Route("forum/{forum}/subjects/list/flagged", name="apiv2_forum_subject_flagged_list")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
+     *
+     *
+     * @param string  $id
+     * @param string  $class
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getFlaggedSubjectsAction(Request $request, Forum $forum)
+    {
+      return new JsonResponse(
+        $this->finder->search($this->getClass(), array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['flagged' => true, 'forum' => $forum->getUuid()]]
+            ))
+      );
+    }
+
     public function getClass()
     {
         return "Claroline\ForumBundle\Entity\Subject";
