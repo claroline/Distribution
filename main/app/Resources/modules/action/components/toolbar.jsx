@@ -12,7 +12,6 @@ import {
   Toolbar as ToolbarTypes
 } from '#/main/app/action/prop-types'
 
-import {constants} from '#/main/app/action/constants'
 import {buildToolbar} from '#/main/app/action/utils'
 
 /**

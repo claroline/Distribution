@@ -3,11 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {schemeCategory20c} from 'd3-scale'
 
 import {trans} from '#/main/core/translation'
-import {param} from '#/main/app/config'
-
 import {Heading} from '#/main/core/layout/components/heading'
 import {PieChart} from '#/main/core/layout/chart/pie/components/pie-chart'
-import {DashboardTable} from '#/main/core/layout/dashboard'
 
 import {ResourceIcon} from '#/main/core/resource/components/icon'
 

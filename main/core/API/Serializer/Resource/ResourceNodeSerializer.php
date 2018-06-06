@@ -240,7 +240,7 @@ class ResourceNodeSerializer
     /**
      * Deserializes resource node data into entities.
      *
-     * @param array $data
+     * @param array        $data
      * @param ResourceNode $resourceNode
      */
     public function deserialize(array $data, ResourceNode $resourceNode)

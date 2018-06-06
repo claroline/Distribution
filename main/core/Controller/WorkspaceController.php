@@ -407,6 +407,11 @@ class WorkspaceController extends Controller
             }
         }
 
+        // mega hack to make the resource manager active when inside a resource
+        if ('claro_resource_open' === $request->get('_route')) {
+            $current = 'resource_manager';
+        }
+
         return [
             'current' => $current,
             'tools' => array_map(function (OrderedTool $orderedTool) use ($workspace) { // todo : create a serializer
