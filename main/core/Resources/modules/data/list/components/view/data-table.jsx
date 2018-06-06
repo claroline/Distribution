@@ -99,7 +99,7 @@ const DataTableRow = props => {
         />
       )}
 
-      {0 < props.actions.length &&
+      {(0 < props.actions.length || props.actions instanceof Promise) &&
         <TableCell align="right" className="actions-cell">
           <ListActions
             id={`data-table-item-${props.row.id}-actions`}
