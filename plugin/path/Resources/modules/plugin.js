@@ -1,8 +1,7 @@
 import {registry} from '#/main/app/plugins/registry'
 
 registry.add('path', {
-  actions: [],
-  resources: [],
-  tools: [],
-  widgets: []
+  resources: {
+    'innova_path': () => { return import(/* webpackChunkName: "plugin-path-path-resource" */ '#/plugin/path/resources/path') }
+  }
 })

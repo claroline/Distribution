@@ -29,7 +29,8 @@ registry.add('core', {
   },
 
   resources: {
-    'text': () => { return import(/* webpackChunkName: "core-text-resource" */ '#/main/core/resources/text') }
+    'directory': () => { return import(/* webpackChunkName: "core-directory-resource" */ '#/main/core/resources/directory') },
+    'text'     : () => { return import(/* webpackChunkName: "core-text-resource" */      '#/main/core/resources/text') }
   },
 
   tools: {},

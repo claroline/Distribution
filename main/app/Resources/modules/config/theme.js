@@ -21,7 +21,7 @@ function currentTheme() {
  * @todo manage versioning
  */
 function theme(assetName = 'bootstrap') {
-  return `/themes/${currentTheme()}/${assetName}.css`
+  return asset(`themes/${currentTheme()}/${assetName}.css`)
 }
 
 /**

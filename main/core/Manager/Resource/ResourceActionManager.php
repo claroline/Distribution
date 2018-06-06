@@ -83,7 +83,7 @@ class ResourceActionManager
             return false;
         }
 
-        return true; // return $this->dispatcher->hasListeners($eventName);
+        return true;
     }
 
     /**
