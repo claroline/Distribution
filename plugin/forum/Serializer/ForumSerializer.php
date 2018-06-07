@@ -75,7 +75,7 @@ class ForumSerializer
               'description' => 'il faut causer sur ce forum !',
               'showOverview' => true,
               'subjectDataList' => $forum->getDataListOptions(),
-              'lastMessagesCount'=>  $forum->getDisplayMessages(),
+              'lastMessagesCount' => $forum->getDisplayMessages(),
             ],
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
@@ -105,13 +105,8 @@ class ForumSerializer
     {
         $this->sipe('moderation', 'setValidationMode', $data, $forum);
         $this->sipe('maxComment', 'setMaxComment', $data, $forum);
-<<<<<<< HEAD
-        $this->sipe('display.lastMessages', 'setDisplayMessage', $data, $forum);
-        $this->sipe('display.dataList', 'setDataListOptions', $data, $forum);
-=======
         $this->sipe('display.lastMessagesCount', 'setDisplayMessage', $data, $forum);
         $this->sipe('display.subjectDataList', 'setDataListOptions', $data, $forum);
->>>>>>> 5961f4c1ce91237fd3366ce85bcdb97b86289c8f
 
         if (isset($data['restrictions'])) {
             if (isset($data['restrictions']['lockDate'])) {
