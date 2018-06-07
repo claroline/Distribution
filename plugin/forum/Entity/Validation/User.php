@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ForumBundle\Entity;
+namespace Claroline\ForumBundle\Entity\Validation;
 
 use Claroline\CoreBundle\Entity\User as ClarolineUser;
 use Doctrine\ORM\Mapping as ORM;

@@ -46,7 +46,7 @@ const EditorComponent = (props) =>
         title: trans('display_parameters'),
         fields: [
           {
-            name: 'display.subjectList',
+            name: 'display.subjectDataList',
             type: 'choice',
             label: trans('subjects_list_display', {}, 'forum'),
             options: {

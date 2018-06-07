@@ -14,6 +14,9 @@ const SubjectCard = (props) =>
     title={props.data.title}
     poster={props.data.poster ? asset(props.data.poster.url) : null}
     subtitle={transChoice('replies', props.data.meta.messages, {count: props.data.meta.messages}, 'forum')}
+    // flags={[
+    //   ['fa fa-fw fa-thumb-tack', trans('stuck', {}, 'forum')]
+    // ]}
     contentText={getPlainText(props.contentText)}
   />
 

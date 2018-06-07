@@ -8,7 +8,7 @@ import {currentUser} from '#/main/core/user/current'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
-import {SubjectCard} from '#/plugin/forum/resources/forum/data/subject-card'
+import {SubjectCard} from '#/plugin/forum/resources/forum/data/components/subject-card'
 
 const authenticatedUser = currentUser()
 

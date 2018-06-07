@@ -36,6 +36,10 @@ const visibleMessages = createSelector(
   [messages],
   (messages) => messages.data.filter(message => true === message.meta.visible)
 )
+const moderatedMessages = createSelector(
+  [messages],
+  (messages) => messages.data.filter(message => false === message.meta.visible)
+)
 
 const tagsCount = createSelector(
   [forum],
@@ -60,6 +64,7 @@ export const select = {
   editingSubject,
   closedSubject,
   visibleMessages,
+  moderatedMessages,
   tagsCount,
   lastMessages
 }

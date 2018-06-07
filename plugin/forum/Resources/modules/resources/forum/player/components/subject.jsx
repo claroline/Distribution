@@ -120,7 +120,13 @@ class SubjectComponent extends Component {
                 {get(this.props.subject, 'meta.sticky') &&
                   <span>[{trans('stuck', {}, 'forum')}] </span>
                 }
-                {this.props.subject.title}<small> {transChoice('replies', this.props.messages.length, {count: this.props.messages.length}, 'forum')}</small>
+                {this.props.subject.title}
+                <small> {transChoice('replies', this.props.messages.length, {count: this.props.messages.length}, 'forum')}
+                  {0 !== this.props.moderatedMessages.length &&
+                    <span> {transChoice('moderated_posts_count', this.props.moderatedMessages.length, {count: this.props.moderatedMessages.length}, 'forum')}</span>
+                  }
+                </small>
+
               </h3>
             }
             {(this.props.showSubjectForm && this.props.editingSubject) &&
@@ -306,6 +312,9 @@ SubjectComponent.propTypes = {
   history: T.object.isRequired
 }
 
+SubjectComponent.defaultProps = {
+  moderatedMessages: []
+}
 const Subject =  withRouter(withModal(connect(
   state => ({
     // TODO : change for forum
@@ -316,6 +325,7 @@ const Subject =  withRouter(withModal(connect(
     sortOrder: listSelect.sortBy(listSelect.list(state, 'subjects.messages')).direction,
     showSubjectForm: select.showSubjectForm(state),
     messages: select.visibleMessages(state),
+    moderatedMessages: select.moderatedMessages(state),
     totalResults: listSelect.totalResults(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
