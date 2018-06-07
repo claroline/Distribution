@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {Heading} from '#/main/core/layout/components/heading'
-import {ActionButton} from '#/main/app/action'
+import {Button} from '#/main/app/action'
 
 const WikiSection = props =>
   <div className="wiki-section">
@@ -11,7 +11,12 @@ const WikiSection = props =>
       level={props.num.length + 3}
       className="wiki-section-title"
     >
-      {props.title}
+      {props.title &&
+        <span className="wiki-section-title-text">
+          {props.displaySectionNumbers && props.num && Array.isArray(props.num) && <span className="ordering">{props.num.join('.')} - </span>}
+          <span className="title">{props.title}</span>
+        </span>
+      }
       {props.loggedUserId !== null && (props.canEdit || props.mode !== '2') &&
         <span className="wiki-section-actions">
           {!props.visible &&
@@ -20,7 +25,7 @@ const WikiSection = props =>
             </span>
           }
           [
-          <ActionButton
+          <Button
             id={`wiki-section-add-${props.id}`}
             type="link"
             className="btn btn-link"
@@ -28,7 +33,7 @@ const WikiSection = props =>
             label={trans('add_new_subsection', {}, 'icap_wiki')}
           />
           |
-          <ActionButton
+          <Button
             id={`wiki-section-edit-${props.id}`}
             type="link"
             className="btn btn-link"
@@ -36,7 +41,7 @@ const WikiSection = props =>
             label={trans('edit', {}, 'icap_wiki')}
           />
           |
-          <ActionButton
+          <Button
             id={`wiki-section-history-${props.id}`}
             type="link"
             className="btn btn-link"
@@ -46,7 +51,7 @@ const WikiSection = props =>
           {props.loggedUserId !== null && props.canEdit && props.toggleVisibility !== null &&
             <span>
               |
-              <ActionButton
+              <Button
                 id={`wiki-section-toggle-visibility-${props.id}`}
                 type="callback"
                 className="btn btn-link"
@@ -75,7 +80,7 @@ const WikiSection = props =>
             canEdit={props.canEdit}
             loggedUserId={props.loggedUserId}
             mode={props.mode}
-            visible={section.visible}
+            visible={section.meta.visible}
             toggleVisibility={props.toggleVisibility}
           />
       )
@@ -84,7 +89,7 @@ const WikiSection = props =>
 
 WikiSection.propTypes = {
   'id': T.string.isRequired,
-  'title': T.string.isRequired,
+  'title': T.string,
   'text': T.string.isRequired,
   'sections': T.arrayOf(T.object),
   'num': T.arrayOf(T.number).isRequired,
@@ -98,7 +103,8 @@ WikiSection.propTypes = {
 
 WikiSection.defaultProps = {
   'loggedUserId': null,
-  'toggleVisibility': null
+  'toggleVisibility': null,
+  'title': null
 }
 
 export {

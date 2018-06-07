@@ -5,7 +5,7 @@ import {PropTypes as T} from 'prop-types'
 const ContentSection = props =>
   <div className="wiki-contents-section">
     <div className="wiki-contents-section-title">
-      <span className="ordering">{props.num.join('.')} - </span>
+      {props.num && Array.isArray(props.num) && <span className="ordering">{props.num.join('.')} - </span>}
       <span className="name">{props.section.activeContribution.title}</span>
     </div>
     {

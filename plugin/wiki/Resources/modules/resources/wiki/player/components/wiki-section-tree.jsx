@@ -19,7 +19,7 @@ const WikiSectionTree = props =>
             canEdit={props.canEdit}
             loggedUserId={props.loggedUserId}
             mode={props.mode}
-            visible={section.visible}
+            visible={section.meta.visible}
             toggleVisibility={props.toggleVisibility}
           />
       )

@@ -82,7 +82,7 @@ class SectionSerializer
                 'visible' => $section->getVisible(),
                 'creator' => null === $author ?
                     null :
-                    $this->userSerializer->serialize($author, Options::SERIALIZE_MINIMAL),
+                    $this->userSerializer->serialize($author, [Options::SERIALIZE_MINIMAL]),
             ],
         ];
     }
@@ -113,6 +113,7 @@ class SectionSerializer
             'id' => $node['uuid'],
             'meta' => [
                 'createdAt' => $node['creationDate']->format('Y-m-d H:i'),
+                'visible' => $node['visible'],
             ],
             'activeContribution' => $this->contributionSerializer->serializeFromSectionNode($node),
             'children' => $children,

@@ -31,7 +31,7 @@ const EditorComponent = props =>
               choices: WIKI_MODE_CHOICES
             }
           }, {
-            name: 'displaySectionNumbers',
+            name: 'display.sectionNumbers',
             help: trans('display_section_numbers_message', {}, 'icap_wiki'),
             type: 'boolean',
             label: trans('display_section_numbers', {}, 'icap_wiki')

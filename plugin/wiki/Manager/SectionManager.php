@@ -4,6 +4,7 @@ namespace Icap\WikiBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
+use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Serializer\SectionSerializer;
@@ -41,14 +42,6 @@ class SectionManager
         $this->sectionSerializer = $sectionSerializer;
     }
 
-    /**
-     * @return \Icap\WikiBundle\Repository\SectionRepository
-     */
-    public function getSectionRepository()
-    {
-        return $this->sectionRepository;
-    }
-
     public function getSerializedSectionTree(Wiki $wiki, User $user = null, $isAdmin = false)
     {
         $tree = $this->sectionRepository->buildSectionTree($wiki, $user, $isAdmin);
@@ -56,9 +49,16 @@ class SectionManager
         return $this->sectionSerializer->serializeSectionTreeNode($wiki, $tree[0]);
     }
 
+    public function setActiveContribution(Section $section, Contribution $contribution)
+    {
+        $section->setActiveContribution($contribution);
+        $this->om->persist($section);
+        $this->om->flush();
+    }
+
     public function getArchivedSectionsForPosition(Section $section)
     {
-        $sections = $this->getSectionRepository()->findSectionsForPosition($section);
+        $sections = $this->sectionRepository->findSectionsForPosition($section);
         $archivedSections = [];
         $prefixesArray = [];
         $childrens = [];

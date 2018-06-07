@@ -23,7 +23,7 @@ const PlayerComponent = props =>
       canEdit={props.canEdit}
       loggedUserId={loggedUser === null ? null : loggedUser.id}
       mode={props.mode}
-      visible={props.sectionTree.visible}
+      visible={props.sectionTree.meta.visible}
     />
     <Contents sectionTree={props.sectionTree}/>
     <WikiSectionTree
@@ -54,7 +54,7 @@ const Player = connect(
   }),
   dispatch => (
     {
-      toggleVisibility: (sectionId, visible) => console.log(sectionId + ' ' + visible)
+      toggleVisibility: (sectionId, visible) => dispatch(sectionId, visible)
     }
   )
 )(PlayerComponent)

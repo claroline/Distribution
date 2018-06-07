@@ -75,12 +75,11 @@ class ContributionSerializer
             'id' => $contribution->getUuid(),
             'title' => $contribution->getTitle(),
             'text' => $contribution->getText(),
-            'section' => $contribution->getSection()->getUuid(),
             'meta' => [
                 'createdAt' => $contribution->getCreationDate()->format('Y-m-d H:i'),
                 'creator' => null === $contributor ?
                     null :
-                    $this->userSerializer->serialize($contributor, Options::SERIALIZE_MINIMAL),
+                    $this->userSerializer->serialize($contributor, [Options::SERIALIZE_MINIMAL]),
             ],
         ];
     }
@@ -93,9 +92,8 @@ class ContributionSerializer
             'id' => $contribution['uuid'],
             'title' => $contribution['title'],
             'text' => $contribution['text'],
-            'section' => $sectionNode['uuid'],
             'meta' => [
-                'createdAt' => $contribution['meta']['createdAt']->format('Y-m-d H:i'),
+                'createdAt' => $contribution['creationDate']->format('Y-m-d H:i'),
             ],
         ];
     }
