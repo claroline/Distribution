@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {scaleLinear} from 'd3-scale'
 
-import {UrlButton} from '#/main/app/button/components/url'
+import {CallbackButton} from '#/main/app/button/components/callback'
 
 
 // tags is an object with keys=tag and values=count
@@ -15,21 +15,18 @@ const TagCloud = props => {
   return (
     <div className="tag-cloud-container">
       {Object.keys(props.tags).map(tag =>
-        <UrlButton
-          type="link"
+        <CallbackButton
           key={tag}
           className="btn btn-link tag-cloud"
-          target="/subjects"
+          callback={() => console.log('puet')}
           style={{fontSize: fontSizeConverter(props.tags[tag], 1, 3)+'px'}}
         >
           {tag}
-        </UrlButton>
+        </CallbackButton>
       )}
     </div>
   )
 }
-
-
 
 
 TagCloud.propTypes = {

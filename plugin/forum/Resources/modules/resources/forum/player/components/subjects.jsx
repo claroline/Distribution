@@ -1,16 +1,14 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import {trans, transChoice} from '#/main/core/translation'
-import {asset} from '#/main/core/scaffolding/asset'
+import {trans} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
-import {DataCard} from '#/main/core/data/components/data-card'
-import {UserAvatar} from '#/main/core/user/components/avatar'
 import {currentUser} from '#/main/core/user/current'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
+import {SubjectCard} from '#/plugin/forum/resources/forum/data/subject-card'
 
 const authenticatedUser = currentUser()
 
@@ -132,14 +130,9 @@ const SubjectsList = props =>
         }
       ]}
       card={(props) =>
-        <DataCard
+        <SubjectCard
           {...props}
-          id={props.data.id}
-          icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
-          title={props.data.title}
-          poster={props.data.poster ? asset(props.data.poster.url) : null}
-          subtitle={transChoice('replies', props.data.meta.messages, {count: props.data.meta.messages}, 'forum')}
-          // contentText={props.data)}
+          contentText={props.data.content}
         />
       }
     />

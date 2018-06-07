@@ -2,7 +2,6 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
-import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {number} from '#/main/app/intl'
@@ -11,7 +10,6 @@ import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {MetricCard} from '#/main/core/layout/components/metric-card'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
-import {UrlButton} from '#/main/app/button/components/url'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -100,13 +98,13 @@ const OverviewComponent = props =>
                 {props.lastMessages.map(message =>
                   <li key={message.id} className="post">
                     <h4>{message.subject.title}
-                      <UrlButton
+                      <Button
+                        label={trans('see_subject', {}, 'forum')}
                         type="link"
-                        className="btn btn-link"
-                        target="/subjects"
-                      >
-                        Voir le sujet
-                      </UrlButton>
+                        target={'/subjects/show/'+message.subject.id}
+                        className="btn-link"
+                        primary={true}
+                      />
                     </h4>
                     <UserMessage
                       user={message.meta.creator}

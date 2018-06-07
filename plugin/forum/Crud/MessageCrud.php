@@ -49,7 +49,7 @@ class MessageCrud
         }
 
         if (Forum::VALIDATE_PRIOR_ONCE === $forum->getValidationMode()) {
-            $user = $this->om->getRepository('ClarolineForum:Validation\User')->findOneBy([
+            $user = $this->om->getRepository('ClarolineForumBundle:Validation\User')->findOneBy([
               'user' => $message->getCreator(),
               'forum' => $forum,
             ]);
