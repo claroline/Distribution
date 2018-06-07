@@ -33,7 +33,7 @@ const EditorComponent = (props) =>
                 displayed: props.forum.display.showOverview
               },
               {
-                name: 'display.lastMessages',
+                name: 'display.lastMessagesCount',
                 type: 'number',
                 label: trans('show_last_messages', {}, 'forum'),
                 displayed: props.forum.display.showOverview
@@ -46,7 +46,7 @@ const EditorComponent = (props) =>
         title: trans('display_parameters'),
         fields: [
           {
-            name: 'display.subjectList',
+            name: 'display.subjectDataList',
             type: 'choice',
             label: trans('subjects_list_display', {}, 'forum'),
             options: {

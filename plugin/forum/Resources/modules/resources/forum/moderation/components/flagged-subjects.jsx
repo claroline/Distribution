@@ -9,7 +9,7 @@ import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {select} from '#/plugin/forum/resources/forum/selectors'
-import {SubjectCard} from '#/plugin/forum/resources/forum/data/subject-card'
+import {SubjectCard} from '#/plugin/forum/resources/forum/data/components/subject-card'
 
 
 const FlaggedSubjectsComponent = (props) =>
