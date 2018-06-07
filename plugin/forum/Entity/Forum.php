@@ -62,6 +62,20 @@ class Forum extends AbstractResource
      */
     protected $lockDate = null;
 
+    /**
+     * @ORM\Column(name="show_overview", type="boolean", options={"default" = 1})
+     *
+     * @var bool
+     */
+    private $showOverview = true;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    protected $description;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
@@ -132,5 +146,49 @@ class Forum extends AbstractResource
     public function getDisplayMessages()
     {
         return $this->displayMessages;
+    }
+
+    /**
+     * Set show overview.
+     *
+     * @param bool $showOverview
+     */
+    public function setShowOverview($showOverview)
+    {
+        $this->showOverview = $showOverview;
+    }
+
+    /**
+     * Is overview shown ?
+     *
+     * @return bool
+     */
+    public function getShowOverview()
+    {
+        return $this->showOverview;
+    }
+
+    /**
+     * Get description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set description.
+     *
+     * @param string $description
+     *
+     * @return Path
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

@@ -12,7 +12,10 @@
 namespace Claroline\ForumBundle\Manager;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\ForumBundle\Entity\Forum;
+use Claroline\ForumBundle\Entity\Validation\User as ValidationUser;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -26,12 +29,14 @@ class Manager
      * Constructor.
      *
      * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder")
+     *     "finder" = @DI\Inject("claroline.api.finder"),
+     *     "om"     = @DI\Inject("claroline.persistence.object_manager")
      * })
      */
-    public function __construct(FinderProvider $finder)
+    public function __construct(FinderProvider $finder, ObjectManager $om)
     {
         $this->finder = $finder;
+        $this->om = $om;
     }
 
     public function getHotSubjects(Forum $forum)
@@ -69,5 +74,21 @@ class Manager
         }
 
         return array_keys($subjects);
+    }
+
+    public function getValidationUser(User $creator, Forum $forum)
+    {
+        $user = $this->om->getRepository('ClarolineForumBundle:Validation\User')->findOneBy([
+          'user' => $creator,
+          'forum' => $forum,
+        ]);
+
+        if (!$user) {
+            $user = new ValidationUser();
+            $user->setForum($forum);
+            $user->setUser($creator);
+        }
+
+        return $user;
     }
 }

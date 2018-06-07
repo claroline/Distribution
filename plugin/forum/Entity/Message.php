@@ -68,6 +68,10 @@ class Message extends AbstractMessage
 
     public function getSubject()
     {
+        if ($parent = $this->getParent()) {
+            return $parent->getSubject();
+        }
+
         return $this->subject;
     }
 

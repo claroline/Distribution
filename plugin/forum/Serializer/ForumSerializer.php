@@ -72,16 +72,21 @@ class ForumSerializer
             'moderation' => $forum->getValidationMode(),
             'maxComment' => $forum->getMaxComment(),
             'display' => [
-              'description' => 'il faut causer sur ce forum !',
-              'showOverview' => true,
+              'description' => $forum->getDescription(),
+              'showOverview' => $forum->getShowOverview(),
               'subjectDataList' => $forum->getDataListOptions(),
               'lastMessagesCount' => $forum->getDisplayMessages(),
             ],
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
-/*
-              'banned' => isBanned($user, $forum),
-              'moderator' => isModerator($user, $forum),*/
+
+              'banned' => $this->container->get('claroline.manager.forum_manager')
+                ->getValidationUser(
+                  $this->container->get('security.token_storage')->getToken()->getUser(),
+                  $forum
+                  )
+                ->isBanned(),
+              'moderator' => true, //comment on fait pour le savoir ?
             ],
             'meta' => [
               'users' => 34, //utilisateur participants
@@ -107,6 +112,8 @@ class ForumSerializer
         $this->sipe('maxComment', 'setMaxComment', $data, $forum);
         $this->sipe('display.lastMessagesCount', 'setDisplayMessage', $data, $forum);
         $this->sipe('display.subjectDataList', 'setDataListOptions', $data, $forum);
+        $this->sipe('display.description', 'setDescription', $data, $forum);
+        $this->sipe('display.showOverview', 'setShowOverview', $data, $forum);
 
         if (isset($data['restrictions'])) {
             if (isset($data['restrictions']['lockDate'])) {

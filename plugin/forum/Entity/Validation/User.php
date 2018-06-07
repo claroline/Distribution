@@ -100,18 +100,13 @@ class User
         return $this->banned;
     }
 
-    public function isBanned()
-    {
-        return $this->banned;
-    }
-
     public function setNotified($bool)
     {
         $this->notified = $bool;
     }
 
-    public function isNotified($bool)
+    public function isNotified()
     {
-        return $this->isNotified;
+        return $this->notified;
     }
 }

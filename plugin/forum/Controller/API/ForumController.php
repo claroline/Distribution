@@ -4,8 +4,8 @@ namespace Claroline\ForumBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\ForumBundle\Entity\Forum;
-use Claroline\ForumBundle\Entity\Validation\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -98,14 +98,18 @@ class ForumController extends AbstractCrudController
         );
     }
 
+    //Pour les 4 méthodes suivantes, utilser le CRUD ? je sais pas trop.
+
     /**
      * @EXT\Route("/unlock/{user}/forum/{forum}")
      * @EXT\Method("PATCH")
+     * @EXT\ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      */
     public function unlockAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $user = $this->getValidationUser($user, $forum);
+        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setAccess(true);
         $om->persist($user);
         $om->flush();
@@ -116,11 +120,13 @@ class ForumController extends AbstractCrudController
     /**
      * @EXT\Route("/lock/{user}/forum/{forum}")
      * @EXT\Method("PATCH")
+     * @EXT\ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      */
     public function lockAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $user = $this->getValidationUser($user, $forum);
+        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setAccess(false);
         $om->persist($user);
         $om->flush();
@@ -131,11 +137,13 @@ class ForumController extends AbstractCrudController
     /**
      * @EXT\Route("/ban/{user}/forum/{forum}")
      * @EXT\Method("PATCH")
+     * @EXT\ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      */
     public function banAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $user = $this->getValidationUser($user, $forum);
+        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setBanned(true);
         $om->persist($user);
         $om->flush();
@@ -146,33 +154,18 @@ class ForumController extends AbstractCrudController
     /**
      * @EXT\Route("/unban/{user}/forum/{forum}")
      * @EXT\Method("PATCH")
+     * @EXT\ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      */
     public function unbanAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $user = $this->getValidationUser($user, $forum);
+        $user = $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setBanned(false);
         $om->persist($user);
         $om->flush();
 
         return new JsonResponse(true);
-    }
-
-    private function getValidationUser(User $user, Forum $forum)
-    {
-        $om = $this->container->get('claroline.persistence.object_manager');
-        $user = $this->om->getRepository('ClarolineForumBundle:Validation\User')->findOneBy([
-          'user' => $message->getCreator(),
-          'forum' => $forum,
-        ]);
-
-        if (!$user) {
-            $user = new User();
-            $user->setForum($forum);
-            $user->setUser($message->getCreator());
-        }
-
-        return $user;
     }
 
     public function getClass()

@@ -8,7 +8,9 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Validation\User;
+use Claroline\ForumBundle\Manager\Manager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.crud.forum_message")
@@ -20,14 +22,18 @@ class MessageCrud
      * ForumSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "manager"      = @DI\Inject("claroline.manager.forum_manager")
      * })
      *
      * @param FinderProvider $finder
      */
-    public function __construct(ObjectManager $om)
+    public function __construct(ObjectManager $om, TokenStorageInterface $tokenStorage, Manager $manager)
     {
         $this->om = $om;
+        $this->tokenStorage = $tokenStorage;
+        $this->manager = $manager;
     }
 
     /**
@@ -39,7 +45,6 @@ class MessageCrud
      */
     public function preCreate(CreateEvent $event)
     {
-        /** @var ResourceNode $resourceNode */
         $message = $event->getObject();
 
         $forum = $this->getSubject($message)->getForum();
@@ -61,6 +66,27 @@ class MessageCrud
             }
 
             $message->setVisible($user->getAccess());
+        }
+
+        return $message;
+    }
+
+    /**
+     * @DI\Observe("crud_post_create_object_claroline_forumbundle_entity_message")
+     *
+     * @param CreateEvent $event
+     *
+     * @return ResourceNode
+     */
+    public function postCreate(CreateEvent $event)
+    {
+        $message = $event->getObject();
+        $forum = $message->getSubject()->getForum();
+        $user = $this->tokenStorage->getToken()->getUser();
+        $userValidate = $this->manager->getValidationUser($user, $forum);
+
+        if ($userValidate->isNotified()) {
+            //envoyer le message vers la messagerie
         }
 
         return $message;
