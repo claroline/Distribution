@@ -33,7 +33,7 @@ const EditorComponent = (props) =>
                 displayed: props.forum.display.showOverview
               },
               {
-                name: 'display.lastMessages',
+                name: 'display.lastMessagesCount',
                 type: 'number',
                 label: trans('show_last_messages', {}, 'forum'),
                 displayed: props.forum.display.showOverview
