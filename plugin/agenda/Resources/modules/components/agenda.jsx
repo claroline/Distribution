@@ -48,30 +48,6 @@ function sanitize(event) {
   return data
 }
 
-// port from the old code
-function createPopover(event, $element) {
-  /*
-   * In FullCalendar >= 2.3.1, the end date is null if the start date is the same.
-   * In this case, the end date is null when it's a all day event which lasts one day
-   */
-  if (event.end === null) {
-    event.end = moment(event.start).add(1, 'days')
-  }
-
-  event.start.string = convertDateTimeToString(event.start, event.allDay, false)
-  event.end.string = convertDateTimeToString(event.end, event.allDay, true)
-
-  $element
-    .popover({
-      trigger: 'click',
-      title: event.title + '<button class="close">X</button>',
-      content: renderToString(<Event {...sanitize(event)}/>),
-      html: true,
-      container: 'body',
-      placement: 'top'
-    })
-}
-
 const form = [
   {
     title: trans('general'),
@@ -216,7 +192,19 @@ const Agenda = connect(
           fadeModal: () => {},
           hideModal: () => {},
           show: true,
-          event: sanitize(event)
+          event: sanitize(event),
+          onForm: () => {
+            dispatch (
+              modalActions.showModal('MODAL_DATA_FORM', {
+                title: 'event',
+                save: event => {
+                  dispatch(actions.update(event, calendarRef))
+                },
+                sections: form,
+                data: sanitize(event)
+              })
+            )
+          }
         })
       )
     },

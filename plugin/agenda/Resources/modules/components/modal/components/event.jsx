@@ -11,7 +11,7 @@ const EventModal = props =>
     title={trans('event')}
     {...props}
   >
-    <Event {...props.event}></Event>
+    <Event {...props.event} onForm={props.onForm}></Event>
   </Modal>
 
 export {

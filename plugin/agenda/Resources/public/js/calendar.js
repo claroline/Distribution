@@ -93,11 +93,7 @@
       fixedWeekCount: false,
       eventLimit: 4,
       timezone: 'local',
-      eventDrop: onEventDrop,
-      eventDragStart: onEventDragStart,
-      dayClick: renderAddEventForm,
       eventClick:  onEventClick,
-      eventDestroy: onEventDestroy,
       eventRender: onEventRender,
       eventResize: onEventResize,
       eventResizeStart: onEventResizeStart
@@ -107,15 +103,10 @@
     redirectCalendar()
   }
 
-  function onEventDrop(event, delta)
-  {
-    resizeOrMove(event, delta._days, delta._milliseconds / (1000 * 60), 'move')
-  }
 
-  function onEventDragStart()
-  {
-    $(this).popover('hide')
-  }
+
+
+  onEventDestroy,
 
   function onEventClick(event, jsEvent)
   {
@@ -134,11 +125,6 @@
     }
   }
 
-  function onEventDestroy(event, $element)
-  {
-    $element.popover('destroy')
-    $('.popover').remove()
-  }
 
   function onEventRender(event, element)
   {
@@ -153,15 +139,6 @@
     renderEvent(event, element)
   }
 
-  function onEventResize(event, delta)
-  {
-    resizeOrMove(event, delta._days, delta._milliseconds / (1000 * 60), 'resize')
-  }
-
-  function onEventResizeStart()
-  {
-    $(this).popover('hide')
-  }
 
   function renderEvent(event, $element)
   {
@@ -197,8 +174,6 @@
       }
     }
 
-    // Create the popover for the event or the task
-    createPopover(event, $element)
   }
 
   $('body')
@@ -300,29 +275,7 @@
     $calendarElement.fullCalendar('refetchEvents')
   }
 
-  function createPopover(event, $element)
-  {
-    /* In FullCalendar >= 2.3.1, the end date is null if the start date is the same.
-         * In this case, the end date is null when it's a all day event which lasts one day
-         */
-    if (event.end === null) {
-      event.end = moment(event.start).add(1, 'days')
-    }
 
-    event.start.string = convertDateTimeToString(event.start, event.allDay, false)
-    event.end.string = convertDateTimeToString(event.end, event.allDay, true)
-
-    $element
-      .popover({
-        trigger: 'click',
-        title: event.title + '<button class="close">X</button>',
-        content: Twig.render(EventContent, {event: event}),
-        html: true,
-        container: 'body',
-        placement: 'top'
-      })
-
-  }
 
   function markTaskAsToDo(event, jsEvent, $element)
   {
@@ -359,26 +312,7 @@
     })
   }
 
-  function showEditForm(eventId)
-  {
-    if (!isFormShown) {
-      var route_name = isDesktop ? 'claro_desktop_agenda_update_event_form' : 'claro_workspace_agenda_update_event_form',
-        editUrl = Routing.generate(route_name, {event: eventId})
 
-      Claroline.Modal.displayForm(
-        editUrl,
-        updateCalendarItemCallback,
-        function () {
-          initializeDateTimePicker()
-          $('#agenda_form_isTask').is(':checked') ? hideStartDate() : showStartDate()
-          $('#agenda_form_isAllDay').is(':checked') ? hideFormHours(): showFormHours()
-        },
-        'form-event'
-      )
-
-      isFormShown = true
-    }
-  }
 
   function showEditFormForGuest(eventId)
   {

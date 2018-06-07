@@ -56,10 +56,11 @@ const Event = props =>
     }
 
     {props.is_guest &&
-       <button>edit guest</button>
+       <button className="btn btn-primary" onClick={props.onForm()}>edit guest</button>
     }
+
     {!props.is_guest && props.editable &&
-       <button>edit</button>
+       <button className="btn btn-primary" onClick={props.onForm}>edit</button>
     }
   </div>
 
