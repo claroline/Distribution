@@ -45,7 +45,7 @@ class ChapterSerializer
      */
     public function getSchema()
     {
-        return '#/plugin/lesson/section.json';
+        return '#/plugin/lesson/chapter.json';
     }
 
     /**

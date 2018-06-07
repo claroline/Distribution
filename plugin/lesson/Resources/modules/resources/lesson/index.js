@@ -2,7 +2,7 @@ import {bootstrap} from '#/main/app/bootstrap'
 
 import {LessonResource} from '#/plugin/lesson/resources/lesson/components/resource.jsx'
 
-import {reducer} from '#/plugin/lesson/resources/lesson/reducer'
+import {reducer} from '#/plugin/lesson/resources/lesson/store'
 
 
 // mount the react application

@@ -37,7 +37,7 @@ class LessonSerializer
      */
     public function getClass()
     {
-        return 'Icap\LessonBundle\Entity\LEsson';
+        return 'Icap\LessonBundle\Entity\Lesson';
     }
 
     /**
@@ -45,7 +45,7 @@ class LessonSerializer
      */
     public function getSchema()
     {
-        return '#/plugin/lesson/section.json';
+        return '#/plugin/lesson/lesson.json';
     }
 
     /**

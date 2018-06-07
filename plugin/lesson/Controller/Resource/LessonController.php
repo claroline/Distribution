@@ -28,7 +28,7 @@ class LessonController extends Controller
      *
      * @return array
      */
-    public function openAction(Lesson $lesson)
+    /*public function openAction(Lesson $lesson)
     {
         $resourceNode = $lesson->getResourceNode();
         $this->checkPermission('OPEN', $resourceNode, [], true);
@@ -36,7 +36,7 @@ class LessonController extends Controller
         return [
             '_resource' => $lesson,
         ];
-    }
+    }*/
 
     /**
      * @EXT\Route(
