@@ -48,7 +48,6 @@ const Resource = props =>
 
 const LessonResource = connect(
   state => ({
-    resourceNode: state.resourceNode,
     lesson: state.lesson
   }),
   () => ({})
