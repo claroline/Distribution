@@ -17,33 +17,6 @@
     {% endif %}
 {% endblock %}
 
-{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
-
-{% block breadcrumb %}
-    {% if workspace is defined %}
-        {{
-        macros.workspaceBreadcrumbs(
-            workspace,
-                [
-                    {
-                        'name': 'agenda'|trans({}, 'tools'),
-                        'href': ''
-                    }
-                ]
-            )
-        }}
-    {% else %}
-        {{
-            macros.desktopBreadcrumbs([
-                {
-                    'name': 'agenda'|trans({}, 'tools'),
-                    'href': ''
-                }
-            ])
-        }}
-    {% endif %}
-{% endblock %}
-
 {% block section_content %}
   <div class="agenda-container page-container"></div>
 {% endblock %}

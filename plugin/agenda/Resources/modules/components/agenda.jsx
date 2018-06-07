@@ -155,9 +155,9 @@ class AgendaComponent extends Component {
     return (
       <PageContainer>
         <PageHeader title={trans('agenda', {}, 'tool')}></PageHeader>
-        <div>
+        <div className="container row panel-body">
           <Calendar {...this.calendar} />
-          <TaskBar />
+          <TaskBar/>
         </div>
       </PageContainer>
     )
@@ -189,8 +189,6 @@ const Agenda = connect(
       dispatch (
         modalActions.showModal(MODAL_EVENT, {
           title: 'event',
-          fadeModal: () => {},
-          hideModal: () => {},
           show: true,
           event: sanitize(event),
           onForm: () => {
