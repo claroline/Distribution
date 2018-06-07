@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 
 import moment from 'moment'
 import cloneDeep from 'lodash/cloneDeep'
@@ -16,6 +17,8 @@ import {PageContainer, PageHeader, PageActions} from '#/main/core/layout/page'
 import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
 import {TaskBar} from '#/plugin/agenda/components/task-bar.jsx'
 import {Event} from '#/plugin/agenda/components/event.jsx'
+
+import {MODAL_EVENT} from '#/plugin/agenda/components/modal'
 
 import $ from 'jquery'
 
@@ -36,26 +39,33 @@ function convertDateTimeToString(value, isAllDay, isEndDate) {
       moment(value).format('DD/MM/YYYY HH:mm')
 }
 
+function sanitize(event) {
+  const data = cloneDeep(event)
+  data.start = event.start.format(getApiFormat())
+  data.end = event.end.format(getApiFormat())
+  delete data.source
+
+  return data
+}
+
 // port from the old code
 function createPopover(event, $element) {
   /*
    * In FullCalendar >= 2.3.1, the end date is null if the start date is the same.
    * In this case, the end date is null when it's a all day event which lasts one day
    */
-
-  /*
   if (event.end === null) {
     event.end = moment(event.start).add(1, 'days')
-  }*/
+  }
 
-  //event.start.string = convertDateTimeToString(event.start, event.allDay, false)
-  //ent.end.string = convertDateTimeToString(event.end, event.allDay, true)
+  event.start.string = convertDateTimeToString(event.start, event.allDay, false)
+  event.end.string = convertDateTimeToString(event.end, event.allDay, true)
 
   $element
     .popover({
       trigger: 'click',
       title: event.title + '<button class="close">X</button>',
-      content: 'utiliser l\'appli react ici',
+      content: renderToString(<Event {...sanitize(event)}/>),
       html: true,
       container: 'body',
       placement: 'top'
@@ -176,7 +186,6 @@ class AgendaComponent extends Component {
       </PageContainer>
     )
   }
-
 }
 
 const Agenda = connect(
@@ -194,73 +203,43 @@ const Agenda = connect(
       )
     },
     onEventDragStart(calendarRef) {
-      calendarRef.popover('hide')
+      //calendarRef.popover('hide')
     },
     onEventDrop(calendarRef, event, delta, revertFunc, jsEvent, ui, view) {
-      const data = cloneDeep(event)
-      data.start = event.start.format(getApiFormat())
-      data.end = event.end.format(getApiFormat())
-      delete data.source
-      dispatch(actions.update(data, calendarRef))
+
+      dispatch(actions.update(sanitize(event), calendarRef))
     },
-    onEventClick() {
-      alert('click')
-      /*
+    onEventClick(calendarRef, event) {
       dispatch (
-        modalActions.showModal('MODAL_DATA_FORM', {
+        modalActions.showModal(MODAL_EVENT, {
           title: 'event',
-          onChange: () => console.log('change'),
-          save: event => {
-            dispatch(actions.create(event))
-            //reload here
-          },
-          sections: form
+          fadeModal: () => {},
+          hideModal: () => {},
+          show: true,
+          event: sanitize(event)
         })
-      )*/
+      )
     },
     onEventDestroy() {
       //alert('destroy')
     },
     onEventRender(calendarRef, event, $element) {
-      //step 1: find workspace
-      //step 2: find restrictions (according to workspace ?)
-      //step 3: si editable
-
-
       if (event.editable) {
         $element.addClass('fc-draggable')
       }
 
       //event.durationEditable = event.durationEditable && workspacePermissions[workspaceId] && event.isEditable !== false
 
-      /*
-      if (event.isTask) {
-        var eventContent =  $element.find('.fc-content')
-        // Remove the date
-        eventContent.find('.fc-time').remove()
-        $element.css({
-          'background-color': 'rgb(144, 32, 32)',
-          'border-color': 'rgb(144, 32, 32)'
-        })
-        eventContent.prepend('<span class="task fa" data-event-id="' + event.id + '"></span>')
-
-        // Add the checkbox if the task is not done or the check symbol if the task is done
-        var checkbox = eventContent.find('.task')
-        if (event.isTaskDone) {
-          checkbox.addClass('fa-check-square-o')
-          checkbox.next().css('text-decoration', 'line-through')
-        } else {
-          checkbox.addClass('fa-square-o')
-        }
-      }*/
-
-      //createPopover(event, $element)
     },
-    onEventResize() {
-      alert('resize')
+    onEventResize(calendarRef) {
+      //calendarRef.popover('hide')
     },
-    eventResizeStart() {
-      alert('resizeStart')
+    eventResizeStart(calendarRef, event, delta, revertFunc, jsEvent, ui, view) {
+      const data = cloneDeep(event)
+      data.start = event.start.format(getApiFormat())
+      data.end = event.end.format(getApiFormat())
+      delete data.source
+      dispatch(actions.update(data, calendarRef))
     }
   })
 )(AgendaComponent)

@@ -215,17 +215,6 @@ class AgendaManager
         return $tabs;
     }
 
-    public function convertEventsToArray(array $events)
-    {
-        $data = [];
-
-        foreach ($events as $event) {
-            $data[] = $event->jsonSerialize();
-        }
-
-        return $data;
-    }
-
     public function convertInvitationsToArray(array $invitations)
     {
         $data = [];
@@ -235,24 +224,6 @@ class AgendaManager
         }
 
         return $data;
-    }
-
-    public function sortEvents($listEvents)
-    {
-        usort(
-            $listEvents,
-            function ($a, $b) {
-                $aStartTimestamp = $a->getStartInTimestamp();
-                $bStartTimestamp = $b->getStartInTimestamp();
-                if ($aStartTimestamp === $bStartTimestamp) {
-                    return 0;
-                }
-
-                return $aStartTimestamp > $bStartTimestamp ? 1 : -1;
-            }
-        );
-
-        return $listEvents;
     }
 
     /**

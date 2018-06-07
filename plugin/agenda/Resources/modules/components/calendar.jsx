@@ -35,8 +35,8 @@ class Calendar extends Component {
     this.props.dayClick($(this.calendarRef))
   }
 
-  onEventClick() {
-    this.props.eventClick($(this.calendarRef))
+  onEventClick(event) {
+    this.props.eventClick($(this.calendarRef), event)
   }
 
   onEventDestroy() {
@@ -47,8 +47,8 @@ class Calendar extends Component {
     this.props.eventRender($(this.calendarRef), event, $element)
   }
 
-  onEventResize() {
-    this.props.eventResize($(this.calendarRef))
+  onEventResize(event, delta, revertFunc, jsEvent, ui, view) {
+    this.props.eventResize($(this.calendarRef), event, delta, revertFunc, jsEvent, ui, view)
   }
 
   onEventResizeStart() {

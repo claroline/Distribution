@@ -201,31 +201,6 @@
     createPopover(event, $element)
   }
 
-  function renderAddEventForm(date)
-  {
-    // Select the first id of the json workspacePermissions
-    for(var key in workspacePermissions) break
-    if (workspacePermissions[key] && !isFormShown) {
-      var dateStart = moment(date).format('DD/MM/YYYY HH:mm'),
-        dateEnd = moment(date).add(1, 'hours').format('DD/MM/YYYY HH:mm')
-
-      var postRenderAddEventAction = function (html) {
-        $('#agenda_form_start').val(dateStart)
-        $('#agenda_form_end').val(dateEnd)
-        initializeDateTimePicker()
-      }
-
-      Claroline.Modal.displayForm(
-        addUrl,
-        addItemsToCalendar,
-        postRenderAddEventAction,
-        'form-event'
-      )
-
-      isFormShown = true
-    }
-  }
-
   $('body')
     .on('hide.bs.modal', '.modal', function () {
       isFormShown = false
@@ -281,19 +256,6 @@
   function removeEvent(event, item, data)
   {
     $calendarElement.fullCalendar('removeEvents', data.id)
-  }
-
-  function resizeOrMove(event, dayDelta, minuteDelta, action)
-  {
-    var route = action === 'move' ? 'claro_workspace_agenda_move': 'claro_workspace_agenda_resize'
-    $.ajax({
-      url: Routing.generate(route, {event: event.id, day: dayDelta, minute: minuteDelta}),
-      type: 'POST',
-      success: function (event) {
-        // Update the event to change the popover's data
-        updateCalendarItem(event)
-      }
-    })
   }
 
   function filterEvent(event, workspaceIds)
@@ -360,16 +322,6 @@
         placement: 'top'
       })
 
-  }
-
-  function convertDateTimeToString(value, isAllDay, isEndDate)
-  {
-    if (isAllDay) {
-      if (isEndDate) {
-        return moment(value).subtract(1, 'minutes').format('DD/MM/YYYY HH:mm')
-      }
-    }
-    return moment(value).format('DD/MM/YYYY HH:mm')
   }
 
   function markTaskAsToDo(event, jsEvent, $element)

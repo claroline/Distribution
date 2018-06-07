@@ -62,6 +62,7 @@ class EventSerializer
             'end' => DateNormalizer::normalize($event->getEndInDateTime()),
             'color' => $event->getPriority(),
             'allDay' => $event->isAllDay(),
+            'durationEditable' => !$event->isTask() && false !== $event->isEditable() && !$invitation,
             'owner' => $this->serializer->serialize($event->getUser()),
             'description' => $invitation && !is_null($invitation->getDescription()) ? $invitation->getDescription() : $event->getDescription(),
             'workspace' => $event->getWorkspace() ? $this->serializer->serialize($event->getWorkspace()) : null,
@@ -82,7 +83,6 @@ class EventSerializer
     public function serializeRestrictions($event, $invitation = null)
     {
         return [
-          'durationEditable' => !$event->isTask() && false !== $event->isEditable() && !$invitation,
         ];
     }
 
