@@ -74,13 +74,8 @@ class ForumSerializer
             'display' => [
               'description' => 'il faut causer sur ce forum !',
               'showOverview' => true,
-<<<<<<< HEAD
-              'dataList' => $forum->getDataListOptions(),
-              'lastMessages' => $forum->getDisplayMessages(),
-=======
               'subjectDataList' => $forum->getDataListOptions(),
               'lastMessagesCount'=>  $forum->getDisplayMessages(),
->>>>>>> 5961f4c1ce91237fd3366ce85bcdb97b86289c8f
             ],
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
