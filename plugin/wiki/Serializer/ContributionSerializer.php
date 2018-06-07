@@ -2,8 +2,10 @@
 
 namespace Icap\WikiBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
@@ -24,17 +26,24 @@ class ContributionSerializer
     /** @var UserRepository */
     private $userRepo;
 
+    /** @var UserSerializer */
+    private $userSerializer;
+
     /**
      * ContributionSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"     = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
+     *     "userSerializer"     = @DI\Inject("claroline.serializer.user")
      * })
      */
-    public function __construct(ObjectManager $om)
-    {
+    public function __construct(
+        ObjectManager $om,
+        UserSerializer $userSerializer
+    ) {
         $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
         $this->sectionRepo = $om->getRepository('Icap\WikiBundle\Entity\Section');
+        $this->userSerializer = $userSerializer;
     }
 
     /**
@@ -67,12 +76,11 @@ class ContributionSerializer
             'title' => $contribution->getTitle(),
             'text' => $contribution->getText(),
             'section' => $contribution->getSection()->getUuid(),
-            'creationDate' => $contribution->getCreationDate()->format('Y-m-d H:i'),
-            'contributor' => null === $contributor ? null : [
-                'id' => $contributor->getUuid(),
-                'firstName' => $contributor->getFirstName(),
-                'lastName' => $contributor->getLastName(),
-                'email' => $contributor->getEmail(),
+            'meta' => [
+                'createdAt' => $contribution->getCreationDate()->format('Y-m-d H:i'),
+                'creator' => null === $contributor ?
+                    null :
+                    $this->userSerializer->serialize($contributor, Options::SERIALIZE_MINIMAL),
             ],
         ];
     }
@@ -86,7 +94,9 @@ class ContributionSerializer
             'title' => $contribution['title'],
             'text' => $contribution['text'],
             'section' => $sectionNode['uuid'],
-            'creationDate' => $contribution['creationDate']->format('Y-m-d H:i'),
+            'meta' => [
+                'createdAt' => $contribution['meta']['createdAt']->format('Y-m-d H:i'),
+            ],
         ];
     }
 
@@ -107,8 +117,8 @@ class ContributionSerializer
         $this->sipe('id', 'setUuid', $data, $contribution);
         $this->sipe('title', 'setTitle', $data, $contribution);
         $this->sipe('text', 'setText', $data, $contribution);
-        if ($data['contributor']) {
-            $user = $this->userRepo->findOneBy(['uuid' => $data['contributor']['id']]);
+        if ($data['meta']['creator']) {
+            $user = $this->userRepo->findOneBy(['uuid' => $data['meta']['creator']['id']]);
             $contribution->setContributor($user);
         }
 

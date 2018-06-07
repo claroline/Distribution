@@ -2,7 +2,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {WIKI_MODES} from '#/plugin/wiki/resources/wiki/constants'
 
-const WikiType = {
+const Wiki = {
   propTypes: {
     id: T.string.isRequired,
     mode: T.oneOf(
@@ -13,5 +13,5 @@ const WikiType = {
 }
 
 export {
-  WikiType
+  Wiki
 }

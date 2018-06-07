@@ -179,7 +179,7 @@ class Contribution
      *
      * @return $this
      */
-    public function setSection(\Icap\WikiBundle\Entity\Section $section)
+    public function setSection(Section $section)
     {
         $this->section = $section;
 
@@ -221,7 +221,7 @@ class Contribution
      */
     public function createUserPicker(LifecycleEventArgs $event)
     {
-        if (null != $this->getText()) {
+        if (null !== $this->getText()) {
             $userPicker = new UserPickerContent($this->getText());
             $this->setUserPicker($userPicker);
             $this->setText($userPicker->getFinalText());

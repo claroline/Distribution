@@ -2,8 +2,10 @@
 
 namespace Icap\WikiBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
@@ -23,21 +25,27 @@ class SectionSerializer
     /** @var UserRepository */
     private $userRepo;
 
+    /** @var UserSerializer */
+    private $userSerializer;
+
     /**
      * SectionSerializer constructor.
      *
      * * @DI\InjectParams({
+     *     "om"                         = @DI\Inject("claroline.persistence.object_manager"),
      *     "contributionSerializer"     = @DI\Inject("claroline.serializer.wiki.section.contribution"),
-     *     "om"                         = @DI\Inject("claroline.persistence.object_manager")
+     *     "userSerializer"             = @DI\Inject("claroline.serializer.user")
      * })
      *
      * @param ContributionSerializer $contributionSerializer
      */
     public function __construct(
+        ObjectManager $om,
         ContributionSerializer $contributionSerializer,
-        ObjectManager $om
+        UserSerializer $userSerializer
     ) {
         $this->contributionSerializer = $contributionSerializer;
+        $this->userSerializer = $userSerializer;
         $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
     }
 
@@ -68,16 +76,13 @@ class SectionSerializer
 
         return [
             'id' => $section->getUuid(),
-            'wiki' => $section->getWiki()->getUuid(),
-            'parent' => null !== $section->getParent() ? $section->getParent()->getUuid() : null,
-            'creationDate' => $section->getCreationDate()->format('Y-m-d H:i'),
-            'visible' => $section->getVisible(),
             'activeContribution' => $this->contributionSerializer->serialize($section->getActiveContribution()),
-            'author' => null === $author ? null : [
-                'id' => $author->getUuid(),
-                'firstName' => $author->getFirstName(),
-                'lastName' => $author->getLastName(),
-                'email' => $author->getEmail(),
+            'meta' => [
+                'createdAt' => $section->getCreationDate()->format('Y-m-d H:i'),
+                'visible' => $section->getVisible(),
+                'creator' => null === $author ?
+                    null :
+                    $this->userSerializer->serialize($author, Options::SERIALIZE_MINIMAL),
             ],
         ];
     }
@@ -95,21 +100,20 @@ class SectionSerializer
         return $this->serializeSectionTreeNode($wiki, $tree[0]);
     }
 
-    public function serializeSectionTreeNode(Wiki $wiki, $node, $parent = null)
+    public function serializeSectionTreeNode(Wiki $wiki, $node)
     {
         $children = [];
         if (!empty($node['__children'])) {
             foreach ($node['__children'] as $child) {
-                $children[] = $this->serializeSectionTreeNode($wiki, $child, $node);
+                $children[] = $this->serializeSectionTreeNode($wiki, $child);
             }
         }
 
         return [
             'id' => $node['uuid'],
-            'wiki' => $wiki->getUuid(),
-            'parent' => null !== $parent ? $parent['uuid'] : null,
-            'creationDate' => $node['creationDate']->format('Y-m-d H:i'),
-            'visible' => $node['visible'],
+            'meta' => [
+                'createdAt' => $node['creationDate']->format('Y-m-d H:i'),
+            ],
             'activeContribution' => $this->contributionSerializer->serializeFromSectionNode($node),
             'children' => $children,
         ];
@@ -127,9 +131,11 @@ class SectionSerializer
             $section = new Section();
         }
         $this->sipe('id', 'setUuid', $data, $section);
-        $this->sipe('visible', 'setVisible', $data, $section);
-        if ($data['author']) {
-            $user = $this->userRepo->findOneBy(['uuid' => $data['author']['id']]);
+        if ($data['meta']['visible']) {
+            $section->setVisible($data['meta']['visible']);
+        }
+        if ($data['meta']['creator']) {
+            $user = $this->userRepo->findOneBy(['uuid' => $data['meta']['creator']['id']]);
             $section->setAuthor($user);
         }
 

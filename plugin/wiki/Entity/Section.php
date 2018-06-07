@@ -205,7 +205,7 @@ class Section
      *
      * @return section
      */
-    public function setActiveContribution(\Icap\WikiBundle\Entity\Contribution $contribution)
+    public function setActiveContribution(Contribution $contribution)
     {
         $this->activeContribution = $contribution;
 
@@ -229,7 +229,7 @@ class Section
      *
      * @return section
      */
-    public function setWiki(\Icap\WikiBundle\Entity\Wiki $wiki)
+    public function setWiki(Wiki $wiki)
     {
         $this->wiki = $wiki;
 
@@ -503,7 +503,7 @@ class Section
      */
     public function checkMoveSection()
     {
-        return !$this->isRoot() && $this->getPosition() != $this->getId();
+        return !$this->isRoot() && $this->getPosition() !== $this->getId();
     }
 
     /**
@@ -575,7 +575,7 @@ class Section
         $newTitle = trim($activeContribution->getTitle());
         $newText = trim($activeContribution->getText());
 
-        if ($oldText == $newText && $oldTitle == $newTitle) {
+        if ($oldText === $newText && $oldTitle === $newTitle) {
             unset($activeContribution);
             $this->setActiveContribution($oldActiveContribution);
             $this->setHasChangedActiveContribution(false);
@@ -587,7 +587,7 @@ class Section
      */
     public function createActiveContribution(LifecycleEventArgs $event)
     {
-        if (null == $this->getActiveContribution()) {
+        if (null === $this->getActiveContribution()) {
             $em = $event->getEntityManager();
             $activeContribution = new Contribution();
             $activeContribution->setSection($this);

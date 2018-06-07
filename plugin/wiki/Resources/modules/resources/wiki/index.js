@@ -1,27 +1,20 @@
-import {bootstrap} from '#/main/app/bootstrap'
-
 import {WikiResource} from '#/plugin/wiki/resources/wiki/components/resource'
-import {reducer} from '#/plugin/wiki/resources/wiki/reducer'
+import {reducer} from '#/plugin/wiki/resources/wiki/store'
 
-// mount the react application
-bootstrap(
-  // app DOM container (also holds initial app data as data attributes)
-  '.wiki-container',
-
-  // app main component
-  WikiResource,
-
-  // app store configuration
-  reducer,
-
-  // transform data attributes for redux store
-  (initialData) => {
-    return {
-      resource: {
-        node: initialData.resourceNode
-      },
-      wiki: initialData.wiki,
-      sectionTree: initialData.sectionTree
-    }
-  }
-)
+/**
+ * Wiki resource application.
+ *
+ * @constructor
+ */
+export const App = () => ({
+  component: WikiResource,
+  store: reducer,
+  styles: 'claroline-distribution-plugin-wiki-wiki-resource',
+  initialData: initialData => Object.assign({}, initialData, {
+    resource: {
+      node: initialData.resourceNode
+    },
+    wiki: initialData.wiki,
+    sectionTree: initialData.sectionTree
+  })
+})

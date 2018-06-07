@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
+use Icap\WikiBundle\Serializer\WikiSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -43,17 +44,36 @@ class WikiManager
      */
     private $userRepository;
 
+    /** @var WikiSerializer */
+    private $wikiSerializer;
+
     /**
      * @DI\InjectParams({
-     *      "om"        = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
+     *     "wikiSerializer"     = @DI\Inject("claroline.serializer.wiki")
      * })
      */
-    public function __construct(ObjectManager $om)
-    {
+    public function __construct(
+        ObjectManager $om,
+        WikiSerializer $wikiSerializer
+    ) {
         $this->om = $om;
+        $this->wikiSerializer = $wikiSerializer;
         $this->sectionRepository = $this->om->getRepository('IcapWikiBundle:Section');
         $this->contributionRepository = $this->om->getRepository('IcapWikiBundle:Contribution');
         $this->userRepository = $this->om->getRepository('ClarolineCoreBundle:User');
+    }
+
+    public function updateWiki(Wiki $wiki, $data)
+    {
+        $this->wikiSerializer->deserialize($data, $wiki);
+        $this->om->persist($wiki);
+        $this->om->flush();
+    }
+
+    public function serializeWiki(Wiki $wiki)
+    {
+        return $this->wikiSerializer->serialize($wiki);
     }
 
     public function copyWiki(Wiki $orgWiki, $loggedUser)

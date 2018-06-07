@@ -12,11 +12,12 @@ import {RoutedPageContent} from '#/main/core/layout/router'
 
 import {Editor} from '#/plugin/wiki/resources/wiki/editor/components/editor'
 import {Player} from '#/plugin/wiki/resources/wiki/player/components/player'
+import {History} from '#/plugin/wiki/resources/wiki/history/components/history'
 
 const Resource = props =>
   <ResourcePageContainer
     editor={{
-      path: '/editor',
+      path: '/edit',
       label: trans('configure', {}, 'platform'),
       save: {
         disabled: !props.saveEnabled,
@@ -42,9 +43,15 @@ const Resource = props =>
         }, {
           path: '/editor',
           component: Editor,
-          canEnter: () => props.canEdit,
+          disabled: !props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.wiki)
+        }, {
+          path: '/history/{id}',
+          component: History,
+          disabled: !props.canEdit,
+          onLeave: () => props.setCurrentSession(),
+          onEnter: params => props.setCurrentSession(params.id)
         }
       ]}
     />
@@ -56,7 +63,8 @@ Resource.propTypes = {
   saveEnabled: T.bool.isRequired,
   sectionTree: T.object,
   resetForm: T.func.isRequired,
-  saveForm: T.func.isRequired
+  saveForm: T.func.isRequired,
+  setCurrentSession: T.func.isRequired
 }
 
 const WikiResource = connect(
@@ -68,7 +76,8 @@ const WikiResource = connect(
   }),
   (dispatch) => ({
     resetForm: (formData) => dispatch(formActions.resetForm('wikiForm', formData)),
-    saveForm: (wikiId) => dispatch(formActions.saveForm('wikiForm', ['icap_wiki_update', {id: wikiId}]))
+    saveForm: (wikiId) => dispatch(formActions.saveForm('wikiForm', ['apiv2_wiki_update_options', {id: wikiId}])),
+    setCurrentSession: (sessionId) => dispatch()
   })
 )(Resource)
 

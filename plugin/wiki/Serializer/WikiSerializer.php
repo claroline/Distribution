@@ -32,9 +32,11 @@ class WikiSerializer
         return [
             'id' => $wiki->getUuid(),
             'mode' => null === $wiki->getMode() ? '0' : ''.$wiki->getMode(),
-            'displaySectionNumbers' => null === $wiki->getDisplaySectionNumbers() ?
-                true :
-                $wiki->getDisplaySectionNumbers(),
+            'display' => [
+                'sectionNumbers' => null === $wiki->getDisplaySectionNumbers() ?
+                    true :
+                    $wiki->getDisplaySectionNumbers(),
+            ],
         ];
     }
 
@@ -45,7 +47,9 @@ class WikiSerializer
         }
         $this->sipe('id', 'setUuid', $data, $wiki);
         $this->sipe('mode', 'setMode', $data, $wiki);
-        $this->sipe('displaySectionNumbers', 'setDisplaySectionNumbers', $data, $wiki);
+        if (isset($data['display']['sectionNumbers'])) {
+            $wiki->setDisplaySectionNumbers($data['display']['sectionNumbers']);
+        }
 
         return $wiki;
     }

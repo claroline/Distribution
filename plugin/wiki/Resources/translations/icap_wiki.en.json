@@ -71,6 +71,8 @@
     "read_only_message": "Only the administrator and the moderator are allowed to contribute to the wiki.",
     "remove_confirmation": "Do you really want to permanently remove \"%sectionTitle%\" section?",
     "remove_section": "Remove section",
+    "render_invisible": "Render invisible",
+    "render_visible": "Render visible",
     "restore_section": "Restore section",
     "revision_comparison": "Revision comparison",
     "revision_history": "Revision history",

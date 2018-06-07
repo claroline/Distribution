@@ -52,6 +52,7 @@ class SectionController
     /**
      * @EXT\Route("/tree", name="apiv2_wiki_section_tree")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     * @EXT\Method({"GET"})
      *
      * @param Wiki $wiki
      *
@@ -71,6 +72,7 @@ class SectionController
 
     /**
      * @EXT\Route("/deleted", name="apiv2_wiki_section_list")
+     * @EXT\Method({"GET"})
      *
      * @param Wiki $wiki
      *

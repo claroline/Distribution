@@ -45,6 +45,7 @@ class ContributionController
     /**
      * @EXT\Route("/history", name="apiv2_wiki_section_contribution_history")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     * @EXT\Method({"GET"})
      *
      * @param Section $section
      *
