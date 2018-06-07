@@ -12,13 +12,13 @@ const FlaggedPostsNav = () =>
     <div className="user-profile-aside col-md-3">
       <nav className="user-profile-nav">
         <NavLink
-          to='/moderation/flagged-subjects'
+          to='/moderation/flagged/subjects'
           className="user-profile-link"
         >
           {trans('flagged_subjects', {}, 'forum')}
         </NavLink>
         <NavLink
-          to='/moderation/flagged-messages'
+          to='/moderation/flagged/messages'
           className="user-profile-link"
         >
           {trans('flagged_messages', {}, 'forum')}

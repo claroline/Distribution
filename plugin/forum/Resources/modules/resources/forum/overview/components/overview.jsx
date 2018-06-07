@@ -11,6 +11,7 @@ import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {MetricCard} from '#/main/core/layout/components/metric-card'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
+import {UrlButton} from '#/main/app/button/components/url'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -92,13 +93,21 @@ const OverviewComponent = props =>
               />
             </div>
           </section>
-          {!props.lastMessages &&
+          {0 !== props.lastMessages.length &&
             <section>
               <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
-              <ul className="last-messages">
-                {get(props.lastMessages, 'data').map(message =>
+              <ul className="posts">
+                {props.lastMessages.map(message =>
                   <li key={message.id} className="post">
-                    <h4>Titre<a href="/subject">Voir le sujet</a></h4>
+                    <h4>{message.subject.title}
+                      <UrlButton
+                        type="link"
+                        className="btn btn-link"
+                        target="/subjects"
+                      >
+                        Voir le sujet
+                      </UrlButton>
+                    </h4>
                     <UserMessage
                       user={message.meta.creator}
                       date={message.meta.created}
@@ -119,11 +128,15 @@ OverviewComponent.propTypes = {
   forum: T.shape(ForumType.propTypes)
 }
 
+OverviewComponent.defaultProps = {
+  lastMessages: []
+}
+
 const Overview = connect(
   (state) => ({
     subject: select.subject(state),
     forum: select.forum(state),
-    lastMessages: select.lastMessages(state),
+    lastMessages: select.lastMessages(state).data,
     tagsCount: select.tagsCount(state)
   })
 )(OverviewComponent)

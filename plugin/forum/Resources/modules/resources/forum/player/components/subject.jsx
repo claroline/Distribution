@@ -176,12 +176,12 @@ class SubjectComponent extends Component {
               }, {
                 icon: 'fa fa-fw fa-flag-o',
                 label: trans('flag', {}, 'forum'),
-                displayed: (get(this.props.subject, 'meta.creator') !== authenticatedUser) && !(get(this.props.subject, 'meta.flagged')),
+                displayed: (get(this.props.subject, 'meta.creator', false) !== authenticatedUser) && !(get(this.props.subject, 'meta.flagged', true)),
                 action: () => this.props.flagSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-flag',
                 label: trans('unflag', {}, 'forum'),
-                displayed: ((get(this.props.subject, 'meta.creator') !== authenticatedUser) && (get(this.props.subject, 'meta.flagged'))),
+                displayed: ((get(this.props.subject, 'meta.creator', false) !== authenticatedUser) && (get(this.props.subject, 'meta.flagged', false))),
                 action: () => this.props.unFlagSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-trash-o',

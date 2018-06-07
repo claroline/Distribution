@@ -15,7 +15,7 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/actions'
 import {Overview} from '#/plugin/forum/resources/forum/overview/components/overview'
 import {BlockedMessages} from '#/plugin/forum/resources/forum/moderation/components/blocked-messages'
-import {FlaggedPosts} from '#/plugin/forum/resources/forum/moderation/components/flagged-posts'
+import {Moderation} from '#/plugin/forum/resources/forum/moderation/components/moderation'
 import {Editor} from '#/plugin/forum/resources/forum/editor/components/editor'
 import {Player} from '#/plugin/forum/resources/forum/player/components/player'
 
@@ -35,14 +35,10 @@ const Resource = props => {
     }, {
       path: '/subjects',
       component: Player
-    }, {
-      path: '/moderation/flagged-subjects',
-      component: FlaggedPosts
-    }, {
-      path: '/moderation/blocked',
-      component: BlockedMessages
+    },  {
+      path: '/moderation',
+      component: Moderation
     }
-
   ]
   if (!props.forum.display.showOverview) {
     // redirect to player
@@ -94,7 +90,7 @@ const Resource = props => {
           icon: 'fa fa-fw fa-flag',
           label: trans('flagged_messages_subjects', {}, 'forum'),
           group: trans('moderation', {}, 'forum'),
-          target: '/moderation/flagged-subjects',
+          target: '/moderation/flagged/subjects',
           exact: true
         }
       ]}

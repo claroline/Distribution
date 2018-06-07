@@ -6,22 +6,20 @@ import {Routes} from '#/main/app/router'
 import {FlaggedMessages} from '#/plugin/forum/resources/forum/moderation/components/flagged-messages'
 import {FlaggedSubjects} from '#/plugin/forum/resources/forum/moderation/components/flagged-subjects'
 
-const FlaggedPosts= () =>
+const Flagged= () =>
   <Routes
     routes={[
       {
-        path: '/moderation/flagged-subjects',
-        component: FlaggedSubjects,
-        exact: true
+        path: '/moderation/flagged/subjects',
+        component: FlaggedSubjects
       }, {
-        path: '/moderation/flagged-messages',
-        component: FlaggedMessages,
-        exact: true
+        path: '/moderation/flagged/messages',
+        component: FlaggedMessages
       }
     ]}
   />
 
 
 export {
-  FlaggedPosts
+  Flagged
 }

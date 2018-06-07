@@ -7,7 +7,6 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataCard} from '#/main/core/data/components/data-card'
 import {UserAvatar} from '#/main/core/user/components/avatar'
-import {url} from '#/main/app/api'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
@@ -15,13 +14,14 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 import {FlaggedPostsNav} from '#/plugin/forum/resources/forum/moderation/components/flagged-posts-nav'
 
 const FlaggedSubjectsComponent = (props) =>
-  <div>
+  <div className="row">
     <FlaggedPostsNav />
     <div className="user-profile-content col-md-9">
       <DataListContainer
         name="moderation.flaggedSubjects"
         fetch={{
-          url: ['apiv2_forum_subject_flagged_list', {forum: props.forum.id}]
+          url: ['apiv2_forum_subject_flagged_list', {forum: props.forum.id}],
+          autoload: true
         }}
         delete={{
           url: ['apiv2_forum_subject_delete_bulk']
@@ -77,8 +77,8 @@ const FlaggedSubjectsComponent = (props) =>
             {...props}
             id={props.data.id}
             icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
-            title={props.data.content}
-            subtitle={props.data.subject.title}
+            title={props.data.title}
+            subtitle={props.data.content}
           />
         }
       />
