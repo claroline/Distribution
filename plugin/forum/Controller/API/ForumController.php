@@ -99,12 +99,13 @@ class ForumController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route("/unlock/{user}")
+     * @EXT\Route("/unlock/{user}/forum/{forum}")
      * @EXT\Method("PATCH")
      */
-    public function unlockAction(User $user)
+    public function unlockAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
+        $user = $this->getValidationUser($user, $forum);
         $user->setAccess(true);
         $om->persist($user);
         $om->flush();
@@ -113,17 +114,65 @@ class ForumController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route("/lock/{user}")
+     * @EXT\Route("/lock/{user}/forum/{forum}")
      * @EXT\Method("PATCH")
      */
-    public function lockAction(User $user)
+    public function lockAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
+        $user = $this->getValidationUser($user, $forum);
         $user->setAccess(false);
         $om->persist($user);
         $om->flush();
 
         return new JsonResponse(true);
+    }
+
+    /**
+     * @EXT\Route("/ban/{user}/forum/{forum}")
+     * @EXT\Method("PATCH")
+     */
+    public function banAction(User $user, Forum $forum)
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $user = $this->getValidationUser($user, $forum);
+        $user->setBanned(true);
+        $om->persist($user);
+        $om->flush();
+
+        return new JsonResponse(true);
+    }
+
+    /**
+     * @EXT\Route("/unban/{user}/forum/{forum}")
+     * @EXT\Method("PATCH")
+     */
+    public function unbanAction(User $user, Forum $forum)
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $user = $this->getValidationUser($user, $forum);
+        $user->setBanned(false);
+        $om->persist($user);
+        $om->flush();
+
+        return new JsonResponse(true);
+    }
+
+    private function getValidationUser(User $user, Forum $forum)
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $user = $this->om->getRepository('ClarolineForumBundle:Validation\User')->findOneBy([
+          'user' => $message->getCreator(),
+          'forum' => $forum,
+        ]);
+
+        if (!$user) {
+            $user = new User();
+            $user->setForum($forum);
+            $user->setUser($message->getCreator());
+        }
+
+        return $user;
     }
 
     public function getClass()

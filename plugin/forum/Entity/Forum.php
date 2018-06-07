@@ -24,9 +24,9 @@ class Forum extends AbstractResource
 {
     use UuidTrait;
 
-    const VALIDATE_NONE = "NONE";
-    const VALIDATE_PRIOR_ONCE = "PRIOR_ONCE";
-    const VALIDATE_PRIOR_ALL = "PRIOR_ALL";
+    const VALIDATE_NONE = 'NONE';
+    const VALIDATE_PRIOR_ONCE = 'PRIOR_ONCE';
+    const VALIDATE_PRIOR_ALL = 'PRIOR_ALL';
 
     /**
      * @ORM\OneToMany(
@@ -66,6 +66,7 @@ class Forum extends AbstractResource
     {
         $this->subjects = new ArrayCollection();
         $this->refreshUuid();
+        $this->validationMode = self::VALIDATE_NONE;
     }
 
     public function getSubjects()

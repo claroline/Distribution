@@ -229,6 +229,8 @@ class SubjectSerializer
     {
         $manager = $this->container->get('claroline.manager.forum_manager');
 
+        var_dump($manager->getHotSubjects($subject->getForum()));
+
         return in_array($subject->getUuid(), $manager->getHotSubjects($subject->getForum()));
     }
 }

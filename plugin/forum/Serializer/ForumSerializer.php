@@ -71,14 +71,17 @@ class ForumSerializer
             'id' => $forum->getUuid(),
             'moderation' => $forum->getValidationMode(),
             'maxComment' => $forum->getMaxComment(),
-            'displayMessage' => $forum->getDisplayMessages(),
             'display' => [
               'description' => 'il faut causer sur ce forum !',
               'showOverview' => true,
               'dataList' => $forum->getDataListOptions(),
+              'lastMessages' => $forum->getDisplayMessages(),
             ],
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
+/*
+              'banned' => isBanned($user, $forum),
+              'moderator' => isModerator($user, $forum),*/
             ],
             'meta' => [
               'users' => 34, //utilisateur participants
@@ -102,7 +105,7 @@ class ForumSerializer
     {
         $this->sipe('moderation', 'setValidationMode', $data, $forum);
         $this->sipe('maxComment', 'setMaxComment', $data, $forum);
-        $this->sipe('displayMessage', 'setDisplayMessage', $data, $forum);
+        $this->sipe('display.lastMessages', 'setDisplayMessage', $data, $forum);
         $this->sipe('display.dataList', 'setDataListOptions', $data, $forum);
 
         if (isset($data['restrictions'])) {

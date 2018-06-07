@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ForumBundle\Entity;
+namespace Claroline\ForumBundle\Entity\Validation;
 
 use Claroline\CoreBundle\Entity\User as ClarolineUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -50,6 +50,16 @@ class User
      */
     protected $access = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $banned = true;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $notified = false;
+
     public function setUser(ClarolineUser $user)
     {
         $this->user = $user;
@@ -72,11 +82,36 @@ class User
 
     public function setAccess($bool)
     {
-        $this->access = $access;
+        $this->access = $bool;
     }
 
     public function getAccess()
     {
         return $this->access;
+    }
+
+    public function setBanned($bool)
+    {
+        $this->banned = $bool;
+    }
+
+    public function isBanned()
+    {
+        return $this->banned;
+    }
+
+    public function isBanned()
+    {
+        return $this->banned;
+    }
+
+    public function setNotified($bool)
+    {
+        $this->notified = $bool;
+    }
+
+    public function isNotified($bool)
+    {
+        return $this->isNotified;
     }
 }
