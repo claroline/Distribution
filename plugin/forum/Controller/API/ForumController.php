@@ -98,7 +98,7 @@ class ForumController extends AbstractCrudController
         );
     }
 
-    //Pour les 4 méthodes suivantes, utilser le CRUD ? je sais pas trop.
+    //Pour les 6 méthodes suivantes, utilser le CRUD ? je sais pas trop.
 
     /**
      * @EXT\Route("/unlock/{user}/forum/{forum}")
@@ -162,6 +162,40 @@ class ForumController extends AbstractCrudController
         $om = $this->container->get('claroline.persistence.object_manager');
         $user = $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setBanned(false);
+        $om->persist($user);
+        $om->flush();
+
+        return new JsonResponse(true);
+    }
+
+    /**
+     * @EXT\Route("/notify/{user}/forum/{forum}")
+     * @EXT\Method("PATCH")
+     * @EXT\ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
+     */
+    public function notifyAction(User $user, Forum $forum)
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
+        $user->setNotified(true);
+        $om->persist($user);
+        $om->flush();
+
+        return new JsonResponse(true);
+    }
+
+    /**
+     * @EXT\Route("/unnotify/{user}/forum/{forum}")
+     * @EXT\Method("PATCH")
+     * @EXT\ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
+     */
+    public function unnotifyAction(User $user, Forum $forum)
+    {
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $user = $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
+        $user->setNotified(false);
         $om->persist($user);
         $om->flush();
 

@@ -8,7 +8,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Validation\User;
-use Claroline\ForumBundle\Manager\Manager;
+use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -24,16 +24,16 @@ class MessageCrud
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "manager"      = @DI\Inject("claroline.manager.forum_manager")
+     *     "messageManager" = @DI\Inject("claroline.manager.message_manager")
      * })
      *
      * @param FinderProvider $finder
      */
-    public function __construct(ObjectManager $om, TokenStorageInterface $tokenStorage, Manager $manager)
+    public function __construct(ObjectManager $om, TokenStorageInterface $tokenStorage, MessageManager $messageManager)
     {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
-        $this->manager = $manager;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -82,12 +82,18 @@ class MessageCrud
     {
         $message = $event->getObject();
         $forum = $message->getSubject()->getForum();
-        $user = $this->tokenStorage->getToken()->getUser();
-        $userValidate = $this->manager->getValidationUser($user, $forum);
 
-        if ($userValidate->isNotified()) {
-            //envoyer le message vers la messagerie
-        }
+        $usersValidate = $this->om->getRepository('ClarolineForumBundle:Validation\User')
+          ->findBy(['forum' => $forum, 'notified' => true]);
+
+        $toSend = $this->messageManager->create(
+          $message->getContent(),
+          $message->getSubject()->getTitle(),
+          array_map(function ($userValidate) {
+              return $userValidate->getUser();
+          }, $usersValidate)
+        );
+        $this->messageManager->send($toSend);
 
         return $message;
     }
