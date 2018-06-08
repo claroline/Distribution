@@ -51,7 +51,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class ResourceOldController.
- * @package Claroline\CoreBundle\Controller
  *
  * @todo restore used before remove (eg. the action about lock / unlock)
  */
