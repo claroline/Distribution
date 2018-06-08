@@ -11,6 +11,7 @@
 
 namespace Claroline\TagBundle\Controller\Widget;
 
+use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Manager\WidgetManager;
 use Claroline\TagBundle\Form\WorkspaceTagType;
@@ -63,7 +64,13 @@ class WorkspaceTagController extends Controller
             $this->tokenStorage->getToken()->getUser(),
             [$widgetInstance]
           );
-            $config = $displayConfigs[0];
+            if (!$displayConfigs[0]) {
+                $config = new WidgetDisplayConfig();
+                $config->setWidgetInstance($widgetInstance);
+                $config->setUser($this->tokenStorage->getToken()->getUser());
+            } else {
+                $config = $displayConfigs[0];
+            }
             $config->setDetails(['tags' => $form->get('tags')->getData()]);
             $this->widgetManager->persistWidgetConfigs(null, null, $config);
 
@@ -108,11 +115,14 @@ class WorkspaceTagController extends Controller
           $this->tokenStorage->getToken()->getUser(),
           [$widgetInstance]
         );
-        $tags = explode(',', $displayConfigs[0]->getDetails()['tags']);
-        $workspaces = [];
 
-        foreach ($tags as $tag) {
-            $workspaces[$tag] = $this->tagManager->getTaggedWorkspaces($tag);
+        $workspaces = [];
+        if ($displayConfigs[0]) {
+            $tags = explode(',', $displayConfigs[0]->getDetails()['tags']);
+
+            foreach ($tags as $tag) {
+                $workspaces[$tag] = $this->tagManager->getTaggedWorkspaces($tag);
+            }
         }
 
         return ['workspaces' => $workspaces];
