@@ -6,8 +6,7 @@ import {
   RULE_TYPE_BETWEEN,
   RULE_SOURCE_CORRECT,
   RULE_SOURCE_INCORRECT,
-  RULE_TARGET_GLOBAL,
-  RULE_TARGET_ANSWER
+  RULE_TARGET_GLOBAL
 } from '#/plugin/exo/items/choice/constants'
 
 const quizId = state => state.quiz.id

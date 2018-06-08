@@ -44,6 +44,10 @@ class ScoreManager
                 }
                 break;
 
+            case 'rules':
+                $score = 0;
+                break;
+
             case 'manual':
             case 'none':
                 break;
@@ -87,6 +91,10 @@ class ScoreManager
 
             case 'manual':
                 $total = $scoreRule->max;
+                break;
+
+            case 'rules':
+                $total = 10;
                 break;
 
             default:
