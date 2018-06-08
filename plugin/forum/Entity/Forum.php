@@ -28,6 +28,13 @@ class Forum extends AbstractResource
     const VALIDATE_PRIOR_ONCE = 'PRIOR_ONCE';
     const VALIDATE_PRIOR_ALL = 'PRIOR_ALL';
 
+    const DISPLAY_TABLE_SM = 'table-sm';
+    const DISPLAY_TABLE = 'table';
+    const DISPLAY_LIST_SM = 'list-sm';
+    const DISPLAY_LIST = 'list';
+    const DISPLAY_TILES = 'tiles';
+    const DISPLAY_TILES_SM = 'tiles-sm';
+
     /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\ForumBundle\Entity\Subject",
@@ -50,12 +57,12 @@ class Forum extends AbstractResource
     /**
      * @ORM\Column(type="integer")
      */
-    protected $displayMessages = 10;
+    protected $displayMessages = 3;
 
     /**
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="string")
      */
-    protected $dataListOptions = [];
+    protected $dataListOptions = self::DISPLAY_LIST_SM;
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
@@ -81,6 +88,7 @@ class Forum extends AbstractResource
         $this->subjects = new ArrayCollection();
         $this->refreshUuid();
         $this->validationMode = self::VALIDATE_NONE;
+        $this->dataListOptions = self::DISPLAY_LIST_SM;
     }
 
     public function getSubjects()
@@ -118,7 +126,7 @@ class Forum extends AbstractResource
         return $this->maxComment;
     }
 
-    public function setDataListOptions(array $options)
+    public function setDataListOptions($options)
     {
         $this->dataListOptions = $options;
     }

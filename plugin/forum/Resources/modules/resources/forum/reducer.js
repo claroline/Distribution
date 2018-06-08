@@ -7,10 +7,12 @@ import {reducer as playerReducer} from '#/plugin/forum/resources/forum/player/re
 import {reducer as moderationReducer} from '#/plugin/forum/resources/forum/moderation/reducer'
 import {reducer as overviewReducer} from '#/plugin/forum/resources/forum/overview/reducer'
 
-
+import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 const reducer = {
-  forum: makeReducer({}, {}),
+  forum: makeReducer({}, {
+    [FORM_SUBMIT_SUCCESS+'/forumForm']: (state, action) => action.updatedData
+  }),
   lastMessages: overviewReducer,
   moderation: moderationReducer,
   forumForm: editorReducer,
