@@ -13,7 +13,7 @@ import {Choice as component} from '#/plugin/exo/items/choice/editor.jsx'
 import {
   RULE_TYPE_MORE,
   RULE_TYPE_LESS,
-  RULE_TYPE_BETWEEN,
+  RULE_TYPE_BETWEEN
 } from '#/plugin/exo/items/choice/constants'
 
 const UPDATE_PROP = 'UPDATE_PROP'

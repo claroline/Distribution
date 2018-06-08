@@ -154,6 +154,8 @@ ScoreRule.propTypes = {
   ).isRequired,
   error: T.object,
   validating: T.bool,
+  warnOnly: T.bool,
+  disabled: T.bool,
   onChange: T.func.isRequired,
   onDelete: T.func.isRequired
 }
@@ -164,34 +166,50 @@ const ScoreRulesGroup = props =>
     error={props.error && typeof props.error === 'string' ? props.error : undefined}
     className="score-rules-group"
   >
+    <div className="well well-sm">
+      <div>{tex('score_rule_considered')} <b>{tex('score_rule_correct_answers')}</b> :</div>
+      <ul className="score-rules-info-list">
+        <li>{tex('selected_correct_choices')}</li>
+        <li>{tex('unselected_incorrect_choices')}</li>
+      </ul>
+      <div>{tex('score_rule_considered')} <b>{tex('score_rule_incorrect_answers')}</b> :</div>
+      <ul className="score-rules-info-list">
+        <li>{tex('selected_incorrect_choices')}</li>
+        <li>{tex('unselected_correct_choices')}</li>
+      </ul>
+      <div>{tex('score_rules_conflict_warning')}</div>
+    </div>
+
     {0!== props.value.length &&
-    <ul>
-      {props.value.map((rule, index) =>
-        <ScoreRule
-          key={`score-rule-${index}`}
-          index={index}
-          rule={rule}
-          validating={props.validating}
-          error={props.error && typeof props.error !== 'string' ? props.error[index] : undefined}
-          onChange={(propName, propValue) => {
-            const newRule = Object.assign({}, rule, {
-              [propName]: propValue
-            })
+      <ul>
+        {props.value.map((rule, index) =>
+          <ScoreRule
+            key={`score-rule-${index}`}
+            index={index}
+            rule={rule}
+            validating={props.validating}
+            warnOnly={props.warnOnly}
+            disabled={props.disabled}
+            error={props.error && typeof props.error !== 'string' ? props.error[index] : undefined}
+            onChange={(propName, propValue) => {
+              const newRule = Object.assign({}, rule, {
+                [propName]: propValue
+              })
 
-            const newScoreRules = props.value.slice()
-            newScoreRules.splice(index, 1, newRule)
+              const newScoreRules = props.value.slice()
+              newScoreRules.splice(index, 1, newRule)
 
-            props.onChange(newScoreRules)
-          }}
-          onDelete={() => {
-            const newScoreRules = props.value.slice()
-            newScoreRules.splice(index, 1)
+              props.onChange(newScoreRules)
+            }}
+            onDelete={() => {
+              const newScoreRules = props.value.slice()
+              newScoreRules.splice(index, 1)
 
-            props.onChange(newScoreRules)
-          }}
-        />
-      )}
-    </ul>
+              props.onChange(newScoreRules)
+            }}
+          />
+        )}
+      </ul>
     }
 
     {0 === props.value.length &&

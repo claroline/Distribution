@@ -294,7 +294,8 @@ Choice.propTypes = {
       type: T.string.isRequired,
       success: T.number.isRequired,
       failure: T.number.isRequired,
-      noWrongChoice: T.bool
+      noWrongChoice: T.bool,
+      rules: T.array
     }),
     choices: T.arrayOf(T.object).isRequired
   }).isRequired,
