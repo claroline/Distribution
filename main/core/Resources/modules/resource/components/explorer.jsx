@@ -65,7 +65,7 @@ const ResourceExplorer = props =>
           displayable: false
         }
       ]}
-      actions={getActions}
+      actions={props.actions}
       card={ResourceCard}
 
       display={{
