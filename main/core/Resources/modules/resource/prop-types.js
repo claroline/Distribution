@@ -67,19 +67,11 @@ const ResourceNode = {
     /**
      * Access rights.
      */
-    rights: T.shape({
-      // rights of the current user
-      current: T.shape({
-        edit: T.bool,
-        administrate: T.bool,
-        export: T.bool,
-        delete: T.bool
-      }),
-      // all rights configuration
-      all: T.shape({
-        permissions: T.object
-      })
-    }),
+    rights: T.arrayOf(T.shape({
+      name: T.string.isRequired,
+      translationKey: T.string.isRequired,
+      permissions: T.object.isRequired
+    })),
 
     /**
      * Notifications configuration.

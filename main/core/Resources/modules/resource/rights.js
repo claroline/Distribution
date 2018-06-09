@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
+import merge from 'lodash/merge'
 
 // TODO : this 3 methods should be moved in a `role` module
 const roleAnonymous = () => 'ROLE_ANONYMOUS'
@@ -28,7 +29,7 @@ const standardRoles = (workspace = null) => {
  *
  * @return {object}
  */
-const findRolePermissions = (roleName, perms) => perms[roleName] ? perms[roleName].permissions : {}
+const findRolePermissions = (roleName, perms) => perms.find(perm => perm.name === roleName) || {}
 
 /**
  * Checks if a role has custom permissions.

@@ -4,8 +4,14 @@ import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
+import {registry} from '#/main/app/modals/registry'
 import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
+import {FormContainer} from '#/main/core/data/form/containers/form'
+import {ContentMeta} from '#/main/app/content/meta/components/meta'
+
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {RightsModal} from '#/main/core/resource/modals/creation/components/rights'
 
 import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
@@ -13,15 +19,50 @@ import {ResourceForm} from '#/main/core/resource/components/form'
 
 const ParametersModalComponent = props =>
   <Modal
-    {...omit(props, 'saveEnabled', 'save', 'parent')}
+    {...omit(props, 'parent', 'newNode', 'saveEnabled', 'save', 'configureRights')}
     icon="fa fa-fw fa-plus"
-    title={trans('create_resource')}
-    subtitle="2. Configurez la ressource"
+    title={trans('new_resource', {}, 'resource')}
+    subtitle="2. Configurer la ressource"
   >
-    <ResourceForm name={selectors.FORM_NAME} dataPart="node" />
+    <ContentMeta meta={props.newNode.meta} />
+
+    <FormContainer
+      level={5}
+      name={selectors.FORM_NAME}
+      dataPart="resource"
+      sections={[
+        {
+          title: trans('general'),
+          primary: true,
+          fields: [
+            {
+              name: 'file',
+              label: trans('file'),
+              type: 'file',
+              required: true,
+              options: {
+                unzippable: true
+              }
+            }
+          ]
+        }
+      ]}
+    />
+
+    <ResourceForm level={5} meta={false} name={selectors.FORM_NAME} dataPart="node" />
 
     <Button
-      className="modal-btn btn btn-primary"
+      className="modal-btn btn-link"
+      type="callback"
+      label={trans('edit-rights', {}, 'actions')}
+      disabled={!props.saveEnabled}
+      callback={() => {
+        props.configureRights()
+      }}
+    />
+
+    <Button
+      className="modal-btn btn"
       type="callback"
       primary={true}
       label={trans('create', {}, 'actions')}
@@ -37,19 +78,32 @@ ParametersModalComponent.propTypes = {
   parent: T.shape(
     ResourceNodeTypes.propTypes
   ).isRequired,
+  newNode: T.shape(
+    ResourceNodeTypes.propTypes
+  ).isRequired,
   saveEnabled: T.bool.isRequired,
   save: T.func.isRequired,
+  configureRights: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
 
 const ParametersModal = connect(
   (state) => ({
     parent: selectors.parent(state),
+    newNode: selectors.newNode(state),
     saveEnabled: selectors.saveEnabled(state)
   }),
   (dispatch) => ({
     save(parent) {
       dispatch(actions.create(parent))
+    },
+    configureRights() {
+      // register the second modal
+      const MODAL_RESOURCE_CREATION_RIGHTS = 'MODAL_RESOURCE_CREATION_RIGHTS'
+      registry.add(MODAL_RESOURCE_CREATION_RIGHTS, RightsModal)
+
+      // display the second creation modal
+      dispatch(modalActions.showModal(MODAL_RESOURCE_CREATION_RIGHTS, {}))
     }
   })
 )(ParametersModalComponent)

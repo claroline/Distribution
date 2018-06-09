@@ -18,7 +18,7 @@ actions.setParent = makeActionCreator(RESOURCE_SET_PARENT, 'parent')
 
 actions.startCreation = (parent, resourceType) => (dispatch) => {
   dispatch(actions.setParent(parent))
-  dispatch(formActions.resetForm(`${selectors.STORE_NAME}.form`, {
+  dispatch(formActions.resetForm(selectors.FORM_NAME, {
     node: merge({}, ResourceNodeTypes.defaultProps, {
       meta: {
         mimeType: `custom/${resourceType.name}`,

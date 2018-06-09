@@ -4,12 +4,8 @@ import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
-// todo : create and use abstraction
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import Popover from 'react-bootstrap/lib/Popover'
-
 import {trans}  from '#/main/core/translation'
-import {Modal} from '#/main/app/overlay/modal/components/modal'
+import {PopoverButton} from '#/main/app/button/components/popover'
 
 import {
   getSimpleAccessRule,
@@ -22,21 +18,18 @@ const CreatePermission = props =>
     key="create-cell"
     className="create-cell"
   >
-    <OverlayTrigger
-      trigger="click"
-      placement="left"
-      rootClose={true}
-      overlay={
-        <Popover
-          id="popover-positioned-top"
-          className="popover-list-group"
-          title={
-            <label className="checkbox-inline">
-              <input type="checkbox" />
-              {trans('resource_type')}
-            </label>
-          }
-        >
+    <PopoverButton
+      className="btn btn-link"
+      popover={{
+        position: 'left',
+        className: 'popover-list-group',
+        label: (
+          <label className="checkbox-inline">
+            <input type="checkbox" />
+            {trans('resource_type')}
+          </label>
+        ),
+        content: (
           <ul className="list-group">
             {Object.keys(props.permission).map(resourceType =>
               <li key={resourceType} className="list-group-item">
@@ -50,13 +43,11 @@ const CreatePermission = props =>
               </li>
             )}
           </ul>
-        </Popover>
-      }
+        )
+      }}
     >
-      <button type="button" className="btn btn-link-default">
-        <span className="fa fa-fw fa-folder-open" />
-      </button>
-    </OverlayTrigger>
+      <span className="fa fa-fw fa-folder-open" />
+    </PopoverButton>
   </td>
 
 CreatePermission.propTypes = {
@@ -72,11 +63,11 @@ const RolePermissions = props =>
     {Object.keys(props.permissions).map(permission =>
       'create' !== permission ?
         <td
-            key={`${permission}-checkbox`}
-            className={classes({
-              'checkbox-cell': 'create' !== permission,
-              'create-cell': 'create' === permission
-            })}
+          key={`${permission}-checkbox`}
+          className={classes({
+            'checkbox-cell': 'create' !== permission,
+            'create-cell': 'create' === permission
+          })}
         >
           <input
             type="checkbox"
@@ -84,7 +75,7 @@ const RolePermissions = props =>
             onChange={() => props.updatePermissions(merge({}, props.permissions, {[permission]: !props.permissions[permission]}))}
           />
         </td>
-      :
+        :
         !isEmpty(props.permissions[permission]) && <CreatePermission permission={props.permissions[permission]} />
     )}
   </tr>
@@ -115,14 +106,14 @@ const AdvancedTab = props =>
       </thead>
 
       <tbody>
-      {Object.keys(props.permissions).map(roleName =>
-        <RolePermissions
-          key={roleName}
-          role={props.permissions[roleName].role}
-          permissions={props.permissions[roleName].permissions}
-          updatePermissions={(permissions) => props.updateRolePermissions(roleName, permissions)}
-        />
-      )}
+        {Object.keys(props.permissions).map(roleName =>
+          <RolePermissions
+            key={roleName}
+            role={props.permissions[roleName].role}
+            permissions={props.permissions[roleName].permissions}
+            updatePermissions={(permissions) => props.updateRolePermissions(roleName, permissions)}
+          />
+        )}
       </tbody>
     </table>
   </div>
@@ -162,10 +153,10 @@ const SimpleTab = props =>
     </div>
 
     {props.customRules &&
-      <p className="resource-custom-rules-info">
-        <span className="fa fa-asterisk" />
-        {trans('resource_rights_custom_help', {}, 'resource')}
-      </p>
+    <p className="resource-custom-rules-info">
+      <span className="fa fa-asterisk" />
+      {trans('resource_rights_custom_help', {}, 'resource')}
+    </p>
     }
   </div>
 
@@ -180,59 +171,36 @@ SimpleTab.defaultProps = {
   customRules: false
 }
 
-class RightsModal extends Component {
+class ResourceRights extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       activeTab: 'simple',
-      pendingChanges: false,
-      currentMode: getSimpleAccessRule(this.props.resourceNode.rights, this.props.resourceNode.workspace),
-      customRules: hasCustomRules(this.props.resourceNode.rights, this.props.resourceNode.workspace),
-      rights: Object.assign({}, this.props.resourceNode.rights)
     }
 
     this.toggleSimpleMode = this.toggleSimpleMode.bind(this)
     this.updateRolePermissions = this.updateRolePermissions.bind(this)
-    this.save = this.save.bind(this)
   }
 
   toggleSimpleMode(mode) {
-    const newPermissions = setSimpleAccessRule(this.state.rights, mode, this.props.resourceNode.workspace)
+    const newPermissions = setSimpleAccessRule(this.props.resourceNode.rights, mode, this.props.resourceNode.workspace)
 
-    this.updatePermissions(newPermissions)
+    this.props.updateRights(newPermissions)
   }
 
   updateRolePermissions(roleName, permissions) {
-    const newPermissions = merge({}, this.state.rights, {
-      [roleName]: merge({}, this.state.rights[roleName], permissions)
+    // todo fix
+    const newPermissions = merge({}, this.props.resourceNode.rights, {
+      [roleName]: merge({}, this.props.resourceNode.rights[roleName], permissions)
     })
 
-    this.updatePermissions(newPermissions)
-  }
-
-  updatePermissions(permissions) {
-    this.setState({
-      pendingChanges: true,
-      currentMode: getSimpleAccessRule(permissions, this.props.resourceNode.workspace),
-      customRules: hasCustomRules(permissions, this.props.resourceNode.workspace),
-      rights: Object.assign({}, this.state.rights, permissions)
-    })
-  }
-
-  save() {
-    this.props.save(merge({}, this.props.resourceNode, {rights: {all: this.state.rights}}))
-    this.props.fadeModal()
+    this.props.updateRights(newPermissions)
   }
 
   render() {
     return (
-      <Modal
-        icon="fa fa-fw fa-lock"
-        title={trans('edit-rights', {}, 'resource')}
-        className="resource-edit-rights-modal"
-        {...this.props}
-      >
+      <div>
         <ul className="nav nav-tabs">
           <li className={classes({active: 'simple' === this.state.activeTab})}>
             <a
@@ -263,8 +231,8 @@ class RightsModal extends Component {
 
         {'simple' === this.state.activeTab &&
           <SimpleTab
-            currentMode={this.state.currentMode}
-            customRules={this.state.customRules}
+            currentMode={getSimpleAccessRule(this.props.resourceNode.rights, this.props.resourceNode.workspace)}
+            customRules={hasCustomRules(this.props.resourceNode.rights, this.props.resourceNode.workspace)}
             toggleMode={this.toggleSimpleMode}
           />
         }
@@ -275,20 +243,12 @@ class RightsModal extends Component {
             updateRolePermissions={this.updateRolePermissions}
           />
         }
-
-        <button
-          className="modal-btn btn btn-primary"
-          disabled={!this.state.pendingChanges}
-          onClick={this.save}
-        >
-          {trans('save', {}, 'actions')}
-        </button>
-      </Modal>
+      </div>
     )
   }
 }
 
-RightsModal.propTypes = {
+ResourceRights.propTypes = {
   resourceNode: T.shape({
     workspace: T.shape({
       id: T.string.isRequired
@@ -299,10 +259,9 @@ RightsModal.propTypes = {
       permissions: T.object.isRequired
     })).isRequired
   }).isRequired,
-  fadeModal: T.func.isRequired,
-  save: T.func.isRequired
+  updateRights: T.func.isRequired
 }
 
 export {
-  RightsModal
+  ResourceRights
 }

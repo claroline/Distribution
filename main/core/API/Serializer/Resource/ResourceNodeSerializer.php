@@ -10,6 +10,7 @@ use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
@@ -112,7 +113,7 @@ class ResourceNodeSerializer
                 'meta' => $this->serializeMeta($resourceNode),
                 'display' => $this->serializeDisplay($resourceNode),
                 'restrictions' => $this->serializeRestrictions($resourceNode),
-                'rights' => $this->getRights($resourceNode), // todo : remove me
+                'rights' => $this->serializeRights($resourceNode), // todo : remove me
             ]);
         }
 
@@ -218,23 +219,20 @@ class ResourceNodeSerializer
         ];
     }
 
-    private function getRights(ResourceNode $resourceNode)
+    private function serializeRights(ResourceNode $resourceNode)
     {
-        $serializedRights = [];
-        $rights = $resourceNode->getRights();
-        foreach ($rights as $right) {
-            $role = $right->getRole();
-            $serializedRights[$right->getRole()->getName()] = [
+        return array_map(function(ResourceRights $rights) use ($resourceNode) {
+            $role = $rights->getRole();
+
+            return [
                 'name' => $role->getName(),
                 'translationKey' => $role->getTranslationKey(),
                 'permissions' => array_merge(
-                    $this->maskManager->decodeMask($right->getMask(), $resourceNode->getResourceType()),
+                    $this->maskManager->decodeMask($rights->getMask(), $resourceNode->getResourceType()),
                     ['create' => $this->rightsManager->getCreatableTypes([$role->getName()], $resourceNode)]
                 ),
             ];
-        }
-
-        return $serializedRights;
+        }, $resourceNode->getRights()->toArray());
     }
 
     /**

@@ -14,12 +14,26 @@ const parent = createSelector(
 
 const form = (state) => formSelect.form(state, FORM_NAME)
 
-const saveEnabled = (state) => formSelect.saveEnabled(form(state))
+const formData = createSelector(
+  [form],
+  (form) => formSelect.data(form)
+)
+
+const newNode = createSelector(
+  [formData],
+  (formData) => formData.node
+)
+
+const saveEnabled = createSelector(
+  [form],
+  (form) => formSelect.saveEnabled(form)
+)
 
 export const selectors = {
   STORE_NAME,
   FORM_NAME,
   parent,
+  newNode,
   form,
   saveEnabled
 }

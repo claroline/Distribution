@@ -219,6 +219,17 @@ const ModalAction = {
   defaultProps: {}
 }
 
+const PopoverAction = {
+  propTypes: {
+    popover: T.shape({
+      className: T.string,
+      label: T.string,
+      position: T.oneOf(['top', 'bottom', 'left', 'right']),
+      content: T.node.isRequired
+    }).isRequired
+  }
+}
+
 const UrlAction = {
   propTypes: {
     target: T.arrayOf([
@@ -241,5 +252,6 @@ export {
   LinkAction,
   MenuAction,
   ModalAction,
+  PopoverAction,
   UrlAction
 }

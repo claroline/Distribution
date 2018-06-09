@@ -19,8 +19,8 @@ const ResourceTypeModalComponent = props =>
   <SelectionModal
     {...omit(props, 'parent', 'continueCreation')}
     icon="fa fa-fw fa-plus"
-    title={trans('create_resource')}
-    subtitle="1. Choisissez le type de ressource"
+    title={trans('new_resource', {}, 'resource')}
+    subtitle="1. Choisir le type de ressource à créer"
     items={props.parent.permissions.create.map(name => {
       const tags = getType({meta: {type: name}}).tags || []
 

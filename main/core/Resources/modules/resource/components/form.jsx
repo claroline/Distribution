@@ -13,10 +13,10 @@ import {constants} from '#/main/core/resource/constants'
 
 const ResourceFormComponent = (props) =>
   <FormContainer
-    level={3}
+    level={props.level}
     name={props.name}
     dataPart={props.dataPart}
-    meta={true}
+    meta={props.meta}
     sections={[
       {
         title: trans('general'),
@@ -70,17 +70,17 @@ const ResourceFormComponent = (props) =>
           }, {
             name: 'display.showIcon',
             label: trans('resource_showIcon', {}, 'resource'),
-            help: trans('resource_showIcon_help'),
+            help: trans('resource_showIcon_help', {}, 'resource'),
             type: 'boolean'
           }, {
             name: 'display.fullscreen',
             label: trans('resource_fullscreen', {}, 'resource'),
             type: 'boolean'
-          }, {
+          }, /*{
             name: 'display.closable',
             label: trans('resource_closable', {}, 'resource'),
             type: 'boolean'
-          }, {
+          }, */{
             name: 'display.closeTarget',
             label: trans('resource_close_target', {}, 'resource'),
             type: 'choice',
@@ -191,6 +191,7 @@ ResourceFormComponent.propTypes = {
   level: T.number,
   name: T.string.isRequired,
   dataPart: T.string,
+  meta: T.bool,
   children: T.any,
 
   // from redux
@@ -198,7 +199,8 @@ ResourceFormComponent.propTypes = {
 }
 
 ResourceFormComponent.defaultProps = {
-  level: 3
+  level: 3,
+  meta: true
 }
 
 const ResourceForm = connect(
