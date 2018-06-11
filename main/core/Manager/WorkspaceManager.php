@@ -1889,6 +1889,7 @@ class WorkspaceManager
             $templateName = $isPersonal ? 'claroline.param.personal_template' : 'claroline.param.default_template';
             $template = new File($this->container->getParameter($templateName));
             $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
+            $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->setDefaults();
         }
 
