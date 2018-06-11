@@ -86,7 +86,7 @@ class MessageSerializer
         }
 
         $data['meta']['flagged'] = $message->isFlagged();
-        $data['meta']['visible'] = $message->isVisible();
+        $data['meta']['visibility'] = $message->getVisibility();
 
         return $data;
     }
@@ -124,7 +124,7 @@ class MessageSerializer
         }
 
         $this->sipe('meta.flagged', 'setFlagged', $data, $message);
-        $this->sipe('meta.visible', 'setVisible', $data, $message);
+        $this->sipe('meta.visibility', 'setVisibility', $data, $message);
 
         return $message;
     }
