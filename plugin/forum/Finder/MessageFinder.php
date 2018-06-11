@@ -66,6 +66,21 @@ class MessageFinder implements FinderInterface
                 $qb->andWhere("obj.creationDate >= :{$filterName}");
                 $qb->setParameter($filterName, $filterValue);
                 break;
+              case 'moderation':
+                if ($filterValue) {
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->eq('obj.moderation', ':prior_once'),
+                        $qb->expr()->eq('obj.moderation', ':prior_all')
+                    ));
+                    $qb->setParameter('prior_once', Forum::VALIDATE_PRIOR_ONCE);
+                    $qb->setParameter('prior_all', Forum::VALIDATE_PRIOR_ALL);
+                } else {
+                    $qb->andWhere('obj.moderation', ':filter_none');
+                    $qb->setParameter('filter_none', Forum::VALIDATE_NONE);
+                }
+
+                $qb->setParameter($filterName, $filterValue);
+                break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
             }
