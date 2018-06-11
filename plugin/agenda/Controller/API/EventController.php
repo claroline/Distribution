@@ -69,13 +69,14 @@ class EventController extends AbstractCrudController
     {
         $id = $request->query->get('workspace');
         $file = $this->container->get('claroline.manager.agenda_manager')->export($id);
+
         $response = new StreamedResponse();
 
         $response->setCallBack(
           function () use ($file) {
               readfile($file);
           }
-      );
+        );
 
         $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->find($id);
         $name = $workspace ? $workspace->getName() : 'desktop';

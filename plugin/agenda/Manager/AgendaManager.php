@@ -152,7 +152,7 @@ class AgendaManager
         $repo = $this->om->getRepository('ClarolineAgendaBundle:Event');
         $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->find($workspaceId);
 
-        if (isset($workspaceId)) {
+        if ($workspace) {
             $listEvents = $repo->findByWorkspaceId($workspaceId, false);
         } else {
             $usr = $this->tokenStorage->getToken()->getUser();
