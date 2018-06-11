@@ -50,7 +50,7 @@ class MessageCrud
         $forum = $this->getSubject($message)->getForum();
 
         if (Forum::VALIDATE_PRIOR_ALL === $forum->getValidationMode()) {
-            $message->setVisibility(Forum::VALIDATE_PRIOR_ALL);
+            $message->setModeration(Forum::VALIDATE_PRIOR_ALL);
         }
 
         if (Forum::VALIDATE_PRIOR_ONCE === $forum->getValidationMode()) {

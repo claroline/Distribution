@@ -50,7 +50,7 @@ class Message extends AbstractMessage
     /**
      * @ORM\Column(type="string")
      */
-    protected $visibility = FORUM::VALIDATE_NONE;
+    protected $moderation = FORUM::VALIDATE_NONE;
 
     /**
      * @ORM\Column(type="boolean")
@@ -75,14 +75,14 @@ class Message extends AbstractMessage
         return $this->subject;
     }
 
-    public function setVisibility($bool)
+    public function setModeration($bool)
     {
         $this->visible = $bool;
     }
 
-    public function getVisibility()
+    public function getModeration()
     {
-        return $this->visibility;
+        return $this->moderation;
     }
 
     public function setParent(self $parent = null)

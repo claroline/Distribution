@@ -75,13 +75,13 @@ const SubjectsList = props =>
           type: 'string',
           label: trans('tags'),
           displayed: true
+        }, {
+          name: 'meta.creator.username',
+          type: 'string',
+          label: trans('creator'),
+          displayed: true,
+          searchable: false
         }
-        // {
-        //   name: 'meta.creator',
-        //   type: 'string',
-        //   label: trans('creator'),
-        //   displayed: true
-        // }
       ]}
       actions={(rows) => [
         {

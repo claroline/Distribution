@@ -76,7 +76,7 @@ class MessageSerializer
             'created' => $message->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $message->getModificationDate()->format('Y-m-d\TH:i:s'),
             'flagged' => $message->isFlagged(),
-            'visibility' => $message->getVisibility(),
+            'moderation' => $message->getModeration(),
         ];
     }
 
