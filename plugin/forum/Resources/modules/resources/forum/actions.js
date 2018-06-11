@@ -29,3 +29,27 @@ actions.validateMessage = (message, subjectId) => ({
     }
   }
 })
+
+actions.unLockUser = (userId, forumId) => ({
+  [API_REQUEST]: {
+    url: ['claroline_forum_api_forum_unlock', {user: userId, forum: forumId}],
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('moderation.blockedMessages'))
+    }
+  }
+})
+
+actions.banUser = (userId, forumId) => ({
+  [API_REQUEST]: {
+    url: ['claroline_forum_api_forum_ban', {user: userId, forum: forumId}],
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('moderation.blockedMessages'))
+    }
+  }
+})

@@ -109,7 +109,7 @@ class ForumController extends AbstractCrudController
     public function unlockAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
+        $user = $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setAccess(true);
         $om->persist($user);
         $om->flush();
@@ -126,7 +126,7 @@ class ForumController extends AbstractCrudController
     public function lockAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
+        $user = $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setAccess(false);
         $om->persist($user);
         $om->flush();
@@ -143,7 +143,7 @@ class ForumController extends AbstractCrudController
     public function banAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
+        $user = $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setBanned(true);
         $om->persist($user);
         $om->flush();
@@ -177,7 +177,7 @@ class ForumController extends AbstractCrudController
     public function notifyAction(User $user, Forum $forum)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
+        $user = $this->container->get('claroline.manager.forum_manager')->getValidationUser($user, $forum);
         $user->setNotified(true);
         $om->persist($user);
         $om->flush();

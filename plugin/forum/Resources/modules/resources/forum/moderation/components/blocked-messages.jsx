@@ -74,13 +74,13 @@ const BlockedMessagesComponent = (props) =>
           icon: 'fa fa-fw fa-check',
           label: trans('validate_user', {}, 'forum'),
           displayed: props.forum.moderation === 'PRIOR_ONCE',
-          callback: () => props.unLockUser(rows[0], rows[0].subject.id)
+          callback: () => props.unLockUser(rows[0].meta.creator.id, props.forum.id)
         }, {
           type: 'callback',
           icon: 'fa fa-fw fa-times',
           label: trans('block_user', {}, 'forum'),
           displayed: props.forum.moderation === 'PRIOR_ONCE',
-          callback: () => props.lockUser(rows[0], rows[0].subject.id)
+          callback: () => props.banUser(rows[0].meta.creator.id, props.forum.id)
         }
       ]}
       card={(props) =>
@@ -101,11 +101,11 @@ const BlockedMessages = connect(
     validateMessage(message, subjectId) {
       dispatch(actions.validateMessage(message, subjectId))
     },
-    lockUser(message, subjectId) {
-      dispatch(actions.lockUser(message, subjectId))
+    banUser(userId, forumId) {
+      dispatch(actions.banUser(userId, forumId))
     },
-    unLockUser(message, subjectId) {
-      dispatch(actions.unLockUser(message, subjectId))
+    unLockUser(userId, forumId) {
+      dispatch(actions.unLockUser(userId, forumId))
     }
   })
 )(BlockedMessagesComponent)
