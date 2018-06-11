@@ -3,6 +3,10 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
+import uniq from 'lodash/uniq'
+
+import Tab from 'react-bootstrap/lib/Tab'
+import Tabs from 'react-bootstrap/lib/Tabs'
 
 import {trans}  from '#/main/core/translation'
 import {PopoverButton} from '#/main/app/button/components/popover'
@@ -57,7 +61,7 @@ CreatePermission.propTypes = {
 const RolePermissions = props =>
   <tr>
     <th scope="row">
-      {trans(props.role.key)}
+      {trans(props.translationKey)}
     </th>
 
     {Object.keys(props.permissions).map(permission =>
@@ -81,24 +85,27 @@ const RolePermissions = props =>
   </tr>
 
 RolePermissions.propTypes = {
-  role: T.shape({
-    key: T.string.isRequired
-  }).isRequired,
+  translationKey: T.string.isRequired,
   permissions: T.object.isRequired,
   updatePermissions: T.func.isRequired
 }
 
-const AdvancedTab = props =>
-  <div>
+const AdvancedTab = props => {
+  const allPerms = uniq(props.permissions
+    .reduce((accumulator, current) => accumulator.concat(
+      Object.keys(current.permissions).filter(perm => 'create' !== perm || !isEmpty(current.permissions[perm]))
+    ), []))
+
+  return (
     <table className="table table-striped table-hover resource-rights-advanced">
       <thead>
         <tr>
           <th scope="col">{trans('role')}</th>
-          {Object.keys(props.permissions['ROLE_USER'].permissions).map(permission =>
+          {allPerms.map(permission =>
             ('create' !== permission || !isEmpty(props.permissions['ROLE_USER'].permissions[permission])) &&
             <th key={`${permission}-header`} scope="col">
               <div className="permission-name-container">
-                <span className="permission-name">{trans(permission, {}, 'resource')}</span>
+                <span className="permission-name">{trans(permission, {}, 'actions')}</span>
               </div>
             </th>
           )}
@@ -106,20 +113,25 @@ const AdvancedTab = props =>
       </thead>
 
       <tbody>
-        {Object.keys(props.permissions).map(roleName =>
-          <RolePermissions
-            key={roleName}
-            role={props.permissions[roleName].role}
-            permissions={props.permissions[roleName].permissions}
-            updatePermissions={(permissions) => props.updateRolePermissions(roleName, permissions)}
-          />
-        )}
+      {props.permissions.map(rolePerm =>
+        <RolePermissions
+          key={rolePerm.name}
+          translationKey={rolePerm.translationKey}
+          permissions={rolePerm.permissions}
+          updatePermissions={(permissions) => props.updateRolePermissions(rolePerm.name, permissions)}
+        />
+      )}
       </tbody>
     </table>
-  </div>
+  )
+}
 
 AdvancedTab.propTypes = {
-  permissions: T.object.isRequired,
+  permissions: T.arrayOf(T.shape({
+    name: T.string.isRequired,
+    translationKey: T.string.isRequired,
+    permissions: T.object.isRequired
+  })).isRequired,
   updateRolePermissions: T.func.isRequired
 }
 
@@ -142,10 +154,10 @@ SimpleAccessRule.propTypes = {
 }
 
 const SimpleTab = props =>
-  <div className="modal-body">
+  <div className="resource-rights-simple">
     <p>{trans('resource_access_rights', {}, 'resource')}</p>
 
-    <div className="resource-rights-simple">
+    <div className="resource-rights-simple-group">
       <SimpleAccessRule mode="all" icon="fa fa-globe" {...props} />
       <SimpleAccessRule mode="user" icon="fa fa-users" {...props} />
       <SimpleAccessRule mode="workspace" icon="fa fa-book" {...props} />
@@ -153,10 +165,10 @@ const SimpleTab = props =>
     </div>
 
     {props.customRules &&
-    <p className="resource-custom-rules-info">
-      <span className="fa fa-asterisk" />
-      {trans('resource_rights_custom_help', {}, 'resource')}
-    </p>
+      <p className="resource-custom-rules-info">
+        <span className="fa fa-asterisk" />
+        {trans('resource_rights_custom_help', {}, 'resource')}
+      </p>
     }
   </div>
 
@@ -171,82 +183,34 @@ SimpleTab.defaultProps = {
   customRules: false
 }
 
-class ResourceRights extends Component {
-  constructor(props) {
-    super(props)
+const ResourceRights = props =>
+  <Tabs id={`${props.resourceNode.id}-tabs`} defaultActiveKey="simple">
+    <Tab eventKey="simple" title={trans('simple')}>
+      <SimpleTab
+        currentMode={getSimpleAccessRule(props.resourceNode.rights, props.resourceNode.workspace)}
+        customRules={hasCustomRules(props.resourceNode.rights, props.resourceNode.workspace)}
+        toggleMode={(mode) => {
+          props.updateRights(
+            setSimpleAccessRule(props.resourceNode.rights, mode, props.resourceNode.workspace)
+          )
+        }}
+      />
+    </Tab>
 
-    this.state = {
-      activeTab: 'simple',
-    }
+    <Tab eventKey="advanced" title={trans('advanced')}>
+      <AdvancedTab
+        permissions={props.resourceNode.rights}
+        updateRolePermissions={(roleName, permissions) => {
+          // todo fix
+          const newPermissions = merge({}, props.resourceNode.rights, {
+            [roleName]: merge({}, props.resourceNode.rights[roleName], permissions)
+          })
 
-    this.toggleSimpleMode = this.toggleSimpleMode.bind(this)
-    this.updateRolePermissions = this.updateRolePermissions.bind(this)
-  }
-
-  toggleSimpleMode(mode) {
-    const newPermissions = setSimpleAccessRule(this.props.resourceNode.rights, mode, this.props.resourceNode.workspace)
-
-    this.props.updateRights(newPermissions)
-  }
-
-  updateRolePermissions(roleName, permissions) {
-    // todo fix
-    const newPermissions = merge({}, this.props.resourceNode.rights, {
-      [roleName]: merge({}, this.props.resourceNode.rights[roleName], permissions)
-    })
-
-    this.props.updateRights(newPermissions)
-  }
-
-  render() {
-    return (
-      <div>
-        <ul className="nav nav-tabs">
-          <li className={classes({active: 'simple' === this.state.activeTab})}>
-            <a
-              role="button"
-              href=""
-              onClick={(e) => {
-                e.preventDefault()
-                this.setState({activeTab: 'simple'})
-              }}
-            >
-              {trans('simple')}
-            </a>
-          </li>
-
-          <li className={classes({active: 'advanced' === this.state.activeTab})}>
-            <a
-              role="button"
-              href=""
-              onClick={(e) => {
-                e.preventDefault()
-                this.setState({activeTab: 'advanced'})
-              }}
-            >
-              {trans('advanced')}
-            </a>
-          </li>
-        </ul>
-
-        {'simple' === this.state.activeTab &&
-          <SimpleTab
-            currentMode={getSimpleAccessRule(this.props.resourceNode.rights, this.props.resourceNode.workspace)}
-            customRules={hasCustomRules(this.props.resourceNode.rights, this.props.resourceNode.workspace)}
-            toggleMode={this.toggleSimpleMode}
-          />
-        }
-
-        {'advanced' === this.state.activeTab &&
-          <AdvancedTab
-            permissions={this.state.rights}
-            updateRolePermissions={this.updateRolePermissions}
-          />
-        }
-      </div>
-    )
-  }
-}
+          props.updateRights(newPermissions)
+        }}
+      />
+    </Tab>
+  </Tabs>
 
 ResourceRights.propTypes = {
   resourceNode: T.shape({

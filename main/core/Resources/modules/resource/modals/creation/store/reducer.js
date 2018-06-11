@@ -11,7 +11,8 @@ const reducer = combineReducers({
   }),
   form: makeFormReducer(selectors.FORM_NAME, {
     node: null,
-    resource: null
+    resource: null,
+    rights: null
   })
 })
 

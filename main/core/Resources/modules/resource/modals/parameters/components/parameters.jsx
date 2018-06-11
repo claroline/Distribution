@@ -4,11 +4,11 @@ import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-
 import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
+
+import {actions as formActions} from '#/main/core/data/form/actions'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {selectors} from '#/main/core/resource/modals/parameters/store'
 import {ResourceForm} from '#/main/core/resource/components/form'
@@ -25,7 +25,7 @@ const ParametersModalComponent = props =>
     <ResourceForm name={selectors.STORE_NAME} />
 
     <Button
-      className="modal-btn btn btn-primary"
+      className="btn modal-btn"
       type="callback"
       primary={true}
       label={trans('save', {}, 'actions')}

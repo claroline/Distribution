@@ -25,7 +25,8 @@ actions.startCreation = (parent, resourceType) => (dispatch) => {
         type: resourceType.name,
         creator: currentUser()
       }
-    })
+    }),
+    rights: parent.rights
   }, true))
 }
 

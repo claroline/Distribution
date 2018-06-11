@@ -4,18 +4,19 @@ import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
-import {registry} from '#/main/app/modals/registry'
 import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {ContentMeta} from '#/main/app/content/meta/components/meta'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {RightsModal} from '#/main/core/resource/modals/creation/components/rights'
+import {MODAL_RESOURCE_CREATION_RIGHTS} from '#/main/core/resource/modals/creation/components/rights'
 
 import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceForm} from '#/main/core/resource/components/form'
+
+const MODAL_RESOURCE_CREATION_PARAMETERS = 'MODAL_RESOURCE_CREATION_PARAMETERS'
 
 const ParametersModalComponent = props =>
   <Modal
@@ -98,16 +99,12 @@ const ParametersModal = connect(
       dispatch(actions.create(parent))
     },
     configureRights() {
-      // register the second modal
-      const MODAL_RESOURCE_CREATION_RIGHTS = 'MODAL_RESOURCE_CREATION_RIGHTS'
-      registry.add(MODAL_RESOURCE_CREATION_RIGHTS, RightsModal)
-
-      // display the second creation modal
       dispatch(modalActions.showModal(MODAL_RESOURCE_CREATION_RIGHTS, {}))
     }
   })
 )(ParametersModalComponent)
 
 export {
+  MODAL_RESOURCE_CREATION_PARAMETERS,
   ParametersModal
 }

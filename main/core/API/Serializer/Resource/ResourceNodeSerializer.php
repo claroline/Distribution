@@ -100,7 +100,7 @@ class ResourceNodeSerializer
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
-            if (!empty($resourceNode->getWorkspace())) { // TODO : check if this is really required
+            if (!empty($resourceNode->getWorkspace())) {
                 $serializedNode['workspace'] = [ // TODO : use workspace serializer with minimal option
                     'id' => $resourceNode->getWorkspace()->getUuid(),
                     'name' => $resourceNode->getWorkspace()->getName(),
@@ -113,7 +113,7 @@ class ResourceNodeSerializer
                 'meta' => $this->serializeMeta($resourceNode),
                 'display' => $this->serializeDisplay($resourceNode),
                 'restrictions' => $this->serializeRestrictions($resourceNode),
-                'rights' => $this->serializeRights($resourceNode), // todo : remove me
+                'rights' => $this->serializeRights($resourceNode),
             ]);
         }
 

@@ -4,11 +4,10 @@ import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
-import {registry} from '#/main/app/modals/registry'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {SelectionModal} from '#/main/app/modals/selection/components/selection'
-import {ParametersModal} from '#/main/core/resource/modals/creation/components/parameters'
+import {MODAL_RESOURCE_CREATION_PARAMETERS} from '#/main/core/resource/modals/creation/components/parameters'
 
 import {getType} from '#/main/core/resource/utils'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
@@ -34,27 +33,21 @@ const ResourceTypeModalComponent = props =>
         tags: tags.map(tag => trans(tag))
       })
     })}
-    handleSelect={(resourceType) => {
-      props.continueCreation(props.parent, resourceType)
-    }}
+    handleSelect={(resourceType) => props.configure(props.parent, resourceType)}
   />
 
 ResourceTypeModalComponent.propTypes = {
   parent: T.shape(
     ResourceNodeTypes.propTypes
   ).isRequired,
-  continueCreation: T.func.isRequired
+  configure: T.func.isRequired
 }
 
 const ResourceTypeModal = connect(
   null,
   (dispatch) => ({
-    continueCreation(parent, resourceType) {
+    configure(parent, resourceType) {
       dispatch(actions.startCreation(parent, resourceType))
-
-      // register the second modal
-      const MODAL_RESOURCE_CREATION_PARAMETERS = 'MODAL_RESOURCE_CREATION_PARAMETERS'
-      registry.add(MODAL_RESOURCE_CREATION_PARAMETERS, ParametersModal)
 
       // display the second creation modal
       dispatch(modalActions.showModal(MODAL_RESOURCE_CREATION_PARAMETERS, {}))
