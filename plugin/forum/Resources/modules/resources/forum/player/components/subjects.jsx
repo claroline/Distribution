@@ -79,7 +79,8 @@ const SubjectsList = props =>
           name: 'meta.creator.username',
           type: 'string',
           label: trans('creator'),
-          displayed: true
+          displayed: true,
+          searchable: false
         }, {
           name: 'tags',
           type: 'string',
@@ -159,7 +160,7 @@ const SubjectsList = props =>
       card={(props) =>
         <SubjectCard
           {...props}
-          contentText={props.data.content}
+          contentText={props.data.meta.lastMessages[0].content}
         />
       }
     />

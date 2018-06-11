@@ -51,8 +51,7 @@ class SubjectComponent extends Component {
   }
 
   createMessage(subjectId, content) {
-    this.props.createMessage(subjectId, content)
-    // TODO: change to forum when the state is updated
+    this.props.createMessage(subjectId, content, this.props.forum.moderation)
     if(this.props.forum.moderation === 'PRIOR_ALL' ||
     this.props.forum.moderation === 'PRIOR_ONCE' ) {
       this.props.showModal(MODAL_ALERT, {
@@ -61,7 +60,6 @@ class SubjectComponent extends Component {
         type: 'info'
       })
     }
-
   }
 
   updateMessage(message, content) {
@@ -332,8 +330,8 @@ const Subject =  withRouter(withModal(connect(
     currentPage: listSelect.currentPage(listSelect.list(state, 'subjects.messages'))
   }),
   dispatch => ({
-    createMessage(subjectId, content) {
-      dispatch(actions.createMessage(subjectId, content))
+    createMessage(subjectId, content, moderation) {
+      dispatch(actions.createMessage(subjectId, content, moderation))
     },
     deleteSubject(id, push) {
       dispatch(actions.deleteSubject(id, push))
