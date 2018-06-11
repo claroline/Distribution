@@ -162,7 +162,6 @@ class SubjectController extends AbstractCrudController
      * @EXT\Method("GET")
      * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      *
-     *
      * @param string  $id
      * @param string  $class
      * @param Request $request
@@ -171,7 +170,7 @@ class SubjectController extends AbstractCrudController
      */
     public function getFlaggedSubjectsAction(Request $request, Forum $forum)
     {
-      return new JsonResponse(
+        return new JsonResponse(
         $this->finder->search($this->getClass(), array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => ['flagged' => true, 'forum' => $forum->getUuid()]]

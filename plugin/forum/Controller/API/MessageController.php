@@ -4,8 +4,8 @@ namespace Claroline\ForumBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Forum;
+use Claroline\ForumBundle\Entity\Message;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,8 +44,10 @@ class MessageController extends AbstractCrudController
      */
     public function createComment(Message $message, Request $request)
     {
+        $subject = $this->serializer->serialize($message->getSubject());
         $message = $this->serializer->serialize($message);
         $data = $this->decodeRequest($request);
+        $data['subject'] = $subject;
         $data['parent'] = $message;
 
         $object = $this->crud->create(
@@ -69,7 +71,6 @@ class MessageController extends AbstractCrudController
      * @EXT\Method("GET")
      * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      *
-     *
      * @param string  $id
      * @param string  $class
      * @param Request $request
@@ -78,7 +79,7 @@ class MessageController extends AbstractCrudController
      */
     public function getFlaggedMessagesAction(Request $request, Forum $forum)
     {
-      return new JsonResponse(
+        return new JsonResponse(
         $this->finder->search($this->getClass(), array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => ['flagged' => true, 'forum' => $forum->getUuid()]]
@@ -91,7 +92,6 @@ class MessageController extends AbstractCrudController
      * @EXT\Method("GET")
      * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
      *
-     *
      * @param string  $id
      * @param string  $class
      * @param Request $request
@@ -100,7 +100,7 @@ class MessageController extends AbstractCrudController
      */
     public function getBlockedMessagesAction(Request $request, Forum $forum)
     {
-      return new JsonResponse(
+        return new JsonResponse(
         $this->finder->search($this->getClass(), array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => ['visible' => false, 'forum' => $forum->getUuid()]]
