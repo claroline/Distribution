@@ -10,7 +10,6 @@ use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
@@ -38,9 +37,6 @@ class ResourceNodeSerializer
 
     /** @var UserSerializer */
     private $userSerializer;
-
-    /** @var MaskManager */
-    private $maskManager;
 
     /** @var RightsManager */
     private $rightsManager;
@@ -76,7 +72,6 @@ class ResourceNodeSerializer
         $this->eventDispatcher = $eventDispatcher;
         $this->fileSerializer = $fileSerializer;
         $this->userSerializer = $userSerializer;
-        $this->maskManager = $maskManager;
         $this->rightsManager = $rightsManager;
     }
 
@@ -113,7 +108,7 @@ class ResourceNodeSerializer
                 'meta' => $this->serializeMeta($resourceNode),
                 'display' => $this->serializeDisplay($resourceNode),
                 'restrictions' => $this->serializeRestrictions($resourceNode),
-                'rights' => $this->serializeRights($resourceNode),
+                'rights' => $this->rightsManager->getRights($resourceNode),
             ]);
         }
 
@@ -217,22 +212,6 @@ class ResourceNodeSerializer
             'code' => $resourceNode->getAccessCode(),
             'allowedIps' => $resourceNode->getAllowedIps(),
         ];
-    }
-
-    private function serializeRights(ResourceNode $resourceNode)
-    {
-        return array_map(function(ResourceRights $rights) use ($resourceNode) {
-            $role = $rights->getRole();
-
-            return [
-                'name' => $role->getName(),
-                'translationKey' => $role->getTranslationKey(),
-                'permissions' => array_merge(
-                    $this->maskManager->decodeMask($rights->getMask(), $resourceNode->getResourceType()),
-                    ['create' => $this->rightsManager->getCreatableTypes([$role->getName()], $resourceNode)]
-                ),
-            ];
-        }, $resourceNode->getRights()->toArray());
     }
 
     /**

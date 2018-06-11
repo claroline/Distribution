@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
@@ -113,14 +113,14 @@ const AdvancedTab = props => {
       </thead>
 
       <tbody>
-      {props.permissions.map(rolePerm =>
-        <RolePermissions
-          key={rolePerm.name}
-          translationKey={rolePerm.translationKey}
-          permissions={rolePerm.permissions}
-          updatePermissions={(permissions) => props.updateRolePermissions(rolePerm.name, permissions)}
-        />
-      )}
+        {props.permissions.map(rolePerm =>
+          <RolePermissions
+            key={rolePerm.name}
+            translationKey={rolePerm.translationKey}
+            permissions={rolePerm.permissions}
+            updatePermissions={(permissions) => props.updateRolePermissions(rolePerm.name, permissions)}
+          />
+        )}
       </tbody>
     </table>
   )
@@ -214,6 +214,7 @@ const ResourceRights = props =>
 
 ResourceRights.propTypes = {
   resourceNode: T.shape({
+    id: T.string.isRequired, // will not properly work in creation
     workspace: T.shape({
       id: T.string.isRequired
     }),

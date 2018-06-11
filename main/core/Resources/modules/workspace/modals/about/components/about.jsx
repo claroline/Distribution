@@ -43,7 +43,7 @@ const AboutModal = props =>
               type: 'url',
               label: trans('url', {}, 'data'),
               calculated: (workspace) => url(['claro_workspace_subscription_url_generate', {
-                slug: props.workspace.meta.slug
+                slug: workspace.meta.slug
               }, true])
             }, {
               name: 'meta.description',

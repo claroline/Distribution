@@ -12,11 +12,11 @@ import {MODAL_RESOURCE_CREATION_PARAMETERS} from '#/main/core/resource/modals/cr
 import {getType} from '#/main/core/resource/utils'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceIcon} from '#/main/core/resource/components/icon'
-import {actions, selectors} from '#/main/core/resource/modals/creation/store'
+import {actions} from '#/main/core/resource/modals/creation/store'
 
 const ResourceTypeModalComponent = props =>
   <SelectionModal
-    {...omit(props, 'parent', 'continueCreation')}
+    {...omit(props, 'parent', 'configure')}
     icon="fa fa-fw fa-plus"
     title={trans('new_resource', {}, 'resource')}
     subtitle="1. Choisir le type de ressource à créer"

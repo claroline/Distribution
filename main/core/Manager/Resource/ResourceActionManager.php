@@ -54,9 +54,10 @@ class ResourceActionManager
      * ResourceMenuManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "dispatcher"    = @DI\Inject("claroline.event.event_dispatcher")
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "authorization"   = @DI\Inject("security.authorization_checker"),
+     *     "dispatcher"      = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
      * @param ObjectManager                 $om

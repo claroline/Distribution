@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/app/api'
 
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {actions as formActions} from '#/main/core/data/form/actions'

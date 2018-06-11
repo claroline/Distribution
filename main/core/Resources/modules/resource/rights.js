@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
 
 // TODO : this 3 methods should be moved in a `role` module
 const roleAnonymous = () => 'ROLE_ANONYMOUS'

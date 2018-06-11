@@ -38,8 +38,7 @@ const action = (resourceNodes) => {
     icon: classes('fa fa-fw', icon),
     label: trans('edit-rights', {}, 'actions'),
     modal: [MODAL_RESOURCE_RIGHTS, {
-      resourceNode: 1 === resourceNodes.length && resourceNodes[0],
-      //bulk: 1 < resourceNodes.length
+      resourceNode: 1 === resourceNodes.length && resourceNodes[0]
     }],
     subscript: customRules && {
       type: 'danger',

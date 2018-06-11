@@ -12,18 +12,17 @@
 namespace Claroline\CoreBundle\Listener\Resource\Types;
 
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Claroline\CoreBundle\Form\DirectoryType;
+use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -33,12 +32,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DirectoryListener
 {
-    /** @var ContainerInterface */
-    private $container;
-
-    /** @var FormFactoryInterface */
-    private $formFactory;
-
     /** @var TwigEngine */
     private $templating;
 
@@ -49,27 +42,58 @@ class DirectoryListener
      * DirectoryListener constructor.
      *
      * @DI\InjectParams({
-     *     "container"   = @DI\Inject("service_container"),
-     *     "formFactory" = @DI\Inject("form.factory"),
-     *     "templating"  = @DI\Inject("templating"),
-     *     "serializer"  = @DI\Inject("claroline.api.serializer")
+     *     "templating" = @DI\Inject("templating"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param ContainerInterface   $container
-     * @param FormFactoryInterface $formFactory
-     * @param TwigEngine           $templating
-     * @param SerializerProvider   $serializer
+     * @param TwigEngine         $templating
+     * @param SerializerProvider $serializer
      */
     public function __construct(
-        ContainerInterface $container,
-        FormFactoryInterface $formFactory,
         TwigEngine $templating,
         SerializerProvider $serializer
     ) {
-        $this->container = $container;
-        $this->formFactory = $formFactory;
         $this->templating = $templating;
         $this->serializer = $serializer;
+    }
+
+    /**
+     * Creates a new resource inside a directory.
+     *
+     * @DI\Observe("resource.directory.add")
+     *
+     * @param ResourceActionEvent $event
+     */
+    public function onAdd(ResourceActionEvent $event)
+    {
+        $parent = $event->getResourceNode();
+        $data = $event->getData();
+        $options = $event->getOptions();
+
+        // create the resource node
+        $resourceNode = $this->serializer->deserialize(ResourceNode::class, $data['node'], $options);
+        $resourceNode->setParent($parent);
+
+        // initialize custom resource Entity
+        $resourceClass = $resourceNode->getResourceType()->getClass();
+
+        /** @var AbstractResource $resource */
+        $resource = new $resourceClass();
+        if (!empty($data['resource'])) {
+            $resource = $this->serializer->deserialize($resourceClass, $data['resource'], $options);
+        }
+
+        $resource->setResourceNode($resourceNode);
+
+        if (!empty($data['rights'])) {
+
+        }
+
+        /*$rights = $data['rights']['all']['permissions'];
+        foreach ($rights as $rolePerms) {
+            $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($rolePerms['role']['id']);
+            $this->rightsManager->editPerms($rolePerms['permissions'], $role, $resourceNode);
+        }*/
     }
 
     /**
@@ -108,15 +132,17 @@ class DirectoryListener
     public function onOpen(OpenResourceEvent $event)
     {
         $directory = $event->getResource();
+
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Directory:index.html.twig',
-            [
+            'ClarolineCoreBundle:Directory:index.html.twig', [
                 'directory' => $directory,
                 '_resource' => $directory,
             ]
         );
+
         $response = new Response($content);
         $event->setResponse($response);
+
         $event->stopPropagation();
     }
 
