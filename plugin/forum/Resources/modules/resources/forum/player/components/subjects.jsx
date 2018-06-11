@@ -71,6 +71,12 @@ const SubjectsList = props =>
             time: true
           }
         }, {
+          name: 'meta.creator.username',
+          type: 'string',
+          label: trans('creator'),
+          displayed: true,
+          searchable: false
+        },{
           name: 'tags',
           type: 'string',
           label: trans('tags'),
