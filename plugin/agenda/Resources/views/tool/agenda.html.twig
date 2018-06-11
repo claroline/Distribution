@@ -18,7 +18,14 @@
 {% endblock %}
 
 {% block section_content %}
-  <div class="agenda-container page-container"></div>
+  <div
+    class="agenda-container page-container"
+    {% if workspace is defined %}
+      data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"
+    {% else %}
+      data-workspace="{}"
+    {% endif %}>
+  </div>
 {% endblock %}
 
 {% block stylesheets %}

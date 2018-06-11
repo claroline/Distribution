@@ -13,9 +13,11 @@ namespace Claroline\AgendaBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @ApiMeta(class="Claroline\AgendaBundle\Entity\Event")
@@ -50,5 +52,39 @@ class EventController extends AbstractCrudController
         );
 
         return new JsonResponse($data['data']);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/download",
+     *     name="apiv2_download_agenda"
+     * )
+     * @EXT\Method("GET")
+     *
+     * @param Workspace $workspace
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function exportAction(Request $request)
+    {
+        $id = $request->query->get('workspace');
+        $file = $this->container->get('claroline.manager.agenda_manager')->export($id);
+        $response = new StreamedResponse();
+
+        $response->setCallBack(
+          function () use ($file) {
+              readfile($file);
+          }
+      );
+
+        $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->find($id);
+        $name = $workspace ? $workspace->getName() : 'desktop';
+        $response->headers->set('Content-Transfer-Encoding', 'octet-stream');
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$name.'.ics');
+        $response->headers->set('Content-Type', ' text/calendar');
+        $response->headers->set('Connection', 'close');
+
+        return $response;
     }
 }

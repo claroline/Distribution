@@ -32,7 +32,7 @@ class Calendar extends Component {
     this.props.eventDragStart($(this.calendarRef))
   }
   onDayClick() {
-    this.props.dayClick($(this.calendarRef))
+    this.props.dayClick($(this.calendarRef), this.props.workspace)
   }
 
   onEventClick(event) {

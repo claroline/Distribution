@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 
-import moment from 'moment'
 import cloneDeep from 'lodash/cloneDeep'
 
 import {PropTypes as T} from 'prop-types'
@@ -16,11 +14,7 @@ import {PageContainer, PageHeader, PageActions} from '#/main/core/layout/page'
 
 import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
 import {TaskBar} from '#/plugin/agenda/components/task-bar.jsx'
-import {Event} from '#/plugin/agenda/components/event.jsx'
-
 import {MODAL_EVENT} from '#/plugin/agenda/components/modal'
-
-import $ from 'jquery'
 
 function arrayTrans(key) {
   if (typeof key === 'object') {
@@ -30,13 +24,6 @@ function arrayTrans(key) {
     }
     return transWords
   }
-}
-
-function convertDateTimeToString(value, isAllDay, isEndDate) {
-  if (!value)
-    return isAllDay && isEndDate ?
-      moment(value).subtract(1, 'minutes').format('DD/MM/YYYY HH:mm'):
-      moment(value).format('DD/MM/YYYY HH:mm')
 }
 
 function sanitize(event) {
@@ -106,6 +93,11 @@ class AgendaComponent extends Component {
   constructor(props) {
 
     super(props)
+    let filters = ''
+
+    if (props.workspace.id) {
+      filters = '?filters[workspace]=' + props.workspace.uuid
+    }
 
     this.calendar = {
       header: {
@@ -131,7 +123,7 @@ class AgendaComponent extends Component {
       //This is the url which will get the events from ajax the 1st time the calendar is launched
       //aussi il faudra virer le routing.generate ici (filtrer par workspace si il y a)
       /** @global Routing */
-      events: Routing.generate('apiv2_event_list'), //faudra rajouter les filtres ici (pour le workspace par exemple)
+      events: Routing.generate('apiv2_event_list') + filters, //faudra rajouter les filtres ici (pour le workspace par exemple)
       axisFormat: 'HH:mm',
       timeFormat: 'H:mm',
       agenda: 'h:mm{ - h:mm}',
@@ -147,7 +139,8 @@ class AgendaComponent extends Component {
       eventDestroy: props.onEventDestroy,
       eventRender: props.onEventRender,
       eventResize: props.onEventResize,
-      eventResizeStart: props.onEventResizeStart
+      eventResizeStart: props.onEventResizeStart,
+      workspace: props.workspace
     }
   }
 
@@ -157,7 +150,7 @@ class AgendaComponent extends Component {
         <PageHeader title={trans('agenda', {}, 'tool')}></PageHeader>
         <div className="container row panel-body">
           <Calendar {...this.calendar} />
-          <TaskBar/>
+          <TaskBar openImportForm={this.props.openImportForm} onExport={this.props.onExport} workspace={this.props.workspace}/>
         </div>
       </PageContainer>
     )
@@ -165,14 +158,41 @@ class AgendaComponent extends Component {
 }
 
 const Agenda = connect(
-  state => ({}),
+  state => ({
+    workspace: state.workspace
+  }),
   dispatch => ({
-    onDayClick(calendarRef) {
+    openImportForm() {
+      dispatch (
+        modalActions.showModal('MODAL_DATA_FORM', {
+          title: 'import',
+          save: data => {
+          },
+          sections: [
+            {
+              title: trans('general'),
+              primary: true,
+              fields: [{
+                name: 'file',
+                type: 'file',
+                label: trans('file'),
+                required: true
+              }]
+            }
+          ]
+        })
+      )
+    },
+    onExport(workspace) {
+      console.log(workspace)
+      dispatch(actions.download(workspace))
+    },
+    onDayClick(calendarRef, workspace) {
       dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
           title: 'event',
           save: event => {
-            dispatch(actions.create(event, calendarRef))
+            dispatch(actions.create(event, workspace, calendarRef))
           },
           sections: form
         })

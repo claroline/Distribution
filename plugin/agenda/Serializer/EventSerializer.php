@@ -58,8 +58,8 @@ class EventSerializer
         return [
             'id' => $event->getId(),
             'title' => $invitation && !is_null($event->getTitle()) ? $invitation->getTitle() : $event->getTitle(),
-            'start' => DateNormalizer::normalize($event->getStartInDateTime()),
-            'end' => DateNormalizer::normalize($event->getEndInDateTime()),
+            'start' => $event->getStartInDateTime() ? DateNormalizer::normalize($event->getStartInDateTime()) : null,
+            'end' => $event->getEndInDateTime() ? DateNormalizer::normalize($event->getEndInDateTime()) : null,
             'color' => $event->getPriority(),
             'allDay' => $event->isAllDay(),
             'durationEditable' => !$event->isTask() && false !== $event->isEditable() && !$invitation,
@@ -112,7 +112,8 @@ class EventSerializer
         $this->sipe('isEditable', 'setIsEditable', $data, $event);
 
         if (isset($data['workspace'])) {
-            //add ws
+            $workspace = $this->serializer->deserialize('Claroline\CoreBundle\Entity\Workspace\Workspace', $data['workspace']);
+            $event->setWorkspace($workspace);
         }
         //owner set in crud create
 

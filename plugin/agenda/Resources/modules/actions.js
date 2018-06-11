@@ -5,11 +5,11 @@ import $ from 'jquery'
 export const actions = {}
 
 //calendarElement is required to refresh the calendar since it's outside react
-actions.create = (event, calendarRef) => ({
+actions.create = (event, workspace, calendarRef) => ({
   [API_REQUEST]: {
     url: ['apiv2_event_create'],
     request: {
-      body: JSON.stringify(event),
+      body: JSON.stringify(Object.assign({}, event, {workspace})),
       method: 'POST'
     },
     success: (data) => {

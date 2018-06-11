@@ -150,6 +150,7 @@ class AgendaManager
     public function export($workspaceId = null)
     {
         $repo = $this->om->getRepository('ClarolineAgendaBundle:Event');
+        $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->find($workspaceId);
 
         if (isset($workspaceId)) {
             $listEvents = $repo->findByWorkspaceId($workspaceId, false);
@@ -161,7 +162,7 @@ class AgendaManager
         }
 
         $calendar = $this->writeCalendar($listEvents);
-        $fileName = $this->writeToICS($calendar, $workspaceId);
+        $fileName = $this->writeToICS($calendar, $workspace);
 
         return $fileName;
     }
@@ -172,9 +173,9 @@ class AgendaManager
      *
      * @return string $fileName path to the file in web/upload folder
      */
-    public function writeToICS($text, $workspaceId)
+    public function writeToICS($text, $workspace)
     {
-        $name = is_null($workspaceId) ? 'desktop' : $workspaceId->getName();
+        $name = is_null($workspace) ? 'desktop' : $workspace->getName();
         $fileName = $this->rootDir.'/../web/uploads/'.$name.'.ics';
         file_put_contents($fileName, $text);
 
@@ -237,7 +238,7 @@ class AgendaManager
         $tz = $date->getTimezone();
 
         return $this->container->get('templating')->render(
-            'ClarolineAgendaBundle:Tool:exportIcsCalendar.ics.twig',
+            'ClarolineAgendaBundle:tool:export_ics_calendar.ics.twig',
             [
                 'tzName' => $tz->getName(),
                 'events' => $events,
