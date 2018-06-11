@@ -75,12 +75,12 @@ class Message extends AbstractMessage
         return $this->subject;
     }
 
-    public function setModeration($bool)
+    public function setModerated($moderated)
     {
-        $this->visible = $bool;
+        $this->moderation = $moderated;
     }
 
-    public function getModeration()
+    public function getModerated()
     {
         return $this->moderation;
     }

@@ -103,7 +103,7 @@ class MessageController extends AbstractCrudController
         return new JsonResponse(
         $this->finder->search($this->getClass(), array_merge(
                 $request->query->all(),
-                ['hiddenFilters' => ['moderated' => true, 'forum' => $forum->getUuid()]]
+                ['hiddenFilters' => ['moderation' => true, 'forum' => $forum->getUuid()]]
             ))
       );
     }

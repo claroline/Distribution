@@ -86,7 +86,7 @@ class MessageSerializer
         }
 
         $data['meta']['flagged'] = $message->isFlagged();
-        $data['meta']['moderation'] = $message->getModeration();
+        $data['meta']['moderation'] = $message->getModerated();
 
         return $data;
     }
@@ -124,7 +124,7 @@ class MessageSerializer
         }
 
         $this->sipe('meta.flagged', 'setFlagged', $data, $message);
-        $this->sipe('meta.moderation', 'setModeration', $data, $message);
+        $this->sipe('meta.moderation', 'setModerated', $data, $message);
 
         return $message;
     }
