@@ -34,11 +34,11 @@ const forumId = createSelector(
 
 const visibleMessages = createSelector(
   [messages],
-  (messages) => messages.data.filter(message => true === message.meta.visible)
+  (messages) => messages.data.filter(message => 'NONE' === message.meta.moderation)
 )
 const moderatedMessages = createSelector(
   [messages],
-  (messages) => messages.data.filter(message => false === message.meta.visible)
+  (messages) => messages.data.filter(message => 'NONE' !== message.meta.visible)
 )
 
 const tagsCount = createSelector(

@@ -165,7 +165,7 @@ actions.unFlagSubject = (subject) => ({
   }
 })
 
-actions.createMessage = (subjectId, content) => ({
+actions.createMessage = (subjectId, content, moderation) => ({
   [API_REQUEST]: {
     url: ['claroline_forum_api_subject_createmessage', {id: subjectId}],
     request: {
@@ -176,7 +176,8 @@ actions.createMessage = (subjectId, content) => ({
         meta: {
           creator: currentUser(),
           created: now(),
-          updated: now()
+          updated: now(),
+          moderation: moderation
         },
         comments: []
       })
@@ -187,7 +188,7 @@ actions.createMessage = (subjectId, content) => ({
   }
 })
 
-actions.createComment = (messageId, comment) => ({
+actions.createComment = (messageId, comment, moderation) => ({
   [API_REQUEST]: {
     url: ['claroline_forum_api_message_createcomment', {id: messageId}],
     request: {
@@ -198,7 +199,8 @@ actions.createComment = (messageId, comment) => ({
         meta: {
           creator: currentUser(),
           created: now(),
-          updated: now()
+          updated: now(),
+          moderation: moderation
         }
       })
     },

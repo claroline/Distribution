@@ -38,6 +38,12 @@ const FlaggedMessagesComponent = (props) =>
         type: 'string',
         label: trans('subject_title', {}, 'forum'),
         displayed: true
+      },{
+        name: 'meta.creator.username',
+        type: 'string',
+        label: trans('creator'),
+        displayed: true,
+        searchable: false
       }, {
         name: 'meta.updated',
         type: 'date',
@@ -47,12 +53,6 @@ const FlaggedMessagesComponent = (props) =>
           time: true
         }
       }
-      // {
-      //   name: 'meta.creator',
-      //   type: 'string',
-      //   label: trans('creator'),
-      //   displayed: true
-      // }
     ]}
     actions={(rows) => [
       {

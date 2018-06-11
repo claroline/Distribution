@@ -38,6 +38,12 @@ const FlaggedSubjectsComponent = (props) =>
         label: trans('subject_title', {}, 'forum'),
         displayed: true
       }, {
+        name: 'meta.creator.username',
+        type: 'string',
+        label: trans('creator'),
+        displayed: true,
+        searchable: false
+      }, {
         name: 'meta.updated',
         type: 'date',
         label: trans('last_modification'),
@@ -46,12 +52,6 @@ const FlaggedSubjectsComponent = (props) =>
           time: true
         }
       }
-    // {
-    //   name: 'meta.creator',
-    //   type: 'string',
-    //   label: trans('creator'),
-    //   displayed: true
-    // }
     ]}
     actions={(rows) => [
       {

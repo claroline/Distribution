@@ -41,8 +41,16 @@ class MessageCommentsComponent extends Component {
   }
 
   createNewComment(messageId, comment) {
-    this.props.createComment(messageId, comment)
+    this.props.createComment(messageId, comment, this.props.forum.moderation)
     this.setState({showNewCommentForm: null})
+    if(this.props.forum.moderation === 'PRIOR_ALL' ||
+    this.props.forum.moderation === 'PRIOR_ONCE' ) {
+      this.props.showModal(MODAL_ALERT, {
+        title: trans('moderated_posts', {}, 'forum'),
+        message: trans('moderated_posts_explanation', {}, 'forum'),
+        type: 'info'
+      })
+    }
   }
 
   updateComment(comment, content) {
@@ -167,11 +175,12 @@ MessageCommentsComponent.propTypes = {
 
 const MessageComments =  withModal(connect(
   state => ({
+    forum: select.forum(state),
     subject: select.subject(state)
   }),
   dispatch => ({
-    createComment(messageId, comment) {
-      dispatch(actions.createComment(messageId, comment))
+    createComment(messageId, comment, moderation) {
+      dispatch(actions.createComment(messageId, comment, moderation))
     },
     deleteComment(id) {
       dispatch(listActions.deleteData('subjects.messages', ['apiv2_forum_message_delete_bulk'], [{id: id}]))

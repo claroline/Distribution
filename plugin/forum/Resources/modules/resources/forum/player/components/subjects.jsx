@@ -76,17 +76,11 @@ const SubjectsList = props =>
           label: trans('creator'),
           displayed: true,
           searchable: false
-        },{
+        }, {
           name: 'tags',
           type: 'string',
           label: trans('tags'),
           displayed: true
-        }, {
-          name: 'meta.creator.username',
-          type: 'string',
-          label: trans('creator'),
-          displayed: true,
-          searchable: false
         }
       ]}
       actions={(rows) => [
@@ -145,7 +139,7 @@ const SubjectsList = props =>
       card={(props) =>
         <SubjectCard
           {...props}
-          contentText={props.data.content}
+          contentText={props.data.meta.lastMessages[0].content}
         />
       }
     />
