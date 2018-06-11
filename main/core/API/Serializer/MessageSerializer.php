@@ -11,7 +11,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.serializer.message")
- *
  */
 class MessageSerializer
 {
@@ -77,7 +76,7 @@ class MessageSerializer
             'created' => $message->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $message->getModificationDate()->format('Y-m-d\TH:i:s'),
             'flagged' => $message->isFlagged(),
-            'visible' => $message->isVisible(),
+            'visibility' => $message->getVisibility(),
         ];
     }
 
@@ -115,6 +114,7 @@ class MessageSerializer
 
         return $parent;
     }
+
     /**
      * Deserializes data into a Forum entity.
      *
