@@ -11,9 +11,10 @@ import {select} from '#/plugin/planned-notification/tools/planned-notification/s
 const MessagesList = props =>
   <DataListContainer
     name="messages.list"
-    open={{
-      action: (row) => `#/messages/form/${row.id}`
-    }}
+    primaryAction={(row) => ({
+      type: 'link',
+      target: `/messages/form/${row.id}`
+    })}
     fetch={{
       url: ['apiv2_plannednotificationmessage_workspace_list', {workspace: props.workspace.uuid}],
       autoload: true
