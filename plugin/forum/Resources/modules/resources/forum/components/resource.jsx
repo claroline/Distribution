@@ -30,7 +30,7 @@ const Resource = props => {
       path: '/',
       exact: true,
       component: Overview,
-      onEnter: () => props.loadLastMessages(props.forum.id),
+      onEnter: () => props.loadLastMessages(props.forum),
       disabled: !props.forum.display.showOverview
     }, {
       path: '/subjects',
@@ -122,8 +122,8 @@ const ForumResource = connect(
     saveForm(forumId) {
       dispatch(formActions.saveForm('forumForm', ['apiv2_forum_update', {id: forumId}]))
     },
-    loadLastMessages(forumId) {
-      dispatch(actions.fetchLastMessages(forumId))
+    loadLastMessages(forum) {
+      dispatch(actions.fetchLastMessages(forum))
     }
   })
 )(Resource)

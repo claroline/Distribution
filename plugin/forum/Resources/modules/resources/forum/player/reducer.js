@@ -1,6 +1,7 @@
 import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
+import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 import {
   SUBJECT_LOAD,
   SUBJECT_FORM_OPEN,
@@ -28,6 +29,7 @@ const reducer = combineReducers({
     sortBy: {property: 'sticked', direction: -1}
   }),
   current: makeReducer({}, {
+    [FORM_SUBMIT_SUCCESS+'/subjects.form']: (state, action) => action.updatedData,
     [SUBJECT_LOAD]: (state, action) => action.subject
   }),
   messages: makeListReducer('subjects.messages', {

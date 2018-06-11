@@ -5,12 +5,11 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
-import {DataCard} from '#/main/core/data/components/data-card'
-import {UserAvatar} from '#/main/core/user/components/avatar'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {select} from '#/plugin/forum/resources/forum/selectors'
+import {MessageCard} from '#/plugin/forum/resources/forum/data/components/message-card'
 
 
 const FlaggedMessagesComponent = (props) =>
@@ -25,7 +24,7 @@ const FlaggedMessagesComponent = (props) =>
       url: ['apiv2_forum_message_delete_bulk']
     }}
     display={{
-      current: listConst.DISPLAY_LIST_SM
+      current: listConst.DISPLAY_LIST
     }}
     definition={[
       {
@@ -71,12 +70,8 @@ const FlaggedMessagesComponent = (props) =>
       }
     ]}
     card={(props) =>
-      <DataCard
+      <MessageCard
         {...props}
-        id={props.data.id}
-        icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
-        title={props.data.content}
-        subtitle={props.data.subject.title}
       />
     }
   />

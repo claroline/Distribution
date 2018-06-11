@@ -53,9 +53,14 @@ const SubjectsList = props =>
           label: trans('stuck', {}, 'forum'),
           displayed: true
         }, {
+          name: 'meta.hot',
+          type: 'boolean',
+          label: trans('hot_subject', {}, 'forum'),
+          displayed: true
+        }, {
           name: 'meta.messages',
           type: 'number',
-          label: trans('posts', {}, 'forum'),
+          label: trans('posts_count', {}, 'forum'),
           displayed: true
         }, {
           name: 'meta.updated',
@@ -103,19 +108,21 @@ const SubjectsList = props =>
           label: trans('unstick', {}, 'forum'),
           callback: () => props.unStickSubject(rows[0]),
           displayed: rows[0].meta.sticky
-        },
-        // {
-        //   icon: 'fa fa-fw fa-flag-o',
-        //   label: trans('flag', {}, 'forum'),
-        //   displayed: ((rows[0].subject.meta.creator !== authenticatedUser) && !(rows[0].meta.flagged)),
-        //   callback: () => props.flagSubject(rows[0])
-        // }, {
-        //   icon: 'fa fa-fw fa-flag',
-        //   label: trans('unflag', {}, 'forum'),
-        //   displayed: ((rows[0].subject.meta.creator !== authenticatedUser) && (rows[0].meta.flagged)),
-        //   callback: () => props.unFlagSubject(rows[0])
-        // },
-        {
+        }, {
+          type: 'callback',
+          icon: 'fa fa-fw fa-flag-o',
+          label: trans('flag', {}, 'forum'),
+          displayed: !rows[0].meta.flagged && rows[0].meta.creator.id !== authenticatedUser.id,
+          callback: () => props.flagSubject(rows[0]),
+          context: 'row'
+        }, {
+          type: 'callback',
+          icon: 'fa fa-fw fa-flag',
+          label: trans('unflag', {}, 'forum'),
+          displayed: rows[0].meta.flagged && rows[0].meta.creator.id !== authenticatedUser.id,
+          callback: () => props.unFlagSubject(rows[0]),
+          context: 'row'
+        }, {
           type: 'callback',
           icon: 'fa fa-fw fa-times-circle-o',
           label: trans('close_subject', {}, 'forum'),

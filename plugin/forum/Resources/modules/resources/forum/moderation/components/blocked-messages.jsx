@@ -5,12 +5,10 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
-import {DataCard} from '#/main/core/data/components/data-card'
-import {UserAvatar} from '#/main/core/user/components/avatar'
-import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/actions'
+import {MessageCard} from '#/plugin/forum/resources/forum/data/components/message-card'
 
 const BlockedMessagesComponent = (props) =>
   <div>
@@ -25,7 +23,7 @@ const BlockedMessagesComponent = (props) =>
         url: ['apiv2_forum_message_delete_bulk']
       }}
       display={{
-        current: listConst.DISPLAY_LIST_SM
+        current: listConst.DISPLAY_LIST
       }}
       definition={[
         {
@@ -59,7 +57,7 @@ const BlockedMessagesComponent = (props) =>
         {
           type: 'link',
           icon: 'fa fa-fw fa-eye',
-          label: trans('see_message_context', {}, 'forum'),
+          label: trans('see_subject', {}, 'forum'),
           target: '/subjects/show/'+rows[0].subject.id,
           context: 'row'
         },
@@ -76,16 +74,18 @@ const BlockedMessagesComponent = (props) =>
           icon: 'fa fa-fw fa-check',
           label: trans('validate_user', {}, 'forum'),
           displayed: props.forum.moderation === 'PRIOR_ONCE',
-          callback: () => props.validateUser(rows[0], rows[0].subject.id)
+          callback: () => props.unLockUser(rows[0], rows[0].subject.id)
+        }, {
+          type: 'callback',
+          icon: 'fa fa-fw fa-times',
+          label: trans('block_user', {}, 'forum'),
+          displayed: props.forum.moderation === 'PRIOR_ONCE',
+          callback: () => props.lockUser(rows[0], rows[0].subject.id)
         }
       ]}
       card={(props) =>
-        <DataCard
+        <MessageCard
           {...props}
-          id={props.data.id}
-          icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
-          title={props.data.content}
-          subtitle={props.data.subject.title}
         />
       }
     />
@@ -101,8 +101,11 @@ const BlockedMessages = connect(
     validateMessage(message, subjectId) {
       dispatch(actions.validateMessage(message, subjectId))
     },
-    validateUser(message, subjectId) {
-      dispatch(actions.validateUser(message, subjectId))
+    lockUser(message, subjectId) {
+      dispatch(actions.lockUser(message, subjectId))
+    },
+    unLockUser(message, subjectId) {
+      dispatch(actions.unLockUser(message, subjectId))
     }
   })
 )(BlockedMessagesComponent)

@@ -53,8 +53,8 @@ class SubjectComponent extends Component {
   createMessage(subjectId, content) {
     this.props.createMessage(subjectId, content)
     // TODO: change to forum when the state is updated
-    if(this.props.forumForm.moderation === 'PRIOR_ALL' ||
-    this.props.forumForm.moderation === 'PRIOR_ONCE' ) {
+    if(this.props.forum.moderation === 'PRIOR_ALL' ||
+    this.props.forum.moderation === 'PRIOR_ONCE' ) {
       this.props.showModal(MODAL_ALERT, {
         title: trans('moderated_posts', {}, 'forum'),
         message: trans('moderated_posts_explanation', {}, 'forum'),
@@ -157,7 +157,7 @@ class SubjectComponent extends Component {
               {
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit'),
-                displayed: true,
+                displayed: get(this.props.subject, 'meta.creator.id', false) === authenticatedUser.id,
                 action: () => this.editSubject(this.props.subject.id)
               }, {
                 icon: 'fa fa-fw fa-thumb-tack',
@@ -223,7 +223,7 @@ class SubjectComponent extends Component {
                           {
                             icon: 'fa fa-fw fa-pencil',
                             label: trans('edit'),
-                            displayed: message.meta.creator.id === authenticatedUser.id,
+                            displayed: message.meta.creator.id === authenticatedUser.id  && !(get(this.props.subject, 'meta.closed', true)),
                             action: () => this.setState({showMessageForm: message.id})
                           }, {
                             icon: 'fa fa-fw fa-flag-o',
@@ -317,8 +317,7 @@ SubjectComponent.defaultProps = {
 }
 const Subject =  withRouter(withModal(connect(
   state => ({
-    // TODO : change for forum
-    forumForm: formSelect.data(formSelect.form(state, 'forumForm')),
+    forum: select.forum(state),
     subject: select.subject(state),
     subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
     editingSubject: select.editingSubject(state),

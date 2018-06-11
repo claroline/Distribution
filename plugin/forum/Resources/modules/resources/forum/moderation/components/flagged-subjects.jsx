@@ -23,7 +23,7 @@ const FlaggedSubjectsComponent = (props) =>
       url: ['apiv2_forum_subject_delete_bulk']
     }}
     display={{
-      current: listConst.DISPLAY_LIST_SM
+      current: listConst.DISPLAY_LIST
     }}
     definition={[
       {

@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import get from 'lodash/get'
+
 
 import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
@@ -59,58 +61,58 @@ class MessageCommentsComponent extends Component {
   }
 
   render() {
+    const visibleComments = this.props.message.children.filter(comment => true === comment.meta.visible)
+
     return (
       <div className="answer-comment-container">
         {(this.state.opened &&
           <div>
-            {this.props.message.children
-              .filter(comment => true === comment.meta.visible)
-              .map(comment =>
-                <div key={comment.id}>
-                  {this.state.showCommentForm !== comment.id &&
-                    <Comment
-                      user={comment.meta.creator}
-                      date={comment.meta.created}
-                      content={comment.content}
-                      allowHtml={true}
-                      actions={[
-                        {
-                          icon: 'fa fa-fw fa-pencil',
-                          label: trans('edit'),
-                          displayed: comment.meta.creator.id === authenticatedUser.id,
-                          action: () => this.setState({showCommentForm: comment.id})
-                        }, {
-                          icon: 'fa fa-fw fa-flag-o',
-                          label: trans('flag', {}, 'forum'),
-                          displayed: (comment.meta.creator.id !== authenticatedUser.id) && !comment.meta.flagged,
-                          action: () => this.props.flag(comment, this.props.subject.id)
-                        }, {
-                          icon: 'fa fa-fw fa-flag',
-                          label: trans('unflag', {}, 'forum'),
-                          displayed: (comment.meta.creator.id !== authenticatedUser.id) && comment.meta.flagged,
-                          action: () => this.props.unFlag(comment, this.props.subject.id)
-                        }, {
-                          icon: 'fa fa-fw fa-trash-o',
-                          label: trans('delete'),
-                          displayed: comment.meta.creator.id === authenticatedUser.id,
-                          action: () => this.deleteComment(comment.id),
-                          dangerous: true
-                        }
-                      ]}
-                    />
-                  }
-                  {this.state.showCommentForm === comment.id &&
-                    <CommentForm
-                      user={currentUser()}
-                      allowHtml={true}
-                      submitLabel={trans('add_comment')}
-                      content={comment.content}
-                      submit={(content) => this.updateComment(comment, content)}
-                      cancel={() => this.setState({showCommentForm: null})}
-                    />
-                  }
-                </div>
-              )}
+            {visibleComments.map(comment =>
+              <div key={comment.id}>
+                {this.state.showCommentForm !== comment.id &&
+                  <Comment
+                    user={comment.meta.creator}
+                    date={comment.meta.created}
+                    content={comment.content}
+                    allowHtml={true}
+                    actions={[
+                      {
+                        icon: 'fa fa-fw fa-pencil',
+                        label: trans('edit'),
+                        displayed: (comment.meta.creator.id === authenticatedUser.id) && !get(this.props.subject, 'meta.closed'),
+                        action: () => this.setState({showCommentForm: comment.id})
+                      }, {
+                        icon: 'fa fa-fw fa-flag-o',
+                        label: trans('flag', {}, 'forum'),
+                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && !comment.meta.flagged,
+                        action: () => this.props.flag(comment, this.props.subject.id)
+                      }, {
+                        icon: 'fa fa-fw fa-flag',
+                        label: trans('unflag', {}, 'forum'),
+                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && comment.meta.flagged,
+                        action: () => this.props.unFlag(comment, this.props.subject.id)
+                      }, {
+                        icon: 'fa fa-fw fa-trash-o',
+                        label: trans('delete'),
+                        displayed: comment.meta.creator.id === authenticatedUser.id,
+                        action: () => this.deleteComment(comment.id),
+                        dangerous: true
+                      }
+                    ]}
+                  />
+                }
+                {this.state.showCommentForm === comment.id &&
+                  <CommentForm
+                    user={currentUser()}
+                    allowHtml={true}
+                    submitLabel={trans('add_comment')}
+                    content={comment.content}
+                    submit={(content) => this.updateComment(comment, content)}
+                    cancel={() => this.setState({showCommentForm: null})}
+                  />
+                }
+              </div>
+            )}
           </div>
         )}
         {this.state.showNewCommentForm === this.props.message.id &&
@@ -130,10 +132,10 @@ class MessageCommentsComponent extends Component {
               className="btn btn-link btn-sm comment-link"
               onClick={() => this.toggleComments()}
             >
-              {this.state.opened ? transChoice('hide_comments',this.props.message.children.length, {count: this.props.message.children.length}, 'forum'): transChoice('show_comments', this.props.message.children.length, {count: this.props.message.children.length}, 'forum')}
+              {this.state.opened ? transChoice('hide_comments',visibleComments.length, {count: visibleComments.length}, 'forum'): transChoice('show_comments', visibleComments.length, {count: visibleComments.length}, 'forum')}
             </button>
           }
-          { !this.state.showNewCommentForm /*!get(this.props.subject, 'meta.closed') */&&
+          {(!get(this.props.subject, 'meta.closed') && !this.state.showNewCommentForm) &&
             <button
               type="button"
               onClick={() => this.showCommentForm(this.props.message.id)}

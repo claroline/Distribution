@@ -4,8 +4,8 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 
-import {select} from '#/plugin/forum/resources/forum/selectors'
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {constants} from '#/plugin/forum/resources/forum/constants'
 
@@ -30,13 +30,13 @@ const EditorComponent = (props) =>
                 name: 'display.description',
                 type: 'html',
                 label: trans('overview_message', {}, 'forum'),
-                displayed: props.forum.display.showOverview
+                displayed: props.forumForm.display.showOverview
               },
               {
                 name: 'display.lastMessagesCount',
                 type: 'number',
                 label: trans('show_last_messages', {}, 'forum'),
-                displayed: props.forum.display.showOverview
+                displayed: props.forumForm.display.showOverview
               }
             ]
           }
@@ -99,12 +99,12 @@ const EditorComponent = (props) =>
   />
 
 EditorComponent.propTypes = {
-  forum: T.shape(ForumType.propTypes).isRequired
+  forumForm: T.shape(ForumType.propTypes).isRequired
 }
 
 const Editor = connect(
   (state) => ({
-    forum: select.forum(state)
+    forumForm: formSelect.data(formSelect.form(state, 'forumForm'))
   })
 )(EditorComponent)
 

@@ -18,7 +18,7 @@ const TagCloud = props => {
         <CallbackButton
           key={tag}
           className="btn btn-link tag-cloud"
-          callback={() => console.log('puet')}
+          callback={props.callback}
           style={{fontSize: fontSizeConverter(props.tags[tag], 1, 3)+'px'}}
         >
           {tag}

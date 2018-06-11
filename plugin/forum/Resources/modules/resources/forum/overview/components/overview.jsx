@@ -7,14 +7,14 @@ import {trans} from '#/main/core/translation'
 import {number} from '#/main/app/intl'
 import {Button} from '#/main/app/action/components/button'
 import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
-import {MetricCard} from '#/main/core/layout/components/metric-card'
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {UserMessage} from '#/main/core/user/message/components/user-message'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {TagCloud} from '#/plugin/forum/resources/forum/overview/components/tag-cloud'
-
+import {LastMessages} from '#/plugin/forum/resources/forum/overview/components/last-messages'
+import {ForumInfo} from '#/plugin/forum/resources/forum/overview/components/forum-info'
 
 const OverviewComponent = props =>
   <div>
@@ -57,6 +57,7 @@ const OverviewComponent = props =>
                 tags={props.tagsCount}
                 minSize={12}
                 maxSize={28}
+                callback={() => console.log(props)}
               />
             </section>
           }
@@ -71,51 +72,13 @@ const OverviewComponent = props =>
               </div>
             }
           </section>
-          <section className="resource-info row">
-            <div className="col-md-4">
-              <MetricCard
-                value={props.forum.meta.users}
-                cardTitle={trans('participating_users', {}, 'forum')}
-              />
-            </div>
-            <div className="col-md-4">
-              <MetricCard
-                value={props.forum.meta.subjects}
-                cardTitle={trans('subjects', {}, 'forum')}
-              />
-            </div>
-            <div className="col-md-4">
-              <MetricCard
-                value={props.forum.meta.messages}
-                cardTitle={trans('messages', {}, 'forum')}
-              />
-            </div>
-          </section>
+          <ForumInfo
+            forum={props.forum}
+          />
           {0 !== props.lastMessages.length &&
-            <section>
-              <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
-              <ul className="posts">
-                {props.lastMessages.map(message =>
-                  <li key={message.id} className="post">
-                    <h4>{message.subject.title}
-                      <Button
-                        label={trans('see_subject', {}, 'forum')}
-                        type="link"
-                        target={'/subjects/show/'+message.subject.id}
-                        className="btn-link"
-                        primary={true}
-                      />
-                    </h4>
-                    <UserMessage
-                      user={message.meta.creator}
-                      date={message.meta.created}
-                      content={message.content}
-                      allowHtml={true}
-                    />
-                  </li>
-                )}
-              </ul>
-            </section>
+            <LastMessages
+              lastMessages={props.lastMessages}
+            />
           }
         </div>
       </div>
@@ -123,7 +86,8 @@ const OverviewComponent = props =>
   </div>
 
 OverviewComponent.propTypes = {
-  forum: T.shape(ForumType.propTypes)
+  forum: T.shape(ForumType.propTypes),
+  lastMessages: T.shape({})
 }
 
 OverviewComponent.defaultProps = {
@@ -136,6 +100,11 @@ const Overview = connect(
     forum: select.forum(state),
     lastMessages: select.lastMessages(state).data,
     tagsCount: select.tagsCount(state)
+  }),
+  dispatch =>({
+    addFilter(property, value) {
+      dispatch(listActions.addFilter(property, value))
+    }
   })
 )(OverviewComponent)
 
