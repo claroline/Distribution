@@ -49,6 +49,11 @@ class SubjectFinder implements FinderInterface
                 $qb->andWhere("obj.creationDate <= :{$filterName}");
                 $qb->setParameter($filterName, $filterValue);
                 break;
+              case 'creator':
+                $qb->leftJoin('obj.creator', 'creator');
+                $qb->andWhere("creator.username LIKE :{$filterName}");
+                $qb->setParameter($filterName, '%'.$filterValue.'%');
+                break;
               case 'tags':
                 //gonna be difficificult
               default:
