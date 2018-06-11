@@ -41,6 +41,16 @@ class SubjectFinder implements FinderInterface
                 ));
                 $qb->setParameter($filterName, $filterValue);
                 break;
+              case 'createdAfter':
+                $qb->andWhere("obj.creationDate >= :{$filterName}");
+                $qb->setParameter($filterName, $filterValue);
+                break;
+              case 'createdBefore':
+                $qb->andWhere("obj.creationDate <= :{$filterName}");
+                $qb->setParameter($filterName, $filterValue);
+                break;
+              case 'tags':
+                //gonna be difficificult
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
             }

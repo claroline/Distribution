@@ -56,7 +56,10 @@ const SubjectsList = props =>
           name: 'meta.hot',
           type: 'boolean',
           label: trans('hot_subject', {}, 'forum'),
-          displayed: true
+          filterable: false,
+          //displayable: true,
+          //displayed: true,
+          sortable: false
         }, {
           name: 'meta.messages',
           type: 'number',
@@ -67,6 +70,8 @@ const SubjectsList = props =>
           type: 'date',
           label: trans('last_modification'),
           displayed: true,
+          filterable: false,
+          sortable: false,
           option: {
             time: true
           }
@@ -74,20 +79,29 @@ const SubjectsList = props =>
           name: 'meta.creator.username',
           type: 'string',
           label: trans('creator'),
-          displayed: true,
-          searchable: false
-        },{
+          displayed: true
+        }, {
           name: 'tags',
           type: 'string',
           label: trans('tags'),
           displayed: true
+        }, {
+          name: 'createdBefore',
+          type: 'date',
+          label: trans('created_before'),
+          displayed: false,
+          displayable: false,
+          filterable: true,
+          sortable: false
+        }, {
+          name: 'createdAfter',
+          type: 'date',
+          label: trans('created_after'),
+          displayed: false,
+          displayable: false,
+          filterable: true,
+          sortable: false
         }
-        // {
-        //   name: 'meta.creator',
-        //   type: 'string',
-        //   label: trans('creator'),
-        //   displayed: true
-        // }
       ]}
       actions={(rows) => [
         {
