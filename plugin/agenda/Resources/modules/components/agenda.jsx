@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import $ from 'jquery'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -13,8 +14,10 @@ import {actions} from '#/plugin/agenda/actions'
 import {PageContainer, PageHeader, PageActions} from '#/main/core/layout/page'
 
 import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
-import {TaskBar} from '#/plugin/agenda/components/task-bar.jsx'
+import {FilterBar} from '#/plugin/agenda/components/filter-bar.jsx'
 import {MODAL_EVENT} from '#/plugin/agenda/components/modal'
+
+import {url} from '#/main/app/api/router'
 
 function arrayTrans(key) {
   if (typeof key === 'object') {
@@ -54,7 +57,7 @@ const form = [
   {
     title: trans('properties'),
     fields: [{
-      name: 'task',
+      name: 'meta.task',
       type: 'boolean',
       label: trans('task'),
       required: true
@@ -91,14 +94,8 @@ const form = [
 
 class AgendaComponent extends Component {
   constructor(props) {
-
     super(props)
-    let filters = ''
-
-    if (props.workspace.id) {
-      filters = '?filters[workspace]=' + props.workspace.uuid
-    }
-
+    this.getFetchRoute = this.getFetchRoute.bind(this)
     this.calendar = {
       header: {
         left: 'prev,next, today',
@@ -123,8 +120,7 @@ class AgendaComponent extends Component {
       //This is the url which will get the events from ajax the 1st time the calendar is launched
       //aussi il faudra virer le routing.generate ici (filtrer par workspace si il y a)
       /** @global Routing */
-      events: Routing.generate('apiv2_event_list') + filters, //faudra rajouter les filtres ici (pour le workspace par exemple)
-      axisFormat: 'HH:mm',
+      events: this.getFetchRoute(),
       timeFormat: 'H:mm',
       agenda: 'h:mm{ - h:mm}',
       allDayText: trans('isAllDay'),
@@ -144,13 +140,23 @@ class AgendaComponent extends Component {
     }
   }
 
+  getFetchRoute() {
+    return url(['apiv2_event_list'], {filters: this.props.filters})
+  }
+
   render() {
     return (
       <PageContainer>
         <PageHeader title={trans('agenda', {}, 'tool')}></PageHeader>
         <div className="container row panel-body">
           <Calendar {...this.calendar} />
-          <TaskBar openImportForm={this.props.openImportForm} onExport={this.props.onExport} workspace={this.props.workspace}/>
+          <FilterBar
+            openImportForm={this.props.openImportForm}
+            onExport={this.props.onExport}
+            onChangeFiltersType={this.props.onChangeFiltersType}
+            workspace={this.props.workspace}
+            filters={this.props.filters}
+          />
         </div>
       </PageContainer>
     )
@@ -159,15 +165,15 @@ class AgendaComponent extends Component {
 
 const Agenda = connect(
   state => ({
-    workspace: state.workspace
+    workspace: state.workspace,
+    filters: state.filters
   }),
   dispatch => ({
     openImportForm() {
       dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
           title: 'import',
-          save: data => {
-          },
+          save: data => {},
           sections: [
             {
               title: trans('general'),
@@ -184,7 +190,6 @@ const Agenda = connect(
       )
     },
     onExport(workspace) {
-      console.log(workspace)
       dispatch(actions.download(workspace))
     },
     onDayClick(calendarRef, workspace) {
@@ -234,23 +239,52 @@ const Agenda = connect(
         $element.addClass('fc-draggable')
       }
 
+      if (event.meta.task) {
+        const eventContent =  $element.find('.fc-content')
+        // Remove the date
+        eventContent.find('.fc-time').remove()
+        eventContent.prepend('<span class="task fa" data-event-id="' + event.id + '"></span>')
+
+        $element.css({
+          'background-color': 'rgb(144, 32, 32)',
+          'border-color': 'rgb(144, 32, 32)'
+        })
+
+        // Add the checkbox if the task is not done or the check symbol if the task is done
+        const checkbox = eventContent.find('.task')
+
+        if (event.isTaskDone) {
+          checkbox.addClass('fa-check-square-o')
+          checkbox.next().css('text-decoration', 'line-through')
+        } else {
+          checkbox.addClass('fa-square-o')
+        }
+      }
+
       //event.durationEditable = event.durationEditable && workspacePermissions[workspaceId] && event.isEditable !== false
 
     },
     onEventResize(calendarRef) {
       //calendarRef.popover('hide')
     },
-    eventResizeStart(calendarRef, event, delta, revertFunc, jsEvent, ui, view) {
+    eventResizeStart(calendarRef, event, delta, revertFunc, jsEvent, ui) {
       const data = cloneDeep(event)
       data.start = event.start.format(getApiFormat())
       data.end = event.end.format(getApiFormat())
       delete data.source
       dispatch(actions.update(data, calendarRef))
+    },
+    onChangeFiltersType(filters, allFilters) {
+
+      dispatch(actions.updateFilterType(filters))
+      //otherwise it lags behind
+      let newFilters = cloneDeep(allFilters)
+      newFilters.types = filters
+      $('#fullcalendar').fullCalendar('removeEvents')
+      $('#fullcalendar').fullCalendar('addEventSource', url(['apiv2_event_list'], {filters: newFilters}))
     }
   })
 )(AgendaComponent)
-
-//export { Agenda as Agenda }
 
 export {
   Agenda

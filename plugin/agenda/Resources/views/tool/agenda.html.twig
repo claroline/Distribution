@@ -24,12 +24,19 @@
       data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"
     {% else %}
       data-workspace="{}"
-    {% endif %}>
+    {% endif %}
+
+    {% if filters is defined %}
+      {# data-available-filters="{{dump(filters)}}" #}
+    {% endif %}
+  >
+
   </div>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
+      {#    <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-plugin-agenda-agenda.css') }}" /> #}
     <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.min.css') }}'/>
     <link rel='stylesheet' type='text/css' href='{{ asset(calendarPath ~ 'fullcalendar.print.css') }}' media='print' />
     <link rel='stylesheet' type='text/css' href='{{ asset('packages/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}'>
@@ -49,6 +56,19 @@
         }
         .is-task {
             padding-right: 3px;
+        }
+        .task-priority-high {
+            color: #FF0000
+        }
+        .task-priority-medium {
+            color: #01A9DB
+        }
+        .task-priority-low {
+            color: #848484
+        }
+        .task-event {
+          background-color: rgb(144, 32, 32)
+          border-color: rgb(144, 32, 32)
         }
     </style>
 {% endblock %}

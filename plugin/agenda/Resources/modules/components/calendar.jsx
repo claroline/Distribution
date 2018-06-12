@@ -71,7 +71,7 @@ class Calendar extends Component {
   }
 
   render() {
-    return <div className="col-md-9" ref={(el) => this.calendarRef = el}/>
+    return <div id="fullcalendar" className="col-md-9" ref={(el) => this.calendarRef = el}/>
   }
 }
 

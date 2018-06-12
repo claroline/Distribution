@@ -33,11 +33,22 @@ class EventFinder implements FinderInterface
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'workspace':
+              case 'workspaces':
                 $qb->leftJoin('obj.workspace', 'w');
-                $qb->andWhere('w.uuid = :'.$filterName);
+                $qb->andWhere('w.uuid IN (:'.$filterName.')');
                 $qb->setParameter($filterName, $filterValue);
-              break;
+                break;
+              case 'types':
+                if ($filterValue === ['task']) {
+                    $qb->andWhere('obj.isTask = true');
+                } elseif ($filterValue === ['event']) {
+                    $qb->andWhere('obj.isTask = false');
+                }
+                break;
+              case 'createdAfter':
+                break;
+              case 'endBefore':
+                break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
              }

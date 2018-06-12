@@ -1,8 +1,15 @@
+import {makeActionCreator} from '#/main/app/store/actions'
 import {API_REQUEST} from '#/main/app/api'
 
-import $ from 'jquery'
+
+export const AGENDA_UPDATE_FILTER_TYPE = 'AGENDA_UPDATE_FILTER_TYPE'
+export const AGENDA_UPDATE_FILTER_WORKSPACE = 'AGENDA_UPDATE_FILTER_WORKSPACE'
+export const AGENDA_RELOAD = 'AGENDA_RELOAD'
 
 export const actions = {}
+
+actions.updateFilterType = makeActionCreator(AGENDA_UPDATE_FILTER_TYPE, 'filters')
+actions.updateFilterWorkspace = makeActionCreator(AGENDA_UPDATE_FILTER_WORKSPACE, 'filters')
 
 //calendarElement is required to refresh the calendar since it's outside react
 actions.create = (event, workspace, calendarRef) => ({
@@ -26,6 +33,7 @@ actions.update = (event, calendarRef) => ({
       method: 'PUT'
     },
     success: (data) => {
+      calendarRef.fullCalendar('removeEvents', data.id)
       calendarRef.fullCalendar('renderEvent', data)
     }
   }

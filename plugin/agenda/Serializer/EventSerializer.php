@@ -89,7 +89,7 @@ class EventSerializer
     public function serializeMeta(Event $event, $invitation = null)
     {
         return [
-          'isTask' => $event->isTask(),
+          'task' => $event->isTask(),
           'isTaskDone' => $event->isTaskDone(),
           'isGuest' => !is_null($invitation),
         ];
@@ -107,7 +107,7 @@ class EventSerializer
         $this->sipe('color', 'setPriority', $data, $event);
         $this->sipe('allDay', 'setAllDay', $data, $event);
         $this->sipe('description', 'setDescription', $data, $event);
-        $this->sipe('isTask', 'setIsTask', $data, $event);
+        $this->sipe('meta.task', 'setIsTask', $data, $event);
         $this->sipe('isTaskDone', 'setIsTaskDone', $data, $event);
         $this->sipe('isEditable', 'setIsEditable', $data, $event);
 
