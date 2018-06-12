@@ -97,18 +97,13 @@ class SubjectComponent extends Component {
     return (
       <section>
         <header className="subject-info">
-          <div>
-            <Button
-              label={trans('forum_back_to_subjects', {}, 'forum')}
-              type="link"
-              target="/subjects"
-              className="btn-link"
-              primary={true}
-            />
-          </div>
-          {/* {this.props.subject.poster &&
-            <img className="subject-poster img-responsive" alt={this.props.subject.title} src={asset(this.props.subject.poster.url)} />
-          } */}
+          <Button
+            label={trans('forum_back_to_subjects', {}, 'forum')}
+            type="link"
+            target="/subjects"
+            className="btn-link"
+            primary={true}
+          />
           <div>
             {(!this.props.showSubjectForm && !this.props.editingSubject) &&
               <h3 className="h2">
@@ -160,22 +155,22 @@ class SubjectComponent extends Component {
               }, {
                 icon: 'fa fa-fw fa-thumb-tack',
                 label: trans('stick', {}, 'forum'),
-                displayed: !(get(this.props.subject, 'meta.sticky', true)),
+                displayed: !(get(this.props.subject, 'meta.sticky', true)) && this.props.moderator,
                 action: () => this.props.stickSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-thumb-tack',
                 label: trans('unstick', {}, 'forum'),
-                displayed: get(this.props.subject, 'meta.sticky', false),
+                displayed: get(this.props.subject, 'meta.sticky', false) && this.props.moderator,
                 action: () => this.props.unStickSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-times-circle-o',
                 label: trans('close_subject', {}, 'forum'),
-                displayed: !(get(this.props.subject, 'meta.closed', true)),
+                displayed: !(get(this.props.subject, 'meta.closed', true)) && (get(this.props.subject, 'meta.creator.id', false) === authenticatedUser.id || this.props.moderator),
                 action: () => this.props.closeSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-check-circle-o',
                 label: trans('open_subject', {}, 'forum'),
-                displayed: (get(this.props.subject, 'meta.closed', false)),
+                displayed: (get(this.props.subject, 'meta.closed', false)) && (get(this.props.subject, 'meta.creator.id', false) === authenticatedUser.id || this.props.moderator),
                 action: () => this.props.unCloseSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-flag-o',
@@ -190,14 +185,14 @@ class SubjectComponent extends Component {
               }, {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
-                displayed: true,
+                displayed: get(this.props.subject, 'meta.creator.id', false) === authenticatedUser.id || this.props.moderator,
                 action: () => this.deleteSubject(this.props.subject.id),
                 dangerous: true
               }
             ]}
           />
         }
-        {!isEmpty(this.props.messages)&&
+        {(!isEmpty(this.props.messages) && !this.props.showSubjectForm) &&
           <div>
             <MessagesSort
               sortOrder={this.props.sortOrder}
@@ -236,7 +231,7 @@ class SubjectComponent extends Component {
                           }, {
                             icon: 'fa fa-fw fa-trash-o',
                             label: trans('delete'),
-                            displayed:  message.meta.creator.id === authenticatedUser.id,
+                            displayed:  message.meta.creator.id === authenticatedUser.id || this.props.moderator,
                             action: () => this.deleteMessage(message.id),
                             dangerous: true
                           }
@@ -262,7 +257,7 @@ class SubjectComponent extends Component {
             </MessagesSort>
           </div>
         }
-        {this.props.showSubjectForm || !get(this.props.subject, 'meta.closed') &&
+        {!this.props.bannedUser && this.props.showSubjectForm || !get(this.props.subject, 'meta.closed') &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
@@ -327,7 +322,9 @@ const Subject =  withRouter(withModal(connect(
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
     pages: listSelect.pages(listSelect.list(state, 'subjects.messages')),
-    currentPage: listSelect.currentPage(listSelect.list(state, 'subjects.messages'))
+    currentPage: listSelect.currentPage(listSelect.list(state, 'subjects.messages')),
+    bannedUser: select.bannedUser(state),
+    moderator: select.moderator(state)
   }),
   dispatch => ({
     createMessage(subjectId, content, moderation) {

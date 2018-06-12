@@ -84,8 +84,6 @@ class MessageFinder implements FinderInterface
                 $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
-
-        return $qb;
     }
 
     public function getFilters()

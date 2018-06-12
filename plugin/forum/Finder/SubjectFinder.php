@@ -61,6 +61,19 @@ class SubjectFinder implements FinderInterface
             }
         }
 
+        // manages custom sort properties
+        if (!empty($sortBy)) {
+            switch ($sortBy['property']) {
+                case 'meta.messages':
+                    $qb->select('obj, count(msg) AS HIDDEN countMsg');
+                    $qb->leftJoin('obj.messages', 'msg');
+                    $qb->groupBy('obj');
+                    $qb->orderBy('countMsg', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
+
+                    break;
+            }
+        }
+
         return $qb;
     }
 

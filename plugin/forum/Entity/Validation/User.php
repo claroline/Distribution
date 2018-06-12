@@ -53,7 +53,7 @@ class User
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $banned = true;
+    protected $banned = false;
 
     /**
      * @ORM\Column(type="boolean")

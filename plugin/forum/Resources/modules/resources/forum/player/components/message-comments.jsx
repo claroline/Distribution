@@ -69,7 +69,7 @@ class MessageCommentsComponent extends Component {
   }
 
   render() {
-    const visibleComments = this.props.message.children.filter(comment => true === comment.meta.visible)
+    const visibleComments = this.props.message.children.filter(comment => 'NONE' === comment.meta.moderation)
 
     return (
       <div className="answer-comment-container">
@@ -102,7 +102,7 @@ class MessageCommentsComponent extends Component {
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
-                        displayed: comment.meta.creator.id === authenticatedUser.id,
+                        displayed: comment.meta.creator.id === authenticatedUser.id || this.props.moderator,
                         action: () => this.deleteComment(comment.id),
                         dangerous: true
                       }
@@ -143,7 +143,7 @@ class MessageCommentsComponent extends Component {
               {this.state.opened ? transChoice('hide_comments',visibleComments.length, {count: visibleComments.length}, 'forum'): transChoice('show_comments', visibleComments.length, {count: visibleComments.length}, 'forum')}
             </button>
           }
-          {(!get(this.props.subject, 'meta.closed') && !this.state.showNewCommentForm) &&
+          {(!this.props.bannedUser && !get(this.props.subject, 'meta.closed') && !this.state.showNewCommentForm) &&
             <button
               type="button"
               onClick={() => this.showCommentForm(this.props.message.id)}
@@ -176,7 +176,9 @@ MessageCommentsComponent.propTypes = {
 const MessageComments =  withModal(connect(
   state => ({
     forum: select.forum(state),
-    subject: select.subject(state)
+    subject: select.subject(state),
+    bannedUser: select.bannedUser(state),
+    moderator: select.moderator(state)
   }),
   dispatch => ({
     createComment(messageId, comment, moderation) {

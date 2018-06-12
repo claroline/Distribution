@@ -84,7 +84,7 @@ class ForumSerializer
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
               'banned' => $forumUser->isBanned(),
-              'moderator' => true, //comment on fait pour le savoir ?
+              'moderator' => false, //comment on fait pour le savoir ?
             ],
             'meta' => [
               'users' => 34, //utilisateur participants

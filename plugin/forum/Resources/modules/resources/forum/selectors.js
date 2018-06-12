@@ -8,6 +8,8 @@ const sortOrder = state => state.subjects.messages.sortOrder
 const subjects = state => state.subjects
 const currentPage = state => state.subjects.messages.currentPage
 const lastMessages = state => state.lastMessages
+const bannedUser = state => state.forum.restrictions.banned
+const moderator = state => state.forum.restrictions.moderator
 
 const subject = createSelector(
   [subjects],
@@ -38,7 +40,7 @@ const visibleMessages = createSelector(
 )
 const moderatedMessages = createSelector(
   [messages],
-  (messages) => messages.data.filter(message => 'NONE' !== message.meta.visible)
+  (messages) => messages.data.filter(message => 'NONE' !== message.meta.moderation)
 )
 
 const tagsCount = createSelector(
@@ -60,6 +62,8 @@ export const select = {
   forumId,
   currentPage,
   sortOrder,
+  bannedUser,
+  moderator,
   showSubjectForm,
   editingSubject,
   closedSubject,
