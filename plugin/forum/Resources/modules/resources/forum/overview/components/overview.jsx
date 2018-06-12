@@ -43,12 +43,14 @@ const OverviewComponent = props =>
               className="btn btn-block"
               primary={true}
             />
-            <Button
-              label={trans('create_subject', {}, 'forum')}
-              type="link"
-              target="/subjects/form"
-              className="btn btn-block"
-            />
+            {!props.bannedUser &&
+              <Button
+                label={trans('create_subject', {}, 'forum')}
+                type="link"
+                target="/subjects/form"
+                className="btn btn-block"
+              />
+            }
           </section>
           {!isEmpty(props.forum.meta.tags)&&
             <section>
@@ -87,7 +89,8 @@ const OverviewComponent = props =>
 
 OverviewComponent.propTypes = {
   forum: T.shape(ForumType.propTypes),
-  lastMessages: T.shape({})
+  lastMessages: T.shape({}),
+  bannedUser: T.bool.isRequired
 }
 
 OverviewComponent.defaultProps = {
@@ -99,7 +102,9 @@ const Overview = connect(
     subject: select.subject(state),
     forum: select.forum(state),
     lastMessages: select.lastMessages(state).data,
-    tagsCount: select.tagsCount(state)
+    tagsCount: select.tagsCount(state),
+    bannedUser: select.bannedUser(state),
+    moderator: select.moderator(state)
   }),
   dispatch =>({
     addFilter(property, value) {

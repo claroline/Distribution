@@ -119,7 +119,7 @@ const SubjectFormComponent = (props) =>
             title: trans('display_parameters'),
             fields: [
               {
-                name: 'sorted',
+                name: 'sortOrder',
                 type: 'choice',
                 label: trans('messages_sort_display', {}, 'forum'),
                 options: {

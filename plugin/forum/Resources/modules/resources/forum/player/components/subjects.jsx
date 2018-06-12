@@ -13,7 +13,6 @@ import {SubjectCard} from '#/plugin/forum/resources/forum/data/components/subjec
 const authenticatedUser = currentUser()
 
 const SubjectsList = props =>
-
   <div>
     <h2>{trans('subjects', {}, 'forum')}</h2>
     <DataListContainer
@@ -23,7 +22,8 @@ const SubjectsList = props =>
         autoload: true
       }}
       delete={{
-        url: ['apiv2_forum_subject_delete_bulk']
+        url: ['apiv2_forum_subject_delete_bulk'],
+        displayed: (rows) => (rows[0].meta.creator.id === authenticatedUser.id) || props.moderator
       }}
       primaryAction={(subject) => ({
         type: 'link',
@@ -57,8 +57,7 @@ const SubjectsList = props =>
           type: 'boolean',
           label: trans('hot_subject', {}, 'forum'),
           filterable: false,
-          //displayable: true,
-          //displayed: true,
+          displayed: true,
           sortable: false
         }, {
           name: 'meta.messages',
@@ -116,19 +115,20 @@ const SubjectsList = props =>
           icon: 'fa fa-fw fa-pencil',
           label: trans('edit'),
           target: '/subjects/form/'+rows[0].id,
-          context: 'row'
+          context: 'row',
+          displayed: rows[0].meta.creator.id === authenticatedUser.id
         }, {
           type: 'callback',
           icon: 'fa fa-fw fa-thumb-tack',
           label: trans('stick', {}, 'forum'),
           callback: () => props.stickSubject(rows[0]),
-          displayed: !rows[0].meta.sticky
+          displayed: !rows[0].meta.sticky && props.moderator
         }, {
           type: 'callback',
           icon: 'fa fa-fw fa-thumb-tack',
           label: trans('unstick', {}, 'forum'),
           callback: () => props.unStickSubject(rows[0]),
-          displayed: rows[0].meta.sticky
+          displayed: rows[0].meta.sticky && props.moderator
         }, {
           type: 'callback',
           icon: 'fa fa-fw fa-flag-o',
@@ -148,29 +148,30 @@ const SubjectsList = props =>
           icon: 'fa fa-fw fa-times-circle-o',
           label: trans('close_subject', {}, 'forum'),
           callback: () => props.closeSubject(rows[0]),
-          displayed: !rows[0].meta.closed
+          displayed: !rows[0].meta.closed && (rows[0].meta.creator.id === authenticatedUser.id || props.moderator)
         }, {
           type: 'callback',
           icon: 'fa fa-fw fa-check-circle-o',
           label: trans('open_subject', {}, 'forum'),
           callback: () => props.unCloseSubject(rows[0]),
-          displayed: rows[0].meta.closed
+          displayed: rows[0].meta.closed && (rows[0].meta.creator.id === authenticatedUser.id || props.moderator)
         }
       ]}
       card={(props) =>
         <SubjectCard
           {...props}
-          contentText={props.data.meta.lastMessages[0].content}
+          contentText={props.data.content}
         />
       }
-    />
+    />s
   </div>
 
 
 const Subjects = connect(
   state => ({
     forum: select.forum(state),
-    subject: select.subject(state)
+    subject: select.subject(state),
+    moderator: select.moderator(state)
   }),
   dispatch => ({
     stickSubject(subject) {

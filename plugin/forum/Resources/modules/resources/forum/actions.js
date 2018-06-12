@@ -21,7 +21,7 @@ actions.validateMessage = (message, subjectId) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_subject_message_update', {message: message.id, subject: subjectId}],
     request: {
-      body: JSON.stringify(Object.assign({}, message, {meta: {visible:true}})),
+      body: JSON.stringify(Object.assign({}, message, {meta: {moderation:'NONE'}})),
       method: 'PUT'
     },
     success: (data, dispatch) => {

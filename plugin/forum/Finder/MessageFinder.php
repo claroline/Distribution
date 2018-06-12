@@ -79,7 +79,7 @@ class MessageFinder implements FinderInterface
                     $qb->setParameter('filter_none', Forum::VALIDATE_NONE);
                 }
 
-                $qb->setParameter($filterName, $filterValue);
+                // $qb->setParameter($filterName, $filterValue);
                 break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);

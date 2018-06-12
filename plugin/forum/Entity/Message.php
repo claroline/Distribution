@@ -12,6 +12,7 @@
 namespace Claroline\ForumBundle\Entity;
 
 use Claroline\CoreBundle\Entity\AbstractMessage;
+use Claroline\ForumBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -50,7 +51,7 @@ class Message extends AbstractMessage
     /**
      * @ORM\Column(type="string")
      */
-    protected $moderation = FORUM::VALIDATE_NONE;
+    protected $moderation = Forum::VALIDATE_NONE;
 
     /**
      * @ORM\Column(type="boolean")

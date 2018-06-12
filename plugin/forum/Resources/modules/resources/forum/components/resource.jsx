@@ -14,7 +14,6 @@ import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/actions'
 import {Overview} from '#/plugin/forum/resources/forum/overview/components/overview'
-import {BlockedMessages} from '#/plugin/forum/resources/forum/moderation/components/blocked-messages'
 import {Moderation} from '#/plugin/forum/resources/forum/moderation/components/moderation'
 import {Editor} from '#/plugin/forum/resources/forum/editor/components/editor'
 import {Player} from '#/plugin/forum/resources/forum/player/components/player'
@@ -76,6 +75,7 @@ const Resource = props => {
           type: 'link',
           icon: 'fa fa-fw fa-plus',
           label: trans('create_subject', {}, 'forum'),
+          displayed: !props.bannedUser,
           target: '/subjects/form',
           exact: true
         }, {
@@ -83,6 +83,7 @@ const Resource = props => {
           icon: 'fa fa-fw fa-gavel',
           label: trans('moderated_posts', {}, 'forum'),
           group: trans('moderation', {}, 'forum'),
+          displayed: props.moderator,
           target: '/moderation/blocked',
           exact: true
         }, {
@@ -90,6 +91,7 @@ const Resource = props => {
           icon: 'fa fa-fw fa-flag',
           label: trans('flagged_messages_subjects', {}, 'forum'),
           group: trans('moderation', {}, 'forum'),
+          displayed: props.moderator,
           target: '/moderation/flagged/subjects',
           exact: true
         }
@@ -109,14 +111,18 @@ Resource.propTypes = {
   editable: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
   saveForm: T.func.isRequired,
-  loadLastMessages: T.func.isRequired
+  loadLastMessages: T.func.isRequired,
+  bannedUser: T.bool.isRequired,
+  moderator: T.bool.isRequired
 }
 
 const ForumResource = connect(
   (state) => ({
     forum: select.forum(state),
     editable: hasPermission('edit', resourceSelect.resourceNode(state)),
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'forumForm'))
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'forumForm')),
+    bannedUser: select.bannedUser(state),
+    moderator: select.moderator(state)
   }),
   (dispatch) => ({
     saveForm(forumId) {
