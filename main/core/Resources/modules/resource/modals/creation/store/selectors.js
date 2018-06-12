@@ -21,7 +21,7 @@ const formData = createSelector(
 
 const newNode = createSelector(
   [formData],
-  (formData) => formData.node
+  (formData) => formData.resourceNode
 )
 
 const saveEnabled = createSelector(

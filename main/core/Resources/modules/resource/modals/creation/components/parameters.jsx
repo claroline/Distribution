@@ -16,7 +16,7 @@ import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceForm} from '#/main/core/resource/components/form'
 
-import {FileCreation} from '#/main/core/resources/file/components/creation'
+import {ShortcutCreation} from '#/plugin/link/resources/shortcut/components/creation'
 
 const MODAL_RESOURCE_CREATION_PARAMETERS = 'MODAL_RESOURCE_CREATION_PARAMETERS'
 
@@ -29,9 +29,9 @@ const ParametersModalComponent = props =>
   >
     <ContentMeta meta={props.newNode.meta} />
 
-    <FileCreation />
+    <ShortcutCreation />
 
-    <ResourceForm level={5} meta={false} name={selectors.FORM_NAME} dataPart="node" />
+    <ResourceForm level={5} meta={false} name={selectors.FORM_NAME} dataPart="resourceNode" />
 
     <Button
       className="modal-btn btn-link"

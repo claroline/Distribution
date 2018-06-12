@@ -21,7 +21,7 @@ actions.startCreation = (parent, resourceType) => (dispatch) => {
   dispatch(actions.setParent(parent))
   dispatch(formActions.resetForm(selectors.FORM_NAME, {
     resource: null,
-    node: merge({}, ResourceNodeTypes.defaultProps, {
+    resourceNode: merge({}, ResourceNodeTypes.defaultProps, {
       id: makeId(),
       meta: {
         mimeType: `custom/${resourceType.name}`,
@@ -29,9 +29,9 @@ actions.startCreation = (parent, resourceType) => (dispatch) => {
         creator: currentUser(),
         published: true
       },
-      restrictions: parent.restrictions
-    }),
-    rights: parent.rights
+      restrictions: parent.restrictions,
+      rights: parent.rights
+    })
   }, true))
 }
 

@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Listener\Resource\Types;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
@@ -26,7 +27,9 @@ use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Integrates the "Directory" resource.
@@ -35,6 +38,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DirectoryListener
 {
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /** @var TwigEngine */
     private $templating;
 
@@ -48,23 +54,27 @@ class DirectoryListener
      * DirectoryListener constructor.
      *
      * @DI\InjectParams({
+     *     "tokenStorage"  = @DI\Inject("security.token_storage"),
      *     "templating"    = @DI\Inject("templating"),
      *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
      *     "serializer"    = @DI\Inject("claroline.api.serializer"),
      *     "rightsManager" = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
-     * @param TwigEngine         $templating
-     * @param ObjectManager      $om
-     * @param SerializerProvider $serializer
-     * @param RightsManager      $rightsManager
+     * @param TokenStorageInterface $tokenStorage
+     * @param TwigEngine            $templating
+     * @param ObjectManager         $om
+     * @param SerializerProvider    $serializer
+     * @param RightsManager         $rightsManager
      */
     public function __construct(
+        TokenStorageInterface $tokenStorage,
         TwigEngine $templating,
         ObjectManager $om,
         SerializerProvider $serializer,
         RightsManager $rightsManager
     ) {
+        $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
         $this->om = $om;
         $this->serializer = $serializer;
@@ -85,9 +95,14 @@ class DirectoryListener
         $options = $event->getOptions();
 
         // create the resource node
-        $resourceNode = $this->serializer->deserialize(ResourceNode::class, $data['node'], $options);
+
+        /** @var ResourceNode $resourceNode */
+        $resourceNode = $this->serializer->deserialize(ResourceNode::class, $data['resourceNode'], $options);
         $resourceNode->setParent($parent);
         $resourceNode->setWorkspace($parent->getWorkspace());
+        if ($this->tokenStorage->getToken()->getUser() instanceof User) {
+            $resourceNode->setCreator($this->tokenStorage->getToken()->getUser());
+        }
 
         // initialize custom resource Entity
         $resourceClass = $resourceNode->getResourceType()->getClass();
@@ -98,15 +113,33 @@ class DirectoryListener
             $resource = $this->serializer->deserialize($resourceClass, $data['resource'], $options);
         }
 
+        $resourceNode->setClass($resourceClass);
         $resource->setResourceNode($resourceNode);
 
-        if (!empty($data['rights'])) {
-            foreach ($data['rights'] as $rights) {
+        // maybe do it in the serializer (if it can be done without intermediate flush)
+        if (!empty($data['resourceNode']['rights'])) {
+            foreach ($data['resourceNode']['rights'] as $rights) {
                 /** @var Role $role */
                 $role = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneBy(['name' => $rights['name']]);
                 $this->rightsManager->editPerms($rights['permissions'], $role, $resourceNode);
             }
+        } else {
+            // todo : initialize default rights
         }
+
+        $this->om->persist($resource);
+        $this->om->persist($resourceNode);
+
+        $this->om->flush();
+
+        // todo : dispatch get/load action instead
+        $event->setResponse(new JsonResponse(
+            [
+                'resourceNode' => $this->serializer->serialize($resourceNode),
+                'resource' => $this->serializer->serialize($resource),
+            ],
+            201
+        ));
     }
 
     /**

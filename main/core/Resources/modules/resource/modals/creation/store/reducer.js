@@ -10,9 +10,8 @@ const reducer = combineReducers({
     [RESOURCE_SET_PARENT]: (state, action) => action.parent
   }),
   form: makeFormReducer(selectors.FORM_NAME, {
-    node: null,
-    resource: null,
-    rights: null
+    resourceNode: null,
+    resource: null
   })
 })
 

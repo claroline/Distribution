@@ -24,7 +24,7 @@ const RightsModalComponent = props =>
     subtitle="3. Configurer les droits"
   >
     <ResourceRights
-      resourceNode={props.parent}
+      resourceNode={props.newNode}
       updateRights={props.updateRights}
     />
 
@@ -49,6 +49,9 @@ RightsModalComponent.propTypes = {
   parent: T.shape(
     ResourceNodeTypes.propTypes
   ).isRequired,
+  newNode: T.shape(
+    ResourceNodeTypes.propTypes
+  ).isRequired,
   saveEnabled: T.bool.isRequired,
   save: T.func.isRequired,
   updateRights: T.func.isRequired,
@@ -58,6 +61,7 @@ RightsModalComponent.propTypes = {
 
 const RightsModal = connect(
   (state) => ({
+    newNode: selectors.newNode(state),
     parent: selectors.parent(state),
     saveEnabled: selectors.saveEnabled(state)
   }),
