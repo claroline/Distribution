@@ -48,12 +48,10 @@ class ResourceLifecycleManager
 
     public function load(ResourceNode $resourceNode)
     {
-
     }
 
     public function create(ResourceNode $resourceNode)
     {
-
     }
 
     public function open(ResourceNode $resourceNode)

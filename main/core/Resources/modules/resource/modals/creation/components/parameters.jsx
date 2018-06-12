@@ -16,6 +16,8 @@ import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceForm} from '#/main/core/resource/components/form'
 
+import {FileCreation} from '#/main/core/resources/file/components/creation'
+
 const MODAL_RESOURCE_CREATION_PARAMETERS = 'MODAL_RESOURCE_CREATION_PARAMETERS'
 
 const ParametersModalComponent = props =>
@@ -27,28 +29,7 @@ const ParametersModalComponent = props =>
   >
     <ContentMeta meta={props.newNode.meta} />
 
-    <FormContainer
-      level={5}
-      name={selectors.FORM_NAME}
-      dataPart="resource"
-      sections={[
-        {
-          title: trans('general'),
-          primary: true,
-          fields: [
-            {
-              name: 'file',
-              label: trans('file'),
-              type: 'file',
-              required: true,
-              options: {
-                unzippable: true
-              }
-            }
-          ]
-        }
-      ]}
-    />
+    <FileCreation />
 
     <ResourceForm level={5} meta={false} name={selectors.FORM_NAME} dataPart="node" />
 
@@ -57,9 +38,7 @@ const ParametersModalComponent = props =>
       type="callback"
       label={trans('edit-rights', {}, 'actions')}
       disabled={!props.saveEnabled}
-      callback={() => {
-        props.configureRights()
-      }}
+      callback={props.configureRights}
     />
 
     <Button
@@ -68,10 +47,7 @@ const ParametersModalComponent = props =>
       primary={true}
       label={trans('create', {}, 'actions')}
       disabled={!props.saveEnabled}
-      callback={() => {
-        props.save(props.parent)
-        props.fadeModal()
-      }}
+      callback={() => props.save(props.parent, props.fadeModal)}
     />
   </Modal>
 
@@ -95,8 +71,8 @@ const ParametersModal = connect(
     saveEnabled: selectors.saveEnabled(state)
   }),
   (dispatch) => ({
-    save(parent) {
-      dispatch(actions.create(parent))
+    save(parent, close) {
+      dispatch(actions.create(parent)).then(close)
     },
     configureRights() {
       dispatch(modalActions.showModal(MODAL_RESOURCE_CREATION_RIGHTS, {}))

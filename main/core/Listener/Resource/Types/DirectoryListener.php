@@ -12,15 +12,18 @@
 namespace Claroline\CoreBundle\Listener\Resource\Types;
 
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,23 +41,34 @@ class DirectoryListener
     /** @var SerializerProvider */
     private $serializer;
 
+    /** @var RightsManager */
+    private $rightsManager;
+
     /**
      * DirectoryListener constructor.
      *
      * @DI\InjectParams({
-     *     "templating" = @DI\Inject("templating"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "templating"    = @DI\Inject("templating"),
+     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer"    = @DI\Inject("claroline.api.serializer"),
+     *     "rightsManager" = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
      * @param TwigEngine         $templating
+     * @param ObjectManager      $om
      * @param SerializerProvider $serializer
+     * @param RightsManager      $rightsManager
      */
     public function __construct(
         TwigEngine $templating,
-        SerializerProvider $serializer
+        ObjectManager $om,
+        SerializerProvider $serializer,
+        RightsManager $rightsManager
     ) {
         $this->templating = $templating;
+        $this->om = $om;
         $this->serializer = $serializer;
+        $this->rightsManager = $rightsManager;
     }
 
     /**
@@ -73,6 +87,7 @@ class DirectoryListener
         // create the resource node
         $resourceNode = $this->serializer->deserialize(ResourceNode::class, $data['node'], $options);
         $resourceNode->setParent($parent);
+        $resourceNode->setWorkspace($parent->getWorkspace());
 
         // initialize custom resource Entity
         $resourceClass = $resourceNode->getResourceType()->getClass();
@@ -86,14 +101,12 @@ class DirectoryListener
         $resource->setResourceNode($resourceNode);
 
         if (!empty($data['rights'])) {
-
+            foreach ($data['rights'] as $rights) {
+                /** @var Role $role */
+                $role = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneBy(['name' => $rights['name']]);
+                $this->rightsManager->editPerms($rights['permissions'], $role, $resourceNode);
+            }
         }
-
-        /*$rights = $data['rights']['all']['permissions'];
-        foreach ($rights as $rolePerms) {
-            $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($rolePerms['role']['id']);
-            $this->rightsManager->editPerms($rolePerms['permissions'], $role, $resourceNode);
-        }*/
     }
 
     /**

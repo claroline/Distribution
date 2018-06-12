@@ -41,10 +41,7 @@ const RightsModalComponent = props =>
       primary={true}
       label={trans('create', {}, 'actions')}
       disabled={!props.saveEnabled}
-      callback={() => {
-        props.save(props.parent)
-        props.fadeModal()
-      }}
+      callback={() => props.save(props.parent, props.fadeModal)}
     />
   </Modal>
 
@@ -68,8 +65,8 @@ const RightsModal = connect(
     updateRights() {
 
     },
-    save(parent) {
-      dispatch(actions.create(parent))
+    save(parent, close) {
+      dispatch(actions.create(parent)).then(close)
     },
     configure() {
       dispatch(modalActions.showModal(MODAL_RESOURCE_CREATION_PARAMETERS, {}))

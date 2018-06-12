@@ -2,6 +2,7 @@ import merge from 'lodash/merge'
 
 import {makeActionCreator} from '#/main/app/store/actions'
 
+import {makeId} from '#/main/core/scaffolding/id'
 import {currentUser} from '#/main/core/user/current'
 import {actions as formActions} from '#/main/core/data/form/actions'
 
@@ -21,10 +22,12 @@ actions.startCreation = (parent, resourceType) => (dispatch) => {
   dispatch(formActions.resetForm(selectors.FORM_NAME, {
     resource: null,
     node: merge({}, ResourceNodeTypes.defaultProps, {
+      id: makeId(),
       meta: {
         mimeType: `custom/${resourceType.name}`,
         type: resourceType.name,
-        creator: currentUser()
+        creator: currentUser(),
+        published: true
       },
       restrictions: parent.restrictions
     }),
@@ -32,10 +35,8 @@ actions.startCreation = (parent, resourceType) => (dispatch) => {
   }, true))
 }
 
-actions.create = (parent) => {
-  formActions.saveForm(selectors.STORE_NAME, ['claro_resource_action', {
-    resourceType: parent.meta.type,
-    action: 'add',
-    id: parent.id
-  }])
-}
+actions.create = (parent) => formActions.saveForm(selectors.FORM_NAME, ['claro_resource_action', {
+  resourceType: parent.meta.type,
+  action: 'add',
+  id: parent.id
+}])
