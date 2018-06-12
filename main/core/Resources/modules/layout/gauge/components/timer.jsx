@@ -1,7 +1,12 @@
 import React, {Component} from 'react'
+import moment from 'moment'
 
 import {PropTypes as T} from '#/main/core/scaffolding/prop-types'
 import {computeElapsedTime} from '#/main/core/scaffolding/date'
+import {number} from '#/main/app/intl'
+
+import{CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
+
 
 class Timer extends Component {
   constructor(props) {
@@ -81,8 +86,19 @@ class Timer extends Component {
 
   render() {
     return (
-      <div className="timer-component">
+      <div>
         {this.state.formattedRemainingTime}
+        {moment.duration(80, 'seconds').asHours()}
+        {/* {Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss')} */}
+
+        <CountGauge
+          className="metric-card-gauge"
+          value={this.state.remainingTime}
+          total={0}
+          displayValue={(value) => number(value, true)}
+          width={70}
+          height={70}
+        />
       </div>
     )
   }
