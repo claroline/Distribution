@@ -40,7 +40,6 @@ class MessageController extends AbstractCrudController
     /** @var ObjectManager */
     protected $om;
 
-
     /**
      * MessageController constructor.
      *
@@ -102,7 +101,7 @@ class MessageController extends AbstractCrudController
      *     name="apiv2_plannednotificationmessage_messages_send"
      * )
      *
-     * @param Request   $request
+     * @param Request $request
      *
      * @return JsonResponse
      */
