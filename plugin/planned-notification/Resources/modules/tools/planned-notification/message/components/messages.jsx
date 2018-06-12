@@ -63,7 +63,8 @@ MessagesList.propTypes = {
   canEdit: T.bool.isRequired,
   workspace: T.shape({
     uuid: T.string.isRequired
-  }).isRequired
+  }).isRequired,
+  pickUsers: T.func.isRequired
 }
 
 const Messages = connect(

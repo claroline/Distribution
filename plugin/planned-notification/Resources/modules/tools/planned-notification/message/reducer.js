@@ -13,7 +13,7 @@ const reducer = combineReducers({
     })
   }),
   current: makeFormReducer('messages.current', {}, {}),
-  userspicker: makeListReducer('messages.userspicker'),
+  userspicker: makeListReducer('messages.userspicker')
 })
 
 export {
