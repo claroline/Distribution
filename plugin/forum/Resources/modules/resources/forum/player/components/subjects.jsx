@@ -45,13 +45,17 @@ const SubjectsList = props =>
           alias: 'closed',
           type: 'boolean',
           label: trans('closed_subject', {}, 'forum'),
-          displayed: true
+          displayed: true,
+          //filterable true if we want them
+          filterable: false
         }, {
           name: 'meta.sticky',
           alias: 'sticked',
           type: 'boolean',
           label: trans('stuck', {}, 'forum'),
-          displayed: true
+          displayed: true,
+          //filterable true if we want them
+          filterable: false
         }, {
           name: 'meta.hot',
           type: 'boolean',
@@ -63,7 +67,9 @@ const SubjectsList = props =>
           name: 'meta.messages',
           type: 'number',
           label: trans('posts_count', {}, 'forum'),
-          displayed: true
+          displayed: true,
+          filterable: false,
+          sortable: true
         }, {
           name: 'meta.updated',
           type: 'date',
@@ -79,12 +85,15 @@ const SubjectsList = props =>
           type: 'string',
           label: trans('creator'),
           displayed: true,
-          searchable: false
+          searchable: true,
+          filterable: true,
+          alias: 'creator'
         }, {
           name: 'tags',
           type: 'string',
           label: trans('tags'),
-          displayed: true
+          displayed: true,
+          sortable: false
         }, {
           name: 'createdBefore',
           type: 'date',
@@ -101,6 +110,14 @@ const SubjectsList = props =>
           displayable: false,
           filterable: true,
           sortable: false
+        }, {
+          name: 'lastMessage',
+          type: 'string',
+          label: trans('last_messages'),
+          displayed: false,
+          displayable: true,
+          filterable: false,
+          sortable: true
         }
       ]}
       actions={(rows) => [

@@ -13,6 +13,7 @@ namespace Claroline\ForumBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\FinderTrait;
 use Claroline\AppBundle\API\FinderInterface;
+use Claroline\ForumBundle\Entity\Forum;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -49,10 +50,48 @@ class SubjectFinder implements FinderInterface
                 $qb->andWhere("obj.creationDate <= :{$filterName}");
                 $qb->setParameter($filterName, $filterValue);
                 break;
+              case 'creator':
+                $qb->leftJoin('obj.creator', 'creator');
+                $qb->andWhere("creator.username LIKE :{$filterName}");
+                $qb->setParameter($filterName, '%'.$filterValue.'%');
+                break;
               case 'tags':
-                //gonna be difficificult
+                $qb->andWhere("obj.uuid IN (
+                  SELECT to.objectId
+                  FROM Claroline\TagBundle\Entity\TaggedObject to
+                  LEFT JOIN to.tag t
+                  WHERE UPPER(t.name) LIKE :tagFilter
+                )");
+                //
+                //AND to.objectClass = :class
+                $qb->setParameter('tagFilter', '%'.strtoupper($filterValue).'%');
+                //$qb->setParameter('class', $this->getClass());
+                break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
+            }
+        }
+
+        // manages custom sort properties
+        if (!empty($sortBy)) {
+            switch ($sortBy['property']) {
+                case 'meta.messages':
+                    $qb->select('obj, count(msg) AS HIDDEN countMsg');
+                    $qb->leftJoin('obj.messages', 'msg');
+                    $qb->groupBy('obj');
+                    $qb->orderBy('countMsg', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
+                    break;
+                case 'creator':
+                    $qb->leftJoin('obj.creator', 'sortCreator');
+                    $qb->orderBy('sortCreator.username', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
+                    break;
+                case 'lastMessage':
+                    $qb->select('obj, MAX(lm.creationDate) AS HIDDEN lastMessageCreated');
+                    $qb->leftJoin('obj.messages', 'lm');
+                    $qb->groupBy('obj');
+                    $qb->orderBy('lm.moderation', 'ASC');
+                    $qb->orderBy('lastMessageCreated', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
+                    break;
             }
         }
 
