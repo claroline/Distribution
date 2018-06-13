@@ -175,17 +175,17 @@ class SubjectComponent extends Component {
               }, {
                 icon: 'fa fa-fw fa-flag-o',
                 label: trans('flag', {}, 'forum'),
-                displayed: (get(this.props.subject, 'meta.creator', false) !== authenticatedUser) && !(get(this.props.subject, 'meta.flagged', true)),
+                displayed: (get(this.props.subject, 'meta.creator.id') !== authenticatedUser.id) && !(get(this.props.subject, 'meta.flagged', true)),
                 action: () => this.props.flagSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-flag',
                 label: trans('unflag', {}, 'forum'),
-                displayed: ((get(this.props.subject, 'meta.creator', false) !== authenticatedUser) && (get(this.props.subject, 'meta.flagged', false))),
+                displayed: (get(this.props.subject, 'meta.creator.id') !== authenticatedUser.id) && (get(this.props.subject, 'meta.flagged', false)),
                 action: () => this.props.unFlagSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
-                displayed: get(this.props.subject, 'meta.creator.id', false) === authenticatedUser.id || this.props.moderator,
+                displayed: get(this.props.subject, 'meta.creator.id') === authenticatedUser.id || this.props.moderator,
                 action: () => this.deleteSubject(this.props.subject.id),
                 dangerous: true
               }
@@ -299,7 +299,7 @@ SubjectComponent.propTypes = {
   editingSubject: T.bool.isRequired,
   messages: T.arrayOf(T.shape({})).isRequired,
   moderatedMessages: T.arrayOf(T.shape({
-    length: T.number.isRequired
+    length: T.number
   })),
   totalResults: T.number.isRequired,
   sortOrder: T.number.isRequired,

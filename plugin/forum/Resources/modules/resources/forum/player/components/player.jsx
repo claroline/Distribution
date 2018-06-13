@@ -25,6 +25,7 @@ const PlayerComponent = (props) =>
           if (params.id) {
             props.newSubject(params.id)
           } else {
+            props.invalidateMessagesList()
             props.newSubject()
           }
         },
@@ -55,7 +56,8 @@ PlayerComponent.propTypes = {
   showSubjectForm: T.bool.isRequired,
   editingSubject: T.bool.isRequired,
   loadSubjectList: T.func.isRequired,
-  loadSubjectForm: T.func
+  loadSubjectForm: T.func,
+  invalidateMessagesList: T.func
 }
 
 const Player = connect(
@@ -78,6 +80,9 @@ const Player = connect(
     },
     loadSubjectList() {
       dispatch(listActions.invalidateData('subjects.list'))
+    },
+    invalidateMessagesList() {
+      dispatch(listActions.invalidateData('subjects.messages'))
     }
   })
 )(PlayerComponent)
