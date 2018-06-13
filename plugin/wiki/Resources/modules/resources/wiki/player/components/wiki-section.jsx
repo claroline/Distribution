@@ -1,111 +1,111 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
+import {implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {trans} from '#/main/core/translation'
 import {Heading} from '#/main/core/layout/components/heading'
 import {Button} from '#/main/app/action'
+import {Section as SectionTypes} from '#/plugin/wiki/resources/wiki/prop-types'
+import {WikiSectionForm} from '#/plugin/wiki/resources/wiki/player/components/wiki-section-form'
 
-const WikiSection = props =>
-  <div className="wiki-section">
+const WikiSectionContent = props =>
+  <div className="wiki-section-content">
     <Heading
-      key={`wiki-section-title-${props.id}`}
+      key={`wiki-section-title-${props.section.id}`}
       level={props.num.length + 3}
       className="wiki-section-title"
     >
-      {props.title &&
-        <span className="wiki-section-title-text">
-          {props.displaySectionNumbers && props.num && Array.isArray(props.num) && <span className="ordering">{props.num.join('.')} - </span>}
-          <span className="title">{props.title}</span>
-        </span>
+      {props.section.activeContribution.title &&
+      <span className="wiki-section-title-text">
+        {props.displaySectionNumbers && props.num && Array.isArray(props.num) && <span className="ordering">{props.num.join('.')} - </span>}
+        <span className="title">{props.section.activeContribution.title}</span>
+      </span>
       }
       {props.loggedUserId !== null && (props.canEdit || props.mode !== '2') &&
-        <span className="wiki-section-actions">
-          {!props.visible &&
-            <span className="wiki-section-invisible-text">
-              ({trans(props.canEdit ? 'invisible' : 'waiting_for_moderation', {}, 'icap_wiki')})
-            </span>
-          }
-          [
-          <Button
-            id={`wiki-section-add-${props.id}`}
-            type="link"
-            className="btn btn-link"
-            target={`/add/${props.id}`}
-            label={trans('add_new_subsection', {}, 'icap_wiki')}
-          />
-          |
-          <Button
-            id={`wiki-section-edit-${props.id}`}
-            type="link"
-            className="btn btn-link"
-            target={`/edit/${props.id}`}
-            label={trans('edit', {}, 'icap_wiki')}
-          />
-          |
-          <Button
-            id={`wiki-section-history-${props.id}`}
-            type="link"
-            className="btn btn-link"
-            target={`/history/${props.id}`}
-            label={trans('history', {}, 'icap_wiki')}
-          />
-          {props.loggedUserId !== null && props.canEdit && props.toggleVisibility !== null &&
-            <span>
-              |
-              <Button
-                id={`wiki-section-toggle-visibility-${props.id}`}
-                type="callback"
-                className="btn btn-link"
-                label={trans(props.visible ? 'render_invisible' : 'render_visible', {}, 'icap_wiki')}
-                callback={() => props.toggleVisibility(props.id, !props.visible)}
-              />
-            </span>
-          }
-          ]
+      <span className="wiki-section-actions">
+        {!props.section.meta.visible &&
+        <span className="wiki-section-invisible-text">
+          ({trans(props.canEdit ? 'invisible' : 'waiting_for_moderation', {}, 'icap_wiki')})
         </span>
+        }
+        <Button
+          id={`wiki-section-add-${props.section.id}`}
+          type="callback"
+          icon="fa fa-plus"
+          className="btn btn-link"
+          tooltip="top"
+          callback={() => props.addSection(props.section.id)}
+          label={trans('add_new_subsection', {}, 'icap_wiki')}
+          title={trans('add_new_subsection', {}, 'icap_wiki')}
+        />
+        <Button
+          id={`wiki-section-edit-${props.section.id}`}
+          type="callback"
+          icon="fa fa-pencil"
+          className="btn btn-link"
+          tooltip="top"
+          callback={() => props.currentSection(props.section.id)}
+          label={trans('edit', {}, 'icap_wiki')}
+          title={trans('edit', {}, 'icap_wiki')}
+        />
+        <Button
+          id={`wiki-section-history-${props.section.id}`}
+          type="link"
+          icon="fa fa-clock-o"
+          className="btn btn-link"
+          tooltip="top"
+          target={`/history/${props.section.id}`}
+          label={trans('history', {}, 'icap_wiki')}
+          title={trans('history', {}, 'icap_wiki')}
+        />
+        {props.loggedUserId !== null && props.canEdit && props.toggleSectionVisibility !== null &&
+        <Button
+          id={`wiki-section-toggle-visibility-${props.section.id}`}
+          type="callback"
+          icon={props.section.meta.visible ? 'fa fa-eye' : 'fa fa-eye-slash'}
+          className="btn btn-link"
+          tooltip="top"
+          label={trans(props.section.meta.visible ? 'render_invisible' : 'render_visible', {}, 'icap_wiki')}
+          title={trans(props.section.meta.visible ? 'render_invisible' : 'render_visible', {}, 'icap_wiki')}
+          callback={() => props.toggleSectionVisibility(props.section.id, !props.section.meta.visible)}
+        />
+        }
+      </span>
       }
     </Heading>
-    <div className="wiki-section-content" dangerouslySetInnerHTML={{__html: props.text}}/>
+    <div className="wiki-section-text" dangerouslySetInnerHTML={{__html: props.section.activeContribution.text}}/>
+  </div>
+
+implementPropTypes(WikiSectionContent, SectionTypes)
+
+const WikiSection = props =>
+  <div className="wiki-section">
+    {(props.currentEditSection && props.currentEditSection.id && props.currentEditSection.id === props.section.id) ?
+      <WikiSectionForm/> :
+      <WikiSectionContent {...props}/>
+    }
     {
-      props.sections &&
-      props.sections.map(
+      props.num.length > 0 &&
+      props.section.children &&
+      props.section.children.map(
         (section, index) =>
           <WikiSection
             id={section.id}
             key={section.id}
-            num={props.num.push(index + 1)}
-            title={section.activeContribution.title}
-            text={section.activeContribution.text}
+            num={props.num.concat([index + 1])}
             displaySectionNumbers={props.displaySectionNumbers}
-            sections={section.children}
+            section={section}
             canEdit={props.canEdit}
             loggedUserId={props.loggedUserId}
+            currentEditSection={props.currentEditSection}
             mode={props.mode}
-            visible={section.meta.visible}
-            toggleVisibility={props.toggleVisibility}
+            toggleSectionVisibility={props.toggleSectionVisibility}
+            editSection={props.editSection}
+            addSection={props.addSection}
           />
       )
     }
   </div>
 
-WikiSection.propTypes = {
-  'id': T.string.isRequired,
-  'title': T.string,
-  'text': T.string.isRequired,
-  'sections': T.arrayOf(T.object),
-  'num': T.arrayOf(T.number).isRequired,
-  'displaySectionNumbers': T.bool.isRequired,
-  'canEdit': T.bool.isRequired,
-  'loggedUserId': T.oneOfType([() => null, T.string]),
-  'mode': T.string.isRequired,
-  'visible': T.bool.isRequired,
-  'toggleVisibility': T.oneOfType([() => null, T.string])
-}
-
-WikiSection.defaultProps = {
-  'loggedUserId': null,
-  'toggleVisibility': null,
-  'title': null
-}
+implementPropTypes(WikiSection, SectionTypes)
 
 export {
   WikiSection

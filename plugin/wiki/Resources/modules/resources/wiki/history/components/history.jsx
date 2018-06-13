@@ -8,7 +8,7 @@ import {hasPermission} from '#/main/core/resource/permissions'
 import {currentUser} from '#/main/core/user/current'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {actions} from '#/plugin/wiki/resources/wiki/store'
+import {actions} from '#/plugin/wiki/resources/wiki/history/store'
 
 const loggedUser = currentUser()
 
@@ -16,7 +16,7 @@ const HistoryComponent = props =>
   <section className="wiki-section-history">
     <h2>{props.section.activeContribution.title + ': ' + trans('revision_history', {}, 'icap_wiki')}</h2>
     <DataListContainer
-      name="sectionHistory"
+      name="history.contributions"
       fetch={{
         url: ['apiv2_wiki_section_contribution_history', {sectionId: props.section.id}],
         autoload: true
@@ -85,7 +85,7 @@ HistoryComponent.propTypes = {
 
 const History = withRouter(connect(
   state => ({
-    section: state.currentSection,
+    section: state.history.currentSection,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     mode: state.wiki.mode
   }),

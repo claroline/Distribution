@@ -14,7 +14,7 @@ const ContentSection = props =>
         (section, index) => <ContentSection
           section={section}
           key={section.id}
-          num={props.num.push(index + 1)}
+          num={props.num.concat([index + 1])}
         />
       )
     }

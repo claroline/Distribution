@@ -12,6 +12,22 @@ const Wiki = {
   }
 }
 
+const Section = {
+  propTypes: {
+    'num': T.arrayOf(T.number).isRequired,
+    'displaySectionNumbers': T.bool.isRequired,
+    'canEdit': T.bool.isRequired,
+    'loggedUserId': T.string,
+    'mode': T.string.isRequired,
+    'section': T.object.isRequired,
+    'toggleSectionVisibility': T.func,
+    'editSection': T.func.isRequired,
+    'addSection': T.func.isRequired,
+    'currentEditSection': T.object
+  }
+}
+
 export {
-  Wiki
+  Wiki,
+  Section
 }

@@ -5,34 +5,35 @@ import {WikiSection} from '#/plugin/wiki/resources/wiki/player/components/wiki-s
 const WikiSectionTree = props =>
   <div className="wiki-section-container">
     {
-      props.sectionTree.children &&
-      props.sectionTree.children.map(
+      props.sections.tree.children &&
+      props.sections.tree.children.map(
         (section, index) =>
           <WikiSection
-            id={section.id}
             key={section.id}
             num={[index + 1]}
-            title={section.activeContribution.title}
-            text={section.activeContribution.text}
+            section={section}
             displaySectionNumbers={props.displaySectionNumbers}
-            sections={section.children}
             canEdit={props.canEdit}
             loggedUserId={props.loggedUserId}
+            currentEditSection={props.sections.currentSection}
             mode={props.mode}
-            visible={section.meta.visible}
-            toggleVisibility={props.toggleVisibility}
+            toggleSectionVisibility={props.toggleSectionVisibility}
+            editSection={props.editSection}
+            addSection={props.addSection}
           />
       )
     }
   </div>
   
 WikiSectionTree.propTypes = {
-  'sectionTree': T.object.isRequired,
+  'sections': T.object.isRequired,
   'displaySectionNumbers': T.bool.isRequired,
   'canEdit': T.bool.isRequired,
   'loggedUserId': T.oneOfType([() => null, T.string]),
   'mode': T.string.isRequired,
-  'toggleVisibility': T.func.isRequired
+  'toggleSectionVisibility': T.func.isRequired,
+  'editSection': T.func.isRequired,
+  'addSection': T.func.isRequired
 }
 
 WikiSectionTree.defaultProps = {

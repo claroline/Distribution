@@ -5,7 +5,7 @@
             class="page-container wiki-container"
             data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
             data-wiki="{{ _resource | api_serialize | json_encode | raw | escape }}"
-            data-section-tree="{{ sectionTree | json_encode | raw | escape }}"
+            data-sections="{{ sectionTree | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

@@ -31,3 +31,15 @@ export const updateInTree = (tree, idProperty, id, property, value) => {
 
   return copy
 }
+
+export const buildDataPart = path => {
+  let dataPart = ''
+  if (!Array.isArray(path) || path.length === 0) {
+    return dataPart
+  }
+  for (let part of path) {
+    dataPart += `${dataPart.length !== 0 ? '.' : ''}children[${part - 1}]`
+  }
+  
+  return dataPart
+}

@@ -15,6 +15,8 @@ export const App = () => ({
       node: initialData.resourceNode
     },
     wiki: initialData.wiki,
-    sectionTree: initialData.sectionTree
+    sections: {
+      tree: initialData.sections
+    }
   })
 })

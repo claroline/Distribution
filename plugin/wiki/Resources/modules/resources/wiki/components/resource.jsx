@@ -15,7 +15,7 @@ import {Player} from '#/plugin/wiki/resources/wiki/player/components/player'
 import {History} from '#/plugin/wiki/resources/wiki/history/components/history'
 import {VersionDetail} from '#/plugin/wiki/resources/wiki/history/components/version-detail'
 import {VersionCompare} from '#/plugin/wiki/resources/wiki/history/components/version-compare'
-import {actions} from '#/plugin/wiki/resources/wiki/store'
+import {actions as historyActions} from '#/plugin/wiki/resources/wiki/history/store'
 
 const Resource = props =>
   <ResourcePageContainer
@@ -53,20 +53,20 @@ const Resource = props =>
           path: '/history/:id',
           exact: true,
           component: History,
-          onLeave: () => props.setCurrentSection(),
-          onEnter: params => props.setCurrentSection(params.id)
+          onLeave: () => props.setCurrentHistorySection(),
+          onEnter: params => props.setCurrentHistorySection(params.id)
         }, {
           path: '/contribution/:sectionId/:id',
           exact: true,
           component: VersionDetail,
-          onLeave: () => props.setCurrentVersion(),
-          onEnter: params => props.setCurrentVersion(params.sectionId, params.id)
+          onLeave: () => props.setCurrentHistoryVersion(),
+          onEnter: params => props.setCurrentHistoryVersion(params.sectionId, params.id)
         }, {
           path: '/contribution/compare/:sectionId/:id1/:id2',
           exact: true,
           component: VersionCompare,
-          onLeave: () => props.setCompareVersionSet(),
-          onEnter: params => props.setCompareVersionSet(params.sectionId, params.id1, params.id2)
+          onLeave: () => props.setCurrentHistoryCompareSet(),
+          onEnter: params => props.setCurrentHistoryCompareSet(params.sectionId, params.id1, params.id2)
         }
       ]}
     />
@@ -76,27 +76,25 @@ Resource.propTypes = {
   canEdit: T.bool.isRequired,
   wiki: T.object.isRequired,
   saveEnabled: T.bool.isRequired,
-  sectionTree: T.object,
   resetForm: T.func.isRequired,
   saveForm: T.func.isRequired,
-  setCurrentSection: T.func.isRequired,
-  setCurrentVersion: T.func.isRequired,
-  setCompareVersionSet: T.func.isRequired
+  setCurrentHistorySection: T.func.isRequired,
+  setCurrentHistoryVersion: T.func.isRequired,
+  setCurrentHistoryCompareSet: T.func.isRequired
 }
 
 const WikiResource = connect(
   (state) => ({
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     wiki: state.wiki,
-    sectionTree: state.sectionTree,
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'wikiForm'))
   }),
   (dispatch) => ({
     resetForm: (formData) => dispatch(formActions.resetForm('wikiForm', formData)),
     saveForm: (wikiId) => dispatch(formActions.saveForm('wikiForm', ['apiv2_wiki_update_options', {id: wikiId}])),
-    setCurrentSection: (sectionId = null) => dispatch(actions.setCurrentSection(sectionId)),
-    setCurrentVersion: (sectionId = null, contributionId = null) => dispatch(actions.setCurrentVersion(sectionId, contributionId)),
-    setCompareVersionSet: (sectionId = null, contrib1 = null, contrib2 = null) => dispatch(actions.setCompareVersionSet(sectionId, contrib1, contrib2))
+    setCurrentHistorySection: (sectionId = null) => dispatch(historyActions.setCurrentHistorySection(sectionId)),
+    setCurrentHistoryVersion: (sectionId = null, contributionId = null) => dispatch(historyActions.setCurrentHistoryVersion(sectionId, contributionId)),
+    setCurrentHistoryCompareSet: (sectionId = null, id1 = null, id2 = null) => dispatch(historyActions.setCurrentHistoryCompareSet(sectionId, id1, id2))
   })
 )(Resource)
 
