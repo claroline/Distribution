@@ -41,7 +41,8 @@ const action = (resourceNodes) => {
       resourceNode: 1 === resourceNodes.length && resourceNodes[0]
     }],
     subscript: customRules && {
-      type: 'danger',
+      type: 'text',
+      status: 'danger',
       value: (<span className="fa fa-asterisk" />)
     }
   }

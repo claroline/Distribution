@@ -23,6 +23,7 @@ actions.startCreation = (parent, resourceType) => (dispatch) => {
     resource: null,
     resourceNode: merge({}, ResourceNodeTypes.defaultProps, {
       id: makeId(),
+      workspace: parent.workspace,
       meta: {
         mimeType: `custom/${resourceType.name}`,
         type: resourceType.name,

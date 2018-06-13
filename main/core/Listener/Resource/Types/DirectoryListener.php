@@ -127,6 +127,8 @@ class DirectoryListener
             // todo : initialize default rights
         }
 
+        // todo : dispatch creation event
+
         $this->om->persist($resource);
         $this->om->persist($resourceNode);
 

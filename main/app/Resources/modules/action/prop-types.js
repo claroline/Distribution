@@ -29,7 +29,8 @@ const Action = {
     ]).isRequired,
     icon: T.string,
     subscript: T.shape({
-      type: T.oneOf(['default', 'primary', 'danger', 'warning']),
+      type: T.oneOf(['text', 'label']),
+      status: T.oneOf(['default', 'primary', 'danger', 'warning']),
       value: T.node.isRequired
     }),
 

@@ -10,7 +10,8 @@ const action = (resourceNodes) => ({ // todo collection
   label: trans('unlike', {}, 'actions'),
   displayed: isAuthenticated() && false, // todo find the correct way to display it
   subscript: 1 === resourceNodes.length && {
-    type: 'primary',
+    type: 'label',
+    status: 'primary',
     value: get(resourceNodes[0], 'social.likes') || 0
   },
   request: {
