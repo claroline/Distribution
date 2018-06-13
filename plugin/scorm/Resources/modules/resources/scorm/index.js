@@ -9,5 +9,5 @@ import {ScormResource} from '#/plugin/scorm/resources/scorm/components/resource'
 export const App = () => ({
   component: ScormResource,
   store: reducer,
-  // styles: 'claroline-distribution-plugin-scorm-resource',
+  styles: 'claroline-distribution-plugin-scorm-resource',
 })

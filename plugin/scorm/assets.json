@@ -8,7 +8,7 @@
 
   "styles": {
     "entry": {
-      "scorm-resource": "resources/scorm.less"
+      "resource": "resources/scorm.less"
     }
   }
 }
