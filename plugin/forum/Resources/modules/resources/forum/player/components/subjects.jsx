@@ -114,7 +114,7 @@ const SubjectsList = props =>
           name: 'lastMessage',
           type: 'string',
           label: trans('last_messages'),
-          displayed: true,
+          displayed: false,
           displayable: true,
           filterable: false,
           sortable: true

@@ -82,10 +82,14 @@ class SubjectFinder implements FinderInterface
                     break;
                 case 'creator':
                     $qb->leftJoin('obj.creator', 'sortCreator');
-                    $qb->orderBy('sortCreator.username');
+                    $qb->orderBy('sortCreator.username', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
                     break;
                 case 'lastMessage':
+                    $qb->select('obj, MAX(lm.creationDate) AS HIDDEN lastMessageCreated');
                     $qb->leftJoin('obj.messages', 'lm');
+                    $qb->groupBy('obj');
+                    $qb->orderBy('lastMessageCreated', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
+                    break;
             }
         }
 
