@@ -15,7 +15,8 @@ import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceForm} from '#/main/core/resource/components/form'
 
-import {ShortcutCreation} from '#/plugin/link/resources/shortcut/components/creation'
+/*import {ShortcutCreation} from '#/plugin/link/resources/shortcut/components/creation'
+<ShortcutCreation />*/
 
 const MODAL_RESOURCE_CREATION_PARAMETERS = 'MODAL_RESOURCE_CREATION_PARAMETERS'
 
@@ -27,8 +28,6 @@ const ParametersModalComponent = props =>
     subtitle="2. Configurer la ressource"
   >
     <ContentMeta meta={props.newNode.meta} />
-
-    <ShortcutCreation />
 
     <ResourceForm level={5} meta={false} name={selectors.FORM_NAME} dataPart="resourceNode" />
 
