@@ -37,7 +37,7 @@ ShortcutForm.propTypes = {
 const ShortcutCreation = connect(
   null,
   () => ({
-    update(targetNode) {
+    update() {
       // todo default set props of the shortcut with target
     }
   })

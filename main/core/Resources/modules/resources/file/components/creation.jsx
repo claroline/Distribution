@@ -37,8 +37,8 @@ FileForm.propTypes = {
 
 const FileCreation = connect(
   null,
-  (dispatch) => ({
-    update(file) {
+  () => ({
+    update() {
       // set resource name
 
       // set resource mime type
