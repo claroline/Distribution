@@ -12,9 +12,9 @@
 namespace Claroline\PlannedNotificationBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
-use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\PlannedNotificationBundle\Manager\PlannedNotificationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,21 +29,21 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class MessageController extends AbstractCrudController
 {
-    /* var FinderProvider */
-    protected $finder;
+    /** @var PlannedNotificationManager */
+    protected $manager;
 
     /**
      * MessageController constructor.
      *
      * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder")
+     *     "manager" = @DI\Inject("claroline.manager.planned_notification_manager")
      * })
      *
-     * @param FinderProvider $finder
+     * @param PlannedNotificationManager $manager
      */
-    public function __construct(FinderProvider $finder)
+    public function __construct(PlannedNotificationManager $manager)
     {
-        $this->finder = $finder;
+        $this->manager = $manager;
     }
 
     public function getName()
@@ -79,5 +79,25 @@ class MessageController extends AbstractCrudController
         $data = $this->finder->search('Claroline\PlannedNotificationBundle\Entity\Message', $params);
 
         return new JsonResponse($data, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/messages/send",
+     *     name="apiv2_plannednotificationmessage_messages_send"
+     * )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function messagesSendAction(Request $request)
+    {
+        $query = $request->request->all();
+        $messages = $this->om->findList('Claroline\PlannedNotificationBundle\Entity\Message', 'uuid', $query['messages']);
+        $users = $this->om->findList('Claroline\CoreBundle\Entity\User', 'uuid', $query['users']);
+        $this->manager->sendMessages($messages, $users);
+
+        return new JsonResponse('success', 200);
     }
 }
