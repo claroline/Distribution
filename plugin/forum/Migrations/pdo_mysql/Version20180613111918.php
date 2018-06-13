@@ -61,7 +61,7 @@ class Version20180613111918 extends AbstractMigration
             UPDATE claro_forum_subject SET uuid = (SELECT UUID())
         ');
         $this->addSql('
-            UPDATE claro_forum_subject SET content = ''
+            UPDATE claro_forum_subject SET content = ""
         ');
         $this->addSql('
             UPDATE claro_forum_subject SET sticked = false
@@ -75,12 +75,14 @@ class Version20180613111918 extends AbstractMigration
         $this->addSql('
             UPDATE claro_forum_subject SET viewCount = 5
         ');
+        //might cause some issues
+        /*
         $this->addSql('
             ALTER TABLE claro_forum_subject
             ADD CONSTRAINT FK_273AA20B29CCBAD0 FOREIGN KEY (forum_id)
             REFERENCES claro_forum (id)
             ON DELETE CASCADE
-        ');
+        ');*/
         $this->addSql('
             ALTER TABLE claro_forum_subject
             ADD CONSTRAINT FK_273AA20B5BB66C05 FOREIGN KEY (poster_id)
@@ -108,6 +110,9 @@ class Version20180613111918 extends AbstractMigration
             ADD uuid VARCHAR(36) NOT NULL,
             DROP activate_notifications
         ");
+        $this->addSql('
+            UPDATE claro_forum SET displayMessages = 5
+        ');
         $this->addSql('
             UPDATE claro_forum SET uuid = (SELECT UUID())
         ');

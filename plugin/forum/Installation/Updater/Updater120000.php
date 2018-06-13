@@ -17,47 +17,74 @@ class Updater120000 extends Updater
     {
         $this->container = $container;
         $this->conn = $container->get('doctrine.dbal.default_connection');
-        $this->om = $container->get('claroline.persistence.object_manager')
+        $this->om = $container->get('claroline.persistence.object_manager');
     }
 
     public function preUpdate()
     {
+        try {
+            $this->log('backing up the forum subjects...');
+            $this->conn->query('CREATE TABLE claro_forum_subject_temp_new  AS (SELECT * FROM claro_forum_subject)');
+        } catch (\Exception $e) {
+            $this->log('Coulnt backup forum subjects');
+        }
+    }
+
+    public function postUpdate()
+    {
         //trouver une autre condition toussa
         if (true) {
             $this->log('restoring the categories as tag...');
-            $forums = $this->om->getRepository('ClarolineForumBundle:Forum')->findAll();
-            $sql = 'SELECT * FROM claro_forum_category WHERE forum_id = :forumId';
-            $stmt = $this->conn->prepare($sql);
 
-            foreach ($forums as $forum) {
-                foreach ($stmt->fetchAll() as $rowCategory) {
-                  $this->log('Restoring category as tag for ' . $rowCategory['name']);
-                    $this->buildCategoryFromTag($rowCategory);
-                }
+            $sql = 'SELECT * FROM claro_forum_subject_temp_new ';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
+            foreach ($stmt->fetchAll() as $rowSubject) {
+                $this->log('Restoring category as tag for subject '.$rowSubject['title'].'...');
+                $this->restoreSubjectCategory($rowSubject);
             }
         }
     }
 
-    private function buildCategoryFromTag(array $category)
+    private function restoreSubjectCategory(array $subject)
     {
-        $subject = $this->om->getRepository('Claroline\ForumBundle\Entity\Subject')->find($category['subject_id']);
+        $currentSubject = $this->om->getRepository('Claroline\ForumBundle\Entity\Subject')->find($subject['id']);
+
+        $sql = 'SELECT * FROM claro_forum_category where id =  '.$subject['category_id'];
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $category = $stmt->fetch();
+        $forum = $this->om->getRepository('Claroline\ForumBundle\Entity\Forum')->find($category['forum_id']);
+
+        $currentSubject->setForum($forum);
+
+        if ('' === trim($currentSubject->getContent())) {
+            //restore subject first message
+            $messages = $this->om->getRepository('Claroline\ForumBundle\Entity\Message')
+              ->findBy(['subject' => $currentSubject], ['id' => 'ASC']);
+
+            if (isset($messages[0])) {
+                $firstMessage = $messages[0];
+                $currentSubject->setContent($firstMessage->getContent());
+                $this->om->remove($firstMessage);
+            }
+        }
+
+        $this->om->persist($currentSubject);
 
         $event = new GenericDataEvent([
             'tags' => [$category['name']],
             'data' => [
                 [
                     'class' => 'Claroline\ForumBundle\Entity\Subject',
-                    'id' => $subject->getUuid(),
-                    'name' => $subject->getTitle(),
+                    'id' => $currentSubject->getUuid(),
+                    'name' => $currentSubject->getTitle(),
                 ],
             ],
             'replace' => true,
         ]);
 
         $this->container->get('event_dispatcher')->dispatch('claroline_tag_multiple_data', $event);
-    }
-
-    public function postUpdate()
-    {
     }
 }
