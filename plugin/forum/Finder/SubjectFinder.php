@@ -13,6 +13,7 @@ namespace Claroline\ForumBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\FinderTrait;
 use Claroline\AppBundle\API\FinderInterface;
+use Claroline\ForumBundle\Entity\Forum;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -88,6 +89,7 @@ class SubjectFinder implements FinderInterface
                     $qb->select('obj, MAX(lm.creationDate) AS HIDDEN lastMessageCreated');
                     $qb->leftJoin('obj.messages', 'lm');
                     $qb->groupBy('obj');
+                    $qb->orderBy('lm.moderation', 'ASC');
                     $qb->orderBy('lastMessageCreated', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
                     break;
             }
