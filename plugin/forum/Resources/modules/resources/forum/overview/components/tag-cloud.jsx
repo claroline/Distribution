@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import shuffle from 'lodash/shuffle'
 import {scaleLinear} from 'd3-scale'
 
 import {CallbackButton} from '#/main/app/button/components/callback'
@@ -14,7 +15,7 @@ const TagCloud = props => {
 
   return (
     <div className="tag-cloud-container">
-      {Object.keys(props.tags).map(tag =>
+      {shuffle(Object.keys(props.tags)).map(tag =>
         <CallbackButton
           key={tag}
           className="btn btn-link tag-cloud"

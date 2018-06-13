@@ -34,7 +34,7 @@ const reducer = combineReducers({
   }),
   messages: makeListReducer('subjects.messages', {
     pageSize: 10,
-    sortBy: {property: 'creationDate', direction : -1}
+    sortBy: {property: 'creationDate', direction : 1}
   })
 })
 

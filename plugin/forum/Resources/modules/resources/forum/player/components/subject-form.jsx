@@ -118,16 +118,17 @@ const SubjectFormComponent = (props) =>
             icon: 'fa fa-fw fa-desktop',
             title: trans('display_parameters'),
             fields: [
+              // {
+              //   name: 'sortBy',
+              //   type: 'choice',
+              //   label: trans('messages_sort_display', {}, 'forum'),
+              //   options: {
+              //     noEmpty: true,
+              //     choices: constants.MESSAGE_SORT_DISPLAY,
+              //     condensed: true
+              //   }
+              // },
               {
-                name: 'sortOrder',
-                type: 'choice',
-                label: trans('messages_sort_display', {}, 'forum'),
-                options: {
-                  noEmpty: true,
-                  choices: constants.MESSAGE_SORT_DISPLAY,
-                  condensed: true
-                }
-              }, {
                 name: 'meta.sticky',
                 alias: 'sticked',
                 type: 'boolean',
