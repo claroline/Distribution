@@ -55,7 +55,17 @@ class SubjectFinder implements FinderInterface
                 $qb->setParameter($filterName, '%'.$filterValue.'%');
                 break;
               case 'tags':
-                //gonna be difficificult
+                $qb->andWhere("obj.uuid IN (
+                  SELECT to.objectId
+                  FROM Claroline\TagBundle\Entity\TaggedObject to
+                  LEFT JOIN to.tag t
+                  WHERE UPPER(t.name) LIKE :tagFilter
+                )");
+                //
+                //AND to.objectClass = :class
+                $qb->setParameter('tagFilter', '%'.strtoupper($filterValue).'%');
+                //$qb->setParameter('class', $this->getClass());
+                break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
             }
