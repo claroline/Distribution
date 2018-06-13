@@ -60,7 +60,7 @@ const Button = props => props.tooltip ?
     {props.label}
 
     {props.subscript &&
-      <span className={classes('action-subscript label ', `label-${props.subscript.type || 'primary'}`)}>{props.subscript.value}</span>
+    <span className={classes('action-subscript', `${props.subscript.type} ${props.subscript.type}-${props.subscript.status || 'primary'}`)}>{props.subscript.value}</span>
     }
   </GenericButton>
 
