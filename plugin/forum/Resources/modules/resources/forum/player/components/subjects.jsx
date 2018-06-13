@@ -92,6 +92,9 @@ const SubjectsList = props =>
           name: 'tags',
           type: 'string',
           label: trans('tags'),
+          renderer: (rowData) => rowData.tags.map(tag =>
+            <span key={tag}>{tag} </span>
+          ),
           displayed: true,
           sortable: false
         }, {
@@ -150,7 +153,7 @@ const SubjectsList = props =>
           type: 'callback',
           icon: 'fa fa-fw fa-flag-o',
           label: trans('flag', {}, 'forum'),
-          displayed: !rows[0].meta.flagged && rows[0].meta.creator.id !== authenticatedUser.id,
+          displayed: !rows[0].meta.flagged && (rows[0].meta.creator.id !== authenticatedUser.id),
           callback: () => props.flagSubject(rows[0]),
           context: 'row'
         }, {
@@ -180,7 +183,7 @@ const SubjectsList = props =>
           contentText={props.data.content}
         />
       }
-    />s
+    />
   </div>
 
 

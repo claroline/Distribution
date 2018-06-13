@@ -7,6 +7,7 @@ import get from 'lodash/get'
 import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {MODAL_ALERT} from '#/main/app/modals/alert'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {withModal} from '#/main/app/overlay/modal/withModal'
 
@@ -164,13 +165,18 @@ MessageCommentsComponent.propTypes = {
     id: T.string.Required,
     children: T.array.isRequired
   }).isRequired,
+  forum: T.shape({
+    moderation: T.string.isRequired
+  }).isRequired,
   editContent: T.func.isRequired,
   opened: T.bool,
   flag: T.func.isRequired,
   unFlag: T.func.isRequired,
   deleteComment: T.func.isRequired,
   createComment: T.func.isRequired,
-  showModal: T.func
+  showModal: T.func,
+  bannedUser: T.bool.isRrequired,
+  moderator: T.bool.isRrequired
 }
 
 const MessageComments =  withModal(connect(

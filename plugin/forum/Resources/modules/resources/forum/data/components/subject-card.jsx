@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {transChoice} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {getPlainText} from '#/main/core/data/types/html/utils'
 import {asset} from '#/main/core/scaffolding/asset'
 import {DataCard} from '#/main/core/data/components/data-card'
@@ -14,9 +14,11 @@ const SubjectCard = (props) =>
     title={props.data.title}
     poster={props.data.poster ? asset(props.data.poster.url) : null}
     subtitle={transChoice('replies', props.data.meta.messages, {count: props.data.meta.messages}, 'forum')}
-    // flags={[
-    //   ['fa fa-fw fa-thumb-tack', trans('stuck', {}, 'forum')]
-    // ]}
+    flags={[
+      props.data.meta.hot && ['fa fa-fw fa-fire', trans('hot_subject', {}, 'forum')],
+      props.data.meta.sticky && ['fa fa-fw fa-thumb-tack', trans('stuck', {}, 'forum')],
+      props.data.meta.closed && ['fa fa-fw fa-times-circle-o', trans('closed_subject', {}, 'forum')]
+    ]}
     contentText={getPlainText(props.contentText)}
   />
 

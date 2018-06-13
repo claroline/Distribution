@@ -175,17 +175,17 @@ class SubjectComponent extends Component {
               }, {
                 icon: 'fa fa-fw fa-flag-o',
                 label: trans('flag', {}, 'forum'),
-                displayed: (get(this.props.subject, 'meta.creator', false) !== authenticatedUser) && !(get(this.props.subject, 'meta.flagged', true)),
+                displayed: (get(this.props.subject, 'meta.creator.id') !== authenticatedUser.id) && !(get(this.props.subject, 'meta.flagged', true)),
                 action: () => this.props.flagSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-flag',
                 label: trans('unflag', {}, 'forum'),
-                displayed: ((get(this.props.subject, 'meta.creator', false) !== authenticatedUser) && (get(this.props.subject, 'meta.flagged', false))),
+                displayed: (get(this.props.subject, 'meta.creator.id') !== authenticatedUser.id) && (get(this.props.subject, 'meta.flagged', false)),
                 action: () => this.props.unFlagSubject(this.props.subject)
               }, {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
-                displayed: get(this.props.subject, 'meta.creator.id', false) === authenticatedUser.id || this.props.moderator,
+                displayed: get(this.props.subject, 'meta.creator.id') === authenticatedUser.id || this.props.moderator,
                 action: () => this.deleteSubject(this.props.subject.id),
                 dangerous: true
               }
@@ -275,6 +275,9 @@ SubjectComponent.propTypes = {
   subjectForm: T.shape({
     title: T.string
   }),
+  forum: T.shape({
+    moderation: T.string.isRequired
+  }).isRequired,
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
   flag: T.func.isRequired,
@@ -294,7 +297,10 @@ SubjectComponent.propTypes = {
   showModal: T.func,
   showSubjectForm: T.bool.isRequired,
   editingSubject: T.bool.isRequired,
-  messages: T.arrayOf(T.shape({})),
+  messages: T.arrayOf(T.shape({})).isRequired,
+  moderatedMessages: T.arrayOf(T.shape({
+    length: T.number
+  })),
   totalResults: T.number.isRequired,
   sortOrder: T.number.isRequired,
   pages: T.number,
@@ -302,7 +308,9 @@ SubjectComponent.propTypes = {
   changePage: T.func,
   changePagePrev: T.func,
   toggleSort: T.func.isRequired,
-  history: T.object.isRequired
+  history: T.object.isRequired,
+  bannedUser: T.bool.isRrequired,
+  moderator: T.bool.isRrequired
 }
 
 SubjectComponent.defaultProps = {

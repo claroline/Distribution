@@ -51,7 +51,7 @@ const tagsCount = createSelector(
     }
     obj[tag]++
     return obj
-  }, [])
+  }, {})
 )
 
 export const select = {
