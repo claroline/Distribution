@@ -61,6 +61,21 @@ class Version20180613111918 extends AbstractMigration
             UPDATE claro_forum_subject SET uuid = (SELECT UUID())
         ');
         $this->addSql('
+            UPDATE claro_forum_subject SET content = ''
+        ');
+        $this->addSql('
+            UPDATE claro_forum_subject SET sticked = false
+        ');
+        $this->addSql('
+            UPDATE claro_forum_subject SET closed = false
+        ');
+        $this->addSql('
+            UPDATE claro_forum_subject SET flagged = false
+        ');
+        $this->addSql('
+            UPDATE claro_forum_subject SET viewCount = 5
+        ');
+        $this->addSql('
             ALTER TABLE claro_forum_subject
             ADD CONSTRAINT FK_273AA20B29CCBAD0 FOREIGN KEY (forum_id)
             REFERENCES claro_forum (id)
@@ -108,6 +123,12 @@ class Version20180613111918 extends AbstractMigration
         ');
         $this->addSql('
             UPDATE claro_forum_message SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            UPDATE claro_forum_message SET moderation = "NONE"
+        ');
+        $this->addSql('
+            UPDATE claro_forum_message SET flagged = false
         ');
         $this->addSql('
             ALTER TABLE claro_forum_message
