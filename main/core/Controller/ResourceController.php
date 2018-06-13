@@ -27,7 +27,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ResourceController
 {
-
     /** @var ResourceActionManager */
     private $actionManager;
 
@@ -86,7 +85,6 @@ class ResourceController
 
     public function collectionAction(Request $request)
     {
-
     }
 
     /**

@@ -645,7 +645,7 @@ class ResourceNode
      *
      * @param string $class
      *
-     * @deprecated should be retrieved from resource type.
+     * @deprecated should be retrieved from resource type
      */
     public function setClass($class)
     {

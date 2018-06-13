@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions, selectors} from '#/main/core/resource/modals/creation/store'
+import {selectors} from '#/main/core/resource/modals/creation/store'
 
 const FileForm = props =>
   <FormContainer
@@ -21,7 +21,7 @@ const FileForm = props =>
             label: trans('file'),
             type: 'file',
             required: true,
-            onChange: (file) => console.log(file),
+            onChange: (file) => props.update(file),
             options: {
               unzippable: true
             }

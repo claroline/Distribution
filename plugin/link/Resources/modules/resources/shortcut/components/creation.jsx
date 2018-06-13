@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions, selectors} from '#/main/core/resource/modals/creation/store'
+import {selectors} from '#/main/core/resource/modals/creation/store'
 
 import {RESOURCE_TYPE} from '#/main/core/resource/data/types'
 
@@ -21,9 +21,9 @@ const ShortcutForm = props =>
           {
             name: 'target',
             label: trans('target_resource', {}, 'resource'),
-            type: 'resource',
+            type: RESOURCE_TYPE,
             required: true,
-            onChange: (target) => console.log(target)
+            onChange: (target) => props.update(target)
           }
         ]
       }
@@ -36,7 +36,7 @@ ShortcutForm.propTypes = {
 
 const ShortcutCreation = connect(
   null,
-  (dispatch) => ({
+  () => ({
     update(targetNode) {
       // todo default set props of the shortcut with target
     }

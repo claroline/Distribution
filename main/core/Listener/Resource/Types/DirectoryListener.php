@@ -13,12 +13,12 @@ namespace Claroline\CoreBundle\Listener\Resource\Types;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;

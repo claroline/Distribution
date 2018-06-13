@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 
+import {trans} from '#/main/core/translation'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/data/types/resource/prop-types'

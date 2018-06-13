@@ -6,7 +6,6 @@ import omit from 'lodash/omit'
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
-import {FormContainer} from '#/main/core/data/form/containers/form'
 import {ContentMeta} from '#/main/app/content/meta/components/meta'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
