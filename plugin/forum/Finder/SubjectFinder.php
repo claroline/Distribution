@@ -79,8 +79,13 @@ class SubjectFinder implements FinderInterface
                     $qb->leftJoin('obj.messages', 'msg');
                     $qb->groupBy('obj');
                     $qb->orderBy('countMsg', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
-
                     break;
+                case 'creator':
+                    $qb->leftJoin('obj.creator', 'sortCreator');
+                    $qb->orderBy('sortCreator.username');
+                    break;
+                case 'lastMessage':
+                    $qb->leftJoin('obj.messages', 'lm');
             }
         }
 
