@@ -58,6 +58,19 @@ class Updater120000 extends Updater
         $forum = $this->om->getRepository('Claroline\ForumBundle\Entity\Forum')->find($category['forum_id']);
 
         $currentSubject->setForum($forum);
+
+        if ('' === trim($currentSubject->getContent())) {
+            //restore subject first message
+            $messages = $this->om->getRepository('Claroline\ForumBundle\Entity\Message')
+              ->findBy(['subject' => $currentSubject], ['id' => 'ASC']);
+
+            if (isset($messages[0])) {
+                $firstMessage = $messages[0];
+                $currentSubject->setContent($firstMessage->getContent());
+                $this->om->remove($firstMessage);
+            }
+        }
+
         $this->om->persist($currentSubject);
 
         $event = new GenericDataEvent([
