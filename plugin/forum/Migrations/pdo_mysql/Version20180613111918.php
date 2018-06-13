@@ -111,6 +111,9 @@ class Version20180613111918 extends AbstractMigration
             DROP activate_notifications
         ");
         $this->addSql('
+            UPDATE claro_forum SET displayMessages = 5
+        ');
+        $this->addSql('
             UPDATE claro_forum SET uuid = (SELECT UUID())
         ');
         $this->addSql('
