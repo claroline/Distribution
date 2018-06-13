@@ -76,7 +76,7 @@ class Manager
         return array_keys($subjects);
     }
 
-    public function getValidationUser(User $creator, Forum $forum)
+    public function getValidationUser(User $creator, Forum $forum, $autoFlush = false)
     {
         $user = $this->om->getRepository('ClarolineForumBundle:Validation\User')->findOneBy([
           'user' => $creator,
@@ -87,6 +87,8 @@ class Manager
             $user = new ValidationUser();
             $user->setForum($forum);
             $user->setUser($creator);
+            $this->om->persist($user);
+            $this->om->flush();
         }
 
         return $user;

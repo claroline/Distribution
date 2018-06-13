@@ -32,19 +32,18 @@ class Updater120000 extends Updater
 
     public function postUpdate()
     {
-        //trouver une autre condition toussa
-        if (true) {
-            $this->log('restoring the categories as tag...');
+        $this->log('restoring the categories as tag...');
 
-            $sql = 'SELECT * FROM claro_forum_subject_temp_new ';
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
+        $sql = 'SELECT * FROM claro_forum_subject_temp_new ';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
 
-            foreach ($stmt->fetchAll() as $rowSubject) {
-                $this->log('Restoring category as tag for subject '.$rowSubject['title'].'...');
-                $this->restoreSubjectCategory($rowSubject);
-            }
+        foreach ($stmt->fetchAll() as $rowSubject) {
+            $this->log('Restoring category as tag for subject '.$rowSubject['title'].'...');
+            $this->restoreSubjectCategory($rowSubject);
         }
+
+        $this->createForumUsers();
     }
 
     private function restoreSubjectCategory(array $subject)
@@ -86,5 +85,28 @@ class Updater120000 extends Updater
         ]);
 
         $this->container->get('event_dispatcher')->dispatch('claroline_tag_multiple_data', $event);
+    }
+
+    private function createForumUsers()
+    {
+        $this->log('Build forum users...');
+        $forums = $this->om->getRepository('Claroline\ForumBundle\Entity\Forum')->findAll();
+
+        foreach ($forums as $forum) {
+            $this->log('Build forum users for forum...'.$forum->getName());
+
+            $messages = $this->container->get('claroline.api.finder')
+              ->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid()]);
+
+            foreach ($messages as $message) {
+                $this->log('Build forum user for '.$message->getCreator()->getUsername());
+
+                $validationUser = $this->container->get('claroline.manager.forum_manager')->getValidationUser(
+                    $message->getCreator(),
+                    $forum,
+                    true
+                );
+            }
+        }
     }
 }

@@ -66,8 +66,10 @@ class ForumSerializer
     public function serialize(Forum $forum, array $options = [])
     {
         $finder = $this->container->get('claroline.api.finder');
+        $authChecker = $this->container->get('security.authorization_checker');
+        $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
         $forumUser = $this->container->get('claroline.manager.forum_manager')->getValidationUser(
-            $this->container->get('security.token_storage')->getToken()->getUser(),
+            $currentUser,
             $forum
         );
 
@@ -84,12 +86,13 @@ class ForumSerializer
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
               'banned' => $forumUser->isBanned(),
-              'moderator' => false, //comment on fait pour le savoir ?
+              'moderator' => $authChecker->isGranted('EDIT'),
             ],
             'meta' => [
-              'users' => 34, //utilisateur participants
+              'users' => $finder->fetch('Claroline\ForumBundle\Entity\Validation\User', ['forum' => $forum->getUuid()], null, 0, 0, true),
               'subjects' => $finder->fetch('Claroline\ForumBundle\Entity\Subject', ['forum' => $forum->getUuid()], null, 0, 0, true),
               'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid()], null, 0, 0, true),
+              'myMessages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid(), 'creator' => $currentUser], null, 0, 0, true),
               'tags' => $this->getTags($forum),
               'notified' => $forumUser->isNotified(),
             ],

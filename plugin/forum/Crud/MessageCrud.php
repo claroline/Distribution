@@ -7,7 +7,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
-use Claroline\ForumBundle\Entity\Validation\User;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -46,25 +45,25 @@ class MessageCrud
     public function preCreate(CreateEvent $event)
     {
         $message = $event->getObject();
-
         $forum = $this->getSubject($message)->getForum();
+
+        //create user if not here
+        $user = $this->om->getRepository('ClarolineForumBundle:Validation\User')->findOneBy([
+          'user' => $message->getCreator(),
+          'forum' => $forum,
+        ]);
+
+        if (!$user) {
+            $user = new User();
+            $user->setForum($forum);
+            $user->setUser($message->getCreator());
+        }
 
         if (Forum::VALIDATE_PRIOR_ALL === $forum->getValidationMode()) {
             $message->setModerated(Forum::VALIDATE_PRIOR_ALL);
         }
 
         if (Forum::VALIDATE_PRIOR_ONCE === $forum->getValidationMode()) {
-            $user = $this->om->getRepository('ClarolineForumBundle:Validation\User')->findOneBy([
-              'user' => $message->getCreator(),
-              'forum' => $forum,
-            ]);
-
-            if (!$user) {
-                $user = new User();
-                $user->setForum($forum);
-                $user->setUser($message->getCreator());
-            }
-
             $message->setModerated($user->getAccess() ? Forum::VALIDATE_NONE : Forum::VALIDATE_PRIOR_ALL);
         }
 
