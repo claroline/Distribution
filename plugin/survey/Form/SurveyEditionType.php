@@ -11,7 +11,10 @@
 
 namespace Claroline\SurveyBundle\Form;
 
+use Claroline\CoreBundle\Form\Field\TinymceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,11 +24,11 @@ class SurveyEditionType extends AbstractType
     {
         $builder->add(
             'description',
-            'tinymce'
+            TinymceType::class
         );
         $builder->add(
             'startDate',
-            'date',
+            DateType::class,
             array(
                 'required' => false,
                 'widget' => 'single_text',
@@ -34,7 +37,7 @@ class SurveyEditionType extends AbstractType
         );
         $builder->add(
             'endDate',
-            'date',
+            DateType::class,
             array(
                 'required' => false,
                 'widget' => 'single_text',
@@ -51,11 +54,6 @@ class SurveyEditionType extends AbstractType
             CheckboxType::class,
             array('required' => true)
         );
-    }
-
-    public function getName()
-    {
-        return 'survey_edition_form';
     }
 
     public function configureOptions(OptionsResolver $resolver)

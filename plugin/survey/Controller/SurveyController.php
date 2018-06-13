@@ -182,7 +182,7 @@ class SurveyController extends Controller
     {
         $this->checkSurveyRight($survey, 'EDIT');
         $form = $this->formFactory->create(
-            new SurveyEditionType(),
+            SurveyEditionType::class,
             $survey
         );
 
@@ -205,7 +205,7 @@ class SurveyController extends Controller
     {
         $this->checkSurveyRight($survey, 'EDIT');
         $form = $this->formFactory->create(
-            new SurveyEditionType(),
+            SurveyEditionType::class,
             $survey
         );
         $form->handleRequest($this->request->getCurrentRequest());
@@ -239,8 +239,7 @@ class SurveyController extends Controller
     public function surveyManagementAction(Survey $survey)
     {
         $this->checkSurveyRight($survey, 'EDIT');
-        $questionRelations = $this->surveyManager
-            ->getQuestionRelationsBySurvey($survey);
+        $questionRelations = $this->surveyManager->getQuestionRelationsBySurvey($survey);
         $status = $this->computeStatus($survey);
         $questionResult = null;
         $questions = [];
@@ -281,8 +280,7 @@ class SurveyController extends Controller
     {
         $this->checkSurveyRight($survey, 'EDIT');
         $questionViews = [];
-        $questionRelations = $this->surveyManager
-            ->getQuestionRelationsBySurvey($survey);
+        $questionRelations = $this->surveyManager->getQuestionRelationsBySurvey($survey);
 
         foreach ($questionRelations as $relation) {
             $question = $relation->getQuestion();
@@ -520,7 +518,7 @@ class SurveyController extends Controller
     {
         $this->checkSurveyRight($survey, 'EDIT');
         $form = $this->formFactory->create(
-            new QuestionType(),
+            QuestionType::class,
             new Question()
         );
         $models = $this->surveyManager->getQuestionModelsByWorkspace(
@@ -550,7 +548,7 @@ class SurveyController extends Controller
         $this->checkSurveyRight($survey, 'EDIT');
         $question = new Question();
         $form = $this->formFactory->create(
-            new QuestionType(),
+            QuestionType::class,
             $question
         );
         $form->handleRequest($this->request->getCurrentRequest());
@@ -631,7 +629,7 @@ class SurveyController extends Controller
         $this->checkQuestionRight($survey, $question, 'EDIT');
         $this->checkAnsweredQuestion($question);
         $form = $this->formFactory->create(
-            new QuestionType(),
+            QuestionType::class,
             $question
         );
         $models = $this->surveyManager->getQuestionModelsByWorkspace(
@@ -665,7 +663,7 @@ class SurveyController extends Controller
         $this->checkQuestionRight($survey, $question, 'EDIT');
         $this->checkAnsweredQuestion($question);
         $form = $this->formFactory->create(
-            new QuestionType(),
+            QuestionType::class,
             $question
         );
         $form->handleRequest($this->request->getCurrentRequest());
@@ -765,7 +763,7 @@ class SurveyController extends Controller
     {
         $this->checkSurveyRight($survey, 'EDIT');
         $form = $this->formFactory->create(
-            new QuestionTitleType(),
+            QuestionTitleType::class,
             new Question()
         );
 
@@ -790,7 +788,7 @@ class SurveyController extends Controller
         $question = new Question();
         $question->setTitle('TITLE');
         $form = $this->formFactory->create(
-            new QuestionTitleType(),
+            QuestionTitleType::class,
             $question
         );
         $form->handleRequest($this->request->getCurrentRequest());
@@ -830,7 +828,7 @@ class SurveyController extends Controller
     {
         $this->checkQuestionRight($survey, $question, 'EDIT');
         $form = $this->formFactory->create(
-            new QuestionTitleType(),
+            QuestionTitleType::class,
             $question
         );
 
@@ -854,7 +852,7 @@ class SurveyController extends Controller
     {
         $this->checkQuestionRight($survey, $question, 'EDIT');
         $form = $this->formFactory->create(
-            new QuestionTitleType(),
+            QuestionTitleType::class,
             $question
         );
         $form->handleRequest($this->request->getCurrentRequest());
@@ -989,10 +987,7 @@ class SurveyController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function typedQuestionCreateFormAction(
-        Survey $survey,
-        $questionType
-    ) {
+    public function typedQuestionCreateFormAction(Survey $survey, $questionType) {
         $this->checkSurveyRight($survey, 'EDIT');
 
         switch ($questionType) {
@@ -1017,11 +1012,8 @@ class SurveyController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function typedQuestionEditFormAction(
-        Question $question,
-        Survey $survey,
-        $questionType
-    ) {
+    public function typedQuestionEditFormAction(Question $question, Survey $survey, $questionType)
+    {
         $this->checkQuestionRight($survey, $question, 'EDIT');
 
         switch ($questionType) {
@@ -1049,9 +1041,8 @@ class SurveyController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function surveyQuestionRelationMandatorySwitchAction(
-        SurveyQuestionRelation $relation
-    ) {
+    public function surveyQuestionRelationMandatorySwitchAction(SurveyQuestionRelation $relation)
+    {
         $survey = $relation->getSurvey();
         $this->checkSurveyRight($survey, 'EDIT');
 
@@ -1459,8 +1450,7 @@ class SurveyController extends Controller
         if (!$canEdit && !$survey->getHasPublicResult()) {
             throw new AccessDeniedException();
         }
-        $questionRelations = $this->surveyManager
-            ->getQuestionRelationsBySurvey($survey);
+        $questionRelations = $this->surveyManager->getQuestionRelationsBySurvey($survey);
         $questions = [];
 
         foreach ($questionRelations as $relation) {
@@ -1471,8 +1461,7 @@ class SurveyController extends Controller
             }
         }
 
-        $results = $this->showTypedQuestionResults($survey, $question, $page, $max)
-            ->getContent();
+        $results = $this->showTypedQuestionResults($survey, $question, $page, $max)->getContent();
         $comments = $this->surveyManager->getCommentsFromQuestionBySurveyAndQuestion(
             $survey,
             $question
@@ -1636,8 +1625,7 @@ class SurveyController extends Controller
         if (!$canEdit && !$survey->getHasPublicResult()) {
             throw new AccessDeniedException();
         }
-        $questionRelations = $this->surveyManager
-            ->getQuestionRelationsBySurvey($survey);
+        $questionRelations = $this->surveyManager->getQuestionRelationsBySurvey($survey);
         $questions = [];
         $results = [];
         $comments = [];
