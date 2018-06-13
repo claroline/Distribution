@@ -31,8 +31,9 @@ const TagCloud = props => {
 
 TagCloud.propTypes = {
   minSize: T.number.isRequired,
-  maxSize: T.number.isRequired
-  // tags: T.shape({})
+  maxSize: T.number.isRequired,
+  callback: T.func.isRequired,
+  tags: T.shape({})
 }
 
 

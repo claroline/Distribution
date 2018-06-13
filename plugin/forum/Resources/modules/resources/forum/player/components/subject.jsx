@@ -275,6 +275,9 @@ SubjectComponent.propTypes = {
   subjectForm: T.shape({
     title: T.string
   }),
+  forum: T.shape({
+    moderation: T.string.isRequired
+  }).isRequired,
   createMessage: T.func.isRequired,
   editContent: T.func.isRequired,
   flag: T.func.isRequired,
@@ -294,7 +297,10 @@ SubjectComponent.propTypes = {
   showModal: T.func,
   showSubjectForm: T.bool.isRequired,
   editingSubject: T.bool.isRequired,
-  messages: T.arrayOf(T.shape({})),
+  messages: T.arrayOf(T.shape({})).isRequired,
+  moderatedMessages: T.arrayOf(T.shape({
+    length: T.number.isRequired
+  })),
   totalResults: T.number.isRequired,
   sortOrder: T.number.isRequired,
   pages: T.number,
@@ -302,7 +308,9 @@ SubjectComponent.propTypes = {
   changePage: T.func,
   changePagePrev: T.func,
   toggleSort: T.func.isRequired,
-  history: T.object.isRequired
+  history: T.object.isRequired,
+  bannedUser: T.bool.isRrequired,
+  moderator: T.bool.isRrequired
 }
 
 SubjectComponent.defaultProps = {
