@@ -1,7 +1,7 @@
 import {trans} from '#/main/core/translation'
 
-const SORT_DISPLAY_OLDER_TO_NEWER = 'older_to_newer'
-const SORT_DISPLAY_NEWER_TO_OLDER= 'newer_to_older'
+const SORT_DISPLAY_OLDER_TO_NEWER = 1
+const SORT_DISPLAY_NEWER_TO_OLDER= -1
 const DISPLAY_TABLE_SM= 'table-sm'
 const DISPLAY_TABLE= 'table'
 const DISPLAY_LIST_SM= 'list-sm'
