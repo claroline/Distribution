@@ -23,12 +23,16 @@ class Updater120000 extends Updater
         if (true) {
             //backup des tables just in case
             $this->log('backing up the forum subjects...');
-            $this->conn->query('CREATE TABLE claro_forum_subject_temp AS (SELECT * FROM claro_forum_subject)');
+            $this->conn->query('CREATE TABLE claro_forum_subject_tempnew AS (SELECT * FROM claro_forum_subject)');
             $this->log('backing up the forum messages...');
-            $this->conn->query('CREATE TABLE claro_forum_message_temp AS (SELECT * FROM claro_forum_message)');
+            $this->conn->query('CREATE TABLE claro_forum_message_tempnew AS (SELECT * FROM claro_forum_message)');
             $this->log('backing up the forum categories...');
-            $this->conn->query('CREATE TABLE claro_forum_category_temp AS (SELECT * FROM claro_forum_category)');
-        } else {
+            $this->conn->query('CREATE TABLE claro_forum_category_tempnew AS (SELECT * FROM claro_forum_category)');
+        }
+
+        //trouver une autre condition toussa
+        if (true) {
+            //faire la migration !!!
         }
     }
 
