@@ -27,7 +27,7 @@ const OverviewComponent = props =>
             <div className="panel panel-default">
               <div className="panel-body">
                 <CountGauge
-                  value={3}
+                  value={props.myMessages}
                   displayValue={(value) => number(value, true)}
                 />
                 <h4 className="h5">{trans('my_messages', {}, 'forum')}</h4>
@@ -59,7 +59,10 @@ const OverviewComponent = props =>
                 tags={props.tagsCount}
                 minSize={12}
                 maxSize={28}
-                callback={() => console.log(props)}
+                onClick={(tag) => {
+                  props.addFilter('subjects.list', 'tags', tag)
+                  props.invalidateData('subjects.list')
+                  props.history.push('/subjects')}}
               />
             </section>
           }
@@ -93,7 +96,8 @@ OverviewComponent.propTypes = {
     length: T.number.isRequired
   }),
   bannedUser: T.bool.isRequired,
-  tagsCount: T.shape({})
+  tagsCount: T.shape({}),
+  myMessages: T.number.isRequired
 }
 
 OverviewComponent.defaultProps = {
@@ -107,11 +111,15 @@ const Overview = connect(
     lastMessages: select.lastMessages(state).data,
     tagsCount: select.tagsCount(state),
     bannedUser: select.bannedUser(state),
-    moderator: select.moderator(state)
+    moderator: select.moderator(state),
+    myMessages: select.myMessages(state)
   }),
   dispatch =>({
-    addFilter(property, value) {
-      dispatch(listActions.addFilter(property, value))
+    addFilter(name, property, value) {
+      dispatch(listActions.addFilter(name, property, value))
+    },
+    invalidateData(name) {
+      dispatch(listActions.invalidateData(name))
     }
   })
 )(OverviewComponent)

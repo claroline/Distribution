@@ -19,7 +19,7 @@ const TagCloud = props => {
         <CallbackButton
           key={tag}
           className="btn btn-link tag-cloud"
-          callback={props.callback}
+          callback={() => props.onClick(tag)}
           style={{fontSize: fontSizeConverter(props.tags[tag], 1, 3)+'px'}}
         >
           {tag}
@@ -33,7 +33,7 @@ const TagCloud = props => {
 TagCloud.propTypes = {
   minSize: T.number.isRequired,
   maxSize: T.number.isRequired,
-  callback: T.func.isRequired,
+  onClick: T.func.isRequired,
   tags: T.shape({})
 }
 

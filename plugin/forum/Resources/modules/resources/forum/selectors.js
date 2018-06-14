@@ -10,6 +10,7 @@ const currentPage = state => state.subjects.messages.currentPage
 const lastMessages = state => state.lastMessages
 const bannedUser = state => state.forum.restrictions.banned
 const moderator = state => state.forum.restrictions.moderator
+const myMessages = state => state.forum.meta.myMessages
 
 const subject = createSelector(
   [subjects],
@@ -70,5 +71,6 @@ export const select = {
   visibleMessages,
   moderatedMessages,
   tagsCount,
-  lastMessages
+  lastMessages,
+  myMessages
 }
