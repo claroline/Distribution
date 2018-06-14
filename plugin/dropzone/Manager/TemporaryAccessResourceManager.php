@@ -4,7 +4,6 @@ namespace Icap\DropzoneBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

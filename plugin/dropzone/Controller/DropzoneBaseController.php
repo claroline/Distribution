@@ -58,7 +58,6 @@ class DropzoneBaseController extends Controller
             // Other logs are WIP.
             $this->get('event_dispatcher')->dispatch('log', $event);
         }
-        //$this->get('event_dispatcher')->dispatch('log', $event);
 
         return $this;
     }

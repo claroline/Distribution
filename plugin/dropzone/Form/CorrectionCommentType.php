@@ -12,20 +12,20 @@ class CorrectionCommentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['allowCommentInCorrection'] === true && $options['edit'] === true) {
-            $builder->add('comment', TinymceType::class, array('required' => false));
+        if (true === $options['allowCommentInCorrection'] && true === $options['edit']) {
+            $builder->add('comment', TinymceType::class, ['required' => false]);
         }
 
         $builder
-            ->add('goBack', HiddenType::class, array('mapped' => false));
+            ->add('goBack', HiddenType::class, ['mapped' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'edit' => true,
             'allowCommentInCorrection' => false,
             'translation_domain' => 'icap_dropzone',
-        ));
+        ]);
     }
 }
