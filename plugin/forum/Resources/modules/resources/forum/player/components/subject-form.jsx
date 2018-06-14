@@ -12,6 +12,7 @@ import {currentUser} from '#/main/core/user/current'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {constants} from '#/plugin/forum/resources/forum/constants'

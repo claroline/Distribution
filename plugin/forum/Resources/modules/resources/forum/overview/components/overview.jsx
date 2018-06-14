@@ -60,9 +60,9 @@ const OverviewComponent = props =>
                 minSize={12}
                 maxSize={28}
                 onClick={(tag) => {
-                  props.addFilter('subjects.list', 'tags', tag)
-                  props.invalidateData('subjects.list')
-                  props.history.push('/subjects')}}
+                  props.goToList(tag)
+                  props.history.push('/subjects')
+                }}
               />
             </section>
           }
@@ -97,7 +97,8 @@ OverviewComponent.propTypes = {
   }),
   bannedUser: T.bool.isRequired,
   tagsCount: T.shape({}),
-  myMessages: T.number.isRequired
+  myMessages: T.number.isRequired,
+  goToList: T.func.isRequired
 }
 
 OverviewComponent.defaultProps = {
@@ -115,11 +116,9 @@ const Overview = connect(
     myMessages: select.myMessages(state)
   }),
   dispatch =>({
-    addFilter(name, property, value) {
-      dispatch(listActions.addFilter(name, property, value))
-    },
-    invalidateData(name) {
-      dispatch(listActions.invalidateData(name))
+    goToList(tag) {
+      dispatch(listActions.addFilter('subjects.list', 'tags', tag))
+      dispatch(listActions.invalidateData('subjects.list'))
     }
   })
 )(OverviewComponent)

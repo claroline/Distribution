@@ -38,7 +38,10 @@ const PlayerComponent = (props) =>
       },{
         path: '/subjects/show/:id',
         component: Subject,
-        onEnter: (params) => props.openSubject(params.id),
+        onEnter: (params) => {
+          props.invalidateMessagesList(),
+          props.openSubject(params.id)
+        },
         onLeave: () => {
           if(props.showSubjectForm){
             props.closeSubjectForm()
