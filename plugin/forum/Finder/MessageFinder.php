@@ -13,6 +13,7 @@ namespace Claroline\ForumBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\FinderTrait;
 use Claroline\AppBundle\API\FinderInterface;
+use Claroline\ForumBundle\Entity\Forum;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
