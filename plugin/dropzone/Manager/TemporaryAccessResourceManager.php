@@ -28,7 +28,7 @@ class TemporaryAccessResourceManager
 
     private function getUserKey(User $user)
     {
-        if ($user === null) {
+        if (null === $user) {
             return 'anonymous';
         } else {
             return $user->getId();
@@ -39,12 +39,12 @@ class TemporaryAccessResourceManager
     {
         $temporaryAccessArray = $this->container->get('request_stack')->getMasterRequest()->getSession()->get(self::RESOURCE_TEMPORARY_ACCESS_KEY);
 
-        if ($temporaryAccessArray == null || count($temporaryAccessArray) == 0) {
+        if (null == $temporaryAccessArray || 0 == count($temporaryAccessArray)) {
             return false;
         } else {
             $temporaryAccessIds = $temporaryAccessArray[$this->getUserKey($user)];
 
-            return $temporaryAccessIds !== null && count($temporaryAccessIds) > 0;
+            return null !== $temporaryAccessIds && count($temporaryAccessIds) > 0;
         }
     }
 
@@ -52,12 +52,12 @@ class TemporaryAccessResourceManager
     {
         $temporaryAccessArray = $this->container->get('request_stack')->getMasterRequest()->getSession()->get(self::RESOURCE_TEMPORARY_ACCESS_KEY);
 
-        if ($temporaryAccessArray == null || count($temporaryAccessArray) == 0) {
+        if (null == $temporaryAccessArray || 0 == count($temporaryAccessArray)) {
             return false;
         } else {
             $temporaryAccessIds = $temporaryAccessArray[$this->getUserKey($user)];
 
-            if ($temporaryAccessIds == null || count($temporaryAccessIds) == 0) {
+            if (null == $temporaryAccessIds || 0 == count($temporaryAccessIds)) {
                 return false;
             } else {
                 foreach ($temporaryAccessIds as $temporaryAccessId) {
@@ -75,14 +75,14 @@ class TemporaryAccessResourceManager
 
     public function addTemporaryAccess(ResourceNode $node, User $user = null)
     {
-        $collection = new ResourceCollection(array($node));
+        $collection = new ResourceCollection([$node]);
         $temporaryAccessArray = $this->container->get('request_stack')->getMasterRequest()->getSession()->get(self::RESOURCE_TEMPORARY_ACCESS_KEY);
 
-        if ($temporaryAccessArray === null) {
-            $temporaryAccessArray = array();
+        if (null === $temporaryAccessArray) {
+            $temporaryAccessArray = [];
         }
 
-        $temporaryAccessIds = array();
+        $temporaryAccessIds = [];
         if (isset($temporaryAccessArray[$this->getUserKey($user)])) {
             $temporaryAccessIds = $temporaryAccessArray[$this->getUserKey($user)];
         }
@@ -94,7 +94,7 @@ class TemporaryAccessResourceManager
                 break;
             }
         }
-        if ($alreadyIn == false) {
+        if (false == $alreadyIn) {
             $temporaryAccessIds[] = $node->getId();
             $temporaryAccessArray[$this->getUserKey($user)] = $temporaryAccessIds;
         }

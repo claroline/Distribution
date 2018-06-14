@@ -12,7 +12,7 @@ class LogDropzoneManualStateChangedEvent extends AbstractLogResourceEvent implem
     protected $dropzone;
     protected $newState;
     protected $details;
-    private $userIds = array();
+    private $userIds = [];
 
     /**
      * @param Wiki         $wiki
@@ -24,9 +24,9 @@ class LogDropzoneManualStateChangedEvent extends AbstractLogResourceEvent implem
         $this->dropzone = $dropzone;
         $this->newState = $newstate;
         $this->userIds = $userIds;
-        $this->details = array(
+        $this->details = [
                 'newState' => $newstate,
-        );
+        ];
 
         parent::__construct($dropzone->getResourceNode(), $this->details);
     }
@@ -36,8 +36,9 @@ class LogDropzoneManualStateChangedEvent extends AbstractLogResourceEvent implem
      */
     public static function getRestriction()
     {
-        return array(self::DISPLAYED_WORKSPACE);
+        return [self::DISPLAYED_WORKSPACE];
     }
+
     public function getDropzone()
     {
         return $this->$dropzone;
@@ -45,7 +46,7 @@ class LogDropzoneManualStateChangedEvent extends AbstractLogResourceEvent implem
 
     /**
      * Get sendToFollowers boolean.
-     * 
+     *
      * @return bool
      */
     public function getSendToFollowers()
@@ -71,7 +72,7 @@ class LogDropzoneManualStateChangedEvent extends AbstractLogResourceEvent implem
      */
     public function getExcludeUserIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -101,12 +102,12 @@ class LogDropzoneManualStateChangedEvent extends AbstractLogResourceEvent implem
      */
     public function getNotificationDetails()
     {
-        $notificationDetails = array_merge($this->details, array());
-        $notificationDetails['resource'] = array(
+        $notificationDetails = array_merge($this->details, []);
+        $notificationDetails['resource'] = [
             'id' => $this->dropzone->getId(),
             'name' => $this->resource->getName(),
             'type' => $this->resource->getResourceType()->getName(),
-        );
+        ];
 
         return $notificationDetails;
     }
