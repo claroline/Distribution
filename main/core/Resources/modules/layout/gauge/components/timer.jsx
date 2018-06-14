@@ -81,21 +81,21 @@ class Timer extends Component {
     }
     formattedSeconds += `${seconds}s`
 
-    return formattedHours + formattedMinutes + formattedSeconds
+    if (hours > 0) {
+      return formattedHours + formattedMinutes
+    } else {
+      return formattedHours + formattedMinutes + formattedSeconds
+    }
+
   }
 
   render() {
     return (
       <div>
-        {this.state.formattedRemainingTime}
-        {moment.duration(80, 'seconds').asHours()}
-        {/* {Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(':mm:ss')} */}
-
         <CountGauge
-          className="metric-card-gauge"
           value={this.state.remainingTime}
-          total={0}
-          displayValue={(value) => number(value, true)}
+          total={this.props.totalTime}
+          displayValue={() => this.state.formattedRemainingTime}
           width={70}
           height={70}
         />
