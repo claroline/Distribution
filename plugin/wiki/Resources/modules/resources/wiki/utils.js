@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import find from 'lodash/find'
+import set from 'lodash/set'
 
 const flattenItems = (items, key) => {
   return items.reduce((flattened, item) => {
@@ -14,9 +15,22 @@ const flattenItems = (items, key) => {
 const updatePropInTree = (items, key, property, value) => {
   items.forEach(item => {
     if (item['id'] === key) {
-      item[property] = value
-    } else if (Array.isArray(item['children'])) {
+      set(item, property, value)
+    } else if (Array.isArray(item['children']) && item['children'].length > 0) {
       updatePropInTree(item['children'], key, property, value)
+    }
+  })
+}
+
+const appendChildToTreeNode = (items, parentId, child) => {
+  items.forEach(item => {
+    if (item['id'] === parentId) {
+      if (!Array.isArray(item['children'])) {
+        item['children'] = []
+      }
+      item['children'].push(child)
+    } else if (Array.isArray(item['children']) && item['children'].length > 0) {
+      appendChildToTreeNode(item['children'], parentId, child)
     }
   })
 }
@@ -25,9 +39,16 @@ export const findInTree = (tree, id, childrenProperty = 'children', idProperty =
   return find(flattenItems(Array.isArray(tree) ? tree : [tree], childrenProperty), [idProperty, id])
 }
 
-export const updateInTree = (tree, idProperty, id, property, value) => {
+export const updateInTree = (tree, id, property, value) => {
   const copy = cloneDeep(tree)
-  updatePropInTree(Array.isArray(copy) ? copy : [copy], idProperty, id, property, value)
+  updatePropInTree(Array.isArray(copy) ? copy : [copy], id, property, value)
+
+  return copy
+}
+
+export const appendChildToTree = (tree, parentId, child) => {
+  const copy = cloneDeep(tree)
+  appendChildToTreeNode(Array.isArray(copy) ? copy : [copy], parentId, child)
 
   return copy
 }

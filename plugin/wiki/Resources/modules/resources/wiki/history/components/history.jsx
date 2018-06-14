@@ -14,7 +14,7 @@ const loggedUser = currentUser()
 
 const HistoryComponent = props =>
   <section className="wiki-section-history">
-    <h2>{props.section.activeContribution.title + ': ' + trans('revision_history', {}, 'icap_wiki')}</h2>
+    <h2>{(props.section.activeContribution.title ? (props.section.activeContribution.title + ': ') : '') + trans('revision_history', {}, 'icap_wiki')}</h2>
     <DataListContainer
       name="history.contributions"
       fetch={{
@@ -29,6 +29,7 @@ const HistoryComponent = props =>
       definition={[
         {
           name: 'meta.createdAt',
+          alias: 'creationDate',
           label: trans('date', {}, 'platform'),
           type: 'date',
           displayed: true,
@@ -38,6 +39,7 @@ const HistoryComponent = props =>
           }
         }, {
           name: 'meta.creator',
+          alias: 'contributor',
           label: trans('user', {}, 'platform'),
           type: 'string',
           displayed: true,

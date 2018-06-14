@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
@@ -100,25 +101,22 @@ class ContributionSerializer
 
     /**
      * @param array               $data
+     * @param User                $user
+     * @param Section             $section
      * @param Contribution | null $contribution
      *
      * @return Contribution - The deserialized contribution entity
      */
-    public function deserialize($data, Contribution $contribution = null)
+    public function deserialize($data, User $user, Section $section, Contribution $contribution = null)
     {
         if (empty($contribution)) {
             $contribution = new Contribution();
-            /** @var Section $section */
-            $section = $this->sectionRepo->findOneBy(['uuid' => $data['section']]);
             $contribution->setSection($section);
+            $contribution->setContributor($user);
+            $contribution->refreshUuid();
         }
-        $this->sipe('id', 'setUuid', $data, $contribution);
         $this->sipe('title', 'setTitle', $data, $contribution);
         $this->sipe('text', 'setText', $data, $contribution);
-        if ($data['meta']['creator']) {
-            $user = $this->userRepo->findOneBy(['uuid' => $data['meta']['creator']['id']]);
-            $contribution->setContributor($user);
-        }
 
         return $contribution;
     }

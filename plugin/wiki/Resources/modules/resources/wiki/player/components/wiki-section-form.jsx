@@ -1,12 +1,14 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {Button} from '#/main/app/action'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
-const WikiSectionForm = () =>
+const WikiSectionForm = props =>
   <FormContainer
     level={3}
-    name="currentSection"
+    name="sections.currentSection"
     sections={[
       {
         icon: 'fa fa-fw fa-cog',
@@ -30,7 +32,34 @@ const WikiSectionForm = () =>
         ]
       }
     ]}
-  />
+  >
+    <div className="text-center">
+      <Button
+        id="wiki-section-save-btn"
+        type="callback"
+        className="btn"
+        primary={true}
+        callback={() => props.saveChanges()}
+        label={trans(props.isNew ? 'create' : 'save')}
+        title={trans(props.isNew ? 'create' : 'save')}
+      />
+
+      <Button
+        id="wiki-section-save-btn"
+        type="callback"
+        className="btn"
+        callback={() => props.cancelChanges()}
+        label={trans('cancel')}
+        title={trans('cancel')}
+      />
+    </div>
+  </FormContainer>
+
+WikiSectionForm.propTypes = {
+  cancelChanges: T.func.isRequired,
+  saveChanges: T.func.isRequired,
+  isNew: T.bool.isRequired
+}
 
 export {
   WikiSectionForm

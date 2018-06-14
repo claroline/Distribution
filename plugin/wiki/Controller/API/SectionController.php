@@ -3,22 +3,20 @@
 namespace Icap\WikiBundle\Controller\API;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Manager\SectionManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * @EXT\Route("/wiki/{wikiId}/section")
- * @EXT\ParamConverter(
- *     "wiki",
- *     class="IcapWikiBundle:Wiki",
- *     options={"mapping": {"wikiId": "uuid"}}
- * )
+ * @EXT\Route("/wiki")
  */
 class SectionController
 {
@@ -50,7 +48,12 @@ class SectionController
     }
 
     /**
-     * @EXT\Route("/tree", name="apiv2_wiki_section_tree")
+     * @EXT\Route("/{wikiId}/tree", name="apiv2_wiki_section_tree")
+     * @EXT\ParamConverter(
+     *     "wiki",
+     *     class="IcapWikiBundle:Wiki",
+     *     options={"mapping": {"wikiId": "uuid"}}
+     * )
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\Method({"GET"})
      *
@@ -71,8 +74,105 @@ class SectionController
     }
 
     /**
-     * @EXT\Route("/deleted", name="apiv2_wiki_section_list")
+     * @EXT\Route("/section/{id}/visible", name="apiv2_wiki_section_set_visibility")
+     * @EXT\ParamConverter(
+     *     "section",
+     *     class="IcapWikiBundle:Section",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\Method({"PUT"})
+     *
+     * @param Section $section
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function setVisibilityAction(Section $section, Request $request)
+    {
+        $resourceNode = $section->getWiki()->getResourceNode();
+        $this->checkPermission('EDIT', $resourceNode, [], true);
+        $visible = $request->request->get('visible');
+        if (isset($visible)) {
+            $section->setVisible($visible);
+        }
+
+        return new JsonResponse(
+            $this->sectionManager->serializeSection($section)
+        );
+    }
+
+    /**
+     * @EXT\Route("/section/{id}", name="apiv2_wiki_section_create")
+     * @EXT\ParamConverter(
+     *     "section",
+     *     class="IcapWikiBundle:Section",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @EXT\Method({"POST"})
+     *
+     * @param Section $section
+     * @param User    $user
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createAction(Section $section, User $user, Request $request)
+    {
+        $wiki = $section->getWiki();
+        $resourceNode = $wiki->getResourceNode();
+        $this->checkPermission('OPEN', $resourceNode, [], true);
+        $isAdmin = $this->checkPermission('EDIT', $resourceNode);
+        if (Wiki::READ_ONLY_MODE == $wiki->getMode() && !$isAdmin) {
+            throw new AccessDeniedHttpException('Cannot edit section in READ ONLY wiki');
+        }
+        $newSection = $this->sectionManager->createSection($wiki, $section, $user, $isAdmin, json_decode($request->getContent(), true));
+
+        return new JsonResponse(
+            $this->sectionManager->serializeSection($newSection, [Options::DEEP_SERIALIZE], true)
+        );
+    }
+
+    /**
+     * @EXT\Route("/section/{id}", name="apiv2_wiki_section_update")
+     * @EXT\ParamConverter(
+     *     "section",
+     *     class="IcapWikiBundle:Section",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @EXT\Method({"PUT"})
+     *
+     * @param Section $section
+     * @param User    $user
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function updateAction(Section $section, User $user, Request $request)
+    {
+        $wiki = $section->getWiki();
+        $resourceNode = $wiki->getResourceNode();
+        $this->checkPermission('OPEN', $resourceNode, [], true);
+        $isAdmin = $this->checkPermission('EDIT', $resourceNode);
+        if (Wiki::READ_ONLY_MODE == $wiki->getMode() && !$isAdmin) {
+            throw new AccessDeniedHttpException('Cannot edit section in READ ONLY wiki');
+        }
+        $this->sectionManager->updateSection($section, $user, json_decode($request->getContent(), true));
+
+        return new JsonResponse(
+            $this->sectionManager->serializeSection($section, [Options::DEEP_SERIALIZE])
+        );
+    }
+
+    /**
+     * @EXT\Route("/{wikiId}/sections/deleted", name="apiv2_wiki_section_deleted_list")
      * @EXT\Method({"GET"})
+     * @EXT\ParamConverter(
+     *     "wiki",
+     *     class="IcapWikiBundle:Wiki",
+     *     options={"mapping": {"wikiId": "uuid"}}
+     * )
      *
      * @param Wiki $wiki
      *
@@ -81,7 +181,7 @@ class SectionController
     public function deletedListAction(Wiki $wiki, Request $request)
     {
         $resourceNode = $wiki->getResourceNode();
-        $this->checkPermission('ADMINISTRATE', $resourceNode, [], true);
+        $this->checkPermission('EDIT', $resourceNode, [], true);
 
         $query = $request->query->all();
         $query['hiddenFilters'] = ['wiki' => $wiki, 'deleted' => true];

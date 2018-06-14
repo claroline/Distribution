@@ -14,6 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Wiki extends AbstractResource
 {
+    const OPEN_MODE = 0;
+    const MODERATE_MODE = 1;
+    const READ_ONLY_MODE = 2;
+
     use UuidTrait;
 
     /**
@@ -70,7 +74,7 @@ class Wiki extends AbstractResource
      */
     public function getMode()
     {
-        return (null !== $this->mode) ? $this->mode : 0;
+        return (null !== $this->mode) ? $this->mode : self::OPEN_MODE;
     }
 
     /**

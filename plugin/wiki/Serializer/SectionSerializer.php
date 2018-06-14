@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
@@ -70,20 +71,27 @@ class SectionSerializer
      *
      * @return array - The serialized representation of a contribution
      */
-    public function serialize(Section $section)
+    public function serialize(Section $section, $options = [], $isNew = false)
     {
         $author = $section->getAuthor();
+        $extraMeta = [];
+        if (in_array(Options::DEEP_SERIALIZE, $options)) {
+            $extraMeta = [
+                'new' => $isNew,
+                'parent' => $section->getParent()->getUuid(),
+            ];
+        }
 
         return [
             'id' => $section->getUuid(),
             'activeContribution' => $this->contributionSerializer->serialize($section->getActiveContribution()),
-            'meta' => [
+            'meta' => array_merge($extraMeta, [
                 'createdAt' => $section->getCreationDate()->format('Y-m-d H:i'),
                 'visible' => $section->getVisible(),
                 'creator' => null === $author ?
                     null :
                     $this->userSerializer->serialize($author, [Options::SERIALIZE_MINIMAL]),
-            ],
+            ]),
         ];
     }
 
@@ -122,22 +130,21 @@ class SectionSerializer
 
     /**
      * @param array          $data
+     * @param User           $user
      * @param Section | null $section
      *
      * @return Section - The deserialized section entity
      */
-    public function deserialize($data, Section $section = null)
+    public function deserialize($data, User $user, Section $section = null)
     {
         if (empty($section)) {
             $section = new Section();
-        }
-        $this->sipe('id', 'setUuid', $data, $section);
-        if ($data['meta']['visible']) {
-            $section->setVisible($data['meta']['visible']);
-        }
-        if ($data['meta']['creator']) {
-            $user = $this->userRepo->findOneBy(['uuid' => $data['meta']['creator']['id']]);
+            $section->refreshUuid();
             $section->setAuthor($user);
+        }
+        if ($data['activeContribution']) {
+            $activeContribution = $this->contributionSerializer->deserialize($data['activeContribution'], $user, $section);
+            $section->setActiveContribution($activeContribution);
         }
 
         return $section;

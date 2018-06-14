@@ -20,10 +20,13 @@ const Section = {
     'loggedUserId': T.string,
     'mode': T.string.isRequired,
     'section': T.object.isRequired,
-    'toggleSectionVisibility': T.func,
+    'setSectionVisibility': T.func,
     'editSection': T.func.isRequired,
     'addSection': T.func.isRequired,
-    'currentEditSection': T.object
+    'deleteSection': T.func.isRequired,
+    'currentSection': T.object,
+    'isNew': T.bool.isRequired,
+    'saveEnabled': T.bool.isRequired
   }
 }
 

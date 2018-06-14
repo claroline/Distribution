@@ -9,7 +9,7 @@ import {
 } from '#/plugin/wiki/resources/wiki/history/store/actions'
 
 const reducer = combineReducers({
-  contributions: makeListReducer('history.contributions', {}, {
+  contributions: makeListReducer('history.contributions', {sortBy: { property: 'creationDate', direction: -1 }}, {
     invalidated: makeReducer(false, {
       [UPDATE_CURRENT_HISTORY_SECTION]: () => true
     })

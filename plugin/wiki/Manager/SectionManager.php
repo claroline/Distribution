@@ -49,11 +49,36 @@ class SectionManager
         return $this->sectionSerializer->serializeSectionTreeNode($wiki, $tree[0]);
     }
 
+    public function serializeSection(Section $section, $options = [], $isNew = false)
+    {
+        return $this->sectionSerializer->serialize($section, $options, $isNew);
+    }
+
     public function setActiveContribution(Section $section, Contribution $contribution)
     {
         $section->setActiveContribution($contribution);
         $this->om->persist($section);
         $this->om->flush();
+    }
+
+    public function updateSection(Section $section, User $user, $data)
+    {
+        $this->sectionSerializer->deserialize($data, $user, $section);
+        $this->om->persist($section);
+        $this->om->flush();
+    }
+
+    public function createSection(Wiki $wiki, Section $section, User $user, $isAdmin, $data)
+    {
+        $newSection = $this->sectionSerializer->deserialize($data, $user);
+        $newSection->setWiki($wiki);
+        if (Wiki::MODERATE_MODE === $wiki->getMode() && !$isAdmin) {
+            $newSection->setVisible(false);
+        }
+        $this->sectionRepository->persistAsLastChildOf($newSection, $section);
+        $this->om->flush();
+
+        return $newSection;
     }
 
     public function getArchivedSectionsForPosition(Section $section)

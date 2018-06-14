@@ -126,12 +126,12 @@ class ApiController extends FOSRestController
 
         // Adjust visibility
         $oldVisibility = $section->getVisible();
-        $newVisibility = $paramFetcher->get('visible') === 'true';
+        $newVisibility = 'true' === $paramFetcher->get('visible');
 
         if ($oldVisibility !== $newVisibility) {
             $collection = $collection = new ResourceCollection([$wiki->getResourceNode()]);
             $isAdmin = $this->isUserGranted('EDIT', $wiki, $collection);
-            $visible = ($newVisibility && $wiki->getMode() === 0) || ($newVisibility && $isAdmin);
+            $visible = ($newVisibility && 0 === $wiki->getMode()) || ($newVisibility && $isAdmin);
             $section->setVisible($visible);
         }
 
@@ -139,11 +139,11 @@ class ApiController extends FOSRestController
         $referenceSectionId = $paramFetcher->get('referenceSectionId');
         $sectionRepository = $this->get('icap.wiki.section_repository');
 
-        if ($referenceSectionId !== null) {
+        if (null !== $referenceSectionId) {
             $oldParent = $section->getParent();
             $oldLeft = $section->getLeft();
 
-            $isBrother = $paramFetcher->get('isBrother') === 'true';
+            $isBrother = 'true' === $paramFetcher->get('isBrother');
             $referenceSection = $this->getSection($wiki, $referenceSectionId);
 
             if ($isBrother && !$referenceSection->isRoot() && $referenceSection !== $oldLeft) {
@@ -202,14 +202,13 @@ class ApiController extends FOSRestController
             // Soft delete
             $repo = $this->get('icap.wiki.section_repository');
 
-            $withChildren = $paramFetcher->get('withChildren') === 'true';
+            $withChildren = 'true' === $paramFetcher->get('withChildren');
             if ($withChildren) {
                 $repo->deleteSubtree($section);
             } else {
                 $repo->deleteFromTree($section);
             }
 
-            $this->dispatchSectionDeleteEvent($wiki, $section);
             $this->dispatchSectionDeleteEvent($wiki, $section);
         } else {
             $this->checkAccess('EDIT', $wiki);
@@ -424,8 +423,8 @@ class ApiController extends FOSRestController
         $section->setActiveContribution($contribution);
 
         // Adjust section visibility
-        $visible = $paramFetcher->get('visible') === 'true';
-        $visibility = ($visible && $wiki->getMode() === 0) || ($visible && $isAdmin);
+        $visible = 'true' === $paramFetcher->get('visible');
+        $visibility = ($visible && 0 === $wiki->getMode()) || ($visible && $isAdmin);
         $section->setVisible($visibility);
 
         $em->persist($section);
@@ -509,10 +508,10 @@ class ApiController extends FOSRestController
             'response' => [],
         ];
 
-        if ($section->getVisible() === true) {
+        if (true === $section->getVisible()) {
             $contributions = $this->get('icap.wiki.contribution_manager')->compareContributions($section, [$oldContributionId, $newContributionId]);
 
-            if (count($contributions) === 2) {
+            if (2 === count($contributions)) {
                 $data = [
                     'response' => [
                         [
@@ -568,7 +567,7 @@ class ApiController extends FOSRestController
      */
     protected function isUserGranted($permission, Wiki $wiki, $collection = null)
     {
-        if ($collection === null) {
+        if (null === $collection) {
             $collection = new ResourceCollection([$wiki->getResourceNode()]);
         }
         $checkPermission = false;
@@ -746,7 +745,7 @@ class ApiController extends FOSRestController
         $section = $this
             ->get('icap.wiki.section_repository')
             ->findOneBy(['id' => $sectionId, 'wiki' => $wiki]);
-        if ($section === null) {
+        if (null === $section) {
             throw new NotFoundHttpException();
         }
 
@@ -768,7 +767,7 @@ class ApiController extends FOSRestController
         $contribution = $this
             ->get('icap.wiki.contribution_repository')
             ->findOneBy(['id' => $contributionId, 'section' => $section]);
-        if ($section === null) {
+        if (null === $section) {
             throw new NotFoundHttpException();
         }
 
