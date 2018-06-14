@@ -7,6 +7,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\ForumBundle\Entity\Forum;
+use Claroline\ForumBundle\Entity\Validation\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -68,10 +69,15 @@ class ForumSerializer
         $finder = $this->container->get('claroline.api.finder');
         $authChecker = $this->container->get('security.authorization_checker');
         $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
-        $forumUser = $this->container->get('claroline.manager.forum_manager')->getValidationUser(
-            $currentUser,
-            $forum
-        );
+
+        if (!is_string($currentUser)) {
+            $forumUser = $this->container->get('claroline.manager.forum_manager')->getValidationUser(
+                $currentUser,
+                $forum
+            );
+        } else {
+            $forumUser = new User();
+        }
 
         return [
             'id' => $forum->getUuid(),
@@ -91,8 +97,10 @@ class ForumSerializer
             'meta' => [
               'users' => $finder->fetch('Claroline\ForumBundle\Entity\Validation\User', ['forum' => $forum->getUuid()], null, 0, 0, true),
               'subjects' => $finder->fetch('Claroline\ForumBundle\Entity\Subject', ['forum' => $forum->getUuid()], null, 0, 0, true),
-              'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid()], null, 0, 0, true),
-              'myMessages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid(), 'creator' => $currentUser], null, 0, 0, true),
+              'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid(), 'moderated' => Forum::VALIDATE_NONE], null, 0, 0, true),
+              'myMessages' => !is_string($currentUser) ?
+                  $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid(), 'creator' => $currentUser], null, 0, 0, true) :
+                  0,
               'tags' => $this->getTags($forum),
               'notified' => $forumUser->isNotified(),
             ],
