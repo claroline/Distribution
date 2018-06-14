@@ -29,35 +29,35 @@ class SurveyEditionType extends AbstractType
         $builder->add(
             'startDate',
             DateType::class,
-            array(
+            [
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-            )
+            ]
         );
         $builder->add(
             'endDate',
             DateType::class,
-            array(
+            [
                 'required' => false,
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-            )
+            ]
         );
         $builder->add(
             'hasPublicResult',
             CheckboxType::class,
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'allowAnswerEdition',
             CheckboxType::class,
-            array('required' => true)
+            ['required' => true]
         );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'survey'));
+        $resolver->setDefaults(['translation_domain' => 'survey']);
     }
 }

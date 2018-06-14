@@ -28,6 +28,6 @@ class QuestionTitleType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'survey'));
+        $resolver->setDefaults(['translation_domain' => 'survey']);
     }
 }
