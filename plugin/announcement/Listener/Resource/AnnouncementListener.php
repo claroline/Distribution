@@ -185,7 +185,7 @@ class AnnouncementListener
         }
 
         $content = $this->templating->render(
-            'ClarolineAnnouncementBundle:Announcement:open.html.twig', [
+            'ClarolineAnnouncementBundle:announcement:open.html.twig', [
                 '_resource' => $resource,
                 'roles' => $serializedRoles,
             ]
