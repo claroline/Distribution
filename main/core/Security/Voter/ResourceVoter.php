@@ -222,20 +222,20 @@ class ResourceVoter implements VoterInterface
      */
     public function checkAction($action, array $nodes, TokenInterface $token)
     {
-        $haveSameWorkspace = true;
-        $ws = $nodes[0]->getWorkspace();
+        /*$haveSameWorkspace = true;
+        $ws = $nodes[0]->getWorkspace();*/
 
-        foreach ($nodes as $node) {
+        /*foreach ($nodes as $node) {
             if ($node->getWorkspace() !== $ws) {
                 $haveSameWorkspace = false;
                 break;
             }
-        }
+        }*/
 
         //the workspace manager he can do w/e he wants
-        if ($haveSameWorkspace && $ws && $this->isWorkspaceManager($ws, $token)) {
+        /*if ($haveSameWorkspace && $ws && $this->isWorkspaceManager($ws, $token)) {
             return [];
-        }
+        }*/
 
         //the resource creator can do w/e he wants
         $timesCreator = 0;
@@ -329,9 +329,9 @@ class ResourceVoter implements VoterInterface
         }
 
         //if I am the manager, I can do whatever I want
-        if ($this->isWorkspaceManager($workspace, $token)) {
+        /*if ($this->isWorkspaceManager($workspace, $token)) {
             return $errors;
-        }
+        }*/
 
         //otherwise we need to check
         $rightsCreation = $this->repository->findCreationRights($this->ut->getRoles($token), $node);
@@ -418,7 +418,7 @@ class ResourceVoter implements VoterInterface
                 [
                     '%path%' => $path,
                     '%action%' => $action,
-                    ],
+                ],
                 'platform'
             );
     }

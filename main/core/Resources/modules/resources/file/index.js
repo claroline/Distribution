@@ -1,10 +1,28 @@
 
-import {DirectoryResource} from '#/main/core/resources/directory/components/resource'
+import {FileCreation} from '#/main/core/resources/file/components/creation'
+import {FileResource} from '#/main/core/resources/file/components/resource'
 import {reducer} from '#/main/core/resources/text/reducer'
 
-const File = {
-  app: {
-    component: DirectoryResource,
+/**
+ * File resource configuration.
+ */
+const Resource = {
+  /**
+   * The resource name.
+   *
+   * NB. It MUST match the API one.
+   */
+  name: 'file',
+
+  creation: {
+    component: FileCreation
+  },
+
+  /**
+   * The main application of the resource.
+   */
+  main: {
+    component: FileResource,
     store: reducer,
     initialData: (initialData) => Object.assign({}, initialData, {
       resource: {
@@ -16,5 +34,5 @@ const File = {
 }
 
 export {
-  File
+  Resource
 }

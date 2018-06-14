@@ -40,25 +40,29 @@ class UserView extends Component {
               name: 'name',
               type: 'string',
               label: t('name'),
-              renderer: (rowData) => <a href={`#event/${rowData.id}`}>{rowData.name}</a>
+              render: (rowData) => <a href={`#event/${rowData.id}`}>{rowData.name}</a>
             },
             {
               name: 'startDate',
               type: 'date',
               label: t('start_date'),
-              renderer: (rowData) => moment(rowData.startDate).format('DD/MM/YYYY HH:mm')
+              options: {
+                time: true
+              }
             },
             {
               name: 'endDate',
               type: 'date',
               label: t('end_date'),
-              renderer: (rowData) => moment(rowData.endDate).format('DD/MM/YYYY HH:mm')
+              options: {
+                time: true
+              }
             },
             {
               name: 'registration',
               type: 'none',
               label: t('registration'),
-              renderer: (rowData) => {
+              render: (rowData) => {
                 if (this.props.eventsUsers[rowData.id]) {
                   switch (this.props.eventsUsers[rowData.id].registrationStatus) {
                     case 0 :
