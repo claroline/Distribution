@@ -2,8 +2,6 @@
 
 namespace Icap\DropzoneBundle\Controller;
 
-use Claroline\AgendaBundle\Entity\Event;
-use DateTime;
 use Icap\DropzoneBundle\Entity\Dropzone;
 use Icap\DropzoneBundle\Event\Log\LogDropzoneConfigureEvent;
 use Icap\DropzoneBundle\Event\Log\LogDropzoneManualStateChangedEvent;
@@ -12,11 +10,13 @@ use Icap\DropzoneBundle\Form\DropzoneCommonType;
 use Icap\DropzoneBundle\Form\DropzoneCriteriaType;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Exception\NotValidCurrentPageException;
+use Claroline\AgendaBundle\Entity\Event;
 use Pagerfanta\Pagerfanta;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\FormError;
+use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -50,12 +50,12 @@ class DropzoneController extends DropzoneBaseController
         $this->get('icap.manager.dropzone_voter')->isAllowToOpen($dropzone);
         $this->get('icap.manager.dropzone_voter')->isAllowToEdit($dropzone);
         $platformConfigHandler = $this->get('claroline.config.platform_config_handler');
-        $dateFormat = $this->get('translator')->trans('date_form_format', [], 'platform');
+        $dateFormat = $this->get('translator')->trans('date_form_format', array(), 'platform');
         $lang = $platformConfigHandler->getParameter('locale_language');
         $form = $this->createForm(
             DropzoneCommonType::class,
             $dropzone,
-            ['language' => $lang, 'date_format' => $dateFormat]
+            array('language' => $lang, 'date_format' => $dateFormat)
         );
 
         if ($request->isMethod('POST')) {
@@ -70,7 +70,7 @@ class DropzoneController extends DropzoneBaseController
             /** @var Dropzone $dropzone */
             $dropzone = $form->getData();
 
-            if (!$dropzone->getPeerReview() && 'peerReview' == $dropzone->getManualState()) {
+            if (!$dropzone->getPeerReview() && $dropzone->getManualState() === 'peerReview') {
                 $dropzone->setManualState('notStarted');
             }
             if ($dropzone->getEditionState() < 2) {
@@ -126,9 +126,11 @@ class DropzoneController extends DropzoneBaseController
                     $AgendaManager = $this->get('claroline.manager.agenda_manager');
                     $workspace = $dropzone->getResourceNode()->getWorkspace();
                     //Set the Agenda Drop Events.
-                    if (null != $dropzone->getStartAllowDrop() && null != $dropzone->getEndAllowDrop()) {
+                    if ($dropzone->getStartAllowDrop() !== null && $dropzone->getEndAllowDrop() !== null) {
+
                         //if event already exist
-                        if (null != $dropzone->getEventDrop()) {
+                        if ($dropzone->getEventDrop() !== null) {
+
                             // update event
                             $eventDrop = $dropzone->getEventDrop();
                             $eventDrop->setStart($dropzone->getStartAllowDrop()->getTimeStamp());
@@ -147,9 +149,10 @@ class DropzoneController extends DropzoneBaseController
                     }
 
                     //Set the Agenda Review Events.
-                    if (null != $dropzone->getStartReview() && null != $dropzone->getEndReview()) {
+                    if ($dropzone->getStartReview() !== null && $dropzone->getEndReview() !== null) {
+
                         // if event is already linked.
-                        if (null != $dropzone->getEventCorrection()) {
+                        if ($dropzone->getEventCorrection() !== null) {
                             //update event
                             $eventCorrection = $dropzone->getEventCorrection();
                             $eventCorrection->setStart($dropzone->getStartReview());
@@ -163,34 +166,34 @@ class DropzoneController extends DropzoneBaseController
                         }
                     }
 
-                    if (null == $dropzone->getStartAllowDrop()) {
+                    if ($dropzone->getStartAllowDrop() === null) {
                         $form->get('startAllowDrop')->addError(new FormError('Choose a date'));
                     }
-                    if (null == $dropzone->getEndAllowDrop()) {
+                    if ($dropzone->getEndAllowDrop() === null) {
                         $form->get('endAllowDrop')->addError(new FormError('Choose a date'));
                     }
-                    if ($dropzone->getPeerReview() && null == $dropzone->getEndReview()) {
+                    if ($dropzone->getPeerReview() && $dropzone->getEndReview() === null) {
                         $form->get('endReview')->addError(new FormError('Choose a date'));
                     }
-                    if (null != $dropzone->getStartAllowDrop() && null != $dropzone->getEndAllowDrop()) {
+                    if ($dropzone->getStartAllowDrop() !== null && $dropzone->getEndAllowDrop() !== null) {
                         if ($dropzone->getStartAllowDrop()->getTimestamp() > $dropzone->getEndAllowDrop()->getTimestamp()) {
                             $form->get('startAllowDrop')->addError(new FormError('Must be before end allow drop'));
                             $form->get('endAllowDrop')->addError(new FormError('Must be after start allow drop'));
                         }
                     }
-                    if (null != $dropzone->getStartReview() && null != $dropzone->getEndReview()) {
+                    if ($dropzone->getStartReview() !== null && $dropzone->getEndReview() !== null) {
                         if ($dropzone->getStartReview()->getTimestamp() > $dropzone->getEndReview()->getTimestamp()) {
                             $form->get('startReview')->addError(new FormError('Must be before end peer review'));
                             $form->get('endReview')->addError(new FormError('Must be after start peer review'));
                         }
                     }
-                    if (null != $dropzone->getStartAllowDrop() && null != $dropzone->getStartReview()) {
+                    if ($dropzone->getStartAllowDrop() !== null && $dropzone->getStartReview() !== null) {
                         if ($dropzone->getStartAllowDrop()->getTimestamp() > $dropzone->getStartReview()->getTimestamp()) {
                             $form->get('startReview')->addError(new FormError('Must be after start allow drop'));
                             $form->get('startAllowDrop')->addError(new FormError('Must be before start peer review'));
                         }
                     }
-                    if (null != $dropzone->getEndAllowDrop() && null != $dropzone->getEndReview()) {
+                    if ($dropzone->getEndAllowDrop() !== null && $dropzone->getEndReview() !== null) {
                         if ($dropzone->getEndAllowDrop()->getTimestamp() > $dropzone->getEndReview()->getTimestamp()) {
                             $form->get('endReview')->addError(new FormError('Must be after end allow drop'));
                             $form->get('endAllowDrop')->addError(new FormError('Must be before end peer review'));
@@ -204,13 +207,13 @@ class DropzoneController extends DropzoneBaseController
                 // if manual mode, we delete agenda events related to
                 $AgendaManager = $this->get('claroline.manager.agenda_manager');
 
-                if (null != $dropzone->getEventDrop()) {
+                if ($dropzone->getEventDrop() !== null) {
                     $event = $dropzone->getEventDrop();
                     $AgendaManager->deleteEvent($event);
                     $dropzone->setEventDrop(null);
                 }
 
-                if (null != $dropzone->getEventCorrection()) {
+                if ($dropzone->getEventCorrection() !== null) {
                     $event = $dropzone->getEventCorrection();
                     $AgendaManager->deleteEvent($event);
                     $dropzone->setEventCorrection(null);
@@ -221,26 +224,26 @@ class DropzoneController extends DropzoneBaseController
                 //getting the dropzoneManager
                 $dropzoneManager = $this->get('icap.manager.dropzone_manager');
 
-                if (true != $dropzone->getPeerReview()) {
+                if ($dropzone->getPeerReview() !== true) {
                     $dropzone->setExpectedTotalCorrection(1);
-                    if ('peerReview' == $dropzone->getManualState()) {
+                    if ($dropzone->getManualState() === 'peerReview') {
                         $dropzone->setManualState('notStarted');
                     }
                 }
 
                 $manualStateChanged = false;
                 $newManualState = null;
-                if (true == $dropzone->getManualPlanning()) {
-                    if (false == $oldManualPlanning || $oldManualPlanningOption != $dropzone->getManualState()) {
+                if ($dropzone->getManualPlanning() === true) {
+                    if ($oldManualPlanning === false || $oldManualPlanningOption !== $dropzone->getManualState()) {
                         $manualStateChanged = true;
                         $newManualState = $dropzone->getManualState();
                     }
                     // option auto Close unterminated drops
-                    if (1 == $form->get('autoCloseForManualStates')->getData()) {
+                    if ($form->get('autoCloseForManualStates')->getData() === 1) {
                         $dropzoneManager->closeDropzoneOpenedDrops($dropzone, true);
                     }
                 } else {
-                    if ($oldEndDropDate != $dropzone->getEndAllowDrop()) {
+                    if ($oldEndDropDate !== $dropzone->getEndAllowDrop()) {
                         $dropzone->setAutoCloseState(Dropzone::AUTO_CLOSED_STATE_WAITING);
                     }
                 }
@@ -269,43 +272,43 @@ class DropzoneController extends DropzoneBaseController
                 if ($dropzone->getPeerReview()) {
                     $stayHere = $form->get('stayHere')->getData();
 
-                    if (1 == $stayHere) {
-                        if (false === $dropzone->hasCriteria()) {
+                    if ($stayHere === 1) {
+                        if ($dropzone->hasCriteria() === false) {
                             $request->getSession()->getFlashBag()->add(
                                 'warning',
-                                $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', [], 'icap_dropzone')
+                                $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', array(), 'icap_dropzone')
                             );
                         }
 
                         $request->getSession()->getFlashBag()->add(
                             'success',
-                            $this->get('translator')->trans('The evaluation has been successfully saved', [], 'icap_dropzone')
+                            $this->get('translator')->trans('The evaluation has been successfully saved', array(), 'icap_dropzone')
                         );
                     } else {
                         return $this->redirect(
                             $this->generateUrl(
                                 'icap_dropzone_edit_criteria',
-                                [
+                                array(
                                     'resourceId' => $dropzone->getId(),
-                                ]
+                                )
                             )
                         );
                     }
                 } else {
                     $request->getSession()->getFlashBag()->add(
                         'success',
-                        $this->get('translator')->trans('The evaluation has been successfully saved', [], 'icap_dropzone')
+                        $this->get('translator')->trans('The evaluation has been successfully saved', array(), 'icap_dropzone')
                     );
                 }
             }
         }
 
-        return [
+        return array(
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
             'form' => $form->createView(),
-        ];
+        );
     }
 
     /**
@@ -348,10 +351,10 @@ class DropzoneController extends DropzoneBaseController
                 return $this->redirect(
                     $this->generateUrl(
                         'icap_dropzone_edit_criteria_paginated',
-                        [
+                        array(
                             'resourceId' => $dropzone->getId(),
                             'page' => $pager->getNbPages(),
-                        ]
+                        )
                     )
                 );
             } else {
@@ -371,7 +374,7 @@ class DropzoneController extends DropzoneBaseController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $add_criteria_after = 'add-criterion' == $request->request->get('addCriteria') ? true : false;
+                $add_criteria_after = $request->request->get('addCriteria') === 'add-criterion' ? true : false;
 
                 $dropzone = $form->getData();
                 if ($dropzone->getEditionState() < 3) {
@@ -386,48 +389,48 @@ class DropzoneController extends DropzoneBaseController
                 $em->persist($dropzone);
                 $em->flush();
 
-                if (1 == $form->get('recalculateGrades')->getData()) {
+                if ($form->get('recalculateGrades')->getData() === 1) {
                     $this->get('icap.manager.dropzone_manager')->recalculateScoreByDropzone($dropzone);
                     $request->getSession()->getFlashBag()->add(
                         'success',
-                        $this->get('translator')->trans('Grades were recalculated', [], 'icap_dropzone')
+                        $this->get('translator')->trans('Grades were recalculated', array(), 'icap_dropzone')
                     );
                 }
 
                 $event = new LogDropzoneConfigureEvent($dropzone, $changeSet);
                 $this->dispatch($event);
 
-                if (false === $dropzone->hasCriteria()) {
+                if ($dropzone->hasCriteria() === false) {
                     $request->getSession()->getFlashBag()->add(
                         'warning',
-                        $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', [], 'icap_dropzone')
+                        $this->get('translator')->trans('Warning your peer review offers no criteria on which to base correct copies', array(), 'icap_dropzone')
                     );
                 }
                 if ($add_criteria_after) {
-                    return new JsonResponse(['success' => true]);
+                    return new JsonResponse(array('success' => true));
                     //$this->generateUrl('icap_dropzone_edit_add_criterion',array('resourceId'=>$dropzone->getId(),'page'=>$page));
                 }
 
                 $goBack = $form->get('goBack')->getData();
-                if (0 == $goBack) {
+                if ($goBack === 0) {
                     $request->getSession()->getFlashBag()->add(
                         'success',
-                        $this->get('translator')->trans('The evaluation has been successfully saved', [], 'icap_dropzone')
+                        $this->get('translator')->trans('The evaluation has been successfully saved', array(), 'icap_dropzone')
                     );
                 } else {
                     return $this->redirect(
                         $this->generateUrl(
                             'icap_dropzone_edit_common',
-                            [
+                            array(
                                 'resourceId' => $dropzone->getId(),
-                            ]
+                            )
                         )
                     );
                 }
             }
         }
 
-        return [
+        return array(
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
@@ -435,7 +438,7 @@ class DropzoneController extends DropzoneBaseController
             'form' => $form->createView(),
             'nbCorrection' => $nbCorrection,
             'add_criteria_after' => $add_criteria_after,
-        ];
+        );
     }
 
     /**
@@ -460,11 +463,11 @@ class DropzoneController extends DropzoneBaseController
 
         $em = $this->getDoctrine()->getManager();
         $dropRepo = $em->getRepository('IcapDropzoneBundle:Drop');
-        $drop = $dropRepo->findOneBy(['dropzone' => $dropzone, 'user' => $user]);
+        $drop = $dropRepo->findOneBy(array('dropzone' => $dropzone, 'user' => $user));
         $dropzoneManager = $this->get('icap.manager.dropzone_manager');
         // check if endAllowDrop is past and close all unvalidated
         // drops if autoclose options is activated.
-        if (Dropzone::AUTO_CLOSED_STATE_WAITING == $dropzone->getAutoCloseState()) {
+        if ($dropzone->getAutoCloseState() === Dropzone::AUTO_CLOSED_STATE_WAITING) {
             $dropzoneManager->closeDropzoneOpenedDrops($dropzone);
         }
 
@@ -474,14 +477,14 @@ class DropzoneController extends DropzoneBaseController
         $hasCopyToCorrect = $em
             ->getRepository('IcapDropzoneBundle:Drop')
             ->hasCopyToCorrect($dropzone, $user);
-        $hasUnfinishedCorrection = null != $em->getRepository('IcapDropzoneBundle:Correction')->getNotFinished($dropzone, $user);
+        $hasUnfinishedCorrection = $em->getRepository('IcapDropzoneBundle:Correction')->getNotFinished($dropzone, $user) !== null;
 
         // get progression of the evaluation ( current state, all states available and needed infos to the view).
         $dropzoneProgress = $dropzoneManager->getDrozponeProgress($dropzone, $drop, $nbCorrections);
 
         $PeerReviewEndCase = $dropzoneManager->isPeerReviewEndedOrManualStateFinished($dropzone, $nbCorrections);
 
-        return [
+        return array(
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
@@ -491,7 +494,7 @@ class DropzoneController extends DropzoneBaseController
             'hasUnfinishedCorrection' => $hasUnfinishedCorrection,
             'dropzoneProgress' => $dropzoneProgress,
             'PeerReviewEndCase' => $PeerReviewEndCase,
-        ];
+        );
     }
 
     /**
@@ -515,15 +518,15 @@ class DropzoneController extends DropzoneBaseController
         $event->setUser($user);
 
         $dropzoneName = $dropzone->getResourceNode()->getName();
-        if ('drop' == $type) {
-            $title = $this->get('translator')->trans('Deposit phase of the %dropzonename% evaluation', ['%dropzonename%' => $dropzoneName], 'icap_dropzone');
-            $desc = $this->get('translator')->trans('Evaluation %dropzonename% opening', ['%dropzonename%' => $dropzoneName], 'icap_dropzone');
+        if ($type === 'drop') {
+            $title = $this->get('translator')->trans('Deposit phase of the %dropzonename% evaluation', array('%dropzonename%' => $dropzoneName), 'icap_dropzone');
+            $desc = $this->get('translator')->trans('Evaluation %dropzonename% opening', array('%dropzonename%' => $dropzoneName), 'icap_dropzone');
 
             $event->setTitle($title);
             $event->setDescription($desc);
         } else {
-            $title = $this->get('translator')->trans('Peer Review is starting in %dropzonename% evaluation', ['%dropzonename%' => $dropzoneName], 'icap_dropzone');
-            $desc = $this->get('translator')->trans('Peer Review is starting in %dropzonename% evaluation', ['%dropzonename%' => $dropzoneName], 'icap_dropzone');
+            $title = $this->get('translator')->trans('Peer Review is starting in %dropzonename% evaluation', array('%dropzonename%' => $dropzoneName), 'icap_dropzone');
+            $desc = $this->get('translator')->trans('Peer Review is starting in %dropzonename% evaluation', array('%dropzonename%' => $dropzoneName), 'icap_dropzone');
 
             $event->setTitle($title);
             $event->setDescription($desc);
@@ -561,14 +564,14 @@ class DropzoneController extends DropzoneBaseController
         }
 
         $platformConfigHandler = $this->get('claroline.config.platform_config_handler');
-        $form = $this->createForm(DropsDownloadBetweenDatesType, $dropzone, ['language' => $platformConfigHandler->getParameter('locale_language'), 'date_format' => $this->get('translator')->trans('date_form_datepicker_format', [], 'platform')]);
+        $form = $this->createForm(DropsDownloadBetweenDatesType, $dropzone, array('language' => $platformConfigHandler->getParameter('locale_language'), 'date_format' => $this->get('translator')->trans('date_form_datepicker_format', array(), 'platform')));
 
-        return $this->render($view, [
+        return $this->render($view, array(
             'form' => $form->createView(),
             'workspace' => $dropzone->getResourceNode()->getWorkspace(),
             '_resource' => $dropzone,
             'dropzone' => $dropzone,
-        ]);
+        ));
     }
 
     /**
@@ -588,7 +591,7 @@ class DropzoneController extends DropzoneBaseController
     public function donwloadCopiesAction(Request $request, Dropzone $dropzone, $beginDate = null, $endDate = null)
     {
         if ($request->isMethod('POST')) {
-            $date_format = $this->get('translator')->trans('date_form_datepicker_php', [], 'platform');
+            $date_format = $this->get('translator')->trans('date_form_datepicker_php', array(), 'platform');
             $date_format = str_replace('-', '/', $date_format);
             $date_format .= ' H:i:s'; // adding hours in order to have full day possibility ( day1 0h00 to day1 23h59 )
             $form_array = $request->request->get('icap_dropzone_date_download_between_date_form');
@@ -607,24 +610,24 @@ class DropzoneController extends DropzoneBaseController
         // TODO cas ou pas de document dispos à gérer
         if (count($idsToDL) <= 0) {
             $message = 'No drops to download';
-            if (null != $beginDate) {
+            if ($beginDate !== null) {
                 $message = 'No drops to download in this period';
             }
             $request->getSession()->getFlashBag()->add(
                 'warning',
-                $this->get('translator')->trans($message, [], 'icap_dropzone')
+                $this->get('translator')->trans($message, array(), 'icap_dropzone')
             );
 
-            return $this->redirect($this->generateUrl('icap_dropzone_drops', ['resourceId' => $dropzone->getId()]));
+            return $this->redirect($this->generateUrl('icap_dropzone_drops', array('resourceId' => $dropzone->getId())));
         }
 
         return $this->redirect(
             $this->generateUrl(
                 'claro_resource_download',
-                [
+                array(
                     'ids[]' => $idsToDL,
                     'forceArchive' => '1',
-                ]
+                )
             )
         );
     }

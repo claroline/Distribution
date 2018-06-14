@@ -17,28 +17,28 @@ class DocumentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (TextType::class == $options['documentType']) {
+        if ($options['documentType'] === TextType::class) {
             $this->setName('icap_dropzone_document_file_form_text');
-            $builder->add('document', TinymceType::class, [
+            $builder->add('document', TinymceType::class, array(
                 'required' => true,
-            ]);
-        } elseif ('file' == $options['documentType']) {
+            ));
+        } elseif ($options['documentType'] === 'file') {
             $this->setName('icap_dropzone_document_file_form_file');
-            $builder->add('document', FileType::class, ['required' => true, 'label' => 'file document']);
-        } elseif ('resource' == $options['documentType']) {
+            $builder->add('document', FileType::class, array('required' => true, 'label' => 'file document'));
+        } elseif ($options['documentType'] === 'resource') {
             $this->setName('icap_dropzone_document_file_form_resource');
             $builder->add(
                 'document',
                 HiddenType::class,
-                [
+                array(
                     'required' => true,
                     'label' => '',
-                    'label_attr' => ['style' => 'display: none;'],
-                ]
+                    'label_attr' => array('style' => 'display: none;'),
+                )
             );
         } else {
             $this->setName('icap_dropzone_document_file_form_url');
-            $builder->add('document', UrlType::class, ['required' => true, 'label' => 'url document']);
+            $builder->add('document', UrlType::class, array('required' => true, 'label' => 'url document'));
         }
     }
 
@@ -54,9 +54,9 @@ class DocumentType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(array(
             'documentType' => UrlType::class,
             'translation_domain' => 'icap_dropzone',
-        ]);
+        ));
     }
 }

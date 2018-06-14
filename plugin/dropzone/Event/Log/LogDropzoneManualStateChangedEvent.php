@@ -41,7 +41,7 @@ class LogDropzoneManualStateChangedEvent extends AbstractLogResourceEvent implem
 
     public function getDropzone()
     {
-        return $this->$dropzone;
+        return $this->dropzone;
     }
 
     /**

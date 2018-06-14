@@ -286,7 +286,7 @@ class Drop
         $nbFinishedCorrections = 0;
         if (count($this->getCorrections()) > 0) {
             foreach ($this->getCorrections() as $correction) {
-                if ($correction->getFinished() && $correction->getValid() && null != $correction->getTotalGrade()) {
+                if ($correction->getFinished() && $correction->getValid() && $correction->getTotalGrade() !== null) {
                     $grade = $grade + $correction->getTotalGrade();
                     $nbFinishedCorrections = $nbFinishedCorrections + 1;
                 }
@@ -311,7 +311,7 @@ class Drop
     {
         $nbFinishedCorrections = 0;
         foreach ($this->getCorrections() as $correction) {
-            if ($correction->getFinished() && $correction->getValid() && null != $correction->getTotalGrade()) {
+            if ($correction->getFinished() && $correction->getValid() && $correction->getTotalGrade() !== null) {
                 $nbFinishedCorrections = $nbFinishedCorrections + 1;
             }
         }
@@ -345,9 +345,9 @@ class Drop
         $validCorrectionFound = false;
         foreach ($corrections as $correction) {
             // if an ended  correction (with a endDate value) has not been found
-            if (false == $validCorrectionFound) {
+            if ($validCorrectionFound === false) {
                 // if its a valid correction.
-                if (null !== $correction->getEndDate()) {
+                if ($correction->getEndDate() !== null) {
                     // valid correction found, we change the step and keep the date.
                     $date = $correction->getEndDate();
                     $validCorrectionFound = true;
@@ -355,7 +355,7 @@ class Drop
             } else {
                 // at least a valid ended  correction has been found ( with an endDate)
                 // date comparaison if $correction endDate is not NULL;
-                if (null !== $correction->getEndDate()) {
+                if ($correction->getEndDate() !== null) {
                     if ($date->getTimestamp() < $correction->getEndDate()->getTimestamp()) {
                         $date = $correction->getEndDate();
                     }

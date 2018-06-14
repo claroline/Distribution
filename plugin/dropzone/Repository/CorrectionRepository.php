@@ -7,9 +7,9 @@
 
 namespace Icap\DropzoneBundle\Repository;
 
-use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Icap\DropzoneBundle\Entity\Dropzone;
+use Claroline\CoreBundle\Entity\User;
 
 class CorrectionRepository extends EntityRepository
 {
@@ -66,7 +66,7 @@ class CorrectionRepository extends EntityRepository
             ->getQuery()
             ->getResult();
 
-        if (1 == count($corrections)) {
+        if (count($corrections) === 1) {
             return $corrections[0];
         } elseif (count($corrections) > 1) {
             throw new \Exception();

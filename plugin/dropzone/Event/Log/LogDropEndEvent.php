@@ -141,7 +141,7 @@ class LogDropEndEvent extends AbstractLogResourceEvent implements NotifiableInte
     public function isAllowedToNotify()
     {
         $allowed = false;
-        if (null != $this->dropzone && $this->dropzone->getNotifyOnDrop()) {
+        if (null !== $this->dropzone && $this->dropzone->getNotifyOnDrop()) {
             $allowed = true;
         }
 
