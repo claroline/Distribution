@@ -219,7 +219,7 @@ class AgendaListener
         $editableWorkspaces = [0 => true];
 
         foreach ($listEvents as $event) {
-            $workspaceId = $event->getWorkspace()->getId();
+            $workspaceId = $event->getWorkspace()->getUuid();
             $filters[$workspaceId] = $event->getWorkspace()->getName();
             $editableWorkspaces[$workspaceId] = $this->authorization->isGranted(
                 ['agenda_', 'edit'],

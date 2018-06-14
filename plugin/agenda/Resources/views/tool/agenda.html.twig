@@ -27,7 +27,7 @@
     {% endif %}
 
     {% if filters is defined %}
-      {# data-available-filters="{{dump(filters)}}" #}
+       data-workspaces="{{ filters | json_encode }}" 
     {% endif %}
   >
 

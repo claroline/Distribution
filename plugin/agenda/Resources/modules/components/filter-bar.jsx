@@ -19,6 +19,21 @@ const FilterBar = props =>
         {trans('export', {}, 'platform')}
       </a>
 
+      {props.workspaces &&
+        <div className="panel panel-default">
+          <div data-toggle="collapse" data-target="#panel-tasks" className="panel-heading">{atrans('filter_workspaces')}</div>
+          <div id="panel-tasks" className="panel-body list-group in">
+            <Checkboxes
+              choices={props.workspaces}
+              value={props.filters.workspaces}
+              inline={false}
+              onChange={(filters) => {
+                props.onChangeFiltersWorkspace(filters, props.filters)
+              }}
+            />
+          </div>
+        </div>
+      }
       <div className="panel panel-default">
         <div data-toggle="collapse" data-target="#panel-tasks" className="panel-heading">{atrans('filter_tasks')}</div>
         <div id="panel-tasks" className="panel-body list-group in">
@@ -50,8 +65,10 @@ const FilterBar = props =>
 FilterBar.propTypes = {
   openImportForm: T.func.isRequired,
   onChangeFiltersType: T.func.isRequired,
+  onChangeFiltersWorkspace: T.func.isRequired,
   onExport: T.func.isRequired,
   workspace: T.object.isRequired,
+  workspaces: T.object,
   filters: T.object.isRequired,
   reload: T.object.isRequired
 }

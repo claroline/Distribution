@@ -20,8 +20,9 @@ bootstrap(
   (initialData) => {
     return {
       workspace: initialData.workspace,
+      workspaces: initialData.workspaces,
       filters: {
-        workspaces: [initialData.workspace.uuid]
+        workspaces: initialData.workspace.uuid ? [initialData.workspace.uuid]: Object.keys(initialData.workspaces)
       }
     }
   }

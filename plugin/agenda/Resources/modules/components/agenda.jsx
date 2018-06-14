@@ -154,7 +154,9 @@ class AgendaComponent extends Component {
             openImportForm={this.props.openImportForm}
             onExport={this.props.onExport}
             onChangeFiltersType={this.props.onChangeFiltersType}
+            onChangeFiltersWorkspace={this.props.onChangeFiltersWorkspace}
             workspace={this.props.workspace}
+            workspaces={this.props.workspaces}
             filters={this.props.filters}
           />
         </div>
@@ -165,6 +167,8 @@ class AgendaComponent extends Component {
 
 const Agenda = connect(
   state => ({
+    //workspaces is for filter in desktop if the array is here
+    workspaces: state.workspaces,
     workspace: state.workspace,
     filters: state.filters
   }),
@@ -280,6 +284,14 @@ const Agenda = connect(
       //otherwise it lags behind
       let newFilters = cloneDeep(allFilters)
       newFilters.types = filters
+      $('#fullcalendar').fullCalendar('removeEvents')
+      $('#fullcalendar').fullCalendar('addEventSource', url(['apiv2_event_list'], {filters: newFilters}))
+    },
+    onChangeFiltersWorkspace(filters, allFilters) {
+      dispatch(actions.updateFilterWorkspace(filters))
+      //otherwise it lags behind
+      let newFilters = cloneDeep(allFilters)
+      newFilters.workspaces = filters
       $('#fullcalendar').fullCalendar('removeEvents')
       $('#fullcalendar').fullCalendar('addEventSource', url(['apiv2_event_list'], {filters: newFilters}))
     }
