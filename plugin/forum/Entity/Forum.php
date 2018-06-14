@@ -62,7 +62,7 @@ class Forum extends AbstractResource
     /**
      * @ORM\Column(type="string")
      */
-    protected $dataListOptions = self::DISPLAY_LIST_SM;
+    protected $dataListOptions = self::DISPLAY_LIST;
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
