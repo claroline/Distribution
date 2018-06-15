@@ -31,7 +31,7 @@ const SubjectsList = props =>
         label: trans('open', {}, 'actions')
       })}
       display={{
-        current: props.forum.display.subjectDataList || listConst.DISPLAY_LIST
+        current: props.forum.display.subjectDataList || listConst.DISPLAY_LIST_SM
       }}
       definition={[
         {

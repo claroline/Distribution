@@ -92,9 +92,7 @@ const OverviewComponent = props =>
 
 OverviewComponent.propTypes = {
   forum: T.shape(ForumType.propTypes),
-  lastMessages: T.arrayOf({
-    length: T.number.isRequired
-  }),
+  lastMessages: T.array.isRequired,
   bannedUser: T.bool.isRequired,
   tagsCount: T.shape({}),
   myMessages: T.number.isRequired,

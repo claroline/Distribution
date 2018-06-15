@@ -9,7 +9,7 @@ export const actions = {}
 actions.loadLastMessages = makeActionCreator(LAST_MESSAGES_LOAD, 'messages')
 actions.fetchLastMessages = (forum) => ({
   [API_REQUEST]: {
-    url: url(['apiv2_forum_message_list'])+'?limit='+forum.display.lastMessagesCount+'&sortBy=-id&filters[moderated]=NONE&[forum]='+forum.id,
+    url: url(['apiv2_forum_message_list'])+'?limit='+forum.display.lastMessagesCount+'&sortBy=-id&filters[forum]='+forum.id,
     success: (data, dispatch) => {
       dispatch(actions.loadLastMessages(data))
     }
