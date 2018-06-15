@@ -190,11 +190,11 @@ class AgendaManager
      *
      * @return int number of events saved
      */
-    public function importEvents(UploadedFile $file, $workspace = null)
+    public function import($fileData, $workspace = null)
     {
-        $ical = new ICal($file->getPathname());
+        $ical = new ICal($fileData);
         $events = $ical->events();
-        $tabs = [];
+        $entities = [];
 
         foreach ($events as $event) {
             $e = new Event();
@@ -210,10 +210,10 @@ class AgendaManager
             $this->om->persist($e);
             //the flush is required to generate an id
             $this->om->flush();
-            $tabs[] = $e->jsonSerialize();
+            $entities[] = $e;
         }
 
-        return $tabs;
+        return $entities;
     }
 
     public function convertInvitationsToArray(array $invitations)

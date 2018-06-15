@@ -38,3 +38,20 @@ actions.update = (event, calendarRef) => ({
     }
   }
 })
+
+actions.import = (data, workspace = null, calendarRef) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_event_import'],
+    request: {
+      body :JSON.stringify({
+        file: { id: data.file.id },
+        workspace: { id: workspace.id || null }
+      }),
+      method: 'POST'
+    },
+    success: (events) => {
+      calendarRef.fullCalendar('addEventSource', events)
+      calendarRef.fullCalendar('refetchEvents')
+    }
+  }
+})

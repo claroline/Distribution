@@ -173,11 +173,14 @@ const Agenda = connect(
     filters: state.filters
   }),
   dispatch => ({
-    openImportForm() {
+    openImportForm(workspace = null) {
       dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
           title: 'import',
-          save: data => {},
+          save: data => {
+            //bad hack for $('#fullcalendar')
+            dispatch(actions.import(data, workspace, $('#fullcalendar')))
+          },
           sections: [
             {
               title: trans('general'),

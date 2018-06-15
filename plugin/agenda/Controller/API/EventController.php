@@ -11,6 +11,7 @@
 
 namespace Claroline\AgendaBundle\Controller\API;
 
+use Claroline\AgendaBundle\Entity\Event;
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -91,5 +92,33 @@ class EventController extends AbstractCrudController
         $response->headers->set('Connection', 'close');
 
         return $response;
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/import",
+     *     name="apiv2_event_import"
+     * )
+     * @EXT\Method("POST")
+     *
+     * @param Workspace $workspace
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function importAction(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $file = $data['file'];
+        $workspace = $data['workspace'];
+        $workspace = $workspace['id'] ?
+            $this->serializer->deserialize('Claroline\CoreBundle\Entity\Workspace\Workspace', $workspace) :
+            null;
+        $file = $this->serializer->deserialize('Claroline\CoreBundle\Entity\File\PublicFile', $file);
+        $fileData = $this->container->get('claroline.utilities.file')->getContents($file);
+        $events = $this->container->get('claroline.manager.agenda_manager')->import($fileData, $workspace);
+
+        return new JsonResponse(array_map(function (Event $event) {
+            return $this->serializer->serialize($event);
+        }, $events));
     }
 }

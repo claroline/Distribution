@@ -35,8 +35,19 @@ class EventFinder implements FinderInterface
             switch ($filterName) {
               case 'workspaces':
                 $qb->leftJoin('obj.workspace', 'w');
-                $qb->andWhere('w.uuid IN (:'.$filterName.')');
-                $qb->setParameter($filterName, $filterValue);
+
+                //if $filterValue = 0, it means desktop
+                if (in_array(0, $filterValue)) {
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->in('w.uuid', ':'.$filterName),
+                        $qb->expr()->isNull('w')
+                    ));
+
+                    $qb->setParameter($filterName, $filterValue);
+                } else {
+                    $qb->andWhere('w.uuid IN (:'.$filterName.')');
+                    $qb->setParameter($filterName, $filterValue);
+                }
                 break;
               case 'types':
                 if ($filterValue === ['task']) {
