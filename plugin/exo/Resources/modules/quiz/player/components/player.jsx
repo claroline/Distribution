@@ -124,14 +124,16 @@ class PlayerComponent extends Component {
           />
         }
         {this.props.isTimed && this.props.duration > 0 && this.props.paper.startDate &&
-          <Timer
-            totalTime={this.props.duration * 60}
-            startDate={this.props.paper.startDate}
-            onTimeOver={() => {
-              this.props.finish(this.props.quizId, this.props.paper, this.props.answers, this.props.showFeedback, false, this.props.history.push)
-              this.props.showTimeOverMessage()
-            }}
-          />
+          <div className="timer-container">
+            <Timer
+              totalTime={this.props.duration * 60}
+              startDate={this.props.paper.startDate}
+              onTimeOver={() => {
+                this.props.finish(this.props.quizId, this.props.paper, this.props.answers, this.props.showFeedback, false, this.props.history.push)
+                this.props.showTimeOverMessage()
+              }}
+            />
+          </div>
         }
 
         {this.state.fetching &&
