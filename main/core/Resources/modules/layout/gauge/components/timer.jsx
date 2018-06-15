@@ -55,6 +55,7 @@ class Timer extends Component {
   render() {
     return (
       <CountGauge
+        className="timer-component"
         value={this.state.remainingTime}
         total={this.props.totalTime}
         displayValue={() => this.formatTime(this.state.remainingTime)}
