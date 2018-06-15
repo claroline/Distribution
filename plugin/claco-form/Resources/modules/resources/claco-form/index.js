@@ -1,23 +1,7 @@
-// import {registerModals} from '#/main/core/layout/modal'
-// import {registerType} from '#/main/core/data'
-// import {FIELDS_TYPE, fieldsDefinition} from '#/main/core/data/types/fields'
-//
-// import {
-//   MODAL_CATEGORY_FORM,
-//   CategoryFormModal
-// } from '#/plugin/claco-form/resources/claco-form/editor/components/modals/category-form-modal.jsx'
-// import {
-//   MODAL_KEYWORD_FORM,
-//   KeywordFormModal
-// } from '#/plugin/claco-form/resources/claco-form/editor/components/modals/keyword-form-modal.jsx'
-//
-// // register custom modals
-// registerModals([
-//   [MODAL_CATEGORY_FORM, CategoryFormModal],
-//   [MODAL_KEYWORD_FORM, KeywordFormModal]
-// ])
-//
-// registerType(FIELDS_TYPE,  fieldsDefinition)
+import {registerType} from '#/main/core/data'
+import {FIELDS_TYPE, fieldsDefinition} from '#/main/core/data/types/fields'
+
+registerType(FIELDS_TYPE,  fieldsDefinition)
 
 import {ClacoFormResource} from '#/plugin/claco-form/resources/claco-form/components/resource'
 import {reducer} from '#/plugin/claco-form/resources/claco-form/reducer'
@@ -30,8 +14,8 @@ import {reducer} from '#/plugin/claco-form/resources/claco-form/reducer'
 export const App = () => ({
   component: ClacoFormResource,
   store: reducer,
-  styles: 'claroline-distribution-plugin-claco-form-claco-form-resource',
-  initialData: initialData => Object.assign({}, initialData, {
+  styles: 'claroline-distribution-plugin-claco-form-resource',
+  initialData: initialData => ({
     clacoForm: initialData.clacoForm,
     resource: {
       node: initialData.resourceNode,
