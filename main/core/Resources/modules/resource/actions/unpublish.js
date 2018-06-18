@@ -15,7 +15,7 @@ const action = (resourceNodes) => ({ // todo collection
   },
   request: {
     type: 'unpublish',
-    url: ['claro_resource_node_unpublish', {id: resourceNodes[0].id}],
+    url: ['claro_resource_node_unpublish', {ids: resourceNodes.map(node => node.id)}],
     request: {
       method: 'PUT'
     }
