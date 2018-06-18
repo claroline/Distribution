@@ -809,7 +809,7 @@ class ResourceManager
             //only warn for the roots
             $this->dispatcher->dispatch(
                 "publication_change_{$node->getResourceType()->getName()}",
-                'PublicationChange',
+                'Resource\PublicationChange',
                 [$this->getResourceFromNode($node)]
             );
 
