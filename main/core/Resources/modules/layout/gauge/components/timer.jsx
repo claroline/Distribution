@@ -59,6 +59,7 @@ class Timer extends Component {
         value={this.state.remainingTime}
         total={this.props.totalTime}
         displayValue={() => this.formatTime(this.state.remainingTime)}
+        type={this.props.type}
         width={70}
         height={70}
       />
@@ -69,7 +70,8 @@ class Timer extends Component {
 Timer.propTypes = {
   totalTime: T.number.isRequired,
   startDate: T.string.isRequired,
-  onTimeOver: T.func
+  onTimeOver: T.func,
+  type: T.string
 }
 
 export {

@@ -128,6 +128,7 @@ class PlayerComponent extends Component {
             <Timer
               totalTime={this.props.duration * 60}
               startDate={this.props.paper.startDate}
+              type="user"
               onTimeOver={() => {
                 this.props.finish(this.props.quizId, this.props.paper, this.props.answers, this.props.showFeedback, false, this.props.history.push)
                 this.props.showTimeOverMessage()
