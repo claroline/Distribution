@@ -19,8 +19,14 @@ const EventModal = props =>
 
 function mapDispatchToProps(dispatch) {
   return {
-    fadeModal: () => dispatch(modalActions.fadeModal()),
-    hideModal: () => dispatch(modalActions.hideModal())
+    fadeModal: () => {
+      dispatch(modalActions.hideModal())
+      dispatch(modalActions.fadeModal())
+    },
+    hideModal: () => {
+      dispatch(modalActions.fadeModal())
+      dispatch(modalActions.hideModal())
+    }
   }
 }
 

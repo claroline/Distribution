@@ -12,16 +12,18 @@ function atrans(key) {
 const FilterBar = props =>
   <div className="col-md-3">
     <div className="panel">
-      <button className="btn btn-default btn-xs" role="button" onClick={props.openImportForm}>
-        {trans('import', {}, 'platform')}
-      </button>
-      <a href={url(['apiv2_download_agenda', {workspace: props.workspace.id}])} className="btn btn-default btn-xs" role="button">
-        {trans('export', {}, 'platform')}
-      </a>
+      <div className="panel-body">
+        <button className="btn btn-default btn-xs" role="button" onClick={props.openImportForm}>
+          {trans('import', {}, 'platform')}
+        </button>
+        <a href={url(['apiv2_download_agenda', {workspace: props.workspace.id}])} className="btn btn-default btn-xs" role="button">
+          {trans('export', {}, 'platform')}
+        </a>
+      </div>
 
       {props.workspaces &&
         <div className="panel panel-default">
-          <div data-toggle="collapse" data-target="#panel-tasks" className="panel-heading">{atrans('filter_workspaces')}</div>
+          <div data-toggle="collapse" data-target="#panel-tasks" className="panel-heading">{atrans('filter_ws')}</div>
           <div id="panel-tasks" className="panel-body list-group in">
             <Checkboxes
               choices={props.workspaces}

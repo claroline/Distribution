@@ -113,7 +113,9 @@ class EventSerializer
 
         if (isset($data['workspace'])) {
             $workspace = $this->serializer->deserialize('Claroline\CoreBundle\Entity\Workspace\Workspace', $data['workspace']);
-            $event->setWorkspace($workspace);
+            if ($workspace->getId()) {
+                $event->setWorkspace($workspace);
+            }
         }
         //owner set in crud create
 

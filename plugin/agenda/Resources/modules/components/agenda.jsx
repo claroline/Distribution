@@ -65,7 +65,7 @@ const form = [
     {
       name: 'allDay',
       type: 'boolean',
-      label: trans('allDay'),
+      label: trans('all_day'),
       required: true,
       options: {
         time: true
@@ -74,7 +74,7 @@ const form = [
     {
       name: 'start',
       type: 'date',
-      label: trans('start'),
+      label: trans('form.start', {}, 'agenda'),
       required: true,
       options: {
         time: true
@@ -83,7 +83,7 @@ const form = [
     {
       name: 'end',
       type: 'date',
-      label: trans('end'),
+      label: trans('form.end', {}, 'agenda'),
       required: true,
       options: {
         time: true
