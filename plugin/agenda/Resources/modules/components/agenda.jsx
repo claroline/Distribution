@@ -287,16 +287,18 @@ const Agenda = connect(
       //otherwise it lags behind
       let newFilters = cloneDeep(allFilters)
       newFilters.types = filters
-      $('#fullcalendar').fullCalendar('removeEvents')
+      $('#fullcalendar').fullCalendar('removeEventSources')
       $('#fullcalendar').fullCalendar('addEventSource', url(['apiv2_event_list'], {filters: newFilters}))
+      $('#fullcalendar').fullCalendar('refetchEvents')
     },
     onChangeFiltersWorkspace(filters, allFilters) {
       dispatch(actions.updateFilterWorkspace(filters))
       //otherwise it lags behind
       let newFilters = cloneDeep(allFilters)
       newFilters.workspaces = filters
-      $('#fullcalendar').fullCalendar('removeEvents')
+      $('#fullcalendar').fullCalendar('removeEventSources')
       $('#fullcalendar').fullCalendar('addEventSource', url(['apiv2_event_list'], {filters: newFilters}))
+      $('#fullcalendar').fullCalendar('refetchEvents')
     }
   })
 )(AgendaComponent)
