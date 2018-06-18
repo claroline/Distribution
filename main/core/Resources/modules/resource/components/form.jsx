@@ -27,11 +27,15 @@ const ResourceFormComponent = (props) =>
             label: trans('type'),
             type: 'string',
             hideLabel: true,
-            render: (resourceNode) =>
-              <ResourceType
-                name={resourceNode.meta.type}
-                mimeType={resourceNode.meta.mimeType}
-              />
+            render: (resourceNode) => {
+              const NodeType =
+                <ResourceType
+                  name={resourceNode.meta.type}
+                  mimeType={resourceNode.meta.mimeType}
+                />
+
+              return NodeType
+            }
           }, {
             name: 'name',
             label: trans('name'),

@@ -51,7 +51,7 @@ const DataProperty = {
      *
      * @return {T.node}
      */
-    render: T.func,
+    render: T.func
   },
   defaultProps: {
     type: 'string',

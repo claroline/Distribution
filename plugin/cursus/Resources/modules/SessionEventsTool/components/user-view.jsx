@@ -1,7 +1,6 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import moment from 'moment'
 
 import {trans, t} from '#/main/core/translation'
 import {actions as listActions} from '#/main/core/data/list/actions'

@@ -17,17 +17,17 @@ use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\LoadFileEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\File\EncodeFileEvent;
 use Claroline\CoreBundle\Event\Resource\File\PlayFileEvent;
-use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Form\FileType;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
 use Claroline\CoreBundle\Library\Utilities\ZipArchive;
@@ -404,7 +404,7 @@ class FileListener implements ContainerAwareInterface
 
         $archive = new ZipArchive();
 
-        if ($archive->open($archivePath) === true) {
+        if (true === $archive->open($archivePath)) {
             $archive->extractTo($extractPath);
             $archive->close();
             $this->om->startFlushSuite();
@@ -530,7 +530,9 @@ class FileListener implements ContainerAwareInterface
 
         if (!$isStorageLeft) {
             $this->resourceManager->addStorageExceededFormError(
-                $form, filesize($form->get('file')->getData()), $workspace
+                $form,
+                filesize($form->get('file')->getData()),
+                $workspace
             );
         } else {
             //check if there is enough space left
@@ -540,7 +542,7 @@ class FileListener implements ContainerAwareInterface
             $tmpFile = $form->get('file')->getData();
 
             //the tmpFile may require some encoding.
-            if ($event->getEncoding() !== 'none') {
+            if ('none' !== $event->getEncoding()) {
                 $tmpFile = $this->encodeFile($tmpFile, $event->getEncoding());
             }
 
@@ -554,7 +556,7 @@ class FileListener implements ContainerAwareInterface
                 mkdir($workspaceDir);
             }
 
-            if (pathinfo($fileName, PATHINFO_EXTENSION) === 'zip' && $form->get('uncompress')->getData()) {
+            if ('zip' === pathinfo($fileName, PATHINFO_EXTENSION) && $form->get('uncompress')->getData()) {
                 $roots = $this->unzip($tmpFile, $event->getParent(), $published);
                 $event->setResources($roots);
 

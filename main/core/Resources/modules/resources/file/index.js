@@ -4,35 +4,22 @@ import {FileResource} from '#/main/core/resources/file/components/resource'
 import {reducer} from '#/main/core/resources/text/reducer'
 
 /**
- * File resource configuration.
+ * File creation app.
  */
-const Resource = {
-  /**
-   * The resource name.
-   *
-   * NB. It MUST match the API one.
-   */
-  name: 'file',
+export const Creation = () => ({
+  component: FileCreation
+})
 
-  creation: {
-    component: FileCreation
-  },
-
-  /**
-   * The main application of the resource.
-   */
-  main: {
-    component: FileResource,
-    store: reducer,
-    initialData: (initialData) => Object.assign({}, initialData, {
-      resource: {
-        node: initialData.resourceNode,
-        evaluation: initialData.evaluation
-      }
-    })
-  }
-}
-
-export {
-  Resource
-}
+/**
+ * Text resource application.
+ */
+export const App = () => ({
+  component: FileResource,
+  store: reducer,
+  initialData: (initialData) => Object.assign({}, initialData, {
+    resource: {
+      node: initialData.resourceNode,
+      evaluation: initialData.evaluation
+    }
+  })
+})
