@@ -97,7 +97,7 @@ class ForumSerializer
             'meta' => [
               'users' => $finder->fetch('Claroline\ForumBundle\Entity\Validation\User', ['forum' => $forum->getUuid()], null, 0, 0, true),
               'subjects' => $finder->fetch('Claroline\ForumBundle\Entity\Subject', ['forum' => $forum->getUuid()], null, 0, 0, true),
-              'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid(), 'moderated' => Forum::VALIDATE_NONE], null, 0, 0, true),
+              'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid(), 'moderation' => Forum::VALIDATE_NONE], null, 0, 0, true),
               'myMessages' => !is_string($currentUser) ?
                   $finder->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid(), 'creator' => $currentUser], null, 0, 0, true) :
                   0,
