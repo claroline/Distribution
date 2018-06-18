@@ -177,7 +177,7 @@ const Agenda = connect(
     openImportForm(workspace = null) {
       dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
-          title: 'import',
+          title: trans('import'),
           save: data => {
             //bad hack for $('#fullcalendar')
             dispatch(actions.import(data, workspace, $('#fullcalendar')))
@@ -214,14 +214,14 @@ const Agenda = connect(
     onEventDragStart(calendarRef) {
       //calendarRef.popover('hide')
     },
-    onEventDrop(calendarRef, event, delta, revertFunc, jsEvent, ui, view) {
+    onEventDrop(calendarRef, event) {
 
       dispatch(actions.update(sanitize(event), calendarRef))
     },
     onEventClick(calendarRef, event) {
       dispatch (
         modalActions.showModal(MODAL_EVENT, {
-          title: 'event',
+          title: trans('event', {}, 'agenda'),
           show: true,
           event: sanitize(event),
           onDelete: () => {
