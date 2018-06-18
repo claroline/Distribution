@@ -5,11 +5,13 @@ import {API_REQUEST} from '#/main/app/api'
 export const AGENDA_UPDATE_FILTER_TYPE = 'AGENDA_UPDATE_FILTER_TYPE'
 export const AGENDA_UPDATE_FILTER_WORKSPACE = 'AGENDA_UPDATE_FILTER_WORKSPACE'
 export const AGENDA_RELOAD = 'AGENDA_RELOAD'
+export const AGENDA_INIT_EVENT = 'AGENDA_INIT_EVENT'
 
 export const actions = {}
 
 actions.updateFilterType = makeActionCreator(AGENDA_UPDATE_FILTER_TYPE, 'filters')
 actions.updateFilterWorkspace = makeActionCreator(AGENDA_UPDATE_FILTER_WORKSPACE, 'filters')
+actions.initEvent = makeActionCreator(AGENDA_INIT_EVENT, 'date')
 
 //calendarElement is required to refresh the calendar since it's outside react
 actions.create = (event, workspace, calendarRef) => ({

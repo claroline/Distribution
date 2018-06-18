@@ -200,7 +200,8 @@ const Agenda = connect(
     onExport(workspace) {
       dispatch(actions.download(workspace))
     },
-    onDayClick(calendarRef, workspace) {
+    onDayClick(calendarRef, workspace, date) {
+      dispatch(actions.initEvent(date))
       dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
           title: 'event',

@@ -31,8 +31,8 @@ class Calendar extends Component {
   onEventDragStart() {
     this.props.eventDragStart($(this.calendarRef))
   }
-  onDayClick() {
-    this.props.dayClick($(this.calendarRef), this.props.workspace)
+  onDayClick(date) {
+    this.props.dayClick($(this.calendarRef), this.props.workspace, date)
   }
 
   onEventClick(event) {

@@ -4,15 +4,21 @@ import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
 
 import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
-import {AGENDA_UPDATE_FILTER_TYPE, AGENDA_UPDATE_FILTER_WORKSPACE} from '#/plugin/agenda/actions'
+import {AGENDA_UPDATE_FILTER_TYPE, AGENDA_UPDATE_FILTER_WORKSPACE, AGENDA_INIT_EVENT} from '#/plugin/agenda/actions'
 
 const reducer = {
-  list: makeListReducer('events.list', {}, {
-    invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/events.current']: () => true // todo : find better
-    })
-  }),
-  current: makeFormReducer('events.current', {}, {}),
+  current: makeFormReducer(
+    'events.current',
+    {},
+    {
+      data: makeReducer({}, {
+        [AGENDA_INIT_EVENT]: (state, action) => {
+          console.log(action)
+          return state
+        }
+      })
+    }
+  ),
   filters: combineReducers({
     types: makeReducer(['event', 'task'], {
       [AGENDA_UPDATE_FILTER_TYPE] : (state, action) => action.filters
