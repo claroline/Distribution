@@ -79,6 +79,18 @@ const Resource = props => {
           target: '/subjects/form',
           exact: true
         }, {
+          type: 'callback',
+          icon: 'fa fa-fw fa-envelope',
+          label: trans('receive_notifications', {}, 'forum'),
+          displayed: !props.forum.meta.notified,
+          callback: () => console.log('receive')
+        },{
+          type: 'callback',
+          icon: 'fa fa-fw fa-envelope-o',
+          label: trans('stop_receive_notifications', {}, 'forum'),
+          displayed: props.forum.meta.notified,
+          callback: () => console.log('stop receive')
+        }, {
           type: 'link',
           icon: 'fa fa-fw fa-gavel',
           label: trans('moderated_posts', {}, 'forum'),
