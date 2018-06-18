@@ -21,7 +21,6 @@ class WikiController extends Controller
         $user = $this->getLoggedUser();
         $sectionRepository = $this->get('icap.wiki.section_repository');
         $tree = $sectionRepository->buildSectionTree($wiki, $isAdmin, $user);
-        $deletedSections = $sectionRepository->findDeletedSections($wiki);
         $response = new Response();
         $this->render(sprintf('IcapWikiBundle:Wiki:view.%s.twig', $format), [
             '_resource' => $wiki,
@@ -29,7 +28,6 @@ class WikiController extends Controller
             'workspace' => $wiki->getResourceNode()->getWorkspace(),
             'isAdmin' => $isAdmin,
             'user' => $user,
-            'deletedSections' => $deletedSections,
         ], $response);
         if ('pdf' === $format) {
             return new Response(

@@ -1,8 +1,3 @@
-# Old route to delete
-icap_wiki:
-    resource: "@IcapWikiBundle/Controller/WikiController.php"
-    type:     annotation
-
 # Resource
 icap_wiki_resource:
     resource: "@IcapWikiBundle/Controller/Resource/WikiController.php"
