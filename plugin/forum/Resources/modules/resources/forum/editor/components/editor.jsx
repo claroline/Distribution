@@ -60,33 +60,21 @@ const EditorComponent = (props) =>
         title: trans('edition_restriction', {}, 'forum'),
         fields: [
           {
-            name: 'restrictions.enableDates',
+            name: 'restrictions.lockForum',
             label: trans('restrict_by_dates'),
             type: 'boolean',
-            calculated: (node) => node.restrictions.lockDate,
             linked: [
               {
-                name: 'restrictions.dates',
-                type: 'date-range',
-                label: trans('access_dates'),
-                displayed: (node) => node.restrictions.lockDate,
+                name: 'restrictions.lockDate',
+                type: 'date',
+                label: trans('date'),
+                displayed: props.forumForm.restrictions.lockForum,
                 required: true,
                 options: {
                   time: true
                 }
               }
             ]
-          }
-        ]
-      }, {
-        icon: 'fa fa-fw fa-bell-o',
-        title: trans('notifications', {}, 'forum'),
-        fields: [
-          {
-            name: 'notifications.enabled',
-            type: 'boolean',
-            label: trans('activate_global_notifications', {}, 'forum'),
-            help: trans('notifications_explanation', {}, 'forum')
           }
         ]
       }, {

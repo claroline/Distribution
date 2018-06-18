@@ -309,8 +309,8 @@ SubjectComponent.propTypes = {
   changePagePrev: T.func,
   toggleSort: T.func.isRequired,
   history: T.object.isRequired,
-  bannedUser: T.bool.isRrequired,
-  moderator: T.bool.isRrequired
+  bannedUser: T.bool.isRequired,
+  moderator: T.bool.isRequired
 }
 
 SubjectComponent.defaultProps = {

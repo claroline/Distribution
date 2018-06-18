@@ -31,7 +31,7 @@ const SubjectsList = props =>
         label: trans('open', {}, 'actions')
       })}
       display={{
-        current: props.forum.display.subjectDataList || listConst.DISPLAY_LIST_SM
+        current: props.forum.display.subjectDataList || listConst.DISPLAY_LIST
       }}
       definition={[
         {
@@ -116,7 +116,7 @@ const SubjectsList = props =>
         }, {
           name: 'lastMessage',
           type: 'string',
-          label: trans('last_messages'),
+          label: trans('last_message', {}, 'forum'),
           displayed: false,
           displayable: true,
           filterable: false,

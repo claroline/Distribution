@@ -62,7 +62,7 @@ class Forum extends AbstractResource
     /**
      * @ORM\Column(type="string")
      */
-    protected $dataListOptions = self::DISPLAY_LIST_SM;
+    protected $dataListOptions = self::DISPLAY_LIST;
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
@@ -88,7 +88,7 @@ class Forum extends AbstractResource
         $this->subjects = new ArrayCollection();
         $this->refreshUuid();
         $this->validationMode = self::VALIDATE_NONE;
-        $this->dataListOptions = self::DISPLAY_LIST_SM;
+        $this->dataListOptions = self::DISPLAY_LIST;
     }
 
     public function getSubjects()
