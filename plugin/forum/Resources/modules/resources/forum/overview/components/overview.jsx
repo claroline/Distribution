@@ -9,10 +9,10 @@ import {Button} from '#/main/app/action/components/button'
 import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {actions as listActions} from '#/main/core/data/list/actions'
+import {TagCloud} from '#/main/app/content/meta/components/tag-cloud'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
-import {TagCloud} from '#/plugin/forum/resources/forum/overview/components/tag-cloud'
 import {LastMessages} from '#/plugin/forum/resources/forum/overview/components/last-messages'
 import {ForumInfo} from '#/plugin/forum/resources/forum/overview/components/forum-info'
 

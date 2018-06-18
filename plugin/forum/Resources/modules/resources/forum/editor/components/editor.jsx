@@ -56,17 +56,26 @@ const EditorComponent = (props) =>
           }
         ]
       }, {
-        icon: 'fa fa-fw fa-comments',
+        icon: 'fa fa-fw fa-key',
         title: trans('edition_restriction', {}, 'forum'),
         fields: [
           {
-            name: 'forum.lock',
-            type: 'date',
-            label: trans('locking_date', {}, 'forum'),
-            help: trans('locking_date_explenation', {}, 'forum'),
-            options: {
-              time: true
-            }
+            name: 'restrictions.enableDates',
+            label: trans('restrict_by_dates'),
+            type: 'boolean',
+            calculated: (node) => node.restrictions.lockDate,
+            linked: [
+              {
+                name: 'restrictions.dates',
+                type: 'date-range',
+                label: trans('access_dates'),
+                displayed: (node) => node.restrictions.lockDate,
+                required: true,
+                options: {
+                  time: true
+                }
+              }
+            ]
           }
         ]
       }, {
