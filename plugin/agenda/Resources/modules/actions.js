@@ -39,6 +39,18 @@ actions.update = (event, calendarRef) => ({
   }
 })
 
+actions.delete = (event, calendarRef) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_event_delete_bulk', {ids: [event.id]}],
+    request: {
+      method: 'DELETE'
+    },
+    success: () => {
+      calendarRef.fullCalendar('removeEvents', event.id)
+    }
+  }
+})
+
 actions.import = (data, workspace = null, calendarRef) => ({
   [API_REQUEST]: {
     url: ['apiv2_event_import'],

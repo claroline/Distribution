@@ -14,7 +14,7 @@ const EventModal = props =>
     title={trans('event')}
     {...props}
   >
-    <Event {...props.event} onForm={props.onForm}></Event>
+    <Event {...props.event} onForm={props.onForm} onDelete={props.onDelete}/>
   </Modal>
 
 function mapDispatchToProps(dispatch) {

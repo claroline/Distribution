@@ -16,6 +16,7 @@ import {PageContainer, PageHeader, PageActions} from '#/main/core/layout/page'
 import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
 import {FilterBar} from '#/plugin/agenda/components/filter-bar.jsx'
 import {MODAL_EVENT} from '#/plugin/agenda/components/modal'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
 import {url} from '#/main/app/api/router'
 
@@ -223,6 +224,19 @@ const Agenda = connect(
           title: 'event',
           show: true,
           event: sanitize(event),
+          onDelete: () => {
+            dispatch(
+              modalActions.showModal(MODAL_CONFIRM, {
+                title: trans('remove_event', {}, 'agenda') + ': ' + event.title,
+                question: trans('remove_event_confirm', {}, 'agenda'),
+                confirmButtonText: trans('delete'),
+                dangerous: true,
+                handleConfirm: () => {
+                  dispatch(actions.delete(event, calendarRef))
+                }
+              })
+            )
+          },
           onForm: () => {
             dispatch (
               modalActions.showModal('MODAL_DATA_FORM', {
