@@ -201,14 +201,17 @@ const Agenda = connect(
       dispatch(actions.download(workspace))
     },
     onDayClick(calendarRef, workspace, date) {
-      dispatch(actions.initEvent(date))
       dispatch (
         modalActions.showModal('MODAL_DATA_FORM', {
           title: 'event',
           save: event => {
             dispatch(actions.create(event, workspace, calendarRef))
           },
-          sections: form
+          sections: form,
+          data: {
+            start: date.format(getApiFormat()),
+            end: date.add(1, 'days').format(getApiFormat())
+          }
         })
       )
     },
