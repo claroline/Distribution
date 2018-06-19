@@ -3,7 +3,6 @@
 namespace Claroline\AgendaBundle\Serializer;
 
 use Claroline\AgendaBundle\Entity\Event;
-use Claroline\AgendaBundle\Entity\EventInvitation;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
@@ -41,57 +40,28 @@ class EventSerializer
      */
     public function serialize(Event $event)
     {
-        $guests = [];
-        $invitation = null;
-
-        foreach ($event->getEventInvitations() as $eventInvitation) {
-            $guests[] = [
-                'user' => $this->serializer->serialize($eventInvitation->getUser()),
-                'status' => $eventInvitation->getStatus(),
-            ];
-
-            if ($eventInvitation->getUser() === $user) {
-                $invitation = $eventInvitation;
-            }
-        }
-
         return [
             'id' => $event->getId(),
-            'title' => $invitation && !is_null($event->getTitle()) ? $invitation->getTitle() : $event->getTitle(),
+            'title' => $event->getTitle(),
             'start' => $event->getStart() ? DateNormalizer::normalize($event->getStart()) : null,
             'end' => $event->getEnd() ? DateNormalizer::normalize($event->getEnd()) : null,
             'color' => $event->getPriority(),
             'allDay' => $event->isAllDay(),
-            'durationEditable' => !$event->isTask() && false !== $event->isEditable() && !$invitation,
+            'durationEditable' => !$event->isTask() && false !== $event->isEditable(),
             'owner' => $this->serializer->serialize($event->getUser()),
-            'description' => $invitation && !is_null($invitation->getDescription()) ? $invitation->getDescription() : $event->getDescription(),
+            'description' => $event->getDescription(),
             'workspace' => $event->getWorkspace() ? $this->serializer->serialize($event->getWorkspace()) : null,
             'className' => 'event_'.$event->getId(),
-            'editable' => false !== $event->isEditable() && !$invitation,
-            'invitations' => $guests,
-            'meta' => $this->serializeMeta($event, $invitation),
-            'restrictions' => $this->serializeRestrictions($event, $invitation),
-            'invitationStatus' => [
-                'ignore' => EventInvitation::IGNORE,
-                'join' => EventInvitation::JOIN,
-                'maybe' => EventInvitation::MAYBE,
-                'resign' => EventInvitation::RESIGN,
-            ], //We have to passed the status list of the eventInvitation for the popover render because twig.js doesn't have the constant function
+            'editable' => false !== $event->isEditable(),
+            'meta' => $this->serializeMeta($event),
         ];
     }
 
-    public function serializeRestrictions($event, $invitation = null)
-    {
-        return [
-        ];
-    }
-
-    public function serializeMeta(Event $event, $invitation = null)
+    public function serializeMeta(Event $event)
     {
         return [
           'task' => $event->isTask(),
           'isTaskDone' => $event->isTaskDone(),
-          'isGuest' => !is_null($invitation),
         ];
     }
 

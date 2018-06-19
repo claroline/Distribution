@@ -47,7 +47,7 @@ const Event = props => {
         <Description description={props.description}/>
       }
 
-      {!props.is_guest && props.editable &&
+      {props.editable &&
         <div>
           <button className="btn btn-primary" onClick={props.onForm}>{trans('edit')}</button>
           {'\u00a0'}
