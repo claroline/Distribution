@@ -8,10 +8,9 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {getApiFormat} from '#/main/core/scaffolding/date'
 
-import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions} from '#/plugin/agenda/actions'
-import {PageContainer, PageHeader, PageActions} from '#/main/core/layout/page'
+import {PageContainer, PageHeader} from '#/main/core/layout/page'
 
 import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
 import {FilterBar} from '#/plugin/agenda/components/filter-bar.jsx'
@@ -130,7 +129,6 @@ class AgendaComponent extends Component {
       eventLimit: 4,
       timezone: 'local',
       eventDrop: props.onEventDrop,
-      eventDragStart: props.onEventDragStart,
       dayClick: props.onDayClick,
       eventClick:  props.onEventClick,
       eventDestroy: props.onEventDestroy,
@@ -215,11 +213,7 @@ const Agenda = connect(
         })
       )
     },
-    onEventDragStart(calendarRef) {
-      //calendarRef.popover('hide')
-    },
     onEventDrop(calendarRef, event) {
-
       dispatch(actions.update(sanitize(event), calendarRef))
     },
     onEventClick(calendarRef, event) {
@@ -256,9 +250,6 @@ const Agenda = connect(
         })
       )
     },
-    onEventDestroy() {
-      //alert('destroy')
-    },
     onEventRender(calendarRef, event, $element) {
       if (event.editable) {
         $element.addClass('fc-draggable')
@@ -285,14 +276,8 @@ const Agenda = connect(
           checkbox.addClass('fa-square-o')
         }
       }
-
-      //event.durationEditable = event.durationEditable && workspacePermissions[workspaceId] && event.isEditable !== false
-
     },
-    onEventResize(calendarRef) {
-      //calendarRef.popover('hide')
-    },
-    eventResizeStart(calendarRef, event, delta, revertFunc, jsEvent, ui) {
+    eventResizeStart(calendarRef, event) {
       const data = cloneDeep(event)
       data.start = event.start.format(getApiFormat())
       data.end = event.end.format(getApiFormat())
@@ -320,6 +305,23 @@ const Agenda = connect(
     }
   })
 )(AgendaComponent)
+
+AgendaComponent.propTypes = {
+  onEventDrop: T.func.isRequired,
+  onDayClick: T.func.isRequired,
+  onEventClick: T.func.isRequired,
+  onEventDestroy: T.func.isRequired,
+  onEventRender: T.func.isRequired,
+  onEventResize: T.func.isRequired,
+  onEventResizeStart: T.func.isRequired,
+  openImportForm: T.func.isRequired,
+  onExport: T.func.isRequired,
+  onChangeFiltersWorkspace: T.func.isRequired,
+  onChangeFiltersType: T.func.isRequired,
+  workspace: T.object,
+  workspaces: T.object.isRequired,
+  filters: T.object.isRequired
+}
 
 export {
   Agenda

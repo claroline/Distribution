@@ -1,10 +1,5 @@
 import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
-import cloneDeep from 'lodash/cloneDeep'
-
-import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
-
-import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 import {AGENDA_UPDATE_FILTER_TYPE, AGENDA_UPDATE_FILTER_WORKSPACE} from '#/plugin/agenda/actions'
 
 const reducer = {

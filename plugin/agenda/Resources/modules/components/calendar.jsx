@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import cloneDeep from 'lodash/cloneDeep'
 import $ from 'jquery'
+import {PropTypes as T} from 'prop-types'
 //import 'moment/min/moment.min.js'
 
 import 'fullcalendar/dist/fullcalendar.css'
@@ -28,9 +29,6 @@ class Calendar extends Component {
     this.props.eventDrop($(this.calendarRef), event, delta, revertFunc, jsEvent, ui, view)
   }
 
-  onEventDragStart() {
-    this.props.eventDragStart($(this.calendarRef))
-  }
   onDayClick(date) {
     this.props.dayClick($(this.calendarRef), this.props.workspace, date)
   }
@@ -73,6 +71,17 @@ class Calendar extends Component {
   render() {
     return <div id="fullcalendar" className="col-md-9" ref={(el) => this.calendarRef = el}/>
   }
+}
+
+Calendar.propTypes = {
+  eventDrop: T.func.isRequired,
+  dayClick: T.func.isRequired,
+  eventClick: T.func.isRequired,
+  eventDestroy: T.func.isRequired,
+  eventRender: T.func.isRequired,
+  eventResize: T.func.isRequired,
+  eventResizeStart: T.func.isRequired,
+  workspace: T.object
 }
 
 export {

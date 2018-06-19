@@ -1,4 +1,5 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import moment from 'moment'
@@ -10,15 +11,6 @@ const Description = props =>
   <div className="well">
     {props.description}
   </div>
-
-const Invitations = props =>
-  <div>
-    {trans('invitation_guests', {}, 'agenda')}
-    {props.invitations.map(invitation =>
-      <span> {invitation.user_name} </span>
-    )}
-  </div>
-
 
 const Task = props =>
   <div>
@@ -64,6 +56,22 @@ const Event = props => {
       }
     </div>
   )}
+
+
+Event.propTypes = {
+  start: T.object.isRequired,
+  owner: T.object.isRequired,
+  end: T.object,
+  onForm: T.func.isRequired,
+  onDelete: T.func.isRequired,
+  is_guest: T.boolean.isRequired,
+  editable: T.boolean.isRequired,
+  description: T.string,
+  workspace: T.object
+}
+
+Task.propTypes = Event.propTypes
+
 export {
   Task,
   Event
