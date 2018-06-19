@@ -26,6 +26,7 @@ const FilterBar = props =>
           <div data-toggle="collapse" data-target="#panel-tasks" className="panel-heading">{atrans('filter_ws')}</div>
           <div id="panel-tasks" className="panel-body list-group in">
             <Checkboxes
+              id="workspaces"
               choices={props.workspaces}
               value={props.filters.workspaces}
               inline={false}
@@ -40,6 +41,7 @@ const FilterBar = props =>
         <div data-toggle="collapse" data-target="#panel-tasks" className="panel-heading">{atrans('filter_tasks')}</div>
         <div id="panel-tasks" className="panel-body list-group in">
           <Checkboxes
+            id="types"
             choices={{
               'task': 'tache',
               'event': 'évènement'

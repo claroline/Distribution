@@ -290,20 +290,23 @@ const Agenda = connect(
       dispatch(actions.update(data, calendarRef))
     },
     onChangeFiltersType(filters, allFilters) {
-
+      console.log(allFilters)
       dispatch(actions.updateFilterType(filters))
       //otherwise it lags behind
       let newFilters = cloneDeep(allFilters)
       newFilters.types = filters
+      console.log(newFilters, filters)
       $('#fullcalendar').fullCalendar('removeEventSources')
       $('#fullcalendar').fullCalendar('addEventSource', url(['apiv2_event_list'], {filters: newFilters}))
       $('#fullcalendar').fullCalendar('refetchEvents')
     },
     onChangeFiltersWorkspace(filters, allFilters) {
+      console.log(allFilters)
       dispatch(actions.updateFilterWorkspace(filters))
       //otherwise it lags behind
       let newFilters = cloneDeep(allFilters)
       newFilters.workspaces = filters
+      console.log(newFilters, filters)
       $('#fullcalendar').fullCalendar('removeEventSources')
       $('#fullcalendar').fullCalendar('addEventSource', url(['apiv2_event_list'], {filters: newFilters}))
       $('#fullcalendar').fullCalendar('refetchEvents')
