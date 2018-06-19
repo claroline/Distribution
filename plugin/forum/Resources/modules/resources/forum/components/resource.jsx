@@ -5,11 +5,12 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store/selectors'
 import {hasPermission} from '#/main/core/resource/permissions'
+
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
-
+import {currentUser} from '#/main/core/user/current'
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/actions'
@@ -83,13 +84,13 @@ const Resource = props => {
           icon: 'fa fa-fw fa-envelope',
           label: trans('receive_notifications', {}, 'forum'),
           displayed: !props.forum.meta.notified,
-          callback: () => console.log('receive')
+          callback: () => props.notify(props.forum, currentUser())
         },{
           type: 'callback',
           icon: 'fa fa-fw fa-envelope-o',
           label: trans('stop_receive_notifications', {}, 'forum'),
           displayed: props.forum.meta.notified,
-          callback: () => console.log('stop receive')
+          callback: () => props.stopNotify(props.forum, currentUser())
         }, {
           type: 'link',
           icon: 'fa fa-fw fa-gavel',
@@ -125,7 +126,9 @@ Resource.propTypes = {
   saveForm: T.func.isRequired,
   loadLastMessages: T.func.isRequired,
   bannedUser: T.bool.isRequired,
-  moderator: T.bool.isRequired
+  moderator: T.bool.isRequired,
+  notify: T.func.isRequired,
+  stopNotify: T.func.isRequired
 }
 
 const ForumResource = connect(
@@ -142,6 +145,12 @@ const ForumResource = connect(
     },
     loadLastMessages(forum) {
       dispatch(actions.fetchLastMessages(forum))
+    },
+    notify(forum, user) {
+      dispatch(actions.notify(forum, user))
+    },
+    stopNotify(forum, user) {
+      dispatch(actions.stopNotify(forum, user))
     }
   })
 )(Resource)
