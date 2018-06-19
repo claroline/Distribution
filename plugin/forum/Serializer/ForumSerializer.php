@@ -81,6 +81,17 @@ class ForumSerializer
             $forumUser = new User();
         }
 
+        $now = new \DateTime();
+        $readonly = false;
+
+        if ($forum->getLockDate()) {
+            $readonly = $forum->getLockDate() > $now;
+        }
+
+        $banned = $this->checkPermission('EDIT', $forum->getResourceNode()) ?
+          false :
+          $forumUser->isBanned() || $readonly;
+
         return [
             'id' => $forum->getUuid(),
             'moderation' => $forum->getValidationMode(),
@@ -93,7 +104,7 @@ class ForumSerializer
             ],
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
-              'banned' => $forumUser->isBanned(),
+              'banned' => $banned,
               'moderator' => $this->checkPermission('EDIT', $forum->getResourceNode()),
             ],
             'meta' => [
