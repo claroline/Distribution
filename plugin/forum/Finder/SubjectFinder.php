@@ -121,11 +121,11 @@ class SubjectFinder implements FinderInterface
             'type' => 'string',
             'description' => 'the author name',
           ],
-          'isSticked' => [
+          'sticked' => [
             'type' => 'boolean',
             'description' => 'is the subject sticked',
           ],
-          'isClosed' => [
+          'closed' => [
             'type' => 'boolean',
             'description' => 'is the subject closed',
           ],

@@ -41,7 +41,7 @@ class FinderProviderTest extends TransactionalTestCase
             //$this->provider->fetch($class, 0, 1, $filter);
         }
 
-        $data = $this->provider->fetch($class, 0, 1, $allFilters);
+        $data = $this->provider->fetch($class, $allFilters);
         //empty array
         $this->assertTrue(is_array($data));
     }
