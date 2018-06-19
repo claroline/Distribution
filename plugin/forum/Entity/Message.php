@@ -12,7 +12,6 @@
 namespace Claroline\ForumBundle\Entity;
 
 use Claroline\CoreBundle\Entity\AbstractMessage;
-use Claroline\ForumBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

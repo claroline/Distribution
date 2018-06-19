@@ -125,7 +125,7 @@ class OrganizationController extends AbstractCrudController
     {
         return 'Claroline\CoreBundle\Entity\Organization\Organization';
     }
-  
+
     /**
      * Only keep the roots organizations.
      * This is a very heavy operation =/.
