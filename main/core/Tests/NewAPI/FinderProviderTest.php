@@ -6,7 +6,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
-class SerializerProviderTest extends TransactionalTestCase
+class FinderProviderTest extends TransactionalTestCase
 {
     /** @var SerializerProvider */
     private $provider;
