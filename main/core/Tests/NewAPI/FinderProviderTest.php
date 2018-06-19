@@ -70,6 +70,7 @@ class FinderProviderTest extends TransactionalTestCase
      */
     public function getHandledClassesProvider()
     {
+        parent::setUp();
         $provider = $this->client->getContainer()->get('claroline.api.finder');
 
         $finders = array_filter($provider->all(), function ($finder) {

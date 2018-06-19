@@ -67,9 +67,6 @@ class SerializerProviderTest extends TransactionalTestCase
                 $errors = $this->validator->validate($class, $data, ValidatorProvider::UPDATE);
                 $this->assertTrue(0 === count($errors));
             }
-            //is the result... valid ?
-            $errors = $this->validator->validate($class, $data, ValidatorProvider::CREATE);
-            $this->assertTrue(0 === count($errors));
         }
     }
 
@@ -78,6 +75,7 @@ class SerializerProviderTest extends TransactionalTestCase
      */
     public function getHandledClassesProvider()
     {
+        parent::setUp();
         $provider = $this->client->getContainer()->get('claroline.api.serializer');
 
         $classes = array_map(function ($serializer) use ($provider) {
