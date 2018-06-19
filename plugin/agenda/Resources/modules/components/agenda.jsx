@@ -31,7 +31,6 @@ function arrayTrans(key) {
 
 function sanitize(event) {
   const data = cloneDeep(event)
-  //we need timezone here.
   data.start = event.start.format(getApiFormat())
   data.end = event.end.format(getApiFormat())
   delete data.source

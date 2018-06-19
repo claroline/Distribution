@@ -58,8 +58,8 @@ class EventSerializer
         return [
             'id' => $event->getId(),
             'title' => $invitation && !is_null($event->getTitle()) ? $invitation->getTitle() : $event->getTitle(),
-            'start' => $event->getStartInDateTime() ? DateNormalizer::normalize($event->getStartInDateTime()) : null,
-            'end' => $event->getEndInDateTime() ? DateNormalizer::normalize($event->getEndInDateTime()) : null,
+            'start' => $event->getStart() ? DateNormalizer::normalize($event->getStart()) : null,
+            'end' => $event->getEnd() ? DateNormalizer::normalize($event->getEnd()) : null,
             'color' => $event->getPriority(),
             'allDay' => $event->isAllDay(),
             'durationEditable' => !$event->isTask() && false !== $event->isEditable() && !$invitation,

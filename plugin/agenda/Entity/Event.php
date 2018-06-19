@@ -38,12 +38,12 @@ class Event
     private $title;
 
     /**
-     * @ORM\Column(name="start_date", type="integer", nullable=true)
+     * @ORM\Column(name="start_date", type="datetime", nullable=true)
      */
     private $start;
 
     /**
-     * @ORM\Column(name="end_date", type="integer", nullable=true)
+     * @ORM\Column(name="end_date", type="datetime", nullable=true)
      */
     private $end;
 
@@ -122,75 +122,22 @@ class Event
     //Returns a String for the DateTimePicker of the AgendaType
     public function getStart()
     {
-        return date('d/m/Y H:i', $this->start);
-    }
-
-    public function getStartInTimestamp()
-    {
         return $this->start;
-    }
-
-    public function getStartInDateTime()
-    {
-        return \Datetime::createFromFormat('U', $this->start);
     }
 
     public function setStart($start)
     {
-        if (is_string($start)) {
-            $dateFormat = $this->isAllDay() ? 'd/m/Y' : 'd/m/Y H:i';
-            $dateTime = \DateTime::createFromFormat($dateFormat, $start);
-            if (!$dateTime) {
-                $this->start = null;
-            } else {
-                $this->start = $dateTime->getTimestamp();
-            }
-        } elseif (is_int($start)) {
-            $this->start = $start;
-        } elseif ($start instanceof \DateTime) {
-            $this->start = $start->getTimestamp();
-        } else {
-            throw new \Exception('Date format is not supported');
-        }
-
-        return $this;
+        $this->start = $start;
     }
 
-    //Returns a String for the DateTimePicker of the AgendaType
     public function getEnd()
-    {
-        return date('d/m/Y H:i', $this->end);
-    }
-
-    public function getEndInTimestamp()
     {
         return $this->end;
     }
 
-    public function getEndInDateTime()
-    {
-        return \Datetime::createFromFormat('U', $this->end);
-    }
-
     public function setEnd($end)
     {
-        if (is_string($end)) {
-            $dateFormat = $this->isAllDay() ? 'd/m/Y' : 'd/m/Y H:i';
-            $dateTime = \DateTime::createFromFormat($dateFormat, $end);
-            if (!$dateTime) {
-                $this->end = null;
-            } else {
-                $this->end = $dateTime->getTimestamp();
-            }
-        } elseif (is_int($end)) {
-            $this->end = $end;
-        } elseif ($end instanceof \DateTime) {
-            $this->end = $end->getTimestamp();
-        } else {
-            throw new \Exception('Date format is not supported');
-        }
-
-        return $this;
+        $this->end = $end;
     }
 
     public function getDescription()
