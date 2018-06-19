@@ -64,8 +64,8 @@ Event.propTypes = {
   end: T.object,
   onForm: T.func.isRequired,
   onDelete: T.func.isRequired,
-  is_guest: T.boolean.isRequired,
-  editable: T.boolean.isRequired,
+  is_guest: T.bool.isRequired,
+  editable: T.bool.isRequired,
   description: T.string,
   workspace: T.object
 }

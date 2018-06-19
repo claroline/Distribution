@@ -16,13 +16,10 @@ class Calendar extends Component {
     this.calendarRef
 
     this.onEventDrop = this.onEventDrop.bind(this)
-    this.onEventDragStart = this.onEventDragStart.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
     this.onEventClick = this.onEventClick.bind(this)
-    this.onEventDestroy = this.onEventDestroy.bind(this)
     this.onEventRender = this.onEventRender.bind(this)
     this.onEventResize = this.onEventResize.bind(this)
-    this.onEventResizeStart = this.onEventResizeStart.bind(this)
   }
 
   onEventDrop(event, delta, revertFunc, jsEvent, ui, view) {
@@ -37,10 +34,6 @@ class Calendar extends Component {
     this.props.eventClick($(this.calendarRef), event)
   }
 
-  onEventDestroy() {
-    this.props.eventDestroy($(this.calendarRef))
-  }
-
   onEventRender(event, $element) {
     this.props.eventRender($(this.calendarRef), event, $element)
   }
@@ -49,21 +42,14 @@ class Calendar extends Component {
     this.props.eventResize($(this.calendarRef), event, delta, revertFunc, jsEvent, ui, view)
   }
 
-  onEventResizeStart() {
-    this.props.eventResizeStart($(this.calendarRef))
-  }
-
   componentDidMount() {
     const calendarProps = cloneDeep(this.props)
 
     calendarProps.eventDrop = this.onEventDrop
-    calendarProps.eventDragStart = this.onEventDragStart
     calendarProps.dayClick = this.onDayClick
     calendarProps.eventClick = this.onEventClick
-    calendarProps.eventDestroy = this.onEventDestroy
     calendarProps.eventRender = this.onEventRender
     calendarProps.eventResize = this.onEventResize
-    calendarProps.eventResizeStart = this.onEventResizeStart
 
     $(this.calendarRef).fullCalendar(calendarProps)
   }

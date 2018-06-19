@@ -16,7 +16,7 @@ import {Calendar} from '#/plugin/agenda/components/calendar.jsx'
 import {FilterBar} from '#/plugin/agenda/components/filter-bar.jsx'
 import {MODAL_EVENT} from '#/plugin/agenda/components/modal'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-
+import '#/main/core/data/form/modals'
 import {url} from '#/main/app/api/router'
 
 function arrayTrans(key) {
@@ -49,7 +49,7 @@ const form = [
       required: true
     }, {
       name: 'description',
-      type: 'textarea',
+      type: 'tinymce',
       label: trans('description'),
       required: true
     }]
@@ -134,7 +134,6 @@ class AgendaComponent extends Component {
       eventDestroy: props.onEventDestroy,
       eventRender: props.onEventRender,
       eventResize: props.onEventResize,
-      eventResizeStart: props.onEventResizeStart,
       workspace: props.workspace
     }
   }
@@ -277,7 +276,8 @@ const Agenda = connect(
         }
       }
     },
-    eventResizeStart(calendarRef, event) {
+    onEventResize(calendarRef, event) {
+      console.log('resize')
       const data = cloneDeep(event)
       data.start = event.start.format(getApiFormat())
       data.end = event.end.format(getApiFormat())
