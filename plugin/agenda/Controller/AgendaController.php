@@ -129,7 +129,7 @@ class AgendaController extends Controller
             'user' => $user->getId(),
         ]);
 
-        if ($invitation && $invitation->getStatus() != $action) {
+        if ($invitation && $invitation->getStatus() !== $action) {
             $invitation->setStatus($action);
             $this->em->flush();
 
@@ -159,7 +159,7 @@ class AgendaController extends Controller
             return;
         }
 
-        if ($this->tokenStorage->getToken()->getUser() != $event->getUser()) {
+        if ($this->tokenStorage->getToken()->getUser() !== $event->getUser()) {
             throw new AccessDeniedException('You cannot edit the agenda');
         }
     }

@@ -31,6 +31,7 @@ function arrayTrans(key) {
 
 function sanitize(event) {
   const data = cloneDeep(event)
+  //we need timezone here.
   data.start = event.start.format(getApiFormat())
   data.end = event.end.format(getApiFormat())
   delete data.source
@@ -49,9 +50,12 @@ const form = [
       required: true
     }, {
       name: 'description',
-      type: 'tinymce',
+      type: 'string',
       label: trans('description'),
-      required: true
+      required: true,
+      options: {
+        long: true
+      }
     }]
   },
   {
@@ -250,6 +254,9 @@ const Agenda = connect(
       )
     },
     onEventRender(calendarRef, event, $element) {
+      //we need timezone here.
+      //event.start.utcOffset(2)
+
       if (event.editable) {
         $element.addClass('fc-draggable')
       }

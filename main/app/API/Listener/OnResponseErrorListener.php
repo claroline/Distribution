@@ -21,7 +21,7 @@ class OnResponseErrorListener
      * @param GetResponseForExceptionEvent $event
      */
     public function handleError(GetResponseForExceptionEvent $event)
-    {/*
+    {
         if ($event->getRequest()->isXmlHttpRequest()) {
             $exception = $event->getException();
             if ($exception instanceof InvalidDataException) {
@@ -34,6 +34,6 @@ class OnResponseErrorListener
             }
 
             $event->setResponse($response);
-        }*/
+        }
     }
 }

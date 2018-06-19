@@ -333,7 +333,7 @@ class Event
      *
      * @return Event
      */
-    public function addEventInvitation(\Claroline\AgendaBundle\Entity\EventInvitation $eventInvitation)
+    public function addEventInvitation(EventInvitation $eventInvitation)
     {
         $this->eventInvitations[] = $eventInvitation;
 
@@ -345,7 +345,7 @@ class Event
      *
      * @param \Claroline\AgendaBundle\Entity\EventInvitation $eventInvitation
      */
-    public function removeEventInvitation(\Claroline\AgendaBundle\Entity\EventInvitation $eventInvitation)
+    public function removeEventInvitation(EventInvitation $eventInvitation)
     {
         $this->eventInvitations->removeElement($eventInvitation);
     }

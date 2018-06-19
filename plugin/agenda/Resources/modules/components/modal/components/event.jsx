@@ -30,6 +30,12 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
+EventModal.propTypes = {
+  event: T.object.isRequired,
+  onForm: T.func.isRequired,
+  onDelete: T.func.isRequired
+}
+
 const ConnectedEventModal = connect(null, mapDispatchToProps)(EventModal)
 
 export {
