@@ -54,14 +54,6 @@ const FilterBar = props =>
           />
         </div>
       </div>
-      <div className="panel panel-default">
-        <div className="panel-heading">Priorité</div>
-        <div className="panel-body list-group">
-          <div className="list-group-item ask-priority-high">{atrans('high')}</div>
-          <div className="list-group-item ask-priority-medium">{atrans('medium')}</div>
-          <div className="list-group-item ask-priority-low">{atrans('low')}</div>
-        </div>
-      </div>
     </div>
   </div>
 
