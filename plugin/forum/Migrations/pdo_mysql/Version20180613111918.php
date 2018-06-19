@@ -75,14 +75,13 @@ class Version20180613111918 extends AbstractMigration
         $this->addSql('
             UPDATE claro_forum_subject SET viewCount = 5
         ');
-        //might cause some issues
+        //might cause some issues but worth keeping
         /*
-        $this->addSql('
             ALTER TABLE claro_forum_subject
             ADD CONSTRAINT FK_273AA20B29CCBAD0 FOREIGN KEY (forum_id)
             REFERENCES claro_forum (id)
             ON DELETE CASCADE
-        ');*/
+        */
         $this->addSql('
             ALTER TABLE claro_forum_subject
             ADD CONSTRAINT FK_273AA20B5BB66C05 FOREIGN KEY (poster_id)

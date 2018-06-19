@@ -38,7 +38,6 @@ class FinderProviderTest extends TransactionalTestCase
         foreach ($filters as $filterName => $filterOptions) {
             $filter = $this->buildFilter($filterName, $filterOptions);
             $allFilters = array_merge($allFilters, $filter);
-            //$this->provider->fetch($class, 0, 1, $filter);
         }
 
         $data = $this->provider->fetch($class, $allFilters);

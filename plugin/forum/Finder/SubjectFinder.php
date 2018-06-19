@@ -62,10 +62,7 @@ class SubjectFinder implements FinderInterface
                   LEFT JOIN to.tag t
                   WHERE UPPER(t.name) LIKE :tagFilter
                 )");
-                //
-                //AND to.objectClass = :class
                 $qb->setParameter('tagFilter', '%'.strtoupper($filterValue).'%');
-                //$qb->setParameter('class', $this->getClass());
                 break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
