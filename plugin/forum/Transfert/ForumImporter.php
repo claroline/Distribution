@@ -43,7 +43,6 @@ class ForumImporter extends Importer implements ConfigurationInterface, RichText
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('data');
 
         return $treeBuilder;
     }

@@ -101,7 +101,7 @@ class Updater120000 extends Updater
             foreach ($messages as $message) {
                 $this->log('Build forum user for '.$message->getCreator()->getUsername());
 
-                $validationUser = $this->container->get('claroline.manager.forum_manager')->getValidationUser(
+                $this->container->get('claroline.manager.forum_manager')->getValidationUser(
                     $message->getCreator(),
                     $forum,
                     true
