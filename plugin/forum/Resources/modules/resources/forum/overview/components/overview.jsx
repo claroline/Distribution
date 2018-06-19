@@ -96,7 +96,10 @@ OverviewComponent.propTypes = {
   bannedUser: T.bool.isRequired,
   tagsCount: T.shape({}),
   myMessages: T.number.isRequired,
-  goToList: T.func.isRequired
+  goToList: T.func.isRequired,
+  history: T.shape({
+    push: T.func.isRequired
+  }).isRequired
 }
 
 OverviewComponent.defaultProps = {
