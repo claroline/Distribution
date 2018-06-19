@@ -277,7 +277,6 @@ const Agenda = connect(
       }
     },
     onEventResize(calendarRef, event) {
-      console.log('resize')
       const data = cloneDeep(event)
       data.start = event.start.format(getApiFormat())
       data.end = event.end.format(getApiFormat())
