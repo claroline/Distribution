@@ -2,10 +2,10 @@
 
 namespace Icap\NotificationBundle\Manager;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use Icap\NotificationBundle\Entity\FollowerResource;
 use Icap\NotificationBundle\Entity\Notification;
@@ -28,10 +28,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class NotificationManager
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $em;
+    /** @var ObjectManager */
+    private $om;
     /**
      * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface
      */
@@ -57,7 +55,7 @@ class NotificationManager
      * Constructor.
      *
      * @DI\InjectParams({
-     *      "em" = @DI\Inject("doctrine.orm.entity_manager"),
+     *      "om" = @DI\Inject("claroline.persistence.object_manager"),
      *      "tokenStorage" = @DI\Inject("security.token_storage"),
      *      "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *      "configHandler" = @DI\Inject("claroline.config.platform_config_handler"),
@@ -66,14 +64,14 @@ class NotificationManager
      * })
      */
     public function __construct(
-        EntityManager $em,
+        ObjectManager $om,
         TokenStorageInterface $tokenStorage,
         EventDispatcherInterface $eventDispatcher,
         PlatformConfigurationHandler $configHandler,
         NotificationUserParametersManager $notificationParametersManager,
         NotificationPluginConfigurationManager $notificationPluginConfigurationManager
     ) {
-        $this->em = $em;
+        $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->eventDispatcher = $eventDispatcher;
         $this->platformName = $configHandler->getParameter('name');
@@ -117,8 +115,8 @@ class NotificationManager
             $this->getNotificationRepository()->deleteNotificationsBeforeDate($purgeBeforeDate);
 
             $config->setLastPurgeDate($today);
-            $this->em->persist($config);
-            $this->em->flush();
+            $this->om->persist($config);
+            $this->om->flush();
         }
     }
 
@@ -223,11 +221,11 @@ class NotificationManager
     }
 
     /**
-     * @return EntityManager
+     * @return ObjectManager
      */
     public function getEntityManager()
     {
-        return $this->em;
+        return $this->om;
     }
 
     /**
@@ -494,6 +492,43 @@ class NotificationManager
 
     public function getTaggedUsersFromText($text)
     {
+    }
+
+    /**
+     * @param User $user
+     * @param ResourceNode[] $resourceNodes
+     *
+     * @return array
+     */
+    public function toggleFollowResources(User $user, array $resourceNodes)
+    {
+        if (0 < count($resourceNodes)) {
+            $follower = $this->getFollowerResource($user->getId(), $resourceNodes[0]->getId(), $resourceNodes[0]->getClass());
+            $mode = empty($follower) ? 'create' : 'delete';
+
+            $this->om->startFlushSuite();
+
+            switch ($mode) {
+                case 'create':
+                    foreach ($resourceNodes as $resourceNode) {
+                        $userId = $user->getId();
+                        $resourceId = $resourceNode->getId();
+                        $resourceClass = $resourceNode->getClass();
+                        $follower = $this->getFollowerResource($userId, $resourceId, $resourceClass);
+
+                        if (empty($follower)) {
+                            $this->followResource($userId, $resourceId, $resourceClass);
+                        }
+                    }
+                    break;
+                case 'delete':
+                    foreach ($resourceNodes as $resourceNode) {
+                        $this->unfollowResource($user->getId(), $resourceNode->getId(), $resourceNode->getClass());
+                    }
+                    break;
+            }
+            $this->om->endFlushSuite();
+        }
     }
 
     /**
