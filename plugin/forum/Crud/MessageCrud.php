@@ -2,16 +2,15 @@
 
 namespace Claroline\ForumBundle\Crud;
 
-
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.crud.forum_message")
@@ -19,24 +18,27 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class MessageCrud
 {
+    use PermissionCheckerTrait;
+
     /**
      * ForumSerializer constructor.
      *
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "messageManager" = @DI\Inject("claroline.manager.message_manager"),
-     *     "authChecker" = @DI\Inject("security.authorization_checker")
+     *     "messageManager" = @DI\Inject("claroline.manager.message_manager")
      * })
      *
      * @param FinderProvider $finder
      */
-    public function __construct(ObjectManager $om, TokenStorageInterface $tokenStorage, MessageManager $messageManager, AuthorizationCheckerInterface $authChecker)
-    {
+    public function __construct(
+        ObjectManager $om,
+        TokenStorageInterface $tokenStorage,
+        MessageManager $messageManager
+    ) {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->messageManager = $messageManager;
-        $this->authChecker= $authChecker;
     }
 
     /**
@@ -62,19 +64,17 @@ class MessageCrud
             $user->setForum($forum);
             $user->setUser($message->getCreator());
         }
-        if (!$this->authChecker->isGranted('EDIT')) {
+        if (!$this->checkPermission('EDIT', $forum->getResourceNode())) {
+            if (Forum::VALIDATE_PRIOR_ALL === $forum->getValidationMode()) {
+                $message->setModerated(Forum::VALIDATE_PRIOR_ALL);
+            }
 
-          if (Forum::VALIDATE_PRIOR_ALL === $forum->getValidationMode()) {
-              $message->setModerated(Forum::VALIDATE_PRIOR_ALL);
-          }
-
-          if (Forum::VALIDATE_PRIOR_ONCE === $forum->getValidationMode()) {
-              $message->setModerated($user->getAccess() ? Forum::VALIDATE_NONE : Forum::VALIDATE_PRIOR_ONCE);
-          }
+            if (Forum::VALIDATE_PRIOR_ONCE === $forum->getValidationMode()) {
+                $message->setModerated($user->getAccess() ? Forum::VALIDATE_NONE : Forum::VALIDATE_PRIOR_ONCE);
+            }
         } else {
-          $message->setModerated(Forum::VALIDATE_NONE);
+            $message->setModerated(Forum::VALIDATE_NONE);
         }
-
 
         return $message;
     }

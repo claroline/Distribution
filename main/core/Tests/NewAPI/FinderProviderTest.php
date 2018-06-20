@@ -6,7 +6,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
-class SerializerProviderTest extends TransactionalTestCase
+class FinderProviderTest extends TransactionalTestCase
 {
     /** @var SerializerProvider */
     private $provider;
@@ -38,10 +38,9 @@ class SerializerProviderTest extends TransactionalTestCase
         foreach ($filters as $filterName => $filterOptions) {
             $filter = $this->buildFilter($filterName, $filterOptions);
             $allFilters = array_merge($allFilters, $filter);
-            //$this->provider->fetch($class, 0, 1, $filter);
         }
 
-        $data = $this->provider->fetch($class, 0, 1, $allFilters);
+        $data = $this->provider->fetch($class, $allFilters);
         //empty array
         $this->assertTrue(is_array($data));
     }

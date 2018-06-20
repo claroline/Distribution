@@ -30,7 +30,7 @@ const WebResourceForm = props =>
     ]}
   />
 
-FileForm.propTypes = {
+WebResourceForm.propTypes = {
   newNode: T.shape({
     name: T.string
   }),

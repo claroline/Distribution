@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Validation\User;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -17,6 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ForumSerializer
 {
+    use PermissionCheckerTrait;
+
     private $finder;
 
     /**
@@ -67,7 +70,6 @@ class ForumSerializer
     public function serialize(Forum $forum, array $options = [])
     {
         $finder = $this->container->get('claroline.api.finder');
-        $authChecker = $this->container->get('security.authorization_checker');
         $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
 
         if (!is_string($currentUser)) {
@@ -78,6 +80,17 @@ class ForumSerializer
         } else {
             $forumUser = new User();
         }
+
+        $now = new \DateTime();
+        $readonly = false;
+
+        if ($forum->getLockDate()) {
+            $readonly = $forum->getLockDate() > $now;
+        }
+
+        $banned = $this->checkPermission('EDIT', $forum->getResourceNode()) ?
+          false :
+          $forumUser->isBanned() || $readonly;
 
         return [
             'id' => $forum->getUuid(),
@@ -91,8 +104,8 @@ class ForumSerializer
             ],
             'restrictions' => [
               'lockDate' => $forum->getLockDate() ? $forum->getLockDate()->format('Y-m-d\TH:i:s') : null,
-              'banned' => $forumUser->isBanned(),
-              'moderator' => $authChecker->isGranted('EDIT'),
+              'banned' => $banned,
+              'moderator' => $this->checkPermission('EDIT', $forum->getResourceNode()),
             ],
             'meta' => [
               'users' => $finder->fetch('Claroline\ForumBundle\Entity\Validation\User', ['forum' => $forum->getUuid()], null, 0, 0, true),

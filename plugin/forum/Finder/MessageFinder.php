@@ -98,9 +98,13 @@ class MessageFinder implements FinderInterface
             'type' => ['integer', 'string'],
             'description' => 'The parent message id (int) or uuid (string)',
           ],
-          'isVisible' => [
+          'flagged' => [
             'type' => 'boolean',
             'description' => 'If the message is visible',
+          ],
+          'moderation' => [
+            'type' => 'boolean',
+            'description' => 'If the message is waiting for a moderator',
           ],
           'content' => [
             'type' => 'string',
