@@ -16,8 +16,23 @@ const EditorComponent = props =>
     name="wikiForm"
     sections={[
       {
-        title: trans('general', {}, 'platform'),
-        primary: true,
+        icon: 'fa fa-fw fa-desktop',
+        title: trans('display_parameters', {}, 'platform'),
+        fields: [
+          {
+            name: 'display.sectionNumbers',
+            help: trans('display_section_numbers_message', {}, 'icap_wiki'),
+            type: 'boolean',
+            label: trans('display_section_numbers', {}, 'icap_wiki')
+          }, {
+            name: 'display.contents',
+            type: 'boolean',
+            label: trans('display_contents', {}, 'icap_wiki')
+          }
+        ]
+      }, {
+        icon: 'fa fa-fw fa-gavel',
+        title: trans('moderation', {}, 'icap_wiki'),
         fields: [
           {
             name: 'mode',
@@ -30,11 +45,6 @@ const EditorComponent = props =>
               condensed: false,
               choices: WIKI_MODE_CHOICES
             }
-          }, {
-            name: 'display.sectionNumbers',
-            help: trans('display_section_numbers_message', {}, 'icap_wiki'),
-            type: 'boolean',
-            label: trans('display_section_numbers', {}, 'icap_wiki')
           }
         ]
       }

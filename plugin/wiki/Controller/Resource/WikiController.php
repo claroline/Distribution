@@ -54,8 +54,9 @@ class WikiController extends Controller
 
     /**
      * @EXT\Route(
-     *      "/{id}/pdf",
-     *      name="icap_wiki_export_pdf"
+     *     "/{id}/pdf",
+     *     name="icap_wiki_export_pdf",
+     *     options={"expose"=true}
      * )
      * @EXT\ParamConverter(
      *     "wiki",

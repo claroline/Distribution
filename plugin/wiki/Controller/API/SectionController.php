@@ -166,6 +166,59 @@ class SectionController
     }
 
     /**
+     * @EXT\Route("/{wikiId}/section/delete", name="apiv2_wiki_section_delete")
+     * @EXT\ParamConverter(
+     *     "wiki",
+     *     class="IcapWikiBundle:Wiki",
+     *     options={"mapping": {"wikiId": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @EXT\Method({"DELETE"})
+     *
+     * @param Wiki    $wiki
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function deleteAction(Wiki $wiki, Request $request)
+    {
+        $resourceNode = $wiki->getResourceNode();
+        $this->checkPermission('EDIT', $resourceNode, [], true);
+        $this->sectionManager->deleteSections(
+            $wiki,
+            $request->get('ids'),
+            $request->get('children'),
+            $request->get('permanently')
+        );
+
+        return new JsonResponse(true);
+    }
+
+    /**
+     * @EXT\Route("/{wikiId}/section/restore", name="apiv2_wiki_section_restore")
+     * @EXT\ParamConverter(
+     *     "wiki",
+     *     class="IcapWikiBundle:Wiki",
+     *     options={"mapping": {"wikiId": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @EXT\Method({"POST"})
+     *
+     * @param Wiki    $wiki
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function restoreAction(Wiki $wiki, Request $request)
+    {
+        $resourceNode = $wiki->getResourceNode();
+        $this->checkPermission('EDIT', $resourceNode, [], true);
+        $this->sectionManager->restoreSections($wiki, $request->get('ids'));
+
+        return new JsonResponse(true);
+    }
+
+    /**
      * @EXT\Route("/{wikiId}/sections/deleted", name="apiv2_wiki_section_deleted_list")
      * @EXT\Method({"GET"})
      * @EXT\ParamConverter(

@@ -7,8 +7,14 @@ use Claroline\CoreBundle\Entity\User;
 use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
+use Icap\WikiBundle\Event\Log\LogSectionCreateEvent;
+use Icap\WikiBundle\Event\Log\LogSectionDeleteEvent;
+use Icap\WikiBundle\Event\Log\LogSectionRemoveEvent;
+use Icap\WikiBundle\Event\Log\LogSectionRestoreEvent;
+use Icap\WikiBundle\Event\Log\LogSectionUpdateEvent;
 use Icap\WikiBundle\Serializer\SectionSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @DI\Service("icap.wiki.section_manager")
@@ -24,22 +30,29 @@ class SectionManager
     /** @var SectionSerializer */
     protected $sectionSerializer;
 
+    /** @var EventDispatcherInterface */
+    protected $eventDispatcher;
+
     /**
      * @DI\InjectParams({
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "sectionSerializer"      = @DI\Inject("claroline.serializer.wiki.section")
+     *     "sectionSerializer"      = @DI\Inject("claroline.serializer.wiki.section"),
+     *     "eventDispatcher"        = @DI\Inject("event_dispatcher")
      * })
      *
      * @param ObjectManager     $om
      * @param SectionSerializer $sectionSerializer
+     * @param $eventDispatcher
      */
     public function __construct(
         ObjectManager $om,
-        SectionSerializer $sectionSerializer
+        SectionSerializer $sectionSerializer,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->om = $om;
         $this->sectionRepository = $om->getRepository('Icap\WikiBundle\Entity\Section');
         $this->sectionSerializer = $sectionSerializer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function getSerializedSectionTree(Wiki $wiki, User $user = null, $isAdmin = false)
@@ -66,6 +79,8 @@ class SectionManager
         $this->sectionSerializer->deserialize($data, $user, $section);
         $this->om->persist($section);
         $this->om->flush();
+
+        $this->dispatch(new LogSectionUpdateEvent($section->getWiki(), $section, []));
     }
 
     public function createSection(Wiki $wiki, Section $section, User $user, $isAdmin, $data)
@@ -78,7 +93,35 @@ class SectionManager
         $this->sectionRepository->persistAsLastChildOf($newSection, $section);
         $this->om->flush();
 
+        $this->dispatch(new LogSectionCreateEvent($wiki, $newSection));
+
         return $newSection;
+    }
+
+    public function restoreSections(Wiki $wiki, $ids = [])
+    {
+        $sections = $this->sectionRepository->findSectionsBy([
+            'uuid' => $ids,
+            'wiki' => $wiki,
+            'deleted' => true,
+        ]);
+
+        foreach ($sections as $section) {
+            $this->restoreSection($section);
+        }
+    }
+
+    public function deleteSections(Wiki $wiki, $ids, $withChildren = false, $permanently = false)
+    {
+        $sections = $this->sectionRepository->findSectionsBy([
+            'uuid' => $ids,
+            'wiki' => $wiki,
+            'deleted' => $permanently,
+        ]);
+
+        foreach ($sections as $section) {
+            $this->deleteSection($section, $withChildren);
+        }
     }
 
     public function getArchivedSectionsForPosition(Section $section)
@@ -126,5 +169,38 @@ class SectionManager
         }
 
         return count($sections);
+    }
+
+    private function dispatch($event)
+    {
+        $this->eventDispatcher->dispatch('log', $event);
+    }
+
+    private function restoreSection(Section $section)
+    {
+        if ($section->getDeleted()) {
+            $this->sectionRepository->restoreSection($section);
+            $this->dispatch(new LogSectionRestoreEvent($section->getWiki(), $section));
+        }
+    }
+
+    private function deleteSection(Section $section, $withChildren = false)
+    {
+        if (!$section->getDeleted()) {
+            // Soft delete
+            if ($withChildren) {
+                $this->sectionRepository->deleteSubtree($section);
+            } else {
+                $this->sectionRepository->deleteFromTree($section);
+            }
+
+            $this->dispatch(new LogSectionDeleteEvent($section->getWiki(), $section));
+        } else {
+            // Hard delete
+            $this->om->remove($section);
+            $this->om->flush();
+
+            $this->dispatch(new LogSectionRemoveEvent($section->getWiki(), $section));
+        }
     }
 }

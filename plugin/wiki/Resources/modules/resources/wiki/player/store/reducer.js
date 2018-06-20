@@ -5,12 +5,21 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 import {
   UPDATE_CURRENT_EDIT_SECTION,
   UPDATE_CURRENT_PARENT_SECTION,
-  UPDATE_SECTION_VISIBILITY
+  UPDATE_SECTION_VISIBILITY,
+  LOADED_SECTION_TREE,
+  SECTION_DELETED
 } from '#/plugin/wiki/resources/wiki/player/store/actions'
 import {
   UPDATE_ACTIVE_CONTRIBUTION
 } from '#/plugin/wiki/resources/wiki/history/store/actions'
-import {updateInTree, appendChildToTree} from '#/plugin/wiki/resources/wiki/utils'
+import {
+  SECTION_RESTORED
+} from '#/plugin/wiki/resources/wiki/deleted/store/actions'
+import {
+  updateInTree,
+  appendChildToTree,
+  deleteFromTree
+} from '#/plugin/wiki/resources/wiki/utils'
 
 const defaultCurrentSection = {
   id: null,
@@ -20,12 +29,18 @@ const reducer = combineReducers({
   tree: makeReducer({}, {
     [UPDATE_ACTIVE_CONTRIBUTION]: (state, action) => updateInTree(state, action.sectionId, 'activeContribution', action.contribution),
     [UPDATE_SECTION_VISIBILITY]: (state, action) => updateInTree(state, action.sectionId, 'meta.visible', action.section.meta.visible),
+    [SECTION_DELETED]: (state, action) => deleteFromTree(state, action.sectionId, action.children),
+    [LOADED_SECTION_TREE]: (state, action) => action.sectionTree,
     [FORM_SUBMIT_SUCCESS+'/sections.currentSection']: (state, action) => {
       if (action.updatedData.meta.new) {
         return appendChildToTree(state, action.updatedData.meta.parent, action.updatedData)
       }
       return updateInTree(state, action.updatedData.id, 'activeContribution', action.updatedData.activeContribution)
     }
+  }),
+  invalidated: makeReducer(false, {
+    [LOADED_SECTION_TREE]: () => false,
+    [SECTION_RESTORED]: () => true
   }),
   currentSection: makeFormReducer('sections.currentSection', defaultCurrentSection, {
     id: makeReducer(defaultCurrentSection.id, {

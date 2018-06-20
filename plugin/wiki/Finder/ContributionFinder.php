@@ -21,14 +21,49 @@ class ContributionFinder implements FinderInterface
      */
     public function configureQueryBuilder(QueryBuilder $qb, array $searches, array $sortBy = null)
     {
+        $joinedCreator = false;
         foreach ($searches as $filterName => $filterValue) {
-            if (is_string($filterValue)) {
-                $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-            } else {
-                $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                $qb->setParameter($filterName, $filterValue);
+            switch ($filterName) {
+                case 'creator':
+                    $joinedCreator = true;
+                    $qb
+                        ->join('obj.contributor', 'contributor')
+                        ->andWhere($qb->expr()->orX(
+                            $qb->expr()->like('UPPER(contributor.firstName)', ':contributor'),
+                            $qb->expr()->like('UPPER(contributor.lastName)', ':contributor'),
+                            $qb->expr()->like('UPPER(contributor.username)', ':contributor'),
+                            $qb->expr()->like('UPPER(contributor.email)', ':contributor'),
+                            $qb->expr()->like(
+                                "CONCAT(CONCAT(UPPER(contributor.firstName), ' '), UPPER(contributor.lastName))",
+                                ':contributor'
+                            ),
+                            $qb->expr()->like(
+                                "CONCAT(CONCAT(UPPER(contributor.lastName), ' '), UPPER(contributor.firstName))",
+                                ':contributor'
+                            )
+                        ))
+                        ->setParameter('contributor', '%'.strtoupper($filterValue).'%');
+                    break;
+
+                default:
+                    if (is_string($filterValue)) {
+                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    } else {
+                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    }
             }
+        }
+
+        if (null !== $sortBy && 'creator' === $sortBy['property']) {
+            $direction = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
+            if (!$joinedCreator) {
+                $qb->join('obj.contributor', 'contributor');
+            }
+            $qb
+                ->addOrderBy('contributor.lastName', $direction)
+                ->addOrderBy('contributor.firstName', $direction);
         }
     }
 

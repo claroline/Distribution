@@ -39,11 +39,11 @@ const HistoryComponent = props =>
           }
         }, {
           name: 'meta.creator',
-          alias: 'contributor',
-          label: trans('user', {}, 'platform'),
+          alias: 'creator',
+          label: trans('author', {}, 'platform'),
           type: 'string',
           displayed: true,
-          renderer: rowData => rowData.meta.creator ? `${rowData.meta.creator.firstName} ${rowData.meta.creator.lastName}` : trans('unknown')
+          renderer: rowData => rowData.meta.creator ? `${rowData.meta.creator.name}` : trans('unknown')
         },
         {
           name: 'active',
@@ -68,7 +68,7 @@ const HistoryComponent = props =>
           )
         }, {
           type: 'link',
-          icon: 'fa fa-arrows-h',
+          icon: 'fa fa-fw fa-arrows-h',
           target: rows.length === 2 ? `/contribution/compare/${props.section.id}/${rows[0].id}/${rows[1].id}` : '',
           label: trans('compare_versions', {}, 'icap_wiki'),
           scope: ['collection'],

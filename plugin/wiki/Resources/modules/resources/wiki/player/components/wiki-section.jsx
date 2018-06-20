@@ -8,10 +8,13 @@ import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Heading} from '#/main/core/layout/components/heading'
 import {Button} from '#/main/app/action'
+import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Section as SectionTypes} from '#/plugin/wiki/resources/wiki/prop-types'
 import {WikiSectionForm} from '#/plugin/wiki/resources/wiki/player/components/wiki-section-form'
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions} from '#/plugin/wiki/resources/wiki/player/store'
+import {MODAL_WIKI_SECTION_DELETE} from '#/plugin/wiki/resources/wiki/player/modals/section'
 
 const loggedUser = currentUser()
 
@@ -38,7 +41,7 @@ const WikiSectionContent = props =>
         <Button
           id={`wiki-section-add-${props.section.id}`}
           type="callback"
-          icon="fa fa-plus"
+          icon="fa fa-fw fa-plus"
           className="btn btn-link"
           tooltip="top"
           callback={() => props.addSection(props.section.id)}
@@ -52,7 +55,7 @@ const WikiSectionContent = props =>
         <Button
           id={`wiki-section-edit-${props.section.id}`}
           type="callback"
-          icon="fa fa-pencil"
+          icon="fa fa-fw fa-pencil"
           className="btn btn-link"
           tooltip="top"
           callback={() => props.editSection(props.section)}
@@ -66,7 +69,7 @@ const WikiSectionContent = props =>
         <Button
           id={`wiki-section-history-${props.section.id}`}
           type="link"
-          icon="fa fa-clock-o"
+          icon="fa fa-fw fa-history"
           className="btn btn-link"
           tooltip="top"
           target={`/history/${props.section.id}`}
@@ -77,7 +80,7 @@ const WikiSectionContent = props =>
         <Button
           id={`wiki-section-toggle-visibility-${props.section.id}`}
           type="callback"
-          icon={props.section.meta.visible ? 'fa fa-eye' : 'fa fa-eye-slash'}
+          icon={props.section.meta.visible ? 'fa fa-fw fa-eye' : 'fa fa-fw fa-eye-slash'}
           className="btn btn-link"
           tooltip="top"
           label={trans(props.section.meta.visible ? 'render_invisible' : 'render_visible', {}, 'icap_wiki')}
@@ -89,23 +92,19 @@ const WikiSectionContent = props =>
         <Button
           id={`wiki-section-delete-${props.section.id}`}
           type="callback"
-          icon="fa fa-trash-o"
+          icon="fa fa-fw fa-trash-o"
           className="btn btn-link"
           dangerous={true}
           tooltip="top"
           label={trans('delete')}
           title={trans('delete')}
-          callback={deleteChildren => props.deleteSection(props.section.id, deleteChildren)}
-          confirm={{
-            message: trans('confirm_delete'),
-            button: trans('proceed')
-          }}
+          callback={() => props.deleteSection(props.wikiId, props.section)}
         />
         }
       </span>
       }
     </Heading>
-    <div className="wiki-section-text" dangerouslySetInnerHTML={{__html: props.section.activeContribution.text}}/>
+    <HtmlText className="wiki-section-text">{props.section.activeContribution.text}</HtmlText>
   </div>
 
 implementPropTypes(WikiSectionContent, SectionTypes)
@@ -141,9 +140,11 @@ const WikiSectionComponent = props =>
             loggedUserId={props.loggedUserId}
             currentSection={props.currentSection}
             mode={props.mode}
+            wikiId={props.wikiId}
             setSectionVisibility={props.setSectionVisibility}
             editSection={props.editSection}
             addSection={props.addSection}
+            saveSection={props.saveSection}
             deleteSection={props.deleteSection}
             isNew={props.isNew}
             saveEnabled={props.saveEnabled}
@@ -158,6 +159,7 @@ const WikiSection = connect(
   (state, props = {}) => ({
     displaySectionNumbers: props.displaySectionNumbers ? props.displaySectionNumbers : state.wiki.display.sectionNumbers,
     mode: state.wiki.mode,
+    wikiId: state.wiki.id,
     currentSection: state.sections.currentSection,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     loggedUserId: loggedUser === null ? null : loggedUser.id,
@@ -169,7 +171,12 @@ const WikiSection = connect(
       setSectionVisibility: props.setSectionVisibility === null ? null : (sectionId, visible) => dispatch(actions.setSectionVisibility(sectionId, visible)),
       addSection: (parentId = null) => dispatch(actions.setCurrentParentSection(parentId)),
       editSection: (section = null) => dispatch(actions.setCurrentEditSection(section)),
-      deleteSection: (sectionId, deleteChildren) => dispatch(actions.deleteSection(sectionId, deleteChildren)),
+      deleteSection: (wikiId, section) => dispatch(
+        modalActions.showModal(MODAL_WIKI_SECTION_DELETE, {
+          deleteSection: (deleteChildren) => dispatch(actions.deleteSection(wikiId, section.id, deleteChildren)),
+          sectionTitle: section.activeContribution.title
+        })
+      ),
       saveSection: (id, isNew) => dispatch(formActions.saveForm('sections.currentSection', [isNew ? 'apiv2_wiki_section_create' : 'apiv2_wiki_section_update', {id}]))
     }
   )

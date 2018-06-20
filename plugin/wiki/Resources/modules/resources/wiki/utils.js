@@ -35,6 +35,20 @@ const appendChildToTreeNode = (items, parentId, child) => {
   })
 }
 
+const deleteNodeFromTree = (items, sectionId, children) => {
+  items.forEach((item, idx) => {
+    if (item['id'] === sectionId) {
+      let replacement = []
+      if (!children && Array.isArray(items[idx]['children'])) {
+        replacement = items[idx]['children']
+      }
+      items.splice(idx, 1, ...replacement)
+    } else if (Array.isArray(item['children']) && item['children'].length > 0) {
+      deleteNodeFromTree(item['children'], sectionId, children)
+    }
+  })
+}
+
 export const findInTree = (tree, id, childrenProperty = 'children', idProperty = 'id') => {
   return find(flattenItems(Array.isArray(tree) ? tree : [tree], childrenProperty), [idProperty, id])
 }
@@ -50,6 +64,13 @@ export const appendChildToTree = (tree, parentId, child) => {
   const copy = cloneDeep(tree)
   appendChildToTreeNode(Array.isArray(copy) ? copy : [copy], parentId, child)
 
+  return copy
+}
+
+export const deleteFromTree = (tree, sectionId, children) => {
+  const copy = cloneDeep(tree)
+  deleteNodeFromTree(Array.isArray(copy) ? copy : [copy], sectionId, children)
+  
   return copy
 }
 

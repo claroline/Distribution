@@ -19,11 +19,13 @@ const Section = {
     'canEdit': T.bool.isRequired,
     'loggedUserId': T.string,
     'mode': T.string.isRequired,
+    'wikiId': T.string.isRequired,
     'section': T.object.isRequired,
     'setSectionVisibility': T.func,
     'editSection': T.func.isRequired,
     'addSection': T.func.isRequired,
     'deleteSection': T.func.isRequired,
+    'saveSection': T.func.isRequired,
     'currentSection': T.object,
     'isNew': T.bool.isRequired,
     'saveEnabled': T.bool.isRequired

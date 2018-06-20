@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {displayDate} from '#/main/core/scaffolding/date'
+import {HtmlText} from '#/main/core/layout/components/html-text'
 
 const Version = props =>
   <div>
@@ -8,7 +9,7 @@ const Version = props =>
     {props.version.meta && props.version.meta.creator &&
     <h5 className="small text-muted">[ {props.version.meta.creator.username} ({props.version.meta.creator.name}) - {displayDate(props.version.meta.createdAt, true, true)} ]</h5>
     }
-    <div className="wiki-section-content" dangerouslySetInnerHTML={{__html: props.version.text}}/>
+    <HtmlText className="wiki-section-content">{props.version.text}</HtmlText>
   </div>
   
 Version.propTypes = {

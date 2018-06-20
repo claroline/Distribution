@@ -41,6 +41,12 @@ class Wiki extends AbstractResource
      */
     protected $displaySectionNumbers = false;
 
+    /**
+     * @ORM\Column(type="boolean", name="display_contents", nullable=false, options={"default": true})
+     * Display or hide the section numbers in the wiki body
+     */
+    protected $displayContents = true;
+
     //Temporary variable used only by onCopy method of WikiListener
     private $wikiCreator;
 
@@ -105,6 +111,26 @@ class Wiki extends AbstractResource
     public function setDisplaySectionNumbers($displaySectionNumbers)
     {
         $this->displaySectionNumbers = $displaySectionNumbers;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisplayContents()
+    {
+        return $this->displayContents;
+    }
+
+    /**
+     * @param mixed $displayContents
+     *
+     * @return $this
+     */
+    public function setDisplayContents($displayContents)
+    {
+        $this->displayContents = $displayContents;
 
         return $this;
     }

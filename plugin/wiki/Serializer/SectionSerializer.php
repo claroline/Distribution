@@ -88,6 +88,7 @@ class SectionSerializer
             'meta' => array_merge($extraMeta, [
                 'createdAt' => $section->getCreationDate()->format('Y-m-d H:i'),
                 'visible' => $section->getVisible(),
+                'deletedAt' => $section->getDeleted() ? $section->getDeletionDate()->format('Y-m-d H:i') : null,
                 'creator' => null === $author ?
                     null :
                     $this->userSerializer->serialize($author, [Options::SERIALIZE_MINIMAL]),

@@ -185,9 +185,12 @@ class SectionRepository extends NestedTreeRepository
         $queryBuilder->getQuery()->getSingleScalarResult();
     }
 
-    public function restoreSection($section, $parent)
+    public function restoreSection(Section $section, $parent = null)
     {
         //Update restoring section data
+        if (null === $parent) {
+            $parent = $section->getWiki()->getRoot();
+        }
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->update('Icap\WikiBundle\Entity\Section', 'section')
             ->set('section.left', $parent->getRight())
@@ -208,6 +211,22 @@ class SectionRepository extends NestedTreeRepository
             ->andWhere('section.id = :sectionId')
             ->setParameter('sectionId', $parent->getId());
         $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    public function findSectionsBy($criteria = [])
+    {
+        $qb = $this->createQueryBuilder('section');
+        foreach ($criteria as $name => $value) {
+            if (is_array($value)) {
+                $qb
+                    ->andWhere('section.'.$name.' IN (:'.$name.')');
+            } else {
+                $qb->andWhere('section.'.$name.' = :'.$name);
+            }
+            $qb->setParameter($name, $value);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function buildTree(array $nodes, array $options = [])
