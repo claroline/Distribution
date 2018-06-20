@@ -9,7 +9,6 @@ import {actions} from '#/main/core/workspace/list/actions'
 import {trans, transChoice} from '#/main/core/translation'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import '#/main/core/data/form/modals'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 const WorkspacesList = props =>
