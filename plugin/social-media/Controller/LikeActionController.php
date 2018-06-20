@@ -44,7 +44,7 @@ class LikeActionController extends Controller
     }
 
     /**
-     * @Route("/like", name="icap_socialmedia_like")
+     * @Route("/like", name="icap_socialmedia_like", options={"expose"=true})
      * @Method({"POST"})
      * @ParamConverter("user", options={"authenticatedUser" = true})
      *
@@ -65,7 +65,7 @@ class LikeActionController extends Controller
     }
 
     /**
-     * @Route("/unlike", name="icap_socialmedia_unlike")
+     * @Route("/unlike", name="icap_socialmedia_unlike", options={"expose"=true})
      * @ParamConverter("user", options={"authenticatedUser" = true})
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
