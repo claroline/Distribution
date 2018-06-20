@@ -13,7 +13,7 @@
                 'href': path('claro_workspace_list')
             },
             {
-                'name': 'all_public_workspaces'|trans({}, 'platform'),
+                'name': 'my_workspaces'|trans({}, 'platform'),
                 'href': ''
             }
         ])
@@ -27,5 +27,5 @@
 {% block javascripts %}
     {{ parent() }}
 
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-workspace-list.js') }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-main-core-workspace-registered.js') }}"></script>
 {% endblock %}

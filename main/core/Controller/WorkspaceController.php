@@ -155,6 +155,7 @@ class WorkspaceController extends Controller
      *     "/list",
      *     name="claro_workspace_list"
      * )
+     * @EXT\Template
      */
     public function listAction()
     {
@@ -166,6 +167,7 @@ class WorkspaceController extends Controller
      *     "/list/currentuser",
      *     name="claro_workspace_by_user"
      * )
+     * @EXT\Template
      */
     public function listByUserAction()
     {

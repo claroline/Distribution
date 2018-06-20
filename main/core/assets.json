@@ -6,6 +6,8 @@
       "tinymce": "tinymce/browser",
       "user-management": "administration/user",
       "workspace-management": "administration/workspace",
+      "workspace-list": "workspace/list",
+      "workspace-registered": "workspace/registered",
       "theme-management": "administration/appearance/theme",
       "transfer-management": "administration/transfer",
       "plugin-management": "administration/plugins/module",

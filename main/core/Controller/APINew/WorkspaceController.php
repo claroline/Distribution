@@ -265,6 +265,25 @@ class WorkspaceController extends AbstractCrudController
         ));
     }
 
+    /**
+     * @Route(
+     *    "/list/registerable",
+     *    name="apiv2_workspace_displayable_list"
+     * )
+     * @Method("GET")
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function listDisplaybleAction()
+    {
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            ['hiddenFilters' => ['displayable' => true, 'model' => false]]
+        ));
+    }
+
     public function getOptions()
     {
         return [
