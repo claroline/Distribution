@@ -152,6 +152,28 @@ class WorkspaceController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/list",
+     *     name="claro_workspace_list"
+     * )
+     */
+    public function listAction()
+    {
+        return [];
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/list/currentuser",
+     *     name="claro_workspace_by_user"
+     * )
+     */
+    public function listByUserAction()
+    {
+        return [];
+    }
+
+    /**
+     * @EXT\Route(
      *     "/user/picker",
      *     name="claro_workspace_by_user_picker",
      *     options={"expose"=true}
@@ -183,38 +205,6 @@ class WorkspaceController extends Controller
         }
 
         return $response;
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/displayable/selfunregistration/page/{page}",
-     *     name="claro_list_workspaces_with_self_unregistration",
-     *     defaults={"page"=1},
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("currentUser", converter="current_user")
-     *
-     * @EXT\Template()
-     *
-     * Renders the displayable workspace list with self-unregistration.
-     *
-     * @param \Claroline\CoreBundle\Entity\User $currentUser
-     * @param int                               $page
-     *
-     * @return array
-     */
-    public function listWorkspacesWithSelfUnregistrationAction(User $currentUser, $page = 1)
-    {
-        $token = $this->tokenStorage->getToken();
-        $roles = $this->utils->getRoles($token);
-
-        $workspacesPager = $this->workspaceManager
-            ->getWorkspacesWithSelfUnregistrationByRoles($roles, $page);
-
-        return [
-            'user' => $currentUser,
-            'workspaces' => $workspacesPager,
-        ];
     }
 
     /**
@@ -455,75 +445,6 @@ class WorkspaceController extends Controller
     }
 
     /**
-     * @todo Security context verification
-     * @EXT\Route(
-     *     "/{workspace}/add/user/{user}",
-     *     name="claro_workspace_add_user",
-     *     options={"expose"=true},
-     *     requirements={"workspaceId"="^(?=.*[1-9].*$)\d*$"}
-     * )
-     *
-     * Adds a user to a workspace.
-     *
-     * @param Workspace $workspace
-     * @param User      $user
-     *
-     * @return Response
-     */
-    public function addUserAction(Workspace $workspace, User $user)
-    {
-        $this->workspaceManager->addUserAction($workspace, $user);
-
-        return new JsonResponse($this->userManager->convertUsersToArray([$user]));
-    }
-
-    /**
-     * @todo Security context verification
-     * @EXT\Route(
-     *     "/{workspace}/add/user/{user}/queue",
-     *     name="claro_workspace_add_user_queue",
-     *     options={"expose"=true},
-     *     requirements={"workspaceId"="^(?=.*[1-9].*$)\d*$"}
-     * )
-     *
-     * Adds a user to a workspace.
-     *
-     * @param Workspace $workspace
-     * @param User      $user
-     *
-     * @return Response
-     */
-    public function addUserQueueAction(Workspace $workspace, User $user)
-    {
-        $this->workspaceManager->addUserQueue($workspace, $user);
-
-        return new JsonResponse(['true']);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{workspace}/registration/queue/remove",
-     *     name="claro_workspace_remove_user_from_queue",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", converter="current_user")
-     *
-     * Removes user from Workspace registration queue.
-     *
-     * @param Workspace $workspace
-     * @param User      $user
-     *
-     * @return Response
-     */
-    public function removeUserFromQueueAction(Workspace $workspace, User $user)
-    {
-        $this->workspaceUserQueueManager
-            ->removeUserFromWorkspaceQueue($workspace, $user);
-
-        return new Response('success', 204);
-    }
-
-    /**
      * @EXT\Route(
      *     "/list/non/personal/workspaces/page/{page}/max/{max}/search/{search}",
      *     name="claro_all_non_personal_workspaces_list_pager",
@@ -549,114 +470,6 @@ class WorkspaceController extends Controller
             'max' => $max,
             'search' => $search,
         ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/list/personal/workspaces/page/{page}/max/{max}/search/{search}",
-     *     name="claro_all_personal_workspaces_list_pager",
-     *     defaults={"page"=1,"max"=20,"seach"=""},
-     *     options={"expose"=true}
-     * )
-     * @EXT\Template()
-     *
-     * @param int $page
-     *
-     * @return array
-     */
-    public function personalWorkspacesListPagerAction(
-        $page = 1,
-        $max = 20,
-        $search = ''
-    ) {
-        $personalWs = $this->workspaceManager
-            ->getDisplayablePersonalWorkspaces($page, $max, $search);
-
-        return [
-            'personalWs' => $personalWs,
-            'max' => $max,
-            'search' => $search,
-        ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/registration/list/non/personal/workspaces/page/{page}/max/{max}/search/{search}",
-     *     name="claro_all_non_personal_workspaces_list_registration_pager",
-     *     defaults={"page"=1,"max"=20,"seach"=""},
-     *     options={"expose"=true}
-     * )
-     * @EXT\Template()
-     *
-     * @param int $page
-     *
-     * @return array
-     */
-    public function nonPersonalWorkspacesListRegistrationPagerAction(
-        $page = 1,
-        $max = 20,
-        $search = ''
-    ) {
-        $nonPersonalWs = $this->workspaceManager
-            ->getDisplayableNonPersonalWorkspaces($page, $max, $search);
-
-        return [
-            'nonPersonalWs' => $nonPersonalWs,
-            'max' => $max,
-            'search' => $search,
-        ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/registration/list/personal/workspaces/page/{page}/max/{max}/search/{search}",
-     *     name="claro_all_personal_workspaces_list_registration_pager",
-     *     defaults={"page"=1,"max"=20,"seach"=""},
-     *     options={"expose"=true}
-     * )
-     * @EXT\Template()
-     *
-     * @param int $page
-     *
-     * @return array
-     */
-    public function personalWorkspacesListRegistrationPagerAction(
-        $page = 1,
-        $max = 20,
-        $search = ''
-    ) {
-        $personalWs = $this->workspaceManager
-            ->getDisplayablePersonalWorkspaces($page, $max, $search);
-
-        return [
-            'personalWs' => $personalWs,
-            'max' => $max,
-            'search' => $search,
-        ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/registration/list/workspaces/search/{search}/page/{page}",
-     *     name="claro_workspaces_list_registration_pager_search",
-     *     defaults={"page"=1},
-     *     options={"expose"=true}
-     * )
-     *
-     * @EXT\Template()
-     *
-     * Renders the workspace list in a pager for registration.
-     *
-     * @param string $search
-     * @param int    $page
-     *
-     * @return array
-     */
-    public function workspaceSearchedListRegistrationPagerAction($search, $page = 1)
-    {
-        $pager = $this->workspaceManager->getDisplayableWorkspacesBySearchPager($search, $page);
-
-        return ['workspaces' => $pager, 'search' => $search];
     }
 
     /**
