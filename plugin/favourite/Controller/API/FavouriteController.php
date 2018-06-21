@@ -6,8 +6,8 @@ use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\User;
 use HeVinci\FavouriteBundle\Manager\FavouriteManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 

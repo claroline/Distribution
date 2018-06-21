@@ -4,7 +4,6 @@ namespace Claroline\CoreBundle\Controller\API\Resource;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
@@ -43,7 +42,7 @@ class ResourceNodeController
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param ObjectManager $om
+     * @param ObjectManager                 $om
      * @param SerializerProvider            $serializer
      * @param ResourceManager               $resourceManager
      * @param ResourceNodeManager           $resourceNodeManager

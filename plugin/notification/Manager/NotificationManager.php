@@ -75,7 +75,7 @@ class NotificationManager
         $this->tokenStorage = $tokenStorage;
         $this->eventDispatcher = $eventDispatcher;
         $this->platformName = $configHandler->getParameter('name');
-        if ($this->platformName === null || empty($this->platformName)) {
+        if (null === $this->platformName || empty($this->platformName)) {
             $this->platformName = 'Claroline';
         }
         $this->notificationParametersManager = $notificationParametersManager;
@@ -109,7 +109,7 @@ class NotificationManager
     {
         $lastPurgeDate = $config->getLastPurgeDate();
         $today = (new \DateTime())->setTime(0, 0, 0);
-        if ($lastPurgeDate === null || $today > $lastPurgeDate) {
+        if (null === $lastPurgeDate || $today > $lastPurgeDate) {
             $purgeBeforeDate = clone $today;
             $purgeBeforeDate->sub(new \DateInterval('P'.$config->getPurgeAfterDays().'D'));
             $this->getNotificationRepository()->deleteNotificationsBeforeDate($purgeBeforeDate);
@@ -158,7 +158,7 @@ class NotificationManager
     protected function getUsersToNotifyForNotifiable(NotifiableInterface $notifiable)
     {
         $userIds = [];
-        if ($notifiable->getSendToFollowers() && $notifiable->getResource() !== null) {
+        if ($notifiable->getSendToFollowers() && null !== $notifiable->getResource()) {
             $userIds = $this->getFollowersByResourceIdAndClass(
                 $notifiable->getResource()->getId(),
                 $notifiable->getResource()->getClass()
@@ -208,7 +208,7 @@ class NotificationManager
                 $event = $this->eventDispatcher->dispatch($eventName, $event);
                 $views[$notificationView->getId().''] = $event->getResponseContent();
             }
-            if ($notificationView->getStatus() === false) {
+            if (false === $notificationView->getStatus()) {
                 array_push(
                     $unviewedNotificationIds,
                     $notificationView->getId()
@@ -295,7 +295,7 @@ class NotificationManager
 
         $doerId = null;
 
-        if ($doer === null) {
+        if (null === $doer) {
             $doer = $this->getLoggedUser();
         }
 
@@ -335,7 +335,7 @@ class NotificationManager
     {
         if (count($userIds) > 0) {
             foreach ($userIds as $userId) {
-                if ($userId !== null && $notification->getUserId() !== $userId) {
+                if (null !== $userId && $notification->getUserId() !== $userId) {
                     $notificationViewer = new NotificationViewer();
                     $notificationViewer->setNotification($notification);
                     $notificationViewer->setViewerId($userId);
@@ -362,7 +362,7 @@ class NotificationManager
         $notification = null;
         if (count($userIds) > 0) {
             $resourceId = null;
-            if ($notifiable->getResource() !== null) {
+            if (null !== $notifiable->getResource()) {
                 $resourceId = $notifiable->getResource()->getId();
             }
 
@@ -458,7 +458,7 @@ class NotificationManager
         $notificationUserParameters = $this
             ->notificationParametersManager
             ->getParametersByRssId($rssId);
-        if ($notificationUserParameters === null) {
+        if (null === $notificationUserParameters) {
             throw new NoResultException();
         }
 
@@ -495,7 +495,7 @@ class NotificationManager
     }
 
     /**
-     * @param User $user
+     * @param User           $user
      * @param ResourceNode[] $resourceNodes
      *
      * @return array

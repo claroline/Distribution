@@ -1148,7 +1148,7 @@ class ResourceManager
      * Changes a node thumbnail.
      *
      * @param ResourceNode $node
-     * @param File        $file
+     * @param File         $file
      *
      * @return ResourceThumbnail
      *
@@ -1429,7 +1429,7 @@ class ResourceManager
     public function getById($id)
     {
         /** @var ResourceNode $resourceNode */
-        $resourceNode = $this->resourceNodeRepo->findOneBy(['id' => $id]);;
+        $resourceNode = $this->resourceNodeRepo->findOneBy(['id' => $id]);
 
         return $resourceNode;
     }

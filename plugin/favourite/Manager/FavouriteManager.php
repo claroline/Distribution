@@ -57,7 +57,7 @@ class FavouriteManager
     }
 
     /**
-     * Creates or deletes (depending on the first resource) favourites for given user and list of resources
+     * Creates or deletes (depending on the first resource) favourites for given user and list of resources.
      *
      * @param User  $user
      * @param array $resourceNodes
@@ -87,7 +87,7 @@ class FavouriteManager
     }
 
     /**
-     * Creates a favourite for given user and resource
+     * Creates a favourite for given user and resource.
      *
      * @param User         $user
      * @param ResourceNode $resourceNode
@@ -106,7 +106,7 @@ class FavouriteManager
     }
 
     /**
-     * Deletes favourite for given user and resource
+     * Deletes favourite for given user and resource.
      *
      * @param User         $user
      * @param ResourceNode $resourceNode
