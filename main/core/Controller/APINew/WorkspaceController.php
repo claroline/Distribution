@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
@@ -20,6 +21,7 @@ use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Manager\RoleManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -44,16 +46,21 @@ class WorkspaceController extends AbstractCrudController
 
     /**
      * @DI\InjectParams({
-     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
-     *     "translator"      = @DI\Inject("translator")
+     *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
+     *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
+     *     "translator"       = @DI\Inject("translator")
      * })
      *
      * @param ResourceManager $resourceManager
      */
-    public function __construct(ResourceManager $resourceManager, TranslatorInterface $translator)
-    {
+    public function __construct(
+        ResourceManager $resourceManager,
+        TranslatorInterface $translator,
+        RoleManager $roleManager
+    ) {
         $this->resourceManager = $resourceManager;
         $this->translator = $translator;
+        $this->roleManager = $roleManager;
     }
 
     public function getName()
@@ -295,17 +302,28 @@ class WorkspaceController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function bulkRegisterUsersAction($role)
+    public function bulkRegisterUsersAction($role, Request $request)
     {
-        $query = $request->query->all();
-        $workspaces = $request->query->get('workspaces');
-        $groups = $request->query->get('users');
+        $workspaces = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace', 'workspaces');
+        $users = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\User', 'users');
 
-        /*
-        return new JsonResponse($this->finder->search(
-            'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            ['hiddenFilters' => ['displayable' => true, 'model' => false]]
-        ));*/
+        foreach ($workspaces as $workspace) {
+            if ('collaborator' === $role) {
+                $role = $this->roleManager->getCollaboratorRole($workspace);
+            } elseif ('manager' === $role) {
+                $role = $this->roleManager->getManagerRole($workspace);
+            } else {
+                throw new \Exception('The role '.$role.' does not exists');
+            }
+
+            foreach ($users as $user) {
+                $this->crud->patch($role, 'user', Crud::COLLECTION_ADD, $users);
+            }
+        }
+
+        return new JsonResponse(array_map(function ($workspace) {
+            return $this->serializer->serialize($workspace);
+        }, $workspaces));
     }
 
     /**
@@ -319,16 +337,28 @@ class WorkspaceController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function bulkRegisterGroupsAction($role)
+    public function bulkRegisterGroupsAction($role, Request $request)
     {
-        $query = $request->query->all();
-        $workspaces = $request->query->get('workspaces');
-        $groups = $request->query->get('groups');
-        /*
-          return new JsonResponse($this->finder->search(
-              'Claroline\CoreBundle\Entity\Workspace\Workspace',
-              ['hiddenFilters' => ['displayable' => true, 'model' => false]]
-          ));*/
+        $workspaces = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace', 'workspaces');
+        $groups = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\Group', 'groups');
+
+        foreach ($workspaces as $workspace) {
+            if ('collaborator' === $role) {
+                $role = $this->roleManager->getCollaboratorRole($workspace);
+            } elseif ('manager' === $role) {
+                $role = $this->roleManager->getManagerRole($workspace);
+            } else {
+                throw new \Exception('The role '.$role.' does not exists');
+            }
+
+            foreach ($groups as $group) {
+                $this->crud->patch($role, 'group', Crud::COLLECTION_ADD, $groups);
+            }
+        }
+
+        return new JsonResponse(array_map(function ($workspace) {
+            return $this->serializer->serialize($workspace);
+        }, $workspaces));
     }
 
     public function getOptions()

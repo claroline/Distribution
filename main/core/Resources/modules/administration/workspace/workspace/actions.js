@@ -96,7 +96,11 @@ actions.deleteWorkspaces = (workspaces) => ({
 
 actions.registerUsers = (role, workspaces, users) => ({
   [API_REQUEST]: {
-    url: url(['apiv2_role_add_users', {id: roleId}], {ids: users}),
+    url: url(['apiv2_workspace_bulk_register_users', {
+      role,
+      workspaces: workspaces.map(workspace => workspace.id),
+      users
+    }]),
     request: {
       method: 'PATCH'
     },
@@ -108,7 +112,11 @@ actions.registerUsers = (role, workspaces, users) => ({
 
 actions.registerGroups = (role, workspaces, groups) => ({
   [API_REQUEST]: {
-    url: url(['apiv2_role_add_users', {id: roleId}], {ids: users}),
+    url: url(['apiv2_workspace_bulk_register_groups', {
+      role,
+      workspaces: workspaces.map(workspace => workspace.id),
+      groups
+    }]),
     request: {
       method: 'PATCH'
     },

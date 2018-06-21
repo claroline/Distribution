@@ -118,13 +118,11 @@ const Workspaces = connect(
             url: ['apiv2_user_list_managed_organization'],
             autoload: true
           },
-          handleSelect: (selected) => {
-            console.log(selected)
+          handleSelect: (users) => {
             dispatch(modalActions.showModal(MODAL_DATA_FORM, {
               title: trans('register'),
               save: role => {
-                console.log(role, workspaces, selected)
-                //actions.registerUsers(role, workspaces, users)
+                dispatch(actions.registerUsers(role.role, workspaces, users))
               },
               sections: [
                 {
@@ -134,6 +132,7 @@ const Workspaces = connect(
                     name: 'role',
                     type: 'choice',
                     label: trans('role'),
+                    required: true,
                     options: {
                       multiple: false,
                       condensed: false,
@@ -164,12 +163,11 @@ const Workspaces = connect(
             url: ['apiv2_group_list_managed'],
             autoload: true
           },
-          handleSelect: (selected) => {
+          handleSelect: (groups) => {
             dispatch(modalActions.showModal(MODAL_DATA_FORM, {
               title: trans('register'),
               save: role => {
-                console.log(role, workspaces, selected)
-                //actions.registerGroups()(role, workspaces, selected)
+                dispatch(actions.registerGroups(role.role, workspaces, groups))
               },
               sections: [
                 {
@@ -179,6 +177,7 @@ const Workspaces = connect(
                     name: 'role',
                     type: 'choice',
                     label: trans('role'),
+                    required: true,
                     options: {
                       multiple: false,
                       condensed: false,
