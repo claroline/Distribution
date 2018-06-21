@@ -392,6 +392,9 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         $this->log('Updating resource icons...');
         $this->container->get('claroline.manager.icon_set_manager')->setLogger($this->logger);
         $this->container->get('claroline.manager.icon_set_manager')->addDefaultIconSets();
+        $this->log('Generating models...');
+        $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(false, true);
+        $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(true, true);
     }
 
     private function setLocale()
@@ -417,6 +420,10 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
 
         /** @var Role $role */
         $adminOrganization = $om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION');
+
+        if (!$adminOrganization) {
+            $adminOrganization = $this->container->get('claroline.manager.role_manager')->createBaseRole('ROLE_ADMIN_ORGANIZATION', 'admin_organization');
+        }
 
         /** @var AdminTool $tool */
         $usermanagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('user_management');
