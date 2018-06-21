@@ -93,26 +93,6 @@ class WebResourceListener
     }
 
     /**
-     * @DI\Observe("create_form_claroline_web_resource")
-     *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        $form = $this->container->get('form.factory')->create(new FileType(), new File());
-        $content = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'claroline_web_resource',
-            ]
-        );
-
-        $event->setResponseContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
      * @DI\Observe("create_claroline_web_resource")
      *
      * @param CreateResourceEvent $event
@@ -157,7 +137,7 @@ class WebResourceListener
         $hash = $event->getResource()->getHashName();
 
         $content = $this->container->get('templating')->render(
-            'ClarolineWebResourceBundle::webResource.html.twig',
+            'ClarolineWebResourceBundle:web-resource:open.html.twig',
             [
                 'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
                 'path' => $hash.'/'.$this->guessRootFileFromUnzipped($this->zipPath.$hash),
@@ -367,27 +347,7 @@ class WebResourceListener
         return $this->container->get('claroline.utilities.misc')->generateGuid().'.'.$mixed;
     }
 
-    /**
-     * Checks if a UploadedFile is a zip and contains index.html file.
-     *
-     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
-     *
-     * @return bool
-     */
-    private function isZip(UploadedFile $file)
-    {
-        $isZip = false;
-        if ($file->getClientMimeType() === 'application/zip' || $this->getZip()->open($file) === true) {
-            // Correct Zip type => check if html root file exists
-            $rootFile = $this->guessRootFile($file);
 
-            if (!empty($rootFile)) {
-                $isZip = true;
-            }
-        }
-
-        return $isZip;
-    }
 
     public function create(UploadedFile $tmpFile, Workspace $workspace = null)
     {
@@ -404,22 +364,7 @@ class WebResourceListener
         return $file;
     }
 
-    /**
-     * Unzips files in web directory.
-     *
-     * Use first $this->getZip()->open($file) or $this->isZip($file)
-     *
-     * @param string $hash The hash name of the resource
-     */
-    private function unzip($hash)
-    {
-        if (!file_exists($this->zipPath.$hash)) {
-            mkdir($this->zipPath.$hash, 0777, true);
-        }
-        $this->getZip()->open($this->filesPath.$hash);
-        $this->getZip()->extractTo($this->zipPath.$hash);
-        $this->getZip()->close();
-    }
+
 
     /**
      * Copies a file (no persistence).

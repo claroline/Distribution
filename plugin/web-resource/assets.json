@@ -1,0 +1,13 @@
+{
+  "webpack": {
+    "entry": {
+      "resource": "resources/web-resource/bootstrap"
+    }
+  },
+
+  "styles": {
+    "entry": {
+      "resource": "resources/web-resource/index.less"
+    }
+  }
+}

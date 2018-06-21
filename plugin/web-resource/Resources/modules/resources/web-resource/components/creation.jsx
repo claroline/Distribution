@@ -4,31 +4,44 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions, selectors} from '#/main/core/resource/modals/creation/store'
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as creationActions, selectors} from '#/main/core/resource/modals/creation/store'
+import {actions} from '#/plugin/web-resource/resources/web-resource/actions'
 
-const WebResourceForm = props =>
-  <FormContainer
-    level={5}
-    name={selectors.FORM_NAME}
-    sections={[
-      {
-        title: trans('general'),
-        primary: true,
-        fields: [
+const WebResourceForm = props => {
+
+  return (
+    <div>
+      <FormContainer
+        level={5}
+        name={selectors.FORM_NAME}
+        sections={[
           {
-            name: 'file',
-            label: trans('file'),
-            type: 'file',
-            required: true,
-            onChange: (file) => props.update(props.newNode, file),
-            options: {
-              //unzippable: true
-            }
+            title: trans('general'),
+            primary: true,
+            fields: [
+              {
+                name: 'file',
+                label: trans('file'),
+                type: 'file',
+                options: {
+                  uploadUrl: ['apiv2_webresource_file_upload']
+                },
+                help: trans('not_a_zip', {}, 'resource'),
+                required: true,
+                onChange: (file) => props.update(props.newNode, file)
+              }
+            ]
           }
-        ]
-      }
-    ]}
-  />
+        ]}
+      />
+
+    </div>
+
+  )
+}
+
+
 
 WebResourceForm.propTypes = {
   newNode: T.shape({
@@ -38,18 +51,23 @@ WebResourceForm.propTypes = {
 }
 
 const WebResourceCreation = connect(
-  null,
+  state => ({
+    formCreation: formSelect.data(formSelect.form(state, 'resourceCreation.form'))
+  }),
   (dispatch) => ({
+    verifyFile(file) {
+      dispatch(actions.verifyFile(file))
+    },
     update(newNode, file) {
       // update resource props
-      dispatch(actions.updateResource('size', file.size))
-      dispatch(actions.updateResource('hashName', file.url))
+      dispatch(creationActions.updateResource('size', file.size))
+      dispatch(creationActions.updateResource('hashName', file.url))
 
       // update node props
-      dispatch(actions.updateNode('meta.mimeType', file.mimeType))
+      dispatch(creationActions.updateNode('meta.mimeType', file.mimeType))
       if (!newNode.name) {
         // only set name if none provided
-        dispatch(actions.updateNode('name', file.filename))
+        dispatch(creationActions.updateNode('name', file.filename))
       }
     }
   })

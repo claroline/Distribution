@@ -6,4 +6,4 @@ import {App} from '#/plugin/web-resource/resources/web-resource'
 const WebResourceApp = new App()
 
 // mount the react application
-bootstrap('.webResource-container', WebResourceApp.component, WebResourceApp.store, WebResourceApp.initialData)
+bootstrap('.web-resource-container', WebResourceApp.component, WebResourceApp.store, WebResourceApp.initialData)
