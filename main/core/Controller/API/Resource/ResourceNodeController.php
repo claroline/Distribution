@@ -92,11 +92,6 @@ class ResourceNodeController
     public function updateRightsActions()
     {
         // TODO implement
-        /*$rights = $data['rights']['all']['permissions'];
-        foreach ($rights as $rolePerms) {
-            $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($rolePerms['role']['id']);
-            $this->rightsManager->editPerms($rolePerms['permissions'], $role, $resourceNode);
-        }*/
     }
 
     /**

@@ -201,7 +201,6 @@ class ResourceManager
         $node = new ResourceNode();
         $node->setResourceType($resourceType);
         $node->setPublished($isPublished);
-        //$node->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
         $mimeType = (null === $resource->getMimeType()) ?
             'custom/'.$resourceType->getName() :
             $resource->getMimeType();
