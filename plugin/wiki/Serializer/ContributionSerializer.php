@@ -12,6 +12,7 @@ use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Repository\SectionRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @DI\Service("claroline.serializer.wiki.section.contribution")
@@ -117,6 +118,9 @@ class ContributionSerializer
         }
         $this->sipe('title', 'setTitle', $data, $contribution);
         $this->sipe('text', 'setText', $data, $contribution);
+        if (empty($contribution->getTitle()) && !$section->isRoot()) {
+            throw new BadRequestHttpException('Title cannot be blank');
+        }
 
         return $contribution;
     }

@@ -9,6 +9,7 @@ use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Event\Log\LogSectionCreateEvent;
 use Icap\WikiBundle\Event\Log\LogSectionDeleteEvent;
+use Icap\WikiBundle\Event\Log\LogSectionMoveEvent;
 use Icap\WikiBundle\Event\Log\LogSectionRemoveEvent;
 use Icap\WikiBundle\Event\Log\LogSectionRestoreEvent;
 use Icap\WikiBundle\Event\Log\LogSectionUpdateEvent;
@@ -77,10 +78,16 @@ class SectionManager
     public function updateSection(Section $section, User $user, $data)
     {
         $this->sectionSerializer->deserialize($data, $user, $section);
+        if (isset($data['move']['section']) && $data['move']['section'] !== $section->getUuid()) {
+            $this->moveSection($section, $data['move']['section'], $data['move']['direction'] === 'before');
+        }
         $this->om->persist($section);
         $this->om->flush();
 
         $this->dispatch(new LogSectionUpdateEvent($section->getWiki(), $section, []));
+        if ($section->hasMoved()) {
+            $this->dispatch(new LogSectionMoveEvent($section->getWiki(), $section, []));
+        }
     }
 
     public function createSection(Wiki $wiki, Section $section, User $user, $isAdmin, $data)
@@ -122,6 +129,17 @@ class SectionManager
         foreach ($sections as $section) {
             $this->deleteSection($section, $withChildren);
         }
+    }
+
+    public function moveSection(Section $section, $newSectionId, $before = false)
+    {
+        $newSection = $this->sectionRepository->findOneBy(['uuid' => $newSectionId, 'wiki' => $section->getWiki()]);
+        if ($before) {
+            $this->sectionRepository->persistAsPrevSiblingOf($section, $newSection);
+        } else {
+            $this->sectionRepository->persistAsNextSiblingOf($section, $newSection);
+        }
+        $section->setMoved(true);
     }
 
     public function getArchivedSectionsForPosition(Section $section)

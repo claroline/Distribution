@@ -84,26 +84,6 @@ class Section
      */
     private $right;
 
-    /*
-     * Variable used in section edit form to define move section properties
-     */
-    private $position;
-
-    /*
-     * Variable used in section edit form to define move section properties
-     */
-    private $brother;
-
-    /*
-     * Variable used in section edit form to define if active contribution has changed
-     */
-    private $hasChangedActiveContribution = true;
-
-    /*
-     * Variable used is section edit to define if user has admin rights
-     */
-    private $isWikiAdmin = false;
-
     /**
      * @Gedmo\TreeRoot
      * @ORM\Column(type="integer", nullable=true)
@@ -116,6 +96,13 @@ class Section
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $parent;
+
+    /**
+     * Variable used to define if section has moved during update, in order to invalidate client data.
+     *
+     * @var bool
+     */
+    private $moved = false;
 
     public function __construct()
     {
@@ -383,74 +370,6 @@ class Section
     }
 
     /**
-     * @return int
-     */
-    public function getPosition()
-    {
-        return intval($this->position);
-    }
-
-    /**
-     * @param bool $brother
-     *
-     * @return $this
-     */
-    public function setBrother($brother)
-    {
-        $this->brother = (bool) $brother;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getBrother()
-    {
-        return (bool) $this->brother;
-    }
-
-    /**
-     * @param bool $hasChangedActiveContribution
-     *
-     * @return $this
-     */
-    public function setHasChangedActiveContribution($hasChangedActiveContribution)
-    {
-        $this->hasChangedActiveContribution = (bool) $hasChangedActiveContribution;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getHasChangedActiveContribution()
-    {
-        return (bool) $this->hasChangedActiveContribution;
-    }
-
-    /**
-     * @param bool $isAdmin
-     *
-     * @return $this
-     */
-    public function setIsWikiAdmin($isAdmin)
-    {
-        $this->isWikiAdmin = (bool) $isAdmin;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsWikiAdmin()
-    {
-        return (bool) $this->isWikiAdmin;
-    }
-
-    /**
      * Set parent.
      *
      * @param \Icap\WikiBundle\Entity\Section $section
@@ -472,6 +391,26 @@ class Section
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasMoved()
+    {
+        return $this->moved;
+    }
+
+    /**
+     * @param bool $moved
+     *
+     * @return $this
+     */
+    public function setMoved($moved)
+    {
+        $this->moved = $moved;
+
+        return $this;
     }
 
     /**

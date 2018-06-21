@@ -49,6 +49,21 @@ const deleteNodeFromTree = (items, sectionId, children) => {
   })
 }
 
+const buildFlattenedSectionChoices = (items, sectionId, num) => {
+  let flattenedSections = {}
+  items.forEach((item, idx) => {
+    if (item['id'] !== sectionId) {
+      let tmpNum = num.concat([idx + 1])
+      flattenedSections[item['id']] =`${tmpNum.join('.')} ${item['activeContribution']['title']}`
+      if (item['children'] && Array.isArray(item['children']) && item['children'].length > 0) {
+        flattenedSections = Object.assign(flattenedSections, buildFlattenedSectionChoices(item['children'], sectionId, tmpNum))
+      }
+    }
+  })
+
+  return flattenedSections
+}
+
 export const findInTree = (tree, id, childrenProperty = 'children', idProperty = 'id') => {
   return find(flattenItems(Array.isArray(tree) ? tree : [tree], childrenProperty), [idProperty, id])
 }
@@ -72,6 +87,14 @@ export const deleteFromTree = (tree, sectionId, children) => {
   deleteNodeFromTree(Array.isArray(copy) ? copy : [copy], sectionId, children)
   
   return copy
+}
+
+export const buildSectionMoveChoices = (tree, sectionId = null) => {
+  if (sectionId !== null && tree.id !== sectionId && tree['children'] && Array.isArray(tree['children']) && tree['children'].length > 0) {
+    return buildFlattenedSectionChoices(tree['children'], sectionId, [])
+  }
+
+  return {}
 }
 
 export const buildDataPart = path => {

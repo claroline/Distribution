@@ -13,6 +13,12 @@ class PlayerComponent extends Component {
     
     this.reload()
   }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.sections.invalidated && this.props.sections.invalidated !== prevProps.sections.invalidated) {
+      this.reload()
+    }
+  }
   
   reload() {
     if (this.props.sections.invalidated) {
@@ -29,7 +35,7 @@ class PlayerComponent extends Component {
           setSectionVisibility={null}
           num={[]}
         />
-        {this.props.wiki.display.contents &&
+        {this.props.wiki.display.contents && this.props.sections.tree.children.length > 0 &&
         <Contents sectionTree={this.props.sections.tree}/>
         }
         <WikiSectionTree

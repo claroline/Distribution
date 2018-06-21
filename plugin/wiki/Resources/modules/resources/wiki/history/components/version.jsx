@@ -5,7 +5,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text'
 
 const Version = props =>
   <div>
-    <h2>{props.version.title}</h2>
+    <h2>{props.version.title && <HtmlText>{props.version.title}</HtmlText>}</h2>
     {props.version.meta && props.version.meta.creator &&
     <h5 className="small text-muted">[ {props.version.meta.creator.username} ({props.version.meta.creator.name}) - {displayDate(props.version.meta.createdAt, true, true)} ]</h5>
     }

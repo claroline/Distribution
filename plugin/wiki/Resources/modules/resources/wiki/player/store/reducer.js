@@ -32,6 +32,9 @@ const reducer = combineReducers({
     [SECTION_DELETED]: (state, action) => deleteFromTree(state, action.sectionId, action.children),
     [LOADED_SECTION_TREE]: (state, action) => action.sectionTree,
     [FORM_SUBMIT_SUCCESS+'/sections.currentSection']: (state, action) => {
+      if (action.updatedData.meta.moved) {
+        return state
+      }
       if (action.updatedData.meta.new) {
         return appendChildToTree(state, action.updatedData.meta.parent, action.updatedData)
       }
@@ -40,7 +43,8 @@ const reducer = combineReducers({
   }),
   invalidated: makeReducer(false, {
     [LOADED_SECTION_TREE]: () => false,
-    [SECTION_RESTORED]: () => true
+    [SECTION_RESTORED]: () => true,
+    [FORM_SUBMIT_SUCCESS + '/sections.currentSection']: (state, action) => action.updatedData.meta.moved
   }),
   currentSection: makeFormReducer('sections.currentSection', defaultCurrentSection, {
     id: makeReducer(defaultCurrentSection.id, {

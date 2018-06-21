@@ -27,7 +27,6 @@ const Section = {
     'deleteSection': T.func.isRequired,
     'saveSection': T.func.isRequired,
     'currentSection': T.object,
-    'isNew': T.bool.isRequired,
     'saveEnabled': T.bool.isRequired
   }
 }

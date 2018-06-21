@@ -1,5 +1,11 @@
 {% extends "ClarolineCoreBundle:resource:layout.html.twig" %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-plugin-wiki-wiki-resource.css') }}" />
+{% endblock %}
+
 {% block content %}
     <div
             class="page-container wiki-container"

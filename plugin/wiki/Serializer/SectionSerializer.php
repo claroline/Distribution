@@ -75,10 +75,11 @@ class SectionSerializer
     {
         $author = $section->getAuthor();
         $extraMeta = [];
-        if (in_array(Options::DEEP_SERIALIZE, $options)) {
+        if (in_array(Options::DEEP_SERIALIZE, $options) && !$section->isRoot()) {
             $extraMeta = [
                 'new' => $isNew,
                 'parent' => $section->getParent()->getUuid(),
+                'moved' => $section->hasMoved(),
             ];
         }
 
