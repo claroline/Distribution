@@ -118,11 +118,13 @@ const Workspaces = connect(
             url: ['apiv2_user_list_managed_organization'],
             autoload: true
           },
-          handleSelect: () => {
+          handleSelect: (selected) => {
+            console.log(selected)
             dispatch(modalActions.showModal(MODAL_DATA_FORM, {
               title: trans('register'),
-              save: data => {
-                alert('hohoho')
+              save: role => {
+                console.log(role, workspaces, selected)
+                //actions.registerUsers(role, workspaces, users)
               },
               sections: [
                 {
@@ -162,11 +164,12 @@ const Workspaces = connect(
             url: ['apiv2_group_list_managed'],
             autoload: true
           },
-          handleSelect: () => {
+          handleSelect: (selected) => {
             dispatch(modalActions.showModal(MODAL_DATA_FORM, {
               title: trans('register'),
-              save: data => {
-                alert('hohoho')
+              save: role => {
+                console.log(role, workspaces, selected)
+                //actions.registerGroups()(role, workspaces, selected)
               },
               sections: [
                 {

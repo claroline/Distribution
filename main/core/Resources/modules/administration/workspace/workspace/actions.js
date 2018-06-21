@@ -93,3 +93,27 @@ actions.deleteWorkspaces = (workspaces) => ({
     }
   }
 })
+
+actions.registerUsers = (role, workspaces, users) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_role_add_users', {id: roleId}], {ids: users}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('workspaces.current.users'))
+    }
+  }
+})
+
+actions.registerGroups = (role, workspaces, groups) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_role_add_users', {id: roleId}], {ids: users}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('workspaces.current.groups'))
+    }
+  }
+})

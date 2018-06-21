@@ -284,6 +284,53 @@ class WorkspaceController extends AbstractCrudController
         ));
     }
 
+    /**
+     * @Route(
+     *    "/users/register/bulk/{role}",
+     *    name="apiv2_workspace_bulk_register_users"
+     * )
+     * @Method("PATCH")
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function bulkRegisterUsersAction($role)
+    {
+        $query = $request->query->all();
+        $workspaces = $request->query->get('workspaces');
+        $groups = $request->query->get('users');
+
+        /*
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            ['hiddenFilters' => ['displayable' => true, 'model' => false]]
+        ));*/
+    }
+
+    /**
+     * @Route(
+     *    "/groups/register/bulk/{role}",
+     *    name="apiv2_workspace_bulk_register_groups"
+     * )
+     * @Method("PATCH")
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function bulkRegisterGroupsAction($role)
+    {
+        $query = $request->query->all();
+        $workspaces = $request->query->get('workspaces');
+        $groups = $request->query->get('groups');
+        /*
+          return new JsonResponse($this->finder->search(
+              'Claroline\CoreBundle\Entity\Workspace\Workspace',
+              ['hiddenFilters' => ['displayable' => true, 'model' => false]]
+          ));*/
+    }
+
     public function getOptions()
     {
         return [

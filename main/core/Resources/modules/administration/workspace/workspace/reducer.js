@@ -30,24 +30,10 @@ const reducer = {
   }),
   selected: combineReducers({
     user: makeListReducer(
-      'selected.user',
-      {},
-      {
-        invalidated: makeReducer(false, {
-          ['MODAL_HIDE']: () => true // todo : find better
-        })
-      },
-      {/*selectable: false, filterable: true, readOnly: true, paginated: false, sortable: false*/}
+      'selected.user'
     ),
     group: makeListReducer(
-      'selected.group',
-      {},
-      {
-        invalidated: makeReducer(false, {
-          ['MODAL_HIDE']: () => true // todo : find better
-        })
-      },
-      {/*selectable: false, filterable: true, readOnly: true, paginated: false, sortable: false*/}
+      'selected.group'
     )
   })
 }
