@@ -19,9 +19,11 @@ use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -42,13 +44,16 @@ class WorkspaceController extends AbstractCrudController
     use HasGroupsTrait;
 
     protected $resourceManager;
-    private $translator;
+    protected $translator;
+    protected $roleManager;
+    protected $workspaceManager;
 
     /**
      * @DI\InjectParams({
      *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
      *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
-     *     "translator"       = @DI\Inject("translator")
+     *     "translator"       = @DI\Inject("translator"),
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
      * })
      *
      * @param ResourceManager $resourceManager
@@ -56,11 +61,13 @@ class WorkspaceController extends AbstractCrudController
     public function __construct(
         ResourceManager $resourceManager,
         TranslatorInterface $translator,
-        RoleManager $roleManager
+        RoleManager $roleManager,
+        WorkspaceManager $workspaceManager
     ) {
         $this->resourceManager = $resourceManager;
         $this->translator = $translator;
         $this->roleManager = $roleManager;
+        $this->workspaceManager = $workspaceManager;
     }
 
     public function getName()
@@ -359,6 +366,42 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse(array_map(function ($workspace) {
             return $this->serializer->serialize($workspace);
         }, $workspaces));
+    }
+
+    /**
+     * @Route("/{workspace}/unregister/{user}", name="apiv2_workspace_unregister")
+     * @Method("DELETE")
+     * @ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @ParamConverter("workspace", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"workspace": "uuid"}})
+     */
+    public function unregisterAction(Workspace $workspace, User $user)
+    {
+        $this->workspaceManager->unregister($user, $workspace);
+
+        return new JsonResponse($this->serializer->serialize($workspace));
+    }
+
+    /**
+     * @Route("/{workspace}/register/{user}", name="apiv2_workspace_register")
+     * @Method("PATCH")
+     * @ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})
+     * @ParamConverter("workspace", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"workspace": "uuid"}})
+     */
+    public function registerAction(Workspace $workspace, User $user)
+    {
+        // If user is admin or registration validation is disabled, subscribe user
+        //see WorkspaceParametersController::userSubscriptionAction
+
+        if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') || !$workspace->getRegistrationValidation()) {
+            $this->workspaceManager->addUserAction($workspace, $user);
+        } else {
+            // Otherwise add user to validation queue if not already there
+            if (!$this->workspaceManager->isUserInValidationQueue($workspace, $user)) {
+                $this->workspaceManager->addUserQueue($workspace, $user);
+            }
+        }
+
+        return new JsonResponse($this->serializer->serialize($workspace));
     }
 
     public function getOptions()

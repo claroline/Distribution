@@ -29,9 +29,9 @@ const WorkspacesList = props =>
             type: 'callback',
             icon: 'fa fa-fw fa-book',
             label: trans('register'),
-            displayed: rows[0].registration.selfRegistration && !rows[0].permissions['open'],
+            //displayed: rows[0].registration.selfRegistration && !rows[0].permissions['open'],
             scope: ['object'],
-            callback: () => props.register(),
+            callback: () => props.register(rows[0]),
             confirm: {
               title: trans('unregister_groups'),
               message: trans('unregister_groups')
@@ -42,9 +42,9 @@ const WorkspacesList = props =>
             icon: 'fa fa-fw fa-book',
             label: trans('unregister'),
             dangerous: true,
-            displayed: rows[0].registration.selfUnregistration && rows[0].permissions['open'],
+            //  displayed: rows[0].registration.selfUnregistration && rows[0].permissions['open'],
             scope: ['object'],
-            callback: () => props.unregister(),
+            callback: () => props.unregister(rows[0]),
             confirm: {
               title: trans('unregister_groups'),
               message: trans('unregister_groups')
@@ -63,11 +63,11 @@ WorkspacesList.propTypes = {
 const Workspaces = connect(
   null,
   dispatch => ({
-    register(workspaces) {
-      dispatch(actions.register(workspaces))
+    register(workspace) {
+      dispatch(actions.register(workspace))
     },
-    unregister(workspaces) {
-      dispatch(actions.unregister(workspaces))
+    unregister(workspace) {
+      dispatch(actions.unregister(workspace))
     }
   })
 )(WorkspacesList)
