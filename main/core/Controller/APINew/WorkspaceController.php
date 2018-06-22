@@ -300,6 +300,25 @@ class WorkspaceController extends AbstractCrudController
 
     /**
      * @Route(
+     *    "/list/registered",
+     *    name="apiv2_workspace_registered_list"
+     * )
+     * @Method("GET")
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function listRegisteredAction()
+    {
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            ['hiddenFilters' => ['user' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]]
+        ));
+    }
+
+    /**
+     * @Route(
      *    "/users/register/bulk/{role}",
      *    name="apiv2_workspace_bulk_register_users"
      * )

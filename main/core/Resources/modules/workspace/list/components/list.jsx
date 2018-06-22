@@ -18,7 +18,7 @@ const WorkspacesList = props =>
       <DataListContainer
         name="workspaces"
         fetch={{
-          url: ['apiv2_workspace_displayable_list'],
+          url: [props.url],
           autoload: true
         }}
         definition={WorkspaceList.definition}
@@ -57,11 +57,14 @@ const WorkspacesList = props =>
 
 WorkspacesList.propTypes = {
   register: T.func.isRequired,
-  unregister: T.func.isRequired
+  unregister: T.func.isRequired,
+  url: T.string.isRequired
 }
 
 const Workspaces = connect(
-  null,
+  state => ({
+    url: state.url
+  }),
   dispatch => ({
     register(workspace) {
       dispatch(actions.register(workspace))
