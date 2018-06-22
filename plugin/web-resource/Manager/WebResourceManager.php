@@ -12,6 +12,7 @@
 
 namespace Claroline\WebResourceBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Resource\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -74,9 +75,9 @@ class WebResourceManager
     ) {
         $this->om = $om;
         $this->container = $container;
+        $this->filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
         $this->zipPath = $this->container->getParameter('claroline.param.uploads_directory').'/webresource/';
         $this->webResourceResourcesPath = $this->container->getParameter('claroline.param.uploads_directory').'/webresource/';
-        $this->filePath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -267,5 +268,35 @@ class WebResourceManager
         }
         $zip->extractTo($destinationDir);
         $zip->close();
+    }
+    /**
+     * Returns a new hash for a file.
+     *
+     * @param mixed mixed The extension of the file or an Claroline\CoreBundle\Entity\Resource\File
+     *
+     * @return string
+     */
+    private function getHash($mixed)
+    {
+        if ($mixed instanceof File) {
+            $mixed = pathinfo($mixed->getHashName(), PATHINFO_EXTENSION);
+        }
+
+        return $this->container->get('claroline.utilities.misc')->generateGuid().'.'.$mixed;
+    }
+
+    public function create(UploadedFile $tmpFile, Workspace $workspace = null)
+    {
+        $file = new File();
+        $fileName = $tmpFile->getClientOriginalName();
+        $hash = $this->getHash(pathinfo($fileName, PATHINFO_EXTENSION));
+        $file->setSize(filesize($tmpFile));
+        $file->setName($fileName);
+        $file->setHashName($hash);
+        $file->setMimeType('custom/claroline_web_resource');
+        $tmpFile->move($this->filesPath, $hash);
+        $this->unzip($hash);
+
+        return $file;
     }
   }

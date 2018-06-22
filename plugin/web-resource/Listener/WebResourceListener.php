@@ -53,7 +53,6 @@ class WebResourceListener
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        
         $this->filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
         $this->tokenStorage = $this->container->get('security.token_storage');
         $this->workspaceManager = $this->container->get('claroline.manager.workspace_manager');
