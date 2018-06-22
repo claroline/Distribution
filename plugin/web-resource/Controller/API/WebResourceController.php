@@ -24,27 +24,26 @@ use Symfony\Component\HttpFoundation\Request;
 class WebResourceController extends AbstractCrudController
 {
 
-  private $resourceManager;
-  private $webResourceManager;
+    private $resourceManager;
+    private $webResourceManager;
 
-
-  /**
-   * @DI\InjectParams({
-   *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
-   *     "webResourceManager"    = @DI\Inject("claroline.manager.web_resource_manager"),
-   * })
-   */
-  public function __construct(
-      ResourceManager $resourceManager,
-      WebResourceManager $webResourceManager
-  ) {
-      $this->resourceManager = $resourceManager;
-      $this->webResourceManager = $webResourceManager;
-  }
-    public function getName()
-    {
-        return 'web-resource';
+    /**
+     * @DI\InjectParams({
+     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
+     *     "webResourceManager"    = @DI\Inject("claroline.manager.web_resource_manager"),
+     * })
+     */
+    public function __construct(
+        ResourceManager $resourceManager,
+        WebResourceManager $webResourceManager
+    ) {
+        $this->resourceManager = $resourceManager;
+        $this->webResourceManager = $webResourceManager;
     }
+      public function getName()
+      {
+          return 'web-resource';
+      }
 
     /**
      * @EXT\Route(
@@ -58,16 +57,13 @@ class WebResourceController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function uploadAction(Request $request)
+    public function uploadFile(Request $request)
     {
         $files = $request->files->all();
         $data = [];
 
         foreach ($files as $file) {
-            $isZip = $this->manager->isZip($file);
-            if($isZip) {
-              var_dump('yeah');
-            }
+            $data[] = $this->webResourceManager->isZip($file);
         }
 
         return new JsonResponse($data, 200);

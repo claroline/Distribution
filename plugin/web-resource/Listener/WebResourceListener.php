@@ -40,39 +40,6 @@ class WebResourceListener
      */
     private $container;
 
-    /**
-     * @var \ZipArchive
-     */
-    private $zip;
-
-    /**
-     * Path to directory where zip files are stored.
-     *
-     * @var string
-     */
-    private $zipPath;
-
-    /**
-     * Path to directory where uploaded files are stored.
-     *
-     * @var string
-     */
-    private $filesPath;
-
-    private $defaultIndexFiles = [
-        'web/SCO_0001/default.html',
-        'web/SCO_0001/default.htm',
-        'web/index.html',
-        'web/index.htm',
-        'index.html',
-        'index.htm',
-        'web/SCO_0001/Default.html',
-        'web/SCO_0001/Default.htm',
-        'web/Index.html',
-        'web/Index.htm',
-        'Index.html',
-        'Index.htm',
-    ];
 
     /**
      * Class constructor.
@@ -86,7 +53,7 @@ class WebResourceListener
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->zipPath = $this->container->getParameter('claroline.param.uploads_directory').'/webresource/';
+        
         $this->filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
         $this->tokenStorage = $this->container->get('security.token_storage');
         $this->workspaceManager = $this->container->get('claroline.manager.workspace_manager');
@@ -220,116 +187,6 @@ class WebResourceListener
         $event->stopPropagation();
     }
 
-    /**
-     * Get all HTML files from a zip archive.
-     *
-     * @param string $directory
-     *
-     * @return array
-     */
-    private function getHTMLFiles($directory)
-    {
-        $dir = new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::NEW_CURRENT_AND_KEY);
-        $files = new \RecursiveIteratorIterator($dir);
-
-        $allowedExtensions = ['htm', 'html'];
-
-        $list = [];
-        foreach ($files as $file) {
-            if (in_array($file->getExtension(), $allowedExtensions)) {
-                // HTML File found
-                $relativePath = str_replace($directory, '', $file->getPathname());
-                $list[] = ltrim($relativePath, '\\/');
-            }
-        }
-
-        return $list;
-    }
-
-    /**
-     * Try to retrieve root file of the WebResource from the zip archive.
-     *
-     * @param UploadedFile $file
-     *
-     * @return string
-     *
-     * @throws \Exception
-     */
-    private function guessRootFile(UploadedFile $file)
-    {
-        if (!$this->getZip()->open($file)) {
-            throw new \Exception('Can not open archive file.');
-        }
-
-        // Try to locate usual default HTML files to avoid unzip archive and scan directory tree
-        foreach ($this->defaultIndexFiles as $html) {
-            if (is_numeric($this->getZip()->locateName($html))) {
-                return $html;
-            }
-        }
-
-        // No default index file found => scan archive
-        // Extract content into tmp dir
-        $tmpDir = $this->zipPath.'tmp/'.$file->getClientOriginalName().'/';
-
-        $this->getZip()->extractTo($tmpDir);
-        $this->getZip()->close();
-
-        // Search for root file
-        $htmlFiles = $this->getHTMLFiles($tmpDir);
-
-        // Remove tmp data
-        $this->unzipDelete($tmpDir);
-
-        // Only one file
-        if (count($htmlFiles) === 1) {
-            return array_shift($htmlFiles);
-        }
-
-        return;
-    }
-
-    /**
-     * Try to retrieve root file of the WebResource from the unzipped directory.
-     *
-     * @param string $hash
-     *
-     * @return string
-     */
-    private function guessRootFileFromUnzipped($hash)
-    {
-        // Grab all HTML files from Archive
-        $htmlFiles = $this->getHTMLFiles($hash);
-
-        // Only one file
-        if (count($htmlFiles) === 1) {
-            return array_shift($htmlFiles);
-        }
-
-        // Check usual default root files
-        foreach ($this->defaultIndexFiles as $file) {
-            if (in_array($file, $htmlFiles)) {
-                return $file;
-            }
-        }
-
-        // Unable to find an unique HTML file
-        return;
-    }
-
-    /**
-     * Get ZipArchive object.
-     *
-     * @return \ZipArchive
-     */
-    private function getZip()
-    {
-        if (!$this->zip instanceof \ZipArchive) {
-            $this->zip = new \ZipArchive();
-        }
-
-        return $this->zip;
-    }
 
     /**
      * Returns a new hash for a file.
@@ -389,21 +246,5 @@ class WebResourceListener
         return $file;
     }
 
-    /**
-     * Deletes web resource unzipped files.
-     *
-     * @param string $dir The path to the directory to delete
-     */
-    private function unzipDelete($dir)
-    {
-        foreach (glob($dir.'/*') as $file) {
-            if (is_dir($file)) {
-                $this->unzipDelete($file);
-            } else {
-                unlink($file);
-            }
-        }
 
-        rmdir($dir);
-    }
 }
