@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
@@ -81,6 +82,8 @@ class WorkspaceController extends Controller
     private $widgetManager;
     private $workspaceManager;
     private $workspaceUserQueueManager;
+    /** @var ParametersSerializer */
+    private $parametersSerializer;
 
     /**
      * @DI\InjectParams({
@@ -103,7 +106,8 @@ class WorkspaceController extends Controller
      *     "utils"                     = @DI\Inject("claroline.security.utilities"),
      *     "widgetManager"             = @DI\Inject("claroline.manager.widget_manager"),
      *     "workspaceManager"          = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "workspaceUserQueueManager" = @DI\Inject("claroline.manager.workspace_user_queue_manager")
+     *     "workspaceUserQueueManager" = @DI\Inject("claroline.manager.workspace_user_queue_manager"),
+     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
      * })
      */
     public function __construct(
@@ -126,7 +130,8 @@ class WorkspaceController extends Controller
         Utilities $utils,
         WidgetManager $widgetManager,
         WorkspaceManager $workspaceManager,
-        WorkspaceUserQueueManager $workspaceUserQueueManager
+        WorkspaceUserQueueManager $workspaceUserQueueManager,
+        ParametersSerializer $parametersSerializer
     ) {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
@@ -148,6 +153,7 @@ class WorkspaceController extends Controller
         $this->widgetManager = $widgetManager;
         $this->workspaceManager = $workspaceManager;
         $this->workspaceUserQueueManager = $workspaceUserQueueManager;
+        $this->parametersSerializer = $parametersSerializer;
     }
 
     /**
@@ -159,7 +165,7 @@ class WorkspaceController extends Controller
      */
     public function listAction()
     {
-        return [];
+        return ['parameters' => $this->parametersSerializer->serialize()];
     }
 
     /**
@@ -171,7 +177,7 @@ class WorkspaceController extends Controller
      */
     public function listByUserAction()
     {
-        return [];
+        return ['parameters' => $this->parametersSerializer->serialize()];
     }
 
     /**
