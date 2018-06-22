@@ -2,12 +2,14 @@
 
 namespace Icap\BlogBundle\Serializer;
 
-use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
-use Icap\BlogBundle\Entity\Post;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Icap\BlogBundle\Entity\Post;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @DI\Service("claroline.serializer.blog.post")
@@ -16,34 +18,38 @@ use JMS\DiExtraBundle\Annotation as DI;
 class PostSerializer
 {
     use SerializerTrait;
-    
+
     private $userSerializer;
     private $commentSerializer;
     private $userRepo;
     private $om;
-    
+    private $eventDispatcher;
+
     /**
      * PostSerializer constructor.
      *
      * @DI\InjectParams({
      *     "userSerializer"     = @DI\Inject("claroline.serializer.user"),
-      *    "commentSerializer"  = @DI\Inject("claroline.serializer.blog.comment"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager")
+     *    "commentSerializer"  = @DI\Inject("claroline.serializer.blog.comment"),
+     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
+     *     "eventDispatcher"    = @DI\Inject("event_dispatcher")
      * })
      *
-     * @param UserSerializer       $userSerializer
-     * @param ObjectManager        $om
+     * @param UserSerializer $userSerializer
+     * @param ObjectManager  $om
      */
     public function __construct(
         UserSerializer $userSerializer,
         CommentSerializer $commentSerializer,
-        ObjectManager $om
+        ObjectManager $om,
+        EventDispatcherInterface $eventDispatcher
         ) {
-            $this->userSerializer = $userSerializer;
-            $this->commentSerializer = $commentSerializer;
-            $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
-            $this->tagRepo = $om->getRepository('Icap\BlogBundle\Entity\Tag');
-            $this->om = $om;
+        $this->userSerializer = $userSerializer;
+        $this->commentSerializer = $commentSerializer;
+        $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
+        $this->tagRepo = $om->getRepository('Icap\BlogBundle\Entity\Tag');
+        $this->om = $om;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -61,7 +67,7 @@ class PostSerializer
     {
         return '#/plugin/blog/post.json';
     }
-    
+
     /**
      * Checks if an option has been passed to the serializer.
      *
@@ -76,7 +82,7 @@ class PostSerializer
     }
 
     /**
-     * @param Post  $post
+     * @param Post $post
      * @param array comments
      * @param array $options
      *
@@ -84,14 +90,9 @@ class PostSerializer
      */
     public function serialize(Post $post, array $options = [], array $comments = [])
     {
-        $tags = [];
-        foreach ($post->getTags() as $tag) {
-            $tags[] = $tag->getName();
-        }
-        
         //serialize comments
-        if(isset($options[CommentSerializer::INCLUDE_COMMENTS])){
-            if($this->hasOption(CommentSerializer::FETCH_COMMENTS, $options)){
+        if (isset($options[CommentSerializer::INCLUDE_COMMENTS])) {
+            if ($this->hasOption(CommentSerializer::FETCH_COMMENTS, $options)) {
                 $comments = $this->serializePostComments($post, $options);
             }
         }
@@ -111,21 +112,23 @@ class PostSerializer
             'author' => $post->getAuthor() ? $this->userSerializer->serialize($post->getAuthor()) : null,
             'authorName' => $post->getAuthor() ? $post->getAuthor()->getFullName() : null,
             'authorPicture' => $post->getAuthor()->getPicture(),
-            'tags' => $tags,
+            'tags' => $this->serializeTags($post),
             'comments' => $comments,
             'commentsNumber' => $commentsNumber,
             'commentsNumberUnpublished' => $commentsNumberUnpublished,
             'isPublished' => $post->isPublished(),
+            'pinned' => $post->isPinned(),
         ];
     }
-    
+
     /**
      * @param Post  $post
      * @param array $options
      *
      * @return array - Check if post content is truncated
      */
-    private function isAbstract(Post $post, array $options = []){
+    private function isAbstract(Post $post, array $options = [])
+    {
         if (isset($options['abstract']) && $options['abstract']) {
             if ($post->getAbstract() !== $post->getContent()) {
                 return true;
@@ -173,24 +176,22 @@ class PostSerializer
             $post->setAuthor($user);
         }
         if (isset($data['tags'])) {
-            $tags = [];
-            foreach ($data['tags'] as $tag) {
-                $existingTag = $this->tagRepo->findOneByName($tag);
-                if(isset($existingTag)){
-                    $tags[] = $existingTag;
-                }
-            }
-            $post->setTags($tags);    
+            $this->deserializeTags($post, $data['tags']);
         }
-       
+        if (isset($data['published']) && true === $data['published']) {
+            $post->publish();
+        }
+        if (isset($data['commentModerationMode'])) {
+            $post->setCommentModerationMode($data['commentModerationMode']);
+        }
+
         return $post;
     }
-    
-    
+
     /**
-     * Serialize post comments
+     * Serialize post comments.
      *
-     * @param Post $post
+     * @param Post  $post
      * @param array $options
      *
      * @return array - The serialized representation comments
@@ -201,8 +202,50 @@ class PostSerializer
         foreach ($post->getComments() as $comment) {
             $comments[] = $this->commentSerializer->serialize($comment);
         }
-        
+
         return $comments;
     }
-    
+
+    /**
+     * Serializes Item tags.
+     * Forwards the tag serialization to ItemTagSerializer.
+     *
+     * @param post $post
+     *
+     * @return array
+     */
+    public function serializeTags(Post $post)
+    {
+        $event = new GenericDataEvent([
+            'class' => 'Icap\BlogBundle\Entity\Post',
+            'ids' => [$post->getUuid()],
+        ]);
+        $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+
+        return $event->getResponse();
+    }
+
+    /**
+     * Deserializes Item tags.
+     *
+     * @param Post  $post
+     * @param array $tags
+     * @param array $options
+     */
+    public function deserializeTags(Post $post, array $tags = [], array $options = [])
+    {
+        $event = new GenericDataEvent([
+            'tags' => $tags,
+            'data' => [
+                [
+                    'class' => 'Icap\BlogBundle\Entity\Post',
+                    'id' => $post->getUuid(),
+                    'name' => $post->getTitle(),
+                ],
+            ],
+            'replace' => true,
+        ]);
+
+        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+    }
 }

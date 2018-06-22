@@ -21,65 +21,67 @@ class PostFinder implements FinderInterface
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         foreach ($searches as $filterName => $filterValue) {
-            if ($filterName === "published") {
+            if ('published' === $filterName) {
                 $qb
-                ->andWhere("obj.status = :status")
-                ->andWhere("obj.publicationDate <= :endOfDay")
-                ->setParameter("status", true)
-                ->setParameter("endOfDay", new \DateTime('tomorrow'));
-            } else if ($filterName === "authorName") {
+                ->andWhere('obj.status = :status')
+                ->andWhere('obj.publicationDate <= :endOfDay')
+                ->setParameter('status', true)
+                ->setParameter('endOfDay', new \DateTime('tomorrow'));
+            } elseif ('authorName' === $filterName) {
                 $qb
-                ->innerJoin("obj.author", "author")
+                ->innerJoin('obj.author', 'author')
                 ->andWhere("UPPER(author.firstName) LIKE :{$filterName} 
                             OR UPPER(author.lastName) LIKE :{$filterName} 
                             OR UPPER(CONCAT(CONCAT(author.firstName, ' '), author.lastName)) LIKE :{$filterName}
                             OR UPPER(CONCAT(CONCAT(author.lastName, ' '), author.firstName)) LIKE :{$filterName}
                             ");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-            } else if ($filterName === "publicationDate") {
+            } elseif ('publicationDate' === $filterName) {
                 $date = DateNormalizer::denormalize($filterValue);
-                
+
                 $beginOfDay = clone $date;
                 $beginOfDay->modify('today');
                 $endOfDay = clone $beginOfDay;
                 $endOfDay->modify('tomorrow');
                 $endOfDay->modify('1 second ago');
-                
+
                 $qb
                     ->andWhere("obj.{$filterName} >= :beginOfDay")
                     ->andWhere("obj.{$filterName} <= :endOfDay")
-                    ->setParameter(":beginOfDay", $beginOfDay)
-                    ->setParameter(":endOfDay", $endOfDay);
-            } else if ($filterName === "fromDate") {
+                    ->setParameter(':beginOfDay', $beginOfDay)
+                    ->setParameter(':endOfDay', $endOfDay);
+            } elseif ('fromDate' === $filterName) {
                 $date = DateNormalizer::denormalize($filterValue);
                 $beginOfDay = clone $date;
                 $beginOfDay->modify('today');
-                
+
                 $qb
-                ->andWhere("obj.publicationDate >= :beginOfDay")
-                ->setParameter(":beginOfDay", $beginOfDay);
-            } else if ($filterName === "toDate") {
+                ->andWhere('obj.publicationDate >= :beginOfDay')
+                ->setParameter(':beginOfDay', $beginOfDay);
+            } elseif ('toDate' === $filterName) {
                 $date = DateNormalizer::denormalize($filterValue);
                 $beginOfDay = clone $date;
                 $beginOfDay->modify('today');
                 $endOfDay = clone $beginOfDay;
                 $endOfDay->modify('tomorrow');
                 $endOfDay->modify('1 second ago');
-                
+
                 $qb
-                ->andWhere("obj.publicationDate <= :endOfDay")
-                ->setParameter(":endOfDay", $endOfDay);
-            } else if (is_string($filterValue)) {
+                ->andWhere('obj.publicationDate <= :endOfDay')
+                ->setParameter(':endOfDay', $endOfDay);
+            } elseif (is_string($filterValue)) {
                 $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
             } else {
                 $qb->andWhere("obj.{$filterName} = :{$filterName}");
                 $qb->setParameter($filterName, $filterValue);
             }
-            
+
+            $qb->addOrderBy('obj.pinned', 'DESC');
+
             //default sort by publicationDate
-            if ($sortBy == null) {
-                $qb->orderBy('obj.publicationDate', 'DESC');
+            if (null === $sortBy) {
+                $qb->addOrderBy('obj.publicationDate', 'DESC');
             }
         }
 

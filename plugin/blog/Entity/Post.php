@@ -97,6 +97,13 @@ class Post extends Statusable
     protected $viewCounter = 0;
 
     /**
+     * @var bool
+     * @Expose
+     * @ORM\Column(type="boolean", name="pinned")
+     */
+    protected $pinned = true;
+
+    /**
      * @var Comment[]|ArrayCollection
      * @Expose
      * @Groups({"blog_list", "blog_post"})
@@ -582,5 +589,25 @@ class Post extends Statusable
     public function isAbstract()
     {
         return strlen($this->content) > 400;
+    }
+
+    /**
+     * @param bool $pinned
+     *
+     * @return Post
+     */
+    public function setPinned($pinned)
+    {
+        $this->pinned = $pinned;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPinned()
+    {
+        return $this->pinned;
     }
 }

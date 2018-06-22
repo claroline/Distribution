@@ -1,7 +1,5 @@
-import {bootstrap} from '#/main/app/bootstrap'
-
-import {BlogContainer} from '#/plugin/blog/resources/blog/components/resource.jsx'
-import {reducer} from '#/plugin/blog/resources/blog/reducer'
+import {BlogContainer} from '#/plugin/blog/resources/blog/player/components/resource.jsx'
+import {reducer} from '#/plugin/blog/resources/blog/store/reducer.js'
 
 /**
  * Blog resource application.
@@ -19,9 +17,11 @@ export const App = () => ({
       data: {
         id: initialData.blog.id,
         title: initialData.blog.title,
-        originalOptions: initialData.blog.options,
         authors: initialData.authors,
-        archives: initialData.archives
+        archives: initialData.archives,
+        options: {
+          data: initialData.blog.options
+        }
       }
     },
     posts: {

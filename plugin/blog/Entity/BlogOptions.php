@@ -24,6 +24,10 @@ class BlogOptions
     const BANNER_REPEAT_X = 'repeat-x';
     const BANNER_REPEAT_Y = 'repeat-y';
 
+    const COMMENT_MODERATION_NONE = 0;
+    const COMMENT_MODERATION_PRIOR_ONCE = 1;
+    const COMMENT_MODERATION_ALL = 2;
+
     /**
      * BlogOptions constructor.
      */
@@ -84,11 +88,25 @@ class BlogOptions
     protected $autoPublishComment = false;
 
     /**
+     * @var int
+     * @Expose
+     * @ORM\Column(type="smallint", name="comment_moderation_mode")
+     */
+    protected $commentModerationMode = self::COMMENT_MODERATION_NONE;
+
+    /**
      * @var bool
      * @Expose
      * @ORM\Column(type="boolean", name="display_title")
      */
     protected $displayTitle = true;
+
+    /**
+     * @var bool
+     * @Expose
+     * @ORM\Column(type="boolean", name="display_full_posts")
+     */
+    protected $displayFullPosts = false;
 
     /**
      * @var bool
@@ -256,6 +274,26 @@ class BlogOptions
     }
 
     /**
+     * @param bool $autoPublishPost
+     *
+     * @return BlogOptions
+     */
+    public function setAutoPublishPost($autoPublishPost)
+    {
+        $this->autoPublishPost = $autoPublishPost;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAutoPublishPost()
+    {
+        return $this->autoPublishPost;
+    }
+
+    /**
      * @param bool $autoPublishComment
      *
      * @return BlogOptions
@@ -276,23 +314,23 @@ class BlogOptions
     }
 
     /**
-     * @param bool $autoPublishPost
-     *
-     * @return BlogOptions
+     * @return int
      */
-    public function setAutoPublishPost($autoPublishPost)
+    public function getCommentModerationMode()
     {
-        $this->autoPublishPost = $autoPublishPost;
-
-        return $this;
+        return $this->commentModerationMode;
     }
 
     /**
-     * @return bool
+     * @param int $commentModerationMode
+     *
+     * @return BlogOptions
      */
-    public function getAutoPublishPost()
+    public function setCommentModerationMode($commentModerationMode)
     {
-        return $this->autoPublishPost;
+        $this->commentModerationMode = $commentModerationMode;
+
+        return $this;
     }
 
     /**
@@ -333,6 +371,26 @@ class BlogOptions
     public function getDisplayTitle()
     {
         return $this->displayTitle;
+    }
+
+    /**
+     * @param bool $displayFullPosts
+     *
+     * @return BlogOptions
+     */
+    public function setDisplayFullPosts($displayFullPosts)
+    {
+        $this->displayFullPosts = $displayFullPosts;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDisplayFullPosts()
+    {
+        return $this->displayFullPosts;
     }
 
     /**

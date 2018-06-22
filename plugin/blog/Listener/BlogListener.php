@@ -3,26 +3,27 @@
 namespace Icap\BlogBundle\Listener;
 
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
-use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Form\BlogType;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service
@@ -73,7 +74,7 @@ class BlogListener
 
     /**
      * @DI\Observe("create_form_icap_blog")
-     *      
+     *
      * @param CreateFormResourceEvent $event
      */
     public function onCreateForm(CreateFormResourceEvent $event)
@@ -92,7 +93,7 @@ class BlogListener
 
     /**
      * @DI\Observe("create_icap_blog")
-     * 
+     *
      * @param CreateResourceEvent $event
      */
     public function onCreate(CreateResourceEvent $event)
@@ -126,27 +127,30 @@ class BlogListener
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        /*$route = $this->container
-            ->get('router')
-            ->generate(
-                'icap_blog_view',
-                ['blogId' => $event->getResource()->getId()]
-            );
-        $event->setResponse(new RedirectResponse($route));
-        $event->stopPropagation();*/
+        /** @var Blog $blog */
+        $blog = $event->getResource();
+        $canEdit = $this->container
+        ->get('security.authorization_checker')
+        ->isGranted('EDIT', new ResourceCollection([$blog->getResourceNode()]));
 
-        $params = [];
-        $params['_controller'] = 'IcapBlogBundle:Resource\Blog:open';
-        $params['blogId'] = $event->getResource()->getId();
-        $subRequest = $this->request->duplicate([], null, $params);
-        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setResponse($response);
+        $postManager = $this->container->get('icap.blog.manager.post');
+
+        $content = $this->container->get('templating')->render(
+            'IcapBlogBundle:blog:open.html.twig', [
+                '_resource' => $blog,
+                'canEdit' => $canEdit,
+                'authors' => $postManager->getAuthors($blog),
+                'archives' => $postManager->getArchives($blog),
+                ]
+            );
+
+        $event->setResponse(new Response($content));
         $event->stopPropagation();
     }
 
     /**
      * @DI\Observe("delete_icap_blog")
-     * 
+     *
      * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)
@@ -237,7 +241,7 @@ class BlogListener
 
     /**
      * @DI\Observe("configure_blog_icap_blog")
-     * 
+     *
      * @param CustomActionResourceEvent $event
      */
     public function onConfigure(CustomActionResourceEvent $event)
@@ -254,7 +258,7 @@ class BlogListener
 
     /**
      * @DI\Observe("generate_resource_user_evaluation_icap_blog")
-     * 
+     *
      * @param GenericDataEvent $event
      */
     public function onGenerateResourceTracking(GenericDataEvent $event)

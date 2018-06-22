@@ -2,12 +2,12 @@
 
 namespace Icap\BlogBundle\Manager;
 
-use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Icap\BlogBundle\Entity\Blog;
-use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Comment;
+use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Tag;
 use Icap\BlogBundle\Repository\PostRepository;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -32,18 +32,18 @@ class PostManager
      *     "repo"            = @DI\Inject("icap.blog.post_repository"),
      *     "translator"      = @DI\Inject("translator")
      * })
-     * 
-     * @param FinderProvider $finder
-     * @param ObjectManager $om
+     *
+     * @param FinderProvider      $finder
+     * @param ObjectManager       $om
      * @param BlogTrackingManager $trackingManager
-     * @param PostRepository $repo
+     * @param PostRepository      $repo
      * @param TranslatorInterface $translator
      */
     public function __construct(
-        FinderProvider $finder, 
-        ObjectManager $om, 
-        BlogTrackingManager $trackingManager, 
-        PostRepository $repo, 
+        FinderProvider $finder,
+        ObjectManager $om,
+        BlogTrackingManager $trackingManager,
+        PostRepository $repo,
         TranslatorInterface $translator)
     {
         $this->finder = $finder;
@@ -52,14 +52,15 @@ class PostManager
         $this->trackingManager = $trackingManager;
         $this->translator = $translator;
     }
-    
+
     /**
-     * @param Blog $blog
+     * @param Blog   $blog
      * @param string $postId
      *
      * @return post
      */
-    public function getPostByIdOrSlug(Blog $blog, $postId){
+    public function getPostByIdOrSlug(Blog $blog, $postId)
+    {
         if (preg_match('/^\d+$/', $postId)) {
             $post = $this->repo->findOneBy([
                 'blog' => $blog,
@@ -71,7 +72,7 @@ class PostManager
                 'slug' => $postId,
             ]);
         }
-        
+
         return $post;
     }
 
@@ -160,69 +161,58 @@ class PostManager
     public function replacePostAuthor(User $from, User $to)
     {
         $posts = $this->repo->findByAuthor($from);
-        
+
         if (count($posts) > 0) {
             foreach ($posts as $post) {
                 $post->setAuthor($to);
             }
-            
+
             $this->om->flush();
         }
-        
+
         return count($posts);
     }
-    
+
     /**
      * Create a post.
-     * 
+     *
      * @param Blog $blog
      * @param Post $post
      * @param User $user
      */
     public function createPost(Blog $blog, Post $post, User $user)
     {
-        //$post = new Post();
         $post
         ->setBlog($blog)
         ->setAuthor($user)
         ->setStatus($blog->isAutoPublishPost() ? Post::STATUS_PUBLISHED : Post::STATUS_UNPUBLISHED)
         ->setCreationDate(new \DateTime())
         ->setModificationDate(new \DateTime());
-        
-        if ($post->getPublicationDate() == null) {
+
+        if (null === $post->getPublicationDate()) {
             $post->setPublicationDate(new \DateTime());
         }
-        
-        // Tags
-        //$newTags = $paramFetcher->get('tags');
-        //$tagManager = $this->get('icap.blog.manager.tag');
-        
-        // Add new tags
-        /*foreach ($newTags as $newTag) {
-            $tag = $tagManager->loadOrCreateTag($newTag['text']);
-            $post->addTag($tag);
-        }*/
-        
+
         //tracking
         $this->trackingManager->dispatchPostCreateEvent($blog, $post);
-        if ($user !== 'anon.') {
+        if ('anon.' !== $user) {
             $this->trackingManager->updateResourceTracking($blog->getResourceNode(), $user, new \DateTime());
         }
-        
+
         $this->om->persist($post);
         $this->om->flush();
-        
+
         return $post;
     }
-    
+
     /**
      * Create a post comment.
      *
-     * @param Blog $blog
-     * @param Post $post
+     * @param Blog    $blog
+     * @param Post    $post
      * @param Comment $comment
-     * @param User $user
-     * 
+     * @param User    $user
+     *
      * @return Comment
      */
     public function createComment(Blog $blog, Post $post, Comment $comment, $forcePublication = false)
@@ -230,39 +220,31 @@ class PostManager
         $comment
         ->setPost($post)
         ->setStatus($blog->isAutoPublishComment() || $forcePublication ? Comment::STATUS_PUBLISHED : Comment::STATUS_UNPUBLISHED);
-        
-        if ($comment->getCreationDate() == null) {
+
+        if (null === $comment->getCreationDate()) {
             $comment->setCreationDate(new \DateTime());
         }
-        
-        /*if ($comment->getPublicationDate() == null) {
-            $comment->setPublicationDate(new \DateTime());
-        }
-        
-        if ($comment->getUpdateDate() == null) {
-            $comment->setUpdateDate(new \DateTime());
-        }*/
-        
+
         $this->om->persist($comment);
         $this->om->flush();
-        
+
         $this->trackingManager->dispatchCommentCreateEvent($post, $comment);
-        
-        if ($comment->getAuthor() !== null) {
+
+        if (null !== $comment->getAuthor()) {
             $this->trackingManager->updateResourceTracking($blog->getResourceNode(), $comment->getAuthor(), new \DateTime());
         }
-        
+
         return $comment;
     }
-    
+
     /**
      * Update a comment.
      *
-     * @param Blog $blog
-     * @param Post $post
+     * @param Blog    $blog
+     * @param Post    $post
      * @param Comment $comment
-     * @param User $user
-     * 
+     * @param User    $user
+     *
      * @return Comment
      */
     public function updateComment(Blog $blog, Post $post, Comment $existingComment, $message)
@@ -271,25 +253,25 @@ class PostManager
         ->setMessage($message)
         ->setStatus($blog->isAutoPublishComment() ? Comment::STATUS_PUBLISHED : Comment::STATUS_UNPUBLISHED)
         ->setPublicationDate($blog->isAutoPublishComment() ? new \DateTime() : null);
-        
+
         $this->om->flush();
-        
+
         $unitOfWork = $this->om->getUnitOfWork();
         $unitOfWork->computeChangeSets();
         $changeSet = $unitOfWork->getEntityChangeSet($existingComment);
-        
+
         $this->trackingManager->dispatchCommentUpdateEvent($post, $existingComment, $changeSet);
-        
+
         return $existingComment;
     }
-    
+
     /**
      * Publish a comment.
      *
-     * @param Blog $blog
-     * @param Post $post
+     * @param Blog    $blog
+     * @param Post    $post
      * @param Comment $comment
-     * @param User $user
+     * @param User    $user
      *
      * @return Comment
      */
@@ -297,19 +279,39 @@ class PostManager
     {
         $existingComment->publish();
         $this->om->flush();
-        
+
         $this->trackingManager->dispatchCommentPublishEvent($post, $existingComment);
-        
+
         return $existingComment;
     }
-    
+
+    /**
+     * Report a comment.
+     *
+     * @param Blog    $blog
+     * @param Post    $post
+     * @param Comment $comment
+     * @param User    $user
+     *
+     * @return Comment
+     */
+    public function reportComment(Blog $blog, Post $post, Comment $existingComment)
+    {
+        $existingComment->publish();
+        $this->om->flush();
+
+        $this->trackingManager->dispatchCommentPublishEvent($post, $existingComment);
+
+        return $existingComment;
+    }
+
     /**
      * unpublish a comment.
      *
-     * @param Blog $blog
-     * @param Post $post
+     * @param Blog    $blog
+     * @param Post    $post
      * @param Comment $comment
-     * @param User $user
+     * @param User    $user
      *
      * @return Comment
      */
@@ -317,12 +319,12 @@ class PostManager
     {
         $existingComment->unpublish();
         $this->om->flush();
-        
+
         $this->trackingManager->dispatchCommentPublishEvent($post, $existingComment);
-        
+
         return $existingComment;
     }
-    
+
     /**
      * Delete a comment.
      *
@@ -337,10 +339,10 @@ class PostManager
         $this->om->remove($existingComment);
         $this->om->flush();
         $this->trackingManager->dispatchCommentDeleteEvent($post, $existingComment);
-        
+
         return $existingComment->getId();
     }
-    
+
     /**
      * Update a post.
      *
@@ -348,58 +350,35 @@ class PostManager
      * @param Post $existingPost
      * @param Post $post
      * @param User $user
-     * 
+     *
      * @return Post
      */
     public function updatePost(Blog $blog, Post $existingPost, Post $post, User $user)
     {
-        /*$existingPost = $this->repo->findOneBy([
-            'blog' => $blog,
-            'uuid' => $post->getUuid(),
-        ]);*/
-        
         $existingPost
         ->setTitle($post->getTitle())
         ->setContent($post->getContent());
-        if ($post->getPublicationDate() !== null) {
+        if (null !== $post->getPublicationDate()) {
             $existingPost->setPublicationDate($post->getPublicationDate());
         } else {
             $existingPost->setPublicationDate(null);
         }
-        
-        // Tags
-       /* $oldTags = $myPost->getTags();
-        $newTags = $paramFetcher->get('tags');
-        
-        // Remove old tags
-        foreach ($oldTags as $tag) {
-            $existingPost->removeTag($tag);
-        }
-        
-        $tagManager = $this->get('icap.blog.manager.tag');
-        
-        // Add new tags
-        foreach ($newTags as $tag) {
-            $myTag = $tagManager->loadOrCreateTag($tag['text']);
-            $existingPost->addTag($myTag);
-        }*/
-        
-        //$em->persist($myPost);
+
         $this->om->flush();
-        
+
         $unitOfWork = $this->om->getUnitOfWork();
         $unitOfWork->computeChangeSets();
         $changeSet = $unitOfWork->getEntityChangeSet($existingPost);
-        
+
         $this->trackingManager->dispatchPostUpdateEvent($existingPost, $changeSet);
-        
-        if ($user !== 'anon.') {
+
+        if ('anon.' !== $user) {
             $this->trackingManager->updateResourceTracking($blog->getResourceNode(), $user, new \DateTime());
         }
-        
+
         return $existingPost;
     }
-    
+
     /**
      * Delete a post.
      *
@@ -413,56 +392,71 @@ class PostManager
     {
         $this->om->remove($post);
         $this->om->flush();
-        
+
         $this->trackingManager->dispatchPostDeleteEvent($post);
     }
-    
+
     /**
-     * Update post view count
+     * Update post view count.
      *
      * @param Blog $blog
      * @param Post $post
      * @param User $user
      */
-    public function updatePostViewCount($post){
+    public function updatePostViewCount($post)
+    {
         $post->increaseViewCounter();
         $this->om->persist($post);
         $this->om->flush();
     }
-    
+
     /**
-     * Switch post state
+     * Pin/unpin post.
+     *
+     * @param Post $post
+     */
+    public function switchPinState($post)
+    {
+        $post->setPinned(!$post->isPinned());
+        $this->om->persist($post);
+        $this->om->flush();
+    }
+
+    /**
+     * Switch post state.
      *
      * @param Post $post
      * @param User $user
      */
-    public function switchPublicationState(Post $post){
+    public function switchPublicationState(Post $post)
+    {
         if (!$post->isPublished()) {
             $post->publish();
         } else {
             $post->unpublish();
         }
-        
+
         $this->om->flush();
-        
+
         $unitOfWork = $this->om->getUnitOfWork();
         $unitOfWork->computeChangeSets();
         $changeSet = $unitOfWork->getEntityChangeSet($post);
-        
+
         $this->trackingManager->dispatchPostUpdateEvent($post, $changeSet);
-        
+
         return $post;
     }
-    
+
     /**
-     * Get posts
+     * Get posts.
      *
      * @param $blogId
      * @param $filters
      * @param $publishedOnly
      * @param $abstract
      */
-    public function getPosts($blogId, $filters, $publishedOnly, $abstract){
+    public function getPosts($blogId, $filters, $publishedOnly, $abstract)
+    {
         if (!isset($filters['hiddenFilters'])) {
             $filters['hiddenFilters'] = [];
         }
@@ -470,17 +464,18 @@ class PostManager
         $filters['hiddenFilters'] = [
             'blog' => $blogId,
         ];
-        
-        if($publishedOnly){
-            $filters['hiddenFilters'] = array_merge($filters['hiddenFilters'], array('published' => 'true'));
+
+        if ($publishedOnly) {
+            $filters['hiddenFilters'] = array_merge($filters['hiddenFilters'], ['published' => 'true']);
         }
+
         return $this->finder->search('Icap\BlogBundle\Entity\Post', $filters, [
             'abstract' => $abstract,
         ]);
     }
-    
+
     /**
-     * Get comments
+     * Get comments.
      *
      * @param $blogId
      * @param $postId
@@ -488,7 +483,8 @@ class PostManager
      * @param $filters
      * @param $publishedOnly
      */
-    public function getComments($blogId, $postId, $userId, $filters, $allowedToSeeOnly){
+    public function getComments($blogId, $postId, $userId, $filters, $allowedToSeeOnly)
+    {
         if (!isset($filters['hiddenFilters'])) {
             $filters['hiddenFilters'] = [];
         }
@@ -496,96 +492,63 @@ class PostManager
         $filters['hiddenFilters'] = [
             'post' => $postId,
         ];
-        
-        //sort by creationDate desc
-        /*$filters['sortBy'] = [
-            'property' => 'creationDate',
-            'direction' => -1,
-        ];*/
-        
+
         //allow to see only published post, or post whose current user is the author
-        if($allowedToSeeOnly){
+        if ($allowedToSeeOnly) {
             //anonymous only sees published
-            if ($userId === null) {
-                $options = array(
+            if (null === $userId) {
+                $options = [
                     'publishedOnly' => true,
-                );
-            }else {
-                $options = array(
+                ];
+            } else {
+                $options = [
                     'allowedToSeeForUser' => $userId,
-                );
+                ];
             }
-  
+
             $filters['hiddenFilters'] = array_merge(
-                $filters['hiddenFilters'], 
+                $filters['hiddenFilters'],
                 $options);
         }
+
         return $this->finder->search('Icap\BlogBundle\Entity\Comment', $filters, []);
     }
-    
+
     /**
-     * Get blog post authors
+     * Get blog post authors.
      *
      * @param Blog $blog
      *
      * @return array
      */
-    public function getAuthors($blog){
+    public function getAuthors($blog)
+    {
         return $this->repo->findAuthorsByBlog($blog);
     }
-    
+
     /**
-     * Get blog posts archives
+     * Get blog posts archives.
      *
      * @param Blog $blog
      *
      * @return array
      */
-    public function getArchives($blog){
+    public function getArchives($blog)
+    {
         $postDatas = $this->repo->findArchiveDatasByBlog($blog);
-        //var_dump($postDatas);
-        //die();
         $archiveDatas = [];
-        
+
         foreach ($postDatas as $postData) {
-            //$publicationDate = $postData->getPublicationDate();
             $year = $postData['year'];
             $month = $postData['month'];
             $count = $postData['count'];
-            
+
             $archiveDatas[$year][] = [
                 'month' => $this->translator->trans('month.'.date('F', mktime(0, 0, 0, $month, 10)), [], 'platform'),
                 'monthValue' => $month,
-                'count'  => $count,
+                'count' => $count,
             ];
-
-            /*$archiveDatas[] = [
-                'year'  => $year,
-                'month' => $month,
-                'count'  => $count,
-            ];*/
         }
-        
-        /*
-         *   
-        foreach ($postDatas as $postData) {
-            $publicationDate = $postData->getPublicationDate();
-            $year = $publicationDate->format('Y');
-            $month = $publicationDate->format('m');
-            
-            if (!isset($archiveDatas[$year][$month])) {
-                $archiveDatas[$year][$month] = [
-                    'year' => $year,
-                    'month' => $this->translator->trans('month.'.date('F', mktime(0, 0, 0, $month, 10)), [], 'platform'),
-                    'count' => 1,
-                    'urlParameters' => $year.'/'.$month,
-                ];
-            } else {
-                ++$archiveDatas[$year][$month]['count'];
-            }
-        }
-         * 
-         * */
 
         return $archiveDatas;
     }

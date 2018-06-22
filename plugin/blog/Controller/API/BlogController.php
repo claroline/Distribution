@@ -36,18 +36,17 @@ class BlogController
      *     "blogManager"           = @DI\Inject("icap_blog.manager.blog")
      * })
      *
-     * @param FinderProvider $finder
-     * @param BlogSerializer $blogSerializer
+     * @param FinderProvider        $finder
+     * @param BlogSerializer        $blogSerializer
      * @param BlogOptionsSerializer $blogOptionsSerializer
-     * @param BlogManager $blogManager
+     * @param BlogManager           $blogManager
      */
     public function __construct(
-        FinderProvider $finder, 
-        BlogSerializer $blogSerializer, 
-        BlogOptionsSerializer $blogOptionsSerializer, 
+        FinderProvider $finder,
+        BlogSerializer $blogSerializer,
+        BlogOptionsSerializer $blogOptionsSerializer,
         BlogManager $blogManager
-      )
-    {
+      ) {
         $this->finder = $finder;
         $this->blogSerializer = $blogSerializer;
         $this->blogOptionsSerializer = $blogOptionsSerializer;
@@ -85,7 +84,7 @@ class BlogController
     /**
      * Update blog options.
      *
-     * @EXT\Route("options/{blogId}", name="apiv2_blog_options")
+     * @EXT\Route("options/update/{blogId}", name="apiv2_blog_options_update")
      * @EXT\ParamConverter("blog", class="IcapBlogBundle:Blog", options={"mapping": {"blogId": "uuid"}})
      * @EXT\Method("PUT")
      *
@@ -104,19 +103,18 @@ class BlogController
 
         return new JsonResponse($this->blogOptionsSerializer->serialize($blog, $blog->getOptions()));
     }
-    
+
     /**
      * Get all authors for a given blog.
      *
      * @EXT\Route("{blogId}", name="apiv2_blog_authors")
      * @EXT\ParamConverter("blog", class="IcapBlogBundle:Blog", options={"mapping": {"blogId": "uuid"}})
      * @EXT\Method("GET")
-     * 
      */
     public function getBlogAuthorsAction(Blog $blog)
     {
         $this->checkPermission('OPEN', $blog->getResourceNode(), [], true);
-        
+
         return $this->blogManager->getAuthors($blog);
     }
 }
