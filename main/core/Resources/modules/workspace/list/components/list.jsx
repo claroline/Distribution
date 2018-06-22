@@ -2,18 +2,18 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list.jsx'
 import {actions} from '#/main/core/workspace/list/actions'
 import {trans, transChoice} from '#/main/core/translation'
 
-import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
-
 const WorkspacesList = props =>
   <DataListContainer
-    name="workspaces.list"
+    name="workspaces"
     fetch={{
       url: ['apiv2_workspace_displayable_list'],
       autoload: true
@@ -53,7 +53,7 @@ const Workspaces = connect(
     register(workspaces) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
-          icon: 'fa fa-fw fa-users',
+          icon: 'fa fa-fw fa-user',
           title: 'register',
           question: 'register',
           handleConfirm: () => alert('brah')
@@ -63,7 +63,7 @@ const Workspaces = connect(
     unregister(workspaces) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
-          icon: 'fa fa-fw fa-users',
+          icon: 'fa fa-fw fa-user',
           title: trans('unregister_groups'),
           question: trans('unregister_groups'),
           dangerous: true,

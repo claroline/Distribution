@@ -1,5 +1,6 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
+//import {reducer} from '#/main/core/administration/workspace/reducer'
 import {reducer} from '#/main/core/administration/workspace/workspace/reducer'
 import {WorkspaceTool} from '#/main/core/administration/workspace/components/tool.jsx'
 
