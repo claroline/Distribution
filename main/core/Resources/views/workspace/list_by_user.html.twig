@@ -21,11 +21,11 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page-container workspaces-container"></div>
+    <div class="page-container workspaces-container" data-filters="[]"></div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
 
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-workspace-registered.js') }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-main-core-workspace-list.js') }}"></script>
 {% endblock %}
