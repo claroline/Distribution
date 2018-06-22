@@ -16,7 +16,8 @@ const reducer = {
   wikiForm: editorReducer,
   sections: sectionsReducer,
   deletedSections: deletedSectionsReducer,
-  history: historyReducer
+  history: historyReducer,
+  exportPdfEnabled: makeReducer(false, {})
 }
 
 export {

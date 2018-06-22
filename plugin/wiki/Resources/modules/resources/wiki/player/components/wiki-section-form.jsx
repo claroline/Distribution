@@ -64,8 +64,8 @@ class WikiSectionFormComponent extends Component
                   condensed: false,
                   multiple: false,
                   choices: {
-                    before: trans('before'),
-                    after: trans('after')
+                    before: trans('before', {}, 'icap_wiki'),
+                    after: trans('after', {}, 'icap_wiki')
                   }
                 }
               }, {

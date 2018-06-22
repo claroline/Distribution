@@ -17,6 +17,7 @@ export const App = () => ({
     wiki: initialData.wiki,
     sections: {
       tree: initialData.sections
-    }
+    },
+    exportPdfEnabled: initialData.exportPdfEnabled
   })
 })

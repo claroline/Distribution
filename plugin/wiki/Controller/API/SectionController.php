@@ -93,7 +93,7 @@ class SectionController
         $this->checkPermission('EDIT', $resourceNode, [], true);
         $visible = $request->request->get('visible');
         if (isset($visible)) {
-            $section->setVisible($visible);
+            $this->sectionManager->updateSectionVisibility($section, $visible);
         }
 
         return new JsonResponse(

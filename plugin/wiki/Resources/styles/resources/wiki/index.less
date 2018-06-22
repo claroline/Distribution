@@ -43,14 +43,16 @@
 
     &:not(.wiki-section-root) .wiki-section-title {
       .wiki-border(border-bottom);
-      line-height: 26px;
+      display: flex;
+      flex-flow: row wrap;
+      line-height: 30px;
+      padding-left: 10px;
       span {
-        display: inline-block;
+        flex: 50;
       }
       .wiki-section-actions {
         .wiki-border(border-left);
-        display: inline-block;
-        float: right;
+        flex: auto;
         font-size: @font-size-base;
         .btn.btn-link {
           padding: 2px;
@@ -64,15 +66,26 @@
       }
     }
 
-    .wiki-section-text {
-      clear: both;
+    &.wiki-section-invisible {
+      .wiki-section-title {
+        background-color: @state-danger-bg;
+        .wiki-section-invisible-text {
+          display: inline-block;
+          font-size: 0.7em;
+          font-style: italic;
+          color: @gray-light;
+        }
+      }
+      & > .wiki-section-content > .wiki-section-title .wiki-section-title-text {
+          flex: auto;
+      }
     }
   }
 }
 /* End: Wiki overview section */
 
 /* Wiki section form */
-.data-form wiki-section-form {
+.wiki-section-form {
   .wiki-section-form-buttons {
     .btn {
       margin-left: 20px;

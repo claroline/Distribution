@@ -90,6 +90,13 @@ class SectionManager
         }
     }
 
+    public function updateSectionVisibility(Section $section, $visibility)
+    {
+        $section->setVisible($visibility);
+        $this->om->persist($section);
+        $this->om->flush();
+    }
+
     public function createSection(Wiki $wiki, Section $section, User $user, $isAdmin, $data)
     {
         $newSection = $this->sectionSerializer->deserialize($data, $user);

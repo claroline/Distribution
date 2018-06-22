@@ -12,6 +12,7 @@
             data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
             data-wiki="{{ _resource | api_serialize | json_encode | raw | escape }}"
             data-sections="{{ sectionTree | json_encode | raw | escape }}"
+            data-export-pdf-enabled="{{ config.getParameter('is_pdf_export_active') | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

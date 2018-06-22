@@ -34,7 +34,8 @@ const Resource = props =>
         type: 'link',
         icon: 'fa fa-fw fa-home',
         label: trans('show_overview'),
-        target: '/'
+        target: '/',
+        primary: false
       },
       {
         type: 'download',
@@ -111,7 +112,7 @@ Resource.propTypes = {
 const WikiResource = connect(
   (state) => ({
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
-    canExport: hasPermission('export', resourceSelect.resourceNode(state)),
+    canExport: hasPermission('export', resourceSelect.resourceNode(state)) && state.exportPdfEnabled,
     wiki: state.wiki,
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'wikiForm'))
   }),

@@ -94,6 +94,7 @@ class SectionSerializer
                     null :
                     $this->userSerializer->serialize($author, [Options::SERIALIZE_MINIMAL]),
             ]),
+            'children' => [],
         ];
     }
 
