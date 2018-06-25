@@ -29,6 +29,7 @@
     "edit": "Edit",
     "edit_description": "Edit description",
     "edit_section": "Edit section",
+    "empty_wiki_message": "Your wiki has no content. Click on (+) button in order to create your first section",
     "error_401": "You are not authorized to perform this operation.",
     "error_404": "This section doesn't exist.",
     "error_500": "The server encoutered an error. Please try again in a moment.",

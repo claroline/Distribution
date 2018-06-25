@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import {trans} from '#/main/core/translation'
 
 import {Contents} from '#/plugin/wiki/resources/wiki/player/components/contents'
 import {WikiSection} from '#/plugin/wiki/resources/wiki/player/components/wiki-section'
@@ -38,9 +39,16 @@ class PlayerComponent extends Component {
         {this.props.wiki.display.contents && this.props.sections.tree.children.length > 0 &&
         <Contents sectionTree={this.props.sections.tree}/>
         }
+        {this.props.sections.tree.children.length === 0 &&
+        <div className="wiki-empty-message text-info">
+          {trans('empty_wiki_message', {}, 'icap_wiki')}
+        </div>
+        }
+        {this.props.sections.tree.children.length > 0 &&
         <WikiSectionTree
           sections={this.props.sections}
         />
+        }
       </div>
     )
   }

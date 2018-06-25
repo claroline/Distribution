@@ -32,6 +32,7 @@
     "error_401": "Vous n'avez pas les droits nécessaires pour mener à bien l'opération demandée.",
     "error_404": "La section demandée n'existe pas.",
     "error_500": "Le serveur a rencontré une erreur. Veuillez réessayer dans un moment.",
+    "empty_wiki_message": "Votre wiki n'a aucun contenu. Cliquez sur le bouton (+) pour créer votre première section",
     "history": "Historique",
     "icap_wiki_delete_section_type_children": "Supprimer également les sous-sections",
     "icap_wiki_edit_section_type_activeContribution_text": "Texte",
