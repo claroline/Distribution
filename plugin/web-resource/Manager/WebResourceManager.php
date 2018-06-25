@@ -27,6 +27,7 @@ class WebResourceManager
     private $om;
     private $container;
     private $webResourceResourcesPath;
+
     /**
      * @var \ZipArchive
      */
@@ -242,7 +243,7 @@ class WebResourceManager
      *
      * @param string $hash The hash name of the resource
      */
-    public function unzip($hash)
+    public function unzip($hash, $workspace)
     {
         if (!file_exists($this->zipPath.$hash)) {
             mkdir($this->zipPath.$hash, 0777, true);
