@@ -11,54 +11,63 @@ import {constants as listConst} from '#/main/core/data/list/constants'
 
 import {PageContainer, PageHeader,PageContent} from '#/main/core/layout/page/index'
 
-const WorkspacesList = props =>
-  <PageContainer>
-    <PageHeader>
-    </PageHeader>
-    <PageContent>
-      <DataListContainer
-        name="workspaces"
-        fetch={{
-          url: [props.url],
-          autoload: true
-        }}
-        definition={WorkspaceList.definition}
-        primaryAction={WorkspaceList.open}
-        card={WorkspaceList.card}
-        display={{
-          current: props.parameters.workspace.list.default_mode,
-          available: Object.keys(listConst.DISPLAY_MODES)
-        }}
-        actions={(rows) => [
-          {
-            type: 'callback',
-            icon: 'fa fa-fw fa-book',
-            label: trans('register'),
-            displayed: rows[0].registration.selfRegistration && !rows[0].permissions['open'],
-            scope: ['object'],
-            callback: () => props.register(rows[0]),
-            confirm: {
-              title: trans('unregister_groups'),
-              message: trans('unregister_groups')
+const WorkspacesList = props => {
+  const definition = WorkspaceList.definition
+  const defaultProps = props.parameters.workspace.list.default_properties
+
+  definition.forEach(prop => {
+    prop.displayed = defaultProps.indexOf(prop.name) > -1
+  })
+
+  return(
+    <PageContainer>
+      <PageHeader>
+      </PageHeader>
+      <PageContent>
+        <DataListContainer
+          name="workspaces"
+          fetch={{
+            url: [props.url],
+            autoload: true
+          }}
+          definition={definition}
+          primaryAction={WorkspaceList.open}
+          card={WorkspaceList.card}
+          display={{
+            current: props.parameters.workspace.list.default_mode,
+            available: Object.keys(listConst.DISPLAY_MODES)
+          }}
+          actions={(rows) => [
+            {
+              type: 'callback',
+              icon: 'fa fa-fw fa-book',
+              label: trans('register'),
+              displayed: rows[0].registration.selfRegistration && !rows[0].permissions['open'],
+              scope: ['object'],
+              callback: () => props.register(rows[0]),
+              confirm: {
+                title: trans('unregister_groups'),
+                message: trans('unregister_groups')
+              }
+            },
+            {
+              type: 'callback',
+              icon: 'fa fa-fw fa-book',
+              label: trans('unregister'),
+              dangerous: true,
+              displayed: rows[0].registration.selfUnregistration && rows[0].permissions['open'],
+              scope: ['object'],
+              callback: () => props.unregister(rows[0]),
+              confirm: {
+                title: trans('unregister_groups'),
+                message: trans('unregister_groups')
+              }
             }
-          },
-          {
-            type: 'callback',
-            icon: 'fa fa-fw fa-book',
-            label: trans('unregister'),
-            dangerous: true,
-            displayed: rows[0].registration.selfUnregistration && rows[0].permissions['open'],
-            scope: ['object'],
-            callback: () => props.unregister(rows[0]),
-            confirm: {
-              title: trans('unregister_groups'),
-              message: trans('unregister_groups')
-            }
-          }
-        ]}
-      />
-    </PageContent>
-  </PageContainer>
+          ]}
+        />
+      </PageContent>
+    </PageContainer>
+  )}
 
 WorkspacesList.propTypes = {
   register: T.func.isRequired,
