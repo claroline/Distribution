@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ScormBundle\Listener\Exception;
+namespace Claroline\ScormBundle\Manager\Exception;
 
 /**
  * Class for exceptions thrown when no selection has been made with the ResourceQueryBuilder.

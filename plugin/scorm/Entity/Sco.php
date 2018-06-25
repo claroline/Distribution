@@ -12,6 +12,7 @@
 namespace Claroline\ScormBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,7 +33,8 @@ class Sco
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\ScormBundle\Entity\Scorm",
-     *     inversedBy="scos"
+     *     inversedBy="scos",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="scorm_id", onDelete="CASCADE", nullable=false)
      */
@@ -131,6 +133,7 @@ class Sco
     public function __construct()
     {
         $this->refreshUuid();
+        $this->scoChildren = new ArrayCollection();
     }
 
     public function getId()

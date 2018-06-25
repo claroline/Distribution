@@ -20,11 +20,9 @@ const ScormForm = props =>
             label: trans('file'),
             type: 'file',
             required: true,
-
-            onChange: (file) => props.update(props.newNode, file),
+            onChange: (data) => props.update(data),
             options: {
-              // uploadUrl: ['apiv2_transfer_upload_file'],
-              unzippable: true
+              uploadUrl: ['apiv2_scorm_archive_upload', {workspace: props.workspaceId}]
             }
           }
         ]
@@ -33,27 +31,18 @@ const ScormForm = props =>
   />
 
 ScormForm.propTypes = {
-  newNode: T.shape({
-    name: T.string
-  }),
   update: T.func.isRequired
 }
 
 const ScormCreation = connect(
-  null,
+  state => ({
+    workspaceId: selectors.parent(state).workspace.id
+  }),
   (dispatch) => ({
-    update(newNode, file) {
-      console.log(file)
-      // update resource props
-      // dispatch(actions.updateResource('size', file.size))
-      // dispatch(actions.updateResource('hashName', file.url))
-      //
-      // // update node props
-      // dispatch(actions.updateNode('meta.mimeType', file.mimeType))
-      // if (!newNode.name) {
-      //   // only set name if none provided
-      //   dispatch(actions.updateNode('name', file.filename))
-      // }
+    update(data) {
+      dispatch(actions.updateResource('hashName', data.hashName))
+      dispatch(actions.updateResource('version', data.version))
+      dispatch(actions.updateResource('scos', data.scos))
     }
   })
 )(ScormForm)

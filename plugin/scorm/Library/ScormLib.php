@@ -13,7 +13,7 @@
 namespace Claroline\ScormBundle\Library;
 
 use Claroline\ScormBundle\Entity\Sco;
-use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
+use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -73,6 +73,8 @@ class ScormLib
             }
 
             return $this->parseItemNodes($organization, $resources);
+        } else {
+            throw new InvalidScormArchiveException('no_organization_found_message');
         }
     }
 
@@ -87,11 +89,8 @@ class ScormLib
      *
      * @throws InvalidScormArchiveException
      */
-    private function parseItemNodes(
-        \DOMNode $source,
-        \DOMNodeList $resources,
-        Sco $parentSco = null
-    ) {
+    private function parseItemNodes(\DOMNode $source, \DOMNodeList $resources, Sco $parentSco = null)
+    {
         $item = $source->firstChild;
         $scos = [];
 
@@ -103,7 +102,7 @@ class ScormLib
                 $this->findAttrParams($sco, $item, $resources);
                 $this->findNodeParams($sco, $item->firstChild);
 
-                if ($sco->getIsBlock()) {
+                if ($sco->isBlock()) {
                     $scos[] = $this->parseItemNodes($item, $resources, $sco);
                 }
             }
@@ -158,11 +157,8 @@ class ScormLib
      *
      * @throws InvalidScormArchiveException
      */
-    private function findAttrParams(
-        Sco $sco,
-        \DOMNode $item,
-        \DOMNodeList $resources
-    ) {
+    private function findAttrParams(Sco $sco, \DOMNode $item, \DOMNodeList $resources)
+    {
         $identifier = $item->attributes->getNamedItem('identifier');
         $isVisible = $item->attributes->getNamedItem('isvisible');
         $identifierRef = $item->attributes->getNamedItem('identifierref');

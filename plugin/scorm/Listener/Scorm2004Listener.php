@@ -25,7 +25,7 @@ use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\ScormBundle\Entity\Scorm2004Resource;
 use Claroline\ScormBundle\Entity\Scorm2004Sco;
 use Claroline\ScormBundle\Form\ScormType;
-use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
+use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;

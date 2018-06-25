@@ -16,6 +16,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\ScormBundle\Entity\Sco;
@@ -31,7 +32,8 @@ use Claroline\ScormBundle\Entity\ScoTracking;
 use Claroline\ScormBundle\Library\Scorm12;
 use Claroline\ScormBundle\Library\Scorm2004;
 use Claroline\ScormBundle\Library\ScormLib;
-use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
+use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
+use Claroline\ScormBundle\Serializer\ScoSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
@@ -58,6 +60,8 @@ class ScormManager
     private $resourceManager;
     /** @var ScormLib */
     private $scormLib;
+    /** @var ScoSerializer */
+    private $scoSerializer;
     /** @var string */
     private $uploadDir;
 
@@ -82,6 +86,7 @@ class ScormManager
      *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "resourceManager"     = @DI\Inject("claroline.manager.resource_manager"),
      *     "scormLib"            = @DI\Inject("claroline.library.scorm"),
+     *     "scoSerializer"       = @DI\Inject("claroline.serializer.scorm.sco"),
      *     "uploadDir"           = @DI\Inject("%claroline.param.uploads_directory%")
      * })
      *
@@ -93,6 +98,7 @@ class ScormManager
      * @param ResourceEvaluationManager $resourceEvalManager
      * @param ResourceManager           $resourceManager
      * @param ScormLib                  $scormLib
+     * @param ScoSerializer             $scoSerializer
      * @param string                    $uploadDir
      */
     public function __construct(
@@ -104,6 +110,7 @@ class ScormManager
         ResourceEvaluationManager $resourceEvalManager,
         ResourceManager $resourceManager,
         ScormLib $scormLib,
+        ScoSerializer $scoSerializer,
         $uploadDir
     ) {
         $this->fileSystem = $fileSystem;
@@ -114,6 +121,7 @@ class ScormManager
         $this->resourceEvalManager = $resourceEvalManager;
         $this->resourceManager = $resourceManager;
         $this->scormLib = $scormLib;
+        $this->scoSerializer = $scoSerializer;
         $this->uploadDir = $uploadDir;
 
         $this->scormResourcesPath = $uploadDir.DIRECTORY_SEPARATOR.'scormresources'.DIRECTORY_SEPARATOR;
@@ -126,12 +134,89 @@ class ScormManager
         $this->logRepo = $om->getRepository('ClarolineCoreBundle:Log\Log');
     }
 
+    public function uploadScormArchive(Workspace $workspace, UploadedFile $file)
+    {
+        $error = null;
+
+        // Checks if it is a valid scorm archive
+        $zip = new \ZipArchive();
+        $openValue = $zip->open($file);
+
+        $isScormArchive = (true === $openValue) && $zip->getStream('imsmanifest.xml');
+
+        if (!$isScormArchive) {
+            throw new InvalidScormArchiveException('invalid_scorm_archive_message');
+        } else {
+            return $this->generateScorm($workspace, $file);
+        }
+    }
+
+    public function generateScorm(Workspace $workspace, UploadedFile $file)
+    {
+        $ds = DIRECTORY_SEPARATOR;
+        $hashName = Uuid::uuid4()->toString().'.zip';
+        $scormData = $this->parseScormArchive($file);
+        $this->unzipScormArchive($workspace, $file, $hashName);
+        // Move Scorm archive in the files directory
+        $file->move($this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid(), $hashName);
+
+        return [
+            'hashName' => $hashName,
+            'version' => $scormData['version'],
+            'scos' => $scormData['scos'],
+        ];
+    }
+
+    public function parseScormArchive(UploadedFile $file)
+    {
+        $data = [];
+        $contents = '';
+        $zip = new \ZipArchive();
+
+        $zip->open($file);
+        $stream = $zip->getStream('imsmanifest.xml');
+
+        while (!feof($stream)) {
+            $contents .= fread($stream, 2);
+        }
+        $dom = new \DOMDocument();
+
+        if (!$dom->loadXML($contents)) {
+            throw new InvalidScormArchiveException('cannot_load_imsmanifest_message');
+        }
+
+        $scormVersionElements = $dom->getElementsByTagName('schemaversion');
+
+        if (1 === $scormVersionElements->length) {
+            switch ($scormVersionElements->item(0)->textContent) {
+                case '1.2':
+                    $data['version'] = Scorm::SCORM_12;
+                    break;
+                case 'CAM 1.3':
+                case '2004 3rd Edition':
+                case '2004 4th Edition':
+                    $data['version'] = Scorm::SCORM_2004;
+                    break;
+                default:
+                    throw new InvalidScormArchiveException('invalid_scorm_version_message');
+            }
+        } else {
+            throw new InvalidScormArchiveException('invalid_scorm_version_message');
+        }
+        $scos = $this->scormLib->parseOrganizationsNode($dom);
+        $data['scos'] = array_map(function (Sco $sco) {
+            return $this->scoSerializer->serialize($sco);
+        }, $scos);
+
+        return $data;
+    }
+
     public function createScorm($tmpFile, $name)
     {
         $scorm = new Scorm();
         $scorm->setName($name);
         $hashName = Uuid::uuid4()->toString().'.zip';
-        $scorm->setFilePath($hashName);
+        $scorm->setHashName($hashName);
         $scos = $this->generateScos($scorm, $tmpFile);
 
         if (count($scos) > 0) {
@@ -549,14 +634,16 @@ class ScormManager
     /**
      * Unzip a given ZIP file into the web resources directory.
      *
-     * @param \SplFileInfo $file
+     * @param Workspace    $workspace
+     * @param UploadedFile $file
      * @param string       $hashName name of the destination directory
      */
-    private function unzipScormArchive(\SplFileInfo $file, $hashName)
+    private function unzipScormArchive(Workspace $workspace, UploadedFile $file, $hashName)
     {
         $zip = new \ZipArchive();
         $zip->open($file);
-        $destinationDir = $this->scormResourcesPath.$hashName;
+        $destinationDir = $this->scormResourcesPath.$workspace->getUuid().DIRECTORY_SEPARATOR.$hashName;
+
         if (!file_exists($destinationDir)) {
             mkdir($destinationDir, 0777, true);
         }

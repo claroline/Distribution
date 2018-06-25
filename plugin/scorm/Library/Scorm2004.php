@@ -13,7 +13,7 @@
 namespace Claroline\ScormBundle\Library;
 
 use Claroline\ScormBundle\Entity\Scorm2004Sco;
-use Claroline\ScormBundle\Listener\Exception\InvalidScormArchiveException;
+use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

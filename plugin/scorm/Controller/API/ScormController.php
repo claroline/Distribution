@@ -12,9 +12,11 @@ namespace Claroline\ScormBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\ScormBundle\Entity\ScormResource;
+use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use Claroline\ScormBundle\Manager\ScormManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
@@ -22,34 +24,51 @@ use JMS\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ScormController extends Controller
 {
+    /** @var AuthorizationCheckerInterface */
     private $authorization;
+    /** @var ResourceManager */
     private $resourceManager;
+    /** @var ScormManager */
     private $scormManager;
+    /** @var Serializer */
     private $serializer;
+    /** @var TranslatorInterface */
+    private $translator;
 
     /**
      * @DI\InjectParams({
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
      *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
      *     "scormManager"    = @DI\Inject("claroline.manager.scorm_manager"),
-     *     "serializer"      = @DI\Inject("jms_serializer")
+     *     "serializer"      = @DI\Inject("jms_serializer"),
+     *     "translator"      = @DI\Inject("translator")
      * })
+     *
+     * @param AuthorizationCheckerInterface $authorization
+     * @param ResourceManager               $resourceManager
+     * @param ScormManager                  $scormManager
+     * @param Serializer                    $serializer
+     * @param TranslatorInterface           $translator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         ResourceManager $resourceManager,
         ScormManager $scormManager,
-        Serializer $serializer
+        Serializer $serializer,
+        TranslatorInterface $translator
     ) {
         $this->authorization = $authorization;
         $this->resourceManager = $resourceManager;
         $this->scormManager = $scormManager;
         $this->serializer = $serializer;
+        $this->translator = $translator;
     }
 
     /**
@@ -144,6 +163,45 @@ class ScormController extends Controller
         }
 
         return new JsonResponse($results, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *    "/workspace/{workspace}/scorm/archive/upload",
+     *    name="apiv2_scorm_archive_upload"
+     * )
+     * @EXT\ParamConverter(
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"workspace": "uuid"}}
+     * )
+     *
+     * @param Workspace $workspace
+     * @param Request   $request
+     *
+     * @return JsonResponse
+     */
+    public function uploadAction(Workspace $workspace, Request $request)
+    {
+        $files = $request->files->all();
+        $data = null;
+        $error = null;
+
+        try {
+            if (1 === count($files)) {
+                foreach ($files as $file) {
+                    $data = $this->scormManager->uploadScormArchive($workspace, $file);
+                }
+            }
+        } catch (InvalidScormArchiveException $e) {
+            $error = $this->translator->trans($e->getMessage(), [], 'resource');
+        }
+
+        if (empty($error)) {
+            return new JsonResponse($data, 200);
+        } else {
+            return new JsonResponse($error, 400);
+        }
     }
 
     private function checkScormRightAndType(ScormResource $scorm, $right)
