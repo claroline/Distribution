@@ -1,13 +1,7 @@
-const WIKI_PLUGIN = 'wiki'
+import {registry} from '#/main/app/plugins/registry'
 
-const wikiConfiguration = {
-  actions: [],
-  resources: [],
-  tools: [],
-  widgets: []
-}
-
-export {
-  WIKI_PLUGIN,
-  wikiConfiguration
-}
+registry.add('wiki', {
+  resources: {
+    'icap_wiki': () => { return import(/* webpackChunkName: "plugin-forum-forum-resource" */ '#/plugin/wiki/resources/wiki') }
+  }
+})
