@@ -4,9 +4,8 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form'
-import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as creationActions, selectors} from '#/main/core/resource/modals/creation/store'
-import {actions} from '#/plugin/web-resource/resources/web-resource/actions'
+
 
 const WebResourceForm = props => {
 
@@ -25,7 +24,7 @@ const WebResourceForm = props => {
                 label: trans('file'),
                 type: 'file',
                 options: {
-                  uploadUrl: ['apiv2_webresource_file_upload']
+                  uploadUrl: ['apiv2_webresource_file_upload', {workspace: props.workspaceId}]
                 },
                 help: trans('not_a_zip', {}, 'resource'),
                 required: true,
@@ -52,12 +51,9 @@ WebResourceForm.propTypes = {
 
 const WebResourceCreation = connect(
   state => ({
-    formCreation: formSelect.data(formSelect.form(state, 'resourceCreation.form'))
+    workspaceId: selectors.newNode(state).workspace.id
   }),
   (dispatch) => ({
-    verifyFile(file) {
-      dispatch(actions.verifyFile(file))
-    },
     update(newNode, file) {
       // update resource props
       dispatch(creationActions.updateResource('size', file.size))
@@ -65,10 +61,6 @@ const WebResourceCreation = connect(
 
       // update node props
       dispatch(creationActions.updateNode('meta.mimeType', file.mimeType))
-      if (!newNode.name) {
-        // only set name if none provided
-        dispatch(creationActions.updateNode('name', file.filename))
-      }
     }
   })
 )(WebResourceForm)

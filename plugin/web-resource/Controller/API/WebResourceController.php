@@ -13,6 +13,7 @@ namespace Claroline\WebResourceBundle\Controller\API;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\WebResourceBundle\Manager\WebResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -47,31 +48,36 @@ class WebResourceController extends AbstractCrudController
 
     /**
      * @EXT\Route(
-     *    "/webResource/file/upload",
+     *    "{workspace}/webResource/file/upload",
      *    name="apiv2_webresource_file_upload",
      *    options={ "method_prefix" = false }
      * )
      *
+     * @EXT\ParamConverter(
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"workspace": "uuid"}}
+     * )
      *
      * @param Request   $request
      *
      * @return JsonResponse
      */
-    public function uploadFile(Request $request)
+    public function uploadFile(Workspace $workspace, Request $request)
     {
         $files = $request->files->all();
         $data = [];
 
         foreach ($files as $file) {
-            $isZip = $this->webResourceManager->isZip($file);
+            $isZip = $this->webResourceManager->isZip($file, $workspace);
             if(!$isZip) {
               return new JsonResponse('not a valid file', 400);
             } else {
-              $created = $this->webResourceManager->create($file);
-              $data[] = $created;
+              $data = $this->webResourceManager->create($file);
+              return new JsonResponse($data, 200);
             }
         }
 
-        return new JsonResponse($data, 200);
+
     }
 }

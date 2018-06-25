@@ -66,7 +66,7 @@ class WebResourceManager
      *
      * @DI\InjectParams({
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "container"           = @DI\Inject("service_container"),
+     *     "container"           = @DI\Inject("service_container")
      * })
      */
     public function __construct(
@@ -297,6 +297,8 @@ class WebResourceManager
         $tmpFile->move($this->filesPath, $hash);
         $this->unzip($hash);
 
-        return $file;
+        return [
+          'hashName' => $file->getHashName()
+        ];
     }
   }

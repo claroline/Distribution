@@ -204,24 +204,6 @@ class WebResourceListener
     }
 
 
-
-    public function create(UploadedFile $tmpFile, Workspace $workspace = null)
-    {
-        $file = new File();
-        $fileName = $tmpFile->getClientOriginalName();
-        $hash = $this->getHash(pathinfo($fileName, PATHINFO_EXTENSION));
-        $file->setSize(filesize($tmpFile));
-        $file->setName($fileName);
-        $file->setHashName($hash);
-        $file->setMimeType('custom/claroline_web_resource');
-        $tmpFile->move($this->filesPath, $hash);
-        $this->unzip($hash);
-
-        return $file;
-    }
-
-
-
     /**
      * Copies a file (no persistence).
      *
