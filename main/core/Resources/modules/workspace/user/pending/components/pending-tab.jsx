@@ -9,6 +9,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions as pendingActions} from '#/main/core/workspace/user/pending/actions'
 import {MODAL_CONFIRM_REGISTRATION} from '#/main/core/workspace/user/pending/components/modal/confirm-registration.jsx'
+import {MODAL_CONFIRM_REMOVE} from '#/main/core/workspace/user/pending/components/modal/confirm-remove.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 import {select} from '#/main/core/workspace/user/selectors'
@@ -25,12 +26,14 @@ const PendingList = props =>
       type: 'callback',
       icon: 'fa fa-fw fa-check',
       label: trans('validate'),
-      action: () => props.register(rows, props.workspace)
+      callback: () => {
+        props.register(rows, props.workspace)
+      }
     }, {
       type: 'callback',
       icon: 'fa fa-fw fa-check',
       label: trans('remove'),
-      action: () => props.remove(rows, props.workspace)
+      callback: () => props.remove(rows, props.workspace)
     }
     ]}
     definition={UserList.definition}
@@ -49,7 +52,6 @@ const PendingTab = connect(
   }),
   dispatch => ({
     register(users, workspace) {
-      alert('yolo')
       dispatch(
         modalActions.showModal(MODAL_CONFIRM_REGISTRATION, {
           //make a user id list after that
@@ -61,7 +63,7 @@ const PendingTab = connect(
     },
     remove(users, workspace) {
       dispatch(
-        modalActions.showModal(MODAL_CONFIRM_REGISTRATION, {
+        modalActions.showModal(MODAL_CONFIRM_REMOVE, {
           //make a user id list after that
           remove: (users, workspace) => dispatch(pendingActions.remove(users, workspace)),
           users: users,

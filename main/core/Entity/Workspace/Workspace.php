@@ -106,6 +106,20 @@ class Workspace
     protected $maxStorageSize = '1 TB';
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string
+     */
+    protected $workspaceLang = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string
+     */
+    protected $onLoadChangeLang = null;
+
+    /**
      * @ORM\Column(type="integer", nullable=false)
      *
      * @Serializer\Groups({"api_workspace", "api_workspace_min"})
@@ -913,5 +927,25 @@ class Workspace
     public function getWorkspaceModel()
     {
         return $this->workspaceModel;
+    }
+
+    public function setWorkspaceLang($workspaceLang)
+    {
+        $this->workspaceLang = $workspaceLang;
+    }
+
+    public function setOnLoadChangeLang($onLoadChangeLang)
+    {
+        $this->onLoadChangeLang = $onLoadChangeLang;
+    }
+
+    public function getWorkspaceLang()
+    {
+        return $this->workspaceLang;
+    }
+
+    public function getOnLoadChangeLang()
+    {
+        return $this->onLoadChangeLang;
     }
 }
