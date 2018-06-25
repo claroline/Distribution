@@ -133,7 +133,7 @@ class WorkspaceController extends AbstractCrudController
 
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue',
-            ['hiddenFilters' => ['workspace' => $workspace->getUuid()]]
+            array_merge($request->query->all(), ['hiddenFilters' => ['workspace' => $workspace->getUuid()]])
         ));
     }
 
@@ -249,13 +249,13 @@ class WorkspaceController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function listManagersAction(Workspace $workspace)
+    public function listManagersAction(Workspace $workspace, Request $request)
     {
         $role = $this->container->get('claroline.manager.role_manager')->getManagerRole($workspace);
 
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\User',
-            ['hiddenFilters' => ['role' => $role->getUuid()]],
+            array_merge($request->query->all(), ['hiddenFilters' => ['role' => $role->getUuid()]]),
             [Options::IS_RECURSIVE]
         ));
     }
@@ -269,15 +269,13 @@ class WorkspaceController extends AbstractCrudController
      *
      * For anonymous
      *
-     * @param Workspace $workspace
-     *
      * @return JsonResponse
      */
-    public function listRegisterableAction()
+    public function listRegisterableAction(Request $request)
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            ['hiddenFilters' => ['displayable' => true, 'selfRegistration' => true]]
+            array_merge($request->query->all(), ['hiddenFilters' => ['displayable' => true, 'selfRegistration' => true]])
         ));
     }
 
@@ -288,15 +286,13 @@ class WorkspaceController extends AbstractCrudController
      * )
      * @Method("GET")
      *
-     * @param Workspace $workspace
-     *
      * @return JsonResponse
      */
-    public function listDisplaybleAction()
+    public function listDisplaybleAction(Request $request)
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            ['hiddenFilters' => ['displayable' => true, 'model' => false, 'sameOrganization' => true]]
+            array_merge($request->query->all(), ['hiddenFilters' => ['displayable' => true, 'model' => false, 'sameOrganization' => true]])
         ));
     }
 
@@ -311,11 +307,11 @@ class WorkspaceController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function listRegisteredAction()
+    public function listRegisteredAction(Request $request)
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            ['hiddenFilters' => ['user' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]]
+            array_merge($request->query->all(), ['hiddenFilters' => ['user' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]])
         ));
     }
 
@@ -326,15 +322,14 @@ class WorkspaceController extends AbstractCrudController
      * )
      * @Method("GET")
      *
-     * @param Workspace $workspace
-     *
      * @return JsonResponse
      */
-    public function listAdministratedAction()
+    public function listAdministratedAction(Request $request)
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            ['hiddenFilters' => ['administrated' => true]]
+            array_merge($request->query->all(), ['hiddenFilters' => ['administrated' => true]]),
+            [Options::SERIALIZE_MINIMAL]
         ));
     }
 
@@ -344,8 +339,6 @@ class WorkspaceController extends AbstractCrudController
      *    name="apiv2_workspace_bulk_register_users"
      * )
      * @Method("PATCH")
-     *
-     * @param Workspace $workspace
      *
      * @return JsonResponse
      */

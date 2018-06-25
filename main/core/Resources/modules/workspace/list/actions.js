@@ -11,7 +11,7 @@ actions.register = (workspace) => ({
     request: {
       method: 'PATCH'
     },
-    success: (data, dispatch) => dispatch(listActions.invalidateData('workspaces.list'))
+    success: (data, dispatch) => dispatch(listActions.invalidateData('workspaces'))
   }
 })
 
@@ -21,6 +21,6 @@ actions.unregister = (workspace) => ({
     request: {
       method: 'DELETE'
     },
-    success: (data, dispatch) => dispatch(listActions.invalidateData('workspaces.list'))
+    success: (data, dispatch) => dispatch(listActions.invalidateData('workspaces'))
   }
 })
