@@ -2,12 +2,10 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {MODAL_ALERT} from '#/main/app/modals/alert'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list.jsx'
 import {actions} from '#/main/core/workspace/list/actions'
-import {trans, transChoice} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 import {constants as listConst} from '#/main/core/data/list/constants'
 
 import {PageContainer, PageHeader,PageContent} from '#/main/core/layout/page/index'

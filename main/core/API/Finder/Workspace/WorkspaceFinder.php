@@ -79,18 +79,18 @@ class WorkspaceFinder implements FinderInterface
                   $qb->setParameter('userId', $currentUser->getId());
                   break;
                 case 'administrated':
-                  // if ('cli' !== php_sapi_name() && !$this->authChecker->isGranted('ROLE_ADMIN') && !$this->authChecker->isGranted('ROLE_ANONYMOUS')) {
-                  //     /** @var User $currentUser */
-                  //     $currentUser = $this->tokenStorage->getToken()->getUser();
-                  //     $qb->leftJoin('obj.organizations', 'uo');
-                  //     $qb->leftJoin('uo.administrators', 'ua');
-                  //     $qb->leftJoin('obj.creator', 'creator');
-                  //     $qb->andWhere($qb->expr()->orX(
-                  //       $qb->expr()->eq('ua.id', ':userId'),
-                  //       $qb->expr()->eq('creator.id', ':userId')
-                  //     ));
-                  //     $qb->setParameter('userId', $currentUser->getId());
-                  // }
+                  if ('cli' !== php_sapi_name() && !$this->authChecker->isGranted('ROLE_ADMIN') && !$this->authChecker->isGranted('ROLE_ANONYMOUS')) {
+                      /** @var User $currentUser */
+                      $currentUser = $this->tokenStorage->getToken()->getUser();
+                      $qb->leftJoin('obj.organizations', 'uo');
+                      $qb->leftJoin('uo.administrators', 'ua');
+                      $qb->leftJoin('obj.creator', 'creator');
+                      $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->eq('ua.id', ':userId'),
+                        $qb->expr()->eq('creator.id', ':userId')
+                      ));
+                      $qb->setParameter('userId', $currentUser->getId());
+                  }
                   break;
                 case 'createdAfter':
                     $qb->andWhere("obj.created >= :{$filterName}");

@@ -170,6 +170,8 @@ class WorkspaceSerializer
     private function getMeta(Workspace $workspace, array $options)
     {
         $data = [
+            'lang' => $workspace->getLang(),
+            'forceLang' => (bool) $workspace->getLang(),
             'slug' => $workspace->getSlug(),
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
@@ -325,6 +327,7 @@ class WorkspaceSerializer
 
         $this->sipe('meta.model', 'setIsModel', $data, $workspace);
         $this->sipe('meta.description', 'setDescription', $data, $workspace);
+        $this->sipe('meta.lang', 'setLang', $data, $workspace);
 
         $this->sipe('notifications.enabled', 'setNotifications', $data, $workspace);
 

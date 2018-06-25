@@ -9,7 +9,7 @@ import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-
+import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list.jsx'
 import {constants} from '#/main/core/data/list/constants'
 
 const ParametersTabActions = () =>
@@ -21,8 +21,14 @@ const ParametersTabActions = () =>
     />
   </PageActions>
 
-const Parameters = (props) => {
-  return(<FormContainer
+const Parameters = () => {
+  const choices = {}
+
+  WorkspaceList.definition.forEach(property => {
+    choices[property.name] = property.label
+  })
+
+  return (<FormContainer
     level={3}
     name="parameters"
     sections={[
@@ -56,13 +62,7 @@ const Parameters = (props) => {
             options: {
               multiple: true,
               condensed: false,
-              choices: {
-                'name': trans('name'),
-                'code': trans('code'),
-                'meta.created': trans('creation_date'),
-                'meta.personal': trans('personal_workspace'),
-                'registration.selfRegistration': trans('public_registration')
-              }
+              choices: choices
             },
             displayed: true
           }

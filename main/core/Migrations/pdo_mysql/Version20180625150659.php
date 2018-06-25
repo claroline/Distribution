@@ -16,17 +16,15 @@ class Version20180625150659 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE claro_workspace
-            ADD workspaceLang VARCHAR(255) DEFAULT NULL,
-            ADD onLoadChangeLang VARCHAR(255) DEFAULT NULL
+            ADD lang VARCHAR(255) DEFAULT NULL
         ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
-            ALTER TABLE claro_widget_instance
-            ADD display VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci,
-            ADD availableDisplays LONGTEXT NOT NULL COLLATE utf8_unicode_ci COMMENT '(DC2Type:json_array)'
-        ");
+        $this->addSql('
+            ALTER TABLE claro_workspace
+            DROP lang
+        ');
     }
 }

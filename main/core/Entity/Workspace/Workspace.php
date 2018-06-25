@@ -110,14 +110,7 @@ class Workspace
      *
      * @var string
      */
-    protected $workspaceLang = null;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @var string
-     */
-    protected $onLoadChangeLang = null;
+    protected $lang = null;
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -929,23 +922,13 @@ class Workspace
         return $this->workspaceModel;
     }
 
-    public function setWorkspaceLang($workspaceLang)
+    public function setLang($lang)
     {
-        $this->workspaceLang = $workspaceLang;
+        $this->lang = $lang;
     }
 
-    public function setOnLoadChangeLang($onLoadChangeLang)
+    public function getLang()
     {
-        $this->onLoadChangeLang = $onLoadChangeLang;
-    }
-
-    public function getWorkspaceLang()
-    {
-        return $this->workspaceLang;
-    }
-
-    public function getOnLoadChangeLang()
-    {
-        return $this->onLoadChangeLang;
+        return $this->lang;
     }
 }

@@ -354,9 +354,10 @@ class WorkspaceController extends Controller
      *
      * @return Response
      */
-    public function openToolAction($toolName, Workspace $workspace)
+    public function openToolAction($toolName, Workspace $workspace, Request $request)
     {
         $this->assertIsGranted($toolName, $workspace);
+        $this->forceWorkspaceLang($workspace, $request);
         $event = $this->eventDispatcher->dispatch('open_tool_workspace_'.$toolName, new DisplayToolEvent($workspace));
         $this->eventDispatcher->dispatch('log', new LogWorkspaceToolReadEvent($workspace, $toolName));
         $this->eventDispatcher->dispatch('log', new LogWorkspaceEnterEvent($workspace));
@@ -382,34 +383,35 @@ class WorkspaceController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function openAction(Workspace $workspace)
+    public function openAction(Workspace $workspace, Request $request)
     {
         $this->assertIsGranted('OPEN', $workspace);
+        $this->forceWorkspaceLang($workspace, $request);
         $options = $workspace->getOptions();
+        /*
+                if (!is_null($options)) {
+                    $details = $options->getDetails();
 
-        if (!is_null($options)) {
-            $details = $options->getDetails();
+                    if (isset($details['use_workspace_opening_resource']) &&
+                        $details['use_workspace_opening_resource'] &&
+                        isset($details['workspace_opening_resource']) &&
+                        !empty($details['workspace_opening_resource'])) {
+                        $resourceNode = $this->resourceManager->getById($details['workspace_opening_resource']);
 
-            if (isset($details['use_workspace_opening_resource']) &&
-                $details['use_workspace_opening_resource'] &&
-                isset($details['workspace_opening_resource']) &&
-                !empty($details['workspace_opening_resource'])) {
-                $resourceNode = $this->resourceManager->getById($details['workspace_opening_resource']);
+                        if (!is_null($resourceNode)) {
+                            $this->session->set('isDesktop', false);
+                            $route = $this->router->generate(
+                                'claro_resource_open',
+                                [
+                                    'node' => $resourceNode->getId(),
+                                    'resourceType' => $resourceNode->getResourceType()->getName(),
+                                ]
+                            );
 
-                if (!is_null($resourceNode)) {
-                    $this->session->set('isDesktop', false);
-                    $route = $this->router->generate(
-                        'claro_resource_open',
-                        [
-                            'node' => $resourceNode->getId(),
-                            'resourceType' => $resourceNode->getResourceType()->getName(),
-                        ]
-                    );
-
-                    return new RedirectResponse($route);
-                }
-            }
-        }
+                            return new RedirectResponse($route);
+                        }
+                    }
+                }*/
 
         $tool = $this->workspaceManager->getFirstOpenableTool($workspace);
         //small hack for administrators otherwise they can't open it
@@ -841,6 +843,15 @@ class WorkspaceController extends Controller
             if ($object instanceof Workspace) {
                 $this->throwWorkspaceDeniedException($object);
             }
+        }
+    }
+
+    private function forceWorkspaceLang(Workspace $workspace, Request $request)
+    {
+        if ($workspace->getLang()) {
+            $request->setLocale($workspace->getLang());
+            //not sure if both lines are needed
+            $this->translator->setLocale($workspace->getLang());
         }
     }
 }
