@@ -21,7 +21,7 @@ const RightsModalComponent = props =>
     {...omit(props, 'parent', 'saveEnabled', 'save', 'configure', 'updateRights')}
     icon="fa fa-fw fa-plus"
     title={trans('new_resource', {}, 'resource')}
-    subtitle="3. Configurer les droits"
+    subtitle={trans('new_resource_configure_rights', {}, 'resource')}
   >
     <ResourceRights
       resourceNode={props.newNode}

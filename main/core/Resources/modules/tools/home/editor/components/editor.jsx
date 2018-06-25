@@ -3,85 +3,93 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action'
+import {toKey} from '#/main/core/scaffolding/text/utils'
+import {Button} from '#/main/app/action/components/button'
+import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
-import {Widget} from '#/main/core/widget/components/widget'
-import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/prop-types'
+import {WidgetEditor} from '#/main/core/widget/components/editor'
+import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
+import {MODAL_WIDGET_CREATION} from '#/main/core/widget/modals/creation'
+import {MODAL_WIDGET_PARAMETERS} from '#/main/core/widget/modals/parameters'
 
 import {select} from '#/main/core/tools/home/selectors'
+import {actions as editorActions} from '#/main/core/tools/home/editor/actions'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
-import {actions} from '#/main/core/tools/home/editor/actions'
-
-const WidgetEditor = props =>
-  <div className="widget-container">
-    <TooltipAction
-      id={`add-before-${props.instance.id}`}
-      className="btn-link-default"
-      icon="fa fa-fw fa-plus"
-      label={trans('add_widget_before', {}, 'widget')}
-      action={props.insert}
-    />
-
-    <TooltipAction
-      id={`edit-${props.id}`}
-      className="btn-link-default"
-      icon="fa fa-fw fa-pencil"
-      label={trans('edit')}
-      action={() => props.edit(props.instance.id)}
-    />
-
-    <TooltipAction
-      id={`delete-${props.instance.id}`}
-      className="btn-link-danger"
-      icon="fa fa-fw fa-trash-o"
-      label={trans('delete')}
-      action={() => props.delete(props.instance.id)}
-    />
-
-    <Widget
-      instance={props.instance}
-      context={props.context}
-    />
-  </div>
-
-WidgetEditor.propTypes = {
-  context: T.object.isRequired,
-  instance: T.shape(
-    WidgetInstanceTypes.propTypes
-  ).isRequired,
-  insert: T.func.isRequired,
-  edit: T.func.isRequired,
-  delete: T.func.isRequired
-}
 
 const EditorComponent = props =>
   <div>
-    {props.widgets.map((widgetInstance, index) =>
+    {props.widgets.map((widgetContainer, index) =>
       <WidgetEditor
         key={index}
-        instance={widgetInstance}
+        container={widgetContainer}
         context={props.context}
-        insert={() => props.insertWidget(props.context, index)}
-        edit={() => props.editWidget(index, widgetInstance)}
-        delete={() => props.deleteWidget(index)}
+        actions={[
+          {
+            type: 'modal',
+            icon: 'fa fa-fw fa-plus',
+            label: trans('add_widget_before', {}, 'widget'),
+            modal: [MODAL_WIDGET_CREATION, {
+              create: (widget) => props.addWidget(index, widget)
+            }]
+          }, {
+            type: 'callback',
+            icon: 'fa fa-fw fa-arrow-up',
+            label: trans('move_top', {}, 'actions'),
+            callback: () => true
+          }, {
+            type: 'callback',
+            icon: 'fa fa-fw fa-arrow-down',
+            label: trans('move_bottom', {}, 'actions'),
+            callback: () => true
+          }, {
+            type: 'modal',
+            icon: 'fa fa-fw fa-cog',
+            label: trans('configure', {}, 'actions'),
+            modal: [MODAL_WIDGET_PARAMETERS, {
+              widget: widgetContainer,
+              save: (widget) => props.updateWidget(index, widget)
+            }]
+          }, {
+            type: 'callback',
+            icon: 'fa fa-fw fa-trash-o',
+            label: trans('delete', {}, 'actions'),
+            dangerous: true,
+            confirm: {
+              title: trans('widget_delete_confirm_title', {}, 'widget'),
+              message: trans('widget_delete_confirm_message', {}, 'widget')
+            },
+            callback: () => props.deleteWidget(widgetContainer)
+          }
+        ]}
       />
     )}
 
-    <button
-      className="btn btn-block btn-primary btn-add"
-      onClick={() => props.insertWidget(props.context)}
-    >
-      {trans('add_widget', {}, 'widget')}
-    </button>
+    {0 === props.widgets.length &&
+      <EmptyPlaceholder
+        size="lg"
+        icon="fa fa-frown-o"
+        title={trans('no_widget', {}, 'widget')}
+      />
+    }
+
+    <Button
+      className="btn btn-block btn-emphasis"
+      type="modal"
+      label={trans('add_widget', {}, 'widget')}
+      modal={[MODAL_WIDGET_CREATION, {
+        create: (widget) => props.addWidget(props.widgets.length, widget)
+      }]}
+      primary={true}
+    />
   </div>
 
 EditorComponent.propTypes = {
   context: T.object.isRequired,
   widgets: T.arrayOf(T.shape(
-    WidgetInstanceTypes.propTypes
+    WidgetContainerTypes.propTypes
   )).isRequired,
-  insertWidget: T.func.isRequired,
-  editWidget: T.func.isRequired,
+  addWidget: T.func.isRequired,
+  updateWidget: T.func.isRequired,
   deleteWidget: T.func.isRequired
 }
 
@@ -89,17 +97,17 @@ const Editor = connect(
   state => ({
     context: select.context(state),
     widgets: editorSelect.widgets(state),
-    tabs: editorSelect.widgets(state)
+    tabs: editorSelect.tabs(state)
   }),
   dispatch => ({
-    insertWidget(context, position) {
-      dispatch(actions.insertWidget(context, position))
+    addWidget(position, widget) {
+      dispatch(editorActions.addWidget(position, widget))
     },
-    editWidget(position, widget) {
-      dispatch(actions.editWidget(position, widget))
+    updateWidget(position, widget) {
+      dispatch(editorActions.updateWidget(position, widget))
     },
     deleteWidget(position) {
-      dispatch(actions.deleteWidget(position))
+      dispatch(editorActions.deleteWidget(position))
     }
   })
 )(EditorComponent)

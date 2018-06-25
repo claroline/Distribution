@@ -34,7 +34,7 @@ class ParametersModalComponent extends Component {
         {...omit(this.props, 'parent', 'newNode', 'saveEnabled', 'save', 'configureRights')}
         icon="fa fa-fw fa-plus"
         title={trans('new_resource', {}, 'resource')}
-        subtitle="2. Configurer la ressource"
+        subtitle={trans('new_resource_configure', {}, 'resource')}
       >
         <ContentMeta meta={this.props.newNode.meta} />
 

@@ -3,16 +3,16 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {Widget} from '#/main/core/widget/components/widget'
-import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/prop-types'
+import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 
 import {select} from '#/main/core/tools/home/selectors'
 
 const PlayerComponent = props =>
   <div>
-    {props.widgets.map((widgetInstance, index) =>
+    {props.widgets.map((widget, index) =>
       <Widget
         key={index}
-        instance={widgetInstance}
+        container={widget}
         context={props.context}
       />
     )}
@@ -21,7 +21,7 @@ const PlayerComponent = props =>
 PlayerComponent.propTypes = {
   context: T.object.isRequired,
   widgets: T.arrayOf(T.shape(
-    WidgetInstanceTypes.propTypes
+    WidgetContainerTypes.propTypes
   )).isRequired
 }
 

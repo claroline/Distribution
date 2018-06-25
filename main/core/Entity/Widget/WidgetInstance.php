@@ -27,11 +27,22 @@ class WidgetInstance
     /**
      * The name of the instance.
      *
-     * @ORM\Column(name="widget_name")
+     * @ORM\Column(name="widget_name", nullable=true)
      *
      * @var string
+     *
+     * @deprecated. moved on WidgetContainer. Kept for migration.
      */
     private $name;
+
+    /**
+     * The position of the instance inside its container.
+     *
+     * @ORM\Column(type="integer")
+     *
+     * @var int
+     */
+    private $position = 0;
 
     /**
      * The widget which is rendered.
@@ -44,33 +55,6 @@ class WidgetInstance
     private $widget;
 
     /**
-     * The color of the text inside the widget.
-     *
-     * @ORM\Column(nullable=true)
-     *
-     * @var string
-     */
-    private $color = null;
-
-    /**
-     * The type of the background (none, color, image).
-     *
-     * @ORM\Column()
-     *
-     * @var string
-     */
-    private $backgroundType = 'none';
-
-    /**
-     * The background data (either the color or the image url).
-     *
-     * @ORM\Column(nullable=true)
-     *
-     * @var string
-     */
-    private $background = null;
-
-    /**
      * Get name.
      *
      * @return string
@@ -81,13 +65,23 @@ class WidgetInstance
     }
 
     /**
-     * Set name.
+     * Get position.
      *
-     * @param string $name
+     * @return int
      */
-    public function setName($name)
+    public function getPosition()
     {
-        $this->name = $name;
+        return $this->position;
+    }
+
+    /**
+     * Set position.
+     *
+     * @param int $position
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
     }
 
     /**
@@ -108,65 +102,5 @@ class WidgetInstance
     public function setWidget(Widget $widget)
     {
         $this->widget = $widget;
-    }
-
-    /**
-     * Get color.
-     *
-     * @return string
-     */
-    public function getColor()
-    {
-        return $this->color;
-    }
-
-    /**
-     * Set color.
-     *
-     * @param string $color
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
-    }
-
-    /**
-     * Get background type.
-     *
-     * @return string
-     */
-    public function getBackgroundType()
-    {
-        return $this->backgroundType;
-    }
-
-    /**
-     * Set background type.
-     *
-     * @param string $backgroundType
-     */
-    public function setBackgroundType($backgroundType)
-    {
-        $this->backgroundType = $backgroundType;
-    }
-
-    /**
-     * Get background.
-     *
-     * @return string
-     */
-    public function getBackground()
-    {
-        return $this->background;
-    }
-
-    /**
-     * Set background.
-     *
-     * @param string $background
-     */
-    public function setBackground($background)
-    {
-        $this->background = $background;
     }
 }

@@ -1,10 +1,35 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import sum from 'lodash/sum'
+import times from 'lodash/times'
 
 import {Embedded} from '#/main/app/components/embedded'
 
-import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/prop-types'
+import {
+  WidgetContainer as WidgetContainerTypes,
+  WidgetInstance as WidgetInstanceTypes
+} from '#/main/core/widget/prop-types'
+import {computeStyles} from '#/main/core/widget/utils'
 import {getWidget} from '#/main/core/widget/types'
+
+const WidgetCol = props =>
+  <div className={`widget-col col-md-${props.size}`}>
+    {props.content &&
+      <Embedded
+        name={`${props.content.type}-${props.content.id}`}
+        load={getWidget(props.content.type)}
+        parameters={[props.context, props.content.parameters]}
+      />
+    }
+  </div>
+
+WidgetCol.propTypes = {
+  size: T.number.isRequired,
+  context: T.object,
+  content: T.shape(
+    WidgetInstanceTypes.propTypes
+  )
+}
 
 /**
  * Loads a widget application and renders it.
@@ -13,21 +38,25 @@ import {getWidget} from '#/main/core/widget/types'
  * @constructor
  */
 const Widget = props =>
-  <section className={`widget ${props.instance.type}-widget`}>
-    {props.instance.name &&
-      <h2 className="h-first widget-title">{props.instance.name}</h2>
+  <section className="widget" style={computeStyles(props.container)}>
+    {props.container.name &&
+      <h2 className="h-first widget-title">{props.container.name}</h2>
     }
 
-    <Embedded
-      name={`${props.instance.type}-${props.instance.id}`}
-      load={getWidget(props.instance.type)}
-      parameters={[props.context, props.instance.parameters]}
-    />
+    <div className="row">
+      {times(props.container.display.layout.length, col =>
+        <WidgetCol
+          size={(12 / sum(props.container.display.layout)) * props.container.display.layout[col]}
+          context={props.context}
+          content={props.container.contents[col]}
+        />
+      )}
+    </div>
   </section>
 
 Widget.propTypes = {
-  instance: T.shape(
-    WidgetInstanceTypes.propTypes
+  container: T.shape(
+    WidgetContainerTypes.propTypes
   ).isRequired,
   context: T.object
 }

@@ -68,13 +68,7 @@ class WidgetInstanceSerializer
 
         return [
             'id' => $widgetInstance->getUuid(),
-            'name' => $widgetInstance->getName(),
             'type' => $widget->getName(),
-            'display' => [
-                'color' => $widgetInstance->getColor(),
-                'backgroundType' => $widgetInstance->getBackgroundType(),
-                'background' => $widgetInstance->getBackground(),
-            ],
             'parameters' => $parameters
         ];
     }
@@ -82,11 +76,6 @@ class WidgetInstanceSerializer
     public function deserialize($data, WidgetInstance $widgetInstance, array $options = [])
     {
         $this->sipe('id', 'setUuid', $data, $widgetInstance);
-        $this->sipe('name', 'setName', $data, $widgetInstance);
-
-        $this->sipe('display.color', 'setColor', $data, $widgetInstance);
-        $this->sipe('display.backgroundType', 'setBackgroundType', $data, $widgetInstance);
-        $this->sipe('display.background', 'setBackground', $data, $widgetInstance);
 
         /** @var Widget $widget */
         $widget = $this->om

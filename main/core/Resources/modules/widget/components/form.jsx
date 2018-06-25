@@ -1,17 +1,16 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
+import sum from 'lodash/sum'
+import times from 'lodash/times'
 
 import {trans} from '#/main/core/translation'
-import {DataFormModal} from '#/main/core/data/form/modals/components/data-form'
+import {FormContainer} from '#/main/core/data/form/containers/form'
 
-import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/prop-types'
-
-const MODAL_EDIT_WIDGET = 'MODAL_EDIT_WIDGET'
-
-const EditWidgetModal = props =>
-  <DataFormModal
-    {...props}
-    title={trans('edit_widget', {}, 'widget')}
+const WidgetForm = props =>
+  <FormContainer
+    level={props.level}
+    name={props.name}
     sections={[
       {
         id: 'general',
@@ -19,13 +18,25 @@ const EditWidgetModal = props =>
         primary: true,
         fields: [
           {
-            name: 'type',
-            type: 'translation',
-            label: trans('widget'),
+            name: 'display.layout',
+            type: 'string',
+            label: trans('widget_layout'),
             readOnly: true,
             hideLabel: true,
-            options: {
-              domain: 'widget'
+            render: (widget) => {
+              const layout = get(widget, 'display.layout') || [1]
+
+              return (
+                <div className="widget-layout-preview">
+                  <div className="row">
+                    {times(layout.length, col =>
+                      <div key={col} className={`widget-col col-md-${(12 / sum(layout)) * layout[col]}`}>
+                        <div className="widget-col-preview"></div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
             }
           }, {
             name: 'name',
@@ -45,10 +56,11 @@ const EditWidgetModal = props =>
           }, {
             name: 'display.backgroundType',
             label: trans('background'),
-            type: 'enum',
+            type: 'choice',
             required: true,
             options: {
               noEmpty: true,
+              condensed: true,
               choices: {
                 none: trans('none'),
                 color: trans('color'),
@@ -83,14 +95,11 @@ const EditWidgetModal = props =>
     ]}
   />
 
-EditWidgetModal.propTypes = {
-  data: T.shape(
-    WidgetInstanceTypes.propTypes
-  ).isRequired,
-  save: T.func.isRequired
+WidgetForm.propTypes = {
+  level: T.number,
+  name: T.string.isRequired
 }
 
 export {
-  MODAL_EDIT_WIDGET,
-  EditWidgetModal
+  WidgetForm
 }
