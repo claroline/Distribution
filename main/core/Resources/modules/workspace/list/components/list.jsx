@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {MODAL_ALERT} from '#/main/app/modals/alert'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list.jsx'
@@ -42,7 +43,7 @@ const WorkspacesList = props => {
               type: 'callback',
               icon: 'fa fa-fw fa-book',
               label: trans('register'),
-              displayed: rows[0].registration.selfRegistration && !rows[0].permissions['open'],
+              displayed: rows[0].registration.selfRegistration && !rows[0].permissions['open'] && !rows[0].registration.waitingForRegistration,
               scope: ['object'],
               callback: () => props.register(rows[0]),
               confirm: {
@@ -83,6 +84,12 @@ const Workspaces = connect(
   dispatch => ({
     register(workspace) {
       dispatch(actions.register(workspace))
+
+      if (workspace.registration.validation) {
+        dispatch(modalActions.showModal(MODAL_ALERT, {
+          title: trans('register')
+        }))
+      }
     },
     unregister(workspace) {
       dispatch(actions.unregister(workspace))

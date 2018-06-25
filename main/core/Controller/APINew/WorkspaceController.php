@@ -139,6 +139,36 @@ class WorkspaceController extends AbstractCrudController
 
     /**
      * @Route(
+     *    "/{id}/registration/remove",
+     *    name="apiv2_workspace_registration_remove"
+     * )
+     * @Method("PATCH")
+     * @ParamConverter("workspace", options={"mapping": {"id": "uuid"}})
+     *
+     * @param Request   $request
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function removeRegistrationAction(Request $request, Workspace $workspace)
+    {
+        $query = $request->query->all();
+        $users = $this->om->findList('Claroline\CoreBundle\Entity\User', 'uuid', $query['ids']);
+
+        foreach ($users as $user) {
+            $pending = $this->om->getRepository('Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue')
+              ->findOneBy(['user' => $user, 'workspace' => $workspace]);
+            $this->container->get('claroline.manager.workspace_user_queue_manager')->removeRegistrationQueue($pending);
+        }
+
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue',
+            array_merge($request->query->all(), ['hiddenFilters' => ['workspace' => $workspace->getUuid()]])
+        ));
+    }
+
+    /**
+     * @Route(
      *    "/{id}/users/unregistrate",
      *    name="apiv2_workspace_unregister_users"
      * )

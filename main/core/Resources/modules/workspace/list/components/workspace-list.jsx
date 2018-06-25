@@ -44,6 +44,12 @@ const WorkspaceList = {
       label: t('public_registration'),
       type: 'boolean',
       alias: 'selfRegistration'
+    }, {
+      name: 'registration.waitingForRegistration',
+      label: t('waiting_for_registration'),
+      type: 'boolean',
+      filterable: false,
+      sortable: false
     }
   ],
   card: WorkspaceCard

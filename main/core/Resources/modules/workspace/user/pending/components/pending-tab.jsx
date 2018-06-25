@@ -26,14 +26,21 @@ const PendingList = props =>
       icon: 'fa fa-fw fa-check',
       label: trans('validate'),
       action: () => props.register(rows, props.workspace)
-    }]}
+    }, {
+      type: 'callback',
+      icon: 'fa fa-fw fa-check',
+      label: trans('remove'),
+      action: () => props.remove(rows, props.workspace)
+    }
+    ]}
     definition={UserList.definition}
     card={UserList.card}
   />
 
 PendingList.propTypes = {
   workspace: T.object,
-  register: T.func
+  register: T.func,
+  remove: T.func
 }
 
 const PendingTab = connect(
@@ -42,10 +49,21 @@ const PendingTab = connect(
   }),
   dispatch => ({
     register(users, workspace) {
+      alert('yolo')
       dispatch(
         modalActions.showModal(MODAL_CONFIRM_REGISTRATION, {
           //make a user id list after that
           register: (users, workspace) => dispatch(pendingActions.register(users, workspace)),
+          users: users,
+          workspace: workspace
+        })
+      )
+    },
+    remove(users, workspace) {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM_REGISTRATION, {
+          //make a user id list after that
+          remove: (users, workspace) => dispatch(pendingActions.remove(users, workspace)),
           users: users,
           workspace: workspace
         })
