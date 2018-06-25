@@ -24,7 +24,7 @@ const WorkspacesList = props =>
   <DataListContainer
     name="workspaces.list"
     fetch={{
-      url: ['apiv2_workspace_list'],
+      url: ['apiv2_administrated_list'],
       autoload: true
     }}
     definition={WorkspaceList.definition}

@@ -267,6 +267,8 @@ class WorkspaceController extends AbstractCrudController
      * )
      * @Method("GET")
      *
+     * For anonymous
+     *
      * @param Workspace $workspace
      *
      * @return JsonResponse
@@ -294,7 +296,7 @@ class WorkspaceController extends AbstractCrudController
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            ['hiddenFilters' => ['displayable' => true, 'model' => false]]
+            ['hiddenFilters' => ['displayable' => true, 'model' => false, 'sameOrganization' => true]]
         ));
     }
 
@@ -314,6 +316,25 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
             ['hiddenFilters' => ['user' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]]
+        ));
+    }
+
+    /**
+     * @Route(
+     *    "/list/administrated",
+     *    name="apiv2_administrated_list"
+     * )
+     * @Method("GET")
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function listAdministratedAction()
+    {
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            ['hiddenFilters' => ['administrated' => true]]
         ));
     }
 
