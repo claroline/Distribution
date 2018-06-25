@@ -7,6 +7,7 @@ import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-lis
 import {actions} from '#/main/core/workspace/list/actions'
 import {trans} from '#/main/core/translation'
 import {constants as listConst} from '#/main/core/data/list/constants'
+import {currentUser} from '#/main/core/user/current'
 
 import {PageContainer, PageHeader,PageContent} from '#/main/core/layout/page/index'
 
@@ -41,7 +42,7 @@ const WorkspacesList = props => {
               type: 'callback',
               icon: 'fa fa-fw fa-book',
               label: trans('register'),
-              displayed: rows[0].registration.selfRegistration && !rows[0].permissions['open'] && !rows[0].registration.waitingForRegistration,
+              displayed: currentUser && rows[0].registration.selfRegistration && !rows[0].permissions['open'] && !rows[0].registration.waitingForRegistration,
               scope: ['object'],
               callback: () => props.register(rows[0]),
               confirm: {
@@ -54,7 +55,7 @@ const WorkspacesList = props => {
               icon: 'fa fa-fw fa-book',
               label: trans('unregister'),
               dangerous: true,
-              displayed: rows[0].registration.selfUnregistration && rows[0].permissions['open'],
+              displayed: currentUser && rows[0].registration.selfUnregistration && rows[0].permissions['open'],
               scope: ['object'],
               callback: () => props.unregister(rows[0]),
               confirm: {
