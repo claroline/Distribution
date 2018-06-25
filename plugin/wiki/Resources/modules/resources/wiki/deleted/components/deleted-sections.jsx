@@ -44,12 +44,12 @@ const DeletedSectionsComponent = props =>
             time: true
           }
         }, {
-          name: 'meta.creator',
+          name: 'meta.creator.name',
           alias: 'creator',
           label: trans('author', {}, 'platform'),
           type: 'string',
           displayed: true,
-          renderer: rowData => rowData.meta.creator ? `${rowData.meta.creator.name}` : trans('unknown')
+          render: rowData => rowData.meta.creator ? `${rowData.meta.creator.name}` : trans('unknown')
         }
       ]}
       actions={rows => [

@@ -120,11 +120,26 @@ class SectionSerializer
             }
         }
 
+        $author = null;
+
+        if (!empty($node['author'])) {
+            foreach ($node['author'] as $key => $value) {
+                if ($value instanceof \stdClass || $value instanceof \DateTime) {
+                    unset($node['author'][$key]);
+                }
+            }
+            $author = $this->userSerializer->serialize(
+                $this->userSerializer->deserialize($node['author'], new User()),
+                [Options::SERIALIZE_MINIMAL]
+            );
+        }
+
         return [
             'id' => $node['uuid'],
             'meta' => [
                 'createdAt' => $node['creationDate']->format('Y-m-d H:i'),
                 'visible' => $node['visible'],
+                'creator' => null === $author ? null : $author,
             ],
             'activeContribution' => $this->contributionSerializer->serializeFromSectionNode($node),
             'children' => $children,

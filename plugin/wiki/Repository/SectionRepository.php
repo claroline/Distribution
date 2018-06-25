@@ -21,7 +21,7 @@ class SectionRepository extends NestedTreeRepository
         $queryBuilder = $this->createQueryBuilder('section')
             ->join('section.activeContribution', 'contribution')
             ->join('section.author', 'author')
-            ->select('section, contribution, IDENTITY(section.parent) as parent')
+            ->select('section, contribution, author, IDENTITY(section.parent) as parent')
             ->andWhere('section.root = :rootId')
             ->orderBy('section.root, section.left', 'ASC')
             ->setParameter('rootId', $wiki->getRoot()->getId());

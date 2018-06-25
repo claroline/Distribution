@@ -16,6 +16,7 @@ use Icap\WikiBundle\Event\Log\LogSectionUpdateEvent;
 use Icap\WikiBundle\Serializer\SectionSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @DI\Service("icap.wiki.section_manager")
@@ -125,16 +126,31 @@ class SectionManager
         }
     }
 
-    public function deleteSections(Wiki $wiki, $ids, $withChildren = false, $permanently = false)
-    {
+    public function deleteSections(
+        Wiki $wiki,
+        $ids,
+        $withChildren = false,
+        $permanently = false,
+        $isAdmin = false,
+        User $user = null
+    ) {
+        if (!$isAdmin && $permanently) {
+            throw new AccessDeniedHttpException('You cannot delete permanently any wiki sections');
+        }
+
         $sections = $this->sectionRepository->findSectionsBy([
             'uuid' => $ids,
             'wiki' => $wiki,
             'deleted' => $permanently,
         ]);
 
+        /** @var Section $section */
         foreach ($sections as $section) {
-            $this->deleteSection($section, $withChildren);
+            if ($isAdmin || (!$section->getDeleted() && $section->getAuthor()->getId() === $user->getId())) {
+                $this->deleteSection($section, $withChildren);
+            } else {
+                throw new AccessDeniedHttpException('You cannot delete this section');
+            }
         }
     }
 

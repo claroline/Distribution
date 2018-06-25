@@ -44,7 +44,7 @@ const reducer = combineReducers({
   invalidated: makeReducer(false, {
     [LOADED_SECTION_TREE]: () => false,
     [SECTION_RESTORED]: () => true,
-    [FORM_SUBMIT_SUCCESS + '/sections.currentSection']: (state, action) => action.updatedData.meta.moved
+    [FORM_SUBMIT_SUCCESS + '/sections.currentSection']: (state, action) => action.updatedData.meta.moved || false
   }),
   currentSection: makeFormReducer('sections.currentSection', defaultCurrentSection, {
     id: makeReducer(defaultCurrentSection.id, {

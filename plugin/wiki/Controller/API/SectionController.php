@@ -180,15 +180,17 @@ class SectionController
      *
      * @return JsonResponse
      */
-    public function deleteAction(Wiki $wiki, Request $request)
+    public function deleteAction(Wiki $wiki, User $user, Request $request)
     {
         $resourceNode = $wiki->getResourceNode();
-        $this->checkPermission('EDIT', $resourceNode, [], true);
+        $isAdmin = $this->checkPermission('EDIT', $resourceNode);
         $this->sectionManager->deleteSections(
             $wiki,
             $request->get('ids'),
             $request->get('children'),
-            $request->get('permanently')
+            $request->get('permanently'),
+            $isAdmin,
+            $user
         );
 
         return new JsonResponse(true);

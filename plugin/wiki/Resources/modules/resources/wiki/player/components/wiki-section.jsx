@@ -104,7 +104,7 @@ const WikiSectionContent = props =>
             callback={() => props.setSectionVisibility(props.section.id, !props.section.meta.visible)}
           />
           }
-          {!props.isRoot && props.loggedUserId !== null && (props.canEdit || props.loggedUserId === props.section.meta.creator.id) &&
+          {!props.isRoot && props.loggedUserId !== null && (props.canEdit || (props.section.meta.creator && props.loggedUserId === props.section.meta.creator.id)) &&
           <Button
             id={`wiki-section-delete-${props.section.id}`}
             type="callback"
