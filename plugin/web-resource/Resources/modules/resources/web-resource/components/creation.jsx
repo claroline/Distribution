@@ -28,7 +28,7 @@ const WebResourceForm = props => {
                 },
                 help: trans('not_a_zip', {}, 'resource'),
                 required: true,
-                onChange: (file) => props.update(props.newNode, file)
+                onChange: (data) => props.update(props.newNode, data)
               }
             ]
           }
@@ -54,13 +54,13 @@ const WebResourceCreation = connect(
     workspaceId: selectors.newNode(state).workspace.id
   }),
   (dispatch) => ({
-    update(newNode, file) {
+    update(newNode, data) {
       // update resource props
-      dispatch(creationActions.updateResource('size', file.size))
-      dispatch(creationActions.updateResource('hashName', file.url))
+      dispatch(creationActions.updateResource('size', data.size))
+      dispatch(creationActions.updateResource('hashName', data.url))
 
       // update node props
-      dispatch(creationActions.updateNode('meta.mimeType', file.mimeType))
+      dispatch(creationActions.updateNode('meta.mimeType', data.mimeType))
     }
   })
 )(WebResourceForm)

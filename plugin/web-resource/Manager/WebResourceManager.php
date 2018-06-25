@@ -298,7 +298,8 @@ class WebResourceManager
         $this->unzip($hash);
 
         return [
-          'hashName' => $file->getHashName()
+          'hashName' => $file->getHashName(),
+          'size' => $file->getFormattedSize()
         ];
     }
   }
