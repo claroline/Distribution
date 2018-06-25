@@ -47,8 +47,8 @@ const WorkspacesList = props => {
               scope: ['object'],
               callback: () => props.register(rows[0]),
               confirm: {
-                title: trans('unregister_groups'),
-                message: trans('unregister_groups')
+                title: trans('register_user'),
+                message: rows[0].registration.validation ? trans('wait_validation'): trans('register_user')
               }
             },
             {
@@ -60,8 +60,8 @@ const WorkspacesList = props => {
               scope: ['object'],
               callback: () => props.unregister(rows[0]),
               confirm: {
-                title: trans('unregister_groups'),
-                message: trans('unregister_groups')
+                title: trans('unregister_user'),
+                message: trans('unregister_user')
               }
             }
           ]}
@@ -84,12 +84,6 @@ const Workspaces = connect(
   dispatch => ({
     register(workspace) {
       dispatch(actions.register(workspace))
-
-      if (workspace.registration.validation) {
-        dispatch(modalActions.showModal(MODAL_ALERT, {
-          title: trans('register')
-        }))
-      }
     },
     unregister(workspace) {
       dispatch(actions.unregister(workspace))
