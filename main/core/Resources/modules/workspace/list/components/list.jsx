@@ -7,6 +7,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list.jsx'
 import {actions} from '#/main/core/workspace/list/actions'
 import {trans, transChoice} from '#/main/core/translation'
+import {constants as listConst} from '#/main/core/data/list/constants'
 
 import {PageContainer, PageHeader,PageContent} from '#/main/core/layout/page/index'
 
@@ -24,6 +25,10 @@ const WorkspacesList = props =>
         definition={WorkspaceList.definition}
         primaryAction={WorkspaceList.open}
         card={WorkspaceList.card}
+        display={{
+          current: props.parameters.workspace.list.default_mode,
+          available: Object.keys(listConst.DISPLAY_MODES)
+        }}
         actions={(rows) => [
           {
             type: 'callback',
@@ -63,7 +68,8 @@ WorkspacesList.propTypes = {
 
 const Workspaces = connect(
   state => ({
-    url: state.url
+    url: state.url,
+    parameters: state.parameters
   }),
   dispatch => ({
     register(workspace) {
