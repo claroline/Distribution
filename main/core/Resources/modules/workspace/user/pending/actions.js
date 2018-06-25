@@ -13,7 +13,7 @@ actions.register = (users, workspace) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('pendings.list'))
+      dispatch(listActions.invalidateData('pending.list'))
     }
   }
 })
@@ -26,7 +26,7 @@ actions.remove = (users, workspace) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('pendings.list'))
+      dispatch(listActions.invalidateData('pending.list'))
     }
   }
 })

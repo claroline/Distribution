@@ -1,17 +1,9 @@
 import {bootstrap} from '#/main/app/bootstrap'
-import {registerModals} from '#/main/core/layout/modal'
 
 import {registerUserTypes} from '#/main/core/user/data'
 
 import {reducer} from '#/main/core/workspace/user/reducer'
 import {UserTool} from '#/main/core/workspace/user/components/tool.jsx'
-import {MODAL_CONFIRM_REGISTRATION, ConfirmRegistrationModal} from '#/main/core/workspace/user/pending/components/modal/confirm-registration.jsx'
-import {MODAL_CONFIRM_REMOVE, ConfirmRemoveModal} from '#/main/core/workspace/user/pending/components/modal/confirm-remove.jsx'
-
-registerModals([
-  [MODAL_CONFIRM_REGISTRATION, ConfirmRegistrationModal],
-  [MODAL_CONFIRM_REMOVE, ConfirmRemoveModal]
-])
 
 registerUserTypes()
 

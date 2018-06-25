@@ -142,7 +142,7 @@ class WorkspaceController extends AbstractCrudController
      *    "/{id}/registration/remove",
      *    name="apiv2_workspace_registration_remove"
      * )
-     * @Method("PATCH")
+     * @Method("DELETE")
      * @ParamConverter("workspace", options={"mapping": {"id": "uuid"}})
      *
      * @param Request   $request
