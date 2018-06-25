@@ -48,9 +48,8 @@ class WebResourceController extends AbstractCrudController
 
     /**
      * @EXT\Route(
-     *    "{workspace}/webResource/file/upload",
-     *    name="apiv2_webresource_file_upload",
-     *    options={ "method_prefix" = false }
+     *    "workspace/{workspace}/webResource/file/upload",
+     *    name="apiv2_webresource_file_upload"
      * )
      *
      * @EXT\ParamConverter(
@@ -74,7 +73,7 @@ class WebResourceController extends AbstractCrudController
             if(!$isZip) {
               return new JsonResponse('not a valid file', 400);
             } else {
-              $data = $this->webResourceManager->create($file);
+              $data = $this->webResourceManager->create($file, $workspace);
               return new JsonResponse($data, 200);
             }
         }
