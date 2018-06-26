@@ -59,41 +59,6 @@ class WebResourceListener
     }
 
     /**
-     * @DI\Observe("create_claroline_web_resource")
-     *
-     * @param CreateResourceEvent $event
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        $request = $this->container->get('request_stack')->getMasterRequest();
-        $workspace = $event->getParent()->getWorkspace();
-        $form = $this->container->get('form.factory')->create(new FileType(), new File());
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            if (!$this->isZip($form->get('file')->getData())) {
-                $error = $this->container->get('translator')->trans('not_a_zip', [], 'resource');
-                $form->addError(new FormError($error));
-            } else {
-                $event->setResources([$this->create($form->get('file')->getData(), $workspace)]);
-                $event->stopPropagation();
-
-                return;
-            }
-        }
-
-        $content = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => $event->getResourceType(),
-            ]
-        );
-        $event->setErrorFormContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
      * @DI\Observe("open_claroline_web_resource")
      *
      * @param \Claroline\CoreBundle\Event\CreateResourceEvent|\Claroline\CoreBundle\Event\Resource\OpenResourceEvent $event

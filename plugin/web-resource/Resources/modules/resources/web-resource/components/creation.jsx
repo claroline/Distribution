@@ -23,12 +23,12 @@ const WebResourceForm = props => {
                 name: 'file',
                 label: trans('file'),
                 type: 'file',
-                options: {
-                  uploadUrl: ['apiv2_webresource_file_upload', {workspace: props.workspaceId}]
-                },
                 help: trans('not_a_zip', {}, 'resource'),
                 required: true,
-                onChange: (data) => props.update(props.newNode, data)
+                onChange: (data) => props.update(data),
+                options: {
+                  uploadUrl: ['apiv2_webresource_file_upload', {workspace: props.workspaceId}]
+                }
               }
             ]
           }
@@ -43,10 +43,8 @@ const WebResourceForm = props => {
 
 
 WebResourceForm.propTypes = {
-  newNode: T.shape({
-    name: T.string
-  }),
-  update: T.func.isRequired
+  update: T.func.isRequired,
+  workspaceId: T.string.isRequired
 }
 
 const WebResourceCreation = connect(
@@ -54,10 +52,10 @@ const WebResourceCreation = connect(
     workspaceId: selectors.newNode(state).workspace.id
   }),
   (dispatch) => ({
-    update(newNode, data) {
+    update(data) {
       // update resource props
       dispatch(creationActions.updateResource('size', data.size))
-      dispatch(creationActions.updateResource('hashName', data.url))
+      dispatch(creationActions.updateResource('hashName', data.hashName))
 
       // update node props
       dispatch(creationActions.updateNode('meta.mimeType', data.mimeType))

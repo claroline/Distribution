@@ -67,11 +67,13 @@ class WebResourceController extends AbstractCrudController
     {
         $files = $request->files->all();
         $data = [];
+        $error = null;
 
         foreach ($files as $file) {
             $isZip = $this->webResourceManager->isZip($file, $workspace);
             if(!$isZip) {
-              return new JsonResponse('not a valid file', 400);
+              $error = 'not_valid_file';
+              return new JsonResponse($error, 500);
             } else {
               $data = $this->webResourceManager->create($file, $workspace);
               return new JsonResponse($data, 200);
