@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
+use Claroline\WebResourceBundle\Manager\WebResourceManager;
 use Claroline\CoreBundle\Form\FileType;
 use Claroline\ScormBundle\Event\ExportScormResourceEvent;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -40,22 +41,35 @@ class WebResourceListener
      */
     private $container;
 
+    private $webResourceManager;
+
+    /**
+     * Path to directory where zip files are stored.
+     *
+     * @var string
+     */
+    private $zipPath;
 
     /**
      * Class constructor.
      *
      * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
+     *     "container" = @DI\Inject("service_container"),
+     *     "webResourceManager"    = @DI\Inject("claroline.manager.web_resource_manager"),
      * })
      *
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(
+      ContainerInterface $container,
+      WebResourceManager $webResourceManager
+      )
     {
         $this->container = $container;
         $this->filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
         $this->tokenStorage = $this->container->get('security.token_storage');
         $this->workspaceManager = $this->container->get('claroline.manager.workspace_manager');
+        $this->webResourceManager = $webResourceManager;
     }
 
     /**
@@ -66,12 +80,14 @@ class WebResourceListener
     public function onOpenWebResource(OpenResourceEvent $event)
     {
         $hash = $event->getResource()->getHashName();
-
+        $workspace = $event->getResource()->getResourceNode()->getWorkspace();
+        $ds = DIRECTORY_SEPARATOR;
+        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').$ds.'webresource'.$ds.$workspace->getUuid().$ds;
         $content = $this->container->get('templating')->render(
             'ClarolineWebResourceBundle:web-resource:open.html.twig',
             [
-                'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
-                'path' => $hash.'/'.$this->guessRootFileFromUnzipped($this->zipPath.$hash),
+                'workspace' => $workspace,
+                'path' => $zipPath.$hash.'/'.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
                 '_resource' => $event->getResource(),
             ]
         );
