@@ -69,14 +69,17 @@ class WorkspaceFinder implements FinderInterface
             switch ($filterName) {
                 case 'sameOrganization':
                   $currentUser = $this->tokenStorage->getToken()->getUser();
-                  $qb->leftJoin('obj.organizations', 'uo');
-                  $qb->leftJoin('uo.users', 'ua');
+                  if ($currentUser instanceof User) {
+                      $qb->leftJoin('obj.organizations', 'uo');
+                      $qb->leftJoin('uo.users', 'ua');
 
-                  $qb->andWhere($qb->expr()->orX(
-                    $qb->expr()->eq('ua.id', ':userId')
-                  ));
+                      $qb->andWhere($qb->expr()->orX(
+                      $qb->expr()->eq('ua.id', ':userId')
+                    ));
 
-                  $qb->setParameter('userId', $currentUser->getId());
+                      $qb->setParameter('userId', $currentUser->getId());
+                  }
+
                   break;
                 case 'administrated':
                   if ('cli' !== php_sapi_name() && !$this->authChecker->isGranted('ROLE_ADMIN') && !$this->authChecker->isGranted('ROLE_ANONYMOUS')) {
@@ -155,7 +158,7 @@ class WorkspaceFinder implements FinderInterface
             'description' => 'Workspace created after',
           ],
 
-          'createAfter' => [
+          'createdAfter' => [
             'type' => 'date',
             'description' => 'Workspace created before',
           ],
