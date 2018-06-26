@@ -64,7 +64,7 @@ const WorkspaceFormComponent = (props) =>
           }, {
             name: 'meta.forceLang',
             type: 'boolean',
-            label: trans('force_workspace_lang'),
+            label: trans('default_language'),
             onChange: activated => {
               if (!activated) {
                 // reset lang field

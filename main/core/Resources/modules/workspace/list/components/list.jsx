@@ -46,8 +46,8 @@ const WorkspacesList = props => {
               scope: ['object'],
               callback: () => props.register(rows[0]),
               confirm: {
-                title: trans('register_user'),
-                message: rows[0].registration.validation ? trans('wait_validation'): trans('register_user')
+                title: trans('register'),
+                message: rows[0].registration.validation ? trans('workspace_awaiting_validation'): trans('register_to_a_public_workspace')
               }
             },
             {
@@ -59,8 +59,8 @@ const WorkspacesList = props => {
               scope: ['object'],
               callback: () => props.unregister(rows[0]),
               confirm: {
-                title: trans('unregister_user'),
-                message: trans('unregister_user')
+                title: trans('unregister'),
+                message: trans('unregister_from_a_workspace')
               }
             }
           ]}

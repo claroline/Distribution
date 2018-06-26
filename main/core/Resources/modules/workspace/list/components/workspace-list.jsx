@@ -46,7 +46,7 @@ const WorkspaceList = {
       alias: 'selfRegistration'
     }, {
       name: 'registration.waitingForRegistration',
-      label: t('waiting_for_registration'),
+      label: t('pending'),
       type: 'boolean',
       filterable: false,
       sortable: false
