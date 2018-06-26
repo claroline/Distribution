@@ -72,7 +72,8 @@ const WorkspacesList = props => {
 WorkspacesList.propTypes = {
   register: T.func.isRequired,
   unregister: T.func.isRequired,
-  url: T.string.isRequired
+  url: T.string.isRequired,
+  parameters: T.object.isRequired
 }
 
 const Workspaces = connect(

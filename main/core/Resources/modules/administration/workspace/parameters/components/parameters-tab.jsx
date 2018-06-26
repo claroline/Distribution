@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/app/api'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'

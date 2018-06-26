@@ -388,19 +388,20 @@ class WorkspaceController extends Controller
         $this->assertIsGranted('OPEN', $workspace);
         $this->forceWorkspaceLang($workspace, $request);
         $options = $workspace->getOptions();
-        /*
-                if (!is_null($options)) {
-                    $details = $options->getDetails();
 
-                    if (isset($details['use_workspace_opening_resource']) &&
-                        $details['use_workspace_opening_resource'] &&
-                        isset($details['workspace_opening_resource']) &&
-                        !empty($details['workspace_opening_resource'])) {
-                        $resourceNode = $this->resourceManager->getById($details['workspace_opening_resource']);
+        if (!is_null($options)) {
+            $details = $options->getDetails();
 
-                        if (!is_null($resourceNode)) {
-                            $this->session->set('isDesktop', false);
-                            $route = $this->router->generate(
+            if (isset($details['use_workspace_opening_resource']) &&
+                $details['use_workspace_opening_resource'] &&
+                isset($details['workspace_opening_resource']) &&
+                !empty($details['workspace_opening_resource'])
+            ) {
+                $resourceNode = $this->resourceManager->getById($details['workspace_opening_resource']);
+
+                if (!is_null($resourceNode)) {
+                    $this->session->set('isDesktop', false);
+                    $route = $this->router->generate(
                                 'claro_resource_open',
                                 [
                                     'node' => $resourceNode->getId(),
@@ -408,10 +409,10 @@ class WorkspaceController extends Controller
                                 ]
                             );
 
-                            return new RedirectResponse($route);
-                        }
-                    }
-                }*/
+                    return new RedirectResponse($route);
+                }
+            }
+        }
 
         $tool = $this->workspaceManager->getFirstOpenableTool($workspace);
         //small hack for administrators otherwise they can't open it

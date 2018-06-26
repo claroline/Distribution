@@ -1,4 +1,4 @@
-import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
+import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 
 const reducer = {

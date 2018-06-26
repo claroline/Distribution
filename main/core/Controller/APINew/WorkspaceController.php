@@ -386,9 +386,7 @@ class WorkspaceController extends AbstractCrudController
                 throw new \Exception('The role '.$role.' does not exists');
             }
 
-            foreach ($users as $user) {
-                $this->crud->patch($role, 'user', Crud::COLLECTION_ADD, $users);
-            }
+            $this->crud->patch($role, 'user', Crud::COLLECTION_ADD, $users);
         }
 
         return new JsonResponse(array_map(function ($workspace) {
@@ -421,9 +419,7 @@ class WorkspaceController extends AbstractCrudController
                 throw new \Exception('The role '.$role.' does not exists');
             }
 
-            foreach ($groups as $group) {
-                $this->crud->patch($role, 'group', Crud::COLLECTION_ADD, $groups);
-            }
+            $this->crud->patch($role, 'group', Crud::COLLECTION_ADD, $groups);
         }
 
         return new JsonResponse(array_map(function ($workspace) {

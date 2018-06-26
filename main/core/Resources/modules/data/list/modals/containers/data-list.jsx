@@ -47,6 +47,7 @@ DataListModal.propTypes = {
   onlyId: T.bool,
   display: T.object,
   selectors: T.array,
+  selected: T.array.isRequired,
 
   /**
    * Definition of the data properties.
