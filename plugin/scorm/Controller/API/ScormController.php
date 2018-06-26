@@ -200,7 +200,7 @@ class ScormController extends Controller
         if (empty($error)) {
             return new JsonResponse($data, 200);
         } else {
-            return new JsonResponse($error, 400);
+            return new JsonResponse($error, 500);
         }
     }
 

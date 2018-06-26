@@ -12,13 +12,6 @@ import {Player} from '#/plugin/scorm/resources/scorm/player/components/player'
 
 const Resource = props =>
   <ResourcePageContainer
-    editor={{
-      path: '/edit',
-      save: {
-        disabled: false,
-        action: () => {}
-      }
-    }}
     customActions={[]}
   >
     <RoutedPageContent
@@ -29,13 +22,6 @@ const Resource = props =>
       ]}
       routes={[
         {
-          path: '/',
-          exact: true,
-          component: Player
-        }, {
-          path: '/edit',
-          component: Player
-        }, {
           path: '/play',
           component: Player
         }
@@ -44,14 +30,12 @@ const Resource = props =>
   </ResourcePageContainer>
 
 Resource.propTypes = {
-  canEdit: T.bool.isRequired,
-  scorm: T.object.isRequired
+  canEdit: T.bool.isRequired
 }
 
 const ScormResource = connect(
   (state) => ({
-    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
-    scorm: state.scorm
+    canEdit: hasPermission('edit', resourceSelect.resourceNode(state))
   })
 )(Resource)
 

@@ -636,7 +636,7 @@ class ScormManager
      *
      * @param Workspace    $workspace
      * @param UploadedFile $file
-     * @param string       $hashName name of the destination directory
+     * @param string       $hashName  name of the destination directory
      */
     private function unzipScormArchive(Workspace $workspace, UploadedFile $file, $hashName)
     {

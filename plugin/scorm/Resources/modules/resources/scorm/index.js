@@ -22,7 +22,7 @@ export const App = () => ({
     scorm: initialData.scorm,
     resource: {
       node: initialData.resourceNode,
-      evaluation: null
+      evaluation: initialData.evaluation
     }
   })
 })

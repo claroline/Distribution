@@ -1,7 +1,7 @@
 {
   "webpack": {
     "entry": {
-      "resource": "resources/scorm",
+      "resource": "resources/scorm/bootstrap",
       "results": "Results/results"
     }
   },

@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -50,16 +51,18 @@ class ScormListener
     private $om;
     /** @var Request */
     private $request;
+    /** @var ResourceEvaluationManager */
+    private $resourceEvalManager;
     /** @var UrlGeneratorInterface */
     private $router;
     /** @var ScormManager */
     private $scormManager;
     /** @var TwigEngine */
     private $templating;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
     /** @var TranslatorInterface */
     private $translator;
-    /** @var ResourceEvaluationManager */
-    private $resourceEvalManager;
     /** @var string */
     private $uploadDir;
 
@@ -74,11 +77,12 @@ class ScormListener
      *     "formFactory"         = @DI\Inject("form.factory"),
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
      *     "requestStack"        = @DI\Inject("request_stack"),
+     *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "router"              = @DI\Inject("router"),
      *     "scormManager"        = @DI\Inject("claroline.manager.scorm_manager"),
      *     "templating"          = @DI\Inject("templating"),
+     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
      *     "translator"          = @DI\Inject("translator"),
-     *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "uploadDir"           = @DI\Inject("%claroline.param.uploads_directory%")
      * })
      *
@@ -89,6 +93,7 @@ class ScormListener
      * @param UrlGeneratorInterface     $router
      * @param ScormManager              $scormManager
      * @param TwigEngine                $templating
+     * @param TokenStorageInterface     $tokenStorage
      * @param TranslatorInterface       $translator
      * @param ResourceEvaluationManager $resourceEvalManager
      * @param string                    $uploadDir
@@ -101,6 +106,7 @@ class ScormListener
         UrlGeneratorInterface $router,
         ScormManager $scormManager,
         TwigEngine $templating,
+        TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
         ResourceEvaluationManager $resourceEvalManager,
         $uploadDir
@@ -109,11 +115,12 @@ class ScormListener
         $this->formFactory = $formFactory;
         $this->om = $om;
         $this->request = $requestStack->getMasterRequest();
+        $this->resourceEvalManager = $resourceEvalManager;
         $this->router = $router;
         $this->scormManager = $scormManager;
         $this->templating = $templating;
+        $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
-        $this->resourceEvalManager = $resourceEvalManager;
         $this->uploadDir = $uploadDir;
 
         $this->scormResourcesPath = $uploadDir.DIRECTORY_SEPARATOR.'scormresources'.DIRECTORY_SEPARATOR;
@@ -191,9 +198,13 @@ class ScormListener
     public function onOpen(OpenResourceEvent $event)
     {
         $scorm = $event->getResource();
+        $user = $this->tokenStorage->getToken()->getUser();
         $content = $this->templating->render(
             'ClarolineScormBundle::scorm.html.twig', [
                 '_resource' => $scorm,
+                'userEvaluation' => 'anon.' === $user ?
+                    null :
+                    $this->resourceEvalManager->getResourceUserEvaluation($scorm->getResourceNode(), $user),
             ]
         );
 
