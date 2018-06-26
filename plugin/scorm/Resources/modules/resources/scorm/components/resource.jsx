@@ -5,17 +5,41 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
-import {RoutedPageContent} from '#/main/core/layout/router'
+import {RoutedPageContent} from '#/main/core/layout/router/components/page'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+
+import {Player} from '#/plugin/scorm/resources/scorm/player/components/player'
 
 const Resource = props =>
   <ResourcePageContainer
-    editor={{}}
+    editor={{
+      path: '/edit',
+      save: {
+        disabled: false,
+        action: () => {}
+      }
+    }}
     customActions={[]}
   >
     <RoutedPageContent
-      headerSpacer={false}
-      routes={[]}
+      key="resource-content"
+      headerSpacer={true}
+      redirect={[
+        {from: '/', exact: true, to: '/play'}
+      ]}
+      routes={[
+        {
+          path: '/',
+          exact: true,
+          component: Player
+        }, {
+          path: '/edit',
+          component: Player
+        }, {
+          path: '/play',
+          component: Player
+        }
+      ]}
     />
   </ResourcePageContainer>
 

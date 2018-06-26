@@ -263,7 +263,7 @@ class Sco
 
     public function getScoreToPass()
     {
-        if (Scorm::SCORM_2004 === $this->scorm->getType()) {
+        if (Scorm::SCORM_2004 === $this->scorm->getVersion()) {
             return $this->scoreToPassDecimal;
         } else {
             return $this->scoreToPassInt;
@@ -272,7 +272,7 @@ class Sco
 
     public function setScoreToPass($scoreToPass)
     {
-        if (Scorm::SCORM_2004 === $this->scorm->getType()) {
+        if (Scorm::SCORM_2004 === $this->scorm->getVersion()) {
             $this->setScoreToPassDecimal($scoreToPass);
         } else {
             $this->setScoreToPassInt($scoreToPass);

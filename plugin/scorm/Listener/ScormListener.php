@@ -63,6 +63,8 @@ class ScormListener
     /** @var string */
     private $uploadDir;
 
+    private $scormResourcesPath;
+
     private $scormRepo;
     private $scoTrackingRepo;
 
@@ -114,7 +116,7 @@ class ScormListener
         $this->resourceEvalManager = $resourceEvalManager;
         $this->uploadDir = $uploadDir;
 
-        $this->scormResourcesPath = $uploadDir.'/scormresources/';
+        $this->scormResourcesPath = $uploadDir.DIRECTORY_SEPARATOR.'scormresources'.DIRECTORY_SEPARATOR;
 
         $this->scormRepo = $om->getRepository('ClarolineScormBundle:Scorm');
         $this->scoTrackingRepo = $om->getRepository('ClarolineScormBundle:ScoTracking');

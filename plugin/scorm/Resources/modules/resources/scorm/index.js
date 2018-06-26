@@ -17,5 +17,12 @@ export const Creation = () => ({
 export const App = () => ({
   component: ScormResource,
   store: reducer,
-  styles: 'claroline-distribution-plugin-scorm-resource',
+  // styles: 'claroline-distribution-plugin-scorm-resource',
+  initialData: initialData => Object.assign({}, {
+    scorm: initialData.scorm,
+    resource: {
+      node: initialData.resourceNode,
+      evaluation: null
+    }
+  })
 })
