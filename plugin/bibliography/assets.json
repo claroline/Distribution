@@ -1,7 +1,6 @@
 {
   "webpack": {
     "entry": {
-      "list": "book-reference/app",
       "book-reference-resource": "resources/book-reference/bootstrap"
     }
   }

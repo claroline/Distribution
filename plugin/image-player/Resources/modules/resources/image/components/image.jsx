@@ -24,7 +24,7 @@ const ImageComponent = props =>
       }
     ]}
   >
-    <PageContent className="text-center">
+    <PageContent className="text-center content-centered">
       <img
         className="img-responsive"
         src={props.url}

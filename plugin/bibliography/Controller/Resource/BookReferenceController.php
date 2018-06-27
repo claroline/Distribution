@@ -1,6 +1,6 @@
 <?php
 
-namespace Icap\BibliographyBundle\Controller;
+namespace Icap\BibliographyBundle\Controller\Resource;
 
 use Icap\BibliographyBundle\Entity\BookReference;
 use Icap\BibliographyBundle\Entity\BookReferenceConfiguration;

@@ -6,7 +6,7 @@
  * Time: 15:45.
  */
 
-namespace Icap\BibliographyBundle\API\Serializer;
+namespace Icap\BibliographyBundle\Serializer;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Icap\BibliographyBundle\Entity\BookReference;
