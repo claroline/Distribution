@@ -17,6 +17,8 @@ use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -72,7 +74,7 @@ class UserFinder implements FinderInterface
         return 'Claroline\CoreBundle\Entity\User';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
         if (isset($searches['contactable'])) {
             $qb = $this->getContactableUsers($qb);
@@ -157,25 +159,64 @@ class UserFinder implements FinderInterface
                     break;
                 //case 'contactable':
                 case 'workspace':
-                    $qb->leftJoin('obj.roles', 'wsuroles');
-                    $qb->leftJoin('wsuroles.workspace', 'rws');
-                    $qb->leftJoin('obj.groups', 'wsugrps');
-                    $qb->leftJoin('wsugrps.roles', 'guroles');
-                    $qb->leftJoin('guroles.workspace', 'grws');
-
-                    if (is_array($filterValue)) {
-                        $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->in('rws.uuid', ':workspaceId'),
-                            $qb->expr()->in('grws.uuid', ':workspaceId')
-                        ));
+                    //this one is REALLY tricky for performance reasons.
+                    //we need to make a union but it's not supported by the querybuilder.
+                    //It's not supported at all by doctrine actually.
+                    //Let's return a query object with the correct sql.
+                    if (!is_array($filterValue)) {
+                        $filterValue = [$filterValue];
+                    }
+                    $byUserSearch = $byGroupSearch = $searches;
+                    $byUserSearch['_workspace_user'] = $filterValue;
+                    $byGroupSearch['_workspace_group'] = $filterValue;
+                    unset($byUserSearch['workspace']);
+                    unset($byGroupSearch['workspace']);
+                    $qbUser = $this->om->createQueryBuilder();
+                    $qbUser->select('DISTINCT obj')->from($this->getClass(), 'obj');
+                    $this->configureQueryBuilder($qbUser, $byUserSearch, $sortBy);
+                    //this is our first part of the union
+                    $sqlUser = $qbUser->getQuery()->getSql();
+                    $sqlUser = $this->removeAlias($sqlUser);
+                    $qbGroup = $this->om->createQueryBuilder();
+                    $qbGroup->select('DISTINCT obj')->from($this->getClass(), 'obj');
+                    $this->configureQueryBuilder($qbGroup, $byGroupSearch, $sortBy);
+                    //this is the second part of the union
+                    $sqlGroup = $qbGroup->getQuery()->getSql();
+                    $sqlGroup = $this->removeAlias($sqlGroup);
+                    $together = $sqlUser.' UNION '.$sqlGroup;
+                    //we might want to add a count somehere here
+                    //add limit & offset too
+                    if ($options['count']) {
+                        $together = "SELECT COUNT(*) as count FROM ($together) AS wathever";
+                        $rsm = new ResultSetMapping();
+                        $rsm->addScalarResult('count', 'count', 'integer');
+                        $query = $this->_em->createNativeQuery($together, $rsm);
                     } else {
-                        $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->eq('rws.uuid', ':workspaceId'),
-                            $qb->expr()->eq('grws.uuid', ':workspaceId')
-                        ));
+                        $rsm = new ResultSetMappingBuilder($this->_em);
+                        $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
+                        $query = $this->_em->createNativeQuery($together, $rsm);
                     }
 
-                    $qb->setParameter('workspaceId', $filterValue);
+                    return $query;
+                    break;
+                case '_workspace_user':
+                    $filterValue = array_map(function ($value) {
+                        return "'$value'";
+                    }, $filterValue);
+                    $string = join($filterValue, ',');
+                    $qb->leftJoin('obj.roles', 'wsuroles');
+                    $qb->leftJoin('wsuroles.workspace', 'rws');
+                    $qb->andWhere('rws.uuid IN ('.$string.')');
+                    break;
+                case '_workspace_group':
+                    $filterValue = array_map(function ($value) {
+                        return "'$value'";
+                    }, $filterValue);
+                    $string = join($filterValue, ',');
+                    $qb->leftJoin('obj.groups', 'grps');
+                    $qb->leftJoin('grps.roles', 'grpRole');
+                    $qb->leftJoin('grpRole.workspace', 'ws');
+                    $qb->andWhere('ws.uuid IN ('.$string.')');
                     break;
                 case 'blacklist':
                     $qb->andWhere("obj.uuid NOT IN (:{$filterName})");

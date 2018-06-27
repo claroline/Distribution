@@ -12,6 +12,7 @@
 namespace Claroline\AppBundle\API;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Doctrine\ORM\Query\Query;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -152,22 +153,27 @@ class FinderProvider
 
             /** @var QueryBuilder $qb */
             $qb = $this->om->createQueryBuilder();
-
-            $qb->select($count ? 'COUNT(DISTINCT obj)' : 'DISTINCT obj')
-               ->from($class, 'obj');
-
+            $qb->select($count ? 'COUNT(DISTINCT obj)' : 'DISTINCT obj')->from($class, 'obj');
+            //make an option parameters for query builder ?
+            $options = [
+              'page' => $page,
+              'limit' => $limit,
+              'count' => $count,
+            ];
             // filter query - let's the finder implementation process the filters to configure query
-            $this->get($class)->configureQueryBuilder($qb, $filters, $sortBy);
-
-            // order query if implementation has not done it
-            $this->sortResults($qb, $sortBy);
-
-            if (!$count && 0 < $limit) {
-                $qb->setFirstResult($page * $limit);
-                $qb->setMaxResults($limit);
+            $query = $this->get($class)->configureQueryBuilder($qb, $filters, $sortBy, $options);
+            if (!$query instanceof Query) {
+                // order query if implementation has not done it
+                $this->sortResults($qb, $sortBy);
+                if (!$count && 0 < $limit) {
+                    $qb->setFirstResult($page * $limit);
+                    $qb->setMaxResults($limit);
+                }
+                $query = $qb->getQuery();
             }
+            $result = $count ? (int) $query->getSingleScalarResult() : $query->getResult();
 
-            $query = $qb->getQuery();
+            return $result;
 
             if ($count) {
                 return (int) $query->getSingleScalarResult();
