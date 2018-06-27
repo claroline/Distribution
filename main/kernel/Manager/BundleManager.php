@@ -54,7 +54,7 @@ class BundleManager
         $configProviderBundles = [];
         $nonAutoConfigurableBundles = [];
         $environment = $this->getEnvironment();
-        $updateMode = 'update' === $environment;
+        $updateMode = 'console' === $environment;
 
         foreach ($entries as $bundleClass => $isActive) {
             if (($isActive || $fetchAll || $updateMode) && 'Claroline\KernelBundle\ClarolineKernelBundle' !== $bundleClass) {
