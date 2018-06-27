@@ -87,7 +87,7 @@ class WebResourceListener
             'ClarolineWebResourceBundle:web-resource:open.html.twig',
             [
                 'workspace' => $workspace,
-                'path' => $zipPath.$hash.'/'.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
+                'path' => $hash.$ds.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
                 '_resource' => $event->getResource(),
             ]
         );

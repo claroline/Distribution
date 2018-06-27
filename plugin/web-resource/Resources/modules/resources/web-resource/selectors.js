@@ -1,9 +1,6 @@
-import {createSelector} from 'reselect'
 
-
-const webResource = state => state.webResource
-
+const path = state => state.path
 
 export const select = {
-  webResource
+  path
 }
