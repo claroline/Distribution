@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import {asset} from '#/main/core/scaffolding/asset'
@@ -6,23 +6,28 @@ import {selectors as resourceSelector} from '#/main/core/resource/store'
 
 import {select} from '#/plugin/web-resource/resources/web-resource/selectors'
 
-const PlayerComponent = props => {
+class PlayerComponent extends Component {
 
-  const iframe = document.getElementById('web-resource-iframe')
-  // const resize = (iframe) => iframe.height
-  // .contentWindow.document.body.scrollHeight
+  componentDidMount() {
+    const iframe = document.getElementById('web-resource-iframe')
+    const height = iframe.contentWindow.document.body.scrollHeight
+    return height
+  }
 
-  return (
-    <div>
-      {console.log(iframe)}
-      <iframe
-        className="web-resource"
-        id="web-resource-iframe"
-        src={`${asset('uploads/webresource/')}${props.workspaceId}/${props.path}`}
-        allowFullScreen={true}
-      />
-    </div>
-  )
+  render() {
+
+    return (
+      <div>
+        <iframe
+          className="web-resource"
+          id="web-resource-iframe"
+          height={this.height}
+          src={`${asset('uploads/webresource/')}${this.props.workspaceId}/${this.props.path}`}
+          allowFullScreen={true}
+        />
+      </div>
+    )
+  }
 }
 
 
