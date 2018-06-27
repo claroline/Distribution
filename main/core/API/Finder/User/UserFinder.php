@@ -49,7 +49,8 @@ class UserFinder implements FinderInterface
      *     "authChecker"      = @DI\Inject("security.authorization_checker"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "om"               = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
+     *     "em"               = @DI\Inject("doctrine.orm.entity_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authChecker
@@ -61,12 +62,14 @@ class UserFinder implements FinderInterface
         AuthorizationCheckerInterface $authChecker,
         TokenStorageInterface $tokenStorage,
         WorkspaceManager $workspaceManager,
-        ObjectManager $om
+        ObjectManager $om,
+        $em
     ) {
         $this->authChecker = $authChecker;
         $this->tokenStorage = $tokenStorage;
         $this->workspaceManager = $workspaceManager;
         $this->om = $om;
+        $this->_em = $em;
     }
 
     public function getClass()
@@ -166,6 +169,7 @@ class UserFinder implements FinderInterface
                     if (!is_array($filterValue)) {
                         $filterValue = [$filterValue];
                     }
+
                     $byUserSearch = $byGroupSearch = $searches;
                     $byUserSearch['_workspace_user'] = $filterValue;
                     $byGroupSearch['_workspace_group'] = $filterValue;
@@ -286,5 +290,50 @@ class UserFinder implements FinderInterface
         $qb->setParameter('workspacesIds', $workspacesIds);
 
         return $qb;
+    }
+
+    //should be cleaner
+    private function removeAlias($sql)
+    {
+        $aliases = [
+          'AS id_0',
+          'AS first_name_1',
+          'AS last_name_2',
+          'AS username_3',
+          'AS password_4',
+          'AS locale_5',
+          'AS salt_6',
+          'AS phone_7',
+          'AS mail_8',
+          'AS administrative_code_9',
+          'AS creation_date_10',
+          'AS last_login_11',
+          'AS initialization_date_12',
+          'AS reset_password_13',
+          'AS hash_time_14',
+          'AS picture_15',
+          'AS description_16',
+          'AS hasAcceptedTerms_17',
+          'AS is_enabled_18',
+          'AS is_removed_19',
+          'AS is_mail_notified_20',
+          'AS is_mail_validated_21',
+          'AS hide_mail_warning_22',
+          'AS last_uri_23',
+          'AS public_url_24',
+          'AS has_tuned_public_url_25',
+          'AS expiration_date_26',
+          'AS authentication_27',
+          'AS email_validation_hash_28',
+          'AS uuid_29',
+          'AS workspace_id_30',
+          'AS options_id_31',
+        ];
+
+        foreach ($aliases as $alias) {
+            $sql = str_replace($alias, '', $sql);
+        }
+
+        return $sql;
     }
 }
