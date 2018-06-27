@@ -12,6 +12,7 @@
 namespace Claroline\AppBundle\API;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query\Query;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -162,7 +163,8 @@ class FinderProvider
             ];
             // filter query - let's the finder implementation process the filters to configure query
             $query = $this->get($class)->configureQueryBuilder($qb, $filters, $sortBy, $options);
-            if (!$query instanceof Query) {
+
+            if (!($query instanceof NativeQuery)) {
                 // order query if implementation has not done it
                 $this->sortResults($qb, $sortBy);
                 if (!$count && 0 < $limit) {
@@ -171,17 +173,8 @@ class FinderProvider
                 }
                 $query = $qb->getQuery();
             }
-            $result = $count ? (int) $query->getSingleScalarResult() : $query->getResult();
 
-            return $result;
-
-            if ($count) {
-                return (int) $query->getSingleScalarResult();
-            } else {
-                $results = $query->getResult();
-
-                return $results;
-            }
+            return $count ? (int) $query->getSingleScalarResult() : $query->getResult();
         } catch (FinderException $e) {
             $data = $this->om->getRepository($class)->findBy($filters, null, 0 < $limit ? $limit : null, $page);
 

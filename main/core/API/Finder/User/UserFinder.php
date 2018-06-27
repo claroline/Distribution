@@ -190,12 +190,23 @@ class UserFinder implements FinderInterface
                     $together = $sqlUser.' UNION '.$sqlGroup;
                     //we might want to add a count somehere here
                     //add limit & offset too
+
                     if ($options['count']) {
                         $together = "SELECT COUNT(*) as count FROM ($together) AS wathever";
                         $rsm = new ResultSetMapping();
                         $rsm->addScalarResult('count', 'count', 'integer');
                         $query = $this->_em->createNativeQuery($together, $rsm);
                     } else {
+                        //add page & limit
+                        if ($options['limit'] > -1) {
+                            $together .= ' LIMIT '.$options['limit'];
+                        }
+
+                        if ($options['limit'] > 0) {
+                            $offset = $options['limit'] * $options['page'];
+                            $together .= ' OFFSET  '.$offset;
+                        }
+
                         $rsm = new ResultSetMappingBuilder($this->_em);
                         $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
                         $query = $this->_em->createNativeQuery($together, $rsm);

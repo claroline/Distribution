@@ -53,7 +53,7 @@ class ApiListener
         $response = $event->getResponse();
 
         //this is for debug purpose
-        if ($response instanceof JsonResponse) {
+        if ($response instanceof JsonResponse && $debug) {
             $new = new Response();
             $new->setContent('<body>'.$response->getContent().'</body>');
             $event->setResponse($new);
