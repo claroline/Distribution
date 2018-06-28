@@ -1,9 +1,3 @@
-# Resource
-icap_bibliography_resource:
-    resource: "@IcapBibliographyBundle/Controller/Resource/BookReferenceController.php"
-    type: annotation
-    prefix: /
-
 # JSON API
 icap_biblio_api:
     resource: "@IcapBibliographyBundle/Controller/API/"
