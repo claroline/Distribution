@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Icap\LessonBundle\Entity\Lesson;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("icap.serializer.lesson")
@@ -18,18 +19,24 @@ class LessonSerializer
     /** @var ObjectManager */
     private $om;
 
+    /** @var ChapterRepository */
+    private $chapterRepository;
+
     /**
      * LessonSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"        = @DI\Inject("claroline.persistence.object_manager"),
+     *     "container" = @DI\Inject("service_container")
      * })
      *
-     * @param ObjectManager $om
+     * @param ObjectManager      $om
+     * @param ContainerInterface $container
      */
-    public function __construct(ObjectManager $om)
+    public function __construct(ObjectManager $om, ContainerInterface $container)
     {
         $this->om = $om;
+        $this->chapterRepository = $container->get('doctrine.orm.entity_manager')->getRepository('IcapLessonBundle:Chapter');
     }
 
     /**
@@ -58,9 +65,15 @@ class LessonSerializer
      */
     public function serialize(Lesson $lesson, array $options = [])
     {
+        $firstChapter = $this->chapterRepository->getFirstChapter($lesson);
+        $tree = $this->chapterRepository->getChapterTree($lesson->getRoot())[0];
+
         $serialized = [
             'id' => $lesson->getUuid(),
             'title' => $lesson->getResourceNode()->getName(),
+            'firstChapterId' => $firstChapter ? $firstChapter->getUuid() : null,
+            'firstChapterSlug' => $firstChapter ? $firstChapter->getSlug() : null,
+            'tree' => $tree,
         ];
 
         return $serialized;

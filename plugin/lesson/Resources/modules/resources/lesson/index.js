@@ -1,27 +1,26 @@
-import {bootstrap} from '#/main/app/bootstrap'
-
-import {LessonResource} from '#/plugin/lesson/resources/lesson/components/resource.jsx'
-
+import {Player} from '#/plugin/lesson/resources/lesson/player/components/player'
 import {reducer} from '#/plugin/lesson/resources/lesson/store'
 
 
-// mount the react application
-bootstrap(
-  // app DOM container (also holds initial app data as data attributes)
-  '.lesson-container',
 
-  // app main component
-  LessonResource,
-
-  // app store configuration
-  reducer,
-
-  // transform data attributes for redux store
-  (initialData) => {
-    return {
-      lesson: initialData.lesson,
-      currentChapter: initialData.chapter,
-      resourceNode: initialData.resourceNode
-    }
-  }
-)
+/**
+ * Lesson resource application.
+ *
+ * @constructor
+ */
+export const App = () => ({
+  component: Player,
+  store: reducer,
+  styles: 'claroline-distribution-plugin-lesson-lesson-resource',
+  initialData: initialData => Object.assign({}, initialData, {
+    lesson: initialData.lesson,
+    chapter: initialData.chapter,
+    resource: {
+      node: initialData.resourceNode
+    },
+    tree: {
+      data: initialData.tree
+    },
+    exportPdfEnabled: initialData.exportPdfEnabled
+  })
+})

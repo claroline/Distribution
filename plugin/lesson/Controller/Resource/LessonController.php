@@ -40,11 +40,11 @@ class LessonController extends Controller
 
     /**
      * @EXT\Route(
-     *      "view/{resourceId}.pdf",
-     *      name="icap_lesson_pdf",
+     *      "view/{lesson}.pdf",
+     *      name="icap_lesson_export_pdf",
      *      requirements={"resourceId" = "\d+"}
      * )
-     * @EXT\ParamConverter("lesson", class="IcapLessonBundle:Lesson", options={"id" = "resourceId"})
+     * @EXT\ParamConverter("lesson", class="IcapLessonBundle:Lesson", options={"mapping": {"lesson": "uuid"}})
      */
     public function viewLessonPdfAction(Lesson $lesson)
     {

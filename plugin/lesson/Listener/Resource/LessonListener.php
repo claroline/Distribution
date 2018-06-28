@@ -4,14 +4,15 @@ namespace Icap\LessonBundle\Listener\Resource;
 
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
-use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Icap\LessonBundle\Entity\Lesson;
 use Icap\LessonBundle\Form\LessonType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Icap\LessonBundle\Manager\ChapterManager;
+use Icap\LessonBundle\Repository\ChapterRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -19,7 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class LessonListener
 {
-
     private $container;
 
     /* @var ObjectManager */
@@ -28,20 +28,32 @@ class LessonListener
     /** @var SerializerProvider */
     private $serializer;
 
+    /** @var ChapterManager */
+    private $chapterManager;
+
+    /** @var ChapterRepository */
+    private $chapterRepository;
+
     /**
      * LessonListener constructor.
      *
      * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
+     *     "container"      = @DI\Inject("service_container"),
+     *     "chapterManager" = @DI\Inject("icap.lesson.manager.chapter")
      * })
      *
      * @param ContainerInterface $container
+     * @param ChapterManager     $chapterManager
      */
-    public function __construct(ContainerInterface $container)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        ChapterManager $chapterManager
+    ) {
         $this->container = $container;
         $this->om = $container->get('claroline.persistence.object_manager');
         $this->serializer = $container->get('claroline.api.serializer');
+        $this->chapterRepository = $this->container->get('doctrine.orm.entity_manager')->getRepository('IcapLessonBundle:Chapter');
+        $this->chapterManager = $chapterManager;
     }
 
     /**
@@ -103,7 +115,9 @@ class LessonListener
         $content = $this->container->get('templating')->render(
             'IcapLessonBundle:lesson:open.html.twig', [
                 '_resource' => $lesson,
-                'lesson' => $this->serializer->serialize($lesson),
+                'chapter' => $this->chapterRepository->getFirstChapter($lesson),
+                'tree' => $this->chapterManager->serializeChapterTree($lesson),
+                'root' => $lesson->getRoot(),
             ]
         );
 

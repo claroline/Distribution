@@ -2,7 +2,7 @@
 # to use, copy this file into your .git/hooks folder in your git repo
 # make sure to add execute permissions using: chmod +x .git/hooks/pre-commit
 
-HOOKS="pre-commit-phpcs pre-commit-md pre-commit-phpmd pre-commit-eslint"
+HOOKS="pre-commit-phpcs pre-commit-phpmd pre-commit-eslint"
 
 ###########################################################
 # There should be no need to change anything below this line.

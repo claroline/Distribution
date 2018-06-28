@@ -6,7 +6,6 @@ import {trans} from '#/main/core/translation'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 import {RoutedPageContent} from '#/main/core/layout/router'
 
-//import {Editor} from '#/plugin/lesson/resources/lesson/editor/components/editor'
 import {Player} from '#/plugin/lesson/resources/lesson/player/components/player'
 
 const Resource = props =>
