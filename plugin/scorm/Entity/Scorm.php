@@ -107,10 +107,29 @@ class Scorm extends AbstractResource
     }
 
     /**
-     * @return Sco
+     * @return Sco[]
      */
     public function getScos()
     {
         return $this->scos;
+    }
+
+    /**
+     * @return Sco[]
+     */
+    public function getRootScos()
+    {
+        $roots = [];
+
+        if (!empty($this->scos)) {
+            foreach ($this->scos as $sco) {
+                if (is_null($sco->getScoParent())) {
+                    // Root sco found
+                    $roots[] = $sco;
+                }
+            }
+        }
+
+        return $roots;
     }
 }

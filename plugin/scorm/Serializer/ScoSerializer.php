@@ -55,33 +55,7 @@ class ScoSerializer
             'parent' => !empty($parent) ? ['id' => $parent->getUuid()] : null,
             'children' => array_map(function (Sco $scoChild) {
                 return $this->serialize($scoChild);
-            }, $sco->getScoChildren()->toArray()),
+            }, is_array($sco->getScoChildren()) ? $sco->getScoChildren() : $sco->getScoChildren()->toArray()),
         ];
-    }
-
-    /**
-     * @param array $data
-     * @param Sco   $sco
-     *
-     * @return Sco
-     */
-    public function deserialize($data, Sco $sco)
-    {
-        $this->sipe('id', 'setUuid', $data, $sco);
-        $this->sipe('data.entryUrl', 'setEntryUrl', $data, $sco);
-        $this->sipe('data.identifier', 'setIdentifier', $data, $sco);
-        $this->sipe('data.title', 'setTitle', $data, $sco);
-        $this->sipe('data.visible', 'setVisible', $data, $sco);
-        $this->sipe('data.parameters', 'setParameters', $data, $sco);
-        $this->sipe('data.launchData', 'setLaunchData', $data, $sco);
-        $this->sipe('data.maxTimeAllowed', 'setMaxTimeAllowed', $data, $sco);
-        $this->sipe('data.timeLimitAction', 'setTimeLimitAction', $data, $sco);
-        $this->sipe('data.block', 'setBlock', $data, $sco);
-        $this->sipe('data.scoreToPassInt', 'setScoreToPassInt', $data, $sco);
-        $this->sipe('data.scoreToPassDecimal', 'setScoreToPassDecimal', $data, $sco);
-        $this->sipe('data.completionThreshold', 'setCompletionThreshold', $data, $sco);
-        $this->sipe('data.prerequisites', 'setPrerequisites', $data, $sco);
-
-        return $sco;
     }
 }

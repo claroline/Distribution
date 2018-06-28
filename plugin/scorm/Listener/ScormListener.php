@@ -13,8 +13,6 @@ namespace Claroline\ScormBundle\Listener;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
@@ -23,171 +21,69 @@ use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\ScormBundle\Entity\Sco;
 use Claroline\ScormBundle\Entity\Scorm;
-use Claroline\ScormBundle\Form\ScormType;
-use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use Claroline\ScormBundle\Manager\ScormManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormFactory;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service
  */
 class ScormListener
 {
-    /** @var string */
-    private $filesDir;
-    /** @var FormFactory */
-    private $formFactory;
     /** @var ObjectManager */
     private $om;
-    /** @var Request */
-    private $request;
     /** @var ResourceEvaluationManager */
     private $resourceEvalManager;
-    /** @var UrlGeneratorInterface */
-    private $router;
     /** @var ScormManager */
     private $scormManager;
     /** @var TwigEngine */
     private $templating;
     /** @var TokenStorageInterface */
     private $tokenStorage;
-    /** @var TranslatorInterface */
-    private $translator;
     /** @var string */
     private $uploadDir;
 
     private $scormResourcesPath;
 
-    private $scormRepo;
     private $scoTrackingRepo;
 
     /**
      * @DI\InjectParams({
-     *     "filesDir"            = @DI\Inject("%claroline.param.files_directory%"),
-     *     "formFactory"         = @DI\Inject("form.factory"),
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "requestStack"        = @DI\Inject("request_stack"),
      *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
-     *     "router"              = @DI\Inject("router"),
      *     "scormManager"        = @DI\Inject("claroline.manager.scorm_manager"),
      *     "templating"          = @DI\Inject("templating"),
      *     "tokenStorage"        = @DI\Inject("security.token_storage"),
-     *     "translator"          = @DI\Inject("translator"),
      *     "uploadDir"           = @DI\Inject("%claroline.param.uploads_directory%")
      * })
      *
-     * @param string                    $filesDir
-     * @param FormFactory               $formFactory
      * @param ObjectManager             $om
-     * @param RequestStack              $requestStack
-     * @param UrlGeneratorInterface     $router
      * @param ScormManager              $scormManager
      * @param TwigEngine                $templating
      * @param TokenStorageInterface     $tokenStorage
-     * @param TranslatorInterface       $translator
      * @param ResourceEvaluationManager $resourceEvalManager
      * @param string                    $uploadDir
      */
     public function __construct(
-        $filesDir,
-        FormFactory $formFactory,
         ObjectManager $om,
-        RequestStack $requestStack,
-        UrlGeneratorInterface $router,
         ScormManager $scormManager,
         TwigEngine $templating,
         TokenStorageInterface $tokenStorage,
-        TranslatorInterface $translator,
         ResourceEvaluationManager $resourceEvalManager,
         $uploadDir
     ) {
-        $this->filesDir = $filesDir;
-        $this->formFactory = $formFactory;
         $this->om = $om;
-        $this->request = $requestStack->getMasterRequest();
         $this->resourceEvalManager = $resourceEvalManager;
-        $this->router = $router;
         $this->scormManager = $scormManager;
         $this->templating = $templating;
         $this->tokenStorage = $tokenStorage;
-        $this->translator = $translator;
         $this->uploadDir = $uploadDir;
 
         $this->scormResourcesPath = $uploadDir.DIRECTORY_SEPARATOR.'scormresources'.DIRECTORY_SEPARATOR;
 
-        $this->scormRepo = $om->getRepository('ClarolineScormBundle:Scorm');
         $this->scoTrackingRepo = $om->getRepository('ClarolineScormBundle:ScoTracking');
-    }
-
-    /**
-     * @DI\Observe("create_form_claroline_scorm")
-     *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new ScormType(), new Scorm());
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'claroline_scorm',
-            ]
-        );
-        $event->setResponseContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("create_claroline_scorm")
-     *
-     * @param CreateResourceEvent $event
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new ScormType(), new Scorm());
-        $form->handleRequest($this->request);
-
-        try {
-            if ($form->isValid()) {
-                $tmpFile = $form->get('file')->getData();
-
-                if ($this->isScormArchive($tmpFile)) {
-                    $scorm = $this->scormManager->createScorm($tmpFile, $form->get('name')->getData());
-                    $event->setResources([$scorm]);
-                    $event->stopPropagation();
-
-                    return;
-                }
-            }
-        } catch (InvalidScormArchiveException $e) {
-            $msg = $e->getMessage();
-            $errorMsg = $this->translator->trans(
-                $msg,
-                [],
-                'resource'
-            );
-            $form->addError(new FormError($errorMsg));
-        }
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => $event->getResourceType(),
-            ]
-        );
-        $event->setErrorFormContent($content);
-        $event->stopPropagation();
     }
 
     /**
@@ -199,12 +95,17 @@ class ScormListener
     {
         $scorm = $event->getResource();
         $user = $this->tokenStorage->getToken()->getUser();
+
+        if ('anon.' === $user) {
+            $user = null;
+        }
         $content = $this->templating->render(
             'ClarolineScormBundle::scorm.html.twig', [
                 '_resource' => $scorm,
-                'userEvaluation' => 'anon.' === $user ?
+                'userEvaluation' => is_null($user) ?
                     null :
                     $this->resourceEvalManager->getResourceUserEvaluation($scorm->getResourceNode(), $user),
+                'trackings' => $this->scormManager->generateScosTrackings($scorm->getRootScos(), $user),
             ]
         );
 
@@ -368,30 +269,6 @@ class ScormListener
 //        }
 //        $event->stopPropagation();
 //    }
-
-    /**
-     * Checks if a UploadedFile is a zip archive that contains a
-     * imsmanifest.xml file in its root directory.
-     *
-     * @param UploadedFile $file
-     *
-     * @return bool
-     *
-     * @throws InvalidScormArchiveException
-     */
-    private function isScormArchive(UploadedFile $file)
-    {
-        $zip = new \ZipArchive();
-        $openValue = $zip->open($file);
-
-        $isScormArchive = (true === $openValue) && $zip->getStream('imsmanifest.xml');
-
-        if (!$isScormArchive) {
-            throw new InvalidScormArchiveException('invalid_scorm_archive_message');
-        }
-
-        return true;
-    }
 
     /**
      * Deletes recursively a directory and its content.

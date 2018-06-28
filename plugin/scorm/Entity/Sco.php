@@ -171,6 +171,11 @@ class Sco
         return $this->scoChildren;
     }
 
+    public function setScoChildren($scoChildren)
+    {
+        $this->scoChildren = $scoChildren;
+    }
+
     public function getEntryUrl()
     {
         return $this->entryUrl;

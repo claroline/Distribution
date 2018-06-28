@@ -103,7 +103,7 @@ class ScormLib
                 $this->findNodeParams($sco, $item->firstChild);
 
                 if ($sco->isBlock()) {
-                    $scos[] = $this->parseItemNodes($item, $resources, $sco);
+                    $sco->setScoChildren($this->parseItemNodes($item, $resources, $sco));
                 }
             }
             $item = $item->nextSibling;

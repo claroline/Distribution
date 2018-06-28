@@ -27,13 +27,13 @@ use Claroline\ScormBundle\Entity\Scorm12ScoTracking;
 use Claroline\ScormBundle\Entity\Scorm2004Resource;
 use Claroline\ScormBundle\Entity\Scorm2004Sco;
 use Claroline\ScormBundle\Entity\Scorm2004ScoTracking;
-use Claroline\ScormBundle\Entity\ScormResource;
 use Claroline\ScormBundle\Entity\ScoTracking;
 use Claroline\ScormBundle\Library\Scorm12;
 use Claroline\ScormBundle\Library\Scorm2004;
 use Claroline\ScormBundle\Library\ScormLib;
 use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use Claroline\ScormBundle\Serializer\ScoSerializer;
+use Claroline\ScormBundle\Serializer\ScoTrackingSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
@@ -62,11 +62,14 @@ class ScormManager
     private $scormLib;
     /** @var ScoSerializer */
     private $scoSerializer;
+    /** @var ScoTrackingSerializer */
+    private $scoTrackingSerializer;
     /** @var string */
     private $uploadDir;
 
     private $scormResourcesPath;
 
+    private $scoTrackingRepo;
     private $scorm12ResourceRepo;
     private $scorm12ScoTrackingRepo;
     private $scorm2004ResourceRepo;
@@ -78,16 +81,17 @@ class ScormManager
      * Constructor.
      *
      * @DI\InjectParams({
-     *     "fileSystem"          = @DI\Inject("filesystem"),
-     *     "filesDir"            = @DI\Inject("%claroline.param.files_directory%"),
-     *     "libsco12"            = @DI\Inject("claroline.library.scorm_12"),
-     *     "libsco2004"          = @DI\Inject("claroline.library.scorm_2004"),
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
-     *     "resourceManager"     = @DI\Inject("claroline.manager.resource_manager"),
-     *     "scormLib"            = @DI\Inject("claroline.library.scorm"),
-     *     "scoSerializer"       = @DI\Inject("claroline.serializer.scorm.sco"),
-     *     "uploadDir"           = @DI\Inject("%claroline.param.uploads_directory%")
+     *     "fileSystem"            = @DI\Inject("filesystem"),
+     *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
+     *     "libsco12"              = @DI\Inject("claroline.library.scorm_12"),
+     *     "libsco2004"            = @DI\Inject("claroline.library.scorm_2004"),
+     *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
+     *     "resourceEvalManager"   = @DI\Inject("claroline.manager.resource_evaluation_manager"),
+     *     "resourceManager"       = @DI\Inject("claroline.manager.resource_manager"),
+     *     "scormLib"              = @DI\Inject("claroline.library.scorm"),
+     *     "scoSerializer"         = @DI\Inject("claroline.serializer.scorm.sco"),
+     *     "scoTrackingSerializer" = @DI\Inject("claroline.serializer.scorm.sco.tracking"),
+     *     "uploadDir"             = @DI\Inject("%claroline.param.uploads_directory%")
      * })
      *
      * @param Filesystem                $fileSystem
@@ -99,6 +103,7 @@ class ScormManager
      * @param ResourceManager           $resourceManager
      * @param ScormLib                  $scormLib
      * @param ScoSerializer             $scoSerializer
+     * @param ScoTrackingSerializer     $scoTrackingSerializer
      * @param string                    $uploadDir
      */
     public function __construct(
@@ -111,6 +116,7 @@ class ScormManager
         ResourceManager $resourceManager,
         ScormLib $scormLib,
         ScoSerializer $scoSerializer,
+        ScoTrackingSerializer $scoTrackingSerializer,
         $uploadDir
     ) {
         $this->fileSystem = $fileSystem;
@@ -122,10 +128,12 @@ class ScormManager
         $this->resourceManager = $resourceManager;
         $this->scormLib = $scormLib;
         $this->scoSerializer = $scoSerializer;
+        $this->scoTrackingSerializer = $scoTrackingSerializer;
         $this->uploadDir = $uploadDir;
 
         $this->scormResourcesPath = $uploadDir.DIRECTORY_SEPARATOR.'scormresources'.DIRECTORY_SEPARATOR;
 
+        $this->scoTrackingRepo = $om->getRepository('ClarolineScormBundle:ScoTracking');
         $this->scorm12ResourceRepo = $om->getRepository('ClarolineScormBundle:Scorm12Resource');
         $this->scorm12ScoTrackingRepo = $om->getRepository('ClarolineScormBundle:Scorm12ScoTracking');
         $this->scorm2004ResourceRepo = $om->getRepository('ClarolineScormBundle:Scorm2004Resource');
@@ -167,6 +175,35 @@ class ScormManager
         ];
     }
 
+    public function generateScosTrackings(array $scos, User $user = null, &$trackings = [])
+    {
+        if (!is_null($user)) {
+            $this->om->startFlushSuite();
+        }
+
+        foreach ($scos as $sco) {
+            $tracking = null;
+
+            if (!is_null($user)) {
+                $tracking = $this->scoTrackingRepo->findOneBy(['sco' => $sco, 'user' => $user]);
+            }
+            if (is_null($tracking)) {
+                $tracking = $this->createScoTracking($sco, $user);
+            }
+            $trackings[$sco->getUuid()] = $this->scoTrackingSerializer->serialize($tracking);
+            $scoChildren = $sco->getScoChildren()->toArray();
+
+            if (0 < count($scoChildren)) {
+                $this->generateScosTrackings($scoChildren, $user, $trackings);
+            }
+        }
+        if (!is_null($user)) {
+            $this->om->endFlushSuite();
+        }
+
+        return $trackings;
+    }
+
     public function parseScormArchive(UploadedFile $file)
     {
         $data = [];
@@ -204,94 +241,15 @@ class ScormManager
             throw new InvalidScormArchiveException('invalid_scorm_version_message');
         }
         $scos = $this->scormLib->parseOrganizationsNode($dom);
+
+        if (0 >= count($scos)) {
+            throw new InvalidScormArchiveException('no_sco_in_scorm_archive_message');
+        }
         $data['scos'] = array_map(function (Sco $sco) {
             return $this->scoSerializer->serialize($sco);
         }, $scos);
 
         return $data;
-    }
-
-    public function createScorm($tmpFile, $name)
-    {
-        $scorm = new Scorm();
-        $scorm->setName($name);
-        $hashName = Uuid::uuid4()->toString().'.zip';
-        $scorm->setHashName($hashName);
-        $scos = $this->generateScos($scorm, $tmpFile);
-
-        if (count($scos) > 0) {
-            $this->om->persist($scorm);
-            $this->persistScos($scorm, $scos);
-        } else {
-            throw new InvalidScormArchiveException('no_sco_in_scorm_archive_message');
-        }
-
-        $this->unzipScormArchive($tmpFile, $hashName);
-        // Move Scorm archive in the files directory
-        $tmpFile->move($this->filesDir, $hashName);
-
-        return $scorm;
-    }
-
-    public function generateScos(Scorm $scorm, \SplFileInfo $file)
-    {
-        $contents = '';
-        $zip = new \ZipArchive();
-
-        $zip->open($file);
-        $stream = $zip->getStream('imsmanifest.xml');
-
-        while (!feof($stream)) {
-            $contents .= fread($stream, 2);
-        }
-        $dom = new \DOMDocument();
-
-        if (!$dom->loadXML($contents)) {
-            throw new InvalidScormArchiveException('cannot_load_imsmanifest_message');
-        }
-
-        $scormVersionElements = $dom->getElementsByTagName('schemaversion');
-
-        if (1 === $scormVersionElements->length) {
-            switch ($scormVersionElements->item(0)->textContent) {
-                case '1.2':
-                    $scorm->setVersion(Scorm::SCORM_12);
-                    break;
-                case 'CAM 1.3':
-                case '2004 3rd Edition':
-                case '2004 4th Edition':
-                    $scorm->setVersion(Scorm::SCORM_2004);
-                    break;
-                default:
-                    throw new InvalidScormArchiveException('invalid_scorm_version_message');
-            }
-        } else {
-            throw new InvalidScormArchiveException('invalid_scorm_version_message');
-        }
-
-        $scos = $this->scormLib->parseOrganizationsNode($dom);
-
-        return $scos;
-    }
-
-    /**
-     * Associates SCORM resource to SCOs and persists them.
-     * As array $scos can also contain an array of scos
-     * this method is call recursively when an element is an array.
-     *
-     * @param Scorm $scorm
-     * @param array $scos
-     */
-    private function persistScos(Scorm $scorm, array $scos)
-    {
-        foreach ($scos as $sco) {
-            if (is_array($sco)) {
-                $this->persistScos($scorm, $sco);
-            } else {
-                $sco->setScorm($scorm);
-                $this->om->persist($sco);
-            }
-        }
     }
 
     public function createScoTracking(Sco $sco, User $user = null)
@@ -655,133 +613,6 @@ class ScormManager
      * Old methods *
      ***************/
 
-    public function persistScorm12(Scorm12Resource $scorm)
-    {
-        $this->om->persist($scorm);
-        $this->om->flush();
-    }
-
-    public function persistScorm2004(Scorm2004Resource $scorm)
-    {
-        $this->om->persist($scorm);
-        $this->om->flush();
-    }
-
-    public function createScormResource($tmpFile, $name, $version)
-    {
-        //use the workspace as a prefix tor the uploadpath later
-        if ('1.2' === $version) {
-            $scormResource = new Scorm12Resource();
-        } else {
-            $scormResource = new Scorm2004Resource();
-        }
-        $scormResource->setName($name);
-        $hashName = Uuid::uuid4()->toString().'.zip';
-        $scormResource->setHashName($hashName);
-        $scos = $this->generateScosFromScormArchive($tmpFile, $version);
-
-        if (count($scos) > 0) {
-            $this->om->persist($scormResource);
-            $this->persistOldScos($scormResource, $scos);
-        } else {
-            throw new InvalidScormArchiveException('no_sco_in_scorm_archive_message');
-        }
-
-        $this->unzipScormArchive($tmpFile, $hashName);
-        // Move Scorm archive in the files directory
-        $tmpFile->move($this->filesDir, $hashName);
-
-        return $scormResource;
-    }
-
-    public function createScorm12ScoTracking(User $user, Scorm12Sco $sco)
-    {
-        $scoTracking = new Scorm12ScoTracking();
-        $scoTracking->setUser($user);
-        $scoTracking->setSco($sco);
-        $scoTracking->setLessonStatus('not attempted');
-        $scoTracking->setSuspendData('');
-        $scoTracking->setEntry('ab-initio');
-        $scoTracking->setLessonLocation('');
-        $scoTracking->setCredit('no-credit');
-        $scoTracking->setTotalTime(0);
-        $scoTracking->setSessionTime(0);
-        $scoTracking->setLessonMode('normal');
-        $scoTracking->setExitMode('');
-        $scoTracking->setBestLessonStatus('not attempted');
-
-        if (is_null($sco->getPrerequisites())) {
-            $scoTracking->setIsLocked(false);
-        } else {
-            $scoTracking->setIsLocked(true);
-        }
-        $this->om->persist($scoTracking);
-        $this->om->flush();
-
-        return $scoTracking;
-    }
-
-    public function createEmptyScorm12ScoTracking(Scorm12Sco $sco)
-    {
-        $scoTracking = new Scorm12ScoTracking();
-        $scoTracking->setSco($sco);
-        $scoTracking->setLessonStatus('not attempted');
-        $scoTracking->setSuspendData('');
-        $scoTracking->setEntry('ab-initio');
-        $scoTracking->setLessonLocation('');
-        $scoTracking->setCredit('no-credit');
-        $scoTracking->setTotalTime(0);
-        $scoTracking->setSessionTime(0);
-        $scoTracking->setLessonMode('normal');
-        $scoTracking->setExitMode('');
-        $scoTracking->setBestLessonStatus('not attempted');
-
-        if (is_null($sco->getPrerequisites())) {
-            $scoTracking->setIsLocked(false);
-        } else {
-            $scoTracking->setIsLocked(true);
-        }
-
-        return $scoTracking;
-    }
-
-    public function updateScorm12ScoTracking(Scorm12ScoTracking $scoTracking)
-    {
-        $this->om->persist($scoTracking);
-        $this->om->flush();
-    }
-
-    public function createScorm2004ScoTracking(User $user, Scorm2004Sco $sco)
-    {
-        $scoTracking = new Scorm2004ScoTracking();
-        $scoTracking->setUser($user);
-        $scoTracking->setSco($sco);
-        $scoTracking->setTotalTime('PT0S');
-        $scoTracking->setCompletionStatus('unknown');
-        $scoTracking->setSuccessStatus('unknown');
-        $this->om->persist($scoTracking);
-        $this->om->flush();
-
-        return $scoTracking;
-    }
-
-    public function createEmptyScorm2004ScoTracking(Scorm2004Sco $sco)
-    {
-        $scoTracking = new Scorm2004ScoTracking();
-        $scoTracking->setSco($sco);
-        $scoTracking->setTotalTime('PT0S');
-        $scoTracking->setCompletionStatus('unknown');
-        $scoTracking->setSuccessStatus('unknown');
-
-        return $scoTracking;
-    }
-
-    public function updateScorm2004ScoTracking(Scorm2004ScoTracking $scoTracking)
-    {
-        $this->om->persist($scoTracking);
-        $this->om->flush();
-    }
-
     public function formatSessionTime($sessionTime)
     {
         $formattedValue = 'PT0S';
@@ -985,101 +816,5 @@ class ScormManager
         }
 
         return $this->logRepo->findBy(['action' => $action, 'receiver' => $user, 'resourceNode' => $resourceNode], ['dateLog' => 'desc']);
-    }
-
-    public function generateScosFromScormArchive(\SplFileInfo $file, $version)
-    {
-        return '1.2' === $version ? $this->generateScos12FromScormArchive($file) : $this->generateScos2004FromScormArchive($file);
-    }
-
-    /**
-     * Parses imsmanifest.xml file of a Scorm archive and
-     * creates Scos defined in it.
-     *
-     * @param SplFileInfo $file
-     *
-     * @return array of Scorm resources
-     */
-    private function generateScos12FromScormArchive(\SplFileInfo $file)
-    {
-        $contents = '';
-        $zip = new \ZipArchive();
-
-        $zip->open($file);
-        $stream = $zip->getStream('imsmanifest.xml');
-
-        while (!feof($stream)) {
-            $contents .= fread($stream, 2);
-        }
-        $dom = new \DOMDocument();
-
-        if (!$dom->loadXML($contents)) {
-            throw new InvalidScormArchiveException('cannot_load_imsmanifest_message');
-        }
-
-        $scormVersionElements = $dom->getElementsByTagName('schemaversion');
-
-        if ($scormVersionElements->length > 0
-            && '1.2' !== $scormVersionElements->item(0)->textContent) {
-            throw new InvalidScormArchiveException('invalid_scorm_version_12_message');
-        }
-
-        $scos = $this->libsco12->parseOrganizationsNode($dom);
-
-        return $scos;
-    }
-
-    /**
-     * Parses imsmanifest.xml file of a Scorm archive and
-     * creates Scos defined in it.
-     *
-     * @param UploadedFile $file
-     *
-     * @return array of Scorm resources
-     */
-    private function generateScos2004FromScormArchive(UploadedFile $file)
-    {
-        $contents = '';
-        $zip = new \ZipArchive();
-        $zip->open($file);
-        $stream = $zip->getStream('imsmanifest.xml');
-        while (!feof($stream)) {
-            $contents .= fread($stream, 2);
-        }
-        $dom = new \DOMDocument();
-        if (!$dom->loadXML($contents)) {
-            throw new InvalidScormArchiveException('cannot_load_imsmanifest_message');
-        }
-        $scormVersionElements = $dom->getElementsByTagName('schemaversion');
-        if ($scormVersionElements->length > 0
-            && 'CAM 1.3' !== $scormVersionElements->item(0)->textContent
-            && '2004 3rd Edition' !== $scormVersionElements->item(0)->textContent
-            && '2004 4th Edition' !== $scormVersionElements->item(0)->textContent) {
-            throw new InvalidScormArchiveException('invalid_scorm_version_2004_message');
-        }
-
-        $scos = $this->libsco2004->parseOrganizationsNode($dom);
-
-        return $scos;
-    }
-
-    /**
-     * Associates SCORM resource to SCOs and persists them.
-     * As array $scos can also contain an array of scos
-     * this method is call recursively when an element is an array.
-     *
-     * @param Scorm12Resource $scormResource
-     * @param array           $scos          Array of Scorm12Sco
-     */
-    private function persistOldScos(ScormResource $scormResource, array $scos)
-    {
-        foreach ($scos as $sco) {
-            if (is_array($sco)) {
-                $this->persistOldScos($scormResource, $sco);
-            } else {
-                $sco->setScormResource($scormResource);
-                $this->om->persist($sco);
-            }
-        }
     }
 }
