@@ -4,6 +4,7 @@ import {LIST_FILTER_ADD, LIST_FILTER_REMOVE} from '#/main/core/data/list/actions
 import {reducer as editorReducer} from '#/plugin/blog/resources/blog/editor/store'
 import {reducer as postReducer} from '#/plugin/blog/resources/blog/post/store'
 import {reducer as commentReducer} from '#/plugin/blog/resources/blog/comment/store'
+import {reducer as toolbarReducer} from '#/plugin/blog/resources/blog/toolbar/store'
 import {SWITCH_MODE} from '#/plugin/blog/resources/blog/store/actions'
 
 const reducer = {
@@ -21,7 +22,6 @@ const reducer = {
       return state
     }
   }),
-  canEdit: makeReducer(false, {}),
   goHome: makeReducer(false, {
     [FORM_SUBMIT_SUCCESS+'/post_edit']: () => true,
     [SWITCH_MODE]: () => false
@@ -41,14 +41,10 @@ const reducer = {
     data: combineReducers({
       id: makeReducer({}, {}),
       title: makeReducer({}, {}),
-      authors: makeReducer({}, {}),
+      authors: toolbarReducer.authors,
       archives: makeReducer({}, {}),
-      options: editorReducer.options,
-      //defaultOptions: editorReducer.options,
-      tags: combineReducers({
-        id: makeReducer('new', {}),
-        tags: makeReducer(['tag1','tag2'], {})
-      })
+      tags: toolbarReducer.tags,
+      options: editorReducer.options
     })
   })
 }

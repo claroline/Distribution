@@ -129,18 +129,30 @@ class BlogListener
     {
         /** @var Blog $blog */
         $blog = $event->getResource();
-        $canEdit = $this->container
-        ->get('security.authorization_checker')
-        ->isGranted('EDIT', new ResourceCollection([$blog->getResourceNode()]));
 
         $postManager = $this->container->get('icap.blog.manager.post');
+        $authorizationChecker = $this->container->get('security.authorization_checker');
+
+        $canEdit = $authorizationChecker->isGranted('EDIT', new ResourceCollection([$blog->getResourceNode()]));
+        $parameters['limit'] = -1;
+
+        $posts = $postManager->getPosts(
+            $blog->getId(),
+            $parameters,
+            !$canEdit,
+            !$blog->getOptions()->getDisplayFullPosts());
+
+        $postsData = [];
+        if (!empty($posts)) {
+            $postsData = $posts['data'];
+        }
 
         $content = $this->container->get('templating')->render(
             'IcapBlogBundle:blog:open.html.twig', [
                 '_resource' => $blog,
-                'canEdit' => $canEdit,
                 'authors' => $postManager->getAuthors($blog),
                 'archives' => $postManager->getArchives($blog),
+                'tags' => $postManager->getTags($blog, $postsData),
                 ]
             );
 

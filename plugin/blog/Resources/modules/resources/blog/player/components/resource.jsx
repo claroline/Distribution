@@ -15,12 +15,15 @@ import {url} from '#/main/app/api'
 import {Posts} from '#/plugin/blog/resources/blog/post/components/posts.jsx'
 import {Post} from '#/plugin/blog/resources/blog/post/components/post.jsx'
 import {PostForm} from '#/plugin/blog/resources/blog/post/components/post-form.jsx'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {Tools} from '#/plugin/blog/resources/blog/toolbar/components/toolbar.jsx'
 import {BlogOptions} from '#/plugin/blog/resources/blog/editor/components/blog-options.jsx'
 import {actions as editorActions} from '#/plugin/blog/resources/blog/editor/store'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store'
+import {actions as toolbarActions} from '#/plugin/blog/resources/blog/toolbar/store'
 import {actions} from '#/plugin/blog/resources/blog/store'
 import {constants} from '#/plugin/blog/resources/blog/constants.js'
+import {hasPermission} from '#/main/core/resource/permissions'
 
 const Blog = props =>
   <ResourcePageContainer
@@ -30,7 +33,9 @@ const Blog = props =>
       path: '/edit',
       save: {
         disabled: !props.saveEnabled,
-        action: () => props.saveOptions(props.blogId)
+        action: () => {
+          props.saveOptions(props.blogId)
+        }
       }
     }}
     customActions={[
@@ -43,10 +48,12 @@ const Blog = props =>
       },{
         type: 'link',
         icon: 'fa fa-fw fa-plus',
+        displayed: props.canEdit,
         label: trans('new_post', {}, 'icap_blog'),
         target: '/new',
         exact: true
       },{
+        displayed : props.pdfEnabled && props.canExport,
         type: 'download',
         icon: 'fa fa-fw fa-file-pdf-o',
         label: trans('pdf_export', {}, 'platform'),
@@ -79,10 +86,12 @@ const Blog = props =>
               }, {
                 path: '/new',
                 component: PostForm,
+                disabled: !props.canEdit,
                 exact: true,
                 onEnter: () => props.createPost()
               }, {
                 path: '/edit',
+                disabled: !props.canEdit,
                 component: BlogOptions,
                 onEnter: () => props.editBlogOptions(props.blogId),
                 exact: true
@@ -94,6 +103,7 @@ const Blog = props =>
               }, {
                 path: '/:id/edit',
                 component: PostForm,
+                disabled: !props.canEdit,
                 exact: true,
                 onEnter: (params) => props.editPost(props.blogId, params.id)
               }
@@ -109,16 +119,19 @@ const Blog = props =>
 
 Blog.propTypes = {
   blogId: T.string.isRequired,
-  mode: T.string,
-  postId: T.string,
   saveEnabled: T.bool.isRequired,
+  pdfEnabled: T.bool.isRequired,
   switchMode: T.func.isRequired,
   getPostByAuthor: T.func.isRequired,
   createPost: T.func.isRequired,
   editBlogOptions: T.func.isRequired,
   getPost: T.func.isRequired,
   editPost: T.func.isRequired,
-  saveOptions: T.func.isRequired
+  saveOptions: T.func.isRequired,
+  mode: T.string,
+  postId: T.string,
+  canEdit: T.bool,
+  canExport: T.bool
 }
           
 const BlogContainer = connect(
@@ -127,7 +140,10 @@ const BlogContainer = connect(
     postId: !isEmpty(state.post_edit) ? state.post_edit.data.id : null,
     mode: state.mode,
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'blog.data.options')),
-    editorOpened: !isEmpty(formSelect.data(formSelect.form(state, 'blog.data.options')))
+    editorOpened: !isEmpty(formSelect.data(formSelect.form(state, 'blog.data.options'))),
+    pdfEnabled: state.pdfenabled,
+    canExport: hasPermission('export', resourceSelect.resourceNode(state)),
+    canEdit: hasPermission('edit', resourceSelect.resourceNode(state))
   }),
   dispatch => ({
     getPost: (blogId, postId) => {
@@ -154,7 +170,8 @@ const BlogContainer = connect(
     saveOptions: (blogId) => {
       dispatch(
         formActions.saveForm(constants.OPTIONS_EDIT_FORM_NAME, ['apiv2_blog_options_update', {blogId: blogId}])
-      )
+      ).then(
+        () => dispatch(toolbarActions.getTags(blogId)))
     }
   })
 )(Blog)

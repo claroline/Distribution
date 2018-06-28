@@ -2,6 +2,7 @@
 
 namespace Icap\BlogBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
@@ -107,9 +108,9 @@ class PostSerializer
             'abstract' => $this->isAbstract($post, $options),
             'creationDate' => $post->getCreationDate() ? DateNormalizer::normalize($post->getCreationDate()) : new \DateTime(),
             'modificationDate' => $post->getModificationDate() ? DateNormalizer::normalize($post->getModificationDate()) : null,
-            'publicationDate' => $post->getPublicationDate() ? DateNormalizer::normalize($post->getPublicationDate()) : new \DateTime(),
+            'publicationDate' => $post->getPublicationDate() ? DateNormalizer::normalize($post->getPublicationDate()) : DateNormalizer::normalize($post->getCreationDate()),
             'viewCounter' => $post->getViewCounter(),
-            'author' => $post->getAuthor() ? $this->userSerializer->serialize($post->getAuthor()) : null,
+            'author' => $post->getAuthor() ? $this->userSerializer->serialize($post->getAuthor(), [Options::SERIALIZE_MINIMAL]) : null,
             'authorName' => $post->getAuthor() ? $post->getAuthor()->getFullName() : null,
             'authorPicture' => $post->getAuthor()->getPicture(),
             'tags' => $this->serializeTags($post),
@@ -222,17 +223,49 @@ class PostSerializer
         ]);
         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
 
-        return $event->getResponse();
+        return implode(', ', $event->getResponse());
     }
+
+    /* public function serializeTags(Post $post)
+     {
+         $event = new GenericDataEvent([
+             'class' => 'Icap\BlogBundle\Entity\Post',
+             'ids' => [$post->getUuid()],
+         ]);
+         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+
+         return $event->getResponse();
+     }*/
 
     /**
      * Deserializes Item tags.
      *
-     * @param Post  $post
-     * @param array $tags
-     * @param array $options
+     * @param Post   $post
+     * @param string $tags
+     * @param array  $options
      */
-    public function deserializeTags(Post $post, array $tags = [], array $options = [])
+    public function deserializeTags(Post $post, $tags, array $options = [])
+    {
+        $array = array_map('trim', explode(',', $tags));
+
+        $event = new GenericDataEvent([
+            'tags' => $array,
+            'data' => [
+                [
+                    'class' => 'Icap\BlogBundle\Entity\Post',
+                    'id' => $post->getUuid(),
+                    'name' => $post->getTitle(),
+                ],
+            ],
+            'replace' => true,
+        ]);
+
+        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+    }
+
+    /*
+     *
+     *     public function deserializeTags(Post $post, array $tags = [], array $options = [])
     {
         $event = new GenericDataEvent([
             'tags' => $tags,
@@ -248,4 +281,6 @@ class PostSerializer
 
         $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
     }
+     *
+     * */
 }

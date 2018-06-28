@@ -10,19 +10,23 @@ const ExportersComponent = props =>
       <a target="_blank" rel="noopener noreferrer" href={url(['icap_blog_rss', {blogId: props.blogId}])} className="label label-warning white export-links">
         <span className="fa fa-rss"></span> {trans('rss_label', {}, 'icap_blog')}
       </a>
-      <a target="_blank" rel="noopener noreferrer" href={url(['icap_blog_pdf', {blogId: props.blogId}])} className="label label-pdf white export-links">
-        <span className="fa fa-file-pdf-o"></span> {trans('pdf_export', {}, 'platform')}
-      </a>
+      {props.pdfEnabled &&
+        <a target="_blank" rel="noopener noreferrer" href={url(['icap_blog_pdf', {blogId: props.blogId}])} className="label label-pdf white export-links">
+          <span className="fa fa-file-pdf-o"></span> {trans('pdf_export', {}, 'platform')}
+        </a>
+      }
     </div>
   </div>
         
 ExportersComponent.propTypes = {
-  blogId: T.string.isRequired
+  blogId: T.string.isRequired,
+  pdfEnabled: T.bool
 }
 
 const Exporters = connect(
   state => ({
-    blogId: state.blog.data.id
+    blogId: state.blog.data.id,
+    pdfEnabled: state.pdfenabled
   })
 )(ExportersComponent)
 

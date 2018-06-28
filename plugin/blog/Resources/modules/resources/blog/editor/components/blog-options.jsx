@@ -11,6 +11,7 @@ import {BlogOptionsType} from '#/plugin/blog/resources/blog/editor/components/pr
 import {ToolManager} from '#/plugin/blog/resources/blog/editor/components/tool-manager.jsx'
 import {constants} from '#/plugin/blog/resources/blog/constants.js'
 import {FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+import {withRouter} from '#/main/app/router'
 
 const BlogOptionsComponent = props =>
   <section className="resource-section">
@@ -107,7 +108,7 @@ const BlogOptionsComponent = props =>
                     required: true,
                     displayed: props.options.tagTopMode,
                     options: {
-                      max: 100
+                      max: 50
                     }
                   }
                 ]
@@ -132,12 +133,11 @@ const BlogOptionsComponent = props =>
         </FormSection>
         <ButtonToolbar>
           <Button
-            disabled={!props.saveEnabled}
             label={trans('icap_blog_options_form_init', {}, 'icap_blog')}
             type="callback"
             className="btn"
             callback={() => {
-              props.cancel()
+              props.cancel(props.history)
             }}
           />
         </ButtonToolbar>
@@ -149,22 +149,24 @@ BlogOptionsComponent.propTypes = {
   options: T.shape(BlogOptionsType.propTypes),
   cancel: T.func.isRequired,
   mode: T.string,
+  history: T.shape({}),
   saveEnabled: T.bool.isRequired
 }
 
-const BlogOptions = connect(
+const BlogOptions = withRouter(connect(
   state => ({
     options: formSelect.data(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)),
     mode: state.mode,
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME))
   }), 
   dispatch => ({
-    cancel: () => {
+    cancel: (history) => {
       dispatch(
         formActions.cancelChanges(constants.OPTIONS_EDIT_FORM_NAME)
       )
+      history.push('/')
     }
   })
-)(BlogOptionsComponent)
+)(BlogOptionsComponent))
 
 export {BlogOptions}

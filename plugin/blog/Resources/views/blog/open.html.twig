@@ -7,12 +7,13 @@
 {% endblock %}
 
 {% block content %}
-   <div class="page-container blog-container" 
-     data-edit="{{ canEdit | json_encode | raw | escape }}"
+   <div class="page-container blog-container"
      data-blog="{{ _resource | api_serialize | json_encode | raw | escape }}"
      data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
      data-authors="{{ authors | json_encode | raw | escape }}"
      data-archives="{{ archives | json_encode | raw | escape }}"
+     data-tags="{{ tags | json_encode | raw | escape }}"
+     data-pdfEnabled="{{ config.getParameter('is_pdf_export_active') | json_encode | raw | escape }}"
    >
    </div>
 {% endblock %}

@@ -54,6 +54,12 @@ const PostsList = props =>
           name: 'authorName',
           label: trans('author', {}, 'platform'),
           type: 'string'
+        },{
+          name: 'tags',
+          label: trans('tags', {}, 'platform'),
+          type: 'string',
+          sortable: false,
+          displayed: false
         }
       ]}
 

@@ -103,18 +103,4 @@ class BlogController
 
         return new JsonResponse($this->blogOptionsSerializer->serialize($blog, $blog->getOptions()));
     }
-
-    /**
-     * Get all authors for a given blog.
-     *
-     * @EXT\Route("{blogId}", name="apiv2_blog_authors")
-     * @EXT\ParamConverter("blog", class="IcapBlogBundle:Blog", options={"mapping": {"blogId": "uuid"}})
-     * @EXT\Method("GET")
-     */
-    public function getBlogAuthorsAction(Blog $blog)
-    {
-        $this->checkPermission('OPEN', $blog->getResourceNode(), [], true);
-
-        return $this->blogManager->getAuthors($blog);
-    }
 }

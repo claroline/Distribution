@@ -4,7 +4,9 @@ import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 import {PropTypes as T} from 'prop-types'
 import {UserMessage} from '#/main/core/user/message/components/user-message.jsx'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {currentUser} from '#/main/core/user/current'
+import {hasPermission} from '#/main/core/resource/permissions'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
 import {t, trans} from '#/main/core/translation'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
@@ -146,7 +148,7 @@ CommentsComponent.propTypes = {
 const Comments = connect(
   state => ({
     user: state.user,
-    canEdit: state.canEdit,
+    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     opened: state.showComments,
     showForm: state.showCommentForm,
     showEditCommentForm: state.showEditCommentForm

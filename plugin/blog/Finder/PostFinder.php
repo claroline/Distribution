@@ -67,8 +67,16 @@ class PostFinder implements FinderInterface
                 $endOfDay->modify('1 second ago');
 
                 $qb
-                ->andWhere('obj.publicationDate <= :endOfDay')
-                ->setParameter(':endOfDay', $endOfDay);
+                    ->andWhere('obj.publicationDate <= :endOfDay')
+                    ->setParameter(':endOfDay', $endOfDay);
+            } elseif ('tags' === $filterName) {
+                $qb->andWhere("obj.uuid IN (
+                  SELECT to.objectId
+                  FROM Claroline\TagBundle\Entity\TaggedObject to
+                  INNER JOIN to.tag t
+                  WHERE UPPER(t.name) LIKE :tagFilter
+                )");
+                $qb->setParameter('tagFilter', '%'.strtoupper($filterValue).'%');
             } elseif (is_string($filterValue)) {
                 $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');

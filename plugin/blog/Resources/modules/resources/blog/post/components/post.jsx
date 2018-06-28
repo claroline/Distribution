@@ -2,18 +2,24 @@ import React from 'react'
 import {connect} from 'react-redux'
 import classes from 'classnames'
 import {PropTypes as T} from 'prop-types'
+import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 import {trans, transChoice} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
+import {hasPermission} from '#/main/core/resource/permissions'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {UrlButton} from '#/main/app/button/components/url'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {Button} from '#/main/app/action/components/button'
 import {PostType} from '#/plugin/blog/resources/blog/post/components/prop-types'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store'
 import {Comments} from '#/plugin/blog/resources/blog/comment/components/comments'
-import {getCommentsNumber} from '#/plugin/blog/resources/blog/utils.js'
+import {getCommentsNumber, splitArray} from '#/plugin/blog/resources/blog/utils.js'
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
 const PostComponent = props =>
   <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`)}>
@@ -44,7 +50,10 @@ const PostComponent = props =>
         }
         {'sm' !== props.size &&
           <div key="data-card-footer" className="data-card-footer">
-            <Footer post={props.post} canEdit={props.canEdit} />
+            <Footer
+              {...props}
+              post={props.post}
+              canEdit={props.canEdit} />
           </div>
         }
         {props.full &&
@@ -61,43 +70,51 @@ const PostComponent = props =>
         }
       </div>
     }
-    <div className="post-dropdown">
-      <Button
-        id={`actions-${props.post.id}`}
-        className="btn btn-link"
-        type="menu"
-        tooltip="left"
-        icon="fa fa-fw fa-ellipsis-v"
-        label={trans('show-actions', {}, 'actions')}
-        menu={{
-          label: trans('actions'),
-          align: 'right',
-          items: [
-            {
-              type: 'link',
-              target: `/${props.post.slug}/edit`,
-              label: trans('edit_post_short', {}, 'icap_blog'),
-              icon: 'fa fa-pencil'
-            },{
-              type: 'callback',
-              callback: () => props.publishPost(props.blogId, props.post.id),
-              label: props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog'),
-              icon: props.post.isPublished ? 'fa fa-eye-slash' : 'fa fa-eye'
-            },{
-              type: 'callback',
-              callback: () => props.pinPost(props.blogId, props.post.id),
-              label: props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog'),
-              icon: props.post.pinned ? 'fa fa-thumb-tack' : 'fa fa-thumb-tack'
-            },{
-              type: 'callback',
-              callback: () => props.deletePost(props.blogId, props.post.id, props.post.title),
-              label: trans('delete', {}, 'platform'),
-              icon: 'fa fa-trash'
-            }
-          ]
-        }}
-      />
-    </div>
+    {props.canEdit &&
+      <ButtonToolbar className="post-actions">
+        <Button
+          id={`action-edit-${props.post.id}`}
+          type="link"
+          icon="fa fa-pencil"
+          className="btn btn-link"
+          tooltip="top"
+          label={trans('edit_post_short', {}, 'icap_blog')}
+          title={trans('edit_post_short', {}, 'icap_blog')}
+          target={`/${props.post.slug}/edit`}
+        />
+        <Button
+          id={`action-publish-${props.post.id}`}
+          type="callback"
+          icon={props.post.isPublished ? 'fa fa-eye' : 'fa fa-eye-slash'}
+          className="btn btn-link"
+          tooltip="top"
+          label={props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
+          title={props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
+          callback={() => props.publishPost(props.blogId, props.post.id)}
+        />
+        <Button
+          id={`action-pin-${props.post.id}`}
+          type="callback"
+          icon={props.post.pinned ? 'fa fa-thumb-tack' : 'fa fa-thumb-tack fa-rotate-90'}
+          className="btn btn-link"
+          tooltip="top"
+          label={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
+          title={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
+          callback={() => props.pinPost(props.blogId, props.post.id)}
+        />
+        <Button
+          id={`action-delete-${props.post.id}`}
+          type="callback"
+          icon="fa fa-trash"
+          className="btn btn-link"
+          tooltip="top"
+          label={trans('delete', {}, 'platform')}
+          title={trans('delete', {}, 'platform')}
+          dangerous={true}
+          callback={() => props.deletePost(props.blogId, props.post.id, props.post.title)}
+        />
+      </ButtonToolbar>
+    }
   </div>
     
 PostComponent.propTypes = {
@@ -136,7 +153,9 @@ const InfoBar = props =>
         e.stopPropagation()
       }}>
       <span>
-        <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} /> 
+        <UrlButton target={['claro_user_profile', {publicUrl: get(props.post.author, 'meta.publicUrl')}]}>
+          <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} />
+        </UrlButton>
         <a className="read_more">{props.post.author.firstName} {props.post.author.lastName}</a>
       </span>
     </li>
@@ -157,15 +176,17 @@ const Footer = props =>
   <div>
     <ul className='list-inline post-tags pull-left'>
       <li><span className="fa fa-tags"></span></li>
-      <li>
-        {/*props.post.tags && props.post.tags.length > 0 ? (
-          props.post.tags && props.post.tags.map(tag =>(
-           { <PostTag key={tag} tag={tag} /> }
-          ))
-        ) : (
-          trans('no_tags', {}, 'icap_blog')
-        )*/}
-      </li>
+      {!isEmpty(props.post.tags) ? (
+        splitArray(props.post.tags).map((tag, index) =>(
+          <li key={index}>
+            <a href="#" onClick={() => {
+              props.getPostsByTag(tag)
+            }}>{tag}</a>
+          </li>
+        ))
+      ) : (
+        trans('no_tags', {}, 'icap_blog')
+      )}
     </ul>
     <ul className='list-inline pull-right'>
       <li><span className="fa fa-comments"></span></li>
@@ -185,13 +206,14 @@ Footer.propTypes = {
   canEdit:T.bool,
   canComment:T.bool,
   displayViews:T.bool,
+  getPostsByTag:T.func.isRequired,
   post: T.shape(PostType.propTypes)
 }    
 
 const PostCardContainer = connect(
   state => ({
     blogId: state.blog.data.id,
-    canEdit: state.canEdit,
+    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canComment: state.blog.data.options.data.authorizeComment,
     displayViews: state.blog.data.options.data.displayPostViewCounter
   }),
@@ -211,6 +233,10 @@ const PostCardContainer = connect(
     },
     getPostsByAuthor: (blogId, authorName) => {
       dispatch(listActions.addFilter('posts', 'authorName', authorName))
+      dispatch(postActions.initDataList())
+    },
+    getPostsByTag: (tag) => {
+      dispatch(listActions.addFilter('posts', 'tags', tag))
       dispatch(postActions.initDataList())
     }
   })

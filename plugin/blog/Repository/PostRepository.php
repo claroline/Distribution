@@ -4,13 +4,13 @@ namespace Icap\BlogBundle\Repository;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Statusable;
 use Icap\BlogBundle\Entity\Tag;
 use Icap\BlogBundle\Exception\TooMuchResultException;
-use Doctrine\ORM\Query\ResultSetMapping;
 
 class PostRepository extends EntityRepository
 {
@@ -41,12 +41,12 @@ class PostRepository extends EntityRepository
     public function findAuthorsByBlog(Blog $blog, $executeQuery = true)
     {
         $query = $this->getEntityManager()
-            ->createQuery("
-                SELECT DISTINCT a.uuid, CONCAT(CONCAT(a.firstName, ' '), a.lastName) as name
+            ->createQuery('
+                SELECT DISTINCT a.id
                 FROM IcapBlogBundle:Post p
                 JOIN p.author a
                 WHERE p.blog = :blogId
-            ")
+            ')
             ->setParameter('blogId', $blog->getId())
         ;
 
@@ -195,7 +195,7 @@ class PostRepository extends EntityRepository
         ->addScalarResult('c', 'count')
         ->addScalarResult('y', 'year')
         ->addScalarResult('m', 'month');
-        
+
         $query = $this->getEntityManager()
             ->createNativeQuery('
                 SELECT YEAR(p.publication_date) y, MONTH(p.publication_date) m, count(p.id) c
@@ -210,20 +210,6 @@ class PostRepository extends EntityRepository
             ->setParameter('currentDate', new \DateTime())
             ->setParameter('status', POST::STATUS_PUBLISHED)
         ;
-        
-        /*$query = $this->getEntityManager()
-        ->createQuery('
-            SELECT p
-            FROM IcapBlogBundle:Post p
-            WHERE p.blog = :blog
-            AND p.publicationDate <= :currentDate
-            AND p.status = :status
-            ORDER BY p.publicationDate DESC
-        ')
-        ->setParameter('blog', $blog)
-        ->setParameter('currentDate', new \DateTime())
-        ->setParameter('status', POST::STATUS_PUBLISHED)
-        ;*/
 
         return $executeQuery ? $query->getResult() : $query;
     }

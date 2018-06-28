@@ -13,6 +13,7 @@ use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Tag;
 use Icap\BlogBundle\Repository\BlogRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @DI\Service("icap_blog.manager.blog")
@@ -22,19 +23,27 @@ class BlogManager
     private $objectManager;
     private $uploadDir;
     private $repo;
+    private $eventDispatcher;
 
     /**
      * @DI\InjectParams({
      *      "objectManager"  = @DI\Inject("claroline.persistence.object_manager"),
      *      "uploadDir"      = @DI\Inject("%icap.blog.banner_directory%"),
-     *      "repo"           = @DI\Inject("icap.blog.blog_repository")
+     *      "repo"           = @DI\Inject("icap.blog.blog_repository"),
+     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
+     *
      * })
      */
-    public function __construct(ObjectManager $objectManager, $uploadDir, BlogRepository $repo)
+    public function __construct(
+        ObjectManager $objectManager,
+        $uploadDir,
+        BlogRepository $repo,
+        EventDispatcherInterface $eventDispatcher)
     {
         $this->objectManager = $objectManager;
         $this->uploadDir = $uploadDir;
         $this->repo = $repo;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**

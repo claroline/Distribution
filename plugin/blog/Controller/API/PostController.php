@@ -455,4 +455,42 @@ class PostController
 
         return $decodedRequest;
     }
+
+    /**
+     * Get all authors for a given blog.
+     *
+     * @EXT\Route("/authors/get", name="apiv2_blog_post_authors")
+     * @EXT\Method("GET")
+     */
+    public function getBlogAuthorsAction(Blog $blog)
+    {
+        $this->checkPermission('OPEN', $blog->getResourceNode(), [], true);
+
+        return $this->postManager->getAuthors($blog);
+    }
+
+    /**
+     * Get tags used in posts.
+     *
+     * @EXT\Route("/tags/get", name="apiv2_blog_tags")
+     * @EXT\Method("GET")
+     */
+    public function getTagsAction(Blog $blog)
+    {
+        $this->checkPermission('OPEN', $blog->getResourceNode(), [], true);
+
+        $parameters['limit'] = -1;
+        $posts = $this->postManager->getPosts(
+            $blog->getId(),
+            $parameters,
+            !$this->authorization->isGranted('EDIT', new ObjectCollection([$blog])),
+            true);
+
+        $postsData = [];
+        if (!empty($posts)) {
+            $postsData = $posts['data'];
+        }
+
+        return new JsonResponse($this->postManager->getTags($blog, $postsData));
+    }
 }

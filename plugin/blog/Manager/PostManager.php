@@ -3,14 +3,18 @@
 namespace Icap\BlogBundle\Manager;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Tag;
 use Icap\BlogBundle\Repository\PostRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -23,6 +27,9 @@ class PostManager
     private $repo;
     private $finder;
     private $translator;
+    private $userSerializer;
+    private $userRepo;
+    private $eventDispatcher;
 
     /**
      * @DI\InjectParams({
@@ -30,7 +37,9 @@ class PostManager
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "trackingManager" = @DI\Inject("icap.blog.manager.tracking"),
      *     "repo"            = @DI\Inject("icap.blog.post_repository"),
-     *     "translator"      = @DI\Inject("translator")
+     *     "translator"      = @DI\Inject("translator"),
+     *     "userSerializer"  = @DI\Inject("claroline.serializer.user"),
+     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
      * })
      *
      * @param FinderProvider      $finder
@@ -44,13 +53,18 @@ class PostManager
         ObjectManager $om,
         BlogTrackingManager $trackingManager,
         PostRepository $repo,
-        TranslatorInterface $translator)
+        TranslatorInterface $translator,
+        UserSerializer $userSerializer,
+        EventDispatcherInterface $eventDispatcher)
     {
         $this->finder = $finder;
         $this->om = $om;
         $this->repo = $repo;
         $this->trackingManager = $trackingManager;
         $this->translator = $translator;
+        $this->userSerializer = $userSerializer;
+        $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -523,7 +537,18 @@ class PostManager
      */
     public function getAuthors($blog)
     {
-        return $this->repo->findAuthorsByBlog($blog);
+        $recordSet = $this->repo->findAuthorsByBlog($blog);
+        $authorsIds = [];
+        foreach ($recordSet as $value) {
+            $authorsIds[] = $value['id'];
+        }
+        $authors = $this->userRepo->findBy(['id' => $authorsIds], ['lastName' => 'ASC']);
+        $serializedAuthors = [];
+        foreach ($authors as $author) {
+            $serializedAuthors[] = $this->userSerializer->serialize($author, [Options::SERIALIZE_MINIMAL]);
+        }
+
+        return $serializedAuthors;
     }
 
     /**
@@ -551,5 +576,49 @@ class PostManager
         }
 
         return $archiveDatas;
+    }
+
+    /**
+     * Get tags used in the blog.
+     *
+     * @param Blog  $blog
+     * @param array $posts
+     *
+     * @return array
+     */
+    public function getTags($blog, array $postData = [])
+    {
+        //TODO tagBundle needs a mthod to get tags and their frequency
+        $availables = [];
+        foreach ($postData as $data) {
+            $event = new GenericDataEvent([
+                'class' => 'Icap\BlogBundle\Entity\Post',
+                'ids' => [$data['id']],
+            ]);
+
+            $this->eventDispatcher->dispatch(
+                'claroline_retrieve_used_tags_by_class_and_ids',
+                $event
+            );
+
+            $tags = $event->getResponse();
+            $availables = array_merge($availables, $tags);
+        }
+
+        $tags = [];
+        foreach ($availables as $tag) {
+            if (!array_key_exists($tag, $tags)) {
+                $tags[$tag] = 0;
+            }
+            ++$tags[$tag];
+        }
+
+        //only keep max tag number, if defined
+        if ($blog->getOptions()->isTagTopMode() && $blog->getOptions()->getMaxTag() > 0) {
+            arsort($tags);
+            $tags = array_slice($tags, 0, $blog->getOptions()->getMaxTag());
+        }
+
+        return $tags;
     }
 }

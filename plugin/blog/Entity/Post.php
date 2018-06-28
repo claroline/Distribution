@@ -101,7 +101,7 @@ class Post extends Statusable
      * @Expose
      * @ORM\Column(type="boolean", name="pinned")
      */
-    protected $pinned = true;
+    protected $pinned = false;
 
     /**
      * @var Comment[]|ArrayCollection
