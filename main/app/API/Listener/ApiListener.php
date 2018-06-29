@@ -23,7 +23,7 @@ class ApiListener
      * @param GetResponseForExceptionEvent $event
      */
     public function onError(GetResponseForExceptionEvent $event)
-    {
+    {/*
         if ($event->getRequest()->isXmlHttpRequest()) {
             $exception = $event->getException();
             if ($exception instanceof InvalidDataException) {
@@ -36,7 +36,7 @@ class ApiListener
             }
 
             $event->setResponse($response);
-        }
+        }*/
     }
 
     /**
