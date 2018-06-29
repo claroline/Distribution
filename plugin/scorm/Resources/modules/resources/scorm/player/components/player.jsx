@@ -7,7 +7,7 @@ import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 import {Scorm as ScormType} from '#/plugin/scorm/resources/scorm/prop-types'
-import {initializeAPI} from '#/plugin/scorm/resources/scorm/api'
+import {initializeAPI} from '#/plugin/scorm/resources/scorm/player/api'
 import {select} from '#/plugin/scorm/resources/scorm/selectors'
 
 class PlayerComponent extends Component {

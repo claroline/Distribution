@@ -281,6 +281,7 @@ class ScormManager
                 $scoTracking->setTotalTimeString('PT0S');
                 $scoTracking->setCompletionStatus('unknown');
                 $scoTracking->setLessonStatus('unknown');
+                $scoTracking->setIsLocked(false);
                 break;
         }
         if (!empty($user)) {

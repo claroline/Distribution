@@ -1,5 +1,7 @@
 import {currentUser} from '#/main/core/user/current'
 
+import {actions} from '#/plugin/scorm/resources/scorm/player/actions'
+
 const authenticatedUser = currentUser()
 
 const scorm12Errors = {
@@ -45,52 +47,16 @@ const scorm2004Errors = {
   '408': 'Data Model Dependency Not Established'
 }
 
-function commitResult(scoId, mode) {
-  // var datasString = scoData['cmi.core.student_id'] +
-  //   '<-->' + scoData['cmi.core.lesson_mode'] +
-  //   '<-->' + scoData['cmi.core.lesson_location'] +
-  //   '<-->' + scoData['cmi.core.lesson_status'] +
-  //   '<-->' + scoData['cmi.core.credit'] +
-  //   '<-->' + scoData['cmi.core.score.raw'] +
-  //   '<-->' + scoData['cmi.core.score.min'] +
-  //   '<-->' + scoData['cmi.core.score.max'] +
-  //   '<-->' + scoData['cmi.core.session_time'] +
-  //   '<-->' + scoData['cmi.core.total_time'] +
-  //   '<-->' + scoData['cmi.suspend_data'] +
-  //   '<-->' + scoData['cmi.core.entry'] +
-  //   '<-->' + scoData['cmi.core.exit']
-  // $.ajax({
-  //   async: false,
-  //   url: Routing.generate(
-  //       'claro_scorm_12_tracking_commit',
-  //       {'datasString': datasString, 'mode': mode, 'scoId': scoId}
-  //   ),
-  //   type: 'POST',
-  //   success: function () {
-  //       console.log('*** Commit Succeded ***')
-  //   }
-  // })
-
-  // $.ajax({
-  //     async: false,
-  //     url: Routing.generate(
-  //         'claro_scorm_2004_tracking_commit',
-  //         {'mode': mode, 'scoId': scoId}
-  //     ),
-  //     type: 'POST',
-  //     data: JSON.stringify(scoData),
-  //     contentType: 'application/json',
-  //     dataType: 'json',
-  //     success: function () {
-  //         console.log('*** Commit Succeded ***')
-  //     }
-  // })
+function commitResult(scoId, mode, scoData) {
+  if (authenticatedUser) {
+    // actions.commitData(scoId, mode, scoData)
+  }
 }
 
 function APIClass(sco, scormData, tracking) {
   this.apiInitialized = false
   this.apiLastError = 'scorm_12' === scormData.version ? '301' : '0'
-  this.scoData = {}
+  this.scoData = tracking['details'] && [] !== tracking['details'] ? tracking['details'] : {}
 
   if ('scorm_12' === scormData.version) {
     this.scoData['cmi.core.student_id'] = authenticatedUser ? authenticatedUser.autoId : -1
@@ -123,9 +89,6 @@ function APIClass(sco, scormData, tracking) {
     this.scoData['cmi.student_data.max_time_allowed'] = null !== sco.data.maxTimeAllowed ? sco.data.maxTimeAllowed : ''
     this.scoData['cmi.student_data.time_limit_action'] = null !== sco.data.timeLimitAction ? sco.data.timeLimitAction : ''
   } else {
-    if ([] !== tracking['details']) {
-      this.scoData = tracking['details']
-    }
     this.scoData['cmi.learner_id'] = authenticatedUser ? authenticatedUser.autoId : -1
     this.scoData['cmi.learner_name'] = authenticatedUser ? `${authenticatedUser.firstName}, ${authenticatedUser.lastName}` : 'anon., anon.'
     this.scoData['cmi.time_limit_action'] = null !== sco.data.timeLimitAction ? sco.data.timeLimitAction : 'continue,no message'
@@ -218,7 +181,7 @@ function APIClass(sco, scormData, tracking) {
       } else {
         this.scoData['cmi.core.entry'] = ''
       }
-      commitResult(sco.id, 'log')
+      commitResult(sco.id, 'log', this.scoData)
 
       return 'true'
     } else {
@@ -410,7 +373,7 @@ function APIClass(sco, scormData, tracking) {
         return 'false'
       } else {
         this.apiLastError = '0'
-        commitResult(sco.id, 'persist')
+        commitResult(sco.id, 'persist', this.scoData)
 
         return 'true'
       }
@@ -534,7 +497,7 @@ function APIClass(sco, scormData, tracking) {
     } else {
       this.scoData['cmi.entry'] = ''
     }
-    commitResult(sco.id, 'log')
+    commitResult(sco.id, 'log', this.scoData)
 
     return 'true'
   }
@@ -1523,7 +1486,7 @@ function APIClass(sco, scormData, tracking) {
       return 'false'
     }
     this.apiLastError = '0'
-    commitResult(sco.id, 'persist')
+    commitResult(sco.id, 'persist', this.scoData)
 
     return 'true'
   }
