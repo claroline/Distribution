@@ -2,21 +2,16 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {Widget} from '#/main/core/widget/components/widget'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
+import {WidgetGrid} from '#/main/core/widget/player/components/grid'
 
 import {select} from '#/main/core/tools/home/selectors'
 
 const PlayerComponent = props =>
-  <div>
-    {props.widgets.map((widget, index) =>
-      <Widget
-        key={index}
-        container={widget}
-        context={props.context}
-      />
-    )}
-  </div>
+  <WidgetGrid
+    context={props.context}
+    widgets={props.widgets}
+  />
 
 PlayerComponent.propTypes = {
   context: T.object.isRequired,

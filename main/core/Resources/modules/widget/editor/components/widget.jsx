@@ -7,7 +7,6 @@ import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Embedded} from '#/main/app/components/embedded'
 import {Button} from '#/main/app/action/components/button'
-import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 import {
@@ -55,24 +54,24 @@ const WidgetEditor = props =>
       <Button
         {...action}
         key={toKey(action.label)}
-        id={`${toKey(action.label)}-${props.container.id}`}
+        id={`${toKey(action.label)}-${props.widget.id}`}
         className="btn-link"
         tooltip="top"
       />
     )}
 
-    <section className="widget" style={computeStyles(props.container)}>
-      {props.container.name &&
-        <h2 className="h-first widget-title">{props.container.name}</h2>
+    <section className="widget" style={computeStyles(props.widget)}>
+      {props.widget.name &&
+        <h2 className="h-first widget-title">{props.widget.name}</h2>
       }
 
       <div className="row">
-        {times(props.container.display.layout.length, col =>
+        {times(props.widget.display.layout.length, col =>
           <WidgetCol
             key={col}
-            size={(12 / sum(props.container.display.layout)) * props.container.display.layout[col]}
+            size={(12 / sum(props.widget.display.layout)) * props.widget.display.layout[col]}
             context={props.context}
-            content={props.container.contents[col]}
+            content={props.widget.contents[col]}
           />
         )}
       </div>
@@ -81,7 +80,7 @@ const WidgetEditor = props =>
 
 WidgetEditor.propTypes = {
   context: T.object,
-  container: T.shape(
+  widget: T.shape(
     WidgetContainerTypes.propTypes
   ).isRequired,
   actions: T.arrayOf(T.shape(
