@@ -10,7 +10,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {selectors} from '#/main/core/widget/editor/modals/parameters/store'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
-import {WidgetForm} from '#/main/core/widget/components/form'
+import {WidgetForm} from '#/main/core/widget/editor/components/form'
 
 const ParametersModalComponent = props =>
   <Modal

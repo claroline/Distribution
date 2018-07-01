@@ -69,7 +69,7 @@ class WidgetInstanceSerializer
         return [
             'id' => $widgetInstance->getUuid(),
             'type' => $widget->getName(),
-            'parameters' => $parameters
+            'parameters' => $parameters,
         ];
     }
 
@@ -97,7 +97,7 @@ class WidgetInstanceSerializer
                     $parametersClass = $widget->getClass();
 
                     /** @var AbstractWidget $typeParameters */
-                    $typeParameters = new $parametersClass;
+                    $typeParameters = new $parametersClass();
                 }
 
                 // deserializes custom config and link it to the instance

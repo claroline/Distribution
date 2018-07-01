@@ -44,7 +44,7 @@ ParametersModalComponent.propTypes = {
 
 const ParametersModal = connect(
   (state) => ({
-    saveEnabled: selectors.saveEnabled(state),
+    saveEnabled: selectors.saveEnabled(state)
     //widget: selectors.widget(state)
   })
 )(ParametersModalComponent)

@@ -94,9 +94,9 @@ class WidgetContainer
         return $this->layout;
     }
 
-    public function setLayout()
+    public function setLayout($layout)
     {
-
+        $this->layout = $layout;
     }
 
     /**

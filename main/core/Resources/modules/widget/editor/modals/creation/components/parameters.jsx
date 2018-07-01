@@ -8,7 +8,7 @@ import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {selectors} from '#/main/core/widget/editor/modals/creation/store'
-import {WidgetForm} from '#/main/core/widget/components/form'
+import {WidgetForm} from '#/main/core/widget/editor/components/form'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 
 const MODAL_WIDGET_CREATION_PARAMETERS = 'MODAL_WIDGET_CREATION_PARAMETERS'

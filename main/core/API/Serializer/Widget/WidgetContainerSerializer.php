@@ -68,7 +68,6 @@ class WidgetContainerSerializer
 
         // todo deserialize instances
 
-
         return $widgetContainer;
     }
 }

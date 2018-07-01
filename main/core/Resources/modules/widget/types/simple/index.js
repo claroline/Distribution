@@ -3,7 +3,7 @@ import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {SimpleWidget} from '#/main/core/widget/types/simple/components/widget'
 import {SimpleWidgetEditor} from '#/main/core/widget/types/simple/components/editor'
 
-export const Parameters = (context, parameters) => ({
+export const Parameters = () => ({
   component: SimpleWidgetEditor
 })
 
