@@ -676,7 +676,6 @@ class DatabaseWriter
         $widget->setName($widgetConfiguration['name']);
         $widget->setContext(isset($widgetConfiguration['context']) ? $widgetConfiguration['context'] : []);
         $widget->setClass(isset($widgetConfiguration['class']) ? $widgetConfiguration['class'] : null);
-        $widget->setAbstract((bool) $widgetConfiguration['abstract']);
         $widget->setExportable($widgetConfiguration['exportable']);
         $widget->setTags($widgetConfiguration['tags']);
 
