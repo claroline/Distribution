@@ -12,22 +12,21 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {selectors} from '#/main/core/resource/modals/rights/store'
-import {actions as rightsAction} from '#/main/core/resource/modals/rights/store/actions'
 
 import {ResourceRights} from '#/main/core/resource/components/rights'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 
 const RightsModalComponent = props => {
   return (<Modal
-    {...omit(props, 'resourceNode', 'saveEnabled', 'save', 'updateRights', 'loadResourceNode')}
+    {...omit(props, 'resourceNode', 'saveEnabled', 'save', 'updateRights', 'loadResourceNode', 'nodeForm')}
     icon="fa fa-fw fa-lock"
     title={trans('rights')}
     subtitle={props.resourceNode.name}
     onEntering={() => {
-      props.loadResourceNode(props.nodeForm)
+      props.loadResourceNode(props.resourceNode)
     }}
   >
-    {!isEmpty(props.nodeForm) && 
+    {!isEmpty(props.nodeForm.id) &&
       <ResourceRights
         resourceNode={props.nodeForm}
         updateRights={props.updateRights}
@@ -50,6 +49,9 @@ const RightsModalComponent = props => {
 
 RightsModalComponent.propTypes = {
   resourceNode: T.shape(
+    ResourceNodeTypes.propTypes
+  ).isRequired,
+  nodeForm: T.shape(
     ResourceNodeTypes.propTypes
   ).isRequired,
   saveEnabled: T.bool.isRequired,
