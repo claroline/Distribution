@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\WebResourceBundle\Manager\WebResourceManager;
 use Claroline\CoreBundle\Form\FileType;
@@ -81,13 +82,12 @@ class WebResourceListener
     {
         $hash = $event->getResource()->getHashName();
         $workspace = $event->getResource()->getResourceNode()->getWorkspace();
-        $ds = DIRECTORY_SEPARATOR;
-        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').$ds.'webresource'.$ds.$workspace->getUuid().$ds;
+        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
         $content = $this->container->get('templating')->render(
             'ClarolineWebResourceBundle:web-resource:open.html.twig',
             [
                 'workspace' => $workspace,
-                'path' => $hash.$ds.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
+                'path' => $hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
                 '_resource' => $event->getResource(),
             ]
         );
@@ -104,20 +104,13 @@ class WebResourceListener
      */
         public function onLoadWebResource(LoadResourceEvent $event)
         {
-            $webResource = $event->getResource();
-            // $workspace = $event->getResource()->getResourceNode()->getWorkspace();
-            // $ds = DIRECTORY_SEPARATOR;
-            // $zipPath = $this->container->getParameter('claroline.param.uploads_directory').$ds.'webresource'.$ds.$workspace->getUuid().$ds;
-            // $content = $this->container->get('templating')->render(
-            //     'ClarolineWebResourceBundle:web-resource:open.html.twig',
-            //     [
-            //         'workspace' => $workspace,
-            //         'path' => $hash.$ds.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
-            //         '_resource' => $event->getResource(),
-            //     ]
-            // );
-            //
-            // $event->setResponse(new Response($content));
+            $hash = $event->getResource()->getHashName();
+            $workspace = $event->getResource()->getResourceNode()->getWorkspace();
+            $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
+            $event->setAdditionalData([
+              'path' => $hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash)
+            ]);
+
             $event->stopPropagation();
         }
     /**

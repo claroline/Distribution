@@ -34,11 +34,28 @@ class Updater120000 extends Updater
         $resourceType = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceType')->findOneBy(['name' => 'claroline_web_resource']);
         $resourceNodes = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode')->findBy(['resourceType' => $resourceType]);
         $resourceManager = $this->container->get('claroline.manager.resource_manager');
+        $fs = $this->container->get('filesystem');
 
         foreach ($resourceNodes as $resourceNode) {
             $file = $resourceManager->getResourceFromNode($resourceNode);
-            var_dump($file);
-            // recupérer le hash, vérifier ancien endroit si existe déplacer dans nouveau doossier
+            $workspace = $resourceNode->getWorkspace();
+
+            if (!empty($file)) {
+              $hash = $file->getHashName();
+              $uploadDir = $this->container->getParameter('claroline.param.uploads_directory');
+              $filesDir = $this->container->getParameter('claroline.param.files_directory');
+
+              if ($fs->exists($filesDir.DIRECTORY_SEPARATOR.$hash)) {
+                $fs->copy($filesDir.DIRECTORY_SEPARATOR.$hash, $filesDir.DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR.$hash);
+                $fs->remove($filesDir.DIRECTORY_SEPARATOR.$hash);
+              }
+
+              if($fs->exists($uploadDir.DIRECTORY_SEPARATOR.$hash)){
+                $fs->mirror($uploadDir.DIRECTORY_SEPARATOR.$hash, $uploadDir.DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR.$hash);
+                $fs->remove($uploadDir.DIRECTORY_SEPARATOR.$hash);
+              }
+            }
+
         }
 
     }

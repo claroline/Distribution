@@ -34,19 +34,6 @@ class WebResourceManager
      */
     private $zip;
 
-    /**
-     * Path to directory where zip files are stored.
-     *
-     * @var string
-     */
-    private $zipPath;
-
-    /**
-     * Path to directory where uploaded files are stored.
-     *
-     * @var string
-     */
-    private $filesPath;
 
     private $defaultIndexFiles = [
         'web/SCO_0001/default.html',
@@ -77,7 +64,6 @@ class WebResourceManager
     ) {
         $this->om = $om;
         $this->container = $container;
-        $this->filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -132,8 +118,7 @@ class WebResourceManager
      */
     public function guessRootFile(UploadedFile $file, Workspace $workspace)
     {
-        $ds = DIRECTORY_SEPARATOR;
-        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').$ds.'webresource'.$ds.$workspace->getUuid().$ds;
+        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
 
         if (!$this->getZip()->open($file)) {
             throw new \Exception('Can not open archive file.');
@@ -250,12 +235,12 @@ class WebResourceManager
      */
     public function unzip($hash,  Workspace $workspace)
     {
-        $ds = DIRECTORY_SEPARATOR;
-        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').$ds.'webresource'.$ds.$workspace->getUuid().$ds;
+        $filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
+        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
         if (!file_exists($zipPath.$hash)) {
             mkdir($zipPath.$hash, 0777, true);
         }
-        $this->getZip()->open($this->filesPath.$hash);
+        $this->getZip()->open($filesPath.$hash);
         $this->getZip()->extractTo($zipPath.$hash);
         $this->getZip()->close();
     }
@@ -268,8 +253,7 @@ class WebResourceManager
      */
     public function unzipWebResourceArchive(\SplFileInfo $file, $hashName, $workspace)
     {
-        $ds = DIRECTORY_SEPARATOR;
-        $webResourceResourcesPath = $this->container->getParameter('claroline.param.uploads_directory').$ds.'webresource'.$ds.$workspace->getUuid().$ds;
+        $webResourceResourcesPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
         $zip = new \ZipArchive();
         $zip->open($file);
         $destinationDir = $webResourceResourcesPath.$hashName;
@@ -297,6 +281,7 @@ class WebResourceManager
 
     public function create(UploadedFile $tmpFile, Workspace $workspace)
     {
+        $filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
         $file = new File();
         $fileName = $tmpFile->getClientOriginalName();
         $hash = $this->getHash(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -305,7 +290,7 @@ class WebResourceManager
         $file->setName($fileName);
         $file->setHashName($hash);
         $file->setMimeType('custom/claroline_web_resource');
-        $tmpFile->move($this->filesPath, $hash);
+        $tmpFile->move($filesPath, $hash);
         $this->unzip($hash, $workspace);
 
         return [
