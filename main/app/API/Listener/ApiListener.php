@@ -24,7 +24,7 @@ class ApiListener
      */
     public function onError(GetResponseForExceptionEvent $event)
     {
-    //     if ($event->getRequest()->isXmlHttpRequest()) {
+        //     if ($event->getRequest()->isXmlHttpRequest()) {
     //         $exception = $event->getException();
     //         if ($exception instanceof InvalidDataException) {
     //             $response = new JsonResponse($exception->getErrors(), 422);
