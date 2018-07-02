@@ -5,11 +5,18 @@ const Widget = {
     id: T.string.isRequired,
     name: T.string.isRequired,
     meta: T.shape({
-      abstract: T.bool,
-      parent: T.object, // another Widget
-      context: T.arrayOf(T.string)
+      context: T.arrayOf(T.string),
+      exportable: T.bool
     }).isRequired,
+    sources: T.arrayOf(T.string),
     tags: T.arrayOf(T.string)
+  },
+  defaultProps: {
+    meta: {
+      exportable: false
+    },
+    sources: [],
+    tags: []
   }
 }
 

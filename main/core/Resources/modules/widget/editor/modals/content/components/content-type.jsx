@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import classes from 'classnames'
 import flatten from 'lodash/flatten'
 import omit from 'lodash/omit'
 import uniq from 'lodash/uniq'
 
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {trans} from '#/main/core/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
@@ -18,18 +18,16 @@ const WidgetPreview = props =>
   <a className="widget-preview" role="button" onClick={props.onClick}>
     <h5 className="widget-title">
       {trans(props.name, {}, 'widget')}
-    </h5>
 
-    {props.meta.abstract}
+      {0 !== props.sources.length &&
+        <span className="label label-primary">{props.sources.length}</span>
+      }
+    </h5>
   </a>
 
-WidgetPreview.propTypes = {
-  name: T.string.isRequired,
-  meta: T.shape({
-    abstract: T.bool
-  }).isRequired,
+implementPropTypes(WidgetPreview, WidgetTypes, {
   onClick: T.func.isRequired
-}
+})
 
 const WidgetsGrid = props =>
   <div className="modal-body">
