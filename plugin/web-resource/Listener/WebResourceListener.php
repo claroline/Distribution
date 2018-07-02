@@ -96,6 +96,30 @@ class WebResourceListener
         $event->stopPropagation();
     }
 
+
+    /**
+     * @DI\Observe("load_claroline_web_resource")
+     *
+     * @param LoadResourceEvent $event
+     */
+        public function onLoadWebResource(LoadResourceEvent $event)
+        {
+            $webResource = $event->getResource();
+            // $workspace = $event->getResource()->getResourceNode()->getWorkspace();
+            // $ds = DIRECTORY_SEPARATOR;
+            // $zipPath = $this->container->getParameter('claroline.param.uploads_directory').$ds.'webresource'.$ds.$workspace->getUuid().$ds;
+            // $content = $this->container->get('templating')->render(
+            //     'ClarolineWebResourceBundle:web-resource:open.html.twig',
+            //     [
+            //         'workspace' => $workspace,
+            //         'path' => $hash.$ds.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
+            //         '_resource' => $event->getResource(),
+            //     ]
+            // );
+            //
+            // $event->setResponse(new Response($content));
+            $event->stopPropagation();
+        }
     /**
      * @DI\Observe("export_scorm_claroline_web_resource")
      *

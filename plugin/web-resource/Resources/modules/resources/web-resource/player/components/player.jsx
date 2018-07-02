@@ -40,9 +40,6 @@ class PlayerComponent extends Component {
   }
 }
 
-
-
-
 const Player = connect(
   state => ({
     path: select.path(state),
