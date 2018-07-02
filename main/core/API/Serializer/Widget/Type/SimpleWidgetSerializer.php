@@ -13,7 +13,7 @@ class SimpleWidgetSerializer
 {
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget';
+        return SimpleWidget::class;
     }
 
     public function serialize(SimpleWidget $widget, array $options = [])
@@ -25,7 +25,6 @@ class SimpleWidgetSerializer
 
     public function deserialize($data, SimpleWidget $widget, array $options = [])
     {
-
         return $widget;
     }
 }

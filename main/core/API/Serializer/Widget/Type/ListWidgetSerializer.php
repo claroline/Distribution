@@ -13,7 +13,7 @@ class ListWidgetSerializer
 {
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Widget\Type\ListWidget';
+        return ListWidget::class;
     }
 
     public function serialize(ListWidget $widget, array $options = [])
