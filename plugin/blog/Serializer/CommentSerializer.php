@@ -1,13 +1,14 @@
 <?php
+
 namespace Icap\BlogBundle\Serializer;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
-use Icap\BlogBundle\Entity\Comment;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Icap\BlogBundle\Entity\Comment;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.serializer.blog.comment")
@@ -16,25 +17,25 @@ use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 class CommentSerializer
 {
     use SerializerTrait;
-    
+
     /**
-     * serialize post comments
+     * serialize post comments.
      *
      * @var string
      */
     const INCLUDE_COMMENTS = 'includeComments';
     /**
-     * fetch post comments from database, otherwise use provided comments array
+     * fetch post comments from database, otherwise use provided comments array.
      *
      * @var string
      */
     const FETCH_COMMENTS = 'fetchComments';
     const PRELOADED_COMMENTS = 'loadComments';
-    
+
     private $userSerializer;
     private $userRepo;
     private $om;
-    
+
     /**
      * PostSerializer constructor.
      *
@@ -43,19 +44,19 @@ class CommentSerializer
      *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
-     * @param UserSerializer       $userSerializer
-     * @param ObjectManager        $om
+     * @param UserSerializer $userSerializer
+     * @param ObjectManager  $om
      */
     public function __construct(
         UserSerializer $userSerializer,
         ObjectManager $om
         ) {
-            $this->userSerializer = $userSerializer;
-            $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
-            $this->tagRepo = $om->getRepository('Icap\BlogBundle\Entity\Tag');
-            $this->om = $om;
+        $this->userSerializer = $userSerializer;
+        $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
+        $this->tagRepo = $om->getRepository('Icap\BlogBundle\Entity\Tag');
+        $this->om = $om;
     }
-    
+
     /**
      * @return string
      */
@@ -63,7 +64,7 @@ class CommentSerializer
     {
         return 'Icap\BlogBundle\Entity\Comment';
     }
-    
+
     /**
      * @return string
      */
@@ -71,22 +72,9 @@ class CommentSerializer
     {
         return '#/plugin/blog/comment.json';
     }
-    
+
     /**
-     * Checks if an option has been passed to the serializer.
-     *
-     * @param $option
-     * @param array $options
-     *
-     * @return bool
-     */
-    private function hasOption($option, array $options = [])
-    {
-        return in_array($option, $options);
-    }
-    
-    /**
-     * Serialize post comments
+     * Serialize post comments.
      *
      * @param array $comments
      * @param array $options
@@ -98,15 +86,15 @@ class CommentSerializer
         foreach ($comments as $comment) {
             $comments[] = $this->serialize($comment);
         }
-        
+
         return $comments;
-    }  
-    
+    }
+
     /**
-     * Serialize a post comment
+     * Serialize a post comment.
      *
      * @param Comment $comment
-     * @param array $options
+     * @param array   $options
      *
      * @return array - The serialized representation of a comment
      */
@@ -119,16 +107,16 @@ class CommentSerializer
             'updateDate' => $comment->getUpdateDate() ? DateNormalizer::normalize($comment->getUpdateDate()) : null,
             'publicationDate' => $comment->getPublicationDate() ? DateNormalizer::normalize($comment->getPublicationDate()) : null,
             'author' => $comment->getAuthor() ? $this->userSerializer->serialize($comment->getAuthor()) : null,
-            'authorName' => $comment->getAuthor() !== null ? $comment->getAuthor()->getFullName() : null,
-            'authorPicture' => $comment->getAuthor() !== null ? $comment->getAuthor()->getPicture() : null,
+            'authorName' => null !== $comment->getAuthor() ? $comment->getAuthor()->getFullName() : null,
+            'authorPicture' => null !== $comment->getAuthor() ? $comment->getAuthor()->getPicture() : null,
             'isPublished' => $comment->isPublished(),
         ];
     }
-    
+
     /**
-     * @param array       $data
+     * @param array          $data
      * @param Comment | null $comment
-     * @param array       $options
+     * @param array          $options
      *
      * @return Comment - The deserialized comment entity
      */
@@ -141,13 +129,13 @@ class CommentSerializer
         if (isset($data['message'])) {
             $comment->setMessage($data['message']);
         }
-        
+
         if (isset($data['creationDate'])) {
             $comment->setCreationDate(DateNormalizer::denormalize($data['creationDate']));
         } else {
             $comment->setCreationDate(new \DateTime());
         }
-        
+
         if (isset($data['isPublished'])) {
             $comment->publish();
             if (isset($data['publicationDate'])) {
@@ -156,20 +144,18 @@ class CommentSerializer
                 $comment->setPublicationDate(new \DateTime());
             }
         }
-        
+
         if (isset($data['updateDate'])) {
             $comment->setUpdateDate(DateNormalizer::denormalize($data['updateDate']));
         }
-        
-        if($user){
+
+        if ($user) {
             $comment->setAuthor($user);
-        } else if (isset($data['user'])) {
+        } elseif (isset($data['user'])) {
             $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
             $comment->setAuthor($user);
         }
-        
+
         return $comment;
     }
-    
 }
-

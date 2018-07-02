@@ -16,29 +16,29 @@ class CommentFinder implements FinderInterface
     {
         return 'Icap\BlogBundle\Entity\Comment';
     }
-    
+
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         foreach ($searches as $filterName => $filterValue) {
-            if ($filterName === "allowedToSeeForUser") {
+            if ('allowedToSeeForUser' === $filterName) {
                 $qb
-                ->andWhere("obj.status = :status OR obj.author =:userId")
-                ->setParameter("status", true)
-                ->setParameter("userId", $filterValue);
-            } else if ($filterName === "publishedOnly") {
+                ->andWhere('obj.status = :status OR obj.author =:userId')
+                ->setParameter('status', true)
+                ->setParameter('userId', $filterValue);
+            } elseif ('publishedOnly' === $filterName) {
                 $qb
-                ->andWhere("obj.status = :status")
-                ->setParameter("status", true);
-            } else if ($filterName === "authorName") {
+                ->andWhere('obj.status = :status')
+                ->setParameter('status', true);
+            } elseif ('authorName' === $filterName) {
                 $qb
-                ->innerJoin("obj.author", "author")
+                ->innerJoin('obj.author', 'author')
                 ->andWhere("UPPER(author.firstName) LIKE :{$filterName}
                             OR UPPER(author.lastName) LIKE :{$filterName}
                             OR UPPER(CONCAT(CONCAT(author.firstName, ' '), author.lastName)) LIKE :{$filterName}
                             OR UPPER(CONCAT(CONCAT(author.lastName, ' '), author.firstName)) LIKE :{$filterName}
                             ");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-            } else if (is_string($filterValue)) {
+            } elseif (is_string($filterValue)) {
                 $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
             } else {
@@ -46,11 +46,10 @@ class CommentFinder implements FinderInterface
                 $qb->setParameter($filterName, $filterValue);
             }
         }
-        
+
         $qb
         ->orderBy('obj.creationDate', 'DESC');
-        
+
         return $qb;
     }
 }
-
