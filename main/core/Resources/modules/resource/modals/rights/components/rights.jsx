@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import omit from 'lodash/omit'
+import isEmpty from 'lodash/isEmpty'
 
 import {trans}  from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
@@ -23,13 +24,15 @@ const RightsModalComponent = props => {
     title={trans('rights')}
     subtitle={props.resourceNode.name}
     onEntering={() => {
-      props.loadResourceNode(props.resourceNode)
+      props.loadResourceNode(props.nodeForm)
     }}
   >
-    <ResourceRights
-      resourceNode={props.resourceNode}
-      updateRights={props.updateRights}
-    />
+    {!isEmpty(props.nodeForm) && 
+      <ResourceRights
+        resourceNode={props.nodeForm}
+        updateRights={props.updateRights}
+      />
+    }
 
     <Button
       className="btn modal-btn"
@@ -38,7 +41,7 @@ const RightsModalComponent = props => {
       label={trans('save', {}, 'actions')}
       disabled={!props.saveEnabled}
       callback={() => {
-        props.save(props.resourceNode)
+        props.save(props.nodeForm)
         props.fadeModal()
       }}
     />
@@ -59,7 +62,7 @@ RightsModalComponent.propTypes = {
 const RightsModal = connect(
   (state) => ({
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, selectors.STORE_NAME)),
-    nodeForm: state[selectors.STORE_NAME].data
+    nodeForm: formSelect.data(formSelect.form(state, selectors.STORE_NAME))
   }),
   (dispatch) => ({
     updateRights(perms) {
