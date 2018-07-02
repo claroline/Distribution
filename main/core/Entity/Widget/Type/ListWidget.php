@@ -5,6 +5,10 @@ namespace Claroline\CoreBundle\Entity\Widget\Type;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * ListWidget.
+ *
+ * Permits to render an arbitrary list of data.
+ *
  * @ORM\Entity()
  * @ORM\Table(name="claro_widget_list")
  */

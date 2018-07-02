@@ -18,7 +18,7 @@ export const Parameters = () => ({
 export const App = (context, parameters) => ({
   component: SimpleWidget,
   store: {
-    content: makeReducer(null, {}),
+    content: makeReducer(null, {})
   },
   initialData: () => ({ // function is for retro compatibility with bootstrap()
     content: parameters.content

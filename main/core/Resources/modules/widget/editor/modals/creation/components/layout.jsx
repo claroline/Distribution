@@ -12,7 +12,6 @@ import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {actions} from '#/main/core/widget/editor/modals/creation/store'
-import {WidgetForm} from '#/main/core/widget/editor/components/form'
 import {MODAL_WIDGET_CREATION_PARAMETERS} from '#/main/core/widget/editor/modals/creation/components/parameters'
 
 const LayoutPreview = props => {

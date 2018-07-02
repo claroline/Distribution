@@ -5,7 +5,14 @@ namespace Claroline\CoreBundle\Entity\Widget;
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * WidgetContainer entity.
+ *
+ * @ORM\Entity()
+ * @ORM\Table(name="claro_widget_container")
+ */
 class WidgetContainer
 {
     use Id;
@@ -22,6 +29,12 @@ class WidgetContainer
 
     /**
      * The display layout of the container.
+     *
+     * NB:
+     *   Each element in the array represents a column. The value, represents the ratio of the column.
+     *
+     * Example: [2, 1]
+     *   The layout has 2 columns, the first one is 2/3 width and the second is 1/3.
      *
      * @var array
      */
@@ -55,6 +68,11 @@ class WidgetContainer
     private $background = null;
 
     /**
+     * The list of content instances.
+     *
+     * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance", mappedBy="container", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"position" = "ASC"})
+     *
      * @var ArrayCollection|WidgetInstance[]
      */
     private $instances;
@@ -89,6 +107,11 @@ class WidgetContainer
         $this->name = $name;
     }
 
+    /**
+     * Get layout.
+     *
+     * @return array
+     */
     public function getLayout()
     {
         return $this->layout;

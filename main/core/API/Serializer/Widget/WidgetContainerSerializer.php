@@ -56,7 +56,7 @@ class WidgetContainerSerializer
         ];
     }
 
-    public function deserialize($data, WidgetContainer $widgetContainer)
+    public function deserialize($data, WidgetContainer $widgetContainer, array $options)
     {
         $this->sipe('id', 'setUuid', $data, $widgetContainer);
         $this->sipe('name', 'setName', $data, $widgetContainer);
@@ -67,6 +67,15 @@ class WidgetContainerSerializer
         $this->sipe('display.background', 'setBackground', $data, $widgetContainer);
 
         // todo deserialize instances
+        if (isset($data['contents'])) {
+            foreach ($data['contents'] as $index => $content) {
+                /** @var WidgetInstance $widgetInstance */
+                $widgetInstance = $this->serializer->deserialize('Claroline\CoreBundle\Entity\Widget\WidgetInstance', $content, $options);
+                $widgetInstance->setPosition($index);
+                $widgetContainer->addInstance($widgetInstance);
+
+            }
+        }
 
         return $widgetContainer;
     }

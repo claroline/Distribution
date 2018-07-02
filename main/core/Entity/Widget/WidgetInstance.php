@@ -16,6 +16,8 @@ use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * WidgetInstance entity.
+ *
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\WidgetInstanceRepository")
  * @ORM\Table(name="claro_widget_instance")
  */
@@ -38,7 +40,7 @@ class WidgetInstance
     /**
      * The position of the instance inside its container.
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="widget_position", type="integer")
      *
      * @var int
      */
@@ -53,6 +55,16 @@ class WidgetInstance
      * @var Widget
      */
     private $widget;
+
+    /**
+     * The parent container.
+     *
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetContainer", inversedBy="instances")
+     * @ORM\JoinColumn(name="container_id", referencedColumnName="id")
+     *
+     * @var WidgetContainer
+     */
+    private $container;
 
     /**
      * Get name.
@@ -102,5 +114,25 @@ class WidgetInstance
     public function setWidget(Widget $widget)
     {
         $this->widget = $widget;
+    }
+
+    /**
+     * Get widget container.
+     *
+     * @return WidgetContainer
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Set widget container.
+     *
+     * @param WidgetContainer $container
+     */
+    public function setContainer(WidgetContainer $container)
+    {
+        $this->container = $container;
     }
 }
