@@ -89,6 +89,11 @@ class Comment extends Statusable
      */
     protected $post;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    protected $reported = 0;
+
     protected $userPicker = null;
 
     /**
@@ -263,5 +268,15 @@ class Comment extends Statusable
     public function getUserPicker()
     {
         return $this->userPicker;
+    }
+
+    public function setReported($num)
+    {
+        $this->reported = $num;
+    }
+
+    public function getReported()
+    {
+        return $this->reported;
     }
 }

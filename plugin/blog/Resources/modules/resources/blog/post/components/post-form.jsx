@@ -51,7 +51,6 @@ const PostFormComponent = props =>
                 type: 'string',
                 help: trans('icap_blog_post_form_tags_help', {}, 'icap_blog'),
                 label: trans('icap_blog_post_form_tags', {}, 'icap_blog'),
-                required: true,
                 options: {
                   minRows: 6
                 }
@@ -124,7 +123,7 @@ const PostForm = withRouter(connect(
         dispatch(
           formActions.saveForm(constants.POST_EDIT_FORM_NAME, ['apiv2_blog_post_update', {blogId: blogId, postId: postId}])
         ).then((response) => {
-          if(response && !isEmpty(response.tags) && originalTags !== response.tags){
+          if(response && originalTags !== response.tags){
             //update tag list
             dispatch(toolbarActions.addTags(originalTags, response.tags))
           }

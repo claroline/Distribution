@@ -10,13 +10,8 @@ import {
   BLOG_OPTIONS_WIDGET_DOWN
 } from '#/plugin/blog/resources/blog/editor/store/actions'
 
-const defaultState = {
-  data: [],
-  copy: null
-}
-
 const reducer = {
-  options: makeFormReducer('blog.data.options', defaultState, {
+  options: makeFormReducer('blog.data.options', {}, {
     pendingChanges: makeReducer({}, {
       [BLOG_OPTIONS_WIDGET_VISIBILITY]: () => true,
       [BLOG_OPTIONS_WIDGET_UP]: () => true,

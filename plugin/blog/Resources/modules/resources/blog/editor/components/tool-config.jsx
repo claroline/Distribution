@@ -11,7 +11,7 @@ const ToolConfigComponent = props =>
       <Button
         type="callback"
         label=""
-        className="btn btn-link"
+        className="btn btn-link widget-ordering-button"
         icon="fa fa-fw fa-2x fa-caret-up"
         callback={() => {
           props.widgetUp(props.id, props.templateName)
@@ -20,7 +20,7 @@ const ToolConfigComponent = props =>
       />
       <Button
         type="callback"
-        className="btn btn-link"
+        className="btn btn-link widget-ordering-button"
         label=""
         icon="fa fa-fw fa-2x fa-caret-down"
         callback={() => {
@@ -30,7 +30,7 @@ const ToolConfigComponent = props =>
       />
       <Button
         type="callback"
-        className="btn btn-link"
+        className="btn btn-link widget-ordering-button"
         label=""
         icon={props.visibility ? 'fa fa-fw fa-eye fa-lg' : 'fa fa-fw fa-eye-slash fa-lg'}
         callback={() => {

@@ -8,7 +8,7 @@ import {trans} from '#/main/core/translation'
 
 const BlogCalendarComponent = props =>
   <div key='redactors' className="panel panel-default">
-    <div className="panel-heading">{trans('calendar', {}, 'icap_blog')}</div>
+    <div className="panel-heading"><h2 className="panel-title">{trans('calendar', {}, 'icap_blog')}</h2></div>
     <div className="panel-body calendar">
       <Calendar
         selected={props.calendarSelectedDate}

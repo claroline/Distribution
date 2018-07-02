@@ -8,9 +8,13 @@ class Updater120000 extends Updater
 {
     private $container;
 
+    /** @var Connection */
+    private $conn;
+
     public function __construct($container)
     {
         $this->container = $container;
+        $this->conn = $container->get('doctrine.dbal.default_connection');
     }
 
     public function postUpdate()
@@ -19,7 +23,10 @@ class Updater120000 extends Updater
         $this->migrateTags();
         //set new CommentModerationMode attribute value
         $this->setCommentModerationMode();
-        //drop old tag blog table
+        //drop old tag blog tables
+        $this->log('Dropping old blog tag tables');
+        $this->conn->query('DROP TABLE icap__blog_post_tag');
+        $this->conn->query('DROP TABLE icap__blog_tag');
     }
 
     private function migrateTags()
@@ -38,10 +45,12 @@ class Updater120000 extends Updater
             //get batch
             $posts = $repo->findBy([], ['id' => 'ASC'], $batchSize, $batchSize * ($page - 1));
             foreach ($posts as $post) {
-                $serializer->deserializeTags($post, $post->getTags()->toArray());
-                ++$i;
-                if (0 === $i % 200) {
-                    $om->forceFlush();
+                if (!empty($post->getTags())) {
+                    $serializer->deserializeTags($post, implode(',', $post->getTags()->toArray()));
+                    ++$i;
+                    if (0 === $i % 200) {
+                        $om->forceFlush();
+                    }
                 }
             }
             ++$page;

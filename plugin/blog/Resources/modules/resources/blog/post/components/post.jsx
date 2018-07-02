@@ -22,98 +22,61 @@ import {getCommentsNumber, splitArray} from '#/plugin/blog/resources/blog/utils.
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
 const PostComponent = props =>
-  <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`)}>
+  <div className='data-card-blog'>
     {props.post.id &&
-      <div className="post-container">
-        <h1 key="post-header" className={classes('post-header', {'unpublished': !props.post.isPublished})}>
-          <a href={`#/${props.post.slug}`}>{props.post.title}</a>
-          <InfoBar 
-            displayViews={props.displayViews} 
-            blogId={props.blogId} 
-            getPostsByAuthor={props.getPostsByAuthor} 
-            post={props.post} 
-            key={`data-card-subtitle-${props.post.id}`} />
-        </h1>
-      
-        {'sm' !== props.size && props.post.content &&
-          <div key="data-card-description" className="post-content">
-            <HtmlText>{props.post.content}</HtmlText>
-            {props.post.abstract &&
-              <div>
-                ...
-                <div className="read_more">
-                  <a href={`#/${props.post.slug}`}>{trans('read_more', {}, 'icap_blog')}</a> <span className="fa fa-long-arrow-right"></span>
-                </div>
-              </div>
-            }
-          </div>
-        }
-        {'sm' !== props.size &&
-          <div key="data-card-footer" className="data-card-footer">
-            <Footer
-              {...props}
+      <div>
+        <div className="post-container">
+          <div className={classes('post-header', {'unpublished': !props.post.isPublished})}>
+            <h2 className={'post-title'}>
+              <a href={`#/${props.post.slug}`}>{props.post.title}</a>
+            </h2>
+            <InfoBar
+              displayViews={props.displayViews}
+              blogId={props.blogId}
+              getPostsByAuthor={props.getPostsByAuthor}
               post={props.post}
-              canEdit={props.canEdit} />
-          </div>
-        }
-        {props.full &&
-          <div className="post-content">
-            <Comments 
-              blogId={props.blogId} 
-              postId={props.post.id} 
-              canComment={props.canComment} 
-              showForm={props.showCommentForm} 
-              opened={props.showComments} 
-              comments={props.post.comments} 
+              key={`data-card-subtitle-${props.post.id}`} />
+            <ActionBar
+              blogId={props.blogId}
+              post={props.post}
+              canEdit={props.canEdit}
             />
           </div>
-        }
+          {'sm' !== props.size && props.post.content &&
+            <div key="data-card-description" className="post-content">
+              <HtmlText>{props.post.content}</HtmlText>
+              {props.post.abstract &&
+                <div>
+                  ...
+                  <div className="read_more">
+                    <a href={`#/${props.post.slug}`}>{trans('read_more', {}, 'icap_blog')}</a> <span className="fa fa-long-arrow-right"></span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          {'sm' !== props.size &&
+            <div key="data-card-footer" className="data-card-footer">
+              <Footer
+                {...props}
+                post={props.post}
+                canEdit={props.canEdit} />
+            </div>
+          }
+          {props.full &&
+            <div className="post-content">
+              <Comments
+                blogId={props.blogId}
+                postId={props.post.id}
+                canComment={props.canComment}
+                showForm={props.showCommentForm}
+                opened={props.showComments}
+                comments={props.post.comments}
+              />
+            </div>
+          }
+        </div>
       </div>
-    }
-    {props.canEdit &&
-      <ButtonToolbar className="post-actions">
-        <Button
-          id={`action-edit-${props.post.id}`}
-          type="link"
-          icon="fa fa-pencil"
-          className="btn btn-link"
-          tooltip="top"
-          label={trans('edit_post_short', {}, 'icap_blog')}
-          title={trans('edit_post_short', {}, 'icap_blog')}
-          target={`/${props.post.slug}/edit`}
-        />
-        <Button
-          id={`action-publish-${props.post.id}`}
-          type="callback"
-          icon={props.post.isPublished ? 'fa fa-eye' : 'fa fa-eye-slash'}
-          className="btn btn-link"
-          tooltip="top"
-          label={props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
-          title={props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
-          callback={() => props.publishPost(props.blogId, props.post.id)}
-        />
-        <Button
-          id={`action-pin-${props.post.id}`}
-          type="callback"
-          icon={props.post.pinned ? 'fa fa-thumb-tack' : 'fa fa-thumb-tack fa-rotate-90'}
-          className="btn btn-link"
-          tooltip="top"
-          label={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
-          title={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
-          callback={() => props.pinPost(props.blogId, props.post.id)}
-        />
-        <Button
-          id={`action-delete-${props.post.id}`}
-          type="callback"
-          icon="fa fa-trash"
-          className="btn btn-link"
-          tooltip="top"
-          label={trans('delete', {}, 'platform')}
-          title={trans('delete', {}, 'platform')}
-          dangerous={true}
-          callback={() => props.deletePost(props.blogId, props.post.id, props.post.title)}
-        />
-      </ButtonToolbar>
     }
   </div>
     
@@ -156,12 +119,15 @@ const InfoBar = props =>
         <UrlButton target={['claro_user_profile', {publicUrl: get(props.post.author, 'meta.publicUrl')}]}>
           <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} />
         </UrlButton>
-        <a className="read_more">{props.post.author.firstName} {props.post.author.lastName}</a>
+        <a className="user-name">{props.post.author.firstName} {props.post.author.lastName}</a>
       </span>
     </li>
     <li><span className="fa fa-calendar"></span> {displayDate(props.post.publicationDate, false, true)} </li>
     {props.displayViews &&
       <li><span className="fa fa-eye"></span> {transChoice('display_views', props.post.viewCounter, {'%count%': props.post.viewCounter}, 'platform')}</li> 
+    }
+    {props.post.pinned &&
+      <li><span className="label label-success">{trans('icap_blog_post_pinned', {}, 'icap_blog')}</span></li>
     }
   </ul>
     
@@ -170,6 +136,60 @@ InfoBar.propTypes = {
   blogId: T.string.isRequired,
   post: T.shape(PostType.propTypes),
   displayViews: T.bool
+}
+
+const ActionBar = props =>
+  <ButtonToolbar className="post-actions">
+    <Button
+      id={`action-edit-${props.post.id}`}
+      type="link"
+      icon="fa fa-pencil"
+      className="btn btn-link"
+      tooltip="top"
+      label={trans('edit_post_short', {}, 'icap_blog')}
+      title={trans('edit_post_short', {}, 'icap_blog')}
+      target={`/${props.post.slug}/edit`}
+    />
+    <Button
+      id={`action-publish-${props.post.id}`}
+      type="callback"
+      icon={props.post.isPublished ? 'fa fa-eye' : 'fa fa-eye-slash'}
+      className="btn btn-link"
+      tooltip="top"
+      label={props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
+      title={props.post.isPublished ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
+      callback={() => props.publishPost(props.blogId, props.post.id)}
+    />
+    <Button
+      id={`action-pin-${props.post.id}`}
+      type="callback"
+      icon={props.post.pinned ? 'fa fa-thumb-tack' : 'fa fa-thumb-tack fa-rotate-90'}
+      className="btn btn-link"
+      tooltip="top"
+      label={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
+      title={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
+      callback={() => props.pinPost(props.blogId, props.post.id)}
+    />
+    <Button
+      id={`action-delete-${props.post.id}`}
+      type="callback"
+      icon="fa fa-trash"
+      className="btn btn-link"
+      tooltip="top"
+      label={trans('delete', {}, 'platform')}
+      title={trans('delete', {}, 'platform')}
+      dangerous={true}
+      callback={() => props.deletePost(props.blogId, props.post.id, props.post.title)}
+    />
+  </ButtonToolbar>
+
+ActionBar.propTypes = {
+  canEdit:T.bool,
+  post: T.shape(PostType.propTypes),
+  blogId: T.string.isRequired,
+  publishPost: T.func.isRequired,
+  deletePost: T.func.isRequired,
+  pinPost: T.func.isRequired
 }
     
 const Footer = props =>

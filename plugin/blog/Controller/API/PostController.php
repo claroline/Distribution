@@ -316,7 +316,7 @@ class PostController
     /**
      * Report post comment.
      *
-     * @EXT\Route("/update/{postId}/comment/{commentId}/publish", name="apiv2_blog_comment_report")
+     * @EXT\Route("/update/{postId}/comment/{commentId}/report", name="apiv2_blog_comment_report")
      * @EXT\Method("PUT")
      * @EXT\ParamConverter("post", class="IcapBlogBundle:Post", options={"mapping": {"postId": "uuid"}})
      * @EXT\ParamConverter("comment", class="IcapBlogBundle:Comment", options={"mapping": {"commentId": "uuid"}})

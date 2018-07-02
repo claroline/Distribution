@@ -212,6 +212,7 @@ class Blog extends AbstractResource
 
             $blogOptions = new BlogOptions();
             $blogOptions->setBlog($this);
+            $this->setOptions($blogOptions);
 
             $entityManager->persist($blogOptions);
             $entityManager->flush($blogOptions);

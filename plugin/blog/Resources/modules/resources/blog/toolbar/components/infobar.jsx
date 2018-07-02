@@ -7,8 +7,13 @@ import isEmpty from 'lodash/isEmpty'
 
 const InfobarComponent = props =>
   <div className="panel panel-default">
-    <div className="panel-heading">{trans('infobar', {}, 'icap_blog')}</div>
-    <HtmlText className="panel-body">{props.infos}</HtmlText>
+    <div className="panel-heading">
+      <h2 className="panel-title">{trans('infobar', {}, 'icap_blog')}</h2>
+    </div>
+    {!isEmpty(props.infos) &&
+      <HtmlText className="panel-body">{props.infos}</HtmlText>
+    }
+
   </div>
     
 InfobarComponent.propTypes = {

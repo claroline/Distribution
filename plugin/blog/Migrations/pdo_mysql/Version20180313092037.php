@@ -61,6 +61,41 @@ class Version20180313092037 extends AbstractMigration
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_D1AAC984D17F50A6 ON icap__blog_options (uuid)
         ');
+        $this->addSql('
+            CREATE TABLE icap__blog_member (
+                id INT AUTO_INCREMENT NOT NULL, 
+                user_id INT DEFAULT NULL, 
+                blog_id INT DEFAULT NULL, 
+                trusted TINYINT(1) NOT NULL, 
+                banned TINYINT(1) NOT NULL, 
+                INDEX IDX_34A6FF39A76ED395 (user_id), 
+                INDEX IDX_34A6FF39DAE07E97 (blog_id), 
+                PRIMARY KEY(id)
+            ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_member 
+            ADD CONSTRAINT FK_34A6FF39A76ED395 FOREIGN KEY (user_id) 
+            REFERENCES claro_user (id)
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_member 
+            ADD CONSTRAINT FK_34A6FF39DAE07E97 FOREIGN KEY (blog_id) 
+            REFERENCES icap__blog (id)
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_post 
+            ADD pinned TINYINT(1) NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_comment 
+            ADD reported SMALLINT NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_options 
+            ADD comment_moderation_mode SMALLINT NOT NULL, 
+            ADD display_full_posts TINYINT(1) NOT NULL
+        ');
     }
 
     public function down(Schema $schema)
@@ -92,6 +127,22 @@ class Version20180313092037 extends AbstractMigration
         $this->addSql('
             ALTER TABLE icap__blog_post 
             DROP uuid
+        ');
+        $this->addSql('
+            DROP TABLE icap__blog_member
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_comment 
+            DROP reported
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_options 
+            DROP comment_moderation_mode, 
+            DROP display_full_posts
+        ');
+        $this->addSql('
+            ALTER TABLE icap__blog_post 
+            DROP pinned
         ');
     }
 }

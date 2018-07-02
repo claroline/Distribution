@@ -311,10 +311,8 @@ class PostManager
      */
     public function reportComment(Blog $blog, Post $post, Comment $existingComment)
     {
-        $existingComment->publish();
+        $existingComment->setReported($existingComment->getReported() + 1);
         $this->om->flush();
-
-        $this->trackingManager->dispatchCommentPublishEvent($post, $existingComment);
 
         return $existingComment;
     }
@@ -404,6 +402,20 @@ class PostManager
      */
     public function deletePost(Blog $blog, Post $post, User $user)
     {
+        //remove tags beforehand
+        $event = new GenericDataEvent([
+            'tags' => [],
+            'data' => [
+                [
+                    'class' => 'Icap\BlogBundle\Entity\Post',
+                    'id' => $post->getUuid(),
+                    'name' => $post->getTitle(),
+                ],
+            ],
+            'replace' => true,
+        ]);
+        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+
         $this->om->remove($post);
         $this->om->flush();
 

@@ -84,13 +84,13 @@ class PostFinder implements FinderInterface
                 $qb->andWhere("obj.{$filterName} = :{$filterName}");
                 $qb->setParameter($filterName, $filterValue);
             }
+        }
 
-            $qb->addOrderBy('obj.pinned', 'DESC');
-
-            //default sort by publicationDate
-            if (null === $sortBy) {
-                $qb->addOrderBy('obj.publicationDate', 'DESC');
-            }
+        //pinned always first
+        $qb->addOrderBy('obj.pinned', 'DESC');
+        //and then custom sort
+        if (!empty($sortBy)) {
+            $qb->addOrderBy('obj.'.$sortBy['property'], 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
         }
 
         return $qb;

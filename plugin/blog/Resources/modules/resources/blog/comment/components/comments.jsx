@@ -96,21 +96,21 @@ const CommentsComponent = props =>
                     },{
                       icon: 'fa fa-fw fa-check',
                       label: trans('icap_blog_post_publish', {}, 'icap_blog'),
-                      displayed: props.canEdit && !comment.isPublished,
+                      displayed: (props.canEdit ||  props.canModerate) && !comment.isPublished,
                       action: () => props.publishComment(props.blogId, props.postId, comment.id)
                     },{
                       icon: 'fa fa-fw fa-ban',
                       label: trans('icap_blog_post_unpublish', {}, 'icap_blog'),
-                      displayed: props.canEdit && comment.isPublished,
+                      displayed: (props.canEdit ||  props.canModerate) && comment.isPublished,
                       action: () => props.unpublishComment(props.blogId, props.postId, comment.id)
                     },{
-                      icon: 'fa fa-fw fa-exclamation-triangle',
-                      label: t('report'),
+                      icon: 'fa fa-fw fa-flag',
+                      label: trans('icap_blog_comment_report', {}, 'icap_blog'),
                       displayed: authenticatedUser !== null,
                       action: () => props.reportComment(props.blogId, props.postId, comment.id),
                       dangerous: true
                     },{
-                      icon: 'fa fa-fw fa-trash-o',
+                      icon: 'fa fa-fw fa-trash',
                       label: t('delete'),
                       displayed: props.canEdit || (comment.author !== null && authenticatedUser !== null && comment.author.id === authenticatedUser.id && !comment.isPublished),
                       action: () => props.deleteComment(props.blogId, props.postId, comment.id),
@@ -130,6 +130,7 @@ CommentsComponent.propTypes = {
   blogId: T.string.isRequired,
   postId: T.string.isRequired,
   canEdit: T.bool,
+  canModerate: T.bool,
   canComment: T.bool,
   showComments: T.bool,
   opened: T.bool,
@@ -149,6 +150,7 @@ const Comments = connect(
   state => ({
     user: state.user,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
+    canModerate: hasPermission('moderate', resourceSelect.resourceNode(state)),
     opened: state.showComments,
     showForm: state.showCommentForm,
     showEditCommentForm: state.showEditCommentForm
@@ -176,7 +178,11 @@ const Comments = connect(
       dispatch(commentActions.unpublishComment(blogId, postId, commentId))
     },
     reportComment: (blogId, postId, commentId) => {
-      dispatch(commentActions.reportComment(blogId, postId, commentId))
+      dispatch(modalActions.showModal(MODAL_CONFIRM, {
+        title: trans('comment_report_confirm_title', {}, 'icap_blog'),
+        question: trans('comment_report_confirm_message', {}, 'icap_blog'),
+        handleConfirm: () => dispatch(commentActions.reportComment(blogId, postId, commentId))
+      }))
     },
     deleteComment: (blogId, postId, commentId) => {
       dispatch(modalActions.showModal(MODAL_CONFIRM, {
