@@ -161,8 +161,6 @@ class ScoTracking
     protected $isLocked;
 
     /**
-     * For Scorm 2004 only.
-     *
      * @ORM\Column(type="json_array", nullable=true)
      */
     protected $details;

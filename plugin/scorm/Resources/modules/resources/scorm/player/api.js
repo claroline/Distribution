@@ -47,16 +47,16 @@ const scorm2004Errors = {
   '408': 'Data Model Dependency Not Established'
 }
 
-function commitResult(scoId, mode, scoData) {
+function commitResult(scoId, mode, scoData, dispatch) {
   if (authenticatedUser) {
-    // actions.commitData(scoId, mode, scoData)
+    dispatch(actions.commitData(scoId, mode, scoData))
   }
 }
 
-function APIClass(sco, scormData, tracking) {
+function APIClass(sco, scormData, tracking, dispatch) {
   this.apiInitialized = false
   this.apiLastError = 'scorm_12' === scormData.version ? '301' : '0'
-  this.scoData = tracking['details'] && [] !== tracking['details'] ? tracking['details'] : {}
+  this.scoData = Array.isArray(tracking['details']) ? {} : Object.assign({}, tracking['details'])
 
   if ('scorm_12' === scormData.version) {
     this.scoData['cmi.core.student_id'] = authenticatedUser ? authenticatedUser.autoId : -1
@@ -163,7 +163,7 @@ function APIClass(sco, scormData, tracking) {
     return 'true'
   }
 
-  this.LMSFinish = () => {
+  this.LMSFinish = (arg) => {
     console.log('*** LMSFinish ***')
 
     if (this.apiInitialized) {
@@ -181,7 +181,7 @@ function APIClass(sco, scormData, tracking) {
       } else {
         this.scoData['cmi.core.entry'] = ''
       }
-      commitResult(sco.id, 'log', this.scoData)
+      commitResult(sco.id, 'log', this.scoData, dispatch)
 
       return 'true'
     } else {
@@ -373,7 +373,7 @@ function APIClass(sco, scormData, tracking) {
         return 'false'
       } else {
         this.apiLastError = '0'
-        commitResult(sco.id, 'persist', this.scoData)
+        commitResult(sco.id, 'persist', this.scoData, dispatch)
 
         return 'true'
       }
@@ -497,7 +497,7 @@ function APIClass(sco, scormData, tracking) {
     } else {
       this.scoData['cmi.entry'] = ''
     }
-    commitResult(sco.id, 'log', this.scoData)
+    commitResult(sco.id, 'log', this.scoData, dispatch)
 
     return 'true'
   }
@@ -1486,7 +1486,7 @@ function APIClass(sco, scormData, tracking) {
       return 'false'
     }
     this.apiLastError = '0'
-    commitResult(sco.id, 'persist', this.scoData)
+    commitResult(sco.id, 'persist', this.scoData, dispatch)
 
     return 'true'
   }
@@ -1578,13 +1578,14 @@ function APIClass(sco, scormData, tracking) {
   }
 }
 
-function initializeAPI(sco, scormData, trackings) {
-  window.API = new APIClass(sco, scormData, trackings[sco.id])
-  window.api = new APIClass(sco, scormData, trackings[sco.id])
-  window.API_1484_11 = new APIClass(sco, scormData, trackings[sco.id])
-  window.api_1484_11 = new APIClass(sco, scormData, trackings[sco.id])
-}
+// function initializeAPI(sco, scormData, trackings) {
+//   window.API = new APIClass(sco, scormData, trackings[sco.id])
+//   window.api = new APIClass(sco, scormData, trackings[sco.id])
+//   window.API_1484_11 = new APIClass(sco, scormData, trackings[sco.id])
+//   window.api_1484_11 = new APIClass(sco, scormData, trackings[sco.id])
+// }
 
 export {
-  initializeAPI
+  // initializeAPI,
+  APIClass
 }

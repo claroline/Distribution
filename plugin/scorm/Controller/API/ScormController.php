@@ -20,6 +20,7 @@ use Claroline\ScormBundle\Entity\Sco;
 use Claroline\ScormBundle\Entity\Scorm;
 use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use Claroline\ScormBundle\Manager\ScormManager;
+use Claroline\ScormBundle\Serializer\ScoTrackingSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,31 +37,37 @@ class ScormController extends AbstractApiController
     private $resourceManager;
     /** @var ScormManager */
     private $scormManager;
+    /** @var ScoTrackingSerializer */
+    private $scoTrackingSerializer;
     /** @var TranslatorInterface */
     private $translator;
 
     /**
      * @DI\InjectParams({
-     *     "authorization"   = @DI\Inject("security.authorization_checker"),
-     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
-     *     "scormManager"    = @DI\Inject("claroline.manager.scorm_manager"),
-     *     "translator"      = @DI\Inject("translator")
+     *     "authorization"         = @DI\Inject("security.authorization_checker"),
+     *     "resourceManager"       = @DI\Inject("claroline.manager.resource_manager"),
+     *     "scormManager"          = @DI\Inject("claroline.manager.scorm_manager"),
+     *     "scoTrackingSerializer" = @DI\Inject("claroline.serializer.scorm.sco.tracking"),
+     *     "translator"            = @DI\Inject("translator")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param ResourceManager               $resourceManager
      * @param ScormManager                  $scormManager
+     * @param ScoTrackingSerializer         $scoTrackingSerializer
      * @param TranslatorInterface           $translator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         ResourceManager $resourceManager,
         ScormManager $scormManager,
+        ScoTrackingSerializer $scoTrackingSerializer,
         TranslatorInterface $translator
     ) {
         $this->authorization = $authorization;
         $this->resourceManager = $resourceManager;
         $this->scormManager = $scormManager;
+        $this->scoTrackingSerializer = $scoTrackingSerializer;
         $this->translator = $translator;
     }
 
@@ -185,6 +192,8 @@ class ScormController extends AbstractApiController
                 foreach ($files as $file) {
                     $data = $this->scormManager->uploadScormArchive($workspace, $file);
                 }
+            } else {
+                return new JsonResponse('No uploaded file', 500);
             }
         } catch (InvalidScormArchiveException $e) {
             $error = $this->translator->trans($e->getMessage(), [], 'resource');
@@ -199,7 +208,7 @@ class ScormController extends AbstractApiController
 
     /**
      * @EXT\Route(
-     *    "/sco/{sco}/commit",
+     *    "/sco/{sco}/{mode}/commit",
      *    name="apiv2_scorm_sco_commit"
      * )
      * @EXT\ParamConverter(
@@ -210,17 +219,21 @@ class ScormController extends AbstractApiController
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param Sco     $sco
+     * @param string  $mode
      * @param User    $user
      * @param Request $request
      *
      * @return JsonResponse
      */
-    public function scoCommitAction(Sco $sco, User $user, Request $request)
+    public function scoCommitAction(Sco $sco, $mode, User $user, Request $request)
     {
         $scorm = $sco->getScorm();
         $this->checkScormRights($scorm, 'OPEN');
 
         $data = $this->decodeRequest($request);
+        $tracking = $this->scormManager->updateScoTracking($sco, $user, $mode, $data);
+
+        return new JsonResponse($this->scoTrackingSerializer->serialize($tracking), 200);
     }
 
     private function checkScormRights(Scorm $scorm, $right)

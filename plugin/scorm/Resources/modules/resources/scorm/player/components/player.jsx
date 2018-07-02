@@ -7,12 +7,12 @@ import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 import {Scorm as ScormType} from '#/plugin/scorm/resources/scorm/prop-types'
-import {initializeAPI} from '#/plugin/scorm/resources/scorm/player/api'
+import {actions} from '#/plugin/scorm/resources/scorm/player/actions'
 import {select} from '#/plugin/scorm/resources/scorm/selectors'
 
 class PlayerComponent extends Component {
   componentDidMount() {
-    initializeAPI(this.props.scorm.scos[0], this.props.scorm, this.props.trackings)
+    this.props.initializeScormAPI(this.props.scorm.scos[0], this.props.scorm, this.props.trackings)
   }
 
   render() {
@@ -36,6 +36,11 @@ const Player = connect(
     scorm: select.scorm(state),
     trackings: select.trackings(state),
     workspaceUuid: resourceSelect.resourceNode(state).workspace.id
+  }),
+  dispatch => ({
+    initializeScormAPI(sco, scorm, trackings) {
+      dispatch(actions.initializeAPI(sco, scorm, trackings))
+    }
   })
 )(PlayerComponent)
 

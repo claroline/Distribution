@@ -28,6 +28,7 @@ use Claroline\ScormBundle\Entity\Scorm2004Resource;
 use Claroline\ScormBundle\Entity\Scorm2004Sco;
 use Claroline\ScormBundle\Entity\Scorm2004ScoTracking;
 use Claroline\ScormBundle\Entity\ScoTracking;
+use Claroline\ScormBundle\Event\Log\LogScormResultEvent;
 use Claroline\ScormBundle\Library\Scorm12;
 use Claroline\ScormBundle\Library\Scorm2004;
 use Claroline\ScormBundle\Library\ScormLib;
@@ -36,6 +37,7 @@ use Claroline\ScormBundle\Serializer\ScoSerializer;
 use Claroline\ScormBundle\Serializer\ScoTrackingSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -44,6 +46,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ScormManager
 {
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
     /** @var Filesystem */
     private $fileSystem;
     /** @var string */
@@ -81,6 +85,7 @@ class ScormManager
      * Constructor.
      *
      * @DI\InjectParams({
+     *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
      *     "fileSystem"            = @DI\Inject("filesystem"),
      *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
      *     "libsco12"              = @DI\Inject("claroline.library.scorm_12"),
@@ -94,6 +99,7 @@ class ScormManager
      *     "uploadDir"             = @DI\Inject("%claroline.param.uploads_directory%")
      * })
      *
+     * @param EventDispatcherInterface  $eventDispatcher
      * @param Filesystem                $fileSystem
      * @param string                    $filesDir
      * @param Scorm12                   $libsco12
@@ -107,6 +113,7 @@ class ScormManager
      * @param string                    $uploadDir
      */
     public function __construct(
+        EventDispatcherInterface $eventDispatcher,
         Filesystem $fileSystem,
         $filesDir,
         Scorm12 $libsco12,
@@ -119,6 +126,7 @@ class ScormManager
         ScoTrackingSerializer $scoTrackingSerializer,
         $uploadDir
     ) {
+        $this->eventDispatcher = $eventDispatcher;
         $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
         $this->libsco12 = $libsco12;
@@ -175,6 +183,20 @@ class ScormManager
         ];
     }
 
+    public function generateScoTracking(Sco $sco, User $user = null)
+    {
+        $tracking = null;
+
+        if (!is_null($user)) {
+            $tracking = $this->scoTrackingRepo->findOneBy(['sco' => $sco, 'user' => $user]);
+        }
+        if (is_null($tracking)) {
+            $tracking = $this->createScoTracking($sco, $user);
+        }
+
+        return $tracking;
+    }
+
     public function generateScosTrackings(array $scos, User $user = null, &$trackings = [])
     {
         if (!is_null($user)) {
@@ -182,14 +204,7 @@ class ScormManager
         }
 
         foreach ($scos as $sco) {
-            $tracking = null;
-
-            if (!is_null($user)) {
-                $tracking = $this->scoTrackingRepo->findOneBy(['sco' => $sco, 'user' => $user]);
-            }
-            if (is_null($tracking)) {
-                $tracking = $this->createScoTracking($sco, $user);
-            }
+            $tracking = $this->generateScoTracking($sco, $user);
             $trackings[$sco->getUuid()] = $this->scoTrackingSerializer->serialize($tracking);
             $scoChildren = $sco->getScoChildren()->toArray();
 
@@ -291,6 +306,166 @@ class ScormManager
         }
 
         return $scoTracking;
+    }
+
+    public function updateScoTracking(Sco $sco, User $user, $mode, $data)
+    {
+        $tracking = $this->generateScoTracking($sco, $user);
+
+        switch ($sco->getScorm()->getVersion()) {
+            case Scorm::SCORM_12:
+                $scoreRaw = intval($data['cmi.core.score.raw']);
+                $lessonStatus = $data['cmi.core.lesson_status'];
+                $sessionTime = $data['cmi.core.session_time'];
+                $sessionTimeInHundredth = $this->convertTimeInHundredth($sessionTime);
+                $tracking->setDetails($data);
+                $tracking->setEntry($data['cmi.core.entry']);
+                $tracking->setExitMode($data['cmi.core.exit']);
+                $tracking->setLessonLocation($data['cmi.core.lesson_location']);
+                $tracking->setLessonStatus($lessonStatus);
+                $tracking->setScoreMax(intval($data['cmi.core.score.max']));
+                $tracking->setScoreMin(intval($data['cmi.core.score.min']));
+                $tracking->setScoreRaw($scoreRaw);
+                $tracking->setSessionTime($sessionTimeInHundredth);
+                $tracking->setSuspendData($data['cmi.suspend_data']);
+
+                if ('log' === $mode) {
+                    // Compute total time
+                    $totalTimeInHundredth = $this->convertTimeInHundredth($data['cmi.core.total_time']);
+                    $totalTimeInHundredth += $sessionTimeInHundredth;
+                    // Persist total time
+                    $tracking->setTotalTime($totalTimeInHundredth);
+
+                    $bestScore = $tracking->getBestScoreRaw();
+                    $bestStatus = $tracking->getBestLessonStatus();
+
+                    // Update best score if the current score is better than the previous best score
+                    if (empty($bestScore) || (!is_null($scoreRaw) && $scoreRaw > $bestScore)) {
+                        $tracking->setBestScoreRaw($scoreRaw);
+                        $bestScore = $scoreRaw;
+                    }
+                    // Update best lesson status if :
+                    // - current best status = 'not attempted'
+                    // - current best status = 'browsed' or 'incomplete'
+                    //   and current status = 'failed' or 'passed' or 'completed'
+                    // - current best status = 'failed'
+                    //   and current status = 'passed' or 'completed'
+                    if ($lessonStatus !== $bestStatus && 'passed' !== $bestStatus && 'completed' !== $bestStatus) {
+                        if (('not attempted' === $bestStatus && !empty($lessonStatus)) ||
+                            (('browsed' === $bestStatus || 'incomplete' === $bestStatus)
+                                && ('failed' === $lessonStatus || 'passed' === $lessonStatus || 'completed' === $lessonStatus)) ||
+                            ('failed' === $bestStatus && ('passed' === $lessonStatus || 'completed' === $lessonStatus))
+                        ) {
+                            $tracking->setBestLessonStatus($lessonStatus);
+                            $bestStatus = $lessonStatus;
+                        }
+                    }
+                    $data['sco'] = $sco->getUuid();
+                    $data['lessonStatus'] = $lessonStatus;
+                    $data['scoreMax'] = intval($data['cmi.core.score.max']);
+                    $data['scoreMin'] = intval($data['cmi.core.score.min']);
+                    $data['scoreRaw'] = $scoreRaw;
+                    $data['sessionTime'] = $sessionTimeInHundredth;
+                    $data['totalTime'] = $totalTimeInHundredth;
+                    $data['bestScore'] = $bestScore;
+                    $data['bestStatus'] = $bestStatus;
+                    $event = new LogScormResultEvent($sco->getScorm(), $user, $data);
+                    $this->eventDispatcher->dispatch('log', $event);
+
+                    // Generate resource evaluation
+//                    $this->scormManager->generateScormEvaluation($tracking);
+                }
+                break;
+            case Scorm::SCORM_2004:
+                $tracking->setDetails($data);
+
+                if ('log' === $mode) {
+                    $dataSessionTime = isset($data['cmi.session_time']) ?
+                        $this->formatSessionTime($data['cmi.session_time']) :
+                        'PT0S';
+                    $completionStatus = isset($data['cmi.completion_status']) ? $data['cmi.completion_status'] : 'unknown';
+                    $successStatus = isset($data['cmi.success_status']) ? $data['cmi.success_status'] : 'unknown';
+                    $scoreRaw = isset($data['cmi.score.raw']) ? intval($data['cmi.score.raw']) : null;
+                    $scoreMin = isset($data['cmi.score.min']) ? intval($data['cmi.score.min']) : null;
+                    $scoreMax = isset($data['cmi.score.max']) ? intval($data['cmi.score.max']) : null;
+                    $scoreScaled = isset($data['cmi.score.scaled']) ? floatval($data['cmi.score.scaled']) : null;
+                    $bestScore = $tracking->getScoreRaw();
+
+                    // Computes total time
+                    $totalTime = new \DateInterval($tracking->getTotalTimeString());
+
+                    try {
+                        $sessionTime = new \DateInterval($dataSessionTime);
+                    } catch (\Exception $e) {
+                        $sessionTime = new \DateInterval('PT0S');
+                    }
+                    $computedTime = new \DateTime();
+                    $computedTime->setTimestamp(0);
+                    $computedTime->add($totalTime);
+                    $computedTime->add($sessionTime);
+                    $computedTimeInSecond = $computedTime->getTimestamp();
+                    $totalTimeInterval = $this->retrieveIntervalFromSeconds($computedTimeInSecond);
+                    $data['cmi.total_time'] = $totalTimeInterval;
+                    $tracking->setTotalTimeString($totalTimeInterval);
+
+                    // Update best score if the current score is better than the previous best score
+                    if (empty($bestScore) || (!is_null($scoreRaw) && $scoreRaw > $bestScore)) {
+                        $tracking->setScoreRaw($scoreRaw);
+                        $tracking->setScoreMin($scoreMin);
+                        $tracking->setScoreMax($scoreMax);
+                        $tracking->setScoreScaled($scoreScaled);
+                    }
+
+                    // Update best success status and completion status
+                    $currentCompletionStatus = $tracking->getCompletionStatus();
+                    $currentSuccessStatus = $tracking->getLessonStatus();
+                    $conditionCA = ('unknown' === $currentCompletionStatus) &&
+                        ('completed' === $completionStatus ||
+                        'incomplete' === $completionStatus ||
+                        'not_attempted' === $completionStatus);
+                    $conditionCB = ('not_attempted' === $currentCompletionStatus) && ('completed' === $completionStatus || 'incomplete' === $completionStatus);
+                    $conditionCC = ('incomplete' === $currentCompletionStatus) && ('completed' === $completionStatus);
+                    $conditionSA = ('unknown' === $currentSuccessStatus) && ('passed' === $successStatus || 'failed' === $successStatus);
+                    $conditionSB = ('failed' === $currentSuccessStatus) && ('passed' === $successStatus);
+
+                    if (is_null($currentCompletionStatus) || $conditionCA || $conditionCB || $conditionCC) {
+                        $tracking->setCompletionStatus($completionStatus);
+                    }
+
+                    if (is_null($currentSuccessStatus) || $conditionSA || $conditionSB) {
+                        $tracking->setLessonStatus($successStatus);
+                    }
+                    $data['sco'] = $sco->getUuid();
+                    $data['lessonStatus'] = $successStatus;
+                    $data['completionStatus'] = $completionStatus;
+                    $data['scoreMax'] = $scoreMax;
+                    $data['scoreMin'] = $scoreMin;
+                    $data['scoreRaw'] = $scoreRaw;
+                    $data['sessionTime'] = $dataSessionTime;
+                    $data['totalTime'] = $totalTimeInterval;
+                    $data['result'] = $scoreRaw;
+                    $data['resultMax'] = $scoreMax;
+                    $event = new LogScormResultEvent($sco->getScorm(), $user, $data);
+                    $this->eventDispatcher->dispatch('log', $event);
+
+                    // Generate resource evaluation
+//                    $this->scormManager->generateScormEvaluation(
+//                        $sco->getScorm()->getResourceNode(),
+//                        $user,
+//                        $completionStatus,
+//                        $successStatus,
+//                        $scoreRaw,
+//                        $scoreMin,
+//                        $scoreMax,
+//                        $dataSessionTime
+//                    );
+                }
+                break;
+        }
+        $this->om->persist($tracking);
+        $this->om->flush();
+
+        return $tracking;
     }
 
     /* TODO : copies archive & unzipped files */
@@ -610,9 +785,51 @@ class ScormManager
         $zip->close();
     }
 
-    /***************
-     * Old methods *
-     ***************/
+    private function convertTimeInHundredth($time)
+    {
+        $timeInArray = explode(':', $time);
+        $timeInArraySec = explode('.', $timeInArray[2]);
+        $timeInHundredth = 0;
+
+        if (isset($timeInArraySec[1])) {
+            if (1 === strlen($timeInArraySec[1])) {
+                $timeInArraySec[1] .= '0';
+            }
+            $timeInHundredth = intval($timeInArraySec[1]);
+        }
+        $timeInHundredth += intval($timeInArraySec[0]) * 100;
+        $timeInHundredth += intval($timeInArray[1]) * 6000;
+        $timeInHundredth += intval($timeInArray[0]) * 360000;
+
+        return $timeInHundredth;
+    }
+
+    /**
+     * Converts a time in seconds to a DateInterval string.
+     *
+     * @param int $seconds
+     *
+     * @return string
+     */
+    private function retrieveIntervalFromSeconds($seconds)
+    {
+        $result = '';
+        $remainingTime = (int) $seconds;
+
+        if (empty($remainingTime)) {
+            $result .= 'PT0S';
+        } else {
+            $nbDays = (int) ($remainingTime / 86400);
+            $remainingTime %= 86400;
+            $nbHours = (int) ($remainingTime / 3600);
+            $remainingTime %= 3600;
+            $nbMinutes = (int) ($remainingTime / 60);
+            $nbSeconds = $remainingTime % 60;
+            $result .= 'P'.$nbDays.'DT'.$nbHours.'H'.$nbMinutes.'M'.$nbSeconds.'S';
+        }
+
+        return $result;
+    }
 
     public function formatSessionTime($sessionTime)
     {
@@ -630,6 +847,11 @@ class ScormManager
 
         return $formattedValue;
     }
+
+    /***************
+     * Old methods *
+     ***************/
+
 
     public function generateScorm12Evaluation(Scorm12ScoTracking $scoTracking)
     {
