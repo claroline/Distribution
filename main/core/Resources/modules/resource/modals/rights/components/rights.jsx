@@ -11,20 +11,24 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {selectors} from '#/main/core/resource/modals/rights/store'
+import {actions as rightsAction} from '#/main/core/resource/modals/rights/store/actions'
+
 import {ResourceRights} from '#/main/core/resource/components/rights'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 
-const RightsModalComponent = props =>
-  <Modal
-    {...omit(props, 'resourceNode', 'saveEnabled', 'save', 'updateRights', 'loadRights')}
+const RightsModalComponent = props => {
+  return (<Modal
+    {...omit(props, 'resourceNode', 'saveEnabled', 'save', 'updateRights', 'loadResourceNode')}
     icon="fa fa-fw fa-lock"
     title={trans('rights')}
     subtitle={props.resourceNode.name}
-    onEntering={() => props.loadRights(props.resourceNode)}
+    onEntering={() => {
+      props.loadResourceNode(props.resourceNode)
+    }}
   >
     <ResourceRights
       resourceNode={props.resourceNode}
-      updateRights={() => props.updateRights()}
+      updateRights={props.updateRights}
     />
 
     <Button
@@ -38,7 +42,8 @@ const RightsModalComponent = props =>
         props.fadeModal()
       }}
     />
-  </Modal>
+  </Modal>)
+}
 
 RightsModalComponent.propTypes = {
   resourceNode: T.shape(
@@ -47,20 +52,22 @@ RightsModalComponent.propTypes = {
   saveEnabled: T.bool.isRequired,
   save: T.func.isRequired,
   updateRights: T.func.isRequired,
-  loadRights: T.func.isRequired,
+  loadResourceNode: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
 
 const RightsModal = connect(
   (state) => ({
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, selectors.STORE_NAME))
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, selectors.STORE_NAME)),
+    nodeForm: state[selectors.STORE_NAME].data
   }),
   (dispatch) => ({
-    updateRights() {
-
+    updateRights(perms) {
+      //dispatch(rightsAction.update(perms))
+      dispatch(formActions.updateProp(selectors.STORE_NAME, 'rights', perms))
     },
-    loadRights(resourceNode) {
-      dispatch(formActions.resetForm(selectors.STORE_NAME, resourceNode.rights))
+    loadResourceNode(resourceNode) {
+      dispatch(formActions.resetForm(selectors.STORE_NAME, resourceNode))
     },
     save(resourceNode) {
       dispatch(formActions.saveForm(selectors.STORE_NAME, ['claro_resource_action', {

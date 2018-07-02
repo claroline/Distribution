@@ -54,6 +54,10 @@ class ResourceLifecycleManager
     {
     }
 
+    public function rights(ResourceNode $resourceNode, $data)
+    {
+    }
+
     public function open(ResourceNode $resourceNode)
     {
         /** @var OpenResourceEvent $event */
