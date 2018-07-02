@@ -10,7 +10,6 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
  */
 class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterface
 {
-
     /**
      * Action to perform after Bundle update
      * Load default allowed types for the non digital resources if the previous bundle version is less than 1.1.

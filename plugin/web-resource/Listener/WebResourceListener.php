@@ -12,22 +12,15 @@
 namespace Claroline\WebResourceBundle\Listener;
 
 use Claroline\CoreBundle\Entity\Resource\File;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
-use Claroline\WebResourceBundle\Manager\WebResourceManager;
-use Claroline\CoreBundle\Form\FileType;
 use Claroline\ScormBundle\Event\ExportScormResourceEvent;
+use Claroline\WebResourceBundle\Manager\WebResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -64,8 +57,7 @@ class WebResourceListener
     public function __construct(
       ContainerInterface $container,
       WebResourceManager $webResourceManager
-      )
-    {
+      ) {
         $this->container = $container;
         $this->filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR;
         $this->tokenStorage = $this->container->get('security.token_storage');
@@ -96,23 +88,23 @@ class WebResourceListener
         $event->stopPropagation();
     }
 
-
     /**
      * @DI\Observe("load_claroline_web_resource")
      *
      * @param LoadResourceEvent $event
      */
-        public function onLoadWebResource(LoadResourceEvent $event)
-        {
-            $hash = $event->getResource()->getHashName();
-            $workspace = $event->getResource()->getResourceNode()->getWorkspace();
-            $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
-            $event->setAdditionalData([
-              'path' => $hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash)
+    public function onLoadWebResource(LoadResourceEvent $event)
+    {
+        $hash = $event->getResource()->getHashName();
+        $workspace = $event->getResource()->getResourceNode()->getWorkspace();
+        $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
+        $event->setAdditionalData([
+              'path' => $hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
             ]);
 
-            $event->stopPropagation();
-        }
+        $event->stopPropagation();
+    }
+
     /**
      * @DI\Observe("export_scorm_claroline_web_resource")
      *
@@ -184,7 +176,6 @@ class WebResourceListener
         $event->stopPropagation();
     }
 
-
     /**
      * Returns a new hash for a file.
      *
@@ -200,7 +191,6 @@ class WebResourceListener
 
         return $this->container->get('claroline.utilities.misc')->generateGuid().'.'.$mixed;
     }
-
 
     /**
      * Copies a file (no persistence).
@@ -224,6 +214,4 @@ class WebResourceListener
 
         return $file;
     }
-
-
 }

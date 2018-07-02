@@ -12,13 +12,13 @@
 
 namespace Claroline\WebResourceBundle\Manager;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\AppBundle\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @DI\Service("claroline.manager.web_resource_manager")
@@ -33,7 +33,6 @@ class WebResourceManager
      * @var \ZipArchive
      */
     private $zip;
-
 
     private $defaultIndexFiles = [
         'web/SCO_0001/default.html',
@@ -109,7 +108,7 @@ class WebResourceManager
     /**
      * Try to retrieve root file of the WebResource from the zip archive.
      *
-     * @param Workspace $workspace
+     * @param Workspace    $workspace
      * @param UploadedFile $file
      *
      * @return string
@@ -147,7 +146,7 @@ class WebResourceManager
         $this->unzipDelete($tmpDir);
 
         // Only one file
-        if (count($htmlFiles) === 1) {
+        if (1 === count($htmlFiles)) {
             return array_shift($htmlFiles);
         }
 
@@ -167,7 +166,7 @@ class WebResourceManager
         $htmlFiles = $this->getHTMLFiles($hash);
 
         // Only one file
-        if (count($htmlFiles) === 1) {
+        if (1 === count($htmlFiles)) {
             return array_shift($htmlFiles);
         }
 
@@ -181,7 +180,6 @@ class WebResourceManager
         // Unable to find an unique HTML file
         return;
     }
-
 
     /**
      * Deletes web resource unzipped files.
@@ -201,7 +199,6 @@ class WebResourceManager
         rmdir($dir);
     }
 
-
     /**
      * Checks if a UploadedFile is a zip and contains index.html file.
      *
@@ -212,7 +209,7 @@ class WebResourceManager
     public function isZip(UploadedFile $file, $workspace)
     {
         $isZip = false;
-        if ($file->getClientMimeType() === 'application/zip' || $this->getZip()->open($file) === true) {
+        if ('application/zip' === $file->getClientMimeType() || true === $this->getZip()->open($file)) {
             // Correct Zip type => check if html root file exists
             $rootFile = $this->guessRootFile($file, $workspace);
 
@@ -230,10 +227,9 @@ class WebResourceManager
      * Use first $this->getZip()->open($file) or $this->isZip($file)
      *
      * @param Workspace $workspace
-     *
-     * @param string $hash The hash name of the resource
+     * @param string    $hash      The hash name of the resource
      */
-    public function unzip($hash,  Workspace $workspace)
+    public function unzip($hash, Workspace $workspace)
     {
         $filesPath = $this->container->getParameter('claroline.param.files_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
         $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
@@ -263,6 +259,7 @@ class WebResourceManager
         $zip->extractTo($destinationDir);
         $zip->close();
     }
+
     /**
      * Returns a new hash for a file.
      *
@@ -295,7 +292,7 @@ class WebResourceManager
 
         return [
           'hashName' => $hash,
-          'size' => $size
+          'size' => $size,
         ];
     }
-  }
+}

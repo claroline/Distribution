@@ -11,7 +11,6 @@
 
 namespace Claroline\WebResourceBundle\Controller\API;
 
-use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ResourceManager;
@@ -21,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-
 class WebResourceController extends AbstractCrudController
 {
-
     private $resourceManager;
     private $webResourceManager;
 
@@ -41,10 +38,11 @@ class WebResourceController extends AbstractCrudController
         $this->resourceManager = $resourceManager;
         $this->webResourceManager = $webResourceManager;
     }
-      public function getName()
-      {
-          return 'web-resource';
-      }
+
+    public function getName()
+    {
+        return 'web-resource';
+    }
 
     /**
      * @EXT\Route(
@@ -71,15 +69,15 @@ class WebResourceController extends AbstractCrudController
 
         foreach ($files as $file) {
             $isZip = $this->webResourceManager->isZip($file, $workspace);
-            if(!$isZip) {
-              $error = 'not_valid_file';
-              return new JsonResponse($error, 500);
+            if (!$isZip) {
+                $error = 'not_valid_file';
+
+                return new JsonResponse($error, 500);
             } else {
-              $data = $this->webResourceManager->create($file, $workspace);
-              return new JsonResponse($data, 200);
+                $data = $this->webResourceManager->create($file, $workspace);
+
+                return new JsonResponse($data, 200);
             }
         }
-
-
     }
 }

@@ -3,7 +3,6 @@
 namespace Claroline\WebResourceBundle\Installation\Updater;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\WebResourceBundle\Manager\WebResourceManager;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -41,22 +40,20 @@ class Updater120000 extends Updater
             $workspace = $resourceNode->getWorkspace();
 
             if (!empty($file)) {
-              $hash = $file->getHashName();
-              $uploadDir = $this->container->getParameter('claroline.param.uploads_directory');
-              $filesDir = $this->container->getParameter('claroline.param.files_directory');
+                $hash = $file->getHashName();
+                $uploadDir = $this->container->getParameter('claroline.param.uploads_directory');
+                $filesDir = $this->container->getParameter('claroline.param.files_directory');
 
-              if ($fs->exists($filesDir.DIRECTORY_SEPARATOR.$hash)) {
-                $fs->copy($filesDir.DIRECTORY_SEPARATOR.$hash, $filesDir.DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR.$hash);
-                $fs->remove($filesDir.DIRECTORY_SEPARATOR.$hash);
-              }
+                if ($fs->exists($filesDir.DIRECTORY_SEPARATOR.$hash)) {
+                    $fs->copy($filesDir.DIRECTORY_SEPARATOR.$hash, $filesDir.DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR.$hash);
+                    $fs->remove($filesDir.DIRECTORY_SEPARATOR.$hash);
+                }
 
-              if($fs->exists($uploadDir.DIRECTORY_SEPARATOR.$hash)){
-                $fs->mirror($uploadDir.DIRECTORY_SEPARATOR.$hash, $uploadDir.DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR.$hash);
-                $fs->remove($uploadDir.DIRECTORY_SEPARATOR.$hash);
-              }
+                if ($fs->exists($uploadDir.DIRECTORY_SEPARATOR.$hash)) {
+                    $fs->mirror($uploadDir.DIRECTORY_SEPARATOR.$hash, $uploadDir.DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR.$hash);
+                    $fs->remove($uploadDir.DIRECTORY_SEPARATOR.$hash);
+                }
             }
-
         }
-
     }
 }

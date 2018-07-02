@@ -3,6 +3,7 @@ import {WebResource} from '#/plugin/web-resource/resources/web-resource/componen
 import {WebResourceCreation} from '#/plugin/web-resource/resources/web-resource/components/creation'
 /**
  * WebResource creation app.
+ * TODO: should use the FileForm of '#/main/core/resources/file/actions/creation.jsx'
  */
 export const Creation = () => ({
   component: WebResourceCreation
