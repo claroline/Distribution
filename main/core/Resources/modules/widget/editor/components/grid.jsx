@@ -17,6 +17,14 @@ const WidgetGridEditor = props =>
         key={index}
         widget={widgetContainer}
         context={props.context}
+        update={(widget) => {
+          // copy array
+          const widgets = props.widgets.slice(0)
+          // replace modified widget
+          widgets[index] = widget
+          // propagate change
+          props.update(widgets)
+        }}
         actions={[
           {
             type: 'modal',

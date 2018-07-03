@@ -1,11 +1,11 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import cloneDeep from 'lodash/cloneDeep'
 import sum from 'lodash/sum'
 import times from 'lodash/times'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
-import {Embedded} from '#/main/app/components/embedded'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
@@ -14,17 +14,15 @@ import {
   WidgetInstance as WidgetInstanceTypes
 } from '#/main/core/widget/prop-types'
 import {computeStyles} from '#/main/core/widget/utils'
-import {getWidget} from '#/main/core/widget/types'
-import {MODAL_WIDGET_CONTENT} from '#/main/core/widget/editor/modals/content'
-
+import {WidgetContent} from '#/main/core/widget/content/components/content'
+import {MODAL_WIDGET_CONTENT} from '#/main/core/widget/content/modals/creation'
 
 const WidgetCol = props =>
   <div className={`widget-col col-md-${props.size}`}>
     {props.content &&
-      <Embedded
-        name={`${props.content.type}-${props.content.id}`}
-        load={getWidget(props.content.type)}
-        parameters={[props.context, props.content.parameters]}
+      <WidgetContent
+        {...props.content}
+        context={props.context}
       />
     }
 
@@ -34,7 +32,8 @@ const WidgetCol = props =>
         type="modal"
         label={trans('add_content', {}, 'widget')}
         modal={[MODAL_WIDGET_CONTENT, {
-          context: props.context
+          context: props.context,
+          add: props.addContent
         }]}
       />
     }
@@ -45,7 +44,8 @@ WidgetCol.propTypes = {
   context: T.object,
   content: T.shape(
     WidgetInstanceTypes.propTypes
-  )
+  ),
+  addContent: T.func.isRequired
 }
 
 const WidgetEditor = props =>
@@ -72,6 +72,13 @@ const WidgetEditor = props =>
             size={(12 / sum(props.widget.display.layout)) * props.widget.display.layout[col]}
             context={props.context}
             content={props.widget.contents[col]}
+            addContent={(content) => {
+              const widget = cloneDeep(props.widget)
+
+              widget.contents[col] = content
+
+              props.update(widget)
+            }}
           />
         )}
       </div>
@@ -83,6 +90,7 @@ WidgetEditor.propTypes = {
   widget: T.shape(
     WidgetContainerTypes.propTypes
   ).isRequired,
+  update: T.func.isRequired,
   actions: T.arrayOf(T.shape(
     ActionTypes.propTypes
   )).isRequired

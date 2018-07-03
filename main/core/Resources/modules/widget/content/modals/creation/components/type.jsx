@@ -11,8 +11,8 @@ import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {Widget as WidgetTypes} from '#/main/core/widget/prop-types'
-import {actions, selectors} from '#/main/core/widget/editor/modals/creation/store'
-import {MODAL_WIDGET_CONTENT_PARAMETERS} from '#/main/core/widget/editor/modals/content/components/parameters'
+import {actions, selectors} from '#/main/core/widget/content/modals/creation/store'
+import {MODAL_WIDGET_CONTENT_PARAMETERS} from '#/main/core/widget/content/modals/creation/components/parameters'
 
 const WidgetPreview = props =>
   <a className="widget-preview" role="button" onClick={props.onClick}>
@@ -59,19 +59,19 @@ class ContentTypeModalComponent extends Component {
   render() {
     return (
       <Modal
-        {...omit(this.props, 'context', 'availableWidgets', 'fetchWidgets', 'configure')}
+        {...omit(this.props, 'context', 'availableTypes', 'fetchContents', 'configure')}
         icon="fa fa-fw fa-plus"
         title={trans('new_content', {}, 'widget')}
         subtitle={trans('new_content_select', {}, 'widget')}
         onEntering={() => {
-          if (0 === this.props.availableWidgets.length) {
-            this.props.fetchWidgets(this.props.context)
+          if (0 === this.props.availableTypes.length) {
+            this.props.fetchContents(this.props.context)
           }
         }}
       >
         <ul className="nav nav-tabs">
           {['all']
-            .concat(uniq(flatten(this.props.availableWidgets.map(widget => widget.tags))))
+            .concat(uniq(flatten(this.props.availableTypes.map(widget => widget.tags))))
             .map(tag =>
               <li key={tag} className={classes({
                 active: tag === this.state.activeTag
@@ -93,8 +93,8 @@ class ContentTypeModalComponent extends Component {
 
         <WidgetsGrid
           widgets={'all' === this.state.activeTag ?
-            this.props.availableWidgets :
-            this.props.availableWidgets.filter(widget => widget.tags && -1 !== widget.tags.indexOf(this.state.activeTag))
+            this.props.availableTypes :
+            this.props.availableTypes.filter(widget => widget.tags && -1 !== widget.tags.indexOf(this.state.activeTag))
           }
           add={this.props.configure}
         />
@@ -105,24 +105,24 @@ class ContentTypeModalComponent extends Component {
 
 ContentTypeModalComponent.propTypes = {
   context: T.object.isRequired,
-  availableWidgets: T.arrayOf(T.shape(
+  availableTypes: T.arrayOf(T.shape(
     WidgetTypes.propTypes
   )).isRequired,
-  fetchWidgets: T.func.isRequired,
+  fetchContents: T.func.isRequired,
   configure: T.func.isRequired
 }
 
 const ContentTypeModal = connect(
   (state) => ({
-    availableWidgets: selectors.availableWidgets(state)
+    availableTypes: selectors.availableWidgets(state)
   }),
   (dispatch) => ({
-    fetchWidgets(context) {
-      dispatch(actions.fetchWidgets(context.type))
+    fetchContents(context) {
+      dispatch(actions.fetchContents(context.type))
     },
 
     configure(widgetType) {
-      dispatch(actions.startCreation(widgetType))
+      dispatch(actions.startCreation(widgetType.name))
 
       // display the second creation modal
       dispatch(modalActions.showModal(MODAL_WIDGET_CONTENT_PARAMETERS, {}))

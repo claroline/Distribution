@@ -7,8 +7,8 @@ import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
-import {selectors} from '#/main/core/widget/editor/modals/creation/store'
-//import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
+import {WidgetContentForm} from '#/main/core/widget/content/components/form'
+import {selectors} from '#/main/core/widget/content/modals/creation/store'
 
 const MODAL_WIDGET_CONTENT_PARAMETERS = 'MODAL_WIDGET_CONTENT_PARAMETERS'
 
@@ -19,6 +19,7 @@ const ParametersModalComponent = props =>
     title={trans('new_content', {}, 'widget')}
     subtitle={trans('new_content_configure', {}, 'widget')}
   >
+    <WidgetContentForm level={5} name={selectors.FORM_NAME} />
 
     <Button
       className="modal-btn btn"
@@ -35,8 +36,8 @@ const ParametersModalComponent = props =>
 
 ParametersModalComponent.propTypes = {
   /*widget: T.shape(
-    WidgetContainerTypes.propTypes
-  ).isRequired,*/
+   WidgetContainerTypes.propTypes
+   ).isRequired,*/
   saveEnabled: T.bool.isRequired,
   add: T.func.isRequired,
   fadeModal: T.func.isRequired

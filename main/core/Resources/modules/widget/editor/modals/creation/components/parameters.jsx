@@ -20,7 +20,7 @@ const ParametersModalComponent = props =>
     title={trans('new_widget', {}, 'widget')}
     subtitle={trans('new_widget_configure', {}, 'widget')}
   >
-    <WidgetForm level={5} name={selectors.FORM_NAME} />
+    <WidgetForm level={5} name={selectors.STORE_NAME} />
 
     <Button
       className="modal-btn btn"

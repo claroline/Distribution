@@ -12,10 +12,10 @@
 import {registry} from '#/main/app/modals/registry'
 
 // gets the modal component
-import {ContentTypeModal} from '#/main/core/widget/editor/modals/content/components/content-type'
+import {ContentTypeModal} from '#/main/core/widget/content/modals/creation/components/type'
 
 // internal modals
-import {ParametersModal, MODAL_WIDGET_CONTENT_PARAMETERS} from '#/main/core/widget/editor/modals/content/components/parameters'
+import {ParametersModal, MODAL_WIDGET_CONTENT_PARAMETERS} from '#/main/core/widget/content/modals/creation/components/parameters'
 
 const MODAL_WIDGET_CONTENT = 'MODAL_WIDGET_CONTENT'
 
