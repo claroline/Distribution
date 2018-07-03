@@ -15,11 +15,19 @@ use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * @ApiMeta(class="Icap\BibliographyBundle\Entity\BookReference")
+ * @ApiMeta(
+ *     class="Icap\BibliographyBundle\Entity\BookReference",
+ *     ignore={"find", "deleteBulk", "doc", "list", "get", "exist", "create", "copyBulk"}
+ * )
  * @Route("/book_reference")
  */
 class BookReferenceController extends AbstractCrudController
 {
+    /**
+     * Get the name of the managed entity.
+     *
+     * @return string
+     */
     public function getName()
     {
         return 'bookReference';
