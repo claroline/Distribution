@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer\Widget;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
+use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -34,7 +35,7 @@ class HomeTabSerializer
         return HomeTab::class;
     }
 
-    public function serialize(HomeTab $homeTab, array $options = [])
+    public function serialize(HomeTab $homeTab, array $options = []): array
     {
         $widgetHomeTabConfigs = $homeTab->getWidgetHomeTabConfigs();
         $widgetHomeTabConfigs = [];
@@ -55,11 +56,11 @@ class HomeTabSerializer
         ];
     }
 
-    public function deserialize(array $data, HomeTab $homeTab, array $options = [])
-    {/*
-        foreach () {
-
-        }*/
+    public function deserialize(array $data, HomeTab $homeTab, array $options = []): HomeTab
+    {
+        foreach ($data['widgets'] as $widgetContainer) {
+            $this->serializer->deserialize(WidgetContainer::class, $widgetContainer);
+        }
 
         return $widget;
     }

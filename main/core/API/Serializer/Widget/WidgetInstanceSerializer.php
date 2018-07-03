@@ -48,7 +48,7 @@ class WidgetInstanceSerializer
         return 'Claroline\CoreBundle\Entity\Widget\WidgetInstance';
     }
 
-    public function serialize(WidgetInstance $widgetInstance, array $options = [])
+    public function serialize(WidgetInstance $widgetInstance, array $options = []): array
     {
         $widget = $widgetInstance->getWidget();
 
@@ -74,7 +74,7 @@ class WidgetInstanceSerializer
         ];
     }
 
-    public function deserialize($data, WidgetInstance $widgetInstance, array $options = [])
+    public function deserialize($data, WidgetInstance $widgetInstance, array $options = []): WidgetInstance
     {
         $this->sipe('id', 'setUuid', $data, $widgetInstance);
 
