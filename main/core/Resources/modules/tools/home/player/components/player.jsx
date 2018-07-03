@@ -7,6 +7,7 @@ import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/prop-typ
 
 import {select} from '#/main/core/tools/home/selectors'
 
+
 const PlayerComponent = props =>
   <div>
     {props.widgets.map((widgetInstance, index) =>

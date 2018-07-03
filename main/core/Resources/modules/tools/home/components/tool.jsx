@@ -20,22 +20,34 @@ import {select} from '#/main/core/tools/home/selectors'
 import {Editor} from '#/main/core/tools/home/editor/components/editor'
 import {Player} from '#/main/core/tools/home/player/components/player'
 
+import {PlayerNav} from '#/main/core/tools/home/player/components/nav'
+
+const tabs = [
+  {name1 : 'tab1'},
+  {name2 : 'tab2'},
+  {name3 : 'tab3'}
+]
+
 const ToolActionsComponent = props =>
   <PageActions>
-    <FormPageActionsContainer
-      formName="editor"
-      target={['apiv2_home_update']}
-      opened={!!matchPath(props.location.pathname, {path: '/edit'})}
-      open={{
-        type: 'link',
-        target: '/edit'
-      }}
-      cancel={{
-        type: 'link',
-        target: '/',
-        exact: true
-      }}
-    />
+    <PlayerNav
+      tabs={tabs}
+    >
+      <FormPageActionsContainer
+        formName="editor"
+        target={['apiv2_home_update']}
+        opened={!!matchPath(props.location.pathname, {path: '/edit'})}
+        open={{
+          type: 'link',
+          target: '/edit'
+        }}
+        cancel={{
+          type: 'link',
+          target: '/',
+          exact: true
+        }}
+      />
+    </PlayerNav>
   </PageActions>
 
 ToolActionsComponent.propTypes = {
