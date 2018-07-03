@@ -112,7 +112,8 @@ const AVAILABLE_EMBEDDED_RESOURCES = [
   'text',
   'innova_path',
   'claroline_dropzone',
-  'ujm_exercise'
+  'ujm_exercise',
+  'claroline_scorm'
 ]
 
 const SecondaryResources = props =>

@@ -4,10 +4,14 @@ import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {APIClass} from '#/plugin/scorm/resources/scorm/player/api'
 
 const TRACKING_UPDATE = 'TRACKING_UPDATE'
+const SUMMARY_PIN_TOGGLE  = 'SUMMARY_PIN_TOGGLE'
+const SUMMARY_OPEN_TOGGLE = 'SUMMARY_OPEN_TOGGLE'
 
 const actions = {}
 
 actions.updateTracking = makeActionCreator(TRACKING_UPDATE, 'tracking')
+actions.toggleSummaryPin = makeActionCreator(SUMMARY_PIN_TOGGLE)
+actions.toggleSummaryOpen = makeActionCreator(SUMMARY_OPEN_TOGGLE)
 
 actions.initializeAPI = (sco, scormData, trackings) => (dispatch) => {
   window.API = new APIClass(sco, scormData, trackings[sco.id], dispatch)
@@ -31,5 +35,7 @@ actions.commitData = (scoId, mode, scoData) => ({
 
 export {
   actions,
-  TRACKING_UPDATE
+  TRACKING_UPDATE,
+  SUMMARY_PIN_TOGGLE,
+  SUMMARY_OPEN_TOGGLE
 }

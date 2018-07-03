@@ -11,12 +11,14 @@
 
 namespace Claroline\ScormBundle\Listener;
 
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\ScormBundle\Entity\Sco;
@@ -38,6 +40,8 @@ class ScormListener
     private $resourceEvalManager;
     /** @var ScormManager */
     private $scormManager;
+    /** @var SerializerProvider */
+    private $serializer;
     /** @var TwigEngine */
     private $templating;
     /** @var TokenStorageInterface */
@@ -54,6 +58,7 @@ class ScormListener
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
      *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "scormManager"        = @DI\Inject("claroline.manager.scorm_manager"),
+     *     "serializer"          = @DI\Inject("claroline.api.serializer"),
      *     "templating"          = @DI\Inject("templating"),
      *     "tokenStorage"        = @DI\Inject("security.token_storage"),
      *     "uploadDir"           = @DI\Inject("%claroline.param.uploads_directory%")
@@ -61,6 +66,7 @@ class ScormListener
      *
      * @param ObjectManager             $om
      * @param ScormManager              $scormManager
+     * @param SerializerProvider        $serializer
      * @param TwigEngine                $templating
      * @param TokenStorageInterface     $tokenStorage
      * @param ResourceEvaluationManager $resourceEvalManager
@@ -68,15 +74,17 @@ class ScormListener
      */
     public function __construct(
         ObjectManager $om,
+        ResourceEvaluationManager $resourceEvalManager,
         ScormManager $scormManager,
+        SerializerProvider $serializer,
         TwigEngine $templating,
         TokenStorageInterface $tokenStorage,
-        ResourceEvaluationManager $resourceEvalManager,
         $uploadDir
     ) {
         $this->om = $om;
         $this->resourceEvalManager = $resourceEvalManager;
         $this->scormManager = $scormManager;
+        $this->serializer = $serializer;
         $this->templating = $templating;
         $this->tokenStorage = $tokenStorage;
         $this->uploadDir = $uploadDir;
@@ -110,6 +118,31 @@ class ScormListener
         );
 
         $event->setResponse(new Response($content));
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("load_claroline_scorm")
+     *
+     * @param LoadResourceEvent $event
+     */
+    public function onLoad(LoadResourceEvent $event)
+    {
+        $scorm = $event->getResource();
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ('anon.' === $user) {
+            $user = null;
+        }
+        $event->setAdditionalData([
+            'scorm' => $this->serializer->serialize($scorm),
+            'evaluation' => is_null($user) ?
+                null :
+                $this->serializer->serialize(
+                    $this->resourceEvalManager->getResourceUserEvaluation($scorm->getResourceNode(), $user)
+                ),
+            'trackings' => $this->scormManager->generateScosTrackings($scorm->getRootScos(), $user),
+        ]);
         $event->stopPropagation();
     }
 

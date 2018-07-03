@@ -852,7 +852,6 @@ class ScormManager
      * Old methods *
      ***************/
 
-
     public function generateScorm12Evaluation(Scorm12ScoTracking $scoTracking)
     {
         $status = $scoTracking->getLessonStatus();

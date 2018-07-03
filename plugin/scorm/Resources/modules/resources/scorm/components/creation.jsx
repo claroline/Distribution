@@ -31,6 +31,7 @@ const ScormForm = props =>
   />
 
 ScormForm.propTypes = {
+  workspaceId: T.string.isRequired,
   update: T.func.isRequired
 }
 

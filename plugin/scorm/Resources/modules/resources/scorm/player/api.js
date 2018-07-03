@@ -240,6 +240,13 @@ function APIClass(sco, scormData, tracking, dispatch) {
     console.log('*** LMSSetValue:: [' + argName + '] = ' + argValue + ' ***')
 
     if (this.apiInitialized) {
+      let upperCaseLessonStatus = ''
+      let upperCaseExit = ''
+      // regex to check format
+      // hhhh:mm:ss.ss
+      const re = /^[0-9]{2,4}:[0-9]{2}:[0-9]{2}(.[0-9]{1,2})?$/
+      let timeArray = []
+
       switch (argName) {
         case 'cmi.core._children' :
         case 'cmi.core.score._children' :
@@ -272,7 +279,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
           return 'true'
         case 'cmi.core.lesson_status' :
-          const upperCaseLessonStatus = argValue.toUpperCase()
+          upperCaseLessonStatus = argValue.toUpperCase()
 
           if ('PASSED' !== upperCaseLessonStatus &&
             'FAILED' !== upperCaseLessonStatus &&
@@ -302,7 +309,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
           return 'true'
         case 'cmi.core.exit' :
-          const upperCaseExit = argValue.toUpperCase()
+          upperCaseExit = argValue.toUpperCase()
 
           if ('TIME-OUT' !== upperCaseExit &&
             'SUSPEND' !== upperCaseExit &&
@@ -318,17 +325,13 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
           return 'true'
         case 'cmi.core.session_time' :
-          // regex to check format
-          // hhhh:mm:ss.ss
-          const re = /^[0-9]{2,4}:[0-9]{2}:[0-9]{2}(.[0-9]{1,2})?$/
-
           if (!re.test(argValue)) {
             this.apiLastError = '405'
 
             return 'false'
           }
           // check that minute and second are 0 <= x < 60
-          const timeArray = argValue.split(':')
+          timeArray = argValue.split(':')
 
           if (timeArray[1] < 0 || timeArray[1] >= 60 || timeArray[2] < 0 || timeArray[2] >= 60) {
             this.apiLastError = '405'
@@ -517,6 +520,8 @@ function APIClass(sco, scormData, tracking, dispatch) {
       return ''
     }
 
+    let splitted = []
+
     switch (arg) {
       case 'cmi.comments_from_learner':
       case 'cmi.comments_from_lms':
@@ -601,7 +606,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
         return this.scoData[arg]
 
       default:
-        const splitted = arg.split('.')
+        splitted = arg.split('.')
 
         if ('cmi' === splitted[0] && splitted[2].trim()) {
           const cmiIndex = 'cmi.' + splitted[1]
@@ -625,7 +630,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                       return ''
                     }
-                    break
 
                   default:
                     // Undefined Data Model Element
@@ -649,7 +653,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                 return ''
               }
-              break
 
             case 'interactions' :
               if (undefined !== this.scoData[cmiIndex][nIndex]) {
@@ -672,7 +675,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                       return ''
                     }
-                    break
 
                   case 'objectives':
                     if ('_count' === splitted[4]) {
@@ -710,7 +712,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                       return ''
                     }
-                    break
 
                   case 'correct_responses':
                     if ('_count' === splitted[4]) {
@@ -748,7 +749,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                       return ''
                     }
-                    break
 
                   default:
                     // Undefined Data Model Element
@@ -762,10 +762,11 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                 return ''
               }
-              break
 
             case 'objectives' :
               if (undefined !== this.scoData[cmiIndex][nIndex]) {
+                let scoreIndex = ''
+
                 switch (splitted[3]) {
                   case 'id':
                   case 'success_status':
@@ -782,7 +783,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                       return ''
                     }
-                    break
 
                   case 'score':
                     switch (splitted[4]) {
@@ -791,7 +791,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
                       case 'raw':
                       case 'min':
                       case 'max':
-                        const scoreIndex = 'score.' + splitted[4]
+                        scoreIndex = 'score.' + splitted[4]
 
                         if (undefined !== this.scoData[cmiIndex][nIndex][scoreIndex]) {
                           this.apiLastError = '0'
@@ -803,7 +803,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                           return ''
                         }
-                        break
 
                       default:
                         // Undefined Data Model Element
@@ -811,7 +810,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                         return ''
                     }
-                    break
 
                   default:
                     // Undefined Data Model Element
@@ -854,7 +852,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                 return ''
               }
-              break
 
             default:
               // Undefined Data Model Element
@@ -888,6 +885,10 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
     let argStringValue
     let argFloatValue
+    let upperCaseLessonStatus = ''
+    let upperCaseExit = ''
+    let upperCaseSuccessStatus = ''
+    let splitted = []
 
     switch (argName) {
       case 'cmi.comments_from_learner':
@@ -928,7 +929,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
         return 'false'
 
       case 'cmi.completion_status':
-        const upperCaseLessonStatus = argValue.toUpperCase()
+        upperCaseLessonStatus = argValue.toUpperCase()
 
         if ('COMPLETED' !== upperCaseLessonStatus &&
           'INCOMPLETE' !== upperCaseLessonStatus &&
@@ -946,7 +947,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
         return 'true'
 
       case 'cmi.exit':
-        const upperCaseExit = argValue.toUpperCase()
+        upperCaseExit = argValue.toUpperCase()
 
         if ('TIME-OUT' !== upperCaseExit &&
           'SUSPEND' !== upperCaseExit &&
@@ -988,7 +989,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
           return 'false'
         }
-        break
 
       case 'cmi.learner_preference.audio_captioning':
         if ('-1' !== argValue && '0' !== argValue && '1' !== argValue) {
@@ -1025,7 +1025,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
           return 'false'
         }
-        break
 
       case 'cmi.score.scaled':
         argStringValue = '' + argValue
@@ -1050,7 +1049,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
           return 'false'
         }
-        break
 
       case 'cmi.score.raw':
       case 'cmi.score.max':
@@ -1068,10 +1066,9 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
           return 'false'
         }
-        break
 
       case 'cmi.success_status':
-        const upperCaseSuccessStatus = argValue.toUpperCase()
+        upperCaseSuccessStatus = argValue.toUpperCase()
 
         if ('PASSED' !== upperCaseSuccessStatus && 'FAILED' !== upperCaseSuccessStatus && 'UNKNOWN' !== upperCaseSuccessStatus) {
           // Data Model Element Type Mismatch
@@ -1094,7 +1091,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
         return 'true'
 
       default:
-        const splitted = argName.split('.')
+        splitted = argName.split('.')
 
         if ('cmi' === splitted[0] && splitted[2].trim()) {
           const cmiIndex = 'cmi.' + splitted[1]
@@ -1106,6 +1103,10 @@ function APIClass(sco, scormData, tracking, dispatch) {
           if (!this.scoData[cmiIndex][nIndex]) {
             this.scoData[cmiIndex][nIndex] = {}
           }
+          let upperCaseType = ''
+          let upperCaseResult = ''
+          let upperCaseObjSuccessStatus = ''
+          let upperCaseObjCompletionStatus = ''
 
           switch (splitted[1]) {
             case 'comments_from_learner' :
@@ -1128,12 +1129,11 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                   return 'false'
               }
-              break
 
             case 'interactions' :
               switch (splitted[3]) {
                 case 'type':
-                  const upperCaseType = argValue.toUpperCase()
+                  upperCaseType = argValue.toUpperCase()
 
                   if ('TRUE-FALSE' !== upperCaseType &&
                     'CHOICE' !== upperCaseType &&
@@ -1159,7 +1159,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                     return 'true'
                   }
-                  break
 
                 case 'weighting':
                   argStringValue = '' + argValue
@@ -1178,10 +1177,9 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                     return 'false'
                   }
-                  break
 
                 case 'result':
-                  const upperCaseResult = argValue.toUpperCase()
+                  upperCaseResult = argValue.toUpperCase()
 
                   if ('CORRECT' === upperCaseResult ||
                     'INCORRECT' === upperCaseResult ||
@@ -1209,7 +1207,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                     return 'false'
                   }
-                  break
 
                 case 'id':
                 case 'timestamp':
@@ -1258,7 +1255,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
                       return 'false'
                     }
                   }
-                  break
 
                 case 'correct_responses':
                   if ('_count' === splitted[4]) {
@@ -1294,7 +1290,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
                       return 'false'
                     }
                   }
-                  break
 
                 default:
                   // Undefined Data Model Element
@@ -1302,12 +1297,11 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                   return 'false'
               }
-              break
 
             case 'objectives' :
               switch (splitted[3]) {
                 case 'success_status':
-                  const upperCaseObjSuccessStatus = argValue.toUpperCase()
+                  upperCaseObjSuccessStatus = argValue.toUpperCase()
 
                   if ('PASSED' !== upperCaseObjSuccessStatus &&
                     'FAILED' !== upperCaseObjSuccessStatus &&
@@ -1323,10 +1317,9 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                     return 'true'
                   }
-                  break
 
                 case 'completion_status':
-                  const upperCaseObjCompletionStatus = argValue.toUpperCase()
+                  upperCaseObjCompletionStatus = argValue.toUpperCase()
 
                   if ('COMPLETED' !== upperCaseObjCompletionStatus &&
                     'INCOMPLETE' !== upperCaseObjCompletionStatus &&
@@ -1343,7 +1336,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                     return 'true'
                   }
-                  break
 
                 case 'progress_measure':
                   argStringValue = '' + argValue
@@ -1368,7 +1360,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                     return 'false'
                   }
-                  break
 
                 case 'id':
                 case 'description':
@@ -1411,7 +1402,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                         return 'false'
                       }
-                      break
 
                     case 'raw':
                     case 'min':
@@ -1433,7 +1423,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                         return 'false'
                       }
-                      break
 
                     default:
                       // Undefined Data Model Element
@@ -1441,7 +1430,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                       return 'false'
                   }
-                  break
 
                 default:
                   // Undefined Data Model Element
@@ -1449,7 +1437,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
 
                   return 'false'
               }
-              break
 
             default:
               // Undefined Data Model Element
