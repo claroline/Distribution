@@ -76,7 +76,7 @@ class DeleteOldScormCommand extends ContainerAwareCommand
                 $output->writeln('<info>Deleting resource ['.$node->getName().']...</info>');
                 $hashName = $scorm2004->getHashName();
                 $scormArchiveFile = $filesDir.DIRECTORY_SEPARATOR.$hashName;
-                $scormPath = $scormResourcesPath.DIRECTORY_SEPARATOR.$hashName;
+                $scormPath = $scormResourcesDir.DIRECTORY_SEPARATOR.$hashName;
 
                 if (file_exists($scormArchiveFile)) {
                     unlink($scormArchiveFile);

@@ -1,8 +1,3 @@
-claro_scorm_bundle:
-    resource: "@ClarolineScormBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
 # JSON API
 claro_scorm_bundle_api:
     resource: "@ClarolineScormBundle/Controller/API/"

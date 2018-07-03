@@ -24,7 +24,7 @@ function flattenScos(scos) {
 
 function getFirstOpenableSco(scos) {
   for (let i = 0; i < scos.length; ++i) {
-     if (scos[i].data.entryUrl) {
+    if (scos[i].data.entryUrl) {
       return scos[i]
     }
   }
