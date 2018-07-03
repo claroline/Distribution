@@ -44,7 +44,7 @@ class HomeTabFinder implements FinderInterface
                     break;
                 case 'workspace':
                     $qb->leftJoin('obj.workspace', 'w');
-                    $qb->andWhere("w.uuid = :{$filterName}}");
+                    $qb->andWhere("w.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
 
                     break;

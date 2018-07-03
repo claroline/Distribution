@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller\APINew\Tool;
+namespace Claroline\CoreBundle\Controller\APINew\Tool\Home;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
