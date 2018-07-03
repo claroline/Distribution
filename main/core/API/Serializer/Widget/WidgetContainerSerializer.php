@@ -36,10 +36,10 @@ class WidgetContainerSerializer
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Widget\WidgetContainer';
+        return WidgetContainer::class;
     }
 
-    public function serialize(WidgetContainer $widgetContainer, array $options = [])
+    public function serialize(WidgetContainer $widgetContainer, array $options = []): WidgetContainer
     {
         return [
             'id' => $widgetContainer->getUuid(),
@@ -56,7 +56,7 @@ class WidgetContainerSerializer
         ];
     }
 
-    public function deserialize($data, WidgetContainer $widgetContainer, array $options)
+    public function deserialize($data, WidgetContainer $widgetContainer, array $options): array
     {
         $this->sipe('id', 'setUuid', $data, $widgetContainer);
         $this->sipe('name', 'setName', $data, $widgetContainer);

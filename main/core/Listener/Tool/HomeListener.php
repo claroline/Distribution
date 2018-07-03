@@ -11,12 +11,13 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Home tool.
@@ -31,6 +32,9 @@ class HomeListener
     /** @var TwigEngine */
     private $templating;
 
+    /** @var FinderProvider */
+    private $finder;
+
     /** @var SerializerProvider */
     private $serializer;
 
@@ -38,22 +42,26 @@ class HomeListener
      * HomeListener constructor.
      *
      * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "templating"    = @DI\Inject("templating"),
-     *     "serializer"    = @DI\Inject("claroline.api.serializer")
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "templating"   = @DI\Inject("templating"),
+     *     "finder"       = @DI\Inject("claroline.api.finder"),
+     *     "serializer"   = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param TwigEngine                    $templating
-     * @param SerializerProvider            $serializer
+     * @param TokenStorageInterface $tokenStorage
+     * @param TwigEngine            $templating
+     * @param FinderProvider        $finder
+     * @param SerializerProvider    $serializer
      */
     public function __construct(
-        AuthorizationCheckerInterface $authorization,
+        TokenStorageInterface $tokenStorage,
         TwigEngine $templating,
-        SerializerProvider $serializer)
-    {
-        $this->authorization = $authorization;
+        FinderProvider $finder,
+        SerializerProvider $serializer
+    ) {
+        $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
+        $this->finder = $finder;
         $this->serializer = $serializer;
     }
 
@@ -66,27 +74,19 @@ class HomeListener
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+        $tabs = $this->finder->search(
+          'Claroline\CoreBundle\Entity\Home\HomeTab',
+          ['filters' => ['user' => $currentUser->getUuid()]]
+        );
+
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:home.html.twig', [
                 'editable' => true,
                 'context' => [
                     'type' => Widget::CONTEXT_DESKTOP,
                 ],
-                'tabs' => [],
-                'widgets' => [
-                    /*[
-                        'id' => 'id1',
-                        'type' => 'resource-list',
-                        'name' => 'Choisissez votre module de formation',
-                        'parameters' => [
-                            'display' => 'tiles',
-                            'availableDisplays' => ['tiles'],
-                            'filterable' => false,
-                            'sortable' => false,
-                            'paginated' => false,
-                        ],
-                    ],*/
-                ],
+                'tabs' => $tabs['data'],
             ]
         );
 
@@ -104,6 +104,10 @@ class HomeListener
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
         $workspace = $event->getWorkspace();
+        $tabs = $this->finder->search(
+          'Claroline\CoreBundle\Entity\Home\HomeTab',
+          ['filters' => ['workspace' => $workspace->getUuid()]]
+        );
 
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:home.html.twig', [
@@ -113,21 +117,7 @@ class HomeListener
                     'type' => Widget::CONTEXT_WORKSPACE,
                     'data' => $this->serializer->serialize($workspace),
                 ],
-                'tabs' => [],
-                'widgets' => [
-                    /*[
-                        'id' => 'id1',
-                        'type' => 'resource-list',
-                        'name' => 'Choisissez votre module de formation',
-                        'parameters' => [
-                            'display' => 'tiles',
-                            'availableDisplays' => ['tiles'],
-                            'filterable' => false,
-                            'sortable' => false,
-                            'paginated' => false,
-                        ],
-                    ],*/
-                ],
+                'tabs' => $tabs['data'],
             ]
         );
 
