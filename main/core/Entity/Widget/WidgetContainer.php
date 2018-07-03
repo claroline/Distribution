@@ -203,6 +203,7 @@ class WidgetContainer
     {
         if (!$this->instances->contains($instance)) {
             $this->instances->add($instance);
+            $instance->setContainer($this);
         }
     }
 
