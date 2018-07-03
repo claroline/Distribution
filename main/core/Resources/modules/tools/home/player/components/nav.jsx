@@ -11,7 +11,7 @@ const PlayerNav = props =>
           key={tabIndex}
           to="/edit"
         >
-          Accueil
+          {tab.name}
         </a>
       )}
     </nav>

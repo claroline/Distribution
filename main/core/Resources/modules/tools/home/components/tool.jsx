@@ -21,11 +21,12 @@ import {Editor} from '#/main/core/tools/home/editor/components/editor'
 import {Player} from '#/main/core/tools/home/player/components/player'
 
 import {PlayerNav} from '#/main/core/tools/home/player/components/nav'
+import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 
 const tabs = [
-  {name1 : 'tab1'},
-  {name2 : 'tab2'},
-  {name3 : 'tab3'}
+  {name: 'tab1'},
+  {name: 'tab2'},
+  {name: 'tab3'}
 ]
 
 const ToolActionsComponent = props =>
@@ -56,10 +57,12 @@ const ToolActions = withRouter(ToolActionsComponent)
 
 const Tool = props =>
   <ToolPageContainer>
-    <PlayerNav
+    <EditorNav
       tabs={tabs}
+      onSaveCreateTabForm={props.createTab}
     />
     <PageHeader
+      // active tab long title
       title={'desktop' === props.context.type ? trans('desktop') : props.context.data.name}
     >
       {props.editable &&
@@ -100,6 +103,11 @@ const HomeTool = connect(
   (state) => ({
     context: select.context(state),
     editable: select.editable(state)
+  }),
+  dispatch => ({
+    createTab(data){
+      dispatch(console.log(data))
+    }
   })
 )(Tool)
 

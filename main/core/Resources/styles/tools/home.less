@@ -15,14 +15,22 @@
   min-height: 2.85714286em;
 
   .nav-tab {
+    border-right: 1px solid rgba(34,36,38,.15);
+  }
+
+  .nav-add-tab,
+  .nav-tab {
     color: #000;
     padding: .92857143em 1.14285714em;
-    border-right: 1px solid rgba(34,36,38,.15);
 
     &:hover {
       cursor: pointer;
       background: rgba(0,0,0,.03);
       color: rgba(0,0,0,.95);
+    }
+
+    &:active {
+      background: rgba(0,0,0,.03);
     }
   }
 }
