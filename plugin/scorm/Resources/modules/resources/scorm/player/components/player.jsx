@@ -42,7 +42,7 @@ class PlayerComponent extends Component {
         <div className="content-container">
           <iframe
             className="scorm-iframe"
-            src={`${asset('uploads/scormresources/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}
+            src={`${asset('uploads/scorm/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}
           />
         </div>
       </div>

@@ -71,8 +71,6 @@ class ScormManager
     /** @var string */
     private $uploadDir;
 
-    private $scormResourcesPath;
-
     private $scoTrackingRepo;
     private $scorm12ResourceRepo;
     private $scorm12ScoTrackingRepo;
@@ -138,8 +136,6 @@ class ScormManager
         $this->scoSerializer = $scoSerializer;
         $this->scoTrackingSerializer = $scoTrackingSerializer;
         $this->uploadDir = $uploadDir;
-
-        $this->scormResourcesPath = $uploadDir.DIRECTORY_SEPARATOR.'scormresources'.DIRECTORY_SEPARATOR;
 
         $this->scoTrackingRepo = $om->getRepository('ClarolineScormBundle:ScoTracking');
         $this->scorm12ResourceRepo = $om->getRepository('ClarolineScormBundle:Scorm12Resource');
@@ -468,11 +464,11 @@ class ScormManager
         return $tracking;
     }
 
-    /* TODO : copies archive & unzipped files */
     public function convertAllScorm12($withLogs = true)
     {
         $scormType = $this->resourceManager->getResourceTypeByName('claroline_scorm');
         $allScorm12 = $this->scorm12ResourceRepo->findAll();
+        $ds = DIRECTORY_SEPARATOR;
 
         $this->om->startFlushSuite();
         $i = 1;
@@ -482,6 +478,7 @@ class ScormManager
 
             if ($node->isActive()) {
                 $scosMapping = [];
+                $workspace = $node->getWorkspace();
 
                 /* Copies ResourceNode */
                 $newNode = new ResourceNode();
@@ -507,7 +504,7 @@ class ScormManager
                 $newNode->setPublished($node->isPublished());
                 $newNode->setPublishedToPortal($node->isPublishedToPortal());
                 $newNode->setResourceType($scormType);
-                $newNode->setWorkspace($node->getWorkspace());
+                $newNode->setWorkspace($workspace);
 
                 /* Copies rights */
                 foreach ($node->getRights() as $rights) {
@@ -533,11 +530,25 @@ class ScormManager
                 $this->om->persist($newNode);
 
                 /* Copies Scorm resource */
+                $hashName = $scorm->getHashName();
                 $newScorm = new Scorm();
                 $newScorm->setResourceNode($newNode);
                 $newScorm->setVersion(Scorm::SCORM_12);
-                /* TODO : Modify with new path */
                 $newScorm->setHashName($scorm->getHashName());
+
+                /* Copies archive file & unzipped files */
+                if ($this->fileSystem->exists($this->filesDir.$ds.$hashName)) {
+                    $this->fileSystem->copy(
+                        $this->filesDir.$ds.$hashName,
+                        $this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$hashName
+                    );
+                }
+                if ($this->fileSystem->exists($this->uploadDir.$ds.'scormresources'.$ds.$hashName)) {
+                    $this->fileSystem->mirror(
+                        $this->uploadDir.$ds.'scormresources'.$ds.$hashName,
+                        $this->uploadDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$hashName
+                    );
+                }
 
                 /* Copies Scos & creates an array to keep associations */
                 foreach ($scorm->getScos() as $sco) {
@@ -620,11 +631,11 @@ class ScormManager
         $this->om->endFlushSuite();
     }
 
-    /* TODO : copies archive & unzipped files */
     public function convertAllScorm2004($withLogs = true)
     {
         $scormType = $this->resourceManager->getResourceTypeByName('claroline_scorm');
         $allScorm2004 = $this->scorm2004ResourceRepo->findAll();
+        $ds = DIRECTORY_SEPARATOR;
 
         $this->om->startFlushSuite();
         $i = 1;
@@ -634,6 +645,7 @@ class ScormManager
 
             if ($node->isActive()) {
                 $scosMapping = [];
+                $workspace = $node->getWorkspace();
 
                 /* Copies ResourceNode */
                 $newNode = new ResourceNode();
@@ -659,7 +671,7 @@ class ScormManager
                 $newNode->setPublished($node->isPublished());
                 $newNode->setPublishedToPortal($node->isPublishedToPortal());
                 $newNode->setResourceType($scormType);
-                $newNode->setWorkspace($node->getWorkspace());
+                $newNode->setWorkspace($workspace);
 
                 /* Copies rights */
                 foreach ($node->getRights() as $rights) {
@@ -685,11 +697,25 @@ class ScormManager
                 $this->om->persist($newNode);
 
                 /* Copies Scorm resource */
+                $hashName = $scorm->getHashName();
                 $newScorm = new Scorm();
                 $newScorm->setResourceNode($newNode);
                 $newScorm->setVersion(Scorm::SCORM_2004);
-                /* TODO : Modify with new path */
-                $newScorm->setHashName($scorm->getHashName());
+                $newScorm->setHashName($hashName);
+
+                /* Copies archive file & unzipped files */
+                if ($this->fileSystem->exists($this->filesDir.$ds.$hashName)) {
+                    $this->fileSystem->copy(
+                        $this->filesDir.$ds.$hashName,
+                        $this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$hashName
+                    );
+                }
+                if ($this->fileSystem->exists($this->uploadDir.$ds.'scormresources'.$ds.$hashName)) {
+                    $this->fileSystem->mirror(
+                        $this->uploadDir.$ds.'scormresources'.$ds.$hashName,
+                        $this->uploadDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$hashName
+                    );
+                }
 
                 /* Copies Scos & creates an array to keep associations */
                 foreach ($scorm->getScos() as $sco) {
@@ -776,7 +802,8 @@ class ScormManager
     {
         $zip = new \ZipArchive();
         $zip->open($file);
-        $destinationDir = $this->scormResourcesPath.$workspace->getUuid().DIRECTORY_SEPARATOR.$hashName;
+        $ds = DIRECTORY_SEPARATOR;
+        $destinationDir = $this->uploadDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$hashName;
 
         if (!file_exists($destinationDir)) {
             mkdir($destinationDir, 0777, true);
