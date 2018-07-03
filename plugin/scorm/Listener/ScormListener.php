@@ -34,6 +34,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class ScormListener
 {
+    /** @var string */
+    private $filesDir;
     /** @var ObjectManager */
     private $om;
     /** @var ResourceEvaluationManager */
@@ -55,6 +57,7 @@ class ScormListener
 
     /**
      * @DI\InjectParams({
+     *     "filesDir"            = @DI\Inject("%claroline.param.files_directory%"),
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
      *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "scormManager"        = @DI\Inject("claroline.manager.scorm_manager"),
@@ -64,6 +67,7 @@ class ScormListener
      *     "uploadDir"           = @DI\Inject("%claroline.param.uploads_directory%")
      * })
      *
+     * @param string                    $filesDir
      * @param ObjectManager             $om
      * @param ScormManager              $scormManager
      * @param SerializerProvider        $serializer
@@ -73,6 +77,7 @@ class ScormListener
      * @param string                    $uploadDir
      */
     public function __construct(
+        $filesDir,
         ObjectManager $om,
         ResourceEvaluationManager $resourceEvalManager,
         ScormManager $scormManager,
@@ -81,6 +86,7 @@ class ScormListener
         TokenStorageInterface $tokenStorage,
         $uploadDir
     ) {
+        $this->filesDir = $filesDir;
         $this->om = $om;
         $this->resourceEvalManager = $resourceEvalManager;
         $this->scormManager = $scormManager;
@@ -153,8 +159,11 @@ class ScormListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $hashName = $event->getResource()->getHashName();
-        $scormArchiveFile = $this->filePath.$hashName;
+        $ds = DIRECTORY_SEPARATOR;
+        $scorm = $event->getResource();
+        $workspace = $scorm->getResourceNode()->getWorkspace();
+        $hashName = $scorm->getHashName();
+        $scormArchiveFile = $this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$hashName;
         $scormResourcesPath = $this->scormResourcesPath.$hashName;
 
         $nbScorm = (int) ($this->scormResourceRepo->getNbScormWithHashName($hashName));
@@ -204,7 +213,10 @@ class ScormListener
      */
     public function onDownload(DownloadResourceEvent $event)
     {
-        $event->setItem($this->filePath.$event->getResource()->getHashName());
+        $ds = DIRECTORY_SEPARATOR;
+        $scorm = $event->getResource();
+        $workspace = $scorm->getResourceNode()->getWorkspace();
+        $event->setItem($this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$scorm->getHashName());
         $event->setExtension('zip');
         $event->stopPropagation();
     }
