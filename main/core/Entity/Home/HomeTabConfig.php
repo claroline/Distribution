@@ -190,4 +190,12 @@ class HomeTabConfig
     {
         $this->details = $details;
     }
+
+    /**
+     * Alias of setTabOrder.
+     */
+    public function setPosition($position)
+    {
+        $this->setTabOrder($position);
+    }
 }
