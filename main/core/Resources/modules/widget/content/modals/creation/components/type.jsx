@@ -59,7 +59,7 @@ class ContentTypeModalComponent extends Component {
   render() {
     return (
       <Modal
-        {...omit(this.props, 'context', 'availableTypes', 'fetchContents', 'configure')}
+        {...omit(this.props, 'context', 'availableTypes', 'fetchContents', 'configure', 'add')}
         icon="fa fa-fw fa-plus"
         title={trans('new_content', {}, 'widget')}
         subtitle={trans('new_content_select', {}, 'widget')}
@@ -96,7 +96,7 @@ class ContentTypeModalComponent extends Component {
             this.props.availableTypes :
             this.props.availableTypes.filter(widget => widget.tags && -1 !== widget.tags.indexOf(this.state.activeTag))
           }
-          add={this.props.configure}
+          add={(contentType) => this.props.configure(contentType, this.props.add)}
         />
       </Modal>
     )
@@ -109,7 +109,8 @@ ContentTypeModalComponent.propTypes = {
     WidgetTypes.propTypes
   )).isRequired,
   fetchContents: T.func.isRequired,
-  configure: T.func.isRequired
+  configure: T.func.isRequired,
+  add: T.func.isRequired
 }
 
 const ContentTypeModal = connect(
@@ -121,11 +122,11 @@ const ContentTypeModal = connect(
       dispatch(actions.fetchContents(context.type))
     },
 
-    configure(widgetType) {
+    configure(widgetType, add) {
       dispatch(actions.startCreation(widgetType.name))
 
       // display the second creation modal
-      dispatch(modalActions.showModal(MODAL_WIDGET_CONTENT_PARAMETERS, {}))
+      dispatch(modalActions.showModal(MODAL_WIDGET_CONTENT_PARAMETERS, {add}))
     }
   })
 )(ContentTypeModalComponent)

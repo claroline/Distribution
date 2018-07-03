@@ -8,13 +8,14 @@ import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {WidgetContentForm} from '#/main/core/widget/content/components/form'
+import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/content/prop-types'
 import {selectors} from '#/main/core/widget/content/modals/creation/store'
 
 const MODAL_WIDGET_CONTENT_PARAMETERS = 'MODAL_WIDGET_CONTENT_PARAMETERS'
 
 const ParametersModalComponent = props =>
   <Modal
-    {...omit(props, 'widget', 'saveEnabled', 'add')}
+    {...omit(props, 'instance', 'saveEnabled', 'add')}
     icon="fa fa-fw fa-plus"
     title={trans('new_content', {}, 'widget')}
     subtitle={trans('new_content_configure', {}, 'widget')}
@@ -28,16 +29,16 @@ const ParametersModalComponent = props =>
       disabled={!props.saveEnabled}
       label={trans('add', {}, 'actions')}
       callback={() => {
-        //props.add(props.widget)
+        props.add(props.instance)
         props.fadeModal()
       }}
     />
   </Modal>
 
 ParametersModalComponent.propTypes = {
-  /*widget: T.shape(
-   WidgetContainerTypes.propTypes
-   ).isRequired,*/
+  instance: T.shape(
+    WidgetInstanceTypes.propTypes
+  ).isRequired,
   saveEnabled: T.bool.isRequired,
   add: T.func.isRequired,
   fadeModal: T.func.isRequired
@@ -45,8 +46,8 @@ ParametersModalComponent.propTypes = {
 
 const ParametersModal = connect(
   (state) => ({
-    saveEnabled: selectors.saveEnabled(state)
-    //widget: selectors.widget(state)
+    saveEnabled: selectors.saveEnabled(state),
+    instance: selectors.instance(state)
   })
 )(ParametersModalComponent)
 
