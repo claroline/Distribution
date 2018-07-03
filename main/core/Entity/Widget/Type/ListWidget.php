@@ -108,7 +108,8 @@ class ListWidget extends AbstractWidget
     }
 
     /**
-     * Set list sortable
+     * Set list sortable.
+     *
      * @param bool $sortable
      */
     public function setSortable($sortable)

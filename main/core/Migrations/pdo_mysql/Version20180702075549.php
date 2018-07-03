@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2018/07/02 07:55:51
  */
@@ -14,7 +14,7 @@ class Version20180702075549 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_widget_container (
                 id INT AUTO_INCREMENT NOT NULL, 
                 widget_name VARCHAR(255) DEFAULT NULL, 
@@ -25,8 +25,8 @@ class Version20180702075549 extends AbstractMigration
                 UNIQUE INDEX UNIQ_3B06DD75D17F50A6 (uuid), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_widget_instance 
             ADD container_id INT DEFAULT NULL, 
             ADD widget_position INT NOT NULL, 
@@ -34,36 +34,36 @@ class Version20180702075549 extends AbstractMigration
             DROP backgroundType, 
             DROP background, 
             CHANGE widget_name widget_name VARCHAR(255) DEFAULT NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_widget_instance 
             ADD CONSTRAINT FK_5F89A385BC21F742 FOREIGN KEY (container_id) 
             REFERENCES claro_widget_container (id)
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE INDEX IDX_5F89A385BC21F742 ON claro_widget_instance (container_id)
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_widget CHANGE plugin_id plugin_id INT DEFAULT NULL
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE claro_widget_instance 
             DROP FOREIGN KEY FK_5F89A385BC21F742
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_widget_container
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_widget CHANGE plugin_id plugin_id INT NOT NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP INDEX IDX_5F89A385BC21F742 ON claro_widget_instance
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_widget_instance 
             ADD color VARCHAR(255) DEFAULT NULL COLLATE utf8_unicode_ci, 
             ADD backgroundType VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci, 
@@ -71,6 +71,6 @@ class Version20180702075549 extends AbstractMigration
             DROP container_id, 
             DROP widget_position, 
             CHANGE widget_name widget_name VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci
-        ");
+        ');
     }
 }

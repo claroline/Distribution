@@ -73,7 +73,6 @@ class WidgetContainerSerializer
                 $widgetInstance = $this->serializer->deserialize('Claroline\CoreBundle\Entity\Widget\WidgetInstance', $content, $options);
                 $widgetInstance->setPosition($index);
                 $widgetContainer->addInstance($widgetInstance);
-
             }
         }
 

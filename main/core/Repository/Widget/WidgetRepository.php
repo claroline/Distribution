@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Repository\Widget;
 
 use Doctrine\ORM\EntityRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 
 class WidgetRepository extends EntityRepository
 {
@@ -20,7 +19,7 @@ class WidgetRepository extends EntityRepository
      * Finds all available widgets in the platform.
      * It only grabs widgets from enabled plugins.
      *
-     * @param array $enabledPlugins
+     * @param array  $enabledPlugins
      * @param string $context
      *
      * @return array
