@@ -72,20 +72,21 @@ class HomeListener
                 'context' => [
                     'type' => Widget::CONTEXT_DESKTOP,
                 ],
-                'tabs' => [],
-                'widgets' => [
-                    /*[
-                        'id' => 'id1',
-                        'type' => 'resource-list',
-                        'name' => 'Choisissez votre module de formation',
-                        'parameters' => [
-                            'display' => 'tiles',
-                            'availableDisplays' => ['tiles'],
-                            'filterable' => false,
-                            'sortable' => false,
-                            'paginated' => false,
-                        ],
-                    ],*/
+                'tabs' => [
+                  'widgets' => [
+                      [
+                          'id' => 'id1',
+                          'type' => 'resource-list',
+                          'name' => 'Choisissez votre module de formation',
+                          'parameters' => [
+                              'display' => 'tiles',
+                              'availableDisplays' => ['tiles'],
+                              'filterable' => false,
+                              'sortable' => false,
+                              'paginated' => false,
+                          ],
+                      ],
+                  ],
                 ],
             ]
         );

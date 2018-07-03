@@ -11,6 +11,9 @@
 
 namespace Claroline\CoreBundle\Entity\Home;
 
+use Claroline\AppBundle\Entity\Identifier\Id;
+use Claroline\AppBundle\Entity\Meta\Description;
+use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -25,14 +28,9 @@ use JMS\Serializer\Annotation\SerializedName;
  */
 class HomeTab
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_home_tab"})
-     * @SerializedName("id")
-     */
-    protected $id;
+    use Id;
+    use Poster;
+    use Description;
 
     /**
      * @ORM\Column(nullable=false)
@@ -91,16 +89,6 @@ class HomeTab
     {
         $this->roles = new ArrayCollection();
         $this->widgetHomeTabConfigs = new ArrayCollection();
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getName()
