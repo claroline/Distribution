@@ -5,7 +5,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget;
-use Claroline\CoreBundle\Entity\Widget\Type\WidgetContainer;
+use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -25,6 +25,7 @@ class Updater120000 extends Updater
         $this->logger = $logger;
 
         $this->om = $container->get('claroline.persistence.object_manager');
+        $this->conn = $container->get('doctrine.dbal.default_connection');
         $this->config = $container->get('claroline.config.platform_config_handler');
     }
 
@@ -81,41 +82,49 @@ class Updater120000 extends Updater
     {
         $this->log('Update widget structure...');
 
-        $this->log('Migrating WidgetDisplayConfig to WidgetContainer');
+        if (count($this->om->getRepository(WidgetContainer::class)->findAll()) > 0) {
+            $this->log('WidgetContainer already migrated');
+        } else {
+            $this->log('Migrating WidgetDisplayConfig to WidgetContainer');
 
-        $sql = 'SELECT * FROM claro_widget_display_config ';
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $i = 0;
+            $sql = 'SELECT * FROM claro_widget_display_config ';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            $i = 0;
 
-        foreach ($stmt->fetchAll() as $rowConfig) {
-            $this->restoreWidgetContainer($rowConfig);
-            ++$i;
+            foreach ($stmt->fetchAll() as $rowConfig) {
+                $this->restoreWidgetContainer($rowConfig);
+                ++$i;
 
-            if (0 === $i % 200) {
-                $this->om->flush();
+                if (0 === $i % 200) {
+                    $this->om->flush();
+                }
             }
+
+            $this->om->flush();
         }
 
-        $this->om->flush();
+        if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
+            $this->log('SimpleTextWidget already migrated');
+        } else {
+            $this->log('Migrating SimpleTextWidget to SimpleWidget...');
 
-        $this->log('Migrating SimpleTextWidget to SimpleWidget...');
+            $sql = 'SELECT * FROM claro_simple_text_widget_config ';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            $i = 0;
 
-        $sql = 'SELECT * FROM claro_simple_text_widget_config ';
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $i = 0;
+            foreach ($stmt->fetchAll() as $rowConfig) {
+                $this->restoreTextConfig($rowConfig);
+                ++$i;
 
-        foreach ($stmt->fetchAll() as $rowConfig) {
-            $this->restoreTextConfig($rowConfig);
-            ++$i;
-
-            if (0 === $i % 200) {
-                $this->om->flush();
+                if (0 === $i % 200) {
+                    $this->om->flush();
+                }
             }
-        }
 
-        $this->om->flush();
+            $this->om->flush();
+        }
     }
 
     private function restoreWidgetContainer($row)

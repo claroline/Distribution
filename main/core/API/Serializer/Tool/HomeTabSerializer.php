@@ -34,9 +34,24 @@ class HomeTabSerializer
         return HomeTab::class;
     }
 
-    public function serialize(Widget $widget, array $options = [])
+    public function serialize(HomeTab $homeTab, array $options = [])
     {
+        $widgetHomeTabConfigs = $homeTab->getWidgetHomeTabConfigs();
+        $widgetInstances = [];
+        $containers = [];
+
+        foreach ($widgetHomeTabConfigs as $config) {
+            $widgetInstance = $config->getWidgetInstance();
+            $container = $widgetInstance->getContainer();
+            if (!array_key_exists($container->getUuid(), $containers)) {
+                $containers[$container->getUuid()] = $container;
+            }
+        }
+
         return [
+          'widgets' => array_map(function ($container) {
+              return $this->serialize($container);
+          }, $containers),
         ];
     }
 
