@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Home tool.
@@ -42,27 +43,31 @@ class HomeListener
      * HomeListener constructor.
      *
      * @DI\InjectParams({
+     *     "authorization" = @DI\Inject("security.authorization_checker"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
      *     "templating"   = @DI\Inject("templating"),
      *     "finder"       = @DI\Inject("claroline.api.finder"),
      *     "serializer"   = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param TokenStorageInterface $tokenStorage
-     * @param TwigEngine            $templating
-     * @param FinderProvider        $finder
-     * @param SerializerProvider    $serializer
+     * @param TokenStorageInterface         $tokenStorage
+     * @param TwigEngine                    $templating
+     * @param FinderProvider                $finder
+     * @param SerializerProvider            $serializer
+     * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         TwigEngine $templating,
         FinderProvider $finder,
-        SerializerProvider $serializer
+        SerializerProvider $serializer,
+        AuthorizationCheckerInterface $authorization
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
         $this->finder = $finder;
         $this->serializer = $serializer;
+        $this->authorization = $authorization;
     }
 
     /**

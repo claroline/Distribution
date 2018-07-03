@@ -39,7 +39,7 @@ class WidgetContainerSerializer
         return WidgetContainer::class;
     }
 
-    public function serialize(WidgetContainer $widgetContainer, array $options = []): WidgetContainer
+    public function serialize(WidgetContainer $widgetContainer, array $options = []): array
     {
         return [
             'id' => $widgetContainer->getUuid(),
@@ -56,7 +56,7 @@ class WidgetContainerSerializer
         ];
     }
 
-    public function deserialize($data, WidgetContainer $widgetContainer, array $options): array
+    public function deserialize($data, WidgetContainer $widgetContainer, array $options): WidgetContainer
     {
         $this->sipe('id', 'setUuid', $data, $widgetContainer);
         $this->sipe('name', 'setName', $data, $widgetContainer);
