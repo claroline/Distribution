@@ -30,24 +30,20 @@ const tabs = [
 
 const ToolActionsComponent = props =>
   <PageActions>
-    <PlayerNav
-      tabs={tabs}
-    >
-      <FormPageActionsContainer
-        formName="editor"
-        target={['apiv2_home_update']}
-        opened={!!matchPath(props.location.pathname, {path: '/edit'})}
-        open={{
-          type: 'link',
-          target: '/edit'
-        }}
-        cancel={{
-          type: 'link',
-          target: '/',
-          exact: true
-        }}
-      />
-    </PlayerNav>
+    <FormPageActionsContainer
+      formName="editor"
+      target={['apiv2_home_update']}
+      opened={!!matchPath(props.location.pathname, {path: '/edit'})}
+      open={{
+        type: 'link',
+        target: '/edit'
+      }}
+      cancel={{
+        type: 'link',
+        target: '/',
+        exact: true
+      }}
+    />
   </PageActions>
 
 ToolActionsComponent.propTypes = {
@@ -60,6 +56,9 @@ const ToolActions = withRouter(ToolActionsComponent)
 
 const Tool = props =>
   <ToolPageContainer>
+    <PlayerNav
+      tabs={tabs}
+    />
     <PageHeader
       title={'desktop' === props.context.type ? trans('desktop') : props.context.data.name}
     >

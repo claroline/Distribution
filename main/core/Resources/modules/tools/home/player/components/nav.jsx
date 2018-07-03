@@ -4,19 +4,18 @@ import {NavLink} from '#/main/app/router'
 
 const PlayerNav = props =>
   <div>
-    <nav>
+    <nav className="tool-nav">
       {props.tabs.map((tab, tabIndex) =>
-        <NavLink
-          className="nav nav-tab"
+        <a
+          className="nav-tab"
           key={tabIndex}
           to="/edit"
-          activeClassName=""
         >
-          {tab.name}
-        </NavLink>
+          Accueil
+        </a>
       )}
     </nav>
-    {props.children}
+    {/* {props.children} */}
   </div>
 
 
