@@ -7,6 +7,7 @@ import {WidgetGrid} from '#/main/core/widget/player/components/grid'
 
 import {select} from '#/main/core/tools/home/selectors'
 
+
 const PlayerComponent = props =>
   <WidgetGrid
     context={props.context}
