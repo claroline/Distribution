@@ -38,7 +38,8 @@
         data-editable="{{ editable }}"
         data-context="{{ context | json_encode | raw | escape }}"
         data-tabs="{{ tabs | json_encode | raw | escape }}"
-        data-widgets="{{ widgets | json_encode | raw | escape }}"
+        {# remove this line please #}
+        data-widgets="{{ [] | json_encode | raw | escape }}"
     ></div>
 {% endblock %}
 
