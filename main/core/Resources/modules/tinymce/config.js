@@ -7,7 +7,13 @@ import {asset, param, theme} from '#/main/app/config'
 
 const config = {
   //TODO: this is for retro comp purpose
-  setup: (editor) => editor.on('change', () => editor.save()),
+  setup: (editor) => {
+    editor.on('change', () => editor.save())
+    editor.on('FullscreenStateChanged', (evt) => evt.state ?
+      editor.getContainer().parentNode.classList.add('editor-fullscreen') :
+      editor.getContainer().parentNode.classList.remove('editor-fullscreen')
+    )
+  },
   language: locale(),
   theme: 'modern',
   skin: false, // we provide it through theme system

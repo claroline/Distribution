@@ -8,11 +8,11 @@
 
 namespace Icap\WebsiteBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Icap\WebsiteBundle\Entity\Website;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Icap\WebsiteBundle\Entity\Website;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Controller extends BaseController
 {
@@ -24,7 +24,7 @@ class Controller extends BaseController
      */
     protected function checkAccess($permission, Website $website)
     {
-        $collection = new ResourceCollection(array($website->getResourceNode()));
+        $collection = new ResourceCollection([$website->getResourceNode()]);
         if (!$this->get('security.authorization_checker')->isGranted($permission, $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
@@ -40,8 +40,8 @@ class Controller extends BaseController
      */
     protected function isUserGranted($permission, Website $website, $collection = null)
     {
-        if ($collection === null) {
-            $collection = new ResourceCollection(array($website->getResourceNode()));
+        if (null === $collection) {
+            $collection = new ResourceCollection([$website->getResourceNode()]);
         }
         $checkPermission = false;
         if ($this->get('security.authorization_checker')->isGranted($permission, $collection)) {
@@ -71,7 +71,7 @@ class Controller extends BaseController
      *
      * @return Controller
      */
-    protected function dispatchChildEvent(Website $website, $childType, $action, $details = array())
+    protected function dispatchChildEvent(Website $website, $childType, $action, $details = [])
     {
         $event = new LogResourceChildUpdateEvent(
             $website->getResourceNode(),
@@ -115,7 +115,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @return \Icap\WebsiteBundle\Manager\WebsitePageManager
+     * @return \Icap\WebsiteBundle\Manager\WebsiteOptionsManager
      */
     protected function getWebsiteOptionsManager()
     {
