@@ -80,7 +80,7 @@ class WidgetInstanceSerializer
 
         /** @var Widget $widget */
         $widget = $this->om
-            ->getRepository('ClarolineCoreBundle:Widget\Widget')
+            ->getRepository(Widget::class)
             ->findOneBy(['name' => $data['type']]);
 
         if (!empty($widget)) {

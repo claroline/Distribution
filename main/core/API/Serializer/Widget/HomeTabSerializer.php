@@ -66,6 +66,7 @@ class HomeTabSerializer
           'description' => $homeTab->getDescription(),
           'poster' => $homeTab->getPoster(),
           'icon' => $homeTab->getIcon(),
+          'type' => $homeTab->getType(),
           'position' => $homeTabConfig->getTabOrder(),
           'widgets' => array_map(function ($container) {
               return $this->serializer->serialize($container);
@@ -79,21 +80,24 @@ class HomeTabSerializer
         $this->sipe('description', 'setDescription', $data, $homeTab);
         $this->sipe('poster', 'setPoster', $data, $homeTab);
         $this->sipe('icon', 'setIcon', $data, $homeTab);
+        $this->sipe('type', 'setType', $data, $homeTab);
 
-        //persist cascade might ne beeded aswell
         $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
             ->findOneBy(['homeTab' => $homeTab]);
 
         if (!$homeTabConfig) {
+            //persist cascade is needed here
             $homeTabConfig = new HomeTabConfig();
             $homeTabConfig->setHomeTab($homeTab);
+
+            if (isset($data['type'])) {
+                $homeTabConfig->setType($data['type']);
+            }
         }
 
         if (isset($data['position'])) {
             $homeTabConfig->setPosition($data['position']);
         }
-
-        $this->sipe('position', 'setPosition', $data, $homeTab);
 
         if (isset($data['workspace'])) {
             $workspace = $this->serializer->deserialize(Workspace::class, $data['workspace']);
@@ -102,15 +106,17 @@ class HomeTabSerializer
         }
 
         if (isset($data['user'])) {
-            $user = $this->serializer->deserialize(User::class, $data['user']);
+            $user = $this->serializer->deserialize(User::class, $data['user'], $options);
             $homeTab->setUser($user);
             $homeTabConfig->setUser($user);
         }
 
+        $this->om->persist($homeTabConfig);
+
         foreach ($data['widgets'] as $widgetContainer) {
-            $this->serializer->deserialize(WidgetContainer::class, $widgetContainer);
+            $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
         }
 
-        return $widget;
+        return $homeTab;
     }
 }
