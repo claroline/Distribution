@@ -5,9 +5,10 @@ import {NavLink} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 import {ModalButton} from '#/main/app/button'
 import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
+import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {select} from '#/main/core/tools/home/selectors'
-import {actions} from '#/main/core/tools/home/editor/actions'
+
 
 const createTabForm = [
   {
@@ -54,7 +55,7 @@ const EditorNavComponent = props =>
       <NavLink
         className="nav-tab"
         key={tabIndex}
-        to={`/tab/${tab.title}`}
+        to={`/tab/${tab.id}`}
       >
         {tab.title}
       </NavLink>
@@ -64,7 +65,7 @@ const EditorNavComponent = props =>
       modal={[MODAL_DATA_FORM, {
         title: trans('add_tab'),
         sections: createTabForm,
-        save: data => props.createTab(data)
+        save: tab => props.createTab(props.tabs.length, tab)
       }]}
     >
       <span className="fa fa-plus" />
@@ -76,8 +77,8 @@ const EditorNav = connect(
     tabs: select.tabs(state)
   }),
   dispatch => ({
-    createTab(data){
-      dispatch(actions.createTab(data))
+    createTab(tabIndex, tab){
+      dispatch(formActions.updateProp('editor', `[${tabIndex}]`, tab))
     }
   })
 )(EditorNavComponent)
