@@ -4,11 +4,10 @@ import {reducer as editorReducer} from '#/main/core/tools/home/editor/reducer'
 import {CURRENT_TAB} from '#/main/core/tools/home/actions'
 
 const reducer = {
-  currentTabTitle: makeReducer(null, {
-    [CURRENT_TAB]: (state, action) => action.tabTitle
+  currentTabId: makeReducer(null, {
+    [CURRENT_TAB]: (state, action) => action.tab
   }),
   tabs: makeReducer([], {}),
-  widgets: makeReducer([], {}),
   editor: editorReducer
 }
 

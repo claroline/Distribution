@@ -14,7 +14,7 @@ const EditorComponent = props =>
   <WidgetGridEditor
     context={props.context}
     widgets={props.widgets}
-    update={props.update}
+    update={(widgets) => props.update(props.currentTabIndex, widgets)}
   />
 
 EditorComponent.propTypes = {
@@ -29,11 +29,11 @@ const Editor = connect(
   state => ({
     context: select.context(state),
     widgets: editorSelect.widgets(state),
-    tabs: editorSelect.tabs(state)
+    currentTabIndex: editorSelect.currentTabIndex(state)
   }),
   dispatch => ({
-    update(widgets) {
-      dispatch(formActions.updateProp('editor', 'widgets', widgets))
+    update(currentTabIndex, widgets) {
+      dispatch(formActions.updateProp('editor', `[${currentTabIndex}].widgets`, widgets))
     }
   })
 )(EditorComponent)
