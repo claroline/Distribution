@@ -13,7 +13,7 @@ import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
 const EditorComponent = props =>
   <WidgetGridEditor
     context={props.context}
-    widgets={props.tabs.widgets}
+    widgets={props.widgets}
     update={props.update}
   />
 
@@ -28,8 +28,7 @@ EditorComponent.propTypes = {
 const Editor = connect(
   state => ({
     context: select.context(state),
-    widgets: editorSelect.widgets(state),
-    tabs: select.tabs(state)
+    widgets: select.currentTab(state).widgets
   }),
   dispatch => ({
     update(widgets) {

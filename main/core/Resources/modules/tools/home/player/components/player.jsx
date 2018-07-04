@@ -11,7 +11,7 @@ import {select} from '#/main/core/tools/home/selectors'
 const PlayerComponent = props =>
   <WidgetGrid
     context={props.context}
-    widgets={props.tabs.widgets}
+    widgets={props.widgets}
   />
 
 PlayerComponent.propTypes = {
@@ -24,7 +24,7 @@ PlayerComponent.propTypes = {
 const Player = connect(
   (state) => ({
     context: select.context(state),
-    tabs: select.tabs(state)
+    widgets: select.currentTab(state).widgets
   })
 )(PlayerComponent)
 
