@@ -142,20 +142,6 @@ class ScoTracking
     /**
      * For Scorm 1.2 only.
      *
-     * @ORM\Column(name="best_score_raw", type="integer", nullable=true)
-     */
-    protected $bestScoreRaw;
-
-    /**
-     * For Scorm 1.2 only.
-     *
-     * @ORM\Column(name="best_lesson_status", nullable=true)
-     */
-    protected $bestLessonStatus;
-
-    /**
-     * For Scorm 1.2 only.
-     *
      * @ORM\Column(name="is_locked", type="boolean", nullable=false)
      */
     protected $isLocked;
@@ -164,6 +150,11 @@ class ScoTracking
      * @ORM\Column(type="json_array", nullable=true)
      */
     protected $details;
+
+    /**
+     * @ORM\Column(name="latest_date", type="datetime", nullable=true)
+     */
+    private $latestDate;
 
     public function __construct()
     {
@@ -368,26 +359,6 @@ class ScoTracking
         $this->lessonMode = $lessonMode;
     }
 
-    public function getBestScoreRaw()
-    {
-        return $this->bestScoreRaw;
-    }
-
-    public function setBestScoreRaw($bestScoreRaw)
-    {
-        $this->bestScoreRaw = $bestScoreRaw;
-    }
-
-    public function getBestLessonStatus()
-    {
-        return $this->bestLessonStatus;
-    }
-
-    public function setBestLessonStatus($bestLessonStatus)
-    {
-        $this->bestLessonStatus = $bestLessonStatus;
-    }
-
     public function getIsLocked()
     {
         return $this->isLocked;
@@ -408,9 +379,19 @@ class ScoTracking
         $this->details = $details;
     }
 
+    public function getLatestDate()
+    {
+        return $this->latestDate;
+    }
+
+    public function setLatestDate(\DateTime $latestDate = null)
+    {
+        $this->latestDate = $latestDate;
+    }
+
     public function getFormattedTotalTime()
     {
-        if (Scorm::SCORM_2004 === $this->sco->getScorm()->getType()) {
+        if (Scorm::SCORM_2004 === $this->sco->getScorm()->getVersion()) {
             return $this->getFormattedTotalTimeString();
         } else {
             return $this->getFormattedTotalTimeInt();
@@ -419,7 +400,7 @@ class ScoTracking
 
     public function getFormattedTotalTimeInt()
     {
-        $remainingTime = $this->totalTime;
+        $remainingTime = $this->totalTimeInt;
         $hours = intval($remainingTime / 360000);
         $remainingTime %= 360000;
         $minutes = intval($remainingTime / 6000);
@@ -457,8 +438,8 @@ class ScoTracking
         $pattern = '/^P([0-9]+Y)?([0-9]+M)?([0-9]+D)?T([0-9]+H)?([0-9]+M)?([0-9]+S)?$/';
         $formattedTime = '';
 
-        if (!empty($this->totalTime) && 'PT' !== $this->totalTime && preg_match($pattern, $this->totalTime)) {
-            $interval = new \DateInterval($this->totalTime);
+        if (!empty($this->totalTimeString) && 'PT' !== $this->totalTimeString && preg_match($pattern, $this->totalTimeString)) {
+            $interval = new \DateInterval($this->totalTimeString);
             $time = new \DateTime();
             $time->setTimestamp(0);
             $time->add($interval);

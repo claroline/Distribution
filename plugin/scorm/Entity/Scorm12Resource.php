@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\ScormBundle\Repository\Scorm12ResourceRepository")
+ * @ORM\Entity
  * @ORM\Table(name="claro_scorm_12_resource")
  */
 class Scorm12Resource extends AbstractResource implements ScormResource

@@ -21,16 +21,8 @@ use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\ScormBundle\Entity\Sco;
 use Claroline\ScormBundle\Entity\Scorm;
-use Claroline\ScormBundle\Entity\Scorm12Resource;
-use Claroline\ScormBundle\Entity\Scorm12Sco;
-use Claroline\ScormBundle\Entity\Scorm12ScoTracking;
-use Claroline\ScormBundle\Entity\Scorm2004Resource;
-use Claroline\ScormBundle\Entity\Scorm2004Sco;
-use Claroline\ScormBundle\Entity\Scorm2004ScoTracking;
 use Claroline\ScormBundle\Entity\ScoTracking;
 use Claroline\ScormBundle\Event\Log\LogScormResultEvent;
-use Claroline\ScormBundle\Library\Scorm12;
-use Claroline\ScormBundle\Library\Scorm2004;
 use Claroline\ScormBundle\Library\ScormLib;
 use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
 use Claroline\ScormBundle\Serializer\ScoSerializer;
@@ -52,10 +44,6 @@ class ScormManager
     private $fileSystem;
     /** @var string */
     private $filesDir;
-    /** @var Scorm12 */
-    private $libsco12;
-    /** @var Scorm2004 */
-    private $libsco2004;
     /** @var ObjectManager */
     private $om;
     /** @var ResourceEvaluationManager */
@@ -86,8 +74,6 @@ class ScormManager
      *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
      *     "fileSystem"            = @DI\Inject("filesystem"),
      *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
-     *     "libsco12"              = @DI\Inject("claroline.library.scorm_12"),
-     *     "libsco2004"            = @DI\Inject("claroline.library.scorm_2004"),
      *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
      *     "resourceEvalManager"   = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "resourceManager"       = @DI\Inject("claroline.manager.resource_manager"),
@@ -100,8 +86,6 @@ class ScormManager
      * @param EventDispatcherInterface  $eventDispatcher
      * @param Filesystem                $fileSystem
      * @param string                    $filesDir
-     * @param Scorm12                   $libsco12
-     * @param Scorm2004                 $libsco2004
      * @param ObjectManager             $om
      * @param ResourceEvaluationManager $resourceEvalManager
      * @param ResourceManager           $resourceManager
@@ -114,8 +98,6 @@ class ScormManager
         EventDispatcherInterface $eventDispatcher,
         Filesystem $fileSystem,
         $filesDir,
-        Scorm12 $libsco12,
-        Scorm2004 $libsco2004,
         ObjectManager $om,
         ResourceEvaluationManager $resourceEvalManager,
         ResourceManager $resourceManager,
@@ -127,8 +109,6 @@ class ScormManager
         $this->eventDispatcher = $eventDispatcher;
         $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
-        $this->libsco12 = $libsco12;
-        $this->libsco2004 = $libsco2004;
         $this->om = $om;
         $this->resourceEvalManager = $resourceEvalManager;
         $this->resourceManager = $resourceManager;
@@ -278,7 +258,6 @@ class ScormManager
                 $scoTracking->setSessionTime(0);
                 $scoTracking->setLessonMode('normal');
                 $scoTracking->setExitMode('');
-                $scoTracking->setBestLessonStatus('not attempted');
 
                 if (is_null($sco->getPrerequisites())) {
                     $scoTracking->setIsLocked(false);
@@ -305,6 +284,7 @@ class ScormManager
     public function updateScoTracking(Sco $sco, User $user, $mode, $data)
     {
         $tracking = $this->generateScoTracking($sco, $user);
+        $tracking->setLatestDate(new \DateTime());
 
         switch ($sco->getScorm()->getVersion()) {
             case Scorm::SCORM_12:
@@ -316,10 +296,6 @@ class ScormManager
                 $tracking->setEntry($data['cmi.core.entry']);
                 $tracking->setExitMode($data['cmi.core.exit']);
                 $tracking->setLessonLocation($data['cmi.core.lesson_location']);
-                $tracking->setLessonStatus($lessonStatus);
-                $tracking->setScoreMax(intval($data['cmi.core.score.max']));
-                $tracking->setScoreMin(intval($data['cmi.core.score.min']));
-                $tracking->setScoreRaw($scoreRaw);
                 $tracking->setSessionTime($sessionTimeInHundredth);
                 $tracking->setSuspendData($data['cmi.suspend_data']);
 
@@ -330,12 +306,12 @@ class ScormManager
                     // Persist total time
                     $tracking->setTotalTime($totalTimeInHundredth);
 
-                    $bestScore = $tracking->getBestScoreRaw();
-                    $bestStatus = $tracking->getBestLessonStatus();
+                    $bestScore = $tracking->getScoreRaw();
+                    $bestStatus = $tracking->getLessonStatus();
 
                     // Update best score if the current score is better than the previous best score
                     if (empty($bestScore) || (!is_null($scoreRaw) && $scoreRaw > $bestScore)) {
-                        $tracking->setBestScoreRaw($scoreRaw);
+                        $tracking->setScoreRaw($scoreRaw);
                         $bestScore = $scoreRaw;
                     }
                     // Update best lesson status if :
@@ -350,7 +326,7 @@ class ScormManager
                                 && ('failed' === $lessonStatus || 'passed' === $lessonStatus || 'completed' === $lessonStatus)) ||
                             ('failed' === $bestStatus && ('passed' === $lessonStatus || 'completed' === $lessonStatus))
                         ) {
-                            $tracking->setBestLessonStatus($lessonStatus);
+                            $tracking->setLessonStatus($lessonStatus);
                             $bestStatus = $lessonStatus;
                         }
                     }
@@ -586,10 +562,10 @@ class ScormManager
                         $newTracking = new ScoTracking();
                         $newTracking->setSco($scosMapping[$sco->getId()]);
                         $newTracking->setUser($tracking->getUser());
-                        $newTracking->setScoreRaw($tracking->getScoreRaw());
+                        $newTracking->setScoreRaw($tracking->getBestScoreRaw());
                         $newTracking->setScoreMin($tracking->getScoreMin());
                         $newTracking->setScoreMax($tracking->getScoreMax());
-                        $newTracking->setLessonStatus($tracking->getLessonStatus());
+                        $newTracking->setLessonStatus($tracking->getBestLessonStatus());
                         $newTracking->setSessionTime($tracking->getSessionTime());
                         $newTracking->setTotalTimeInt($tracking->getTotalTime());
                         $newTracking->setEntry($tracking->getEntry());
@@ -598,8 +574,6 @@ class ScormManager
                         $newTracking->setExitMode($tracking->getExitMode());
                         $newTracking->setLessonLocation($tracking->getLessonLocation());
                         $newTracking->setLessonMode($tracking->getLessonMode());
-                        $newTracking->setBestScoreRaw($tracking->getBestScoreRaw());
-                        $newTracking->setBestLessonStatus($tracking->getBestLessonStatus());
                         $newTracking->setIsLocked($tracking->getIsLocked());
                         $this->om->persist($newTracking);
                     }
@@ -610,6 +584,10 @@ class ScormManager
                     foreach ($node->getLogs()->toArray() as $log) {
                         $log->setResourceNode($newNode);
                         $log->setResourceType($scormType);
+
+                        if ('resource-scorm_12-sco_result' === $log->getAction()) {
+                            $log->setAction(LogScormResultEvent::ACTION);
+                        }
                         $this->om->persist($log);
                     }
                 }
@@ -770,6 +748,10 @@ class ScormManager
                     foreach ($node->getLogs()->toArray() as $log) {
                         $log->setResourceNode($newNode);
                         $log->setResourceType($scormType);
+
+                        if ('resource-scorm_2004-sco_result' === $log->getAction()) {
+                            $log->setAction(LogScormResultEvent::ACTION);
+                        }
                         $this->om->persist($log);
                     }
                 }
@@ -877,27 +859,29 @@ class ScormManager
      * Access to LogRepository methods *
      ***********************************/
 
-    public function getScoLastSessionDate(User $user, ResourceNode $resourceNode, $type, $scoId)
+    /**
+     * @param User         $user
+     * @param ResourceNode $resourceNode
+     * @param Sco          $sco
+     *
+     * @return \DateTime|null
+     */
+    public function getScoLastSessionDate(User $user, ResourceNode $resourceNode, Sco $sco)
     {
         $lastSessionDate = null;
 
-        switch ($type) {
-            case 'scorm12':
-                $action = 'resource-scorm_12-sco_result';
-                break;
-            case 'scorm2004':
-                $action = 'resource-scorm_2004-sco_result';
-                break;
-            default:
-                $action = null;
-        }
-
-        $logs = $this->logRepo->findBy(['action' => $action, 'receiver' => $user, 'resourceNode' => $resourceNode], ['dateLog' => 'desc']);
+        $logs = $this->logRepo->findBy(
+            ['action' => 'resource-scorm-sco_result', 'receiver' => $user, 'resourceNode' => $resourceNode],
+            ['dateLog' => 'desc']
+        );
 
         foreach ($logs as $log) {
             $details = $log->getDetails();
 
-            if (!isset($details['scoId']) || intval($details['scoId']) === intval($scoId)) {
+            if (!isset($details['scoId']) && !isset($details['sco']) ||
+                intval($details['scoId']) === $sco->getId() ||
+                $details['sco'] === $sco->getUuid()
+            ) {
                 $lastSessionDate = $log->getDateLog();
                 break;
             }
@@ -906,19 +890,11 @@ class ScormManager
         return $lastSessionDate;
     }
 
-    public function getScormTrackingDetails(User $user, ResourceNode $resourceNode, $type = 'scorm12')
+    public function getScormTrackingDetails(User $user, ResourceNode $resourceNode)
     {
-        switch ($type) {
-            case 'scorm12':
-                $action = 'resource-scorm_12-sco_result';
-                break;
-            case 'scorm2004':
-                $action = 'resource-scorm_2004-sco_result';
-                break;
-            default:
-                $action = null;
-        }
-
-        return $this->logRepo->findBy(['action' => $action, 'receiver' => $user, 'resourceNode' => $resourceNode], ['dateLog' => 'desc']);
+        return $this->logRepo->findBy(
+            ['action' => 'resource-scorm-sco_result', 'receiver' => $user, 'resourceNode' => $resourceNode],
+            ['dateLog' => 'desc']
+        );
     }
 }

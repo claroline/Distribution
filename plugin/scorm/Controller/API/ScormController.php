@@ -10,12 +10,11 @@
 
 namespace Claroline\ScormBundle\Controller\API;
 
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractApiController;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\ScormBundle\Entity\Sco;
 use Claroline\ScormBundle\Entity\Scorm;
 use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
@@ -33,8 +32,8 @@ class ScormController extends AbstractApiController
 {
     /** @var AuthorizationCheckerInterface */
     private $authorization;
-    /** @var ResourceManager */
-    private $resourceManager;
+    /* @var FinderProvider */
+    protected $finder;
     /** @var ScormManager */
     private $scormManager;
     /** @var ScoTrackingSerializer */
@@ -45,124 +44,30 @@ class ScormController extends AbstractApiController
     /**
      * @DI\InjectParams({
      *     "authorization"         = @DI\Inject("security.authorization_checker"),
-     *     "resourceManager"       = @DI\Inject("claroline.manager.resource_manager"),
+     *     "finder"                = @DI\Inject("claroline.api.finder"),
      *     "scormManager"          = @DI\Inject("claroline.manager.scorm_manager"),
      *     "scoTrackingSerializer" = @DI\Inject("claroline.serializer.scorm.sco.tracking"),
      *     "translator"            = @DI\Inject("translator")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param ResourceManager               $resourceManager
+     * @param FinderProvider                $finder
      * @param ScormManager                  $scormManager
      * @param ScoTrackingSerializer         $scoTrackingSerializer
      * @param TranslatorInterface           $translator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        ResourceManager $resourceManager,
+        FinderProvider $finder,
         ScormManager $scormManager,
         ScoTrackingSerializer $scoTrackingSerializer,
         TranslatorInterface $translator
     ) {
         $this->authorization = $authorization;
-        $this->resourceManager = $resourceManager;
+        $this->finder = $finder;
         $this->scormManager = $scormManager;
         $this->scoTrackingSerializer = $scoTrackingSerializer;
         $this->translator = $translator;
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/scorm/{resourceNode}/results",
-     *     name="claro_scorm_results",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     * @EXT\Template("ClarolineScormBundle::scorm_results.html.twig")
-     */
-    public function scormResultsAction(ResourceNode $resourceNode)
-    {
-//        $resource = $this->resourceManager->getResourceFromNode($resourceNode);
-//        $this->checkScormRights($resource, 'EDIT');
-//        $resourceTypeName = $resourceNode->getResourceType()->getName();
-//        $scos = $resource->getScos();
-//        $serializedScos = $this->serializer->serialize(
-//            $scos,
-//            'json',
-//            SerializationContext::create()->setGroups(['api_user_min'])
-//        );
-//
-//        switch ($resourceTypeName) {
-//            case 'claroline_scorm_12':
-//                $type = 'scorm12';
-//                $trackings = $this->scormManager->getScorm12TrackingsByResource($resource);
-//                break;
-//            case 'claroline_scorm_2004':
-//                $type = 'scorm2004';
-//                $trackings = $this->scormManager->getScorm2004TrackingsByResource($resource);
-//                break;
-//            default:
-//                $type = null;
-//                $trackings = [];
-//                break;
-//        }
-//        foreach ($trackings as $tracking) {
-//            $lastDate = $this->scormManager->getScoLastSessionDate($tracking->getUser(), $resourceNode, $type, $tracking->getSco()->getId());
-//            $tracking->setLastSessionDate($lastDate);
-//        }
-//        $serializedTrackings = $this->serializer->serialize(
-//            $trackings,
-//            'json',
-//            SerializationContext::create()->setGroups(['api_user_min'])
-//        );
-//
-//        return [
-//            'resource' => $resource,
-//            'resourceNode' => $resourceNode,
-//            'type' => $type,
-//            'workspace' => $resourceNode->getWorkspace(),
-//            'scos' => $serializedScos,
-//            'trackings' => $serializedTrackings,
-//        ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/scorm/{resourceNode}/tracking/sco/{scoId}/user/{user}/details",
-     *     name="claro_scorm_get_tracking_details",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("authenticatedUser", converter="current_user", options={"allowAnonymous"=false})
-     */
-    public function getScormTrackingDetailsAction(User $user, ResourceNode $resourceNode, $scoId)
-    {
-//        $results = [];
-//        $resource = $this->resourceManager->getResourceFromNode($resourceNode);
-//        $this->checkScormRights($resource, 'EDIT');
-//        $resourceTypeName = $resourceNode->getResourceType()->getName();
-//
-//        switch ($resourceTypeName) {
-//            case 'claroline_scorm_12':
-//                $type = 'scorm12';
-//                break;
-//            case 'claroline_scorm_2004':
-//                $type = 'scorm2004';
-//                break;
-//            default:
-//                $type = null;
-//                break;
-//        }
-//        $trackingDetails = $this->scormManager->getScormTrackingDetails($user, $resourceNode, $type);
-//
-//        foreach ($trackingDetails as $log) {
-//            $details = $log->getDetails();
-//
-//            if (!isset($details['scoId']) || intval($details['scoId']) === intval($scoId)) {
-//                $results[] = ['dateLog' => $log->getDateLog(), 'details' => $details];
-//            }
-//        }
-//
-//        return new JsonResponse($results, 200);
     }
 
     /**
@@ -234,6 +139,37 @@ class ScormController extends AbstractApiController
         $tracking = $this->scormManager->updateScoTracking($sco, $user, $mode, $data);
 
         return new JsonResponse($this->scoTrackingSerializer->serialize($tracking), 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/scorm/{scorm}/trackings/list",
+     *     name="apiv2_scormscotracking_list"
+     * )
+     * @EXT\ParamConverter(
+     *     "scorm",
+     *     class="ClarolineScormBundle:Scorm",
+     *     options={"mapping": {"scorm": "uuid"}}
+     * )
+     *
+     * @param Scorm   $scorm
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function scoTrackingsListAction(Scorm $scorm, Request $request)
+    {
+        $this->checkScormRights($scorm, 'EDIT');
+
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['scorm'] = $scorm->getId();
+        $data = $this->finder->search('Claroline\ScormBundle\Entity\ScoTracking', $params);
+
+        return new JsonResponse($data, 200);
     }
 
     private function checkScormRights(Scorm $scorm, $right)

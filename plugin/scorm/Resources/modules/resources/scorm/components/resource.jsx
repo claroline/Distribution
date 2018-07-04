@@ -9,10 +9,27 @@ import {RoutedPageContent} from '#/main/core/layout/router/components/page'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
 
 import {Player} from '#/plugin/scorm/resources/scorm/player/components/player'
+import {Results} from '#/plugin/scorm/resources/scorm/player/components/results'
 
 const Resource = props =>
   <ResourcePageContainer
-    customActions={[]}
+    customActions={[
+      {
+        type: 'link',
+        icon: 'fa fa-fw fa-play',
+        label: trans('play_scorm', {}, 'scorm'),
+        target: '/play',
+        exact: true
+      }, {
+        type: 'link',
+        icon: 'fa fa-fw fa-list',
+        label: trans('results_list', {}, 'scorm'),
+        disabled: !props.editable,
+        displayed: props.editable,
+        target: '/results',
+        exact: true
+      }
+    ]}
   >
     <RoutedPageContent
       key="resource-content"
@@ -24,18 +41,23 @@ const Resource = props =>
         {
           path: '/play',
           component: Player
+        },
+        {
+          path: '/results',
+          component: Results,
+          disabled: !props.editable
         }
       ]}
     />
   </ResourcePageContainer>
 
 Resource.propTypes = {
-  canEdit: T.bool.isRequired
+  editable: T.bool.isRequired
 }
 
 const ScormResource = connect(
   (state) => ({
-    canEdit: hasPermission('edit', resourceSelect.resourceNode(state))
+    editable: hasPermission('edit', resourceSelect.resourceNode(state))
   })
 )(Resource)
 

@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
 
 import {
   TRACKING_UPDATE,
@@ -26,7 +27,8 @@ const reducer = {
     opened: makeReducer(false, {
       [SUMMARY_OPEN_TOGGLE]: (state) => !state
     })
-  })
+  }),
+  results: makeListReducer('results', {})
 }
 
 export {

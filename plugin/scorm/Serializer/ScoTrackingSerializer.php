@@ -11,7 +11,9 @@
 
 namespace Claroline\ScormBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\ScormBundle\Entity\ScoTracking;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -23,6 +25,28 @@ class ScoTrackingSerializer
 {
     use SerializerTrait;
 
+    /** @var ScoSerializer */
+    private $scoSerializer;
+    /** @var UserSerializer */
+    private $userSerializer;
+
+    /**
+     * ScoTrackingSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *     "scoSerializer"  = @DI\Inject("claroline.serializer.scorm.sco"),
+     *     "userSerializer" = @DI\Inject("claroline.serializer.user")
+     * })
+     *
+     * @param ScoSerializer  $scoSerializer
+     * @param UserSerializer $userSerializer
+     */
+    public function __construct(ScoSerializer $scoSerializer, UserSerializer $userSerializer)
+    {
+        $this->scoSerializer = $scoSerializer;
+        $this->userSerializer = $userSerializer;
+    }
+
     /**
      * @param ScoTracking $scoTracking
      *
@@ -31,12 +55,12 @@ class ScoTrackingSerializer
     public function serialize(ScoTracking $scoTracking)
     {
         $sco = $scoTracking->getSco();
+        $user = $scoTracking->getUser();
 
         return [
             'id' => $scoTracking->getUuid(),
-            'sco' => [
-                'id' => $sco->getUuid(),
-            ],
+            'sco' => empty($sco) ? null : $this->scoSerializer->serialize($sco),
+            'user' => empty($user) ? null : $this->userSerializer->serialize($user, [Options::SERIALIZE_MINIMAL]),
             'scoreRaw' => $scoTracking->getScoreRaw(),
             'scoreMin' => $scoTracking->getScoreMin(),
             'scoreMax' => $scoTracking->getScoreMax(),
@@ -44,6 +68,7 @@ class ScoTrackingSerializer
             'lessonStatus' => $scoTracking->getLessonStatus(),
             'completionStatus' => $scoTracking->getCompletionStatus(),
             'sessionTime' => $scoTracking->getSessionTime(),
+            'totalTime' => $scoTracking->getFormattedTotalTime(),
             'totalTimeInt' => $scoTracking->getTotalTimeInt(),
             'totalTimeString' => $scoTracking->getTotalTimeString(),
             'entry' => $scoTracking->getEntry(),
@@ -52,10 +77,9 @@ class ScoTrackingSerializer
             'exitMode' => $scoTracking->getExitMode(),
             'lessonLocation' => $scoTracking->getLessonLocation(),
             'lessonMode' => $scoTracking->getLessonMode(),
-            'bestScoreRaw' => $scoTracking->getBestScoreRaw(),
-            'bestLessonStatus' => $scoTracking->getBestLessonStatus(),
             'isLocked' => $scoTracking->getIsLocked(),
             'details' => $scoTracking->getDetails(),
+            'latestDate' => $scoTracking->getLatestDate() ? $scoTracking->getLatestDate()->format('Y-m-d\TH:i:s') : null,
         ];
     }
 }
