@@ -53,17 +53,20 @@ const ToolActions = withRouter(ToolActionsComponent)
 
 const Tool = props =>
   <ToolPageContainer>
+    {/* {1 < props.tabs.length && */}
     <Router>
       <Routes
         routes={[
           {
             path: '/',
             exact: true,
-            component: PlayerNav
+            component: PlayerNav,
+            disabled: 1 < props.tabs.length
           }, {
             path: '/tab/:title?',
             exact: true,
             component: PlayerNav,
+            disabled: 1 < props.tabs.length,
             onEnter: (params) =>props.setCurrentTab(params.title)
           }, {
             path: '/edit',
@@ -73,9 +76,9 @@ const Tool = props =>
         ]}
       />
     </Router>
+    {/* } */}
     <PageHeader
-      // active tab long title
-      title={props.title ? props.title : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
+      title={props.currentTab.description ? props.currentTab.description : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
       {props.editable &&
         <ToolActions />
@@ -108,7 +111,8 @@ Tool.propTypes = {
       name: T.string.isRequired
     })
   }).isRequired,
-  editable: T.bool.isRequired
+  editable: T.bool.isRequired,
+  setCurrentTab: T.func.isRequired
 }
 
 const HomeTool = connect(
@@ -116,7 +120,7 @@ const HomeTool = connect(
     context: select.context(state),
     editable: select.editable(state),
     tabs: select.tabs(state),
-    title: select.title(state)
+    currentTab: select.currentTab(state)
   }),
   (dispatch) => ({
     setCurrentTab(tabTitle){
