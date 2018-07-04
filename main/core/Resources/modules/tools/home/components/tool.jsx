@@ -34,7 +34,7 @@ const ToolActionsComponent = props =>
       opened={!!matchPath(props.location.pathname, {path: '/edit'})}
       open={{
         type: 'link',
-        target: '/edit'
+        target: '/edit/tab/:id?'
       }}
       cancel={{
         type: 'link',
