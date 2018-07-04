@@ -1663,18 +1663,17 @@ class WorkspaceManager
         $this->log('Duplicating home tabs...');
         $serializer = $this->container->get('claroline.api.serializer');
         $crud = $this->container->get('claroline.api.crud');
+        $newTabs = [];
 
         foreach ($homeTabs as $homeTab) {
             $homeTabSerialized = $serializer->serialize($homeTab, [Options::REFRESH_UUID]);
             $homeTabSerialized['workspace'] = $serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
-            //add random stuff here
-            $homeTab = $crud->create(HomeTab::class, $homeTabSerialized);
+            $newTabs[] = $crud->create(HomeTab::class, $homeTabSerialized);
+            //maybe not a good idea
             $this->om->forceFlush();
-            //this is justa test here
-            $serializer->serialize($homeTab);
         }
 
-        return [];
+        return $newTabs;
     }
 
     /**

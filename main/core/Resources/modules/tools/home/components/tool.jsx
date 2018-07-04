@@ -77,10 +77,8 @@ const Tool = props =>
       />
     </Router>
     <PageHeader
-      // TODO : change title for description
       title={props.currentTab ? props.currentTab.title : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
-      {console.log(props.tabs)}
       {props.editable &&
         <ToolActions />
       }

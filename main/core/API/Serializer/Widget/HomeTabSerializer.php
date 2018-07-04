@@ -58,6 +58,8 @@ class HomeTabSerializer
             }
         }
 
+        $containers = array_values($containers);
+
         $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
           ->findOneBy(['homeTab' => $homeTab]);
 

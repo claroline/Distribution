@@ -42,7 +42,6 @@ const Widget = props =>
     {props.widget.name &&
       <h2 className="h-first widget-title">{props.widget.name}</h2>
     }
-
     <div className="row">
       {times(props.widget.display.layout.length, col =>
         <WidgetCol

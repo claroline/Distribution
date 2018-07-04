@@ -5,7 +5,9 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget;
+use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -130,20 +132,26 @@ class Updater120000 extends Updater
     private function restoreWidgetContainer($row)
     {
         $widgetContainer = new WidgetContainer();
-        $widgetInstance = $this->om->getRepository('Claroline\CoreBundle\Entity\Widget\WidgetInstance')->find($row['widget_instance_id']);
+        $widgetInstance = $this->om->getRepository(WidgetInstance::class)->find($row['widget_instance_id']);
+        $this->log('migrating '.$widgetInstance->getName().' ...');
         $widgetContainer->addInstance($widgetInstance);
         $widgetContainer->setColor($row['color']);
+        $widgetContainer->setName($widgetInstance->getName());
+        $widgetContainer->setLayout([1]);
 
         $this->om->persist($widgetContainer);
     }
 
     private function restoreTextConfig($row)
     {
-        //not complete
         $simpleWidget = new SimpleWidget();
         $simpleWidget->setContent($row['content']);
-        $widgetInstance = $this->om->getRepository('Claroline\CoreBundle\Entity\Widget\WidgetInstance')->find($row['widgetInstance_id']);
+        $widgetInstance = $this->om->getRepository(WidgetInstance::class)->find($row['widgetInstance_id']);
+        $this->log('migrating content of '.$widgetInstance->getName().' ...');
         $simpleWidget->setWidgetInstance($widgetInstance);
+        $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
+        $widgetInstance->setWidget($widget);
+        $this->om->persist($widgetInstance);
         $this->om->persist($simpleWidget);
     }
 }

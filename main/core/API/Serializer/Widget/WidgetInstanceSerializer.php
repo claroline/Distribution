@@ -54,7 +54,8 @@ class WidgetInstanceSerializer
 
         // retrieves the custom configuration of the widget if any
         $parameters = [];
-        if (!empty($widget->getClass())) {
+
+        if ($widget->getClass()) {
             // loads configuration entity for the current instance
             $typeParameters = $this->om
                 ->getRepository($widget->getClass())
