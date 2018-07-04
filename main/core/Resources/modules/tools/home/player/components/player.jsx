@@ -8,11 +8,12 @@ import {WidgetGrid} from '#/main/core/widget/player/components/grid'
 import {select} from '#/main/core/tools/home/selectors'
 
 
-const PlayerComponent = props =>
-  <WidgetGrid
+const PlayerComponent = props => {
+  return (<WidgetGrid
     context={props.context}
-    widgets={props.currentTabs[0].widgets}
-  />
+    widgets={props.currentTab.widgets}
+  />)
+}
 
 PlayerComponent.propTypes = {
   context: T.object.isRequired,

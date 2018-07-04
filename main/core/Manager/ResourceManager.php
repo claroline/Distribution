@@ -755,7 +755,7 @@ class ResourceManager
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             'copy_'.$node->getResourceType()->getName(),
-            'CopyResource',
+            'Resource\\CopyResource',
             [$resource, $parent, $newNode]
         );
 

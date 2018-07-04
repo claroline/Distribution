@@ -78,9 +78,8 @@ const Tool = props =>
     </Router>
     {/* } */}
     <PageHeader
-      title={props.currentTab.description ? props.currentTab.description : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
+      title={props.currentTab ? props.currentTab.title : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
-      {console.log(props.currentTab)}
       {props.editable &&
         <ToolActions />
       }
@@ -91,8 +90,8 @@ const Tool = props =>
         headerSpacer={true}
         routes={[
           {
-            path: '/',
-            exact: true,
+            path: '/tab/:title',
+            exact: false,
             component: Player
           }, {
             path: '/edit',

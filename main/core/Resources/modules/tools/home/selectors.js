@@ -8,7 +8,7 @@ const widgets = (state) => state.widgets
 
 const currentTab = createSelector(
   [tabs, currentTabTitle],
-  (tabs, currentTabTitle) => tabs.filter(tab => currentTabTitle === tab.title)
+  (tabs, currentTabTitle) => tabs.find(tab => currentTabTitle === tab.title)
 )
 
 export const select = {
