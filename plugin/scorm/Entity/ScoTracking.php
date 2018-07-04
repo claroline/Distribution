@@ -263,7 +263,7 @@ class ScoTracking
 
     public function getTotalTime()
     {
-        if (Scorm::SCORM_2004 === $this->sco->getScorm()->getType()) {
+        if (Scorm::SCORM_2004 === $this->sco->getScorm()->getVersion()) {
             return $this->totalTimeString;
         } else {
             return $this->totalTimeInt;
@@ -272,7 +272,7 @@ class ScoTracking
 
     public function setTotalTime($totalTime)
     {
-        if (Scorm::SCORM_2004 === $this->sco->getScorm()->getType()) {
+        if (Scorm::SCORM_2004 === $this->sco->getScorm()->getVersion()) {
             $this->setTotalTimeString($totalTime);
         } else {
             $this->setTotalTimeInt($totalTime);
