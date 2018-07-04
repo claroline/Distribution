@@ -70,7 +70,7 @@ class WidgetContainerSerializer
         if (isset($data['contents'])) {
             foreach ($data['contents'] as $index => $content) {
                 /** @var WidgetInstance $widgetInstance */
-                $widgetInstance = $this->serializer->deserialize('Claroline\CoreBundle\Entity\Widget\WidgetInstance', $content, $options);
+                $widgetInstance = $this->serializer->deserialize(WidgetInstance::class, $content, $options);
                 $widgetInstance->setPosition($index);
                 $widgetContainer->addInstance($widgetInstance);
             }

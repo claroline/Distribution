@@ -42,11 +42,10 @@ class HomeTabConfig
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Home\HomeTab"
+     *     targetEntity="Claroline\CoreBundle\Entity\Home\HomeTab",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="home_tab_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_home_tab"})
-     * @SerializedName("hometab")
      */
     protected $homeTab;
 

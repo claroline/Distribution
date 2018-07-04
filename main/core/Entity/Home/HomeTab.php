@@ -32,6 +32,11 @@ class HomeTab
     use Poster;
     use Description;
 
+    const TYPE_WORKSPACE = 'workspace';
+    const TYPE_DESKTOP = 'desktop';
+    const TYPE_ADMIN_WORKSPACE = 'admin_workspace';
+    const TYPE_ADMIN_DESKTOP = 'admin_desktop';
+
     /**
      * @ORM\Column(nullable=false)
      * @Groups({"api_home_tab"})
@@ -71,6 +76,14 @@ class HomeTab
     protected $widgetHomeTabConfigs;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="HomeTabConfig",
+     *     mappedBy="homeTab"
+     * )
+     */
+    protected $homeTabConfigs;
+
+    /**
      * @ORM\ManyToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Role"
      * )
@@ -89,6 +102,7 @@ class HomeTab
     {
         $this->roles = new ArrayCollection();
         $this->widgetHomeTabConfigs = new ArrayCollection();
+        $this->homeTabConfigs = new ArrayCollection();
     }
 
     public function getName()

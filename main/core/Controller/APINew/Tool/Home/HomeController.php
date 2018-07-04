@@ -35,12 +35,11 @@ class HomeController extends AbstractCrudController
      */
     public function updateHomeAction(Request $request)
     {
-        $data = $this->decodeRequest($request);
-        $tabs = [];
+        $tabs = $this->decodeRequest($request);
         //here we assume we got the data properly
 
         foreach ($tabs as $tab) {
-            $this->crud->deserialize('Claroline\CoreBundle\Entity\Tool\Home\HomeTab', $tab);
+            $this->crud->update('Claroline\CoreBundle\Entity\Tool\Home\HomeTab', $tab);
         }
 
         return new JsonResponse([]);
