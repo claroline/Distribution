@@ -63,11 +63,7 @@ function APIClass(sco, scormData, tracking, dispatch) {
     this.scoData['cmi.core.student_name'] = authenticatedUser ? `${authenticatedUser.firstName}, ${authenticatedUser.lastName}` : 'anon., anon.'
     this.scoData['cmi.core.lesson_mode'] = tracking['lessonMode']
     this.scoData['cmi.core.lesson_location'] = tracking['lessonLocation']
-    this.scoData['cmi.core.lesson_status'] = tracking['lessonStatus']
     this.scoData['cmi.core.credit'] = tracking['credit']
-    this.scoData['cmi.core.score.raw'] = -1 < tracking['scoreRaw'] ? tracking['scoreRaw'] : ''
-    this.scoData['cmi.core.score.max'] = -1 < tracking['scoreMax'] ? tracking['scoreMax'] : ''
-    this.scoData['cmi.core.score.min'] = -1 < tracking['scoreMin'] ? tracking['scoreMin'] : ''
 
     let totalTime = tracking['totalTimeInt']
     const totalTimeHours = totalTime / 144000
