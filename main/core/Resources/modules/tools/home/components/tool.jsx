@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+
 import {trans} from '#/main/core/translation'
 import {matchPath, withRouter} from '#/main/app/router'
 import {
@@ -53,34 +54,33 @@ const ToolActions = withRouter(ToolActionsComponent)
 
 const Tool = props =>
   <ToolPageContainer>
-    {/* {1 < props.tabs.length && */}
     <Router>
       <Routes
+        redirect={[
+          {from: '/', exact: true, to: '/tab/'+props.tabs[0].id },
+          {from: '/edit', exact: true, to: '/edit/tab/'+props.tabs[0].id }
+        ]}
         routes={[
           {
-            path: '/',
-            exact: true,
-            component: PlayerNav
-            // disabled: 1 < props.tabs.length
-          }, {
-            path: '/tab/:title?',
+            path: '/tab/:id?',
             exact: true,
             component: PlayerNav,
-            // disabled: 1 < props.tabs.length,
-            onEnter: (params) =>props.setCurrentTab(params.title)
+            disabled: 1 < props.tabs.length,
+            onEnter: (params) =>props.setCurrentTab(params.id)
           }, {
-            path: '/edit',
+            path: '/edit/tab/:id?',
             exact: true,
-            component: EditorNav
+            component: EditorNav,
+            onEnter: (params) =>props.setCurrentTab(params.id)
           }
         ]}
       />
     </Router>
-    {/* } */}
     <PageHeader
-      title={props.currentTab.description ? props.currentTab.description : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
+      // TODO : change title for description
+      title={props.currentTab ? props.currentTab.title : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
-      {console.log(props.currentTab)}
+      {console.log(props.tabs)}
       {props.editable &&
         <ToolActions />
       }
@@ -91,11 +91,11 @@ const Tool = props =>
         headerSpacer={true}
         routes={[
           {
-            path: '/',
+            path: '/tab/:id?',
             exact: true,
             component: Player
           }, {
-            path: '/edit',
+            path: '/edit/tab/:id?',
             exact: true,
             component: Editor
           }
@@ -124,8 +124,8 @@ const HomeTool = connect(
     currentTab: select.currentTab(state)
   }),
   (dispatch) => ({
-    setCurrentTab(tabTitle){
-      dispatch(actions.setCurrentTab(tabTitle))
+    setCurrentTab(tab){
+      dispatch(actions.setCurrentTab(parseInt(tab)))
     }
   })
 )(Tool)

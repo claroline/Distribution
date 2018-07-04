@@ -64,7 +64,7 @@ const EditorNavComponent = props =>
       modal={[MODAL_DATA_FORM, {
         title: trans('add_tab'),
         sections: createTabForm,
-        save: data => props.CreateTab(data)
+        save: data => props.createTab(data)
       }]}
     >
       <span className="fa fa-plus" />
