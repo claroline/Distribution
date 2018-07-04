@@ -80,6 +80,7 @@ const Tool = props =>
     <PageHeader
       title={props.currentTab.description ? props.currentTab.description : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
+      {console.log(props.currentTab[0])}
       {props.editable &&
         <ToolActions />
       }

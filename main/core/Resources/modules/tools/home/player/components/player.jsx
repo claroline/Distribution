@@ -24,7 +24,7 @@ PlayerComponent.propTypes = {
 const Player = connect(
   (state) => ({
     context: select.context(state),
-    widgets: select.currentTab(state).widgets
+    widgets: select.currentTab(state)[0].widgets
   })
 )(PlayerComponent)
 
