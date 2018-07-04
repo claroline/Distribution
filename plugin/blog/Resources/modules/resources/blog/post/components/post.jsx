@@ -26,7 +26,7 @@ const PostComponent = props =>
     {props.post.id &&
       <div>
         <div className="post-container">
-          <div className={classes('post-header', {'unpublished': !props.post.isPublished})}>
+          <div className={classes('post-header')}>
             <h2 className={'post-title'}>
               <a href={`#/${props.post.slug}`}>{props.post.title}</a>
             </h2>
@@ -40,6 +40,9 @@ const PostComponent = props =>
               blogId={props.blogId}
               post={props.post}
               canEdit={props.canEdit}
+              publishPost={props.publishPost}
+              pinPost={props.pinPost}
+              deletePost={props.deletePost}
             />
           </div>
           {'sm' !== props.size && props.post.content &&
@@ -128,6 +131,9 @@ const InfoBar = props =>
     }
     {props.post.pinned &&
       <li><span className="label label-success">{trans('icap_blog_post_pinned', {}, 'icap_blog')}</span></li>
+    }
+    {!props.post.isPublished &&
+    <li><span className="label label-danger">{trans('unpublished', {}, 'icap_blog')}</span></li>
     }
   </ul>
     

@@ -5,6 +5,7 @@ import {reducer as editorReducer} from '#/plugin/blog/resources/blog/editor/stor
 import {reducer as postReducer} from '#/plugin/blog/resources/blog/post/store'
 import {reducer as commentReducer} from '#/plugin/blog/resources/blog/comment/store'
 import {reducer as toolbarReducer} from '#/plugin/blog/resources/blog/toolbar/store'
+import {reducer as moderationReducer} from '#/plugin/blog/resources/blog/moderation/store'
 import {SWITCH_MODE} from '#/plugin/blog/resources/blog/store/actions'
 
 const reducer = {
@@ -37,6 +38,7 @@ const reducer = {
   post: postReducer.post,
   post_edit: postReducer.post_edit,
   resourceNode: makeReducer({}, {}),
+  comments: moderationReducer.comments,
   blog: combineReducers({
     data: combineReducers({
       id: makeReducer({}, {}),

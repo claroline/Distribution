@@ -31,6 +31,10 @@ class PostManager
     private $userRepo;
     private $eventDispatcher;
 
+    const GET_ALL_POSTS = 'GET_ALL_POSTS';
+    const GET_PUBLISHED_POSTS = 'GET_PUBLISHED_POSTS';
+    const GET_UNPUBLISHED_POSTS = 'GET_UNPUBLISHED_POSTS';
+
     /**
      * @DI\InjectParams({
      *     "finder"          = @DI\Inject("claroline.api.finder"),
@@ -255,13 +259,12 @@ class PostManager
      * Update a comment.
      *
      * @param Blog    $blog
-     * @param Post    $post
      * @param Comment $comment
      * @param User    $user
      *
      * @return Comment
      */
-    public function updateComment(Blog $blog, Post $post, Comment $existingComment, $message)
+    public function updateComment(Blog $blog, Comment $existingComment, $message)
     {
         $existingComment
         ->setMessage($message)
@@ -274,7 +277,7 @@ class PostManager
         $unitOfWork->computeChangeSets();
         $changeSet = $unitOfWork->getEntityChangeSet($existingComment);
 
-        $this->trackingManager->dispatchCommentUpdateEvent($post, $existingComment, $changeSet);
+        $this->trackingManager->dispatchCommentUpdateEvent($existingComment->getPost(), $existingComment, $changeSet);
 
         return $existingComment;
     }
@@ -283,18 +286,17 @@ class PostManager
      * Publish a comment.
      *
      * @param Blog    $blog
-     * @param Post    $post
      * @param Comment $comment
      * @param User    $user
      *
      * @return Comment
      */
-    public function publishComment(Blog $blog, Post $post, Comment $existingComment)
+    public function publishComment(Blog $blog, Comment $existingComment)
     {
         $existingComment->publish();
         $this->om->flush();
 
-        $this->trackingManager->dispatchCommentPublishEvent($post, $existingComment);
+        $this->trackingManager->dispatchCommentPublishEvent($existingComment->getPost(), $existingComment);
 
         return $existingComment;
     }
@@ -303,13 +305,12 @@ class PostManager
      * Report a comment.
      *
      * @param Blog    $blog
-     * @param Post    $post
      * @param Comment $comment
      * @param User    $user
      *
      * @return Comment
      */
-    public function reportComment(Blog $blog, Post $post, Comment $existingComment)
+    public function reportComment(Blog $blog, Comment $existingComment)
     {
         $existingComment->setReported($existingComment->getReported() + 1);
         $this->om->flush();
@@ -321,18 +322,17 @@ class PostManager
      * unpublish a comment.
      *
      * @param Blog    $blog
-     * @param Post    $post
      * @param Comment $comment
      * @param User    $user
      *
      * @return Comment
      */
-    public function unpublishComment(Blog $blog, Post $post, Comment $existingComment)
+    public function unpublishComment(Blog $blog, Comment $existingComment)
     {
         $existingComment->unpublish();
         $this->om->flush();
 
-        $this->trackingManager->dispatchCommentPublishEvent($post, $existingComment);
+        $this->trackingManager->dispatchCommentPublishEvent($existingComment->getPost(), $existingComment);
 
         return $existingComment;
     }
@@ -341,16 +341,15 @@ class PostManager
      * Delete a comment.
      *
      * @param Blog $blog
-     * @param Post $post
      * @param User $user
      *
      * @return Comment
      */
-    public function deleteComment(Blog $blog, Post $post, Comment $existingComment)
+    public function deleteComment(Blog $blog, Comment $existingComment)
     {
         $this->om->remove($existingComment);
         $this->om->flush();
-        $this->trackingManager->dispatchCommentDeleteEvent($post, $existingComment);
+        $this->trackingManager->dispatchCommentDeleteEvent($existingComment->getPost(), $existingComment);
 
         return $existingComment->getId();
     }
@@ -478,10 +477,10 @@ class PostManager
      *
      * @param $blogId
      * @param $filters
-     * @param $publishedOnly
+     * @param $publication
      * @param $abstract
      */
-    public function getPosts($blogId, $filters, $publishedOnly, $abstract)
+    public function getPosts($blogId, $filters, $publication = PostManager::GET_PUBLISHED_POSTS, $abstract = true)
     {
         if (!isset($filters['hiddenFilters'])) {
             $filters['hiddenFilters'] = [];
@@ -490,54 +489,17 @@ class PostManager
         $filters['hiddenFilters'] = [
             'blog' => $blogId,
         ];
-
-        if ($publishedOnly) {
-            $filters['hiddenFilters'] = array_merge($filters['hiddenFilters'], ['published' => 'true']);
+        $publicationOptions = [];
+        if (PostManager::GET_PUBLISHED_POSTS === $publication) {
+            $publicationOptions = ['published' => true];
+        } elseif (PostManager::GET_UNPUBLISHED_POSTS === $publication) {
+            $publicationOptions = ['published' => false];
         }
+        $filters['hiddenFilters'] = array_merge($filters['hiddenFilters'], $publicationOptions);
 
         return $this->finder->search('Icap\BlogBundle\Entity\Post', $filters, [
             'abstract' => $abstract,
         ]);
-    }
-
-    /**
-     * Get comments.
-     *
-     * @param $blogId
-     * @param $postId
-     * @param $userId
-     * @param $filters
-     * @param $publishedOnly
-     */
-    public function getComments($blogId, $postId, $userId, $filters, $allowedToSeeOnly)
-    {
-        if (!isset($filters['hiddenFilters'])) {
-            $filters['hiddenFilters'] = [];
-        }
-        //filter on current blog and post
-        $filters['hiddenFilters'] = [
-            'post' => $postId,
-        ];
-
-        //allow to see only published post, or post whose current user is the author
-        if ($allowedToSeeOnly) {
-            //anonymous only sees published
-            if (null === $userId) {
-                $options = [
-                    'publishedOnly' => true,
-                ];
-            } else {
-                $options = [
-                    'allowedToSeeForUser' => $userId,
-                ];
-            }
-
-            $filters['hiddenFilters'] = array_merge(
-                $filters['hiddenFilters'],
-                $options);
-        }
-
-        return $this->finder->search('Icap\BlogBundle\Entity\Comment', $filters, []);
     }
 
     /**

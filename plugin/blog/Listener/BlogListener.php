@@ -15,6 +15,7 @@ use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Form\BlogType;
+use Icap\BlogBundle\Manager\PostManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -133,13 +134,16 @@ class BlogListener
         $postManager = $this->container->get('icap.blog.manager.post');
         $authorizationChecker = $this->container->get('security.authorization_checker');
 
-        $canEdit = $authorizationChecker->isGranted('EDIT', new ResourceCollection([$blog->getResourceNode()]));
         $parameters['limit'] = -1;
 
         $posts = $postManager->getPosts(
             $blog->getId(),
             $parameters,
-            !$canEdit,
+            $authorizationChecker->isGranted('ADMINISTRATE', new ResourceCollection([$blog->getResourceNode()]))
+            || $authorizationChecker->isGranted('EDIT', new ResourceCollection([$blog->getResourceNode()]))
+            || $authorizationChecker->isGranted('MODERATE', new ResourceCollection([$blog->getResourceNode()]))
+                ? PostManager::GET_ALL_POSTS
+                : PostManager::GET_PUBLISHED_POSTS,
             !$blog->getOptions()->getDisplayFullPosts());
 
         $postsData = [];

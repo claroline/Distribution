@@ -19,8 +19,6 @@ actions.createComment = makeActionCreator(CREATE_POST_COMMENT, 'comment')
 actions.removeComment = makeActionCreator(DELETE_POST_COMMENT, 'commentId')
 
 actions.submitComment = (blogId, postId, comment) => (dispatch) => {
-  //const formData = new FormData()
-  //formData.append('comment', comment)
   dispatch({
     [API_REQUEST]: {
       url: ['apiv2_blog_comment_new', {blogId, postId}],
@@ -36,12 +34,10 @@ actions.submitComment = (blogId, postId, comment) => (dispatch) => {
   })
 }
 
-actions.editComment = (blogId, postId, commentId, comment) => (dispatch) => {
-  //const formData = new FormData()
-  //formData.append('message', comment)
+actions.editComment = (blogId, commentId, comment) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: ['apiv2_blog_comment_update', {blogId, postId, commentId}],
+      url: ['apiv2_blog_comment_update', {blogId, commentId}],
       request: {
         method: 'PUT',
         body: JSON.stringify({comment: comment})
@@ -54,10 +50,10 @@ actions.editComment = (blogId, postId, commentId, comment) => (dispatch) => {
   })
 }
 
-actions.publishComment = (blogId, postId, commentId) => (dispatch) => {
+actions.publishComment = (blogId, commentId) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: ['apiv2_blog_comment_publish', {blogId, postId, commentId}],
+      url: ['apiv2_blog_comment_publish', {blogId, commentId}],
       request: {
         method: 'PUT'
       },
@@ -68,10 +64,10 @@ actions.publishComment = (blogId, postId, commentId) => (dispatch) => {
   })
 }
 
-actions.reportComment = (blogId, postId, commentId) => (dispatch) => {
+actions.reportComment = (blogId, commentId) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: ['apiv2_blog_comment_report', {blogId, postId, commentId}],
+      url: ['apiv2_blog_comment_report', {blogId, commentId}],
       request: {
         method: 'PUT'
       },
@@ -82,10 +78,10 @@ actions.reportComment = (blogId, postId, commentId) => (dispatch) => {
   })
 }
 
-actions.unpublishComment = (blogId, postId, commentId) => (dispatch) => {
+actions.unpublishComment = (blogId, commentId) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: ['apiv2_blog_comment_unpublish', {blogId, postId, commentId}],
+      url: ['apiv2_blog_comment_unpublish', {blogId, commentId}],
       request: {
         method: 'PUT'
       },
@@ -96,10 +92,10 @@ actions.unpublishComment = (blogId, postId, commentId) => (dispatch) => {
   })
 }
 
-actions.deleteComment = (blogId, postId, commentId) => (dispatch) => {
+actions.deleteComment = (blogId, commentId) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: ['apiv2_blog_comment_delete', {blogId, postId, commentId}],
+      url: ['apiv2_blog_comment_delete', {blogId, commentId}],
       request: {
         method: 'DELETE'
       },
