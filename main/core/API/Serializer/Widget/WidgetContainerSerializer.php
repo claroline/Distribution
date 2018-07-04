@@ -43,8 +43,7 @@ class WidgetContainerSerializer
     {
         return [
             'id' => $widgetContainer->getUuid(),
-            'name' => 'cocolasticot',
-            //'name' => $widgetContainer->getName(),
+            'name' => $widgetContainer->getName(),
             'display' => [
                 'layout' => $widgetContainer->getLayout(),
                 'color' => $widgetContainer->getColor(),
