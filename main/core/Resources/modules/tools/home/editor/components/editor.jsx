@@ -28,7 +28,8 @@ EditorComponent.propTypes = {
 const Editor = connect(
   state => ({
     context: select.context(state),
-    widgets: select.currentTab(state).widgets
+    widgets: editorSelect.widgets(state),
+    tabs: editorSelect.tabs(state)
   }),
   dispatch => ({
     update(widgets) {
