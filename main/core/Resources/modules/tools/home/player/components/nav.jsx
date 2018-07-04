@@ -11,7 +11,7 @@ const PlayerNavComponent = props =>
       <NavLink
         className="nav-tab"
         key={tabIndex}
-        to={`/tab/${tab.title}`}
+        to={`/tab/${tab.id}`}
       >
         {tab.title}
       </NavLink>
