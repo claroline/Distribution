@@ -6,7 +6,6 @@ import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-t
 
 const WidgetGrid = props =>
   <div className="widgets-grid">
-    aaaaAAAAAAAAAAAAAAAAAaaaaaaaaakkf,dsog
     {props.widgets.map((widget, index) =>
       <Widget
         key={index}
