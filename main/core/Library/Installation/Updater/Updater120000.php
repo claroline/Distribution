@@ -131,12 +131,13 @@ class Updater120000 extends Updater
 
     private function restoreWidgetContainer($row)
     {
-        $this->log('migrating '.$widgetInstance->getName().' ...');
         $widgetContainer = new WidgetContainer();
         $widgetInstance = $this->om->getRepository(WidgetInstance::class)->find($row['widget_instance_id']);
+        $this->log('migrating '.$widgetInstance->getName().' ...');
         $widgetContainer->addInstance($widgetInstance);
         $widgetContainer->setColor($row['color']);
         $widgetContainer->setName($widgetInstance->getName());
+        $widgetContainer->setLayout([1, 1]);
 
         $this->om->persist($widgetContainer);
     }
