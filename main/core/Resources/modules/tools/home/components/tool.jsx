@@ -11,23 +11,19 @@ import {
 import {
   RoutedPageContent
 } from '#/main/core/layout/router'
+import {Router, Routes} from '#/main/app/router'
 import {
   ToolPageContainer
 } from '#/main/core/tool/containers/page'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 import {select} from '#/main/core/tools/home/selectors'
+import {actions} from '#/main/core/tools/home/actions'
 import {Editor} from '#/main/core/tools/home/editor/components/editor'
 import {Player} from '#/main/core/tools/home/player/components/player'
-
 import {PlayerNav} from '#/main/core/tools/home/player/components/nav'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 
-const tabs = [
-  {name: 'tab1'},
-  {name: 'tab2'},
-  {name: 'tab3'}
-]
 
 const ToolActionsComponent = props =>
   <PageActions>
@@ -57,13 +53,29 @@ const ToolActions = withRouter(ToolActionsComponent)
 
 const Tool = props =>
   <ToolPageContainer>
-    <EditorNav
-      tabs={tabs}
-      onSaveCreateTabForm={props.createTab}
-    />
+    <Router>
+      <Routes
+        routes={[
+          {
+            path: '/',
+            exact: true,
+            component: PlayerNav
+          }, {
+            path: '/tab/:title?',
+            exact: true,
+            component: PlayerNav,
+            onEnter: (params) =>props.setCurrentTab(params.title)
+          }, {
+            path: '/edit',
+            exact: true,
+            component: EditorNav
+          }
+        ]}
+      />
+    </Router>
     <PageHeader
       // active tab long title
-      title={'desktop' === props.context.type ? trans('desktop') : props.context.data.name}
+      title={props.title ? props.title : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
       {props.editable &&
         <ToolActions />
@@ -102,11 +114,13 @@ Tool.propTypes = {
 const HomeTool = connect(
   (state) => ({
     context: select.context(state),
-    editable: select.editable(state)
+    editable: select.editable(state),
+    tabs: select.tabs(state),
+    title: select.title(state)
   }),
-  dispatch => ({
-    createTab(data){
-      dispatch(console.log(data))
+  (dispatch) => ({
+    setCurrentTab(tabTitle){
+      dispatch(actions.setCurrentTab(tabTitle))
     }
   })
 )(Tool)

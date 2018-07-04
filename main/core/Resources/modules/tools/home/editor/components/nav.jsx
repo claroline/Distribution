@@ -1,8 +1,12 @@
 import React from 'react'
+import {connect} from 'react-redux'
 
+import {NavLink} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 import {ModalButton} from '#/main/app/button'
 import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
+
+import {select} from '#/main/core/tools/home/selectors'
 
 const createTabForm = [
   {
@@ -17,10 +21,7 @@ const createTabForm = [
       name: 'description',
       type: 'string',
       label: trans('title'),
-      required: true,
-      options: {
-        long: true
-      }
+      required: true
     }]
   },
   {
@@ -46,31 +47,39 @@ const createTabForm = [
     }]
   }
 ]
-const EditorNav = props =>
-  <div>
-    <nav className="tool-nav">
-      {props.tabs.map((tab, tabIndex) =>
-        <a
-          className="nav-tab"
-          key={tabIndex}
-          to={`/${tab.name}`}
-        >
-          {tab.name}
-        </a>
-      )}
-      <ModalButton
-        className="nav-add-tab"
-        modal={[MODAL_DATA_FORM, {
-          title: trans('add_tab'),
-          sections: createTabForm,
-          save: data => props.onSaveCreateTabForm(data)
-        }]}
+const EditorNavComponent = props =>
+  <nav className="tool-nav">
+    {props.tabs.map((tab, tabIndex) =>
+      <NavLink
+        className="nav-tab"
+        key={tabIndex}
+        to={`/tab/${tab.title}`}
       >
-        <span className="fa fa-plus" />
-      </ModalButton>
-    </nav>
-    {/* {props.children} */}
-  </div>
+        {tab.title}
+      </NavLink>
+    )}
+    <ModalButton
+      className="nav-add-tab"
+      modal={[MODAL_DATA_FORM, {
+        title: trans('add_tab'),
+        sections: createTabForm,
+        save: data => props.onSaveCreateTabForm(data)
+      }]}
+    >
+      <span className="fa fa-plus" />
+    </ModalButton>
+  </nav>
+
+const EditorNav = connect(
+  (state) => ({
+    tabs: select.tabs(state)
+  }),
+  dispatch => ({
+    createTab(data){
+      dispatch(actions.createTab(data))
+    }
+  })
+)(EditorNavComponent)
 
 export {
   EditorNav
