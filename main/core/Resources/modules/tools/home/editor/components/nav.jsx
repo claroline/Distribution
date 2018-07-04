@@ -7,6 +7,7 @@ import {ModalButton} from '#/main/app/button'
 import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 
 import {select} from '#/main/core/tools/home/selectors'
+import {actions} from '#/main/core/tools/home/editor/actions'
 
 const createTabForm = [
   {
@@ -63,7 +64,7 @@ const EditorNavComponent = props =>
       modal={[MODAL_DATA_FORM, {
         title: trans('add_tab'),
         sections: createTabForm,
-        save: data => props.onSaveCreateTabForm(data)
+        save: data => props.CreateTab(data)
       }]}
     >
       <span className="fa fa-plus" />
