@@ -65,7 +65,7 @@ const Tool = props =>
             path: '/tab/:id?',
             exact: true,
             component: PlayerNav,
-            disabled: 1 < props.tabs.length,
+            // disabled: 1 < props.tabs.length,
             onEnter: (params) =>props.setCurrentTab(params.id)
           }, {
             path: '/edit/tab/:id?',
