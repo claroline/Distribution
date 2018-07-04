@@ -137,7 +137,7 @@ class Updater120000 extends Updater
         $widgetContainer->addInstance($widgetInstance);
         $widgetContainer->setColor($row['color']);
         $widgetContainer->setName($widgetInstance->getName());
-        $widgetContainer->setLayout([1, 1]);
+        $widgetContainer->setLayout([1]);
 
         $this->om->persist($widgetContainer);
     }
