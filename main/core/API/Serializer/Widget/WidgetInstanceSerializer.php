@@ -84,17 +84,17 @@ class WidgetInstanceSerializer
             ->getRepository(Widget::class)
             ->findOneBy(['name' => $data['type']]);
 
-        if (!empty($widget)) {
+        if ($widget) {
             $widgetInstance->setWidget($widget);
 
             // process custom configuration of the widget if any
-            if (!empty($data['parameters']) && !empty($widget->getClass())) {
+            if ($data['parameters'] && $widget->getClass()) {
                 // loads configuration entity for the current instance
                 $typeParameters = $this->om
                     ->getRepository($widget->getClass())
                     ->findOneBy(['widgetInstance' => $widgetInstance]);
 
-                if (empty($typeParameters)) {
+                if ($typeParameters) {
                     // no existing parameters => initializes one
                     $parametersClass = $widget->getClass();
 
@@ -103,7 +103,7 @@ class WidgetInstanceSerializer
                 }
 
                 // deserializes custom config and link it to the instance
-                $this->serializer->deserialize($data['parameters'], $typeParameters, $options);
+                $this->serializer->deserialize($parametersClass, $data['parameters'], $options);
                 $typeParameters->setWidgetInstance($widgetInstance);
             }
         }

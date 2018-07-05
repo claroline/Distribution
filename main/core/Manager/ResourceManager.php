@@ -756,7 +756,7 @@ class ResourceManager
         $event = $this->dispatcher->dispatch(
             'copy_'.$node->getResourceType()->getName(),
             'Resource\\CopyResource',
-            [$resource, $parent, $newNode]
+            [$resource, $newNode]
         );
 
         $copy = $event->getCopy();
@@ -857,7 +857,7 @@ class ResourceManager
                 if (!$softDelete) {
                     $event = $this->dispatcher->dispatch(
                         "delete_{$node->getResourceType()->getName()}",
-                        'DeleteResource',
+                        'Resource\DeleteResource',
                         [$resource, $softDelete]
                     );
                     $eventSoftDelete = $event->isSoftDelete();
@@ -1443,10 +1443,12 @@ class ResourceManager
      */
     public function getResourceFromNode(ResourceNode $node)
     {
-        /** @var AbstractResource $resource */
-        $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
+        /* @var AbstractResource $resource */
+        if (class_exists($node->getClass())) {
+            $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
 
-        return $resource;
+            return $resource;
+        }
     }
 
     /**
