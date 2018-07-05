@@ -123,7 +123,7 @@ const HomeTool = connect(
   }),
   (dispatch) => ({
     setCurrentTab(tab){
-      dispatch(actions.setCurrentTab(parseInt(tab)))
+      dispatch(actions.setCurrentTab(tab))
     }
   })
 )(Tool)

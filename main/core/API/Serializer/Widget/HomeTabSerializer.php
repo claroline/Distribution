@@ -79,6 +79,7 @@ class HomeTabSerializer
 
     public function deserialize(array $data, HomeTab $homeTab, array $options = []): HomeTab
     {
+        $this->sipe('id', 'setId', $data, $homeTab);
         $this->sipe('title', 'setName', $data, $homeTab);
         $this->sipe('longTitle', 'setLongTitle', $data, $homeTab);
         $this->sipe('poster', 'setPoster', $data, $homeTab);

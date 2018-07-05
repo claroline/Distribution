@@ -24,7 +24,7 @@ const createTabForm = [
       label: trans('menu_title'),
       required: true
     }, {
-      name: 'description',
+      name: 'longTitle',
       type: 'string',
       label: trans('title'),
       required: true
@@ -61,6 +61,7 @@ const EditorNavComponent = props =>
       <NavLink
         className="nav-tab"
         key={tabIndex}
+        activeClassName="nav-tab-active"
         to={`/tab/${tab.id}`}
       >
 
@@ -75,7 +76,7 @@ const EditorNavComponent = props =>
         save: data => props.createTab(props.tabs.length, merge({}, data, {
           id: makeId(),
           title: data.title,
-          description: data.description ? data.description : data.title,
+          longTitle: data.longTitle ? data.longTitle : data.title,
           icon: data.icon ? data.icon : null,
           poster: data.poster ? data.poster : null,
           type: props.context.type,
