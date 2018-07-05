@@ -39,7 +39,7 @@ class PlayerComponent extends Component {
             openSco={this.openSco}
           />
         }
-        <div className="content-container">
+        <div className="content-container scorm-content-container">
           <iframe
             className="scorm-iframe"
             src={`${asset('uploads/scorm/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}

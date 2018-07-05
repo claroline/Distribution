@@ -343,7 +343,15 @@ class ScormManager
                     $this->eventDispatcher->dispatch('log', $event);
 
                     // Generate resource evaluation
-//                    $this->scormManager->generateScormEvaluation($tracking);
+                    $this->generateScormEvaluation(
+                        $tracking,
+                        $data,
+                        $scoreRaw,
+                        intval($data['cmi.core.score.min']),
+                        intval($data['cmi.core.score.max']),
+                        $sessionTimeInHundredth / 100,
+                        $lessonStatus
+                    );
                 }
                 break;
             case Scorm::SCORM_2004:
@@ -419,16 +427,16 @@ class ScormManager
                     $this->eventDispatcher->dispatch('log', $event);
 
                     // Generate resource evaluation
-//                    $this->scormManager->generateScormEvaluation(
-//                        $sco->getScorm()->getResourceNode(),
-//                        $user,
-//                        $completionStatus,
-//                        $successStatus,
-//                        $scoreRaw,
-//                        $scoreMin,
-//                        $scoreMax,
-//                        $dataSessionTime
-//                    );
+                    $this->generateScormEvaluation(
+                        $tracking,
+                        $data,
+                        $scoreRaw,
+                        $scoreMin,
+                        $scoreMax,
+                        $dataSessionTime,
+                        $successStatus,
+                        $completionStatus
+                    );
                 }
                 break;
         }
@@ -436,6 +444,83 @@ class ScormManager
         $this->om->flush();
 
         return $tracking;
+    }
+
+    public function generateScormEvaluation(
+        ScoTracking $tracking,
+        array $data,
+        $score = null,
+        $scoreMin = null,
+        $scoreMax = null,
+        $sessionTime = null,
+        $successStatus = null,
+        $completionStatus = null
+    ) {
+        $scorm = $tracking->getSco()->getScorm();
+
+        switch ($scorm->getVersion()) {
+            case Scorm::SCORM_12:
+                $duration = $sessionTime;
+
+                switch ($successStatus) {
+                    case 'passed':
+                    case 'failed':
+                    case 'completed':
+                    case 'incomplete':
+                        $status = $successStatus;
+                        break;
+                    case 'not attempted':
+                        $status = 'not_attempted';
+                        break;
+                    case 'browsed':
+                        $status = 'opened';
+                        break;
+                    default:
+                        $status = 'unknown';
+                }
+                break;
+            case Scorm::SCORM_2004:
+                if (!is_null($sessionTime)) {
+                    $time = new \DateInterval($sessionTime);
+                    $computedTime = new \DateTime();
+                    $computedTime->setTimestamp(0);
+                    $computedTime->add($time);
+                    $duration = $computedTime->getTimestamp();
+                }
+                switch ($completionStatus) {
+                    case 'incomplete':
+                        $status = $completionStatus;
+                        break;
+                    case 'completed':
+                        if (in_array($successStatus, ['passed', 'failed'])) {
+                            $status = $successStatus;
+                        } else {
+                            $status = $completionStatus;
+                        }
+                        break;
+                    case 'not attempted':
+                        $status = 'not_attempted';
+                        break;
+                    default:
+                        $status = 'unknown';
+                }
+                break;
+        }
+
+        $this->resourceEvalManager->createResourceEvaluation(
+            $scorm->getResourceNode(),
+            $tracking->getUser(),
+            $tracking->getLatestDate(),
+            $status,
+            $score,
+            $scoreMin,
+            $scoreMax,
+            null,
+            null,
+            $duration,
+            null,
+            $data
+        );
     }
 
     public function convertAllScorm12($withLogs = true)
@@ -556,12 +641,14 @@ class ScormManager
 
                 /* Copies Scos Trackings */
                 foreach ($scorm->getScos() as $sco) {
+                    $scoId = $sco->getId();
                     $trackings = $this->scorm12ScoTrackingRepo->findBy(['sco' => $sco]);
 
                     foreach ($trackings as $tracking) {
+                        $trackingUser = $tracking->getUser();
                         $newTracking = new ScoTracking();
-                        $newTracking->setSco($scosMapping[$sco->getId()]);
-                        $newTracking->setUser($tracking->getUser());
+                        $newTracking->setSco($scosMapping[$scoId]);
+                        $newTracking->setUser($trackingUser);
                         $newTracking->setScoreRaw($tracking->getBestScoreRaw());
                         $newTracking->setScoreMin($tracking->getScoreMin());
                         $newTracking->setScoreMax($tracking->getScoreMax());
