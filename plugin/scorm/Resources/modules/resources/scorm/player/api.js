@@ -146,8 +146,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
    *   SCORM 1.2   *
    *****************/
   this.LMSInitialize = (arg) => {
-    console.log('*** LMSInitialize ***')
-
     if (arg != '') {
       this.apiLastError = '201'
 
@@ -160,8 +158,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.LMSFinish = (arg) => {
-    console.log('*** LMSFinish ***')
-
     if (this.apiInitialized) {
 
       if ('' !== arg) {
@@ -188,8 +184,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.LMSGetValue = (arg) => {
-    console.log('*** LMSGetValue:: ' + arg + ' ***')
-
     if (this.apiInitialized) {
       switch (arg) {
         case 'cmi.core._children' :
@@ -233,8 +227,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.LMSSetValue = (argName, argValue) => {
-    console.log('*** LMSSetValue:: [' + argName + '] = ' + argValue + ' ***')
-
     if (this.apiInitialized) {
       let upperCaseLessonStatus = ''
       let upperCaseExit = ''
@@ -363,8 +355,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.LMSCommit = (arg) => {
-    console.log('*** LMSCommit ***')
-
     if (this.apiInitialized) {
       if ('' !== arg) {
         this.apiLastError = '201'
@@ -384,13 +374,10 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.LMSGetLastError = () => {
-    console.log('*** LMSGetLastError:: ' + this.apiLastError + ' ***')
-
     return this.apiLastError
   }
 
   this.LMSGetErrorString = (errorCode) => {
-    console.log('*** LMSGetErrorString:: [' + errorCode + '] ***')
     let error = 'Unknown Error'
 
     switch (errorCode) {
@@ -419,8 +406,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
     if ('' === index) {
       index = this.apiLastError
     }
-    console.log('*** LMSGetDiagnostic:: [' + index + '] ***')
-
     switch (index) {
       case '0' :
       case '101' :
@@ -444,8 +429,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
    *   SCORM 2004   *
    ******************/
   this.Initialize = (arg) => {
-    console.log('*** Initialize ***')
-
     if ('' !== arg) {
       // General Argument Error
       this.apiLastError = '201'
@@ -469,8 +452,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.Terminate = (arg) => {
-    console.log('*** Terminate ***')
-
     if ('' !== arg) {
       // General Argument Error
       this.apiLastError = '201'
@@ -502,8 +483,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.GetValue = (arg) => {
-    console.log('*** GetValue:: ' + arg + ' ***')
-
     if (!this.apiInitialized) {
       // Retrieve Data Before Initialization
       this.apiLastError = '122'
@@ -865,8 +844,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.SetValue = (argName, argValue) => {
-    console.log('*** SetValue:: [' + argName + '] = ' + argValue + ' ***')
-
     if (!this.apiInitialized) {
       // Store Data Before Initialization
       this.apiLastError = '132'
@@ -1450,8 +1427,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.Commit = (arg) => {
-    console.log('*** Commit ***')
-
     if ('' !== arg) {
       // General Argument Error
       this.apiLastError = '201'
@@ -1475,13 +1450,10 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 
   this.GetLastError = () => {
-    console.log('*** GetLastError:: ' + this.apiLastError + ' ***')
-
     return this.apiLastError
   }
 
   this.GetErrorString = (errorCode) => {
-    console.log('*** GetErrorString:: [' + errorCode + '] ***')
     let error = ''
 
     switch (errorCode) {
@@ -1525,8 +1497,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
     if (index === '') {
       index = this.apiLastError
     }
-    console.log('*** GetDiagnostic:: [' + index + '] ***')
-
     switch (index) {
       case '0' :
       case '101' :

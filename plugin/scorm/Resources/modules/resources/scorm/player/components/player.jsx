@@ -2,14 +2,15 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {trans} from '#/main/core/translation'
 import {asset} from '#/main/core/scaffolding/asset'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {SummarizedContent} from '#/main/app/content/summary/components/content'
 
 import {Scorm as ScormType, Sco as ScoType} from '#/plugin/scorm/resources/scorm/prop-types'
 import {actions} from '#/plugin/scorm/resources/scorm/player/actions'
 import {select} from '#/plugin/scorm/resources/scorm/selectors'
-import {flattenScos, getFirstOpenableSco} from '#/plugin/scorm/resources/scorm/utils'
-import {ScormSummary} from '#/plugin/scorm/resources/scorm/player/components/summary.jsx'
+import {flattenScos, getFirstOpenableSco, generateSummary} from '#/plugin/scorm/resources/scorm/utils'
 
 class PlayerComponent extends Component {
   constructor(props) {
@@ -32,20 +33,28 @@ class PlayerComponent extends Component {
 
   render() {
     return (
-      <div className="scorm-player">
-        {1 < this.props.scos.length &&
-          <ScormSummary
-            scos={this.props.scorm.scos}
-            openSco={this.openSco}
+      1 < this.props.scos.length ?
+        <SummarizedContent
+          className="scorm-summary"
+          summary={{
+            displayed: true,
+            opened: true,
+            pinned: true,
+            title: trans('summary'),
+            links: generateSummary(this.props.scorm.scos, this.openSco)
+          }}
+        >
+          <iframe
+            className="scorm-iframe"
+            src={`${asset('uploads/scorm/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}
           />
-        }
+        </SummarizedContent> :
         <div className="content-container scorm-content-container">
           <iframe
             className="scorm-iframe"
             src={`${asset('uploads/scorm/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}
           />
         </div>
-      </div>
     )
   }
 }

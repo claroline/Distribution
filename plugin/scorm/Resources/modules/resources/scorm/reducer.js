@@ -1,12 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
+import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 
 import {
-  TRACKING_UPDATE,
-  SUMMARY_PIN_TOGGLE,
-  SUMMARY_OPEN_TOGGLE
+  TRACKING_UPDATE
 } from '#/plugin/scorm/resources/scorm/player/actions'
 
 const reducer = {
@@ -19,14 +17,6 @@ const reducer = {
 
       return newState
     }
-  }),
-  summary: combineReducers({
-    pinned: makeReducer(false, {
-      [SUMMARY_PIN_TOGGLE]: (state) => !state
-    }),
-    opened: makeReducer(false, {
-      [SUMMARY_OPEN_TOGGLE]: (state) => !state
-    })
   }),
   results: makeListReducer('results', {})
 }

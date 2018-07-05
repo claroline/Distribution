@@ -2,6 +2,37 @@
     .page-content {
         display: flex;
     }
+
+    .summary-container {
+        top: 0;
+        left: 0;
+    }
+
+    .summarized-content {
+        .content-container {
+            height: 0;
+            overflow: auto;
+        }
+    }
+
+    .summary .summary-link {
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        button span.sr-only, button {
+            position: relative !important;
+            width: auto !important;
+            height: auto !important;
+        }
+    }
+
+    //.btn.float-right {
+    //    float: right;
+    //}
+    //
+    //.summary-link .btn-summary {
+    //    float: left;
+    //}
 }
 
 .scorm-content-container {
@@ -15,10 +46,4 @@
     position: absolute;
     top: 0;
     left: 0;
-}
-
-.scorm-summary {
-    left: 0;
-    top: 0;
-    z-index: 1;
 }
