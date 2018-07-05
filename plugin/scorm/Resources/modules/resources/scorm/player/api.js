@@ -1531,14 +1531,6 @@ function APIClass(sco, scormData, tracking, dispatch) {
   }
 }
 
-// function initializeAPI(sco, scormData, trackings) {
-//   window.API = new APIClass(sco, scormData, trackings[sco.id])
-//   window.api = new APIClass(sco, scormData, trackings[sco.id])
-//   window.API_1484_11 = new APIClass(sco, scormData, trackings[sco.id])
-//   window.api_1484_11 = new APIClass(sco, scormData, trackings[sco.id])
-// }
-
 export {
-  // initializeAPI,
   APIClass
 }

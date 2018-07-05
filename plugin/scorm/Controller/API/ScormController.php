@@ -113,6 +113,36 @@ class ScormController extends AbstractApiController
 
     /**
      * @EXT\Route(
+     *    "/scorm/{scorm}/update",
+     *    name="apiv2_scorm_update"
+     * )
+     * @EXT\ParamConverter(
+     *     "scorm",
+     *     class="ClarolineScormBundle:Scorm",
+     *     options={"mapping": {"scorm": "uuid"}}
+     * )
+     *
+     * @param Scorm   $scorm
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function updateAction(Scorm $scorm, Request $request)
+    {
+        $this->checkScormRights($scorm, 'EDIT');
+        $data = $this->decodeRequest($request);
+        $dataToUpdate = [];
+
+        if (isset($data['ratio'])) {
+            $dataToUpdate['ratio'] = $data['ratio'];
+        }
+        $serializedScorm = $this->scormManager->updateScorm($scorm, $dataToUpdate);
+
+        return new JsonResponse($serializedScorm, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *    "/sco/{sco}/{mode}/commit",
      *    name="apiv2_scorm_sco_commit"
      * )

@@ -62,6 +62,7 @@ class ScormSerializer
             'id' => $scorm->getUuid(),
             'version' => $scorm->getVersion(),
             'hashName' => $scorm->getHashName(),
+            'ratio' => $scorm->getRatio(),
             'scos' => $this->serializeScos($scorm),
         ];
     }
@@ -76,6 +77,7 @@ class ScormSerializer
     {
         $this->sipe('hashName', 'setHashName', $data, $scorm);
         $this->sipe('version', 'setVersion', $data, $scorm);
+        $this->sipe('ratio', 'setRatio', $data, $scorm);
 
         if (isset($data['scos'])) {
             $this->deserializeScos($data['scos'], $scorm, null);

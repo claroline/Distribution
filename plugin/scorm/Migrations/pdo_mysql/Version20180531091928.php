@@ -19,6 +19,7 @@ class Version20180531091928 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 version VARCHAR(255) NOT NULL, 
                 hash_name VARCHAR(255) NOT NULL, 
+                ratio DOUBLE PRECISION DEFAULT NULL,
                 uuid VARCHAR(36) NOT NULL, 
                 resourceNode_id INT DEFAULT NULL, 
                 UNIQUE INDEX UNIQ_B6416871D17F50A6 (uuid), 

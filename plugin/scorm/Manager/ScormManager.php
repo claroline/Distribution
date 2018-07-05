@@ -25,6 +25,7 @@ use Claroline\ScormBundle\Entity\ScoTracking;
 use Claroline\ScormBundle\Event\Log\LogScormResultEvent;
 use Claroline\ScormBundle\Library\ScormLib;
 use Claroline\ScormBundle\Manager\Exception\InvalidScormArchiveException;
+use Claroline\ScormBundle\Serializer\ScormSerializer;
 use Claroline\ScormBundle\Serializer\ScoSerializer;
 use Claroline\ScormBundle\Serializer\ScoTrackingSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -52,6 +53,8 @@ class ScormManager
     private $resourceManager;
     /** @var ScormLib */
     private $scormLib;
+    /** @var ScormSerializer */
+    private $scormSerializer;
     /** @var ScoSerializer */
     private $scoSerializer;
     /** @var ScoTrackingSerializer */
@@ -78,6 +81,7 @@ class ScormManager
      *     "resourceEvalManager"   = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "resourceManager"       = @DI\Inject("claroline.manager.resource_manager"),
      *     "scormLib"              = @DI\Inject("claroline.library.scorm"),
+     *     "scormSerializer"       = @DI\Inject("claroline.serializer.scorm"),
      *     "scoSerializer"         = @DI\Inject("claroline.serializer.scorm.sco"),
      *     "scoTrackingSerializer" = @DI\Inject("claroline.serializer.scorm.sco.tracking"),
      *     "uploadDir"             = @DI\Inject("%claroline.param.uploads_directory%")
@@ -90,6 +94,7 @@ class ScormManager
      * @param ResourceEvaluationManager $resourceEvalManager
      * @param ResourceManager           $resourceManager
      * @param ScormLib                  $scormLib
+     * @param ScormSerializer           $scormSerializer
      * @param ScoSerializer             $scoSerializer
      * @param ScoTrackingSerializer     $scoTrackingSerializer
      * @param string                    $uploadDir
@@ -102,6 +107,7 @@ class ScormManager
         ResourceEvaluationManager $resourceEvalManager,
         ResourceManager $resourceManager,
         ScormLib $scormLib,
+        ScormSerializer $scormSerializer,
         ScoSerializer $scoSerializer,
         ScoTrackingSerializer $scoTrackingSerializer,
         $uploadDir
@@ -113,6 +119,7 @@ class ScormManager
         $this->resourceEvalManager = $resourceEvalManager;
         $this->resourceManager = $resourceManager;
         $this->scormLib = $scormLib;
+        $this->scormSerializer = $scormSerializer;
         $this->scoSerializer = $scoSerializer;
         $this->scoTrackingSerializer = $scoTrackingSerializer;
         $this->uploadDir = $uploadDir;
@@ -155,6 +162,15 @@ class ScormManager
             'version' => $scormData['version'],
             'scos' => $scormData['scos'],
         ];
+    }
+
+    public function updateScorm(Scorm $scorm, $data)
+    {
+        $newScorm = $this->scormSerializer->deserialize($data, $scorm);
+        $this->om->persist($newScorm);
+        $this->om->flush();
+
+        return $this->scormSerializer->serialize($newScorm);
     }
 
     public function generateScoTracking(Sco $sco, User $user = null)

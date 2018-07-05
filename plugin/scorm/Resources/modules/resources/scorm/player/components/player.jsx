@@ -44,12 +44,32 @@ class PlayerComponent extends Component {
             links: generateSummary(this.props.scorm.scos, this.openSco)
           }}
         >
-          <iframe
-            className="scorm-iframe"
-            src={`${asset('uploads/scorm/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}
-          />
+          <div
+            className="content-container scorm-content-container"
+            style={this.props.scorm.ratio ?
+              {
+                position: 'relative',
+                paddingBottom: `${this.props.scorm.ratio}%`
+              } :
+              {}
+            }
+          >
+            <iframe
+              className="scorm-iframe"
+              src={`${asset('uploads/scorm/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}
+            />
+          </div>
         </SummarizedContent> :
-        <div className="content-container scorm-content-container">
+        <div
+          className="content-container scorm-content-container"
+          style={this.props.scorm.ratio ?
+            {
+              position: 'relative',
+              paddingBottom: `${this.props.scorm.ratio}%`
+            } :
+            {}
+          }
+        >
           <iframe
             className="scorm-iframe"
             src={`${asset('uploads/scorm/')}${this.props.workspaceUuid}/${this.props.scorm.hashName}/${this.state.currentSco.data.entryUrl}${this.state.currentSco.data.parameters ? this.state.currentSco.data.parameters : ''}`}

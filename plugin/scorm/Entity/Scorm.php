@@ -45,6 +45,11 @@ class Scorm extends AbstractResource
     protected $hashName;
 
     /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $ratio = 56.25;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\ScormBundle\Entity\Sco",
      *     mappedBy="scorm"
@@ -104,6 +109,22 @@ class Scorm extends AbstractResource
     public function setHashName($hashName)
     {
         $this->hashName = $hashName;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRatio()
+    {
+        return $this->ratio;
+    }
+
+    /**
+     * @param float $ratio
+     */
+    public function setRatio($ratio)
+    {
+        $this->ratio = $ratio;
     }
 
     /**

@@ -192,6 +192,7 @@ class ScormListener
         $copy->setHashName($resource->getHashName());
         $copy->setName($resource->getName());
         $copy->setVersion($resource->getVersion());
+        $copy->setRatio($resource->getRatio());
         $this->om->persist($copy);
 
         $scos = $resource->getScos();
