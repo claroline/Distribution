@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew\Tool\Home;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +40,7 @@ class HomeController extends AbstractCrudController
         //here we assume we got the data properly
 
         foreach ($tabs as $tab) {
-            $this->crud->update('Claroline\CoreBundle\Entity\Tool\Home\HomeTab', $tab);
+            $this->crud->update(HomeTab::class, $tab);
         }
 
         return new JsonResponse([]);
