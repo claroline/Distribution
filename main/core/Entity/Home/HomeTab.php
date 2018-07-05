@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity\Home;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -29,6 +30,7 @@ class HomeTab
 {
     use Id;
     use Poster;
+    use Uuid;
 
     const TYPE_WORKSPACE = 'workspace';
     const TYPE_DESKTOP = 'desktop';
