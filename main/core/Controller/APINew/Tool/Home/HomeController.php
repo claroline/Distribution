@@ -43,7 +43,7 @@ class HomeController extends AbstractCrudController
             $this->crud->update(HomeTab::class, $tab);
         }
 
-        return new JsonResponse([]);
+        return new JsonResponse($tabs);
     }
 
     /** @return string */
