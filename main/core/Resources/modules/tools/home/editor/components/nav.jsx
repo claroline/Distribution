@@ -5,6 +5,7 @@ import merge from 'lodash/merge'
 import {NavLink} from '#/main/app/router'
 import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/core/translation'
+import {currentUser} from '#/main/core/user/current'
 import {ModalButton} from '#/main/app/button'
 import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 import {actions as formActions} from '#/main/core/data/form/actions'
@@ -80,6 +81,8 @@ const EditorNavComponent = props =>
           icon: data.icon ? data.icon : null,
           poster: data.poster ? data.poster : null,
           type: props.context.type,
+          user: props.context.type === 'desktop' ? currentUser() : null,
+          workspace: props.context.type === 'workspace' ? {uuid: props.context.data.uuid} : null,
           position: data.position ? data.position : props.tabs.length + 1,
           widgets : data.widgets ? data.widgets : []
         }))

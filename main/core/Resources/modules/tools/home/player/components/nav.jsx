@@ -19,6 +19,7 @@ const PlayerNavComponent = props =>
     )}
   </nav>
 
+
 const PlayerNav = connect(
   (state) => ({
     tabs: select.tabs(state)

@@ -100,11 +100,11 @@ class WidgetInstanceSerializer
 
                     /** @var AbstractWidget $typeParameters */
                     $typeParameters = new $parametersClass();
-                }
 
-                // deserializes custom config and link it to the instance
-                $this->serializer->deserialize($parametersClass, $data['parameters'], $options);
-                $typeParameters->setWidgetInstance($widgetInstance);
+                    // deserializes custom config and link it to the instance
+                    $this->serializer->deserialize($parametersClass, $data['parameters'], $options);
+                    $typeParameters->setWidgetInstance($widgetInstance);
+                }
             }
         }
 
