@@ -20,10 +20,9 @@ const widgets = createSelector(
   (currentTab) => currentTab.widgets
 )
 
-
-
 export const select = {
   currentTab,
+  editorData,
   currentTabIndex,
   widgets
 }
