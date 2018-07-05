@@ -12,48 +12,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {select as homeSelect} from '#/main/core/tools/home/selectors'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
-
-
-const createTabForm = [
-  {
-    icon: 'fa fa-fw fa-plus',
-    title: trans('general'),
-    primary: true,
-    fields: [{
-      name: 'title',
-      type: 'string',
-      label: trans('menu_title'),
-      required: true
-    }, {
-      name: 'longTitle',
-      type: 'string',
-      label: trans('title'),
-      required: true
-    }]
-  },
-  {
-    icon: 'fa fa-fw fa-desktop',
-    title: trans('display_parameters'),
-    fields: [{
-      name: 'icon',
-      type: 'string',
-      label: trans('icon')
-    },
-    {
-      name: 'position',
-      type: 'number',
-      label: trans('position')
-    },
-    {
-      name: 'poster',
-      label: trans('poster'),
-      type: 'file',
-      options: {
-        ratio: '3:1'
-      }
-    }]
-  }
-]
+import {tabFormSections} from '#/main/core/tools/home/utils'
 
 
 const EditorNavComponent = props =>
@@ -63,7 +22,7 @@ const EditorNavComponent = props =>
         className="nav-tab"
         key={tabIndex}
         activeClassName="nav-tab-active"
-        to={`/tab/${tab.id}`}
+        to={`/edit/tab/${tab.id}`}
       >
 
         {tab.title}
@@ -73,7 +32,7 @@ const EditorNavComponent = props =>
       className="nav-add-tab"
       modal={[MODAL_DATA_FORM, {
         title: trans('add_tab'),
-        sections: createTabForm,
+        sections: tabFormSections,
         save: data => props.createTab(props.tabs.length, merge({}, data, {
           id: makeId(),
           title: data.title,

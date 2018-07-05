@@ -2,6 +2,7 @@ import {createSelector} from 'reselect'
 
 const currentTabId = (state) => state.currentTabId
 const editable = (state) => state.editable
+const editing = (state) => state.editing
 const context = (state) => state.context
 const tabs = (state) => state.tabs
 
@@ -19,6 +20,7 @@ export const select = {
   currentTab,
   currentTabId,
   editable,
+  editing,
   context,
   tabs,
   widgets
