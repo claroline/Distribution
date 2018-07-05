@@ -66,6 +66,7 @@ class HomeTabSerializer
         return [
           'id' => $homeTab->getId(),
           'title' => $homeTab->getName(),
+          'longTitle' => $homeTab->getLongTitle(),
           'description' => $homeTab->getDescription(),
           'poster' => $homeTab->getPoster(),
           'icon' => $homeTab->getIcon(),
@@ -89,7 +90,6 @@ class HomeTabSerializer
             ->findOneBy(['homeTab' => $homeTab]);
 
         if (!$homeTabConfig) {
-            //persist cascade is needed here
             $homeTabConfig = new HomeTabConfig();
             $homeTabConfig->setHomeTab($homeTab);
 
@@ -114,6 +114,7 @@ class HomeTabSerializer
             $homeTabConfig->setUser($user);
         }
 
+        // We either do this or cascade persist ¯\_(ツ)_/¯
         $this->om->persist($homeTabConfig);
 
         foreach ($data['widgets'] as $widgetContainer) {

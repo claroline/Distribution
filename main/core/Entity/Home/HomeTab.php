@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Entity\Home;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
-use Claroline\AppBundle\Entity\Meta\Description;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -30,7 +29,6 @@ class HomeTab
 {
     use Id;
     use Poster;
-    use Description;
 
     const TYPE_WORKSPACE = 'workspace';
     const TYPE_DESKTOP = 'desktop';
@@ -43,6 +41,11 @@ class HomeTab
      * @SerializedName("name")
      */
     protected $name;
+
+    /**
+     * @ORM\Column(nullable=false, type="text")
+     */
+    protected $longTitle;
 
     /**
      * @ORM\Column(nullable=false)
@@ -190,5 +193,15 @@ class HomeTab
     public function setIcon($icon)
     {
         $this->icon = $icon;
+    }
+
+    public function setLongTitle($title)
+    {
+        $this->longTitle = $title;
+    }
+
+    public function getLongTitle()
+    {
+        return $this->longTitle;
     }
 }
