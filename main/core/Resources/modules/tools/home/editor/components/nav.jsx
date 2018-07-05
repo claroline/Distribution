@@ -1,17 +1,21 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import merge from 'lodash/merge'
 
 import {NavLink} from '#/main/app/router'
+import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/core/translation'
 import {ModalButton} from '#/main/app/button'
 import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 import {actions as formActions} from '#/main/core/data/form/actions'
 
-import {select} from '#/main/core/tools/home/selectors'
+import {select as homeSelect} from '#/main/core/tools/home/selectors'
+import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
 
 
 const createTabForm = [
   {
+    icon: 'fa fa-fw fa-plus',
     title: trans('general'),
     primary: true,
     fields: [{
@@ -49,6 +53,8 @@ const createTabForm = [
     }]
   }
 ]
+
+
 const EditorNavComponent = props =>
   <nav className="tool-nav">
     {props.tabs.map((tab, tabIndex) =>
@@ -57,6 +63,7 @@ const EditorNavComponent = props =>
         key={tabIndex}
         to={`/tab/${tab.id}`}
       >
+
         {tab.title}
       </NavLink>
     )}
@@ -65,16 +72,28 @@ const EditorNavComponent = props =>
       modal={[MODAL_DATA_FORM, {
         title: trans('add_tab'),
         sections: createTabForm,
-        save: tab => props.createTab(props.tabs.length, tab)
+        save: data => props.createTab(props.tabs.length, merge({}, data, {
+          id: makeId(),
+          title: data.title,
+          description: data.description ? data.description : data.title,
+          icon: data.icon ? data.icon : null,
+          poster: data.poster ? data.poster : null,
+          type: props.context.type,
+          position: data.position ? data.position : props.tabs.length + 1,
+          widgets : data.widgets ? data.widgets : []
+        }))
       }]}
     >
       <span className="fa fa-plus" />
     </ModalButton>
   </nav>
 
+
+
 const EditorNav = connect(
   (state) => ({
-    tabs: select.tabs(state)
+    tabs: editorSelect.editorData(state),
+    context : homeSelect.context(state)
   }),
   dispatch => ({
     createTab(tabIndex, tab){
