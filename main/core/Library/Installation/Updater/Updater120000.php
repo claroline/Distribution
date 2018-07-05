@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget;
 use Claroline\CoreBundle\Entity\Widget\Widget;
@@ -127,6 +128,23 @@ class Updater120000 extends Updater
 
             $this->om->flush();
         }
+
+        $this->log('Updating HomeTabs titles...');
+
+        $tabs = $this->om->getRepository(HomeTab::class)->findAll();
+        $i = 0;
+
+        foreach ($tabs as $tab) {
+            $this->updateTabTitle($tab);
+
+            ++$i;
+
+            if (0 === $i % 200) {
+                $this->om->flush();
+            }
+        }
+
+        $this->om->flush();
     }
 
     private function restoreWidgetContainer($row)
@@ -153,5 +171,17 @@ class Updater120000 extends Updater
         $widgetInstance->setWidget($widget);
         $this->om->persist($widgetInstance);
         $this->om->persist($simpleWidget);
+    }
+
+    private function updateTabTitle(HomeTab $tab)
+    {
+        $this->log('Renaming tab '.$tab->getName().'...');
+        if (!$tab->getLongTitle()) {
+            $tab->setLongTitle($tab->getName());
+        }
+
+        $tab->setName(substr(strip_tags($tab->getLongTitle()), 0, 20));
+
+        $this->om->persist($tab);
     }
 }
