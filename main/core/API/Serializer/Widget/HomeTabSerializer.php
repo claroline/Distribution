@@ -65,6 +65,7 @@ class HomeTabSerializer
 
         return [
           'id' => $homeTab->getId(),
+          'uuid' => $homeTab->getUuid(),
           'title' => $homeTab->getName(),
           'longTitle' => $homeTab->getLongTitle(),
           'poster' => $homeTab->getPoster(),
