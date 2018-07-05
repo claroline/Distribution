@@ -64,8 +64,7 @@ class HomeTabSerializer
           ->findOneBy(['homeTab' => $homeTab]);
 
         return [
-          'id' => $homeTab->getId(),
-          'uuid' => $homeTab->getUuid(),
+          'id' => $homeTab->getUuid(),
           'title' => $homeTab->getName(),
           'longTitle' => $homeTab->getLongTitle(),
           'poster' => $homeTab->getPoster(),
