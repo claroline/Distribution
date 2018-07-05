@@ -17,7 +17,7 @@ class Version20180703113830 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_home_tab
             ADD poster VARCHAR(255) DEFAULT NULL,
-            ADD description LONGTEXT DEFAULT NULL
+            ADD longTitle LONGTEXT DEFAULT NULL
         ');
     }
 
@@ -26,7 +26,7 @@ class Version20180703113830 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_home_tab
             DROP poster,
-            DROP description
+            DROP longTitle
         ');
     }
 }
