@@ -47,10 +47,12 @@ const EditorComponent = props =>
     />
   </section>
 
-EditorComponent.propTypes = {}
+EditorComponent.propTypes = {
+  updateProp: T.func.isRequired
+}
 
 const Editor = connect(
-  (state) => ({}),
+  null,
   (dispatch) => ({
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp('scormForm', propName, propValue))
