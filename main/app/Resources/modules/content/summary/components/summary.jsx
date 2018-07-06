@@ -59,33 +59,43 @@ class SummaryLink extends Component {
     super(props)
 
     this.state = {
-      collapsed: false
+      collapsed: this.props.collapsed || false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.collapsed !== this.props.collapsed) {
+      this.setState({collapsed: nextProps.collapsed || false})
     }
   }
 
   toggleCollapse() {
+    if (this.props.toggleCollapse) {
+      this.props.toggleCollapse(!this.state.collapsed)
+    }
+
     this.setState({collapsed: !this.state.collapsed})
   }
 
   render() {
-    const collapsible = this.props.children && 0 !== this.props.children.length
+    const collapsible = this.props.collapsible || (this.props.children && 0 !== this.props.children.length)
 
     return (
       <li className="summary-link-container">
         <div className="summary-link">
           <Button
-            {...omit(this.props, 'opened', 'children', 'additional')}
-            tooltip={this.props.opened && 'right'}
+            {...omit(this.props, 'opened', 'children', 'additional', 'collapsible', 'collapsed', 'toggleCollapse')}
+            tooltip={!this.props.opened ? 'right' : undefined}
           />
 
           {(this.props.opened && (collapsible || 0 !== this.props.additional.length)) &&
             <div className="step-actions">
               {this.props.additional
                 .filter(action => undefined === action.displayed || action.displayed)
-                .map((action) =>
+                .map((action, index) =>
                   <Button
                     {...action}
-                    key={toKey(action.label)}
+                    key={toKey(action.label) + index}
                     tooltip="bottom"
                     className="btn-link btn-summary"
                   />
@@ -101,7 +111,7 @@ class SummaryLink extends Component {
                     'fa-caret-right': this.state.collapsed,
                     'fa-caret-down': !this.state.collapsed
                   })}
-                  label={trans(this.state.collapsed ? 'expand_step':'collapse_step', {}, 'path')}
+                  label={trans(this.state.collapsed ? 'expand': 'collapse', {}, 'actions')}
                   callback={this.toggleCollapse.bind(this)}
                 />
               }
@@ -111,11 +121,11 @@ class SummaryLink extends Component {
 
         {!this.state.collapsed && this.props.children.length > 0 &&
           <ul className="step-children">
-            {this.props.children.map(child =>
+            {this.props.children.map((child, index) =>
               <SummaryLink
-                key={toKey(child)}
-                opened={this.props.opened}
                 {...child}
+                key={toKey(child.label) + index}
+                opened={this.props.opened}
               />
             )}
           </ul>
@@ -132,10 +142,17 @@ implementPropTypes(SummaryLink, ActionTypes, {
   )),
   children: T.arrayOf(T.shape(
     ActionTypes.propTypes
-  ))
+  )),
+  toggleCollapse: T.func,
+  collapsed: T.bool,
+  // It forces the display of the collapse button even if children is empty
+  // It permits to dynamic load the children
+  collapsible: T.bool
 }, {
   additional: [],
-  children: []
+  children: [],
+  collapsed: false,
+  collapsible: false
 })
 
 class Summary extends Component {
@@ -172,10 +189,10 @@ class Summary extends Component {
 
         {0 !== this.props.links.length &&
           <ul className="summary">
-            {this.props.links.map(link =>
+            {this.props.links.map((link, index) =>
               <SummaryLink
                 {...link}
-                key={toKey(link.label)}
+                key={toKey(link.label) + index}
                 opened={this.state.opened}
               />
             )}
