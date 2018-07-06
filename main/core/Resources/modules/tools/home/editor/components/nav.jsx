@@ -35,6 +35,7 @@ const EditorNavComponent = props =>
         title: trans('add_tab'),
         sections: tabFormSections,
         data: merge({}, TabTypes.defaultProps, {
+          id: makeId(),
           position: props.tabs.length + 1,
           type: props.context.type,
           user: props.context.type === 'desktop' ? currentUser() : null,

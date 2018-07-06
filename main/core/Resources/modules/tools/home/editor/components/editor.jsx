@@ -18,6 +18,7 @@ import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-t
 
 import {ToolActions} from '#/main/core/tools/home/components/tool'
 import {select} from '#/main/core/tools/home/selectors'
+import {actions} from '#/main/core/tools/home/editor/actions'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 import {tabFormSections} from '#/main/core/tools/home/utils'
@@ -40,7 +41,7 @@ const EditorComponent = props =>
                 title: trans('home_tab_edition'),
                 sections: tabFormSections,
                 data: props.currentTab,
-                save: data => props.updateTab(props.tabs.length, data)
+                save: data => props.updateTab(props.currentTabIndex, data)
               }]}
             />
             <PageAction
@@ -51,7 +52,7 @@ const EditorComponent = props =>
                 title: trans('home_tab_delete_confirm_title'),
                 message: trans('home_tab_delete_confirm_message')
               }}
-              callback={() => props.deleteTab()}
+              callback={() => props.deleteTab(props.currentTab.id, props.history.push)}
             />
           </PageGroupActions>
         </PageActions>
@@ -86,11 +87,11 @@ const Editor = connect(
     update(currentTabIndex, widgets) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}].widgets`, widgets))
     },
-    deleteTab(tab) {
-      console.log(tab)
+    deleteTab(tabId, push) {
+      dispatch(actions.deleteTab(tabId, push))
     },
-    updateTab(tabIndex, tab) {
-      dispatch(formActions.updateProp('editor', `[${tabIndex}]`, tab))
+    updateTab(currentTabIndex, tab) {
+      dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
     }
   })
 )(EditorComponent)
