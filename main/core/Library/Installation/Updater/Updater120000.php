@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
+use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget;
 use Claroline\CoreBundle\Entity\Widget\Widget;
@@ -39,6 +40,7 @@ class Updater120000 extends Updater
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
         $this->updateWidgetsStructure();
+        $this->checkDesktopTabs();
     }
 
     private function updatePlatformParameters()
@@ -165,7 +167,7 @@ class Updater120000 extends Updater
         $simpleWidget = new SimpleWidget();
         $simpleWidget->setContent($row['content']);
         $widgetInstance = $this->om->getRepository(WidgetInstance::class)->find($row['widgetInstance_id']);
-        $this->log('migrating content of '.$widgetInstance->getName().' ...');
+        $this->log('migrating content of default'.$widgetInstance->getName().' ...');
         $simpleWidget->setWidgetInstance($widgetInstance);
         $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
         $widgetInstance->setWidget($widget);
@@ -183,5 +185,30 @@ class Updater120000 extends Updater
         $tab->setName(substr(strip_tags($tab->getLongTitle()), 0, 20));
 
         $this->om->persist($tab);
+    }
+
+    private function checkDesktopTabs()
+    {
+        $tabs = $this->om->getRepository(HomeTab::class)->findBy(['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
+
+        if (count(0 === $tabs)) {
+            $this->log('Adding default admin desktop tab...');
+
+            $desktopHomeTab = new HomeTab();
+            $desktopHomeTab->setType('admin_desktop');
+            $desktopHomeTab->setName('Accueil');
+            $desktopHomeTab->setLongTitle('Accueil');
+            $manager->persist($desktopHomeTab);
+
+            $desktopHomeTabConfig = new HomeTabConfig();
+            $desktopHomeTabConfig->setHomeTab($desktopHomeTab);
+            $desktopHomeTabConfig->setType('admin_desktop');
+            $desktopHomeTabConfig->setVisible(true);
+            $desktopHomeTabConfig->setLocked(false);
+            $desktopHomeTabConfig->setTabOrder(1);
+
+            $this->om->persist($desktopHomeTabConfig);
+            $this->om->flush();
+        }
     }
 }
