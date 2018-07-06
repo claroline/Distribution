@@ -40,7 +40,9 @@ class HomeController extends AbstractCrudController
         //here we assume we got the data properly
 
         foreach ($tabs as $tab) {
-            $this->crud->update(HomeTab::class, $tab);
+            if (HomeTab::TYPE_ADMIN_DESKTOP !== $tab['type']) {
+                $this->crud->update(HomeTab::class, $tab);
+            }
         }
 
         return new JsonResponse($tabs);
