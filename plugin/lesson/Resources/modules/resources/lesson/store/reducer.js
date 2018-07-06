@@ -17,15 +17,19 @@ import {
 import {constants} from '#/plugin/lesson/resources/lesson/constants'
 
 const formDefault = {
-  slug: '',
-  title: '',
-  text: '',
-  parentSug: '',
-  previousSlug: '',
-  nextSlug: '',
+  id: null,
+  slug: null,
+  title: null,
+  text: null,
+  parentSug: null,
+  previousSlug: null,
+  nextSlug: null,
   move: false,
-  position: '',
-  order: {}
+  position: null,
+  order: {
+    sibling: null,
+    subchapter: null
+  }
 }
 
 const reducer = {
@@ -40,15 +44,20 @@ const reducer = {
   lesson: makeReducer({}, {}),
   chapter: makeReducer({}, {
     [CHAPTER_LOAD]: (state, action) => action.chapter,
-    [CHAPTER_RESET]: () => ({})
+    [CHAPTER_RESET]: () => ({}),
+    [CHAPTER_DELETED]: () => null
   }),
   chapter_form: makeFormReducer(constants.CHAPTER_EDIT_FORM_NAME, formDefault, {
     data: makeReducer({}, {
       [CHAPTER_LOAD]: (state, action) => action.chapter,
-      [CHAPTER_RESET]: () => ({}),
+      [CHAPTER_RESET]: () => (formDefault),
       [POSITION_SELECTED]: (state, action) => {
         const data = cloneDeep(state)
-        data.position = action.isRoot ? 'subchapter' : data.position
+        data.position = action.isRoot ? 'subchapter' : null
+        data.order = {
+          sibling: null,
+          subchapter: null
+        }
         return data
       }
     })
@@ -57,11 +66,11 @@ const reducer = {
   tree: combineReducers({
     invalidated: makeReducer(false, {
       [TREE_LOADED]: () => false,
-      [FORM_SUBMIT_SUCCESS + '/chapter_form']: () => true,
-      [CHAPTER_DELETED]: () => true
+      [FORM_SUBMIT_SUCCESS + '/chapter_form']: () => true
     }),
     data: makeReducer({}, {
-      [TREE_LOADED]: (state, action) => action.tree
+      [TREE_LOADED]: (state, action) => action.tree,
+      [CHAPTER_DELETED]: (state, action) => action.tree
     })
   })
 }
