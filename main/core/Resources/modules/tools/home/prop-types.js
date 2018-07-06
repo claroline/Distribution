@@ -19,7 +19,7 @@ const Tab = {
   },
   defaultProps: {
     icon: null,
-    poster: [],
+    poster: null,
     widgets: []
   }
 }
