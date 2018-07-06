@@ -63,22 +63,25 @@ class HomeTabSerializer
         $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
           ->findOneBy(['homeTab' => $homeTab]);
 
-        return [
-          'id' => $homeTab->getUuid(),
+        $data = [
+          'id' => $this->getUuid($homeTab, $options),
           'title' => $homeTab->getName(),
           'longTitle' => $homeTab->getLongTitle(),
           'poster' => $homeTab->getPoster(),
           'icon' => $homeTab->getIcon(),
           'type' => $homeTab->getType(),
           'position' => $homeTabConfig->getTabOrder(),
-          'widgets' => array_map(function ($container) {
-              return $this->serializer->serialize($container);
+          'widgets' => array_map(function ($container) use ($options) {
+              return $this->serializer->serialize($container, $options);
           }, $containers),
         ];
+
+        return $data;
     }
 
     public function deserialize(array $data, HomeTab $homeTab, array $options = []): HomeTab
     {
+        //var_dump($data);
         $this->sipe('id', 'setUuid', $data, $homeTab);
         $this->sipe('title', 'setName', $data, $homeTab);
         $this->sipe('longTitle', 'setLongTitle', $data, $homeTab);

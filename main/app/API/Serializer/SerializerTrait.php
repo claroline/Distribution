@@ -11,10 +11,14 @@
 
 namespace Claroline\AppBundle\API\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Utils\ArrayUtils;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 
 trait SerializerTrait
 {
+    use LoggableTrait;
+
     /** @var GenericSerializer */
     protected $genericSerializer;
 
@@ -35,7 +39,7 @@ trait SerializerTrait
         $this->genericSerializer = $serializer;
     }
 
-    public function serialize($object, array $options = [])
+    public function serialize($object, array $options = []): array
     {
         return $this->genericSerializer->serialize($object, $options);
     }
@@ -78,5 +82,20 @@ trait SerializerTrait
     public function sipe($prop, $setter, $data, $object)
     {
         $this->setIfPropertyExists($prop, $setter, $data, $object);
+    }
+
+    public function getUuid($object, array $options): string
+    {
+        return in_array(Options::REFRESH_UUID, $options) ?
+            $object->generateUuid() :
+            $object->getUuid();
+    }
+
+    public function setLogger()
+    {
+    }
+
+    public function log()
+    {
     }
 }
