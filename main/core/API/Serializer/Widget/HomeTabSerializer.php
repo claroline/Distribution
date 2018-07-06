@@ -9,6 +9,7 @@ use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
+use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -81,7 +82,6 @@ class HomeTabSerializer
 
     public function deserialize(array $data, HomeTab $homeTab, array $options = []): HomeTab
     {
-        //var_dump($data);
         $this->sipe('id', 'setUuid', $data, $homeTab);
         $this->sipe('title', 'setName', $data, $homeTab);
         $this->sipe('longTitle', 'setLongTitle', $data, $homeTab);
@@ -105,6 +105,8 @@ class HomeTabSerializer
             $homeTabConfig->setPosition($data['position']);
         }
 
+        $workspace = $user = null;
+
         if (isset($data['workspace'])) {
             $workspace = $this->serializer->deserialize(Workspace::class, $data['workspace']);
             $homeTab->setWorkspace($workspace);
@@ -121,7 +123,20 @@ class HomeTabSerializer
         $this->om->persist($homeTabConfig);
 
         foreach ($data['widgets'] as $widgetContainer) {
-            $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
+            $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
+            //ptet rajouter les instances ici ? je sais pas
+            foreach ($widgetContainer->getInstances() as $key => $instance) {
+                $widgetHomeTabConfig = new WidgetHomeTabConfig();
+                $widgetHomeTabConfig->setUser($user);
+                $widgetHomeTabConfig->setWorkspace($workspace);
+                $widgetHomeTabConfig->setHomeTab($homeTab);
+                $widgetHomeTabConfig->setVisible(true);
+                $widgetHomeTabConfig->setLocked(false);
+                $widgetHomeTabConfig->setType($homeTab->getType());
+                $widgetHomeTabConfig->setWidgetOrder($key);
+                $widgetHomeTabConfig->setWidgetInstance($instance);
+                $this->om->persist($widgetHomeTabConfig);
+            }
         }
 
         return $homeTab;
