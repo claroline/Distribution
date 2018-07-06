@@ -14,7 +14,6 @@ import {PlayerNav} from '#/main/core/tools/home/player/components/nav'
 import {ToolActions} from '#/main/core/tools/home/components/tool'
 
 
-
 const PlayerComponent = props =>
   <ToolPageContainer>
     <PlayerNav

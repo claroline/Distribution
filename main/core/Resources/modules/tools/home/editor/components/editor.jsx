@@ -17,6 +17,7 @@ import {WidgetGridEditor} from '#/main/core/widget/editor/components/grid'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 
 import {ToolActions} from '#/main/core/tools/home/components/tool'
+import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {select} from '#/main/core/tools/home/selectors'
 import {actions} from '#/main/core/tools/home/editor/actions'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
@@ -64,6 +65,7 @@ const EditorComponent = props =>
         context={props.context}
         widgets={props.widgets}
         update={(widgets) => props.update(props.currentTabIndex, widgets)}
+        deleteWidget={(widgetId) => props.deleteWidget(props.currentTab.id, widgetId)}
       />
     </PageContent>
   </ToolPageContainer>
@@ -73,7 +75,15 @@ EditorComponent.propTypes = {
   widgets: T.arrayOf(T.shape(
     WidgetContainerTypes.propTypes
   )).isRequired,
-  update: T.func.isRequired
+  update: T.func.isRequired,
+  tabs: T.arrayOf(T.shape(
+    TabTypes.propTypes
+  )),
+  currentTab: T.shape(TabTypes.propTypes),
+  history: T.object.isRequired,
+  deleteTab: T.func,
+  updateTab: T.func,
+  currentTabIndex: T.number.isRequired
 }
 
 const Editor = connect(
@@ -89,6 +99,9 @@ const Editor = connect(
     },
     deleteTab(tabId, push) {
       dispatch(actions.deleteTab(tabId, push))
+    },
+    deleteWidget(tabId, widgetId) {
+      dispatch(actions.deleteWidget(tabId, widgetId))
     },
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
