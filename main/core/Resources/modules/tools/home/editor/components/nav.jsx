@@ -13,6 +13,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as homeSelect} from '#/main/core/tools/home/selectors'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
 import {tabFormSections} from '#/main/core/tools/home/utils'
+import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
 
 const EditorNavComponent = props =>
@@ -33,24 +34,18 @@ const EditorNavComponent = props =>
       modal={[MODAL_DATA_FORM, {
         title: trans('add_tab'),
         sections: tabFormSections,
-        save: data => props.createTab(props.tabs.length, merge({}, data, {
-          id: makeId(),
-          title: data.title,
-          longTitle: data.longTitle ? data.longTitle : data.title,
-          icon: data.icon ? data.icon : null,
-          poster: data.poster ? data.poster : null,
+        data: merge({}, TabTypes.defaultProps, {
+          position: props.tabs.length + 1,
           type: props.context.type,
           user: props.context.type === 'desktop' ? currentUser() : null,
-          workspace: props.context.type === 'workspace' ? {uuid: props.context.data.uuid} : null,
-          position: data.position ? data.position : props.tabs.length + 1,
-          widgets : data.widgets ? data.widgets : []
-        }))
+          workspace: props.context.type === 'workspace' ? {uuid: props.context.data.uuid} : null
+        }),
+        save: data => props.createTab(props.tabs.length, data)
       }]}
     >
       <span className="fa fa-plus" />
     </ModalButton>
   </nav>
-
 
 
 const EditorNav = connect(

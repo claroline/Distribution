@@ -1,11 +1,9 @@
 import React from 'react'
-import {connect} from 'react-redux'
 
 import {NavLink} from '#/main/app/router'
 
-import {select} from '#/main/core/tools/home/selectors'
 
-const PlayerNavComponent = props =>
+const PlayerNav = props =>
   <nav className="tool-nav">
     {props.tabs.map((tab, tabIndex) =>
       <NavLink
@@ -18,13 +16,6 @@ const PlayerNavComponent = props =>
       </NavLink>
     )}
   </nav>
-
-
-const PlayerNav = connect(
-  (state) => ({
-    tabs: select.tabs(state)
-  })
-)(PlayerNavComponent)
 
 export {
   PlayerNav
