@@ -4,7 +4,7 @@ import {Widget} from '#/main/core/widget/prop-types'
 
 const Tab = {
   propTypes: {
-    id: T.number.isRequired,
+    id: T.string.isRequired,
     title: T.string.isRequired,
     description: T.string,
     icon: T.string,
