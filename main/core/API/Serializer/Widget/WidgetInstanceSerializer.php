@@ -68,7 +68,7 @@ class WidgetInstanceSerializer
         }
 
         return [
-            'id' => $widgetInstance->getUuid(),
+            'id' => $this->getUuid($widgetInstance, $options),
             'type' => $widget->getName(),
             'source' => null, // todo
             'parameters' => $parameters,
@@ -94,17 +94,22 @@ class WidgetInstanceSerializer
                     ->getRepository($widget->getClass())
                     ->findOneBy(['widgetInstance' => $widgetInstance]);
 
-                if ($typeParameters) {
+                $parametersClass = $widget->getClass();
+
+                if (!$typeParameters) {
                     // no existing parameters => initializes one
-                    $parametersClass = $widget->getClass();
 
                     /** @var AbstractWidget $typeParameters */
                     $typeParameters = new $parametersClass();
-
-                    // deserializes custom config and link it to the instance
-                    $this->serializer->deserialize($parametersClass, $data['parameters'], $options);
-                    $typeParameters->setWidgetInstance($widgetInstance);
                 }
+
+                // deserializes custom config and link it to the instance
+                $typeParameters = $this->serializer->deserialize($typeParameters, $data['parameters'], $options);
+                $typeParameters->setWidgetInstance($widgetInstance);
+
+                // We either do this or cascade persist ¯\_(ツ)_/¯
+                $this->om->persist($typeParameters);
+                $this->om->persist($widgetInstance);
             }
         }
 

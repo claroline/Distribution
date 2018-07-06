@@ -1326,6 +1326,10 @@ class WorkspaceManager
     //used for cli copy debug tool
     public function copyFromCode(Workspace $workspace, $code)
     {
+        if ($this->logger) {
+            $this->container->get('claroline.api.serializer')->setLogger($this->logger);
+        }
+
         $newWorkspace = new Workspace();
         $newWorkspace->setCode($code);
         $newWorkspace->setName($code);
@@ -1668,7 +1672,7 @@ class WorkspaceManager
         foreach ($homeTabs as $homeTab) {
             $homeTabSerialized = $serializer->serialize($homeTab, [Options::REFRESH_UUID]);
             $homeTabSerialized['workspace'] = $serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
-            $newTabs[] = $crud->create(HomeTab::class, $homeTabSerialized);
+            $newTabs[] = $crud->create(HomeTab::class, $homeTabSerialized, [Options::NO_FETCH]);
             //maybe not a good idea
             $this->om->forceFlush();
         }

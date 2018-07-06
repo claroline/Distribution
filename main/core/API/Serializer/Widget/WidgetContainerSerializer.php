@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer\Widget;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -19,18 +20,24 @@ class WidgetContainerSerializer
     /** @var SerializerProvider */
     private $serializer;
 
+    /** @var ObjectManager */
+    private $om;
+
     /**
      * WidgetContainerSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *    "om"          = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param SerializerProvider $serializer
      */
     public function __construct(
-        SerializerProvider $serializer)
-    {
+        ObjectManager $om,
+        SerializerProvider $serializer
+    ) {
+        $this->om = $om;
         $this->serializer = $serializer;
     }
 
@@ -42,7 +49,7 @@ class WidgetContainerSerializer
     public function serialize(WidgetContainer $widgetContainer, array $options = []): array
     {
         return [
-            'id' => $widgetContainer->getUuid(),
+            'id' => $this->getUuid($widgetContainer, $options),
             'name' => $widgetContainer->getName(),
             'display' => [
                 'layout' => $widgetContainer->getLayout(),
@@ -73,6 +80,9 @@ class WidgetContainerSerializer
                 $widgetInstance = $this->serializer->deserialize(WidgetInstance::class, $content, $options);
                 $widgetInstance->setPosition($index);
                 $widgetContainer->addInstance($widgetInstance);
+
+                // We either do this or cascade persist ¯\_(ツ)_/¯
+                $this->om->persist($widgetInstance);
             }
         }
 
