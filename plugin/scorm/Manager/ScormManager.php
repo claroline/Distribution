@@ -564,7 +564,8 @@ class ScormManager
 
                 /* Copies ResourceNode */
                 $newNode = new ResourceNode();
-                $newNode->setAccesses($node->getAccesses());
+                $newNode->setAccessCode($node->getAccessCode());
+                $newNode->setAllowedIps($node->getAllowedIps());
                 $newNode->setAccessibleFrom($node->getAccessibleFrom());
                 $newNode->setAccessibleUntil($node->getAccessibleUntil());
                 $newNode->setAuthor($node->getAuthor());
@@ -756,7 +757,8 @@ class ScormManager
 
                 /* Copies ResourceNode */
                 $newNode = new ResourceNode();
-                $newNode->setAccesses($node->getAccesses());
+                $newNode->setAccessCode($node->getAccessCode());
+                $newNode->setAllowedIps($node->getAllowedIps());
                 $newNode->setAccessibleFrom($node->getAccessibleFrom());
                 $newNode->setAccessibleUntil($node->getAccessibleUntil());
                 $newNode->setAuthor($node->getAuthor());

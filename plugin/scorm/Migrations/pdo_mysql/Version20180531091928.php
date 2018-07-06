@@ -47,7 +47,7 @@ class Version20180531091928 extends AbstractMigration
                 exit_mode VARCHAR(255) DEFAULT NULL, 
                 lesson_location VARCHAR(255) DEFAULT NULL, 
                 lesson_mode VARCHAR(255) DEFAULT NULL, 
-                is_locked TINYINT(1) NOT NULL, 
+                is_locked TINYINT(1) DEFAULT NULL, 
                 details LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', 
                 latest_date DATETIME DEFAULT NULL,
                 uuid VARCHAR(36) NOT NULL, 

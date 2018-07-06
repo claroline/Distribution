@@ -55,7 +55,11 @@ class DeleteOldScormCommand extends ContainerAwareCommand
                     unlink($scormArchiveFile);
                 }
                 if (file_exists($scormPath)) {
-                    $this->deleteFiles($scormPath);
+                    try {
+                        $this->deleteFiles($scormPath);
+                    } catch (\Exception $e) {
+                        $output->writeln('<error>'.$e->getMessage().'</error>');
+                    }
                 }
 
                 $resourceManager->delete($node);
@@ -82,7 +86,11 @@ class DeleteOldScormCommand extends ContainerAwareCommand
                     unlink($scormArchiveFile);
                 }
                 if (file_exists($scormPath)) {
-                    $this->deleteFiles($scormPath);
+                    try {
+                        $this->deleteFiles($scormPath);
+                    } catch (\Exception $e) {
+                        $output->writeln('<error>'.$e->getMessage().'</error>');
+                    }
                 }
 
                 $resourceManager->delete($node);
@@ -106,7 +114,7 @@ class DeleteOldScormCommand extends ContainerAwareCommand
      */
     private function deleteFiles($dirPath)
     {
-        foreach (glob($dirPath.'/*') as $content) {
+        foreach (glob($dirPath.DIRECTORY_SEPARATOR.'*') as $content) {
             if (is_dir($content)) {
                 $this->deleteFiles($content);
             } else {

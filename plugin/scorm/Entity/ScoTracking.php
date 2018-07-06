@@ -142,7 +142,7 @@ class ScoTracking
     /**
      * For Scorm 1.2 only.
      *
-     * @ORM\Column(name="is_locked", type="boolean", nullable=false)
+     * @ORM\Column(name="is_locked", type="boolean", nullable=true)
      */
     protected $isLocked;
 
