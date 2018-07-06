@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 /**
  * @Route("/widget_instance")
  */
-class WidgetContainerController extends AbstractCrudController
+class WidgetInstanceController extends AbstractCrudController
 {
     public function getName()
     {
