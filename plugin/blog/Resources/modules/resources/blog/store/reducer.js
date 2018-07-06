@@ -28,17 +28,21 @@ const reducer = {
     [SWITCH_MODE]: () => false
   }),
   user: makeReducer({}, {}),
-  showComments: commentReducer.showComments,
-  showCommentForm: commentReducer.showCommentForm,
-  showEditCommentForm: commentReducer.showEditCommentForm,
   mode: makeReducer('list_posts', {
     [SWITCH_MODE]: (state, action) => action.mode
   }),
   posts: postReducer.posts,
+  comments: commentReducer.comments,
+  showComments: commentReducer.showComments,
+  showCommentForm: commentReducer.showCommentForm,
+  showEditCommentForm: commentReducer.showEditCommentForm,
   post: postReducer.post,
   post_edit: postReducer.post_edit,
   resourceNode: makeReducer({}, {}),
-  comments: moderationReducer.comments,
+  moderationComments: moderationReducer.moderationComments,
+  reportedComments: moderationReducer.reportedComments,
+  moderationPosts: moderationReducer.moderationPosts,
+  trustedUsers: moderationReducer.trustedUsers,
   blog: combineReducers({
     data: combineReducers({
       id: makeReducer({}, {}),

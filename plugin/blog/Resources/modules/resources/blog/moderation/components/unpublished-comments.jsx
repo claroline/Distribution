@@ -8,7 +8,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 const UnpublishedCommentsComponent = (props) =>
   <DataListContainer
-    name="comments"
+    name="moderationComments"
     fetch={{
       url: ['apiv2_blog_comment_unpublished', {blogId: props.blogId}],
       autoload: true
@@ -35,7 +35,7 @@ const UnpublishedCommentsComponent = (props) =>
       }
     ]}
     selection={{}}
-    card={(props) => <CommentModerationCard showEdit={false} {...props} />}
+    card={CommentModerationCard}
     display={{
       available : [listConst.DISPLAY_LIST],
       current: listConst.DISPLAY_LIST

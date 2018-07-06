@@ -25,10 +25,14 @@ class CommentFinder implements FinderInterface
                 ->andWhere('obj.status = :status OR obj.author =:userId')
                 ->setParameter('status', true)
                 ->setParameter('userId', $filterValue);
+            } elseif ('reported' === $filterName) {
+                $qb
+                ->andWhere('obj.reported >= :value')
+                ->setParameter('value', $filterValue);
             } elseif ('publishedOnly' === $filterName) {
                 $qb
-                ->andWhere('obj.status = :status')
-                ->setParameter('status', true);
+                    ->andWhere('obj.status = :status')
+                    ->setParameter('status', true);
             } elseif ('authorName' === $filterName) {
                 $qb
                     ->innerJoin('obj.author', 'author')

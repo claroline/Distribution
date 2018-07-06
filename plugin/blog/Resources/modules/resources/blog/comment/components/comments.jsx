@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {currentUser} from '#/main/core/user/current'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
 import {t, trans} from '#/main/core/translation'
-import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation.jsx'
+import {CommentCard} from '#/plugin/blog/resources/blog/comment/components/comment.jsx'
 import {actions as commentActions} from '#/plugin/blog/resources/blog/comment/store'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {constants as listConst} from '#/main/core/data/list/constants'
@@ -17,7 +17,7 @@ const CommentsComponent = props =>
       <h4 className="comments-title">
         <span className="comments-icon">
           <span className="fa fa-fw fa-comments" />
-          <span className="comments-count">{props.comments.length || '0'}</span>
+          <span className="comments-count">{props.commentNumber || '0'}</span>
         </span>
         {trans('comments', {}, 'icap_blog')}
         <button
@@ -29,7 +29,7 @@ const CommentsComponent = props =>
         </button>
       </h4>
 
-      {props.opened && props.canComment &&
+      {props.opened && props.canComment && (authenticatedUser !== null || props.canAnonymousComment) &&
         <section className="comments-section">
           {!props.showComments  && !props.showForm &&
             <button
@@ -47,7 +47,7 @@ const CommentsComponent = props =>
                 user={authenticatedUser !== null ? authenticatedUser : {}}
                 allowHtml={true}
                 submitLabel={t('add_comment')}
-                submit={(comment) => props.submitComment(props.blogId, comment)}
+                submit={(comment) => props.submitComment(props.blogId, props.postId, comment)}
                 cancel={() => props.switchCommentFormDisplay(false)}
               />
             </div>
@@ -58,13 +58,6 @@ const CommentsComponent = props =>
       {props.opened  &&
         <section className="comments-section">
           <h4>{trans('all_comments', {}, 'icap_blog')}</h4>
-
-          {props.comments.length === 0 &&
-          <div className="list-empty">
-            {trans('no_comment', {}, 'icap_blog')}
-          </div>
-          }
-
           {/*props.comments.map((comment, commentIndex) =>
             !isEmpty(props.showEditCommentForm) && props.showEditCommentForm === comment.id ?
               <UserMessageForm
@@ -86,11 +79,10 @@ const CommentsComponent = props =>
           <DataListContainer
             name="comments"
             fetch={{
-              url: ['apiv2_blog_comment_list', {blogId: props.blogId}],
+              url: ['apiv2_blog_comment_list', {blogId: props.blogId, postId: props.postId}],
               autoload: true
             }}
             open={{
-              action: (row) => `#/${row.slug}`
             }}
             definition={[
               {
@@ -111,7 +103,7 @@ const CommentsComponent = props =>
               }
             ]}
             selection={{}}
-            card={(props) => <CommentModerationCard showEdit={false} {...props} />}
+            card={CommentCard}
             display={{
               available : [listConst.DISPLAY_LIST],
               current: listConst.DISPLAY_LIST
@@ -131,10 +123,12 @@ CommentsComponent.propTypes = {
   postId: T.string.isRequired,
   showEditCommentForm: T.string,
   canComment: T.bool,
+  canAnonymousComment: T.bool,
   showComments: T.bool,
   opened: T.bool,
   showForm: T.bool,
-  comments: T.array
+  comments: T.array,
+  commentNumber: T.number
 }
         
 const Comments = connect(

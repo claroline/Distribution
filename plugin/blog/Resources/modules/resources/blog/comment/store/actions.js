@@ -6,8 +6,10 @@ export const SHOW_COMMENT_FORM = ' SHOW_COMMENT_FORM'
 export const SHOW_EDIT_COMMENT_FORM = ' SHOW_EDIT_COMMENT_FORM'
 export const CREATE_COMMENT = ' CREATE_COMMENT'
 export const UPDATE_POST_COMMENT = 'UPDATE_POST_COMMENT'
+export const REPORT_POST_COMMENT = 'REPORT_POST_COMMENT'
 export const CREATE_POST_COMMENT = 'CREATE_POST_COMMENT'
 export const DELETE_POST_COMMENT = 'DELETE_POST_COMMENT'
+
   
 export const actions = {}
 
@@ -15,6 +17,7 @@ actions.showComments = makeActionCreator(SHOW_COMMENTS, 'value')
 actions.showCommentForm = makeActionCreator(SHOW_COMMENT_FORM, 'value')
 actions.showEditCommentForm = makeActionCreator(SHOW_EDIT_COMMENT_FORM, 'value')
 actions.updateComment = makeActionCreator(UPDATE_POST_COMMENT, 'comment')
+actions.reportedComment = makeActionCreator(REPORT_POST_COMMENT, 'comment')
 actions.createComment = makeActionCreator(CREATE_POST_COMMENT, 'comment')
 actions.removeComment = makeActionCreator(DELETE_POST_COMMENT, 'commentId')
 
@@ -43,7 +46,7 @@ actions.editComment = (blogId, commentId, comment) => (dispatch) => {
         body: JSON.stringify({comment: comment})
       },
       success: (response, dispatch) => {
-        dispatch(actions.showEditCommentForm(false))
+        dispatch(actions.showEditCommentForm(''))
         dispatch(actions.updateComment(response))
       }
     }
@@ -72,7 +75,7 @@ actions.reportComment = (blogId, commentId) => (dispatch) => {
         method: 'PUT'
       },
       success: (response, dispatch) => {
-        dispatch(actions.updateComment(response))
+        dispatch(actions.reportedComment(response))
       }
     }
   })

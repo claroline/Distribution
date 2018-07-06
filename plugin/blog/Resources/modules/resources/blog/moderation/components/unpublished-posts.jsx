@@ -8,7 +8,7 @@ import {PostCard} from '#/plugin/blog/resources/blog/post/components/post.jsx'
 
 const UnpublishedPostsComponent = (props) =>
   <DataListContainer
-    name="posts"
+    name="moderationPosts"
     fetch={{
       url: ['apiv2_blog_post_list_unpublished', {blogId: props.blogId}],
       autoload: true

@@ -9,7 +9,6 @@ use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Icap\BlogBundle\Entity\Blog;
-use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Entity\Tag;
 use Icap\BlogBundle\Repository\PostRepository;
@@ -224,137 +223,6 @@ class PostManager
     }
 
     /**
-     * Create a post comment.
-     *
-     * @param Blog    $blog
-     * @param Post    $post
-     * @param Comment $comment
-     * @param User    $user
-     *
-     * @return Comment
-     */
-    public function createComment(Blog $blog, Post $post, Comment $comment, $forcePublication = false)
-    {
-        $comment
-        ->setPost($post)
-        ->setStatus($blog->isAutoPublishComment() || $forcePublication ? Comment::STATUS_PUBLISHED : Comment::STATUS_UNPUBLISHED);
-
-        if (null === $comment->getCreationDate()) {
-            $comment->setCreationDate(new \DateTime());
-        }
-
-        $this->om->persist($comment);
-        $this->om->flush();
-
-        $this->trackingManager->dispatchCommentCreateEvent($post, $comment);
-
-        if (null !== $comment->getAuthor()) {
-            $this->trackingManager->updateResourceTracking($blog->getResourceNode(), $comment->getAuthor(), new \DateTime());
-        }
-
-        return $comment;
-    }
-
-    /**
-     * Update a comment.
-     *
-     * @param Blog    $blog
-     * @param Comment $comment
-     * @param User    $user
-     *
-     * @return Comment
-     */
-    public function updateComment(Blog $blog, Comment $existingComment, $message)
-    {
-        $existingComment
-        ->setMessage($message)
-        ->setStatus($blog->isAutoPublishComment() ? Comment::STATUS_PUBLISHED : Comment::STATUS_UNPUBLISHED)
-        ->setPublicationDate($blog->isAutoPublishComment() ? new \DateTime() : null);
-
-        $this->om->flush();
-
-        $unitOfWork = $this->om->getUnitOfWork();
-        $unitOfWork->computeChangeSets();
-        $changeSet = $unitOfWork->getEntityChangeSet($existingComment);
-
-        $this->trackingManager->dispatchCommentUpdateEvent($existingComment->getPost(), $existingComment, $changeSet);
-
-        return $existingComment;
-    }
-
-    /**
-     * Publish a comment.
-     *
-     * @param Blog    $blog
-     * @param Comment $comment
-     * @param User    $user
-     *
-     * @return Comment
-     */
-    public function publishComment(Blog $blog, Comment $existingComment)
-    {
-        $existingComment->publish();
-        $this->om->flush();
-
-        $this->trackingManager->dispatchCommentPublishEvent($existingComment->getPost(), $existingComment);
-
-        return $existingComment;
-    }
-
-    /**
-     * Report a comment.
-     *
-     * @param Blog    $blog
-     * @param Comment $comment
-     * @param User    $user
-     *
-     * @return Comment
-     */
-    public function reportComment(Blog $blog, Comment $existingComment)
-    {
-        $existingComment->setReported($existingComment->getReported() + 1);
-        $this->om->flush();
-
-        return $existingComment;
-    }
-
-    /**
-     * unpublish a comment.
-     *
-     * @param Blog    $blog
-     * @param Comment $comment
-     * @param User    $user
-     *
-     * @return Comment
-     */
-    public function unpublishComment(Blog $blog, Comment $existingComment)
-    {
-        $existingComment->unpublish();
-        $this->om->flush();
-
-        $this->trackingManager->dispatchCommentPublishEvent($existingComment->getPost(), $existingComment);
-
-        return $existingComment;
-    }
-
-    /**
-     * Delete a comment.
-     *
-     * @param Blog $blog
-     * @param User $user
-     *
-     * @return Comment
-     */
-    public function deleteComment(Blog $blog, Comment $existingComment)
-    {
-        $this->om->remove($existingComment);
-        $this->om->flush();
-        $this->trackingManager->dispatchCommentDeleteEvent($existingComment->getPost(), $existingComment);
-
-        return $existingComment->getId();
-    }
-
-    /**
      * Update a post.
      *
      * @param Blog $blog
@@ -553,46 +421,49 @@ class PostManager
     }
 
     /**
-     * Get tags used in the blog.
+     * Get post tags.
      *
-     * @param Blog  $blog
-     * @param array $posts
+     * @param $postUuid
      *
      * @return array
      */
-    public function getTags($blog, array $postData = [])
+    public function getTags($postUuid)
     {
-        //TODO tagBundle needs a mthod to get tags and their frequency
-        $availables = [];
-        foreach ($postData as $data) {
-            $event = new GenericDataEvent([
-                'class' => 'Icap\BlogBundle\Entity\Post',
-                'ids' => [$data['id']],
-            ]);
+        $event = new GenericDataEvent([
+            'class' => 'Icap\BlogBundle\Entity\Post',
+            'ids' => [$postUuid],
+        ]);
 
-            $this->eventDispatcher->dispatch(
-                'claroline_retrieve_used_tags_by_class_and_ids',
-                $event
-            );
-
-            $tags = $event->getResponse();
-            $availables = array_merge($availables, $tags);
-        }
-
-        $tags = [];
-        foreach ($availables as $tag) {
-            if (!array_key_exists($tag, $tags)) {
-                $tags[$tag] = 0;
-            }
-            ++$tags[$tag];
-        }
-
-        //only keep max tag number, if defined
-        if ($blog->getOptions()->isTagTopMode() && $blog->getOptions()->getMaxTag() > 0) {
-            arsort($tags);
-            $tags = array_slice($tags, 0, $blog->getOptions()->getMaxTag());
-        }
+        $this->eventDispatcher->dispatch(
+            'claroline_retrieve_used_tags_by_class_and_ids',
+            $event
+        );
+        $tags = $event->getResponse();
 
         return $tags;
+    }
+
+    /**
+     * Get post tags.
+     *
+     * @param Post $post
+     *
+     * @return array
+     */
+    public function setTags($post, $tags = [])
+    {
+        $event = new GenericDataEvent([
+            'tags' => $tags,
+            'data' => [
+                [
+                    'class' => 'Icap\BlogBundle\Entity\Post',
+                    'id' => $post->getUuid(),
+                    'name' => $post->getTitle(),
+                ],
+            ],
+            'replace' => true,
+        ]);
+
+        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
     }
 }
