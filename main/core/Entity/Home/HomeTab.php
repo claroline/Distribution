@@ -97,6 +97,7 @@ class HomeTab
 
     public function __construct()
     {
+        $this->refreshUuid();
         $this->roles = new ArrayCollection();
         $this->widgetHomeTabConfigs = new ArrayCollection();
         $this->homeTabConfigs = new ArrayCollection();

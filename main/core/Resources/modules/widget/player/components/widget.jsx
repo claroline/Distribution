@@ -10,11 +10,11 @@ import {
   WidgetInstance as WidgetInstanceTypes
 } from '#/main/core/widget/prop-types'
 import {computeStyles} from '#/main/core/widget/utils'
-import {getWidget} from '#/main/core/widget/types'
+import {getWidget, exists} from '#/main/core/widget/types'
 
 const WidgetCol = props =>
   <div className={`widget-col col-md-${props.size}`}>
-    {props.content &&
+    {props.content && exists(props.content.type) &&
       <Embedded
         name={`${props.content.type}-${props.content.id}`}
         load={getWidget(props.content.type)}

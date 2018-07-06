@@ -1775,22 +1775,22 @@ class WorkspaceManager
         if (!$workspace || $restore) {
             //don't log this or it'll crash everything during the platform installation
             //(some database tables aren't already created because they come from plugins)
-            $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
-
-            if (!$workspace) {
-                $workspace = new Workspace();
-                $workspace->setName($name);
-                $workspace->setPersonal($isPersonal);
-                $workspace->setCode($name);
-                $workspace->setModel(true);
-                $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultUser());
-                $templateName = $isPersonal ? 'claroline.param.personal_template' : 'claroline.param.default_template';
-                $template = new File($this->container->getParameter($templateName));
-                $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
-
-                $this->container->get('claroline.core_bundle.listener.log.log_listener')->setDefaults();
+            if ($workspace && $restore) {
+                $this->om->remove($workspace);
             }
 
+            $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
+
+            $workspace = new Workspace();
+            $workspace->setName($name);
+            $workspace->setPersonal($isPersonal);
+            $workspace->setCode($name);
+            $workspace->setModel(true);
+            $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultUser());
+            $templateName = $isPersonal ? 'claroline.param.personal_template' : 'claroline.param.default_template';
+            $template = new File($this->container->getParameter($templateName));
+            $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
+            $this->container->get('claroline.core_bundle.listener.log.log_listener')->setDefaults();
             $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
 
             if ($restore) {
