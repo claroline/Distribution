@@ -19,6 +19,7 @@ import {
   ToolPageContainer
 } from '#/main/core/tool/containers/page'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
+import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 
 import {select} from '#/main/core/tools/home/selectors'
 import {actions} from '#/main/core/tools/home/actions'
@@ -29,6 +30,7 @@ import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 import {tabFormSections} from '#/main/core/tools/home/utils'
 
 const ToolActionsComponent = props =>
+
   <PageActions>
     <FormPageActionsContainer
       formName="editor"
@@ -85,40 +87,42 @@ const Tool = props =>
     <PageHeader
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
-      {props.editing &&
-        <PageGroupActions>
-          <PageAction
-            type="modal"
-            label={trans('configure', {}, 'actions')}
-            icon="fa fa-fw fa-cog"
-            modal={[MODAL_DATA_FORM, {
-              title: trans('home_tab_edition'),
-              sections: tabFormSections,
-              save: data => props.createTab(props.tabs.length, merge({}, data, {
-                id: makeId(),
-                title: data.title,
-                longTitle: data.longTitle ? data.longTitle : data.title,
-                icon: data.icon ? data.icon : null,
-                poster: data.poster ? data.poster : null,
-                type: props.context.type,
-                user: props.context.type === 'desktop' ? currentUser() : null,
-                workspace: props.context.type === 'workspace' ? {uuid: props.context.data.uuid} : null,
-                position: data.position ? data.position : props.tabs.length + 1,
-                widgets : data.widgets ? data.widgets : []
-              }))
-            }]}
-          />
-          <PageAction
-            type="callback"
-            dangerous={true}
-            label={trans('delete')}
-            icon="fa fa-fw fa-trash-o"
-            callback={() => props.deleteTab(props.currentTab)}
-          />
-        </PageGroupActions>
-      }
       {props.editable &&
-        <ToolActions />
+        <div className="tab-edition-container">
+          {props.editing &&
+          <PageGroupActions>
+            <PageAction
+              type="modal"
+              label={trans('configure', {}, 'actions')}
+              icon="fa fa-fw fa-cog"
+              modal={[MODAL_DATA_FORM, {
+                title: trans('home_tab_edition'),
+                sections: tabFormSections,
+                data: {
+                  id: props.currentTab.id,
+                  title: props.currentTab.title,
+                  longTitle: props.currentTab.longTitle,
+                  icon: props.currentTab.icon,
+                  poster: props.currentTab.poster,
+                  type: props.currentTab.context,
+                  user: props.currentTab.user,
+                  workspace: props.currentTab.workspace,
+                  position: props.currentTab.position,
+                  widgets : props.currentTab.widgets
+                },
+                save: data => props.updateTab(data)
+              }]}
+            />
+            <PageAction
+              type="callback"
+              label={trans('delete')}
+              icon="fa fa-fw fa-trash-o"
+              callback={() => props.deleteTab(props.currentTab)}
+            />
+          </PageGroupActions>
+          }
+          <ToolActions />
+        </div>
       }
     </PageHeader>
 
@@ -175,6 +179,9 @@ const HomeTool = connect(
       dispatch(actions.stopEditing())
     },
     deleteTab(tab) {
+      console.log(tab)
+    },
+    updateTab(tab) {
       console.log(tab)
     }
   })
