@@ -177,7 +177,7 @@ class Updater120000 extends Updater
     {
         $this->log('Renaming tab '.$tab->getName().'...');
         if (!$tab->getLongTitle()) {
-            $tab->setLongTitle($tab->getName());
+            $tab->setLongTitle(strip_tags($tab->getName()));
         }
 
         $tab->setName(substr(strip_tags($tab->getLongTitle()), 0, 20));
