@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\API\Finder\Home;
 
 use Claroline\AppBundle\API\Finder\FinderTrait;
 use Claroline\AppBundle\API\FinderInterface;
+use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -39,8 +40,9 @@ class HomeTabFinder implements FinderInterface
                       $qb->expr()->eq('u.id', ':userId'),
                       $qb->expr()->eq('u.uuid', ':userId')
                     ));
+                    $qb->orWhere('obj.type = :desktopType');
                     $qb->setParameter('userId', $filterValue);
-
+                    $qb->setParameter('desktopType', HomeTab::TYPE_ADMIN_DESKTOP);
                     break;
                 case 'workspace':
                     $qb->leftJoin('obj.workspace', 'w');
