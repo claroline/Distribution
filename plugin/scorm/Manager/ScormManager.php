@@ -304,9 +304,11 @@ class ScormManager
 
         switch ($sco->getScorm()->getVersion()) {
             case Scorm::SCORM_12:
-                $scoreRaw = intval($data['cmi.core.score.raw']);
-                $lessonStatus = $data['cmi.core.lesson_status'];
-                $sessionTime = $data['cmi.core.session_time'];
+                $scoreRaw = isset($data['cmi.core.score.raw']) ? intval($data['cmi.core.score.raw']) : null;
+                $scoreMin = isset($data['cmi.core.score.min']) ? intval($data['cmi.core.score.min']) : null;
+                $scoreMax = isset($data['cmi.core.score.max']) ? intval($data['cmi.core.score.max']) : null;
+                $lessonStatus = isset($data['cmi.core.lesson_status']) ? $data['cmi.core.lesson_status'] : null;
+                $sessionTime = isset($data['cmi.core.session_time']) ? $data['cmi.core.session_time'] : null;
                 $sessionTimeInHundredth = $this->convertTimeInHundredth($sessionTime);
                 $tracking->setDetails($data);
                 $tracking->setEntry($data['cmi.core.entry']);
@@ -348,8 +350,8 @@ class ScormManager
                     }
                     $data['sco'] = $sco->getUuid();
                     $data['lessonStatus'] = $lessonStatus;
-                    $data['scoreMax'] = intval($data['cmi.core.score.max']);
-                    $data['scoreMin'] = intval($data['cmi.core.score.min']);
+                    $data['scoreMax'] = $scoreMax;
+                    $data['scoreMin'] = $scoreMin;
                     $data['scoreRaw'] = $scoreRaw;
                     $data['sessionTime'] = $sessionTimeInHundredth;
                     $data['totalTime'] = $totalTimeInHundredth;
@@ -363,8 +365,8 @@ class ScormManager
                         $tracking,
                         $data,
                         $scoreRaw,
-                        intval($data['cmi.core.score.min']),
-                        intval($data['cmi.core.score.max']),
+                        $scoreMin,
+                        $scoreMax,
                         $sessionTimeInHundredth / 100,
                         $lessonStatus
                     );
@@ -372,6 +374,10 @@ class ScormManager
                 break;
             case Scorm::SCORM_2004:
                 $tracking->setDetails($data);
+
+                if (isset($data['cmi.suspend_data'])) {
+                    $tracking->setSuspendData($data['cmi.suspend_data']);
+                }
 
                 if ('log' === $mode) {
                     $dataSessionTime = isset($data['cmi.session_time']) ?
