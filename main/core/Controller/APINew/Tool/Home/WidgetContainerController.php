@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * @Route("/home_tab")
+ * @Route("/widget_container")
  */
 class WidgetContainerController extends AbstractCrudController
 {
