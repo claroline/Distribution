@@ -64,8 +64,7 @@ const RightsModal = connect(
     saveEnabled: selectors.saveEnabled(state)
   }),
   (dispatch) => ({
-    updateRights(perms) {
-      console.log('implements me later plz')
+    updateRights() {
     },
     save(parent, close) {
       dispatch(actions.create(parent)).then(close)

@@ -84,10 +84,6 @@ class ResourceLifecycleManager
 
     public function copy(ResourceNode $copiedNode, ResourceNode $originalNode)
     {
-        /*$newNodes = [];
-        $collection = new ResourceCollection($nodes);
-        $collection->addAttribute('parent', $parent);*/
-
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             static::eventName('copy', $copiedNode),
@@ -100,8 +96,6 @@ class ResourceLifecycleManager
 
     public function move()
     {
-        /*$collection = new ResourceCollection($nodes);
-        $collection->addAttribute('parent', $newParent);*/
     }
 
     /**
