@@ -553,6 +553,7 @@ class ScormManager
 
             if ($node->isActive()) {
                 $scosMapping = [];
+                $newTrackings = [];
                 $workspace = $node->getWorkspace();
 
                 /* Copies ResourceNode */
@@ -679,6 +680,11 @@ class ScormManager
                         $newTracking->setLessonMode($tracking->getLessonMode());
                         $newTracking->setIsLocked($tracking->getIsLocked());
                         $this->om->persist($newTracking);
+
+                        if (!isset($newTrackings[$scoId])) {
+                            $newTrackings[$scoId] = [];
+                        }
+                        $newTrackings[$scoId][$trackingUser->getUuid()] = $newTracking;
                     }
                 }
 
@@ -690,6 +696,21 @@ class ScormManager
 
                         if ('resource-scorm_12-sco_result' === $log->getAction()) {
                             $log->setAction(LogScormResultEvent::ACTION);
+
+                            /* Computes latest date from results logs */
+                            $logDetails = $log->getDetails();
+                            $logScoId = isset($logDetails['scoId']) ? $logDetails['scoId'] : null;
+                            $logReceiverUuid = $log->getReceiver()->getUuid();
+
+                            if (!empty($logScoId) && isset($newTrackings[$logScoId][$logReceiverUuid])) {
+                                $logDate = $log->getDateLog();
+                                $latestDate = $newTrackings[$logScoId][$logReceiverUuid]->getLatestDate();
+
+                                if (empty($latestDate) || $logDate > $latestDate) {
+                                    $newTrackings[$logScoId][$logReceiverUuid]->setLatestDate($logDate);
+                                    $this->om->persist($newTrackings[$logScoId][$logReceiverUuid]);
+                                }
+                            }
                         }
                         $this->om->persist($log);
                     }
@@ -724,6 +745,7 @@ class ScormManager
 
             if ($node->isActive()) {
                 $scosMapping = [];
+                $newTrackings = [];
                 $workspace = $node->getWorkspace();
 
                 /* Copies ResourceNode */
@@ -831,9 +853,10 @@ class ScormManager
                     $trackings = $this->scorm2004ScoTrackingRepo->findBy(['sco' => $sco]);
 
                     foreach ($trackings as $tracking) {
+                        $trackingUser = $tracking->getUser();
                         $newTracking = new ScoTracking();
                         $newTracking->setSco($scosMapping[$sco->getId()]);
-                        $newTracking->setUser($tracking->getUser());
+                        $newTracking->setUser($trackingUser);
                         $newTracking->setScoreRaw($tracking->getScoreRaw());
                         $newTracking->setScoreMin($tracking->getScoreMin());
                         $newTracking->setScoreMax($tracking->getScoreMax());
@@ -843,6 +866,13 @@ class ScormManager
                         $newTracking->setTotalTimeString($tracking->getTotalTime());
                         $newTracking->setDetails($tracking->getDetails());
                         $this->om->persist($newTracking);
+
+                        $trackingUserUuid = $trackingUser->getUuid();
+
+                        if (!isset($newTrackings[$trackingUserUuid])) {
+                            $newTrackings[$trackingUserUuid] = [];
+                        }
+                        $newTrackings[$trackingUserUuid][] = $newTracking;
                     }
                 }
 
@@ -854,6 +884,21 @@ class ScormManager
 
                         if ('resource-scorm_2004-sco_result' === $log->getAction()) {
                             $log->setAction(LogScormResultEvent::ACTION);
+
+                            /* Computes latest date from results logs */
+                            $logReceiverUuid = $log->getReceiver()->getUuid();
+
+                            if (isset($newTrackings[$logReceiverUuid]) && 0 < count($newTrackings[$logReceiverUuid])) {
+                                $logDate = $log->getDateLog();
+                                $latestDate = $newTrackings[$logReceiverUuid][0]->getLatestDate();
+
+                                if (empty($latestDate) || $logDate > $latestDate) {
+                                    foreach ($newTrackings[$logReceiverUuid] as $newTracking) {
+                                        $newTracking->setLatestDate($logDate);
+                                        $this->om->persist($newTracking);
+                                    }
+                                }
+                            }
                         }
                         $this->om->persist($log);
                     }

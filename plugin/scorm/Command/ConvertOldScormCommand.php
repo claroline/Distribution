@@ -27,24 +27,24 @@ class ConvertOldScormCommand extends ContainerAwareCommand
             ->setDescription('Converts old Scorm12/Scorm2004 resources to new Scorm resources');
 
         $this->addOption(
-            'logs',
+            'no-logs',
             'l',
             InputOption::VALUE_NONE,
-            'When set to true, all associated logs are also copied'
+            'When set to true, all associated logs are not copied'
         );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $withLogs = $input->getOption('logs');
+        $withoutLogs = $input->getOption('no-logs');
         $scormManager = $this->getContainer()->get('claroline.manager.scorm_manager');
 
         $output->writeln('<info>  Starting conversion of Scorm 1.2 resources...</info>');
-        $scormManager->convertAllScorm12($withLogs);
+        $scormManager->convertAllScorm12(!$withoutLogs);
         $output->writeln('<info>  Conversion of Scorm 1.2 resources is finished.</info>');
 
         $output->writeln('<info>  Starting conversion of Scorm 2004 resources...</info>');
-        $scormManager->convertAllScorm2004($withLogs);
+        $scormManager->convertAllScorm2004(!$withoutLogs);
         $output->writeln('<info>  Conversion of Scorm 2004 resources is finished.</info>');
     }
 }
