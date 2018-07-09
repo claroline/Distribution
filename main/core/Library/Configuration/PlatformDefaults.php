@@ -141,8 +141,13 @@ class PlatformDefaults implements ParameterProviderInterface
             'profile_roles_confidential' => [],
             'profile_roles_locked' => [],
             'profile_roles_edition' => [],
-            'workspace_list_default_mode' => 'list',
-            'workspace_list_default_properties' => ['code', 'meta.created', 'registration.waitingForRegistration'],
+            'workspace_list_default_mode' => 'tiles-sm',
+            'workspace_list_default_properties' => [
+                'name',
+                'code',
+                'registration.selfRegistration',
+                'registration.waitingForRegistration',
+            ],
         ];
     }
 }
