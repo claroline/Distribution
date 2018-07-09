@@ -13,8 +13,6 @@ namespace Claroline\ScormBundle\Listener;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
-use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
