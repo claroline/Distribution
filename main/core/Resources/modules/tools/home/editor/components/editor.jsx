@@ -29,6 +29,7 @@ const EditorComponent = props =>
   <ToolPageContainer>
     <EditorNav />
     <PageHeader
+      className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
       <div className="tab-edition-container">

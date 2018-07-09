@@ -22,7 +22,7 @@ const tabFormSections = [
     }, {
       name: 'centerTitle',
       type: 'boolean',
-      label: trans('center-title')
+      label: trans('center_title')
     }]
   },
   {
