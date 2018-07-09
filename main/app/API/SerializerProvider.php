@@ -116,7 +116,7 @@ class SerializerProvider
         $className = is_object($object) ? get_class($object) : $object;
 
         throw new \Exception(
-            sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', print_r($className))
+            sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', $className)
         );
     }
 

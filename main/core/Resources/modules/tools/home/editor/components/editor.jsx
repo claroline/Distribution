@@ -69,11 +69,18 @@ const EditorComponent = props =>
   </ToolPageContainer>
 
 EditorComponent.propTypes = {
+  currentTab: T.shape({
+    longTitle: T.string.isRequired,
+    id: T.string.isRequired
+  }).isRequired,
   context: T.object.isRequired,
   widgets: T.arrayOf(T.shape(
     WidgetContainerTypes.propTypes
   )).isRequired,
-  update: T.func.isRequired
+  update: T.func.isRequired,
+  updateTab: T.func.isRequired,
+  deleteTab: T.func.isRequired,
+  history: T.object.isRequired
 }
 
 const Editor = connect(

@@ -381,25 +381,24 @@ class HomeTabController extends Controller
      */
     public function getAdminWidgetsAction(HomeTab $homeTab)
     {
-        /*
-          $widgets = [];
-          $configs = $this->homeTabManager->getAdminWidgetConfigs($homeTab);
-          $wdcs = $this->widgetManager->generateWidgetDisplayConfigsForAdmin($configs);
+        $widgets = [];
+        $configs = $this->homeTabManager->getAdminWidgetConfigs($homeTab);
+        $wdcs = $this->widgetManager->generateWidgetDisplayConfigsForAdmin($configs);
 
-          foreach ($configs as $config) {
-              $widgetDatas = [];
-              $widgetInstance = $config->getWidgetInstance();
-              $widget = $widgetInstance->getWidget();
-              $widgetInstanceId = $widgetInstance->getId();
-              $widgetDatas['config'] = $this->serializer->serialize($config, 'json', SerializationContext::create()->setGroups(['api_widget']));
-              $widgetDatas['display'] = $this->serializer->serialize($wdcs[$widgetInstanceId], 'json', SerializationContext::create()->setGroups(['api_widget']));
-              $widgetDatas['configurable'] = $widget->isConfigurable();
-              $event = $this->eventDispatcher->dispatch('widget_'.$widget->getName(), new DisplayWidgetEvent($widgetInstance));
-              $widgetDatas['content'] = $event->getContent();
-              $widgets[] = $widgetDatas;
-          }
+        foreach ($configs as $config) {
+            $widgetDatas = [];
+            $widgetInstance = $config->getWidgetInstance();
+            $widget = $widgetInstance->getWidget();
+            $widgetInstanceId = $widgetInstance->getId();
+            $widgetDatas['config'] = $this->serializer->serialize($config, 'json', SerializationContext::create()->setGroups(['api_widget']));
+            $widgetDatas['display'] = $this->serializer->serialize($wdcs[$widgetInstanceId], 'json', SerializationContext::create()->setGroups(['api_widget']));
+            $widgetDatas['configurable'] = $widget->isConfigurable();
+            $event = $this->eventDispatcher->dispatch('widget_'.$widget->getName(), new DisplayWidgetEvent($widgetInstance));
+            $widgetDatas['content'] = $event->getContent();
+            $widgets[] = $widgetDatas;
+        }
 
-          return new JsonResponse($widgets, 200);*/
+        return new JsonResponse($widgets, 200);
     }
 
     /**
