@@ -63,9 +63,6 @@ class BadgeRuleType extends AbstractType
     {
         $actionChoices = $this->eventManager->getSortedEventsForFilter();
 
-        /** @var \Claroline\CoreBundle\Entity\User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-
         $builder
             ->add(
                 'action',
