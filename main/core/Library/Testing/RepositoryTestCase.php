@@ -659,7 +659,6 @@ abstract class RepositoryTestCase extends WebTestCase
         $node->setCreator($creator);
         $node->setWorkspace($workspace);
         $node->setCreationDate(self::$time);
-        $node->setClass('resourceClass');
         $node->setName($name);
         $node->setMimeType($mimeType);
         $node->setGuid(uniqid());
