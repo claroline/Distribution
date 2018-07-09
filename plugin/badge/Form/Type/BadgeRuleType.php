@@ -66,8 +66,6 @@ class BadgeRuleType extends AbstractType
         /** @var \Claroline\CoreBundle\Entity\User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $locale = (null === $user->getLocale()) ? $this->platformConfigHandler->getParameter('locale_language') : $user->getLocale();
-
         $builder
             ->add(
                 'action',

@@ -33,8 +33,6 @@ use WhiteOctober\PagerfantaBundle\Twig\PagerfantaExtension as P;
  */
 class PagerfantaExtension extends P
 {
-    //use ContainerAwareTrait;
-
     /**
      * @DI\InjectParams({
      *     "container" = @DI\Inject("service_container")

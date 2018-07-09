@@ -49,7 +49,6 @@ class BadgeType extends AbstractType
     {
         $platformLanguage = $this->platformConfigHandler->getParameter('locale_language');
         $languages = array_values($this->localeManager->getAvailableLocales());
-        $sortedLanguages = [];
 
         usort($languages, function ($language1, $language2) use ($platformLanguage) {
             if ($language1 === $platformLanguage) {

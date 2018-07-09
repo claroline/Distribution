@@ -39,7 +39,6 @@ class ProfileController extends Controller
                 $translator = $this->get('translator');
 
                 try {
-                    $entityManager = $this->getDoctrine()->getManager();
                     $badge = $form->get('badge')->getData();
 
                     if (null !== $badge) {
@@ -75,7 +74,6 @@ class ProfileController extends Controller
         /** @var \Claroline\CoreBundle\Rule\Validator $badgeRuleValidator */
         $badgeRuleValidator = $this->get('claroline.rule.validator');
         $validatedRules = $badgeRuleValidator->validate($badge, $user);
-        $validateLogsLink = [];
 
         if (0 < $validatedRules['validRules']) {
             foreach ($validatedRules['rules'] as $ruleIndex => $validatedRule) {
