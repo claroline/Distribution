@@ -821,7 +821,7 @@ class RoleManager
             $maxUsers = $role->getWorkspace()->getMaxUsers();
             $countByWorkspace = $this->container->get('claroline.api.finder')->fetch(
               User::class,
-              ['workspace' => $workspace->getUuid()],
+              ['workspace' => $role->getWorkspace()->getUuid()],
               null,
               0,
               -1,
