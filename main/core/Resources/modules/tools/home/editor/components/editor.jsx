@@ -80,7 +80,8 @@ EditorComponent.propTypes = {
   update: T.func.isRequired,
   updateTab: T.func.isRequired,
   deleteTab: T.func.isRequired,
-  history: T.object.isRequired
+  history: T.object.isRequired,
+  currentTabIndex: T.string.isRequired
 }
 
 const Editor = connect(
