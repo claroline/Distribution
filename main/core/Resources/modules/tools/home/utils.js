@@ -9,6 +9,7 @@ const tabFormSections = [
       name: 'title',
       type: 'string',
       label: trans('menu_title'),
+      help: trans('menu_title_help'),
       options: {
         maxLength: 20
       },
@@ -18,20 +19,25 @@ const tabFormSections = [
       type: 'string',
       label: trans('title'),
       required: true
+    }, {
+      name: 'centerTitle',
+      type: 'boolean',
+      label: trans('center-title')
     }]
   },
   {
     icon: 'fa fa-fw fa-desktop',
     title: trans('display_parameters'),
     fields: [{
-      name: 'icon',
-      type: 'string',
-      label: trans('icon')
-    },
-    {
       name: 'position',
       type: 'number',
       label: trans('position')
+    },
+    {
+      name: 'icon',
+      type: 'string',
+      label: trans('icon'),
+      help: trans('icon_tab_help')
     },
     {
       name: 'poster',

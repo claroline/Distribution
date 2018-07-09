@@ -17,7 +17,7 @@ import {ToolActions} from '#/main/core/tools/home/components/tool'
 const PlayerComponent = props =>
   <ToolPageContainer>
     <PlayerNav
-      tabs={props.tabs}
+      tabs={props.ordenedTabs}
     />
 
     <PageHeader
@@ -37,7 +37,7 @@ const PlayerComponent = props =>
 
 PlayerComponent.propTypes = {
   context: T.object.isRequired,
-  tabs: T.arrayOf(T.shape(
+  ordenedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
@@ -51,7 +51,7 @@ const Player = connect(
   (state) => ({
     context: select.context(state),
     editable: select.editable(state),
-    tabs: select.tabs(state),
+    ordenedTabs: select.ordenedTabs(state),
     currentTab: select.currentTab(state),
     widgets: select.widgets(state)
   })

@@ -7,7 +7,7 @@ const Widget = {
     meta: T.shape({
       context: T.arrayOf(T.string),
       exportable: T.bool
-    }).isRequired,
+    }),
     sources: T.arrayOf(T.string),
     tags: T.arrayOf(T.string)
   },

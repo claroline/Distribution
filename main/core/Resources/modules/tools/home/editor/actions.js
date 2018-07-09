@@ -21,9 +21,9 @@ actions.deleteTab = (tabId, push) => ({
 })
 
 actions.updateDeletedWidget = makeActionCreator(UPDATE_DELETED_WIDGET, 'tabId', 'widgetId')
-actions.deleteTab = (tabId, widgetId) => ({
+actions.deleteWidget = (tabId, widgetId) => ({
   [API_REQUEST]: {
-    url: ['apiv2_home_tab_delete_bulk', {ids: [widgetId]}],
+    url: ['apiv2_widget_container_delete_bulk', {ids: [widgetId]}],
     request: {
       method: 'DELETE'
     },

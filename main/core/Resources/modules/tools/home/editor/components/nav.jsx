@@ -18,14 +18,16 @@ import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
 const EditorNavComponent = props =>
   <nav className="tool-nav">
-    {props.tabs.map((tab, tabIndex) =>
+    {props.editorData.map((tab, tabIndex) =>
       <NavLink
         className="nav-tab"
-        key={tabIndex}
         activeClassName="nav-tab-active"
+        key={tabIndex}
         to={`/edit/tab/${tab.id}`}
       >
-
+        {tab.icon &&
+          <span className={`fa fa-${tab.icon} tab-icon`} />
+        }
         {tab.title}
       </NavLink>
     )}
@@ -36,12 +38,12 @@ const EditorNavComponent = props =>
         sections: tabFormSections,
         data: merge({}, TabTypes.defaultProps, {
           id: makeId(),
-          position: props.tabs.length + 1,
+          position: props.editorData.length + 1,
           type: props.context.type,
           user: props.context.type === 'desktop' ? currentUser() : null,
           workspace: props.context.type === 'workspace' ? {uuid: props.context.data.uuid} : null
         }),
-        save: data => props.createTab(props.tabs.length, data)
+        save: data => props.createTab(props.editorData.length, data)
       }]}
     >
       <span className="fa fa-plus" />
@@ -51,7 +53,7 @@ const EditorNavComponent = props =>
 
 const EditorNav = connect(
   (state) => ({
-    tabs: editorSelect.editorData(state),
+    editorData: editorSelect.editorData(state),
     context : homeSelect.context(state)
   }),
   dispatch => ({

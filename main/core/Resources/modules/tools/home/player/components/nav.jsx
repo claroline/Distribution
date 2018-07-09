@@ -12,6 +12,9 @@ const PlayerNav = props =>
         key={tabIndex}
         to={`/tab/${tab.id}`}
       >
+        {tab.icon &&
+          <span className={`fa fa-${tab.icon} tab-icon`} />
+        }
         {tab.title}
       </NavLink>
     )}
