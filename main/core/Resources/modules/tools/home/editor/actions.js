@@ -29,6 +29,7 @@ actions.deleteWidget = (tabId, widgetId) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.updateDeletedWidget(tabId, widgetId))
+      console.log(tabId, widgetId)
     }
   }
 })

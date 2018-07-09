@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 const Widget = {
   propTypes: {
     id: T.string.isRequired,
-    name: T.string.isRequired,
+    name: T.string,
     meta: T.shape({
       context: T.arrayOf(T.string),
       exportable: T.bool

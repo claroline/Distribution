@@ -22,15 +22,14 @@ const reducer = makeFormReducer('editor', {
     },
     [UPDATE_DELETED_WIDGET]: (state, action) => {
       const newState = cloneDeep(state)
-      const tabIndex = newState.findIndex(c => c.id === action.tabId)
+      const tabIndex = newState.findIndex(tab => tab.id === action.tabId)
 
       if (tabIndex > -1) {
-        const index = newState[tabIndex].widgets.findIndex(c => c.id === action.widgetId)
+        const index = newState[tabIndex].widgets.findIndex(widget => widget.id === action.widgetId)
         if (index > -1) {
           newState[tabIndex].widgets.splice(index, 1)
         }
       }
-
       return newState
     }
   })
