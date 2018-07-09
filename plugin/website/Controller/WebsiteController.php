@@ -65,7 +65,7 @@ class WebsiteController extends Controller
             $pages = $pageManager->getPageTree($website, $isAdmin, true);
             $website->setPages($pages);
             $currentPage = $website->getHomePage();
-            if (null == $currentPage && !empty($pages) && !empty($pages[0]['children'])) {
+            if (null === $currentPage && !empty($pages) && !empty($pages[0]['children'])) {
                 $currentPage = $pages[0]['children'][0];
                 if (isset($currentPage) && null !== $currentPage) {
                     $currentPage = $pageManager->getPages($website, $currentPage['id'], $isAdmin, false)[0];

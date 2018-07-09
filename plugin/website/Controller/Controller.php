@@ -8,7 +8,6 @@
 
 namespace Icap\WebsiteBundle\Controller;
 
-use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Icap\WebsiteBundle\Entity\Website;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
@@ -28,8 +27,6 @@ class Controller extends BaseController
         if (!$this->get('security.authorization_checker')->isGranted($permission, $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
-        //$logEvent = new LogResourceReadEvent($website->getResourceNode());
-        //$this->get('event_dispatcher')->dispatch('log', $logEvent);
     }
 
     /**
