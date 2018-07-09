@@ -198,7 +198,7 @@ class Updater120000 extends Updater
             $desktopHomeTab->setType('admin_desktop');
             $desktopHomeTab->setName('Accueil');
             $desktopHomeTab->setLongTitle('Accueil');
-            $manager->persist($desktopHomeTab);
+            $this->om->persist($desktopHomeTab);
 
             $desktopHomeTabConfig = new HomeTabConfig();
             $desktopHomeTabConfig->setHomeTab($desktopHomeTab);

@@ -90,12 +90,4 @@ trait SerializerTrait
             $object->generateUuid() :
             $object->getUuid();
     }
-
-    public function setLogger()
-    {
-    }
-
-    public function log()
-    {
-    }
 }
