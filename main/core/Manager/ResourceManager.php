@@ -221,7 +221,6 @@ class ResourceManager
 
         $node->setParent($parent);
         $node->setName($this->getUniqueName($node, $parent));
-        $node->setClass(get_class($resource));
 
         if ($parent) {
             $this->setLastIndex($parent, $node);
@@ -755,8 +754,8 @@ class ResourceManager
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             'copy_'.$node->getResourceType()->getName(),
-            'CopyResource',
-            [$resource, $parent, $newNode]
+            'Resource\\CopyResource',
+            [$resource, $newNode]
         );
 
         $copy = $event->getCopy();
@@ -857,7 +856,7 @@ class ResourceManager
                 if (!$softDelete) {
                     $event = $this->dispatcher->dispatch(
                         "delete_{$node->getResourceType()->getName()}",
-                        'DeleteResource',
+                        'Resource\DeleteResource',
                         [$resource, $softDelete]
                     );
                     $eventSoftDelete = $event->isSoftDelete();
@@ -1443,10 +1442,12 @@ class ResourceManager
      */
     public function getResourceFromNode(ResourceNode $node)
     {
-        /** @var AbstractResource $resource */
-        $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
+        /* @var AbstractResource $resource */
+        if (class_exists($node->getClass())) {
+            $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
 
-        return $resource;
+            return $resource;
+        }
     }
 
     /**
@@ -1478,7 +1479,6 @@ class ResourceManager
         $newParent->addChild($newNode);
         $newNode->setName($this->getUniqueName($node, $newParent, true));
         $newNode->setIcon($node->getIcon());
-        $newNode->setClass($node->getClass());
         $newNode->setMimeType($node->getMimeType());
         $newNode->setAccessibleFrom($node->getAccessibleFrom());
         $newNode->setAccessibleUntil($node->getAccessibleUntil());
