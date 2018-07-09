@@ -75,7 +75,6 @@ abstract class RepositoryTestCase extends WebTestCase
     public static function tearDownAfterClass()
     {
         self::$om->rollback();
-        //self::$client->shutdown();
     }
 
     /**
