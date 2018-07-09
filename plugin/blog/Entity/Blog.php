@@ -2,6 +2,7 @@
 
 namespace Icap\BlogBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -14,6 +15,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Blog extends AbstractResource
 {
+    use UuidTrait;
+
+    /**
+     * Blog constructor.
+     */
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
+
     /**
      * @var Post[]
      *
@@ -21,6 +32,13 @@ class Blog extends AbstractResource
      * @ORM\OrderBy({"creationDate" = "ASC"})
      */
     protected $posts;
+
+    /**
+     * @var Member[]
+     *
+     * @ORM\OneToMany(targetEntity="Icap\BlogBundle\Entity\Member", mappedBy="blog", cascade={"all"})
+     */
+    protected $members;
 
     /**
      * @var BlogOptions
@@ -137,7 +155,7 @@ class Blog extends AbstractResource
      */
     public function isAutoPublishComment()
     {
-        return $this->getOptions()->getAutoPublishComment();
+        return BlogOptions::COMMENT_MODERATION_NONE === $this->getOptions()->getCommentModerationMode() ? true : false;
     }
 
     /**
@@ -201,6 +219,7 @@ class Blog extends AbstractResource
 
             $blogOptions = new BlogOptions();
             $blogOptions->setBlog($this);
+            $this->setOptions($blogOptions);
 
             $entityManager->persist($blogOptions);
             $entityManager->flush($blogOptions);
