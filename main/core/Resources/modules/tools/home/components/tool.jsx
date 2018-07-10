@@ -44,8 +44,8 @@ const Tool = props =>
   <Router>
     <Routes
       redirect={[
-        {from: '/', exact: true, to: '/tab/'+props.tabs[0].id },
-        {from: '/edit', exact: true, to: '/edit/tab/'+props.tabs[0].id}
+        {from: '/', exact: true, to: '/tab/'+props.ordenedTabs[0].id },
+        {from: '/edit', exact: true, to: '/edit/tab/'+props.ordenedTabs[0].id}
       ]}
       routes={[
         {
@@ -72,7 +72,7 @@ Tool.propTypes = {
       name: T.string.isRequired
     })
   }),
-  tabs: T.arrayOf(T.shape(
+  ordenedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
@@ -83,7 +83,7 @@ Tool.propTypes = {
 const HomeTool = connect(
   (state) => ({
     editable: select.editable(state),
-    tabs: select.tabs(state),
+    ordenedTabs: select.ordenedTabs(state),
     currentTab: select.currentTab(state)
   }),
   (dispatch) => ({

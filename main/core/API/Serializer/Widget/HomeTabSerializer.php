@@ -68,6 +68,7 @@ class HomeTabSerializer
           'id' => $this->getUuid($homeTab, $options),
           'title' => $homeTab->getName(),
           'longTitle' => $homeTab->getLongTitle(),
+          'centerTitle' => $homeTab->isCenterTitle(),
           'poster' => $homeTab->getPoster(),
           'icon' => $homeTab->getIcon(),
           'type' => $homeTab->getType(),
@@ -85,6 +86,7 @@ class HomeTabSerializer
         $this->sipe('id', 'setUuid', $data, $homeTab);
         $this->sipe('title', 'setName', $data, $homeTab);
         $this->sipe('longTitle', 'setLongTitle', $data, $homeTab);
+        $this->sipe('centerTitle', 'setCenterTitle', $data, $homeTab);
         $this->sipe('poster', 'setPoster', $data, $homeTab);
         $this->sipe('icon', 'setIcon', $data, $homeTab);
         $this->sipe('type', 'setType', $data, $homeTab);
