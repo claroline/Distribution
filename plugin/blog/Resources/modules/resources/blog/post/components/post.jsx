@@ -52,7 +52,7 @@ const PostComponent = props =>
                 <div>
                   ...
                   <div className="read_more">
-                    <a href={`#/${props.post.slug}`}>{trans('read_more', {}, 'icap_blog')}</a> <span className="fa fa-long-arrow-right"></span>
+                    <a href={`#/${props.post.slug}`}>{trans('read_more', {}, 'icap_blog')}</a> <span className="fa fa-lg fa-arrow-circle-right"></span>
                   </div>
                 </div>
               }
@@ -128,7 +128,7 @@ const InfoBar = props =>
         <a className="user-name">{props.post.author.firstName} {props.post.author.lastName}</a>
       </span>
     </li>
-    <li><span className="fa fa-calendar"></span> {displayDate(props.post.publicationDate, false, true)} </li>
+    <li><span className="fa fa-calendar"></span> {displayDate(props.post.publicationDate, false, false)} </li>
     {props.displayViews &&
       <li><span className="fa fa-eye"></span> {transChoice('display_views', props.post.viewCounter, {'%count%': props.post.viewCounter}, 'platform')}</li> 
     }

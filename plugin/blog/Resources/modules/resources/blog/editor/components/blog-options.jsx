@@ -22,7 +22,8 @@ const BlogOptionsComponent = props =>
         name="blog.data.options"
         sections={[
           {
-            id: 'options',
+            id: 'display',
+            icon: 'fa fa-fw fa-desktop',
             title: trans('display', {}, 'icap_blog'),
             fields: [
               {
@@ -48,7 +49,7 @@ const BlogOptionsComponent = props =>
             ]
           },{
             id: 'moderation',
-            icon: 'fa fa-fw fa-lock',
+            icon: 'fa fa-fw fa-gavel',
             title: trans('moderation', {}, 'icap_blog'),
             fields: [
               {
@@ -128,7 +129,11 @@ const BlogOptionsComponent = props =>
           }
         ]}
       >
-        <FormSection id="widgets" icon="fa fa-fw fa-wrench" title={trans('icap_blog_options_form_Order_Widget_Right', {}, 'icap_blog')}>
+        <FormSection
+          className='toolmanager'
+          id="widgets"
+          icon="fa fa-fw fa-wrench"
+          title={trans('icap_blog_options_form_Order_Widget_Right', {}, 'icap_blog')}>
           <ToolManager />
         </FormSection>
         <ButtonToolbar>

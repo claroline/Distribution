@@ -511,6 +511,6 @@ class BlogManager
             $tags = array_slice($tags, 0, $blog->getOptions()->getMaxTag());
         }
 
-        return $tags;
+        return (object) $tags;
     }
 }
