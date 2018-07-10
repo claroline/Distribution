@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {ToolPageContainer} from '#/main/core/tool/containers/page'
-import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {
   PageHeader,
@@ -19,10 +18,10 @@ import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-t
 import {ToolActions} from '#/main/core/tools/home/components/tool'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {select} from '#/main/core/tools/home/selectors'
-import {actions} from '#/main/core/tools/home/editor/actions'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
+import {MODAL_TAB_UPDATE} from '#/main/core/tools/home/editor/modals/update'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
-import {tabFormSections} from '#/main/core/tools/home/utils'
+
 
 
 const EditorComponent = props =>
@@ -39,11 +38,9 @@ const EditorComponent = props =>
               type="modal"
               label={trans('configure', {}, 'actions')}
               icon="fa fa-fw fa-cog"
-              modal={[MODAL_DATA_FORM, {
-                title: trans('home_tab_edition'),
-                sections: tabFormSections,
-                data: props.currentTab,
-                save: data => props.updateTab(props.currentTabIndex, data)
+              modal={[MODAL_TAB_UPDATE, {
+                currentTabData: props.currentTab,
+                save: (Formdata) => props.updateTab(props.currentTabIndex, Formdata)
               }]}
             />
             <PageAction
@@ -66,16 +63,11 @@ const EditorComponent = props =>
         context={props.context}
         widgets={props.widgets}
         update={(widgets) => props.update(props.currentTabIndex, widgets)}
-        deleteWidget={(widgetId) => props.deleteWidget(props.currentTab.id, widgetId)}
       />
     </PageContent>
   </ToolPageContainer>
 
 EditorComponent.propTypes = {
-  currentTab: T.shape({
-    longTitle: T.string.isRequired,
-    id: T.string.isRequired
-  }).isRequired,
   context: T.object.isRequired,
   widgets: T.arrayOf(T.shape(
     WidgetContainerTypes.propTypes
@@ -101,12 +93,6 @@ const Editor = connect(
   dispatch => ({
     update(currentTabIndex, widgets) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}].widgets`, widgets))
-    },
-    deleteTab(tabId, push) {
-      dispatch(actions.deleteTab(tabId, push))
-    },
-    deleteWidget(tabId, widgetId) {
-      dispatch(actions.deleteWidget(tabId, widgetId))
     },
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))

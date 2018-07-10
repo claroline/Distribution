@@ -6,7 +6,8 @@ const Tab = {
   propTypes: {
     id: T.string.isRequired,
     title: T.string.isRequired,
-    description: T.string,
+    longTitle: T.string,
+    centerTitle: T.bool.isRequired,
     icon: T.string,
     poster: T.shape({
       url: T.string
@@ -20,7 +21,8 @@ const Tab = {
   defaultProps: {
     icon: null,
     poster: null,
-    widgets: []
+    widgets: [],
+    centerTitle: false
   }
 }
 
