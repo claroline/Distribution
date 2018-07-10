@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Finder\Home\WidgetContainerFinder;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
@@ -28,18 +29,21 @@ class HomeTabSerializer
      * ContactSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
+     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
+     *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
+     *     "widgetContainerFinder" = @DI\Inject("claroline.api.finder.widget_container")
      * })
      *
      * @param SerializerProvider $serializer
      */
     public function __construct(
         SerializerProvider $serializer,
-        ObjectManager $om
+        ObjectManager $om,
+        WidgetContainerFinder $widgetContainerFinder
     ) {
         $this->serializer = $serializer;
         $this->om = $om;
+        $this->widgetContainerFinder = $widgetContainerFinder;
     }
 
     public function getClass()
@@ -126,11 +130,12 @@ class HomeTabSerializer
 
         // We either do this or cascade persist ¯\_(ツ)_/¯
         $this->om->persist($homeTabConfig);
-
-        //remove olds widgets here ?
+        $containerIds = [];
 
         foreach ($data['widgets'] as $widgetContainer) {
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
+            $containerIds[] = $widgetContainer->getUuid();
+
             //ptet rajouter les instances ici ? je sais pas
             foreach ($widgetContainer->getInstances() as $key => $instance) {
                 $widgetHomeTabConfig = new WidgetHomeTabConfig();
@@ -143,6 +148,15 @@ class HomeTabSerializer
                 $widgetHomeTabConfig->setWidgetOrder($key);
                 $widgetHomeTabConfig->setWidgetInstance($instance);
                 $this->om->persist($widgetHomeTabConfig);
+            }
+        }
+
+        //readytoremove
+        $containers = $this->widgetContainerFinder->find(['homeTab' => $homeTab->getUuid()]);
+
+        foreach ($containers as $container) {
+            if (!in_array($container->getUuid(), $containerIds)) {
+                $this->om->remove($container);
             }
         }
 
