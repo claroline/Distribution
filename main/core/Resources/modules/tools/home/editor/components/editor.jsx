@@ -19,7 +19,7 @@ import {ToolActions} from '#/main/core/tools/home/components/tool'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {select} from '#/main/core/tools/home/selectors'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
-import {MODAL_TAB_UPDATE} from '#/main/core/tools/home/editor/modals/update'
+import {MODAL_TAB_PARAMETERS} from '#/main/core/tools/home/editor/modals/parameters'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 
 
@@ -38,7 +38,7 @@ const EditorComponent = props =>
               type="modal"
               label={trans('configure', {}, 'actions')}
               icon="fa fa-fw fa-cog"
-              modal={[MODAL_TAB_UPDATE, {
+              modal={[MODAL_TAB_PARAMETERS, {
                 currentTabData: props.currentTab,
                 save: (Formdata) => props.updateTab(props.currentTabIndex, Formdata)
               }]}

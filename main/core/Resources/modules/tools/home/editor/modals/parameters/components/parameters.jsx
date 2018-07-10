@@ -8,13 +8,12 @@ import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {actions as formActions} from '#/main/core/data/form/actions'
 
-import {selectors} from '#/main/core/tools/home/editor/modals/update/store'
+import {selectors} from '#/main/core/tools/home/editor/modals/parameters/store'
 import {TabForm} from '#/main/core/tools/home/editor/components/tab'
-import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
-const UpdateTabModalComponent = props =>
+const ParametersModalComponent = props =>
   <Modal
-    {...omit(props, 'tab', 'saveEnabled', 'update', 'save', 'loadTab')}
+    {...omit(props, 'tab', 'saveEnabled', 'save', 'loadTab', 'currentTabData')}
     icon="fa fa-fw fa-pencil"
     title={trans('configure', {}, 'actions')}
     subtitle={props.currentTabData.title}
@@ -35,27 +34,29 @@ const UpdateTabModalComponent = props =>
     />
   </Modal>
 
-UpdateTabModalComponent.propTypes = {
+ParametersModalComponent.propTypes = {
   saveEnabled: T.bool.isRequired,
-  currentTabData: T.shape({}),
+  currentTabData: T.shape({
+    title: T.string.isRequired
+  }),
   tab: T.shape({}),
   save: T.func,
-  loadData: T.func,
+  loadTab: T.func,
   fadeModal: T.func.isRequired
 }
 
-const UpdateTabModal = connect(
+const ParametersModal = connect(
   (state) => ({
     tab: selectors.tab(state),
     saveEnabled: selectors.saveEnabled(state)
   }),
   (dispatch) => ({
-    loadtab(data) {
+    loadTab(data) {
       dispatch(formActions.resetForm(selectors.STORE_NAME, data))
     }
   })
-)(UpdateTabModalComponent)
+)(ParametersModalComponent)
 
 export {
-  UpdateTabModal
+  ParametersModal
 }
