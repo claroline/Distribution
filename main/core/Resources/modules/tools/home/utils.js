@@ -31,6 +31,7 @@ const tabFormSections = [
     fields: [{
       name: 'position',
       type: 'number',
+      // onChange: recalculer les autres positions ici
       label: trans('position')
     },
     {

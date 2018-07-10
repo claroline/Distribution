@@ -9,6 +9,7 @@ const PlayerNav = props =>
       <NavLink
         className="nav-tab"
         activeClassName="nav-tab-active"
+        exact={true}
         key={tabIndex}
         to={`/tab/${tab.id}`}
       >
