@@ -57,6 +57,7 @@ actions.copyChapter = (formName, lessonId, chapterSlug) => dispatch => {
 }
 
 actions.createChapter = formName => dispatch => {
+  dispatch(actions.chapterReset())
   dispatch(formActions.resetForm(formName, {}, true))
   dispatch(actions.chapterCreate())
 }

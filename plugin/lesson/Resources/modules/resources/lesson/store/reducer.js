@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
-import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
+import {FORM_SUBMIT_SUCCESS, FORM_RESET} from '#/main/core/data/form/actions'
 import {
   SUMMARY_PIN_TOGGLE,
   SUMMARY_OPEN_TOGGLE
@@ -47,19 +47,22 @@ const reducer = {
     [CHAPTER_RESET]: () => ({}),
     [CHAPTER_DELETED]: () => null
   }),
-  chapter_form: makeFormReducer(constants.CHAPTER_EDIT_FORM_NAME, formDefault, {
+  chapter_form: makeFormReducer(constants.CHAPTER_EDIT_FORM_NAME, {}, {
     data: makeReducer({}, {
-      [CHAPTER_LOAD]: (state, action) => action.chapter,
+      [CHAPTER_LOAD]: (state, action) => Object.assign(cloneDeep(state), action.chapter),
       [CHAPTER_RESET]: () => (formDefault),
       [POSITION_SELECTED]: (state, action) => {
         const data = cloneDeep(state)
-        data.position = action.isRoot ? 'subchapter' : null
-        data.order = {
-          sibling: null,
-          subchapter: null
-        }
+        data.position = action.isRoot ? 'subchapter' : data.position
         return data
-      }
+      },
+      [FORM_RESET + '/chapter_form']: () => ({
+        position: 'subchapter',
+        order: {
+          sibling: 'before',
+          subchapter: 'first'
+        }
+      })
     })
   }),
   exportPdfEnabled: makeReducer(false, {}),

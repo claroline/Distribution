@@ -77,7 +77,6 @@ const buildFlattenedChapterChoices = (items, chapterSlug) => {
   let flattenedChapters = {}
 
   items.forEach(item => {
-
     if (item['slug'] !== chapterSlug) {
       flattenedChapters[item['slug']] = item['title']
       if (item['children'] && Array.isArray(item['children']) && item['children'].length > 0) {
