@@ -10,7 +10,7 @@ import {
 } from '#/main/core/resource/store/actions'
 
 const reducer = combineReducers({
-  embedded: makeReducer(false, {}), // this can not be changed at runtime
+  embedded: makeReducer(false), // this can not be changed at runtime
 
   /**
    * Manages the ResourceNode of the resource.
@@ -54,9 +54,7 @@ const reducer = combineReducers({
     [USER_EVALUATION_UPDATE]: (state, action) => action.userEvaluation
   }),
 
-  lifecycle: makeReducer({}, {
-
-  })
+  lifecycle: makeReducer({})
 })
 
 

@@ -2,6 +2,8 @@
  * Data card.
  */
 
+// todo : create mixin for color variants
+
 .data-card {
     display: flex;
     position: relative; // constrain actions toolbar
@@ -53,6 +55,23 @@
 
         .data-card-content {
             color: @data-card-active-color;
+        }
+    }
+}
+
+.data-card-muted {
+    &:hover {
+        //z-index: 2;
+        color: @data-card-muted-color;
+        background-color: @data-card-muted-bg;
+        .box-shadow(@data-card-muted-box-shadow);
+
+        .data-card-header {
+            background: @data-card-muted-header-bg;
+        }
+
+        .data-card-content {
+            color: @data-card-muted-color;
         }
     }
 }
