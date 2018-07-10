@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Widget;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -73,6 +74,8 @@ class HomeTabSerializer
           'icon' => $homeTab->getIcon(),
           'type' => $homeTab->getType(),
           'position' => $homeTabConfig->getTabOrder(),
+          'user' => $homeTab->getUser() ? $this->serializer->serialize($homeTab->getUser(), [Options::SERIALIZE_MINIMAL]) : null,
+          'workspace' => $homeTab->getWorkspace() ? $this->serializer->serialize($homeTab->getWorkspace(), [Options::SERIALIZE_MINIMAL]) : null,
           'widgets' => array_map(function ($container) use ($options) {
               return $this->serializer->serialize($container, $options);
           }, $containers),
@@ -123,6 +126,8 @@ class HomeTabSerializer
 
         // We either do this or cascade persist ¯\_(ツ)_/¯
         $this->om->persist($homeTabConfig);
+
+        //remove olds widgets here ?
 
         foreach ($data['widgets'] as $widgetContainer) {
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
