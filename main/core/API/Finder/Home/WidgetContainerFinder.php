@@ -9,32 +9,37 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\API\Finder\Workspace;
+namespace Claroline\CoreBundle\API\Finder\Home;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
+use Claroline\AppBundle\API\Finder\FinderTrait;
+use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.api.finder.pending")
+ * @DI\Service("claroline.api.finder.widget_container")
  * @DI\Tag("claroline.finder")
  */
-class PendingRegistrationFinder extends AbstractFinder
+class WidgetContainerFinder extends AbstractFinder
 {
+    use FinderTrait;
+
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue';
+        return WidgetContainer::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-                case 'workspace':
-                    $qb->leftJoin('obj.workspace', 'ws');
-                    $qb->andWhere('ws.uuid = :wsUuid');
-                    $qb->setParameter('wsUuid', $filterValue);
-                    break;
+                case 'homeTab':
+                  $qb->leftJoin('obj.instances', 'i');
+                  $qb->leftJoin('i.widgetHomeTabConfigs', 'c');
+                  $qb->leftJoin('c.homeTab', 't');
+                  $qb->andWhere('t.uuid = :homeTab');
+                  $qb->setParameter('homeTab', $filterValue);
             }
         }
 
