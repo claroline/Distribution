@@ -23,7 +23,7 @@ class Chapter extends Component {
             {this.props.chapter.text ? this.props.chapter.text : ''}
           </HtmlText>
 
-          <Button
+          {this.props.chapter.slug && <Button
             type="link"
             className="btn btn-lg btn-link default"
             icon="fa fa-chevron-circle-left"
@@ -31,8 +31,8 @@ class Chapter extends Component {
             target={`/${this.props.chapter.previousSlug}`}
             disabled={!this.props.chapter.previousSlug}
             tooltip="right"
-          />
-          <Button
+          />}
+          {this.props.chapter.slug && <Button
             type="link"
             className="btn btn-lg btn-link default float-right"
             icon="fa fa-chevron-circle-right"
@@ -40,7 +40,7 @@ class Chapter extends Component {
             target={`/${this.props.chapter.nextSlug}`}
             disabled={!this.props.chapter.nextSlug}
             tooltip="left"
-          />
+          />}
         </div>
         }
       </div>
