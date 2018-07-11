@@ -5,14 +5,15 @@ import {trans} from '#/main/core/translation'
 // temp
 // todo : replace by a better code later if we keep iFrame compatibility
 const AVAILABLE_EMBEDDED_RESOURCES = [
-  'text',
-  'innova_path',
+  'claroline_announcement_aggregate',
   'claroline_dropzone',
-  'ujm_exercise',
-  'claroline_web_resource',
   'claroline_forum',
   'claroline_scorm',
-  'claroline_announcement_aggregate'
+  'claroline_web_resource',
+  'innova_path',
+  'icap_bibliography',
+  'text',
+  'ujm_exercise'
 ]
 
 const NUMBERING_NONE    = 'none'

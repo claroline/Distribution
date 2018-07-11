@@ -17,7 +17,7 @@ const Resource = props =>
       {
         type: 'link',
         icon: 'fa fa-fw fa-home',
-        label: trans('home', {}, 'platform'),
+        label: trans('home'),
         target: '/',
         exact: true
       }

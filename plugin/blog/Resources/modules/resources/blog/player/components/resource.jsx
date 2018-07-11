@@ -35,7 +35,7 @@ const Blog = props =>
         label: trans('show_overview'),
         target: '/',
         exact: true
-      },{
+      }, {
         type: 'link',
         icon: 'fa fa-fw fa-plus',
         displayed: props.canEdit || props.canPost,

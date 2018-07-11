@@ -1,5 +1,5 @@
-import {AnnouncementResource} from '#/plugin/announcement/resources/anouncement/components/resource'
-import {reducer} from '#/plugin/announcement/resources/anouncement/reducer'
+import {AnnouncementResource} from '#/plugin/announcement/resources/announcement/components/resource'
+import {reducer} from '#/plugin/announcement/resources/announcement/reducer'
 
 /**
  * Announcement resource application.
