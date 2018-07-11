@@ -13,7 +13,7 @@ const Tab = {
       url: T.string
     }),
     position: T.number,
-    type: T.oneOf(['workspace', 'desktop']),
+    type: T.oneOf(['workspace', 'admin_desktop', 'desktop']),
     widgets: T.arrayOf(T.shape(
       Widget.propTypes
     ))

@@ -51,7 +51,13 @@ const EditorComponent = props =>
                 title: trans('home_tab_delete_confirm_title'),
                 message: trans('home_tab_delete_confirm_message')
               }}
-              callback={() => props.deleteTab(props.currentTab.id, props.history.push)}
+              callback={() =>
+              //   props.update(
+              //   props.widgets
+              //     .slice(0) // copy array
+              //     .splice(index, 1) // remove element
+              // )
+                props.deleteTab(props.currentTabIndex, props.currentTab, props.history.push)}
             />
           </PageGroupActions>
         </PageActions>
@@ -96,6 +102,10 @@ const Editor = connect(
     },
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
+    },
+    deleteTab(currentTabIndex, tab, push) {
+      dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
+      // .then(() => push('/edit'))
     }
   })
 )(EditorComponent)
