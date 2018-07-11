@@ -67,11 +67,11 @@ ExplorerModalComponent.defaultProps = {
 }
 
 const ExplorerModal = connect(
-  (state, ownProps) => ({
+  (state) => ({
     current: explorerSelectors.current(selectors.explorer(state, selectors.STORE_NAME)),
-    selected: explorerSelectors.selected(selectors.explorer(state, selectors.STORE_NAME))
+    selected: explorerSelectors.selectedFull(selectors.explorer(state, selectors.STORE_NAME))
   }),
-  (dispatch, ownProps) => ({
+  (dispatch) => ({
     initialize(root) {
       dispatch(actions.initialize(selectors.STORE_NAME, root))
     }
