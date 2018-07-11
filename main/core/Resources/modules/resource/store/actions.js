@@ -1,17 +1,15 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 
-import {API_REQUEST} from '#/main/app/api'
-
 import {selectors} from '#/main/core/resource/store/selectors'
 
 // actions
-export const RESOURCE_UPDATE_NODE          = 'RESOURCE_UPDATE_NODE'
+export const RESOURCE_UPDATE_NODE   = 'RESOURCE_UPDATE_NODE'
 export const USER_EVALUATION_UPDATE = 'USER_EVALUATION_UPDATE'
 
 // action creators
 export const actions = {}
 
-actions.update = makeActionCreator(RESOURCE_UPDATE_NODE, 'resourceNode')
+actions.updateNode = makeActionCreator(RESOURCE_UPDATE_NODE, 'resourceNode')
 
 actions.triggerLifecycleAction = (action) => (dispatch, getState) => {
   const lifecycleActions = selectors.resourceLifecycle(getState())

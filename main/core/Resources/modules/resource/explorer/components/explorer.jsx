@@ -71,7 +71,7 @@ const ResourceExplorer = props => {
             label: trans('creation_date'),
             type: 'date',
             alias: 'creationDate',
-            displayed: true,
+            displayed: true
           }, {
             name: 'meta.updated',
             label: trans('modification_date'),

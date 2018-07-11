@@ -20,7 +20,7 @@ const reducer = combineReducers({
      * @param {object} state  - the current node data.
      * @param {object} action - the action. New node data is stored in `resourceNode`
      */
-    [RESOURCE_UPDATE_NODE]: (state, action) => merge({}, state, action.resourceNode),
+    [RESOURCE_UPDATE_NODE]: (state, action) => merge({}, state, action.resourceNode)
   }),
 
   /**
