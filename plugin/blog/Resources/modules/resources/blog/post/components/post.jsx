@@ -156,7 +156,7 @@ const ActionBar = props =>
         id={`action-edit-${props.post.id}`}
         type="link"
         icon="fa fa-pencil"
-        className="btn btn-link"
+        className="btn btn-link post-button"
         tooltip="top"
         label={trans('edit_post_short', {}, 'icap_blog')}
         title={trans('edit_post_short', {}, 'icap_blog')}
@@ -168,7 +168,7 @@ const ActionBar = props =>
         id={`action-publish-${props.post.id}`}
         type="callback"
         icon={props.post.status ? 'fa fa-eye' : 'fa fa-eye-slash'}
-        className="btn btn-link"
+        className="btn btn-link post-button"
         tooltip="top"
         label={props.post.status ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
         title={props.post.status ? trans('icap_blog_post_unpublish', {}, 'icap_blog') : trans('icap_blog_post_publish', {}, 'icap_blog')}
@@ -180,7 +180,7 @@ const ActionBar = props =>
         id={`action-pin-${props.post.id}`}
         type="callback"
         icon={props.post.pinned ? 'fa fa-thumb-tack' : 'fa fa-thumb-tack fa-rotate-90'}
-        className="btn btn-link"
+        className="btn btn-link post-button"
         tooltip="top"
         label={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
         title={props.post.pinned ? trans('icap_blog_post_unpin', {}, 'icap_blog') : trans('icap_blog_post_pin', {}, 'icap_blog')}
@@ -192,7 +192,7 @@ const ActionBar = props =>
         id={`action-delete-${props.post.id}`}
         type="callback"
         icon="fa fa-trash"
-        className="btn btn-link"
+        className="btn btn-link post-button"
         tooltip="top"
         label={trans('delete', {}, 'platform')}
         title={trans('delete', {}, 'platform')}

@@ -406,7 +406,7 @@ class TagListener
 
             foreach ($taggedObjects as $taggedObject) {
                 $tag = $taggedObject->getTag();
-                if (isset($data['frequency'])) {
+                if (isset($data['frequency']) && true === $data['frequency']) {
                     //array [tagname => frequency]
                     if (!array_key_exists($tag->getName(), $tags)) {
                         $tags[$tag->getName()] = 0;
