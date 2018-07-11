@@ -107,7 +107,7 @@ const PostsContainer = connect(
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canPost: hasPermission('post', resourceSelect.resourceNode(state))
   }),
-  dispatch => ({
+  () => ({
     goUp: () => {
       let node = document.getElementById('blog-top-page')
       if (node) {

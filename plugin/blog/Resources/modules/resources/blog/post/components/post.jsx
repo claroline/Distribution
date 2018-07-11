@@ -91,6 +91,7 @@ PostComponent.propTypes = {
   blogId: T.string.isRequired,
   size: T.string,
   canComment: T.bool,
+  canModerate: T.bool,
   canAnonymousComment:T.bool,
   displayViews: T.bool,
   orientation: T.string,

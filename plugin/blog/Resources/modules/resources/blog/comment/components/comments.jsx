@@ -112,6 +112,7 @@ const CommentsComponent = props =>
 CommentsComponent.propTypes = {
   switchCommentFormDisplay: T.func.isRequired,
   switchCommentsDisplay: T.func.isRequired,
+  goUp: T.func.isRequired,
   switchEditCommentFormDisplay: T.func.isRequired,
   submitComment: T.func.isRequired,
   blogId: T.string.isRequired,
