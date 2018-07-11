@@ -18,6 +18,7 @@ import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-t
 import {ToolActions} from '#/main/core/tools/home/components/tool'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {select} from '#/main/core/tools/home/selectors'
+import {actions} from '#/main/core/tools/home/editor/actions'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
 import {MODAL_TAB_PARAMETERS} from '#/main/core/tools/home/editor/modals/parameters'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
@@ -51,12 +52,7 @@ const EditorComponent = props =>
                 title: trans('home_tab_delete_confirm_title'),
                 message: trans('home_tab_delete_confirm_message')
               }}
-              callback={() => props.deleteTab((
-                props.tabs
-                  .splice(props.currentTabIndex, 1))
-
-              )}
-              // props.deleteTab(props.currentTabIndex, props.currentTab, props.history.push)}
+              callback={() => props.deleteTab(props.currentTabIndex, props.tabs, props.history.push)}
             />
           </PageGroupActions>
         </PageActions>
@@ -91,6 +87,7 @@ EditorComponent.propTypes = {
 const Editor = connect(
   state => ({
     context: select.context(state),
+    tabs: editorSelect.editorData(state),
     widgets: editorSelect.widgets(state),
     currentTabIndex: editorSelect.currentTabIndex(state),
     currentTab: editorSelect.currentTab(state)
@@ -102,9 +99,8 @@ const Editor = connect(
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
     },
-    deleteTab(currentTabIndex, tab) {
-      dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
-      // push('/edit'))
+    deleteTab(currentTabIndex, tabs, push) {
+      dispatch(actions.deleteTab(currentTabIndex, tabs, push))
     }
   })
 )(EditorComponent)

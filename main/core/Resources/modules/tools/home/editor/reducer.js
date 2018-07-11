@@ -4,7 +4,9 @@ import {makeReducer} from '#/main/core/scaffolding/reducer'
 
 
 const reducer = makeFormReducer('editor', {
-  data: makeReducer([] ,{})
+  data: {
+    tabs: makeReducer([] ,{})
+  }
 })
 
 export {

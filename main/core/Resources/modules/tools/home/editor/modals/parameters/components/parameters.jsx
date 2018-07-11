@@ -52,7 +52,7 @@ const ParametersModal = connect(
   }),
   (dispatch) => ({
     loadTab(data) {
-      dispatch(formActions.resetForm(selectors.STORE_NAME, data))
+      dispatch(formActions.resetForm(selectors.STORE_NAME, data, false))
     }
   })
 )(ParametersModalComponent)
