@@ -2,6 +2,19 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 
+// temp
+// todo : replace by a better code later if we keep iFrame compatibility
+const AVAILABLE_EMBEDDED_RESOURCES = [
+  'text',
+  'innova_path',
+  'claroline_dropzone',
+  'ujm_exercise',
+  'claroline_web_resource',
+  'claroline_forum',
+  'claroline_scorm',
+  'claroline_announcement_aggregate'
+]
+
 const NUMBERING_NONE    = 'none'
 const NUMBERING_NUMERIC = 'numeric'
 const NUMBERING_LITERAL = 'literal'
@@ -32,6 +45,7 @@ const STEP_STATUS = merge({}, {
 }, STEP_MANUAL_STATUS)
 
 export const constants = {
+  AVAILABLE_EMBEDDED_RESOURCES,
   NUMBERING_NONE,
   NUMBERING_NUMERIC,
   NUMBERING_LITERAL,
