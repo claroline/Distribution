@@ -23,7 +23,7 @@ const ExplorerModalComponent = props => {
     <Modal
       {...omit(props, 'current', 'primaryAction', 'actions', 'confirmText', 'selected', 'selectAction')}
       subtitle={props.current && props.current.name}
-      onEntering={() => props.initialize(props.root)}
+      onEntering={() => props.initialize(props.root, props.current)}
       bsSize="lg"
     >
       <ResourceExplorer
@@ -72,8 +72,8 @@ const ExplorerModal = connect(
     selected: explorerSelectors.selectedFull(explorerSelectors.explorer(state, selectors.STORE_NAME))
   }),
   (dispatch) => ({
-    initialize(root) {
-      dispatch(actions.initialize(selectors.STORE_NAME, root))
+    initialize(root, current) {
+      dispatch(actions.initialize(selectors.STORE_NAME, root, current))
     }
   })
 )(ExplorerModalComponent)
