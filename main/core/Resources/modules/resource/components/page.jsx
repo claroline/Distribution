@@ -23,6 +23,7 @@ class ResourcePage extends Component {
   }
 
   toggleFullscreen() {
+    console.log('coucou')
     this.setState({fullscreen: !this.state.fullscreen})
   }
 
@@ -51,7 +52,7 @@ class ResourcePage extends Component {
                 'fa-compress': this.state.fullscreen
               }),
               label: trans(this.state.fullscreen ? 'fullscreen_off' : 'fullscreen_on'),
-              callback: this.toggleFullscreen
+              callback: this.toggleFullscreen.bind(this)
             }
           ]
         )})}

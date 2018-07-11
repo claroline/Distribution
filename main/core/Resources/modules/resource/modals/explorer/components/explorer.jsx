@@ -17,6 +17,7 @@ const ExplorerModalComponent = props =>
     {...omit(props, 'current', 'primaryAction', 'actions', 'confirmText', 'selected', 'handleSelect')}
     subtitle={props.current && props.current.name}
     onEntering={() => props.initialize(props.root)}
+    bsSize="lg"
   >
     <ResourceExplorer
       name={selectors.STORE_NAME}

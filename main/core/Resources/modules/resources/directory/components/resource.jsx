@@ -12,16 +12,7 @@ import {Player} from '#/main/core/resources/text/player/components/player'
 import {Editor} from '#/main/core/resources/text/editor/components/editor'
 
 const Resource = props =>
-  <ResourcePageContainer
-    toolbar="create | edit edit-rights publish unpublish | fullscreen more"
-    editor={{
-      path: '/edit',
-      save: {
-        disabled: !props.saveEnabled,
-        action: () => props.saveForm(props.text.id)
-      }
-    }}
-  >
+  <ResourcePageContainer>
     <RoutedPageContent
       headerSpacer={true}
       routes={[
