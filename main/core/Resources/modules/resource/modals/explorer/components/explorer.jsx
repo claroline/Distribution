@@ -10,32 +10,39 @@ import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceExplorer} from '#/main/core/resource/explorer/containers/explorer'
 
-import {actions, selectors} from '#/main/core/resource/explorer/store'
+import {
+  actions,
+  selectors as explorerSelectors
+} from '#/main/core/resource/explorer/store'
+import {selectors} from '#/main/core/resource/explorer/store'
 
-const ExplorerModalComponent = props =>
-  <Modal
-    {...omit(props, 'current', 'primaryAction', 'actions', 'confirmText', 'selected', 'handleSelect')}
-    subtitle={props.current && props.current.name}
-    onEntering={() => props.initialize(props.root)}
-    bsSize="lg"
-  >
-    <ResourceExplorer
-      name={selectors.STORE_NAME}
-      primaryAction={props.primaryAction}
-      actions={props.actions}
-    />
+const ExplorerModalComponent = props => {
+  const selectAction = props.selectAction(props.selected)
 
-    <Button
-      className="modal-btn btn"
-      type="callback"
-      primary={true}
-      label={props.confirmText}
-      callback={() => {
-        props.fadeModal()
-        props.handleSelect(props.selected)
-      }}
-    />
-  </Modal>
+  return (
+    <Modal
+      {...omit(props, 'current', 'primaryAction', 'actions', 'confirmText', 'selected', 'selectAction')}
+      subtitle={props.current && props.current.name}
+      onEntering={() => props.initialize(props.root, props.current)}
+      bsSize="lg"
+    >
+      <ResourceExplorer
+        name={selectors.STORE_NAME}
+        primaryAction={props.primaryAction}
+        actions={props.actions}
+      />
+
+      <Button
+        label={props.confirmText}
+        {...selectAction}
+        className="modal-btn btn"
+        primary={true}
+        disabled={0 === props.selected.length}
+        onClick={props.fadeModal}
+      />
+    </Modal>
+  )
+}
 
 ExplorerModalComponent.propTypes = {
   root: T.shape(
@@ -45,10 +52,10 @@ ExplorerModalComponent.propTypes = {
     ResourceNodeTypes.propTypes
   ),
   primaryAction: T.func,
-  actions: T.oneOfType([T.array, T.object]),
-  confirmText: T.string,
+  actions: T.func,
+  selectAction: T.func.isRequired, // action generator for the select button
+  confirmText: T.string, // todo : deprecated. kept for retro compatibility. Use the selectAction label instead
   selected: T.array.isRequired,
-  handleSelect: T.func.isRequired,
   initialize: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
@@ -60,13 +67,13 @@ ExplorerModalComponent.defaultProps = {
 }
 
 const ExplorerModal = connect(
-  (state, ownProps) => ({
-    current: selectors.current(selectors.explorer(state, ownProps.name)),
-    selected: selectors.selected(selectors.explorer(state, ownProps.name))
+  (state) => ({
+    current: explorerSelectors.current(explorerSelectors.explorer(state, selectors.STORE_NAME)),
+    selected: explorerSelectors.selectedFull(explorerSelectors.explorer(state, selectors.STORE_NAME))
   }),
-  (dispatch, ownProps) => ({
-    initialize(root) {
-      dispatch(actions.initialize(ownProps.name, root))
+  (dispatch) => ({
+    initialize(root, current) {
+      dispatch(actions.initialize(selectors.STORE_NAME, root, current))
     }
   })
 )(ExplorerModalComponent)
