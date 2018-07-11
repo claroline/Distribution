@@ -18,8 +18,9 @@ const restrictStorage   = (workspace) => workspace.restrictions.enableMaxStorage
 // TODO : finish implementation (open resource / open tool)
 // TODO : add tools
 
-const WorkspaceFormComponent = (props) =>
-  <FormContainer
+const WorkspaceFormComponent = (props) => {
+  console.log(props)
+  return (<FormContainer
     level={props.level}
     name={props.name}
     meta={true}
@@ -287,7 +288,7 @@ const WorkspaceFormComponent = (props) =>
     ]}
   >
     {props.children}
-  </FormContainer>
+  </FormContainer>)}
 
 WorkspaceFormComponent.propTypes = {
   level: T.number,

@@ -7,6 +7,7 @@ import {matchPath, Routes, withRouter} from '#/main/app/router'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
+import {WorkspaceCreation} from '#/main/core/workspace/creation/containers/creation.jsx'
 
 import {Workspace}  from '#/main/core/administration/workspace/workspace/components/workspace.jsx'
 import {Workspaces} from '#/main/core/administration/workspace/workspace/components/workspaces.jsx'
@@ -25,7 +26,7 @@ const WorkspaceTabActionsComponent = props =>
         type: 'link',
         icon: 'fa fa-plus',
         label: t('add_workspace'),
-        target: '/workspaces/form'
+        target: '/workspaces/creation'
       }}
       cancel={{
         type: 'link',
@@ -51,9 +52,16 @@ const WorkspaceTabComponent = props =>
         exact: true,
         component: Workspaces
       }, {
-        path: '/workspaces/form/:id?',
+        path: '/workspaces/creation',
+        component: WorkspaceCreation
+        //exact: true,
+      }, {
+        path: '/workspaces/form/:id',
+        exact: true,
         component: Workspace,
-        onEnter: (params) => props.openForm(params.id || null)
+        onEnter: (params) => {
+          props.openForm(params.id || null)
+        }
       }
     ]}
   />

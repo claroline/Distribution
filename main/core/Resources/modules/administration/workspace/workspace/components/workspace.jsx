@@ -104,7 +104,7 @@ WorkspaceComponent.propTypes = {
 
 WorkspaceComponent.defaultProps = {
   managerRole: {},
-  workspace: WorkspaceTypes.defaultProps,
+  workspace: WorkspaceTypes.defaultProps
 }
 
 const Workspace = connect(
