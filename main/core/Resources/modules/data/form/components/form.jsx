@@ -8,7 +8,6 @@ import merge from 'lodash/merge'
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Heading} from '#/main/core/layout/components/heading'
 import {ContentMeta} from '#/main/app/content/meta/components/meta'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
@@ -243,16 +242,20 @@ Form.propTypes = {
   /**
    * The save action of the form (if provided, form toolbar will be displayed).
    */
-  save: T.shape(
-    ActionTypes.propTypes
-  ),
+  save: T.shape({
+    type: T.string.isRequired,
+    disabled: T.bool
+    // todo find a way to document custom action type props
+  }),
 
   /**
    * The cancel action of the form (if provided, form toolbar will be displayed).
    */
-  cancel: T.shape(
-    ActionTypes.propTypes
-  )
+  cancel: T.shape({
+    type: T.string.isRequired,
+    disabled: T.bool
+    // todo find a way to document custom action type props
+  })
 }
 
 Form.defaultProps = {

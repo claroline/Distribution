@@ -23,7 +23,6 @@ class ResourcePage extends Component {
   }
 
   toggleFullscreen() {
-    console.log('coucou')
     this.setState({fullscreen: !this.state.fullscreen})
   }
 
@@ -85,30 +84,9 @@ ResourcePage.propTypes = {
     ActionTypes.propTypes
   )),
 
-  /**
-   * If provided, this permits to manage the resource editor in the header (aka. open, save actions).
-   */
-  editor: T.shape({
-    icon: T.string,
-    label: T.string,
-    opened: T.bool,
-    open: T.oneOfType([T.func, T.string]),
-    path: T.string,
-    save: T.shape({
-      disabled: T.bool.isRequired,
-      action: T.oneOfType([T.string, T.func]).isRequired
-    }).isRequired
-  }),
-
-  togglePublication: T.func.isRequired,
-  updateNode: T.func.isRequired,
-
   // todo : reuse Page propTypes
   embedded: T.bool,
-  children: T.node.isRequired,
-
-  // resource notification
-  toggleNotifications: T.func
+  children: T.node.isRequired
 }
 
 export {

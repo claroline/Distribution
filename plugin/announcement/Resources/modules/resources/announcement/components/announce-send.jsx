@@ -11,6 +11,8 @@ import {RadiosGroup}  from '#/main/core/layout/form/components/group/radios-grou
 import {CheckboxesGroup}  from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
+import {FormContainer} from '#/main/core/data/form/containers/form'
+
 import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
@@ -22,6 +24,12 @@ import {actions} from './../actions'
 
 const SendForm = props =>
   <form>
+    <FormContainer
+      name="announcementForm"
+      sections={[
+
+      ]}
+    />
     <FormSections level={2} defaultOpened="announcement-form">
       <FormSection
         icon="fa fa-fw fa-paper-plane-o"
@@ -78,24 +86,19 @@ SendForm.defaultProps = {
   announcement: AnnouncementTypes.defaultProps
 }
 
-function mapStateToProps(state) {
-  return {
+const AnnouncementSend = connect(
+  (state) => ({
     announcement: select.formData(state),
     aggregateId: select.aggregateId(state),
     errors: select.formErrors(state),
     validating: select.formValidating(state),
     workspaceRoles: select.workspaceRoles(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     updateProperty(prop, value) {
       dispatch(actions.updateForm(prop, value))
     },
     validateSend(aggregateId, announce) {
-      //const qs = '?' + announce.roles.map(role => 'ids[]=' + role).join('&')
-
       dispatch(listActions.addFilter('selected.list', 'roles', announce.roles))
       dispatch(
         modalActions.showModal(MODAL_DATA_LIST, {
@@ -116,11 +119,9 @@ function mapDispatchToProps(dispatch) {
         })
       )
     }
-  }
-}
-
-const ConnectedSendForm = connect(mapStateToProps, mapDispatchToProps)(SendForm)
+  })
+)(SendForm)
 
 export {
-  ConnectedSendForm as SendForm
+  AnnouncementSend
 }

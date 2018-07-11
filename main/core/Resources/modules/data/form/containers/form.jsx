@@ -4,7 +4,8 @@ import invariant from 'invariant'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
+import {url} from '#/main/app/api'
+
 import {Form} from '#/main/core/data/form/components/form'
 import {actions} from '#/main/core/data/form/actions'
 import {select} from '#/main/core/data/form/selectors'

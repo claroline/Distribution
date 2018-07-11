@@ -3,17 +3,16 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Button} from '#/main/app/action/components/button'
 
 const FormActions = props =>
   <div className={classes('form-toolbar', props.className)}>
     <Button
+      icon="fa fa-fw fa-floppy-o"
+      label={trans('save', {}, 'actions')}
       {...props.save}
       className="btn"
       tooltip="top"
-      icon="fa fa-fw fa-floppy-o"
-      label={trans('save', {}, 'actions')}
       primary={true}
     />
 
@@ -30,12 +29,14 @@ const FormActions = props =>
 
 FormActions.propTypes = {
   className: T.string,
-  save: T.shape(
-    ActionTypes.propTypes
-  ).isRequired,
-  cancel: T.shape(
-    ActionTypes.propTypes
-  )
+  save: T.shape({
+    type: T.string.isRequired
+    // todo find a way to document custom action type props
+  }).isRequired,
+  cancel: T.shape({
+    type: T.string.isRequired
+    // todo find a way to document custom action type props
+  })
 }
 
 export {
