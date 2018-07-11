@@ -1,104 +1,102 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import get from 'lodash/get'
 
-// todo use dynamic form
 import {trans} from '#/main/core/translation'
-import {Button} from '#/main/app/action/components/button'
-import {ConditionalSet} from '#/main/core/layout/form/components/fieldset/conditional-set.jsx'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {RadiosGroup}  from '#/main/core/layout/form/components/group/radios-group.jsx'
-import {CheckboxesGroup}  from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
-import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
-
+import {withRouter} from '#/main/app/router'
 import {FormContainer} from '#/main/core/data/form/containers/form'
+import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
 
+import {select as formSelectors} from '#/main/core/data/form/selectors'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
-import {Announcement as AnnouncementTypes} from './../prop-types'
-import {select} from './../selectors'
-import {actions} from './../actions'
+import {Announcement as AnnouncementTypes} from '#/plugin/announcement/resources/announcement/prop-types'
+import {select} from '#/plugin/announcement/resources/announcement/selectors'
+import {actions} from '#/plugin/announcement/resources/announcement/actions'
 
-const SendForm = props =>
-  <form>
-    <FormContainer
-      name="announcementForm"
-      sections={[
-
-      ]}
-    />
-    <FormSections level={2} defaultOpened="announcement-form">
-      <FormSection
-        icon="fa fa-fw fa-paper-plane-o"
-        title={trans('announcement_sending', {}, 'announcement')}
-        id="announcement-form"
-      >
-        <RadiosGroup
-          id="announcement-notify-users"
-          label={trans('announcement_notify_users', {}, 'announcement')}
-          choices={{
-            0: trans('do_not_send', {}, 'announcement'),
-            1: trans('send_directly', {}, 'announcement')
-          }}
-          value={props.announcement.meta.notifyUsers.toString()}
-          onChange={value => {
-            props.updateProperty('meta.notifyUsers', parseInt(value))
-          }}
-        />
-
-        <ConditionalSet condition={0 !== props.announcement.meta.notifyUsers}>
-          <CheckboxesGroup
-            id="announcement-sending-roles"
-            label={trans('roles_to_send_to', {}, 'announcement')}
-            choices={props.workspaceRoles.reduce((acc, current) => {
-              acc[current.id] = trans(current.translationKey)
-
-              return acc
-            }, {})}
-            inline={false}
-            value={props.announcement.roles}
-            onChange={values => props.updateProperty('roles', values)}
-            warnOnly={!props.validating}
-            error={get(props.errors, 'roles')}
-          />
-        </ConditionalSet>
-      </FormSection>
-    </FormSections>
-
-    <Button
-      primary={true}
-      label={trans('validate')}
-      type="callback"
-      className="btn"
-      callback={() => {
-        if (props.announcement.meta.notifyUsers !== 0) {
-          props.validateSend(props.aggregateId, props.announcement)
-        }
+const AnnounceSendComponent = props =>
+  <FormContainer
+    name="announcementForm"
+    level={2}
+    buttons={true}
+    save={{
+      type: 'callback',
+      icon: 'fa fa-fw fa-paper-plane-o',
+      label: trans('send', {}, 'actions'),
+      disabled: props.announcement.meta.notifyUsers !== 0,
+      callback: () => {
+        props.send(props.aggregateId, props.announcement)
         props.history.push('/')
-      }}
-    />
-  </form>
+      }
+    }}
+    cancel={{
+      type: 'link',
+      target: '/',
+      exact: true
+    }}
+    sections={[
+      {
+        title: trans('general'),
+        primary: true,
+        fields: [
+          {
+            name: 'meta.notifyUsers',
+            type: 'choice',
+            label: trans('announcement_notify_users', {}, 'announcement'),
+            options: {
+              choices: {
+                0: trans('do_not_send', {}, 'announcement'),
+                1: trans('send_directly', {}, 'announcement')
+              }
+            },
+            linked: [
+              {
+                name: 'roles',
+                label: trans('roles_to_send_to', {}, 'announcement'),
+                type: 'choice',
+                displayed: (announcement) => 0 !== announcement.meta.notifyUsers,
+                options: {
+                  choices: props.workspaceRoles.reduce((acc, current) => {
+                    acc[current.id] = trans(current.translationKey)
 
-SendForm.defaultProps = {
+                    return acc
+                  }, {})
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]}
+  />
+
+AnnounceSendComponent.propTypes = {
+  announcement: T.shape(
+    AnnouncementTypes.propTypes
+  ).isRequired,
+  history: T.shape({
+    push: T.func.isRequired
+  }).isRequired,
+  send: T.func.isRequired
+}
+
+AnnounceSendComponent.defaultProps = {
   announcement: AnnouncementTypes.defaultProps
 }
 
-const AnnouncementSend = connect(
+const RoutedAnnounceSend = withRouter(AnnounceSendComponent)
+
+const AnnounceSend = connect(
   (state) => ({
-    announcement: select.formData(state),
+    announcement: formSelectors.data(formSelectors.form(state, 'announcementForm')),
     aggregateId: select.aggregateId(state),
-    errors: select.formErrors(state),
-    validating: select.formValidating(state),
     workspaceRoles: select.workspaceRoles(state)
   }),
   (dispatch) => ({
-    updateProperty(prop, value) {
-      dispatch(actions.updateForm(prop, value))
-    },
-    validateSend(aggregateId, announce) {
+    send(aggregateId, announce) {
       dispatch(listActions.addFilter('selected.list', 'roles', announce.roles))
       dispatch(
         modalActions.showModal(MODAL_DATA_LIST, {
@@ -120,8 +118,8 @@ const AnnouncementSend = connect(
       )
     }
   })
-)(SendForm)
+)(RoutedAnnounceSend)
 
 export {
-  AnnouncementSend
+  AnnounceSend
 }
