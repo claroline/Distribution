@@ -19,6 +19,7 @@ class Chapter extends Component {
         }
         {this.props.chapter &&
         <div>
+          <h1>{this.props.chapter.title}</h1>
           <HtmlText>
             {this.props.chapter.text ? this.props.chapter.text : ''}
           </HtmlText>
