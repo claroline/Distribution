@@ -7,6 +7,7 @@ import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
 import {PostCard} from '#/plugin/blog/resources/blog/post/components/post.jsx'
 import {hasPermission} from '#/main/core/resource/permissions'
+import isEmpty from 'lodash/isEmpty'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 const PostsList = props =>
@@ -78,9 +79,21 @@ const PostsList = props =>
         current: listConst.DISPLAY_LIST
       }}
     />
+    {!isEmpty(props.posts) &&
+      <Button
+        icon={'fa fa-4x fa-arrow-circle-up'}
+        label={trans('go-up', {}, 'icap_blog')}
+        type="callback"
+        tooltip="bottom"
+        callback={() => props.goUp()}
+        className="btn-link button-go-to-top pull-right"
+        target={'/new'}
+      />
+    }
   </div>
 
 PostsList.propTypes ={
+  goUp: T.func.isRequired,
   blogId: T.string.isRequired,
   posts: T.array,
   canEdit: T.bool,
@@ -93,6 +106,14 @@ const PostsContainer = connect(
     blogId: state.blog.data.id,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canPost: hasPermission('post', resourceSelect.resourceNode(state))
+  }),
+  dispatch => ({
+    goUp: () => {
+      let node = document.getElementById('blog-top-page')
+      if (node) {
+        node.scrollIntoView({block: 'end', behavior: 'smooth', inline: 'center'})
+      }
+    }
   })
 )(PostsList)
 

@@ -71,6 +71,7 @@ const BlogOptionsComponent = props =>
                     name: 'commentModerationMode',
                     type: 'choice',
                     required: true,
+                    help: trans('icap_blog_post_form_moderation_help', {}, 'icap_blog'),
                     label: trans('comment_moderation_mode', {}, 'icap_blog'),
                     displayed: props.options.authorizeComment,
                     options: {
