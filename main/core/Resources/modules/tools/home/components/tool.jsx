@@ -60,7 +60,7 @@ const Tool = props =>
           component: Editor,
           onEnter: (params) => {
             props.setCurrentTab(params.id)
-            props.resetForm(props.sortedTabs)
+            props.resetForm({tabs: props.sortedTabs})
           },
           disabled: !props.editable
         }

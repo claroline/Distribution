@@ -3,10 +3,11 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 // action creators
 export const actions = {}
 
-actions.deleteTab = (currentTabIndex, tabs, push) => (dispatch) => {
+actions.deleteTab = (currentTabIndex, editorTabs, push) => (dispatch) => {
 
-  const newTabs = tabs.slice(0)
+  const newTabs = editorTabs.tabs.slice(0)
   newTabs.splice(currentTabIndex, 1)
-  dispatch(formActions.updateProp('editor', tabs, newTabs))
+  console.log(editorTabs)
+  dispatch(formActions.updateProp('editor', editorTabs, newTabs))
   push('/edit')
 }

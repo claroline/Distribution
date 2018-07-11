@@ -8,9 +8,6 @@ bootstrap(
   HomeTool,
   reducer,
   (initialData) => Object.assign({}, initialData, {
-    editable: !!initialData.editable,
-    editor: {
-      data: initialData.tabs
-    }
+    editable: !!initialData.editable
   })
 )

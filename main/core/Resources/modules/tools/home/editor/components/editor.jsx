@@ -44,16 +44,18 @@ const EditorComponent = props =>
                 save: (Formdata) => props.updateTab(props.currentTabIndex, Formdata)
               }]}
             />
-            <PageAction
-              type="callback"
-              label={trans('delete')}
-              icon="fa fa-fw fa-trash-o"
-              confirm={{
-                title: trans('home_tab_delete_confirm_title'),
-                message: trans('home_tab_delete_confirm_message')
-              }}
-              callback={() => props.deleteTab(props.currentTabIndex, props.tabs, props.history.push)}
-            />
+            {1 < props.editorData.length &&
+              <PageAction
+                type="callback"
+                label={trans('delete')}
+                icon="fa fa-fw fa-trash-o"
+                confirm={{
+                  title: trans('home_tab_delete_confirm_title'),
+                  message: trans('home_tab_delete_confirm_message')
+                }}
+                callback={() => props.deleteTab(props.currentTabIndex, props.editorTabs, props.history.push)}
+              />
+            }
           </PageGroupActions>
         </PageActions>
         <ToolActions />
@@ -74,7 +76,10 @@ EditorComponent.propTypes = {
     WidgetContainerTypes.propTypes
   )).isRequired,
   update: T.func.isRequired,
-  tabs: T.arrayOf(T.shape(
+  editorData: T.arrayOf(T.shape(
+    TabTypes.propTypes
+  )),
+  editorTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
@@ -87,7 +92,8 @@ EditorComponent.propTypes = {
 const Editor = connect(
   state => ({
     context: select.context(state),
-    tabs: editorSelect.editorData(state),
+    editorTabs: editorSelect.editorTabs(state),
+    editorData: editorSelect.editorData(state),
     widgets: editorSelect.widgets(state),
     currentTabIndex: editorSelect.currentTabIndex(state),
     currentTab: editorSelect.currentTab(state)
@@ -99,8 +105,8 @@ const Editor = connect(
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
     },
-    deleteTab(currentTabIndex, tabs, push) {
-      dispatch(actions.deleteTab(currentTabIndex, tabs, push))
+    deleteTab(currentTabIndex, editorTabs, push) {
+      dispatch(actions.deleteTab(currentTabIndex, editorTabs, push))
     }
   })
 )(EditorComponent)

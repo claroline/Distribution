@@ -3,7 +3,8 @@ import {createSelector} from 'reselect'
 import {select as formSelectors} from '#/main/core/data/form/selectors'
 import {select as homeSelectors} from '#/main/core/tools/home/selectors'
 
-const editorData = (state) => formSelectors.data(formSelectors.form(state, 'editor'))
+const editorTabs = (state) => formSelectors.data(formSelectors.form(state, 'editor'))
+const editorData = (state) => formSelectors.data(formSelectors.form(state, 'editor')).tabs
 
 const currentTabIndex = createSelector(
   [editorData, homeSelectors.currentTabId],
@@ -27,6 +28,7 @@ const sortedTabs = createSelector(
 
 
 export const select = {
+  editorTabs,
   currentTab,
   editorData,
   currentTabIndex,
