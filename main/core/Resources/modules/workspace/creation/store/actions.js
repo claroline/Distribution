@@ -18,3 +18,48 @@ actions.fetchModel = (model) => ({
     }
   }
 })
+
+actions.copyBase = (workspace) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_workspace_copy_base', {id: workspace.id}],
+    request: {
+      method: 'POST'
+    }
+  }
+})
+
+actions.copyRoles = (newWorkspace, oldWorkspace) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_workspace_copy_roles', {new: newWorkspace.id, old: oldWorkspace.id}],
+    request: {
+      method: 'GET'
+    }
+  }
+})
+
+actions.copyBaseTools = (newWorkspace, oldWorkspace) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_workspace_copy_tools', {new: newWorkspace.id, old: oldWorkspace.id}],
+    request: {
+      method: 'GET'
+    }
+  }
+})
+
+actions.copyHome = (newWorkspace, oldWorkspace) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_workspace_copy_home', {new: newWorkspace.id, old: oldWorkspace.id}],
+    request: {
+      method: 'GET'
+    }
+  }
+})
+
+actions.copyResources = (newWorkspace, oldWorkspace) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_workspace_copy_resources', {new: newWorkspace.id, old: oldWorkspace.id}],
+    request: {
+      method: 'GET'
+    }
+  }
+})

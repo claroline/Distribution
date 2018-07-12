@@ -24,32 +24,37 @@ const CreationForm = props => {
       title: 'form',
       component: WorkspaceForm,
       onEnter: props.createForm(),
-      onLeave: props.loadModel(props.workspace.model)
+      onLeave: props.build(props.workspace.model)
     },
     {
       path: '/workspaces/creation/roles',
       title: 'roles',
-      component: WorkspaceRoles
+      component: WorkspaceRoles,
+      onLeave: props.copyRoles(props.workspace, props.model)
     },
     {
       path: '/workspaces/creation/tools',
       title: 'tools',
-      component: WorkspaceTools
+      component: WorkspaceTools,
+      onLeave: props.copyRoles(props.workspace, props.model)
     },
     {
       path: '/workspaces/creation/root',
       title: 'root',
-      component: WorkspaceRoot
+      component: WorkspaceRoot,
+      onLeave: alert('nope')
     },
     {
       path: '/workspaces/creation/resources',
       title: 'resources',
-      component: WorkspaceResources
+      component: WorkspaceResources,
+      onLeave: props.copyResources(props.workspace, props.model)
     },
     {
       path: '/workspaces/creation/home',
       title: 'home',
-      component: WorkspaceHome
+      component: WorkspaceHome,
+      onLeave: props.copyHome(props.workspace, props.model)
     }
   ]
 
@@ -81,17 +86,29 @@ const ConnectedCreationForm = connect(
     const workspace = formSelect.data(formSelect.form(state, 'workspaces.creation.workspace'))
 
     return {
-      workspace: workspace
+      workspace: workspace,//?
+      model: state.model
     }
   },
   dispatch =>({
     createForm() {
       dispatch(formActions.resetForm('workspaces.creation.workspace', WorkspaceTypes.defaultProps, true))
     },
-    loadModel(model) {
-      if (model) {
-        dispatch(actions.fetchModel(model))
-      }
+    build(model) {
+      dispatch(actions.copyBase(model))
+      dispatch(actions.fetchModel(model))
+    },
+    copyRoles(workspace, model) {
+      dispatch(actions.copyRoles(workspace, model))
+    },
+    copyBaseTools(workspace, model) {
+      dispatch(actions.copyBaseTools(workspace, model))
+    },
+    copyHome(workspace, model) {
+      dispatch(actions.copyHome(workspace, model))
+    },
+    copyResources(workspace, model) {
+      dispatch(actions.copyResources(workspace, model))
     }
   })
 )(CreationForm)
