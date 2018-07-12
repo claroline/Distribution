@@ -24,11 +24,6 @@ class ChangeTablePropertyCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
-    private $params = [
-        'old_string' => 'The string to match',
-        'new_string' => 'The string to replace',
-    ];
-
     protected function configure()
     {
         $this->setName('claroline:entity:replace')
