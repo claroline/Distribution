@@ -205,7 +205,7 @@ class Form extends Component {
         {(this.props.save || this.props.cancel) &&
           <FormActions
             save={this.props.save ? merge({}, this.props.save, {
-              disabled: this.props.save.disabled || !(this.props.pendingChanges && (!this.props.validating || isEmpty(this.props.errors)))
+              disabled: this.props.disabled || this.props.save.disabled || !(this.props.pendingChanges && (!this.props.validating || isEmpty(this.props.errors)))
             }) : undefined}
             cancel={this.props.cancel}
           />
