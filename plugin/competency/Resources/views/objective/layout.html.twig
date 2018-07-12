@@ -26,36 +26,41 @@
 {% endblock %}
 
 {% block section_content %}
-    <div class="panel-heading">
-        <div class="panel-title">{{ 'learning-objectives'|trans({}, 'tools') }}</div>
-    </div>
     <div class="panel-body">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation"{% if activeTab == 'objectives' %} class="active"{% endif %}>
-                <a href="{{ activeTab == 'objectives' ? '#' : path('hevinci_objectives') }}">
-                    {{ 'objectives'|trans({}, 'competency') }}
-                </a>
-            </li>
-            <li role="presentation"{% if activeTab == 'users' %} class="active"{% endif %}>
-                <a href="{{ activeTab == 'users' ? '#' : path('hevinci_objectives_users') }}">
-                    {{ 'users'|trans({}, 'platform') }}
-                </a>
-            </li>
-            <li role="presentation"{% if activeTab == 'groups' %} class="active"{% endif %}>
-                <a href="{{ activeTab == 'groups' ? '#' : path('hevinci_objectives_groups') }}">
-                    {{ 'groups'|trans({}, 'platform') }}
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active">
-                {% block tabContent %}{% endblock %}
-            </div>
+        <div class="alert alert-warning">
+            {{ 'tool_work_in_progress'|trans({}, 'platform') }}
         </div>
     </div>
-    <div class="panel-footer">
-        {% block tabFooter %}{% endblock %}
-    </div>
+    {#<div class="panel-heading">#}
+        {#<div class="panel-title">{{ 'learning-objectives'|trans({}, 'tools') }}</div>#}
+    {#</div>#}
+    {#<div class="panel-body">#}
+        {#<ul class="nav nav-tabs" role="tablist">#}
+            {#<li role="presentation"{% if activeTab == 'objectives' %} class="active"{% endif %}>#}
+                {#<a href="{{ activeTab == 'objectives' ? '#' : path('hevinci_objectives') }}">#}
+                    {#{{ 'objectives'|trans({}, 'competency') }}#}
+                {#</a>#}
+            {#</li>#}
+            {#<li role="presentation"{% if activeTab == 'users' %} class="active"{% endif %}>#}
+                {#<a href="{{ activeTab == 'users' ? '#' : path('hevinci_objectives_users') }}">#}
+                    {#{{ 'users'|trans({}, 'platform') }}#}
+                {#</a>#}
+            {#</li>#}
+            {#<li role="presentation"{% if activeTab == 'groups' %} class="active"{% endif %}>#}
+                {#<a href="{{ activeTab == 'groups' ? '#' : path('hevinci_objectives_groups') }}">#}
+                    {#{{ 'groups'|trans({}, 'platform') }}#}
+                {#</a>#}
+            {#</li>#}
+        {#</ul>#}
+        {#<div class="tab-content">#}
+            {#<div role="tabpanel" class="tab-pane active">#}
+                {#{% block tabContent %}{% endblock %}#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+    {#<div class="panel-footer">#}
+        {#{% block tabFooter %}{% endblock %}#}
+    {#</div>#}
 {% endblock %}
 
 {% block javascripts %}
