@@ -19,7 +19,16 @@ function getType(resourceNode) {
     .find(type => type.name === resourceNode.meta.type)
 }
 
-function loadActions(resourceNodes, actions, dispatch) {
+/**
+ * Loads the available actions apps from configuration.
+ *
+ * @param {Array} resourceNodes
+ * @param {Array} actions
+ *
+ * @return {Promise}
+ */
+function loadActions(resourceNodes, actions) {
+  // get all actions declared
   const asyncActions = getApps('actions')
 
   // only get implemented actions
@@ -32,7 +41,7 @@ function loadActions(resourceNodes, actions, dispatch) {
     // generates action from loaded modules
     const realActions = {}
     loadedActions.map(actionModule => {
-      const generated = actionModule.action(resourceNodes, dispatch)
+      const generated = actionModule.action(resourceNodes)
       realActions[generated.name] = generated
     })
 
@@ -46,15 +55,10 @@ function loadActions(resourceNodes, actions, dispatch) {
 /**
  * Gets the list of available actions for a resource.
  *
- * NB. Action generators receive the current store dispatcher.
- * It's not really aesthetic to pass it like it but I have no choice
- * because actions are plain objects, not components.
- *
- * @param {Array}    resourceNodes - the current resource node
- * @param {function} dispatch      - the store dispatcher
- * @param {boolean}  withDefault   - include the default action (most of the time, it's not useful to get it)
+ * @param {Array}   resourceNodes - the current resource node
+ * @param {boolean} withDefault   - include the default action (most of the time, it's not useful to get it)
  */
-function getActions(resourceNodes, dispatch, withDefault = false) {
+function getActions(resourceNodes, withDefault = false) {
   const resourceTypes = uniq(resourceNodes.map(resourceNode => resourceNode.meta.type))
 
   const collectionActions = resourceTypes
@@ -70,23 +74,47 @@ function getActions(resourceNodes, dispatch, withDefault = false) {
       return uniqBy(accumulator.concat(typeActions), 'name')
     }, [])
 
-  return loadActions(resourceNodes, collectionActions, dispatch)
+  return loadActions(resourceNodes, collectionActions)
 }
 
-function getDefaultAction(resourceNode, dispatch) {
+function getDefaultAction(resourceNode) {
   const defaultAction = getType(resourceNode).actions
     .find(action => action.default)
 
   if (hasPermission(defaultAction.permission, resourceNode)) {
-    return loadActions([resourceNode], [defaultAction], dispatch)
+    return loadActions([resourceNode], [defaultAction])
       .then(loadActions => loadActions[0] || null)
   }
 
   return null
 }
 
+/**
+ * Generates the toolbar for resources.
+ *
+ * @param {string|null} primaryAction - the name of a custom primary resource which will be appended to the toolbar.
+ * @param {boolean}     fullscreen    - if true, the fullscreen button will be added in the toolbar.
+ *
+ * @return {string}
+ */
+function getToolbar(primaryAction = null, fullscreen = true) {
+  let toolbar = 'edit rights publish unpublish'
+  if (primaryAction) {
+    toolbar = primaryAction + ' | ' + toolbar
+  }
+
+  if (fullscreen) {
+    toolbar += ' | fullscreen more'
+  } else {
+    toolbar += ' | more'
+  }
+
+  return toolbar
+}
+
 export {
   getType,
   getActions,
-  getDefaultAction
+  getDefaultAction,
+  getToolbar
 }
