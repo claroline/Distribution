@@ -15,12 +15,12 @@ import {
 import {WidgetGridEditor} from '#/main/core/widget/editor/components/grid'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 
-import {ToolActions} from '#/main/core/tools/home/components/tool'
+import {ToolActions} from '#/main/core/tools/home/components/tool-actions'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
-import {select} from '#/main/core/tools/home/selectors'
+import {selectors} from '#/main/core/tools/home/selectors'
 import {actions as EditorActions} from '#/main/core/tools/home/editor/actions'
 import {actions} from '#/main/core/tools/home/actions'
-import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
+import {selectors as editorSelectors} from '#/main/core/tools/home/editor/selectors'
 import {MODAL_TAB_PARAMETERS} from '#/main/core/tools/home/editor/modals/parameters'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 
@@ -103,14 +103,14 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   state => ({
-    context: select.context(state),
-    // sortedTabs: editorSelect.sortedTabs(state),
-    editorTabs: editorSelect.editorTabs(state),
-    editorData: editorSelect.editorData(state),
-    widgets: editorSelect.widgets(state),
-    currentTabIndex: editorSelect.currentTabIndex(state),
-    currentTab: editorSelect.currentTab(state),
-    editable: select.editable(state)
+    context: selectors.context(state),
+    // sortedTabs: editorSelectors.sortedTabs(state),
+    editorTabs: editorSelectors.editorTabs(state),
+    editorData: editorSelectors.editorData(state),
+    widgets: editorSelectors.widgets(state),
+    currentTabIndex: editorSelectors.currentTabIndex(state),
+    currentTab: editorSelectors.currentTab(state),
+    editable: selectors.editable(state)
   }),
   dispatch => ({
     setCurrentTab(tab){

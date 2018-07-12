@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect'
 
 import {select as formSelectors} from '#/main/core/data/form/selectors'
-import {select as homeSelectors} from '#/main/core/tools/home/selectors'
+import {selectors as homeSelectors} from '#/main/core/tools/home/selectors'
 
 const editorData = (state) => formSelectors.data(formSelectors.form(state, 'editor'))
 const editorTabs = (state) => formSelectors.data(formSelectors.form(state, 'editor')).tabs
@@ -27,7 +27,7 @@ const widgets = createSelector(
 // )
 
 
-export const select = {
+export const selectors = {
   editorTabs,
   currentTab,
   editorData,
