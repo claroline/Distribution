@@ -27,7 +27,11 @@ import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 
 const EditorComponent = props =>
   <ToolPageContainer>
-    <EditorNav />
+    <EditorNav
+      tabs={props.editorTabs}
+      context={props.context}
+      create={(data) => props.createTab(props.editorTabs.length, data)}
+    />
     <PageHeader
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
@@ -44,7 +48,7 @@ const EditorComponent = props =>
                 save: (Formdata) => props.updateTab(props.currentTabIndex, Formdata)
               }]}
             />
-            {1 < props.editorData.length &&
+            {1 < props.editorTabs.length &&
               <PageAction
                 type="callback"
                 label={trans('delete')}
@@ -53,7 +57,7 @@ const EditorComponent = props =>
                   title: trans('home_tab_delete_confirm_title'),
                   message: trans('home_tab_delete_confirm_message')
                 }}
-                callback={() => props.deleteTab(props.currentTabIndex, props.editorTabs, props.history.push)}
+                callback={() => props.deleteTab(props.currentTabIndex, props.editorData, props.history.push)}
               />
             }
           </PageGroupActions>
@@ -76,14 +80,18 @@ EditorComponent.propTypes = {
     WidgetContainerTypes.propTypes
   )).isRequired,
   update: T.func.isRequired,
-  editorData: T.arrayOf(T.shape(
+  editorData: T.shape(T.arrayOf(T.shape(
+    TabTypes.propTypes
+  ))),
+  editorTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
-  editorTabs: T.arrayOf(T.shape(
+  sortedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
   history: T.object.isRequired,
+  createTab: T.func,
   deleteTab: T.func,
   updateTab: T.func,
   currentTabIndex: T.number.isRequired
@@ -92,6 +100,7 @@ EditorComponent.propTypes = {
 const Editor = connect(
   state => ({
     context: select.context(state),
+    // sortedTabs: editorSelect.sortedTabs(state),
     editorTabs: editorSelect.editorTabs(state),
     editorData: editorSelect.editorData(state),
     widgets: editorSelect.widgets(state),
@@ -102,11 +111,14 @@ const Editor = connect(
     update(currentTabIndex, widgets) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}].widgets`, widgets))
     },
+    createTab(tabIndex, tab){
+      dispatch(formActions.updateProp('editor', `tabs[${tabIndex}]`, tab))
+    },
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
     },
-    deleteTab(currentTabIndex, editorTabs, push) {
-      dispatch(actions.deleteTab(currentTabIndex, editorTabs, push))
+    deleteTab(currentTabIndex, editorData, push) {
+      dispatch(actions.deleteTab(currentTabIndex, editorData, push))
     }
   })
 )(EditorComponent)

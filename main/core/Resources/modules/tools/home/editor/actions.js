@@ -8,6 +8,6 @@ actions.deleteTab = (currentTabIndex, editorTabs, push) => (dispatch) => {
   const newTabs = editorTabs.tabs.slice(0)
   newTabs.splice(currentTabIndex, 1)
   console.log(editorTabs)
-  dispatch(formActions.updateProp('editor', editorTabs, newTabs))
+  dispatch(formActions.updateProp('editor', 'tabs', newTabs))
   push('/edit')
 }
