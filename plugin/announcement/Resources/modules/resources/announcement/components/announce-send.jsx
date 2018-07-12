@@ -74,13 +74,18 @@ const AnnounceSendComponent = props =>
   />
 
 AnnounceSendComponent.propTypes = {
+  aggregateId: T.string.isRequired,
   announcement: T.shape(
     AnnouncementTypes.propTypes
   ).isRequired,
   history: T.shape({
     push: T.func.isRequired
   }).isRequired,
-  send: T.func.isRequired
+  send: T.func.isRequired,
+  workspaceRoles: T.arrayOf(T.shape({
+    id: T.string.isRequired,
+    translationKey: T.string.isRequired
+  }))
 }
 
 AnnounceSendComponent.defaultProps = {

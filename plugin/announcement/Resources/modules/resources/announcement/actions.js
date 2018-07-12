@@ -1,8 +1,6 @@
 import {makeActionCreator} from '#/main/app/store/actions'
 import {url, API_REQUEST} from '#/main/app/api'
 
-import {isValid} from './validator'
-
 export const ANNOUNCE_ADD    = 'ANNOUNCE_ADD'
 export const ANNOUNCE_CHANGE = 'ANNOUNCE_CHANGE'
 export const ANNOUNCE_DELETE = 'ANNOUNCE_DELETE'
@@ -33,8 +31,6 @@ actions.removeAnnounce = (aggregateId, announce) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.deleteAnnounce(announce))
-      // open list
-      navigate('/')
     }
   }
 })

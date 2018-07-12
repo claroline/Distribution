@@ -1,5 +1,4 @@
 import {trans} from '#/main/core/translation'
-import {MODAL_RESOURCE_CREATION} from '#/main/core/resource/modals/creation'
 
 const action = () => ({
   name: 'create-announce',

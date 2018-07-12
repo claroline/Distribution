@@ -53,8 +53,8 @@ class ResourcePage extends Component {
               label: trans(this.state.fullscreen ? 'fullscreen_off' : 'fullscreen_on'),
               callback: this.toggleFullscreen.bind(this)
             }
-          ]
-        )})}
+          ])
+        })}
       >
         {this.props.children}
       </Page>

@@ -79,7 +79,7 @@ class AnnouncementSerializer
                 'dates' => DateRangeNormalizer::normalize(
                     $announce->getVisibleFrom(),
                     $announce->getVisibleUntil()
-                )
+                ),
             ],
             'roles' => array_map(function (Role $role) {
                 return $role->getUuid();

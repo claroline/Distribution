@@ -35,7 +35,7 @@ Resource.propTypes = {
 
 const FileResource = connect(
   state => ({
-    text: state.text,
+    text: state.text
   }),
   (dispatch) => ({
     resetForm: (formData) => dispatch(formActions.resetForm('textForm', formData))
