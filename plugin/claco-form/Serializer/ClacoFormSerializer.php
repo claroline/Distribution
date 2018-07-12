@@ -10,7 +10,6 @@ use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\Keyword;
 use JMS\DiExtraBundle\Annotation as DI;
-use MyProject\Proxies\__CG__\stdClass;
 
 /**
  * @DI\Service("claroline.serializer.clacoform")
