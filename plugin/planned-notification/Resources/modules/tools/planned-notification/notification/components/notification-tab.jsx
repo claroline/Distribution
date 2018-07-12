@@ -13,7 +13,7 @@ import {actions} from '#/plugin/planned-notification/tools/planned-notification/
 import {Notifications} from '#/plugin/planned-notification/tools/planned-notification/notification/components/notifications'
 import {Notification} from '#/plugin/planned-notification/tools/planned-notification/notification/components/notification'
 
-const NotificationTabActions = props =>
+const NotificationTabActions = () =>
   <PageActions>
     <PageAction
       type="link"
