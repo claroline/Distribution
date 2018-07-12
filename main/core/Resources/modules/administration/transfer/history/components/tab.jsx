@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
+import {trans} from '#/main/core/translation'
 import {Routes} from '#/main/app/router'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
