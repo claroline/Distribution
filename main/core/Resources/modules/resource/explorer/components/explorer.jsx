@@ -78,6 +78,12 @@ const ResourceExplorer = props => {
             label: trans('created_before'),
             type: 'date',
             displayable: false
+          }, {
+            name: 'resourceType',
+            label: trans('type'),
+            type: 'string',
+            displayable: false,
+            filterable: true
           }
         ]}
         actions={props.actions}

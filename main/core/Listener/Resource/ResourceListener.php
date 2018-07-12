@@ -151,6 +151,17 @@ class ResourceListener
     }
 
     /**
+     * @DI\Observe("resource.copy")
+     *
+     * @param ResourceActionEvent $event
+     */
+    public function onCopy(ResourceActionEvent $event)
+    {
+        var_dump($event->getOptions());
+//        $this->resourceLifecycleManager->delete($event->getResourceNode());
+    }
+
+    /**
      * Handles resources access errors due to restrictions configuration.
      *
      * @DI\Observe("kernel.exception")
