@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
-//import {matchPath, Routes, withRouter} from '#/main/app/router'
+import {actions} from '#/main/core/workspace/creation/store/actions'
 
 import {WorkspaceForm} from '#/main/core/workspace/creation/components/form.jsx'
 import {WorkspaceHome} from '#/main/core/workspace/creation/components/home.jsx'
@@ -22,11 +22,12 @@ const CreationForm = props => {
       path: '/workspaces/creation/form',
       title: 'form',
       component: WorkspaceForm,
-      onEnter: props.createForm()
+      onEnter: props.createForm(),
+      onLeave: props.loadModel(props.data)
     },
     {
       path: '/workspaces/creation/roles',
-      title: 'roles',
+      title: 'roles',onLeave
       component: WorkspaceRoles
     },
     {
@@ -77,12 +78,19 @@ const CreationForm = props => {
 const ConnectedCreationForm = connect(
   state => {
     return {
-      
+      const workspace = formSelect.data(formSelect.form(state, 'workspaces.creation.workspace'))
+
+      return {
+        workspace: workspace
+      }
     }
   },
   dispatch =>({
     createForm() {
       dispatch(formActions.resetForm('workspaces.creation.workspace', WorkspaceTypes.defaultProps, true))
+    },
+    loadModel() {
+      dispatch()
     }
   })
 )(CreationForm)

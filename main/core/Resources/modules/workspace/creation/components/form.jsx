@@ -8,7 +8,6 @@ import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
 import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions as formActions} from '#/main/core/data/form/actions'
 
 
 const WorkspaceComponent = (props) => {
@@ -16,7 +15,6 @@ const WorkspaceComponent = (props) => {
     <FormContainer
       level={3}
       name="workspaces.creation.workspace"
-      meta={true}
       new={true}
       sections={[
         {
