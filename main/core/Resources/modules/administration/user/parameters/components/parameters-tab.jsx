@@ -5,9 +5,7 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
 
-import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {constants} from '#/main/core/administration/user/parameters/constants'
