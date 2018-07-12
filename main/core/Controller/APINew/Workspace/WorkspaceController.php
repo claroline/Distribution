@@ -463,6 +463,78 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($this->serializer->serialize($workspace));
     }
 
+    /**
+     * @Route("/{workspace}/copy/base", name="apiv2_workspace_copy_base")
+     * @Method("POST")
+     * @ParamConverter("workspace", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"workspace": "uuid"}})
+     */
+    public function copyBaseAction(Workspace $workspace, Request $request)
+    {
+        $data = $this->decodeRequest($request);
+        $oldSerialized = $this->serializer->serialize($workspace);
+        $data = array_merge($oldSerialized, $data);
+        unset($data['uuid'], $data['id']);
+        $new = $this->crud->create(Workspace::class, $data, [Options::LIGHT_COPY]);
+
+        return new JsonResponse($this->serializer->serialize($new));
+    }
+
+    /**
+     * @Route("/{old}/copy/{new}/roles", name="apiv2_workspace_copy_roles")
+     * @Method("GET")
+     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
+     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
+     */
+    public function copyRolesActions(Workspace $new, Workspace $old)
+    {
+        //add voter check here
+
+        $this->workspaceManager->duplicateWorkspaceRoles($old, $new, $new->getCreator());
+
+        //here we must edit the default roles
+
+        return new JsonResponse($this->serializer->serialize($new));
+    }
+
+    /**
+     * @Route("/{old}/copy/{new}/tools", name="apiv2_workspace_copy_tools")
+     * @Method("GET")
+     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
+     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
+     */
+    public function copyBaseToolsAction(Workspace $new, Workspace $old)
+    {
+        $this->workspaceManager->duplicateOrderedTools($old, $new);
+
+        return new JsonResponse($this->serializer->serialize($new));
+    }
+
+    /**
+     * @Route("/{old}/copy/{new}/home", name="apiv2_workspace_copy_home")
+     * @Method("GET")
+     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
+     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
+     */
+    public function copyHomeActions(Workspace $new, Workspace $old)
+    {
+        $this->workspaceManager->duplicateHomeTabs($old, $new);
+
+        return new JsonResponse($this->serializer->serialize($new));
+    }
+
+    /**
+     * @Route("/{old}/copy/{new}/resources", name="apiv2_workspace_copy_resources")
+     * @Method("GET")
+     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
+     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
+     */
+    public function copyResourcesActions(Workspace $new, Workspace $old)
+    {
+        $this->workspaceManager->duplicateAllResources($old, $new, $new->getCreator());
+
+        return new JsonResponse($this->serializer->serialize($new));
+    }
+
     public function getOptions()
     {
         return [
