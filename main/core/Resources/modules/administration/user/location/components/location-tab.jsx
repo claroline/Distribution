@@ -10,7 +10,7 @@ import {Location}  from '#/main/core/administration/user/location/components/loc
 import {Locations} from '#/main/core/administration/user/location/components/locations'
 import {actions}   from '#/main/core/administration/user/location/actions'
 
-const LocationTabActions = props =>
+const LocationTabActions = () =>
   <PageActions>
     <PageAction
       type="link"

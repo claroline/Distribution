@@ -11,7 +11,7 @@ import {Role}    from '#/main/core/workspace/user/role/components/role'
 import {Roles}   from '#/main/core/workspace/user/role/components/roles'
 import {actions} from '#/main/core/workspace/user/role/actions'
 
-const RoleTabActions = props =>
+const RoleTabActions = () =>
   <PageActions>
     <PageAction
       type="link"

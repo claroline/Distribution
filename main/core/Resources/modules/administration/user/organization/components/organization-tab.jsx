@@ -12,7 +12,7 @@ import {Organizations} from '#/main/core/administration/user/organization/compon
 import {actions}       from '#/main/core/administration/user/organization/actions'
 import {select}        from '#/main/core/administration/user/organization/selectors'
 
-const OrganizationTabActions = props =>
+const OrganizationTabActions = () =>
   <PageActions>
     <PageAction
       type="link"

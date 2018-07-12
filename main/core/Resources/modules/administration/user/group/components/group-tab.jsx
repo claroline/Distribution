@@ -10,7 +10,7 @@ import {Group}   from '#/main/core/administration/user/group/components/group'
 import {Groups}  from '#/main/core/administration/user/group/components/groups'
 import {actions} from '#/main/core/administration/user/group/actions'
 
-const GroupTabActions = props =>
+const GroupTabActions = () =>
   <PageActions>
     <PageAction
       type="link"

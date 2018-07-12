@@ -75,6 +75,5 @@ const ParametersTab = connect(
 )(Parameters)
 
 export {
-  ParametersTabActions,
   ParametersTab
 }

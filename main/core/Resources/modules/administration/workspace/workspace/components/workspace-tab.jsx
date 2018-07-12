@@ -10,7 +10,7 @@ import {Workspace}  from '#/main/core/administration/workspace/workspace/compone
 import {Workspaces} from '#/main/core/administration/workspace/workspace/components/workspaces'
 import {actions}    from '#/main/core/administration/workspace/workspace/actions'
 
-const WorkspaceTabActions = props =>
+const WorkspaceTabActions = () =>
   <PageActions>
     <PageAction
       type="link"

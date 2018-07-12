@@ -11,7 +11,7 @@ import {Users}      from '#/main/core/administration/user/user/components/users.
 import {UsersMerge} from '#/main/core/administration/user/user/components/users-merge'
 import {actions}    from '#/main/core/administration/user/user/actions'
 
-const UserTabActions = props =>
+const UserTabActions = () =>
   <PageActions>
     <PageAction
       type="link"

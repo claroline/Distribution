@@ -10,7 +10,7 @@ import {Role}    from '#/main/core/administration/user/role/components/role'
 import {Roles}   from '#/main/core/administration/user/role/components/roles'
 import {actions} from '#/main/core/administration/user/role/actions'
 
-const RoleTabActions = props =>
+const RoleTabActions = () =>
   <PageActions>
     <PageAction
       type="link"
