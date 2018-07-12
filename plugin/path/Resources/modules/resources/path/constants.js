@@ -12,6 +12,9 @@ const AVAILABLE_EMBEDDED_RESOURCES = [
   'claroline_web_resource',
   'innova_path',
   'icap_bibliography',
+  'icap_blog',
+  'icap_website',
+  'icap_wiki',
   'text',
   'ujm_exercise'
 ]
