@@ -18,14 +18,15 @@ import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-t
 import {ToolActions} from '#/main/core/tools/home/components/tool'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {select} from '#/main/core/tools/home/selectors'
-import {actions} from '#/main/core/tools/home/editor/actions'
+import {actions as EditorActions} from '#/main/core/tools/home/editor/actions'
+import {actions} from '#/main/core/tools/home/actions'
 import {select as editorSelect} from '#/main/core/tools/home/editor/selectors'
 import {MODAL_TAB_PARAMETERS} from '#/main/core/tools/home/editor/modals/parameters'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 
 
-
 const EditorComponent = props =>
+
   <ToolPageContainer>
     <EditorNav
       tabs={props.editorTabs}
@@ -49,16 +50,16 @@ const EditorComponent = props =>
               }]}
             />
             {1 < props.editorTabs.length &&
-              <PageAction
-                type="callback"
-                label={trans('delete')}
-                icon="fa fa-fw fa-trash-o"
-                confirm={{
-                  title: trans('home_tab_delete_confirm_title'),
-                  message: trans('home_tab_delete_confirm_message')
-                }}
-                callback={() => props.deleteTab(props.currentTabIndex, props.editorData, props.history.push)}
-              />
+                <PageAction
+                  type="callback"
+                  label={trans('delete')}
+                  icon="fa fa-fw fa-trash-o"
+                  confirm={{
+                    title: trans('home_tab_delete_confirm_title'),
+                    message: trans('home_tab_delete_confirm_message')
+                  }}
+                  callback={() => props.deleteTab(props.currentTabIndex, props.editorData, props.history.push)}
+                />
             }
           </PageGroupActions>
         </PageActions>
@@ -73,6 +74,7 @@ const EditorComponent = props =>
       />
     </PageContent>
   </ToolPageContainer>
+
 
 EditorComponent.propTypes = {
   context: T.object.isRequired,
@@ -89,7 +91,9 @@ EditorComponent.propTypes = {
   sortedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
+  setCurrentTab: T.func.isRequired,
   currentTab: T.shape(TabTypes.propTypes),
+  editable: T.bool.isRequired,
   history: T.object.isRequired,
   createTab: T.func,
   deleteTab: T.func,
@@ -105,20 +109,24 @@ const Editor = connect(
     editorData: editorSelect.editorData(state),
     widgets: editorSelect.widgets(state),
     currentTabIndex: editorSelect.currentTabIndex(state),
-    currentTab: editorSelect.currentTab(state)
+    currentTab: editorSelect.currentTab(state),
+    editable: select.editable(state)
   }),
   dispatch => ({
+    setCurrentTab(tab){
+      dispatch(actions.setCurrentTab(tab))
+    },
     update(currentTabIndex, widgets) {
-      dispatch(formActions.updateProp('editor', `[${currentTabIndex}].widgets`, widgets))
+      dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}].widgets`, widgets))
     },
     createTab(tabIndex, tab){
       dispatch(formActions.updateProp('editor', `tabs[${tabIndex}]`, tab))
     },
     updateTab(currentTabIndex, tab) {
-      dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
+      dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}]`, tab))
     },
     deleteTab(currentTabIndex, editorData, push) {
-      dispatch(actions.deleteTab(currentTabIndex, editorData, push))
+      dispatch(EditorActions.deleteTab(currentTabIndex, editorData, push))
     }
   })
 )(EditorComponent)

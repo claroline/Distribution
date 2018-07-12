@@ -11,7 +11,7 @@ import {PageActions} from '#/main/core/layout/page'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {select} from '#/main/core/tools/home/selectors'
 import {actions} from '#/main/core/tools/home/actions'
-import {Editor} from '#/main/core/tools/home/editor/components/editor'
+import {RouterEditor} from '#/main/core/tools/home/editor/components/router-editor'
 import {Player} from '#/main/core/tools/home/player/components/player'
 
 const ToolActionsComponent = props =>
@@ -45,8 +45,7 @@ const Tool = props =>
   <Router>
     <Routes
       redirect={[
-        {from: '/', exact: true, to: '/tab/'+props.sortedTabs[0].id },
-        {from: '/edit', exact: true, to: '/edit/tab/'+props.sortedTabs[0].id}
+        {from: '/', exact: true, to: '/tab/'+props.sortedTabs[0].id }
       ]}
       routes={[
         {
@@ -55,11 +54,9 @@ const Tool = props =>
           component: Player,
           onEnter: (params) =>props.setCurrentTab(params.id)
         }, {
-          path: '/edit/tab/:id?',
-          exact: true,
-          component: Editor,
-          onEnter: (params) => {
-            props.setCurrentTab(params.id)
+          path: '/edit',
+          component: RouterEditor,
+          onEnter: () => {
             props.resetForm({tabs: props.sortedTabs})
           },
           disabled: !props.editable

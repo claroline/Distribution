@@ -36,7 +36,7 @@ class HomeController extends AbstractCrudController
      */
     public function updateHomeAction(Request $request)
     {
-        $tabs = $this->decodeRequest($request);
+        $tabs = $this->decodeRequest($request)['tabs'];
         $ids = [];
 
         foreach ($tabs as $tab) {
