@@ -12,7 +12,7 @@ import {actions} from '#/plugin/planned-notification/tools/planned-notification/
 import {Messages} from '#/plugin/planned-notification/tools/planned-notification/message/components/messages'
 import {Message} from '#/plugin/planned-notification/tools/planned-notification/message/components/message'
 
-const MessageTabActions = props =>
+const MessageTabActions = () =>
   <PageActions>
     <PageAction
       type="link"
