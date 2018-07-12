@@ -13,7 +13,6 @@ import {selectors} from '#/main/core/tools/home/selectors'
 import {PlayerNav} from '#/main/core/tools/home/player/components/nav'
 import {ToolActions} from '#/main/core/tools/home/components/tool-actions'
 
-
 const PlayerComponent = props =>
   <ToolPageContainer>
     {1 < props.sortedTabs.length &&

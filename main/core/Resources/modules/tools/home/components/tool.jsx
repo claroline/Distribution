@@ -15,8 +15,8 @@ const Tool = props =>
   <Router>
     <Routes
       redirect={[
-        {from: '/edit', exact: true, to: '/edit/tab/'+props.sortedTabs[0].id},
-        {from: '/', exact: true, to: '/tab/'+props.sortedTabs[0].id }
+        {from: '/', exact: true, to: '/tab/'+props.sortedTabs[0].id },
+        {from: '/edit', exact: true, to: '/edit/tab/'+props.sortedTabs[0].id}
       ]}
       routes={[
         {
@@ -63,6 +63,9 @@ const HomeTool = connect(
   (dispatch) => ({
     setCurrentTab(tab){
       dispatch(actions.setCurrentTab(tab))
+    },
+    resetForm(tabs){
+      dispatch(formActions.resetForm('editor', tabs))
     }
 
   })
