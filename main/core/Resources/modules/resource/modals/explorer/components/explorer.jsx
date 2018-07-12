@@ -21,7 +21,7 @@ const ExplorerModalComponent = props => {
 
   return (
     <Modal
-      {...omit(props, 'current', 'currentDirectory', 'primaryAction', 'actions', 'confirmText', 'selected', 'selectAction')}
+      {...omit(props, 'current', 'currentDirectory', 'primaryAction', 'actions', 'confirmText', 'selected', 'selectAction', 'initialize', 'filters')}
       subtitle={props.currentDirectory && props.currentDirectory.name}
       onEntering={() => props.initialize(props.root, props.current, props.filters)}
       bsSize="lg"
