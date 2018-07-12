@@ -227,7 +227,6 @@ class ScormListener
                     $this->uploadDir.$ds.'scorm'.$ds.$newWorkspace->getUuid().$ds.$hashName
                 );
             }
-
         }
 
         $event->setCopy($copy);

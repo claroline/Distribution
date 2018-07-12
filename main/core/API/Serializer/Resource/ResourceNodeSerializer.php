@@ -114,14 +114,11 @@ class ResourceNodeSerializer
         $parent = $resourceNode->getParent();
 
         if (!empty($parent)) {
-            $serializedNode['parent'] = in_array(Options::SERIALIZE_RESOURCE_PARENT, $options) ?
-                $this->serialize($parent, [Options::SERIALIZE_MINIMAL]) :
-                [
-                    'id' => $parent->getUuid(),
-                    'autoId' => $parent->getId(),
-                    'name' => $parent->getName(),
-                ];
-
+            $serializedNode['parent'] = [
+                'id' => $parent->getUuid(),
+                'autoId' => $parent->getId(),
+                'name' => $parent->getName(),
+            ];
         }
 
         return $this->decorate($resourceNode, $serializedNode, $options);

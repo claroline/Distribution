@@ -180,9 +180,9 @@ class ResourceListener
     public function onCopy(ResourceActionEvent $event)
     {
         $resourceNode = $event->getResourceNode();
-        $options = $event->getOptions();
-        $parent = isset($options['destination']['autoId']) && isset($options['destination']['meta']['type']) && 'directory' === $options['destination']['meta']['type'] ?
-            $this->resourceManager->getById($options['destination']['autoId']) :
+        $data = $event->getData();
+        $parent = isset($data['destination']['autoId']) && isset($data['destination']['meta']['type']) && 'directory' === $data['destination']['meta']['type'] ?
+            $this->resourceManager->getById($data['destination']['autoId']) :
             null;
         $user = $this->tokenStorage->getToken()->getUser();
 
@@ -204,9 +204,9 @@ class ResourceListener
     public function onMove(ResourceActionEvent $event)
     {
         $resourceNode = $event->getResourceNode();
-        $options = $event->getOptions();
-        $parent = isset($options['destination']['autoId']) && isset($options['destination']['meta']['type']) && 'directory' === $options['destination']['meta']['type'] ?
-            $this->resourceManager->getById($options['destination']['autoId']) :
+        $data = $event->getData();
+        $parent = isset($data['destination']['autoId']) && isset($data['destination']['meta']['type']) && 'directory' === $data['destination']['meta']['type'] ?
+            $this->resourceManager->getById($data['destination']['autoId']) :
             null;
 
         if (!empty($parent)) {

@@ -9,7 +9,7 @@
 {% block content %}
     <div
         class="page-container path-container"
-        data-resource-node="{{ _resource.resourceNode | api_serialize([constant('Claroline\\AppBundle\\API\\Options::SERIALIZE_RESOURCE_PARENT')]) | json_encode | raw | escape }}"
+        data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
         data-path="{{ path | json_encode | raw | escape }}"
         data-evaluation="{{ evaluation | api_serialize | json_encode | raw | escape }}"
     >
