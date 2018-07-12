@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 
-import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
-import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
-import {actions} from '#/main/core/administration/transfer/components/log/actions'
+import {PageActions} from '#/main/core/layout/page/components/page-actions'
+import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions'
+import {actions} from '#/main/core/administration/transfer/log/actions'
 
 import {connect} from 'react-redux'
 
