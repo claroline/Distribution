@@ -10,6 +10,7 @@ use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\Keyword;
 use JMS\DiExtraBundle\Annotation as DI;
+use MyProject\Proxies\__CG__\stdClass;
 
 /**
  * @DI\Service("claroline.serializer.clacoform")
@@ -76,7 +77,7 @@ class ClacoFormSerializer
             'id' => $clacoForm->getUuid(),
             'autoId' => $clacoForm->getId(),
             'template' => $clacoForm->getTemplate(),
-            'details' => $clacoForm->getDetails(),
+            'details' => $clacoForm->getDetails() ? $clacoForm->getDetails() : new \stdClass(),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
