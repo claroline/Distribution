@@ -12,6 +12,7 @@
 namespace Claroline\AppBundle\Logger;
 
 use Claroline\AppBundle\API\Utils\ArrayUtils;
+use Psr\Log\LogLevel;
 
 class JsonLogger
 {
@@ -77,7 +78,7 @@ class JsonLogger
         file_put_contents($this->file, json_encode($data));
     }
 
-    public function log($message, $separator = "\n")
+    public function log($logLevel = LogLevel::INFO, $message, $separator = "\n")
     {
         $data = $this->get();
         $time = date('m-d-y h:i:s').': ';
@@ -88,6 +89,11 @@ class JsonLogger
           $data['log'] = $line;
 
         $this->write($data);
+    }
+
+    public function info($message, $separator = "\n")
+    {
+        $this->log(LogLevel::INFO, $message, $separator);
     }
 
     public function get($property = null)

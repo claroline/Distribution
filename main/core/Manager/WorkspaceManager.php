@@ -1682,6 +1682,7 @@ class WorkspaceManager
         $this->log('Duplicating roles...');
         $guid = $workspace->getGuid();
         $roles = $source->getRoles();
+
         foreach ($roles as $role) {
             $unusedRolePartName = '_'.$role->getWorkspace()->getGuid();
             $roleName = str_replace($unusedRolePartName, '', $role->getName());

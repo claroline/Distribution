@@ -53,7 +53,8 @@ class WorkspaceController extends AbstractCrudController
      *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
      *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
      *     "translator"       = @DI\Inject("translator"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%")
      * })
      *
      * @param ResourceManager $resourceManager
@@ -62,12 +63,14 @@ class WorkspaceController extends AbstractCrudController
         ResourceManager $resourceManager,
         TranslatorInterface $translator,
         RoleManager $roleManager,
-        WorkspaceManager $workspaceManager
+        WorkspaceManager $workspaceManager,
+        $logDir
     ) {
         $this->resourceManager = $resourceManager;
         $this->translator = $translator;
         $this->roleManager = $roleManager;
         $this->workspaceManager = $workspaceManager;
+        $this->logDir = $logDir;
     }
 
     public function getName()
@@ -488,7 +491,7 @@ class WorkspaceController extends AbstractCrudController
     public function copyRolesActions(Workspace $new, Workspace $old)
     {
         //add voter check here
-
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
         $this->workspaceManager->duplicateWorkspaceRoles($old, $new, $new->getCreator());
 
         //here we must edit the default roles
@@ -504,6 +507,7 @@ class WorkspaceController extends AbstractCrudController
      */
     public function copyBaseToolsAction(Workspace $new, Workspace $old)
     {
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
         $this->workspaceManager->duplicateOrderedTools($old, $new);
 
         return new JsonResponse($this->serializer->serialize($new));
@@ -517,6 +521,7 @@ class WorkspaceController extends AbstractCrudController
      */
     public function copyHomeActions(Workspace $new, Workspace $old)
     {
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
         $this->workspaceManager->duplicateHomeTabs($old, $new);
 
         return new JsonResponse($this->serializer->serialize($new));
@@ -530,9 +535,25 @@ class WorkspaceController extends AbstractCrudController
      */
     public function copyResourcesActions(Workspace $new, Workspace $old)
     {
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
         $this->workspaceManager->duplicateAllResources($old, $new, $new->getCreator());
 
         return new JsonResponse($this->serializer->serialize($new));
+    }
+
+    public function end(Workspace $new)
+    {
+        //remove the log file
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    private function getLogFile(Workspace $workspace)
+    {
+        return $this->logDir.DIRECTORY_SEPARATOR.$workspace->getUuid().'.json';
     }
 
     public function getOptions()
