@@ -33,8 +33,8 @@ const WorkspaceComponent = (props) => {
               required: true
             }, {
               name: 'model',
-              type:
-              label:
+              type: 'string',
+              label: 'model',
               required: true
             }
           ]

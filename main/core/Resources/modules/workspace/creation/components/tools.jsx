@@ -10,13 +10,17 @@ class Tools extends Component {
   }
 
   render() {
-    return (<div>tools</div>)
+    return (
+      <div>
+      </div>
+    )
   }
 }
 
 
 const ConnectedTools = connect(
   state => ({
+    model: state.model
   }),
   dispatch => ({
   })
