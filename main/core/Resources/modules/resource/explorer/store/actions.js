@@ -26,6 +26,15 @@ actions.initialize = (explorerName, root = null, current = null, filters = []) =
   }
 }
 
+actions.openDirectory = (explorerName, directory) => (dispatch) => {
+  // clear current selection
+  dispatch(listActions.resetSelect(explorerName+'.resources'))
+
+  dispatch(actions.changeDirectory(explorerName, directory))
+  // mark directory has opened
+  dispatch(actions.toggleDirectoryOpen(explorerName, directory, true))
+}
+
 actions.changeDirectory = makeInstanceActionCreator(DIRECTORY_CHANGE, 'directory')
 actions.setDirectoryOpen = makeInstanceActionCreator(DIRECTORY_TOGGLE_OPEN, 'directory', 'opened')
 
