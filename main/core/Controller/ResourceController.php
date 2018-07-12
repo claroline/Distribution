@@ -73,7 +73,7 @@ class ResourceController
         $this->checkAccess($this->actionManager->get($resourceNode, $action), [$resourceNode]);
 
         // read request and get user query
-        $parameters = $request->query->all();
+        $parameters = $request->request->all();
         $content = null;
         if (!empty($request->getContent())) {
             $content = json_decode($request->getContent(), true);

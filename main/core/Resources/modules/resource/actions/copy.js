@@ -14,8 +14,8 @@ const action = (resourceNodes) => ({
       request: {
         url: ['claro_resource_action_short', {id: resourceNodes[0].id, action: 'copy'}],
         request: {
-          method: 'PUT',
-          body: JSON.stringify(selected[0])
+          method: 'POST',
+          body: JSON.stringify({destination: selected[0]})
         }
       }
     }),
