@@ -9,12 +9,16 @@ const action = (resourceNodes) => ({
   modal: [MODAL_RESOURCE_EXPLORER, {
     title: trans('select_target_directory'),
     current: 0 < resourceNodes.length && resourceNodes[0].parent ? resourceNodes[0].parent : null,
-    handleSelect: (selected) => {
-      if (0 < selected.length && 'directory' === selected[0].meta.type) {
-        console.log('move')
-        console.log(selected[0])
+    selectAction: (selected) => ({
+      type: 'async',
+      request: {
+        url: ['claro_resource_action_short', {id: resourceNodes[0].id, action: 'move'}],
+        request: {
+          method: 'PUT',
+          body: JSON.stringify({destination: selected[0]})
+        }
       }
-    },
+    }),
     filters: [{resourceType: 'directory'}]
   }]
 })

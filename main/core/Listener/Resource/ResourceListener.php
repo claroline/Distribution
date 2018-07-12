@@ -181,7 +181,7 @@ class ResourceListener
     {
         $resourceNode = $event->getResourceNode();
         $options = $event->getOptions();
-        $parent = isset($options['destination']['autoId']) ?
+        $parent = isset($options['destination']['autoId']) && isset($options['destination']['meta']['type']) && 'directory' === $options['destination']['meta']['type'] ?
             $this->resourceManager->getById($options['destination']['autoId']) :
             null;
         $user = $this->tokenStorage->getToken()->getUser();
@@ -191,6 +191,31 @@ class ResourceListener
             $event->setResponse(
                 new JsonResponse($this->resourceNodeSerializer->serialize($newResource->getResourceNode()), 200)
             );
+        } else {
+            $event->setResponse(new JsonResponse(null, 500));
+        }
+    }
+
+    /**
+     * @DI\Observe("resource.move")
+     *
+     * @param ResourceActionEvent $event
+     */
+    public function onMove(ResourceActionEvent $event)
+    {
+        $resourceNode = $event->getResourceNode();
+        $options = $event->getOptions();
+        $parent = isset($options['destination']['autoId']) && isset($options['destination']['meta']['type']) && 'directory' === $options['destination']['meta']['type'] ?
+            $this->resourceManager->getById($options['destination']['autoId']) :
+            null;
+
+        if (!empty($parent)) {
+            $movedResource = $this->resourceManager->move($resourceNode, $parent);
+            $event->setResponse(
+                new JsonResponse($this->resourceNodeSerializer->serialize($movedResource), 200)
+            );
+        } else {
+            $event->setResponse(new JsonResponse(null, 500));
         }
     }
 
