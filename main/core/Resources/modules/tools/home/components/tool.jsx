@@ -25,12 +25,9 @@ const Tool = props =>
           component: Player,
           onEnter: (params) =>props.setCurrentTab(params.id)
         }, {
-          path: 'edit/tab/:id?',
-          exact: true,
+          path: '/edit/tab/:id?',
           component: Editor,
-          onEnter: (params) => {
-            props.setCurrentTab(params.id)
-          },
+          onEnter: (params) => props.setCurrentTab(params.id),
           disabled: !props.editable
         }
       ]}
@@ -50,8 +47,7 @@ Tool.propTypes = {
   )),
   currentTab: T.shape(TabTypes.propTypes),
   editable: T.bool.isRequired,
-  setCurrentTab: T.func.isRequired,
-  resetForm: T.func.isRequired
+  setCurrentTab: T.func.isRequired
 }
 
 const HomeTool = connect(
@@ -63,11 +59,7 @@ const HomeTool = connect(
   (dispatch) => ({
     setCurrentTab(tab){
       dispatch(actions.setCurrentTab(tab))
-    },
-    resetForm(tabs){
-      dispatch(formActions.resetForm('editor', tabs))
     }
-
   })
 )(Tool)
 

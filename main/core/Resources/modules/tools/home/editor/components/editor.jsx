@@ -58,7 +58,7 @@ const EditorComponent = props =>
                     title: trans('home_tab_delete_confirm_title'),
                     message: trans('home_tab_delete_confirm_message')
                   }}
-                  callback={() => props.deleteTab(props.currentTabIndex, props.editorData, props.history.push)}
+                  callback={() => props.deleteTab(props.currentTabIndex, props.editorTabs, props.history.push)}
                 />
             }
           </PageGroupActions>
@@ -82,9 +82,6 @@ EditorComponent.propTypes = {
     WidgetContainerTypes.propTypes
   )).isRequired,
   update: T.func.isRequired,
-  editorData: T.shape(T.arrayOf(T.shape(
-    TabTypes.propTypes
-  ))),
   editorTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
@@ -106,7 +103,6 @@ const Editor = connect(
     context: selectors.context(state),
     // sortedTabs: editorSelectors.sortedTabs(state),
     editorTabs: editorSelectors.editorTabs(state),
-    editorData: editorSelectors.editorData(state),
     widgets: editorSelectors.widgets(state),
     currentTabIndex: editorSelectors.currentTabIndex(state),
     currentTab: editorSelectors.currentTab(state),
@@ -125,8 +121,8 @@ const Editor = connect(
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}]`, tab))
     },
-    deleteTab(currentTabIndex, editorData, push) {
-      dispatch(EditorActions.deleteTab(currentTabIndex, editorData, push))
+    deleteTab(currentTabIndex, editorTabs, push) {
+      dispatch(EditorActions.deleteTab(currentTabIndex, editorTabs, push))
     }
   })
 )(EditorComponent)

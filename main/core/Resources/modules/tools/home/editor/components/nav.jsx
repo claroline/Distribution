@@ -16,6 +16,7 @@ const EditorNav = props =>
     {props.tabs.map((tab, tabIndex) =>
       <NavLink
         className="nav-tab"
+        exact={true}
         key={tabIndex}
         activeClassName="nav-tab-active"
         to={`/edit/tab/${tab.id}`}
