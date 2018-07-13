@@ -14,6 +14,7 @@ class Updater120000 extends Updater
     public function __construct($container)
     {
         $this->container = $container;
+        $this->conn = $container->get('doctrine.dbal.default_connection');
     }
 
     public function preUpdate()
