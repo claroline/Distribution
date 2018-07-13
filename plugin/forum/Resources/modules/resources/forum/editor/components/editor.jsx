@@ -107,7 +107,8 @@ const EditorComponent = (props) =>
   />
 
 EditorComponent.propTypes = {
-  forumForm: T.shape(ForumType.propTypes).isRequired
+  forumForm: T.shape(ForumType.propTypes).isRequired,
+  saveForm: T.func.isRequired
 }
 
 const Editor = connect(
