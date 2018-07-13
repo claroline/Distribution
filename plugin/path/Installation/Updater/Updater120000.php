@@ -89,9 +89,34 @@ class Updater120000 extends Updater
         try {
             $this->log('Saving old widget config table...');
             $this->conn->query('CREATE TABLE innova_path_widget_config_old  AS (SELECT * FROM innova_path_widget_config)');
-            $this->conn->query('TRUNCATE innova_path_widget_config');
         } catch (\Exception $e) {
+            $this->log($e->getMessage());
             $this->log('Widget configs already backed up.');
         }
+
+       try {
+            $this->log('Truncate widget config table...');
+	    $this->conn->query('TRUNCATE innova_path_widget_config');
+        } catch (\Exception $e) {
+            $this->log($e->getMessage());
+            $this->log('Widget configs already truncated.');
+        }
+
+        try {
+            $this->log('Saving old widget config tags table...');
+            $this->conn->query('CREATE TABLE innova_path_widget_config_tags_old  AS (SELECT * FROM innova_path_widget_config_tags)');
+        } catch (\Exception $e) {
+            $this->log($e->getMessage());
+            $this->log('Widget configs tags already backed up.');
+        }
+
+       try {
+            $this->log('Truncate widget config tags table...');
+            $this->conn->query('TRUNCATE innova_path_widget_config_tags');
+        } catch (\Exception $e) {
+            $this->log($e->getMessage());
+            $this->log('Widget configs tags already truncated.');
+        }
+
     }
 }
