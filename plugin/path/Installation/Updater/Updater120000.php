@@ -94,9 +94,9 @@ class Updater120000 extends Updater
             $this->log('Widget configs already backed up.');
         }
 
-       try {
+        try {
             $this->log('Truncate widget config table...');
-	    $this->conn->query('TRUNCATE innova_path_widget_config');
+            $this->conn->query('TRUNCATE innova_path_widget_config');
         } catch (\Exception $e) {
             $this->log($e->getMessage());
             $this->log('Widget configs already truncated.');
@@ -110,13 +110,12 @@ class Updater120000 extends Updater
             $this->log('Widget configs tags already backed up.');
         }
 
-       try {
+        try {
             $this->log('Truncate widget config tags table...');
             $this->conn->query('TRUNCATE innova_path_widget_config_tags');
         } catch (\Exception $e) {
             $this->log($e->getMessage());
             $this->log('Widget configs tags already truncated.');
         }
-
     }
 }

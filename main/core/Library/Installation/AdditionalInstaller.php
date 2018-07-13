@@ -397,7 +397,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(false, true);
         }
 
-	$this->updateRolesAdmin();
+        $this->updateRolesAdmin();
     }
 
     private function setLocale()
