@@ -16,6 +16,11 @@ class Updater120000 extends Updater
         $this->container = $container;
     }
 
+    public function preUpdate()
+    {
+        $this->removeInnovaPathWidgetConfigs();
+    }
+
     public function postUpdate()
     {
         $this->initializeResourceEvaluationProgression();
@@ -76,5 +81,16 @@ class Updater120000 extends Updater
         }
 
         $om->endFlushSuite();
+    }
+
+    public function removeInnovaPathWidgetConfigs()
+    {
+        try {
+            $this->log('Saving old widget config table...');
+            $this->conn->query('CREATE TABLE innova_path_widget_config_old  AS (SELECT * FROM innova_path_widget_config)');
+            $this->conn->query('TRUNCATE innova_path_widget_config');
+        } catch (\Exception $e) {
+            $this->log('Widget configs already backed up.');
+        }
     }
 }
