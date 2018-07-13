@@ -39,7 +39,8 @@ const reducer = {
       'selected.group'
     )
   }),
-  parameters: makeFormReducer('parameters')
+  parameters: makeFormReducer('parameters'),
+  models: makeReducer()
 }
 
 export {

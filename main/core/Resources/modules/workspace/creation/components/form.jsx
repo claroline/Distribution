@@ -11,6 +11,13 @@ import {FormContainer} from '#/main/core/data/form/containers/form'
 
 
 const WorkspaceComponent = (props) => {
+  const modelChoices = {}
+
+  props.models.data.forEach(model => {
+    modelChoices[model.uuid] = model.code
+  })
+
+
   return (<div>
     <FormContainer
       level={3}
@@ -33,9 +40,13 @@ const WorkspaceComponent = (props) => {
               required: true
             }, {
               name: 'model',
-              type: 'string',
+              type: 'choice',
               label: 'model',
-              required: true
+              required: true,
+              options: {
+                condensed: true,
+                choices: modelChoices
+              }
             }
           ]
         }, {
@@ -272,7 +283,8 @@ const WorkspaceComponent = (props) => {
 WorkspaceComponent.propTypes = {
   workspace: T.shape(
     WorkspaceTypes.propTypes
-  ).isRequired
+  ).isRequired,
+  models: T.array.isRequired
 }
 
 WorkspaceComponent.defaultProps = {
@@ -284,7 +296,8 @@ const ConnectedForm = connect(
     const workspace = formSelect.data(formSelect.form(state, 'workspaces.creation.workspace'))
 
     return {
-      workspace: workspace
+      workspace: workspace,
+      models: state.models
     }
   },
   dispatch =>({

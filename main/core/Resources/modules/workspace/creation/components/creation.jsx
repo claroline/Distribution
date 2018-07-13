@@ -42,7 +42,7 @@ const CreationForm = props => {
       path: '/workspaces/creation/root',
       title: 'root',
       component: WorkspaceRoot,
-      onLeave: alert('nope')
+      onLeave: console.log('buildRoot')
     },
     {
       path: '/workspaces/creation/resources',
@@ -92,23 +92,24 @@ const ConnectedCreationForm = connect(
   },
   dispatch =>({
     createForm() {
+      console.log('createForm')
       dispatch(formActions.resetForm('workspaces.creation.workspace', WorkspaceTypes.defaultProps, true))
     },
     build(model) {
-      dispatch(actions.copyBase(model))
-      dispatch(actions.fetchModel(model))
+      //dispatch(actions.copyBase(model))
+      //dispatch(actions.fetchModel(model))
     },
     copyRoles(workspace, model) {
-      dispatch(actions.copyRoles(workspace, model))
+      //dispatch(actions.copyRoles(workspace, model))
     },
     copyBaseTools(workspace, model) {
-      dispatch(actions.copyBaseTools(workspace, model))
+      //dispatch(actions.copyBaseTools(workspace, model))
     },
     copyHome(workspace, model) {
-      dispatch(actions.copyHome(workspace, model))
+      //dispatch(actions.copyHome(workspace, model))
     },
     copyResources(workspace, model) {
-      dispatch(actions.copyResources(workspace, model))
+      //dispatch(actions.copyResources(workspace, model))
     }
   })
 )(CreationForm)
