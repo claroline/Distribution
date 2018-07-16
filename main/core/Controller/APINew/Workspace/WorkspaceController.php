@@ -541,6 +541,22 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($this->serializer->serialize($new));
     }
 
+    /**
+     * @Route("/fetch/{id}", name="apiv2_workspace_copy_resources")
+     * @Method("GET")
+     */
+    public function fetchAllWorkspaceDataAction($id)
+    {
+        $workspace = $this->find(Workspace::class, $id);
+
+        return new JsonResponse($this->serializer->serialize($workspace, [
+          Options::WORKSPACE_FETCH_GROUPS,
+          Options::WORKSPACE_FETCH_ORDERED_TOOLS,
+          Options::WORKSPACE_FETCH_HOME,
+          Options::WORKSPACE_FETCH_RESOURCES,
+        ]));
+    }
+
     public function end(Workspace $new)
     {
         //remove the log file
@@ -554,6 +570,16 @@ class WorkspaceController extends AbstractCrudController
     private function getLogFile(Workspace $workspace)
     {
         return $this->logDir.DIRECTORY_SEPARATOR.$workspace->getUuid().'.json';
+    }
+
+    /**
+     * @return array
+     */
+    protected function getRequirements()
+    {
+        return [
+          'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|fetch|\/)).*'],
+        ];
     }
 
     public function getOptions()

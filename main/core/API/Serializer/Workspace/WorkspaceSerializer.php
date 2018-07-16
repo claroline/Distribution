@@ -166,6 +166,18 @@ class WorkspaceSerializer
             }, $groups);
         }
 
+        if (in_array(Options::WORKSPACE_FETCH_RESOURCES, $options)) {
+        }
+
+        if (in_array(Options::WORKSPACE_FETCH_HOME, $options)) {
+        }
+
+        if (in_array(Options::WORKSPACE_FETCH_ORDERED_TOOLS, $options)) {
+            $serialized['orderedTools'] = array_map(function ($orderedTool) {
+                return $this->serializer->serialize($orderedTool);
+            }, $workspace->getOrderedTools()->toArray());
+        }
+
         return $serialized;
     }
 

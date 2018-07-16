@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import {defaultModel} from './model.default.js'
 
 class Roles extends Component {
   constructor(props) {
@@ -8,13 +9,18 @@ class Roles extends Component {
   }
 
   render() {
-    return (<div>roles</div>)
+    return (
+      <div>
+        {defaultModel.roles.map(role => <span key={role.id}>{role.translationKey}</span> )}
+      </div>
+    )
   }
 }
 
 
 const ConnectedRoles = connect(
   state => ({
+    model: state.workspaces.creation.model
   }),
   dispatch => ({
   })

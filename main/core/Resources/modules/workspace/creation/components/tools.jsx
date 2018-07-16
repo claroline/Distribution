@@ -3,6 +3,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import {defaultModel} from './model.default.js'
 
 class Tools extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class Tools extends Component {
   render() {
     return (
       <div>
+        {defaultModel.orderedTools.map(orderedTool => <span key={orderedTool.id}>{orderedTool.tool.name}</span> )}
       </div>
     )
   }
@@ -20,7 +22,7 @@ class Tools extends Component {
 
 const ConnectedTools = connect(
   state => ({
-    model: state.model
+    model: state.workspaces.creation.model
   }),
   dispatch => ({
   })
