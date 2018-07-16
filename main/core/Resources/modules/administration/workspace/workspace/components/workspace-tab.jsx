@@ -2,10 +2,10 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
-import {Routes} from '#/main/app/router'
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
+import {t} from '#/main/core/translation'
+import {matchPath, Routes, withRouter} from '#/main/app/router'
 
+import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 import {WorkspaceCreation} from '#/main/core/workspace/creation/containers/creation.jsx'
 
@@ -13,7 +13,7 @@ import {Workspace}  from '#/main/core/administration/workspace/workspace/compone
 import {Workspaces} from '#/main/core/administration/workspace/workspace/components/workspaces.jsx'
 import {actions}    from '#/main/core/administration/workspace/workspace/actions'
 
-const WorkspaceTabActions = () =>
+const WorkspaceTabActionsComponent = props =>
   <PageActions>
     <FormPageActionsContainer
       formName="workspaces.current"
@@ -35,6 +35,14 @@ const WorkspaceTabActions = () =>
       }}
     />
   </PageActions>
+
+WorkspaceTabActionsComponent.propTypes = {
+  location: T.shape({
+    pathname: T.string
+  }).isRequired
+}
+
+const WorkspaceTabActions = withRouter(WorkspaceTabActionsComponent)
 
 const WorkspaceTabComponent = props =>
   <Routes
