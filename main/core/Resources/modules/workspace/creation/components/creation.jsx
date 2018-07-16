@@ -24,12 +24,13 @@ const CreationForm = props => {
       title: 'form',
       component: WorkspaceForm,
       onEnter: props.createForm,
-      onLeave: () => props.build(props.workspace.model)
+      onLeave: () => props.build(props.workspace.model, props.workspace)
     },
     {
       path: '/workspaces/creation/roles',
       title: 'roles',
       component: WorkspaceRoles,
+      onEnter: () => props.fetchModel(props.workspace.model),
       onLeave: () => props.copyRoles(props.workspace, props.model)
     },
     {
@@ -92,13 +93,14 @@ const ConnectedCreationForm = connect(
   },
   dispatch =>({
     createForm() {
-      console.log('createForm')
       dispatch(formActions.resetForm('workspaces.creation.workspace', WorkspaceTypes.defaultProps, true))
     },
-    build(model) {
-      console.log('build')
-      //dispatch(actions.copyBase(model))
-      //dispatch(actions.fetchModel(model))
+    fetchModel(model) {
+      console.log(model)
+      dispatch(actions.fetchModel(model))
+    },
+    build(model, workspace) {
+      dispatch(actions.copyBase(model, workspace))
     },
     copyRoles(workspace, model) {
       //dispatch(actions.copyRoles(workspace, model))

@@ -9,7 +9,7 @@ actions.loadModel = makeActionCreator(LOAD_MODEL, 'data')
 
 actions.fetchModel = (model) => ({
   [API_REQUEST]: {
-    url: ['apiv2_workspace_get', {id: model.id}],
+    url: ['apiv2_workspace_get', {id: model}],
     request: {
       method: 'GET'
     },
@@ -19,10 +19,11 @@ actions.fetchModel = (model) => ({
   }
 })
 
-actions.copyBase = (workspace) => ({
+actions.copyBase = (modelId, data) => ({
   [API_REQUEST]: {
-    url: ['apiv2_workspace_copy_base', {id: workspace.id}],
+    url: ['apiv2_workspace_copy_base', {workspace: modelId}],
     request: {
+      body: JSON.stringify(data),
       method: 'POST'
     }
   }
