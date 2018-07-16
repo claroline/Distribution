@@ -65,7 +65,6 @@ const EditorComponent = props =>
         context={props.context}
         widgets={props.widgets}
         update={(widgets) => props.update(props.currentTabIndex, widgets)}
-        deleteWidget={(widgetId) => props.deleteWidget(props.currentTab.id, widgetId)}
       />
     </PageContent>
   </ToolPageContainer>
@@ -98,14 +97,11 @@ const Editor = connect(
     update(currentTabIndex, widgets) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}].widgets`, widgets))
     },
-    deleteTab(tabId, push) {
-      dispatch(actions.deleteTab(tabId, push))
-    },
-    deleteWidget(tabId, widgetId) {
-      dispatch(actions.deleteWidget(tabId, widgetId))
-    },
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}]`, tab))
+    },
+    deleteTab(currentTabIndex, tabs, push) {
+      dispatch(actions.deleteTab(currentTabIndex, tabs, push))
     }
   })
 )(EditorComponent)
