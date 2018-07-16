@@ -20,16 +20,16 @@ const widgets = createSelector(
   (currentTab) => currentTab.widgets
 )
 
-// const sortedTabs = createSelector(
-//   [editorTabs],
-//   (editorTabs) => editorTabs.sort((a,b) => a.position - b.position)
-// )
+const sortedEditorTabs = createSelector(
+  [editorTabs],
+  (editorTabs) => editorTabs.sort((a,b) => a.position - b.position)
+)
 
 
 export const selectors = {
   editorTabs,
   currentTab,
   currentTabIndex,
-  // sortedTabs,
+  sortedEditorTabs,
   widgets
 }
