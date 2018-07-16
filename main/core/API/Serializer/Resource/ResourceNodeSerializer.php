@@ -111,6 +111,15 @@ class ResourceNodeSerializer
                 'rights' => $this->rightsManager->getRights($resourceNode),
             ]);
         }
+        $parent = $resourceNode->getParent();
+
+        if (!empty($parent)) {
+            $serializedNode['parent'] = [
+                'id' => $parent->getUuid(),
+                'autoId' => $parent->getId(),
+                'name' => $parent->getName(),
+            ];
+        }
 
         return $this->decorate($resourceNode, $serializedNode, $options);
     }

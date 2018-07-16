@@ -9,11 +9,12 @@ const PlayerNav = props =>
       <NavLink
         className="nav-tab"
         activeClassName="nav-tab-active"
+        exact={true}
         key={tabIndex}
         to={`/tab/${tab.id}`}
       >
         {tab.icon &&
-          <span className={`fa fa-${tab.icon} tab-icon`} />
+          <span className={`fa fa-fw fa-${tab.icon} icon-with-text-right`} />
         }
         {tab.title}
       </NavLink>

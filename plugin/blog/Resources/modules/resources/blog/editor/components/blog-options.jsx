@@ -12,6 +12,7 @@ import {ToolManager} from '#/plugin/blog/resources/blog/editor/components/tool-m
 import {constants} from '#/plugin/blog/resources/blog/constants.js'
 import {FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {withRouter} from '#/main/app/router'
+import {actions as toolbarActions} from '#/plugin/blog/resources/blog/toolbar/store'
 
 const BlogOptionsComponent = props =>
   <section className="resource-section">
@@ -22,7 +23,8 @@ const BlogOptionsComponent = props =>
         name="blog.data.options"
         sections={[
           {
-            id: 'options',
+            id: 'display',
+            icon: 'fa fa-fw fa-desktop',
             title: trans('display', {}, 'icap_blog'),
             fields: [
               {
@@ -48,7 +50,7 @@ const BlogOptionsComponent = props =>
             ]
           },{
             id: 'moderation',
-            icon: 'fa fa-fw fa-lock',
+            icon: 'fa fa-fw fa-gavel',
             title: trans('moderation', {}, 'icap_blog'),
             fields: [
               {
@@ -70,6 +72,7 @@ const BlogOptionsComponent = props =>
                     name: 'commentModerationMode',
                     type: 'choice',
                     required: true,
+                    help: trans('icap_blog_post_form_moderation_help', {}, 'icap_blog'),
                     label: trans('comment_moderation_mode', {}, 'icap_blog'),
                     displayed: props.options.authorizeComment,
                     options: {
@@ -128,10 +131,24 @@ const BlogOptionsComponent = props =>
           }
         ]}
       >
-        <FormSection id="widgets" icon="fa fa-fw fa-wrench" title={trans('icap_blog_options_form_Order_Widget_Right', {}, 'icap_blog')}>
+        <FormSection
+          className='toolmanager'
+          id="widgets"
+          icon="fa fa-fw fa-wrench"
+          title={trans('icap_blog_options_form_Order_Widget_Right', {}, 'icap_blog')}>
           <ToolManager />
         </FormSection>
         <ButtonToolbar>
+          <Button
+            disabled={!props.saveEnabled}
+            primary={true}
+            label={trans('save')}
+            type="callback"
+            className="btn"
+            callback={() => {
+              props.saveOptions(props.blogId, props.tagOptionsChanged)
+            }}
+          />
           <Button
             label={trans('icap_blog_options_form_init', {}, 'icap_blog')}
             type="callback"
@@ -147,17 +164,23 @@ const BlogOptionsComponent = props =>
     
 BlogOptionsComponent.propTypes = {
   options: T.shape(BlogOptionsType.propTypes),
-  cancel: T.func.isRequired,
   mode: T.string,
   history: T.shape({}),
-  saveEnabled: T.bool.isRequired
+  blogId: T.string,
+  cancel: T.func.isRequired,
+  saveEnabled: T.bool.isRequired,
+  tagOptionsChanged: T.bool.isRequired,
+  saveOptions: T.func.isRequired
 }
 
 const BlogOptions = withRouter(connect(
   state => ({
+    blogId: state.blog.data.id,
     options: formSelect.data(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)),
     mode: state.mode,
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME))
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)),
+    tagOptionsChanged:formSelect.data(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).tagTopMode !== formSelect.originalData(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).tagTopMode
+    || formSelect.data(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).maxTag !== formSelect.originalData(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).maxTag
   }), 
   dispatch => ({
     cancel: (history) => {
@@ -165,6 +188,17 @@ const BlogOptions = withRouter(connect(
         formActions.cancelChanges(constants.OPTIONS_EDIT_FORM_NAME)
       )
       history.push('/')
+    },
+    saveOptions: (blogId, tagOptionsChanged) => {
+      dispatch(
+        formActions.saveForm(constants.OPTIONS_EDIT_FORM_NAME, ['apiv2_blog_options_update', {blogId: blogId}])
+      ).then(
+        () => {
+          //if tag options changed
+          if(tagOptionsChanged){
+            dispatch(toolbarActions.getTags(blogId))
+          }
+        })
     }
   })
 )(BlogOptionsComponent))

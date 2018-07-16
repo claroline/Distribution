@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Library\Installation;
 
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\InstallationBundle\Additional\AdditionalInstaller as BaseInstaller;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\SecurityBundle\Command\InitAclCommand;
@@ -27,7 +28,6 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
 
     public function preUpdate($currentVersion, $targetVersion)
     {
-        $this->updateRolesAdmin();
         $dataWebDir = $this->container->getParameter('claroline.param.data_web_dir');
         $fileSystem = $this->container->get('filesystem');
         $publicFilesDir = $this->container->getParameter('claroline.param.public_files_directory');
@@ -387,9 +387,17 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         $this->log('Updating resource icons...');
         $this->container->get('claroline.manager.icon_set_manager')->setLogger($this->logger);
         $this->container->get('claroline.manager.icon_set_manager')->addDefaultIconSets();
-        $this->log('Generating models...');
-        $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(false, true);
-        $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(true, true);
+        $om = $this->container->get('claroline.persistence.object_manager');
+
+        if (!$om->getRepository(Workspace::class)->findOneBy(['code' => 'default_personal', 'personal' => true, 'model' => true])) {
+            $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(true, true);
+        }
+
+        if (!$om->getRepository(Workspace::class)->findOneBy(['code' => 'default_workspace', 'personal' => false, 'model' => true])) {
+            $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(false, true);
+        }
+
+        $this->updateRolesAdmin();
     }
 
     private function setLocale()

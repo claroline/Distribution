@@ -15,14 +15,14 @@ import {BlogOptions} from '#/plugin/blog/resources/blog/editor/components/blog-o
 import {actions as editorActions} from '#/plugin/blog/resources/blog/editor/store'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store'
 import {actions} from '#/plugin/blog/resources/blog/store'
-import {constants} from '#/plugin/blog/resources/blog/constants.js'
+import {constants} from '#/plugin/blog/resources/blog/constants'
 import {hasPermission} from '#/main/core/resource/permissions'
 
 const PlayerComponent = props =>
   <Grid key="blog-grid" className="blog-page">
     <Row className="show-grid">
-      <Col xs={12} md={9} className="blog-content">
-        <RoutedPageContent className="blog-page-content"
+      <Col xs={12} md={9} className={'posts-list'}>
+        <RoutedPageContent
           routes={[
             {
               path: '/author/:authorId',

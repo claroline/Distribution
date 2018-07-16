@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {Router, Routes} from '#/main/app/router'
 import {matchPath, withRouter} from '#/main/app/router'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
+import {actions as formActions} from '#/main/core/data/form/actions'
 import {PageActions} from '#/main/core/layout/page'
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
@@ -14,7 +15,6 @@ import {Editor} from '#/main/core/tools/home/editor/components/editor'
 import {Player} from '#/main/core/tools/home/player/components/player'
 
 const ToolActionsComponent = props =>
-
   <PageActions>
     <FormPageActionsContainer
       formName="editor"
@@ -44,8 +44,8 @@ const Tool = props =>
   <Router>
     <Routes
       redirect={[
-        {from: '/', exact: true, to: '/tab/'+props.ordenedTabs[0].id },
-        {from: '/edit', exact: true, to: '/edit/tab/'+props.ordenedTabs[0].id}
+        {from: '/', exact: true, to: '/tab/'+props.sortedTabs[0].id },
+        {from: '/edit', exact: true, to: '/edit/tab/'+props.sortedTabs[0].id}
       ]}
       routes={[
         {
@@ -57,7 +57,10 @@ const Tool = props =>
           path: '/edit/tab/:id?',
           exact: true,
           component: Editor,
-          onEnter: (params) => props.setCurrentTab(params.id),
+          onEnter: (params) => {
+            props.setCurrentTab(params.id)
+            props.resetForm(props.sortedTabs)
+          },
           disabled: !props.editable
         }
       ]}
@@ -72,23 +75,27 @@ Tool.propTypes = {
       name: T.string.isRequired
     })
   }),
-  ordenedTabs: T.arrayOf(T.shape(
+  sortedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
   editable: T.bool.isRequired,
-  setCurrentTab: T.func.isRequired
+  setCurrentTab: T.func.isRequired,
+  resetForm: T.func.isRequired
 }
 
 const HomeTool = connect(
   (state) => ({
     editable: select.editable(state),
-    ordenedTabs: select.ordenedTabs(state),
+    sortedTabs: select.sortedTabs(state),
     currentTab: select.currentTab(state)
   }),
   (dispatch) => ({
     setCurrentTab(tab){
       dispatch(actions.setCurrentTab(tab))
+    },
+    resetForm(tabs){
+      dispatch(formActions.resetForm('editor', tabs))
     }
   })
 )(Tool)

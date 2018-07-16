@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep'
 
 import {makeFormReducer} from '#/main/core/data/form/reducer'
 import {makeReducer} from '#/main/core/scaffolding/reducer'

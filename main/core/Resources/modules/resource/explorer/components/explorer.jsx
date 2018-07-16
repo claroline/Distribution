@@ -39,9 +39,9 @@ const ResourceExplorer = props => {
     >
       <DataListContainer
         name={`${props.name}.resources`}
-        primaryAction={props.primaryAction && ((resourceNode) => {
+        primaryAction={(resourceNode) => {
           if ('directory' !== resourceNode.meta.type) {
-            return props.primaryAction(resourceNode)
+            return props.primaryAction && props.primaryAction(resourceNode)
           } else {
             // do not open directory, just change the target of the explorer
             return {
@@ -50,7 +50,7 @@ const ResourceExplorer = props => {
               callback: () => props.changeDirectory(resourceNode)
             }
           }
-        })}
+        }}
         fetch={{
           url: ['apiv2_resource_list', {parent: get(props, 'current.id') || get(props, 'root.id') || null}],
           autoload: props.initialized
@@ -62,22 +62,28 @@ const ResourceExplorer = props => {
             displayed: true,
             primary: true
           }, {
+            name: 'meta.published',
+            type: 'boolean',
+            label: trans('published'),
+            displayed: true
+          }, {
             name: 'meta.created',
             label: trans('creation_date'),
             type: 'date',
             alias: 'creationDate',
-            displayed: true,
-            filterable: false
+            displayed: true
           }, {
-            name: 'createdAfter',
-            label: trans('created_after'),
+            name: 'meta.updated',
+            label: trans('modification_date'),
             type: 'date',
-            displayable: false
+            alias: 'modificationDate',
+            displayed: true
           }, {
-            name: 'createdBefore',
-            label: trans('created_before'),
-            type: 'date',
-            displayable: false
+            name: 'resourceType',
+            label: trans('type'),
+            type: 'string',
+            displayable: false,
+            filterable: true
           }
         ]}
         actions={props.actions}

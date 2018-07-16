@@ -16,10 +16,11 @@ import {ToolActions} from '#/main/core/tools/home/components/tool'
 
 const PlayerComponent = props =>
   <ToolPageContainer>
-    <PlayerNav
-      tabs={props.ordenedTabs}
-    />
-
+    {1 < props.sortedTabs.length &&
+      <PlayerNav
+        tabs={props.sortedTabs}
+      />
+    }
     <PageHeader
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
@@ -38,7 +39,7 @@ const PlayerComponent = props =>
 
 PlayerComponent.propTypes = {
   context: T.object.isRequired,
-  ordenedTabs: T.arrayOf(T.shape(
+  sortedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
@@ -52,7 +53,7 @@ const Player = connect(
   (state) => ({
     context: select.context(state),
     editable: select.editable(state),
-    ordenedTabs: select.ordenedTabs(state),
+    sortedTabs: select.sortedTabs(state),
     currentTab: select.currentTab(state),
     widgets: select.widgets(state)
   })
