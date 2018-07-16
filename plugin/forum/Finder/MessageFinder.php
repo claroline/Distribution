@@ -12,7 +12,6 @@
 namespace Claroline\ForumBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Claroline\AppBundle\API\Finder\FinderTrait;
 use Claroline\ForumBundle\Entity\Forum;
 use Doctrine\ORM\QueryBuilder;
