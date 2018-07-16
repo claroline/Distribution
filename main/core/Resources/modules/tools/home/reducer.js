@@ -13,6 +13,7 @@ const reducer = {
   }),
   tabs: makeReducer([], {
     [FORM_SUBMIT_SUCCESS+'/editor']: (state, action) => action.updatedData
+
   }),
   editor: editorReducer
 }

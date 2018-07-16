@@ -39,17 +39,16 @@ const EditorComponent = props =>
     >
       <div className="tab-edition-container">
         <PageActions>
-          <PageGroupActions>
-            <PageAction
-              type="modal"
-              label={trans('configure', {}, 'actions')}
-              icon="fa fa-fw fa-cog"
-              modal={[MODAL_TAB_PARAMETERS, {
-                currentTabData: props.currentTab,
-                save: (Formdata) => props.updateTab(props.currentTabIndex, Formdata)
-              }]}
-            />
-            {1 < props.editorTabs.length &&
+          <PageAction
+            type="modal"
+            label={trans('configure', {}, 'actions')}
+            icon="fa fa-fw fa-cog"
+            modal={[MODAL_TAB_PARAMETERS, {
+              currentTabData: props.currentTab,
+              save: (Formdata) => props.updateTab(props.currentTabIndex, Formdata)
+            }]}
+          />
+          {1 < props.editorTabs.length &&
                 <PageAction
                   type="callback"
                   label={trans('delete')}
@@ -60,8 +59,7 @@ const EditorComponent = props =>
                   }}
                   callback={() => props.deleteTab(props.currentTabIndex, props.editorTabs, props.history.push)}
                 />
-            }
-          </PageGroupActions>
+          }
         </PageActions>
         <ToolActions />
       </div>
@@ -97,6 +95,7 @@ EditorComponent.propTypes = {
   updateTab: T.func,
   currentTabIndex: T.number.isRequired
 }
+
 
 const Editor = connect(
   state => ({
