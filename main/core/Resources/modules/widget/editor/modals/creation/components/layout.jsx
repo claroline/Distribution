@@ -51,7 +51,7 @@ LayoutPreview.propTypes = {
  */
 const LayoutModalComponent = props =>
   <Modal
-    {...omit(props, 'selectLayout', 'create', 'dispatch')}
+    {...omit(props, 'selectLayout', 'create')}
     icon="fa fa-fw fa-plus"
     title={trans('new_widget', {}, 'widget')}
     subtitle={trans('new_widget_select', {}, 'widget')}

@@ -8,7 +8,6 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {
   PageHeader,
   PageContent,
-  PageGroupActions,
   PageActions,
   PageAction
 } from '#/main/core/layout/page'
@@ -33,6 +32,7 @@ const EditorComponent = props =>
       context={props.context}
       create={(data) => props.createTab(props.editorTabs.length, data)}
     />
+    {console.log(props.editorTabs)}
     <PageHeader
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}

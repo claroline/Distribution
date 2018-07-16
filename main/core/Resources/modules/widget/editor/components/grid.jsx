@@ -100,11 +100,9 @@ const WidgetGridEditor = props =>
               message: trans('widget_delete_confirm_message', {}, 'widget')
             },
             callback: () => {
-              props.update(
-                props.widgets
-                  .slice(0) // copy array
-                  .splice(index, 1) // remove element
-              )
+              const widgets = props.widgets.slice(0) // copy array
+              widgets.splice(index, 1) // remove element
+              props.update(widgets)
             }
           }
         ]}
