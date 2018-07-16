@@ -58,7 +58,7 @@ const HomeTool = connect(
   (state) => ({
     editable: selectors.editable(state),
     sortedTabs: selectors.sortedTabs(state),
-    sortedEditorTabs: editorSelectors.sortedEditorTabs(state),
+    // sortedEditorTabs: editorSelectors.sortedEditorTabs(state),
     currentTab: selectors.currentTab(state)
   }),
   (dispatch) => ({

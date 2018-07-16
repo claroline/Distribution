@@ -1,9 +1,12 @@
 import React from 'react'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form'
+import {selectors} from '#/main/core/tools/home/editor/selectors'
+import {actions} from '#/main/core/tools/home/editor/actions'
 
-const TabForm = props =>
+const TabFormComponent = props =>
   <FormContainer
     level={props.level}
     name={props.name}
@@ -44,8 +47,8 @@ const TabForm = props =>
             {
               name: 'position',
               type: 'number',
-              // onChange: recalculer les autres positions ici
-              label: trans('position')
+              label: trans('position'),
+              onChange: (newPosition) => props.changePosition(props.editorTabs, props.currentTab, newPosition)
             },
             {
               name: 'icon',
@@ -66,6 +69,18 @@ const TabForm = props =>
       ]
     }
   />
+
+const TabForm = connect(
+  state => ({
+    editorTabs: selectors.editorTabs(state),
+    currentTab: selectors.currentTab(state)
+  }),
+  dispatch => ({
+    changePosition(editorTabs, currentTab, newPosition) {
+      dispatch(actions.changePosition(editorTabs, currentTab, newPosition))
+    }
+  })
+)(TabFormComponent)
 
 
 export {

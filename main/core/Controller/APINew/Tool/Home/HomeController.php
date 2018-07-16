@@ -63,7 +63,7 @@ class HomeController extends AbstractCrudController
             }
         }
 
-        return new JsonResponse($tabs);
+        return new JsonResponse($this->decodeRequest($request));
     }
 
     /** @return string */

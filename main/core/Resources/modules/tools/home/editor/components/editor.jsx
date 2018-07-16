@@ -32,7 +32,6 @@ const EditorComponent = props =>
       context={props.context}
       create={(data) => props.createTab(props.editorTabs.length, data)}
     />
-    {console.log(props.editorTabs)}
     <PageHeader
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
