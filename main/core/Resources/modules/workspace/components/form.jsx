@@ -286,7 +286,7 @@ const WorkspaceFormComponent = (props) =>
     ]}
   >
     {props.children}
-  </FormContainer>)}
+  </FormContainer>
 
 WorkspaceFormComponent.propTypes = {
   children: T.any,

@@ -1,10 +1,9 @@
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {makeActionCreator} from '#/main/core/scaffolding/actions'
 
 export const UPDATE_DELETED_TAB = 'UPDATE_DELETED_TABS'
 export const UPDATE_DELETED_WIDGET = 'UPDATE_DELETED_WIDGET'
 export const actions = {}
-
-actions.deleteTab = (currentTabIndex, tabs, push) => (dispatch) => {
 
 actions.updateDeletedTab = makeActionCreator(UPDATE_DELETED_TAB, 'tabId')
 actions.deleteTab = (tabId, push) => ({
