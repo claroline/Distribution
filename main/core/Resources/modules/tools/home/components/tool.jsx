@@ -6,7 +6,7 @@ import {Router, Routes} from '#/main/app/router'
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {selectors} from '#/main/core/tools/home/selectors'
-import {selectors as editorSelectors} from '#/main/core/tools/home/editor/selectors'
+
 import {actions} from '#/main/core/tools/home/actions'
 import {Editor} from '#/main/core/tools/home/editor/components/editor'
 import {Player} from '#/main/core/tools/home/player/components/player'
