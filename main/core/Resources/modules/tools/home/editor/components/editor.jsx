@@ -30,7 +30,7 @@ const EditorComponent = props =>
     <EditorNav
       tabs={props.editorTabs}
       context={props.context}
-      create={(data) => props.createTab(props.editorTabs.length, data)}
+      create={(data) => props.createTab(props.editorTabs, data)}
     />
     <PageHeader
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
@@ -113,8 +113,12 @@ const Editor = connect(
     update(currentTabIndex, widgets) {
       dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}].widgets`, widgets))
     },
-    createTab(tabIndex, tab){
-      dispatch(formActions.updateProp('editor', `tabs[${tabIndex}]`, tab))
+    createTab(editorTabs, tab){
+      if(tab.position !== editorTabs.length + 1) {
+        dispatch(EditorActions.createTab(editorTabs, tab))
+      } else {
+        dispatch(formActions.updateProp('editor', `tabs[${editorTabs.length}]`, tab))
+      }
     },
     updateTab(currentTabIndex, tab) {
       dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}]`, tab))
