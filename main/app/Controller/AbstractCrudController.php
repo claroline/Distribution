@@ -119,14 +119,15 @@ abstract class AbstractCrudController extends AbstractApiController
      *     }
      * )
      *
+     * @param Request    $request
      * @param string|int $id
      * @param string     $class
-     * @param string     $env
      *
      * @return JsonResponse
      */
-    public function getAction($id, $class)
+    public function getAction(Request $request, $id, $class)
     {
+        $query = $request->query->all();
         $object = $this->find($class, $id);
 
         $options = $this->options['get'];
@@ -209,6 +210,7 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     public function createAction(Request $request, $class)
     {
+        $query = $request->query->all();
         $options = $this->options['create'];
 
         if (isset($query['options'])) {
@@ -226,7 +228,7 @@ abstract class AbstractCrudController extends AbstractApiController
         }
 
         return new JsonResponse(
-            $this->serializer->serialize($object, $this->options['get']),
+            $this->serializer->serialize($object, $options),
             201
         );
     }
@@ -253,6 +255,7 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     public function updateAction($id, Request $request, $class)
     {
+        $query = $request->query->all();
         $data = $this->decodeRequest($request);
 
         if (!isset($data['id'])) {
@@ -276,7 +279,7 @@ abstract class AbstractCrudController extends AbstractApiController
         }
 
         return new JsonResponse(
-            $this->serializer->serialize($object, $this->options['get'])
+            $this->serializer->serialize($object, $options)
         );
     }
 
