@@ -18,7 +18,7 @@ import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-t
 import {ToolActions} from '#/main/core/tools/home/components/tool-actions'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {selectors} from '#/main/core/tools/home/selectors'
-import {actions as EditorActions} from '#/main/core/tools/home/editor/actions'
+import {actions as editorActions} from '#/main/core/tools/home/editor/actions'
 import {actions} from '#/main/core/tools/home/actions'
 import {selectors as editorSelectors} from '#/main/core/tools/home/editor/selectors'
 import {MODAL_TAB_PARAMETERS} from '#/main/core/tools/home/editor/modals/parameters'
@@ -120,7 +120,7 @@ const Editor = connect(
       dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}]`, tab))
     },
     deleteTab(currentTabIndex, editorTabs, push) {
-      dispatch(EditorActions.deleteTab(currentTabIndex, editorTabs, push))
+      dispatch(editorActions.deleteTab(currentTabIndex, editorTabs, push))
     }
   })
 )(EditorComponent)

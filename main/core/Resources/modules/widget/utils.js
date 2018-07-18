@@ -1,5 +1,7 @@
 import get from 'lodash/get'
 
+import {asset} from '#/main/core/scaffolding/asset'
+
 function computeStyles(widget) {
   const styles = {}
   const display = get(widget, 'display') || {}
@@ -16,7 +18,7 @@ function computeStyles(widget) {
       styles.background = display.background
       break
     case 'image':
-      styles.background = `url(${display.background})`
+      styles.background = `url(${asset(display.background.url)})`
       break
   }
 
