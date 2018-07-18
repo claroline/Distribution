@@ -57,8 +57,7 @@ const TabFormComponent = props =>
               type: 'string',
               label: trans('icon'),
               help: trans('icon_tab_help')
-            },
-            {
+            }, {
               name: 'poster',
               label: trans('poster'),
               type: 'file',

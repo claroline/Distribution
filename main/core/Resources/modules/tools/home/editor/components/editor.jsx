@@ -4,13 +4,14 @@ import {connect} from 'react-redux'
 import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
-import {ToolPageContainer} from '#/main/core/tool/containers/page'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {
+  PageContainer,
   PageHeader,
   PageContent,
   PageActions,
-  PageAction
+  PageAction,
+  PageGroupActions
 } from '#/main/core/layout/page'
 import {WidgetGridEditor} from '#/main/core/widget/editor/components/grid'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
@@ -24,21 +25,20 @@ import {selectors as editorSelectors} from '#/main/core/tools/home/editor/select
 import {MODAL_TAB_PARAMETERS} from '#/main/core/tools/home/editor/modals/parameters'
 import {EditorNav} from '#/main/core/tools/home/editor/components/nav'
 
-
 const EditorComponent = props =>
-
-  <ToolPageContainer>
+  <PageContainer>
     <EditorNav
       tabs={props.editorTabs}
       context={props.context}
       create={(data) => props.createTab(props.editorTabs, data)}
     />
+
     <PageHeader
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
     >
-      <div className="tab-edition-container">
-        <PageActions>
+      <PageActions>
+        <PageGroupActions>
           <PageAction
             type="modal"
             label={trans('configure', {}, 'actions')}
@@ -48,22 +48,26 @@ const EditorComponent = props =>
               save: (Formdata) => props.updateTab(props.editorTabs, Formdata, props.currentTab)
             }]}
           />
+
           {1 < props.editorTabs.length &&
-                <PageAction
-                  type="callback"
-                  label={trans('delete')}
-                  icon="fa fa-fw fa-trash-o"
-                  confirm={{
-                    title: trans('home_tab_delete_confirm_title'),
-                    message: trans('home_tab_delete_confirm_message')
-                  }}
-                  callback={() => props.deleteTab(props.currentTabIndex, props.editorTabs, props.history.push)}
-                />
+            <PageAction
+              type="callback"
+              label={trans('delete')}
+              icon="fa fa-fw fa-trash-o"
+              dangerous={true}
+              confirm={{
+                title: trans('home_tab_delete_confirm_title'),
+                message: trans('home_tab_delete_confirm_message')
+              }}
+              callback={() => props.deleteTab(props.currentTabIndex, props.editorTabs, props.history.push)}
+            />
           }
-        </PageActions>
+        </PageGroupActions>
+
         <ToolActions />
-      </div>
+      </PageActions>
     </PageHeader>
+
     <PageContent>
       <WidgetGridEditor
         context={props.context}
@@ -71,7 +75,7 @@ const EditorComponent = props =>
         update={(widgets) => props.update(props.currentTabIndex, widgets)}
       />
     </PageContent>
-  </ToolPageContainer>
+  </PageContainer>
 
 
 EditorComponent.propTypes = {
@@ -81,9 +85,6 @@ EditorComponent.propTypes = {
   )).isRequired,
   update: T.func.isRequired,
   editorTabs: T.arrayOf(T.shape(
-    TabTypes.propTypes
-  )),
-  sortedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   setCurrentTab: T.func.isRequired,
@@ -100,7 +101,6 @@ EditorComponent.propTypes = {
 const Editor = connect(
   state => ({
     context: selectors.context(state),
-    // sortedTabs: editorSelectors.sortedTabs(state),
     editorTabs: editorSelectors.editorTabs(state),
     widgets: editorSelectors.widgets(state),
     currentTabIndex: editorSelectors.currentTabIndex(state),
