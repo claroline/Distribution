@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 import {actions as formActions} from '#/main/core/data/form/actions'
