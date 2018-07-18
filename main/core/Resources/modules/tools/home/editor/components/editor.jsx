@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 import {ToolPageContainer} from '#/main/core/tool/containers/page'
@@ -44,7 +45,7 @@ const EditorComponent = props =>
             icon="fa fa-fw fa-cog"
             modal={[MODAL_TAB_PARAMETERS, {
               currentTabData: props.currentTab,
-              save: (Formdata) => props.updateTab(props.currentTabIndex, Formdata)
+              save: (Formdata) => props.updateTab(props.editorTabs, Formdata, props.currentTab)
             }]}
           />
           {1 < props.editorTabs.length &&
@@ -120,8 +121,12 @@ const Editor = connect(
         dispatch(formActions.updateProp('editor', `tabs[${editorTabs.length}]`, tab))
       }
     },
-    updateTab(currentTabIndex, tab) {
-      dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}]`, tab))
+    updateTab(editorTabs, tab, currentTab) {
+      if(tab.position !== currentTab.position) {
+        dispatch(EditorActions.updateTab(editorTabs, tab, currentTab))
+      } else {
+        dispatch(formActions.updateProp('editor', `tabs[${currentTab.index}]`, tab))
+      }
     },
     deleteTab(currentTabIndex, editorTabs, push) {
       dispatch(EditorActions.deleteTab(currentTabIndex, editorTabs, push))
