@@ -6,15 +6,18 @@ import {trans} from '#/main/core/translation'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
-
 import {FormContainer} from '#/main/core/data/form/containers/form'
 
 
 const WorkspaceComponent = (props) => {
   const modelChoices = {}
+  let defaultModel = null
 
   props.models.data.forEach(model => {
     modelChoices[model.uuid] = model.code
+    if (model.code === 'default_workspace') {
+      defaultModel = model.code
+    }
   })
 
 
@@ -46,7 +49,8 @@ const WorkspaceComponent = (props) => {
               options: {
                 condensed: true,
                 choices: modelChoices
-              }
+              },
+              value: defaultModel
             }
           ]
         }, {

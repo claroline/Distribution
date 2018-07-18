@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import {Logs} from '#/main/core/workspace/creation/components/log/components/logs.jsx'
 
 class Resources extends Component {
   constructor(props) {
@@ -8,7 +9,7 @@ class Resources extends Component {
   }
 
   render() {
-    return (<div>resources</div>)
+    return (<div>resources<Logs/></div>)
   }
 }
 

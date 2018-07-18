@@ -12,9 +12,10 @@
 namespace Claroline\AppBundle\Logger;
 
 use Claroline\AppBundle\API\Utils\ArrayUtils;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class JsonLogger
+class JsonLogger implements LoggerInterface
 {
     private $file;
     private $cache;
@@ -78,8 +79,9 @@ class JsonLogger
         file_put_contents($this->file, json_encode($data));
     }
 
-    public function log($logLevel = LogLevel::INFO, $message, $separator = "\n")
+    public function log($level, $message, array $context = [])
     {
+        $separator = '\n';
         $data = $this->get();
         $time = date('m-d-y h:i:s').': ';
         $line = $time.$message;
@@ -91,9 +93,37 @@ class JsonLogger
         $this->write($data);
     }
 
-    public function info($message, $separator = "\n")
+    public function info($message, array $context = [])
     {
-        $this->log(LogLevel::INFO, $message, $separator);
+        $this->log(LogLevel::INFO, $message);
+    }
+
+    public function emergency($message, array $context = [])
+    {
+    }
+
+    public function alert($message, array $context = [])
+    {
+    }
+
+    public function critical($message, array $context = [])
+    {
+    }
+
+    public function error($message, array $context = [])
+    {
+    }
+
+    public function warning($message, array $context = [])
+    {
+    }
+
+    public function debug($message, array $context = [])
+    {
+    }
+
+    public function notice($message, array $context = [])
+    {
     }
 
     public function get($property = null)

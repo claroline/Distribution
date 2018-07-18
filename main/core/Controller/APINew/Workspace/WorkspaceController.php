@@ -15,6 +15,7 @@ use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\AppBundle\Logger\JsonLogger;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
@@ -469,15 +470,21 @@ class WorkspaceController extends AbstractCrudController
     /**
      * @Route("/{workspace}/copy/base", name="apiv2_workspace_copy_base")
      * @Method("POST")
-     * @ParamConverter("workspace", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"workspace": "uuid"}})
      */
-    public function copyBaseAction(Workspace $workspace, Request $request)
+    public function copyBaseAction($workspace, Request $request)
     {
+        $workspace = $this->find(Workspace::class, $workspace);
+
+        if (!$workspace) {
+            $workspace = $this->workspaceManager->getDefaultModel();
+        }
+
         $data = $this->decodeRequest($request);
         $oldSerialized = $this->serializer->serialize($workspace);
         $data = array_merge($oldSerialized, $data);
         unset($data['uuid'], $data['id']);
         $new = $this->crud->create(Workspace::class, $data, [Options::LIGHT_COPY]);
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
 
         return new JsonResponse($this->serializer->serialize($new));
     }
@@ -491,7 +498,7 @@ class WorkspaceController extends AbstractCrudController
     public function copyRolesActions(Workspace $new, Workspace $old)
     {
         //add voter check here
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
         $this->workspaceManager->duplicateWorkspaceRoles($old, $new, $new->getCreator());
 
         //here we must edit the default roles
@@ -507,7 +514,7 @@ class WorkspaceController extends AbstractCrudController
      */
     public function copyBaseToolsAction(Workspace $new, Workspace $old)
     {
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
         $this->workspaceManager->duplicateOrderedTools($old, $new);
 
         return new JsonResponse($this->serializer->serialize($new));
@@ -521,7 +528,7 @@ class WorkspaceController extends AbstractCrudController
      */
     public function copyHomeActions(Workspace $new, Workspace $old)
     {
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
         $this->workspaceManager->duplicateHomeTabs($old, $new);
 
         return new JsonResponse($this->serializer->serialize($new));
@@ -535,17 +542,17 @@ class WorkspaceController extends AbstractCrudController
      */
     public function copyResourcesActions(Workspace $new, Workspace $old)
     {
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile()));
+        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
         $this->workspaceManager->duplicateAllResources($old, $new, $new->getCreator());
 
         return new JsonResponse($this->serializer->serialize($new));
     }
 
     /**
-     * @Route("/fetch/{id}", name="apiv2_workspace_copy_resources")
+     * @Route("/{id}/full", name="apiv2_workspace_get_full")
      * @Method("GET")
      */
-    public function fetchAllWorkspaceDataAction($id)
+    public function getFullAction($id)
     {
         $workspace = $this->find(Workspace::class, $id);
 
@@ -578,7 +585,7 @@ class WorkspaceController extends AbstractCrudController
     protected function getRequirements()
     {
         return [
-          'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|fetch|\/)).*'],
+          'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|\/)).*'],
         ];
     }
 
