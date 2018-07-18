@@ -115,14 +115,14 @@ const Editor = connect(
     },
     createTab(editorTabs, tab){
       if(tab.position !== editorTabs.length + 1) {
-        dispatch(EditorActions.createTab(editorTabs, tab))
+        dispatch(editorActions.createTab(editorTabs, tab))
       } else {
         dispatch(formActions.updateProp('editor', `tabs[${editorTabs.length}]`, tab))
       }
     },
     updateTab(editorTabs, tab, currentTab, currentTabIndex) {
       if(tab.position !== currentTab.position) {
-        dispatch(EditorActions.updateTab(editorTabs, tab, currentTab))
+        dispatch(editorActions.updateTab(editorTabs, tab, currentTab))
       } else {
         dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}]`, tab))
       }
