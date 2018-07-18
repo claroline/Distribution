@@ -44,7 +44,7 @@ const EditorComponent = props =>
             icon="fa fa-fw fa-cog"
             modal={[MODAL_TAB_PARAMETERS, {
               currentTabData: props.currentTab,
-              save: (Formdata) => props.updateTab(props.editorTabs, Formdata, props.currentTab)
+              save: (formData) => props.updateTab(props.editorTabs, formData, props.currentTab, props.currentTabIndex )
             }]}
           />
 
@@ -120,11 +120,11 @@ const Editor = connect(
         dispatch(formActions.updateProp('editor', `tabs[${editorTabs.length}]`, tab))
       }
     },
-    updateTab(editorTabs, tab, currentTab) {
+    updateTab(editorTabs, tab, currentTab, currentTabIndex) {
       if(tab.position !== currentTab.position) {
         dispatch(EditorActions.updateTab(editorTabs, tab, currentTab))
       } else {
-        dispatch(formActions.updateProp('editor', `tabs[${currentTab.index}]`, tab))
+        dispatch(formActions.updateProp('editor', `tabs[${currentTabIndex}]`, tab))
       }
     },
     deleteTab(currentTabIndex, editorTabs, push) {
