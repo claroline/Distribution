@@ -22,12 +22,20 @@ function getType(resourceNode) {
 /**
  * Loads the available actions apps from configuration.
  *
- * @param {Array} resourceNodes
- * @param {Array} actions
+ * @param {Array}  resourceNodes
+ * @param {Array}  actions
+ * @param {object} nodesRefresher - an object containing methods to update the node context.
  *
  * @return {Promise}
  */
-function loadActions(resourceNodes, actions) {
+function loadActions(resourceNodes, actions, nodesRefresher) {
+  // adds default refresher actions
+  const refresher = Object.assign({
+    add: (resourceNodes) => resourceNodes,
+    update: (resourceNodes) => resourceNodes,
+    delete: (resourceNodes) => resourceNodes
+  }, nodesRefresher)
+
   // get all actions declared
   const asyncActions = getApps('actions')
 
@@ -41,7 +49,7 @@ function loadActions(resourceNodes, actions) {
     // generates action from loaded modules
     const realActions = {}
     loadedActions.map(actionModule => {
-      const generated = actionModule.action(resourceNodes)
+      const generated = actionModule.action(resourceNodes, refresher)
       realActions[generated.name] = generated
     })
 
@@ -55,10 +63,11 @@ function loadActions(resourceNodes, actions) {
 /**
  * Gets the list of available actions for a resource.
  *
- * @param {Array}   resourceNodes - the current resource node
- * @param {boolean} withDefault   - include the default action (most of the time, it's not useful to get it)
+ * @param {Array}   resourceNodes  - the current resource node
+ * @param {object}  nodesRefresher - an object containing methods to update the node context.
+ * @param {boolean} withDefault    - include the default action (most of the time, it's not useful to get it)
  */
-function getActions(resourceNodes, withDefault = false) {
+function getActions(resourceNodes, nodesRefresher, withDefault = false) {
   const resourceTypes = uniq(resourceNodes.map(resourceNode => resourceNode.meta.type))
 
   const collectionActions = resourceTypes
@@ -74,15 +83,15 @@ function getActions(resourceNodes, withDefault = false) {
       return uniqBy(accumulator.concat(typeActions), 'name')
     }, [])
 
-  return loadActions(resourceNodes, collectionActions)
+  return loadActions(resourceNodes, collectionActions, nodesRefresher)
 }
 
-function getDefaultAction(resourceNode) {
+function getDefaultAction(resourceNode, nodesRefresher) {
   const defaultAction = getType(resourceNode).actions
     .find(action => action.default)
 
   if (hasPermission(defaultAction.permission, resourceNode)) {
-    return loadActions([resourceNode], [defaultAction])
+    return loadActions([resourceNode], [defaultAction], nodesRefresher)
       .then(loadActions => loadActions[0] || null)
   }
 

@@ -1,4 +1,4 @@
-import {makeReducer} from '#/main/core/scaffolding/reducer'
+import {makeReducer} from '#/main/app/store/reducer'
 
 import {reducer as editorReducer} from '#/main/core/tools/home/editor/reducer'
 import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
@@ -12,7 +12,7 @@ const reducer = {
     [CURRENT_TAB]: (state, action) => action.tab
   }),
   tabs: makeReducer([], {
-    [FORM_SUBMIT_SUCCESS+'/editor']: (state, action) => action.updatedData
+    [FORM_SUBMIT_SUCCESS+'/editor']: (state, action) => action.updatedData.tabs
   }),
   editor: editorReducer
 }
