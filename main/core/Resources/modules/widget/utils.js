@@ -20,9 +20,9 @@ function computeStyles(widget) {
       break
     case 'image':
       if (isObject(display.background)){
-        styles.background = `url(${asset(display.background.url)})`
+        styles.background = `url(${asset(display.background.url)}) center center no-repeat`
       } else {
-        styles.background = `url(${asset(display.background)})`
+        styles.background = `url(${asset(display.background)}) center center no-repeat`
       }
       break
   }

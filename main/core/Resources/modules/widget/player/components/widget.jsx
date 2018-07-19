@@ -38,7 +38,7 @@ WidgetCol.propTypes = {
  * @constructor
  */
 const Widget = props =>
-  <section className={`widget widget-background-${props.widget.display.backgroundType}`} style={computeStyles(props.widget)}>
+  <section className="widget" style={computeStyles(props.widget)}>
     {props.widget.name &&
       <h2 className="h-first widget-title">{props.widget.name}</h2>
     }
