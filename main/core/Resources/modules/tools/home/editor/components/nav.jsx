@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import merge from 'lodash/merge'
+import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
@@ -11,7 +12,7 @@ import {MODAL_TAB_CREATE} from '#/main/core/tools/home/editor/modals/creation'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
 const EditorNav = props =>
-  <nav className="tool-nav">
+  <nav className={classes('tool-nav', {'tool-nav-poster': props.poster})}>
     {props.tabs.map((tab, tabIndex) =>
       <Button
         key={tabIndex}
@@ -48,6 +49,7 @@ EditorNav.propTypes = {
     TabTypes.propTypes
   )),
   create: T.func,
+  poster: T.bool,
   context: T.shape({
     type: T.string.isRequired,
     data: T.shape({

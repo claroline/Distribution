@@ -1,6 +1,8 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import classes from 'classnames'
+import isNull from 'lodash/isNull'
 
 import {trans} from '#/main/core/translation'
 import {actions as formActions} from '#/main/core/data/form/actions'
@@ -30,11 +32,14 @@ const EditorComponent = props =>
       tabs={props.editorTabs}
       context={props.context}
       create={(data) => props.createTab(props.editorTabs, data)}
+      poster={!isNull(props.currentTab.poster)}
     />
 
     <PageHeader
-      className={props.currentTab.centerTitle ? 'center-page-title' : ''}
+      className={classes({'page-header-poster': !!props.currentTab.poster})}
+      centerTitle={props.currentTab.centerTitle}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
+      poster={props.currentTab.poster ? props.currentTab.poster.url: undefined}
     >
       <PageActions>
         <PageGroupActions>

@@ -6,8 +6,16 @@
   text-align: center;
 }
 
+.page-header-poster {
+  position: relative !important;
+  top: 0;
+  left: 0;
+  border-radius: 6px 6px 0 0;
+}
+
 .tool-nav {
   display: flex;
+  z-index: 1;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -23,19 +31,31 @@
     border-right: 1px solid @panel-default-border;
     border-bottom: 1px solid @panel-default-border;
   }
-
+  .nav-add-tab {
+    padding: 11px @padding-large-horizontal;
+  }
+  
   .nav-add-tab,
   .nav-tab {
     color: @text-color;
     padding: @padding-large-vertical @padding-large-horizontal;
+    background-color: #fafafa ;
+
 
     &:hover {
-      background: rgba(0,0,0,.03);
+      background: #f2f2f2;
       color: rgba(0,0,0,.95);
     }
 
     &.active {
       background: #ebebeb;
     }
+    &.default {
+      background-color: #fafafa;
+    }
   }
+}
+
+.tool-nav-poster {
+  position : absolute;
 }
