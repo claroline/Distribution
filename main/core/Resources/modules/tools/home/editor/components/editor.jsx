@@ -22,6 +22,7 @@ import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-t
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {selectors} from '#/main/core/tools/home/selectors'
+import {actions} from '#/main/core/tools/home/actions'
 import {selectors as editorSelectors} from '#/main/core/tools/home/editor/selectors'
 import {actions as editorActions} from '#/main/core/tools/home/editor/actions'
 import {Tabs} from '#/main/core/tools/home/components/tabs'
@@ -69,7 +70,6 @@ const EditorComponent = props =>
 
     <PageContent>
       <FormContainer
-        level={props.level}
         name="editor"
         dataPart={`[${props.currentTabIndex}]`}
         buttons={true}

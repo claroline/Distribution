@@ -17,7 +17,7 @@ actions.deleteTab = (tabs, tabToDelete) => (dispatch) => {
 
   // inject updated data into the form
   dispatch(formActions.update('editor', newTabs
-   // recalculate tabs positions
+    // recalculate tabs positions
     .sort((a,b) => a.position - b.position)
     .map((tab, index) => merge({}, tab, {
       position: index + 1

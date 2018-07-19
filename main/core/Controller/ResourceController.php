@@ -47,7 +47,6 @@ class ResourceController
 
     public function showAction(ResourceNode $resourceNode)
     {
-
     }
 
     /**

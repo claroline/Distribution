@@ -1,10 +1,9 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
-import {Router, Routes} from '#/main/app/router'
-import {Page, PageContent} from '#/main/core/layout/page'
-
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
+import {Routes} from '#/main/app/router'
 import {Route as RouteTypes} from '#/main/app/router/prop-types'
+import {PageContent} from '#/main/core/layout/page'
 
 const RoutedPageContent = props =>
   <PageContent
