@@ -1,7 +1,12 @@
 /*
  * Base styles for widgets.
  */
-
+ .widget-background-image {
+   background-size: cover;
+   background-position: center center;
+   background-repeat: no-repeat;
+ }
+ 
 .widget {
     display: flex !important;
     flex-direction: column;
@@ -13,12 +18,6 @@
     border-radius: @widget-border-radius;
 
     .box-shadow(@widget-box-shadow);
-}
-
-.widget-background-image {
-  background-size: cover; !important
-  background-position: center center;
-  background-repeat: no-repeat;
 }
 
 // Widget contents

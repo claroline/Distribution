@@ -73,7 +73,7 @@ const WidgetForm = props =>
                 label: trans('backgroundImage'),
                 type: 'image',
                 required: true,
-                displayed: (widget) => widget.display && 'image' === widget.display.backgroundType,
+                displayed: (widget) => widget.display && 'image' === widget.display.backgroundType
               }, {
                 name: 'display.background',
                 label: trans('backgroundColor'),
