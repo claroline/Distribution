@@ -57,7 +57,7 @@ class ExternalSynchronizationManager
     private $externalUserManager;
     /** @var ExternalSynchronizationGroupManager */
     private $externalGroupManager;
-    /** @var \Claroline\CasBundle\Manager\CasManager|object */
+    /** @var \Claroline\AuthenticationBundle\Manager\Cas\CasManager|object */
     private $casManager;
     /** @var PlatformConfigurationHandler */
     private $platformConfigHandler;
@@ -117,7 +117,7 @@ class ExternalSynchronizationManager
         $this->sourcesArray = $this->loadExternalSources();
         $this->casManager = null;
         $this->utilities = $utilities;
-        if ($pluginManager->isLoaded('ClarolineCasBundle')) {
+        if ($pluginManager->isLoaded('ClarolineAuthenticationBundle')) {
             $this->casManager = $container->get('claroline.manager.cas_manager');
         }
     }

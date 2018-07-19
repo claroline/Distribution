@@ -1,0 +1,9 @@
+claro_cas_admin:
+    resource: "@ClarolineAuthenticationBundle/Controller/Administration/Cas/CasConfigurationController.php"
+    type: annotation
+    prefix: /
+
+claro_cas_connection:
+    resource: "@ClarolineAuthenticationBundle/Controller/Cas/CasConnectionController.php"
+    type: annotation
+    prefix: /cas
