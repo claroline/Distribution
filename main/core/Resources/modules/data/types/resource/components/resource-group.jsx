@@ -1,14 +1,15 @@
 import React from 'react'
-import {connect} from 'react-redux'
+
+import {Button} from '#/main/app/action/components/button'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {trans} from '#/main/core/translation'
-import {FormGroup as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
-import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
+import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
+import {FormGroup} from '#/main/core/layout/form/components/group/form-group'
 import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 
-const ResourceGroupComponent = props =>
+const ResourceGroup = props =>
   <FormGroup
     {...props}
     error={props.error && typeof props.error === 'string' ? props.error : undefined}
@@ -23,47 +24,39 @@ const ResourceGroupComponent = props =>
         disabled={true}
       />
       <div className="input-group-btn">
-        <button
+        <Button
           className="btn btn-default"
-          type="button"
-          onClick={() => props.pickResource(props.pickerTitle, props.pickerCurrent, props.onChange)}
-        >
-          <span className="fa fa-fw fa-folder" />
-        </button>
+          type="modal"
+          icon="fa fa-fw fa-folder"
+          label=""
+          modal={[MODAL_RESOURCE_EXPLORER, {
+            title: props.picker.title,
+            current: props.picker.current,
+            root: props.picker.root,
+            selectAction: (selected) => ({
+              type: 'callback',
+              callback: () => props.onChange(selected[0])
+            })
+          }]}
+        />
       </div>
     </div>
   </FormGroup>
 
-implementPropTypes(ResourceGroupComponent, FormGroupWithFieldTypes, {
-  value: T.shape({
-    id: T.string,
-    name: T.string
-  }),
-  pickerTitle: T.string.isRequired,
-  error: T.oneOfType([T.string, T.object]),
-  pickResource: T.func.isRequired
+implementPropTypes(ResourceGroup, FormGroupWithFieldTypes, {
+  picker: T.shape({
+    title: T.string,
+    current: T.shape(ResourceNodeTypes.propTypes),
+    root: T.shape(ResourceNodeTypes.propTypes)
+  })
 }, {
   value: null,
-  pickerTitle: trans('resource_picker'),
-  pickerCurrent: null
+  picker: {
+    title: trans('resource_picker'),
+    current: null,
+    root: null
+  }
 })
-
-const ResourceGroup = connect(
-  null,
-  dispatch => ({
-    pickResource(title, current, onChange) {
-      dispatch(modalActions.showModal(MODAL_RESOURCE_EXPLORER, {
-        title: title,
-        current: current,
-        autoClose: false,
-        selectAction: (selected) => ({
-          type: 'callback',
-          callback: () => onChange(selected[0])
-        })
-      }))
-    }
-  })
-)(ResourceGroupComponent)
 
 export {
   ResourceGroup

@@ -45,21 +45,19 @@ const CallbackButton = withModal(props =>
             confirmButtonText: props.confirm.button,
             dangerous: props.dangerous,
             handleConfirm: () => {
-              props.callback(e)
-
               if (props.onClick) {
                 // execute the default click callback if any (mostly to make dropdown works)
                 props.onClick(e)
               }
+              props.callback(e)
             }
           })
         } else {
-          props.callback(e)
-
           if (props.onClick) {
             // execute the default click callback if any (mostly to make dropdown works)
             props.onClick(e)
           }
+          props.callback(e)
         }
       }
 

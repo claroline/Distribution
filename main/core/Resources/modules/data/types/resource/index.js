@@ -1,5 +1,4 @@
-import {chain, string, notBlank} from '#/main/core/validation'
-import {ResourceGroup} from '#/main/core/data/types/resource/components/resource-group.jsx'
+import {ResourceGroup} from '#/main/core/data/types/resource/components/resource-group'
 
 const RESOURCE_TYPE = 'resource'
 
@@ -7,7 +6,7 @@ const resourceDefinition = {
   meta: {
     type: RESOURCE_TYPE
   },
-  validate: (value, options) => chain(value, options, [notBlank]),
+  validate: () => {},
   components: {
     form: ResourceGroup
   }
