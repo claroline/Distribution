@@ -32,7 +32,7 @@ const EditorComponent = props =>
       tabs={props.editorTabs}
       context={props.context}
       create={(data) => props.createTab(props.editorTabs, data)}
-      poster={!isNull(props.currentTab.poster)}
+      poster={!props.currentTab.poster}
     />
 
     <PageHeader
