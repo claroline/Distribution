@@ -12,7 +12,6 @@ import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 const ResourceGroup = props =>
   <FormGroup
     {...props}
-    error={props.error && typeof props.error === 'string' ? props.error : undefined}
     className="resource-group"
   >
     <div className="input-group">
