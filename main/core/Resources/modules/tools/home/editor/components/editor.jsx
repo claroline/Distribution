@@ -1,9 +1,8 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import classes from 'classnames'
 import merge from 'lodash/merge'
-import isNull from 'lodash/isNull'
+
 
 import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
@@ -34,11 +33,9 @@ const EditorComponent = props =>
       prefix="/edit"
       tabs={props.tabs}
       create={() => props.createTab(props.context, props.tabs.length, props.history.push)}
-      poster={!props.currentTab.poster}
     />
 
     <PageHeader
-      className={classes({'page-header-poster': !!props.currentTab.poster})}
       centerTitle={props.currentTab.centerTitle}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
       poster={props.currentTab.poster ? props.currentTab.poster.url: undefined}
