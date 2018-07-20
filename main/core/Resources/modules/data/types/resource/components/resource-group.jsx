@@ -27,7 +27,8 @@ const ResourceGroup = props =>
           className="btn btn-default"
           type="modal"
           icon="fa fa-fw fa-folder"
-          label=""
+          label={trans('select', {}, 'actions')}
+          tooltip="left"
           modal={[MODAL_RESOURCE_EXPLORER, {
             title: props.picker.title,
             current: props.picker.current,

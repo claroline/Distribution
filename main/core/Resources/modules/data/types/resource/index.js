@@ -6,7 +6,6 @@ const resourceDefinition = {
   meta: {
     type: RESOURCE_TYPE
   },
-  validate: () => {},
   components: {
     form: ResourceGroup
   }
