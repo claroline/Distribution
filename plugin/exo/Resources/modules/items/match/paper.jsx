@@ -116,7 +116,7 @@ export class MatchPaper extends Component
     const positions = getPopoverPosition(connectionClass, this.props.item.id)
 
     const solution = this.props.item.solutions.find(solution => solution.firstId === firstId && solution.secondId === secondId)
-    if(this.state.showPopover) {
+    if (this.state.showPopover) {
       this.setState({
         showPopover: false,
         top: 0,

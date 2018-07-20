@@ -16,7 +16,7 @@ class GridCell extends Component {
     const answers = cloneDeep(this.props.answers)
     const answer = answers.find(answer => answer.cellId === this.props.cell.id)
     // add new
-    if(undefined === answer){
+    if (undefined === answer){
       answers.push({cellId:this.props.cell.id, text: value})
     } else { // update
       answer.text = value

@@ -164,7 +164,7 @@ class SetPlayer extends Component {
      */
   handleAssociationItemDrop(source, target) {
 
-    if(undefined === this.props.answer.find(el => el.setId === target.object.id && el.itemId === source.item.id)){
+    if (undefined === this.props.answer.find(el => el.setId === target.object.id && el.itemId === source.item.id)){
       // do something to add to solution
       this.props.onChange(
           [{itemId: source.item.id, setId: target.object.id, _itemData: source.item.data}].concat(this.props.answer)

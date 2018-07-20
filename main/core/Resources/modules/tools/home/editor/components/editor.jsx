@@ -90,26 +90,11 @@ const EditorComponent = props =>
             primary: true,
             fields: [
               {
-                name: 'title',
-                type: 'string',
-                label: trans('menu_title'),
-                help: trans('menu_title_help'),
-                options: {
-                  maxLength: 20
-                },
-                required: true
-              }, {
                 name: 'longTitle',
                 type: 'string',
                 label: trans('title'),
                 required: true,
-                linked :[
-                  {
-                    name: 'centerTitle',
-                    type: 'boolean',
-                    label: trans('center_title')
-                  }
-                ]
+                onChange: (title) => props.updateTitle(props.currentTabIndex, 'title', title.substring(0, 20))
               }
             ]
           }, {
@@ -117,6 +102,34 @@ const EditorComponent = props =>
             title: trans('display_parameters'),
             fields: [
               {
+                name: 'title',
+                type: 'string',
+                label: trans('menu_title'),
+                help: trans('menu_title_help'),
+                options: {
+                  maxLength: 20
+                },
+                onChange: (value) => {
+                  if (0 === value.length && 0 === props.currentTab.icon.length) {
+                    console.log('Erreur')
+                    props.setErrors({message: 'Erreur'})
+                  }
+                }
+              }, {
+                name: 'centerTitle',
+                type: 'boolean',
+                label: trans('center_title')
+              }, {
+                name: 'icon',
+                type: 'string',
+                label: trans('icon'),
+                help: trans('icon_tab_help'),
+                onChange: (icon) => {
+                  if (0 === icon.length && 0 === props.currentTab.title.length) {
+                    console.log('Erreur')
+                  }
+                }
+              }, {
                 name: 'position',
                 type: 'number',
                 label: trans('position'),
@@ -126,11 +139,6 @@ const EditorComponent = props =>
                 },
                 required: true,
                 onChange: (newPosition) => props.moveTab(props.tabs, props.currentTab, newPosition)
-              }, {
-                name: 'icon',
-                type: 'string',
-                label: trans('icon'),
-                help: trans('icon_tab_help')
               }, {
                 name: 'poster',
                 label: trans('poster'),
@@ -168,6 +176,8 @@ EditorComponent.propTypes = {
   }).isRequired,
   createTab: T.func.isRequired,
   updateWidgets: T.func.isRequired,
+  updateTitle: T.func.isRequired,
+  setErrors: T.func.isRequired,
   deleteTab: T.func.isRequired,
   moveTab: T.func.isRequired
 }
@@ -181,6 +191,12 @@ const Editor = withRouter(connect(
     currentTab: editorSelectors.currentTab(state)
   }),
   dispatch => ({
+    updateTitle(currentTabIndex, field, value) {
+      dispatch(formActions.updateProp('editor', `[${currentTabIndex}].${field}`, value))
+    },
+    setErrors(errors) {
+      dispatch(formActions.setErrors('editor', errors))
+    },
     createTab(context, position, navigate){
       const newTabId = makeId()
 

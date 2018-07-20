@@ -46,7 +46,7 @@ class ExpectedGridCell extends Component {
       let best = null
       solution.answers.forEach(answer => {
         // or score > 0 or expected
-        if(best === null || best.score < answer.score) {
+        if (best === null || best.score < answer.score) {
           best = answer
         }
       })
@@ -61,7 +61,7 @@ class ExpectedGridCell extends Component {
     if (null === this.state.currentText) {
       let best = null
       solution.answers.forEach(answer => {
-        if(best === null || best.score < answer.score) {
+        if (best === null || best.score < answer.score) {
           best = answer
         }
       })
@@ -76,7 +76,7 @@ class ExpectedGridCell extends Component {
     if (null ===  this.state.currentText) {
       let best = null
       solution.answers.forEach(answer => {
-        if(best === null || best.score < answer.score) {
+        if (best === null || best.score < answer.score) {
           best = answer
         }
       })
@@ -251,13 +251,13 @@ class GridPaper extends Component {
 
   isValidAnswer(cell) {
     const answer = this.props.answer.find(answer => answer.cellId === cell.id)
-    if(undefined === answer) {
+    if (undefined === answer) {
       return false
     } else {
       const text = answer.text
       const solution = this.props.item.solutions.find(solution => solution.cellId === cell.id)
       // also depends on score or expected depending on score mode
-      if(this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL) {
+      if (this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL) {
         return undefined !== solution.answers.find(answer => ((answer.caseSensitive && answer.text === text) || (answer.text.toLowerCase() === text.toLowerCase())) && answer.score > 0)
       } else {
         return undefined !== solution.answers.find(answer => ((answer.caseSensitive && answer.text === text) || (answer.text.toLowerCase() === text.toLowerCase())) && answer.expected)
@@ -284,7 +284,7 @@ class GridPaper extends Component {
       return this.props.item.penalty > 0 ? cellSolutionScore - this.props.item.penalty : 0
     }
     // if penalty is set to 0 and one wrong answer then my score for the col is 0
-    if(this.props.item.penalty === 0) {
+    if (this.props.item.penalty === 0) {
       const allGood = colAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
         if (undefined === solution.answers.find(answer => answer.expected && ((answer.caseSensitive && answer.text === a.text) || (answer.text.toLowerCase() === a.text.toLowerCase())))) {
@@ -327,7 +327,7 @@ class GridPaper extends Component {
       return this.props.item.penalty > 0 ? cellSolutionScore - this.props.item.penalty : 0
     }
     // if penalty is set to 0 and one wrong answer then my score for the col is 0
-    if(this.props.item.penalty === 0) {
+    if (this.props.item.penalty === 0) {
       const allGood = rowAnswers.every(a => {
         const solution = this.props.item.solutions.find(solution => solution.cellId === a.cellId)
         if (undefined === solution.answers.find(answer => answer.expected && ((answer.caseSensitive && answer.text === a.text) || (answer.text.toLowerCase() === a.text.toLowerCase())))) {
@@ -410,7 +410,7 @@ class GridPaper extends Component {
     if (this.props.item.score.type === SCORE_FIXED) {
       return this.noErrorInGrid() ? successStyle : errorStyle
     } else if (this.props.item.sumMode === SUM_CELL) {
-      if(cell.input) {
+      if (cell.input) {
         return valid ? successStyle : errorStyle
       } else {
         return {backgroundColor: cell.background}
@@ -440,7 +440,7 @@ class GridPaper extends Component {
   }
 
   getExpectedAnswerCellColors(cell) {
-    if(cell.input) {
+    if (cell.input) {
       return {backgroundColor: '#daf1f8', color: '#3a87ad'}
     } else {
       return {backgroundColor: cell.background}

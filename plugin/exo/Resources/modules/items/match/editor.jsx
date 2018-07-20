@@ -353,7 +353,7 @@ class Match extends Component {
       const firstId = conn.sourceId.replace('source_', '')
       const secondId = conn.targetId.replace('target_', '')
       const solution = this.props.item.solutions.find(solution => solution.firstId === firstId && solution.secondId === secondId)
-      if(undefined !== solution && solution.score <= 0){
+      if (undefined !== solution && solution.score <= 0){
         type = 'unexpected'
       }
       conn.setType(type)
@@ -363,7 +363,7 @@ class Match extends Component {
   // click outside the popover but inside the question items row will close the popover
   handlePopoverFocusOut(event){
     const elem = event.target.closest('#popover-place-holder-' + this.props.item.id)
-    if(null === elem){
+    if (null === elem){
       this.closePopover()
     }
   }
@@ -376,7 +376,7 @@ class Match extends Component {
    */
   componentDidUpdate(prevProps){
     const repaint = (prevProps.item.firstSet.length > this.props.item.firstSet.length || prevProps.item.secondSet.length > this.props.item.secondSet.length) || get(this.props.item, '_touched')
-    if(repaint) {
+    if (repaint) {
       this.jsPlumbInstance.repaintEverything()
     }
   }

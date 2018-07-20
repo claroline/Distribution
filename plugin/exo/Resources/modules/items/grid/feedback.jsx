@@ -88,13 +88,13 @@ class GridFeedback extends Component {
 
   isValidAnswer(cell) {
     const answer = this.props.answer.find(answer => answer.cellId === cell.id)
-    if(undefined === answer) {
+    if (undefined === answer) {
       return false
     } else {
       const text = answer.text
       const solution = this.props.item.solutions.find(solution => solution.cellId === cell.id)
       // also depends on score or expected depending on score mode
-      if(this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL) {
+      if (this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL) {
         return undefined !== solution.answers.find(answer => ((answer.caseSensitive && answer.text === text) || (answer.text.toLowerCase() === text.toLowerCase())) && answer.score > 0)
       } else {
         return undefined !== solution.answers.find(answer => ((answer.caseSensitive && answer.text === text) || (answer.text.toLowerCase() === text.toLowerCase())) && answer.expected)
@@ -143,7 +143,7 @@ class GridFeedback extends Component {
   getYourAnswerCellColors(cell, valid) {
     const errorStyle = {backgroundColor: '#f9e2e2', color: '#b94a48'}
     const successStyle = {backgroundColor: '#d4ffb0', color: '#468847'}
-    if(cell.input) {
+    if (cell.input) {
       return valid ? successStyle : errorStyle
     } else {
       return {backgroundColor: cell.background}
@@ -151,7 +151,7 @@ class GridFeedback extends Component {
   }
 
   getExpectedAnswerCellColors(cell) {
-    if(cell.input) {
+    if (cell.input) {
       return {backgroundColor: '#daf1f8', color: '#3a87ad'}
     } else {
       return {backgroundColor: cell.background}
