@@ -22,9 +22,10 @@ import {TRANSLATED_TYPE,   translatedDefinition}  from '#/main/core/data/types/t
 import {URL_TYPE,          urlDefinition}         from '#/main/core/data/types/url'
 import {USERNAME_TYPE,     usernameDefinition}    from '#/main/core/data/types/username'
 import {ENUM_TYPE,         enumDefinition}        from '#/main/core/data/types/enum'
-import {ENUM_PLUS_TYPE,   enumPlusDefinition}    from '#/main/core/data/types/enum-plus'
+import {ENUM_PLUS_TYPE,    enumPlusDefinition}    from '#/main/core/data/types/enum-plus'
 import {CASCADE_ENUM_TYPE, cascadeEnumDefinition} from '#/main/core/data/types/cascade-enum'
 import {CASCADE_TYPE,      cascadeDefinition}     from '#/main/core/data/types/cascade'
+import {RESOURCE_TYPE,     resourceDefinition}    from '#/main/core/data/types/resource'
 
 
 // the list of registered data types
@@ -54,8 +55,9 @@ registerType(TRANSLATED_TYPE,   translatedDefinition)
 registerType(URL_TYPE,          urlDefinition)
 registerType(USERNAME_TYPE,     usernameDefinition)
 registerType(ENUM_TYPE,         enumDefinition)
-registerType(ENUM_PLUS_TYPE,   enumPlusDefinition)
+registerType(ENUM_PLUS_TYPE,    enumPlusDefinition)
 registerType(CASCADE_ENUM_TYPE, cascadeEnumDefinition)
+registerType(RESOURCE_TYPE,     resourceDefinition)
 
 /**
  * Validates & registers a data type.

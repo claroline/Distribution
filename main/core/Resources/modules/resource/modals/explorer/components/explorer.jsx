@@ -38,7 +38,7 @@ const ExplorerModalComponent = props => {
         className="modal-btn btn"
         primary={true}
         disabled={0 === props.selected.length}
-        onClick={props.fadeModal}
+        onClick={props.autoClose ? props.fadeModal : null}
       />
     </Modal>
   )
@@ -60,6 +60,7 @@ ExplorerModalComponent.propTypes = {
   confirmText: T.string, // todo : deprecated. kept for retro compatibility. Use the selectAction label instead
   selected: T.array.isRequired,
   filters: T.array,
+  autoClose: T.bool.isRequired,
   initialize: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
@@ -69,7 +70,8 @@ ExplorerModalComponent.defaultProps = {
   title: trans('resource_explorer', {}, 'resource'),
   confirmText: trans('select', {}, 'actions'),
   filters: [],
-  current: null
+  current: null,
+  autoClose: true
 }
 
 const ExplorerModal = connect(
