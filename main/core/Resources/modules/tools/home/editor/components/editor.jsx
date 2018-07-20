@@ -36,7 +36,7 @@ const EditorComponent = props =>
     />
 
     <PageHeader
-      centerTitle={props.currentTab.centerTitle}
+      alignTitle={true === props.currentTab.centerTitle ? 'center' : 'left'}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
       poster={props.currentTab.poster ? props.currentTab.poster.url: undefined}
     >

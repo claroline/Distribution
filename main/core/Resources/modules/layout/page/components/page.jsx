@@ -44,9 +44,7 @@ implementPropTypes(Page, PageTypes, {
  * Title of the current page.
  */
 const PageTitle = props =>
-  <h1 className={classes('page-title', {
-    'page-title-center': props.centerTitle
-  })}>
+  <h1 className={classes('page-title', `page-title-${props.alignTitle}`)}>
     {props.title}
     {props.subtitle &&
       <small>{props.subtitle}</small>
@@ -68,9 +66,9 @@ PageTitle.propTypes = {
   subtitle: T.string,
 
   /**
-   * The title will be centered if true.
+   * The title will be align.
    */
-  centerTitle: T.bool
+  alignTitle: T.string
 }
 
 /**
@@ -96,7 +94,7 @@ const PageHeader = props => {
       <PageTitle
         title={props.title}
         subtitle={props.subtitle}
-        centerTitle={props.centerTitle}
+        alignTitle={props.alignTitle}
       />
 
       {props.children}
@@ -120,7 +118,7 @@ PageHeader.propTypes = {
 
   poster: T.string,
 
-  centerTitle: T.bool,
+  alignTitle: T.string,
 
   /**
    * Additional classes to add to the header tag.
