@@ -11,6 +11,7 @@ import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions} from '#/main/core/workspace/creation/store/actions'
 import {actions as logActions} from '#/main/core/workspace/creation/components/log/actions'
 import {Logs} from '#/main/core/workspace/creation/components/log/components/logs.jsx'
+import {withRouter} from '#/main/app/router'
 
 const WorkspaceComponent = (props) => {
   const modelChoices = {}
@@ -35,13 +36,17 @@ const WorkspaceComponent = (props) => {
         label: trans('save', {}, 'actions'),
         callback: () => {
           props.save(props.workspace)
+          //props.loadLog(logName)
           const logName = props.workspace.code
+
           const refresher = setInterval(() => {
             props.loadLog(logName)
 
-            if (this.props.logs && !this.props.logs.end) {
-              clearInterval(refresher)
-            }
+            //if (props.logs && props.logs.end) {
+            clearInterval(refresher)
+
+            props.history.push('/worspaces')
+            //}
           }, 2000)
         }
       }}
@@ -306,6 +311,7 @@ const WorkspaceComponent = (props) => {
 
 WorkspaceComponent.propTypes = {
   loadLog: T.func,
+  history: T.object,
   updateProp: T.func,
   save: T.func,
   workspace: T.shape(
@@ -318,11 +324,12 @@ WorkspaceComponent.defaultProps = {
   workspace: WorkspaceTypes.defaultProps
 }
 
-const ConnectedForm = connect(
+const ConnectedForm = withRouter(connect(
   state => {
     return {
       models: state.models,
-      workspace: formSelect.data(formSelect.form(state, 'workspaces.current'))
+      workspace: formSelect.data(formSelect.form(state, 'workspaces.current')),
+      logs: state.workspaces.creation.logs //always {} for some reason
     }
   },
   (dispatch, ownProps) =>({
@@ -336,7 +343,7 @@ const ConnectedForm = connect(
       dispatch(actions.save(workspace))
     }
   })
-)(WorkspaceComponent)
+)(WorkspaceComponent))
 
 export {
   ConnectedForm as WorkspaceForm

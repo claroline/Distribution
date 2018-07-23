@@ -3,8 +3,6 @@ import {reducer as logReducer} from '#/main/core/workspace/creation/components/l
 
 
 const reducer = combineReducers({
-  //chemin de l'admin
-  //workspace: makeFormReducer('workspaces.current', {}, {}),
   log: logReducer
 })
 

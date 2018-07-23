@@ -1,6 +1,5 @@
 import React from 'react'
 import {PageContainer, PageHeader} from '#/main/core/layout/page/index'
-import {trans} from '#/main/core/translation'
 import {connect} from 'react-redux'
 
 import {actions as formActions} from '#/main/core/data/form/actions'
@@ -35,7 +34,7 @@ const ConnectedCreationForm = connect(
     const workspace = formSelect.data(formSelect.form(state, 'workspaces.current'))
 
     return {
-      workspace: workspace,//?
+      workspace: workspace,
       model: state.model
     }
   },
