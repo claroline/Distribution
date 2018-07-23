@@ -155,6 +155,7 @@ const EditorComponent = props =>
           }, {
             icon: 'fa fa-fw fa-key',
             title: trans('access_restrictions'),
+            displayed: props.context.type === 'workspace',
             fields: [
               {
                 name: 'roles',
