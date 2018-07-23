@@ -191,11 +191,11 @@ class RoleSerializer
         $workspace = $this->workspaceRepo->findOneBy(['uuid' => $workspaceId]);
 
         if (!empty($workspace)) {
-            $orderedTools = $this->orderedToolRepo->findBy(['workspace' => $workspace]);
+            $orderedTools = $this->orderedToolRepo->findBy(['workspace' => $workspaceId]);
 
             foreach ($orderedTools as $orderedTool) {
-                $toolRights = $this->toolRightsRepo->findOneBy(['role' => $role, 'orderedTool' => $orderedTool]);
-                $mask = !empty($toolRights) ? $toolRights->getMask() : 0;
+                $toolRights = $this->toolRightsRepo->findBy(['role' => $role, 'orderedTool' => $orderedTool], ['id' => 'ASC']);
+                $mask = 0 < count($toolRights) ? $toolRights[0]->getMask() : 0;
                 $toolName = $orderedTool->getTool()->getName();
                 $tools[$toolName] = [];
 
@@ -290,11 +290,13 @@ class RoleSerializer
                             ->findOneBy(['tool' => $tool, 'workspace' => $workspaceId]);
 
                         if ($orderedTool) {
-                            $rights = $this->om
+                            $toolRights = $this->om
                                 ->getRepository('ClarolineCoreBundle:Tool\ToolRights')
-                                ->findOneBy(['orderedTool' => $orderedTool, 'role' => $role]);
+                                ->findBy(['orderedTool' => $orderedTool, 'role' => $role], ['id' => 'ASC']);
 
-                            if (empty($rights)) {
+                            if (0 < count($toolRights)) {
+                                $rights = $toolRights[0];
+                            } else {
                                 $rights = new ToolRights();
                                 $rights->setRole($role);
                                 $rights->setOrderedTool($orderedTool);

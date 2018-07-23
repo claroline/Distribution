@@ -152,6 +152,27 @@ const EditorComponent = props =>
                 }
               }
             ]
+          }, {
+            icon: 'fa fa-fw fa-key',
+            title: trans('access_restrictions'),
+            fields: [
+              {
+                name: 'roles',
+                label: trans('role'),
+                help: trans('home_tab_roles_explanation'),
+                type: 'choice',
+                options:{
+                  multiple : true,
+                  choices: {
+                    0: 'Anonyme',
+                    1: 'Utilisateur',
+                    2: 'Collaborateur',
+                    3: 'Gestionnaire',
+                    4: 'Rôle 1'
+                  }
+                }
+              }
+            ]
           }
         ]}
       >
