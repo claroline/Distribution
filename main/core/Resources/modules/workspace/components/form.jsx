@@ -115,11 +115,11 @@ const WorkspaceFormComponent = (props) =>
                   noEmpty: true,
                   multiple: false,
                   condensed: true,
-                  choices: props.tools.reduce((acc, tool) => {
+                  choices: props.tools ? props.tools.reduce((acc, tool) => {
                     acc[tool.name] = trans(tool.name, {}, 'tools')
 
                     return acc
-                  }, {})
+                  }, {}) : {}
                 }
               }, {
                 name: 'opening.target',
@@ -127,7 +127,13 @@ const WorkspaceFormComponent = (props) =>
                 label: trans('resource'),
                 required: true,
                 displayed: (workspace) => workspace.opening && 'resource' === workspace.opening.type,
-                onChange: (selected) => props.updateResource(selected, props.workspace)
+                onChange: (selected) => {
+                  props.updateProp('opening.target', selected)
+
+                  if (props.modal) {
+                    props.showWorkspaceParametersModal(props.workspace)
+                  }
+                }
               }
             ]
           }
@@ -311,10 +317,16 @@ WorkspaceFormComponent.propTypes = {
   ).isRequired,
   children: T.any,
   tools: T.array,
+  modal: T.bool.isRequired,
+  showWorkspaceParametersModal: T.func.isRequired,
 
   // from redux
   new: T.bool.isRequired,
   updateProp: T.func.isRequired
+}
+
+WorkspaceFormComponent.defaultProps = {
+  modal: false
 }
 
 const WorkspaceForm = connect(
@@ -327,10 +339,8 @@ const WorkspaceForm = connect(
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(ownProps.name, propName, propValue))
     },
-    updateResource(selected, workspace) {
-      const newWorkspace = cloneDeep(workspace)
-      set(newWorkspace, 'opening.target', selected)
-      dispatch(modalActions.showModal(MODAL_WORKSPACE_PARAMETERS, {workspace: newWorkspace}))
+    showWorkspaceParametersModal(workspace) {
+      dispatch(modalActions.showModal(MODAL_WORKSPACE_PARAMETERS, {workspace: workspace, workspaceLoading: false}))
     }
   })
 )(WorkspaceFormComponent)

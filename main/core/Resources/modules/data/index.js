@@ -25,7 +25,7 @@ import {ENUM_TYPE,         enumDefinition}        from '#/main/core/data/types/e
 import {ENUM_PLUS_TYPE,    enumPlusDefinition}    from '#/main/core/data/types/enum-plus'
 import {CASCADE_ENUM_TYPE, cascadeEnumDefinition} from '#/main/core/data/types/cascade-enum'
 import {CASCADE_TYPE,      cascadeDefinition}     from '#/main/core/data/types/cascade'
-import {RESOURCE_TYPE,     resourceDefinition}    from '#/main/core/data/types/resource'
+import {RESOURCE_TYPE,     resourceDefinition}    from '#/main/core/resource/data/types/resource'
 
 
 // the list of registered data types

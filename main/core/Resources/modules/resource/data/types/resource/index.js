@@ -1,7 +1,4 @@
-import {registerType} from '#/main/core/data'
-
 import {trans} from '#/main/core/translation'
-//import {chain, lengthInRange, match, string} from '#/main/core/validation'
 
 import {ResourceGroup} from '#/main/core/resource/data/types/resource/components/group'
 import {ResourceDisplay} from '#/main/core/resource/data/types/resource/components/display'
@@ -25,8 +22,7 @@ const resourceDefinition = {
   }
 }
 
-registerType(RESOURCE_TYPE, resourceDefinition)
-
 export {
-  RESOURCE_TYPE
+  RESOURCE_TYPE,
+  resourceDefinition
 }
