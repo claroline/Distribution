@@ -1,8 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import cloneDeep from 'lodash/cloneDeep'
-import set from 'lodash/set'
 
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
@@ -322,8 +320,7 @@ WorkspaceFormComponent.propTypes = {
 
   // from redux
   new: T.bool.isRequired,
-  updateProp: T.func.isRequired,
-  showWorkspaceParametersModal: T.func.isRequired
+  updateProp: T.func.isRequired
 }
 
 WorkspaceFormComponent.defaultProps = {
