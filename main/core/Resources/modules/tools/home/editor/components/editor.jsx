@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import merge from 'lodash/merge'
+import isEmpty from 'lodash/isEmpty'
 
 
 import {trans} from '#/main/core/translation'
@@ -102,33 +103,9 @@ const EditorComponent = props =>
             title: trans('display_parameters'),
             fields: [
               {
-                name: 'title',
-                type: 'string',
-                label: trans('menu_title'),
-                help: trans('menu_title_help'),
-                options: {
-                  maxLength: 20
-                },
-                onChange: (value) => {
-                  if (0 === value.length && 0 === props.currentTab.icon.length) {
-                    console.log('Erreur')
-                    props.setErrors({message: 'Erreur'})
-                  }
-                }
-              }, {
                 name: 'centerTitle',
                 type: 'boolean',
                 label: trans('center_title')
-              }, {
-                name: 'icon',
-                type: 'string',
-                label: trans('icon'),
-                help: trans('icon_tab_help'),
-                onChange: (icon) => {
-                  if (0 === icon.length && 0 === props.currentTab.title.length) {
-                    console.log('Erreur')
-                  }
-                }
               }, {
                 name: 'position',
                 type: 'number',
@@ -139,6 +116,33 @@ const EditorComponent = props =>
                 },
                 required: true,
                 onChange: (newPosition) => props.moveTab(props.tabs, props.currentTab, newPosition)
+              }, {
+                name: 'title',
+                type: 'string',
+                label: trans('menu_title'),
+                help: trans('menu_title_help'),
+                options: {
+                  maxLength: 20
+                },
+                onChange: (value) => {
+                  if (isEmpty(value) && 0 === props.currentTab.icon.length) {
+                    props.setErrors({
+                      [props.currentTabIndex]: {title: 'Ce champ ne peux pas être vide si l\'onglet n\'a pas d\'icône'}
+                    })
+                  }
+                }
+              }, {
+                name: 'icon',
+                type: 'string',
+                label: trans('icon'),
+                help: trans('icon_tab_help'),
+                onChange: (icon) => {
+                  if (0 === icon.length && 0 === props.currentTab.title.length) {
+                    props.setErrors({
+                      [props.currentTabIndex]: {icon: 'Ce champ ne peux pas être vide si l\'onglet n\'a pas de titre.'}
+                    })
+                  }
+                }
               }, {
                 name: 'poster',
                 label: trans('poster'),
