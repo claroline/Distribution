@@ -42,11 +42,11 @@ const WorkspaceComponent = (props) => {
           const refresher = setInterval(() => {
             props.loadLog(logName)
 
-            //if (props.logs && props.logs.end) {
-            clearInterval(refresher)
+            if (props.logs && props.logs.end) {
+              clearInterval(refresher)
 
-            props.history.push('/worspaces')
-            //}
+              props.history.push('/workspaces')
+            }
           }, 2000)
         }
       }}
