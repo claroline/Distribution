@@ -15,10 +15,10 @@ const MODAL_WIDGET_CONTENT_PARAMETERS = 'MODAL_WIDGET_CONTENT_PARAMETERS'
 
 const ParametersModalComponent = props =>
   <Modal
-    {...omit(props, 'instance', 'saveEnabled', 'add')}
+    {...omit(props, 'instance', 'saveEnabled', 'add', 'dispatch')}
     icon="fa fa-fw fa-plus"
-    title={trans('new_content', {}, 'widget')}
-    subtitle={trans('new_content_configure', {}, 'widget')}
+    title={trans('new_widget', {}, 'widget')}
+    subtitle={trans('new_widget_configure', {}, 'widget')}
   >
     <WidgetContentForm level={5} name={selectors.FORM_NAME} />
 

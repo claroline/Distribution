@@ -29,7 +29,7 @@ const WidgetGridEditor = props =>
           {
             type: 'modal',
             icon: 'fa fa-fw fa-plus',
-            label: trans('add_widget_before', {}, 'widget'),
+            label: trans('add_section_before'),
             modal: [MODAL_WIDGET_CREATION, {
               create: (widget) => {
                 // copy array
@@ -96,14 +96,14 @@ const WidgetGridEditor = props =>
             label: trans('delete', {}, 'actions'),
             dangerous: true,
             confirm: {
-              title: trans('widget_delete_confirm_title', {}, 'widget'),
-              message: trans('widget_delete_confirm_message', {}, 'widget')
+              title: trans('section_delete_confirm_title'),
+              message: trans('section_delete_confirm_message')
             },
-            callback: () => props.update(
-              props.widgets
-                .slice(0) // copy array
-                .splice(index, 1) // remove element
-            )
+            callback: () => {
+              const widgets = props.widgets.slice(0) // copy array
+              widgets.splice(index, 1) // remove element
+              props.update(widgets)
+            }
           }
         ]}
       />
@@ -113,14 +113,14 @@ const WidgetGridEditor = props =>
       <EmptyPlaceholder
         size="lg"
         icon="fa fa-frown-o"
-        title={trans('no_widget', {}, 'widget')}
+        title={trans('no_section')}
       />
     }
 
     <Button
       className="btn btn-block btn-emphasis"
       type="modal"
-      label={trans('add_widget', {}, 'widget')}
+      label={trans('add_section')}
       modal={[MODAL_WIDGET_CREATION, {
         create: (widget) => props.update(
           props.widgets.concat([widget]) // copy array & append element

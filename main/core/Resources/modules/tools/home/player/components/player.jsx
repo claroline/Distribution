@@ -2,40 +2,49 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {trans} from '#/main/core/translation'
+import {PageContainer, PageHeader, PageContent, PageActions, PageAction} from '#/main/core/layout/page'
+
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {WidgetGrid} from '#/main/core/widget/player/components/grid'
-import {trans} from '#/main/core/translation'
-import {PageHeader, PageContent} from '#/main/core/layout/page'
-import {ToolPageContainer} from '#/main/core/tool/containers/page'
-
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
-import {select} from '#/main/core/tools/home/selectors'
-import {PlayerNav} from '#/main/core/tools/home/player/components/nav'
-import {ToolActions} from '#/main/core/tools/home/components/tool'
-
+import {selectors} from '#/main/core/tools/home/selectors'
+import {Tabs} from '#/main/core/tools/home/components/tabs'
 
 const PlayerComponent = props =>
-  <ToolPageContainer>
+  <PageContainer>
     {1 < props.sortedTabs.length &&
-      <PlayerNav
+      <Tabs
         tabs={props.sortedTabs}
       />
     }
+
     <PageHeader
+      // TODO change to h1
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
+      poster={props.currentTab.poster ? props.currentTab.poster.url: undefined}
     >
       {props.editable &&
-          <ToolActions />
+        <PageActions>
+          <PageAction
+            type="link"
+            label={trans('configure', {}, 'actions')}
+            icon="fa fa-fw fa-cog"
+            target="/edit"
+            primary={true}
+          />
+        </PageActions>
       }
     </PageHeader>
+
     <PageContent>
       <WidgetGrid
         context={props.context}
         widgets={props.widgets}
       />
     </PageContent>
-  </ToolPageContainer>
+  </PageContainer>
 
 PlayerComponent.propTypes = {
   context: T.object.isRequired,
@@ -51,11 +60,11 @@ PlayerComponent.propTypes = {
 
 const Player = connect(
   (state) => ({
-    context: select.context(state),
-    editable: select.editable(state),
-    sortedTabs: select.sortedTabs(state),
-    currentTab: select.currentTab(state),
-    widgets: select.widgets(state)
+    context: selectors.context(state),
+    editable: selectors.editable(state),
+    sortedTabs: selectors.sortedTabs(state),
+    currentTab: selectors.currentTab(state),
+    widgets: selectors.widgets(state)
   })
 )(PlayerComponent)
 

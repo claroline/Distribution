@@ -9,8 +9,9 @@ bootstrap(
   reducer,
   (initialData) => Object.assign({}, initialData, {
     editable: !!initialData.editable,
-    editor: {
-      data: initialData.tabs
+    editor:{
+      data: initialData.tabs || [],
+      originalData: initialData.tabs || []
     }
   })
 )

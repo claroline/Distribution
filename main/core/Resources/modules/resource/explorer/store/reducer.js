@@ -1,28 +1,38 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
-import {makeInstanceReducer, combineReducers} from '#/main/app/store/reducer'
+import {makeReducer, makeInstanceReducer, combineReducers} from '#/main/app/store/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 
 import {
-  EXPLORER_INITIALIZE,
-  DIRECTORY_CHANGE,
+  EXPLORER_SET_INITIALIZED,
+  EXPLORER_SET_ROOT,
+  EXPLORER_SET_CURRENT,
   DIRECTORY_TOGGLE_OPEN,
-  DIRECTORIES_LOAD
+  DIRECTORIES_LOAD,
+  DIRECTORY_UPDATE
 } from '#/main/core/resource/explorer/store/actions'
 
 import {selectors} from '#/main/core/resource/explorer/store/selectors'
 
-function updateDirectory(directories, oldDir, newDir) {
+/**
+ * Replaces a directory data inside the directories tree.
+ *
+ * @param {Array}  directories - the directory tree
+ * @param {object} newDir      - the new directory data
+ *
+ * @return {Array} - the updated directories tree
+ */
+function replaceDirectory(directories, newDir) {
   for (let i = 0; i < directories.length; i++) {
-    if (directories[i].id === oldDir.id) {
+    if (directories[i].id === newDir.id) {
       const updatedDirs = cloneDeep(directories)
       updatedDirs[i] = newDir
 
       return updatedDirs
     } else if (directories[i].children) {
       const updatedDirs = cloneDeep(directories)
-      updatedDirs[i].children = updateDirectory(directories[i].children, oldDir, newDir)
+      updatedDirs[i].children = replaceDirectory(directories[i].children, newDir)
 
       return updatedDirs
     }
@@ -39,20 +49,19 @@ const defaultState = {
 }
 
 const initializedReducer = makeInstanceReducer(defaultState.initialized, {
-  [EXPLORER_INITIALIZE]: () => true
+  [EXPLORER_SET_INITIALIZED]: (state, action) => action.initialized
 })
 
 const rootReducer = makeInstanceReducer(defaultState.root, {
-  [EXPLORER_INITIALIZE]: (state, action) => action.root
+  [EXPLORER_SET_ROOT]: (state, action) => action.root
 })
 
 const currentReducer = makeInstanceReducer(null, {
-  [EXPLORER_INITIALIZE]: (state, action) => action.current,
-  [DIRECTORY_CHANGE]: (state, action) => action.directory
+  [EXPLORER_SET_CURRENT]: (state, action) => action.current
 })
 
 const directoriesReducer = makeInstanceReducer([], {
-  [EXPLORER_INITIALIZE]: (state, action) => action.root ? [action.root] : [],
+  [EXPLORER_SET_ROOT]: (state, action) => action.root ? [action.root] : [],
   [DIRECTORIES_LOAD]: (state, action) => {
     if (!action.parent) {
       return action.directories
@@ -64,15 +73,19 @@ const directoriesReducer = makeInstanceReducer([], {
     updatedParent._loaded = true
     updatedParent.children = action.directories
 
-    return updateDirectory(state, action.parent, updatedParent)
+    return replaceDirectory(state, updatedParent)
   },
   [DIRECTORY_TOGGLE_OPEN]: (state, action) => {
-    const updatedDirectory = cloneDeep(selectors.directory(state, action.directory.id))
+    const updatedDirectory = cloneDeep(selectors.directory(state, action.directoryId))
 
     updatedDirectory._opened = action.opened
 
-    return updateDirectory(state, action.directory, updatedDirectory)
-  }
+    return replaceDirectory(state, updatedDirectory)
+  },
+  [DIRECTORY_UPDATE]: (state, action) => replaceDirectory(state, merge(
+    // we merge with previous state to keep loaded children if any
+    {}, selectors.directory(state, action.updatedDirectory.id), action.updatedDirectory
+  ))
 })
 
 /**
@@ -113,7 +126,14 @@ function makeResourceExplorerReducer(explorerName, initialState = {}) {
     /**
      * The list of resources for the current directory.
      */
-    resources: makeListReducer(`${explorerName}.resources`)
+    resources: makeListReducer(`${explorerName}.resources`, {}, {
+      invalidated: makeReducer(false, {
+        [`${EXPLORER_SET_CURRENT}/${explorerName}`]: () => true
+      }),
+      selected: makeReducer([], {
+        [`${EXPLORER_SET_CURRENT}/${explorerName}`]: () => []
+      })
+    })
   })
 }
 

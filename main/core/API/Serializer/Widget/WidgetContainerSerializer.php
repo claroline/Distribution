@@ -51,16 +51,34 @@ class WidgetContainerSerializer
         return [
             'id' => $this->getUuid($widgetContainer, $options),
             'name' => $widgetContainer->getName(),
-            'display' => [
-                'layout' => $widgetContainer->getLayout(),
-                'color' => $widgetContainer->getColor(),
-                'backgroundType' => $widgetContainer->getBackgroundType(),
-                'background' => $widgetContainer->getBackground(),
-            ],
+            'display' => $this->serializeDisplay($widgetContainer),
             'contents' => array_map(function (WidgetInstance $widgetInstance) use ($options) {
                 return $this->serializer->serialize($widgetInstance, $options);
             }, $widgetContainer->getInstances()->toArray()),
         ];
+    }
+
+    public function serializeDisplay(WidgetContainer $widgetContainer)
+    {
+        $display = [
+          'layout' => $widgetContainer->getLayout(),
+          'color' => $widgetContainer->getColor(),
+          'backgroundType' => $widgetContainer->getBackgroundType(),
+          'background' => $widgetContainer->getBackground(),
+      ];
+        if ('image' === $widgetContainer->getBackgroundType() && $widgetContainer->getBackground()) {
+            $file = $this->om
+              ->getRepository('Claroline\CoreBundle\Entity\File\PublicFile')
+              ->findOneBy(['url' => $widgetContainer->getBackground()]);
+
+            if ($file) {
+                $display['background'] = $this->serializer->serialize($file);
+            }
+        } else {
+            $display['background'] = $widgetContainer->getBackground();
+        }
+
+        return $display;
     }
 
     public function deserialize($data, WidgetContainer $widgetContainer, array $options): WidgetContainer
@@ -71,7 +89,14 @@ class WidgetContainerSerializer
         $this->sipe('display.layout', 'setLayout', $data, $widgetContainer);
         $this->sipe('display.color', 'setColor', $data, $widgetContainer);
         $this->sipe('display.backgroundType', 'setBackgroundType', $data, $widgetContainer);
-        $this->sipe('display.background', 'setBackground', $data, $widgetContainer);
+
+        $display = $data['display'];
+
+        if (isset($display['background']) && isset($display['background']['url'])) {
+            $this->sipe('display.background.url', 'setBackground', $data, $widgetContainer);
+        } else {
+            $this->sipe('display.background', 'setBackground', $data, $widgetContainer);
+        }
 
         // todo deserialize instances
         if (isset($data['contents'])) {

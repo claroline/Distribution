@@ -526,90 +526,6 @@ class WorkspaceController extends AbstractCrudController
     }
 
     /**
-     * @Route("/{workspace}/copy/base", name="apiv2_workspace_copy_base")
-     * @Method("POST")
-     */
-    public function copyBaseAction($workspace, Request $request)
-    {
-        $workspace = $this->find(Workspace::class, $workspace);
-
-        if (!$workspace) {
-            $workspace = $this->workspaceManager->getDefaultModel();
-        }
-
-        $data = $this->decodeRequest($request);
-        $oldSerialized = $this->serializer->serialize($workspace);
-        $data = array_merge($oldSerialized, $data);
-        unset($data['uuid'], $data['id']);
-        $new = $this->crud->create(Workspace::class, $data, [Options::LIGHT_COPY]);
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
-
-        return new JsonResponse($this->serializer->serialize($new));
-    }
-
-    /**
-     * @Route("/{old}/copy/{new}/roles", name="apiv2_workspace_copy_roles")
-     * @Method("GET")
-     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
-     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
-     */
-    public function copyRolesActions(Workspace $new, Workspace $old)
-    {
-        //add voter check here
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
-        $this->workspaceManager->duplicateWorkspaceRoles($old, $new, $new->getCreator());
-
-        //here we must edit the default roles
-
-        return new JsonResponse($this->serializer->serialize($new));
-    }
-
-    /**
-     * @Route("/{old}/copy/{new}/tools", name="apiv2_workspace_copy_tools")
-     * @Method("GET")
-     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
-     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
-     */
-    public function copyBaseToolsAction(Workspace $new, Workspace $old)
-    {
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
-        $this->workspaceManager->duplicateOrderedTools($old, $new);
-
-        return new JsonResponse($this->serializer->serialize($new));
-    }
-
-    /**
-     * @Route("/{old}/copy/{new}/home", name="apiv2_workspace_copy_home")
-     * @Method("GET")
-     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
-     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
-     */
-    public function copyHomeActions(Workspace $new, Workspace $old)
-    {
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
-        $this->workspaceManager->duplicateHomeTabs($old, $new);
-
-        return new JsonResponse($this->serializer->serialize($new));
-    }
-
-    /**
-     * @Route("/{old}/copy/{new}/resources", name="apiv2_workspace_copy_resources")
-     * @Method("GET")
-     * @ParamConverter("new", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"new": "uuid"}})
-     * @ParamConverter("old", class = "ClarolineCoreBundle:Workspace\Workspace",  options={"mapping": {"old": "uuid"}})
-     */
-    public function copyResourcesActions(Workspace $new, Workspace $old)
-    {
-        $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
-        $rootNode = $this->workspaceManager->duplicateRoot($old, $new, $new->getCreator());
-        $resourceNodes = $this->resourceManager->getWorkspaceRoot($old)->getChildren()->toArray();
-        $workspaceRoles = $this->workspaceManager->getArrayRolesByWorkspace($new);
-        $this->workspaceManager->duplicateResources($resourceNodes, $workspaceRoles, $new->getCreator(), $rootNode);
-
-        return new JsonResponse($this->serializer->serialize($new));
-    }
-
-    /**
      * @param Request $request
      *
      * @return string
@@ -627,6 +543,32 @@ class WorkspaceController extends AbstractCrudController
         return [
           'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|\/)).*'],
         ];
+    }
+
+    /**
+     * @Route(
+     *    "/{id}/management/roles",
+     *    name="apiv2_workspace_management_roles_list"
+     * )
+     * @Method("GET")
+     * @ParamConverter("workspace", options={"mapping": {"id": "uuid"}})
+     *
+     * @param Request   $request
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function rolesListAction(Request $request, Workspace $workspace)
+    {
+        return new JsonResponse(
+            $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => [
+                    'workspace' => [$workspace->getUuid()],
+                    'roleNames' => ['ROLE_ANONYMOUS', 'ROLE_USER'],
+                ]]
+            ))
+        );
     }
 
     public function getOptions()

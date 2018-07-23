@@ -41,7 +41,24 @@ class ResourcePage extends Component {
           />
         }
         toolbar={getToolbar(this.props.primaryAction, true)}
-        actions={getActions([this.props.resourceNode]).then((actions) => {
+        actions={getActions([this.props.resourceNode], {
+          update: (resourceNodes) => {
+            // checks if the action have modified the current node
+            const currentNode = resourceNodes.find(node => node.id === this.props.resourceNode.id)
+            if (currentNode) {
+              // grabs updated data
+              this.props.updateNode(currentNode)
+            }
+          },
+          delete: (resourceNodes) => {
+            // checks if the action have deleted the current node
+            const currentNode = resourceNodes.find(node => node.id === this.props.resourceNode.id)
+            if (currentNode) {
+              // grabs updated data
+              //this.props.deleteNode(currentNode)
+            }
+          }
+        }).then((actions) => {
           return [].concat(this.props.customActions || [], actions, [
             {
               name: 'fullscreen',
@@ -69,6 +86,7 @@ ResourcePage.propTypes = {
   resourceNode: T.shape(
     ResourceNodeTypes.propTypes
   ).isRequired,
+  updateNode: T.func.isRequired,
 
   /**
    * The current user evaluation.
