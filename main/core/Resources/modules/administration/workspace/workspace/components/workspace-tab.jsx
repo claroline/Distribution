@@ -2,51 +2,25 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
-import {matchPath, Routes, withRouter} from '#/main/app/router'
+import {trans} from '#/main/core/translation'
+import {Routes} from '#/main/app/router'
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
-import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
-import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
-import {WorkspaceCreation} from '#/main/core/workspace/creation/containers/creation.jsx'
-
-import {Workspace}  from '#/main/core/administration/workspace/workspace/components/workspace.jsx'
-import {Workspaces} from '#/main/core/administration/workspace/workspace/components/workspaces.jsx'
+import {Workspace}  from '#/main/core/administration/workspace/workspace/components/workspace'
+import {CreationForm as WorkspaceCreation} from '#/main/core/workspace/creation/components/creation'
+import {Workspaces} from '#/main/core/administration/workspace/workspace/components/workspaces'
 import {actions}    from '#/main/core/administration/workspace/workspace/actions'
 
-const WorkspaceTabActionsComponent = props =>
+const WorkspaceTabActions = () =>
   <PageActions>
-    <FormPageActionsContainer
-      formName="workspaces.current"
-      target={(workspace, isNew) => isNew ?
-        ['apiv2_workspace_create'] :
-        ['apiv2_workspace_update', {id: workspace.id}]
-      }
-      opened={
-        !!
-        (matchPath(props.location.pathname, {path: '/workspaces/creation/form'}) ||
-        matchPath(props.location.pathname, {path: '/workspaces/form/:id?'}))
-      }
-      open={{
-        type: 'link',
-        icon: 'fa fa-plus',
-        label: t('add_workspace'),
-        target: '/workspaces/creation/form'
-      }}
-      cancel={{
-        type: 'link',
-        target: '/workspaces',
-        exact: true
-      }}
+    <PageAction
+      type="link"
+      icon="fa fa-plus"
+      label={trans('add_workspace')}
+      target="/workspaces/creation/form"
+      primary={true}
     />
   </PageActions>
-
-WorkspaceTabActionsComponent.propTypes = {
-  location: T.shape({
-    pathname: T.string
-  }).isRequired
-}
-
-const WorkspaceTabActions = withRouter(WorkspaceTabActionsComponent)
 
 const WorkspaceTabComponent = props =>
   <Routes
@@ -56,16 +30,13 @@ const WorkspaceTabComponent = props =>
         exact: true,
         component: Workspaces
       }, {
-        path: '/workspaces/creation',
-        component: WorkspaceCreation
-        //exact: true,
-      }, {
         path: '/workspaces/form/:id',
-        exact: true,
         component: Workspace,
-        onEnter: (params) => {
-          props.openForm(params.id || null)
-        }
+        onEnter: (params) => props.openForm(params.id)
+      }, {
+        path: '/workspaces/creation/form',
+        component: WorkspaceCreation,
+        onEnter: () => props.openForm()
       }
     ]}
   />
