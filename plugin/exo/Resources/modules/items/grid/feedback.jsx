@@ -172,36 +172,36 @@ class GridFeedback extends Component {
                     const colors = this.getYourAnswerCellColors(cell, valid)
                     if(!cell.input) {
                       return(
-                          <td
+                        <td
                           key={`grid-row-${i}-col-${j}`}
                           style={Object.assign({border: `${this.props.item.border.width}px solid ${this.props.item.border.color}`}, colors)}>
-                            <div className="grid-cell">
-                              <div className="cell-body">{cell.data}</div>
-                            </div>
-                          </td>
-                        )
+                          <div className="grid-cell">
+                            <div className="cell-body">{cell.data}</div>
+                          </div>
+                        </td>
+                      )
                     } else {
                       return (
-                          <td
+                        <td
                           key={`grid-row-${i}-col-${j}`}
                           style={Object.assign({border: `${this.props.item.border.width}px solid ${colors.color}`}, colors)}>
-                            <YourGridCell
-                              isValid={valid}
-                              answers={this.props.answer}
-                              solutions={this.props.item.solutions}
-                              cell={cell}/>
-                          </td>
+                          <YourGridCell
+                            isValid={valid}
+                            answers={this.props.answer}
+                            solutions={this.props.item.solutions}
+                            cell={cell}/>
+                        </td>
                       )
                     }
                   }
-                )}
+                  )}
                 </tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
-      )
+    )
   }
 }
 

@@ -52,12 +52,12 @@ class GridCell extends Component {
                 {this.props.cell.choices.map((choice, index) => {
                   {return choice !== this.getTextValue() &&
                      <li
-                      key={`choice-${index}`}
-                      onClick={() => this.props.onChange(
-                        this.setTextAnswer(choice)
-                      )}>
-                      <a style={{color:this.props.cell.color}}>{choice}</a>
-                    </li>
+                       key={`choice-${index}`}
+                       onClick={() => this.props.onChange(
+                         this.setTextAnswer(choice)
+                       )}>
+                       <a style={{color:this.props.cell.color}}>{choice}</a>
+                     </li>
                   }
                 })}
               </ul>

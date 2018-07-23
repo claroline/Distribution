@@ -95,7 +95,7 @@ class ExpectedGridCell extends Component {
               id={`ass-${this.props.cell.id}-feedback`}
               feedback={this.getSolutionFeedback()}
             />
-          {this.props.showScore && this.props.isSumCellMode &&
+            {this.props.showScore && this.props.isSumCellMode &&
               <SolutionScore score={this.getSolutionScore()}/>
             }
           </div>
@@ -114,10 +114,10 @@ class ExpectedGridCell extends Component {
                 {this.getCellChoices().map((choice, index) => {
                   {return choice.text !== this.state.currentText &&
                      <li
-                      key={`choice-${index}`}
-                      onClick={() => this.setTextState(choice.text)}>
-                      <a>{choice.text}</a>
-                    </li>
+                       key={`choice-${index}`}
+                       onClick={() => this.setTextState(choice.text)}>
+                       <a>{choice.text}</a>
+                     </li>
                   }
                 })}
               </ul>
@@ -185,10 +185,10 @@ class YourGridCell extends Component {
       <div className="grid-cell">
         {this.props.cell.input &&
           <div className={classes(
-              'cell-header',
-              {'text-success': this.props.isValid},
-              {'text-danger': !this.props.isValid}
-            )}>
+            'cell-header',
+            {'text-success': this.props.isValid},
+            {'text-danger': !this.props.isValid}
+          )}>
             <WarningIcon valid={this.props.isValid}/>
             <div className="additional-infos">
               <Feedback
@@ -495,31 +495,31 @@ class GridPaper extends Component {
                         const colors = this.getYourAnswerCellColors(cell, valid)
                         if(!cell.input) {
                           return(
-                              <td
+                            <td
                               key={`grid-row-${i}-col-${j}`}
                               style={Object.assign({border: `${this.props.item.border.width}px solid ${this.props.item.border.color}`}, colors)}>
-                                <div className="grid-cell">
-                                  <div className="cell-body">{cell.data}</div>
-                                </div>
-                              </td>
+                              <div className="grid-cell">
+                                <div className="cell-body">{cell.data}</div>
+                              </div>
+                            </td>
                           )
                         } else {
                           return (
-                              <td
+                            <td
                               key={`grid-row-${i}-col-${j}`}
                               style={Object.assign({border: `${this.props.item.border.width}px solid ${colors.color}`}, colors)}>
-                                <YourGridCell
-                                  isValid={valid}
-                                  answers={this.props.answer}
-                                  solutions={this.props.item.solutions}
-                                  showScore={this.props.showScore && this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL}
-                                  cell={cell}
-                                  penalty={this.props.item.penalty}/>
-                              </td>
+                              <YourGridCell
+                                isValid={valid}
+                                answers={this.props.answer}
+                                solutions={this.props.item.solutions}
+                                showScore={this.props.showScore && this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL}
+                                cell={cell}
+                                penalty={this.props.item.penalty}/>
+                            </td>
                           )
                         }
                       }
-                    )}
+                      )}
                     </tr>
                   )}
                 </tbody>
@@ -561,30 +561,30 @@ class GridPaper extends Component {
                         const colors = this.getExpectedAnswerCellColors(cell)
                         if(!cell.input) {
                           return(
-                              <td
+                            <td
                               key={`grid-row-${i}-col-${j}`}
                               style={Object.assign({border: `${this.props.item.border.width}px solid ${this.props.item.border.color}`}, colors)}>
-                                <div className="grid-cell">
-                                  <div className="cell-body">{cell.data}</div>
-                                </div>
-                              </td>
+                              <div className="grid-cell">
+                                <div className="cell-body">{cell.data}</div>
+                              </div>
+                            </td>
                           )
                         } else {
                           return (
-                              <td
+                            <td
                               key={`grid-row-${i}-col-${j}`}
                               style={Object.assign({border: `${this.props.item.border.width}px solid ${colors.color}`}, colors)}>
-                                <ExpectedGridCell
-                                  showScore = {this.props.showScore}
-                                  answers={this.props.answer}
-                                  solutions={this.props.item.solutions}
-                                  isSumCellMode={this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL}
-                                  cell={cell}/>
-                              </td>
+                              <ExpectedGridCell
+                                showScore = {this.props.showScore}
+                                answers={this.props.answer}
+                                solutions={this.props.item.solutions}
+                                isSumCellMode={this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL}
+                                cell={cell}/>
+                            </td>
                           )
                         }
                       }
-                    )}
+                      )}
                     </tr>
                   )}
                 </tbody>
@@ -681,7 +681,7 @@ class GridPaper extends Component {
                           )
                         }
                       }
-                    )}
+                      )}
                     </tr>
                   )}
                 </tbody>
