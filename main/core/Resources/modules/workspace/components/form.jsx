@@ -322,7 +322,8 @@ WorkspaceFormComponent.propTypes = {
 
   // from redux
   new: T.bool.isRequired,
-  updateProp: T.func.isRequired
+  updateProp: T.func.isRequired,
+  showWorkspaceParametersModal: T.func.isRequired
 }
 
 WorkspaceFormComponent.defaultProps = {
