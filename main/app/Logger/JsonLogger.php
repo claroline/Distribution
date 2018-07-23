@@ -81,7 +81,7 @@ class JsonLogger implements LoggerInterface
 
     public function log($level, $message, array $context = [])
     {
-        $separator = '\n';
+        $separator = PHP_EOL;
         $data = $this->get();
         $time = date('m-d-y h:i:s').': ';
         $line = $time.$message;
@@ -124,6 +124,11 @@ class JsonLogger implements LoggerInterface
 
     public function notice($message, array $context = [])
     {
+    }
+
+    public function end()
+    {
+        $this->set('end', true);
     }
 
     public function get($property = null)

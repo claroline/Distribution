@@ -79,6 +79,64 @@ class WorkspaceController extends AbstractCrudController
         return 'workspace';
     }
 
+    /**
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function createAction(Request $request, $class)
+    {
+        $data = $this->decodeRequest($request);
+
+        if (isset($data['model'])) {
+            $modelId = $data['model'];
+        } else {
+            $modelId = 0;
+        }
+
+        $workspace = $this->crud->create(
+            $class,
+            $data,
+            [Options::LIGHT_COPY]
+        );
+
+        if (is_array($workspace)) {
+            return new JsonResponse($workspace, 400);
+        }
+
+        $model = $this->om->getRepository(Workspace::class)->find($modelId);
+
+        if (!$model) {
+            $model = $this->workspaceManager->getDefaultModel();
+        }
+
+        $logger = new JsonLogger($this->getLogFile($workspace));
+        $this->workspaceManager->setLogger($logger);
+
+        $this->workspaceManager->duplicateWorkspaceRoles($model, $workspace, $workspace->getCreator());
+        $this->workspaceManager->duplicateOrderedTools($model, $workspace);
+        $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($model);
+        $this->workspaceManager->duplicateHomeTabs($model, $workspace, $homeTabs);
+        $rootNode = $this->workspaceManager->duplicateRoot($model, $workspace, $workspace->getCreator());
+        $resourceNodes = $this->resourceManager->getWorkspaceRoot($model)->getChildren()->toArray();
+        $workspaceRoles = $this->workspaceManager->getArrayRolesByWorkspace($workspace);
+        $this->workspaceManager->duplicateResources($resourceNodes, $workspaceRoles, $workspace->getCreator(), $rootNode);
+
+        $logger->end();
+
+        return new JsonResponse(
+            $this->serializer->serialize($workspace, $this->options['get']),
+            201
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
     public function copyBulkAction(Request $request, $class)
     {
         //add params for the copy here
@@ -543,30 +601,12 @@ class WorkspaceController extends AbstractCrudController
     public function copyResourcesActions(Workspace $new, Workspace $old)
     {
         $this->workspaceManager->setLogger(new JsonLogger($this->getLogFile($new)));
-        $this->workspaceManager->duplicateAllResources($old, $new, $new->getCreator());
+        $rootNode = $this->workspaceManager->duplicateRoot($old, $new, $new->getCreator());
+        $resourceNodes = $this->resourceManager->getWorkspaceRoot($old)->getChildren()->toArray();
+        $workspaceRoles = $this->workspaceManager->getArrayRolesByWorkspace($new);
+        $this->workspaceManager->duplicateResources($resourceNodes, $workspaceRoles, $new->getCreator(), $rootNode);
 
         return new JsonResponse($this->serializer->serialize($new));
-    }
-
-    /**
-     * @Route("/{id}/full", name="apiv2_workspace_get_full")
-     * @Method("GET")
-     */
-    public function getFullAction($id)
-    {
-        $workspace = $this->find(Workspace::class, $id);
-
-        return new JsonResponse($this->serializer->serialize($workspace, [
-          Options::WORKSPACE_FETCH_GROUPS,
-          Options::WORKSPACE_FETCH_ORDERED_TOOLS,
-          Options::WORKSPACE_FETCH_HOME,
-          Options::WORKSPACE_FETCH_RESOURCES,
-        ]));
-    }
-
-    public function end(Workspace $new)
-    {
-        //remove the log file
     }
 
     /**
@@ -576,7 +616,7 @@ class WorkspaceController extends AbstractCrudController
      */
     private function getLogFile(Workspace $workspace)
     {
-        return $this->logDir.DIRECTORY_SEPARATOR.$workspace->getUuid().'.json';
+        return $this->logDir.DIRECTORY_SEPARATOR.$workspace->getCode().'.json';
     }
 
     /**

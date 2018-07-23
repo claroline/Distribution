@@ -21,6 +21,16 @@ actions.fetchModel = (model) => ({
   }
 })
 
+actions.save = (workspace) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_workspace_create'],
+    request: {
+      body: JSON.stringify(workspace),
+      method: 'POST'
+    }
+  }
+})
+
 actions.copyBase = (modelId, data) => ({
   [API_REQUEST]: {
     url: ['apiv2_workspace_copy_base', {workspace: modelId}],
@@ -30,42 +40,6 @@ actions.copyBase = (modelId, data) => ({
     },
     success: (response, dispatch) => {
       dispatch(actions.loadCurrent(response))
-    }
-  }
-})
-
-actions.copyRoles = (newWorkspace, oldWorkspace) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_workspace_copy_roles', {new: newWorkspace.id, old: oldWorkspace}],
-    request: {
-      method: 'GET'
-    }
-  }
-})
-
-actions.copyBaseTools = (newWorkspace, oldWorkspace) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_workspace_copy_tools', {new: newWorkspace.id, old: oldWorkspace}],
-    request: {
-      method: 'GET'
-    }
-  }
-})
-
-actions.copyHome = (newWorkspace, oldWorkspace) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_workspace_copy_home', {new: newWorkspace.id, old: oldWorkspace}],
-    request: {
-      method: 'GET'
-    }
-  }
-})
-
-actions.copyResources = (newWorkspace, oldWorkspace) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_workspace_copy_resources', {new: newWorkspace.id, old: oldWorkspace}],
-    request: {
-      method: 'GET'
     }
   }
 })

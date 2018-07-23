@@ -21,12 +21,16 @@ const WorkspaceTabActionsComponent = props =>
         ['apiv2_workspace_create'] :
         ['apiv2_workspace_update', {id: workspace.id}]
       }
-      opened={!!matchPath(props.location.pathname, {path: '/workspaces/form'})}
+      opened={
+        !!
+        (matchPath(props.location.pathname, {path: '/workspaces/creation/form'}) ||
+        matchPath(props.location.pathname, {path: '/workspaces/form/:id?'}))
+      }
       open={{
         type: 'link',
         icon: 'fa fa-plus',
         label: t('add_workspace'),
-        target: '/workspaces/creation'
+        target: '/workspaces/creation/form'
       }}
       cancel={{
         type: 'link',

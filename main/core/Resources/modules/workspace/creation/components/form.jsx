@@ -3,11 +3,14 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {FormContainer} from '#/main/core/data/form/containers/form'
-
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions} from '#/main/core/workspace/creation/store/actions'
+import {actions as logActions} from '#/main/core/workspace/creation/components/log/actions'
+import {Logs} from '#/main/core/workspace/creation/components/log/components/logs.jsx'
 
 const WorkspaceComponent = (props) => {
   const modelChoices = {}
@@ -20,12 +23,28 @@ const WorkspaceComponent = (props) => {
     }
   })
 
-
   return (<div>
     <FormContainer
       level={3}
-      name="workspaces.creation.workspace"
+      name="workspaces.current"
       new={true}
+      buttons={true}
+      save={{
+        type: 'callback',
+        icon: 'fa fa-fw fa-upload',
+        label: trans('save', {}, 'actions'),
+        callback: () => {
+          props.save(props.workspace)
+          const logName = props.workspace.code
+          const refresher = setInterval(() => {
+            props.loadLog(logName)
+
+            if (this.props.logs && !this.props.logs.end) {
+              clearInterval(refresher)
+            }
+          }, 2000)
+        }
+      }}
       sections={[
         {
           title: trans('general'),
@@ -44,7 +63,7 @@ const WorkspaceComponent = (props) => {
             }, {
               name: 'model',
               type: 'choice',
-              label: 'model',
+              label: trans('model'),
               required: true,
               options: {
                 condensed: true,
@@ -281,10 +300,14 @@ const WorkspaceComponent = (props) => {
       ]}
     >
     </FormContainer>
+    <Logs/>
   </div>
   )}
 
 WorkspaceComponent.propTypes = {
+  loadLog: T.func,
+  updateProp: T.func,
+  save: T.func,
   workspace: T.shape(
     WorkspaceTypes.propTypes
   ).isRequired,
@@ -297,14 +320,21 @@ WorkspaceComponent.defaultProps = {
 
 const ConnectedForm = connect(
   state => {
-    const workspace = formSelect.data(formSelect.form(state, 'workspaces.creation.workspace'))
-
     return {
-      workspace: workspace,
-      models: state.models
+      models: state.models,
+      workspace: formSelect.data(formSelect.form(state, 'workspaces.current'))
     }
   },
-  dispatch =>({
+  (dispatch, ownProps) =>({
+    updateProp(propName, propValue) {
+      dispatch(formActions.updateProp(ownProps.name, propName, propValue))
+    },
+    loadLog(filename) {
+      dispatch(logActions.load(filename))
+    },
+    save(workspace) {
+      dispatch(actions.save(workspace))
+    }
   })
 )(WorkspaceComponent)
 

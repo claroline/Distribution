@@ -73,10 +73,12 @@ const Routes = props =>
           <Routes
             {...route}
             key={`route-${routeIndex}`}
+            blockingStep={props.blockingSteps}
           /> :
           <Route
             {...route}
             key={`route-${routeIndex}`}
+            blockingStep={props.blockingSteps}
           />
         )
       }

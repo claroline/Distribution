@@ -27,7 +27,7 @@ const Logs = props => {
       </div>
     </div>)
   } else {
-    return(<div> Loading... </div>)
+    return(<div className="well"> Loading... </div>)
   }
 }
 
@@ -37,7 +37,7 @@ Logs.propTypes = {
 
 const ConnectedLog = connect(
   state => ({
-    data: state.log
+    data: state.workspaces.creation.log
   }),
   null
 )(Logs)

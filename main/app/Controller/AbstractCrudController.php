@@ -12,7 +12,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractCrudController extends AbstractApiController
 {
@@ -359,15 +358,7 @@ abstract class AbstractCrudController extends AbstractApiController
 
     private function sendResponse($data, $code = 200)
     {
-        $request = $this->container->get('request_stack')->getMasterRequest();
-        $debug = $request->query->get('debug');
-
-        if (!$debug) {
-            return new JsonResponse($data, $code);
-        }
-
-        //this is for debug purpose
-        return new Response('<body>'.json_encode($data).'</body>', $code);
+        return new JsonResponse($data, $code);
     }
 
     /**
