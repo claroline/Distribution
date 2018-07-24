@@ -67,7 +67,15 @@ abstract class AbstractFinder implements FinderInterface
     public function findOneBy(array $filters = [])
     {
         $data = $this->find($filters);
-
+        // var_dump($filters);
+        // foreach ($data as $el) {
+        //     var_dump($el->getId());
+        //     var_dump($el->getTool()->getName());
+        //     var_dump($el->getWorkspace()->getCode());
+        //     var_dump($el->getWorkspace()->getId());
+        //     var_dump($el->getWorkspace()->getUuid());
+        //     var_dump($el->getWorkspace()->getName());
+        // }
         if (count($data) > 1) {
             throw new \Exception('Multiple results found ('.count($data).')');
         } elseif (0 === count($data)) {

@@ -165,13 +165,7 @@ const EditorComponent = props =>
                 type: 'choice',
                 options:{
                   multiple : true,
-                  choices: {
-                    0: 'Anonyme',
-                    1: 'Utilisateur',
-                    2: 'Collaborateur',
-                    3: 'Gestionnaire',
-                    4: 'Rôle 1'
-                  }
+                  choices: props.context.data.roles.map((role, index) => console.log(role.translationKey))
                 }
               }
             ]

@@ -11,6 +11,8 @@ import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {selectors} from '#/main/core/tools/home/selectors'
 import {Tabs} from '#/main/core/tools/home/components/tabs'
 
+import {currentUser} from '#/main/core/user/current'
+
 const PlayerComponent = props =>
   <PageContainer>
     {1 < props.sortedTabs.length &&
@@ -18,7 +20,7 @@ const PlayerComponent = props =>
         tabs={props.sortedTabs}
       />
     }
-
+    {console.log(currentUser())}
     <PageHeader
       // TODO change to h1
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
