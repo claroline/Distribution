@@ -12,7 +12,6 @@ use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
 use Claroline\CoreBundle\Entity\Tool\ToolRights;
 use Claroline\CoreBundle\Repository\OrderedToolRepository;
 use Claroline\CoreBundle\Repository\UserRepository;
-use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -38,9 +37,6 @@ class RoleSerializer
     /** @var UserRepository */
     private $userRepo;
 
-    /** @var WorkspaceRepository */
-    private $workspaceRepo;
-
     /**
      * RoleSerializer constructor.
      *
@@ -60,7 +56,6 @@ class RoleSerializer
         $this->orderedToolRepo = $this->om->getRepository('ClarolineCoreBundle:Tool\OrderedTool');
         $this->toolRightsRepo = $this->om->getRepository('ClarolineCoreBundle:Tool\ToolRights');
         $this->userRepo = $this->om->getRepository('ClarolineCoreBundle:User');
-        $this->workspaceRepo = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace');
     }
 
     /**
@@ -188,21 +183,18 @@ class RoleSerializer
     private function serializeTools(Role $role, $workspaceId)
     {
         $tools = [];
-        $workspace = $this->workspaceRepo->findOneBy(['uuid' => $workspaceId]);
 
-        if (!empty($workspace)) {
-            $orderedTools = $this->orderedToolRepo->findBy(['workspace' => $workspaceId]);
+        $orderedTools = $this->orderedToolRepo->findBy(['workspace' => $workspaceId]);
 
-            foreach ($orderedTools as $orderedTool) {
-                $toolRights = $this->toolRightsRepo->findBy(['role' => $role, 'orderedTool' => $orderedTool], ['id' => 'ASC']);
-                $mask = 0 < count($toolRights) ? $toolRights[0]->getMask() : 0;
-                $toolName = $orderedTool->getTool()->getName();
-                $tools[$toolName] = [];
+        foreach ($orderedTools as $orderedTool) {
+            $toolRights = $this->toolRightsRepo->findBy(['role' => $role, 'orderedTool' => $orderedTool], ['id' => 'ASC']);
+            $mask = 0 < count($toolRights) ? $toolRights[0]->getMask() : 0;
+            $toolName = $orderedTool->getTool()->getName();
+            $tools[$toolName] = [];
 
-                foreach (ToolMaskDecoder::$defaultActions as $action) {
-                    $actionValue = ToolMaskDecoder::$defaultValues[$action];
-                    $tools[$toolName][$action] = $mask & $actionValue ? true : false;
-                }
+            foreach (ToolMaskDecoder::$defaultActions as $action) {
+                $actionValue = ToolMaskDecoder::$defaultValues[$action];
+                $tools[$toolName][$action] = $mask & $actionValue ? true : false;
             }
         }
 
