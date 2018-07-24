@@ -129,9 +129,6 @@ function makeResourceExplorerReducer(explorerName, initialState = {}) {
     resources: makeListReducer(`${explorerName}.resources`, {}, {
       invalidated: makeReducer(false, {
         [`${EXPLORER_SET_CURRENT}/${explorerName}`]: () => true
-      }),
-      selected: makeReducer([], {
-        [`${EXPLORER_SET_CURRENT}/${explorerName}`]: () => []
       })
     })
   })

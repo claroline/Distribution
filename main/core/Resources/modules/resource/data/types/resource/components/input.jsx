@@ -9,7 +9,7 @@ import {ModalButton} from '#/main/app/button'
 
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/data/types/resource/prop-types'
-// import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
+//import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 
 const ResourceInput = props => !isEmpty(props.value) ?
   <ResourceCard
@@ -20,7 +20,7 @@ const ResourceInput = props => !isEmpty(props.value) ?
         type: 'modal',
         icon: 'fa fa-fw fa-recycle',
         label: trans('replace', {}, 'actions'),
-        modal: ['MODAL_RESOURCE_EXPLORER', {
+        modal: [MODAL_RESOURCE_EXPLORER, {
           title: props.picker.title,
           current: props.picker.current,
           root: props.picker.root,
@@ -47,7 +47,7 @@ const ResourceInput = props => !isEmpty(props.value) ?
     <ModalButton
       className="btn btn-resource-primary"
       primary={true}
-      modal={['MODAL_RESOURCE_EXPLORER', {
+      modal={[MODAL_RESOURCE_EXPLORER, {
         title: props.picker.title,
         current: props.picker.current,
         root: props.picker.root,
