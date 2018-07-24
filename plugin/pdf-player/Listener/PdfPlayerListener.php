@@ -29,7 +29,6 @@ class PdfPlayerListener
             'ClarolinePdfPlayerBundle::open.html.twig',
             [
                 'path' => $path,
-                'pdf' => $event->getResource(),
                 'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
                 '_resource' => $event->getResource(),
             ]

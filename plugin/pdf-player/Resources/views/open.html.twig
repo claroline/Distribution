@@ -10,7 +10,7 @@
     <div
         class="page-container pdf-player-container"
         data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
-        data-path="{{ path | json_encode | raw | escape }}"
+        data-path="{{ url('claro_pdf', {node: _resource.resourceNode.id}) | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}
@@ -18,5 +18,6 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="{{ asset('packages/pdfjs-dist/build/pdf.combined.js') }}"></script>
     <script src="{{ hotAsset('dist/claroline-distribution-plugin-pdf-player-pdf-viewer.js') }}"></script>
 {% endblock %}

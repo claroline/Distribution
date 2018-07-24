@@ -6,11 +6,7 @@ import {ResourcePageContainer} from '#/main/core/resource/containers/page'
 import {Player} from '#/plugin/pdf-player/resources/pdf/player/components/player'
 
 const pdfPlayer = () =>
-  <ResourcePageContainer
-    editor={{
-      path: '/edit'
-    }}
-  >
+  <ResourcePageContainer>
     <RoutedPageContent
       headerSpacer={true}
       routes={[
