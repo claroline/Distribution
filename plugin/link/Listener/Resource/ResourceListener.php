@@ -13,6 +13,7 @@ namespace Claroline\LinkBundle\Listener\Resource;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Claroline\LinkBundle\Manager\ShortcutManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -58,9 +59,9 @@ class ResourceListener
      *
      * @DI\Observe("resource.delete")
      *
-     * @param DeleteResourceEvent $event
+     * @param ResourceActionEvent $event
      */
-    public function delete(DeleteResourceEvent $event)
+    public function delete(ResourceActionEvent $event)
     {
         $this->shortcutManager->removeShortcutsTo($event->getResourceNode());
     }
