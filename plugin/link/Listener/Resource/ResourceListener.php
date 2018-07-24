@@ -50,7 +50,6 @@ class ResourceListener
      */
     public function shortcuts(DeleteResourceEvent $event)
     {
-        /*$this->shortcutManager->removeShortcutsTo($event->getResourceNode());*/
     }
 
     /**
