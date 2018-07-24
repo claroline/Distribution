@@ -20,7 +20,7 @@ const ResourceInput = props => !isEmpty(props.value) ?
         type: 'modal',
         icon: 'fa fa-fw fa-recycle',
         label: trans('replace', {}, 'actions'),
-        modal: [MODAL_RESOURCE_EXPLORER, {
+        modal: ['MODAL_RESOURCE_EXPLORER', {
           title: props.picker.title,
           current: props.picker.current,
           root: props.picker.root,
@@ -47,7 +47,7 @@ const ResourceInput = props => !isEmpty(props.value) ?
     <ModalButton
       className="btn btn-resource-primary"
       primary={true}
-      modal={[MODAL_RESOURCE_EXPLORER, {
+      modal={['MODAL_RESOURCE_EXPLORER', {
         title: props.picker.title,
         current: props.picker.current,
         root: props.picker.root,
