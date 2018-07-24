@@ -54,6 +54,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.manager.resource_manager")
+ *
+ * @todo clean me
  */
 class ResourceManager
 {
@@ -1923,5 +1925,14 @@ class ResourceManager
         }
 
         return count($nodes);
+    }
+
+    public function addView(ResourceNode $node)
+    {
+        $node->addView();
+        $this->om->persist($node);
+        $this->om->flush();
+
+        return $node;
     }
 }

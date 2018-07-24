@@ -16,8 +16,10 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceRestrictionsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -30,21 +32,35 @@ class ResourceController
     /** @var ResourceActionManager */
     private $actionManager;
 
+    /** @var ResourceRestrictionsManager */
+    private $restrictionsManager;
+
     /**
      * ResourceController constructor.
      *
      * @DI\InjectParams({
-     *     "actionManager" = @DI\Inject("claroline.manager.resource_action")
+     *     "actionManager"       = @DI\Inject("claroline.manager.resource_action"),
+     *     "restrictionsManager" = @DI\Inject("claroline.manager.resource_restrictions")
      * })
      *
-     * @param ResourceActionManager $actionManager
+     * @param ResourceActionManager       $actionManager
+     * @param ResourceRestrictionsManager $restrictionsManager
      */
     public function __construct(
-        ResourceActionManager $actionManager)
+        ResourceActionManager $actionManager,
+        ResourceRestrictionsManager $restrictionsManager)
     {
         $this->actionManager = $actionManager;
+        $this->restrictionsManager = $restrictionsManager;
     }
 
+    /**
+     * Displays a resource page.
+     *
+     * @EXT\Route("/{id}", name="claro_resource_show")
+     *
+     * @param ResourceNode $resourceNode
+     */
     public function showAction(ResourceNode $resourceNode)
     {
     }
@@ -87,8 +103,30 @@ class ResourceController
         return $this->actionManager->execute($resourceNode, $action, $parameters, $content);
     }
 
+    /**
+     * Executes an action on a collection of resources.
+     *
+     * @param Request $request
+     */
     public function executeCollectionAction(Request $request)
     {
+    }
+
+    /**
+     * Submit access code.
+     *
+     * @EXT\Route("/{id}/unlock", name="claro_resource_unlock")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function unlockAction(Request $request)
+    {
+        // todo finish implementation
+
+        return new JsonResponse($this->restrictionsManager->unlock($resourceNode, $code));
     }
 
     /**

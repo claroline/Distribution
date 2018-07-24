@@ -3,12 +3,11 @@
 namespace Claroline\CoreBundle\Listener\Resource;
 
 use Claroline\AppBundle\API\Crud;
-use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager;
-use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -22,8 +21,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class ResourceListener
 {
-    /** @var ResourceNodeManager */
-    private $resourceNodeManager;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
+    /** @var Crud */
+    private $crud;
+
+    /** @var SerializerProvider */
+    private $serializer;
 
     /** @var ResourceManager */
     private $resourceManager;
@@ -34,52 +39,39 @@ class ResourceListener
     /** @var RightsManager */
     private $resourceRightsManager;
 
-    /** @var Crud */
-    private $crud;
-
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-
-    /** @var ResourceNodeSerializer */
-    private $resourceNodeSerializer;
-
     /**
      * ResourceListener constructor.
      *
      * @DI\InjectParams({
-     *     "resourceNodeManager"      = @DI\Inject("claroline.manager.resource_node"),
+     *     "tokenStorage"             = @DI\Inject("security.token_storage"),
+     *     "crud"                     = @DI\Inject("claroline.api.crud"),
+     *     "serializer"               = @DI\Inject("claroline.api.serializer"),
      *     "resourceManager"          = @DI\Inject("claroline.manager.resource_manager"),
      *     "resourceLifecycleManager" = @DI\Inject("claroline.manager.resource_lifecycle"),
-     *     "resourceRightsManager"    = @DI\Inject("claroline.manager.rights_manager"),
-     *     "crud"                     = @DI\Inject("claroline.api.crud"),
-     *     "tokenStorage"             = @DI\Inject("security.token_storage"),
-     *     "resourceSerializer"       = @DI\Inject("claroline.serializer.resource_node")
+     *     "resourceRightsManager"    = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
-     * @param ResourceNodeManager      $resourceNodeManager
+     * @param TokenStorageInterface    $tokenStorage
+     * @param Crud                     $crud
+     * @param SerializerProvider       $serializer
      * @param ResourceManager          $resourceManager
      * @param ResourceLifecycleManager $resourceLifecycleManager
      * @param RightsManager            $resourceRightsManager
-     * @param Crud                     $crud
-     * @param TokenStorageInterface    $tokenStorage
-     * @param ResourceNodeSerializer   $resourceSerializer
      */
     public function __construct(
-        ResourceNodeManager $resourceNodeManager,
+        TokenStorageInterface $tokenStorage,
+        Crud $crud,
+        SerializerProvider $serializer,
         ResourceManager $resourceManager,
         ResourceLifecycleManager $resourceLifecycleManager,
-        RightsManager $resourceRightsManager,
-        Crud $crud,
-        TokenStorageInterface $tokenStorage,
-        ResourceNodeSerializer $resourceSerializer
+        RightsManager $resourceRightsManager
     ) {
-        $this->resourceNodeManager = $resourceNodeManager;
+        $this->tokenStorage = $tokenStorage;
+        $this->crud = $crud;
+        $this->serializer = $serializer;
         $this->resourceManager = $resourceManager;
         $this->resourceLifecycleManager = $resourceLifecycleManager;
         $this->resourceRightsManager = $resourceRightsManager;
-        $this->crud = $crud;
-        $this->tokenStorage = $tokenStorage;
-        $this->resourceNodeSerializer = $resourceSerializer;
     }
 
     /**
@@ -95,7 +87,7 @@ class ResourceListener
         $this->resourceLifecycleManager->rights($event->getResourceNode(), $event->getData());
 
         $event->setResponse(new JsonResponse(
-            $this->resourceNodeSerializer->serialize($event->getResourceNode())
+            $this->serializer->serialize($event->getResourceNode())
         ));
     }
 
@@ -140,6 +132,7 @@ class ResourceListener
     {
         $data = $event->getData();
         $this->crud->update(ResourceNode::class, $data);
+
         $event->setResponse(new JsonResponse($data));
         $event->stopPropagation();
     }
@@ -152,6 +145,34 @@ class ResourceListener
     public function onEdit(ResourceActionEvent $event)
     {
         $this->resourceLifecycleManager->edit($event->getResourceNode());
+    }
+
+    /**
+     * @DI\Observe("resource.publish")
+     *
+     * @param ResourceActionEvent $event
+     */
+    public function onPublish(ResourceActionEvent $event)
+    {
+        $this->resourceManager->setPublishedStatus([$event->getResourceNode()], true);
+
+        $event->setResponse(
+            new JsonResponse($this->serializer->serialize($event->getResourceNode()))
+        );
+    }
+
+    /**
+     * @DI\Observe("resource.unpublish")
+     *
+     * @param ResourceActionEvent $event
+     */
+    public function onUnpublish(ResourceActionEvent $event)
+    {
+        $this->resourceManager->setPublishedStatus([$event->getResourceNode()], false);
+
+        $event->setResponse(
+            new JsonResponse($this->serializer->serialize($event->getResourceNode()))
+        );
     }
 
     /**
@@ -172,7 +193,11 @@ class ResourceListener
     public function onDelete(ResourceActionEvent $event)
     {
         $this->resourceManager->delete($event->getResourceNode());
-        $event->setResponse(new JsonResponse(null, 204));
+        //$this->resourceLifecycleManager->delete($event->getResourceNode());
+
+        $event->setResponse(
+            new JsonResponse(null, 204)
+        );
     }
 
     /**
@@ -192,10 +217,12 @@ class ResourceListener
         if (!empty($parent) && 'anon.' !== $user) {
             $newResource = $this->resourceManager->copy($resourceNode, $parent, $user);
             $event->setResponse(
-                new JsonResponse($this->resourceNodeSerializer->serialize($newResource->getResourceNode()))
+                new JsonResponse($this->serializer->serialize($newResource->getResourceNode()))
             );
         } else {
-            $event->setResponse(new JsonResponse(null, 500));
+            $event->setResponse(
+                new JsonResponse(null, 500)
+            );
         }
     }
 
@@ -215,10 +242,12 @@ class ResourceListener
         if (!empty($parent)) {
             $movedResource = $this->resourceManager->move($resourceNode, $parent);
             $event->setResponse(
-                new JsonResponse($this->resourceNodeSerializer->serialize($movedResource), 200)
+                new JsonResponse($this->serializer->serialize($movedResource), 200)
             );
         } else {
-            $event->setResponse(new JsonResponse(null, 500));
+            $event->setResponse(
+                new JsonResponse(null, 500)
+            );
         }
     }
 
@@ -233,11 +262,13 @@ class ResourceListener
      */
     public function handleAccessRestrictions(GetResponseForExceptionEvent $event)
     {
+        // todo re implement
+
         $exception = $event->getException()->getPrevious();
         if ($exception && $exception instanceof ResourceAccessException) {
             $toUnlock = [];
             foreach ($exception->getNodes() as $node) {
-                $unlock = $this->resourceNodeManager->requiresUnlock($node);
+                $unlock = $this->serializer->requiresUnlock($node);
 
                 if ($unlock) {
                     $toUnlock[] = $node;
@@ -257,7 +288,9 @@ class ResourceListener
                   '_resource' => $this->resourceManager->getResourceFromNode($node),
               ]);
 
-            $event->setResponse(new Response($content));
+            $event->setResponse(
+                new Response($content)
+            );
         }
     }
 }

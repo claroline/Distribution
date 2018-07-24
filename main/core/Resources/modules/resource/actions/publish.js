@@ -3,7 +3,7 @@ import get from 'lodash/get'
 import {number} from '#/main/app/intl'
 import {trans} from '#/main/core/translation'
 
-const action = (resourceNodes, nodesRefresher) => ({
+const action = (resourceNodes, nodesRefresher) => ({ // todo collection
   name: 'publish',
   type: 'async',
   icon: 'fa fa-fw fa-eye',
@@ -16,11 +16,15 @@ const action = (resourceNodes, nodesRefresher) => ({
   } : undefined,
   request: {
     type: 'publish',
-    url: ['claro_resource_node_publish', {ids: resourceNodes.map(node => node.id)}],
+    url: ['claro_resource_action', {
+      resourceType: resourceNodes[0].meta.type,
+      action: 'publish',
+      id: resourceNodes[0].id
+    }],
     request: {
       method: 'PUT'
     },
-    success: (response) => nodesRefresher.update(response)
+    success: (response) => nodesRefresher.update([response])
   }
 })
 

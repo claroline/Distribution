@@ -12,31 +12,32 @@
 namespace Claroline\CoreBundle\Twig;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceType;
-use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
-use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceRestrictionsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service
  * @DI\Tag("twig.extension")
+ *
+ * @todo : remove me when new resource restrictions page will be implemented
  */
 class ResourceExtension extends \Twig_Extension
 {
-    private $resourceNodeManager;
+    /** @var ResourceRestrictionsManager */
+    private $restrictionsManager;
 
     /**
      * ResourceExtension constructor.
      *
      * @DI\InjectParams({
-     *     "resourceNodeManager" = @DI\Inject("claroline.manager.resource_node")
+     *     "restrictionsManager" = @DI\Inject("claroline.manager.resource_restrictions")
      * })
      *
-     * @param ResourceNodeManager $resourceNodeManager
+     * @param ResourceRestrictionsManager $restrictionsManager
      */
-    public function __construct(ResourceNodeManager $resourceNodeManager)
+    public function __construct(ResourceRestrictionsManager $restrictionsManager)
     {
-        $this->resourceNodeManager = $resourceNodeManager;
+        $this->restrictionsManager = $restrictionsManager;
     }
 
     public function getName()
@@ -54,11 +55,11 @@ class ResourceExtension extends \Twig_Extension
 
     public function isCodeProtected(ResourceNode $resourceNode)
     {
-        return $this->resourceNodeManager->isCodeProtected($resourceNode);
+        return $this->restrictionsManager->isCodeProtected($resourceNode);
     }
 
     public function requiresUnlock(ResourceNode $resourceNode)
     {
-        return $this->resourceNodeManager->requiresUnlock($resourceNode);
+        return $this->restrictionsManager->requiresUnlock($resourceNode);
     }
 }
