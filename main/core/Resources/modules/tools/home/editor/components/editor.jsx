@@ -165,7 +165,11 @@ const EditorComponent = props =>
                 type: 'choice',
                 options:{
                   multiple : true,
-                  choices: props.context.data.roles.map((role, index) => console.log(role.translationKey))
+                  choices: props.context.data.roles.reduce((acc, role) => {
+                    acc[role.id] = role.translationKey
+
+                    return acc
+                  }, {})
                 }
               }
             ]
