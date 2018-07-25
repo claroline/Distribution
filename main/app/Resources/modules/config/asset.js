@@ -1,4 +1,5 @@
 import {param} from '#/main/app/config'
+import trim from 'lodash/trim'
 
 /**
  * Get the path to an asset file.
@@ -8,13 +9,7 @@ import {param} from '#/main/app/config'
  * @returns {string}
  */
 function asset(assetName) {
-  let host = param('server.host')
-
-  let path = param('server.path')
-  path = trimByChar(path, '/')
-
-  const serverPath = `${param('server.protocol')}://${host}/${path}`
-    .replace(/^.*(\/)+$/g, '')
+  const serverPath = `${param('server.protocol')}://${param('server.host')}/${trim(param('server.path'), '/')}`
 
   return `${serverPath}/${assetName}`
 }
