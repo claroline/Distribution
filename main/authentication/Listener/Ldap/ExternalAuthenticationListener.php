@@ -1,13 +1,13 @@
 <?php
 
-namespace Claroline\LdapBundle\Listener;
+namespace Claroline\AuthenticationBundle\Listener\Ldap;
 
+use Claroline\AuthenticationBundle\Manager\Ldap\LdapManager;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogUserDeleteEvent;
 use Claroline\CoreBundle\Event\LoginTargetUrlEvent;
 use Claroline\CoreBundle\Event\RenderAuthenticationButtonEvent;
-use Claroline\CoreBundle\Routing\ClaroRouter;
-use Claroline\LdapBundle\Manager\LdapManager;
+use  Claroline\CoreBundle\Routing\ClaroRouter;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bridge\Twig\TwigEngine;
 
@@ -90,7 +90,7 @@ class ExternalAuthenticationListener
     {
         if ($event instanceof LogUserDeleteEvent) {
             $receiver = $event->getReceiver();
-            if ($receiver !== null) {
+            if (null !== $receiver) {
                 $this->ldapManager->unlinkAccount($receiver->getId());
             }
         }

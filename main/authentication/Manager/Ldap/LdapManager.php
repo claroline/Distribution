@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\LdapBundle\Manager;
+namespace Claroline\AuthenticationBundle\Manager\Ldap;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\AuthenticationBundle\Entity\Ldap\LdapUser;
+use Claroline\AuthenticationBundle\Exception\InvalidLdapCredentialsException;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Authenticator;
 use Claroline\CoreBundle\Manager\RegistrationManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\LdapBundle\Entity\LdapUser;
-use Claroline\LdapBundle\Exception\InvalidLdapCredentialsException;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -49,7 +49,7 @@ class LdapManager
     private $userManager;
     /** @var PlatformConfigurationHandler */
     private $platformConfigHandler;
-    /** @var \Claroline\LdapBundle\Repository\LdapUserRepository */
+    /** @var \Claroline\AuthenticationBundle\Ldap\Repository\LdapUserRepository */
     private $ldapUserRepo;
     /** @var TranslatorInterface */
     private $translator;
@@ -83,7 +83,7 @@ class LdapManager
         $this->om = $om;
         $this->registrationManager = $registrationManager;
         $this->userManager = $userManager;
-        $this->ldapUserRepo = $om->getRepository('ClarolineLdapBundle:LdapUser');
+        $this->ldapUserRepo = $om->getRepository('ClarolineAuthenticationBundle:Ldap\LdapUser');
         $this->platformConfigHandler = $platformConfigHandler;
         $this->translator = $translator;
         $this->authenticator = $authenticator;

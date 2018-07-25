@@ -9,9 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\LdapBundle\Form;
+namespace Claroline\AuthenticationBundle\Form\Ldap;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -43,7 +48,7 @@ class LdapType extends AbstractType
         ->add('port', NumberType::class, ['label' => 'port'])
         ->add('dn', TextType::class, ['label' => 'distinguished_name'])
         ->add('user', TextType::class, ['label' => 'username'])
-        ->add('password', 'password', ['label' => 'password', 'always_empty' => false])
+        ->add('password', PasswordType::class, ['label' => 'password', 'always_empty' => false])
         ->add(
             'protocol_version',
             ChoiceType::class,

@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\LdapBundle\Controller;
+namespace Claroline\AuthenticationBundle\Controller\Ldap;
 
-use Claroline\LdapBundle\Form\LdapType;
-use Claroline\LdapBundle\Manager\LdapManager;
+use Claroline\AuthenticationBundle\Form\Ldap\LdapType;
+use Claroline\AuthenticationBundle\Manager\Ldap\LdapManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -97,15 +97,15 @@ class LdapController extends Controller
     {
         $tmpServer = $this->ldap->get($name);
         $tmpPassword = (isset($tmpServer['password'])) ? $tmpServer['password'] : null;
-        $form = $this->formFactory->create(new LdapType(), $tmpServer);
-        if ($this->request->getMethod() === 'POST' && $form->handleRequest($this->request) && $form->isValid()) {
+        $form = $this->formFactory->create(LdapType::class, $tmpServer);
+        if ('POST' === $this->request->getMethod() && $form->handleRequest($this->request) && $form->isValid()) {
             $data = $form->getData();
 
             if ($this->ldap->exists($name, $data)) {
                 $form->addError(new FormError($this->translator->trans('ldap_already_exists', [], 'ldap')));
             } else {
                 $user = isset($data['user']) ? $data['user'] : null;
-                $data['password'] = (isset($data['password']) && $data['password'] !== null) ?
+                $data['password'] = (isset($data['password']) && null !== $data['password']) ?
                     $data['password'] :
                     $tmpPassword;
                 $password = $data['password'];

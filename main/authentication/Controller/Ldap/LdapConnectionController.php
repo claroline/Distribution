@@ -10,9 +10,9 @@
  * Date: 3/29/17
  */
 
-namespace Claroline\LdapBundle\Controller;
+namespace Claroline\AuthenticationBundle\Controller\Ldap;
 
-use Claroline\LdapBundle\Manager\LdapManager;
+use  Claroline\AuthenticationBundle\Manager\Ldap\LdapManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -39,7 +39,7 @@ class LdapConnectionController extends Controller
 
     /**
      * @Route("/login/{name}", name="claro_ldap_login")
-     * @Template("ClarolineLdapBundle:connect:login.html.twig")
+     * @Template("ClarolineLdapBundle\ldap:connect:login.html.twig")
      *
      * @param Request $request
      * @param $name
@@ -67,7 +67,7 @@ class LdapConnectionController extends Controller
 
     /**
      * @Route("/login/check_connection/{name}", name="claro_ldap_check_connection")
-     * @Template("ClarolineLdapBundle:connect:check_connection.html.twig")
+     * @Template("ClarolineLdapBundle\ldap:connect:check_connection.html.twig")
      *
      * @param Request $request
      * @param $name
@@ -94,7 +94,7 @@ class LdapConnectionController extends Controller
 
     /**
      * @Route("/register/{name}", name="claro_ldap_register")
-     * @Template("ClarolineLdapBundle:connect:register.html.twig")
+     * @Template("ClarolineLdapBundle\ldap:connect:register.html.twig")
      *
      * @param Request $request
      *
@@ -120,7 +120,7 @@ class LdapConnectionController extends Controller
 
     /**
      * @Route("/link/login/{name}", name="claro_ldap_login_link")
-     * @Template("ClarolineLdapBundle:connect:link_account.html.twig")
+     * @Template("ClarolineLdapBundle\ldap:connect:link_account.html.twig")
      *
      * @param Request $request
      *
@@ -143,7 +143,7 @@ class LdapConnectionController extends Controller
     /**
      * @Route("/link_account_mail/{name}", name="claro_ldap_link_account_mail")
      * @Method("GET")
-     * @Template("ClarolineLdapBundle:connect:link_account.html.twig")
+     * @Template("ClarolineLdapBundle\ldap:connect:link_account.html.twig")
      *
      * @param Request $request
      *

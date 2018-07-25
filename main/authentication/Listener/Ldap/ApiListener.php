@@ -1,9 +1,9 @@
 <?php
 
-namespace Claroline\LdapBundle\Listener;
+namespace Claroline\AuthenticationBundle\Listener\Ldap;
 
-use Claroline\CoreBundle\Event\User\MergeUsersEvent;
-use Claroline\LdapBundle\Manager\LdapManager;
+use Claroline\AuthenticationBundle\Manager\Ldap\LdapManager;
+use  Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

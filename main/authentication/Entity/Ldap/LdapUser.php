@@ -10,7 +10,7 @@
  * Date: 3/30/17
  */
 
-namespace Claroline\LdapBundle\Entity;
+namespace Claroline\AuthenticationBundle\Entity\Ldap;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class LdapUser.
  *
  * @ORM\Table(name="claro_ldap_user")
- * @ORM\Entity(repositoryClass="Claroline\LdapBundle\Repository\LdapUserRepository")
+ * @ORM\Entity(repositoryClass="Claroline\AuthenticationBundle\Repository\Ldap\LdapUserRepository")
  */
 class LdapUser
 {

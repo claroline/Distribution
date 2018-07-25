@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\LdapBundle\Migrations\pdo_mysql;
+namespace Claroline\AuthenticationBundle\Migrations\pdo_mysql;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
@@ -16,18 +16,18 @@ class Version20170331114351 extends AbstractMigration
     {
         $this->addSql('
             CREATE TABLE claro_ldap_user (
-                id INT AUTO_INCREMENT NOT NULL, 
-                user_id INT DEFAULT NULL, 
-                ldapId VARCHAR(255) NOT NULL, 
-                serverName VARCHAR(255) NOT NULL, 
-                INDEX IDX_6C1E56DCA76ED395 (user_id), 
+                id INT AUTO_INCREMENT NOT NULL,
+                user_id INT DEFAULT NULL,
+                ldapId VARCHAR(255) NOT NULL,
+                serverName VARCHAR(255) NOT NULL,
+                INDEX IDX_6C1E56DCA76ED395 (user_id),
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ');
         $this->addSql('
-            ALTER TABLE claro_ldap_user 
-            ADD CONSTRAINT FK_6C1E56DCA76ED395 FOREIGN KEY (user_id) 
-            REFERENCES claro_user (id) 
+            ALTER TABLE claro_ldap_user
+            ADD CONSTRAINT FK_6C1E56DCA76ED395 FOREIGN KEY (user_id)
+            REFERENCES claro_user (id)
             ON DELETE CASCADE
         ');
         $this->addSql("

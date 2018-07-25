@@ -10,7 +10,7 @@
  * Date: 3/30/17
  */
 
-namespace Claroline\LdapBundle\Repository;
+namespace Claroline\AuthenticationBundle\Repository\Ldap;
 
 use Doctrine\ORM\EntityRepository;
 

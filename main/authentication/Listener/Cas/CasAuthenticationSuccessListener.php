@@ -23,9 +23,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class CasAuthenticationSuccessListener extends AuthenticationSuccessListener
 {
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
-    {
+    {/*
         $request->getSession()->set('LOGGED_VIA_CAS', true);
 
-        return parent::onAuthenticationSuccess($request, $token);
+        return parent::onAuthenticationSuccess($request, $token);*/
     }
 }

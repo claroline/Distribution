@@ -52,7 +52,7 @@ class ExternalAuthenticationListener
     {
         if (
             $this->casServerConfig->isActive() &&
-            $this->casServerConfig->getLoginOption() === CasServerConfiguration::DEFAULT_LOGIN
+            CasServerConfiguration::DEFAULT_LOGIN === $this->casServerConfig->getLoginOption()
         ) {
             $content = $this->templating->render(
                 'ClarolineAuthenticationBundle:cas:cas_login_button.html.twig',
@@ -71,7 +71,7 @@ class ExternalAuthenticationListener
     {
         if (
             $this->casServerConfig->isActive() &&
-            $this->casServerConfig->getLoginOption() === CasServerConfiguration::PRIMARY_LOGIN
+            CasServerConfiguration::PRIMARY_LOGIN === $this->casServerConfig->getLoginOption()
         ) {
             $content = $this->templating->render(
                 'ClarolineAuthenticationBundle:cas:cas_login_button.html.twig',
@@ -102,7 +102,7 @@ class ExternalAuthenticationListener
     {
         if ($event instanceof LogUserDeleteEvent) {
             $receiver = $event->getReceiver();
-            if ($receiver !== null) {
+            if (null !== $receiver) {
                 $this->casManager->unlinkAccount($receiver->getId());
             }
         }

@@ -57,3 +57,13 @@ office_365_login:
 
 oauth2_generic_login:
     path: /login/check-generic
+
+claro_ldap:
+    resource: "@ClarolineAuthenticationBundle/Controller/Ldap/LdapController.php"
+    type: annotation
+    prefix: /admin/ldap
+
+claro_ldap_connection:
+    resource: "@ClarolineAuthenticationBundle/Controller/Ldap/LdapConnectionController.php"
+    type: annotation
+    prefix: /ldap

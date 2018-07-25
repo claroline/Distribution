@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\LdapBundle\Listener;
+namespace Claroline\AuthenticationBundle\Listener\Ldap;
 
 use Claroline\CoreBundle\Menu\ConfigureMenuEvent;
 use JMS\DiExtraBundle\Annotation\Observe;

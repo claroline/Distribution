@@ -1,6 +1,6 @@
 {% extends "ClarolineCoreBundle:administration:layout.html.twig" %}
 
-{% block title %}{{ parent() ~ ' - LDAP ' ~ ' groups' | trans({}, 'platform') | striptags | raw }}{% endblock %}
+{% block title %}{{ parent() ~ ' - LDAP ' ~ ' users' | trans({}, 'platform') | striptags | raw }}{% endblock %}
 {% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 {% block breadcrumb %}
     {{
@@ -27,27 +27,27 @@
                 'href': path('claro_admin_ldap_servers')
             },
             {
-                'name': 'groups'|trans({}, 'platform'),
+                'name': 'users'|trans({}, 'platform'),
                 'href': ''
             }
         ])
     }}
 {% endblock %}
 
-{% macro row(id, name, groups, server) %}
+{% macro row(id, name, users, server) %}
     <div class="row margin-bottom-md">
         <div class="col-sm-3">
             <label for="{{ id }}">{{ name | trans({}, 'platform') }}:</label>
         </div>
         <div class="col-sm-9">
             <select class="form-control" name="{{ id }}" id="{{ id }}">
-                {% if groups is defined and not groups is empty %}
+                {% if users is defined and not users is empty %}
                     <option></option>
-                    {% for i in 0..(groups[1].count - 1) %}
+                    {% for i in 0..(users[1].count - 1) %}
                         <option
-                            {% if server is defined and not server is empty and server[id] == groups[1][i] %}selected="selected"{% endif %}
+                            {% if server is defined and not server is empty and server[id] == users[1][i] %}selected="selected"{% endif %}
                         >
-                            {{ groups[1][i] }}
+                            {{ users[1][i] }}
                         </option>
                     {% endfor %}
                 {% endif %}
@@ -59,7 +59,7 @@
 {% block section_content %}
     {% import _self as select %}
     <div class="panel-heading">
-        <h3 class="panel-title">{{  'LDAP - ' ~ 'groups' | trans({}, 'platform') }}</h3>
+        <h3 class="panel-title">{{  'LDAP - ' ~ 'users' | trans({}, 'platform') }}</h3>
     </div>
     <div class="panel-body">
         <form id='ldapForm'>
@@ -74,14 +74,14 @@
             {% else %}
                 <div class="row margin-bottom-md">
                     <div class="col-sm-3">
-                        <label for="ldapObjectClass">{{ 'ldap_group_class' | trans({}, 'ldap') }}:</label>
+                        <label for="ldapObjectClass">{{ 'ldap_user_class' | trans({}, 'ldap') }}:</label>
                     </div>
                     <div class="col-sm-9">
-                        <select class="form-control" name="group" id="ldapObjectClass" data-type="groups" data-name="{{ server.name }}">
+                        <select class="form-control" name="objectClass" id="ldapObjectClass" data-type="users" data-name="{{ server.name }}">
                             <option></option>
                             {% for objectClass in classes %}
                                 <option
-                                    {% if server is defined and not server is empty and server['group'] is defined and server['group'] == objectClass %}selected="selected"{% endif %}
+                                    {% if server is defined and not server is empty and server['objectClass'] is defined and server['objectClass'] == objectClass %}selected="selected"{% endif %}
                                 >
                                     {{ objectClass }}
                                 </option>
@@ -89,21 +89,33 @@
                         </select>
                     </div>
                 </div>
-                <div{% if groups is defined and groups is empty %} class="hide"{% endif %} id="ldapAttributes">
-                    {{ select.row('groupName', 'name', groups, server) }}
-                    {{ select.row('groupCode', 'code', groups, server) }}
+                <div{% if users is defined and users is empty %} class="hide"{% endif %} id="ldapAttributes">
+                    {{ select.row('userName', 'username', users, server) }}
+                    {{ select.row('firstName', 'firstName', users, server) }}
+                    {{ select.row('lastName', 'lastName', users, server) }}
+                    {{ select.row('email', 'email', users, server) }}
+                    {{ select.row('code', 'administrative_code', users, server) }}
+                    {{ select.row('locale', 'Language', users, server) }}
                 </div>
                 <div class="hide table-responsive" id="ldapPreview">
                     <p class='text-muted'><i class="fa fa-eye"></i> {{ 'Preview' | trans({}, 'theme') }}</p>
                     <table class="table table-bordered">
                         <tr>
-                            <th>{{ 'name' | trans({}, 'platform') }}</th>
-                            <th>{{ 'code' | trans({}, 'platform') }}</th>
+                            <th>{{ 'username' | trans({}, 'platform') }}</th>
+                            <th>{{ 'firstName' | trans({}, 'platform') }}</th>
+                            <th>{{ 'lastName' | trans({}, 'platform') }}</th>
+                            <th>{{ 'email' | trans({}, 'platform') }}</th>
+                            <th>{{ 'administrative_code' | trans({}, 'platform') }}</th>
+                            <th>{{ 'Language' | trans({}, 'platform') }}</th>
                         </tr>
                         {% for i in 0..4 %}
-                            <tr id="groups{{ i }}">
-                                <td class="groupName"></td>
-                                <td class="groupCode"></td>
+                            <tr id="users{{ i }}">
+                                <td class="userName"></td>
+                                <td class="firstName"></td>
+                                <td class="lastName"></td>
+                                <td class="email"></td>
+                                <td class="code"></td>
+                                <td class="locale"></td>
                             </tr>
                         {% endfor %}
                     </table>
@@ -111,7 +123,7 @@
             {% endif %}
         </form>
     </div>
-    <div class="panel-footer text-right{% if groups is defined and groups is empty %} hide{% endif %}" id='ldapFooter'>
+    <div class="panel-footer text-right{% if users is defined and users is empty %} hide{% endif %}" id='ldapFooter'>
         <a class="btn btn-default" href="{{ path('claro_admin_ldap') }}">{{ 'cancel' | trans({}, 'platform') }}</a>
         <a class="btn btn-primary"><i class='fa fa-check'></i> {{ 'Save settings' | trans({}, 'ldap') }}</a>
     </div>
@@ -120,17 +132,21 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'ldap' }) }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/clarolineldap/js/ldap.js') }}"></script>
-    {% if groups is defined and not groups is empty %}
+    <script type="text/javascript" src="{{ asset('bundles/clarolineauthentication/js/ldap/ldap.js') }}"></script>
+    {% if users is defined and not users is empty %}
         <script>
             (function () {
                 'use strict';
 
                 var ldap = window.Claroline.LDAP;
 
-                ldap.setAttribute('entries', {{ groupsJSON | raw }});
-                {% if server.groupName is defined and not server.groupName is empty %}ldap.setAttribute('groupName', '{{ server.groupName }}');{% endif %}
-                {% if server.groupCode is defined and not server.groupCode is empty %}ldap.setAttribute('groupCode', '{{ server.groupCode }}');{% endif %}
+                ldap.setAttribute('entries', {{ usersJSON | raw }});
+                {% if server.userName is defined and not server.userName is empty %}ldap.setAttribute('userName', '{{ server.userName }}');{% endif %}
+                {% if server.firstName is defined and not server.firstName is empty %}ldap.setAttribute('firstName', '{{ server.firstName }}');{% endif %}
+                {% if server.lastName is defined and not server.lastName is empty %}ldap.setAttribute('lastName', '{{ server.lastName }}');{% endif %}
+                {% if server.email is defined and not server.email is empty %}ldap.setAttribute('email', '{{ server.email }}');{% endif %}
+                {% if server.code is defined and not server.code is empty %}ldap.setAttribute('code', '{{ server.code }}');{% endif %}
+                {% if server.locale is defined and not server.locale is empty %}ldap.setAttribute('locale', '{{ server.locale }}');{% endif %}
                 ldap.showPreview();
             }());
         </script>

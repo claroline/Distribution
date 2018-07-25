@@ -10,7 +10,7 @@
  * Date: 4/3/17
  */
 
-namespace Claroline\LdapBundle\Exception;
+namespace Claroline\AuthenticationBundle\Exception;
 
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
