@@ -38,7 +38,7 @@ const WorkspaceComponent = (props) => {
           props.save(props.workspace)
           //props.loadLog(logName)
           const logName = props.workspace.code
-
+          console.log(props.logs)
           const refresher = setInterval(() => {
             props.loadLog(logName)
 
@@ -329,7 +329,7 @@ const ConnectedForm = withRouter(connect(
     return {
       models: state.models,
       workspace: formSelect.data(formSelect.form(state, 'workspaces.current')),
-      logs: state.workspaces.creation.logs //always {} for some reason
+      logs: state.workspaces.creation.log //always {} for some reason
     }
   },
   (dispatch, ownProps) =>({

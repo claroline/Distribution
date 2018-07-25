@@ -5,30 +5,26 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 
 const Logs = props => {
-  if (props.data) {
-    return (<div>
-      <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-        <div className="panel panel-default">
-          <div className="panel-heading" role="tab" id="headingOne">
-            <h4 className="panel-title">
-              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                {trans('log')}
-              </a>
-            </h4>
-          </div>
-          <div id="collapseOne" className="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-            <div className="panel-body">
-              <pre>
-                {props.data.log}
-              </pre>
-            </div>
+  return (<div>
+    <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div className="panel panel-default">
+        <div className="panel-heading" role="tab" id="headingOne">
+          <h4 className="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              {trans('log')}
+            </a>
+          </h4>
+        </div>
+        <div id="collapseOne" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div className="panel-body">
+            <pre>
+              {props.data.log}
+            </pre>
           </div>
         </div>
       </div>
-    </div>)
-  } else {
-    return(<div className="well"> Loading... </div>)
-  }
+    </div>
+  </div>)
 }
 
 Logs.propTypes = {

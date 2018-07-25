@@ -1,8 +1,7 @@
 import {makeReducer} from '#/main/core/scaffolding/reducer'
 
 import {
-  LOG_REFRESH,
-  LOG_RESET
+  LOG_REFRESH
 } from './actions'
 
 const reducer = makeReducer({}, {
@@ -12,8 +11,7 @@ const reducer = makeReducer({}, {
     } catch (e) {
       return {}
     }
-  },
-  [LOG_RESET]: () => {return {}}
+  }
 })
 
 export {
