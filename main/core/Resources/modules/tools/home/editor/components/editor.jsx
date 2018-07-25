@@ -4,8 +4,6 @@ import {connect} from 'react-redux'
 import merge from 'lodash/merge'
 import isEmpty from 'lodash/isEmpty'
 
-
-
 import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 import {withRouter} from '#/main/app/router'
