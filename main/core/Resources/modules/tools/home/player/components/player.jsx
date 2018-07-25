@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {PageContainer, PageHeader, PageContent, PageActions, PageAction} from '#/main/core/layout/page'
 
@@ -17,12 +16,10 @@ const PlayerComponent = props =>
   <PageContainer>
     {1 < props.sortedTabs.length &&
       <Tabs
-        tabs={props.visibleTabs}
+        tabs={props.context.type === 'workspace' ? props.visibleTabs : props.sortedTabs}
       />
     }
-    {/* {console.log(currentUser())} */}
     <PageHeader
-      // TODO change to h1
       className={props.currentTab.centerTitle ? 'center-page-title' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
       poster={props.currentTab.poster ? props.currentTab.poster.url: undefined}

@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect'
 import isEmpty from 'lodash/isEmpty'
+import intersection from 'lodash/intersection'
 
 import {currentUser} from '#/main/core/user/current'
 
@@ -8,7 +9,6 @@ const editable = (state) => state.editable
 const editing = (state) => state.editing
 const context = (state) => state.context
 const tabs = (state) => state.tabs
-const roles = (state) => state.tabs.roles
 
 const authenticatedUser = currentUser()
 
@@ -28,22 +28,18 @@ const sortedTabs = createSelector(
 )
 
 const visibleTabs = createSelector(
-  [roles, sortedTabs],
-  (roles, sortedTabs) => {
-    const visible = sortedTabs.filter(tab => {
-      if (isEmpty(tab.roles)) {
-        return sortedTabs
-      } else {
-        // if user.role = tab.role the tab must be in visibleTabs
-        // for every role that can see the tab
-        tab.roles.forEach(id => {
-          const userRolesId = authenticatedUser.roles.map(role => role.id)
-          // compares with the userRoleId
-          userRolesId.some(roleId => roleId === id)
-        })
-      }
-    })
-    return visible
+  [sortedTabs],
+  (sortedTabs) => {
+    const userRoles = authenticatedUser.roles.map(role => role.id)
+
+    return sortedTabs
+      .filter(tab => {
+        if (isEmpty(tab.roles)) {
+          return true
+        } else {
+          return 0 !== intersection(tab.roles, userRoles).length
+        }
+      })
   }
 )
 
