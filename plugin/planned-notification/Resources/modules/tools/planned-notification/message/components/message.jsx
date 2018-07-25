@@ -3,8 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form'
 
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
 import {Message as MessageTypes} from '#/plugin/planned-notification/tools/planned-notification/prop-types'
@@ -20,7 +21,7 @@ const MessageForm = props =>
       ['apiv2_plannednotificationmessage_update', {id: message.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/messages',
       exact: true
     }}

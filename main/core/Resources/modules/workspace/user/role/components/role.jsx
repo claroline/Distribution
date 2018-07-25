@@ -13,6 +13,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
 import {actions} from '#/main/core/administration/user/role/actions'
@@ -60,7 +61,7 @@ const RoleForm = props =>
       ['apiv2_role_update', {id: role.id, options: ['serialize_role_tools_rights', `workspace_id_${props.workspaceId}`]}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/roles',
       exact: true
     }}
@@ -109,7 +110,7 @@ const RoleForm = props =>
           disabled={props.new}
           actions={[
             {
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-plus',
               label: trans('add_user'),
               callback: () => props.pickUsers(props.role.id),
@@ -141,7 +142,7 @@ const RoleForm = props =>
           disabled={props.new}
           actions={[
             {
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-plus',
               label: trans('add_group'),
               callback: () => props.pickGroups(props.role.id)

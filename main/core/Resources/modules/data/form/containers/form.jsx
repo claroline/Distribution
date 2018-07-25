@@ -5,6 +5,7 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 
 import {url} from '#/main/app/api'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {Form} from '#/main/core/data/form/components/form'
 import {actions} from '#/main/core/data/form/actions'
@@ -73,7 +74,7 @@ const FormContainer = connect(
             }
           }
         }) : {
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           callback: () => {
             if (ownProps.target) {
               dispatchProps.saveForm(url(
@@ -86,7 +87,7 @@ const FormContainer = connect(
           // append the reset form callback to the defined action
           onClick: () => dispatchProps.cancelForm()
         }) : {
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           disabled: !stateProps.pendingChanges,
           callback: () => dispatchProps.cancelForm()
         }

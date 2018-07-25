@@ -1,3 +1,6 @@
-/**
- * Created by Corum on 12/05/2018.
- */
+
+import {STRING_TYPE} from '#/main/app/content/data/string'
+
+export {
+  STRING_TYPE
+}

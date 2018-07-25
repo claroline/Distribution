@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
@@ -27,39 +28,39 @@ const UsersList = props =>
     primaryAction={UserList.open}
     actions={(rows) => [
       {
-        type: 'url',
+        type: URL_BUTTON,
         icon: 'fa fa-fw fa-id-card-o',
         label: trans('show_profile'),
         target: ['claro_user_profile', {publicUrl: rows[0].meta.publicUrl}],
         scope: ['object']
       }, {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-lock',
         label: trans('change_password'),
         scope: ['object'],
         callback: () => props.updatePassword(rows[0]),
         dangerous: true
       }, {
-        type: 'url',
+        type: URL_BUTTON,
         icon: 'fa fa-fw fa-line-chart',
         label: trans('show_tracking'),
         target: ['claro_user_tracking', {publicUrl: rows[0].meta.publicUrl}],
         scope: ['object']
       }, {
-        type: 'url',
+        type: URL_BUTTON,
         icon: 'fa fa-fw fa-user-secret',
         label: trans('show_as'),
         target: ['claro_desktop_open', {_switch: rows[0].username}],
         scope: ['object']
       }, {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-check-circle',
         label: trans('enable_user'),
         scope: ['object'], // todo should be a selection action too
         displayed: rows[0].restrictions.disabled,
         callback: () => props.enable(rows[0])
       }, {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-times-circle',
         label: trans('disable_user'),
         scope: ['object'], // todo should be a selection action too
@@ -67,14 +68,14 @@ const UsersList = props =>
         callback: () => props.disable(rows[0]),
         dangerous: true
       }, {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-book',
         label: trans('enable_personal_ws'),
         scope: ['object'], // todo should be a selection action too
         displayed: !rows[0].meta.personalWorkspace,
         callback: () => props.createWorkspace(rows[0])
       }, {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-book',
         label: trans('disable_personal_ws'),
         scope: ['object'], // todo should be a selection action too
@@ -82,7 +83,7 @@ const UsersList = props =>
         callback: () => props.deleteWorkspace(rows[0]),
         dangerous: true
       }, {
-        type: 'link',
+        type: LINK_BUTTON,
         icon: 'fa fa-fw fa-compress',
         label: trans('merge_accounts'),
         target: rows.length === 2 ? `/users/merge/${rows[0].id}/${rows[1].id}`: '',

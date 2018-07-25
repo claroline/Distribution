@@ -5,16 +5,22 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {trans} from '#/main/core/translation'
 import isEmpty from 'lodash/isEmpty'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+
+// todo : remove me
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
+
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {actions as toolbarActions} from '#/plugin/blog/resources/blog/toolbar/store'
 import {PostType} from '#/plugin/blog/resources/blog/post/components/prop-types'
-import {constants} from '#/plugin/blog/resources/blog/constants.js'
+import {constants} from '#/plugin/blog/resources/blog/constants'
 import {currentUser} from '#/main/core/user/current'
 import {withRouter} from '#/main/app/router'
 
 const loggedUser = currentUser()
+
+// todo : use standard form buttons
 
 const PostFormComponent = props =>
   <div>
@@ -67,7 +73,7 @@ const PostFormComponent = props =>
             disabled={!props.saveEnabled}
             primary={true}
             label={trans('save')}
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => {
               props.save(props.blogId, props.mode, props.postId, props.history, props.originalTags)
@@ -75,7 +81,7 @@ const PostFormComponent = props =>
           />
           <Button
             label={trans('cancel')}
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => {
               props.cancel(props.history)

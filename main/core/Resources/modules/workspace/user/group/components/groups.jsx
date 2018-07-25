@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions} from '#/main/core/workspace/user/group/actions'
@@ -21,7 +22,7 @@ const GroupsList = props =>
     }}
     actions={(rows) => [
       {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-trash-o',
         label: trans('unregister'),
         callback: () => props.unregister(rows, props.workspace),

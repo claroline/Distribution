@@ -3,6 +3,8 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
+
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
 import {FormContainer} from '#/main/core/data/form/containers/form'
@@ -13,7 +15,7 @@ const EditorComponent = (props) =>
     target={['apiv2_resource_text_update', {id: props.text.id}]}
     buttons={true}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}

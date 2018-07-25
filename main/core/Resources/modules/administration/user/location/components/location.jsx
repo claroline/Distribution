@@ -10,6 +10,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {actions} from '#/main/core/administration/user/location/actions'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
@@ -27,7 +28,7 @@ const LocationForm = props =>
       ['apiv2_location_update', {id: location.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/locations',
       exact: true
     }}
@@ -71,7 +72,7 @@ const LocationForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_user'),
             callback: () => props.pickUsers(props.location.id)
@@ -100,7 +101,7 @@ const LocationForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_group'),
             callback: () => props.pickGroups(props.location.id)
@@ -129,7 +130,7 @@ const LocationForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_organizations'),
             callback: () => props.pickOrganizations(props.location.id)

@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {transChoice} from '#/main/core/translation'
 
-import {GenericButton} from '#/main/app/button/components/generic'
+import {Button} from '#/main/app/action/components/button'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {
   Action as ActionTypes,
@@ -17,12 +17,11 @@ const ListPrimaryAction = props => {
     }, props.children)
   } else {
     return (
-      <GenericButton
+      <Button
         {...props.action}
+        label={props.children}
         className={props.className}
-      >
-        {props.children}
-      </GenericButton>
+      />
     )
   }
 }
@@ -33,7 +32,7 @@ ListPrimaryAction.propTypes = {
     ActionTypes.propTypes
   ),
   disabledWrapper: T.string,
-  children: T.any.isRequired
+  children: T.element.isRequired
 }
 
 ListPrimaryAction.defaultProps = {

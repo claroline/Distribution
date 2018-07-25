@@ -7,6 +7,7 @@ import times from 'lodash/times'
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Button} from '#/main/app/action/components/button'
+import {MODAL_BUTTON} from '#/main/app/buttons'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 import {
@@ -24,7 +25,7 @@ const WidgetCol = props =>
       <div className="widget-col-configure" >
         <Button
           className="btn btn-link text-movie-subtitles"
-          type="modal"
+          type={MODAL_BUTTON}
           icon="fa fa-fw fa-pencil"
           label={trans('modify_widget', {}, 'widget')}
           modal={[MODAL_CONTENT_PARAMETERS, {
@@ -44,7 +45,7 @@ const WidgetCol = props =>
     {!props.content &&
       <Button
         className="btn btn-block btn-emphasis"
-        type="modal"
+        type={MODAL_BUTTON}
         label={trans('add_widget', {}, 'widget')}
         modal={[MODAL_WIDGET_CONTENT, {
           context: props.context,

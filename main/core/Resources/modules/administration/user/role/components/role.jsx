@@ -13,6 +13,7 @@ import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {enumRole, PLATFORM_ROLE} from '#/main/core/user/role/constants'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
@@ -30,7 +31,7 @@ const RoleForm = props =>
       ['apiv2_role_update', {id: role.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/roles',
       exact: true
     }}
@@ -133,7 +134,7 @@ const RoleForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_user'),
             callback: () => props.pickUsers(props.role.id),
@@ -163,7 +164,7 @@ const RoleForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_group'),
             callback: () => props.pickGroups(props.role.id)

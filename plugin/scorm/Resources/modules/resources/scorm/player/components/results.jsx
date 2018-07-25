@@ -48,9 +48,16 @@ const ResultsComponent = props =>
         type: 'number',
         label: trans('best_score'),
         displayed: true,
-        render: (rowData) => (rowData.scoreRaw || 0 === rowData.scoreRaw) && (rowData.scoreMax || 0 === rowData.scoreMax) ?
-          <ScoreBox size="sm" score={rowData.scoreRaw} scoreMax={rowData.scoreMax} /> :
-          rowData.scoreRaw
+        render: (rowData) => {
+          let Score
+          if ((rowData.scoreRaw || 0 === rowData.scoreRaw) && (rowData.scoreMax || 0 === rowData.scoreMax)) {
+            Score = <ScoreBox size="sm" score={rowData.scoreRaw} scoreMax={rowData.scoreMax} />
+          } else {
+            Score = rowData.scoreRaw
+          }
+
+          return Score
+        }
       }, {
         name: 'lessonStatus',
         type: 'string',
@@ -92,7 +99,6 @@ const ResultsComponent = props =>
         }
       }
     ]}
-    actions={() => []}
   />
 
 ResultsComponent.propTypes = {

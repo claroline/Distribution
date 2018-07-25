@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/app/router'
-
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelectors} from '#/main/core/data/form/selectors'
@@ -24,7 +24,7 @@ const AnnounceFormComponent = props =>
     }
     buttons={true}
     save={{
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       target: `/${props.announcement.id}`,
       callback: () => {
         if (props.new) {
@@ -38,7 +38,7 @@ const AnnounceFormComponent = props =>
       }
     }}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}

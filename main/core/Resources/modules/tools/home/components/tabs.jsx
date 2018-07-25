@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
@@ -11,7 +12,7 @@ const Tabs = props =>
     {props.tabs.map((tab) =>
       <Button
         key={tab.id}
-        type="link"
+        type={LINK_BUTTON}
         className="nav-tab"
         icon={tab.icon ? `fa fa-fw fa-${tab.icon}` : undefined}
         label={tab.title}
@@ -23,7 +24,7 @@ const Tabs = props =>
     {props.create &&
       <Button
         className="nav-add-tab"
-        type="callback"
+        type={CALLBACK_BUTTON}
         icon="fa fa-fw fa-plus"
         label={trans('add_tab', {}, 'home')}
         tooltip="bottom"

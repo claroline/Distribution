@@ -3,7 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list.jsx'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list'
 import {actions} from '#/main/core/workspace/list/actions'
 import {trans} from '#/main/core/translation'
 import {constants as listConst} from '#/main/core/data/list/constants'
@@ -39,7 +40,7 @@ const WorkspacesList = props => {
           }}
           actions={(rows) => [
             {
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-book',
               label: trans('register'),
               displayed: currentUser && rows[0].registration.selfRegistration && !rows[0].permissions['open'] && !rows[0].registration.waitingForRegistration,
@@ -51,7 +52,7 @@ const WorkspacesList = props => {
               }
             },
             {
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-book',
               label: trans('unregister'),
               dangerous: true,

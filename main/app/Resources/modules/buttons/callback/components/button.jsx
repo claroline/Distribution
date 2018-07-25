@@ -5,8 +5,8 @@ import omit from 'lodash/omit'
 import {withModal} from '#/main/app/overlay/modal'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {Button as ButtonTypes} from '#/main/app/button/prop-types'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
+import {Button as ButtonTypes} from '#/main/app/buttons/prop-types'
 
 /**
  * Callback button.

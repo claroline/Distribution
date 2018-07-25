@@ -10,6 +10,7 @@ import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {actions} from '#/main/core/administration/user/organization/actions'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
@@ -26,7 +27,7 @@ const OrganizationForm = props =>
       ['apiv2_organization_update', {id: organization.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/organizations',
       exact: true
     }}
@@ -88,7 +89,7 @@ const OrganizationForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_workspace'),
             callback: () => props.pickWorkspaces(props.organization.id)
@@ -117,7 +118,7 @@ const OrganizationForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_user'),
             callback: () => props.pickUsers(props.organization.id)
@@ -146,7 +147,7 @@ const OrganizationForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_group'),
             callback: () => props.pickGroups(props.organization.id)
@@ -175,7 +176,7 @@ const OrganizationForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_managers'),
             callback: () => props.pickManagers(props.organization.id)

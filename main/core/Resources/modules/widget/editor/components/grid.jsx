@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 import {WidgetEditor} from '#/main/core/widget/editor/components/widget'
@@ -27,7 +28,7 @@ const WidgetGridEditor = props =>
         }}
         actions={[
           {
-            type: 'modal',
+            type: MODAL_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_section_before'),
             modal: [MODAL_WIDGET_CREATION, {
@@ -42,7 +43,7 @@ const WidgetGridEditor = props =>
               }
             }]
           }, {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-arrow-up',
             label: trans('move_top', {}, 'actions'),
             disabled: 0 === index,
@@ -59,7 +60,7 @@ const WidgetGridEditor = props =>
               props.update(widgets)
             }
           }, {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-arrow-down',
             label: trans('move_bottom', {}, 'actions'),
             disabled: props.widgets.length - 1 === index,
@@ -76,7 +77,7 @@ const WidgetGridEditor = props =>
               props.update(widgets)
             }
           }, {
-            type: 'modal',
+            type: MODAL_BUTTON,
             icon: 'fa fa-fw fa-cog',
             label: trans('configure', {}, 'actions'),
             modal: [MODAL_WIDGET_PARAMETERS, {
@@ -91,7 +92,7 @@ const WidgetGridEditor = props =>
               }
             }]
           }, {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-trash-o',
             label: trans('delete', {}, 'actions'),
             dangerous: true,
@@ -119,7 +120,7 @@ const WidgetGridEditor = props =>
 
     <Button
       className="btn btn-block btn-emphasis"
-      type="modal"
+      type={MODAL_BUTTON}
       label={trans('add_section')}
       modal={[MODAL_WIDGET_CREATION, {
         create: (widget) => props.update(

@@ -7,7 +7,7 @@ import {t} from '#/main/core/translation'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 
@@ -24,7 +24,7 @@ const FacetSection = props =>
     className="embedded-form-section"
     actions={[
       {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-trash-o',
         label: t('delete'),
         callback: props.remove,

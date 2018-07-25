@@ -6,6 +6,7 @@ import {trans} from '#/main/core/translation'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
@@ -14,7 +15,7 @@ import {RoleList} from '#/main/core/administration/user/role/components/role-lis
 
 import {actions} from '#/plugin/reservation/administration/resource/actions'
 
-const ResourceRigths = props =>
+const ResourceRights = props =>
   <ul className="list-group">
     {props.resourceRights.map(rr =>
       <li
@@ -56,7 +57,7 @@ const ResourceRigths = props =>
     )}
   </ul>
 
-ResourceRigths.propTypes = {
+ResourceRights.propTypes = {
   resourceRights: T.arrayOf(T.shape({
     id: T.string.isRequired,
     mask: T.number.isRequired,
@@ -77,7 +78,7 @@ const Resource = props =>
       ['apiv2_reservationresource_update', {id: resource.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}
@@ -132,7 +133,7 @@ const Resource = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_organizations', {}, 'platform'),
             callback: () => props.pickOrganizations(props.resource.id)
@@ -160,7 +161,7 @@ const Resource = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_roles', {}, 'platform'),
             callback: () => props.pickRoles(props.resource.id, props.resource.resourceRights ? props.resource.resourceRights : [])
@@ -168,7 +169,7 @@ const Resource = props =>
         ]}
       >
         {props.resource.resourceRights && props.resource.resourceRights.length > 0 ?
-          <ResourceRigths
+          <ResourceRights
             resourceRights={props.resource.resourceRights ? props.resource.resourceRights : []}
             onChange={props.editResourceRights}
           /> :

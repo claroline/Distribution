@@ -1,10 +1,11 @@
 import React from 'react'
 import omit from 'lodash/omit'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {withModal} from '#/main/app/overlay/modal'
-import {Button as ButtonTypes} from '#/main/app/button/prop-types'
-import {CallbackButton} from '#/main/app/button/components/callback'
+
+import {Button as ButtonTypes} from '#/main/app/buttons/prop-types'
+import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 /**
  * Modal button.

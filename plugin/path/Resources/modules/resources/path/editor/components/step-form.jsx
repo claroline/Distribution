@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
@@ -132,11 +133,11 @@ const StepForm = props =>
     dataPart={props.stepPath}
     buttons={true}
     save={{
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       callback: () => props.saveForm()
     }}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}

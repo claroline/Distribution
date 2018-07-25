@@ -5,6 +5,7 @@ import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {actions as formActions} from '#/main/core/data/form/actions'
@@ -26,7 +27,7 @@ const ParametersModalComponent = props =>
 
     <Button
       className="btn modal-btn"
-      type="callback"
+      type={CALLBACK_BUTTON}
       primary={true}
       label={trans('save', {}, 'actions')}
       disabled={!props.saveEnabled}

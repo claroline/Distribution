@@ -12,8 +12,6 @@ const UserLogList = props =>
       url: props.listUrl,
       autoload: true
     }}
-    open={false}
-    delete={false}
     definition={[
       {
         name: 'doer.name',

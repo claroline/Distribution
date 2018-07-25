@@ -7,6 +7,7 @@ import {FormContainer} from '#/main/core/data/form/containers/form'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {constants} from '#/main/core/administration/scheduled-task/constants'
 import {actions} from '#/main/core/administration/scheduled-task/actions'
@@ -24,7 +25,7 @@ const ScheduledTaskForm = props =>
     }
     buttons={true}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}
@@ -86,7 +87,7 @@ const ScheduledTaskForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('add_users'),
             callback: () => props.pickUsers(props.task.id)

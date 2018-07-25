@@ -5,6 +5,7 @@ import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {MODAL_RESOURCE_CREATION_PARAMETERS} from '#/main/core/resource/modals/creation/components/parameters'
@@ -29,7 +30,7 @@ const RightsModalComponent = props =>
 
     <Button
       className="modal-btn btn-link"
-      type="modal"
+      type={MODAL_BUTTON}
       label={trans('configure', {}, 'actions')}
       modal={[MODAL_RESOURCE_CREATION_PARAMETERS, {
         add: props.add
@@ -38,7 +39,7 @@ const RightsModalComponent = props =>
 
     <Button
       className="modal-btn btn"
-      type="callback"
+      type={CALLBACK_BUTTON}
       primary={true}
       label={trans('create', {}, 'actions')}
       disabled={!props.saveEnabled}
