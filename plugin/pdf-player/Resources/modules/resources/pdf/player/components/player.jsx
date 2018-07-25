@@ -13,7 +13,6 @@ class PlayerComponent extends Component {
       pdf: null,
       page: 1,
       scale: 100,
-      canvas: null,
       context: null
     }
   }
@@ -23,7 +22,6 @@ class PlayerComponent extends Component {
     PDFJS.getDocument(this.props.path).then((pdf) => {
       this.setState({
         pdf: pdf,
-        canvas: document.getElementById('pdf-canvas'),
         context: document.getElementById('pdf-canvas').getContext('2d')
       }, () => this.renderPage())
     })
@@ -32,8 +30,9 @@ class PlayerComponent extends Component {
   renderPage() {
     this.state.pdf.getPage(this.state.page).then(page => {
       const viewport = page.getViewport(this.state.scale / 100)
-      this.state.canvas.height = viewport.height
-      this.state.canvas.width = viewport.width
+      const canvas = document.getElementById('pdf-canvas')
+      canvas.height = viewport.height
+      canvas.width = viewport.width
 
       // Render PDF page into canvas context
       const renderContext = {
