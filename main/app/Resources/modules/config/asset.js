@@ -17,10 +17,3 @@ function asset(assetName) {
 export {
   asset
 }
-
-/* https://stackoverflow.com/questions/36390853/how-to-remove-specific-character-surrounding-a-string */
-function trimByChar(string, character) {
-  const first = [...string].findIndex(char => char !== character)
-  const last = [...string].reverse().findIndex(char => char !== character)
-  return string.substring(first, string.length - last)
-}
