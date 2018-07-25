@@ -7,6 +7,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {Button} from '#/main/app/action/components/button'
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
@@ -77,8 +78,9 @@ Corrections.propTypes = {
 const MyDropComponent = props =>
   <section className="resource-section drop-panel">
     <h2>{trans('my_drop', {}, 'dropzone')}</h2>
-
-    <HtmlText>{props.dropzone.instruction}</HtmlText>
+    {props.dropzone.instruction &&
+      <HtmlText>{props.dropzone.instruction}</HtmlText>
+    }
 
     <Documents
       documents={props.myDrop.documents}
@@ -96,24 +98,23 @@ const MyDropComponent = props =>
 
     {props.isDropEnabled && !props.myDrop.finished &&
       <div className="text-right">
-        <Button
-          type="callback"
-          className="btn btn-default"
-          callback={() => props.addDocument(props.myDrop.id, props.dropzone.parameters.documents)}
-        >
-          <span className="fa fa-fw fa-plus icon-with-text-right" />
-          {trans('add_document', {}, 'dropzone')}
-        </Button>
-
-        <Button
-          type="callback"
-          className="btn btn-primary"
-          disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
-          callback={() => props.submit(props.myDrop.id)}
-        >
-          <span className="fa fa-fw fa-upload icon-with-text-right" />
-          {trans('submit_my_drop', {}, 'dropzone')}
-        </Button>
+        <ButtonToolbar className={'pull-right'}>
+          <Button
+            icon={'fa fa-fw fa-plus icon-with-text-right'}
+            label= {trans('add_document', {}, 'dropzone')}
+            type="callback"
+            className="btn btn-default"
+            callback={() => props.addDocument(props.myDrop.id, props.dropzone.parameters.documents)}
+          />
+          <Button
+            icon={'fa fa-fw fa-upload icon-with-text-right'}
+            label= {trans('submit_my_drop', {}, 'dropzone')}
+            type="callback"
+            className="btn primary"
+            disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
+            callback={() => props.submit(props.myDrop.id)}
+          />
+        </ButtonToolbar>
       </div>
     }
   </section>
