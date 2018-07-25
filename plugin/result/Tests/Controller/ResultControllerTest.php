@@ -60,7 +60,7 @@ class ResultControllerTest extends TransactionalTestCase
         $this->om->flush();
 
         $this->request('GET', "/results/{$result->getId()}", $john);
-
+        var_dump($this->client->getResponse()->getContent());
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertContains($result->getResourceNode()->getName(), $this->client->getResponse()->getContent());
     }
