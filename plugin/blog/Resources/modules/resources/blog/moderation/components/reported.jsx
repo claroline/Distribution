@@ -1,7 +1,9 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation.jsx'
@@ -13,9 +15,10 @@ const ReportedComponent = (props) =>
       url: ['apiv2_blog_comment_reported', {blogId: props.blogId}],
       autoload: true
     }}
-    open={{
-      action: (row) => `#/${row.slug}`
-    }}
+    open={(row) => ({
+      type: LINK_BUTTON,
+      target: `/${row.slug}`
+    })}
     definition={[
       {
         name: 'creationDate',
@@ -34,7 +37,6 @@ const ReportedComponent = (props) =>
         type: 'string'
       }
     ]}
-    selection={{}}
     card={CommentModerationCard}
     display={{
       available : [listConst.DISPLAY_LIST],

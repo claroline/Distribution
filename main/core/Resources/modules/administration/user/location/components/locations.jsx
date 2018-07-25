@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions} from '#/main/core/administration/user/location/actions'
@@ -27,7 +28,7 @@ const LocationsList = props =>
       url: ['apiv2_location_delete_bulk']
     }}
     actions={(rows) => [{
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       icon: 'fa fa-fw fa-map-marker',
       label: t('geolocate'),
       callback: () => props.geolocate(rows[0]),

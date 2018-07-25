@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
@@ -10,9 +11,10 @@ import {select} from '#/plugin/planned-notification/tools/planned-notification/s
 const NotificationsList = props =>
   <DataListContainer
     name="notifications.list"
-    open={{
-      action: (row) => `#/notifications/form/${row.id}`
-    }}
+    primaryAction={(row) => ({
+      type: LINK_BUTTON,
+      target: `/notifications/form/${row.id}`
+    })}
     fetch={{
       url: ['apiv2_plannednotification_workspace_list', {workspace: props.workspace.uuid}],
       autoload: true

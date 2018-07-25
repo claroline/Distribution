@@ -2,6 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
+
 import {FormContainer} from '#/main/core/data/form/containers/form'
 
 const DirectoryEditor = (props) =>
@@ -10,7 +12,7 @@ const DirectoryEditor = (props) =>
     target={['apiv2_resource_directory_update', {id: props.directory.id}]}
     buttons={true}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}

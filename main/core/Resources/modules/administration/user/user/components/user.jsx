@@ -11,6 +11,7 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {actions} from '#/main/core/administration/user/user/actions'
 
@@ -28,7 +29,7 @@ const UserForm = props =>
       ['apiv2_user_update', {id: user.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/users',
       exact: true
     }}
@@ -152,7 +153,7 @@ const UserForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_groups'),
             callback: () => props.pickGroups(props.user.id)
@@ -181,7 +182,7 @@ const UserForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_organizations'),
             callback: () => props.pickOrganizations(props.user.id)
@@ -210,7 +211,7 @@ const UserForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_roles'),
             callback: () => props.pickRoles(props.user.id)

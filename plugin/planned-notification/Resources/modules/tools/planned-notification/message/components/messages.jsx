@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
@@ -16,7 +17,7 @@ const MessagesList = props =>
   <DataListContainer
     name="messages.list"
     primaryAction={(row) => ({
-      type: 'link',
+      type: LINK_BUTTON,
       label: trans('open'),
       target: `/messages/form/${row.id}`
     })}
@@ -51,7 +52,7 @@ const MessagesList = props =>
     ]}
     actions={(rows) => [
       {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-envelope-o',
         label: trans('send'),
         callback: () => props.pickUsers(rows)

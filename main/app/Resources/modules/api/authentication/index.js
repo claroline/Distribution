@@ -1,5 +1,5 @@
 import uuid from 'uuid'
-import {url} from '#/main/app/api'
+import {url} from '#/main/app/api/router'
 
 const AUTH_WINDOW = 'claro_auth_window'
 

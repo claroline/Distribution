@@ -4,9 +4,12 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-import {Button} from '#/main/app/action'
+import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {buildSectionMoveChoices} from '#/plugin/wiki/resources/wiki/utils'
+
+// todo : use standard form buttons
 
 class WikiSectionFormComponent extends Component
 {
@@ -86,7 +89,7 @@ class WikiSectionFormComponent extends Component
           <Button
             id="wiki-section-save-btn"
             icon="fa fa-fw fa-save"
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             primary={true}
             disabled={!this.props.saveEnabled || !this.props.valid}
@@ -97,14 +100,14 @@ class WikiSectionFormComponent extends Component
 
           <Button
             id="wiki-section-cancel-btn"
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => this.props.cancelChanges()}
             label={trans('cancel')}
             title={trans('cancel')}
           />
         </div>
-      </FormContainer>     
+      </FormContainer>
     )
   }
 }

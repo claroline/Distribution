@@ -4,8 +4,8 @@ import omit from 'lodash/omit'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {PopoverOverlay} from '#/main/app/overlay/popover/components/overlay'
 
-import {Button as ButtonTypes} from '#/main/app/button/prop-types'
-import {CallbackButton} from '#/main/app/button/components/callback'
+import {Button as ButtonTypes} from '#/main/app/buttons/prop-types'
+import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 const PopoverButton = (props) =>
   <PopoverOverlay

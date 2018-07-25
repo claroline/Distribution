@@ -2,10 +2,8 @@ import React from 'react'
 import classes from 'classnames'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {toKey} from '#/main/core/scaffolding/text/utils'
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {Button as ButtonTypes} from '#/main/app/button/prop-types'
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 import {
   MenuOverlay,
@@ -14,7 +12,9 @@ import {
   MenuItem
 } from '#/main/app/overlay/menu'
 
-import {CallbackButton} from '#/main/app/button/components/callback'
+import {Button as ButtonTypes} from '#/main/app/buttons/prop-types'
+import {Action as ActionTypes} from '#/main/app/action/prop-types'
+import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 /**
  * Menu button.
@@ -65,7 +65,7 @@ const MenuButton = props => {
 
       <Menu>
         {(props.menu.label && 0 !== unclassifiedActions.length) &&
-          <MenuItem header={true}>{props.menu.label}</MenuItem>
+        <MenuItem header={true}>{props.menu.label}</MenuItem>
         }
 
         {primaryActions.map((action) =>
@@ -77,7 +77,7 @@ const MenuButton = props => {
         )}
 
         {(0 !== primaryActions.length && 0 !== unclassifiedActions.length) &&
-          <MenuItem divider={true} />
+        <MenuItem divider={true} />
         }
 
         {unclassifiedActions.map((action) =>
@@ -100,7 +100,7 @@ const MenuButton = props => {
         ])}
 
         {((0 !== unclassifiedActions.length || 0 !== Object.keys(groupActions).length) && 0 !== dangerousActions.length) &&
-          <MenuItem divider={true} />
+        <MenuItem divider={true} />
         }
 
         {dangerousActions.map((action) =>

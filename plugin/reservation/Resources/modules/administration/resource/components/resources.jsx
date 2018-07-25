@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {actions} from '#/plugin/reservation/administration/resource/actions'
@@ -18,11 +19,11 @@ const ResourcesList = props =>
       autoload: true
     }}
     primaryAction={(row) => ({
-      type: 'link',
-      target: `#/form/${row.id}`
+      type: LINK_BUTTON,
+      target: `/form/${row.id}`
     })}
     delete={() => ({
-      type: 'url',
+      type: URL_BUTTON,
       target: ['apiv2_reservationresource_delete_bulk']
     })}
     definition={[{
@@ -57,7 +58,7 @@ const ResourcesList = props =>
     }]}
     actions={(rows) => [
       {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-w fa-sign-out',
         label: trans('export', {}, 'platform'),
         callback: () => props.exportResources(rows)

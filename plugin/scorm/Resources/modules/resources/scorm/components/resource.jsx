@@ -8,6 +8,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {RoutedPageContent} from '#/main/core/layout/router/components/page'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {Scorm as ScormType} from '#/plugin/scorm/resources/scorm/prop-types'
 import {select} from '#/plugin/scorm/resources/scorm/selectors'
@@ -19,13 +20,13 @@ const Resource = props =>
   <ResourcePageContainer
     customActions={[
       {
-        type: 'link',
+        type: LINK_BUTTON,
         icon: 'fa fa-fw fa-play',
         label: trans('play_scorm', {}, 'scorm'),
         target: '/play',
         exact: true
       }, {
-        type: 'link',
+        type: LINK_BUTTON,
         icon: 'fa fa-fw fa-list',
         label: trans('results_list', {}, 'scorm'),
         disabled: !props.editable,

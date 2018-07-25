@@ -11,7 +11,7 @@ import {
   Action as ActionTypes,
   PromisedAction as PromisedActionTypes
 } from '#/main/app/action/prop-types'
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {
   Table,
   TableHeaderCell,

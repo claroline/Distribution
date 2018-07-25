@@ -1,8 +1,11 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/core/translation'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {LineChart} from '#/main/core/layout/chart/line/components/line-chart.jsx'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+
+import {LineChart} from '#/main/core/layout/chart/line/components/line-chart'
 import {constants as listConst} from '#/main/core/data/list/constants'
 
 class LogList extends Component {
@@ -53,7 +56,7 @@ class LogList extends Component {
           }}
           primaryAction={(row) =>({
             label: trans('date'),
-            type: 'link',
+            type: LINK_BUTTON,
             target: `/log/${row.id}`
           })}
           delete={false}

@@ -3,8 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form'
 
 import {
   TRIGGERING_ACTIONS,
@@ -25,7 +26,7 @@ const NotificationForm = props =>
       ['apiv2_plannednotification_update', {id: notification.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/notifications',
       exact: true
     }}

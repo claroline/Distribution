@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/app/router'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
@@ -23,7 +24,7 @@ const AnnounceSendComponent = props =>
     level={2}
     buttons={true}
     save={{
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       icon: 'fa fa-fw fa-paper-plane-o',
       label: trans('send', {}, 'actions'),
       disabled: props.announcement.meta.notifyUsers !== 0,
@@ -33,7 +34,7 @@ const AnnounceSendComponent = props =>
       }
     }}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}

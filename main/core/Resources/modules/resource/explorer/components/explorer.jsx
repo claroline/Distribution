@@ -6,6 +6,7 @@ import {trans} from '#/main/core/translation'
 import {SummarizedContent} from '#/main/app/content/summary/components/content'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConstants} from '#/main/core/data/list/constants'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
@@ -15,7 +16,7 @@ import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 const ResourceExplorer = props => {
   function summaryLink(directory) {
     return {
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       id: directory.id,
       icon: directory._opened ? 'fa fa-fw fa-folder-open' : 'fa fa-fw fa-folder',
       label: directory.name,
@@ -46,7 +47,7 @@ const ResourceExplorer = props => {
             // do not open directory, just change the target of the explorer
             return {
               label: trans('open', {}, 'actions'),
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               callback: () => props.changeDirectory(resourceNode)
             }
           }

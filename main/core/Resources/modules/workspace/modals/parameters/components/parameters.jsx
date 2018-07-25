@@ -8,6 +8,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {selectors} from '#/main/core/workspace/modals/parameters/store'
@@ -26,7 +27,7 @@ const ParametersModalComponent = props =>
 
     <Button
       className="modal-btn btn btn-primary"
-      type="callback"
+      type={CALLBACK_BUTTON}
       primary={true}
       label={trans('save', {}, 'actions')}
       disabled={!props.saveEnabled}

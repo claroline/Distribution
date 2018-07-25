@@ -11,6 +11,7 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions} from '#/main/core/administration/workspace/workspace/actions'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {WorkspaceForm} from '#/main/core/workspace/components/form'
 import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
@@ -35,7 +36,7 @@ const WorkspaceComponent = (props) =>
         ['apiv2_workspace_update', {id: workspace.id}]
       }
       cancel={{
-        type: 'link',
+        type: LINK_BUTTON,
         target: '/workspaces',
         exact: true
       }}
@@ -48,7 +49,7 @@ const WorkspaceComponent = (props) =>
           disabled={props.new}
           actions={[
             {
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-plus',
               label: trans('add_organizations'),
               callback: () => props.pickOrganizations(props.workspace.uuid)
@@ -77,7 +78,7 @@ const WorkspaceComponent = (props) =>
           disabled={props.new || isEmpty(props.managerRole)}
           actions={[
             {
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-plus',
               label: trans('add_managers'),
               callback: () => props.pickManagers(props.workspace)

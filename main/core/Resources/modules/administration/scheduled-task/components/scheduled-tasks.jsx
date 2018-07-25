@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {ScheduledTaskCard} from '#/main/core/administration/scheduled-task/data/components/scheduled-task-card'
@@ -14,7 +15,7 @@ const ScheduledTasks = () =>
       autoload: true
     }}
     primaryAction={(row) => ({
-      type: 'link',
+      type: LINK_BUTTON,
       target: `/form/${row.id}`
     })}
     delete={{

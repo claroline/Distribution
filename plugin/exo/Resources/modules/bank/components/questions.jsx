@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t, tex, trans, transChoice} from '#/main/core/translation'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_SHARE} from '#/plugin/exo/bank/components/modal/share.jsx'
@@ -102,12 +103,12 @@ const QuestionsPage = props =>
             action: (rows) => props.duplicateQuestions(rows, true)
           },*/ {
             // TODO : checks if the current user has the rights to share to enable the action
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-share',
             label: tex('question_share'),
             callback: () => props.shareQuestions(rows)
           }, {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-trash-o',
             label: t('delete'),
             callback: () => props.removeQuestions(rows),

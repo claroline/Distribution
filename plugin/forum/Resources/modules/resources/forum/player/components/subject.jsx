@@ -8,6 +8,7 @@ import {withRouter} from '#/main/app/router'
 import {trans, transChoice} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
 import {Button} from '#/main/app/action/components/button'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {withModal} from '#/main/app/overlay/modal/withModal'
@@ -99,7 +100,7 @@ class SubjectComponent extends Component {
         <header className="subject-info">
           <Button
             label={trans('forum_back_to_subjects', {}, 'forum')}
-            type="link"
+            type={LINK_BUTTON}
             target="/subjects"
             className="btn-link"
             primary={true}

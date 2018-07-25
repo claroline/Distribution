@@ -10,6 +10,7 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {actions} from '#/main/core/administration/user/group/actions'
 
@@ -27,7 +28,7 @@ const GroupForm = props =>
       ['apiv2_group_update', {id: group.id}]
     }
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/groups',
       exact: true
     }}
@@ -56,7 +57,7 @@ const GroupForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_users'),
             callback: () => props.pickUsers(props.group.id)
@@ -85,7 +86,7 @@ const GroupForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_roles'),
             callback: () => props.pickRoles(props.group.id)
@@ -114,7 +115,7 @@ const GroupForm = props =>
         disabled={props.new}
         actions={[
           {
-            type: 'callback',
+            type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: t('add_organizations'),
             callback: () => props.pickOrganizations(props.group.id)

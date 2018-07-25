@@ -4,11 +4,12 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {copy} from '#/main/app/clipboard'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 const UrlDisplay = (props) =>
   <div id={props.id} className="url-display">
     <Button
-      type="url"
+      type={URL_BUTTON}
       label={props.data}
       className="btn-link"
       target={props.data}
@@ -17,7 +18,7 @@ const UrlDisplay = (props) =>
 
     <Button
       id={`clipboard-${props.id}`}
-      type="callback"
+      type={CALLBACK_BUTTON}
       tooltip="left"
       label={trans('clipboard_copy')}
       className="btn-link"

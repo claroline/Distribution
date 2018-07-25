@@ -3,6 +3,7 @@ import invariant from 'invariant'
 import isEqual from 'lodash/isEqual'
 
 import {trans, transChoice} from '#/main/core/translation'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
@@ -182,7 +183,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
     if (ownProps.delete) {
       const deleteAction = {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete', {}, 'actions'),
         dangerous: true,

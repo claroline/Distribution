@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import {url} from '#/main/app/api'
 import {tex, trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {getTimeDiff} from '#/main/core/scaffolding/date'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
@@ -24,7 +25,7 @@ const Papers = props =>
     <DataListContainer
       name="papers.list"
       primaryAction={(row) => ({
-        type: 'link',
+        type: LINK_BUTTON,
         label: trans('open'),
         target: `/papers/${row.id}`
       })}
@@ -91,7 +92,6 @@ const Papers = props =>
             tex('paper_score_not_available')
         }
       ]}
-      actions={() => []}
     />
   </div>
 

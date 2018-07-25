@@ -3,12 +3,13 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans, transChoice} from '#/main/core/translation'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {getUserList} from '#/main/core/workspace/user/user/components/user-list.jsx'
+import {getUserList} from '#/main/core/workspace/user/user/components/user-list'
 import {actions} from '#/main/core/workspace/user/user/actions'
 
 import {select} from '#/main/core/workspace/user/selectors'
@@ -22,7 +23,7 @@ const UsersList = props =>
     }}
     primaryAction={getUserList(props.workspace).open}
     actions={(rows) => [{
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       icon: 'fa fa-fw fa-trash-o',
       label: trans('unregister', {}, 'actions'),
       callback: () => props.unregister(rows, props.workspace),

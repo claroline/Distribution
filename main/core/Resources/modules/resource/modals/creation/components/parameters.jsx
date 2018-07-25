@@ -5,6 +5,7 @@ import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {ContentMeta} from '#/main/app/content/meta/components/meta'
 import {Await} from '#/main/app/components/await'
@@ -52,7 +53,7 @@ class ParametersModalComponent extends Component {
 
         <Button
           className="modal-btn btn-link"
-          type="modal"
+          type={MODAL_BUTTON}
           label={trans('edit-rights', {}, 'actions')}
           disabled={!this.props.saveEnabled}
           modal={[MODAL_RESOURCE_CREATION_RIGHTS, {}]}
@@ -60,7 +61,7 @@ class ParametersModalComponent extends Component {
 
         <Button
           className="modal-btn btn"
-          type="callback"
+          type={CALLBACK_BUTTON}
           primary={true}
           label={trans('create', {}, 'actions')}
           disabled={!this.props.saveEnabled}

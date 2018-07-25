@@ -10,6 +10,7 @@ import {Routes} from '#/main/app/router'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {select as editorSelect} from '#/plugin/path/resources/path/editor/selectors'
 import {actions} from '#/plugin/path/resources/path/editor/actions'
@@ -176,7 +177,7 @@ const Editor = connect(
         title: title,
         current: current,
         selectAction: (selected) => ({
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           callback: () => callback(selected)
         })
       }))

@@ -3,7 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
@@ -23,7 +24,7 @@ const DropsList = props =>
         autoload: true
       }}
       primaryAction={(row) => ({
-        type: 'link',
+        type: LINK_BUTTON,
         target: `/drop/${row.id}`,
         label: trans('correct_a_copy', {}, 'dropzone')
       })}
@@ -89,28 +90,28 @@ const DropsList = props =>
       ]}
       actions={(rows) => [
         {
-          type: 'link',
+          type: LINK_BUTTON,
           icon: 'fa fa-fw fa-pencil',
           label: trans('correct_the_copy', {}, 'dropzone'),
           target: `/drop/${rows[0].id}`,
           scope: ['object']
         },
         {
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-unlock',
           label: trans('unlock_drop', {}, 'dropzone'),
           displayed: !rows[0].unlockedDrop,
           callback: () => props.unlockDrop(rows[0].id),
           scope: ['object'] // todo should be selection action too
         }, {
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-undo',
           label: trans('cancel_drop_submission', {}, 'dropzone'),
           displayed: rows[0].finished,
           callback: () => props.cancelDrop(rows[0].id),
           scope: ['object'] // todo should be selection action too
         }, {
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-download',
           label: trans('download', {}, 'platform'),
           callback: () => props.downloadDrops(rows)

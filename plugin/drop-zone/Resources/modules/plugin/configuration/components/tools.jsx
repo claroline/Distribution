@@ -13,6 +13,8 @@ import {
   PageActions,
   PageAction
 } from '#/main/core/layout/page'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {constants} from '#/plugin/drop-zone/plugin/configuration/constants'
@@ -116,12 +118,10 @@ class Tools extends Component {
       <PageContainer id="tools-container">
         <PageHeader
           title={trans('tools_management', {}, 'dropzone')}
-          key="tools-container-header"
         >
           <PageActions>
             <PageAction
-              id="theme-save"
-              type="callback"
+              type={CALLBACK_BUTTON}
               label={trans('add_tool', {}, 'dropzone')}
               icon="fa fa-plus"
               primary={true}
@@ -129,7 +129,8 @@ class Tools extends Component {
             />
           </PageActions>
         </PageHeader>
-        <PageContent key="tools-container-content">
+
+        <PageContent>
           <DataListContainer
             name="tools"
             fetch={{
@@ -142,7 +143,7 @@ class Tools extends Component {
             definition={this.generateColumns()}
             actions={(rows) => [
               {
-                type: 'callback',
+                type: CALLBACK_BUTTON,
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit_tool', {}, 'dropzone'),
                 callback: () => this.editTool(rows[0]),

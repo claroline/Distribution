@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 import {MODAL_IFRAME} from '#/main/app/modals/iframe'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
@@ -25,7 +26,7 @@ const PortalPage = props =>
       <DataListContainer
         name="portal"
         primaryAction={(row) => ({
-          type: row.url && row.url.isYoutube ? 'callback' : 'url',
+          type: row.url && row.url.isYoutube ? CALLBACK_BUTTON : URL_BUTTON,
           callback: () => props.displayModalVideo(row.name, row.url.embedYoutubeUrl), // open a modal with the video in a iframe
           target: ['claro_resource_open', {node: row.id, resourceType: row.meta.type}] // direct link to the resource
         })}

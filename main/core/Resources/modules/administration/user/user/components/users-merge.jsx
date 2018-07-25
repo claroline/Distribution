@@ -6,6 +6,7 @@ import {trans} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
 
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Sections, Section} from '#/main/core/layout/components/sections'
 import {DataDetails} from '#/main/core/data/details/components/details'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
@@ -134,7 +135,7 @@ const UserCompare = props =>
 
     <Button
       className="panel-btn btn"
-      type="callback"
+      type={CALLBACK_BUTTON}
       primary={true}
       label={trans('keep_user')}
       callback={props.merge}

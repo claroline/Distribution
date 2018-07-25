@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {Routes} from '#/main/app/router'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
@@ -27,7 +28,7 @@ const List = () =>
   <DataListContainer
     name="history"
     primaryAction={(row) => ({
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/history/' + row.log
     })}
     fetch={{
