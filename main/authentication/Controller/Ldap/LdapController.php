@@ -260,7 +260,7 @@ class LdapController extends Controller
             $this->ldap->close();
             $response = new response(
                 $this->templating->render(
-                    'ClarolineLdapBundle:export:'.$type.'.html.twig',
+                    'ClarolineAuthenticationBundle:export:'.$type.'.html.twig',
                     ['users' => $users, 'server' => $server]
                 )
             );

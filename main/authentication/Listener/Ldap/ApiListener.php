@@ -37,6 +37,6 @@ class ApiListener
     {
         // Replace user of LdapUser nodes
         $ldapUserCount = $this->manager->replaceUser($event->getRemoved(), $event->getKept());
-        $event->addMessage("[ClarolineLdapBundle] updated LdapUser count: $ldapUserCount");
+        $event->addMessage("[ClarolineAuthenticationBundle] updated LdapUser count: $ldapUserCount");
     }
 }

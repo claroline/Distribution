@@ -42,7 +42,7 @@ class Version20170331114351 extends AbstractMigration
         ');
         $this->addSql("
             INSERT INTO claro_admin_tools (name, class, plugin_id)
-            SELECT 'LDAP', 'database', id FROM claro_plugin WHERE short_name = 'LdapBundle'
+            SELECT 'LDAP', 'database', id FROM claro_plugin WHERE short_name = 'AuthenticationBundle'
         ");
     }
 }

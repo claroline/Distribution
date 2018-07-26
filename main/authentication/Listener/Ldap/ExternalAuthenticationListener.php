@@ -56,7 +56,7 @@ class ExternalAuthenticationListener
         $servers = $this->ldapManager->getActiveServers();
         if (count($servers) > 0) {
             $content = $this->templating->render(
-                'ClarolineLdapBundle:Ldap:buttons.html.twig',
+                'ClarolineAuthenticationBundle:Ldap:buttons.html.twig',
                 ['servers' => $servers]
             );
             $event->addContent($content);
