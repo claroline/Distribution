@@ -3,9 +3,11 @@ import {PropTypes as T} from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 import sum from 'lodash/sum'
 import times from 'lodash/times'
+import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
+import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
@@ -23,7 +25,7 @@ const WidgetCol = props =>
     {props.content &&
       <div className="widget-col-configure" >
         <Button
-          className="btn btn-link text-movie-subtitles"
+          className="btn btn-link"
           type="modal"
           icon="fa fa-fw fa-pencil"
           label={trans('modify_widget', {}, 'widget')}
@@ -32,6 +34,24 @@ const WidgetCol = props =>
             save: props.updateContent
           }]}
         />
+        {props.content.id !== props.isMoving &&
+        <Button
+          className="btn btn-link"
+          type="callback"
+          icon="fa fa-fw fa-arrows"
+          label={trans('move_widget', {}, 'widget')}
+          callback={() => props.moveContent(props.content)}
+        />
+        }
+        {props.content.id === props.isMoving &&
+        <Button
+          className="btn btn-link"
+          type="callback"
+          icon="fa fa-fw fa-arrows"
+          label={trans('cancel_move_widget', {}, 'widget')}
+          callback={() => props.stopMovingContent()}
+        />
+        }
       </div>
     }
     {props.content &&
@@ -41,7 +61,13 @@ const WidgetCol = props =>
       />
     }
 
-    {!props.content &&
+    {!props.content && props.isMoving &&
+      <EmptyPlaceholder
+        size="lg"
+        title={trans('insert_widget', {}, 'widget')}
+      />
+    }
+    {!props.content && !props.isMoving &&
       <Button
         className="btn btn-block btn-emphasis"
         type="modal"
@@ -53,6 +79,8 @@ const WidgetCol = props =>
       />
     }
   </div>
+
+
 
 WidgetCol.propTypes = {
   size: T.number.isRequired,
@@ -78,7 +106,7 @@ const WidgetEditor = props =>
 
     <section className="widget" style={computeStyles(props.widget)}>
       {props.widget.name &&
-        <h2 className="h-first widget-title">{props.widget.name}</h2>
+            <h2 className="h-first widget-title">{props.widget.name}</h2>
       }
 
       <div className="row">
@@ -104,11 +132,15 @@ const WidgetEditor = props =>
               // propagate change
               props.update(widget)
             }}
+            moveContent={props.moveContent}
+            stopMovingContent={props.stopMovingContent}
+            isMoving={props.isMoving}
           />
         )}
       </div>
     </section>
   </div>
+
 
 WidgetEditor.propTypes = {
   context: T.object,
@@ -120,6 +152,7 @@ WidgetEditor.propTypes = {
     ActionTypes.propTypes
   )).isRequired
 }
+
 
 export {
   WidgetEditor
