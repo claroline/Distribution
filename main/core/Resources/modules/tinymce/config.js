@@ -10,8 +10,6 @@ import {getExternalPlugins} from '#/main/core/tinymce/plugins/external-plugins'
 const extPlugins = getExternalPlugins()
 const extButtons = extPlugins.length > 0 ? ` | ${extPlugins.join(' ')}` : ''
 
-console.log(theme('bootstrap'))
-
 const config = {
   //TODO: this is for retro comp purpose
   setup: (editor) => {
