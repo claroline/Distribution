@@ -127,7 +127,7 @@
                             <tr>
                                 <th>{{ 'team_form_isPublic'|trans({}, 'team') }}</th>
                                 <td>
-                                    {% if team.getIsPublic() %}
+                                    {% if team.isPublic() %}
                                         {{ 'public'|trans({}, 'team') }}
                                     {% else %}
                                         {{ 'private'|trans({}, 'team') }}
@@ -137,7 +137,7 @@
                             <tr>
                                 <th>{{ 'team_form_selfRegistration'|trans({}, 'team') }}</th>
                                 <td>
-                                    {% if team.getSelfRegistration() %}
+                                    {% if team.isSelfRegistration() %}
                                         <i class="fa fa-check-circle" style="color: #5CB85C"></i>
                                     {% else %}
                                         <i class="fa fa-times-circle" style="color: #D9534F"></i>
@@ -147,7 +147,7 @@
                             <tr>
                                 <th>{{ 'team_form_selfUnregistration'|trans({}, 'team') }}</th>
                                 <td>
-                                    {% if team.getSelfUnregistration() %}
+                                    {% if team.isSelfUnregistration() %}
                                         <i class="fa fa-check-circle" style="color: #5CB85C"></i>
                                     {% else %}
                                         <i class="fa fa-times-circle" style="color: #D9534F"></i>
@@ -272,7 +272,7 @@
     <div id="team-datas"
          data-team-id="{{ team.getId() }}"
          data-max-users="{{ team.getMaxUsers() }}"
-         data-nb-users="{{ team.getUsers()|length }}"
+         data-nb-users="{{ team.getUsers().toArray()|length }}"
          data-workspace-id="{{ workspace.getId() }}"
          data-team-manager-id="{{ managerId }}"
     >

@@ -126,7 +126,7 @@
                                     </span>
                                 {% endif %}
 
-                                {% if userTeam.getSelfUnregistration() %}
+                                {% if userTeam.isSelfUnregistration() %}
                                     <span class="btn btn-danger btn-sm unregister-btn"
                                           data-team-id="{{ userTeam.getId() }}"
                                           data-team-name="{{ userTeam.getName() }}"
@@ -227,7 +227,7 @@
                                     ) %}
                                     {% set registerable = true %}
                                 {% endif %}
-                                {% if team.getSelfRegistration() and registerable is defined %}
+                                {% if team.isSelfRegistration() and registerable is defined %}
                                     <span class="btn btn-success btn-sm register-btn"
                                           data-team-id="{{ team.getId() }}"
                                           data-team-name="{{ team.getName() }}"

@@ -183,14 +183,14 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                {% if team.getSelfRegistration() %}
+                                {% if team.isSelfRegistration() %}
                                 <i class="fa fa-check-circle" style="color: #5CB85C"></i>
                                 {% else %}
                                 <i class="fa fa-times-circle" style="color: #D9534F"></i>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                {% if team.getSelfUnregistration() %}
+                                {% if team.isSelfUnregistration() %}
                                     <i class="fa fa-check-circle" style="color: #5CB85C"></i>
                                 {% else %}
                                     <i class="fa fa-times-circle" style="color: #D9534F"></i>

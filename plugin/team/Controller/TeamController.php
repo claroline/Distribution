@@ -215,10 +215,10 @@ class TeamController extends Controller
         $this->checkWorkspaceManager($workspace, $user);
         $params = $this->teamManager->getParametersByWorkspace($workspace);
         $team = new Team();
-        $team->setIsPublic($params->getIsPublic());
-        $team->setSelfRegistration($params->getSelfRegistration());
-        $team->setSelfUnregistration($params->getSelfUnregistration());
-        $form = $this->formFactory->create(new TeamType(), $team);
+        $team->setIsPublic($params->isPublic());
+        $team->setSelfRegistration($params->isSelfRegistration());
+        $team->setSelfUnregistration($params->isSelfUnregistration());
+        $form = $this->formFactory->create(TeamType::class, $team);
 
         return ['form' => $form->createView(), 'workspace' => $workspace];
     }
@@ -237,13 +237,13 @@ class TeamController extends Controller
     {
         $this->checkWorkspaceManager($workspace, $user);
         $team = new Team();
-        $form = $this->formFactory->create(new TeamType(), $team);
+        $form = $this->formFactory->create(TeamType::class, $team);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $resource = $form->get('defaultResource')->getData();
-            $creatableResources = $form->get('resourceTypes')->getData();
-            $this->teamManager->createTeam($team, $workspace, $user, $resource, $creatableResources->toArray());
+//            $resource = $form->get('defaultResource')->getData();
+//            $creatableResources = $form->get('resourceTypes')->getData();
+            $this->teamManager->createTeam($team, $workspace, $user);
             $this->teamManager->initializeTeamRights($team);
 
             return new RedirectResponse(
@@ -274,7 +274,7 @@ class TeamController extends Controller
         if (!$isWorkspaceManager && !$isTeamManager) {
             throw new AccessDeniedException();
         }
-        $form = $this->formFactory->create(new TeamEditType(), $team);
+        $form = $this->formFactory->create(TeamEditType::class, $team);
 
         return ['form' => $form->createView(), 'team' => $team, 'workspace' => $workspace];
     }
@@ -299,12 +299,12 @@ class TeamController extends Controller
         if (!$isWorkspaceManager && !$isTeamManager) {
             throw new AccessDeniedException();
         }
-        $oldIsPublic = $team->getIsPublic();
-        $form = $this->formFactory->create(new TeamEditType(), $team);
+        $oldIsPublic = $team->isPublic();
+        $form = $this->formFactory->create(TeamEditType::class, $team);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $newIsPublic = $team->getIsPublic() || $team->getIsPublic() === 1;
+            $newIsPublic = $team->isPublic() || 1 === $team->isPublic();
             $this->teamManager->persistTeam($team);
 
             if ($oldIsPublic !== $newIsPublic) {
@@ -332,7 +332,7 @@ class TeamController extends Controller
     {
         $workspace = $team->getWorkspace();
         $this->checkWorkspaceManager($workspace, $user);
-        $deleteDirectory = (intval($withDirectory) === 1);
+        $deleteDirectory = (1 === intval($withDirectory));
         $this->teamManager->deleteTeam($team, $deleteDirectory);
 
         return new Response('success', 200);
@@ -352,7 +352,7 @@ class TeamController extends Controller
     {
         $this->checkWorkspaceManager($workspace, $user);
         $params = $this->teamManager->getParametersByWorkspace($workspace);
-        $form = $this->formFactory->create(new MultipleTeamsType($params));
+        $form = $this->formFactory->create(MultipleTeamsType::class, null, ['params' => $params]);
 
         return ['form' => $form->createView(), 'workspace' => $workspace];
     }
@@ -371,7 +371,7 @@ class TeamController extends Controller
     {
         $this->checkWorkspaceManager($workspace, $user);
         $params = $this->teamManager->getParametersByWorkspace($workspace);
-        $form = $this->formFactory->create(new MultipleTeamsType($params));
+        $form = $this->formFactory->create(MultipleTeamsType::class, null, ['params' => $params]);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -385,9 +385,9 @@ class TeamController extends Controller
                 $datas['maxUsers'],
                 $datas['isPublic'],
                 $datas['selfRegistration'],
-                $datas['selfUnregistration'],
-                $form->get('defaultResource')->getData(),
-                $form->get('resourceTypes')->getData()->toArray()
+                $datas['selfUnregistration']
+//                $form->get('defaultResource')->getData(),
+//                $form->get('resourceTypes')->getData()->toArray()
             );
 
             return new RedirectResponse(
@@ -414,7 +414,7 @@ class TeamController extends Controller
         $this->checkWorkspaceManager($workspace, $manager);
         $params = $this->teamManager->getParametersByWorkspace($workspace);
         $maxUsers = $team->getMaxUsers();
-        $full = !is_null($maxUsers) && (count($team->getUsers()) >= $maxUsers);
+        $full = !is_null($maxUsers) && (count($team->getUsers()->toArray()) >= $maxUsers);
         $nbAllowedTeams = $params->getMaxTeams();
         $userTeams = $this->teamManager->getTeamsByUserAndWorkspace($user, $workspace);
         $nbTeams = count($userTeams);
@@ -516,7 +516,7 @@ class TeamController extends Controller
     public function managerDeleteTeamsAction(Workspace $workspace, array $teams, User $manager, $withDirectory = 0)
     {
         $this->checkWorkspaceManager($workspace, $manager);
-        $deleteDirectory = (intval($withDirectory) === 1);
+        $deleteDirectory = (1 === intval($withDirectory));
         $this->teamManager->deleteTeams($teams, $deleteDirectory);
 
         return new Response('success', 200);
@@ -584,13 +584,13 @@ class TeamController extends Controller
         $this->checkToolAccess($workspace);
         $params = $this->teamManager->getParametersByWorkspace($workspace);
         $maxUsers = $team->getMaxUsers();
-        $full = !is_null($maxUsers) && (count($team->getUsers()) >= $maxUsers);
+        $full = !is_null($maxUsers) && (count($team->getUsers()->toArray()) >= $maxUsers);
         $nbAllowedTeams = $params->getMaxTeams();
         $userTeams = $this->teamManager->getTeamsByUserAndWorkspace($user, $workspace);
         $nbTeams = count($userTeams);
         $nbAllowed = is_null($nbAllowedTeams) || ($nbTeams < $nbAllowedTeams);
 
-        if ($team->getSelfRegistration() && !$full && $nbAllowed) {
+        if ($team->isSelfRegistration() && !$full && $nbAllowed) {
             $this->teamManager->registerUserToTeam($team, $user);
             $token = new UsernamePasswordToken($user, $user->getPassword(), 'main', $user->getRoles());
             $this->tokenStorage->setToken($token);
@@ -614,7 +614,7 @@ class TeamController extends Controller
         $workspace = $team->getWorkspace();
         $this->checkToolAccess($workspace);
 
-        if ($team->getSelfUnregistration()) {
+        if ($team->isSelfUnregistration()) {
             $this->teamManager->unregisterUserFromTeam($team, $user);
         }
 
@@ -635,7 +635,7 @@ class TeamController extends Controller
     {
         $workspace = $params->getWorkspace();
         $this->checkWorkspaceManager($workspace, $user);
-        $form = $this->formFactory->create(new TeamParamsType(), $params);
+        $form = $this->formFactory->create(TeamParamsType::class, null, ['params' => $params]);
 
         return ['form' => $form->createView(), 'params' => $params, 'workspace' => $workspace];
     }
@@ -654,7 +654,7 @@ class TeamController extends Controller
     {
         $workspace = $params->getWorkspace();
         $this->checkWorkspaceManager($workspace, $user);
-        $form = $this->formFactory->create(new TeamParamsType(), $params);
+        $form = $this->formFactory->create(TeamParamsType::class, null, ['params' => $params]);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -700,7 +700,7 @@ class TeamController extends Controller
         $workspace = $team->getWorkspace();
         $this->checkWorkspaceManager($workspace, $user);
 
-        $users = $search === '' ?
+        $users = '' === $search ?
             $this->teamManager->getWorkspaceUsers($workspace, $orderedBy, $order, $page, $max) :
             $this->teamManager->getSearchedWorkspaceUsers($workspace, $search, $orderedBy, $order, $page, $max);
         $params = $this->teamManager->getParametersByWorkspace($workspace);
@@ -717,7 +717,7 @@ class TeamController extends Controller
         }
         $registered = [];
 
-        foreach ($team->getUsers() as $user) {
+        foreach ($team->getUsers()->toArray() as $user) {
             $registered[$user->getId()] = $user;
         }
 
@@ -767,7 +767,7 @@ class TeamController extends Controller
         $workspace = $team->getWorkspace();
         $this->checkWorkspaceManager($workspace, $user);
 
-        $users = $search === '' ?
+        $users = '' === $search ?
             $this->teamManager->getUnregisteredUsersByTeam($team, $orderedBy, $order, $page, $max) :
             $this->teamManager->getSearchedUnregisteredUsersByTeam($team, $search, $orderedBy, $order, $page, $max);
         $params = $this->teamManager->getParametersByWorkspace($workspace);
@@ -813,7 +813,7 @@ class TeamController extends Controller
     public function teamUserslistAction(Team $team)
     {
         $this->checkToolAccess($team->getWorkspace());
-        $users = $team->getUsers();
+        $users = $team->getUsers()->toArray();
 
         return ['team' => $team, 'users' => $users];
     }
@@ -854,7 +854,7 @@ class TeamController extends Controller
     {
         $workspace = $team->getWorkspace();
         $this->checkWorkspaceManager($workspace, $manager);
-        $users = $team->getUsers();
+        $users = $team->getUsers()->toArray();
         $params = $this->teamManager->getParametersByWorkspace($workspace);
 
         return ['workspace' => $workspace, 'users' => $users, 'team' => $team, 'params' => $params];
@@ -881,7 +881,7 @@ class TeamController extends Controller
         if (!$isTeamMember && !$isTeamManager) {
             throw new AccessDeniedException();
         }
-        $users = $team->getUsers();
+        $users = $team->getUsers()->toArray();
         $params = $this->teamManager->getParametersByWorkspace($workspace);
 
         return [
@@ -961,7 +961,7 @@ class TeamController extends Controller
 
     private function isTeamMember(Team $team, User $user)
     {
-        $users = $team->getUsersArrayCollection();
+        $users = $team->getUsers();
 
         return $users->contains($user);
     }

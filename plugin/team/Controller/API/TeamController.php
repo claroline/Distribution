@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ClacoFormBundle\Controller\API;
+namespace Claroline\TeamBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\ClacoFormBundle\Entity\ClacoForm;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,18 +22,18 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiMeta(
- *     class="Claroline\ClacoFormBundle\Entity\Keyword",
+ *     class="Claroline\TeamBundle\Entity\Team",
  *     ignore={"exist", "copyBulk", "schema", "find", "list"}
  * )
- * @EXT\Route("/clacoformkeyword")
+ * @EXT\Route("/team")
  */
-class KeywordController extends AbstractCrudController
+class TeamController extends AbstractCrudController
 {
     /* var FinderProvider */
     protected $finder;
 
     /**
-     * KeywordController constructor.
+     * TeamController constructor.
      *
      * @DI\InjectParams({
      *     "finder" = @DI\Inject("claroline.api.finder")
@@ -48,33 +48,34 @@ class KeywordController extends AbstractCrudController
 
     public function getName()
     {
-        return 'clacoformkeyword';
+        return 'team';
     }
 
     /**
      * @EXT\Route(
-     *     "/clacoform/{clacoForm}/keywords/list",
-     *     name="apiv2_clacoformkeyword_list"
+     *     "/workspace/{workspace}/teams/list",
+     *     name="apiv2_team_list"
      * )
      * @EXT\ParamConverter(
-     *     "clacoForm",
-     *     class="ClarolineClacoFormBundle:ClacoForm",
-     *     options={"mapping": {"clacoForm": "uuid"}}
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"workspace": "uuid"}}
      * )
      *
-     * @param ClacoForm $clacoForm
+     * @param Workspace $workspace
      * @param Request   $request
      *
      * @return JsonResponse
      */
-    public function categoriesListAction(ClacoForm $clacoForm, Request $request)
+    public function teamsListAction(Workspace $workspace, Request $request)
     {
         $params = $request->query->all();
+
         if (!isset($params['hiddenFilters'])) {
             $params['hiddenFilters'] = [];
         }
-        $params['hiddenFilters']['clacoForm'] = $clacoForm->getId();
-        $data = $this->finder->search('Claroline\ClacoFormBundle\Entity\Keyword', $params);
+        $params['hiddenFilters']['workspace'] = $workspace->getId();
+        $data = $this->finder->search('Claroline\TeamBundle\Entity\Team', $params);
 
         return new JsonResponse($data, 200);
     }

@@ -12,30 +12,33 @@
 namespace Claroline\TeamBundle\Listener;
 
 use Claroline\CoreBundle\Event\DisplayToolEvent;
+use Claroline\TeamBundle\Manager\TeamManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 
 /**
  * @DI\Service
  */
 class TeamListener
 {
-    private $httpKernel;
-    private $request;
+    /** @var TeamManager */
+    private $teamManager;
+    /** @var TwigEngine */
+    private $templating;
 
     /**
      * @DI\InjectParams({
-     *     "httpKernel"         = @DI\Inject("http_kernel"),
-     *     "requestStack"       = @DI\Inject("request_stack")
+     *     "teamManager" = @DI\Inject("claroline.manager.team_manager"),
+     *     "templating"  = @DI\Inject("templating")
      * })
+     *
+     * @param TeamManager $teamManager
+     * @param TwigEngine  $templating
      */
-    public function __construct(
-        HttpKernelInterface $httpKernel,
-        RequestStack $requestStack
-    ) {
-        $this->httpKernel = $httpKernel;
-        $this->request = $requestStack->getCurrentRequest();
+    public function __construct(TeamManager $teamManager, TwigEngine $templating)
+    {
+        $this->teamManager = $teamManager;
+        $this->templating = $templating;
     }
 
     /**
@@ -45,13 +48,16 @@ class TeamListener
      */
     public function onWorkspaceToolOpen(DisplayToolEvent $event)
     {
-        $params = [];
-        $params['_controller'] = 'ClarolineTeamBundle:Team:index';
-        $params['workspace'] = $event->getWorkspace()->getId();
-        $subRequest = $this->request->duplicate([], null, $params);
-        $response = $this->httpKernel
-            ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setContent($response->getContent());
+        $workspace = $event->getWorkspace();
+        $teamParams = $this->teamManager->getWorkspaceTeamParameters($workspace);
+
+        $content = $this->templating->render(
+            'ClarolineTeamBundle:team:tool.html.twig', [
+                'workspace' => $workspace,
+                'teamParams' => $teamParams,
+            ]
+        );
+        $event->setContent($content);
         $event->stopPropagation();
     }
 }

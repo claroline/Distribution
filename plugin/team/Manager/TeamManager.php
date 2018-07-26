@@ -16,14 +16,14 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolRightsManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\TeamBundle\API\Serializer\TeamSerializer;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Entity\WorkspaceTeamParameters;
+use Claroline\TeamBundle\Serializer\TeamSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -52,7 +52,7 @@ class TeamManager
      *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
      *     "toolRightsManager" = @DI\Inject("claroline.manager.tool_rights_manager"),
      *     "roleManager"       = @DI\Inject("claroline.manager.role_manager"),
-     *     "teamSerializer"   = @DI\Inject("claroline.serializer.team"),
+     *     "teamSerializer"    = @DI\Inject("claroline.serializer.team"),
      *     "translator"        = @DI\Inject("translator")
      * })
      */
@@ -78,6 +78,29 @@ class TeamManager
         $this->teamRepo = $om->getRepository('ClarolineTeamBundle:Team');
         $this->workspaceTeamParamsRepo = $om->getRepository('ClarolineTeamBundle:WorkspaceTeamParameters');
     }
+
+    /**
+     * Gets team parameters for a workspace.
+     *
+     * @param Workspace $workspace
+     *
+     * @return WorkspaceTeamParameters
+     */
+    public function getWorkspaceTeamParameters(Workspace $workspace)
+    {
+        $teamParams = $this->workspaceTeamParamsRepo->findOneBy(['workspace' => $workspace]);
+
+        if (empty($teamParams)) {
+            $teamParams = new WorkspaceTeamParameters();
+            $teamParams->setWorkspace($workspace);
+        }
+
+        return $teamParams;
+    }
+
+    /*******************
+     *  Old functions  *
+     ******************/
 
     public function createMultipleTeams(
         Workspace $workspace,
@@ -192,7 +215,7 @@ class TeamManager
         $workspace = $team->getWorkspace();
         $teamRole = $team->getRole();
         $teamManagerRole = $team->getTeamManagerRole();
-        $isPublic = $team->getIsPublic();
+        $isPublic = $team->isPublic();
         $resourceNode = !is_null($team->getDirectory()) ?
             $team->getDirectory()->getResourceNode() :
             null;
@@ -339,7 +362,7 @@ class TeamManager
         $this->om->startFlushSuite();
 
         foreach ($teams as $team) {
-            $users = $team->getUsers();
+            $users = $team->getUsers()->toArray();
             $this->unregisterUsersFromTeam($team, $users);
         }
         $this->om->endFlushSuite();
@@ -359,7 +382,7 @@ class TeamManager
                 $this->registerUsersToTeam($team, $users);
                 break;
             } else {
-                $nbFreeSpaces = $maxUsers - count($team->getUsers());
+                $nbFreeSpaces = $maxUsers - count($team->getUsers()->toArray());
 
                 while ($nbFreeSpaces > 0 && count($users) > 0) {
                     $index = rand(0, count($users) - 1);
@@ -443,7 +466,7 @@ class TeamManager
         foreach ($teams as $team) {
             $directory = $team->getDirectory();
 
-            if ($team->getIsPublic() && !is_null($directory)) {
+            if ($team->isPublic() && !is_null($directory)) {
                 $rights = [];
                 $rights['open'] = true;
                 $this->rightsManager->editPerms(
@@ -670,7 +693,7 @@ class TeamManager
             $workspace = $team->getWorkspace();
             $teamRole = $team->getRole();
             $teamManagerRole = $team->getTeamManagerRole();
-            $isPublic = $team->getIsPublic();
+            $isPublic = $team->isPublic();
             $node = $directory->getResourceNode();
             $workspaceRoles = $this->roleManager->getRolesByWorkspace($workspace);
 
@@ -893,9 +916,9 @@ class TeamManager
      * Access to WorkspaceTeamParametersRepository methods *
      *******************************************************/
 
-    public function getParametersByWorkspace(Workspace $workspace, $executeQuery = true)
+    public function getParametersByWorkspace(Workspace $workspace)
     {
-        return $this->workspaceTeamParamsRepo->findParametersByWorkspace($workspace, $executeQuery);
+        return $this->workspaceTeamParamsRepo->findOneBy(['workspace' => $workspace]);
     }
 
     /**

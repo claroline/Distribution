@@ -11,7 +11,12 @@
 
 namespace Claroline\TeamBundle\Form;
 
+use Claroline\CoreBundle\Form\Field\TinymceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,38 +27,38 @@ class TeamType extends AbstractType
         $builder->add(
             'name',
             TextType::class,
-            array('required' => true)
+            ['required' => true]
         );
         $builder->add(
             'description',
-            'tinymce',
+            TinymceType::class,
             ['required' => false]
         );
-        $builder->add(
-            'defaultResource',
-            'resourcePicker',
-            [
-                'required' => false,
-                'mapped' => false,
-                'label' => 'default_resource',
-                'attr' => [
-                    'data-restrict-for-owner' => 1,
-                ],
-            ]
-        );
+//        $builder->add(
+//            'defaultResource',
+//            'resourcePicker',
+//            [
+//                'required' => false,
+//                'mapped' => false,
+//                'label' => 'default_resource',
+//                'attr' => [
+//                    'data-restrict-for-owner' => 1,
+//                ],
+//            ]
+//        );
         $builder->add(
             'maxUsers',
             IntegerType::class,
-            array(
-                'attr' => array('min' => 0),
+            [
+                'attr' => ['min' => 0],
                 'required' => false,
             ]
         );
         $builder->add(
             'isPublic',
             ChoiceType::class,
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     true => 'public',
                     false => 'private',
                 ],
@@ -64,7 +69,7 @@ class TeamType extends AbstractType
         $builder->add(
             'selfRegistration',
             CheckboxType::class,
-            array(
+            [
                 'required' => true,
                 'attr' => ['class' => 'advanced-param'],
             ]
@@ -72,31 +77,26 @@ class TeamType extends AbstractType
         $builder->add(
             'selfUnregistration',
             CheckboxType::class,
-            array(
+            [
                 'required' => true,
                 'attr' => ['class' => 'advanced-param'],
             ]
         );
-        $builder->add(
-            'resourceTypes',
-            'entity',
-            [
-                'required' => false,
-                'mapped' => false,
-                'expanded' => true,
-                'multiple' => true,
-                'translation_domain' => 'resource',
-                'label' => 'user_creatable_resources',
-                'class' => 'ClarolineCoreBundle:Resource\ResourceType',
-                'property' => 'name',
-                'attr' => ['class' => 'advanced-param'],
-            ]
-        );
-    }
-
-    public function getName()
-    {
-        return 'team_form';
+//        $builder->add(
+//            'resourceTypes',
+//            'entity',
+//            [
+//                'required' => false,
+//                'mapped' => false,
+//                'expanded' => true,
+//                'multiple' => true,
+//                'translation_domain' => 'resource',
+//                'label' => 'user_creatable_resources',
+//                'class' => 'ClarolineCoreBundle:Resource\ResourceType',
+//                'property' => 'name',
+//                'attr' => ['class' => 'advanced-param'],
+//            ]
+//        );
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -117,7 +117,7 @@
                                 {{ 'max_teams_limit_reached'|trans({}, 'team') }}
                             </span>
                         {% else %}
-                            {% if (team.getMaxUsers() is not empty) and (team.getUsers()|length >= team.getMaxUsers()) %}
+                            {% if (team.getMaxUsers() is not empty) and (team.getUsers().toArray()|length >= team.getMaxUsers()) %}
                                 {% set disabled = 'disabled' %}
                             {% else %}
                                 {% set disabled = '' %}

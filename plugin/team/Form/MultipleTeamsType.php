@@ -11,8 +11,13 @@
 
 namespace Claroline\TeamBundle\Form;
 
+use Claroline\CoreBundle\Form\Field\TinymceType;
 use Claroline\TeamBundle\Entity\WorkspaceTeamParameters;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -31,97 +36,92 @@ class MultipleTeamsType extends AbstractType
         $builder->add(
             'name',
             TextType::class,
-            array(
+            [
                 'required' => true,
                 'constraints' => new NotBlank(),
             ]
         );
         $builder->add(
             'description',
-            'tinymce',
+            TinymceType::class,
             ['required' => false]
         );
         $builder->add(
             'nbTeams',
             IntegerType::class,
-            array(
-                'attr' => array('min' => 1),
+            [
+                'attr' => ['min' => 1],
                 'required' => true,
                 'constraints' => new NotBlank(),
                 'data' => 1,
             ]
         );
-        $builder->add(
-            'defaultResource',
-            'resourcePicker',
-            [
-                'required' => false,
-                'mapped' => false,
-                'label' => 'default_resource',
-                'attr' => [
-                    'data-restrict-for-owner' => 1,
-                ],
-            ]
-        );
+//        $builder->add(
+//            'defaultResource',
+//            'resourcePicker',
+//            [
+//                'required' => false,
+//                'mapped' => false,
+//                'label' => 'default_resource',
+//                'attr' => [
+//                    'data-restrict-for-owner' => 1,
+//                ],
+//            ]
+//        );
         $builder->add(
             'maxUsers',
             IntegerType::class,
-            array(
-                'attr' => array('min' => 0),
+            [
+                'attr' => ['min' => 0],
                 'required' => false,
             ]
         );
         $builder->add(
             'isPublic',
             ChoiceType::class,
-            array(
-                'choices' => array(
+            [
+                'choices' => [
                     true => 'public',
                     false => 'private',
                 ],
                 'required' => true,
-                'data' => $this->params->getIsPublic(),
+                'data' => $this->params->isPublic(),
                 'attr' => ['class' => 'advanced-param'],
             ]
         );
         $builder->add(
             'selfRegistration',
             CheckboxType::class,
-            array(
+            [
                 'required' => true,
-                'data' => $this->params->getSelfRegistration(),
+                'data' => $this->params->isSelfRegistration(),
                 'attr' => ['class' => 'advanced-param'],
             ]
         );
         $builder->add(
             'selfUnregistration',
             CheckboxType::class,
-            array(
-                'required' => true,
-                'data' => $this->params->getSelfUnregistration(),
-                'attr' => ['class' => 'advanced-param'],
-            ]
-        );
-        $builder->add(
-            'resourceTypes',
-            'entity',
             [
-                'required' => false,
-                'mapped' => false,
-                'expanded' => true,
-                'multiple' => true,
-                'translation_domain' => 'resource',
-                'label' => 'user_creatable_resources',
-                'class' => 'ClarolineCoreBundle:Resource\ResourceType',
-                'property' => 'name',
+                'required' => true,
+                'data' => $this->params->isSelfUnregistration(),
                 'attr' => ['class' => 'advanced-param'],
             ]
         );
-    }
-
-    public function getName()
-    {
-        return 'team_form';
+//        $builder->add(
+//            'resourceTypes',
+//            'entity',
+//            [
+//                'required' => false,
+//                'mapped' => false,
+//                'expanded' => true,
+//                'multiple' => true,
+//                'translation_domain' => 'resource',
+//                'label' => 'user_creatable_resources',
+//                'class' => 'ClarolineCoreBundle:Resource\ResourceType',
+//                'property' => 'name',
+//                'attr' => ['class' => 'advanced-param'],
+//            ]
+//        );
     }
 
     public function configureOptions(OptionsResolver $resolver)
