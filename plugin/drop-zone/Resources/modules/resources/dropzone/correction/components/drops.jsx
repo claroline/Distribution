@@ -93,7 +93,7 @@ const DropsList = props =>
           icon: 'fa fa-fw fa-pencil',
           label: trans('correct_the_copy', {}, 'dropzone'),
           target: `/drop/${rows[0].id}`,
-          scope: ['object'] // todo should be selection action too
+          scope: ['object']
         },
         {
           type: 'callback',

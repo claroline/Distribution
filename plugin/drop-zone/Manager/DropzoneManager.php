@@ -108,6 +108,7 @@ class DropzoneManager
     protected $eventDispatcher;
     /** @var RoleManager */
     protected $roleManager;
+    private $resourceNodeRepo;
 
     /**
      * DropzoneManager constructor.
@@ -180,6 +181,7 @@ class DropzoneManager
         $this->dropzoneToolRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\DropzoneTool');
         $this->dropzoneToolDocumentRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\DropzoneToolDocument');
         $this->documentRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Document');
+        $this->resourceNodeRepo = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode');
     }
 
     /**
@@ -458,7 +460,13 @@ class DropzoneManager
         $document->setUser($user);
         $document->setDropDate(new \DateTime());
         $document->setType($documentType);
-        $document->setData($documentData);
+        if (Document::DOCUMENT_TYPE_RESOURCE === $document->getType()) {
+            $resourceNode = $this->resourceNodeRepo->findOneBy(['uuid' => $documentData]);
+            $document->setData($resourceNode);
+        } else {
+            $document->setData($documentData);
+        }
+
         $this->om->persist($document);
         $this->om->flush();
 

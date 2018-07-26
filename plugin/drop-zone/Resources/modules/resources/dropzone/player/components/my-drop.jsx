@@ -17,6 +17,7 @@ import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzon
 import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
 import {MODAL_ADD_DOCUMENT} from '#/plugin/drop-zone/resources/dropzone/player/components/modal/add-document.jsx'
 import {MODAL_CORRECTION} from '#/plugin/drop-zone/resources/dropzone/correction/components/modal/correction-modal'
+import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 
 const Corrections = props =>
   <table className="table corrections-table">
@@ -27,7 +28,7 @@ const Corrections = props =>
         <th>{trans('start_date', {}, 'platform')}</th>
         <th>{trans('end_date', {}, 'platform')}</th>
         {props.dropzone.display.showScore &&
-          <th>{trans('score', {}, 'platform')}</th>
+        <th>{trans('score', {}, 'platform')}</th>
         }
       </tr>
     </thead>
@@ -38,7 +39,7 @@ const Corrections = props =>
           <tr key={`correction-row-${c.id}`}>
             <td>
               {c.correctionDenied &&
-                <span className="fa fa-fw fa-exclamation-triangle" />
+              <span className="fa fa-fw fa-exclamation-triangle" />
               }
             </td>
             <td>
@@ -60,7 +61,7 @@ const Corrections = props =>
             <td>{c.startDate}</td>
             <td>{c.endDate}</td>
             {props.dropzone.display.showScore &&
-              <td>{c.score} / {props.dropzone.parameters.scoreMax}</td>
+            <td>{c.score} / {props.dropzone.parameters.scoreMax}</td>
             }
           </tr>
         )
@@ -79,7 +80,7 @@ const MyDropComponent = props =>
   <section className="resource-section drop-panel">
     <h2>{trans('my_drop', {}, 'dropzone')}</h2>
     {props.dropzone.instruction &&
-      <HtmlText>{props.dropzone.instruction}</HtmlText>
+    <HtmlText>{props.dropzone.instruction}</HtmlText>
     }
 
     <Documents
@@ -90,32 +91,32 @@ const MyDropComponent = props =>
     />
 
     {props.dropzone.display.displayCorrectionsToLearners && props.myDrop.finished && props.myDrop.corrections.filter(c => c.finished).length > 0 &&
-      <Corrections
-        corrections={props.myDrop.corrections.filter(c => c.finished && c.valid)}
-        {...props}
-      />
+    <Corrections
+      corrections={props.myDrop.corrections.filter(c => c.finished && c.valid)}
+      {...props}
+    />
     }
 
     {props.isDropEnabled && !props.myDrop.finished &&
-      <div className="text-right">
-        <ButtonToolbar className={'pull-right'}>
-          <Button
-            icon={'fa fa-fw fa-plus icon-with-text-right'}
-            label= {trans('add_document', {}, 'dropzone')}
-            type="callback"
-            className="btn btn-default"
-            callback={() => props.addDocument(props.myDrop.id, props.dropzone.parameters.documents)}
-          />
-          <Button
-            icon={'fa fa-fw fa-upload icon-with-text-right'}
-            label= {trans('submit_my_drop', {}, 'dropzone')}
-            type="callback"
-            className="btn primary"
-            disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
-            callback={() => props.submit(props.myDrop.id)}
-          />
-        </ButtonToolbar>
-      </div>
+    <div className="text-right">
+      <ButtonToolbar className={'pull-right'}>
+        <Button
+          icon={'fa fa-fw fa-plus icon-with-text-right'}
+          label= {trans('add_document', {}, 'dropzone')}
+          type="callback"
+          className="btn btn-default"
+          callback={() => props.addDocument(props.myDrop.id, props.dropzone.parameters.documents)}
+        />
+        <Button
+          icon={'fa fa-fw fa-upload icon-with-text-right'}
+          label= {trans('submit_my_drop', {}, 'dropzone')}
+          type="callback"
+          className="btn primary"
+          disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
+          callback={() => props.submit(props.myDrop.id)}
+        />
+      </ButtonToolbar>
+    </div>
     }
   </section>
 
@@ -146,7 +147,20 @@ const MyDrop = connect(
       dispatch(
         modalActions.showModal(MODAL_ADD_DOCUMENT, {
           allowedDocuments: allowedDocuments,
-          save: (data) => dispatch(actions.saveDocument(dropId, data.type, data.data))
+          save: (data) => dispatch(actions.saveDocument(dropId, data.type, data.data)),
+          pickResource: (data) => {
+            let title
+            let callback
+            title = trans('add_primary_resource', {}, 'path')
+            callback = (selected) => {dispatch(actions.saveDocument(dropId, data.type, selected[0].id))}
+            dispatch(modalActions.showModal(MODAL_RESOURCE_EXPLORER, {
+              title: title,
+              selectAction: (selected) => ({
+                type: 'callback',
+                callback: () => callback(selected)
+              })
+            }))
+          }
         })
       )
     },
