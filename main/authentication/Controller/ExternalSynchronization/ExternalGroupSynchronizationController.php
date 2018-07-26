@@ -12,8 +12,8 @@
 
 namespace Claroline\AuthenticationBundle\Controller\ExternalSynchronization;
 
-use Claroline\AuthenticationBundle\Manager\ExternalSynchronizationGroupManager;
-use Claroline\AuthenticationBundle\Manager\ExternalSynchronizationManager;
+use Claroline\AuthenticationBundle\Manager\ExternalSynchronization\ExternalSynchronizationGroupManager;
+use Claroline\AuthenticationBundle\Manager\ExternalSynchronization\ExternalSynchronizationManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Manager\RoleManager;
@@ -62,7 +62,7 @@ class ExternalGroupSynchronizationController extends Controller
      *     options={"expose"=true},
      *     defaults={"page"=1, "search"="", "max"=50, "order"="name", "direction"="ASC"},
      * )
-     * @EXT\Template("Claroline:groups:list.html.twig")
+     * @EXT\Template("ClarolineAuthenticationBundle:external-synchronization/groups:list.html.twig")
      * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -103,7 +103,7 @@ class ExternalGroupSynchronizationController extends Controller
      *     defaults={"page"=1, "search"="", "order"="name", "direction"="ASC"},
      *     options={"expose"=true},
      * )
-     * @EXT\Template("Claroline:groups:external_groups_list.html.twig")
+     * @EXT\Template("ClarolineAuthenticationBundle:external-synchronization/groups:external_groups_list.html.twig")
      */
     public function unregisteredExternalGroupsListAction(Workspace $workspace, $source, $order, $direction, $search)
     {
