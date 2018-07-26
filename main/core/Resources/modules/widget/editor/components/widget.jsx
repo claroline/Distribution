@@ -3,11 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 import sum from 'lodash/sum'
 import times from 'lodash/times'
-import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
-import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
@@ -62,9 +60,11 @@ const WidgetCol = props =>
     }
 
     {!props.content && props.isMoving &&
-      <EmptyPlaceholder
-        size="lg"
-        title={trans('insert_widget', {}, 'widget')}
+      <Button
+        className="btn btn-block btn-emphasis widget-insert-content"
+        type="callback"
+        icon="fa fa-fw fa-arrow-down"
+        label={trans('insert_widget', {}, 'widget')}
       />
     }
     {!props.content && !props.isMoving &&
@@ -89,7 +89,9 @@ WidgetCol.propTypes = {
     WidgetInstanceTypes.propTypes
   ),
   addContent: T.func.isRequired,
-  updateContent: T.func.isRequired
+  updateContent: T.func.isRequired,moveContent: T.func.isRequired,
+  stopMovingContent:T.func.isRequired,
+  isMoving: T.string
 }
 
 const WidgetEditor = props =>
@@ -150,7 +152,10 @@ WidgetEditor.propTypes = {
   update: T.func.isRequired,
   actions: T.arrayOf(T.shape(
     ActionTypes.propTypes
-  )).isRequired
+  )).isRequired,
+  moveContent: T.func.isRequired,
+  stopMovingContent:T.func.isRequired,
+  isMoving: T.string
 }
 
 
