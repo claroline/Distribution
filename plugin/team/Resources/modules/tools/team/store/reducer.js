@@ -10,7 +10,11 @@ const reducer = {
   }),
   teamParamsForm: makeFormReducer('teamParamsForm'),
   teams: combineReducers({
-    list: makeListReducer('teams.list'),
+    list: makeListReducer('teams.list', {}, {
+      invalidated: makeReducer(false, {
+        [FORM_SUBMIT_SUCCESS+'/teams.current']: () => true
+      })
+    }),
     current: makeFormReducer('teams.current')
   })
 }

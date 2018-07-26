@@ -1,9 +1,13 @@
 {
     "create_a_team": "Créer une équipe",
+    "default_resource": "Ressource par défaut",
     "max_teams": "Nombre d'équipes autorisées par utilisateur",
     "max_users": "Nombre maximum d'utilisateurs",
+    "public_directory": "Dossier public",
     "team": "Equipe",
+    "team_creation": "Création d'une équipe",
     "team_directory_public_access": "Accès public au répertoire de l'équipe",
+    "team_edition": "Modification de l'équipe",
     "team_self_registration": "Permettre aux utilisateurs de s'inscrire",
     "team_self_unregistration": "Permettre aux utilisateurs de se désinscrire",
 }

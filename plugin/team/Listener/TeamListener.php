@@ -15,12 +15,15 @@ use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\TeamBundle\Manager\TeamManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service
  */
 class TeamListener
 {
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
     /** @var TeamManager */
     private $teamManager;
     /** @var TwigEngine */
@@ -28,15 +31,21 @@ class TeamListener
 
     /**
      * @DI\InjectParams({
-     *     "teamManager" = @DI\Inject("claroline.manager.team_manager"),
-     *     "templating"  = @DI\Inject("templating")
+     *     "authorization" = @DI\Inject("security.authorization_checker"),
+     *     "teamManager"   = @DI\Inject("claroline.manager.team_manager"),
+     *     "templating"    = @DI\Inject("templating")
      * })
      *
-     * @param TeamManager $teamManager
-     * @param TwigEngine  $templating
+     * @param AuthorizationCheckerInterface $authorization
+     * @param TeamManager                   $teamManager
+     * @param TwigEngine                    $templating
      */
-    public function __construct(TeamManager $teamManager, TwigEngine $templating)
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorization,
+        TeamManager $teamManager,
+        TwigEngine $templating
+    ) {
+        $this->authorization = $authorization;
         $this->teamManager = $teamManager;
         $this->templating = $templating;
     }
@@ -50,11 +59,13 @@ class TeamListener
     {
         $workspace = $event->getWorkspace();
         $teamParams = $this->teamManager->getWorkspaceTeamParameters($workspace);
+        $canEdit = $this->authorization->isGranted(['claroline_team_tool', 'edit'], $workspace);
 
         $content = $this->templating->render(
             'ClarolineTeamBundle:team:tool.html.twig', [
                 'workspace' => $workspace,
                 'teamParams' => $teamParams,
+                'canEdit' => $canEdit,
             ]
         );
         $event->setContent($content);

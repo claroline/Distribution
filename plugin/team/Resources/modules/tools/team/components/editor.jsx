@@ -10,7 +10,7 @@ import {FormContainer} from '#/main/core/data/form/containers/form'
 import {TeamParams as TeamParamsType} from '#/plugin/team/tools/team/prop-types'
 
 const EditorComponent = props =>
-  <div>
+  <section className="tool-section">
     <h2>{trans('configuration', {}, 'platform')}</h2>
     <FormContainer
       level={3}
@@ -27,7 +27,7 @@ const EditorComponent = props =>
       }}
       sections={[
         {
-          id: 'generam',
+          id: 'general',
           icon: 'fa fa-fw fa-cogs',
           title: trans('general'),
           primary: true,
@@ -59,7 +59,7 @@ const EditorComponent = props =>
         }
       ]}
     />
-  </div>
+  </section>
 
 EditorComponent.propTypes = {
   teamParams: T.shape(TeamParamsType.propTypes).isRequired,
@@ -68,7 +68,7 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   (state) => ({
-    teamParams: formSelect.data(formSelect.form(state, 'teamParamsForm')),
+    teamParams: formSelect.data(formSelect.form(state, 'teamParamsForm'))
   }),
   (dispatch) => ({
     saveForm(id) {

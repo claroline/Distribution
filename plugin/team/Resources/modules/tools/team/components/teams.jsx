@@ -6,6 +6,8 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {trans} from '#/main/core/translation'
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
 
+import {selectors} from '#/plugin/team/tools/team/store'
+
 const TeamsComponent = props =>
   <DataListContainer
     name="teams.list"
@@ -27,12 +29,6 @@ const TeamsComponent = props =>
         type: 'string',
         primary: true
       }, {
-        name: 'description',
-        label: trans('description'),
-        displayed: true,
-        filterable: true,
-        type: 'string'
-      }, {
         name: 'selfRegistration',
         label: trans('public_registration'),
         displayed: true,
@@ -45,8 +41,9 @@ const TeamsComponent = props =>
         filterable: true,
         type: 'boolean'
       }, {
-        name: 'public',
-        label: trans('public'),
+        name: 'publicDirectory',
+        alias: 'isPublic',
+        label: trans('public_directory', {}, 'team'),
         displayed: true,
         filterable: true,
         type: 'boolean'
@@ -62,12 +59,14 @@ const TeamsComponent = props =>
   />
 
 TeamsComponent.propTypes = {
-  workspaceId: T.string.isRequired
+  workspaceId: T.string.isRequired,
+  canEdit: T.bool.isRequired
 }
 
 const Teams = connect(
   (state) => ({
-    workspaceId: workspaceSelect.workspace(state).uuid
+    workspaceId: workspaceSelect.workspace(state).uuid,
+    canEdit: selectors.canEdit(state)
   })
 )(TeamsComponent)
 

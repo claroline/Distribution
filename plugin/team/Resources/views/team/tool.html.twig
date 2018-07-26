@@ -25,6 +25,7 @@
       class="page-container team-container"
       data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"
       data-team-params="{{ teamParams | api_serialize | json_encode | raw | escape }}"
+      data-can-edit="{{ canEdit | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

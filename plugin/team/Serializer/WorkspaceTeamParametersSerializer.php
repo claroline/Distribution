@@ -67,8 +67,8 @@ class WorkspaceTeamParametersSerializer
         $this->sipe('publicDirectory', 'setIsPublic', $data, $parameters);
         $this->sipe('allowedTeams', 'setMaxTeams', $data, $parameters);
 
-        if (isset($data['workspace']['id'])) {
-            $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspace']['id']]);
+        if (isset($data['workspace']['uuid'])) {
+            $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspace']['uuid']]);
 
             if ($workspace) {
                 $parameters->setWorkspace($workspace);

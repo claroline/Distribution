@@ -9,7 +9,7 @@ const TeamParams = {
     id: T.string.isRequired,
     selfRegistration: T.bool.isRequired,
     selfUnregistration: T.bool.isRequired,
-    public: T.bool.isRequired,
+    publicDirectory: T.bool.isRequired,
     allowedTeams: T.number
   }
 }
@@ -21,7 +21,7 @@ const Team = {
     description: T.string,
     selfRegistration: T.bool.isRequired,
     selfUnregistration: T.bool.isRequired,
-    public: T.bool.isRequired,
+    publicDirectory: T.bool.isRequired,
     maxUsers: T.number,
     workspace: T.shape(WorkspaceType.propTypes),
     teamManager: T.shape(UserType.propTypes),

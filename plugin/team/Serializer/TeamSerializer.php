@@ -3,6 +3,7 @@
 namespace Claroline\TeamBundle\Serializer;
 
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
@@ -22,6 +23,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class TeamSerializer
 {
+    use SerializerTrait;
+
     /** @var ResourceManager */
     private $resourceManager;
     /** @var ResourceNodeSerializer */
