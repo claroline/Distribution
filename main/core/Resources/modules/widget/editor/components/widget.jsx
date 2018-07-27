@@ -61,10 +61,10 @@ const WidgetCol = props =>
 
     {!props.content && props.isMoving &&
       <Button
-        className="btn btn-block btn-emphasis widget-insert-content"
+        className="btn btn-block widget-insert-content"
         type="callback"
-        icon="fa fa-fw fa-arrow-down"
         label={trans('insert_widget', {}, 'widget')}
+        callback={() => console.log('ici, ici, ici !')}
       />
     }
     {!props.content && !props.isMoving &&
