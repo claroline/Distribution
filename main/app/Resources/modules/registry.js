@@ -104,6 +104,16 @@ function declareRegistry(registryName) {
       return registry.entries
     },
 
+    filter(filterCallback) {
+      return Object
+        .keys(registry.entries)
+        .filter((entryName) => filterCallback(registry.entries[entryName]))
+        // recreate object with found entries
+        .reduce((foundEntries, entryName) => Object.assign(foundEntries, {
+          [entryName]: registry.entries[entryName]
+        }, {}))
+    },
+
     /**
      * Binds an event to the registry.
      *

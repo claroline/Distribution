@@ -1,19 +1,14 @@
-import {registry} from '#/main/app/content/data/registry'
-
 import {trans} from '#/main/core/translation'
 import {chain, lengthInRange, match, string} from '#/main/core/validation'
 
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group'
 import {StringDisplay} from '#/main/app/content/data/string/components/display'
 
-const STRING_TYPE = 'string'
+//import {StringInput} from '#/main/app/content/data/string/components/input'
 
-import {StringInput} from '#/main/app/content/data/string/components/input'
-
-registry.add(STRING_TYPE, {
+const dataType = {
+  name: 'string',
   meta: {
-    type: STRING_TYPE,
-    default: true,
     creatable: true,
     icon: 'fa fa-fw fa-font',
     label: trans('string', {}, 'data'),
@@ -56,8 +51,8 @@ registry.add(STRING_TYPE, {
     details: StringDisplay,
     form: TextGroup
   }
-})
+}
 
 export {
-  STRING_TYPE
+  dataType
 }

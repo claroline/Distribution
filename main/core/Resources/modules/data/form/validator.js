@@ -9,7 +9,7 @@ import {getTypeOrDefault} from '#/main/core/data'
  * Validates a value based on a definition object.
  *
  * @param {object} propDef   - the data definition (@see prop-types/DataFormProperty.propTypes).
- * @param {mixed}  propValue - the value to validate.
+ * @param {*}      propValue - the value to validate.
  *
  * @return {object} - the errors thrown.
  */

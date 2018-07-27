@@ -4,7 +4,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import times from 'lodash/times'
 
-// TODO : remove me when toolbar bars will be mounted in the main app
+// TODO : remove us when toolbar bars will be mounted in the main app
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
 import {AlertOverlay} from '#/main/app/overlay/alert/containers/overlay'
 

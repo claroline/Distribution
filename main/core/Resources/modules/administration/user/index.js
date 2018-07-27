@@ -1,17 +1,11 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {registerType} from '#/main/core/data'
-import {FIELDS_TYPE, fieldsDefinition} from '#/main/core/data/types/fields'
-
 import {registerUserTypes} from '#/main/core/user/data'
 
 import {decorate} from '#/main/core/user/profile/decorator'
 
 import {reducer} from '#/main/core/administration/user/reducer'
-import {UserTool} from '#/main/core/administration/user/components/tool.jsx'
-
-// register dynamic fields type
-registerType(FIELDS_TYPE,  fieldsDefinition)
+import {UserTool} from '#/main/core/administration/user/components/tool'
 
 // register user form fields
 registerUserTypes()
