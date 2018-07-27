@@ -58,6 +58,11 @@ class WorkspaceTeamParameters
      */
     protected $maxTeams;
 
+    /**
+     * @ORM\Column(name="dir_deletable", type="boolean", options={"default" = 0})
+     */
+    protected $dirDeletable = false;
+
     public function __construct()
     {
         $this->refreshUuid();
@@ -121,5 +126,15 @@ class WorkspaceTeamParameters
     public function setMaxTeams($maxTeams)
     {
         $this->maxTeams = $maxTeams;
+    }
+
+    public function isDirDeletable()
+    {
+        return $this->dirDeletable;
+    }
+
+    public function setDirDeletable($dirDeletable)
+    {
+        $this->dirDeletable = $dirDeletable;
     }
 }

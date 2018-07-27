@@ -39,10 +39,15 @@ const EditorComponent = props =>
               options: {
                 min: 0
               }
-            },  {
+            }, {
               name: 'publicDirectory',
               type: 'boolean',
               label: trans('team_directory_public_access', {}, 'team'),
+              required: true
+            }, {
+              name: 'deletableDirectory',
+              type: 'boolean',
+              label: trans('delete_team_directory', {}, 'team'),
               required: true
             }, {
               name: 'selfRegistration',

@@ -14,20 +14,22 @@ class Version20180725221341 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql('
+        $this->addSql("
             ALTER TABLE claro_team 
-            ADD uuid VARCHAR(36) NOT NULL
-        ');
+            ADD uuid VARCHAR(36) NOT NULL,
+            ADD dir_deletable TINYINT(1) DEFAULT '0' NOT NULL
+        ");
         $this->addSql('
             UPDATE claro_team SET uuid = (SELECT UUID())
         ');
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_A2FE5804D17F50A6 ON claro_team (uuid)
         ');
-        $this->addSql('
+        $this->addSql("
             ALTER TABLE claro_team_parameters 
-            ADD uuid VARCHAR(36) NOT NULL
-        ');
+            ADD uuid VARCHAR(36) NOT NULL,
+            ADD dir_deletable TINYINT(1) DEFAULT '0' NOT NULL
+        ");
         $this->addSql('
             UPDATE claro_team_parameters SET uuid = (SELECT UUID())
         ');
@@ -43,14 +45,16 @@ class Version20180725221341 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE claro_team 
-            DROP uuid
+            DROP uuid,
+            DROP dir_deletable
         ');
         $this->addSql('
             DROP INDEX UNIQ_C99EF541D17F50A6 ON claro_team_parameters
         ');
         $this->addSql('
             ALTER TABLE claro_team_parameters 
-            DROP uuid
+            DROP uuid,
+            DROP dir_deletable
         ');
     }
 }

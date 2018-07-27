@@ -113,6 +113,11 @@ class Team
     protected $isPublic = false;
 
     /**
+     * @ORM\Column(name="dir_deletable", type="boolean", options={"default" = 0})
+     */
+    protected $dirDeletable = false;
+
+    /**
      * Class constructor.
      */
     public function __construct()
@@ -276,5 +281,15 @@ class Team
     public function setIsPublic($isPublic)
     {
         $this->isPublic = $isPublic;
+    }
+
+    public function isDirDeletable()
+    {
+        return $this->dirDeletable;
+    }
+
+    public function setDirDeletable($dirDeletable)
+    {
+        $this->dirDeletable = $dirDeletable;
     }
 }

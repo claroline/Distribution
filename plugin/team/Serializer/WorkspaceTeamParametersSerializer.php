@@ -47,6 +47,7 @@ class WorkspaceTeamParametersSerializer
             'selfRegistration' => $parameters->isSelfRegistration(),
             'selfUnregistration' => $parameters->isSelfUnregistration(),
             'publicDirectory' => $parameters->isPublic(),
+            'deletableDirectory' => $parameters->isDirDeletable(),
             'allowedTeams' => $parameters->getMaxTeams(),
         ];
 
@@ -65,6 +66,7 @@ class WorkspaceTeamParametersSerializer
         $this->sipe('selfRegistration', 'setSelfRegistration', $data, $parameters);
         $this->sipe('selfUnregistration', 'setSelfUnregistration', $data, $parameters);
         $this->sipe('publicDirectory', 'setIsPublic', $data, $parameters);
+        $this->sipe('deletableDirectory', 'setDirDeletable', $data, $parameters);
         $this->sipe('allowedTeams', 'setMaxTeams', $data, $parameters);
 
         if (isset($data['workspace']['uuid'])) {

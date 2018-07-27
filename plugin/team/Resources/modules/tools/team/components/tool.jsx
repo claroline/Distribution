@@ -128,7 +128,8 @@ const TeamTool = connect(
         },
         selfRegistration: teamParams.selfRegistration,
         selfUnregistration: teamParams.selfUnregistration,
-        publicDirectory: teamParams.publicDirectory
+        publicDirectory: teamParams.publicDirectory,
+        deletableDirectory: teamParams.deletableDirectory
       }
       dispatch(actions.openForm('teams.current', id, defaultValue))
     },

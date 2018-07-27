@@ -59,6 +59,11 @@ const TeamFormComponent = props =>
               label: trans('team_directory_public_access', {}, 'team'),
               required: true
             }, {
+              name: 'deletableDirectory',
+              type: 'boolean',
+              label: trans('delete_team_directory', {}, 'team'),
+              required: true
+            }, {
               name: 'selfRegistration',
               type: 'boolean',
               label: trans('team_self_registration', {}, 'team'),

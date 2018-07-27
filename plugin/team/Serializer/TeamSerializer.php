@@ -113,6 +113,7 @@ class TeamSerializer
                 $this->resourceNodeSerializer->serialize($team->getDirectory()->getResourceNode(), [Options::SERIALIZE_MINIMAL]) :
                 null,
             'publicDirectory' => $team->isPublic(),
+            'deletableDirectory' => $team->isDirDeletable(),
         ];
     }
 
@@ -132,6 +133,7 @@ class TeamSerializer
         $this->sipe('selfRegistration', 'setSelfRegistration', $data, $team);
         $this->sipe('selfUnregistration', 'setSelfUnregistration', $data, $team);
         $this->sipe('publicDirectory', 'setIsPublic', $data, $team);
+        $this->sipe('deletableDirectory', 'setDirDeletable', $data, $team);
         $this->sipe('maxUsers', 'setMaxUsers', $data, $team);
 
         if (isset($data['workspace']['uuid'])) {

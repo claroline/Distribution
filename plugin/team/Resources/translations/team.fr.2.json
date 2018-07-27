@@ -1,6 +1,7 @@
 {
     "create_a_team": "Créer une équipe",
     "default_resource": "Ressource par défaut",
+    "delete_team_directory": "Supprimer le répertoire à la suppression de l'équipe",
     "max_teams": "Nombre d'équipes autorisées par utilisateur",
     "max_users": "Nombre maximum d'utilisateurs",
     "public_directory": "Dossier public",
