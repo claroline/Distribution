@@ -21,6 +21,7 @@ actions.fetchModel = (model) => ({
   }
 })
 
+//récupérer l'action save du formulaire à la place
 actions.save = (workspace) => ({
   [API_REQUEST]: {
     url: ['apiv2_workspace_create'],
