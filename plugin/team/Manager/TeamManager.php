@@ -12,6 +12,7 @@
 namespace Claroline\TeamBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -23,7 +24,6 @@ use Claroline\CoreBundle\Manager\ToolRightsManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Entity\WorkspaceTeamParameters;
-use Claroline\TeamBundle\Serializer\TeamSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -37,7 +37,6 @@ class TeamManager
     private $resourceManager;
     private $rightsManager;
     private $roleManager;
-    private $teamSerializer;
     private $translator;
 
     private $teamRepo;
@@ -52,7 +51,6 @@ class TeamManager
      *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
      *     "toolRightsManager" = @DI\Inject("claroline.manager.tool_rights_manager"),
      *     "roleManager"       = @DI\Inject("claroline.manager.role_manager"),
-     *     "teamSerializer"    = @DI\Inject("claroline.serializer.team"),
      *     "translator"        = @DI\Inject("translator")
      * })
      */
@@ -62,7 +60,6 @@ class TeamManager
         ResourceManager $resourceManager,
         RightsManager $rightsManager,
         RoleManager $roleManager,
-        TeamSerializer $teamSerializer,
         TranslatorInterface $translator,
         ToolRightsManager $toolRightsManager
     ) {
@@ -71,7 +68,6 @@ class TeamManager
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->roleManager = $roleManager;
-        $this->teamSerializer = $teamSerializer;
         $this->translator = $translator;
         $this->toolRightsManager = $toolRightsManager;
 
@@ -96,6 +92,228 @@ class TeamManager
         }
 
         return $teamParams;
+    }
+
+    /**
+     * Checks if name already exists and returns a incremented version if it does.
+     *
+     * @param Workspace $workspace
+     * @param string    $teamName
+     * @param int       $index
+     *
+     * @return array
+     */
+    public function computeValidTeamName(Workspace $workspace, $teamName, $index = 0)
+    {
+        $name = 0 === $index ? $teamName : $teamName.' '.$index;
+
+        $teams = $this->teamRepo->findBy(['workspace' => $workspace, 'name' => $name]);
+
+        while (count($teams) > 0) {
+            ++$index;
+            $name = $teamName.' '.$index;
+            $teams = $this->teamRepo->findBy(['workspace' => $workspace, 'name' => $name]);
+        }
+
+        return ['name' => $name, 'index' => $index];
+    }
+
+    /**
+     * Creates role for team members.
+     *
+     * @param Team $team
+     * @param bool $isManager
+     *
+     * @return Role
+     */
+    public function createTeamRole(Team $team, $isManager = false)
+    {
+        $workspace = $team->getWorkspace();
+        $teamName = $team->getName();
+        $roleName = $this->computeValidRoleName(
+            strtoupper(str_replace(' ', '_', $isManager ? $teamName.'_MANAGER' : $teamName)),
+            $workspace->getUuid()
+        );
+        $roleKey = $this->computeValidRoleTranslationKey($workspace, $isManager ? $teamName.' manager' : $teamName);
+        $role = $this->roleManager->createWorkspaceRole($roleName, $roleKey, $workspace);
+
+        $root = $this->resourceManager->getWorkspaceRoot($workspace);
+        $this->rightsManager->editPerms(['open' => true], $role, $root);
+        $orderedTool = $this->om
+            ->getRepository('ClarolineCoreBundle:Tool\OrderedTool')
+            ->findOneBy(['workspace' => $workspace, 'name' => 'resource_manager']);
+
+        if (!empty($orderedTool)) {
+            $this->toolRightsManager->setToolRights($orderedTool, $role, 1);
+        }
+        $this->setRightsForOldTeams($workspace, $role);
+
+        return $role;
+    }
+
+    /**
+     * Creates team directory.
+     *
+     * @param Team         $team
+     * @param User         $user
+     * @param ResourceNode $resource
+     * @param array        $creatableResources
+     *
+     * @return Directory
+     */
+    public function createTeamDirectory(Team $team, User $user, ResourceNode $resource = null, array $creatableResources = [])
+    {
+        $workspace = $team->getWorkspace();
+        $teamRole = $team->getRole();
+        $teamManagerRole = $team->getTeamManagerRole();
+        $rootDirectory = $this->resourceManager->getWorkspaceRoot($workspace);
+        $directoryType = $this->resourceManager->getResourceTypeByName('directory');
+        $resourceTypes = $this->resourceManager->getAllResourceTypes();
+
+        $directory = $this->resourceManager->createResource(
+            'Claroline\CoreBundle\Entity\Resource\Directory',
+            $team->getName()
+        );
+        $teamRoleName = $teamRole->getName();
+        $teamManagerRoleName = $teamManagerRole->getName();
+        $rights = [];
+        $rights[$teamRoleName] = [];
+        $rights[$teamRoleName]['role'] = $teamRole;
+        $rights[$teamRoleName]['create'] = [];
+        $rights[$teamManagerRoleName] = [];
+        $rights[$teamManagerRoleName]['role'] = $teamManagerRole;
+        $rights[$teamManagerRoleName]['create'] = [];
+
+        foreach ($resourceTypes as $resourceType) {
+            $rights[$teamManagerRoleName]['create'][] = ['name' => $resourceType->getName()];
+        }
+
+        foreach ($creatableResources as $creatableResource) {
+            $rights[$teamRoleName]['create'][] = ['name' => $creatableResource->getName()];
+        }
+        $decoders = $directoryType->getMaskDecoders();
+
+        foreach ($decoders as $decoder) {
+            $decoderName = $decoder->getName();
+
+            if ('create' !== $decoderName) {
+                $rights[$teamManagerRoleName][$decoderName] = true;
+            }
+            if ('administrate' !== $decoderName && 'delete' !== $decoderName && 'create' !== $decoderName) {
+                $rights[$teamRoleName][$decoderName] = true;
+            }
+        }
+
+        $teamDirectory = $this->resourceManager->create(
+            $directory,
+            $directoryType,
+            $user,
+            $workspace,
+            $rootDirectory,
+            null,
+            $rights
+        );
+
+        if (!is_null($resource)) {
+            $this->resourceManager->copy(
+                $resource,
+                $teamDirectory->getResourceNode(),
+                $user,
+                true,
+                true,
+                $rights
+            );
+        }
+
+        return $teamDirectory;
+    }
+
+    /**
+     * Gets user teams in a workspace.
+     *
+     * @param User      $user
+     * @param Workspace $workspace
+     *
+     * @return array
+     */
+    public function getTeamsByUserAndWorkspace(User $user, Workspace $workspace)
+    {
+        return $this->teamRepo->findTeamsByUserAndWorkspace($user, $workspace);
+    }
+
+    /**
+     * Checks and updates role name for unicity.
+     *
+     * @param string $roleName
+     * @param string $uuid
+     *
+     * @return string
+     */
+    private function computeValidRoleName($roleName, $uuid)
+    {
+        $i = 1;
+        $name = 'ROLE_WS_'.$roleName.'_'.$uuid;
+        $role = $this->roleManager
+            ->getRoleByName($name);
+
+        while (!is_null($role)) {
+            $name = 'ROLE_WS_'.$roleName.'_'.$i.'_'.$uuid;
+            $role = $this->roleManager->getRoleByName($name);
+            ++$i;
+        }
+
+        return $name;
+    }
+
+    /**
+     * Checks and updates role translation key for unicity.
+     *
+     * @param Workspace $workspace
+     * @param string    $key
+     *
+     * @return string
+     */
+    private function computeValidRoleTranslationKey(Workspace $workspace, $key)
+    {
+        $i = 1;
+        $translationKey = $key;
+        $role = $this->roleManager->getRoleByTranslationKeyAndWorkspace($translationKey, $workspace);
+
+        while (!is_null($role)) {
+            $translationKey = $key.' ('.$i.')';
+            $role = $this->roleManager->getRoleByTranslationKeyAndWorkspace($translationKey, $workspace);
+            ++$i;
+        }
+
+        return $translationKey;
+    }
+
+    /**
+     * Grants access to all directories of existing teams which are set as public for role.
+     *
+     * @param Workspace $workspace
+     * @param Role      $role
+     */
+    private function setRightsForOldTeams(Workspace $workspace, Role $role)
+    {
+        $this->om->startFlushSuite();
+        $teams = $this->teamRepo->findBy(['workspace' => $workspace]);
+
+        foreach ($teams as $team) {
+            $directory = $team->getDirectory();
+
+            if ($team->isPublic() && !is_null($directory)) {
+                $rights = [];
+                $rights['open'] = true;
+                $this->rightsManager->editPerms(
+                    $rights,
+                    $role,
+                    $directory->getResourceNode(),
+                    true
+                );
+            }
+        }
+        $this->om->endFlushSuite();
     }
 
     /*******************
@@ -165,19 +383,11 @@ class TeamManager
         $team->setWorkspace($workspace);
         $validName = $this->computeValidTeamName($workspace, $team->getName(), 0);
         $team->setName($validName['name']);
-        $role = $this->createTeamRole($team, $workspace);
+        $role = $this->createTeamRole($team);
         $team->setRole($role);
-        $teamManagerRole = $this->createTeamManagerRole($team, $workspace);
+        $teamManagerRole = $this->createTeamRole($team, true);
         $team->setTeamManagerRole($teamManagerRole);
-        $directory = $this->createTeamDirectory(
-            $team,
-            $workspace,
-            $user,
-            $role,
-            $teamManagerRole,
-            $resource,
-            $creatableResources
-        );
+        $directory = $this->createTeamDirectory($team, $user, $resource, $creatableResources);
         $team->setDirectory($directory);
         $this->om->persist($team);
         $this->om->endFlushSuite();
@@ -371,7 +581,7 @@ class TeamManager
     public function fillTeams(Workspace $workspace, array $teams)
     {
         $this->om->startFlushSuite();
-        $workspaceTeams = $this->teamRepo->findTeamsByWorkspace($workspace);
+        $workspaceTeams = $this->teamRepo->findBy(['workspace' => $workspace]);
         $users = $this->teamRepo
             ->findUsersWithNoTeamByWorkspace($workspace, $workspaceTeams);
 
@@ -398,212 +608,6 @@ class TeamManager
             }
         }
         $this->om->endFlushSuite();
-    }
-
-    private function createTeamRole(Team $team, Workspace $workspace)
-    {
-        $teamName = $team->getName();
-        $roleName = $this->computeValidRoleName(
-            strtoupper(str_replace(' ', '_', $teamName)),
-            $workspace->getGuid()
-        );
-        $roleKey = $this->computeValidRoleTranslationKey($workspace, $teamName);
-
-        $role = $this->roleManager->createWorkspaceRole(
-            $roleName,
-            $roleKey,
-            $workspace
-        );
-
-        $root = $this->resourceManager->getWorkspaceRoot($workspace);
-        $this->rightsManager->editPerms(['open' => true], $role, $root);
-        $this->setRightsForOldTeams($workspace, $role);
-        $orderedTool = $this->om->getRepository('ClarolineCoreBundle:Tool\OrderedTool')
-          ->findOneBy(['workspace' => $workspace, 'name' => 'resource_manager']);
-
-        if (!empty($orderedTool)) {
-            $this->toolRightsManager->setToolRights($orderedTool, $role, 1);
-        }
-
-        return $role;
-    }
-
-    private function createTeamManagerRole(Team $team, Workspace $workspace)
-    {
-        $teamName = $team->getName();
-        $roleName = $this->computeValidRoleName(
-            strtoupper(str_replace(' ', '_', $teamName.'_MANAGER')),
-            $workspace->getGuid()
-        );
-        $roleKey = $this->computeValidRoleTranslationKey(
-            $workspace,
-            $teamName.' manager'
-        );
-
-        $role = $this->roleManager->createWorkspaceRole(
-            $roleName,
-            $roleKey,
-            $workspace
-        );
-
-        $root = $this->resourceManager->getWorkspaceRoot($workspace);
-        $this->rightsManager->editPerms(['open' => true], $role, $root);
-        $orderedTool = $this->om->getRepository('ClarolineCoreBundle:Tool\OrderedTool')->findOneBy(['workspace' => $workspace, 'name' => 'resource_manager']);
-
-        if (!empty($orderedTool)) {
-            $this->toolRightsManager->setToolRights($orderedTool, $role, 1);
-        }
-        $this->setRightsForOldTeams($workspace, $role);
-
-        return $role;
-    }
-
-    private function setRightsForOldTeams(Workspace $workspace, Role $role)
-    {
-        $this->om->startFlushSuite();
-        $teams = $this->teamRepo->findTeamsByWorkspace($workspace);
-
-        foreach ($teams as $team) {
-            $directory = $team->getDirectory();
-
-            if ($team->isPublic() && !is_null($directory)) {
-                $rights = [];
-                $rights['open'] = true;
-                $this->rightsManager->editPerms(
-                    $rights,
-                    $role,
-                    $directory->getResourceNode(),
-                    true
-                );
-            }
-        }
-        $this->om->endFlushSuite();
-    }
-
-    private function computeValidRoleName($roleName, $guid)
-    {
-        $i = 1;
-        $name = 'ROLE_WS_'.$roleName.'_'.$guid;
-        $role = $this->roleManager
-            ->getRoleByName($name);
-
-        while (!is_null($role)) {
-            $name = 'ROLE_WS_'.$roleName.'_'.$i.'_'.$guid;
-            $role = $this->roleManager
-                ->getRoleByName($name);
-            ++$i;
-        }
-
-        return $name;
-    }
-
-    private function computeValidRoleTranslationKey(Workspace $workspace, $key)
-    {
-        $i = 1;
-        $translationKey = $key;
-        $role = $this->roleManager->getRoleByTranslationKeyAndWorkspace(
-            $translationKey,
-            $workspace
-        );
-
-        while (!is_null($role)) {
-            $translationKey = $key.' ('.$i.')';
-            $role = $this->roleManager->getRoleByTranslationKeyAndWorkspace(
-                $translationKey,
-                $workspace
-            );
-            ++$i;
-        }
-
-        return $translationKey;
-    }
-
-    private function computeValidTeamName(Workspace $workspace, $teamName, $index)
-    {
-        $name = 0 === $index ? $teamName : $teamName.' '.$index;
-
-        $teams = $this->teamRepo->findTeamsByWorkspaceAndName($workspace, $name);
-
-        while (count($teams) > 0) {
-            ++$index;
-            $name = $teamName.' '.$index;
-
-            $teams = $this->teamRepo
-                ->findTeamsByWorkspaceAndName($workspace, $name);
-        }
-
-        return ['name' => $name, 'index' => $index];
-    }
-
-    private function createTeamDirectory(
-        Team $team,
-        Workspace $workspace,
-        User $user,
-        Role $teamRole,
-        Role $teamManagerRole,
-        ResourceNode $resource = null,
-        array $creatableResources = []
-    ) {
-        $rootDirectory = $this->resourceManager->getWorkspaceRoot($workspace);
-        $directoryType = $this->resourceManager->getResourceTypeByName('directory');
-        $resourceTypes = $this->resourceManager->getAllResourceTypes();
-
-        $directory = $this->resourceManager->createResource(
-            'Claroline\CoreBundle\Entity\Resource\Directory',
-            $team->getName()
-        );
-        $teamRoleName = $teamRole->getName();
-        $teamManagerRoleName = $teamManagerRole->getName();
-        $rights = [];
-        $rights[$teamRoleName] = [];
-        $rights[$teamRoleName]['role'] = $teamRole;
-        $rights[$teamRoleName]['create'] = [];
-        $rights[$teamManagerRoleName] = [];
-        $rights[$teamManagerRoleName]['role'] = $teamManagerRole;
-        $rights[$teamManagerRoleName]['create'] = [];
-
-        foreach ($resourceTypes as $resourceType) {
-            $rights[$teamManagerRoleName]['create'][] =
-                ['name' => $resourceType->getName()];
-        }
-
-        foreach ($creatableResources as $creatableResource) {
-            $rights[$teamRoleName]['create'][] =
-                ['name' => $creatableResource->getName()];
-        }
-        $decoders = $directoryType->getMaskDecoders();
-
-        foreach ($decoders as $decoder) {
-            $decoderName = $decoder->getName();
-            $rights[$teamManagerRoleName][$decoderName] = true;
-
-            if ('administrate' !== $decoderName && 'delete' !== $decoderName) {
-                $rights[$teamRoleName][$decoderName] = true;
-            }
-        }
-
-        $teamDirectory = $this->resourceManager->create(
-            $directory,
-            $directoryType,
-            $user,
-            $workspace,
-            $rootDirectory,
-            null,
-            $rights
-        );
-
-        if (!is_null($resource)) {
-            $this->resourceManager->copy(
-                $resource,
-                $teamDirectory->getResourceNode(),
-                $user,
-                true,
-                true,
-                $rights
-            );
-        }
-
-        return $teamDirectory;
     }
 
     private function linkResourceNodesArray(Workspace $workspace, array $nodes)
@@ -716,18 +720,16 @@ class TeamManager
      * Access to TeamRepository methods *
      ************************************/
 
-    public function getTeamsByWorkspace(
-        Workspace $workspace,
-        $orderedBy = 'name',
-        $order = 'ASC',
-        $executeQuery = true
-    ) {
-        return $this->teamRepo->findTeamsByWorkspace(
-            $workspace,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
+    /**
+     * @param Workspace $workspace
+     * @param string    $orderedBy
+     * @param string    $order
+     *
+     * @return array
+     */
+    public function getTeamsByWorkspace(Workspace $workspace, $orderedBy = 'name', $order = 'ASC')
+    {
+        return $this->teamRepo->findBy(['workspace' => $workspace], [$orderedBy => $order]);
     }
 
     public function getTeamsByUser(
@@ -747,23 +749,6 @@ class TeamManager
     public function getTeamsWithUsersByWorkspace(Workspace $workspace, $executeQuery = true)
     {
         return $this->teamRepo->findTeamsWithUsersByWorkspace($workspace, $executeQuery);
-    }
-
-    public function getTeamsByUserAndWorkspace(User $user, Workspace $workspace, $executeQuery = true)
-    {
-        return $this->teamRepo->findTeamsByUserAndWorkspace($user, $workspace, $executeQuery);
-    }
-
-    public function getSearializedTeamsByUserAndWorkspace(User $user, Workspace $workspace)
-    {
-        $serializedTeams = [];
-        $teams = $this->teamRepo->findTeamsByUserAndWorkspace($user, $workspace);
-
-        foreach ($teams as $team) {
-            $serializedTeams[] = $this->teamSerializer->serialize($team);
-        }
-
-        return $serializedTeams;
     }
 
     public function getUnregisteredUsersByTeam(
@@ -908,7 +893,7 @@ class TeamManager
                 $executeQuery
             );
         } else {
-            return $this->teamRepo->findTeamsByWorkspace($workspace, $orderedBy, $order, $executeQuery);
+            return $this->teamRepo->findBy(['workspace' => $workspace], [$orderedBy => $order]);
         }
     }
 

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ClacoFormBundle\Security\Voter;
+namespace Claroline\TeamBundle\Security\Voter;
 
 use Claroline\AppBundle\Security\Voter\VoterInterface;
 use Claroline\CoreBundle\Security\Voter\AbstractVoter;

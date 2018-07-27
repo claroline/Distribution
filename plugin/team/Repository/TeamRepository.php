@@ -18,24 +18,6 @@ use Doctrine\ORM\EntityRepository;
 
 class TeamRepository extends EntityRepository
 {
-    public function findTeamsByWorkspace(
-        Workspace $workspace,
-        $orderedBy = 'name',
-        $order = 'ASC',
-        $executeQuery = true
-    ) {
-        $dql = "
-            SELECT t
-            FROM Claroline\TeamBundle\Entity\Team t
-            WHERE t.workspace = :workspace
-            ORDER BY t.{$orderedBy} {$order}
-        ";
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('workspace', $workspace);
-
-        return $executeQuery ? $query->getResult() : $query;
-    }
-
     public function findTeamsByUser(
         User $user,
         $orderedBy = 'name',
@@ -51,24 +33,6 @@ class TeamRepository extends EntityRepository
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('user', $user);
-
-        return $executeQuery ? $query->getResult() : $query;
-    }
-
-    public function findTeamsByWorkspaceAndName(
-        Workspace $workspace,
-        $teamName,
-        $executeQuery = true
-    ) {
-        $dql = '
-            SELECT t
-            FROM Claroline\TeamBundle\Entity\Team t
-            WHERE t.workspace = :workspace
-            AND t.name = :teamName
-        ';
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('workspace', $workspace);
-        $query->setParameter('teamName', $teamName);
 
         return $executeQuery ? $query->getResult() : $query;
     }

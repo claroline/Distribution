@@ -6,16 +6,16 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
-use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
-use Claroline\CoreBundle\Repository\RoleRepository;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\TeamBundle\Entity\Team;
+use Claroline\TeamBundle\Manager\TeamManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * @DI\Service("claroline.serializer.team")
@@ -25,12 +25,17 @@ class TeamSerializer
 {
     use SerializerTrait;
 
+    /** @var ObjectManager */
+    private $om;
     /** @var ResourceManager */
     private $resourceManager;
+    /** @var TeamManager */
+    private $teamManager;
+    /** @var TokenStorage */
+    private $tokenStorage;
+
     /** @var ResourceNodeSerializer */
     private $resourceNodeSerializer;
-    /** @var RoleSerializer */
-    private $roleSerializer;
     /** @var UserSerializer */
     private $userSerializer;
     /** @var WorkspaceSerializer */
@@ -38,8 +43,6 @@ class TeamSerializer
 
     /** @var ResourceNodeRepository */
     private $resourceNodeRepo;
-    /** @var RoleRepository */
-    private $roleRepo;
     /** @var UserRepository */
     private $userRepo;
     /** @var WorkspaceRepository */
@@ -51,35 +54,39 @@ class TeamSerializer
      * @DI\InjectParams({
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager"),
+     *     "teamManager"            = @DI\Inject("claroline.manager.team_manager"),
+     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
      *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node"),
-     *     "roleSerializer"         = @DI\Inject("claroline.serializer.role"),
      *     "userSerializer"         = @DI\Inject("claroline.serializer.user"),
      *     "workspaceSerializer"    = @DI\Inject("claroline.serializer.workspace")
      * })
      *
      * @param ObjectManager          $om
      * @param ResourceManager        $resourceManager
+     * @param TeamManager            $teamManager
+     * @param TokenStorage           $tokenStorage
      * @param ResourceNodeSerializer $resourceNodeSerializer
-     * @param RoleSerializer         $roleSerializer
      * @param UserSerializer         $userSerializer
      * @param WorkspaceSerializer    $workspaceSerializer
      */
     public function __construct(
         ObjectManager $om,
         ResourceManager $resourceManager,
+        TeamManager $teamManager,
+        TokenStorage $tokenStorage,
         ResourceNodeSerializer $resourceNodeSerializer,
-        RoleSerializer $roleSerializer,
         UserSerializer $userSerializer,
         WorkspaceSerializer $workspaceSerializer
     ) {
+        $this->om = $om;
         $this->resourceManager = $resourceManager;
+        $this->teamManager = $teamManager;
+        $this->tokenStorage = $tokenStorage;
         $this->resourceNodeSerializer = $resourceNodeSerializer;
-        $this->roleSerializer = $roleSerializer;
         $this->userSerializer = $userSerializer;
         $this->workspaceSerializer = $workspaceSerializer;
 
         $this->resourceNodeRepo = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode');
-        $this->roleRepo = $om->getRepository('Claroline\CoreBundle\Entity\Role');
         $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
         $this->workspaceRepo = $om->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace');
     }
@@ -96,14 +103,8 @@ class TeamSerializer
             'name' => $team->getName(),
             'description' => $team->getDescription(),
             'workspace' => $this->workspaceSerializer->serialize($team->getWorkspace(), [Options::SERIALIZE_MINIMAL]),
-            'role' => $team->getRole() ?
-                $this->roleSerializer->serialize($team->getRole()) :
-                null,
             'teamManager' => $team->getTeamManager() ?
                 $this->userSerializer->serialize($team->getTeamManager(), [Options::SERIALIZE_MINIMAL]) :
-                null,
-            'teamManagerRole' => $team->getTeamManagerRole() ?
-                $this->roleSerializer->serialize($team->getTeamManagerRole(), [Options::SERIALIZE_MINIMAL]) :
                 null,
             'maxUsers' => $team->getMaxUsers(),
             'selfRegistration' => $team->isSelfRegistration(),
@@ -123,6 +124,8 @@ class TeamSerializer
      */
     public function deserialize($data, Team $team)
     {
+        $this->om->startFlushSuite();
+
         $this->sipe('id', 'setUuid', $data, $team);
         $this->sipe('name', 'setName', $data, $team);
         $this->sipe('description', 'setDescription', $data, $team);
@@ -144,27 +147,37 @@ class TeamSerializer
             null;
         $team->setTeamManager($teamManager);
 
-        // Sets roles for team members and team manager
-        $teamRole = isset($data['role']['id']) ?
-            $this->roleRepo->findOneBy(['uuid' => $data['role']['id']]) :
-            null;
-        $team->setRole($teamRole);
-        $teamManagerRole = isset($data['teamManagerRole']['id']) ?
-            $this->roleRepo->findOneBy(['uuid' => $data['teamManagerRole']['id']]) :
-            null;
-        $team->setTeamManagerRole($teamManagerRole);
+        // Checks and creates role for team members & team manager if needed.
+        $teamRole = $team->getRole();
+        $teamManagerRole = $team->getTeamManagerRole();
 
-        // Sets team directory
-        $directory = null;
-
-        if (isset($data['directory']['id'])) {
-            $node = $this->resourceNodeRepo->findOneBy(['uuid' => $data['directory']['id']]);
-
-            if (!empty($node)) {
-                $directory = $this->resourceManager->getResourceFromNode($node);
-            }
+        if (empty($teamRole)) {
+            $teamRole = $this->teamManager->createTeamRole($team);
+            $team->setRole($teamRole);
         }
-        $team->setDirectory($directory);
+        if (empty($teamManagerRole)) {
+            $teamManagerRole = $this->teamManager->createTeamRole($team, true);
+            $team->setTeamManagerRole($teamManagerRole);
+        }
+
+        // Checks and creates team directory
+        $directory = $team->getDirectory();
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if (empty($directory) && 'anon.' !== $user) {
+            $defaultResource = isset($data['defaultResource']['id']) ?
+                $this->resourceNodeRepo->findOneBy(['uuid' => $data['defaultResource']['id']]) :
+                null;
+            $directory = $this->teamManager->createTeamDirectory(
+                $team,
+                $user,
+                $defaultResource
+            );
+            $team->setDirectory($directory);
+        }
+
+        $this->om->persist($team);
+        $this->om->endFlushSuite();
 
         return $team;
     }

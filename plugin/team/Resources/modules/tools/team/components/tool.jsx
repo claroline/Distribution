@@ -25,34 +25,48 @@ import {TeamForm} from '#/plugin/team/tools/team/components/team-form'
 const TeamToolComponent = props =>
   <PageContainer>
     <PageHeader title={trans('team', {}, 'team')}>
-      <PageActions>
-        <PageAction
-          id="team-add"
-          type="link"
-          icon="fa fa-fw fa-plus"
-          primary={true}
-          label={trans('create_a_team', {}, 'team')}
-          target="/team/form"
-        />
-        <PageAction
-          id="team-params"
-          type="link"
-          icon="fa fa-fw fa-cog"
-          label={trans('configure')}
-          target="/edit"
-        />
-        <MoreAction
-          actions={[
-            {
-              type: 'link',
-              icon: 'fa fa-fw fa-home',
-              label: trans('home'),
-              target: '/',
-              exact: true
-            }
-          ]}
-        />
-      </PageActions>
+      {props.canEdit ?
+        <PageActions>
+          <PageAction
+            id="team-add"
+            type="link"
+            icon="fa fa-fw fa-plus"
+            primary={true}
+            label={trans('create_a_team', {}, 'team')}
+            target="/team/form"
+            exact={true}
+          />
+          <PageAction
+            id="team-params"
+            type="link"
+            icon="fa fa-fw fa-cog"
+            label={trans('configure')}
+            target="/edit"
+          />
+          <MoreAction
+            actions={[
+              {
+                type: 'link',
+                icon: 'fa fa-fw fa-home',
+                label: trans('home'),
+                target: '/teams',
+                exact: true
+              }
+            ]}
+          />
+        </PageActions> :
+        <PageActions>
+          <PageAction
+            id="team-home"
+            type="link"
+            icon="fa fa-fw fa-home"
+            primary={true}
+            label={trans('home')}
+            target="/teams"
+            exact={true}
+          />
+        </PageActions>
+      }
     </PageHeader>
     <RoutedPageContent
       key="team-tool-content"
@@ -74,29 +88,14 @@ const TeamToolComponent = props =>
         }, {
           path: '/teams/:id',
           component: Team,
-          // onEnter: (params) => {
-          //   props.openEntryForm(params.id, props.clacoForm.id)
-          //   props.loadEntryUser(params.id)
-          // },
-          // onLeave: () => {
-          //   props.resetEntryForm()
-          //   props.resetEntryUser()
-          // }
+          onEnter: (params) => props.openCurrentTeam(params.id, props.teamParams, props.workspaceId),
+          onLeave: () => props.resetCurrentTeam()
         }, {
           path: '/team/form/:id?',
           component: TeamForm,
           disabled: !props.canEdit,
-          onEnter: (params) => {
-            props.openTeamForm(params.id, props.teamParams, props.workspaceId)
-
-            // if (params.id) {
-            //   props.loadEntryUser(params.id)
-            // }
-          },
-          onLeave: () => {
-            props.resetTeamForm()
-            // props.resetEntryUser()
-          }
+          onEnter: (params) => props.openCurrentTeam(params.id, props.teamParams, props.workspaceId),
+          onLeave: () => props.resetCurrentTeam()
         }
       ]}
     />
@@ -106,20 +105,22 @@ TeamToolComponent.propTypes = {
   canEdit: T.bool.isRequired,
   teamParams: T.shape(TeamParamsType.propTypes).isRequired,
   workspaceId: T.string.isRequired,
-  resetForm: T.func.isRequired
+  resetForm: T.func.isRequired,
+  openCurrentTeam: T.func.isRequired,
+  resetCurrentTeam: T.func.isRequired
 }
 
 const TeamTool = connect(
   (state) => ({
     canEdit: selectors.canEdit(state),
     teamParams: selectors.teamParams(state),
-    workspaceId: workspaceSelect.workspace(state).uuid,
+    workspaceId: workspaceSelect.workspace(state).uuid
   }),
   (dispatch) => ({
     resetForm(formData) {
       dispatch(formActions.resetForm('teamParamsForm', formData))
     },
-    openTeamForm(id, teamParams, workspaceId) {
+    openCurrentTeam(id, teamParams, workspaceId) {
       const defaultValue = {
         id: makeId(),
         workspace: {
@@ -131,7 +132,7 @@ const TeamTool = connect(
       }
       dispatch(actions.openForm('teams.current', id, defaultValue))
     },
-    resetTeamForm() {
+    resetCurrentTeam() {
       dispatch(formActions.resetForm('teams.current', {}, true))
     }
   })

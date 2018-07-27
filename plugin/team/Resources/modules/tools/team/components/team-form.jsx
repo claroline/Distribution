@@ -46,7 +46,7 @@ const TeamFormComponent = props =>
               type: 'html',
               label: trans('description')
             // },{
-            //   name: 'directory',
+            //   name: 'defaultResource',
             //   type: 'resource',
             //   label: trans('default_resource', {}, 'team')
             }, {
@@ -77,7 +77,10 @@ const TeamFormComponent = props =>
 
 TeamFormComponent.propTypes = {
   team: T.shape(TeamType.propTypes).isRequired,
-  isNew: T.bool.isRequired
+  isNew: T.bool.isRequired,
+  history: T.shape({
+    push: T.func.isRequired
+  }).isRequired
 }
 
 const TeamForm = connect(

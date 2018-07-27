@@ -55,7 +55,20 @@ const TeamsComponent = props =>
         type: 'number'
       }
     ]}
-    actions={() => []}
+    delete={{
+      url: ['apiv2_team_delete_bulk'],
+      displayed: () => props.canEdit
+    }}
+    actions={(rows) => [
+      {
+        type: 'link',
+        icon: 'fa fa-fw fa-pencil',
+        label: trans('edit'),
+        displayed: props.canEdit,
+        scope: ['object'],
+        target: `/team/form/${rows[0].id}`
+      }
+    ]}
   />
 
 TeamsComponent.propTypes = {
