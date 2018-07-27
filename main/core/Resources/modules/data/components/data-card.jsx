@@ -3,7 +3,7 @@ import classes from 'classnames'
 import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {getPlainText} from '#/main/core/data/types/html/utils'
+import {getPlainText} from '#/main/app/content/data/html/utils'
 import {number} from '#/main/app/intl'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {Button} from '#/main/app/action/components/button'

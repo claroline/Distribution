@@ -1,91 +1,16 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import get from 'lodash/get'
-import merge from 'lodash/merge'
 
-import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Heading} from '#/main/core/layout/components/heading'
 import {Sections, Section} from '#/main/core/layout/components/sections'
-import {FormGroup} from '#/main/core/layout/form/components/group/form-group'
-import {getTypeOrDefault} from '#/main/core/data'
+
 import {DataDetailsSection as DataDetailsSectionTypes} from '#/main/core/data/details/prop-types'
 import {createDetailsDefinition} from '#/main/core/data/details/utils'
+import {DetailsProp} from '#/main/core/data/details/components/prop'
 
 // todo there are big c/c from Form component but I don't know if we can do better
-
-const DataDetailsField = props => {
-  const typeDef = getTypeOrDefault(props.type)
-
-  return (
-    <div id={props.name} className={props.className}>
-      {(!props.value && false !== props.value) &&
-        <span className="data-details-empty">{trans('empty_value')}</span>
-      }
-
-      {(props.value || false === props.value)  && (typeDef.components.details ?
-        React.createElement(typeDef.components.details, merge({}, props.options, {
-          id: props.name,
-          label: props.label,
-          hideLabel: props.hideLabel,
-          data: props.value // todo rename into `value` in implementations later
-        }))
-        :
-        typeDef.render ? typeDef.render(props.value, props.options || {}) : props.value
-      )}
-    </div>
-  )
-}
-
-DataDetailsField.propTypes = {
-  value: T.any,
-  name: T.string.isRequired,
-  type: T.string,
-  label: T.string.isRequired,
-  hideLabel: T.bool,
-  options: T.object,
-  className: T.string
-}
-
-const DataDetailsGroup = props => {
-  const typeDef = getTypeOrDefault(props.type)
-
-  return (props.render ?
-    <FormGroup
-      id={props.name}
-      label={props.label}
-      hideLabel={props.hideLabel}
-      help={props.help}
-    >
-      {props.render(props.data)}
-    </FormGroup> :
-    <FormGroup
-      id={props.name}
-      label={typeDef.meta && typeDef.meta.noLabel ? props.label : undefined}
-      hideLabel={props.hideLabel}
-      help={props.help}
-    >
-      <DataDetailsField
-        {...props}
-        value={props.calculated ? props.calculated(props.data) : get(props.data, props.name)}
-      />
-    </FormGroup>
-  )
-}
-
-DataDetailsGroup.propTypes = {
-  value: T.any,
-  name: T.string.isRequired,
-  type: T.string,
-  label: T.string.isRequired,
-  hideLabel: T.bool,
-  options: T.object,
-  help: T.oneOfType([T.string, T.arrayOf(T.string)]),
-  data: T.object.isRequired, // the whole data object
-  calculated: T.func,
-  render: T.func
-}
 
 const DataDetails = props => {
   const hLevel = props.level + (props.title ? 1 : 0)
@@ -116,7 +41,7 @@ const DataDetails = props => {
             </Heading>
 
             {primarySection.fields.map(field =>
-              <DataDetailsGroup
+              <DetailsProp
                 {...field}
                 key={field.name}
                 data={props.data}
@@ -139,7 +64,7 @@ const DataDetails = props => {
               title={section.title}
             >
               {section.fields.map(field =>
-                <DataDetailsGroup
+                <DetailsProp
                   {...field}
                   key={field.name}
                   data={props.data}

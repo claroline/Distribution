@@ -1,37 +1,37 @@
 import invariant from 'invariant'
 
-import {BOOLEAN_TYPE,      booleanDefinition}     from '#/main/core/data/types/boolean'
-import {CHOICE_TYPE,       choiceDefinition}      from '#/main/core/data/types/choice'
-import {COLOR_TYPE,        colorDefinition}       from '#/main/core/data/types/color'
-import {COUNTRY_TYPE,      countryDefinition}     from '#/main/core/data/types/country'
-import {DATE_TYPE,         dateDefinition}        from '#/main/core/data/types/date'
-import {DATE_RANGE_TYPE,   dateRangeDefinition}   from '#/main/core/data/types/date-range'
-import {EMAIL_TYPE,        emailDefinition}       from '#/main/core/data/types/email'
-import {FILE_TYPE,         fileDefinition}        from '#/main/core/data/types/file'
-import {HTML_TYPE,         htmlDefinition}        from '#/main/core/data/types/html'
-import {IMAGE_TYPE,        imageDefinition}       from '#/main/core/data/types/image'
-import {IP_TYPE,           ipDefinition}          from '#/main/core/data/types/ip'
-import {LOCALE_TYPE,       localeDefinition}      from '#/main/core/data/types/locale'
-import {NUMBER_TYPE,       numberDefinition}      from '#/main/core/data/types/number'
-import {PASSWORD_TYPE,     passwordDefinition}    from '#/main/core/data/types/password'
-import {SCORE_TYPE,        scoreDefinition}       from '#/main/core/data/types/score'
-import {STORAGE_TYPE,      storageDefinition}     from '#/main/core/data/types/storage'
-import {STRING_TYPE,       stringDefinition}      from '#/main/core/data/types/string'
-import {TRANSLATION_TYPE,  translationDefinition} from '#/main/core/data/types/translation'
-import {TRANSLATED_TYPE,   translatedDefinition}  from '#/main/core/data/types/translated'
-import {URL_TYPE,          urlDefinition}         from '#/main/core/data/types/url'
-import {USERNAME_TYPE,     usernameDefinition}    from '#/main/core/data/types/username'
-import {ENUM_TYPE,         enumDefinition}        from '#/main/core/data/types/enum'
-import {ENUM_PLUS_TYPE,   enumPlusDefinition}    from '#/main/core/data/types/enum-plus'
-import {CASCADE_ENUM_TYPE, cascadeEnumDefinition} from '#/main/core/data/types/cascade-enum'
-import {CASCADE_TYPE,      cascadeDefinition}     from '#/main/core/data/types/cascade'
+/*import {BOOLEAN_TYPE,      booleanDefinition}     from '#/main/app/content/data/boolean'
+import {CHOICE_TYPE,       choiceDefinition}      from '#/main/app/content/data/choice'
+import {COLOR_TYPE,        colorDefinition}       from '#/main/app/content/data/color'
+import {COUNTRY_TYPE,      countryDefinition}     from '#/main/app/content/data/country'
+import {DATE_TYPE,         dateDefinition}        from '#/main/app/content/data/date'
+import {DATE_RANGE_TYPE,   dateRangeDefinition}   from '#/main/app/content/data/date-range'
+import {EMAIL_TYPE,        emailDefinition}       from '#/main/app/content/data/email'
+import {FILE_TYPE,         fileDefinition}        from '#/main/app/content/data/file'
+import {HTML_TYPE,         htmlDefinition}        from '#/main/app/content/data/html'
+import {IMAGE_TYPE,        imageDefinition}       from '#/main/app/content/data/image'
+import {IP_TYPE,           ipDefinition}          from '#/main/app/content/data/ip'
+import {LOCALE_TYPE,       localeDefinition}      from '#/main/app/content/data/locale'
+import {NUMBER_TYPE,       numberDefinition}      from '#/main/app/content/data/number'
+import {PASSWORD_TYPE,     passwordDefinition}    from '#/main/app/content/data/password'
+import {SCORE_TYPE,        scoreDefinition}       from '#/main/app/content/data/score'
+import {STORAGE_TYPE,      storageDefinition}     from '#/main/app/content/data/storage'
+import {STRING_TYPE,       stringDefinition}      from '#/main/app/content/data/string'
+import {TRANSLATION_TYPE,  translationDefinition} from '#/main/app/content/data/translation'
+import {TRANSLATED_TYPE,   translatedDefinition}  from '#/main/app/content/data/translated'
+import {URL_TYPE,          urlDefinition}         from '#/main/app/content/data/url'
+import {USERNAME_TYPE,     usernameDefinition}    from '#/main/app/content/data/username'
+import {ENUM_TYPE,         enumDefinition}        from '#/main/app/content/data/enum'
+import {ENUM_PLUS_TYPE,   enumPlusDefinition}    from '#/main/app/content/data/enum-plus'
+import {CASCADE_ENUM_TYPE, cascadeEnumDefinition} from '#/main/app/content/data/cascade-enum'
+import {CASCADE_TYPE,      cascadeDefinition}     from '#/main/app/content/data/cascade'*/
 
 
 // the list of registered data types
 const dataTypes = {}
 
 // register default types
-registerType(BOOLEAN_TYPE,      booleanDefinition)
+/*registerType(BOOLEAN_TYPE,      booleanDefinition)
 registerType(COLOR_TYPE,        colorDefinition)
 registerType(COUNTRY_TYPE,      countryDefinition)
 registerType(DATE_TYPE,         dateDefinition)
@@ -55,7 +55,7 @@ registerType(URL_TYPE,          urlDefinition)
 registerType(USERNAME_TYPE,     usernameDefinition)
 registerType(ENUM_TYPE,         enumDefinition)
 registerType(ENUM_PLUS_TYPE,   enumPlusDefinition)
-registerType(CASCADE_ENUM_TYPE, cascadeEnumDefinition)
+registerType(CASCADE_ENUM_TYPE, cascadeEnumDefinition)*/
 
 /**
  * Validates & registers a data type.

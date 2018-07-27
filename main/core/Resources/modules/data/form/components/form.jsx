@@ -18,7 +18,7 @@ import {createFormDefinition} from '#/main/core/data/form/utils'
 import {DataFormSection as DataFormSectionTypes} from '#/main/core/data/form/prop-types'
 import {FormField} from '#/main/core/data/form/components/field'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group'
-import {FormActions} from '#/main/core/data/form/components/actions'
+import {FormActions} from '#/main/app/content/form/components/actions'
 
 const AdvancedSection = props =>
   <ToggleableSet

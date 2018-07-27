@@ -1,5 +1,3 @@
-import {registerType} from '#/main/core/data'
-
 import {trans} from '#/main/core/translation'
 //import {chain, lengthInRange, match, string} from '#/main/core/validation'
 
@@ -24,8 +22,6 @@ const resourceDefinition = {
     form: ResourceGroup
   }
 }
-
-registerType(RESOURCE_TYPE, resourceDefinition)
 
 export {
   RESOURCE_TYPE
