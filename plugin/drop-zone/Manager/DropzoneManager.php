@@ -746,12 +746,12 @@ class DropzoneManager
                 }
                 break;
         }
-        $this->checkCompletion($drop->getDropzone(), $users, $drop);
+        $this->eventDispatcher->dispatch('log', new LogCorrectionEndEvent($dropzone, $correction->getDrop(), $correction));
+
         $this->checkSuccess($drop);
+        $this->checkCompletion($drop->getDropzone(), $users, $drop);
 
         $this->om->endFlushSuite();
-
-        $this->eventDispatcher->dispatch('log', new LogCorrectionEndEvent($dropzone, $correction->getDrop(), $correction));
 
         return $correction;
     }
@@ -1193,11 +1193,10 @@ class DropzoneManager
                 if (!empty($userEval) && !in_array($userEval->getStatus(), $fixedStatusList)) {
                     $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_COMPLETED);
                 }
-
-                $this->eventDispatcher->dispatch('log', new LogDropGradeAvailableEvent($dropzone, $drop));
-                $this->eventDispatcher->dispatch('log', new LogDropEvaluateEvent($dropzone, $drop, $drop->getScore()));
+                //TODO user whose score is available must be notified by LogDropGradeAvailableEvent, when he has done his corrections AND his drop has been corrected
             }
         }
+
         $this->om->endFlushSuite();
     }
 
@@ -1241,6 +1240,10 @@ class DropzoneManager
             foreach ($users as $user) {
                 $this->generateResourceEvaluation($dropzone, $user, $status, $score, $drop, true);
             }
+
+            $this->eventDispatcher->dispatch('log', new LogDropEvaluateEvent($dropzone, $drop, $drop->getScore()));
+
+            //TODO user whose score is available must be notified by LogDropGradeAvailableEvent, when he has done his corrections AND his drop has been corrected
         }
 
         $this->om->endFlushSuite();
