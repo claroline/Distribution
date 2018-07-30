@@ -5,6 +5,7 @@ import sum from 'lodash/sum'
 import times from 'lodash/times'
 
 import {trans} from '#/main/core/translation'
+import {makeId} from '#/main/core/scaffolding/id'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
@@ -23,29 +24,32 @@ const WidgetCol = props =>
     {props.content &&
       <div className="widget-col-configure" >
         <Button
-          className="btn btn-link"
+          className="btn-link"
           type="modal"
           icon="fa fa-fw fa-pencil"
+          tooltip="top"
           label={trans('modify_widget', {}, 'widget')}
           modal={[MODAL_CONTENT_PARAMETERS, {
             content: props.content,
             save: props.updateContent
           }]}
         />
-        {props.content.id !== props.isMoving &&
+        {props.content.id !== props.isMoving.id &&
         <Button
-          className="btn btn-link"
+          className="btn-link"
           type="callback"
           icon="fa fa-fw fa-arrows"
+          tooltip="top"
           label={trans('move_widget', {}, 'widget')}
           callback={() => props.moveContent(props.content)}
         />
         }
-        {props.content.id === props.isMoving &&
+        {props.content.id === props.isMoving.id &&
         <Button
-          className="btn btn-link"
+          className="btn-link"
           type="callback"
           icon="fa fa-fw fa-arrows"
+          tooltip="top"
           label={trans('cancel_move_widget', {}, 'widget')}
           callback={() => props.stopMovingContent()}
         />
@@ -59,15 +63,24 @@ const WidgetCol = props =>
       />
     }
 
-    {!props.content && props.isMoving &&
+    {!props.content && !!props.isMoving.id &&
       <Button
         className="btn btn-block widget-insert-content"
         type="callback"
         label={trans('insert_widget', {}, 'widget')}
-        callback={() => console.log('ici, ici, ici !')}
+        callback={() => {
+          props.deleteOldContent(props.isMoving.id)
+          props.addContent({
+            id: makeId(),
+            type: props.isMoving.type,
+            parameters: props.isMoving.parameters,
+            source: props.isMoving.source
+          })
+          props.stopMovingContent()
+        }}
       />
     }
-    {!props.content && !props.isMoving &&
+    {!props.content && !props.isMoving.id &&
       <Button
         className="btn btn-block btn-emphasis"
         type="modal"
@@ -91,7 +104,7 @@ WidgetCol.propTypes = {
   addContent: T.func.isRequired,
   updateContent: T.func.isRequired,moveContent: T.func.isRequired,
   stopMovingContent:T.func.isRequired,
-  isMoving: T.string
+  isMoving: T.object
 }
 
 const WidgetEditor = props =>
@@ -134,9 +147,11 @@ const WidgetEditor = props =>
               // propagate change
               props.update(widget)
             }}
+            deleteOldContent={props.deleteOldContent}
             moveContent={props.moveContent}
             stopMovingContent={props.stopMovingContent}
             isMoving={props.isMoving}
+
           />
         )}
       </div>
@@ -155,7 +170,7 @@ WidgetEditor.propTypes = {
   )).isRequired,
   moveContent: T.func.isRequired,
   stopMovingContent:T.func.isRequired,
-  isMoving: T.string
+  isMoving: T.object
 }
 
 
