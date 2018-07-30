@@ -242,6 +242,47 @@ class TeamManager
     }
 
     /**
+     * Deletes multiple teams.
+     *
+     * @param array $teams
+     */
+    public function deleteTeams(array $teams)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($teams as $team) {
+            $this->deleteTeam($team);
+        }
+
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * Deletes a team.
+     *
+     * @param Team $team
+     */
+    public function deleteTeam(Team $team)
+    {
+        $teamRole = $team->getRole();
+        $teamManagerRole = $team->getTeamManagerRole();
+
+        if (!is_null($teamManagerRole)) {
+            $this->om->remove($teamManagerRole);
+        }
+        if (!is_null($teamRole)) {
+            $this->om->remove($teamRole);
+        }
+        $teamDirectory = $team->getDirectory();
+
+        if ($team->isDirDeletable() && !is_null($teamDirectory)) {
+            $this->resourceManager->delete($teamDirectory->getResourceNode());
+        }
+        $this->om->remove($team);
+        $this->om->flush();
+    }
+
+    /**
      * Checks and updates role name for unicity.
      *
      * @param string $roleName
@@ -399,27 +440,6 @@ class TeamManager
         $this->om->flush();
     }
 
-    public function deleteTeam(Team $team, $withDirectory = false)
-    {
-        $teamRole = $team->getRole();
-        $teamManagerRole = $team->getTeamManagerRole();
-
-        if (!is_null($teamManagerRole)) {
-            $this->om->remove($teamManagerRole);
-        }
-
-        if (!is_null($teamRole)) {
-            $this->om->remove($teamRole);
-        }
-        $this->om->remove($team);
-        $teamDirectory = $team->getDirectory();
-
-        if ($withDirectory && !is_null($teamDirectory)) {
-            $this->resourceManager->delete($teamDirectory->getResourceNode());
-        }
-        $this->om->flush();
-    }
-
     public function initializeTeamRights(Team $team)
     {
         $workspace = $team->getWorkspace();
@@ -540,31 +560,6 @@ class TeamManager
         }
         $this->om->persist($team);
         $this->om->endFlushSuite();
-    }
-
-    public function deleteTeams(array $teams, $withDirectory = false)
-    {
-        $this->om->startFlushSuite();
-        $nodes = [];
-
-        foreach ($teams as $team) {
-            if ($withDirectory) {
-                $directory = $team->getDirectory();
-
-                if (!is_null($directory)) {
-                    $nodes[] = $directory->getResourceNode();
-                }
-            }
-            $this->deleteTeam($team);
-        }
-        $this->om->endFlushSuite();
-
-        if (count($nodes) > 0) {
-            foreach ($nodes as $node) {
-                $this->resourceManager->delete($node);
-            }
-            $this->om->flush();
-        }
     }
 
     public function emptyTeams(array $teams)

@@ -15,6 +15,7 @@ use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\TeamBundle\Manager\TeamManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,21 +30,27 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TeamController extends AbstractCrudController
 {
-    /* var FinderProvider */
+    /** @var FinderProvider */
     protected $finder;
+
+    /** @var TeamManager */
+    protected $teamManager;
 
     /**
      * TeamController constructor.
      *
      * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder")
+     *     "finder"      = @DI\Inject("claroline.api.finder"),
+     *     "teamManager" = @DI\Inject("claroline.manager.team_manager")
      * })
      *
      * @param FinderProvider $finder
+     * @param TeamManager    $teamManager
      */
-    public function __construct(FinderProvider $finder)
+    public function __construct(FinderProvider $finder, TeamManager $teamManager)
     {
         $this->finder = $finder;
+        $this->teamManager = $teamManager;
     }
 
     public function getName()
@@ -78,5 +85,19 @@ class TeamController extends AbstractCrudController
         $data = $this->finder->search('Claroline\TeamBundle\Entity\Team', $params);
 
         return new JsonResponse($data, 200);
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function deleteBulkAction(Request $request, $class)
+    {
+        $teams = parent::decodeIdsString($request, 'Claroline\TeamBundle\Entity\Team');
+        $this->teamManager->deleteTeams($teams);
+
+        return new JsonResponse(null, 204);
     }
 }
