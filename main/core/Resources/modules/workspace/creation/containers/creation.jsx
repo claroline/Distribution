@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {CreationForm} from '#/main/core/workspace/creation/components/creation.jsx'
 
@@ -15,10 +14,7 @@ class WorkspaceCreationContainer extends Component {
 
 
 const ConnectedWorkspaceCreationContainer = connect(
-  state => ({
-  }),
-  dispatch => ({
-  })
+  null, null
 )(WorkspaceCreationContainer)
 
 export {

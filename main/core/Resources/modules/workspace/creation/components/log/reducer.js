@@ -9,7 +9,6 @@ const reducer = makeReducer({}, {
     try {
       return JSON.parse(action.content)
     } catch (e) {
-      console.log('fail parse')
       return {}
     }
   }
