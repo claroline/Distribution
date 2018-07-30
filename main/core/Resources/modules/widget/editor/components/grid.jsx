@@ -16,66 +16,49 @@ class WidgetGridEditor extends Component {
     super(props)
 
     this.state = {
-      movingContent: {},
-      movingContentParent: null
+      movingContentId: null
     }
   }
 
-  moveContent(content, widgetContainerId) {
-    this.setState({movingContent: content})
-    this.setState({movingContentParent: widgetContainerId})
+  startMovingContent(contentId) {
+    this.setState({movingContentId: contentId})
   }
 
   stopMovingContent() {
-    this.setState({movingContent: {}})
-    this.setState({movingContentParent: null})
+    this.setState({movingContentId: null})
   }
 
-  // deleteOldContent(movingContentId) {
-  //   // copy array
-  //   const widgets = cloneDeep(this.props.widgets)
-  //
-  //   const widgetIndex = widgets.findIndex(widget => widget.id === this.state.movingContentParent)
-  //   const contentIndex = widgets[widgetIndex].contents.findIndex(content => content.id === movingContentId)
-  //
-  //   // removes the content to delete
-  //   widgets[widgetIndex].contents.splice(contentIndex, 1)
-  //
-  //   // propagate change
-  //   this.props.update(widgets)
-  //   this.stopMovingContent()
-  // }
 
   render() {
     return (
-
       <div className="widgets-grid">
-        {console.log(this.props.widgets)}
         {this.props.widgets.map((widgetContainer, index) =>
           <WidgetEditor
             key={index}
             widget={widgetContainer}
             context={this.props.context}
-            isMoving={this.state.movingContent}
+            isMoving={this.state.movingContentId}
             stopMovingContent={() => this.stopMovingContent()}
-            moveContent={(content) => this.moveContent(content, widgetContainer.id)}
-            deleteOldContent={(movingContentId) => {
-              console.log('movingContentId')
-              console.log(movingContentId)
+            startMovingContent={(contentId) => this.startMovingContent(contentId)}
+            moveContent={(movingContentId, newParentId, position) => {
               // copy array
               const widgets = cloneDeep(this.props.widgets)
-              console.log('clone')
-              console.log(widgets)
-              const widgetIndex = widgets.findIndex(widget => widget.id === this.state.movingContentParent)
-              console.log(widgetIndex)
-              const contentIndex = widgets[widgetIndex].contents.findIndex(content => content.id === movingContentId)
-              console.log(contentIndex)
-              // removes the content to delete and replace by null
-              widgets[widgetIndex].contents[contentIndex] = null
-              console.log('newclone')
-              console.log(widgets)
+              let movingContentIndex
+              const oldParent = widgets.find(widget => {
+                movingContentIndex = widget.contents.findIndex(content => content && content.id === movingContentId)
+                return -1 !== movingContentIndex
+              })
+
+              if (oldParent) {
+                const newParent = widgets.find(widget => widget.id === newParentId)
+                newParent.contents[position] = oldParent.contents[movingContentIndex]
+                // removes the content to delete and replace by null
+                oldParent.contents[movingContentIndex] = null
+              }
+
               // propagate change
               this.props.update(widgets)
+              this.stopMovingContent()
             }}
             update={(widget) => {
               // copy array

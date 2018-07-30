@@ -5,7 +5,6 @@ import sum from 'lodash/sum'
 import times from 'lodash/times'
 
 import {trans} from '#/main/core/translation'
-import {makeId} from '#/main/core/scaffolding/id'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
@@ -27,30 +26,28 @@ const WidgetCol = props =>
           className="btn-link"
           type="modal"
           icon="fa fa-fw fa-pencil"
-          tooltip="top"
-          label={trans('modify_widget', {}, 'widget')}
+          label={trans('edit', {}, 'actions')}
           modal={[MODAL_CONTENT_PARAMETERS, {
             content: props.content,
             save: props.updateContent
           }]}
         />
-        {props.content.id !== props.isMoving.id &&
+        {props.content.id !== props.isMoving &&
         <Button
           className="btn-link"
           type="callback"
           icon="fa fa-fw fa-arrows"
-          tooltip="top"
-          label={trans('move_widget', {}, 'widget')}
-          callback={() => props.moveContent(props.content)}
+          label={trans('move', {}, 'actions')}
+          callback={() => props.startMovingContent(props.content.id)}
+          disabled={!!props.isMoving}
         />
         }
-        {props.content.id === props.isMoving.id &&
+        {props.content.id === props.isMoving &&
         <Button
           className="btn-link"
           type="callback"
-          icon="fa fa-fw fa-arrows"
-          tooltip="top"
-          label={trans('cancel_move_widget', {}, 'widget')}
+          icon="fa fa-fw fa-ban"
+          label={trans('cancel', {}, 'actions')}
           callback={() => props.stopMovingContent()}
         />
         }
@@ -63,24 +60,15 @@ const WidgetCol = props =>
       />
     }
 
-    {!props.content && !!props.isMoving.id &&
+    {!props.content && !!props.isMoving &&
       <Button
         className="btn btn-block widget-insert-content"
         type="callback"
         label={trans('insert_widget', {}, 'widget')}
-        callback={() => {
-          props.deleteOldContent(props.isMoving.id)
-          props.addContent({
-            id: makeId(),
-            type: props.isMoving.type,
-            parameters: props.isMoving.parameters,
-            source: props.isMoving.source
-          })
-          props.stopMovingContent()
-        }}
+        callback={() => props.moveContent(props.isMoving)}
       />
     }
-    {!props.content && !props.isMoving.id &&
+    {!props.content && !props.isMoving &&
       <Button
         className="btn btn-block btn-emphasis"
         type="modal"
@@ -102,9 +90,11 @@ WidgetCol.propTypes = {
     WidgetInstanceTypes.propTypes
   ),
   addContent: T.func.isRequired,
-  updateContent: T.func.isRequired,moveContent: T.func.isRequired,
+  updateContent: T.func.isRequired,
+  moveContent: T.func.isRequired,
+  startMovingContent: T.func.isRequired,
   stopMovingContent:T.func.isRequired,
-  isMoving: T.object
+  isMoving: T.string
 }
 
 const WidgetEditor = props =>
@@ -147,11 +137,10 @@ const WidgetEditor = props =>
               // propagate change
               props.update(widget)
             }}
-            deleteOldContent={props.deleteOldContent}
-            moveContent={props.moveContent}
+            startMovingContent={props.startMovingContent}
+            moveContent={(movingContentId) => props.moveContent(movingContentId, props.widget.id, col)}
             stopMovingContent={props.stopMovingContent}
             isMoving={props.isMoving}
-
           />
         )}
       </div>
@@ -169,8 +158,9 @@ WidgetEditor.propTypes = {
     ActionTypes.propTypes
   )).isRequired,
   moveContent: T.func.isRequired,
+  startMovingContent: T.func.isRequired,
   stopMovingContent:T.func.isRequired,
-  isMoving: T.object
+  isMoving: T.string
 }
 
 
