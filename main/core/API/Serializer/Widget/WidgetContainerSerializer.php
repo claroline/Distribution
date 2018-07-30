@@ -48,13 +48,27 @@ class WidgetContainerSerializer
 
     public function serialize(WidgetContainer $widgetContainer, array $options = []): array
     {
+        /* contents ordering */
+        $contents = array_map(function (WidgetInstance $widgetInstance) use ($options) {
+            return $this->serializer->serialize($widgetInstance, $options);
+        }, $widgetContainer->getInstances()->toArray());
+
+        $ordered = [];
+        $arraySize = count($widgetContainer->getLayout());
+
+        for ($i = 0; $i < $arraySize; ++$i) {
+            $ordered[$i] = null;
+        }
+
+        foreach ($contents as $content) {
+            $ordered[$content['position']] = $content;
+        }
+
         return [
             'id' => $this->getUuid($widgetContainer, $options),
             'name' => $widgetContainer->getName(),
             'display' => $this->serializeDisplay($widgetContainer),
-            'contents' => array_map(function (WidgetInstance $widgetInstance) use ($options) {
-                return $this->serializer->serialize($widgetInstance, $options);
-            }, $widgetContainer->getInstances()->toArray()),
+            'contents' => $ordered,
         ];
     }
 
@@ -111,6 +125,18 @@ class WidgetContainerSerializer
                     $this->om->persist($widgetInstance);
                 }
             }
+
+            //remove superfluous here
+            /*
+            $ids = array_map(function ($instance) {
+                return $instance['id'];
+            }, $data['contents']);
+
+            foreach ($widgetContainer->getInstances() as $instance) {
+                if (!in_array($instance->getUuid(), $ids)) {
+                    $this->om->remove($instance);
+                }
+            }*/
         }
 
         return $widgetContainer;

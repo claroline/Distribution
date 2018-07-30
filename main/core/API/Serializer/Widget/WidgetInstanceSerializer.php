@@ -69,6 +69,7 @@ class WidgetInstanceSerializer
 
         return [
             'id' => $this->getUuid($widgetInstance, $options),
+            'position' => $widgetInstance->getPosition(),
             'type' => $widget->getName(),
             'source' => null, // todo
             'parameters' => $parameters,
