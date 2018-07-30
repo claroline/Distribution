@@ -88,7 +88,7 @@ class MessageListener
             $menu = $event->getMenu();
             $messageMenuLink = $menu->addChild(
                 $this->translator->trans('messages', [], 'platform'),
-                ['route' => 'claro_message_list_received']
+                ['route' => 'claro_message_index']
             )->setExtra('icon', 'fa fa-'.$tool->getClass())
             ->setExtra('title', $messageTitle);
 
@@ -187,7 +187,7 @@ class MessageListener
     public function onOpenDesktopTool(DisplayToolEvent $event)
     {
         $params = [];
-        $params['_controller'] = 'ClarolineMessageBundle:Message:listReceived';
+        $params['_controller'] = 'ClarolineMessageBundle:Message:index';
         $params['page'] = 1;
         $params['search'] = '';
         $subRequest = $this->request->duplicate([], null, $params);

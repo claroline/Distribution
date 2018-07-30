@@ -97,6 +97,19 @@ class MessageController
 
     /**
      * @EXT\Route(
+     *     "/index",
+     *     name="claro_message_index",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Template()
+     */
+    public function indexAction()
+    {
+        return [];
+    }
+
+    /**
+     * @EXT\Route(
      *     "/form/user/{user}",
      *     name="claro_message_form_for_user",
      *     options={"expose"=true}
