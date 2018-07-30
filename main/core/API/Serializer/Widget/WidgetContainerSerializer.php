@@ -125,18 +125,6 @@ class WidgetContainerSerializer
                     $this->om->persist($widgetInstance);
                 }
             }
-
-            //remove superfluous here
-            /*
-            $ids = array_map(function ($instance) {
-                return $instance['id'];
-            }, $data['contents']);
-
-            foreach ($widgetContainer->getInstances() as $instance) {
-                if (!in_array($instance->getUuid(), $ids)) {
-                    $this->om->remove($instance);
-                }
-            }*/
         }
 
         return $widgetContainer;
