@@ -13,13 +13,40 @@ import {actions as logActions} from '#/main/core/workspace/creation/components/l
 import {Logs} from '#/main/core/workspace/creation/components/log/components/logs.jsx'
 import {withRouter} from '#/main/app/router'
 
-class WorkspaceComponent extends Component {
+class WorkspaceComponent extends Component
+{
   constructor(props) {
     super(props)
+
+    this.state = {
+      refresh: false
+    }
+  }
+
+  refreshLog() {
+    const props = this.props
+
+    if (this.state.refresh) {
+      if (!props.logData.end) {
+        let loader = setInterval(() => {
+
+          clearInterval(loader)
+
+          props.loadLog(props.workspace.code)
+        }, 1500)
+      } else {
+        props.history.push('/workspaces')
+      }
+
+    }
+  }
+
+  componentDidUpdate()
+  {
+    this.refreshLog()
   }
 
   render() {
-    console.log('RERENDER')
     const props = this.props
     const modelChoices = {}
     let defaultModel = null
@@ -31,11 +58,10 @@ class WorkspaceComponent extends Component {
       }
     })
 
-    return (<div>
+    return (
       <FormContainer
         level={3}
         name="workspaces.current"
-        new={true}
         buttons={true}
         save={{
           type: 'callback',
@@ -43,18 +69,8 @@ class WorkspaceComponent extends Component {
           label: trans('save', {}, 'actions'),
           callback: () => {
             props.save(props.workspace)
-            //props.loadLog(logName)
-            const logName = props.workspace.code
-            const refresher = setInterval(() => {
-              props.loadLog(logName)
-              //this.forceUpdate()
-              console.log(props.logData)
-              //if (props.logData && props.logData.end) {
-              clearInterval(refresher)
-
-              //props.history.push('/workspaces')
-              //}
-            }, 2000)
+            this.refreshLog()
+            this.setState({refresh: true})
           }
         }}
         sections={[
@@ -311,10 +327,10 @@ class WorkspaceComponent extends Component {
           }
         ]}
       >
+        <Logs/>
       </FormContainer>
-      <Logs/>
-    </div>
     )}
+
 }
 
 WorkspaceComponent.propTypes = {
@@ -333,13 +349,13 @@ WorkspaceComponent.defaultProps = {
   workspace: WorkspaceTypes.defaultProps
 }
 
-const ConnectedForm = connect(
+const ConnectedForm = withRouter(connect(
   state => {
     return {
       models: state.models,
       workspace: formSelect.data(formSelect.form(state, 'workspaces.current')),
-      //logData: state.workspaces.creation.log //always {} for some reason
-      logData: state
+      logData: state.workspaces.creation.log //always {} for some reason
+      //logData: state
     }
   },
   (dispatch, ownProps) =>({
@@ -353,7 +369,7 @@ const ConnectedForm = connect(
       dispatch(actions.save(workspace))
     }
   })
-)(withRouter(WorkspaceComponent))
+)(WorkspaceComponent))
 
 export {
   ConnectedForm as WorkspaceForm

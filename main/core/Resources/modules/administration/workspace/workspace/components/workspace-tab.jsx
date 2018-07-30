@@ -7,7 +7,8 @@ import {Routes} from '#/main/app/router'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
 import {Workspace}  from '#/main/core/administration/workspace/workspace/components/workspace'
-import {CreationForm as WorkspaceCreation} from '#/main/core/workspace/creation/components/creation'
+//import {CreationForm as WorkspaceCreation} from '#/main/core/workspace/creation/components/creation'
+import {WorkspaceForm as WorkspaceCreation} from '#/main/core/workspace/creation/components/form' 
 import {Workspaces} from '#/main/core/administration/workspace/workspace/components/workspaces'
 import {actions}    from '#/main/core/administration/workspace/workspace/actions'
 
