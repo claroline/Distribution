@@ -101,13 +101,15 @@ class WidgetContainerSerializer
         // todo deserialize instances
         if (isset($data['contents'])) {
             foreach ($data['contents'] as $index => $content) {
-                /** @var WidgetInstance $widgetInstance */
-                $widgetInstance = $this->serializer->deserialize(WidgetInstance::class, $content, $options);
-                $widgetInstance->setPosition($index);
-                $widgetContainer->addInstance($widgetInstance);
+                if ($content) {
+                    /** @var WidgetInstance $widgetInstance */
+                    $widgetInstance = $this->serializer->deserialize(WidgetInstance::class, $content, $options);
+                    $widgetInstance->setPosition($index);
+                    $widgetContainer->addInstance($widgetInstance);
 
-                // We either do this or cascade persist ¯\_(ツ)_/¯
-                $this->om->persist($widgetInstance);
+                    // We either do this or cascade persist ¯\_(ツ)_/¯
+                    $this->om->persist($widgetInstance);
+                }
             }
         }
 
