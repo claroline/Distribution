@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Mockery as m;
@@ -37,7 +37,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->homeTabConfigRepo =
             $this->mock('Claroline\CoreBundle\Repository\HomeTabConfigRepository');
         $this->widgetHomeTabConfigRepo =
-            $this->mock('Claroline\CoreBundle\Repository\WidgetHomeTabConfigRepository');
+            $this->mock('Claroline\CoreBundle\Repository\WidgetInstanceConfigRepository');
         $this->widgetDisplayConfigRepo =
             $this->mock('Claroline\CoreBundle\Repository\DisplayConfigRepository');
     }
@@ -82,7 +82,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
     public function testDeleteDesktopHomeTab()
     {
-        $homeTab = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
+        $homeTab = $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTab');
         $user = new User();
 
         $homeTab->shouldReceive('getUser')->once()->andReturn($user);
@@ -98,7 +98,7 @@ class HomeTabManagerTest extends MockeryTestCase
 
     public function testDeleteWorkspaceHomeTab()
     {
-        $homeTab = $this->mock('Claroline\CoreBundle\Entity\Home\HomeTab');
+        $homeTab = $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTab');
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
 
@@ -126,7 +126,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testUpdateVisibility()
     {
         $homeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $homeTabConfig->shouldReceive('setVisible')->with(true)->once();
         $this->om->shouldReceive('flush')->once();
@@ -137,7 +137,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testUpdateLock()
     {
         $homeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $homeTabConfig->shouldReceive('setLocked')->with(true)->once();
         $this->om->shouldReceive('flush')->once();
@@ -148,7 +148,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testCreateWorkspaceVersion()
     {
         $homeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $homeTab = new HomeTab();
@@ -186,7 +186,7 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testCreateUserVersion()
     {
         $homeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $user = new User();
         $homeTab = new HomeTab();
 
@@ -227,9 +227,9 @@ class HomeTabManagerTest extends MockeryTestCase
     {
         $user = new User();
         $adminHomeTabConfigA =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $adminHomeTabConfigB =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $adminHomeTabConfigs = [$adminHomeTabConfigA, $adminHomeTabConfigB];
         $homeTab = new HomeTab();
         $newHomeTabConfig = new HomeTabConfig();
@@ -279,9 +279,9 @@ class HomeTabManagerTest extends MockeryTestCase
     public function testFilterVisibleHomeTabConfigs()
     {
         $homeTabConfigA =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $homeTabConfigB =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $homeTabConfigs = [$homeTabConfigA, $homeTabConfigB];
 
         $homeTabConfigA
@@ -338,7 +338,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $homeTab = new HomeTab();
         $user = new User();
         $adminHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
@@ -375,7 +375,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $homeTab = new HomeTab();
         $user = new User();
         $userHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
@@ -412,9 +412,9 @@ class HomeTabManagerTest extends MockeryTestCase
         $homeTab = new HomeTab();
         $user = new User();
         $adminHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $userHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
@@ -490,7 +490,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $adminHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
@@ -529,7 +529,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $workspaceHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
@@ -568,9 +568,9 @@ class HomeTabManagerTest extends MockeryTestCase
         $workspace =
             $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $adminHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
         $workspaceHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Home\HomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Tab\HomeTabConfig');
 
         $this->homeTabConfigRepo
             ->shouldReceive('findOneBy')
@@ -604,49 +604,49 @@ class HomeTabManagerTest extends MockeryTestCase
         );
     }
 
-    public function testInsertWidgetHomeTabConfig()
+    public function testInsertWidgetInstanceConfig()
     {
-        $widgetHomeTabConfig = new WidgetHomeTabConfig();
+        $widgetHomeTabConfig = new WidgetInstanceConfig();
 
         $this->om->shouldReceive('persist')->with($widgetHomeTabConfig)->once();
         $this->om->shouldReceive('flush')->once();
 
-        $this->getManager()->insertWidgetHomeTabConfig($widgetHomeTabConfig);
+        $this->getManager()->insertWidgetInstanceConfig($widgetHomeTabConfig);
     }
 
-    public function testDeleteWidgetHomeTabConfig()
+    public function testDeleteWidgetInstanceConfig()
     {
-        $widgetHomeTabConfig = $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig');
+        $widgetHomeTabConfig = $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig');
         $this->om->shouldReceive('remove')->with($widgetHomeTabConfig)->once();
         $this->om->shouldReceive('flush')->once();
 
-        $this->getManager()->deleteWidgetHomeTabConfig($widgetHomeTabConfig);
+        $this->getManager()->deleteWidgetInstanceConfig($widgetHomeTabConfig);
     }
 
-    public function testChangeVisibilityWidgetHomeTabConfig()
+    public function testChangeVisibilityWidgetInstanceConfig()
     {
         $widgetHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig');
 
         $widgetHomeTabConfig->shouldReceive('isVisible')->once()->andReturn(false);
         $widgetHomeTabConfig->shouldReceive('setVisible')->with(true)->once();
         $this->om->shouldReceive('flush')->once();
 
         $this->getManager()
-            ->changeVisibilityWidgetHomeTabConfig($widgetHomeTabConfig);
+            ->changeVisibilityWidgetInstanceConfig($widgetHomeTabConfig);
     }
 
-    public function testChangeLockWidgetHomeTabConfig()
+    public function testChangeLockWidgetInstanceConfig()
     {
         $widgetHomeTabConfig =
-            $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig');
+            $this->mock('Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig');
 
         $widgetHomeTabConfig->shouldReceive('isLocked')->once()->andReturn(false);
         $widgetHomeTabConfig->shouldReceive('setLocked')->with(true)->once();
         $this->om->shouldReceive('flush')->once();
 
         $this->getManager()
-            ->changeLockWidgetHomeTabConfig($widgetHomeTabConfig);
+            ->changeLockWidgetInstanceConfig($widgetHomeTabConfig);
     }
 
     public function testGetHomeTabById()
@@ -1072,15 +1072,15 @@ class HomeTabManagerTest extends MockeryTestCase
         );
     }
 
-    public function testGetUserAdminWidgetHomeTabConfig()
+    public function testGetUserAdminWidgetInstanceConfig()
     {
         $homeTab = new HomeTab();
         $widget = new WidgetInstance();
         $user = new User();
-        $widgetHomeTabConfig = new WidgetHomeTabConfig();
+        $widgetHomeTabConfig = new WidgetInstanceConfig();
 
         $this->widgetHomeTabConfigRepo
-            ->shouldReceive('findUserAdminWidgetHomeTabConfig')
+            ->shouldReceive('findUserAdminWidgetInstanceConfig')
             ->with($homeTab, $widget, $user)
             ->once()
             ->andReturn($widgetHomeTabConfig);
@@ -1088,7 +1088,7 @@ class HomeTabManagerTest extends MockeryTestCase
         $this->assertEquals(
             $widgetHomeTabConfig,
             $this->getManager()
-                ->getUserAdminWidgetHomeTabConfig($homeTab, $widget, $user)
+                ->getUserAdminWidgetInstanceConfig($homeTab, $widget, $user)
         );
     }
 
@@ -1103,7 +1103,7 @@ class HomeTabManagerTest extends MockeryTestCase
             ->once()
             ->andReturn($this->homeTabConfigRepo);
         $this->om->shouldReceive('getRepository')
-            ->with('ClarolineCoreBundle:Widget\WidgetHomeTabConfig')
+            ->with('ClarolineCoreBundle:Widget\WidgetInstanceConfig')
             ->once()
             ->andReturn($this->widgetHomeTabConfigRepo);
         $this->om->shouldReceive('getRepository')

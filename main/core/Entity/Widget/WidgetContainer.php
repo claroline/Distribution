@@ -19,57 +19,6 @@ class WidgetContainer
     use Uuid;
 
     /**
-     * The name of the widget.
-     *
-     * @ORM\Column(name="widget_name", nullable=true)
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
-     * The display layout of the container.
-     *
-     * NB:
-     *   Each element in the array represents a column. The value, represents the ratio of the column.
-     *
-     * Example: [2, 1]
-     *   The layout has 2 columns, the first one is 2/3 width and the second is 1/3.
-     *
-     * @var array
-     *
-     * @ORM\Column(type="json_array", nullable=true)
-     */
-    private $layout = [];
-
-    /**
-     * The color of the text inside the widget.
-     *
-     * @ORM\Column(nullable=true)
-     *
-     * @var string
-     */
-    private $color = null;
-
-    /**
-     * The type of the background (none, color, image).
-     *
-     * @ORM\Column()
-     *
-     * @var string
-     */
-    private $backgroundType = 'none';
-
-    /**
-     * The background data (either the color or the image url).
-     *
-     * @ORM\Column(nullable=true)
-     *
-     * @var string
-     */
-    private $background = null;
-
-    /**
      * The list of content instances.
      *
      * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance", mappedBy="container", cascade={"persist", "remove"})
@@ -80,13 +29,12 @@ class WidgetContainer
     private $instances;
 
     /**
-     * The position of the instance inside its container.
+     * The list of content instances.
      *
-     * @ORM\Column(name="position", type="integer", nullable=true)
-     *
-     * @var int
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Tab\HomeTab", invertedBy="container", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"position" = "ASC"})
      */
-    private $position = 0;
+    private $homeTab;
 
     /**
      * WidgetContainer constructor.
@@ -96,101 +44,6 @@ class WidgetContainer
         $this->refreshUuid();
 
         $this->instances = new ArrayCollection();
-    }
-
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set name.
-     *
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Get layout.
-     *
-     * @return array
-     */
-    public function getLayout()
-    {
-        return $this->layout;
-    }
-
-    public function setLayout($layout)
-    {
-        $this->layout = $layout;
-    }
-
-    /**
-     * Get color.
-     *
-     * @return string
-     */
-    public function getColor()
-    {
-        return $this->color;
-    }
-
-    /**
-     * Set color.
-     *
-     * @param string $color
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
-    }
-
-    /**
-     * Get background type.
-     *
-     * @return string
-     */
-    public function getBackgroundType()
-    {
-        return $this->backgroundType;
-    }
-
-    /**
-     * Set background type.
-     *
-     * @param string $backgroundType
-     */
-    public function setBackgroundType($backgroundType)
-    {
-        $this->backgroundType = $backgroundType;
-    }
-
-    /**
-     * Get background.
-     *
-     * @return string
-     */
-    public function getBackground()
-    {
-        return $this->background;
-    }
-
-    /**
-     * Set background.
-     *
-     * @param string $background
-     */
-    public function setBackground($background)
-    {
-        $this->background = $background;
     }
 
     /**
@@ -228,23 +81,13 @@ class WidgetContainer
         }
     }
 
-    /**
-     * Get position.
-     *
-     * @return int
-     */
-    public function getPosition()
+    public function setHomeTab(HomeTab $tab)
     {
-        return $this->position;
+        $this->homeTab = $homeTab;
     }
 
-    /**
-     * Set position.
-     *
-     * @param int $position
-     */
-    public function setPosition($position)
+    public function getHomeTab()
     {
-        $this->position = $position;
+        return $this->homeTab;
     }
 }

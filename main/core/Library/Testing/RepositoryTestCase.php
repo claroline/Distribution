@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Testing;
 
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
@@ -29,7 +29,7 @@ use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Tool\ToolRights;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\Widget;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\RelWorkspaceTag;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -504,7 +504,7 @@ abstract class RepositoryTestCase extends WebTestCase
         self::$om->flush();
     }
 
-    protected static function createAdminWidgetHomeTabConfig(
+    protected static function createAdminWidgetInstanceConfig(
         $name,
         Widget $widget,
         HomeTab $homeTab,
@@ -512,7 +512,7 @@ abstract class RepositoryTestCase extends WebTestCase
         $locked,
         $widgetOrder
     ) {
-        $widgetHomeTabConfig = new WidgetHomeTabConfig();
+        $widgetHomeTabConfig = new WidgetInstanceConfig();
         $widgetHomeTabConfig->setWidget($widget);
         $widgetHomeTabConfig->setHomeTab($homeTab);
         $widgetHomeTabConfig->setType('admin');
@@ -524,7 +524,7 @@ abstract class RepositoryTestCase extends WebTestCase
         self::$om->flush();
     }
 
-    protected static function createDesktopWidgetHomeTabConfig(
+    protected static function createDesktopWidgetInstanceConfig(
         $name,
         Widget $widget,
         HomeTab $homeTab,
@@ -534,7 +534,7 @@ abstract class RepositoryTestCase extends WebTestCase
         $locked,
         $widgetOrder
     ) {
-        $widgetHomeTabConfig = new WidgetHomeTabConfig();
+        $widgetHomeTabConfig = new WidgetInstanceConfig();
         $widgetHomeTabConfig->setWidget($widget);
         $widgetHomeTabConfig->setHomeTab($homeTab);
         $widgetHomeTabConfig->setUser($user);
@@ -547,7 +547,7 @@ abstract class RepositoryTestCase extends WebTestCase
         self::$om->flush();
     }
 
-    protected static function createWorkspaceWidgetHomeTabConfig(
+    protected static function createWorkspaceWidgetInstanceConfig(
         $name,
         Widget $widget,
         HomeTab $homeTab,
@@ -556,7 +556,7 @@ abstract class RepositoryTestCase extends WebTestCase
         $locked,
         $widgetOrder
     ) {
-        $widgetHomeTabConfig = new WidgetHomeTabConfig();
+        $widgetHomeTabConfig = new WidgetInstanceConfig();
         $widgetHomeTabConfig->setWidget($widget);
         $widgetHomeTabConfig->setHomeTab($homeTab);
         $widgetHomeTabConfig->setWorkspace($workspace);

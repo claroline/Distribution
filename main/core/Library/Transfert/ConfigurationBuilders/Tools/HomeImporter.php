@@ -12,11 +12,11 @@
 namespace Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 //TODO FIXME ! NOT GONNA WORK ANYMORE
 use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Transfert\Importer;
@@ -182,7 +182,7 @@ class HomeImporter extends Importer implements ConfigurationInterface, RichTextI
                 $widgetConfig->setWidgetInstance($widgetInstance);
                 $this->om->persist($widgetConfig);
 
-                $widgetHomeTabConfig = new WidgetHomeTabConfig();
+                $widgetHomeTabConfig = new WidgetInstanceConfig();
                 $widgetHomeTabConfig->setWidgetInstance($widgetInstance);
                 $widgetHomeTabConfig->setHomeTab($homeTab);
                 $widgetHomeTabConfig->setWorkspace($this->getWorkspace());

@@ -7,12 +7,12 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Finder\Home\WidgetContainerFinder;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -61,10 +61,10 @@ class HomeTabSerializer
 
     public function serialize(HomeTab $homeTab, array $options = []): array
     {
-        $widgetHomeTabConfigs = $homeTab->getWidgetHomeTabConfigs();
+        $widgetInstanceConfigs = $homeTab->getWidgetInstanceConfigs();
         $containers = [];
 
-        foreach ($widgetHomeTabConfigs as $config) {
+        foreach ($widgetInstanceConfigs as $config) {
             $container = $config->getWidgetInstance()->getContainer();
 
             if ($container) {
@@ -176,7 +176,7 @@ class HomeTabSerializer
 
             //ptet rajouter les instances ici ? je sais pas
             foreach ($widgetContainer->getInstances() as $key => $instance) {
-                $widgetHomeTabConfig = new WidgetHomeTabConfig();
+                $widgetHomeTabConfig = new WidgetInstanceConfig();
                 $widgetHomeTabConfig->setUser($user);
                 $widgetHomeTabConfig->setWorkspace($workspace);
                 $widgetHomeTabConfig->setHomeTab($homeTab);

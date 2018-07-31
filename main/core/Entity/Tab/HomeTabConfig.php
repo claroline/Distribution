@@ -29,6 +29,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  */
 class HomeTabConfig
 {
+    public function __construct()
+    {
+        $this->refreshUuid();
+
+        $this->centerTitle = false;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -37,29 +44,33 @@ class HomeTabConfig
     protected $id;
 
     /**
+     * @ORM\Column(nullable=true)
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(nullable=false, type="text")
+     */
+    protected $longTitle;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $centerTitle = false;
+
+    /**
+     * @ORM\Column(nullable=true)
+     */
+    protected $icon;
+
+    /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Home\HomeTab",
+     *     targetEntity="Claroline\CoreBundle\Entity\Tab\HomeTab",
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="home_tab_id", nullable=false, onDelete="CASCADE")
      */
     protected $homeTab;
-
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\User"
-     * )
-     * @ORM\JoinColumn(name="user_id", nullable=true, onDelete="CASCADE")
-     */
-    protected $user;
-
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace"
-     * )
-     * @ORM\JoinColumn(name="workspace_id", nullable=true, onDelete="CASCADE")
-     */
-    protected $workspace;
 
     /**
      * @ORM\Column()
@@ -86,6 +97,36 @@ class HomeTabConfig
      */
     protected $details;
 
+    /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Role"
+     * )
+     * @ORM\JoinTable(name="claro_home_tab_roles")
+     */
+    protected $roles;
+
+    public function getRoles()
+    {
+        return $this->roles->toArray();
+    }
+
+    public function addRole(Role $role)
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
+        }
+    }
+
+    public function removeRole(Role $role)
+    {
+        $this->roles->removeElement($role);
+    }
+
+    public function emptyRoles()
+    {
+        $this->roles->clear();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -104,26 +145,6 @@ class HomeTabConfig
     public function setHomeTab($homeTab)
     {
         $this->homeTab = $homeTab;
-    }
-
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
-
-    public function getWorkspace()
-    {
-        return $this->workspace;
-    }
-
-    public function setWorkspace($workspace)
-    {
-        $this->workspace = $workspace;
     }
 
     public function isVisible()

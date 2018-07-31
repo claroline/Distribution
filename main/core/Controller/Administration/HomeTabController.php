@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Event\Log\LogHomeTabAdminCreateEvent;
 use Claroline\CoreBundle\Event\Log\LogHomeTabAdminDeleteEvent;
@@ -432,7 +432,7 @@ class HomeTabController extends Controller
             $visible = $form->get('visible')->getData();
 
             $widgetInstance = new WidgetInstance();
-            $widgetHomeTabConfig = new WidgetHomeTabConfig();
+            $widgetHomeTabConfig = new WidgetInstanceConfig();
             $widgetDisplayConfig = new WidgetDisplayConfig();
             $widgetInstance->setName($formDatas['name']);
             $widgetInstance->setWidget($widget);
@@ -484,9 +484,9 @@ class HomeTabController extends Controller
      *
      * Returns the widget instance edition form
      */
-    public function getAdminWidgetInstanceEditionFormAction(WidgetHomeTabConfig $whtc, WidgetDisplayConfig $wdc)
+    public function getAdminWidgetInstanceEditionFormAction(WidgetInstanceConfig $whtc, WidgetDisplayConfig $wdc)
     {
-        $this->checkAdminAccessForWidgetHomeTabConfig($whtc);
+        $this->checkAdminAccessForWidgetInstanceConfig($whtc);
         $this->checkAdminAccessForWidgetDisplayConfig($wdc);
         $widgetInstance = $wdc->getWidgetInstance();
         $widget = $widgetInstance->getWidget();
@@ -517,11 +517,11 @@ class HomeTabController extends Controller
      *
      * Edits widget instance config
      */
-    public function putAdminWidgetInstanceEditionAction(WidgetHomeTabConfig $whtc, WidgetDisplayConfig $wdc)
+    public function putAdminWidgetInstanceEditionAction(WidgetInstanceConfig $whtc, WidgetDisplayConfig $wdc)
     {
         $widgetInstance = $wdc->getWidgetInstance();
         $widget = $widgetInstance->getWidget();
-        $this->checkAdminAccessForWidgetHomeTabConfig($whtc);
+        $this->checkAdminAccessForWidgetInstanceConfig($whtc);
         $this->checkAdminAccessForWidgetDisplayConfig($wdc);
         $this->checkAdminAccessForWidgetInstance($widgetInstance);
         $color = $wdc->getColor();
@@ -591,12 +591,12 @@ class HomeTabController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function deleteAdminWidgetHomeTabConfigAction(WidgetHomeTabConfig $widgetHomeTabConfig)
+    public function deleteAdminWidgetInstanceConfigAction(WidgetInstanceConfig $widgetHomeTabConfig)
     {
-        $this->checkAdminAccessForWidgetHomeTabConfig($widgetHomeTabConfig);
+        $this->checkAdminAccessForWidgetInstanceConfig($widgetHomeTabConfig);
         $widgetInstance = $widgetHomeTabConfig->getWidgetInstance();
         $datas = $this->serializer->serialize($widgetInstance, 'json', SerializationContext::create()->setGroups(['api_widget']));
-        $this->homeTabManager->deleteWidgetHomeTabConfig($widgetHomeTabConfig);
+        $this->homeTabManager->deleteWidgetInstanceConfig($widgetHomeTabConfig);
         $this->widgetManager->removeInstance($widgetInstance);
         $event = new LogWidgetAdminDeleteEvent(json_decode($datas, true));
         $this->eventDispatcher->dispatch('log', $event);
@@ -664,7 +664,7 @@ class HomeTabController extends Controller
         }
     }
 
-    private function checkAdminAccessForWidgetHomeTabConfig(WidgetHomeTabConfig $whtc)
+    private function checkAdminAccessForWidgetInstanceConfig(WidgetInstanceConfig $whtc)
     {
         if ('admin' !== $whtc->getType() ||
             !is_null($whtc->getUser()) ||

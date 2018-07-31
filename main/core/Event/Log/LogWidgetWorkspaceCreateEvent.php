@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Event\Log;
 
-use Claroline\CoreBundle\Entity\Home\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 
 class LogWidgetWorkspaceCreateEvent extends LogGenericEvent
 {
@@ -22,7 +22,7 @@ class LogWidgetWorkspaceCreateEvent extends LogGenericEvent
     /**
      * Constructor.
      */
-    public function __construct(HomeTab $homeTab, WidgetHomeTabConfig $whtc, WidgetDisplayConfig $wdc = null)
+    public function __construct(HomeTab $homeTab, WidgetInstanceConfig $whtc, WidgetDisplayConfig $wdc = null)
     {
         $workspace = $homeTab->getWorkspace();
         $widgetInstance = $whtc->getWidgetInstance();

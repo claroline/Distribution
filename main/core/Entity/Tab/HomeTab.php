@@ -14,7 +14,6 @@ namespace Claroline\CoreBundle\Entity\Home;
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\AppBundle\Entity\Meta\Poster;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -34,21 +33,6 @@ class HomeTab
     const TYPE_DESKTOP = 'desktop';
     const TYPE_ADMIN_WORKSPACE = 'admin_workspace';
     const TYPE_ADMIN_DESKTOP = 'admin_desktop';
-
-    /**
-     * @ORM\Column(nullable=true)
-     */
-    protected $name;
-
-    /**
-     * @ORM\Column(nullable=false, type="text")
-     */
-    protected $longTitle;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $centerTitle = false;
 
     /**
      * @ORM\Column(nullable=false)
@@ -73,14 +57,6 @@ class HomeTab
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig",
-     *     mappedBy="homeTab"
-     * )
-     */
-    protected $widgetHomeTabConfigs;
-
-    /**
-     * @ORM\OneToMany(
      *     targetEntity="HomeTabConfig",
      *     mappedBy="homeTab"
      * )
@@ -88,25 +64,18 @@ class HomeTab
     protected $homeTabConfigs;
 
     /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Role"
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetContainer",
+     *     mappedBy="homeTab"
      * )
-     * @ORM\JoinTable(name="claro_home_tab_roles")
      */
-    protected $roles;
-
-    /**
-     * @ORM\Column(nullable=true)
-     */
-    protected $icon;
+    protected $widgetContainers;
 
     public function __construct()
     {
         $this->refreshUuid();
         $this->roles = new ArrayCollection();
-        $this->widgetHomeTabConfigs = new ArrayCollection();
         $this->homeTabConfigs = new ArrayCollection();
-        $this->centerTitle = false;
     }
 
     public function getName()
@@ -149,9 +118,9 @@ class HomeTab
         $this->workspace = $workspace;
     }
 
-    public function getWidgetHomeTabConfigs()
+    public function getWidgetInstanceConfigs()
     {
-        return $this->widgetHomeTabConfigs;
+        return $this->widgetInstanceConfigs;
     }
 
     public function serializeForWidgetPicker()
@@ -162,28 +131,6 @@ class HomeTab
         ];
 
         return $return;
-    }
-
-    public function getRoles()
-    {
-        return $this->roles->toArray();
-    }
-
-    public function addRole(Role $role)
-    {
-        if (!$this->roles->contains($role)) {
-            $this->roles->add($role);
-        }
-    }
-
-    public function removeRole(Role $role)
-    {
-        $this->roles->removeElement($role);
-    }
-
-    public function emptyRoles()
-    {
-        $this->roles->clear();
     }
 
     public function getIcon()

@@ -11,16 +11,16 @@
 
 namespace Claroline\CoreBundle\Entity\Widget;
 
-use Claroline\CoreBundle\Entity\Home\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\WidgetHomeTabConfigRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\WidgetInstanceConfigRepository")
  * @ORM\Table(
  *     name="claro_widget_home_tab_config"
  * )
  */
-class WidgetHomeTabConfig
+class WidgetInstanceConfig
 {
     /**
      * @ORM\Id
@@ -32,20 +32,11 @@ class WidgetHomeTabConfig
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstance",
-     *     inversedBy="widgetHomeTabConfigs"
+     *     inversedBy="widgetInstanceConfigs"
      * )
      * @ORM\JoinColumn(name="widget_instance_id", onDelete="CASCADE", nullable=true)
      */
     protected $widgetInstance;
-
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Home\HomeTab",
-     *     inversedBy="widgetHomeTabConfigs"
-     * )
-     * @ORM\JoinColumn(name="home_tab_id", onDelete="CASCADE", nullable=false)
-     */
-    protected $homeTab;
 
     /**
      * @ORM\ManyToOne(

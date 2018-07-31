@@ -27,26 +27,6 @@ class WidgetInstance
     use Uuid;
 
     /**
-     * The name of the instance.
-     *
-     * @ORM\Column(name="widget_name", nullable=true)
-     *
-     * @var string
-     *
-     * @deprecated. moved on WidgetContainer. Kept for migration.
-     */
-    private $name;
-
-    /**
-     * The position of the instance inside its container.
-     *
-     * @ORM\Column(name="widget_position", type="integer")
-     *
-     * @var int
-     */
-    private $position = 0;
-
-    /**
      * The widget which is rendered.
      *
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Widget\Widget")
@@ -68,41 +48,11 @@ class WidgetInstance
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig",
+     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig",
      *     mappedBy="widgetInstance"
      * )
      */
-    protected $widgetHomeTabConfigs;
-
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get position.
-     *
-     * @return int
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    /**
-     * Set position.
-     *
-     * @param int $position
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-    }
+    protected $widgetInstanceConfigs;
 
     /**
      * Get widget.

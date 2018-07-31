@@ -50,7 +50,7 @@ class Updater021600 extends Updater
         $this->log('Repairing workspace widget instances...');
 
         $dql = '
-            SELECT wic, wi FROM ClarolineCoreBundle:Widget\WidgetHomeTabConfig wic
+            SELECT wic, wi FROM ClarolineCoreBundle:Widget\WidgetInstanceConfig wic
             JOIN wic.widgetInstance wi
             WHERE wic.type = \'workspace\'
             AND wi.workspace IS NULL

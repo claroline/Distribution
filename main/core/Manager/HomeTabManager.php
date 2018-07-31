@@ -13,10 +13,10 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -33,7 +33,7 @@ class HomeTabManager
     private $homeTabConfigRepo;
     /** @var HomeTabRepository */
     private $homeTabRepo;
-    /** @var WidgetHomeTabConfigRepository */
+    /** @var WidgetInstanceConfigRepository */
     private $widgetHomeTabConfigRepo;
     private $om;
     private $container;
@@ -50,12 +50,12 @@ class HomeTabManager
     {
         $this->homeTabRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTab');
         $this->homeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTabConfig');
-        $this->widgetHomeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetHomeTabConfig');
+        $this->widgetHomeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetInstanceConfig');
         $this->container = $container;
         $this->om = $om;
         $this->homeTabRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTab');
         $this->homeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTabConfig');
-        $this->widgetHomeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetHomeTabConfig');
+        $this->widgetHomeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetInstanceConfig');
     }
 
     public function persistHomeTabConfigs(HomeTab $homeTab = null, HomeTabConfig $homeTabConfig = null)
@@ -168,7 +168,7 @@ class HomeTabManager
         $res = [];
 
         foreach ($scheduledForInsert as $entity) {
-            if ('Claroline\CoreBundle\Entity\Home\HomeTab' === get_class($entity)) {
+            if ('Claroline\CoreBundle\Entity\Tab\HomeTab' === get_class($entity)) {
                 if ($entity->getWorkspace()->getCode() === $workspace->getCode()) {
                     $res[] = $entity;
                 }
@@ -518,26 +518,26 @@ class HomeTabManager
         return true;
     }
 
-    public function insertWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig)
+    public function insertWidgetInstanceConfig(WidgetInstanceConfig $widgetHomeTabConfig)
     {
         $this->om->persist($widgetHomeTabConfig);
         $this->om->flush();
     }
 
-    public function deleteWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig)
+    public function deleteWidgetInstanceConfig(WidgetInstanceConfig $widgetHomeTabConfig)
     {
         $this->om->remove($widgetHomeTabConfig);
         $this->om->flush();
     }
 
-    public function changeVisibilityWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig, $visible = null)
+    public function changeVisibilityWidgetInstanceConfig(WidgetInstanceConfig $widgetHomeTabConfig, $visible = null)
     {
         $isVisible = is_null($visible) ? !$widgetHomeTabConfig->isVisible() : $visible;
         $widgetHomeTabConfig->setVisible($isVisible);
         $this->om->flush();
     }
 
-    public function changeLockWidgetHomeTabConfig(WidgetHomeTabConfig $widgetHomeTabConfig)
+    public function changeLockWidgetInstanceConfig(WidgetInstanceConfig $widgetHomeTabConfig)
     {
         $isLocked = !$widgetHomeTabConfig->isLocked();
         $widgetHomeTabConfig->setLocked($isLocked);
@@ -568,14 +568,14 @@ class HomeTabManager
             $homeTabConfig->setTabOrder($adminHomeTabConfig->getTabOrder());
             $this->om->persist($homeTabConfig);
 
-            // Create WidgetHomeTabConfig
-            $adminWidgetHomeTabConfigs = $this->widgetHomeTabConfigRepo->findAdminWidgetConfigs($adminHomeTab);
+            // Create WidgetInstanceConfig
+            $adminWidgetInstanceConfigs = $this->widgetHomeTabConfigRepo->findAdminWidgetConfigs($adminHomeTab);
 
-            foreach ($adminWidgetHomeTabConfigs as $adminWidgetHomeTabConfig) {
-                $widgetHomeTabConfig = new WidgetHomeTabConfig();
+            foreach ($adminWidgetInstanceConfigs as $adminWidgetInstanceConfig) {
+                $widgetHomeTabConfig = new WidgetInstanceConfig();
                 $widgetHomeTabConfig->setHomeTab($homeTab);
 
-                $adminWidgetInstance = $adminWidgetHomeTabConfig->getWidgetInstance();
+                $adminWidgetInstance = $adminWidgetInstanceConfig->getWidgetInstance();
                 $workspaceWidgetInstance = new WidgetInstance();
                 $workspaceWidgetInstance->setIsAdmin(false);
                 $workspaceWidgetInstance->setIsDesktop(false);
@@ -587,9 +587,9 @@ class HomeTabManager
                 $widgetHomeTabConfig->setWidgetInstance($workspaceWidgetInstance);
                 $widgetHomeTabConfig->setWorkspace($workspace);
                 $widgetHomeTabConfig->setType('workspace');
-                $widgetHomeTabConfig->setVisible($adminWidgetHomeTabConfig->isVisible());
+                $widgetHomeTabConfig->setVisible($adminWidgetInstanceConfig->isVisible());
                 $widgetHomeTabConfig->setLocked(false);
-                $widgetHomeTabConfig->setWidgetOrder($adminWidgetHomeTabConfig->getWidgetOrder());
+                $widgetHomeTabConfig->setWidgetOrder($adminWidgetInstanceConfig->getWidgetOrder());
                 $this->om->persist($widgetHomeTabConfig);
             }
 
@@ -768,7 +768,7 @@ class HomeTabManager
     }
 
     /**
-     * WidgetHomeTabConfigRepository access methods.
+     * WidgetInstanceConfigRepository access methods.
      */
     public function getAdminWidgetConfigs(HomeTab $homeTab)
     {
@@ -810,14 +810,14 @@ class HomeTabManager
         return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace($widgetId, $homeTabId, $workspace);
     }
 
-    public function getUserAdminWidgetHomeTabConfig(HomeTab $homeTab, WidgetInstance $widgetInstance, User $user)
+    public function getUserAdminWidgetInstanceConfig(HomeTab $homeTab, WidgetInstance $widgetInstance, User $user)
     {
-        return $this->widgetHomeTabConfigRepo->findUserAdminWidgetHomeTabConfig($homeTab, $widgetInstance, $user);
+        return $this->widgetHomeTabConfigRepo->findUserAdminWidgetInstanceConfig($homeTab, $widgetInstance, $user);
     }
 
-    public function getWidgetHomeTabConfigsByHomeTabAndType(HomeTab $homeTab, $type)
+    public function getWidgetInstanceConfigsByHomeTabAndType(HomeTab $homeTab, $type)
     {
-        return $this->widgetHomeTabConfigRepo->findWidgetHomeTabConfigsByHomeTabAndType($homeTab, $type);
+        return $this->widgetHomeTabConfigRepo->findWidgetInstanceConfigsByHomeTabAndType($homeTab, $type);
     }
 
     public function setLogger(LoggerInterface $logger)

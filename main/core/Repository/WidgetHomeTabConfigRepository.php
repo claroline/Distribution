@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\Home\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class WidgetHomeTabConfigRepository extends EntityRepository implements ContainerAwareInterface
+class WidgetInstanceConfigRepository extends EntityRepository implements ContainerAwareInterface
 {
     private $container;
 
@@ -111,7 +111,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     {
         return $this->buildSelectQuery($homeTabId)
             ->join(
-                'Claroline\CoreBundle\Entity\Home\HomeTabConfig',
+                'Claroline\CoreBundle\Entity\Tab\HomeTabConfig',
                 'htc',
                 'WITH',
                 'htc.homeTab = :homeTabId'
@@ -135,7 +135,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
     ) {
         return $this->buildSelectQuery($homeTabId)
             ->join(
-                'Claroline\CoreBundle\Entity\Home\HomeTabConfig',
+                'Claroline\CoreBundle\Entity\Tab\HomeTabConfig',
                 'htc',
                 'WITH',
                 'htc.homeTab = :homeTab'
@@ -153,7 +153,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
             ->getOneOrNullResult();
     }
 
-    public function findUserAdminWidgetHomeTabConfig(
+    public function findUserAdminWidgetInstanceConfig(
         HomeTab $homeTab,
         WidgetInstance $widgetInstance,
         User $user
@@ -169,7 +169,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
             ->getOneOrNullResult();
     }
 
-    public function findWidgetHomeTabConfigsByHomeTabAndType(HomeTab $homeTab, $type)
+    public function findWidgetInstanceConfigsByHomeTabAndType(HomeTab $homeTab, $type)
     {
         return $this->buildSelectQuery($homeTab)
             ->andWhere('whtc.type = :type')
@@ -178,7 +178,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
             ->getResult();
     }
 
-    public function updateAdminWidgetHomeTabConfig(HomeTab $homeTab, $widgetOrder)
+    public function updateAdminWidgetInstanceConfig(HomeTab $homeTab, $widgetOrder)
     {
         return $this->buildUpdateQuery($homeTab)
             ->set('whtc.widgetOrder', 'whtc.widgetOrder - 1')
@@ -190,7 +190,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
             ->execute();
     }
 
-    public function updateWidgetHomeTabConfigByUser(
+    public function updateWidgetInstanceConfigByUser(
         HomeTab $homeTab,
         $widgetOrder,
         User $user
@@ -206,7 +206,7 @@ class WidgetHomeTabConfigRepository extends EntityRepository implements Containe
             ->execute();
     }
 
-    public function updateWidgetHomeTabConfigByWorkspace(
+    public function updateWidgetInstanceConfigByWorkspace(
         HomeTab $homeTab,
         $widgetOrder,
         Workspace $workspace
