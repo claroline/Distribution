@@ -1,4 +1,6 @@
 {
+    "add_managers": "Add managers",
+    "add_members": "Add members",
     "all_other_teams": "All other teams",
     "automatic_fill": "Automatic fill",
     "create_a_team": "Create a team",
@@ -55,7 +57,9 @@
     "team_form_name": "Name",
     "team_form_nbTeams": "Number of teams",
     "team_manager": "Team manager",
+    "team_managers": "Team managers",
     "team_manager_selection": "Team manager selection",
+    "team_members": "Team members",
     "team_self_registration": "Allow user to register",
     "team_self_unregistration": "Allow user to unregister",
     "teams_creation": "Create teams",

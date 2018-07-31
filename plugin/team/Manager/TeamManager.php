@@ -95,6 +95,47 @@ class TeamManager
     }
 
     /**
+     * Deletes multiple teams.
+     *
+     * @param array $teams
+     */
+    public function deleteTeams(array $teams)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($teams as $team) {
+            $this->deleteTeam($team);
+        }
+
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * Deletes a team.
+     *
+     * @param Team $team
+     */
+    public function deleteTeam(Team $team)
+    {
+        $teamRole = $team->getRole();
+        $teamManagerRole = $team->getTeamManagerRole();
+
+        if (!is_null($teamManagerRole)) {
+            $this->om->remove($teamManagerRole);
+        }
+        if (!is_null($teamRole)) {
+            $this->om->remove($teamRole);
+        }
+        $teamDirectory = $team->getDirectory();
+
+        if ($team->isDirDeletable() && !is_null($teamDirectory)) {
+            $this->resourceManager->delete($teamDirectory->getResourceNode());
+        }
+        $this->om->remove($team);
+        $this->om->flush();
+    }
+
+    /**
      * Checks if name already exists and returns a incremented version if it does.
      *
      * @param Workspace $workspace
@@ -242,44 +283,93 @@ class TeamManager
     }
 
     /**
-     * Deletes multiple teams.
-     *
-     * @param array $teams
-     */
-    public function deleteTeams(array $teams)
-    {
-        $this->om->startFlushSuite();
-
-        foreach ($teams as $team) {
-            $this->deleteTeam($team);
-        }
-
-        $this->om->endFlushSuite();
-    }
-
-    /**
-     * Deletes a team.
+     * Sets rights to team directory for all workspace roles.
      *
      * @param Team $team
      */
-    public function deleteTeam(Team $team)
+    public function initializeTeamRights(Team $team)
     {
+        $workspace = $team->getWorkspace();
         $teamRole = $team->getRole();
         $teamManagerRole = $team->getTeamManagerRole();
+        $resourceNode = !is_null($team->getDirectory()) ? $team->getDirectory()->getResourceNode() : null;
 
-        if (!is_null($teamManagerRole)) {
-            $this->om->remove($teamManagerRole);
-        }
-        if (!is_null($teamRole)) {
-            $this->om->remove($teamRole);
-        }
-        $teamDirectory = $team->getDirectory();
+        if (!is_null($resourceNode)) {
+            $workspaceRoles = $this->roleManager->getRolesByWorkspace($workspace);
+            $rights = [];
 
-        if ($team->isDirDeletable() && !is_null($teamDirectory)) {
-            $this->resourceManager->delete($teamDirectory->getResourceNode());
+            foreach ($workspaceRoles as $role) {
+                if (!in_array($role->getUuid(), [$teamRole->getUuid(), $teamManagerRole->getUuid()])) {
+                    var_dump($role->getName());
+                    $rights[$role->getName()] = [
+                        'role' => $role,
+                        'create' => [],
+                        'open' => $team->isPublic(),
+                    ];
+                }
+            }
+            $this->applyRightsToResourceNode($resourceNode, $rights);
         }
-        $this->om->remove($team);
-        $this->om->flush();
+    }
+
+    /**
+     * Updates permissions of team directory..
+     *
+     * @param Team $team
+     */
+    public function updateTeamDirectoryPerms(Team $team)
+    {
+        $directory = $team->getDirectory();
+
+        if (!is_null($directory)) {
+            $this->om->startFlushSuite();
+
+            $workspace = $team->getWorkspace();
+            $teamRole = $team->getRole();
+            $teamManagerRole = $team->getTeamManagerRole();
+            $workspaceRoles = $this->roleManager->getRolesByWorkspace($workspace);
+
+            foreach ($workspaceRoles as $role) {
+                if (!in_array($role->getUuid(), [$teamRole->getUuid(), $teamManagerRole->getUuid()])) {
+                    $rights = ['open' => $team->isPublic()];
+                    $this->rightsManager->editPerms($rights, $role, $directory->getResourceNode(), true);
+                }
+            }
+            $this->om->endFlushSuite();
+        }
+    }
+
+    /**
+     * Initializes directory permissions. Used in command.
+     *
+     * @param Team  $team
+     * @param array $roles
+     */
+    public function initializeTeamPerms(Team $team, array $roles)
+    {
+        $directory = $team->getDirectory();
+
+        if (!is_null($directory)) {
+            $this->om->startFlushSuite();
+            $node = $directory->getResourceNode();
+
+            foreach ($roles as $role) {
+                if ($role === $team->getRole()) {
+                    $perms = ['open' => true, 'edit' => true, 'export' => true, 'copy' => true];
+                    $creatable = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
+                } elseif ($role === $team->getTeamManagerRole()) {
+                    $perms = ['open' => true, 'edit' => true, 'export' => true, 'copy' => true, 'delete' => true, 'administrate' => true];
+                    $creatable = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
+                } elseif ($team->isPublic()) {
+                    $perms = ['open' => true];
+                    $creatable = [];
+                }
+
+                $this->rightsManager->editPerms($perms, $role, $node, true, $creatable, true);
+            }
+
+            $this->om->endFlushSuite();
+        }
     }
 
     /**
@@ -352,6 +442,23 @@ class TeamManager
                     $directory->getResourceNode(),
                     true
                 );
+            }
+        }
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * @param ResourceNode $node
+     * @param array        $rights
+     */
+    private function applyRightsToResourceNode(ResourceNode $node, array $rights)
+    {
+        $this->om->startFlushSuite();
+        $this->resourceManager->createRights($node, $rights, false);
+
+        if ('directory' === $node->getResourceType()->getName()) {
+            foreach ($node->getChildren() as $child) {
+                $this->applyRightsToResourceNode($child, $rights);
             }
         }
         $this->om->endFlushSuite();
@@ -438,38 +545,6 @@ class TeamManager
     {
         $this->om->persist($team);
         $this->om->flush();
-    }
-
-    public function initializeTeamRights(Team $team)
-    {
-        $workspace = $team->getWorkspace();
-        $teamRole = $team->getRole();
-        $teamManagerRole = $team->getTeamManagerRole();
-        $isPublic = $team->isPublic();
-        $resourceNode = !is_null($team->getDirectory()) ?
-            $team->getDirectory()->getResourceNode() :
-            null;
-
-        if (!is_null($resourceNode)) {
-            $workspaceRoles = $this->roleManager->getRolesByWorkspace($workspace);
-            $rights = [];
-
-            foreach ($workspaceRoles as $role) {
-                if ($role->getId() !== $teamRole->getId() &&
-                    $role->getId() !== $teamManagerRole->getId() &&
-                    !is_null($resourceNode)) {
-                    $roleName = $role->getName();
-                    $rights[$roleName] = [];
-                    $rights[$roleName]['role'] = $role;
-                    $rights[$roleName]['create'] = [];
-
-                    if ($isPublic) {
-                        $rights[$roleName]['open'] = true;
-                    }
-                }
-            }
-            $this->applyRightsToResources($resourceNode, $rights);
-        }
     }
 
     public function registerUserToTeam(Team $team, User $user)
@@ -618,103 +693,6 @@ class TeamManager
             }
         }
     }
-
-    private function applyRightsToResources(ResourceNode $node, array $rights)
-    {
-        $this->om->startFlushSuite();
-        $this->resourceManager->createRights($node, $rights);
-
-        if ('directory' === $node->getResourceType()->getName()) {
-            foreach ($node->getChildren() as $child) {
-                $this->applyRightsToResources($child, $rights);
-            }
-        }
-        $this->om->endFlushSuite();
-    }
-
-    /***********************************
-     * WorkspaceTeamParameters methods *
-     ***********************************/
-
-    public function createWorkspaceTeamParameters(Workspace $workspace)
-    {
-        $params = new WorkspaceTeamParameters();
-        $params->setWorkspace($workspace);
-        $params->setIsPublic(true);
-        $params->setSelfRegistration(false);
-        $params->setSelfUnregistration(false);
-        $this->om->persist($params);
-        $this->om->flush();
-
-        return $params;
-    }
-
-    public function persistWorkspaceTeamParameters(WorkspaceTeamParameters $params)
-    {
-        $this->om->persist($params);
-        $this->om->flush();
-    }
-
-    public function initializeTeamPerms(Team $team, array $roles)
-    {
-        $directory = $team->getDirectory();
-
-        if (!is_null($directory)) {
-            $this->om->startFlushSuite();
-            $node = $directory->getResourceNode();
-
-            foreach ($roles as $role) {
-                if ($role === $team->getRole()) {
-                    $perms = ['open' => true, 'edit' => true, 'export' => true, 'copy' => true];
-                    $creatable = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
-                } elseif ($role === $team->getTeamManagerRole()) {
-                    $perms = ['open' => true, 'edit' => true, 'export' => true, 'copy' => true, 'delete' => true, 'administrate' => true];
-                    $creatable = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
-                } elseif ($team->isPublic()) {
-                    $perms = ['open' => true];
-                    $creatable = [];
-                }
-
-                $this->rightsManager->editPerms($perms, $role, $node, true, $creatable, true);
-            }
-
-            $this->om->endFlushSuite();
-        }
-    }
-
-    public function initializeTeamDirectoryPerms(Team $team)
-    {
-        $directory = $team->getDirectory();
-
-        if (!is_null($directory)) {
-            $this->om->startFlushSuite();
-
-            $workspace = $team->getWorkspace();
-            $teamRole = $team->getRole();
-            $teamManagerRole = $team->getTeamManagerRole();
-            $isPublic = $team->isPublic();
-            $node = $directory->getResourceNode();
-            $workspaceRoles = $this->roleManager->getRolesByWorkspace($workspace);
-
-            foreach ($workspaceRoles as $role) {
-                if ($role->getId() !== $teamRole->getId() &&
-                    $role->getId() !== $teamManagerRole->getId()) {
-                    $rights = [];
-
-                    if ($isPublic) {
-                        $rights['open'] = true;
-                    }
-                    $this->rightsManager->editPerms($rights, $role, $node, true);
-                }
-            }
-            $this->om->endFlushSuite();
-        }
-    }
-
-    /************************************
-     * Access to TeamRepository methods *
-     ************************************/
-
     /**
      * @param Workspace $workspace
      * @param string    $orderedBy

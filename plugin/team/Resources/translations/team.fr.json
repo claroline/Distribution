@@ -1,4 +1,6 @@
 {
+    "add_managers": "Ajouter des gestionnaires",
+    "add_members": "Ajouter des membres",
     "all_other_teams": "Toutes les autres équipes",
     "automatic_fill": "Remplir automatiquement",
     "create_a_team": "Créer une équipe",
@@ -55,7 +57,9 @@
     "team_form_name": "Nom",
     "team_form_nbTeams": "Nombre déquipes",
     "team_manager": "Gestionnaire de l'équipe",
+    "team_managers": "Gestionnaires de l'équipe",
     "team_manager_selection": "Sélection du gestionnaire de l'équipe",
+    "team_members": "Membres de l'équipe",
     "team_self_registration": "Permettre aux utilisateurs de s'inscrire",
     "team_self_unregistration": "Permettre aux utilisateurs de se désinscrire",
     "teams_creation": "Création d'équipes",

@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
+use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Manager\ResourceManager;
@@ -36,6 +37,8 @@ class TeamSerializer
 
     /** @var ResourceNodeSerializer */
     private $resourceNodeSerializer;
+    /** @var RoleSerializer */
+    private $roleSerializer;
     /** @var UserSerializer */
     private $userSerializer;
     /** @var WorkspaceSerializer */
@@ -57,6 +60,7 @@ class TeamSerializer
      *     "teamManager"            = @DI\Inject("claroline.manager.team_manager"),
      *     "tokenStorage"           = @DI\Inject("security.token_storage"),
      *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node"),
+     *     "roleSerializer"         = @DI\Inject("claroline.serializer.role"),
      *     "userSerializer"         = @DI\Inject("claroline.serializer.user"),
      *     "workspaceSerializer"    = @DI\Inject("claroline.serializer.workspace")
      * })
@@ -66,6 +70,7 @@ class TeamSerializer
      * @param TeamManager            $teamManager
      * @param TokenStorage           $tokenStorage
      * @param ResourceNodeSerializer $resourceNodeSerializer
+     * @param RoleSerializer         $roleSerializer
      * @param UserSerializer         $userSerializer
      * @param WorkspaceSerializer    $workspaceSerializer
      */
@@ -75,6 +80,7 @@ class TeamSerializer
         TeamManager $teamManager,
         TokenStorage $tokenStorage,
         ResourceNodeSerializer $resourceNodeSerializer,
+        RoleSerializer $roleSerializer,
         UserSerializer $userSerializer,
         WorkspaceSerializer $workspaceSerializer
     ) {
@@ -83,6 +89,7 @@ class TeamSerializer
         $this->teamManager = $teamManager;
         $this->tokenStorage = $tokenStorage;
         $this->resourceNodeSerializer = $resourceNodeSerializer;
+        $this->roleSerializer = $roleSerializer;
         $this->userSerializer = $userSerializer;
         $this->workspaceSerializer = $workspaceSerializer;
 
@@ -114,6 +121,12 @@ class TeamSerializer
                 null,
             'publicDirectory' => $team->isPublic(),
             'deletableDirectory' => $team->isDirDeletable(),
+            'role' => $team->getRole() ?
+                $this->roleSerializer->serialize($team->getRole(), [Options::SERIALIZE_MINIMAL]) :
+                null,
+            'teamManagerRole' => $team->getTeamManagerRole() ?
+                $this->roleSerializer->serialize($team->getTeamManagerRole(), [Options::SERIALIZE_MINIMAL]) :
+                null,
         ];
     }
 
@@ -134,7 +147,6 @@ class TeamSerializer
         $this->sipe('selfUnregistration', 'setSelfUnregistration', $data, $team);
         $this->sipe('publicDirectory', 'setIsPublic', $data, $team);
         $this->sipe('deletableDirectory', 'setDirDeletable', $data, $team);
-        $this->sipe('maxUsers', 'setMaxUsers', $data, $team);
 
         if (isset($data['workspace']['uuid'])) {
             $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspace']['uuid']]);
@@ -157,6 +169,11 @@ class TeamSerializer
             $teamRole = $this->teamManager->createTeamRole($team);
             $team->setRole($teamRole);
         }
+        $maxUsers = !empty($data['maxUsers']) ? $data['maxUsers'] : null;
+        $team->setMaxUsers($maxUsers);
+        $teamRole->setMaxUsers($maxUsers);
+        $this->om->persist($teamRole);
+
         if (empty($teamManagerRole)) {
             $teamManagerRole = $this->teamManager->createTeamRole($team, true);
             $team->setTeamManagerRole($teamManagerRole);
@@ -176,6 +193,9 @@ class TeamSerializer
                 $defaultResource
             );
             $team->setDirectory($directory);
+            $this->teamManager->initializeTeamRights($team);
+        } elseif ('anon.' !== $user) {
+            $this->teamManager->updateTeamDirectoryPerms($team);
         }
 
         $this->om->persist($team);

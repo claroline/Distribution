@@ -15,7 +15,11 @@ const reducer = {
         [FORM_SUBMIT_SUCCESS+'/teams.current']: () => true
       })
     }),
-    current: makeFormReducer('teams.current')
+    current: makeFormReducer('teams.current', {}, {
+      users: makeListReducer('teams.current.users'),
+      managers: makeListReducer('teams.current.managers'),
+      usersPicker: makeListReducer('teams.current.usersPicker')
+    })
   })
 }
 
