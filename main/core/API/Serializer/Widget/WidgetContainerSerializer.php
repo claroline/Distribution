@@ -48,27 +48,21 @@ class WidgetContainerSerializer
 
     public function serialize(WidgetContainer $widgetContainer, array $options = []): array
     {
-        /* contents ordering */
-        $contents = array_map(function (WidgetInstance $widgetInstance) use ($options) {
-            return $this->serializer->serialize($widgetInstance, $options);
-        }, $widgetContainer->getInstances()->toArray());
-
-        $ordered = [];
+        $contents = [];
         $arraySize = count($widgetContainer->getLayout());
-
         for ($i = 0; $i < $arraySize; ++$i) {
-            $ordered[$i] = null;
+            $contents[$i] = null;
         }
 
-        foreach ($contents as $content) {
-            $ordered[$content['position']] = $content;
+        foreach ($widgetContainer->getInstances() as $widgetInstance) {
+            $contents[$widgetInstance->getPosition()] = $this->serializer->serialize($widgetInstance, $options);
         }
 
         return [
             'id' => $this->getUuid($widgetContainer, $options),
             'name' => $widgetContainer->getName(),
             'display' => $this->serializeDisplay($widgetContainer),
-            'contents' => $ordered,
+            'contents' => $contents,
         ];
     }
 
@@ -112,7 +106,6 @@ class WidgetContainerSerializer
             $this->sipe('display.background', 'setBackground', $data, $widgetContainer);
         }
 
-        // todo deserialize instances
         if (isset($data['contents'])) {
             foreach ($data['contents'] as $index => $content) {
                 if ($content) {
@@ -126,6 +119,8 @@ class WidgetContainerSerializer
                 }
             }
         }
+
+        // todo : remove superfluous
 
         return $widgetContainer;
     }
