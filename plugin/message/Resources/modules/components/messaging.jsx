@@ -28,8 +28,8 @@ const Messaging = () =>
         path: '/removed'
       }, {
         icon: 'fa fa-cog',
-        title: trans('send'),
-        path: '/send'
+        title: trans('new'),
+        path: '/new'
       }
     ]}
   />
