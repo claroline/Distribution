@@ -80,6 +80,7 @@ class HomeListener
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
         $currentUser = $this->tokenStorage->getToken()->getUser();
+
         $tabs = $this->finder->search(
           'Claroline\CoreBundle\Entity\Tab\HomeTab',
           ['filters' => ['user' => $currentUser->getUuid()]]

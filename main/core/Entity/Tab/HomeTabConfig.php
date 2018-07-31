@@ -63,11 +63,6 @@ class HomeTabConfig
     protected $homeTab;
 
     /**
-     * @ORM\Column()
-     */
-    protected $type;
-
-    /**
      * @ORM\Column(type="boolean", name="is_visible")
      */
     protected $visible = true;
@@ -162,6 +157,16 @@ class HomeTabConfig
         return $this->tabOrder;
     }
 
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+    }
+
     public function setTabOrder($tabOrder)
     {
         $this->tabOrder = $tabOrder;
@@ -185,6 +190,36 @@ class HomeTabConfig
     public function setDetails($details)
     {
         $this->details = $details;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getLongTitle()
+    {
+        return $this->longTitle;
+    }
+
+    public function setLongTitle($longTitle)
+    {
+        $this->longTitle = $longTitle;
+    }
+
+    public function isCenterTitle()
+    {
+        return $this->centerTitle;
+    }
+
+    public function setCenterTitle($centerTitle)
+    {
+        $this->centerTitle = $centerTitle;
     }
 
     /**

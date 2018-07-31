@@ -37,15 +37,6 @@ class WidgetContainer
     private $homeTab;
 
     /**
-     * The position of the instance inside its container.
-     *
-     * @ORM\Column(name="position", type="integer", nullable=true)
-     *
-     * @var int
-     */
-    private $position = 0;
-
-    /**
      * WidgetContainer constructor.
      */
     public function __construct()
@@ -98,25 +89,5 @@ class WidgetContainer
     public function getHomeTab()
     {
         return $this->homeTab;
-    }
-
-    /**
-     * Get position.
-     *
-     * @return int
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
-    /**
-     * Set position.
-     *
-     * @param int $position
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
     }
 }

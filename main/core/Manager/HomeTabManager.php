@@ -16,8 +16,8 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
@@ -147,8 +147,6 @@ class HomeTabManager
 
         $homeTabConfig = new HomeTabConfig();
         $homeTabConfig->setHomeTab($homeTab);
-        $homeTabConfig->setType('workspace');
-        $homeTabConfig->setWorkspace($workspace);
 
         $tabsInserted = $this->homeTabRepo->findByWorkspace($workspace);
         $tabsToInsert = $this->getTabsScheduledForInsert($workspace);

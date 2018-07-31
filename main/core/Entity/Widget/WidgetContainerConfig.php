@@ -69,6 +69,15 @@ class WidgetContainerConfig
     private $background = null;
 
     /**
+     * The position of the instance inside its container.
+     *
+     * @ORM\Column(name="position", type="integer", nullable=true)
+     *
+     * @var int
+     */
+    private $position = 0;
+
+    /**
      * WidgetContainer constructor.
      */
     public function __construct()

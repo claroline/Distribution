@@ -7,9 +7,9 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Finder\Home\WidgetContainerFinder;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
@@ -61,15 +61,11 @@ class HomeTabSerializer
 
     public function serialize(HomeTab $homeTab, array $options = []): array
     {
-        $widgetInstanceConfigs = $homeTab->getWidgetInstanceConfigs();
+        $savedContainers = $homeTab->getWidgetContainers();
         $containers = [];
 
-        foreach ($widgetInstanceConfigs as $config) {
-            $container = $config->getWidgetInstance()->getContainer();
-
-            if ($container) {
-                $containers[$container->getPosition()] = $container;
-            }
+        foreach ($savedContainers as $container) {
+            $containers[$container->getPosition()] = $container;
         }
 
         $containers = array_values($containers);
@@ -78,10 +74,11 @@ class HomeTabSerializer
           ->findOneBy(['homeTab' => $homeTab]);
 
         $poster = null;
+
         if ($homeTab->getPoster()) {
             $file = $this->om
                 ->getRepository('Claroline\CoreBundle\Entity\File\PublicFile')
-                ->findOneBy(['url' => $homeTab->getPoster()]);
+                ->findOneBy(['url' => $homeTabConfig->getPoster()]);
 
             if ($file) {
                 $poster = $this->serializer->serialize($file);
@@ -90,16 +87,16 @@ class HomeTabSerializer
 
         return [
             'id' => $this->getUuid($homeTab, $options),
-            'title' => $homeTab->getName(),
-            'longTitle' => $homeTab->getLongTitle(),
-            'centerTitle' => $homeTab->isCenterTitle(),
+            'title' => $homeTabConfig->getName(),
+            'longTitle' => $homeTabConfig->getLongTitle(),
+            'centerTitle' => $homeTabConfig->isCenterTitle(),
             'poster' => $poster,
-            'icon' => $homeTab->getIcon(),
+            'icon' => $homeTabConfig->getIcon(),
             'type' => $homeTab->getType(),
             'position' => $homeTabConfig->getTabOrder(),
             'roles' => array_map(function ($role) {
                 return $role->getUuid();
-            }, $homeTab->getRoles()),
+            }, $homeTabConfig->getRoles()),
             'user' => $homeTab->getUser() ? $this->serializer->serialize($homeTab->getUser(), [Options::SERIALIZE_MINIMAL]) : null,
             'workspace' => $homeTab->getWorkspace() ? $this->serializer->serialize($homeTab->getWorkspace(), [Options::SERIALIZE_MINIMAL]) : null,
             'widgets' => array_map(function ($container) use ($options) {

@@ -118,9 +118,9 @@ class HomeTab
         $this->workspace = $workspace;
     }
 
-    public function getWidgetInstanceConfigs()
+    public function getWidgetContainers()
     {
-        return $this->widgetInstanceConfigs;
+        return $this->widgetContainers;
     }
 
     public function serializeForWidgetPicker()
@@ -131,35 +131,5 @@ class HomeTab
         ];
 
         return $return;
-    }
-
-    public function getIcon()
-    {
-        return $this->icon;
-    }
-
-    public function setIcon($icon)
-    {
-        $this->icon = $icon;
-    }
-
-    public function setLongTitle($title)
-    {
-        $this->longTitle = $title;
-    }
-
-    public function getLongTitle()
-    {
-        return $this->longTitle;
-    }
-
-    public function setCenterTitle($bool)
-    {
-        $this->centerTitle = $bool;
-    }
-
-    public function isCenterTitle()
-    {
-        return $this->centerTitle;
     }
 }
