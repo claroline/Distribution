@@ -1,9 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
@@ -19,7 +19,7 @@ const BlogOptionsComponent = props =>
   <section className="resource-section">
     <h2 className="h-first">{trans('configure_blog', {}, 'icap_blog')}</h2>
     {props.mode === constants.EDIT_OPTIONS &&
-      <FormContainer
+      <FormData
         level={2}
         name="blog.data.options"
         sections={[
@@ -159,7 +159,7 @@ const BlogOptionsComponent = props =>
             }}
           />
         </ButtonToolbar>
-      </FormContainer>
+      </FormData>
     }
   </section>
     

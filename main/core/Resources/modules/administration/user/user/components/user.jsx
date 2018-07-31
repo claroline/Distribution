@@ -6,10 +6,10 @@ import {t} from '#/main/core/translation'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
@@ -20,7 +20,7 @@ import {GroupList} from '#/main/core/administration/user/group/components/group-
 import {RoleList} from '#/main/core/administration/user/role/components/role-list'
 
 const UserForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="users.current"
     buttons={true}
@@ -233,7 +233,7 @@ const UserForm = props =>
         />
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 UserForm.propTypes = {
   new: T.bool.isRequired,

@@ -8,7 +8,7 @@ import {makeId} from '#/main/core/scaffolding/id'
 
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {Announces} from '#/plugin/announcement/resources/announcement/components/announces'

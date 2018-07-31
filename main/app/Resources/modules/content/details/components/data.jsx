@@ -6,13 +6,13 @@ import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Heading} from '#/main/core/layout/components/heading'
 import {Sections, Section} from '#/main/core/layout/components/sections'
 
-import {DataDetailsSection as DataDetailsSectionTypes} from '#/main/core/data/details/prop-types'
-import {createDetailsDefinition} from '#/main/core/data/details/utils'
-import {DetailsProp} from '#/main/core/data/details/components/prop'
+import {DataDetailsSection as DataDetailsSectionTypes} from '#/main/app/content/details/prop-types'
+import {createDetailsDefinition} from '#/main/app/content/details/utils'
+import {DetailsProp} from '#/main/app/content/details/components/prop'
 
 // todo there are big c/c from Form component but I don't know if we can do better
 
-const DataDetails = props => {
+const DetailsData = props => {
   const hLevel = props.level + (props.title ? 1 : 0)
   let hDisplay
   if (props.displayLevel) {
@@ -80,7 +80,7 @@ const DataDetails = props => {
   )
 }
 
-DataDetails.propTypes = {
+DetailsData.propTypes = {
   className: T.string,
   level: T.number,
   displayLevel: T.number,
@@ -92,11 +92,11 @@ DataDetails.propTypes = {
   children: T.node
 }
 
-DataDetails.defaultProps = {
+DetailsData.defaultProps = {
   level: 2,
   data: {}
 }
 
 export {
-  DataDetails
+  DetailsData
 }

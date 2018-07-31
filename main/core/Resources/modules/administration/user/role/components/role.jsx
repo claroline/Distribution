@@ -5,12 +5,12 @@ import classes from 'classnames'
 
 import {t, trans} from '#/main/core/translation'
 
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -22,7 +22,7 @@ import {GroupList} from '#/main/core/administration/user/group/components/group-
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 const RoleForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="roles.current"
     buttons={true}
@@ -186,7 +186,7 @@ const RoleForm = props =>
         />
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 RoleForm.propTypes = {
   new: T.bool.isRequired,

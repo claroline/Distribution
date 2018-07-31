@@ -6,9 +6,9 @@ import {t} from '#/main/core/translation'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
@@ -19,7 +19,7 @@ import {RoleList} from '#/main/core/administration/user/role/components/role-lis
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 const GroupForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="groups.current"
     buttons={true}
@@ -137,7 +137,7 @@ const GroupForm = props =>
         />
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 GroupForm.propTypes = {
   new: T.bool.isRequired,

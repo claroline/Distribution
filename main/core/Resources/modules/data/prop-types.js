@@ -2,6 +2,8 @@ import {PropTypes as T} from 'prop-types'
 
 import {Action, PromisedAction} from '#/main/app/action/prop-types'
 
+import {constants} from '#/main/app/content/data/constants'
+
 const DataProperty = {
   propTypes: {
     /**
@@ -54,7 +56,7 @@ const DataProperty = {
     render: T.func
   },
   defaultProps: {
-    type: 'string',
+    type: constants.DEFAULT_TYPE,
     options: {}
   }
 }

@@ -3,8 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -16,7 +16,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 
 const ScheduledTaskForm = props =>
-  <FormContainer
+  <FormData
     level={2}
     name="task"
     target={(task, isNew) => isNew ?
@@ -109,7 +109,7 @@ const ScheduledTaskForm = props =>
         />
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 ScheduledTaskForm.propTypes = {
   new: T.bool.isRequired,

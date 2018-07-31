@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
-import {makeFormReducer} from '#/main/core/data/form/reducer'
+import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 
 import {RESOURCE_RIGHTS_ADD, RESOURCE_RIGHTS_UPDATE} from '#/plugin/reservation/administration/resource/actions'

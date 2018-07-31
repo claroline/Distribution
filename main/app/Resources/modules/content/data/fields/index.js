@@ -7,7 +7,7 @@ import {FieldsGroup} from '#/main/app/content/data/fields/components/group'
 const dataType = {
   name: 'fields',
   meta: {
-    icon: 'fa fa-fw fa fa-dot',
+    icon: 'fa fa-fw fa-dot',
     label: trans('fields'),
     description: trans('fields_desc')
   },

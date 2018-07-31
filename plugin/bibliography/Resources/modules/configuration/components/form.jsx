@@ -3,11 +3,11 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 const ConfigurationFormComponent = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="bookReferenceConfiguration"
     buttons={true}
@@ -27,7 +27,7 @@ const ConfigurationFormComponent = props =>
       }
     ]}
   >
-  </FormContainer>
+  </FormData>
 
 ConfigurationFormComponent.propTypes = {
   id: T.oneOfType([T.number, T.string]).isRequired,

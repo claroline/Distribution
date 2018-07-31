@@ -6,7 +6,7 @@ import get from 'lodash/get'
 const details = (state, detailsName) => get(state, detailsName)
 const data = (detailsState) => detailsState.originalData
 
-export const select = {
+export const selectors = {
   details,
   data
 }

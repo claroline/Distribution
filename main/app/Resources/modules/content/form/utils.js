@@ -4,7 +4,7 @@ import merge from 'lodash/merge'
 import mergeWith from 'lodash/mergeWith'
 import omitBy from 'lodash/omitBy'
 
-import {DataFormSection, DataFormProperty} from '#/main/core/data/form/prop-types'
+import {DataFormSection, DataFormProperty} from '#/main/app/content/form/prop-types'
 
 function isFieldDisplayed(field, data) {
   return typeof field.displayed === 'function' ? field.displayed(data) : field.displayed

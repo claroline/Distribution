@@ -2,15 +2,15 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
 
-import {DataDetails} from '#/main/core/data/details/components/details.jsx'
-import {select} from '#/main/core/data/details/selectors'
+import {DetailsData as DetailsDataComponent} from '#/main/app/content/details/components/data'
+import {selectors} from '#/main/app/content/details/store'
 
-const DataDetailsContainer = connect(
+const DetailsData = connect(
   (state, ownProps) => {
     // get the root of the details in the store
-    const detailsState = select.details(state, ownProps.name)
+    const detailsState = selectors.details(state, ownProps.name)
 
-    let data = select.data(detailsState)
+    let data = selectors.data(detailsState)
     if (ownProps.dataPart) {
       // just select what is related to the managed data part
       data = get(data, ownProps.dataPart)
@@ -21,9 +21,9 @@ const DataDetailsContainer = connect(
     }
   },
   null
-)(DataDetails)
+)(DetailsDataComponent)
 
-DataDetailsContainer.propTypes = {
+DetailsData.propTypes = {
   /**
    * The name of the data in the form.
    *
@@ -42,5 +42,5 @@ DataDetailsContainer.propTypes = {
 }
 
 export {
-  DataDetailsContainer
+  DetailsData
 }

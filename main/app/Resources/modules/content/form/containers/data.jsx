@@ -7,19 +7,18 @@ import set from 'lodash/set'
 import {url} from '#/main/app/api'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {Form} from '#/main/core/data/form/components/form'
-import {actions} from '#/main/core/data/form/actions'
-import {select} from '#/main/core/data/form/selectors'
+import {FormData as FormDataComponent} from '#/main/app/content/form/components/data'
+import {actions, selectors} from '#/main/app/content/form/store'
 
-const FormContainer = connect(
+const FormData = connect(
   (state, ownProps) => {
     // get the root of the form in the store
-    const formState = select.form(state, ownProps.name)
+    const formState = selectors.form(state, ownProps.name)
 
     invariant(undefined !== formState, `Try to connect form on undefined store '${ownProps.name}'.`)
 
-    let data = select.data(formState)
-    let errors = select.errors(formState)
+    let data = selectors.data(formState)
+    let errors = selectors.errors(formState)
     if (ownProps.dataPart) {
       // just select what is related to the managed data part
       data = get(data, ownProps.dataPart)
@@ -27,11 +26,11 @@ const FormContainer = connect(
     }
 
     return {
-      new: select.isNew(formState),
+      new: selectors.isNew(formState),
       data: data,
       errors: errors,
-      pendingChanges: select.pendingChanges(formState),
-      validating: select.validating(formState)
+      pendingChanges: selectors.pendingChanges(formState),
+      validating: selectors.validating(formState)
     }
   },
   (dispatch, ownProps) => ({
@@ -65,32 +64,32 @@ const FormContainer = connect(
       // we need to build the form buttons
       finalProps = Object.assign(finalProps, {
         save: ownProps.save ? Object.assign({}, ownProps.save, {
-          // append the api call to the defined action if the target is provided
-          onClick: () => {
-            if (ownProps.target) {
-              dispatchProps.saveForm(url(
-                typeof ownProps.target === 'function' ? ownProps.target(stateProps.data, stateProps.new) : ownProps.target
-              ))
+            // append the api call to the defined action if the target is provided
+            onClick: () => {
+              if (ownProps.target) {
+                dispatchProps.saveForm(url(
+                  typeof ownProps.target === 'function' ? ownProps.target(stateProps.data, stateProps.new) : ownProps.target
+                ))
+              }
             }
-          }
-        }) : {
-          type: CALLBACK_BUTTON,
-          callback: () => {
-            if (ownProps.target) {
-              dispatchProps.saveForm(url(
-                typeof ownProps.target === 'function' ? ownProps.target(stateProps.data, stateProps.new) : ownProps.target
-              ))
+          }) : {
+            type: CALLBACK_BUTTON,
+            callback: () => {
+              if (ownProps.target) {
+                dispatchProps.saveForm(url(
+                  typeof ownProps.target === 'function' ? ownProps.target(stateProps.data, stateProps.new) : ownProps.target
+                ))
+              }
             }
-          }
-        },
+          },
         cancel: ownProps.cancel ? Object.assign({}, ownProps.cancel, {
-          // append the reset form callback to the defined action
-          onClick: () => dispatchProps.cancelForm()
-        }) : {
-          type: CALLBACK_BUTTON,
-          disabled: !stateProps.pendingChanges,
-          callback: () => dispatchProps.cancelForm()
-        }
+            // append the reset form callback to the defined action
+            onClick: () => dispatchProps.cancelForm()
+          }) : {
+            type: CALLBACK_BUTTON,
+            disabled: !stateProps.pendingChanges,
+            callback: () => dispatchProps.cancelForm()
+          }
       })
     } else {
       // make sure save & cancel actions are not passed to the component
@@ -102,9 +101,9 @@ const FormContainer = connect(
 
     return finalProps
   }
-)(Form)
+)(FormDataComponent)
 
-FormContainer.propTypes = {
+FormData.propTypes = {
   /**
    * The name of the data in the form.
    *
@@ -155,10 +154,10 @@ FormContainer.propTypes = {
   })
 }
 
-FormContainer.defaultProps = {
+FormData.defaultProps = {
   buttons: false
 }
 
 export {
-  FormContainer
+  FormData
 }

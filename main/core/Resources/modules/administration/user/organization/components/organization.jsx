@@ -4,9 +4,9 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
@@ -18,7 +18,7 @@ import {UserList} from '#/main/core/administration/user/user/components/user-lis
 import {WorkspaceList} from '#/main/core/administration/workspace/workspace/components/workspace-list.jsx'
 
 const OrganizationForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="organizations.current"
     buttons={true}
@@ -198,7 +198,7 @@ const OrganizationForm = props =>
         />
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 OrganizationForm.propTypes = {
   new: T.bool.isRequired,

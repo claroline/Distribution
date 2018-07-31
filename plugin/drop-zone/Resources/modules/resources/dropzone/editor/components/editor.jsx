@@ -3,9 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
@@ -14,7 +14,7 @@ import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 const EditorComponent = props =>
   <section className="resource-section">
     <h2>{trans('configuration', {}, 'platform')}</h2>
-    <FormContainer
+    <FormData
       level={3}
       name="dropzoneForm"
       buttons={true}

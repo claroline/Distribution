@@ -1,5 +1,5 @@
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
-import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
+import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 import {LIST_FILTER_ADD, LIST_FILTER_REMOVE} from '#/main/core/data/list/actions'
 import {reducer as editorReducer} from '#/plugin/blog/resources/blog/editor/store'
 import {reducer as postReducer} from '#/plugin/blog/resources/blog/post/store'

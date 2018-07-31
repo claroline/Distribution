@@ -5,9 +5,9 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
 
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 // easy selection for restrictions
 const restrictByDates   = (workspace) => workspace.restrictions.enableDates        || (workspace.restrictions.dates && 0 !== workspace.restrictions.dates.length)
@@ -18,13 +18,15 @@ const restrictStorage   = (workspace) => workspace.restrictions.enableMaxStorage
 // TODO : finish implementation (open resource / open tool)
 // TODO : add tools
 
-const WorkspaceFormComponent = (props) => {
-  return(
-    <div>
-      <FormContainer
-        {...props}
-        meta={true}
-        sections={[
+const WorkspaceFormComponent = (props) =>
+  <FormData
+    {...props}
+    meta={true}
+    sections={[
+      {
+        title: trans('general'),
+        primary: true,
+        fields: [
           {
             title: trans('general'),
             primary: true,
@@ -285,13 +287,12 @@ const WorkspaceFormComponent = (props) => {
               }
             ]
           }
-        ]}
-      >
-        {props.children}
-      </FormContainer>
-    </div>
-  )
-}
+        ]
+      }
+    ]}
+  >
+    {props.children}
+  </FormData>
 
 WorkspaceFormComponent.propTypes = {
   children: T.any,

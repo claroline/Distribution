@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {registry} from '#/main/app/modals/registry'
 import {trans} from '#/main/core/translation'
-import {DataFormModal} from '#/main/core/data/form/modals/components/data-form.jsx'
+import {DataFormModal} from '#/main/app/modals/form/components/data'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'

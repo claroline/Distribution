@@ -4,14 +4,14 @@ import merge from 'lodash/merge'
 import set from 'lodash/set'
 
 import {makeInstanceReducer, combineReducers, reduceReducers} from '#/main/app/store/reducer'
-import {cleanErrors} from '#/main/core/data/form/utils'
+import {cleanErrors} from '#/main/app/content/form/utils'
 
 import {
   FORM_RESET,
   FORM_SET_ERRORS,
   FORM_SUBMIT,
   FORM_UPDATE
-} from './actions'
+} from '#/main/app/content/form/store/actions'
 
 const defaultState = {
   new: false,

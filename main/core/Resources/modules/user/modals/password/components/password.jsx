@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {DataFormModal} from '#/main/core/data/form/modals/components/data-form'
+import {DataFormModal} from '#/main/app/modals/form/components/data'
 
 const PasswordModal = props =>
   <DataFormModal

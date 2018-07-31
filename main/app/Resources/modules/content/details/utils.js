@@ -1,6 +1,6 @@
 import merge from 'lodash/merge'
 
-import {DataDetailsSection, DataDetailsProperty} from '#/main/core/data/details/prop-types'
+import {DataDetailsSection, DataDetailsProperty} from '#/main/app/content/details/prop-types'
 
 /**
  * Fills definition with missing default values.

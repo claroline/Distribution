@@ -5,7 +5,7 @@ import omit from 'lodash/omit'
 import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {DataFormModal} from '#/main/core/data/form/modals/components/data-form'
+import {DataFormModal} from '#/main/app/modals/form/components/data'
 
 class PublicUrlModal extends Component {
   constructor(props) {

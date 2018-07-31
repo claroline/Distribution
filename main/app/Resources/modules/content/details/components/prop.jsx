@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 import merge from 'lodash/merge'
 
+import {Await} from '#/main/app/components/await'
 import {trans} from '#/main/core/translation'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group'
 import {getType} from '#/main/app/content/data'
@@ -42,25 +43,38 @@ DataDetailsField.propTypes = {
   className: T.string
 }
 
-const DetailsProp = props => {
-  const typeDef = getType(props.type)
+class DetailsProp extends Component {
+  constructor(props) {
+    super(props)
 
-  return (
-    <FormGroup
-      id={props.name}
-      label={typeDef.meta && typeDef.meta.noLabel ? props.label : undefined}
-      hideLabel={props.hideLabel}
-      help={props.help}
-    >
-      {props.render ?
-        props.render(props.data) :
-        <DataDetailsField
-          {...props}
-          value={props.calculated ? props.calculated(props.data) : get(props.data, props.name)}
-        />
-      }
-    </FormGroup>
-  )
+    this.state = {definition: null}
+  }
+
+  render() {
+    return (
+      <Await
+        for={getType(this.props.type)}
+        then={typeDef => this.setState({definition: typeDef})}
+      >
+        {this.state.definition &&
+          <FormGroup
+            id={this.props.name}
+            label={this.state.definition.meta && this.state.definition.meta.noLabel ? this.props.label : undefined}
+            hideLabel={this.props.hideLabel}
+            help={this.props.help}
+          >
+            {this.props.render ?
+              this.props.render(this.props.data) :
+              <DataDetailsField
+                {...this.props}
+                value={this.props.calculated ? this.props.calculated(this.props.data) : get(this.props.data, this.props.name)}
+              />
+            }
+          </FormGroup>
+        }
+      </Await>
+    )
+  }
 }
 
 export {

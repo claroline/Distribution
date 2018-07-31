@@ -8,7 +8,7 @@ import {currentUser} from '#/main/core/user/current'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Sections, Section} from '#/main/core/layout/components/sections'
-import {DataDetails} from '#/main/core/data/details/components/details'
+import {DetailsData} from '#/main/app/content/details/components/data'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {User as UserTypes} from '#/main/core/user/prop-types'
@@ -30,7 +30,7 @@ const UserCompare = props =>
       <h3 className="panel-title">{props.user.username}</h3>
     </div>
 
-    <DataDetails
+    <DetailsData
       data={props.user}
       sections={[
         {
@@ -131,7 +131,7 @@ const UserCompare = props =>
           />
         </Section>
       </Sections>
-    </DataDetails>
+    </DetailsData>
 
     <Button
       className="panel-btn btn"

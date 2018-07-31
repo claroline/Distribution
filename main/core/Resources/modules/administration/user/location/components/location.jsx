@@ -5,9 +5,9 @@ import {connect} from 'react-redux'
 import {t} from '#/main/core/translation'
 
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -19,7 +19,7 @@ import {GroupList} from '#/main/core/administration/user/group/components/group-
 import {locationTypes} from '#/main/core/administration/user/location/constants'
 
 const LocationForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="locations.current"
     buttons={true}
@@ -152,7 +152,7 @@ const LocationForm = props =>
         />
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 LocationForm.propTypes = {
   new: T.bool.isRequired,

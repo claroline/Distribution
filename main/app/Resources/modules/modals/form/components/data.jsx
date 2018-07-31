@@ -7,9 +7,9 @@ import set from 'lodash/set'
 
 import {trans} from '#/main/core/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
-import {DataFormSection as DataFormSectionTypes} from '#/main/core/data/form/prop-types'
-import {Form} from '#/main/core/data/form/components/form.jsx'
-import {cleanErrors} from '#/main/core/data/form/utils'
+import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/prop-types'
+import {FormData} from '#/main/app/content/form/components/data'
+import {cleanErrors} from '#/main/app/content/form/utils'
 
 const MODAL_DATA_FORM = 'MODAL_DATA_FORM'
 
@@ -72,10 +72,11 @@ class DataFormModal extends Component {
 
   render() {
     return (
-      <Modal {...this.props}>
-        <Form
+      <Modal
+        {...this.props}
+      >
+        <FormData
           level={5}
-          meta={this.props.meta}
           data={this.state.data}
           errors={this.state.errors}
           pendingChanges={this.state.pendingChanges}
@@ -85,7 +86,7 @@ class DataFormModal extends Component {
           updateProp={this.updateProp}
         >
           {this.props.children}
-        </Form>
+        </FormData>
         <button
           className="modal-btn btn btn-primary"
           disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
@@ -107,7 +108,6 @@ DataFormModal.propTypes = {
 
   // form configuration
   data: T.any,
-  meta: T.bool,
   sections: T.arrayOf(T.shape(
     DataFormSectionTypes.propTypes
   )).isRequired,
@@ -119,8 +119,7 @@ DataFormModal.defaultProps = {
   icon: 'fa fa-fw fa-pencil',
   title: trans('edit'),
   saveButtonText: trans('save'),
-  data: {},
-  meta: false
+  data: {}
 }
 
 export {

@@ -3,7 +3,7 @@ import React from 'react'
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
@@ -126,7 +126,7 @@ InheritedResourcesSection.propTypes = {
 }
 
 const StepForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     displayLevel={2}
     name="pathForm"
@@ -229,7 +229,7 @@ const StepForm = props =>
         </FormSection>
       }
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 implementPropTypes(StepForm, StepTypes, {
   stepPath: T.string.isRequired,

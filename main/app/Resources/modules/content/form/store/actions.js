@@ -8,7 +8,8 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as alertActions} from '#/main/app/overlay/alert/store'
 import {constants as alertConstants} from '#/main/app/overlay/alert/constants'
 import {constants as actionConstants} from '#/main/app/action/constants'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 export const FORM_RESET          = 'FORM_RESET'
 export const FORM_SET_ERRORS     = 'FORM_SET_ERRORS'

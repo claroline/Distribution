@@ -2,7 +2,7 @@ import merge from 'lodash/merge'
 
 import {makeId} from '#/main/core/scaffolding/id'
 
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {selectors} from '#/main/core/widget/editor/modals/creation/store'

@@ -7,17 +7,17 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
-import {MODAL_DATA_FORM} from '#/main/core/data/form/modals'
+import {MODAL_DATA_FORM} from '#/main/app/modals/form'
 
-import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
-import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
+import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {GroupList} from '#/main/core/administration/user/group/components/group-list'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {actions} from '#/main/core/administration/workspace/workspace/actions'
-import {WorkspaceList} from '#/main/core/administration/workspace/workspace/components/workspace-list.jsx'
+import {WorkspaceList} from '#/main/core/administration/workspace/workspace/components/workspace-list'
 
 // todo : restore custom actions the same way resource actions are implemented
 

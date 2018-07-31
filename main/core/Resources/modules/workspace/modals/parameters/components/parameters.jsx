@@ -4,8 +4,8 @@ import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'

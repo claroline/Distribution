@@ -4,11 +4,11 @@ import {PropTypes as T} from 'prop-types'
 
 import {makeId} from '#/main/core/scaffolding/id'
 import {trans, transChoice} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -58,7 +58,7 @@ const generateRestrictedList = (fields) => {
 const EditorComponent = props =>
   <section className="resource-section">
     <h2>{trans('configuration', {}, 'platform')}</h2>
-    <FormContainer
+    <FormData
       level={3}
       name="clacoFormForm"
       buttons={true}
@@ -607,7 +607,7 @@ const EditorComponent = props =>
           </FormSection>
         }
       </FormSections>
-    </FormContainer>
+    </FormData>
   </section>
 
 EditorComponent.propTypes = {

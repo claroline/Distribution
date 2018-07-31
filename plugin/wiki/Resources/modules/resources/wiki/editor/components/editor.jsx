@@ -4,14 +4,14 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
 
 import {Wiki as WikiTypes} from '#/plugin/wiki/resources/wiki/prop-types'
 import {WIKI_MODES, WIKI_MODE_CHOICES} from '#/plugin/wiki/resources/wiki/constants'
 
 const EditorComponent = props =>
-  <FormContainer
+  <FormData
     level={2}
     buttons={true}
     target={() => ['apiv2_wiki_update_options', {id: props.wiki.id}]}

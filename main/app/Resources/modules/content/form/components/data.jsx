@@ -11,9 +11,9 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {SubSet} from '#/main/core/layout/form/components/fieldset/sub-set'
 import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set'
 
-import {createFormDefinition} from '#/main/core/data/form/utils'
-import {DataFormSection as DataFormSectionTypes} from '#/main/core/data/form/prop-types'
-import {FormField} from '#/main/core/data/form/components/field'
+import {createFormDefinition} from '#/main/app/content/form/utils'
+import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/prop-types'
+import {FormProp} from '#/main/app/content/form/components/prop'
 import {FormGroup} from '#/main/app/content/form/components/group'
 
 const AdvancedSection = props =>
@@ -54,7 +54,7 @@ class FormData extends Component {
         )
       } else {
         rendered.push(
-          <FormField
+          <FormProp
             {...field}
             key={field.name}
             value={field.calculated ? field.calculated(this.props.data) : get(this.props.data, field.name)}

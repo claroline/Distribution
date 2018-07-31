@@ -3,8 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import cloneDeep from 'lodash/cloneDeep'
 
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
@@ -21,7 +21,7 @@ const ProfileFacetComponent = props => {
   }
 
   return (
-    <FormContainer
+    <FormData
       name="user"
       title={props.facet.title}
       target={['apiv2_user_update', {id: props.user.id}]}

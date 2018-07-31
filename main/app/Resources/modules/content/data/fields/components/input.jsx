@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 
@@ -13,15 +12,14 @@ import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 
 import {getCreatableTypes} from '#/main/app/content/data'
-import {FormField} from '#/main/core/data/form/components/field'
-
-// TODO : fixes types modales (creatableTypes are now a Promise)
+import {FormProp} from '#/main/app/content/form/components/prop'
 
 // todo try to avoid connexion to the store
 // todo create working preview
+// todo restore data type icon : <span className={classes('field-item-icon', registry.get(field.type).meta.icon)} />
 
 const FieldPreview = props =>
-  <FormField
+  <FormProp
     {...props}
     onChange={() => true}
   />
@@ -117,10 +115,6 @@ class FieldList extends Component {
           <ul>
             {this.props.value.map((field, fieldIndex) =>
               <li key={fieldIndex} className="field-item">
-                <span
-                  className={classes('field-item-icon', registry.get(field.type).meta.icon)}
-                />
-
                 <FieldPreview {...this.formatField(field)} />
 
                 <div className="field-item-actions">
@@ -162,23 +156,23 @@ class FieldList extends Component {
         }
 
         <Button
-          type={MODAL_BUTTON}
+          type={CALLBACK_BUTTON}
           className="btn btn-block"
           icon="fa fa-fw fa-plus"
           label={trans('add_field')}
-          modal={[MODAL_SELECTION, {
-            title: trans('create_field'),
-            items: getCreatableTypes().map(type => type.meta),
-            handleSelect: (type) => this.open({
-              type: type.type,
-              restrictions: {
-                locked: false,
-                lockedEditionOnly: false
-              }
-            }, (data) => {
-                this.add(data)
+          callback={() => getCreatableTypes().then(types => {
+            this.props.showModal(MODAL_SELECTION, {
+              title: trans('create_field'),
+              items: types.map(type => Object.assign({}, type.meta, {name: type.name})),
+              handleSelect: (type) => this.open({
+                type: type.name,
+                restrictions: {
+                  locked: false,
+                  lockedEditionOnly: false
+                }
+              }, this.add)
             })
-          }]}
+          })}
         />
       </div>
     )

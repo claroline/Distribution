@@ -1,4 +1,4 @@
-import {makeFormReducer} from '#/main/core/data/form/reducer'
+import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 
 const reducer = {

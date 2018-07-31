@@ -4,11 +4,11 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
@@ -52,7 +52,7 @@ ToolRightsRow.propTypes = {
 }
 
 const RoleForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="roles.current"
     buttons={true}
@@ -165,7 +165,7 @@ const RoleForm = props =>
         </FormSection>
       }
     </FormSections>
-  </FormContainer>
+  </FormData>
 RoleForm.propTypes = {
   new: T.bool.isRequired,
   role: T.shape(

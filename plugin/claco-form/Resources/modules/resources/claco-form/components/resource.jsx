@@ -8,7 +8,7 @@ import {now} from '#/main/core/scaffolding/date'
 import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {RoutedPageContent} from '#/main/core/layout/router/components/page'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
