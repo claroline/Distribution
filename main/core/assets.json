@@ -17,7 +17,7 @@
       "user-registration": "user/registration",
       "user-profile": "user/profile",
       "home-tool": "tools/home",
-      "admin-desktop-tool": "administration/desktop",
+      "admin-desktop-tool": "administration/home",
       "user-tracking": "user/tracking",
       "contacts-tool": "user/contact",
       "resources-tool": "tools/resources/bootstrap",
