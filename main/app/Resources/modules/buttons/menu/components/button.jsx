@@ -65,7 +65,7 @@ const MenuButton = props => {
 
       <Menu>
         {(props.menu.label && 0 !== unclassifiedActions.length) &&
-        <MenuItem header={true}>{props.menu.label}</MenuItem>
+          <MenuItem header={true}>{props.menu.label}</MenuItem>
         }
 
         {primaryActions.map((action) =>
@@ -77,7 +77,7 @@ const MenuButton = props => {
         )}
 
         {(0 !== primaryActions.length && 0 !== unclassifiedActions.length) &&
-        <MenuItem divider={true} />
+          <MenuItem divider={true} />
         }
 
         {unclassifiedActions.map((action) =>
@@ -100,7 +100,7 @@ const MenuButton = props => {
         ])}
 
         {((0 !== unclassifiedActions.length || 0 !== Object.keys(groupActions).length) && 0 !== dangerousActions.length) &&
-        <MenuItem divider={true} />
+          <MenuItem divider={true} />
         }
 
         {dangerousActions.map((action) =>

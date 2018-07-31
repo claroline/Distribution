@@ -5,7 +5,7 @@ import classes from 'classnames'
 import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 
-import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
+import {UserAvatar} from '#/main/core/user/components/avatar'
 
 /**
  * Micro representation of a User.
