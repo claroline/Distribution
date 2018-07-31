@@ -9,30 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Entity\Home;
+namespace Claroline\CoreBundle\Entity\Tab;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\HomeTabConfigRepository")
  * @ORM\Table(
- *     name="claro_home_tab_config",
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(
- *             name="home_tab_config_unique_home_tab_user_workspace_type",
- *             columns={"home_tab_id", "user_id", "workspace_id", "type"}
- *         )
- *     }
+ *     name="claro_home_tab_config"
  * )
- * @DoctrineAssert\UniqueEntity({"homeTab", "user", "workspace", "type"})
  */
 class HomeTabConfig
 {
     public function __construct()
     {
-        $this->refreshUuid();
-
         $this->centerTitle = false;
     }
 
@@ -51,7 +41,7 @@ class HomeTabConfig
     /**
      * @ORM\Column(nullable=false, type="text")
      */
-    protected $longTitle;
+    protected $longTitle = '';
 
     /**
      * @ORM\Column(type="boolean")

@@ -10,9 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
  * WidgetContainer entity.
  *
  * @ORM\Entity()
- * @ORM\Table(name="claro_widget_container")
+ * @ORM\Table(name="claro_widget_container_config")
  */
-class WidgetContainer
+class WidgetContainerConfig
 {
     use Id;
     use Uuid;

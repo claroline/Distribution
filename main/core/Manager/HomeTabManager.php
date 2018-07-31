@@ -48,13 +48,13 @@ class HomeTabManager
      */
     public function __construct(ContainerInterface $container, ObjectManager $om)
     {
-        $this->homeTabRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTab');
-        $this->homeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTabConfig');
+        $this->homeTabRepo = $om->getRepository('ClarolineCoreBundle:Tab\HomeTab');
+        $this->homeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Tab\HomeTabConfig');
         $this->widgetHomeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetInstanceConfig');
         $this->container = $container;
         $this->om = $om;
-        $this->homeTabRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTab');
-        $this->homeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Home\HomeTabConfig');
+        $this->homeTabRepo = $om->getRepository('ClarolineCoreBundle:Tab\HomeTab');
+        $this->homeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Tab\HomeTabConfig');
         $this->widgetHomeTabConfigRepo = $om->getRepository('ClarolineCoreBundle:Widget\WidgetInstanceConfig');
     }
 
@@ -119,7 +119,7 @@ class HomeTabManager
             $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
 
             $name = $values[1];
-            $tab = $this->om->getRepository('ClarolineCoreBundle:Home\HomeTab')->findBy(['workspace' => $workspace, 'name' => $name]);
+            $tab = $this->om->getRepository('ClarolineCoreBundle:Tab\HomeTab')->findBy(['workspace' => $workspace, 'name' => $name]);
             if (!$tab) {
                 $this->createHomeTab($name, $workspace);
                 ++$i;

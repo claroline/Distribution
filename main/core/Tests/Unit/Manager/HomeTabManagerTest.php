@@ -1095,11 +1095,11 @@ class HomeTabManagerTest extends MockeryTestCase
     private function getManager(array $mockedMethods = [])
     {
         $this->om->shouldReceive('getRepository')
-            ->with('ClarolineCoreBundle:Home\HomeTab')
+            ->with('ClarolineCoreBundle:Tab\HomeTab')
             ->once()
             ->andReturn($this->homeTabRepo);
         $this->om->shouldReceive('getRepository')
-            ->with('ClarolineCoreBundle:Home\HomeTabConfig')
+            ->with('ClarolineCoreBundle:Tab\HomeTabConfig')
             ->once()
             ->andReturn($this->homeTabConfigRepo);
         $this->om->shouldReceive('getRepository')

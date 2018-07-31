@@ -20,7 +20,7 @@ class HomeTabConfigRepositoryTest extends RepositoryTestCase
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        self::$repo = self::getRepository('ClarolineCoreBundle:Home\HomeTabConfig');
+        self::$repo = self::getRepository('ClarolineCoreBundle:Tab\HomeTabConfig');
         self::createUser('user_a');
         self::createWorkspace('wsa');
 
