@@ -321,13 +321,13 @@ class WorkspaceController extends Controller
 
         return [
             'current' => $current,
-            'tools' => array_map(function (OrderedTool $orderedTool) use ($workspace) { // todo : create a serializer
+            'tools' => array_values(array_map(function (OrderedTool $orderedTool) use ($workspace) { // todo : create a serializer
                 return [
                     'icon' => $orderedTool->getTool()->getClass(),
                     'name' => $orderedTool->getTool()->getName(),
                     'open' => ['claro_workspace_open_tool', ['workspaceId' => $workspace->getId(), 'toolName' => $orderedTool->getTool()->getName()]],
                 ];
-            }, $orderedTools),
+            }, $orderedTools)),
             'workspace' => $workspace,
             'hideToolsMenu' => $hideToolsMenu,
         ];

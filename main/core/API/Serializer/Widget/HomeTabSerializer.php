@@ -125,16 +125,17 @@ class HomeTabSerializer
         $this->sipe('centerTitle', 'setCenterTitle', $data, $homeTabConfig);
         $this->sipe('poster.url', 'setPoster', $data, $homeTabConfig);
         $this->sipe('icon', 'setIcon', $data, $homeTabConfig);
-        $this->sipe('type', 'setType', $data, $homeTabConfig);
+        $this->sipe('type', 'setType', $data, $homeTab);
 
         if (isset($data['roles'])) {
             foreach ($data['roles'] as $roleUuid) {
-                $role = $this->om->getRepository(Role::class)
-              ->findOneBy(['uuid' => $roleUuid]);
-                $homeTab->addRole($role);
+                $role = $this->om->getRepository(Role::class)->findOneBy(['uuid' => $roleUuid]);
+
+                $homeTabConfig->addRole($role);
             }
 
-            $existingRoles = $homeTab->getRoles();
+            $existingRoles = $homeTabConfig->getRoles();
+
             foreach ($existingRoles as $role) {
                 if (!in_array($role->getUuid(), $data['roles'])) {
                     // the role no longer exist we can remove it
@@ -148,13 +149,11 @@ class HomeTabSerializer
         if (isset($data['workspace'])) {
             $workspace = $this->serializer->deserialize(Workspace::class, $data['workspace']);
             $homeTab->setWorkspace($workspace);
-            $homeTabConfig->setWorkspace($workspace);
         }
 
         if (isset($data['user'])) {
             $user = $this->serializer->deserialize(User::class, $data['user'], $options);
             $homeTab->setUser($user);
-            $homeTabConfig->setUser($user);
         }
 
         // We either do this or cascade persist ¯\_(ツ)_/¯
@@ -183,13 +182,14 @@ class HomeTabSerializer
         }
 
         //readytoremove
+        /*
         $containers = $this->widgetContainerFinder->find(['homeTab' => $homeTab->getUuid()]);
 
         foreach ($containers as $container) {
             if (!in_array($container->getUuid(), $containerIds)) {
                 $this->om->remove($container);
             }
-        }
+        }*/
 
         return $homeTab;
     }

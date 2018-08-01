@@ -140,13 +140,14 @@ class HomeTabManager
     {
         $type = $workspace ? 'workspace' : 'user';
         $homeTab = new HomeTab();
-        $homeTab->setName($name);
-        $homeTab->setLongTitle($name);
+
         $homeTab->setWorkspace($workspace);
         $homeTab->setType($type);
 
         $homeTabConfig = new HomeTabConfig();
         $homeTabConfig->setHomeTab($homeTab);
+        $homeTabConfig->setName($name);
+        $homeTabConfig->setLongTitle($name);
 
         $tabsInserted = $this->homeTabRepo->findByWorkspace($workspace);
         $tabsToInsert = $this->getTabsScheduledForInsert($workspace);

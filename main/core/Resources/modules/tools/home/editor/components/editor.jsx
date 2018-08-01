@@ -95,6 +95,12 @@ const EditorComponent = props =>
                 label: trans('title'),
                 required: true,
                 onChange: (title) => props.updateTitle(props.currentTabIndex, 'title', title.substring(0, 20))
+              }, {
+                name: 'locked',
+                type: 'boolean',
+                label: trans('lock_tab', {}, 'widget'),
+                help : trans('lock_tab_help', {}, 'widget'),
+                displayed: props.context.type === 'administration'
               }
             ]
           }, {
@@ -154,19 +160,22 @@ const EditorComponent = props =>
           }, {
             icon: 'fa fa-fw fa-key',
             title: trans('access_restrictions'),
-            displayed: props.context.type === 'workspace',
+            displayed: props.context.type === 'workspace' || props.context.type === 'administration',
             fields: [
               {
                 name: 'roles',
                 label: trans('role'),
                 help: trans('home_tab_roles_explanation'),
                 type: 'choice',
-                choices: props.context.type === 'workspace' ?
-                  props.context.data.roles.reduce((acc, role) => {
-                    acc[role.id] = role.translationKey
-                    return acc
-                  }, {})
-                  : ''
+                options:{
+                  multiple : true,
+                  choices: props.context.type === 'workspace' || props.context.type === 'administration' ?
+                    props.context.data.roles.reduce((acc, role) => {
+                      acc[role.id] = role.translationKey
+                      return acc
+                    }, {})
+                    : ''
+                }
               }
             ]
           }

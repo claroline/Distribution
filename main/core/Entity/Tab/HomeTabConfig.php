@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Tab;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,6 +25,7 @@ class HomeTabConfig
     public function __construct()
     {
         $this->centerTitle = false;
+        $this->roles = new ArrayCollection();
     }
 
     /**
