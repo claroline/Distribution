@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
@@ -12,8 +13,8 @@ const Tabs = props =>
       <Button
         key={tab.id}
         type="link"
-        className="nav-tab"
-        icon={tab.icon ? `fa fa-fw fa-${tab.icon}` : undefined && tab.locked ? 'fa fa-fw fa-lock' : '' }
+        className={classes('nav-tab')}
+        icon={tab.icon ? `fa fa-fw fa-${tab.icon}` : undefined}
         label={tab.title}
         target={`${props.prefix}/tab/${tab.id}`}
         exact={true}
