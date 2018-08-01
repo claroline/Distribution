@@ -107,13 +107,25 @@ class HomeTabSerializer
 
     public function deserialize(array $data, HomeTab $homeTab, array $options = []): HomeTab
     {
+        $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
+          ->findOneBy(['homeTab' => $homeTab]);
+
+        if (!$homeTabConfig) {
+            $homeTabConfig = new HomeTabConfig();
+            $homeTabConfig->setHomeTab($homeTab);
+        }
+
+        if (isset($data['position'])) {
+            $homeTabConfig->setPosition($data['position']);
+        }
+
         $this->sipe('id', 'setUuid', $data, $homeTab);
-        $this->sipe('title', 'setName', $data, $homeTab);
-        $this->sipe('longTitle', 'setLongTitle', $data, $homeTab);
-        $this->sipe('centerTitle', 'setCenterTitle', $data, $homeTab);
-        $this->sipe('poster.url', 'setPoster', $data, $homeTab);
-        $this->sipe('icon', 'setIcon', $data, $homeTab);
-        $this->sipe('type', 'setType', $data, $homeTab);
+        $this->sipe('title', 'setName', $data, $homeTabConfig);
+        $this->sipe('longTitle', 'setLongTitle', $data, $homeTabConfig);
+        $this->sipe('centerTitle', 'setCenterTitle', $data, $homeTabConfig);
+        $this->sipe('poster.url', 'setPoster', $data, $homeTabConfig);
+        $this->sipe('icon', 'setIcon', $data, $homeTabConfig);
+        $this->sipe('type', 'setType', $data, $homeTabConfig);
 
         if (isset($data['roles'])) {
             foreach ($data['roles'] as $roleUuid) {
@@ -129,22 +141,6 @@ class HomeTabSerializer
                     $homeTab->removeRole($role);
                 }
             }
-        }
-
-        $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
-            ->findOneBy(['homeTab' => $homeTab]);
-
-        if (!$homeTabConfig) {
-            $homeTabConfig = new HomeTabConfig();
-            $homeTabConfig->setHomeTab($homeTab);
-
-            if (isset($data['type'])) {
-                $homeTabConfig->setType($data['type']);
-            }
-        }
-
-        if (isset($data['position'])) {
-            $homeTabConfig->setPosition($data['position']);
         }
 
         $workspace = $user = null;
