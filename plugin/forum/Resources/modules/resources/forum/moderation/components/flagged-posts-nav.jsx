@@ -1,6 +1,4 @@
 import React from 'react'
-// import {PropTypes as T} from 'prop-types'
-// import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {NavLink} from '#/main/app/router'

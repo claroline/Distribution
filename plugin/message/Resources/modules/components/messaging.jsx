@@ -1,35 +1,32 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
-import {TabbedPageContainer} from '#/main/core/layout/tabs'
+import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
-import {WorkspaceTab, WorkspaceTabActions} from '#/main/core/administration/workspace/workspace/components/workspace-tab'
-import {ParametersTab} from '#/main/core/administration/workspace/parameters/components/parameters-tab'
 
 const Messaging = () =>
-  <TabbedPageContainer
-    title={trans('messaging', {}, 'tools')}
-    redirect={[
-      {from: '/', exact: true, to: '/sent'}
-    ]}
-
+  <Vertical
     tabs={[
       {
-        icon: 'fa fa-book',
-        title: trans('sent'),
-        path: '/sent'
+        icon: 'fa fa-fw fa-envelope',
+        title: trans('messages_received'),
+        path: '/received',
+        exact: true
       }, {
-        icon: 'fa fa-cog',
-        title: trans('received'),
-        path: '/received'
+        icon: 'fa fa-fw fa-share',
+        title: trans('messages_sent'),
+        path: '/sent',
+        exact: true
+      },  {
+        icon: 'fa fa-fw fa-trash',
+        title: trans('messages_removed'),
+        path: '/removed',
+        exact: true
       }, {
-        icon: 'fa fa-cog',
-        title: trans('removed'),
-        path: '/removed'
-      }, {
-        icon: 'fa fa-cog',
-        title: trans('send'),
-        path: '/send'
+        icon: 'fa fa-fw fa-plus',
+        title: trans('new'),
+        path: '/send',
+        exact: true
       }
     ]}
   />
