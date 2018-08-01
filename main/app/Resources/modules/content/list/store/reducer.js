@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
 import difference from 'lodash/difference'
+import intersection from 'lodash/intersection'
+import merge from 'lodash/merge'
 
 import {makeInstanceReducer, reduceReducers, combineReducers} from '#/main/app/store/reducer'
 
@@ -154,6 +155,8 @@ const selectedReducer = makeInstanceReducer(defaultState.selected, {
     return selected
   },
 
+  [LIST_DATA_LOAD]: (state, action) => intersection(state, action.data.map(item => item.id)),
+
   [LIST_DATA_DELETE]: (state, action) => {
     const items = cloneDeep(state)
 
@@ -279,7 +282,8 @@ function makeListReducer(listName, initialState = {}, customReducer = {}, option
   }
 
   if (listOptions.selectable) {
-    reducer.selected = baseReducer.selected(listName, listState.selected)
+    reducer.selected = customReducer.selected ?
+      reduceReducers(baseReducer.selected(listName, listState.selected), customReducer.selected) : baseReducer.selected(listName, listState.selected)
   }
 
   if (listOptions.readOnly) {

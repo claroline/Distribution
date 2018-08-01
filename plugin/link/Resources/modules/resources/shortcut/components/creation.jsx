@@ -6,8 +6,6 @@ import {trans} from '#/main/core/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors} from '#/main/core/resource/modals/creation/store'
 
-import {RESOURCE_TYPE} from '#/main/core/resource/data/types'
-
 const ShortcutForm = props =>
   <FormData
     level={5}
@@ -21,7 +19,7 @@ const ShortcutForm = props =>
           {
             name: 'target',
             label: trans('target_resource', {}, 'resource'),
-            type: RESOURCE_TYPE,
+            type: 'resource',
             required: true,
             onChange: (target) => props.update(target)
           }

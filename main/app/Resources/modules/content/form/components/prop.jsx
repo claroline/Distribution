@@ -76,6 +76,12 @@ class FormProp extends Component {
     this.state = {definition: null}
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.type !== nextProps.type) {
+      this.setState({definition: null})
+    }
+  }
+
   render() {
     return (
       <Await

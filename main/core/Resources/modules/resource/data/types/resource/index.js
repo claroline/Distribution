@@ -1,5 +1,4 @@
 import {trans} from '#/main/core/translation'
-//import {chain, lengthInRange, match, string} from '#/main/core/validation'
 
 import {ResourceGroup} from '#/main/core/resource/data/types/resource/components/group'
 import {ResourceDisplay} from '#/main/core/resource/data/types/resource/components/display'

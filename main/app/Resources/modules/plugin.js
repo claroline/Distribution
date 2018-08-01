@@ -31,6 +31,7 @@ registry.add('app', {
       'string'      : () => { return import(/* webpackChunkName: "app-data-string" */       '#/main/app/data/string') },
       'translated'  : () => { return import(/* webpackChunkName: "app-data-translated" */   '#/main/app/data/translated') },
       'translation' : () => { return import(/* webpackChunkName: "app-data-translation" */  '#/main/app/data/translation') },
+      'url'         : () => { return import(/* webpackChunkName: "app-data-url" */          '#/main/app/data/url') },
       'username'    : () => { return import(/* webpackChunkName: "app-data-username" */     '#/main/app/data/username') }
     }
   }

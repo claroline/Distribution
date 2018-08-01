@@ -17,13 +17,16 @@ import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
 const ParametersModalComponent = props =>
   <Modal
-    {...omit(props, 'workspace', 'saveEnabled', 'loadWorkspace', 'saveWorkspace')}
+    {...omit(props, 'workspace', 'saveEnabled', 'workspaceLoading', 'loadWorkspace', 'saveWorkspace')}
     icon="fa fa-fw fa-cog"
     title={trans('parameters')}
     subtitle={props.workspace.name}
-    onEntering={() => props.loadWorkspace(props.workspace)}
+    onEntering={() => props.workspaceLoading ? props.loadWorkspace(props.workspace) : null}
   >
-    <WorkspaceForm name={selectors.STORE_NAME} />
+    <WorkspaceForm
+      name={selectors.STORE_NAME}
+      modal={true}
+    />
 
     <Button
       className="modal-btn btn btn-primary"
@@ -43,9 +46,14 @@ ParametersModalComponent.propTypes = {
     WorkspaceTypes.propTypes
   ).isRequired,
   saveEnabled: T.bool.isRequired,
+  workspaceLoading: T.bool.isRequired,
   saveWorkspace: T.func.isRequired,
   loadWorkspace: T.func.isRequired,
   fadeModal: T.func.isRequired
+}
+
+ParametersModalComponent.defaultProps = {
+  workspaceLoading: true
 }
 
 const ParametersModal = connect(

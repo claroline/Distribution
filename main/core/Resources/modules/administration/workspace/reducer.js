@@ -36,6 +36,7 @@ const reducer = {
     group: makeListReducer('selected.group')
   }),
   parameters: makeFormReducer('parameters'),
+  tools: makeReducer([], {}),
   models: makeReducer()
 }
 

@@ -5,6 +5,7 @@ import {WorkspaceCard} from '#/main/core/workspace/data/components/workspace-car
 
 const WorkspaceList = {
   open: (row) => ({
+    label: t('open'),
     type: URL_BUTTON,
     target: ['claro_workspace_open', {workspaceId: row.id}]
   }),

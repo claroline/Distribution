@@ -8,13 +8,11 @@ import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
-import {MODAL_RESOURCE_CREATION_PARAMETERS} from '#/main/core/resource/modals/creation/components/parameters'
+import {constants} from '#/main/core/resource/modals/creation/constants'
 
 import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceRights} from '#/main/core/resource/components/rights'
-
-const MODAL_RESOURCE_CREATION_RIGHTS = 'MODAL_RESOURCE_CREATION_RIGHTS'
 
 const RightsModalComponent = props =>
   <Modal
@@ -32,7 +30,7 @@ const RightsModalComponent = props =>
       className="modal-btn btn-link"
       type={MODAL_BUTTON}
       label={trans('configure', {}, 'actions')}
-      modal={[MODAL_RESOURCE_CREATION_PARAMETERS, {
+      modal={[constants.MODAL_RESOURCE_CREATION_INTERNAL_PARAMETERS, {
         add: props.add
       }]}
     />
@@ -80,6 +78,5 @@ const RightsModal = connect(
 )(RightsModalComponent)
 
 export {
-  MODAL_RESOURCE_CREATION_RIGHTS,
   RightsModal
 }

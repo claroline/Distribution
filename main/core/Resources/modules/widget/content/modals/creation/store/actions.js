@@ -6,7 +6,7 @@ import {makeId} from '#/main/core/scaffolding/id'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/content/prop-types'
-import {selectors} from '#/main/core/widget/content/modals/creation/store'
+import {selectors} from '#/main/core/widget/content/modals/creation/store/selectors'
 
 // action names
 export const WIDGET_CONTENTS_LOAD = 'WIDGET_CONTENTS_LOAD'

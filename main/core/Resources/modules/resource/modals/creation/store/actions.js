@@ -7,7 +7,7 @@ import {currentUser} from '#/main/core/user/current'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
-import {selectors} from '#/main/core/resource/modals/creation/store'
+import {selectors} from '#/main/core/resource/modals/creation/store/selectors'
 
 // action names
 export const RESOURCE_SET_PARENT = 'RESOURCE_SET_PARENT'
