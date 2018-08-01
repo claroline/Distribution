@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\Entity\Widget;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +38,14 @@ class WidgetContainer
     private $homeTab;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetContainerConfig",
+     *     mappedBy="widgetContainer"
+     * )
+     */
+    protected $widgetContainerConfigs;
+
+    /**
      * WidgetContainer constructor.
      */
     public function __construct()
@@ -44,6 +53,7 @@ class WidgetContainer
         $this->refreshUuid();
 
         $this->instances = new ArrayCollection();
+        $this->widgetContainerConfigs = new ArrayCollection();
     }
 
     /**
@@ -81,7 +91,7 @@ class WidgetContainer
         }
     }
 
-    public function setHomeTab(HomeTab $tab)
+    public function setHomeTab(HomeTab $homeTab)
     {
         $this->homeTab = $homeTab;
     }
@@ -89,5 +99,17 @@ class WidgetContainer
     public function getHomeTab()
     {
         return $this->homeTab;
+    }
+
+    public function getWidgetContainerConfigs()
+    {
+        return $this->widgetContainerConfigs;
+    }
+
+    public function addWidgetContainerConfig(WidgetContainerConfig $config)
+    {
+        if (!$this->widgetContainerConfigs->contains($config)) {
+            $this->widgetContainerConfigs->add($config);
+        }
     }
 }

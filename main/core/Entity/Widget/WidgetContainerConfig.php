@@ -78,6 +78,15 @@ class WidgetContainerConfig
     private $position = 0;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetContainer",
+     *     inversedBy="widgetContainerConfigs"
+     * )
+     * @ORM\JoinColumn(name="widget_container_id", onDelete="CASCADE", nullable=true)
+     */
+    protected $widgetContainer;
+
+    /**
      * WidgetContainer constructor.
      */
     public function __construct()
@@ -187,6 +196,22 @@ class WidgetContainerConfig
      */
     public function getPosition()
     {
-        $instances = $this->position;
+        return $this->position;
+    }
+
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+    public function setWidgetContainer(WidgetContainer $container)
+    {
+        $this->widgetContainer = $container;
+        $container->addWidgetContainerConfig($this);
+    }
+
+    public function getWidgetContainer()
+    {
+        return $this->widgetContainer;
     }
 }

@@ -65,11 +65,15 @@ class HomeTabSerializer
         $containers = [];
 
         foreach ($savedContainers as $container) {
-            $containers[$container->getPosition()] = $container;
+            //temporary
+            $widgetContainerConfig = $container->getWidgetContainerConfigs()[0];
+
+            $containers[$widgetContainerConfig->getPosition()] = $container;
         }
 
         $containers = array_values($containers);
 
+        //throw new \Exception(count($savedContainers));
         $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
           ->findOneBy(['homeTab' => $homeTab]);
 
@@ -162,11 +166,18 @@ class HomeTabSerializer
 
         foreach ($data['widgets'] as $position => $widgetContainer) {
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
-            $widgetContainer->setPosition($position);
-            $this->om->persist($widgetContainer);
+            //?
+            $widgetContainer->setHomeTab($homeTab);
+
+            //temporary
+            $widgetContainerConfig = $widgetContainer->getWidgetContainerConfigs()[0];
+            $widgetContainerConfig->setPosition($position);
+            $this->om->persist($widgetContainerConfig);
             $containerIds[] = $widgetContainer->getUuid();
 
             //ptet rajouter les instances ici ? je sais pas
+
+            /*
             foreach ($widgetContainer->getInstances() as $key => $instance) {
                 $widgetHomeTabConfig = new WidgetInstanceConfig();
                 $widgetHomeTabConfig->setUser($user);
@@ -178,7 +189,7 @@ class HomeTabSerializer
                 $widgetHomeTabConfig->setWidgetOrder($key);
                 $widgetHomeTabConfig->setWidgetInstance($instance);
                 $this->om->persist($widgetHomeTabConfig);
-            }
+            }*/
         }
 
         //readytoremove
