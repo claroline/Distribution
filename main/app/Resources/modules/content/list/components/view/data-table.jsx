@@ -6,7 +6,7 @@ import isEmpty from 'lodash/isEmpty'
 
 import {t} from '#/main/core/translation'
 import {Await} from '#/main/app/components/await'
-import {getType} from '#/main/app/content/data'
+import {getType} from '#/main/app/data'
 import {getPrimaryAction, getActions, isRowSelected} from '#/main/app/content/list/utils'
 import {
   Action as ActionTypes,

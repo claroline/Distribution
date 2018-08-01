@@ -4,8 +4,8 @@ import merge from 'lodash/merge'
 
 import {Await} from '#/main/app/components/await'
 
-import {getType} from '#/main/app/content/data'
-import {DataType as DataTypeTypes} from '#/main/app/content/data/prop-types'
+import {getType} from '#/main/app/data'
+import {DataType as DataTypeTypes} from '#/main/app/data/prop-types'
 import {validateProp} from '#/main/app/content/form/validator'
 import {FormGroup} from '#/main/app/content/form/components/group'
 

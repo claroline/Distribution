@@ -3,7 +3,7 @@ import classes from 'classnames'
 import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {getPlainText} from '#/main/app/content/data/html/utils'
+import {getPlainText} from '#/main/app/data/html/utils'
 import {number} from '#/main/app/intl'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {Button} from '#/main/app/action/components/button'
@@ -11,7 +11,7 @@ import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {Heading} from '#/main/core/layout/components/heading'
 
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
-import {DataCard as DataCardTypes} from '#/main/app/content/data/prop-types'
+import {DataCard as DataCardTypes} from '#/main/app/data/prop-types'
 
 /**
  * Renders the card header.

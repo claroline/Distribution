@@ -5,7 +5,7 @@ import merge from 'lodash/merge'
 
 import {t} from '#/main/core/translation'
 import {Await} from '#/main/app/components/await'
-import {getType} from '#/main/app/content/data'
+import {getType} from '#/main/app/data'
 import {getPropDefinition} from '#/main/app/content/list/utils'
 
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element'

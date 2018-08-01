@@ -1,7 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 import merge from 'lodash/merge'
 
-import {DataProperty} from '#/main/app/content/data/prop-types'
+import {DataProperty} from '#/main/app/data/prop-types'
 
 const DataDetailsProperty = {
   propTypes: merge({}, DataProperty.propTypes, {

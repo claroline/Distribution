@@ -4,7 +4,7 @@ import set from 'lodash/set'
 // todo : move in data module
 
 import {chain, notEmpty, validateIf} from '#/main/core/validation'
-import {getType} from '#/main/app/content/data'
+import {getType} from '#/main/app/data'
 
 /**
  * Validates a value based on a definition object.
