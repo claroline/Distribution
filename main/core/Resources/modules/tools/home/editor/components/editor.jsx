@@ -161,14 +161,12 @@ const EditorComponent = props =>
                 label: trans('role'),
                 help: trans('home_tab_roles_explanation'),
                 type: 'choice',
-                options:{
-                  multiple : true,
-                  choices: props.context.data.roles.reduce((acc, role) => {
+                choices: props.context.type === 'workspace' ?
+                  props.context.data.roles.reduce((acc, role) => {
                     acc[role.id] = role.translationKey
-
                     return acc
                   }, {})
-                }
+                  : ''
               }
             ]
           }
