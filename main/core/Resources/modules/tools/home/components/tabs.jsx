@@ -13,7 +13,7 @@ const Tabs = props =>
         key={tab.id}
         type="link"
         className="nav-tab"
-        icon={tab.icon ? `fa fa-fw fa-${tab.icon}` : undefined}
+        icon={tab.icon ? `fa fa-fw fa-${tab.icon}` : undefined && tab.locked ? 'fa fa-fw fa-lock' : '' }
         label={tab.title}
         target={`${props.prefix}/tab/${tab.id}`}
         exact={true}
