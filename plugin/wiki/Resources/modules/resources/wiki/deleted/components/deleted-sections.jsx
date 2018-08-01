@@ -4,13 +4,13 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {actions} from '#/plugin/wiki/resources/wiki/deleted/store/actions'
 
 const DeletedSectionsComponent = props =>
   <section className="wiki-deleted-sections-list">
     <h2>{trans('deleted_sections', {}, 'icap_wiki')}</h2>
-    <DataListContainer
+    <ListData
       name="deletedSections"
       fetch={{
         url: ['apiv2_wiki_section_deleted_list', {wikiId: props.wiki.id}],

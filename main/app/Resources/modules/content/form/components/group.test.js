@@ -29,7 +29,7 @@ describeComponent('FormGroup', FormGroup,
   {
     id: 'ID',
     label: 'LABEL',
-    children: React.createElement('span', {children: 'CHILD'})
+    children: React.createElement('span', {}, 'CHILD')
   },
   // custom tests
   () => {
@@ -37,7 +37,7 @@ describeComponent('FormGroup', FormGroup,
       const group = shallowComponent(FormGroup, 'FormGroup', {
         id: 'ID',
         label: 'LABEL',
-        children: React.createElement('span', {children: 'CHILD'})
+        children: React.createElement('span', {}, 'CHILD')
       })
 
       // check propTypes
@@ -64,7 +64,7 @@ describeComponent('FormGroup', FormGroup,
         id: 'ID',
         label: 'LABEL',
         help: 'HELP',
-        children: React.createElement('span', {children: 'CHILD'})
+        children: React.createElement('span', {}, 'CHILD')
       })
 
       // check propTypes
@@ -79,7 +79,7 @@ describeComponent('FormGroup', FormGroup,
         id: 'ID',
         label: 'LABEL',
         error: 'ERROR',
-        children: React.createElement('span', {children: 'CHILD'})
+        children: React.createElement('span', {}, 'CHILD')
       })
 
       // check propTypes

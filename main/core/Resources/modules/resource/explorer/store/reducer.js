@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
 import {makeReducer, makeInstanceReducer, combineReducers} from '#/main/app/store/reducer'
-import {makeListReducer} from '#/main/core/data/list/reducer'
+import {makeListReducer} from '#/main/app/content/list/store'
 
 import {
   EXPLORER_SET_INITIALIZED,

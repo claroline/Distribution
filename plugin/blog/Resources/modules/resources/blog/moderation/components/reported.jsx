@@ -4,12 +4,12 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {constants as listConst} from '#/main/core/data/list/constants'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation.jsx'
+import {constants as listConst} from '#/main/app/content/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation'
 
 const ReportedComponent = (props) =>
-  <DataListContainer
+  <ListData
     name="reportedComments"
     fetch={{
       url: ['apiv2_blog_comment_reported', {blogId: props.blogId}],

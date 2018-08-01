@@ -4,7 +4,7 @@ import {chain, string} from '#/main/core/validation'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group'
 
 const dataType = {
-  translation: 'translation',
+  name: 'translation',
   meta: {
     icon: 'fa fa-fw fa fa-language',
     label: trans('translation'),

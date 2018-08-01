@@ -4,13 +4,13 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
 
-import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation.jsx'
+import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation'
 
 const UnpublishedCommentsComponent = (props) =>
-  <DataListContainer
+  <ListData
     name="moderationComments"
     fetch={{
       url: ['apiv2_blog_comment_unpublished', {blogId: props.blogId}],

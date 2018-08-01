@@ -18,10 +18,10 @@ function getTypes() {
   ).then((loadedTypes) => loadedTypes
     .map(loadedType => {
       // append some default values
-      const defaultedType = Object.assign(DataType.defaultProps, loadedType.dataType)
+      const defaultedType = Object.assign({}, DataType.defaultProps, loadedType.dataType)
 
       // validate type def
-      checkPropTypes(DataType.propTypes, defaultedType, 'prop', 'DATA_TYPE')
+      checkPropTypes(DataType.propTypes, defaultedType, 'prop', `DataType<${defaultedType.name}>`)
 
       return defaultedType
     })
@@ -53,10 +53,10 @@ function getType(typeName) {
   return dataType()
     .then((loadedType) => {
       // append some default values
-      const defaultedType = Object.assign(DataType.defaultProps, loadedType.dataType)
+      const defaultedType = Object.assign({}, DataType.defaultProps, loadedType.dataType)
 
       // validate type def
-      checkPropTypes(DataType.propTypes, defaultedType, 'prop', 'DATA_TYPE')
+      checkPropTypes(DataType.propTypes, defaultedType, 'prop', `DataType<${defaultedType.name}>`)
 
       return defaultedType
     })

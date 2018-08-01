@@ -1,7 +1,7 @@
 import React from 'react'
 import classes from 'classnames'
 
-import {DataCell as DataCellTypes} from '#/main/core/data/prop-types'
+import {DataCell as DataCellTypes} from '#/main/app/content/data/prop-types'
 import {translateBool} from '#/main/app/content/data/boolean/utils'
 
 const BooleanCell = props =>

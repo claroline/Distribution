@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_USER_PASSWORD} from '#/main/core/user/modals/password'
 import {actions as userActions} from '#/main/core/user/actions'
@@ -16,7 +16,7 @@ import {UserList, getUserListDefinition} from '#/main/core/administration/user/u
 // todo : restore custom actions the same way resource actions are implemented
 
 const UsersList = props =>
-  <DataListContainer
+  <ListData
     name="users.list"
     fetch={{
       url: ['apiv2_user_list_managed_organization'],

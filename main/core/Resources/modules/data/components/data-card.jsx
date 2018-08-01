@@ -11,7 +11,7 @@ import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {Heading} from '#/main/core/layout/components/heading'
 
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
-import {DataCard as DataCardTypes} from '#/main/core/data/prop-types'
+import {DataCard as DataCardTypes} from '#/main/app/content/data/prop-types'
 
 /**
  * Renders the card header.

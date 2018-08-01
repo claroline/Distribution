@@ -4,12 +4,12 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {ListData} from '#/main/app/content/list/containers/data.jsx'
 
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
 
 const NotificationsList = props =>
-  <DataListContainer
+  <ListData
     name="notifications.list"
     primaryAction={(row) => ({
       type: LINK_BUTTON,

@@ -8,7 +8,7 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {getTimeDiff} from '#/main/core/scaffolding/date'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box.jsx'
 
 import quizSelect from '#/plugin/exo/quiz/selectors'
@@ -22,7 +22,7 @@ const Papers = props =>
       {' '}
       <a className="btn btn-primary" href={url(['exercise_papers_export_csv', {'exerciseId': props.quiz.id}])}> {tex('csv_export')} </a>
     </div>
-    <DataListContainer
+    <ListData
       name="papers.list"
       primaryAction={(row) => ({
         type: LINK_BUTTON,

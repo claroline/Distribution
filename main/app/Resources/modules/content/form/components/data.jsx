@@ -13,6 +13,7 @@ import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/togglea
 
 import {createFormDefinition} from '#/main/app/content/form/utils'
 import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/prop-types'
+import {Form} from '#/main/app/content/form/components/form'
 import {FormProp} from '#/main/app/content/form/components/prop'
 import {FormGroup} from '#/main/app/content/form/components/group'
 

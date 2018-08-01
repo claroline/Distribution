@@ -8,30 +8,27 @@ import {trans} from '#/main/core/translation'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group'
 import {getType} from '#/main/app/content/data'
 
+import {DataType as DataTypeTypes} from '#/main/app/content/data/prop-types'
+
 // todo there are big c/c from Form component but I don't know if we can do better
 
-const DataDetailsField = props => {
-  const typeDef = getType(props.type)
+const DataDetailsField = props =>
+  <div id={props.name} className={props.className}>
+    {(!props.value && false !== props.value) &&
+      <span className="data-details-empty">{trans('empty_value')}</span>
+    }
 
-  return (
-    <div id={props.name} className={props.className}>
-      {(!props.value && false !== props.value) &&
-        <span className="data-details-empty">{trans('empty_value')}</span>
-      }
-
-      {(props.value || false === props.value)  && (typeDef.components.details ?
-          React.createElement(typeDef.components.details, merge({}, props.options, {
-            id: props.name,
-            label: props.label,
-            hideLabel: props.hideLabel,
-            data: props.value // todo rename into `value` in implementations later
-          }))
-          :
-          typeDef.render ? typeDef.render(props.value, props.options || {}) : props.value
-      )}
-    </div>
-  )
-}
+    {(props.value || false === props.value) && (props.definition.components.details ?
+      React.createElement(props.definition.components.details, merge({}, props.options, {
+        id: props.name,
+        label: props.label,
+        hideLabel: props.hideLabel,
+        data: props.value // todo rename into `value` in implementations later
+      }))
+      :
+      props.definition.render ? props.definition.render(props.value, props.options || {}) : props.value
+    )}
+  </div>
 
 DataDetailsField.propTypes = {
   value: T.any,
@@ -40,7 +37,10 @@ DataDetailsField.propTypes = {
   label: T.string.isRequired,
   hideLabel: T.bool,
   options: T.object,
-  className: T.string
+  className: T.string,
+  definition: T.shape(
+    DataTypeTypes.propTypes
+  ).isRequired
 }
 
 class DetailsProp extends Component {
@@ -67,6 +67,7 @@ class DetailsProp extends Component {
               this.props.render(this.props.data) :
               <DataDetailsField
                 {...this.props}
+                definition={this.state.definition}
                 value={this.props.calculated ? this.props.calculated(this.props.data) : get(this.props.data, this.props.name)}
               />
             }

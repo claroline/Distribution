@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
@@ -17,7 +17,7 @@ const DropsList = props =>
   <section className="resource-section drop-list">
     <h2>{trans('corrections_management', {}, 'dropzone')}</h2>
 
-    <DataListContainer
+    <ListData
       name="drops"
       fetch={{
         url: ['claro_dropzone_drops_search', {id: props.dropzone.id}],

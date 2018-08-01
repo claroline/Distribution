@@ -9,8 +9,8 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
@@ -461,7 +461,7 @@ const EditorComponent = props =>
             }
           ]}
         >
-          <DataListContainer
+          <ListData
             name="clacoFormForm.categories"
             fetch={{
               url: ['apiv2_clacoformcategory_list', {clacoForm: props.clacoForm.id}],
@@ -561,7 +561,7 @@ const EditorComponent = props =>
               }
             ]}
           >
-            <DataListContainer
+            <ListData
               name="clacoFormForm.keywords"
               fetch={{
                 url: ['apiv2_clacoformkeyword_list', {clacoForm: props.clacoForm.id}],

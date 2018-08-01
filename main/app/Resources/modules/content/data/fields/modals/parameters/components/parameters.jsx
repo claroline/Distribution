@@ -5,7 +5,7 @@ import set from 'lodash/set'
 
 import {trans} from '#/main/core/translation'
 import {getType} from '#/main/app/content/data'
-import {DataFormModal} from '#/main/app/modals/form/components/data'
+import {FormDataModal} from '#/main/app/modals/form/components/data'
 
 class ParametersModal extends Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class ParametersModal extends Component {
     const typeDef = getType(this.props.data.type)
 
     return (
-      <DataFormModal
+      <FormDataModal
         {...this.props}
         save={fieldData => {
           // generate normalized name for field (c/p from api Entity)

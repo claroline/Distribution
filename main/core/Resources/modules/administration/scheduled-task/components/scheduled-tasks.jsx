@@ -2,13 +2,13 @@ import React from 'react'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {ScheduledTaskCard} from '#/main/core/administration/scheduled-task/data/components/scheduled-task-card'
 import {constants} from '#/main/core/administration/scheduled-task/constants'
 
 const ScheduledTasks = () =>
-  <DataListContainer
+  <ListData
     name="tasks"
     fetch={{
       url: ['apiv2_scheduledtask_list'],

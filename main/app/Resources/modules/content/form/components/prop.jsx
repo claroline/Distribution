@@ -4,10 +4,10 @@ import merge from 'lodash/merge'
 
 import {Await} from '#/main/app/components/await'
 
-import {getType} from '#/main/core/data'
+import {getType} from '#/main/app/content/data'
 import {DataType as DataTypeTypes} from '#/main/app/content/data/prop-types'
-import {FormGroup} from '#/main/core/layout/form/components/group/form-group'
 import {validateProp} from '#/main/app/content/form/validator'
+import {FormGroup} from '#/main/app/content/form/components/group'
 
 // todo : add loading placeholder
 // todo : better error handling on undefined types
@@ -38,7 +38,8 @@ const FormInput = props => {
       value: props.value,
       onChange: (value) => {
         props.updateProp(props.name, value)
-        props.setErrors(validateProp(props, value))
+
+        validateProp(props, value).then(errors => props.setErrors(errors))
 
         if (props.onChange) {
           props.onChange(value)

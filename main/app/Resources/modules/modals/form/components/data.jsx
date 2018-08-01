@@ -11,9 +11,11 @@ import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/p
 import {FormData} from '#/main/app/content/form/components/data'
 import {cleanErrors} from '#/main/app/content/form/utils'
 
-const MODAL_DATA_FORM = 'MODAL_DATA_FORM'
+// todo : use claroline btns
+// todo : maybe use btns from Form definition
+// todo : use a redux store
 
-class DataFormModal extends Component {
+class FormDataModal extends Component {
   constructor(props) {
     super(props)
 
@@ -87,6 +89,7 @@ class DataFormModal extends Component {
         >
           {this.props.children}
         </FormData>
+
         <button
           className="modal-btn btn btn-primary"
           disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
@@ -98,7 +101,7 @@ class DataFormModal extends Component {
     )}
 }
 
-DataFormModal.propTypes = {
+FormDataModal.propTypes = {
   icon: T.string,
   title: T.string,
   saveButtonText: T.string,
@@ -115,7 +118,7 @@ DataFormModal.propTypes = {
   onChange: T.func
 }
 
-DataFormModal.defaultProps = {
+FormDataModal.defaultProps = {
   icon: 'fa fa-fw fa-pencil',
   title: trans('edit'),
   saveButtonText: trans('save'),
@@ -123,6 +126,5 @@ DataFormModal.defaultProps = {
 }
 
 export {
-  MODAL_DATA_FORM,
-  DataFormModal
+  FormDataModal
 }

@@ -2,13 +2,13 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {currentUser} from '#/main/core/user/current'
-import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
+import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {t, trans} from '#/main/core/translation'
 import isEmpty from 'lodash/isEmpty'
-import {CommentCard} from '#/plugin/blog/resources/blog/comment/components/comment.jsx'
+import {CommentCard} from '#/plugin/blog/resources/blog/comment/components/comment'
 import {actions as commentActions} from '#/plugin/blog/resources/blog/comment/store'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {hasPermission} from '#/main/core/resource/permissions'
@@ -70,7 +70,7 @@ const CommentsComponent = props =>
       {props.opened  &&
         <section className="comments-section">
           <h4>{trans('all_comments', {}, 'icap_blog')}</h4>
-          <DataListContainer
+          <ListData
             name="comments"
             fetch={{
               url: ['apiv2_blog_comment_list', {blogId: props.blogId, postId: props.postId}],

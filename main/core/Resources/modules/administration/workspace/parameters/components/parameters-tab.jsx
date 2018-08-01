@@ -7,7 +7,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list'
-import {constants} from '#/main/core/data/list/constants'
+import {constants} from '#/main/app/content/list/constants'
 
 const Parameters = () => {
   const choices = {}

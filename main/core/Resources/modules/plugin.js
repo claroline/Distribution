@@ -50,7 +50,7 @@ registry.add('core', {
 
   data: {
     types: {
-
+      'organization': () => { return import(/* webpackChunkName: "core-data-organization" */     '#/main/core/user/data/types/organization') }
     },
     sources: {
 

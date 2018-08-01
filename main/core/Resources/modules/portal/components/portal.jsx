@@ -14,8 +14,8 @@ import {
   PageContent
 } from '#/main/core/layout/page'
 
-import {constants as listConstants} from '#/main/core/data/list/constants'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {constants as listConstants} from '#/main/app/content/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 const PortalPage = props =>
@@ -23,7 +23,7 @@ const PortalPage = props =>
     <PageHeader title={trans('portal')} />
 
     <PageContent>
-      <DataListContainer
+      <ListData
         name="portal"
         primaryAction={(row) => ({
           type: row.url && row.url.isYoutube ? CALLBACK_BUTTON : URL_BUTTON,

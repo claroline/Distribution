@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {DataSearch as DataSearchTypes} from '#/main/core/data/prop-types'
+import {DataSearch as DataSearchTypes} from '#/main/app/content/data/prop-types'
 
 const ChoiceSearch = (props) =>
   <span className="enum-filter">

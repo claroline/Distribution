@@ -6,7 +6,7 @@ import {trans, transChoice} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {MODAL_DATA_FORM} from '#/main/app/modals/form'
 
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
@@ -14,7 +14,7 @@ import {GroupList} from '#/main/core/administration/user/group/components/group-
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {actions} from '#/main/core/administration/workspace/workspace/actions'
 import {WorkspaceList} from '#/main/core/administration/workspace/workspace/components/workspace-list'
@@ -22,7 +22,7 @@ import {WorkspaceList} from '#/main/core/administration/workspace/workspace/comp
 // todo : restore custom actions the same way resource actions are implemented
 
 const WorkspacesList = props =>
-  <DataListContainer
+  <ListData
     name="workspaces.list"
     fetch={{
       url: ['apiv2_administrated_list'],

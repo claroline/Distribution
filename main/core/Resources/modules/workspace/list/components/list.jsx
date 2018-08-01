@@ -2,12 +2,12 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list'
 import {actions} from '#/main/core/workspace/list/actions'
 import {trans} from '#/main/core/translation'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {constants as listConst} from '#/main/app/content/list/constants'
 import {currentUser} from '#/main/core/user/current'
 
 import {PageContainer, PageHeader,PageContent} from '#/main/core/layout/page/index'
@@ -25,7 +25,7 @@ const WorkspacesList = props => {
       <PageHeader>
       </PageHeader>
       <PageContent>
-        <DataListContainer
+        <ListData
           name="workspaces"
           fetch={{
             url: [props.url],

@@ -6,9 +6,9 @@ import omit from 'lodash/omit'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
 import {URL_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {UserCard} from '#/main/core/user/data/components/user-card'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {constants as listConst} from '#/main/app/content/list/constants'
 
 import {select} from '#/main/core/user/contact/selectors'
 import {OptionsType} from '#/main/core/user/contact/prop-types'
@@ -24,7 +24,7 @@ ContactCard.propTypes = {
 }
 
 const ContactsComponent = props =>
-  <DataListContainer
+  <ListData
     name="contacts"
     display={{
       current: listConst.DISPLAY_TILES_SM,

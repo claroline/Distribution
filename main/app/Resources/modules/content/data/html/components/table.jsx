@@ -1,6 +1,6 @@
 import React from 'react'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {DataCell as DataCellTypes} from '#/main/core/data/prop-types'
+import {DataCell as DataCellTypes} from '#/main/app/content/data/prop-types'
 
 import {getPlainText} from '#/main/app/content/data/html/utils'
 

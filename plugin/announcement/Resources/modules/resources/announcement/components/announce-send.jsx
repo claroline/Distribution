@@ -8,11 +8,11 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
-import {MODAL_DATA_LIST} from '#/main/core/data/list/modals'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
-import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
+import {selectors as formSelectors} from '#/main/app/content/form/store'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {actions as listActions} from '#/main/core/data/list/actions'
+import {actions as listActions} from '#/main/app/content/list/store'
 
 import {Announcement as AnnouncementTypes} from '#/plugin/announcement/resources/announcement/prop-types'
 import {select} from '#/plugin/announcement/resources/announcement/selectors'

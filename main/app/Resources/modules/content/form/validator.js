@@ -1,11 +1,10 @@
 import get from 'lodash/get'
 import set from 'lodash/set'
-import merge from 'lodash/merge'
 
-// todo ! move in data module and brek into multiple files
+// todo : move in data module
 
 import {chain, notEmpty, validateIf} from '#/main/core/validation'
-import {getTypeOrDefault} from '#/main/core/data'
+import {getType} from '#/main/app/content/data'
 
 /**
  * Validates a value based on a definition object.
@@ -16,24 +15,23 @@ import {getTypeOrDefault} from '#/main/core/data'
  * @return {object} - the errors thrown.
  */
 function validateProp(propDef, propValue) {
-  const errors = {}
+  return getType(propDef.type).then(propType => {
+    const errors = {}
 
-  // get corresponding type
-  const propType = getTypeOrDefault(propDef.type)
+    if (propDef.displayed) {
+      // only validate displayed props
+      set(errors, propDef.name, chain(propValue, propDef.options || {}, [
+        // checks if not empty when field is required
+        validateIf(propDef.required, notEmpty),
+        // execute data type validator if any
+        validateIf(propType.validate, propType.validate),
+        // execute form instance validator if any
+        validateIf(propDef.validate, propDef.validate)
+      ]))
+    }
 
-  if (propDef.displayed) {
-    // only validate displayed props
-    set(errors, propDef.name, chain(propValue, propDef.options || {}, [
-      // checks if not empty when field is required
-      validateIf(propDef.required, notEmpty),
-      // execute data type validator if any
-      validateIf(propType.validate, propType.validate),
-      // execute form instance validator if any
-      validateIf(propDef.validate, propDef.validate)
-    ]))
-  }
-
-  return errors
+    return errors
+  })
 }
 
 /**
@@ -45,8 +43,6 @@ function validateProp(propDef, propValue) {
  * @return {object}
  */
 function validateDefinition(definition, data) {
-  let errors = {}
-
   // flatten sections fields
   let formProps = []
   definition.sections.map(section => {
@@ -56,12 +52,9 @@ function validateDefinition(definition, data) {
     }
   })
 
-  // validate fields
-  formProps.map(formProp => {
-    errors = merge(errors, validateProp(formProp, get(data, formProp.name)))
-  })
-
-  return errors
+  return Promise.all(
+    formProps.map(formProp => validateProp(formProp, get(data, formProp.name)))
+  ).then(propErrors => propErrors.reduce((allErrors, current) => Object.assign(allErrors, current)), {})
 }
 
 export {

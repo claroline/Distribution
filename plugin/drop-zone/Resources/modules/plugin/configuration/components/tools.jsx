@@ -15,7 +15,7 @@ import {
 } from '#/main/core/layout/page'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {constants} from '#/plugin/drop-zone/plugin/configuration/constants'
 import {actions} from '#/plugin/drop-zone/plugin/configuration/actions'
@@ -131,7 +131,7 @@ class Tools extends Component {
         </PageHeader>
 
         <PageContent>
-          <DataListContainer
+          <ListData
             name="tools"
             fetch={{
               url: ['apiv2_dropzonetool_list'],
