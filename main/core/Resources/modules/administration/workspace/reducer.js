@@ -40,6 +40,7 @@ const reducer = {
     )
   }),
   parameters: makeFormReducer('parameters'),
+  tools: makeReducer([], {}),
   models: makeReducer()
 }
 

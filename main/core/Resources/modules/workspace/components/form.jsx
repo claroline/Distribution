@@ -8,6 +8,10 @@ import {url} from '#/main/app/api'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
+import {select as workspaceSelect} from '#/main/core/workspace/selectors'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {MODAL_WORKSPACE_PARAMETERS} from '#/main/core/workspace/modals/parameters'
+import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
 // easy selection for restrictions
 const restrictByDates   = (workspace) => workspace.restrictions.enableDates        || (workspace.restrictions.dates && 0 !== workspace.restrictions.dates.length)
@@ -103,16 +107,33 @@ const WorkspaceFormComponent = (props) => {
                 linked: [
                   {
                     name: 'opening.target',
-                    type: 'string',
+                    type: 'choice',
                     label: trans('tool'),
                     required: true,
-                    displayed: (workspace) => workspace.opening && 'tool' === workspace.opening.type
+                    displayed: (workspace) => workspace.opening && 'tool' === workspace.opening.type,
+                    options: {
+                      noEmpty: true,
+                      multiple: false,
+                      condensed: true,
+                      choices: props.tools ? props.tools.reduce((acc, tool) => {
+                        acc[tool.name] = trans(tool.name, {}, 'tools')
+
+                        return acc
+                      }, {}) : {}
+                    }
                   }, {
                     name: 'opening.target',
-                    type: 'string',
+                    type: 'resource',
                     label: trans('resource'),
                     required: true,
-                    displayed: (workspace) => workspace.opening && 'resource' === workspace.opening.type
+                    displayed: (workspace) => workspace.opening && 'resource' === workspace.opening.type,
+                    onChange: (selected) => {
+                      props.updateProp('opening.target', selected)
+
+                      if (props.modal) {
+                        props.showWorkspaceParametersModal(props.workspace)
+                      }
+                    }
                   }
                 ]
               }
@@ -294,19 +315,34 @@ const WorkspaceFormComponent = (props) => {
 }
 
 WorkspaceFormComponent.propTypes = {
+  workspace: T.shape(
+    WorkspaceTypes.propTypes
+  ).isRequired,
   children: T.any,
+  tools: T.array,
+  modal: T.bool.isRequired,
+  showWorkspaceParametersModal: T.func.isRequired,
   // from redux
   new: T.bool.isRequired,
   updateProp: T.func.isRequired
 }
 
+WorkspaceFormComponent.defaultProps = {
+  modal: false
+}
+
 const WorkspaceForm = connect(
   (state, ownProps) => ({
-    new: formSelect.isNew(formSelect.form(state, ownProps.name))
+    workspace: formSelect.data(formSelect.form(state, ownProps.name)),
+    new: formSelect.isNew(formSelect.form(state, ownProps.name)),
+    tools: workspaceSelect.tools(state)
   }),
   (dispatch, ownProps) =>({
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(ownProps.name, propName, propValue))
+    },
+    showWorkspaceParametersModal(workspace) {
+      dispatch(modalActions.showModal(MODAL_WORKSPACE_PARAMETERS, {workspace: workspace, workspaceLoading: false}))
     }
   })
 )(WorkspaceFormComponent)
