@@ -29,7 +29,8 @@ bootstrap(
         data: initialData.parameters,
         originalData: initialData.parameters
       },
-      tools: initialData.tools
+      tools: initialData.tools,
+      models: initialData.models
     }
   }
 )
