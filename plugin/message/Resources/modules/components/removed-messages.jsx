@@ -1,7 +1,7 @@
 import React from 'react'
 
 const RemovedMessages = () =>
-  <div>messages reçus</div>
+  <div>messages supprimés</div>
 
 export {
   RemovedMessages

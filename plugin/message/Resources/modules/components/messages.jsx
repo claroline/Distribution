@@ -17,15 +17,19 @@ const Messages = () =>
       routes={[
         {
           path: '/received',
+          exact: true,
           component: ReceivedMessages
         }, {
           path: '/sent',
+          exact: true,
           component: SentMessages
         }, {
           path: '/removed',
+          exact: true,
           component: RemovedMessages
         }, {
           path: '/send',
+          exact: true,
           component: SendMessage
         }
       ]}

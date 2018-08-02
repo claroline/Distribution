@@ -1,7 +1,7 @@
 import React from 'react'
 
 const SendMessage = () =>
-  <div>messages reçus</div>
+  <div>nouveau message</div>
 
 export {
   SendMessage

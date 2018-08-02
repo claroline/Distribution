@@ -11,23 +11,19 @@ const MessagesNav = () =>
       {
         icon: 'fa fa-fw fa-envelope',
         title: trans('messages_received'),
-        path: '/received',
-        exact: true
+        path: '/received'
       }, {
         icon: 'fa fa-fw fa-share',
         title: trans('messages_sent'),
-        path: '/sent',
-        exact: true
+        path: '/sent'
       },  {
         icon: 'fa fa-fw fa-trash',
         title: trans('messages_removed'),
-        path: '/removed',
-        exact: true
+        path: '/removed'
       }, {
         icon: 'fa fa-fw fa-plus',
         title: trans('new'),
-        path: '/send',
-        exact: true
+        path: '/send'
       }
     ]}
   />
