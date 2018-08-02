@@ -1,21 +1,21 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
-import {CallbackButton} from '#/main/app/buttons/callback/components/button'
-import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {URL_BUTTON} from '#/main/app/buttons'
+import {MenuButton} from '#/main/app/buttons/menu/components/button'
 
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {UserMicro} from '#/main/core/user/components/micro'
+import {constants as roleConstants} from '#/main/core/user/role/constants'
 
 // TODO : add user poster when available
 
 const UserMenu = props =>
-  <div className="user-menu dropdown-menu dropdown-menu-right">
-    <div className="user-menu-header">
-      <div className="user-menu-icon">
+  <div className="app-current-user dropdown-menu dropdown-menu-right">
+    <div className="app-current-user-header">
+      <div className="app-current-user-icon">
         <UserAvatar picture={props.currentUser.picture} alt={true} />
       </div>
 
@@ -23,46 +23,55 @@ const UserMenu = props =>
         {props.currentUser.name}
       </h2>
 
-      <em>{props.currentUser.roles.map(role => trans(role.translationKey)).join(', ')}</em>
+      <em>
+        {props.currentUser.roles
+          .filter(role => -1 !== [roleConstants.ROLE_PLATFORM, roleConstants.ROLE_CUSTOM].indexOf(role.type))
+          .map(role => trans(role.translationKey)).join(', ')
+        }
+      </em>
     </div>
 
     {!props.authenticated &&
-      <div className="user-menu-body">
+      <div className="app-current-user-body">
         <Button
           type={URL_BUTTON}
           className="btn btn-block btn-emphasis"
           label={trans('login', {}, 'actions')}
           primary={true}
-          target=""
+          target={props.login}
         />
 
-        <Button
-          type={URL_BUTTON}
-          className="btn btn-block"
-          label={trans('self-register', {}, 'actions')}
-          target=""
-        />
+        {props.registration &&
+          <Button
+            type={URL_BUTTON}
+            className="btn btn-block"
+            label={trans('self-register', {}, 'actions')}
+            target={props.registration}
+          />
+        }
       </div>
     }
 
-    <div className="list-group">
+    <div className="app-current-user-tools list-group">
       {props.authenticated &&
         <Button
           type={URL_BUTTON}
           className="list-group-item"
           icon="fa fa-fw fa-user"
-          label={trans('profile')}
+          label={trans('user_profile')}
           target={['claro_user_profile', {publicUrl: props.currentUser.publicUrl}]}
         />
       }
 
-      <Button
-        type={URL_BUTTON}
-        className="list-group-item"
-        icon="fa fa-fw fa-cog"
-        label="Paramètres"
-        target=""
-      />
+      {props.authenticated &&
+        <Button
+          type={URL_BUTTON}
+          className="list-group-item"
+          icon="fa fa-fw fa-cog"
+          label={trans('parameters', {}, 'tools')}
+          target={['claro_desktop_open_tool', {toolName: 'parameters'}]}
+        />
+      }
 
       <Button
         type={URL_BUTTON}
@@ -81,19 +90,21 @@ const UserMenu = props =>
       />
     </div>
 
-    <div className="user-menu-footer">
-      <Button
-        type={URL_BUTTON}
-        className="user-menu-btn"
-        icon="fa fa-fw fa-question"
-        label={trans('help')}
-        tooltip="bottom"
-        target=""
-      />
+    <div className="app-current-user-footer">
+      {props.help &&
+        <Button
+          type={URL_BUTTON}
+          className="app-current-user-btn"
+          icon="fa fa-fw fa-question"
+          label={trans('help')}
+          tooltip="bottom"
+          target={props.help}
+        />
+      }
 
       <Button
         type={URL_BUTTON}
-        className="user-menu-btn"
+        className="app-current-user-btn"
         icon="fa fa-fw fa-info"
         label={trans('about')}
         tooltip="bottom"
@@ -103,11 +114,11 @@ const UserMenu = props =>
       {props.authenticated &&
         <Button
           type={URL_BUTTON}
-          className="user-menu-btn"
+          className="app-current-user-btn"
           icon="fa fa-fw fa-power-off"
           label={trans('logout')}
           tooltip="bottom"
-          target=""
+          target={['claro_security_logout']}
         />
       }
     </div>
@@ -116,43 +127,34 @@ const UserMenu = props =>
 
 UserMenu.propTypes = {
   authenticated: T.bool.isRequired,
+  login: T.string.isRequired,
+  registration: T.string,
+  help: T.string,
   currentUser: T.shape({
 
   }).isRequired
 }
 
-class HeaderUser extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {opened: false}
-  }
-
-  render() {
-    return (
-      <div className={classes('app-header-item app-header-user dropdown', {
-        open: this.state.opened
-      })}>
-        <CallbackButton
-          className="dropdown-toggle app-header-btn"
-          callback={() => this.setState({opened: !this.state.opened})}
-        >
-          <UserMicro {...this.props.currentUser} />
-        </CallbackButton>
-
-        {this.state.opened &&
-          <UserMenu
-            authenticated={this.props.authenticated}
-            currentUser={this.props.currentUser}
-          />
-        }
-      </div>
-    )
-  }
-}
+const HeaderUser = props =>
+  <MenuButton
+    id="authenticated-user-menu"
+    className="app-header-item app-header-btn"
+    menu={
+      <UserMenu
+        authenticated={props.authenticated}
+        currentUser={props.currentUser}
+        login={props.login}
+        registration={props.registration}
+        help={props.help}
+      />
+    }
+  >
+    <UserMicro {...props.currentUser} showUsername={true} />
+  </MenuButton>
 
 HeaderUser.propTypes = {
-  registration: T.bool,
+  login: T.string.isRequired,
+  registration: T.string,
   help: T.string,
   authenticated: T.bool.isRequired,
   currentUser: T.shape({

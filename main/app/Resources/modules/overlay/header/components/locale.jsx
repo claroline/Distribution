@@ -13,14 +13,16 @@ import {LocaleFlag} from '#/main/app/intl/locale/components/flag'
 const HeaderLocale = props =>
   <MenuButton
     id="app-locale-select"
-    className="app-header-locale app-header-btn"
+    className="app-header-locale app-header-item app-header-btn"
     menu={{
       position: 'bottom',
       align: 'right',
+      label: trans('available_languages'),
       items: props.locale.available.map(locale => ({
         type: URL_BUTTON,
         label: trans(locale),
-        target: ''
+        target: ['claroline_locale_change', {locale: locale}],
+        active: locale === props.locale.current
       }))
     }}
   >

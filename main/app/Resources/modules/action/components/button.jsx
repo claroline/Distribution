@@ -20,7 +20,7 @@ const ButtonComponent = props => {
   return React.createElement(button, Object.assign(
     omit(props, 'type', 'icon', 'label', 'subscript', 'hideLabel'),
     {
-      id: props.id || toKey(props.label),
+      id: props.id || (typeof props.label === 'string' ? toKey(props.label) : undefined),
       confirm: props.confirm ? Object.assign({}, props.confirm, {
         // append some defaults from action spec
         icon: props.icon,

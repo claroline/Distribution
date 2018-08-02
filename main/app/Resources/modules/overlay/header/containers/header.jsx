@@ -11,11 +11,16 @@ const Header = connect(
     logo: selectors.logo(state),
     title: selectors.title(state),
     subtitle: selectors.subtitle(state),
-    help: selectors.help(state),
+    display: selectors.display(state),
+    helpUrl: selectors.helpUrl(state),
+    loginUrl: selectors.loginUrl(state),
+    registrationUrl: selectors.registrationUrl(state),
     currentUser: selectors.user(state),
     authenticated: selectors.authenticated(state),
     workspaces: selectors.workspaces(state),
-    locale: selectors.locale(state)
+    locale: selectors.locale(state),
+    administration: selectors.administration(state),
+    maintenance: selectors.maintenance(state)
   }),
   (dispatch) => ({
 

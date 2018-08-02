@@ -4,6 +4,8 @@ import {trans} from '#/main/core/translation'
 import {param} from '#/main/app/config'
 import {currentUser} from '#/main/core/user/current'
 
+const administration = (state) => state.administration
+
 const workspaces = (state) => state.workspaces
 
 const personalWorkspace = createSelector(
@@ -21,11 +23,12 @@ const workspacesHistory = createSelector(
   (workspaces) => workspaces.history
 )
 
+const display = (state) => state.display
+
 // this will later be retrieved from the store
 const logo = () => param('logo')
 const title = () => param('name')
 const subtitle = () => param('secondaryName')
-const help = () => param('help')
 const user = () => {
   let current = currentUser()
   if (!current) {
@@ -47,7 +50,34 @@ const authenticated = () => !!currentUser()
 
 const locale = () => param('locale')
 
+const loginUrl = () => param('links.login')
+
+const helpUrl = createSelector(
+  [display],
+  (display) => {
+    if (display.help) {
+      return param('links.help')
+    }
+
+    return null
+  }
+)
+
+const registrationUrl = createSelector(
+  [display],
+  (display) => {
+    if (display.registration) {
+      return param('links.registration')
+    }
+
+    return null
+  }
+)
+
+const maintenance = () => param('maintenance')
+
 export const selectors = {
+  administration,
   workspaces,
   personalWorkspace,
   currentWorkspace,
@@ -55,8 +85,12 @@ export const selectors = {
   logo,
   title,
   subtitle,
-  help,
+  display,
   user,
   authenticated,
-  locale
+  locale,
+  loginUrl,
+  helpUrl,
+  registrationUrl,
+  maintenance
 }

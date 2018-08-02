@@ -157,43 +157,21 @@ class LayoutController extends Controller
             $user = $token->getUser();
         }
 
-        $registerTarget = null;
-        $loginTarget = null;
-        $workspaces = [];
-        $personalWs = null;
-
+        // todo : find what is it
         $homeMenu = $this->configHandler->getParameter('home_menu');
         if (is_numeric($homeMenu)) {
             $homeMenu = $this->homeManager->getContentByType('menu', $homeMenu);
         }
 
-        $adminTools = [];
+        $workspaces = [];
+        $personalWs = null;
         if ($user instanceof User) {
-            $adminTools = $this->toolManager->getAdminToolsByRoles($token->getRoles());
             $personalWs = $user->getPersonalWorkspace();
             $workspaces = $this->findWorkspacesFromLogs();
-        } else {
-            if ($this->configHandler->getParameter('allow_self_registration') &&
-                $this->roleManager->validateRoleInsert(
-                    new User(),
-                    $this->roleManager->getRoleByName('ROLE_USER')
-                )
-            ) {
-                $registerTarget = $this->router->generate('claro_user_registration');
-            }
-
-            $loginTargetRoute = $this->configHandler->getParameter('login_target_route');
-            if (!$loginTargetRoute) {
-                $loginTarget = $this->router->generate('claro_security_login');
-            } else {
-                $loginTarget = $this->routeExists($loginTargetRoute) ? $this->router->generate($loginTargetRoute) : $loginTargetRoute;
-            }
         }
 
-        $translator = $this->translator;
-        usort($adminTools, function (AdminTool $a, AdminTool $b) use ($translator) {
-            return $translator->trans($a->getName(), [], 'tools') > $translator->trans($b->getName(), [], 'tools');
-        });
+        // if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()
+        // if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole)
 
         // I think we will need to merge this with the default platform config object
         // this can be done when the top bar will be moved in the main react app
@@ -201,7 +179,7 @@ class LayoutController extends Controller
             'display' => [
                 'about' => $this->configHandler->getParameter('show_about_button'),
                 'help' => $this->configHandler->getParameter('show_help_button'),
-                'registration' => !empty($registerTarget),
+                'registration' => $this->configHandler->getParameter('allow_self_registration'),
                 'locale' => $this->configHandler->getParameter('header_locale'),
             ],
 
@@ -213,19 +191,20 @@ class LayoutController extends Controller
                 }, $workspaces),
             ],
 
-            'user' => [
-                'registrationUrl' => $registerTarget,
-                'loginUrl' => $loginTarget,
-            ],
-
             'notifications' => [
                 'count' => 200,
                 'refreshDelay' => $this->configHandler->getParameter('notifications_refresh_delay'),
             ],
 
-            'isImpersonated' => $this->isImpersonated(),
-            'homeMenu' => $homeMenu,
-            'administration' => $adminTools,
+            //'isImpersonated' => $this->isImpersonated(),
+            //'homeMenu' => $homeMenu,
+            'administration' => array_map(function (AdminTool $tool) {
+                return [
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
+                    'open' => ['claro_admin_open_tool', ['toolName' => $tool->getName()]]
+                ];
+            }, $this->toolManager->getAdminToolsByRoles($token->getRoles())),
         ];
     }
 

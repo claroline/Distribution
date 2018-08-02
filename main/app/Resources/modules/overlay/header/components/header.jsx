@@ -1,8 +1,11 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {trans} from '#/main/core/translation'
+
 import {HeaderBrand} from '#/main/app/overlay/header/components/brand'
 import {HeaderLocale} from '#/main/app/overlay/header/components/locale'
+import {HeaderNotifications} from '#/main/app/overlay/header/components/notifications'
 import {HeaderTitle} from '#/main/app/overlay/header/components/title'
 import {HeaderTools} from '#/main/app/overlay/header/components/tools'
 import {HeaderUser} from '#/main/app/overlay/header/components/user'
@@ -40,18 +43,28 @@ const Header = props =>
         icon="fa fa-fw fa-cogs"
         label={trans('administration')}
         tools={props.administration}
+        right={true}
       />
     }
 
-    <HeaderUser
-      registration={props.registration}
-      currentUser={props.currentUser}
-      authenticated={props.authenticated}
-      help={props.help}
+    <HeaderNotifications
+
     />
 
-    <HeaderLocale locale={props.locale} />
+    <HeaderUser
+      currentUser={props.currentUser}
+      authenticated={props.authenticated}
+      login={props.loginUrl}
+      help={props.helpUrl}
+      registration={props.registrationUrl}
+    />
+
+    {props.display.locale &&
+      <HeaderLocale locale={props.locale} />
+    }
   </header>
+
+//
 
 Header.propTypes = {
   locale: T.shape({
@@ -64,6 +77,9 @@ Header.propTypes = {
   }),
   title: T.string,
   subtitle: T.string,
+  display: T.shape({
+    locale: T.bool.isRequired
+  }).isRequired,
 
   /**
    * The currently logged user.
@@ -73,16 +89,9 @@ Header.propTypes = {
   }).isRequired,
   authenticated: T.bool.isRequired,
 
-  tools: T.arrayOf(T.shape({
+  tools: T.array,
+  administration: T.array,
 
-  })),
-
-  administration: T.arrayOf(T.shape({
-
-  })),
-
-  registration: T.bool,
-  help: T.string,
   workspaces: T.shape({
     personal: T.shape({
 
@@ -93,14 +102,20 @@ Header.propTypes = {
     history: T.arrayOf(T.shape({
 
     }))
-  }).isRequired
+  }).isRequired,
+
+  loginUrl: T.string.isRequired,
+  helpUrl: T.string,
+  registrationUrl: T.string,
+  maintenance: T.bool
 }
 
 Header.defaultProps = {
   currentUser: null,
   tools: [],
   administration: [],
-  registration: false
+  registration: false,
+  maintenance: false
 }
 
 export {

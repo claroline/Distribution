@@ -39,6 +39,7 @@ class Updater120000 extends Updater
 
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
+        $this->removeAdminTool('widgets_management');
         $this->updateWidgetsStructure();
         $this->checkDesktopTabs();
     }
@@ -77,6 +78,17 @@ class Updater120000 extends Updater
         $this->log(sprintf('Removing `%s` tool...', $toolName));
 
         $tool = $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $toolName]);
+        if (!empty($tool)) {
+            $this->om->remove($tool);
+            $this->om->flush();
+        }
+    }
+
+    private function removeAdminTool($toolName)
+    {
+        $this->log(sprintf('Removing `%s` tool...', $toolName));
+
+        $tool = $this->om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneBy(['name' => $toolName]);
         if (!empty($tool)) {
             $this->om->remove($tool);
             $this->om->flush();

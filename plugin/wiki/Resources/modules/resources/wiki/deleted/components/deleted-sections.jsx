@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {actions} from '#/plugin/wiki/resources/wiki/deleted/store/actions'
 

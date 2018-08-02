@@ -30,19 +30,34 @@
         .border-top-radius(0);
     }
 
-    .app-header-item,
-    .dropdown {
+    .app-header-item {
         padding: 0 15px;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
+    }
+
+    .dropdown {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+
+        &.open .dropdown-toggle {
+            &,
+            &:hover,
+            &:focus {
+                color: @top-bar-link-active-color;
+                background-color: @top-bar-link-active-bg;
+            }
+        }
     }
 }
 
 
 
 .app-header-brand {
+    flex: 0;
     height: 100%;
     min-width: @toolbar-size;
     text-align: center;
@@ -55,7 +70,7 @@
 }
 
 .app-header-logo {
-    max-height: 85%;
+    max-height: 75%;
 
     // fallback for IE 11 and logos that don't define color schema
     fill: @top-bar-brand-color;
@@ -66,6 +81,7 @@
 }
 
 .app-header-title {
+    flex-direction: column !important; // override default alignment
     align-items: flex-start !important; // override default alignment
     padding: 0 floor(@grid-gutter-width / 2);
     margin: 0;
@@ -84,6 +100,53 @@
     }
 }
 
+.app-header-btn {
+    color: @top-bar-link-color;
+
+    .action-icon,
+    .fa {
+        font-size: @font-size-large;
+    }
+
+    // puts labels in the bottom right corner
+    .action-subscript {
+        position: absolute;
+        top: auto; // reset bootstrap default
+        bottom: 5px;
+        right: 5px;
+        line-height: 1;
+
+        &.label {
+            font-size: 10px;
+            padding: .2em .4em;
+        }
+    }
+
+    &:hover,
+    &:focus {
+        color: @top-bar-link-hover-color;
+        background: @top-bar-link-hover-bg;
+    }
+
+    &.active {
+        &,
+        &:hover,
+        &:focus {
+            color: @top-bar-link-active-color;
+            background-color: @top-bar-link-active-bg;
+        }
+    }
+
+    &.disabled {
+        &,
+        &:hover,
+        &:focus {
+            color: @top-bar-link-disabled-color;
+            background-color: @top-bar-link-disabled-bg;
+        }
+    }
+}
+
 .app-header-tools {
 
 }
@@ -92,16 +155,11 @@
     flex: 1;
 }
 
-.app-header-user {
-    // align right in flex container
-    margin-left: auto;
+.app-current-user {
+    width: 360px;
+    padding: 0; // reset default .dropdown-menu
 
-    .user-menu {
-        width: 360px;
-        padding: 0; // reset default .dropdown-menu
-    }
-
-    .user-menu-header {
+    .app-current-user-header {
         padding: 15px;
         text-align: center;
         background: @panel-default-heading-bg;
@@ -117,7 +175,7 @@
         }
     }
 
-    .user-menu-icon {
+    .app-current-user-icon {
         width: 80px;
         height: 80px;
         font-size: floor(80px / 2); // for FA icons
@@ -137,17 +195,17 @@
         stroke: #777777 !important;
 
         img {
-            max-width: floor(80px / 2);
-            max-height: floor(80px / 2);
+            max-width: 100%;
+            max-height: 100%;
         }
     }
 
-    .user-menu-body {
+    .app-current-user-body {
         padding: 15px;
         border-top: 1px solid @list-group-border;
     }
 
-    .list-group {
+    .app-current-user-tools {
         margin: 0;
 
         .list-group-item {
@@ -165,16 +223,16 @@
         }
     }
 
-    .user-menu-footer {
+    .app-current-user-footer {
         padding: 15px;
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
+        //justify-content: space-around;
         align-items: center;
         background: @panel-footer-bg;
     }
 
-    .user-menu-btn {
+    .app-current-user-btn {
         width: 32px;
         height: 32px;
         border-radius: 50%;
@@ -193,9 +251,15 @@
     }
 }
 
-.app-header-locale {
+.app-notifications {
 
 }
+
+
+
+
+
+
 
 #top_bar,
 .top-bar {

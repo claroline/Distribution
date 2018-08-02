@@ -3,11 +3,11 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {Button} from '#/main/app/action'
-import {selectors as formSelect} from '#/main/app/content/form/store'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
+import {selectors as formSelect} from '#/main/app/content/form/store'
+
 import {buildSectionMoveChoices} from '#/plugin/wiki/resources/wiki/utils'
 
 // todo : use standard form buttons
@@ -108,9 +108,7 @@ class WikiSectionFormComponent extends Component
             title={trans('cancel')}
           />
         </div>
-      </FormContainer>     
       </FormData>
-      </FormContainer>
     )
   }
 }

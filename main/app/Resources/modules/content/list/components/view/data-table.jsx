@@ -80,6 +80,12 @@ class DataCell extends Component {
     this.state = {definition: null}
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.column.type !== nextProps.column.type) {
+      this.setState({definition: null})
+    }
+  }
+
   render() {
     return (
       <Await

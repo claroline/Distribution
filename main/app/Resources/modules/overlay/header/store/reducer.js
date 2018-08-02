@@ -9,10 +9,6 @@ const reducer = {
     history: makeReducer([])
   }),
   display: makeReducer({}),
-
-  // this is not the current user, but some parameters relative to users
-  user: makeReducer({}),
-
   tools: makeReducer([]),
   administration: makeReducer([])
 }

@@ -1,10 +1,56 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-const HeaderWorkspaces = props =>
-  <div className="app-header-item app-header-workspaces">
+import {trans} from '#/main/core/translation'
+import {Button} from '#/main/app/action/components/button'
+import {URL_BUTTON} from '#/main/app/buttons'
+import {MenuButton} from '#/main/app/buttons/menu/components/button'
 
+const WorkspacesMenu = props =>
+  <div className="app-workspaces dropdown-menu">
+    <Button
+      type={URL_BUTTON}
+      icon="fa fa-fw fa-home"
+      label={trans('home')}
+      target={['claro_index']}
+    />
+
+    <Button
+      type={URL_BUTTON}
+      icon="fa fa-fw fa-atlas"
+      label={trans('desktop')}
+      target={['claro_desktop_open']}
+    />
+
+    {props.personal &&
+      <Button
+        type={URL_BUTTON}
+        icon="fa fa-fw fa-book"
+        label={trans('personal_ws')}
+        target={['claro_desktop_open']}
+      />
+    }
   </div>
+
+const HeaderWorkspaces = props =>
+  <MenuButton
+    id="app-workspaces-menu"
+    className="app-header-item app-header-btn"
+    containerClassName="app-header-workspaces"
+    menu={
+      <WorkspacesMenu
+        personal={props.personal}
+        current={props.current}
+        history={props.history}
+      />
+    }
+  >
+    <span className="fa fa-fw fa-atlas" />
+
+    Desktop
+
+    <span className="fa fa-fw fa-caret-down" />
+  </MenuButton>
 
 HeaderWorkspaces.propTypes = {
   personal: T.shape({
