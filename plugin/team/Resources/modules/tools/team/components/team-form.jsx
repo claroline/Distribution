@@ -3,14 +3,15 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
 import {trans} from '#/main/core/translation'
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
-import {FormContainer} from '#/main/core/data/form/containers/form'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 import {Team as TeamType} from '#/plugin/team/tools/team/prop-types'
@@ -19,7 +20,7 @@ import {actions} from '#/plugin/team/tools/team/store'
 const TeamFormComponent = props =>
   <section className="tool-section">
     <h2>{props.isNew ? trans('team_creation', {}, 'team') : trans('team_edition', {}, 'team')}</h2>
-    <FormContainer
+    <FormData
       level={3}
       name="teams.current"
       buttons={true}
@@ -28,12 +29,12 @@ const TeamFormComponent = props =>
         ['apiv2_team_update', {id: team.id}]
       }
       // save={{
-      //   type: 'callback',
+      //   type: CALLBACK_BUTTON,
       //   target: `/teams/${props.team.id}`,
       //   callback: () => props.history.push(`/teams/${props.team.id}`)
       // }}
       cancel={{
-        type: 'link',
+        type: LINK_BUTTON,
         target: '/',
         exact: true
       }}
@@ -104,7 +105,7 @@ const TeamFormComponent = props =>
               }
             ]}
           >
-            <DataListContainer
+            <ListData
               name="teams.current.users"
               fetch={{
                 url: ['apiv2_role_list_users', {id: props.team.role.id}],
@@ -133,7 +134,7 @@ const TeamFormComponent = props =>
               }
             ]}
           >
-            <DataListContainer
+            <ListData
               name="teams.current.managers"
               fetch={{
                 url: ['apiv2_role_list_users', {id: props.team.teamManagerRole.id}],
@@ -148,7 +149,7 @@ const TeamFormComponent = props =>
           </FormSection>
         }
       </FormSections>
-    </FormContainer>
+    </FormData>
   </section>
 
 TeamFormComponent.propTypes = {
@@ -162,13 +163,13 @@ TeamFormComponent.propTypes = {
 
 const TeamForm = connect(
   (state) => ({
-    team: formSelect.data(formSelect.form(state, 'teams.current')),
+    team: formSelectors.data(formSelectors.form(state, 'teams.current')),
     workspaceId: workspaceSelect.workspace(state).uuid,
-    isNew: formSelect.isNew(formSelect.form(state, 'teams.current'))
+    isNew: formSelectors.isNew(formSelectors.form(state, 'teams.current'))
   }),
   (dispatch) => ({
     pickUsers(teamId, workspaceId, pickManagers = false) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-user',
         title: pickManagers ? trans('add_managers', {}, 'team') : trans('add_members', {}, 'team'),
         confirmText: trans('add'),

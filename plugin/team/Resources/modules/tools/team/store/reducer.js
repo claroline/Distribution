@@ -1,7 +1,7 @@
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
-import {makeListReducer} from '#/main/core/data/list/reducer'
-import {makeFormReducer} from '#/main/core/data/form/reducer'
-import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
+import {makeListReducer} from '#/main/app/content/list/store'
+import {makeFormReducer} from '#/main/app/content/form/store/reducer'
+import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
 const reducer = {
   teamParams: makeReducer({}, {

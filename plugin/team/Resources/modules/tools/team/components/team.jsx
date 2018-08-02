@@ -2,13 +2,14 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {LinkButton} from '#/main/app/button'
+import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {DetailsData} from '#/main/app/content/details/containers/data'
+// import {LinkButton} from '#/main/app/button'
+import {LinkButton} from '#/main/app/buttons/link/components/button'
 
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {DataDetailsContainer} from '#/main/core/data/details/containers/details'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 import {selectors} from '#/plugin/team/tools/team/store'
@@ -25,7 +26,7 @@ const TeamComponent = props =>
         <span className="fa fa-fw fa-pencil" />
       </LinkButton>
     }
-    <DataDetailsContainer
+    <DetailsData
       name="teams.current"
       title={props.team.name}
       sections={[
@@ -63,7 +64,7 @@ const TeamComponent = props =>
           icon="fa fa-fw fa-users"
           title={trans('team_members', {}, 'team')}
         >
-          <DataListContainer
+          <ListData
             name="teams.current.users"
             fetch={{
               url: ['apiv2_role_list_users', {id: props.team.role.id}],
@@ -80,7 +81,7 @@ const TeamComponent = props =>
           icon="fa fa-fw fa-users"
           title={trans('team_managers', {}, 'team')}
         >
-          <DataListContainer
+          <ListData
             name="teams.current.managers"
             fetch={{
               url: ['apiv2_role_list_users', {id: props.team.teamManagerRole.id}],
@@ -101,7 +102,7 @@ TeamComponent.propTypes = {
 
 const Team = connect(
   (state) => ({
-    team: formSelect.data(formSelect.form(state, 'teams.current')),
+    team: formSelectors.data(formSelectors.form(state, 'teams.current')),
     canEdit: selectors.canEdit(state)
   })
 )(TeamComponent)

@@ -2,14 +2,15 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
+
 import {trans} from '#/main/core/translation'
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
 
 import {selectors} from '#/plugin/team/tools/team/store'
 
 const TeamsComponent = props =>
-  <DataListContainer
+  <ListData
     name="teams.list"
     primaryAction={(row) => ({
       type: 'link',

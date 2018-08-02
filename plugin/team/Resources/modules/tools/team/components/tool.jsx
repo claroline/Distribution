@@ -2,9 +2,10 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {actions as formActions} from '#/main/app/content/form/store'
+
 import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/core/translation'
-import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
 import {
   PageContainer,

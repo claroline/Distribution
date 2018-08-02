@@ -2,26 +2,28 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {selectors as formSelectors} from '#/main/app/content/form/store'
+import {actions as formActions} from '#/main/app/content/form/store'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {FormContainer} from '#/main/core/data/form/containers/form'
 
 import {TeamParams as TeamParamsType} from '#/plugin/team/tools/team/prop-types'
 
 const EditorComponent = props =>
   <section className="tool-section">
     <h2>{trans('configuration', {}, 'platform')}</h2>
-    <FormContainer
+    <FormData
       level={3}
       name="teamParamsForm"
       buttons={true}
       save={{
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         callback: () => props.saveForm(props.teamParams.id)
       }}
       cancel={{
-        type: 'link',
+        type: LINK_BUTTON,
         target: '/',
         exact: true
       }}
@@ -73,7 +75,7 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   (state) => ({
-    teamParams: formSelect.data(formSelect.form(state, 'teamParamsForm'))
+    teamParams: formSelectors.data(formSelectors.form(state, 'teamParamsForm'))
   }),
   (dispatch) => ({
     saveForm(id) {
