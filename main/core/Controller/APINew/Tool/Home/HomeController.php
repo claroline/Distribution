@@ -86,19 +86,24 @@ class HomeController extends AbstractApiController
         }
 
         // retrieve existing tabs for the context to remove deleted ones
-        /** @var HomeTab[] $installedTabs */
-        $installedTabs = $this->finder->fetch(HomeTab::class, 'desktop' === $context ? [
-            'user' => $contextId,
-        ] : [
-            $context => $contextId,
-        ]);
+        /* @var HomeTab[] $installedTabs */
+        if ('administration' === $context) {
+            $installedTabs = $this->finder->fetch(HomeTab::class, ['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
+        } else {
+            $installedTabs = $this->finder->fetch(HomeTab::class, 'desktop' === $context ? [
+              'user' => $contextId,
+          ] : [
+              $context => $contextId,
+          ]);
+        }
 
+        /*
         foreach ($installedTabs as $installedTab) {
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
                 $this->crud->delete($installedTab);
             }
-        }
+        }*/
 
         return new JsonResponse(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);
