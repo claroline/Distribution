@@ -57,10 +57,14 @@ class WidgetContainerSerializer
         for ($i = 0; $i < $arraySize; ++$i) {
             $contents[$i] = null;
         }
-        /*
-                foreach ($widgetContainer->getInstances() as $widgetInstance) {
-                    $contents[$widgetInstance->getPosition()] = $this->serializer->serialize($widgetInstance, $options);
-                }*/
+
+        foreach ($widgetContainer->getInstances() as $widgetInstance) {
+            $config = $widgetInstance->getWidgetInstanceConfigs()[0];
+
+            if ($config) {
+                $contents[$config->getPosition()] = $this->serializer->serialize($widgetInstance, $options);
+            }
+        }
 
         return [
             'id' => $this->getUuid($widgetContainer, $options),
@@ -73,11 +77,12 @@ class WidgetContainerSerializer
     public function serializeDisplay(WidgetContainerConfig $widgetContainerConfig)
     {
         $display = [
-          'layout' => $widgetContainerConfig->getLayout(),
-          'color' => $widgetContainerConfig->getColor(),
-          'backgroundType' => $widgetContainerConfig->getBackgroundType(),
-          'background' => $widgetContainerConfig->getBackground(),
-      ];
+            'layout' => $widgetContainerConfig->getLayout(),
+            'color' => $widgetContainerConfig->getColor(),
+            'backgroundType' => $widgetContainerConfig->getBackgroundType(),
+            'background' => $widgetContainerConfig->getBackground(),
+        ];
+
         if ('image' === $widgetContainerConfig->getBackgroundType() && $widgetContainerConfig->getBackground()) {
             $file = $this->om
               ->getRepository('Claroline\CoreBundle\Entity\File\PublicFile')
@@ -125,11 +130,13 @@ class WidgetContainerSerializer
                 if ($content) {
                     /** @var WidgetInstance $widgetInstance */
                     $widgetInstance = $this->serializer->deserialize(WidgetInstance::class, $content, $options);
-                    $widgetInstance->setPosition($index);
-                    $widgetContainer->addInstance($widgetInstance);
+                    $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
+                    $widgetInstanceConfig->setPosition($index);
+                    $widgetInstance->setContainer($widgetContainer);
 
                     // We either do this or cascade persist ¯\_(ツ)_/¯
                     $this->om->persist($widgetInstance);
+                    $this->om->persist($widgetInstanceConfig);
                 }
             }
         }

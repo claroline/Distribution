@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\WidgetInstanceConfigRepository")
  * @ORM\Table(
- *     name="claro_widget_home_tab_config"
+ *     name="claro_widget_instance_config"
  * )
  */
 class WidgetInstanceConfig
@@ -92,6 +92,7 @@ class WidgetInstanceConfig
     public function setWidgetInstance(WidgetInstance $widgetInstance)
     {
         $this->widgetInstance = $widgetInstance;
+        $widgetInstance->addWidgetInstanceConfig($this);
     }
 
     public function getHomeTab()
@@ -132,6 +133,18 @@ class WidgetInstanceConfig
     public function setWidgetOrder($widgetOrder)
     {
         $this->widgetOrder = $widgetOrder;
+    }
+
+    /* alias */
+    public function getPosition()
+    {
+        return $this->getWidgetOrder();
+    }
+
+    /* alias */
+    public function setPosition($widgetOrder)
+    {
+        $this->setWidgetOrder($widgetOrder);
     }
 
     public function getType()

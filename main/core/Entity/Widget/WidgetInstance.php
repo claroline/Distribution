@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Entity\Widget;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -55,6 +56,16 @@ class WidgetInstance
     protected $widgetInstanceConfigs;
 
     /**
+     * WidgetContainer constructor.
+     */
+    public function __construct()
+    {
+        $this->refreshUuid();
+
+        $this->widgetInstanceConfigs = new ArrayCollection();
+    }
+
+    /**
      * Get widget.
      *
      * @return Widget
@@ -92,5 +103,22 @@ class WidgetInstance
     public function setContainer(WidgetContainer $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * Set widget container.
+     *
+     * @param WidgetContainer $container
+     */
+    public function getWidgetInstanceConfigs()
+    {
+        return $this->widgetInstanceConfigs;
+    }
+
+    public function addWidgetInstanceConfig(WidgetInstanceConfig $config)
+    {
+        if (!$this->widgetInstanceConfigs->contains($config)) {
+            $this->widgetInstanceConfigs->add($config);
+        }
     }
 }
