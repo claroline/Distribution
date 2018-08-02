@@ -15,7 +15,7 @@ const Vertical = (props) =>
         exact={tab.exact}
       >
         {tab.icon &&
-            <span className={classes(tab.icon, tab.title && 'icon-with-text-right')} />
+          <span className={classes(tab.icon, tab.title && 'icon-with-text-right')} />
         }
         {tab.title}
       </NavLink>
