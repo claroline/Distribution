@@ -54,12 +54,11 @@ const TeamFormComponent = props =>
               name: 'description',
               type: 'html',
               label: trans('description')
-            // },{
-            //   name: 'defaultResource',
-            //   type: 'resource',
-            //   label: trans('default_resource', {}, 'team'),
-            //   disabled: !props.isNew,
-            //   displayed: !props.isNew
+            },{
+              name: 'defaultResource',
+              type: 'resource',
+              label: trans('default_resource', {}, 'team'),
+              displayed: props.isNew
             }, {
               name: 'maxUsers',
               type: 'number',
@@ -122,7 +121,7 @@ const TeamFormComponent = props =>
         {props.team.teamManagerRole &&
           <FormSection
             className="embedded-list-section"
-            icon="fa fa-fw fa-users"
+            icon="fa fa-fw fa-graduation-cap"
             title={trans('team_managers', {}, 'team')}
             disabled={props.isNew}
             actions={[
@@ -180,7 +179,7 @@ const TeamForm = connect(
           url: ['apiv2_workspace_list_users', {id: workspaceId}],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.registerUsers(teamId, selected))
+        handleSelect: (selected) => dispatch(actions.registerUsers(teamId, selected, pickManagers ? 'manager' : 'user'))
       }))
     }
   })

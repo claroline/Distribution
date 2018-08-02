@@ -78,7 +78,7 @@ const TeamComponent = props =>
       {props.team.teamManagerRole &&
         <FormSection
           className="embedded-list-section"
-          icon="fa fa-fw fa-users"
+          icon="fa fa-fw fa-graduation-cap"
           title={trans('team_managers', {}, 'team')}
         >
           <ListData

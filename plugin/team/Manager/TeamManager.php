@@ -255,14 +255,14 @@ class TeamManager
             $rights
         );
 
+        // TODO : manage rights
         if (!is_null($resource)) {
             $this->resourceManager->copy(
                 $resource,
                 $teamDirectory->getResourceNode(),
                 $user,
                 true,
-                true,
-                $rights
+                false
             );
         }
 
@@ -300,7 +300,6 @@ class TeamManager
 
             foreach ($workspaceRoles as $role) {
                 if (!in_array($role->getUuid(), [$teamRole->getUuid(), $teamManagerRole->getUuid()])) {
-                    var_dump($role->getName());
                     $rights[$role->getName()] = [
                         'role' => $role,
                         'create' => [],

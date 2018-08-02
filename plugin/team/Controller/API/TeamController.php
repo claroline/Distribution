@@ -22,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @ApiMeta(
@@ -80,6 +81,16 @@ class TeamController extends AbstractCrudController
         $teams = parent::decodeIdsString($request, 'Claroline\TeamBundle\Entity\Team');
         $workspace = 0 < count($teams) ? $teams[0]->getWorkspace() : null;
 
+        if ($workspace) {
+            foreach ($teams as $team) {
+                if ($workspace->getId() !== $team->getWorkspace()->getId()) {
+                    throw new AccessDeniedException();
+                }
+            }
+        } else {
+            throw new AccessDeniedException();
+        }
+        $this->checkToolAccess($workspace, 'edit');
         $this->teamManager->deleteTeams($teams);
 
         return new JsonResponse(null, 204);
@@ -103,6 +114,7 @@ class TeamController extends AbstractCrudController
      */
     public function teamsListAction(Workspace $workspace, Request $request)
     {
+        $this->checkToolAccess($workspace, 'open');
         $params = $request->query->all();
 
         if (!isset($params['hiddenFilters'])) {
@@ -116,7 +128,7 @@ class TeamController extends AbstractCrudController
 
     /**
      * @EXT\Route(
-     *     "/team/{team}/register",
+     *     "/team/{team}/{role}/register",
      *     name="apiv2_team_register"
      * )
      * @EXT\ParamConverter(
@@ -126,21 +138,31 @@ class TeamController extends AbstractCrudController
      * )
      *
      * @param Team    $team
+     * @param string  $role (user|manager)
      * @param Request $request
      *
      * @return JsonResponse
      */
-    public function teamRegisterAction(Team $team, Request $request)
+    public function teamRegisterAction(Team $team, $role, Request $request)
     {
+        $this->checkToolAccess($team->getWorkspace(), 'edit');
         $users = parent::decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
-        $this->teamManager->registerUsersToTeam($team, $users);
+
+        switch ($role) {
+            case 'user':
+                $this->teamManager->registerUsersToTeam($team, $users);
+                break;
+            case 'manager':
+                $this->teamManager->registerManagersToTeam($team, $users);
+                break;
+        }
 
         return new JsonResponse(null, 200);
     }
 
     /**
      * @EXT\Route(
-     *     "/team/{team}/unregister",
+     *     "/team/{team}/{role}/unregister",
      *     name="apiv2_team_unregister"
      * )
      * @EXT\ParamConverter(
@@ -150,15 +172,32 @@ class TeamController extends AbstractCrudController
      * )
      *
      * @param Team    $team
+     * @param string  $role (user|manager)
      * @param Request $request
      *
      * @return JsonResponse
      */
-    public function teamUnregisterAction(Team $team, Request $request)
+    public function teamUnregisterAction(Team $team, $role, Request $request)
     {
+        $this->checkToolAccess($team->getWorkspace(), 'edit');
         $users = parent::decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
-        $this->teamManager->unregisterUsersFromTeam($team, $users);
+
+        switch ($role) {
+            case 'user':
+                $this->teamManager->unregisterUsersFromTeam($team, $users);
+                break;
+            case 'manager':
+                $this->teamManager->unregisterManagersFromTeam($team, $users);
+                break;
+        }
 
         return new JsonResponse(null, 200);
+    }
+
+    private function checkToolAccess(Workspace $workspace, $rights)
+    {
+        if (!$this->authorization->isGranted(['claroline_team_tool', $rights], $workspace)) {
+            throw new AccessDeniedException();
+        }
     }
 }

@@ -17,14 +17,21 @@ actions.openForm = (formName, id = null, defaultProps) => {
   }
 }
 
-actions.registerUsers = (teamId, users) => ({
+actions.registerUsers = (teamId, users, role = 'user') => ({
   [API_REQUEST]: {
-    url: url(['apiv2_team_register', {team: teamId}], {ids: users}),
+    url: url(['apiv2_team_register', {team: teamId, role: role}], {ids: users}),
     request: {
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('teams.current.users'))
+      switch (role) {
+        case 'user':
+          dispatch(listActions.invalidateData('teams.current.users'))
+          break
+        case 'manager':
+          dispatch(listActions.invalidateData('teams.current.managers'))
+          break
+      }
     }
   }
 })
