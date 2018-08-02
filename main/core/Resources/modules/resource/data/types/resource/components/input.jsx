@@ -14,14 +14,22 @@ import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 
 const ResourceInput = props => !isEmpty(props.value) ?
   <ResourceCard
-    data={props.data}
+    data={props.value}
     actions={[
       {
         name: 'replace',
         type: MODAL_BUTTON,
         icon: 'fa fa-fw fa-recycle',
         label: trans('replace', {}, 'actions'),
-        modal: []
+        modal: ['MODAL_RESOURCE_EXPLORER', {
+          title: props.picker.title,
+          current: props.picker.current,
+          root: props.picker.root,
+          selectAction: (selected) => ({
+            type: 'callback',
+            callback: () => props.onChange(selected[0])
+          })
+        }]
       }, { // todo confirm
         name: 'delete',
         type: CALLBACK_BUTTON,
@@ -61,9 +69,19 @@ const ResourceInput = props => !isEmpty(props.value) ?
 implementPropTypes(ResourceInput, FormFieldTypes, {
   value: T.shape(
     ResourceNodeTypes.propTypes
-  )
+  ),
+  picker: T.shape({
+    title: T.string,
+    current: T.shape(ResourceNodeTypes.propTypes),
+    root: T.shape(ResourceNodeTypes.propTypes)
+  })
 }, {
-  value: null
+  value: null,
+  picker: {
+    title: trans('resource_picker'),
+    current: null,
+    root: null
+  }
 })
 
 export {

@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {trans} from '#/main/core/translation'
 import isEmpty from 'lodash/isEmpty'
 import {Button} from '#/main/app/action/components/button'
@@ -10,8 +10,8 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 // todo : remove me
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {actions as toolbarActions} from '#/plugin/blog/resources/blog/toolbar/store'
 import {PostType} from '#/plugin/blog/resources/blog/post/components/prop-types'
 import {constants} from '#/plugin/blog/resources/blog/constants'
@@ -25,7 +25,7 @@ const loggedUser = currentUser()
 const PostFormComponent = props =>
   <div>
     {(props.mode === constants.CREATE_POST || !isEmpty(props.post.data)) &&
-      <FormContainer
+      <FormData
         name="post_edit"
         sections={[
           {
@@ -88,7 +88,7 @@ const PostFormComponent = props =>
             }}
           />
         </ButtonToolbar>
-      </FormContainer>   
+      </FormData>
     }
   </div>
 

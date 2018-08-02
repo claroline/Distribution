@@ -5,16 +5,16 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
 import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {ListData} from '#/main/app/content/list/containers/data.jsx'
 import {UserCard} from '#/main/core/user/data/components/user-card'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {constants as listConst} from '#/main/app/content/list/constants'
 
 import {actions} from '#/main/core/user/contact/actions'
 import {select} from '#/main/core/user/contact/selectors'
 import {OptionsType} from '#/main/core/user/contact/prop-types'
 
 const VisibleUsersComponent = props =>
-  <DataListContainer
+  <ListData
     name="visibleUsers"
     primaryAction={(row) => ({
       type: URL_BUTTON,

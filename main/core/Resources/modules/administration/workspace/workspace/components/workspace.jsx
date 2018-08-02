@@ -6,10 +6,10 @@ import isEmpty from 'lodash/isEmpty'
 import {trans} from '#/main/core/translation'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {actions} from '#/main/core/administration/workspace/workspace/actions'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
@@ -56,7 +56,7 @@ const WorkspaceComponent = (props) =>
             }
           ]}
         >
-          <DataListContainer
+          <ListData
             name="workspaces.current.organizations"
             fetch={{
               url: ['apiv2_workspace_list_organizations', {id: props.workspace.uuid}],
@@ -85,7 +85,7 @@ const WorkspaceComponent = (props) =>
             }
           ]}
         >
-          <DataListContainer
+          <ListData
             name="workspaces.current.managers"
             fetch={{
               url: ['apiv2_workspace_list_managers', {id: props.workspace.uuid}],
@@ -134,7 +134,7 @@ const Workspace = connect(
   },
   dispatch =>({
     pickOrganizations(workspaceId) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-buildings',
         title: trans('add_organizations'),
         confirmText: trans('add'),
@@ -152,7 +152,7 @@ const Workspace = connect(
       // this is not a pretty way to find it but it's ok for now
       const managerRole = workspace.roles.find(role => role.name.indexOf('ROLE_WS_MANAGER') > -1)
 
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-user',
         title: trans('add_managers'),
         confirmText: trans('add'),

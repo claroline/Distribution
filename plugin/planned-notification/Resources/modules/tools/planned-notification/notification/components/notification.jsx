@@ -4,8 +4,8 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {selectors as formSelect} from '#/main/app/content/form/store'
+import {FormData} from '#/main/app/content/form/containers/data'
 
 import {
   TRIGGERING_ACTIONS,
@@ -16,7 +16,7 @@ import {select} from '#/plugin/planned-notification/tools/planned-notification/s
 import {Notification as NotificationTypes} from '#/plugin/planned-notification/tools/planned-notification/prop-types'
 
 const NotificationForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="notifications.current"
     disabled={!props.canEdit}

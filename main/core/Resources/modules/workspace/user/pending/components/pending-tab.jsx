@@ -4,15 +4,14 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-
+import {ListData} from '#/main/app/content/list/containers/data'
 import {actions as pendingActions} from '#/main/core/workspace/user/pending/actions'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 import {select} from '#/main/core/workspace/user/selectors'
 
 const PendingList = props =>
-  <DataListContainer
+  <ListData
     name="pending.list"
     fetch={{
       url: ['apiv2_workspace_list_pending', {id: props.workspace.uuid}],

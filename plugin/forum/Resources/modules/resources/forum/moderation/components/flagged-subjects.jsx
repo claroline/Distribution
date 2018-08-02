@@ -3,16 +3,16 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {constants as listConst} from '#/main/core/data/list/constants'
-import {actions as listActions} from '#/main/core/data/list/actions'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
+import {actions as listActions} from '#/main/app/content/list/store'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {SubjectCard} from '#/plugin/forum/resources/forum/data/components/subject-card'
 
 const FlaggedSubjectsComponent = (props) =>
-  <DataListContainer
+  <ListData
     name="moderation.flaggedSubjects"
     fetch={{
       url: ['apiv2_forum_subject_flagged_list', {forum: props.forum.id}],

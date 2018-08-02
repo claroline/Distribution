@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {RoutedPageContent} from '#/main/core/layout/router/components/page'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'

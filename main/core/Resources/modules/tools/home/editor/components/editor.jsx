@@ -16,8 +16,8 @@ import {
   PageAction,
   PageGroupActions
 } from '#/main/core/layout/page'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {WidgetGridEditor} from '#/main/core/widget/editor/components/grid'
@@ -72,7 +72,7 @@ const EditorComponent = props =>
     </PageHeader>
 
     <PageContent>
-      <FormContainer
+      <FormData
         name="editor"
         dataPart={`[${props.currentTabIndex}]`}
         buttons={true}
@@ -188,7 +188,7 @@ const EditorComponent = props =>
           widgets={props.widgets}
           update={(widgets) => props.updateWidgets(props.currentTabIndex, widgets)}
         />
-      </FormContainer>
+      </FormData>
     </PageContent>
   </PageContainer>
 

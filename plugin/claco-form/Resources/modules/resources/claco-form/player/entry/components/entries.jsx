@@ -11,9 +11,9 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {DataCard} from '#/main/core/data/components/data-card'
-import {constants as listConstants} from '#/main/core/data/list/constants'
+import {constants as listConstants} from '#/main/app/content/list/constants'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
@@ -436,7 +436,7 @@ class EntriesComponent extends Component {
     return (
       <div>
         <h2>{trans('entries_list', {}, 'clacoform')}</h2>
-        <DataListContainer
+        <ListData
           display={{
             current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
             available: Object.keys(listConstants.DISPLAY_MODES)

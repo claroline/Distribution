@@ -5,21 +5,21 @@ import {connect} from 'react-redux'
 import {t} from '#/main/core/translation'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {actions} from '#/main/core/administration/user/group/actions'
 
-import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
-import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
-import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
+import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
+import {RoleList} from '#/main/core/administration/user/role/components/role-list'
+import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 const GroupForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     name="groups.current"
     buttons={true}
@@ -64,7 +64,7 @@ const GroupForm = props =>
           }
         ]}
       >
-        <DataListContainer
+        <ListData
           name="groups.current.users"
           fetch={{
             url: ['apiv2_group_list_users', {id: props.group.id}],
@@ -93,7 +93,7 @@ const GroupForm = props =>
           }
         ]}
       >
-        <DataListContainer
+        <ListData
           name="groups.current.roles"
           fetch={{
             url: ['apiv2_group_list_roles', {id: props.group.id}],
@@ -122,7 +122,7 @@ const GroupForm = props =>
           }
         ]}
       >
-        <DataListContainer
+        <ListData
           name="groups.current.organizations"
           fetch={{
             url: ['apiv2_group_list_organizations', {id: props.group.id}],
@@ -137,7 +137,7 @@ const GroupForm = props =>
         />
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 GroupForm.propTypes = {
   new: T.bool.isRequired,
@@ -156,7 +156,7 @@ const Group = connect(
   }),
   dispatch =>({
     pickUsers(groupId) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-user',
         title: t('add_users'),
         confirmText: t('add'),
@@ -171,7 +171,7 @@ const Group = connect(
       }))
     },
     pickRoles(groupId) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-id-badge',
         title: t('add_roles'),
         confirmText: t('add'),
@@ -186,7 +186,7 @@ const Group = connect(
       }))
     },
     pickOrganizations(groupId) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-buildings',
         title: t('add_organizations'),
         confirmText: t('add'),

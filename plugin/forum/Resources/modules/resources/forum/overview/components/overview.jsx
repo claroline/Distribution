@@ -9,7 +9,7 @@ import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {actions as listActions} from '#/main/core/data/list/actions'
+import {actions as listActions} from '#/main/app/content/list/store'
 import {TagCloud} from '#/main/app/content/meta/components/tag-cloud'
 
 import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'

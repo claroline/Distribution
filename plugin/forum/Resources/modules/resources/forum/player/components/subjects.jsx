@@ -3,8 +3,8 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
 import {currentUser} from '#/main/core/user/current'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
@@ -16,7 +16,7 @@ const authenticatedUser = currentUser()
 const SubjectsList = props =>
   <div>
     <h2>{trans('subjects', {}, 'forum')}</h2>
-    <DataListContainer
+    <ListData
       name="subjects.list"
       fetch={{
         url: ['claroline_forum_api_forum_getsubjects', {id: props.forum.id}],

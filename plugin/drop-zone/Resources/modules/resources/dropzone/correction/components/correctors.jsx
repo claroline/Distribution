@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
@@ -19,7 +19,7 @@ const Correctors = props =>
     <h2>{trans('correctors_list', {}, 'dropzone')}</h2>
     {!props.corrections ?
       <span className="fa fa-fw fa-circle-o-notch fa-spin" /> :
-      <DataListContainer
+      <ListData
         name="drops"
         fetch={{
           url: ['claro_dropzone_drops_search', {id: props.dropzone.id}],

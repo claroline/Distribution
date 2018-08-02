@@ -14,9 +14,11 @@ import {UserMessageForm} from '#/main/core/user/message/components/user-message-
 import {withModal} from '#/main/app/overlay/modal/withModal'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_ALERT} from '#/main/app/modals/alert'
-import {actions as listActions} from '#/main/core/data/list/actions'
-import {select as listSelect} from '#/main/core/data/list/selectors'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {
+  actions as listActions,
+  select as listSelect
+} from '#/main/app/content/list/store'
+import {selectors as formSelect} from '#/main/app/content/form/store'
 
 import {Subject as SubjectType} from '#/plugin/forum/resources/forum/player/prop-types'
 import {select} from '#/plugin/forum/resources/forum/selectors'

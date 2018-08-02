@@ -3,8 +3,8 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/actions'
@@ -13,7 +13,7 @@ import {MessageCard} from '#/plugin/forum/resources/forum/data/components/messag
 const BlockedMessagesComponent = (props) =>
   <div>
     <h2>{trans('moderated_posts', {}, 'forum')}</h2>
-    <DataListContainer
+    <ListData
       name="moderation.blockedMessages"
       fetch={{
         url: ['apiv2_forum_message_blocked_list', {forum: props.forum.id}],

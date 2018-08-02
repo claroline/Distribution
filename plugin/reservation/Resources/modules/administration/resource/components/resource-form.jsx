@@ -3,13 +3,13 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {ListData} from '#/main/app/content/list/containers/data.jsx'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list'
 
@@ -69,7 +69,7 @@ ResourceRights.propTypes = {
 }
 
 const Resource = props =>
-  <FormContainer
+  <FormData
     level={2}
     name="resourceForm"
     buttons={true}
@@ -140,7 +140,7 @@ const Resource = props =>
           }
         ]}
       >
-        <DataListContainer
+        <ListData
           name="resourceForm.organizations"
           open={OrganizationList.open}
           fetch={{
@@ -194,7 +194,7 @@ const Resource = props =>
         </div>
       </FormSection>
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 Resource.propTypes = {
   new: T.bool.isRequired,
@@ -222,7 +222,7 @@ const ResourceForm = connect(
       dispatch(actions.editResourceRights(rights, value))
     },
     pickOrganizations(resourceId) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-building',
         title: trans('add_organizations', {}, 'platform'),
         confirmText: trans('add', {}, 'platform'),
@@ -237,7 +237,7 @@ const ResourceForm = connect(
       }))
     },
     pickRoles(resourceId, resourceRights) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-id-badge',
         title: trans('add_roles', {}, 'platform'),
         confirmText: trans('add', {}, 'platform'),

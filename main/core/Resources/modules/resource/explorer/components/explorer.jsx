@@ -4,8 +4,8 @@ import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {SummarizedContent} from '#/main/app/content/summary/components/content'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {constants as listConstants} from '#/main/core/data/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConstants} from '#/main/app/content/list/constants'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
@@ -38,7 +38,7 @@ const ResourceExplorer = props => {
         links: props.directories.map(summaryLink)
       }}
     >
-      <DataListContainer
+      <ListData
         name={`${props.name}.resources`}
         primaryAction={(resourceNode) => {
           if ('directory' !== resourceNode.meta.type) {

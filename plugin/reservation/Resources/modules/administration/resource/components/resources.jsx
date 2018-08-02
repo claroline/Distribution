@@ -4,14 +4,14 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {actions} from '#/plugin/reservation/administration/resource/actions'
 
 // TODO : add card display
 
 const ResourcesList = props =>
-  <DataListContainer
+  <ListData
     name="resources"
     title={trans('resource_types', {}, 'reservation')}
     fetch={{

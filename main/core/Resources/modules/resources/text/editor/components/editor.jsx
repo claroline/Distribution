@@ -5,12 +5,12 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {FormData} from '#/main/app/content/form/containers/data'
 
 const EditorComponent = (props) =>
-  <FormContainer
+  <FormData
     name="textForm"
     target={['apiv2_resource_text_update', {id: props.text.id}]}
     buttons={true}

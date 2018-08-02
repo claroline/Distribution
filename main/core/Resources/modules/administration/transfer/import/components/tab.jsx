@@ -4,7 +4,7 @@ import classes from 'classnames'
 import has from 'lodash/has'
 
 import {trans} from '#/main/core/translation'
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {Routes, withRouter} from '#/main/app/router'
 import {Heading} from '#/main/core/layout/components/heading'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -83,7 +83,7 @@ class RoutedExplain extends Component {
 
     return (
       <div>
-        <FormContainer
+        <FormData
           level={2}
           name="import"
           title={trans(entity)}

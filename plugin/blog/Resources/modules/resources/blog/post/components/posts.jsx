@@ -4,15 +4,16 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
 import {PostCard} from '#/plugin/blog/resources/blog/post/components/post'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 const PostsList = props =>
   <div className={'posts-list'}>
-    <DataListContainer
+    <ListData
       name="posts"
       fetch={{
         url: ['apiv2_blog_post_list', {blogId: props.blogId}],

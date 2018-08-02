@@ -357,6 +357,7 @@ class Theme extends Component {
                     label: trans('rebuild_theme', {}, 'theme'),
                     callback: () => this.props.rebuildTheme(this.props.theme)
                   }, {
+                    type: CALLBACK_BUTTON,
                   type: CALLBACK_BUTTON,
                     icon: 'fa fa-fw fa-trash',
                     label: trans('delete_theme', {}, 'theme'),

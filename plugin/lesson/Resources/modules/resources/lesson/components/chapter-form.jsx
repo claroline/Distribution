@@ -5,9 +5,9 @@ import {withRouter} from '#/main/app/router'
 // todo : remove me
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/core/translation'
@@ -20,7 +20,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 // todo : use standard form buttons
 
 const ChapterFormComponent = props =>
-  <FormContainer
+  <FormData
     name={constants.CHAPTER_EDIT_FORM_NAME}
     sections={[
       {
@@ -139,7 +139,7 @@ const ChapterFormComponent = props =>
       />}
     </ButtonToolbar>
 
-  </FormContainer>
+  </FormData>
 
 const ChapterForm = withRouter(connect(
   state => ({

@@ -3,10 +3,10 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {LineChart} from '#/main/core/layout/chart/line/components/line-chart'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {constants as listConst} from '#/main/app/content/list/constants'
 
 class LogList extends Component {
   
@@ -48,7 +48,7 @@ class LogList extends Component {
           />
         </div>
         }
-        <DataListContainer
+        <ListData
           name="logs"
           fetch={{
             url: props.listUrl,

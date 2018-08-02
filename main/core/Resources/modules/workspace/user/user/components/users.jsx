@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {trans, transChoice} from '#/main/core/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
@@ -15,7 +15,7 @@ import {actions} from '#/main/core/workspace/user/user/actions'
 import {select} from '#/main/core/workspace/user/selectors'
 
 const UsersList = props =>
-  <DataListContainer
+  <ListData
     name="users.list"
     fetch={{
       url: ['apiv2_workspace_list_users', {id: props.workspace.uuid}],

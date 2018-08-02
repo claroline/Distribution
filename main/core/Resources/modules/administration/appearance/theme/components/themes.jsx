@@ -18,14 +18,14 @@ import {
   PageContent
 } from '#/main/core/layout/page'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 const ThemesPage = props =>
   <PageContainer id="theme-management">
     <PageHeader title={trans('themes_management')} />
 
     <PageContent>
-      <DataListContainer
+      <ListData
         name="themes"
         fetch={{
           url: ['apiv2_theme_list']

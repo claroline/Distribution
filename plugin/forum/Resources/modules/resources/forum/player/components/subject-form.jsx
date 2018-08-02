@@ -10,9 +10,9 @@ import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {currentUser} from '#/main/core/user/current'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
@@ -89,7 +89,7 @@ const SubjectFormComponent = (props) =>
         cancel={() => props.history.push(`/subjects/show/${props.subject.id}`)}
         editingSubject={props.editingSubject}
       >
-        <FormContainer
+        <FormData
           level={3}
           displayLevel={2}
           name="subjects.form"

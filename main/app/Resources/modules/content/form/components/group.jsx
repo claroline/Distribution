@@ -9,6 +9,13 @@ import {ContentError} from '#/main/app/content/components/error'
 
 import {FormGroup as FormGroupTypes} from '#/main/core/layout/form/prop-types'
 
+/**
+ * Renders an agnostic form group.
+ * It is used to wrap inputs in order to render the associated meta (label, errors, etc.).
+ *
+ * @param props
+ * @constructor
+ */
 const FormGroup = props =>
   <div className={classes('form-group', props.className, {
     'has-error': props.error && !props.warnOnly,

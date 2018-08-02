@@ -4,8 +4,8 @@ import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
-import {LinkButton} from '#/main/app/button/components/link'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {LinkButton} from '#/main/app/buttons/link/components/button'
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
@@ -14,7 +14,6 @@ const Tabs = props =>
     {props.tabs.map((tab) =>
       <LinkButton
         key={tab.id}
-        type={LINK_BUTTON}
         className="nav-tab"
         target={`${props.prefix}/tab/${tab.id}`}
         exact={true}

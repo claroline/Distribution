@@ -8,13 +8,13 @@ import {url} from '#/main/app/api'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {UserMicro} from '#/main/core/user/components/micro.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
+import {UserMicro} from '#/main/core/user/components/micro'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {DataDetailsContainer} from '#/main/core/data/details/containers/details.jsx'
+import {DetailsData} from '#/main/app/content/details/containers/data'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
@@ -26,8 +26,8 @@ import {
 import {getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
-import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
-import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu.jsx'
+import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments'
+import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu'
 
 const EntryActions = props =>
   <div className="entry-actions">
@@ -445,7 +445,7 @@ class EntryComponent extends Component {
                 <HtmlText>
                   {this.generateTemplate()}
                 </HtmlText> :
-                <DataDetailsContainer
+                <DetailsData
                   name="entries.current"
                   sections={this.getSections(this.props.fields, this.props.titleLabel)}
                 />
