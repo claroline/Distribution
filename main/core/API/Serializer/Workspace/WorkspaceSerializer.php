@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -40,6 +41,9 @@ class WorkspaceSerializer
     /** @var WorkspaceManager */
     private $workspaceManager;
 
+    /** @var ResourceManager */
+    private $resourceManager;
+
     /** @var SerializerProvider */
     private $serializer;
 
@@ -59,6 +63,7 @@ class WorkspaceSerializer
      *     "authorization"    = @DI\Inject("security.authorization_checker"),
      *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
      *     "serializer"       = @DI\Inject("claroline.api.serializer"),
      *     "utilities"        = @DI\Inject("claroline.utilities.misc"),
      *     "fileUt"           = @DI\Inject("claroline.utilities.file"),
@@ -69,6 +74,7 @@ class WorkspaceSerializer
      * @param AuthorizationCheckerInterface $authorization
      * @param ObjectManager                 $om
      * @param WorkspaceManager              $workspaceManager
+     * @param ResourceManager               $resourceManager
      * @param SerializerProvider            $serializer
      * @param ClaroUtilities                $utilities
      * @param FileUtilities                 $fileUt
@@ -80,6 +86,7 @@ class WorkspaceSerializer
         TokenStorageInterface $tokenStorage,
         ObjectManager $om,
         WorkspaceManager $workspaceManager,
+        ResourceManager $resourceManager,
         SerializerProvider $serializer,
         ClaroUtilities $utilities,
         FileUtilities $fileUt,
@@ -89,6 +96,7 @@ class WorkspaceSerializer
         $this->authorization = $authorization;
         $this->om = $om;
         $this->workspaceManager = $workspaceManager;
+        $this->resourceManager = $resourceManager;
         $this->serializer = $serializer;
         $this->utilities = $utilities;
         $this->fileUt = $fileUt;
@@ -166,6 +174,27 @@ class WorkspaceSerializer
             }, $groups);
         }
 
+        if (in_array(Options::WORKSPACE_FETCH_RESOURCES, $options)) {
+            $root = $this->resourceManager->getWorkspaceRoot($workspace);
+            $resources = $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_MINIMAL]);
+            $serialized['resources'] = $resources;
+        }
+
+        if (in_array(Options::WORKSPACE_FETCH_HOME, $options)) {
+            $tabs = $this->finder->search(
+              'Claroline\CoreBundle\Entity\Home\HomeTab',
+              ['filters' => ['workspace' => $workspace->getUuid()]]
+            );
+
+            $serialized['tabs'] = $tabs['data'];
+        }
+
+        if (in_array(Options::WORKSPACE_FETCH_ORDERED_TOOLS, $options)) {
+            $serialized['orderedTools'] = array_map(function ($orderedTool) {
+                return $this->serializer->serialize($orderedTool);
+            }, $workspace->getOrderedTools()->toArray());
+        }
+
         return $serialized;
     }
 
@@ -206,14 +235,31 @@ class WorkspaceSerializer
         return $data;
     }
 
-    private function getOpening(Workspace $workspace, array $options = [])
+    private function getOpening(Workspace $workspace)
     {
-        // todo implement
-
-        return [
+        $details = $this->workspaceManager->getWorkspaceOptions($workspace)->getDetails();
+        $openingData = [
             'type' => 'tool',
             'target' => 'home',
         ];
+
+        if ($details && isset($details['opening_type'])) {
+            $openingData['type'] = $details['opening_type'];
+        }
+        if ($details && isset($details['opening_target'])) {
+            $openingData['target'] = $details['opening_target'];
+        }
+        if ('resource' === $openingData['type'] && isset($details['workspace_opening_resource']) && $details['workspace_opening_resource']) {
+            $resource = $this->om
+                ->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode')
+                ->findOneBy(['id' => $details['workspace_opening_resource']]);
+
+            if (!empty($resource)) {
+                $openingData['target'] = $this->serializer->serialize($resource);
+            }
+        }
+
+        return $openingData;
     }
 
     /**
@@ -361,15 +407,39 @@ class WorkspaceSerializer
             }
         }
 
-        if (isset($data['display'])) {
+        if (isset($data['display']) || isset($data['opening'])) {
             $workspaceOptions = $this->workspaceManager->getWorkspaceOptions($workspace);
-            $workspaceOptions->setDetails([
-                'background_color' => !empty($data['display']['color']) ? $data['display']['color'] : null,
-                'hide_tools_menu' => isset($data['display']['showTools']) ? !$data['display']['showTools'] : true,
-                'hide_breadcrumb' => isset($data['display']['showBreadcrumbs']) ? !$data['display']['showBreadcrumbs'] : true,
-                'use_workspace_opening_resource' => !empty($data['display']['openResource']),
-                'workspace_opening_resource' => !empty($data['display']['openResource']) ? !empty($data['display']['openResource']['autoId']) : null,
-            ]);
+            $details = $workspaceOptions->getDetails();
+
+            if (empty($details)) {
+                $details = [];
+            }
+            if (isset($data['display'])) {
+                $details['background_color'] = !empty($data['display']['color']) ? $data['display']['color'] : null;
+                $details['hide_tools_menu'] = isset($data['display']['showTools']) ? !$data['display']['showTools'] : true;
+                $details['hide_breadcrumb'] = isset($data['display']['showBreadcrumbs']) ? !$data['display']['showBreadcrumbs'] : true;
+                $details['use_workspace_opening_resource'] = !empty($data['display']['openResource']);
+                $details['workspace_opening_resource'] = !empty($data['display']['openResource']) && !empty($data['display']['openResource']['autoId']) ?
+                    $data['display']['openResource']['autoId'] :
+                    null;
+            }
+            if (isset($data['opening'])) {
+                $details['opening_type'] = isset($data['opening']['type']) && isset($data['opening']['target']) && !empty($data['opening']['target']) ?
+                    $data['opening']['type'] :
+                    'tool';
+                $details['opening_target'] = isset($data['opening']['target']) && !empty($data['opening']['target']) ?
+                    $data['opening']['target'] :
+                    'home';
+
+                if ('resource' === $data['opening']['type'] && isset($data['opening']['target']['autoId'])) {
+                    $details['workspace_opening_resource'] = $data['opening']['target']['autoId'];
+                    $details['use_workspace_opening_resource'] = true;
+                } else {
+                    $details['workspace_opening_resource'] = null;
+                    $details['use_workspace_opening_resource'] = false;
+                }
+            }
+            $workspaceOptions->setDetails($details);
         }
 
         return $workspace;

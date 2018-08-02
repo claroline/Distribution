@@ -11,7 +11,7 @@ actions.reset =  makeActionCreator(LOG_REFRESH)
 actions.load = (file) => {
   return {
     [API_REQUEST]: {
-      url: ['apiv2_logger_get', {name: file}],
+      url: ['apiv2_logger_get', {subdir: 'transfer', name: file}],
       success: (response, dispatch) => {
         dispatch(actions.refresh(response))
       }
