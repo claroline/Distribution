@@ -2,10 +2,11 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+
 import {trans} from '#/main/core/translation'
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
@@ -13,6 +14,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 import {Team as TeamType} from '#/plugin/team/tools/team/prop-types'
+import {actions} from '#/plugin/team/tools/team/store'
 
 const TeamFormComponent = props =>
   <section className="tool-section">
@@ -25,11 +27,11 @@ const TeamFormComponent = props =>
         ['apiv2_team_create'] :
         ['apiv2_team_update', {id: team.id}]
       }
-      save={{
-        type: 'callback',
-        target: `/teams/${props.team.id}`,
-        callback: () => props.history.push(`/teams/${props.team.id}`)
-      }}
+      // save={{
+      //   type: 'callback',
+      //   target: `/teams/${props.team.id}`,
+      //   callback: () => props.history.push(`/teams/${props.team.id}`)
+      // }}
       cancel={{
         type: 'link',
         target: '/',
@@ -98,7 +100,7 @@ const TeamFormComponent = props =>
                 type: 'callback',
                 icon: 'fa fa-fw fa-plus',
                 label: trans('add_members', {}, 'team'),
-                callback: () => props.pickUsers(props.team.role.id, props.workspaceId)
+                callback: () => props.pickUsers(props.team.id, props.workspaceId)
               }
             ]}
           >
@@ -109,7 +111,7 @@ const TeamFormComponent = props =>
                 autoload: !props.isNew
               }}
               delete={{
-                url: ['apiv2_role_remove_users', {id: props.team.role.id}]
+                url: ['apiv2_team_unregister', {team: props.team.id}]
               }}
               definition={UserList.definition}
               card={UserList.card}
@@ -127,7 +129,7 @@ const TeamFormComponent = props =>
                 type: 'callback',
                 icon: 'fa fa-fw fa-plus',
                 label: trans('add_managers', {}, 'team'),
-                callback: () => props.pickUsers(props.team.teamManagerRole.id, props.workspaceId, true)
+                callback: () => props.pickUsers(props.team.id, props.workspaceId, true)
               }
             ]}
           >
@@ -165,7 +167,7 @@ const TeamForm = connect(
     isNew: formSelect.isNew(formSelect.form(state, 'teams.current'))
   }),
   (dispatch) => ({
-    pickUsers(roleId, workspaceId, pickManagers = false) {
+    pickUsers(teamId, workspaceId, pickManagers = false) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-user',
         title: pickManagers ? trans('add_managers', {}, 'team') : trans('add_members', {}, 'team'),
@@ -177,7 +179,7 @@ const TeamForm = connect(
           url: ['apiv2_workspace_list_users', {id: workspaceId}],
           autoload: true
         },
-        handleSelect: (selected) => console.log(selected)
+        handleSelect: (selected) => dispatch(actions.registerUsers(teamId, selected))
       }))
     }
   })

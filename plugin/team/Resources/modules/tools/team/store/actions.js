@@ -1,6 +1,7 @@
-import {makeActionCreator} from '#/main/app/store/actions'
-import {API_REQUEST} from '#/main/app/api'
+import {API_REQUEST, url} from '#/main/app/api'
+
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 const actions = {}
 
@@ -16,6 +17,18 @@ actions.openForm = (formName, id = null, defaultProps) => {
     return formActions.resetForm(formName, defaultProps, true)
   }
 }
+
+actions.registerUsers = (teamId, users) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_team_register', {team: teamId}], {ids: users}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('teams.current.users'))
+    }
+  }
+})
 
 export {
   actions

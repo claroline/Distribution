@@ -15,11 +15,13 @@ use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Manager\TeamManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @ApiMeta(
@@ -30,6 +32,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TeamController extends AbstractCrudController
 {
+    /** @var AuthorizationCheckerInterface */
+    protected $authorization;
+
     /** @var FinderProvider */
     protected $finder;
 
@@ -40,15 +45,21 @@ class TeamController extends AbstractCrudController
      * TeamController constructor.
      *
      * @DI\InjectParams({
-     *     "finder"      = @DI\Inject("claroline.api.finder"),
-     *     "teamManager" = @DI\Inject("claroline.manager.team_manager")
+     *     "authorization" = @DI\Inject("security.authorization_checker"),
+     *     "finder"        = @DI\Inject("claroline.api.finder"),
+     *     "teamManager"   = @DI\Inject("claroline.manager.team_manager")
      * })
      *
-     * @param FinderProvider $finder
-     * @param TeamManager    $teamManager
+     * @param AuthorizationCheckerInterface $authorization
+     * @param FinderProvider                $finder
+     * @param TeamManager                   $teamManager
      */
-    public function __construct(FinderProvider $finder, TeamManager $teamManager)
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorization,
+        FinderProvider $finder,
+        TeamManager $teamManager
+    ) {
+        $this->authorization = $authorization;
         $this->finder = $finder;
         $this->teamManager = $teamManager;
     }
@@ -56,6 +67,22 @@ class TeamController extends AbstractCrudController
     public function getName()
     {
         return 'team';
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function deleteBulkAction(Request $request, $class)
+    {
+        $teams = parent::decodeIdsString($request, 'Claroline\TeamBundle\Entity\Team');
+        $workspace = 0 < count($teams) ? $teams[0]->getWorkspace() : null;
+
+        $this->teamManager->deleteTeams($teams);
+
+        return new JsonResponse(null, 204);
     }
 
     /**
@@ -88,16 +115,50 @@ class TeamController extends AbstractCrudController
     }
 
     /**
+     * @EXT\Route(
+     *     "/team/{team}/register",
+     *     name="apiv2_team_register"
+     * )
+     * @EXT\ParamConverter(
+     *     "team",
+     *     class="ClarolineTeamBundle:Team",
+     *     options={"mapping": {"team": "uuid"}}
+     * )
+     *
+     * @param Team    $team
      * @param Request $request
-     * @param string  $class
      *
      * @return JsonResponse
      */
-    public function deleteBulkAction(Request $request, $class)
+    public function teamRegisterAction(Team $team, Request $request)
     {
-        $teams = parent::decodeIdsString($request, 'Claroline\TeamBundle\Entity\Team');
-        $this->teamManager->deleteTeams($teams);
+        $users = parent::decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $this->teamManager->registerUsersToTeam($team, $users);
 
-        return new JsonResponse(null, 204);
+        return new JsonResponse(null, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/team/{team}/unregister",
+     *     name="apiv2_team_unregister"
+     * )
+     * @EXT\ParamConverter(
+     *     "team",
+     *     class="ClarolineTeamBundle:Team",
+     *     options={"mapping": {"team": "uuid"}}
+     * )
+     *
+     * @param Team    $team
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function teamUnregisterAction(Team $team, Request $request)
+    {
+        $users = parent::decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $this->teamManager->unregisterUsersFromTeam($team, $users);
+
+        return new JsonResponse(null, 200);
     }
 }

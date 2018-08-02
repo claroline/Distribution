@@ -373,6 +373,153 @@ class TeamManager
     }
 
     /**
+     * Registers users to a team.
+     *
+     * @param Team  $team
+     * @param array $users
+     */
+    public function registerUsersToTeam(Team $team, array $users)
+    {
+        $teamRole = $team->getRole();
+
+        if (!is_null($teamRole)) {
+            $this->om->startFlushSuite();
+
+            foreach ($users as $user) {
+                $team->addUser($user);
+                $this->roleManager->associateRole($user, $teamRole);
+            }
+            $this->om->persist($team);
+            $this->om->endFlushSuite();
+        }
+    }
+
+    /**
+     * Unregisters users from a team.
+     *
+     * @param Team  $team
+     * @param array $users
+     */
+    public function unregisterUsersFromTeam(Team $team, array $users)
+    {
+        $teamRole = $team->getRole();
+
+        if (!is_null($teamRole)) {
+            $this->om->startFlushSuite();
+
+            foreach ($users as $user) {
+                $team->removeUser($user);
+                $this->roleManager->dissociateRole($user, $teamRole);
+            }
+            $this->om->persist($team);
+            $this->om->endFlushSuite();
+        }
+    }
+
+    /**
+     * Registers users as team managers.
+     *
+     * @param Team  $team
+     * @param array $users
+     */
+    public function registerManagersToTeam(Team $team, array $users)
+    {
+        $teamManagerRole = $team->getTeamManagerRole();
+
+        if (!is_null($teamManagerRole) && 0 < count($users)) {
+            $this->om->startFlushSuite();
+
+            $team->setTeamManager($users[0]);
+
+            foreach ($users as $user) {
+                $this->roleManager->associateRole($user, $teamManagerRole);
+            }
+            $this->om->persist($team);
+            $this->om->endFlushSuite();
+        }
+    }
+
+    /**
+     * Unregisters team managers.
+     *
+     * @param Team  $team
+     * @param array $users
+     */
+    public function unregisterManagersFromTeam(Team $team, array $users)
+    {
+        $teamManagerRole = $team->getTeamManagerRole();
+
+        if (!is_null($teamManagerRole)) {
+            $this->om->startFlushSuite();
+
+            $teamManager = $team->getTeamManager();
+
+            foreach ($users as $user) {
+                $this->roleManager->dissociateRole($user, $teamManagerRole);
+
+                if ($teamManager && $teamManager->getid() === $user->getId()) {
+                    $team->setTeamManager(null);
+                }
+            }
+            $this->om->persist($team);
+            $this->om->endFlushSuite();
+        }
+    }
+
+    /**
+     * Empty teams from all members.
+     *
+     * @param array $teams
+     */
+    public function emptyTeams(array $teams)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($teams as $team) {
+            $users = $team->getUsers()->toArray();
+            $this->unregisterUsersFromTeam($team, $users);
+        }
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * Fills teams with workspace users who belong to no team.
+     *
+     * @param Workspace $workspace
+     * @param array     $teams
+     */
+    public function fillTeams(Workspace $workspace, array $teams)
+    {
+        $this->om->startFlushSuite();
+        $workspaceTeams = $this->teamRepo->findBy(['workspace' => $workspace]);
+        $users = $this->teamRepo->findUsersWithNoTeamByWorkspace($workspace, $workspaceTeams);
+
+        foreach ($teams as $team) {
+            $maxUsers = $team->getMaxUsers();
+
+            if (is_null($maxUsers)) {
+                $this->registerUsersToTeam($team, $users);
+                break;
+            } else {
+                $nbFreeSpaces = $maxUsers - count($team->getUsers()->toArray());
+
+                while ($nbFreeSpaces > 0 && count($users) > 0) {
+                    $index = rand(0, count($users) - 1);
+                    $this->registerUserToTeam($team, $users[$index]);
+                    unset($users[$index]);
+                    $users = array_values($users);
+                    --$nbFreeSpaces;
+                }
+
+                if (0 === count($users)) {
+                    break;
+                }
+            }
+        }
+        $this->om->endFlushSuite();
+    }
+
+    /**
      * Checks and updates role name for unicity.
      *
      * @param string $roleName
@@ -520,166 +667,6 @@ class TeamManager
         $this->om->endFlushSuite();
     }
 
-    public function createTeam(
-        Team $team,
-        Workspace $workspace,
-        User $user,
-        ResourceNode $resource = null,
-        array $creatableResources = []
-    ) {
-        $this->om->startFlushSuite();
-        $team->setWorkspace($workspace);
-        $validName = $this->computeValidTeamName($workspace, $team->getName(), 0);
-        $team->setName($validName['name']);
-        $role = $this->createTeamRole($team);
-        $team->setRole($role);
-        $teamManagerRole = $this->createTeamRole($team, true);
-        $team->setTeamManagerRole($teamManagerRole);
-        $directory = $this->createTeamDirectory($team, $user, $resource, $creatableResources);
-        $team->setDirectory($directory);
-        $this->om->persist($team);
-        $this->om->endFlushSuite();
-    }
-
-    public function persistTeam(Team $team)
-    {
-        $this->om->persist($team);
-        $this->om->flush();
-    }
-
-    public function registerUserToTeam(Team $team, User $user)
-    {
-        $this->om->startFlushSuite();
-        $teamRole = $team->getRole();
-        $team->addUser($user);
-
-        if (!is_null($teamRole)) {
-            $this->roleManager->associateRole($user, $teamRole);
-        }
-        $this->om->persist($team);
-        $this->om->endFlushSuite();
-    }
-
-    public function unregisterUserFromTeam(Team $team, User $user)
-    {
-        $this->om->startFlushSuite();
-        $teamRole = $team->getRole();
-        $team->removeUser($user);
-
-        if (!is_null($teamRole)) {
-            $this->roleManager->dissociateRole($user, $teamRole);
-        }
-        $this->om->persist($team);
-        $this->om->endFlushSuite();
-    }
-
-    public function registerUsersToTeam(Team $team, array $users)
-    {
-        $this->om->startFlushSuite();
-        $teamRole = $team->getRole();
-
-        foreach ($users as $user) {
-            $team->addUser($user);
-
-            if (!is_null($teamRole)) {
-                $this->roleManager->associateRole($user, $teamRole);
-            }
-        }
-        $this->om->persist($team);
-        $this->om->endFlushSuite();
-    }
-
-    public function unregisterUsersFromTeam(Team $team, array $users)
-    {
-        $this->om->startFlushSuite();
-        $teamRole = $team->getRole();
-
-        foreach ($users as $user) {
-            $team->removeUser($user);
-
-            if (!is_null($teamRole)) {
-                $this->roleManager->dissociateRole($user, $teamRole);
-            }
-        }
-        $this->om->persist($team);
-        $this->om->endFlushSuite();
-    }
-
-    public function registerManagerToTeam(Team $team, User $user)
-    {
-        $this->om->startFlushSuite();
-        $currentTeamManager = $team->getTeamManager();
-        $teamManagerRole = $team->getTeamManagerRole();
-        $team->setTeamManager($user);
-
-        if (!is_null($teamManagerRole)) {
-            if (!is_null($currentTeamManager)) {
-                $this->roleManager
-                    ->dissociateRole($currentTeamManager, $teamManagerRole);
-            }
-            $this->roleManager->associateRole($user, $teamManagerRole);
-        }
-        $this->om->persist($team);
-        $this->om->endFlushSuite();
-    }
-
-    public function unregisterManagerFromTeam(Team $team)
-    {
-        $this->om->startFlushSuite();
-        $teamManager = $team->getTeamManager();
-        $teamManagerRole = $team->getTeamManagerRole();
-        $team->setTeamManager(null);
-
-        if (!is_null($teamManagerRole) && !is_null($teamManager)) {
-            $this->roleManager->dissociateRole($teamManager, $teamManagerRole);
-        }
-        $this->om->persist($team);
-        $this->om->endFlushSuite();
-    }
-
-    public function emptyTeams(array $teams)
-    {
-        $this->om->startFlushSuite();
-
-        foreach ($teams as $team) {
-            $users = $team->getUsers()->toArray();
-            $this->unregisterUsersFromTeam($team, $users);
-        }
-        $this->om->endFlushSuite();
-    }
-
-    public function fillTeams(Workspace $workspace, array $teams)
-    {
-        $this->om->startFlushSuite();
-        $workspaceTeams = $this->teamRepo->findBy(['workspace' => $workspace]);
-        $users = $this->teamRepo
-            ->findUsersWithNoTeamByWorkspace($workspace, $workspaceTeams);
-
-        foreach ($teams as $team) {
-            $maxUsers = $team->getMaxUsers();
-
-            if (is_null($maxUsers)) {
-                $this->registerUsersToTeam($team, $users);
-                break;
-            } else {
-                $nbFreeSpaces = $maxUsers - count($team->getUsers()->toArray());
-
-                while ($nbFreeSpaces > 0 && count($users) > 0) {
-                    $index = rand(0, count($users) - 1);
-                    $this->registerUserToTeam($team, $users[$index]);
-                    unset($users[$index]);
-                    $users = array_values($users);
-                    --$nbFreeSpaces;
-                }
-
-                if (0 === count($users)) {
-                    break;
-                }
-            }
-        }
-        $this->om->endFlushSuite();
-    }
-
     private function linkResourceNodesArray(Workspace $workspace, array $nodes)
     {
         if (count($nodes) > 0) {
@@ -705,178 +692,16 @@ class TeamManager
         return $this->teamRepo->findBy(['workspace' => $workspace], [$orderedBy => $order]);
     }
 
-    public function getTeamsByUser(
-        User $user,
-        $orderedBy = 'name',
-        $order = 'ASC',
-        $executeQuery = true
-    ) {
-        return $this->teamRepo->findTeamsByUser(
-            $user,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
-    }
-
-    public function getTeamsWithUsersByWorkspace(Workspace $workspace, $executeQuery = true)
+    /**
+     * @param User   $user
+     * @param string $orderedBy
+     * @param string $order
+     *
+     * @return array
+     */
+    public function getTeamsByUser(User $user, $orderedBy = 'name', $order = 'ASC')
     {
-        return $this->teamRepo->findTeamsWithUsersByWorkspace($workspace, $executeQuery);
-    }
-
-    public function getUnregisteredUsersByTeam(
-        Team $team,
-        $orderedBy = 'username',
-        $order = 'ASC',
-        $page = 1,
-        $max = 50,
-        $executeQuery = true
-    ) {
-        $users = $this->teamRepo->findUnregisteredUsersByTeam(
-            $team,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
-
-        return $executeQuery ?
-            $this->pagerFactory->createPagerFromArray($users, $page, $max) :
-            $this->pagerFactory->createPager($users, $page, $max);
-    }
-
-    public function getSearchedUnregisteredUsersByTeam(
-        Team $team,
-        $search = '',
-        $orderedBy = 'username',
-        $order = 'ASC',
-        $page = 1,
-        $max = 50,
-        $executeQuery = true
-    ) {
-        $users = $this->teamRepo->findSearchedUnregisteredUsersByTeam(
-            $team,
-            $search,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
-
-        return $executeQuery ?
-            $this->pagerFactory->createPagerFromArray($users, $page, $max) :
-            $this->pagerFactory->createPager($users, $page, $max);
-    }
-
-    public function getWorkspaceUsers(
-        Workspace $workspace,
-        $orderedBy = 'firstName',
-        $order = 'ASC',
-        $page = 1,
-        $max = 50,
-        $executeQuery = true
-    ) {
-        $users = $this->teamRepo->findWorkspaceUsers($workspace, $orderedBy, $order, $executeQuery);
-
-        return $executeQuery ?
-            $this->pagerFactory->createPagerFromArray($users, $page, $max) :
-            $this->pagerFactory->createPager($users, $page, $max);
-    }
-
-    public function getSearchedWorkspaceUsers(
-        Workspace $workspace,
-        $search = '',
-        $orderedBy = 'firstName',
-        $order = 'ASC',
-        $page = 1,
-        $max = 50,
-        $executeQuery = true
-    ) {
-        $users = $this->teamRepo->findSearchedWorkspaceUsers(
-            $workspace,
-            $search,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
-
-        return $executeQuery ?
-            $this->pagerFactory->createPagerFromArray($users, $page, $max) :
-            $this->pagerFactory->createPager($users, $page, $max);
-    }
-
-    public function getWorkspaceUsersWithManagers(
-        Workspace $workspace,
-        $orderedBy = 'firstName',
-        $order = 'ASC',
-        $page = 1,
-        $max = 50,
-        $executeQuery = true
-    ) {
-        $users = $this->teamRepo->findWorkspaceUsersWithManagers(
-            $workspace,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
-
-        return $executeQuery ?
-            $this->pagerFactory->createPagerFromArray($users, $page, $max) :
-            $this->pagerFactory->createPager($users, $page, $max);
-    }
-
-    public function getSearchedWorkspaceUsersWithManagers(
-        Workspace $workspace,
-        $search = '',
-        $orderedBy = 'firstName',
-        $order = 'ASC',
-        $page = 1,
-        $max = 50,
-        $executeQuery = true
-    ) {
-        $users = $this->teamRepo->findSearchedWorkspaceUsersWithManagers(
-            $workspace,
-            $search,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
-
-        return $executeQuery ?
-            $this->pagerFactory->createPagerFromArray($users, $page, $max) :
-            $this->pagerFactory->createPager($users, $page, $max);
-    }
-
-    public function getNbTeamsByUsers(Workspace $workspace, array $users, $executeQuery = true)
-    {
-        return count($users) > 0 ? $this->teamRepo->findNbTeamsByUsers($workspace, $users, $executeQuery) : [];
-    }
-
-    public function getTeamsWithExclusionsByWorkspace(
-        Workspace $workspace,
-        array $excludedTeams,
-        $orderedBy = 'name',
-        $order = 'ASC',
-        $executeQuery = true
-    ) {
-        if (count($excludedTeams) > 0) {
-            return $this->teamRepo->findTeamsWithExclusionsByWorkspace(
-                $workspace,
-                $excludedTeams,
-                $orderedBy,
-                $order,
-                $executeQuery
-            );
-        } else {
-            return $this->teamRepo->findBy(['workspace' => $workspace], [$orderedBy => $order]);
-        }
-    }
-
-    /*******************************************************
-     * Access to WorkspaceTeamParametersRepository methods *
-     *******************************************************/
-
-    public function getParametersByWorkspace(Workspace $workspace)
-    {
-        return $this->workspaceTeamParamsRepo->findOneBy(['workspace' => $workspace]);
+        return $this->teamRepo->findTeamsByUser($user, $orderedBy, $order);
     }
 
     /**
