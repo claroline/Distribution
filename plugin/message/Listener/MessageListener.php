@@ -180,7 +180,7 @@ class MessageListener
     }
 
     /**
-     * @DI\Observe("open_tool_desktop_message")
+     * @DI\Observe("open_tool_desktop_messaging")
      *
      * @param DisplayToolEvent $event
      */
