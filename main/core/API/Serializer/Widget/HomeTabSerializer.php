@@ -68,7 +68,7 @@ class HomeTabSerializer
             $container = $config->getWidgetInstance()->getContainer();
 
             if ($container) {
-                $containers[$container->getUuid()] = $container;
+                $containers[$container->getPosition()] = $container;
             }
         }
 
@@ -121,7 +121,7 @@ class HomeTabSerializer
         if (isset($data['roles'])) {
             foreach ($data['roles'] as $roleUuid) {
                 $role = $this->om->getRepository(Role::class)
-              ->findOneBy(['uuid' => $roleUuid]);
+                    ->findOneBy(['uuid' => $roleUuid]);
                 $homeTab->addRole($role);
             }
 
@@ -168,8 +168,10 @@ class HomeTabSerializer
         $this->om->persist($homeTabConfig);
         $containerIds = [];
 
-        foreach ($data['widgets'] as $widgetContainer) {
+        foreach ($data['widgets'] as $position => $widgetContainer) {
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
+            $widgetContainer->setPosition($position);
+            $this->om->persist($widgetContainer);
             $containerIds[] = $widgetContainer->getUuid();
 
             //ptet rajouter les instances ici ? je sais pas
