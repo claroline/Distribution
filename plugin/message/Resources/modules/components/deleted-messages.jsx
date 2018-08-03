@@ -4,10 +4,6 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
-import {constants as listConst} from '#/main/app/content/list/constants'
-
-import {select} from '#/plugin/forum/resources/forum/selectors'
-import {actions} from '#/plugin/forum/resources/forum/player/actions'
 
 
 const DeletedMessages = () =>
