@@ -14,6 +14,7 @@ namespace Claroline\TeamBundle\Controller\API;
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Manager\TeamManager;
@@ -138,7 +139,7 @@ class TeamController extends AbstractCrudController
      * )
      *
      * @param Team    $team
-     * @param string  $role (user|manager)
+     * @param string  $role    (user|manager)
      * @param Request $request
      *
      * @return JsonResponse
@@ -172,7 +173,7 @@ class TeamController extends AbstractCrudController
      * )
      *
      * @param Team    $team
-     * @param string  $role (user|manager)
+     * @param string  $role    (user|manager)
      * @param Request $request
      *
      * @return JsonResponse
@@ -190,6 +191,33 @@ class TeamController extends AbstractCrudController
                 $this->teamManager->unregisterManagersFromTeam($team, $users);
                 break;
         }
+
+        return new JsonResponse(null, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/{workspace}/teams/create",
+     *     name="apiv2_team_multiple_create"
+     * )
+     * @EXT\ParamConverter(
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"workspace": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Workspace $workspace
+     * @param User      $user
+     * @param Request   $request
+     *
+     * @return JsonResponse
+     */
+    public function multipleTeamsCreateAction(Workspace $workspace, User $user, Request $request)
+    {
+        $this->checkToolAccess($workspace, 'edit');
+        $data = $request->request->all();
+        $this->teamManager->createMultipleTeams($workspace, $user, $data);
 
         return new JsonResponse(null, 200);
     }

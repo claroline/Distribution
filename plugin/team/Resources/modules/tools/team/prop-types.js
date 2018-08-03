@@ -1,7 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 
 import {ResourceNode as ResourceNodeType} from '#/main/core/resource/data/types/resource/prop-types'
-import {User as UserType, Role as RoleType} from '#/main/core/user/prop-types'
+import {Role as RoleType} from '#/main/core/user/prop-types'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 
 const TeamParams = {
@@ -26,7 +26,6 @@ const Team = {
     deletableDirectory: T.bool.isRequired,
     maxUsers: T.number,
     workspace: T.shape(WorkspaceType.propTypes),
-    teamManager: T.shape(UserType.propTypes),
     role: T.shape(RoleType.propTypes),
     teamManagerRole: T.shape(RoleType.propTypes),
     directory: T.shape(ResourceNodeType.propTypes)

@@ -38,10 +38,11 @@ class TeamManager
     private $rightsManager;
     private $roleManager;
     private $translator;
+    private $toolRightsManager;
 
+    private $resourceNodeRepo;
     private $teamRepo;
     private $workspaceTeamParamsRepo;
-    private $toolRightsManager;
 
     /**
      * @DI\InjectParams({
@@ -71,6 +72,7 @@ class TeamManager
         $this->translator = $translator;
         $this->toolRightsManager = $toolRightsManager;
 
+        $this->resourceNodeRepo = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $this->teamRepo = $om->getRepository('ClarolineTeamBundle:Team');
         $this->workspaceTeamParamsRepo = $om->getRepository('ClarolineTeamBundle:WorkspaceTeamParameters');
     }
@@ -92,6 +94,82 @@ class TeamManager
         }
 
         return $teamParams;
+    }
+
+    /**
+     * Creates several teams from data.
+     *
+     * @param Workspace $workspace
+     * @param User      $user
+     * @param array     $data
+     */
+    public function createMultipleTeams(Workspace $workspace, User $user, array $data)
+    {
+        $this->om->startFlushSuite();
+        $teams = [];
+        $nodes = [];
+        $index = 1;
+        $nbTeams = isset($data['nbTeams']) ? $data['nbTeams'] : 0;
+        $name = isset($data['name']) ? $data['name'] : '';
+        $description = isset($data['description']) ? $data['description'] : null;
+        $selfRegistration = isset($data['selfRegistration']) ? $data['selfRegistration'] : false;
+        $selfUnregistration = isset($data['selfUnregistration']) ? $data['selfUnregistration'] : false;
+        $publicDirectory = isset($data['publicDirectory']) ? $data['publicDirectory'] : false;
+        $deletableDirectory = isset($data['deletableDirectory']) ? $data['deletableDirectory'] : false;
+        $maxUsers = isset($data['maxUsers']) ? $data['maxUsers'] : null;
+
+        for ($i = 0; $i < $nbTeams; ++$i) {
+            $team = new Team();
+            $validName = $this->computeValidTeamName($workspace, $name, $index);
+            $team->setName($validName['name']);
+            $index = $validName['index'] + 1;
+            $team->setWorkspace($workspace);
+            $team->setDescription($description);
+            $team->setMaxUsers($maxUsers);
+            $team->setSelfRegistration($selfRegistration);
+            $team->setSelfUnregistration($selfUnregistration);
+            $team->setIsPublic($publicDirectory);
+            $team->setDirDeletable($deletableDirectory);
+
+            // Creates team role
+            $teamRole = $this->createTeamRole($team);
+            $teamRole->setMaxUsers($maxUsers);
+            $team->setRole($teamRole);
+            $this->om->persist($teamRole);
+
+            // Creates team manager role
+            $teamManagerRole = $this->createTeamRole($team, true);
+            $team->setTeamManagerRole($teamManagerRole);
+
+            // Creates team directory
+            $defaultResource = isset($data['defaultResource']['id']) ?
+                $this->resourceNodeRepo->findOneBy(['uuid' => $data['defaultResource']['id']]) :
+                null;
+            $creatableResources = isset($data['creatableResources']) ?
+                $data['creatableResources'] :
+                [];
+            $directory = $this->createTeamDirectory(
+                $team,
+                $user,
+                $defaultResource,
+                $creatableResources
+            );
+            $team->setDirectory($directory);
+            $this->om->persist($team);
+
+            $node = $team->getDirectory()->getResourceNode();
+            $node->setIndex(1);
+            $this->om->persist($node);
+            $teams[] = $team;
+            $nodes[] = $node;
+        }
+        $this->linkResourceNodesArray($workspace, $nodes);
+        $this->om->forceFlush();
+
+        foreach ($teams as $team) {
+            $this->initializeTeamRights($team);
+        }
+        $this->om->endFlushSuite();
     }
 
     /**
@@ -610,65 +688,13 @@ class TeamManager
         $this->om->endFlushSuite();
     }
 
-    /*******************
-     *  Old functions  *
-     ******************/
-
-    public function createMultipleTeams(
-        Workspace $workspace,
-        User $user,
-        $name,
-        $nbTeams,
-        $description,
-        $maxUsers,
-        $isPublic,
-        $selfRegistration,
-        $selfUnregistration,
-        ResourceNode $resource = null,
-        array $creatableResources = []
-    ) {
-        $this->om->startFlushSuite();
-        $teams = [];
-        $nodes = [];
-        $index = 1;
-
-        for ($i = 0; $i < $nbTeams; ++$i) {
-            $team = new Team();
-            $validName = $this->computeValidTeamName($workspace, $name, $index);
-            $team->setName($validName['name']);
-            $index = $validName['index'] + 1;
-            $team->setWorkspace($workspace);
-            $team->setDescription($description);
-            $team->setMaxUsers($maxUsers);
-            $team->setIsPublic($isPublic);
-            $team->setSelfRegistration($selfRegistration);
-            $team->setSelfUnregistration($selfUnregistration);
-
-            $this->createTeam(
-                $team,
-                $workspace,
-                $user,
-                $resource,
-                $creatableResources
-            );
-            $node = $team->getDirectory()->getResourceNode();
-            $node->setIndex(1);
-            $this->om->persist($node);
-            $teams[] = $team;
-            $nodes[] = $node;
-        }
-        $this->linkResourceNodesArray($workspace, $nodes);
-        $this->om->forceFlush();
-
-        foreach ($teams as $team) {
-            $this->initializeTeamRights($team);
-        }
-        $this->om->endFlushSuite();
-    }
-
+    /**
+     * @param Workspace $workspace
+     * @param array     $nodes
+     */
     private function linkResourceNodesArray(Workspace $workspace, array $nodes)
     {
-        if (count($nodes) > 0) {
+        if (0 < count($nodes)) {
             $rootNode = $this->resourceManager->getWorkspaceRoot($workspace);
             $index = $this->resourceManager->getLastIndex($rootNode) + 1;
 
@@ -679,6 +705,11 @@ class TeamManager
             }
         }
     }
+
+    /*******************
+     *  Old functions  *
+     ******************/
+
     /**
      * @param Workspace $workspace
      * @param string    $orderedBy

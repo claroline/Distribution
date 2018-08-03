@@ -12,14 +12,16 @@ const reducer = {
   teams: combineReducers({
     list: makeListReducer('teams.list', {}, {
       invalidated: makeReducer(false, {
-        [FORM_SUBMIT_SUCCESS+'/teams.current']: () => true
+        [FORM_SUBMIT_SUCCESS+'/teams.current']: () => true,
+        [FORM_SUBMIT_SUCCESS+'/teams.multiple']: () => true
       })
     }),
     current: makeFormReducer('teams.current', {}, {
       users: makeListReducer('teams.current.users'),
       managers: makeListReducer('teams.current.managers'),
       usersPicker: makeListReducer('teams.current.usersPicker')
-    })
+    }),
+    multiple: makeFormReducer('teams.multiple')
   })
 }
 

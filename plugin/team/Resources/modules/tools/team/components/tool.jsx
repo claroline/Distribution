@@ -22,6 +22,7 @@ import {Editor} from '#/plugin/team/tools/team/components/editor'
 import {Teams} from '#/plugin/team/tools/team/components/teams'
 import {Team} from '#/plugin/team/tools/team/components/team'
 import {TeamForm} from '#/plugin/team/tools/team/components/team-form'
+import {MultipleTeamForm} from '#/plugin/team/tools/team/components/multiple-team-form'
 
 const TeamToolComponent = props =>
   <PageContainer>
@@ -52,6 +53,11 @@ const TeamToolComponent = props =>
                 label: trans('home'),
                 target: '/teams',
                 exact: true
+              }, {
+                type: 'link',
+                icon: 'fa fa-fw fa-user-plus',
+                label: trans('create_teams', {}, 'team'),
+                target: '/teams/multiple/form'
               }
             ]}
           />
@@ -90,13 +96,20 @@ const TeamToolComponent = props =>
           path: '/teams/:id',
           component: Team,
           onEnter: (params) => props.openCurrentTeam(params.id, props.teamParams, props.workspaceId),
-          onLeave: () => props.resetCurrentTeam()
+          onLeave: () => props.resetCurrentTeam(),
+          exact: true
         }, {
           path: '/team/form/:id?',
           component: TeamForm,
           disabled: !props.canEdit,
           onEnter: (params) => props.openCurrentTeam(params.id, props.teamParams, props.workspaceId, props.resourceTypes),
           onLeave: () => props.resetCurrentTeam()
+        }, {
+          path: '/teams/multiple/form',
+          component: MultipleTeamForm,
+          disabled: !props.canEdit,
+          onEnter: (params) => props.openMultipleTeamsForm(props.teamParams, props.resourceTypes),
+          onLeave: () => props.resetMultipleTeamsForm()
         }
       ]}
     />
@@ -109,7 +122,9 @@ TeamToolComponent.propTypes = {
   workspaceId: T.string.isRequired,
   resetForm: T.func.isRequired,
   openCurrentTeam: T.func.isRequired,
-  resetCurrentTeam: T.func.isRequired
+  resetCurrentTeam: T.func.isRequired,
+  openMultipleTeamsForm: T.func.isRequired,
+  resetMultipleTeamsForm: T.func.isRequired
 }
 
 const TeamTool = connect(
@@ -139,6 +154,20 @@ const TeamTool = connect(
     },
     resetCurrentTeam() {
       dispatch(formActions.resetForm('teams.current', {}, true))
+    },
+    openMultipleTeamsForm(teamParams, resourceTypes) {
+      const defaultValue = {
+        nbTeams: 1,
+        selfRegistration: teamParams.selfRegistration,
+        selfUnregistration: teamParams.selfUnregistration,
+        publicDirectory: teamParams.publicDirectory,
+        deletableDirectory: teamParams.deletableDirectory,
+        creatableResources: resourceTypes
+      }
+      dispatch(formActions.resetForm('teams.multiple', defaultValue, true))
+    },
+    resetMultipleTeamsForm() {
+      dispatch(formActions.resetForm('teams.multiple', {}, true))
     }
   })
 )(TeamToolComponent)

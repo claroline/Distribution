@@ -54,7 +54,7 @@ const TeamFormComponent = props =>
               name: 'description',
               type: 'html',
               label: trans('description')
-            },{
+            }, {
               name: 'defaultResource',
               type: 'resource',
               label: trans('default_resource', {}, 'team'),
@@ -135,7 +135,7 @@ const TeamFormComponent = props =>
         {props.team.teamManagerRole &&
           <FormSection
             className="embedded-list-section"
-            icon="fa fa-fw fa-graduation-cap"
+            icon="fa fa-fw fa-user-graduate"
             title={trans('team_managers', {}, 'team')}
             disabled={props.isNew}
             actions={[

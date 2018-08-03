@@ -13,7 +13,6 @@ namespace Claroline\TeamBundle\Repository;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\TeamBundle\Entity\Team;
 use Doctrine\ORM\EntityRepository;
 
 class TeamRepository extends EntityRepository

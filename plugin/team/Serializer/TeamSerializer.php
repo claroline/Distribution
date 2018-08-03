@@ -7,11 +7,9 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
-use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
-use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Manager\TeamManager;
@@ -39,15 +37,11 @@ class TeamSerializer
     private $resourceNodeSerializer;
     /** @var RoleSerializer */
     private $roleSerializer;
-    /** @var UserSerializer */
-    private $userSerializer;
     /** @var WorkspaceSerializer */
     private $workspaceSerializer;
 
     /** @var ResourceNodeRepository */
     private $resourceNodeRepo;
-    /** @var UserRepository */
-    private $userRepo;
     /** @var WorkspaceRepository */
     private $workspaceRepo;
 
@@ -61,7 +55,6 @@ class TeamSerializer
      *     "tokenStorage"           = @DI\Inject("security.token_storage"),
      *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node"),
      *     "roleSerializer"         = @DI\Inject("claroline.serializer.role"),
-     *     "userSerializer"         = @DI\Inject("claroline.serializer.user"),
      *     "workspaceSerializer"    = @DI\Inject("claroline.serializer.workspace")
      * })
      *
@@ -71,7 +64,6 @@ class TeamSerializer
      * @param TokenStorage           $tokenStorage
      * @param ResourceNodeSerializer $resourceNodeSerializer
      * @param RoleSerializer         $roleSerializer
-     * @param UserSerializer         $userSerializer
      * @param WorkspaceSerializer    $workspaceSerializer
      */
     public function __construct(
@@ -81,7 +73,6 @@ class TeamSerializer
         TokenStorage $tokenStorage,
         ResourceNodeSerializer $resourceNodeSerializer,
         RoleSerializer $roleSerializer,
-        UserSerializer $userSerializer,
         WorkspaceSerializer $workspaceSerializer
     ) {
         $this->om = $om;
@@ -90,11 +81,9 @@ class TeamSerializer
         $this->tokenStorage = $tokenStorage;
         $this->resourceNodeSerializer = $resourceNodeSerializer;
         $this->roleSerializer = $roleSerializer;
-        $this->userSerializer = $userSerializer;
         $this->workspaceSerializer = $workspaceSerializer;
 
         $this->resourceNodeRepo = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode');
-        $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
         $this->workspaceRepo = $om->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace');
     }
 
@@ -110,9 +99,6 @@ class TeamSerializer
             'name' => $team->getName(),
             'description' => $team->getDescription(),
             'workspace' => $this->workspaceSerializer->serialize($team->getWorkspace(), [Options::SERIALIZE_MINIMAL]),
-            'teamManager' => $team->getTeamManager() ?
-                $this->userSerializer->serialize($team->getTeamManager(), [Options::SERIALIZE_MINIMAL]) :
-                null,
             'maxUsers' => $team->getMaxUsers(),
             'selfRegistration' => $team->isSelfRegistration(),
             'selfUnregistration' => $team->isSelfUnregistration(),
@@ -155,11 +141,6 @@ class TeamSerializer
                 $team->setWorkspace($workspace);
             }
         }
-        // Sets team manager
-        $teamManager = isset($data['teamManager']['id']) ?
-            $this->userRepo->findOneBy(['uuid' => $data['teamManager']['id']]) :
-            null;
-        $team->setTeamManager($teamManager);
 
         // Checks and creates role for team members & team manager if needed.
         $teamRole = $team->getRole();
