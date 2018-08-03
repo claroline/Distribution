@@ -1,38 +1,23 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
-import {TabbedPageContainer} from '#/main/core/layout/tabs'
+import {PageContainer} from '#/main/core/layout/page'
 
-import {WorkspaceTab, WorkspaceTabActions} from '#/main/core/administration/workspace/workspace/components/workspace-tab'
-import {ParametersTab} from '#/main/core/administration/workspace/parameters/components/parameters-tab'
+import {MessagesNav} from '#/plugin/message/components/messages-nav'
+import {Messages} from '#/plugin/message/components/messages'
 
 const Messaging = () =>
-  <TabbedPageContainer
-    title={trans('messaging', {}, 'tools')}
-    redirect={[
-      {from: '/', exact: true, to: '/sent'}
-    ]}
-
-    tabs={[
-      {
-        icon: 'fa fa-book',
-        title: trans('sent'),
-        path: '/sent'
-      }, {
-        icon: 'fa fa-cog',
-        title: trans('received'),
-        path: '/received'
-      }, {
-        icon: 'fa fa-cog',
-        title: trans('removed'),
-        path: '/removed'
-      }, {
-        icon: 'fa fa-cog',
-        title: trans('new'),
-        path: '/new'
-      }
-    ]}
-  />
+  <PageContainer>
+    <h2>{trans('mailbox')}</h2>
+    <div className="row">
+      <div className="col-md-3">
+        <MessagesNav/>
+      </div>
+      <div className="col-md-9">
+        <Messages/>
+      </div>
+    </div>
+  </PageContainer>
 
 export {
   Messaging
