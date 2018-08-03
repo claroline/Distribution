@@ -146,4 +146,8 @@ class WidgetContainerSerializer
 
         return $widgetContainer;
     }
+
+    public function getConfig(WidgetContainer $container, array $options)
+    {
+    }
 }

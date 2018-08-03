@@ -79,8 +79,9 @@ class HomeController extends AbstractApiController
         $updated = [];
         foreach ($tabs as $tab) {
             // do not update tabs set by the administration tool
-            if (HomeTab::TYPE_ADMIN_DESKTOP !== $tab['type']) {
-                $updated[] = $this->crud->update(HomeTab::class, $tab);
+
+            if (HomeTab::TYPE_ADMIN_DESKTOP !== $tab['type'] || 'administration' === $context) {
+                $updated[] = $this->crud->update(HomeTab::class, $tab, [$context]);
                 $ids[] = $tab['id']; // will be used to determine deleted tabs
             }
         }

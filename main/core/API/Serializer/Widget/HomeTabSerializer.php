@@ -12,7 +12,6 @@ use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -61,6 +60,8 @@ class HomeTabSerializer
 
     public function serialize(HomeTab $homeTab, array $options = []): array
     {
+        $homeTabConfig = $this->getConfig($homeTab, $options);
+
         $savedContainers = $homeTab->getWidgetContainers();
         $containers = [];
 
@@ -74,8 +75,6 @@ class HomeTabSerializer
         $containers = array_values($containers);
 
         //throw new \Exception(count($savedContainers));
-        $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
-          ->findOneBy(['homeTab' => $homeTab]);
 
         $poster = null;
 
@@ -174,22 +173,6 @@ class HomeTabSerializer
             $widgetContainerConfig->setPosition($position);
             $this->om->persist($widgetContainerConfig);
             $containerIds[] = $widgetContainer->getUuid();
-
-            //ptet rajouter les instances ici ? je sais pas
-
-            /*
-            foreach ($widgetContainer->getInstances() as $key => $instance) {
-                $widgetHomeTabConfig = new WidgetInstanceConfig();
-                $widgetHomeTabConfig->setUser($user);
-                $widgetHomeTabConfig->setWorkspace($workspace);
-                $widgetHomeTabConfig->setHomeTab($homeTab);
-                $widgetHomeTabConfig->setVisible(true);
-                $widgetHomeTabConfig->setLocked(false);
-                $widgetHomeTabConfig->setType($homeTab->getType());
-                $widgetHomeTabConfig->setWidgetOrder($key);
-                $widgetHomeTabConfig->setWidgetInstance($instance);
-                $this->om->persist($widgetHomeTabConfig);
-            }*/
         }
 
         //readytoremove
@@ -203,5 +186,13 @@ class HomeTabSerializer
         }*/
 
         return $homeTab;
+    }
+
+    public function getConfig(HomeTab $tab, array $options)
+    {
+        $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
+          ->findOneBy(['homeTab' => $tab]);
+
+        return $homeTabConfig;
     }
 }
