@@ -187,10 +187,14 @@ class TeamSerializer
             $defaultResource = isset($data['defaultResource']['id']) ?
                 $this->resourceNodeRepo->findOneBy(['uuid' => $data['defaultResource']['id']]) :
                 null;
+            $creatableResources = isset($data['creatableResources']) ?
+                $data['creatableResources'] :
+                [];
             $directory = $this->teamManager->createTeamDirectory(
                 $team,
                 $user,
-                $defaultResource
+                $defaultResource,
+                $creatableResources
             );
             $team->setDirectory($directory);
             $this->teamManager->initializeTeamRights($team);

@@ -67,5 +67,6 @@
     "unregister_all_users_from_selected_teams": "Désinscrire tous les utilisateurs des équipes sélectionnées",
     "unregister_from_team": "Se désinscrire de l'équipe",
     "unregister_from_team_confirm_message": "Êtes-vous sûr de vouloir vous désinscrire de cette équipe ?",
-    "unregister_user_from_team_confirm_message": "Êtes-vous sûr de vouloir désinscrire cet utilisateur de cette équipe ?"
+    "unregister_user_from_team_confirm_message": "Êtes-vous sûr de vouloir désinscrire cet utilisateur de cette équipe ?",
+    "user_creatable_resources": "Ressources pouvant être créées par les utilisateurs"
 }

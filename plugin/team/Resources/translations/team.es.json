@@ -62,5 +62,6 @@
     "unregister_all_users_from_selected_teams": "Dar de baja a todos los usuarios de los equipos seleccionados",
     "unregister_from_team": "Darse de baja del equipo",
     "unregister_from_team_confirm_message": "¿Está seguro que quiere darse de baja de este equipo?",
-    "unregister_user_from_team_confirm_message": "¿Está seguro que quiere dar de baja este usuario de este equipo?"
+    "unregister_user_from_team_confirm_message": "¿Está seguro que quiere dar de baja este usuario de este equipo?",
+    "user_creatable_resources": "Recursos creables por los usuarios"
 }

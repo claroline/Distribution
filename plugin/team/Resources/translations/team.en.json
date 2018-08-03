@@ -67,5 +67,6 @@
     "unregister_all_users_from_selected_teams": "Unregister all users from selected team(s)",
     "unregister_from_team": "Unregister from team",
     "unregister_from_team_confirm_message": "Are you sure you want to unregister from this team ?",
-    "unregister_user_from_team_confirm_message": "Are you sure you want to unregister this user from this team ?"
+    "unregister_user_from_team_confirm_message": "Are you sure you want to unregister this user from this team ?",
+    "user_creatable_resources": "Resources that can be created by users"
 }

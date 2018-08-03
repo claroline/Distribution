@@ -15,7 +15,7 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
 import {Team as TeamType} from '#/plugin/team/tools/team/prop-types'
-import {actions} from '#/plugin/team/tools/team/store'
+import {actions, selectors} from '#/plugin/team/tools/team/store'
 
 const TeamFormComponent = props =>
   <section className="tool-section">
@@ -83,6 +83,20 @@ const TeamFormComponent = props =>
               type: 'boolean',
               label: trans('team_self_unregistration', {}, 'team'),
               required: true
+            }, {
+              name: 'creatableResources',
+              type: 'choice',
+              label: trans('user_creatable_resources', {}, 'team'),
+              displayed: props.isNew,
+              options: {
+                multiple: true,
+                condensed: true,
+                choices: props.resourceTypes.reduce((acc, type) => {
+                  acc[type] = trans(type, {}, 'resource')
+
+                  return acc
+                }, {})
+              }
             }
           ]
         }
@@ -155,6 +169,7 @@ TeamFormComponent.propTypes = {
   team: T.shape(TeamType.propTypes).isRequired,
   workspaceId: T.string.isRequired,
   isNew: T.bool.isRequired,
+  resourceTypes: T.arrayOf(T.string).isRequired,
   history: T.shape({
     push: T.func.isRequired
   }).isRequired
@@ -164,7 +179,8 @@ const TeamForm = connect(
   (state) => ({
     team: formSelectors.data(formSelectors.form(state, 'teams.current')),
     workspaceId: workspaceSelect.workspace(state).uuid,
-    isNew: formSelectors.isNew(formSelectors.form(state, 'teams.current'))
+    isNew: formSelectors.isNew(formSelectors.form(state, 'teams.current')),
+    resourceTypes: selectors.resourceTypes(state)
   }),
   (dispatch) => ({
     pickUsers(teamId, workspaceId, pickManagers = false) {

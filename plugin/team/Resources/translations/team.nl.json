@@ -62,5 +62,6 @@
     "unregister_all_users_from_selected_teams": "Alle gebruikers afschrijven van de geselecteerde ploegen",
     "unregister_from_team": "Zich afschrijven van de ploeg",
     "unregister_from_team_confirm_message": "Bent u er zeker van dat u deze ploeg wenst af te schrijven ?",
-    "unregister_user_from_team_confirm_message": "Bent u er zeker van dat u deze gebruiker van deze ploeg wenst af te schrijven ?"
+    "unregister_user_from_team_confirm_message": "Bent u er zeker van dat u deze gebruiker van deze ploeg wenst af te schrijven ?",
+    "user_creatable_resources": "Bronnen die door de gebruikers mogen gemaakt worden"
 }

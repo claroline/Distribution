@@ -95,7 +95,7 @@ const TeamToolComponent = props =>
           path: '/team/form/:id?',
           component: TeamForm,
           disabled: !props.canEdit,
-          onEnter: (params) => props.openCurrentTeam(params.id, props.teamParams, props.workspaceId),
+          onEnter: (params) => props.openCurrentTeam(params.id, props.teamParams, props.workspaceId, props.resourceTypes),
           onLeave: () => props.resetCurrentTeam()
         }
       ]}
@@ -105,6 +105,7 @@ const TeamToolComponent = props =>
 TeamToolComponent.propTypes = {
   canEdit: T.bool.isRequired,
   teamParams: T.shape(TeamParamsType.propTypes).isRequired,
+  resourceTypes: T.arrayOf(T.string).isRequired,
   workspaceId: T.string.isRequired,
   resetForm: T.func.isRequired,
   openCurrentTeam: T.func.isRequired,
@@ -115,13 +116,14 @@ const TeamTool = connect(
   (state) => ({
     canEdit: selectors.canEdit(state),
     teamParams: selectors.teamParams(state),
+    resourceTypes: selectors.resourceTypes(state),
     workspaceId: workspaceSelect.workspace(state).uuid
   }),
   (dispatch) => ({
     resetForm(formData) {
       dispatch(formActions.resetForm('teamParamsForm', formData))
     },
-    openCurrentTeam(id, teamParams, workspaceId) {
+    openCurrentTeam(id, teamParams, workspaceId, resourceTypes) {
       const defaultValue = {
         id: makeId(),
         workspace: {
@@ -130,7 +132,8 @@ const TeamTool = connect(
         selfRegistration: teamParams.selfRegistration,
         selfUnregistration: teamParams.selfUnregistration,
         publicDirectory: teamParams.publicDirectory,
-        deletableDirectory: teamParams.deletableDirectory
+        deletableDirectory: teamParams.deletableDirectory,
+        creatableResources: resourceTypes
       }
       dispatch(actions.openForm('teams.current', id, defaultValue))
     },

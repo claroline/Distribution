@@ -230,7 +230,7 @@ class TeamManager
         }
 
         foreach ($creatableResources as $creatableResource) {
-            $rights[$teamRoleName]['create'][] = ['name' => $creatableResource->getName()];
+            $rights[$teamRoleName]['create'][] = ['name' => $creatableResource];
         }
         $decoders = $directoryType->getMaskDecoders();
 
