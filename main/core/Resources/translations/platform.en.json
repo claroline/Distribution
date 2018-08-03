@@ -727,7 +727,7 @@
     "merge_confirmation": "Merging account process will result in keeping user: %username% account. Do you still want to proceed?",
     "message": "Message",
     "message_form_content": "Content",
-    "message_form_object": "Object",
+    "message_form_object": "Subject",
     "message_form_to": "To",
     "message_sending": "Message sending",
     "messages": "Message",

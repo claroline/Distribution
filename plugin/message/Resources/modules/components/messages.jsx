@@ -5,8 +5,9 @@ import {Router, Routes} from '#/main/app/router'
 
 import {ReceivedMessages} from '#/plugin/message/components/received-messages'
 import {SentMessages} from '#/plugin/message/components/sent-messages'
-import {RemovedMessages} from '#/plugin/message/components/removed-messages'
-import {SendMessage} from '#/plugin/message/components/send-message'
+import {DeletedMessages} from '#/plugin/message/components/deleted-messages'
+import {NewMessage} from '#/plugin/message/components/new-message'
+import {Message} from '#/plugin/message/components/message'
 
 const Messages = () =>
   <Router>
@@ -24,13 +25,17 @@ const Messages = () =>
           exact: true,
           component: SentMessages
         }, {
-          path: '/removed',
+          path: '/deleted',
           exact: true,
-          component: RemovedMessages
+          component: DeletedMessages
         }, {
-          path: '/send',
+          path: '/new',
           exact: true,
-          component: SendMessage
+          component: NewMessage
+        }, {
+          path: '/message/:id?',
+          exact: true,
+          component: Message
         }
       ]}
     />

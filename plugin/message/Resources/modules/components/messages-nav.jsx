@@ -1,5 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
@@ -19,11 +18,11 @@ const MessagesNav = () =>
       },  {
         icon: 'fa fa-fw fa-trash',
         title: trans('messages_removed'),
-        path: '/removed'
+        path: '/deleted'
       }, {
         icon: 'fa fa-fw fa-plus',
         title: trans('new'),
-        path: '/send'
+        path: '/new'
       }
     ]}
   />
