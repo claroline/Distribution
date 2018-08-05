@@ -10,6 +10,8 @@
     "multiple_teams_creation": "Création de plusieurs équipes",
     "nb_teams": "Nombre d'équipes",
     "public_directory": "Dossier public",
+    "self_register": "S'inscrire",
+    "self_unregister": "Se désinscrire",
     "team": "Equipe",
     "team_creation": "Création d'une équipe",
     "team_directory_public_access": "Accès public au répertoire de l'équipe",

@@ -22,8 +22,9 @@ class TeamRepository extends EntityRepository
         $dql = "
             SELECT t
             FROM Claroline\TeamBundle\Entity\Team t
-            JOIN t.users tu
-            WHERE tu = :user
+            JOIN t.role r
+            JOIN r.users u
+            WHERE u = :user
             ORDER BY t.{$orderedBy} {$order}
         ";
         $query = $this->_em->createQuery($dql);
@@ -37,7 +38,8 @@ class TeamRepository extends EntityRepository
         $dql = '
             SELECT t
             FROM Claroline\TeamBundle\Entity\Team t
-            JOIN t.users u
+            JOIN t.role r
+            JOIN r.users u
             WHERE t.workspace = :workspace
             AND u = :user
         ';

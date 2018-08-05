@@ -21,11 +21,9 @@ use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolRightsManager;
-use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Entity\WorkspaceTeamParameters;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.manager.team_manager")
@@ -33,11 +31,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 class TeamManager
 {
     private $om;
-    private $pagerFactory;
     private $resourceManager;
     private $rightsManager;
     private $roleManager;
-    private $translator;
     private $toolRightsManager;
 
     private $resourceNodeRepo;
@@ -47,29 +43,23 @@ class TeamManager
     /**
      * @DI\InjectParams({
      *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
-     *     "pagerFactory"      = @DI\Inject("claroline.pager.pager_factory"),
      *     "resourceManager"   = @DI\Inject("claroline.manager.resource_manager"),
      *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
      *     "toolRightsManager" = @DI\Inject("claroline.manager.tool_rights_manager"),
-     *     "roleManager"       = @DI\Inject("claroline.manager.role_manager"),
-     *     "translator"        = @DI\Inject("translator")
+     *     "roleManager"       = @DI\Inject("claroline.manager.role_manager")
      * })
      */
     public function __construct(
         ObjectManager $om,
-        PagerFactory $pagerFactory,
         ResourceManager $resourceManager,
         RightsManager $rightsManager,
         RoleManager $roleManager,
-        TranslatorInterface $translator,
         ToolRightsManager $toolRightsManager
     ) {
         $this->om = $om;
-        $this->pagerFactory = $pagerFactory;
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->roleManager = $roleManager;
-        $this->translator = $translator;
         $this->toolRightsManager = $toolRightsManager;
 
         $this->resourceNodeRepo = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode');

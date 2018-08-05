@@ -197,6 +197,56 @@ class TeamController extends AbstractCrudController
 
     /**
      * @EXT\Route(
+     *     "/team/{team}/register",
+     *     name="apiv2_team_self_register"
+     * )
+     * @EXT\ParamConverter(
+     *     "team",
+     *     class="ClarolineTeamBundle:Team",
+     *     options={"mapping": {"team": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Team $team
+     * @param User $user
+     *
+     * @return JsonResponse
+     */
+    public function teamSelfRegisterAction(Team $team, User $user)
+    {
+        $this->checkToolAccess($team->getWorkspace(), 'open');
+        $this->teamManager->registerUsersToTeam($team, [$user]);
+
+        return new JsonResponse(null, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/team/{team}/unregister",
+     *     name="apiv2_team_self_unregister"
+     * )
+     * @EXT\ParamConverter(
+     *     "team",
+     *     class="ClarolineTeamBundle:Team",
+     *     options={"mapping": {"team": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Team $team
+     * @param User $user
+     *
+     * @return JsonResponse
+     */
+    public function teamSelfUnregisterAction(Team $team, User $user)
+    {
+        $this->checkToolAccess($team->getWorkspace(), 'open');
+        $this->teamManager->unregisterUsersFromTeam($team, [$user]);
+
+        return new JsonResponse(null, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/workspace/{workspace}/teams/create",
      *     name="apiv2_team_multiple_create"
      * )

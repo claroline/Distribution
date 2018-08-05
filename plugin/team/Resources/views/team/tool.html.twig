@@ -26,6 +26,7 @@
       data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"
       data-team-params="{{ teamParams | api_serialize | json_encode | raw | escape }}"
       data-can-edit="{{ canEdit | json_encode | raw | escape }}"
+      data-my-teams="{{ myTeams | json_encode | raw | escape }}"
       data-resource-types="{{ resourceTypes | json_encode | raw | escape }}"
     >
     </div>

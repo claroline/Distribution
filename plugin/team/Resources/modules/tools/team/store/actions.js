@@ -1,8 +1,15 @@
+import {makeActionCreator} from '#/main/app/store/actions'
 import {API_REQUEST, url} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {actions as listActions} from '#/main/app/content/list/store'
 
+const MY_TEAMS_ADD = 'MY_TEAMS_ADD'
+const MY_TEAMS_REMOVE = 'MY_TEAMS_REMOVE'
+
 const actions = {}
+
+actions.addToMyTeams = makeActionCreator(MY_TEAMS_ADD, 'teamId')
+actions.removeFromMyTeams = makeActionCreator(MY_TEAMS_REMOVE, 'teamId')
 
 actions.openForm = (formName, id = null, defaultProps) => {
   if (id) {
@@ -36,6 +43,34 @@ actions.registerUsers = (teamId, users, role = 'user') => ({
   }
 })
 
+actions.selfRegister = (teamId) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_team_self_register', {team: teamId}],
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.addToMyTeams(teamId))
+      dispatch(listActions.invalidateData('teams.current.users'))
+    }
+  }
+})
+
+actions.selfUnregister = (teamId) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_team_self_unregister', {team: teamId}],
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.removeFromMyTeams(teamId))
+      dispatch(listActions.invalidateData('teams.current.users'))
+    }
+  }
+})
+
 export {
-  actions
+  actions,
+  MY_TEAMS_ADD,
+  MY_TEAMS_REMOVE
 }
