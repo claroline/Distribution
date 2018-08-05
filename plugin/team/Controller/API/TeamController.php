@@ -148,9 +148,25 @@ class TeamController extends AbstractCrudController
     {
         $this->checkToolAccess($team->getWorkspace(), 'edit');
         $users = parent::decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $workspace = $team->getWorkspace();
 
         switch ($role) {
             case 'user':
+                $maxUsers = $team->getMaxUsers();
+
+                if ($maxUsers && $maxUsers < count($team->getRole()->getUsers()->toArray()) + count($users)) {
+                    throw new AccessDeniedException();
+                }
+                $params = $this->teamManager->getWorkspaceTeamParameters($workspace);
+                $allowedTeams = $params->getMaxTeams();
+
+                if ($allowedTeams) {
+                    foreach ($users as $user) {
+                        if ($allowedTeams <= count($this->teamManager->getTeamsByUserAndWorkspace($user, $workspace))) {
+                            throw new AccessDeniedException();
+                        }
+                    }
+                }
                 $this->teamManager->registerUsersToTeam($team, $users);
                 break;
             case 'manager':
@@ -214,7 +230,24 @@ class TeamController extends AbstractCrudController
      */
     public function teamSelfRegisterAction(Team $team, User $user)
     {
-        $this->checkToolAccess($team->getWorkspace(), 'open');
+        $workspace = $team->getWorkspace();
+        $this->checkToolAccess($workspace, 'open');
+
+        if (!$team->isSelfRegistration()) {
+            throw new AccessDeniedException();
+        }
+        $maxUsers = $team->getMaxUsers();
+
+        if ($maxUsers && $maxUsers <= count($team->getRole()->getUsers()->toArray())) {
+            throw new AccessDeniedException();
+        }
+        $params = $this->teamManager->getWorkspaceTeamParameters($workspace);
+        $allowedTeams = $params->getMaxTeams();
+
+        if ($allowedTeams && $allowedTeams <= count($this->teamManager->getTeamsByUserAndWorkspace($user, $workspace))) {
+            throw new AccessDeniedException();
+        }
+
         $this->teamManager->registerUsersToTeam($team, [$user]);
 
         return new JsonResponse(null, 200);
@@ -240,6 +273,10 @@ class TeamController extends AbstractCrudController
     public function teamSelfUnregisterAction(Team $team, User $user)
     {
         $this->checkToolAccess($team->getWorkspace(), 'open');
+
+        if (!$team->isSelfUnregistration()) {
+            throw new AccessDeniedException();
+        }
         $this->teamManager->unregisterUsersFromTeam($team, [$user]);
 
         return new JsonResponse(null, 200);

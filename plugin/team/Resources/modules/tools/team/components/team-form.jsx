@@ -125,7 +125,7 @@ const TeamFormComponent = props =>
                 autoload: !props.isNew
               }}
               delete={{
-                url: ['apiv2_team_unregister', {team: props.team.id}]
+                url: ['apiv2_team_unregister', {team: props.team.id, role: 'user'}]
               }}
               definition={UserList.definition}
               card={UserList.card}
@@ -154,7 +154,7 @@ const TeamFormComponent = props =>
                 autoload: !props.isNew
               }}
               delete={{
-                url: ['apiv2_role_remove_users', {id: props.team.teamManagerRole.id}]
+                url: ['apiv2_team_unregister', {team: props.team.id, role: 'manager'}]
               }}
               definition={UserList.definition}
               card={UserList.card}
