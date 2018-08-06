@@ -2,10 +2,12 @@
 
 namespace Claroline\MessageBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\MessageSerializer as AbstractMessageSerializer;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -68,14 +70,21 @@ class MessageSerializer
      */
     public function serialize(Message $message, array $options = [])
     {
-        return [
+        $data = [
+          'id' => $message->getId(),
           'object' => $message->getObject(),
           'content' => $message->getContent(),
           'to' => $message->getTo(),
-          'children' => array_map(function (Message $child) {
-              return $this->serialize($child);
-          }, $message->getChildren()->toArray()),
+          'date' => DateNormalizer::normalize($message->getDate()),
         ];
+
+        if (in_array(Options::IS_RECURSIVE, $options)) {
+            $data['children'] = array_map(function (Message $child) {
+                return $this->serialize($child);
+            }, $message->getChildren()->toArray());
+        }
+
+        return $data;
     }
 
     /**

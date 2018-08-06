@@ -11,9 +11,9 @@ const SentMessages = () =>
   <div>
     <h2>{trans('messages_sent')}</h2>
     <ListData
-      name="messagesSent"
+      name="sentMessages"
       fetch={{
-        url: ['apiv2_message_list'],
+        url: ['apiv2_message_sent'],
         autoload: true
       }}
       // delete={{
@@ -51,21 +51,21 @@ const SentMessages = () =>
           alias: 'creator'
         }
       ]}
-      actions={(rows) => [
-        {
-          type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-eye',
-          label: trans('see_message', {}, 'message'),
-          target: '/message/'+rows[0].id,
-          context: 'row'
-        }
-      ]}
-      card={(props) =>
-        <MessageCard
-          {...props}
-          contentText={props.data.content}
-        />
-      }
+      // actions={(rows) => [
+      //   {
+      //     type: LINK_BUTTON,
+      //     icon: 'fa fa-fw fa-eye',
+      //     label: trans('see_message', {}, 'message'),
+      //     target: '/message/'+rows[0].id,
+      //     context: 'row'
+      //   }
+      // ]}
+      // card={(props) =>
+      //   <MessageCard
+      //     {...props}
+      //     contentText={props.data.content}
+      //   />
+      // }
     />
   </div>
 

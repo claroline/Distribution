@@ -11,9 +11,9 @@ const DeletedMessages = () =>
   <div>
     <h2>{trans('messages_delete')}</h2>
     <ListData
-      name="messagesDeleted"
+      name="deletedMessages"
       fetch={{
-        url: [],
+        url: ['apiv2_message_removed'],
         autoload: true
       }}
       delete={{
@@ -51,21 +51,21 @@ const DeletedMessages = () =>
           alias: 'creator'
         }
       ]}
-      actions={(rows) => [
-        {
-          type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-eye',
-          label: trans('see_message', {}, 'message'),
-          target: '/message/'+rows[0].id,
-          context: 'row'
-        }
-      ]}
-      card={(props) =>
-        <MessageCard
-          {...props}
-          contentText={props.data.content}
-        />
-      }
+      // actions={(rows) => [
+      //   {
+      //     type: LINK_BUTTON,
+      //     icon: 'fa fa-fw fa-eye',
+      //     label: trans('see_message', {}, 'message'),
+      //     target: '/message/'+rows[0].id,
+      //     context: 'row'
+      //   }
+      // ]}
+      // card={(props) =>
+      //   <MessageCard
+      //     {...props}
+      //     contentText={props.data.content}
+      //   />
+      // }
     />
   </div>
 

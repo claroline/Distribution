@@ -12,13 +12,13 @@
 namespace Claroline\MessageBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\MessageController\Entity\Message;
+use Claroline\MessageBundle\Entity\Message;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @DI\Service("claroline.api.finder.message")
+ * @DI\Service("claroline.api.finder.messaging.message")
  * @DI\Tag("claroline.finder")
  */
 class MessageFinder extends AbstractFinder
@@ -50,43 +50,43 @@ class MessageFinder extends AbstractFinder
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-                  case 'currentUser':
-                      $qb->leftJoin('um.users', 'currentUser');
-                      $qb->andWhere('currentUser.id = :currentUserId');
-                      $qb->setParameter('currentUserId', $this->token->getUser()->getId());
-                      break;
-                  case 'users':
-                      $qb->leftJoin('um.users', 'user');
-                      $qb->andWhere('user.uuid IN (:userIds)');
-                      $qb->setParameter('userIds', is_array($filterValue) ? $filterValue : [$filterValue]);
-                      break;
-                  case 'sent':
-                      $qb->andWhere("obj.isSent = :{$filterName}");
-                      $qb->setParameter($filterName, $filterValue);
-                      break;
-                  case 'removed':
-                      $qb->andWhere("obj.isRemoved = :{$filterName}");
-                      $qb->setParameter($filterName, $filterValue);
-                      break;
-                  case 'read':
-                      $qb->andWhere("obj.isRead = :{$filterName}");
-                      $qb->setParameter($filterName, $filterValue);
-                      break;
-                  case 'after':
-                      $qb->andWhere("obj.date >= :{$filterName}");
-                      $qb->setParameter($filterName, $filterValue);
-                      break;
-                  case 'before':
-                      $qb->andWhere("obj.date <= :{$filterName}");
-                      $qb->setParameter($filterName, $filterValue);
-                      break;
-                  case 'from':
-                      $qb->andWhere("UPPER(obj.senderUserName) LIKE :{$filterName}");
-                      $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                      break;
-                  default:
-                    $this->setDefaults($qb, $filterName, $filterValue);
-                }
+                case 'currentUser':
+                    $qb->leftJoin('um.user', 'currentUser');
+                    $qb->andWhere('currentUser.id = :currentUserId');
+                    $qb->setParameter('currentUserId', $this->tokenStorage->getToken()->getUser()->getId());
+                    break;
+                case 'users':
+                    $qb->leftJoin('um.user', 'user');
+                    $qb->andWhere('user.uuid IN (:userIds)');
+                    $qb->setParameter('userIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                case 'sent':
+                    $qb->andWhere("um.isSent = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'removed':
+                    $qb->andWhere("um.isRemoved = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'read':
+                    $qb->andWhere("um.isRead = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'after':
+                    $qb->andWhere("um.date >= :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'before':
+                    $qb->andWhere("obj.date <= :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'from':
+                    $qb->andWhere("UPPER(obj.senderUserName) LIKE :{$filterName}");
+                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    break;
+                default:
+                  $this->setDefaults($qb, $filterName, $filterValue);
+            }
         }
 
         return $qb;

@@ -11,9 +11,9 @@ const ReceivedMessages = () =>
   <div>
     <h2>{trans('messages_received')}</h2>
     <ListData
-      name="messagesReceived"
+      name="receivedMessages"
       fetch={{
-        url: [],
+        url: ['apiv2_message_received'],
         autoload: true
       }}
       delete={{
@@ -59,27 +59,27 @@ const ReceivedMessages = () =>
           alias: 'creator'
         }
       ]}
-      actions={(rows) => [
-        {
-          type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-eye',
-          label: trans('see_message', {}, 'message'),
-          target: '/message/'+rows[0].id,
-          context: 'row'
-        }, {
-          type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-share',
-          label: trans('reply', {}, 'actions'),
-          target: '/message/'+rows[0].id,
-          context: 'row'
-        }
-      ]}
-      card={(props) =>
-        <MessageCard
-          {...props}
-          contentText={props.data.content}
-        />
-      }
+      // actions={(rows) => [
+      //   {
+      //     type: LINK_BUTTON,
+      //     icon: 'fa fa-fw fa-eye',
+      //     label: trans('see_message', {}, 'message'),
+      //     target: '/message/'+rows[0].id,
+      //     context: 'row'
+      //   }, {
+      //     type: LINK_BUTTON,
+      //     icon: 'fa fa-fw fa-share',
+      //     label: trans('reply', {}, 'actions'),
+      //     target: '/message/'+rows[0].id,
+      //     context: 'row'
+      //   }
+      // ]}
+      // card={(props) =>
+      //   <MessageCard
+      //     {...props}
+      //     contentText={props.data.content}
+      //   />
+      // }
     />
   </div>
 

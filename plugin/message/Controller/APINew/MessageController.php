@@ -11,9 +11,12 @@
 
 namespace Claroline\MessageBundle\Controller\APINew;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\MessageBundle\Entity\Message;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @EXT\Route("/message")
@@ -24,6 +27,61 @@ class MessageController extends AbstractCrudController
     public function getName()
     {
         return 'message';
+    }
+
+    /**
+     * @EXT\Route("/received", name="apiv2_message_received")
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function getReceivedAction(Request $request)
+    {
+        return new JsonResponse(
+          $this->finder->search($this->getClass(), array_merge(
+              $request->query->all(),
+              ['hiddenFilters' => ['currentUser' => true, 'removed' => false, 'sent' => false]]
+          ))
+        );
+    }
+
+    /**
+     * @EXT\Route("/removed", name="apiv2_message_removed")
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function getRemovedAction(Request $request)
+    {
+        return new JsonResponse(
+          $this->finder->search($this->getClass(), array_merge(
+              $request->query->all(),
+              ['hiddenFilters' => ['currentUser' => true, 'removed' => true]]
+          ))
+        );
+    }
+
+    /**
+     * @EXT\Route("/sent", name="apiv2_message_sent")
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function getSentAction(Request $request)
+    {
+        return new JsonResponse(
+          $this->finder->search($this->getClass(), array_merge(
+              $request->query->all(),
+              ['hiddenFilters' => ['currentUser' => true, 'sent' => true, 'removed' => false]]
+          ))
+        );
+    }
+
+    public function getOptions()
+    {
+        return [
+            'get' => [Options::IS_RECURSIVE],
+        ];
     }
 
     public function getClass()

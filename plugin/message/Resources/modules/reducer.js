@@ -3,9 +3,9 @@ import {makeListReducer} from '#/main/app/content/list/store'
 
 
 const reducer = {
-  receivedMessages: makeListReducer('messagesReceived', {}),
-  sentMessages: makeListReducer('messagesSent', {}),
-  deletedMessages: makeListReducer('messagesDeleted', {}),
+  receivedMessages: makeListReducer('receivedMessages', {}),
+  sentMessages: makeListReducer('sentMessages', {}),
+  deletedMessages: makeListReducer('deletedMessages', {}),
   messageForm : makeFormReducer('messageForm')
 }
 
