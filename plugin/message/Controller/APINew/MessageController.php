@@ -78,6 +78,126 @@ class MessageController extends AbstractCrudController
     }
 
     /**
+     * @EXT\Route("/softdelete", name="apiv2_message_soft_delete")
+     * @EXT\Method("PUT")
+     *
+     * @return JsonResponse
+     */
+    public function softDeleteAction(Request $request)
+    {
+        $messages = $this->decodeIdsString($request, $this->getClass());
+        $updated = [];
+
+        $this->om->startFlushSuite();
+
+        foreach ($messages as $message) {
+            $data = [
+                'id' => $message->getId(),
+                'meta' => [
+                    'removed' => true,
+                ],
+            ];
+            $updated[] = $this->crud->update($this->getClass(), $data);
+        }
+
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (Message $message) {
+            return $this->serializer->serialize($message);
+        }, $messages));
+    }
+
+    /**
+     * @EXT\Route("/restore", name="apiv2_message_restore")
+     * @EXT\Method("PUT")
+     *
+     * @return JsonResponse
+     */
+    public function softUndeleteAction(Request $request)
+    {
+        $messages = $this->decodeIdsString($request, $this->getClass());
+        $updated = [];
+
+        $this->om->startFlushSuite();
+
+        foreach ($messages as $message) {
+            $data = [
+                'id' => $message->getId(),
+                'meta' => [
+                    'removed' => false,
+                ],
+            ];
+            $updated[] = $this->crud->update($this->getClass(), $data);
+        }
+
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (Message $message) {
+            return $this->serializer->serialize($message);
+        }, $messages));
+    }
+
+    /**
+     * @EXT\Route("/read", name="apiv2_message_read")
+     * @EXT\Method("PUT")
+     *
+     * @return JsonResponse
+     */
+    public function readAction(Request $request)
+    {
+        $messages = $this->decodeIdsString($request, $this->getClass());
+        $updated = [];
+
+        $this->om->startFlushSuite();
+
+        foreach ($messages as $message) {
+            $data = [
+                'id' => $message->getId(),
+                'meta' => [
+                    'read' => true,
+                ],
+            ];
+            $updated[] = $this->crud->update($this->getClass(), $data);
+        }
+
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (Message $message) {
+            return $this->serializer->serialize($message);
+        }, $messages));
+    }
+
+    /**
+     * @EXT\Route("/unread", name="apiv2_message_unread")
+     * @EXT\Method("PUT")
+     *
+     * @return JsonResponse
+     */
+    public function unreadAction(Request $request)
+    {
+        $messages = $this->decodeIdsString($request, $this->getClass());
+        $updated = [];
+
+        $this->om->startFlushSuite();
+
+        foreach ($messages as $message) {
+            $data = [
+                'id' => $message->getId(),
+                'meta' => [
+                    'read' => false,
+                ],
+            ];
+            $updated[] = $this->crud->update($this->getClass(), $data);
+        }
+
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (Message $message) {
+            return $this->serializer->serialize($message);
+        }, $messages));
+    }
+
+    /**
      * @EXT\Route("/remove", name="apiv2_message_user_remove")
      * @EXT\Method("DELETE")
      *

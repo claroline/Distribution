@@ -77,7 +77,6 @@ class MessageSerializer
           'object' => $message->getObject(),
           'content' => $message->getContent(),
           'to' => $message->getTo(),
-          'from' => $this->userSerializer->serialize($message->getSender(), [Options::SERIALIZE_MINIMAL]),
           'meta' => [
             'date' => DateNormalizer::normalize($message->getDate()),
             'read' => $userMessage->isRead(),
@@ -85,6 +84,10 @@ class MessageSerializer
             'sent' => $userMessage->isSent(),
           ],
         ];
+
+        $data['from'] = $message->getSender() ?
+            $this->userSerializer->serialize($message->getSender(), [Options::SERIALIZE_MINIMAL]) :
+            ['username' => $message->getSenderUsername()];
 
         if (in_array(Options::IS_RECURSIVE, $options)) {
             $data['children'] = array_map(function (Message $child) {
