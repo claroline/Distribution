@@ -103,7 +103,8 @@ class MessageController
      */
     public function indexAction()
     {
-        return [];
+        return [
+        ];
     }
 
     /**
