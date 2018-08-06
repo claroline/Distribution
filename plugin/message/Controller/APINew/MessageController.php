@@ -77,6 +77,28 @@ class MessageController extends AbstractCrudController
         );
     }
 
+    /**
+     * @EXT\Route("/remove", name="apiv2_message_user_remove")
+     * @EXT\Method("DELETE")
+     *
+     * @return JsonResponse
+     */
+    public function hardRemoveAction(Request $request)
+    {
+        $ids = $request->query->get('ids');
+
+        $this->om->startFlushSuite();
+
+        foreach ($ids as $id) {
+            $message = $this->om->getRepository($this->getClass())->find($id);
+            $this->container->get('claroline.manager.message_manager')->remove($message);
+        }
+
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(null, 204);
+    }
+
     public function getOptions()
     {
         return [

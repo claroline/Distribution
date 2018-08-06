@@ -6,7 +6,6 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\Serializer\MessageSerializer as AbstractMessageSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\MessageBundle\Entity\Message;
@@ -23,9 +22,6 @@ class MessageSerializer
 {
     use SerializerTrait;
 
-    /** @var AbstractMessageSerializer */
-    private $messageSerializer;
-
     /**
      * ParametersSerializer constructor.
      *
@@ -36,8 +32,7 @@ class MessageSerializer
      *     "userSerializer" = @DI\Inject("claroline.serializer.user"),
      * })
      *
-     * @param SerializerProvider        $serializer
-     * @param AbstractMessageSerializer $messageSerializer
+     * @param SerializerProvider $serializer
      */
     public function __construct(
         ObjectManager $om,

@@ -16,47 +16,42 @@ use Claroline\CoreBundle\Entity\AbstractRoleSubject;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\MailManager;
-use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Entity\UserMessage;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.manager.message_manager")
  */
 class MessageManager
 {
-    const MESSAGE_READ = 'Read';
-    const MESSAGE_SENT = 'Sent';
-    const MESSAGE_REMOVED = 'Removed';
-    const MESSAGE_UNREMOVED = 'Unremoved';
-
     private $mailManager;
     private $om;
-    private $pagerFactory;
     private $groupRepo;
     private $messageRepo;
     private $userMessageRepo;
     private $userRepo;
     private $workspaceRepo;
+    private $tokenStorage;
 
     /**
      * Constructor.
      *
      * @DI\InjectParams({
      *     "mailManager"  = @DI\Inject("claroline.manager.mail_manager"),
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "pagerFactory" = @DI\Inject("claroline.pager.pager_factory")
+     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager")
      * })
      */
     public function __construct(
         MailManager $mailManager,
         ObjectManager $om,
-        PagerFactory $pagerFactory
+        TokenStorageInterface $tokenStorage
     ) {
         $this->mailManager = $mailManager;
         $this->om = $om;
-        $this->pagerFactory = $pagerFactory;
+        $this->tokenStorage = $tokenStorage;
         $this->groupRepo = $om->getRepository('ClarolineCoreBundle:Group');
         $this->messageRepo = $om->getRepository('ClarolineMessageBundle:Message');
         $this->userMessageRepo = $om->getRepository('ClarolineMessageBundle:UserMessage');
@@ -278,5 +273,19 @@ class MessageManager
 
         $message = $this->create($content, $object, $users, $sender);
         $this->send($message, true, $withMail);
+    }
+
+    private function getUserMessage(Message $message)
+    {
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+
+        return $this->om->getRepository(UserMessage::class)->findOneBy(['message' => $message, 'user' => $currentUser]);
+    }
+
+    public function remove(Message $message)
+    {
+        $userMessage = $this->getUserMessage($message);
+        $this->om->remove($message);
+        $this->om->flush();
     }
 }
