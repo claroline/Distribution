@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\API\Finder\Home;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\AppBundle\API\Finder\FinderTrait;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -23,8 +22,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class HomeTabFinder extends AbstractFinder
 {
-    use FinderTrait;
-
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\Home\HomeTab';
