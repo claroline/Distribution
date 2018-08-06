@@ -6,7 +6,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ListData} from '#/main/app/content/list/containers/data'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
 import {trans} from '#/main/core/translation'

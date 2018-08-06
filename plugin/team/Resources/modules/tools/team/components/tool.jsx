@@ -108,7 +108,7 @@ const TeamToolComponent = props =>
           path: '/teams/multiple/form',
           component: MultipleTeamForm,
           disabled: !props.canEdit,
-          onEnter: (params) => props.openMultipleTeamsForm(props.teamParams, props.resourceTypes),
+          onEnter: () => props.openMultipleTeamsForm(props.teamParams, props.resourceTypes),
           onLeave: () => props.resetMultipleTeamsForm()
         }
       ]}
