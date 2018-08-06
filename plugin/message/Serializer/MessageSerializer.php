@@ -7,6 +7,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\MessageSerializer as AbstractMessageSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Entity\UserMessage;
@@ -32,7 +33,7 @@ class MessageSerializer
      *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
      *     "tokenStorage"   = @DI\Inject("security.token_storage"),
      *     "manager"        = @DI\Inject("claroline.manager.message_manager"),
-     *     "userSerializer" = @DI\Inject("claroline.manager.message_manager"),
+     *     "userSerializer" = @DI\Inject("claroline.serializer.user"),
      * })
      *
      * @param SerializerProvider        $serializer
@@ -81,7 +82,7 @@ class MessageSerializer
           'object' => $message->getObject(),
           'content' => $message->getContent(),
           'to' => $message->getTo(),
-          'from' => $this->userSerializer->serialize($message->sender, [Options::SERIALIZE_MINIMAL]),
+          'from' => $this->userSerializer->serialize($message->getSender(), [Options::SERIALIZE_MINIMAL]),
           'meta' => [
             'date' => DateNormalizer::normalize($message->getDate()),
             'read' => $userMessage->isRead(),
