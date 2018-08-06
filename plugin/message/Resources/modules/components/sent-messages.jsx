@@ -9,16 +9,15 @@ import {MessageCard} from '#/plugin/message/data/components/message-card'
 
 const SentMessages = () =>
   <div>
-    <h2>{trans('messages_sent')}</h2>
     <ListData
       name="sentMessages"
       fetch={{
         url: ['apiv2_message_sent'],
         autoload: true
       }}
-      // delete={{
-      //   url: []
-      // }}
+      delete={{
+        url: ['apiv2_message_user_remove']
+      }}
       primaryAction={(message) => ({
         type: LINK_BUTTON,
         target: '/message/'+message.id,
@@ -29,26 +28,28 @@ const SentMessages = () =>
       // }}
       definition={[
         {
-          name: 'subject',
+          name: 'object',
           type: 'string',
           label: trans('message_form_object'),
           displayed: true,
           primary: true
         }, {
-          name: 'meta.creator.username',
-          type: 'number',
-          label: trans('from_message'),
+          name: 'to',
+          type: 'string',
+          label: trans('to_message'),
           displayed: true,
           filterable: false,
           sortable: true
         }, {
-          name: 'meta.created',
-          type: 'string',
-          label: trans('creator'),
+          name: 'meta.date',
+          type: 'date',
+          label: trans('date'),
           displayed: true,
           searchable: true,
           filterable: true,
-          alias: 'creator'
+          option: {
+            time: true
+          }
         }
       ]}
       // actions={(rows) => [
