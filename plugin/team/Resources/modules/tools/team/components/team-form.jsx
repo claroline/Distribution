@@ -172,7 +172,8 @@ TeamFormComponent.propTypes = {
   resourceTypes: T.arrayOf(T.string).isRequired,
   history: T.shape({
     push: T.func.isRequired
-  }).isRequired
+  }).isRequired,
+  pickUsers: T.func.isRequired
 }
 
 const TeamForm = connect(

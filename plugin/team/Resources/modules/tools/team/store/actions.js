@@ -69,6 +69,24 @@ actions.selfUnregister = (teamId) => ({
   }
 })
 
+actions.fillTeams = (teams) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_team_fill'], {ids: teams.map(t => t.id)}),
+    request: {
+      method: 'PATCH'
+    }
+  }
+})
+
+actions.emptyTeams = (teams) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_team_empty'], {ids: teams.map(t => t.id)}),
+    request: {
+      method: 'PATCH'
+    }
+  }
+})
+
 export {
   actions,
   MY_TEAMS_ADD,

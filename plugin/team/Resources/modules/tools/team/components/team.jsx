@@ -2,10 +2,12 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {ListData} from '#/main/app/content/list/containers/data'
-import {DetailsData} from '#/main/app/content/details/containers/data'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 import {select as listSelectors} from '#/main/app/content/list/store/selectors'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {DetailsData} from '#/main/app/content/details/containers/data'
 import {LinkButton} from '#/main/app/buttons/link/components/button'
 
 import {trans} from '#/main/core/translation'
@@ -145,10 +147,18 @@ const Team = connect(
   }),
   (dispatch) => ({
     selfRegister(teamId) {
-      dispatch(actions.selfRegister(teamId))
+      dispatch(modalActions.showModal(MODAL_CONFIRM, {
+        title: trans('register_to_team', {}, 'team'),
+        question: trans('register_to_team_confirm_message', {}, 'team'),
+        handleConfirm: () => dispatch(actions.selfRegister(teamId))
+      }))
     },
     selfUnregister(teamId) {
-      dispatch(actions.selfUnregister(teamId))
+      dispatch(modalActions.showModal(MODAL_CONFIRM, {
+        title: trans('unregister_from_team', {}, 'team'),
+        question: trans('unregister_from_team_confirm_message', {}, 'team'),
+        handleConfirm: () => dispatch(actions.selfUnregister(teamId))
+      }))
     }
   })
 )(TeamComponent)

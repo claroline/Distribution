@@ -543,7 +543,7 @@ class TeamManager
         $this->om->startFlushSuite();
 
         foreach ($teams as $team) {
-            $users = $team->getUsers()->toArray();
+            $users = $team->getRole()->getUsers()->toArray();
             $this->unregisterUsersFromTeam($team, $users);
         }
         $this->om->endFlushSuite();
@@ -572,7 +572,7 @@ class TeamManager
 
                 while ($nbFreeSpaces > 0 && count($users) > 0) {
                     $index = rand(0, count($users) - 1);
-                    $this->registerUserToTeam($team, $users[$index]);
+                    $this->registerUsersToTeam($team, [$users[$index]]);
                     unset($users[$index]);
                     $users = array_values($users);
                     --$nbFreeSpaces;

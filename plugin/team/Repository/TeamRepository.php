@@ -56,6 +56,7 @@ class TeamRepository extends EntityRepository
             SELECT DISTINCT u
             FROM Claroline\CoreBundle\Entity\User u
             WHERE u.isRemoved = false
+            AND u.isEnabled = true
             AND (
                 u IN (
                     SELECT DISTINCT u1
@@ -66,6 +67,7 @@ class TeamRepository extends EntityRepository
                         WHERE r12.workspace = :workspace
                     )
                     WHERE u1.isRemoved = false
+                    AND u1.isEnabled = true
                 )
                 OR u IN (
                     SELECT DISTINCT u2
@@ -77,6 +79,7 @@ class TeamRepository extends EntityRepository
                         WHERE r22.workspace = :workspace
                     )
                     WHERE u2.isRemoved = false
+                    AND u2.isEnabled = true
                 )
             )
             AND u NOT IN (
@@ -85,7 +88,8 @@ class TeamRepository extends EntityRepository
                 WHERE EXISTS (
                     SELECT t
                     FROM Claroline\TeamBundle\Entity\Team t
-                    JOIN t.users u4
+                    JOIN t.role tr
+                    JOIN tr.users u4
                     WHERE t IN (:teams)
                     AND u4 = u3
                 )
@@ -100,6 +104,7 @@ class TeamRepository extends EntityRepository
                     AND r52.name = :workspaceManagerName
                 )
                 WHERE u5.isRemoved = false
+                AND u5.isEnabled = true
             )
             AND u NOT IN (
                 SELECT DISTINCT u6
@@ -112,14 +117,12 @@ class TeamRepository extends EntityRepository
                     AND r62.name = :workspaceManagerName
                 )
                 WHERE u6.isRemoved = false
+                AND u6.isEnabled = true
             )
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('workspace', $workspace);
-        $query->setParameter(
-            'workspaceManagerName',
-            'ROLE_WS_MANAGER_'.$workspace->getGuid()
-        );
+        $query->setParameter('workspaceManagerName', 'ROLE_WS_MANAGER_'.$workspace->getUuid());
         $query->setParameter('teams', $teams);
 
         return $query->getResult();
