@@ -9,10 +9,9 @@ import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {currentUser} from '#/main/core/user/current'
 import {FormData} from '#/main/app/content/form/containers/data'
-// import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 // import {actions as formActions} from '#/main/app/content/form/store/actions'
 
-import {selectors} from '#/plugin/message/selectors'
 
 const NewMessageFormWrapper = (props) =>
   <div>
@@ -89,7 +88,8 @@ const NewMessageComponent = (props) =>
 
 const NewMessage = connect(
   state => ({
-    newMessage: selectors.newMessage(state)
+    newMessage: formSelectors.data(formSelectors.form(state, 'messageForm'))
+
   })
 )(NewMessageComponent)
 
