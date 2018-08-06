@@ -216,17 +216,6 @@ class MessageManager
     }
 
     /**
-     * @param \Claroline\MessageBundle\Entity\Message $message
-     * @param \Claroline\MessageBundle\Entity\User    $user
-     *
-     * @return \Claroline\MessageBundle\Entity\Message[]
-     */
-    public function getConversation(Message $message, User $user)
-    {
-        return $this->messageRepo->findAncestors($message, $user);
-    }
-
-    /**
      * @param \Claroline\CoreBundle\Entity\User $user
      *
      * @return int
@@ -234,45 +223,6 @@ class MessageManager
     public function getNbUnreadMessages(User $user)
     {
         return $this->messageRepo->countUnread($user);
-    }
-
-    /**
-     * @param \Claroline\CoreBundle\Entity\User         $user
-     * @param \Claroline\MessageBundle\Entity\Message[] $messages
-     */
-    public function markAsRead(User $user, array $messages)
-    {
-        $userMessages = $this->userMessageRepo->findByMessages($user, $messages);
-
-        $this->markMessages($userMessages, self::MESSAGE_READ);
-    }
-
-    /**
-     * @param \Claroline\MessageBundle\Entity\Message[] $userMessages
-     */
-    public function markAsRemoved(array $userMessages)
-    {
-        $this->markMessages($userMessages, self::MESSAGE_REMOVED);
-    }
-
-    /**
-     * @param \Claroline\MessageBundle\Entity\Message[] $userMessages
-     */
-    public function markAsUnremoved(array $userMessages)
-    {
-        $this->markMessages($userMessages, self::MESSAGE_UNREMOVED);
-    }
-
-    /**
-     * @param \Claroline\MessageBundle\Entity\Message[] $userMessages
-     */
-    public function remove(array $userMessages)
-    {
-        foreach ($userMessages as $userMessage) {
-            $this->om->remove($userMessage);
-        }
-
-        $this->om->flush();
     }
 
     /**
@@ -307,27 +257,6 @@ class MessageManager
         return $string;
     }
 
-    public function getUserMessagesBy(array $array)
-    {
-        return $this->userMessageRepo->findBy($array);
-    }
-
-    /**
-     * @param \Claroline\MessageBundle\Entity\Message[] $userMessages
-     * @param string                                    $flag
-     */
-    private function markMessages(array $userMessages, $flag)
-    {
-        $method = 'markAs'.$flag;
-
-        foreach ($userMessages as $userMessage) {
-            $userMessage->$method();
-            $this->om->persist($userMessage);
-        }
-
-        $this->om->flush();
-    }
-
     public function sendMessageToAbstractRoleSubject(
         AbstractRoleSubject $subject,
         $content,
@@ -349,10 +278,5 @@ class MessageManager
 
         $message = $this->create($content, $object, $users, $sender);
         $this->send($message, true, $withMail);
-    }
-
-    public function getOneUserMessageByUserAndMessage(User $user, Message $message)
-    {
-        return $this->userMessageRepo->findOneByUserAndMessage($user, $message);
     }
 }

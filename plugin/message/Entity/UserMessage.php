@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\MessageBundle\Repository\UserMessageRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="claro_user_message")
  */
 class UserMessage
