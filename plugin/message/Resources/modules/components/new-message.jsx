@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {withRouter} from '#/main/app/router'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 import {Button} from '#/main/app/action/components/button'
@@ -14,29 +15,28 @@ import {selectors as formSelectors} from '#/main/app/content/form/store/selector
 
 
 const NewMessageFormWrapper = (props) =>
-  <div>
-    <div className='user-message-container user-message-form-container user-message-left'>
-      <UserAvatar picture={props.user.picture} />
+  <div className='user-message-container user-message-form-container user-message-left'>
+    <UserAvatar picture={props.user.picture} />
 
-      <div className="user-message">
-        <div className="user-message-meta">
-          <div className="user-message-info">
-            {props.user.name}
-          </div>
+    <div className="user-message">
+      <div className="user-message-meta">
+        <div className="user-message-info">
+          {props.user.name}
         </div>
-        <div className="user-message-content embedded-form-section">
-          {props.children}
-        </div>
-        <Button
-          className="btn btn-block btn-save btn-emphasis"
-          label={trans('send'), {}, ('action')}
-          type={CALLBACK_BUTTON}
-          callback={props.callback}
-          primary={true}
-        />
       </div>
+      <div className="user-message-content embedded-form-section">
+        {props.children}
+      </div>
+      <Button
+        className="btn btn-block btn-save btn-emphasis"
+        label={trans('send', {}, 'actions')}
+        type={CALLBACK_BUTTON}
+        callback={props.callback}
+        primary={true}
+      />
     </div>
   </div>
+
 
 NewMessageFormWrapper.propTypes = {
   user: T.shape(UserTypes.propTypes),
@@ -48,14 +48,12 @@ const NewMessageComponent = (props) =>
   <div>
     <NewMessageFormWrapper
       user={currentUser()}
-      callback={() => console.log(props.newMessage)}
-      // props.saveForm(props.forumId, props.editingSubject, props.subject.id)}
+      callback={() =>  props.saveForm(props.history.push)}
     >
       <FormData
         level={3}
         displayLevel={2}
         name="messageForm"
-        title={trans('new_message')}
         className="content-container"
         sections={[
           {
@@ -86,12 +84,16 @@ const NewMessageComponent = (props) =>
     </NewMessageFormWrapper>
   </div>
 
-const NewMessage = connect(
+const NewMessage = withRouter(connect(
   state => ({
     newMessage: formSelectors.data(formSelectors.form(state, 'messageForm'))
-
+  }),
+  (dispatch) => ({
+    saveForm(push) {
+      dispatch(console.log('save').then(() => push('/received')))
+    }
   })
-)(NewMessageComponent)
+)(NewMessageComponent))
 
 export {
   NewMessage

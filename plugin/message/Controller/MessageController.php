@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Claroline Connect package.
  *
@@ -8,9 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Claroline\MessageBundle\Controller;
-
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -33,7 +30,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
 /**
  * @DI\Tag("security.secure_service")
  * @SEC\PreAuthorize("hasRole('ROLE_USER')")
@@ -51,7 +47,6 @@ class MessageController
     private $userManager;
     private $utils;
     private $workspaceManager;
-
     /**
      * @DI\InjectParams({
      *     "formFactory"      = @DI\Inject("form.factory"),
@@ -92,7 +87,6 @@ class MessageController
         $this->utils = $utils;
         $this->workspaceManager = $workspaceManager;
     }
-
     /**
      * @EXT\Route(
      *     "/index",
@@ -103,10 +97,8 @@ class MessageController
      */
     public function indexAction()
     {
-        return [
-        ];
+        return [];
     }
-
     /**
      * @EXT\Route(
      *     "/contactable/users/page/{page}",
@@ -132,7 +124,6 @@ class MessageController
     public function contactableUsersListAction(User $user, $page, $search)
     {
         $trimmedSearch = trim($search);
-
         if ($user->hasRole('ROLE_ADMIN')) {
             if ('' === $trimmedSearch) {
                 $users = $this->userManager->getAllUsers($page);
@@ -145,7 +136,6 @@ class MessageController
             $token = $this->tokenStorage->getToken();
             $roles = $this->utils->getRoles($token);
             $workspaces = $this->workspaceManager->getOpenableWorkspacesByRoles($roles);
-
             if (count($workspaces) > 0) {
                 if ('' === $trimmedSearch) {
                     $users = $this->userManager
@@ -159,10 +149,8 @@ class MessageController
                 }
             }
         }
-
         return ['users' => $users, 'search' => $search];
     }
-
     /**
      * @EXT\Route(
      *     "/notification/{isNotified}",
@@ -181,10 +169,8 @@ class MessageController
     public function setMailNotificationAction($isNotified, User $user)
     {
         $this->userManager->setIsMailNotified($user, $isNotified);
-
         return new JsonResponse(['success' => 'success']);
     }
-
     /**
      * @EXT\Route(
      *     "/contactable/groups/page/{page}",
@@ -210,7 +196,6 @@ class MessageController
     public function contactableGroupsListAction(User $user, $page, $search)
     {
         $trimmedSearch = trim($search);
-
         if ($user->hasRole('ROLE_ADMIN')) {
             if ('' === $trimmedSearch) {
                 $groups = $this->groupManager->getAllGroups($page);
@@ -234,38 +219,30 @@ class MessageController
                     );
                 }
             }
-
             // get groups in which user is subscribed
             $userGroups = $user->getGroups();
             $userGroupsFinal = [];
-
             if ('' === $trimmedSearch) {
                 $userGroupsFinal = $userGroups;
             } else {
                 $upperSearch = strtoupper($trimmedSearch);
-
                 foreach ($userGroups as $userGroup) {
                     $upperName = strtoupper($userGroup->getName());
-
                     if (false !== strpos($upperName, $upperSearch)) {
                         $userGroupsFinal[] = $userGroup;
                     }
                 }
             }
-
             // merge the 2 groups array
             foreach ($userGroupsFinal as $userGroupFinal) {
                 if (!in_array($userGroupFinal, $groups, true)) {
                     $groups[] = $userGroupFinal;
                 }
             }
-
             $groups = $this->pagerFactory->createPagerFromArray($groups, $page);
         }
-
         return ['groups' => $groups, 'search' => $search];
     }
-
     /**
      * @EXT\Route(
      *     "/contactable/workspaces/page/{page}",
@@ -292,10 +269,8 @@ class MessageController
     {
         $workspaces = $this->workspaceManager->getWorkspacesByManager($user);
         $pager = $this->pagerFactory->createPagerFromArray($workspaces, $page);
-
         return ['workspaces' => $pager, 'search' => $search];
     }
-
     public function checkAccess(Message $message, User $user)
     {
         if ($message->getSenderUsername() === $user->getUsername()) {
@@ -303,17 +278,14 @@ class MessageController
         }
         $userMessage = $this->messageManager
             ->getOneUserMessageByUserAndMessage($user, $message);
-
         if (!is_null($userMessage)) {
             return true;
         }
-
         $receiverString = $message->getTo();
         $names = explode(';', $receiverString);
         $usernames = [];
         $groupNames = [];
         $workspaceCodes = [];
-
         foreach ($names as $name) {
             if ('{' === substr($name, 0, 1)) {
                 $groupNames[] = trim($name, '{}');
@@ -323,26 +295,21 @@ class MessageController
                 $usernames[] = trim($name);
             }
         }
-
         if (in_array($user->getUsername(), $usernames)) {
             return true;
         }
-
         foreach ($user->getGroups() as $group) {
             if (in_array($group->getName(), $groupNames)) {
                 return true;
             }
         }
-
         foreach ($this->workspaceManager->getWorkspacesByUser($user) as $workspace) {
             if (in_array($workspace->getCode(), $workspaceCodes)) {
                 return true;
             }
         }
-
         throw new AccessDeniedException();
     }
-
     /**
      * @EXT\Route(
      *     "/users/usernames",
@@ -358,14 +325,11 @@ class MessageController
     public function retrieveUsernamesFromUsersAction(array $users)
     {
         $usernames = '';
-
         foreach ($users as $user) {
             $usernames .= $user->getUsername().';';
         }
-
         return new Response($usernames, 200);
     }
-
     /**
      * @EXT\Route(
      *     "/groups/names",
@@ -381,14 +345,11 @@ class MessageController
     public function retrieveNamesFromGroupsAction(array $groups)
     {
         $names = '';
-
         foreach ($groups as $group) {
             $names .= '{'.$group->getName().'};';
         }
-
         return new Response($names, 200);
     }
-
     /**
      * @EXT\Route(
      *     "/workspaces/names",
@@ -404,11 +365,9 @@ class MessageController
     public function retrieveNamesFromWorkspacesAction(array $workspaces)
     {
         $names = '';
-
         foreach ($workspaces as $workspace) {
             $names .= '['.$workspace->getCode().'];';
         }
-
         return new Response($names, 200);
     }
 }

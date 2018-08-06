@@ -5,14 +5,15 @@ import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
+import {MessageCard} from '#/plugin/message/data/components/message-card'
 
 const DeletedMessages = () =>
   <div>
-    <h2>{trans('messages_removed')}</h2>
+    <h2>{trans('messages_delete')}</h2>
     <ListData
-      name="messagesDeleted"
+      name="deletedMessages"
       fetch={{
-        url: [],
+        url: ['apiv2_message_removed'],
         autoload: true
       }}
       delete={{
@@ -36,7 +37,7 @@ const DeletedMessages = () =>
         }, {
           name: 'meta.creator.username',
           type: 'number',
-          label: trans('posts_count', {}, 'forum'),
+          label: trans('from_message'),
           displayed: true,
           filterable: false,
           sortable: true
@@ -54,39 +55,13 @@ const DeletedMessages = () =>
       //   {
       //     type: LINK_BUTTON,
       //     icon: 'fa fa-fw fa-eye',
-      //     label: trans('see_subject', {}, 'forum'),
-      //     target: '/subjects/show/'+rows[0].id,
+      //     label: trans('see_message', {}, 'message'),
+      //     target: '/message/'+rows[0].id,
       //     context: 'row'
-      //   }, {
-      //     type: CALLBACK_BUTTON,
-      //     icon: 'fa fa-fw fa-flag-o',
-      //     label: trans('flag', {}, 'forum'),
-      //     displayed: !rows[0].meta.flagged && (rows[0].meta.creator.id !== authenticatedUser.id),
-      //     callback: () => props.flagSubject(rows[0]),
-      //     context: 'row'
-      //   }, {
-      //     type: CALLBACK_BUTTON,
-      //     icon: 'fa fa-fw fa-flag',
-      //     label: trans('unflag', {}, 'forum'),
-      //     displayed: rows[0].meta.flagged && rows[0].meta.creator.id !== authenticatedUser.id,
-      //     callback: () => props.unFlagSubject(rows[0]),
-      //     context: 'row'
-      //   }, {
-      //     type: CALLBACK_BUTTON,
-      //     icon: 'fa fa-fw fa-times-circle',
-      //     label: trans('close_subject', {}, 'forum'),
-      //     callback: () => props.closeSubject(rows[0]),
-      //     displayed: !rows[0].meta.closed && (rows[0].meta.creator.id === authenticatedUser.id || props.moderator)
-      //   }, {
-      //     type: CALLBACK_BUTTON,
-      //     icon: 'fa fa-fw fa-check-circle',
-      //     label: trans('open_subject', {}, 'forum'),
-      //     callback: () => props.unCloseSubject(rows[0]),
-      //     displayed: rows[0].meta.closed && (rows[0].meta.creator.id === authenticatedUser.id || props.moderator)
       //   }
       // ]}
       // card={(props) =>
-      //   <SubjectCard
+      //   <MessageCard
       //     {...props}
       //     contentText={props.data.content}
       //   />

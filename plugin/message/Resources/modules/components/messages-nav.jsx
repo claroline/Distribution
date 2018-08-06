@@ -21,7 +21,7 @@ const MessagesNav = () =>
         path: '/deleted'
       }, {
         icon: 'fa fa-fw fa-plus',
-        title: trans('new'),
+        title: trans('new_message'),
         path: '/new'
       }
     ]}

@@ -93,7 +93,6 @@ const SubjectFormComponent = (props) =>
           level={3}
           displayLevel={2}
           name="subjects.form"
-          // title={trans('new_subject', {}, 'forum')}
           className="content-container"
           sections={[
             {
