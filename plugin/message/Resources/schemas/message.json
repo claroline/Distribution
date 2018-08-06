@@ -1,3 +1,29 @@
 {
-  "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schemas/message.json"
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "The message id"
+    },
+    "content": {
+      "type": "string",
+      "description": "The message content"
+    },
+    "object": {
+      "type": "string",
+      "description": "The message object"
+    },
+    "date": {
+      "type": ["string"],
+      "description": "The messae creation date"
+    },
+    "meta": {
+      "type": ["object"],
+      "properties": {
+        "sender": {
+        }
+      }
+    }
+  }
 }

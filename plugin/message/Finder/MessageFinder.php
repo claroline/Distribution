@@ -45,21 +45,13 @@ class MessageFinder extends AbstractFinder
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
-        //need the join to usermessages first
         $qb->join('obj.userMessages', 'um');
+        $qb->leftJoin('um.user', 'currentUser');
+        $qb->andWhere('currentUser.id = :currentUserId');
+        $qb->setParameter('currentUserId', $this->tokenStorage->getToken()->getUser()->getId());
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-                case 'currentUser':
-                    $qb->leftJoin('um.user', 'currentUser');
-                    $qb->andWhere('currentUser.id = :currentUserId');
-                    $qb->setParameter('currentUserId', $this->tokenStorage->getToken()->getUser()->getId());
-                    break;
-                case 'users':
-                    $qb->leftJoin('um.user', 'user');
-                    $qb->andWhere('user.uuid IN (:userIds)');
-                    $qb->setParameter('userIds', is_array($filterValue) ? $filterValue : [$filterValue]);
-                    break;
                 case 'sent':
                     $qb->andWhere("um.isSent = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);

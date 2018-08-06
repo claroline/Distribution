@@ -40,7 +40,7 @@ class MessageController extends AbstractCrudController
         return new JsonResponse(
           $this->finder->search($this->getClass(), array_merge(
               $request->query->all(),
-              ['hiddenFilters' => ['currentUser' => true, 'removed' => false, 'sent' => false]]
+              ['hiddenFilters' => ['removed' => false, 'sent' => false]]
           ))
         );
     }
@@ -56,7 +56,7 @@ class MessageController extends AbstractCrudController
         return new JsonResponse(
           $this->finder->search($this->getClass(), array_merge(
               $request->query->all(),
-              ['hiddenFilters' => ['currentUser' => true, 'removed' => true]]
+              ['hiddenFilters' => ['removed' => true]]
           ))
         );
     }
@@ -72,7 +72,7 @@ class MessageController extends AbstractCrudController
         return new JsonResponse(
           $this->finder->search($this->getClass(), array_merge(
               $request->query->all(),
-              ['hiddenFilters' => ['currentUser' => true, 'sent' => true, 'removed' => false]]
+              ['hiddenFilters' => ['sent' => true, 'removed' => false]]
           ))
         );
     }
