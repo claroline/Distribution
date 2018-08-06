@@ -11,10 +11,10 @@
 
 namespace Claroline\MessageBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Gedmo\Mapping\Annotation as Gedmo;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -34,21 +34,18 @@ class Message
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @JMS\Groups({"api_message"})
      */
     protected $id;
 
     /**
      * @ORM\Column()
      * @Assert\NotBlank()
-     * @JMS\Groups({"api_message"})
      */
     protected $object;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
-     * @JMS\Groups({"api_message"})
      */
     protected $content;
 
@@ -60,14 +57,12 @@ class Message
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="sender_id", onDelete="CASCADE", nullable=true)
-     * @JMS\Groups({"api_message"})
      */
     protected $user;
 
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
-     * @JMS\Groups({"api_message"})
      */
     protected $date;
 
@@ -129,20 +124,18 @@ class Message
 
     /**
      * @ORM\Column(name="sender_username")
-     * @JMS\Groups({"api_message"})
      */
     protected $senderUsername = 'claroline-connect';
 
     /**
      * @ORM\Column(name="receiver_string", length=16000)
-     * @Assert\Length(max = "16000")
-     * @JMS\Groups({"api_message"})
      */
     protected $to;
 
     public function __construct()
     {
         $this->isRemoved = false;
+        $this->children = new ArrayCollection();
     }
 
     public function getId()
@@ -179,6 +172,16 @@ class Message
     {
         $this->user = $sender;
         $this->senderUsername = ($sender) ? $sender->getUsername() : 'claroline-connect';
+    }
+
+    public function setCreator($sender)
+    {
+        $this->sendSender($sender);
+    }
+
+    public function getCreator()
+    {
+        return $this->getSender();
     }
 
     public function getDate()

@@ -13,6 +13,7 @@ namespace Claroline\MessageBundle\Controller\APINew;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\MessageBundle\Entity\UserMessage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
@@ -27,5 +28,10 @@ class MessageController extends AbstractCrudController
     public function getName()
     {
         return 'usermessage';
+    }
+
+    public function getClass()
+    {
+        return UserMessage::class;
     }
 }
