@@ -13,8 +13,8 @@ namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Event\Log\LogHomeTabAdminCreateEvent;
 use Claroline\CoreBundle\Event\Log\LogHomeTabAdminDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogHomeTabAdminEditEvent;
