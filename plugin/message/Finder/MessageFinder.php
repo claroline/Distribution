@@ -47,8 +47,11 @@ class MessageFinder extends AbstractFinder
     {
         $qb->join('obj.userMessages', 'um');
         $qb->leftJoin('um.user', 'currentUser');
-        $qb->andWhere('currentUser.id = :currentUserId');
-        $qb->setParameter('currentUserId', $this->tokenStorage->getToken()->getUser()->getId());
+        $userId = null;
+
+        if ($this->tokenStorage && $this->tokenStorage->getToken() && 'anon.' !== $this->tokenStorage->getToken()->getUser()) {
+            $userId = $this->tokenStorage->getToken()->getUser()->getId();
+        }
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
@@ -65,7 +68,7 @@ class MessageFinder extends AbstractFinder
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'after':
-                    $qb->andWhere("um.date >= :{$filterName}");
+                    $qb->andWhere("obj.date >= :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'before':
@@ -73,8 +76,13 @@ class MessageFinder extends AbstractFinder
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'from':
-                    $qb->andWhere("UPPER(obj.senderUserName) LIKE :{$filterName}");
+                    $qb->andWhere("UPPER(obj.senderUsername) LIKE :{$filterName}");
                     $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    break;
+                case 'user':
+                    $qb->leftJoin('um.user', 'user');
+                    $qb->andWhere('user.uuid IN (:userIds)');
+                    $qb->setParameter('userIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
                 default:
                   $this->setDefaults($qb, $filterName, $filterValue);
@@ -82,5 +90,47 @@ class MessageFinder extends AbstractFinder
         }
 
         return $qb;
+    }
+
+    public function getFilters()
+    {
+        return [
+          'sent' => [
+            'type' => 'boolean',
+            'description' => 'The forum validation mode',
+          ],
+          'removed' => [
+            'type' => 'boolean',
+            'description' => 'The max amount of sub comments per messages',
+          ],
+          'read' => [
+            'type' => 'boolean',
+            'description' => 'The max amount of sub comments per messages',
+          ],
+          'after' => [
+            'type' => 'date',
+            'description' => 'The max amount of sub comments per messages',
+          ],
+          'before' => [
+            'type' => 'date',
+            'description' => 'The max amount of sub comments per messages',
+          ],
+          'from' => [
+            'type' => 'string',
+            'description' => 'The username ',
+          ],
+          'object' => [
+            'type' => 'string',
+            'description' => 'The message object',
+          ],
+          'content' => [
+            'type' => 'string',
+            'description' => 'The message content',
+          ],
+          'user' => [
+            'type' => ['string'],
+            'description' => 'The users uuid (default is current user)',
+          ],
+        ];
     }
 }
