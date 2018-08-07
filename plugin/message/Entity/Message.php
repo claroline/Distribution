@@ -11,6 +11,7 @@
 
 namespace Claroline\MessageBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
@@ -30,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Message
 {
+    use UuidTrait;
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -136,6 +138,7 @@ class Message
     {
         $this->isRemoved = false;
         $this->children = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()
