@@ -7,6 +7,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Entity\UserMessage;
@@ -72,8 +73,13 @@ class MessageSerializer
     {
         $userMessage = $this->getUserMessage($message);
 
+        if (!$userMessage) {
+            //this shouldn't happen but if something went wrong, it's a failsafe
+            $userMessage = new UserMessage();
+        }
+
         $data = [
-          'id' => $message->getId(),
+          'id' => $message->getUuid(),
           'object' => $message->getObject(),
           'content' => $message->getContent(),
           'to' => $message->getTo(),
@@ -121,9 +127,11 @@ class MessageSerializer
             $message->setParent($parent);
         }
 
-        $message->setSender($currentUser);
+        if ($currentUser instanceof User) {
+            $message->setSender($currentUser);
+        }
 
-        if (isset($data['meta'])) {
+        if (isset($data['meta']) && $userMessage) {
             if (isset($data['meta']['removed'])) {
                 $userMessage->setIsRemoved($data['meta']['removed']);
             }
@@ -143,5 +151,21 @@ class MessageSerializer
         $currentUser = $this->tokenStorage->getToken()->getUser();
 
         return $this->om->getRepository(UserMessage::class)->findOneBy(['message' => $message, 'user' => $currentUser]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/message/message.json';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSamples()
+    {
+        return '#/plugin/message/message';
     }
 }
