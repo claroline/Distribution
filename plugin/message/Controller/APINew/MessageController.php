@@ -278,6 +278,30 @@ class MessageController extends AbstractCrudController
         return new JsonResponse(null, 204);
     }
 
+    /**
+     * @EXT\Route("/root/{id}", name="apiv2_message_root")
+     * @EXT\Method("GET")
+     * @ApiDoc(
+     *     description="Get the fist message.",
+     *     parameters={
+     *         "message": {
+     *              "type": {"string", "integer"},
+     *              "description": "The message id or uuid"
+     *          }
+     *     }
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function getRootAction($id)
+    {
+        $message = $this->find($this->getClass(), $id);
+        $rootId = $message->getRoot();
+        $root = $this->om->getRepository($this->getClass())->find($rootId);
+
+        return new JsonResponse($this->serializer->serialize($root, [Options::IS_RECURSIVE]));
+    }
+
     public function getOptions()
     {
         return [
