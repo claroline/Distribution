@@ -19,26 +19,25 @@ const MessageComponent = (props) =>
       user={get(props.message, 'from')}
       date={get(props.message, 'meta.date')}
       content={props.message.content}
+      object={props.message.object}
       allowHtml={true}
       actions={[
         {
-          icon: 'fa fa-fw fa-trash-o',
-          label: trans('delete'),
-          action: () => props.removeMessage([props.message]),
-          dangerous: true
-        }, {
           icon: 'fa fa-fw fa-sync-alt',
           label: trans('restore'),
           displayed: get(props.message, 'meta.removed'),
           action: () => props.restoreMessage([props.message])
+        }, {
+          icon: 'fa fa-fw fa-trash-o',
+          label: trans('delete'),
+          action: () => props.removeMessage([props.message]),
+          dangerous: true,
+          displayed: true
         }
       ]}
     />
     {!get(props.message, 'meta.sent') && !get(props.message, 'meta.removed') &&
-      <NewMessage
-        // to={get(props.message, 'from')}
-        // object={`Re:${props.message.object}`}
-      />
+      <NewMessage/>
     }
   </div>
 
@@ -48,6 +47,7 @@ MessageComponent.propTypes = {
 
 MessageComponent.defaultProps = {
   message: {
+    content: '',
     meta : {
       removed: true,
       sent: true

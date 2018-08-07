@@ -11,8 +11,7 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {currentUser} from '#/main/core/user/current'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
-// import {actions as formActions} from '#/main/app/content/form/store/actions'
-
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 const NewMessageFormWrapper = (props) =>
   <div className='user-message-container user-message-form-container user-message-left'>
@@ -61,13 +60,13 @@ const NewMessageComponent = (props) =>
             primary: true,
             fields: [
               {
-                name: 'recipient',
+                name: 'to',
                 type: 'username',
                 label: trans('message_form_to'),
                 required: true
               },
               {
-                name: 'subject',
+                name: 'object',
                 type: 'string',
                 label: trans('message_form_object')
               },
@@ -90,7 +89,7 @@ const NewMessage = withRouter(connect(
   }),
   (dispatch) => ({
     saveForm(push) {
-      dispatch(console.log('save').then(() => push('/received')))
+      dispatch(formActions.saveForm('messageForm', ['apiv2_message_create'])).then(() => push('/received'))
     }
   })
 )(NewMessageComponent))

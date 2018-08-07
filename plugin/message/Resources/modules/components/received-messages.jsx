@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import {trans, transChoice} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
@@ -65,6 +65,11 @@ const ReceivedMessagesComponent = (props) =>
           target: '/message/'+rows[0].id,
           context: 'row'
         }, {
+          type: CALLBACK_BUTTON,
+          icon: 'fa fa-fw fa-check',
+          label: trans('marked_read_message', {}, 'message'),
+          callback: () => props.markReadMessages(rows)
+        }, {
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-share',
           label: trans('reply', {}, 'actions'),
@@ -99,6 +104,9 @@ const ReceivedMessages = connect(
           handleConfirm: () => dispatch(actions.removeMessages(messages))
         })
       )
+    },
+    markReadMessages(messages) {
+      dispatch(actions.markReadMessages(messages.map(message => message.id)))
     }
   })
 )(ReceivedMessagesComponent)

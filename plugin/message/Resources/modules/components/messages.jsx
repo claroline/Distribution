@@ -39,7 +39,10 @@ const MessagesComponent = (props) =>
           path: '/new',
           exact: true,
           component: NewMessage,
-          onEnter: () => props.setTitle(constants.NEW_MESSAGE_TITLE)
+          onEnter: () => {
+            props.setTitle(constants.NEW_MESSAGE_TITLE)
+            props.newMessage()
+          }
         }, {
           path: '/message/:id?',
           exact: true,
@@ -47,6 +50,7 @@ const MessagesComponent = (props) =>
           onEnter: (params) => {
             props.setTitle(constants.MESSAGE_TITLE)
             props.openMessage(params.id)
+            props.newMessage(params.id)
           }
         }
       ]}
@@ -61,6 +65,9 @@ const Messages = connect(
     },
     setTitle(title) {
       dispatch(actions.setTitle(title))
+    },
+    newMessage(id) {
+      dispatch(actions.newMessage(id))
     }
   })
 )(MessagesComponent)

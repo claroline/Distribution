@@ -1,3 +1,4 @@
+import {trans} from '#/main/core/translation'
 import {makeReducer} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
@@ -12,7 +13,7 @@ const reducer = {
   currentMessage: makeReducer({}, {
     [MESSAGE_LOAD]: (state, action) => action.message
   }),
-  title: makeReducer({}, {
+  title: makeReducer(trans('mailbox'), {
     [SET_TITLE]: (state, action) => action.title
   })
 }
