@@ -11,6 +11,7 @@
 
 namespace Claroline\MessageBundle\Controller\APINew;
 
+use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\MessageBundle\Entity\Message;
@@ -32,6 +33,15 @@ class MessageController extends AbstractCrudController
     /**
      * @EXT\Route("/received", name="apiv2_message_received")
      * @EXT\Method("GET")
+     * @ApiDoc(
+     *     description="Returns the list of received message for the current connected user",
+     *     queryString={
+     *         "$finder=Claroline\MessageBundle\Entity\Message&!removed&!sent",
+     *         {"name": "page", "type": "integer", "description": "The queried page."},
+     *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
+     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
+     *     }
+     * )
      *
      * @return JsonResponse
      */
@@ -48,6 +58,15 @@ class MessageController extends AbstractCrudController
     /**
      * @EXT\Route("/removed", name="apiv2_message_removed")
      * @EXT\Method("GET")
+     * @ApiDoc(
+     *     description="Returns the list of removed message for the current connected user",
+     *     queryString={
+     *         "$finder=Claroline\MessageBundle\Entity\Message&!removed",
+     *         {"name": "page", "type": "integer", "description": "The queried page."},
+     *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
+     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
+     *     }
+     * )
      *
      * @return JsonResponse
      */
@@ -65,6 +84,16 @@ class MessageController extends AbstractCrudController
      * @EXT\Route("/sent", name="apiv2_message_sent")
      * @EXT\Method("GET")
      *
+     * @ApiDoc(
+     *     description="Returns the list of sent message for the current connected user",
+     *     queryString={
+     *         "$finder=Claroline\MessageBundle\Entity\Message&!removed&!sent&!removed",
+     *         {"name": "page", "type": "integer", "description": "The queried page."},
+     *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
+     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
+     *     }
+     * )
+     *
      * @return JsonResponse
      */
     public function getSentAction(Request $request)
@@ -80,6 +109,12 @@ class MessageController extends AbstractCrudController
     /**
      * @EXT\Route("/softdelete", name="apiv2_message_soft_delete")
      * @EXT\Method("PUT")
+     * @ApiDoc(
+     *     description="Soft delete an array of message",
+     *     queryString={
+     *         {"name": "ids", "type": "array", "description": "The message ids list."}
+     *     }
+     * )
      *
      * @return JsonResponse
      */
@@ -110,6 +145,12 @@ class MessageController extends AbstractCrudController
     /**
      * @EXT\Route("/restore", name="apiv2_message_restore")
      * @EXT\Method("PUT")
+     * @ApiDoc(
+     *     description="Soft undelete an array of message for the current user.",
+     *     queryString={
+     *         {"name": "ids", "type": "array", "description": "The message ids list."}
+     *     }
+     * )
      *
      * @return JsonResponse
      */
@@ -140,6 +181,12 @@ class MessageController extends AbstractCrudController
     /**
      * @EXT\Route("/read", name="apiv2_message_read")
      * @EXT\Method("PUT")
+     * @ApiDoc(
+     *     description="Read an array of message for the current user.",
+     *     queryString={
+     *         {"name": "ids", "type": "array", "description": "The message ids list."}
+     *     }
+     * )
      *
      * @return JsonResponse
      */
@@ -170,6 +217,12 @@ class MessageController extends AbstractCrudController
     /**
      * @EXT\Route("/unread", name="apiv2_message_unread")
      * @EXT\Method("PUT")
+     * @ApiDoc(
+     *     description="Unread an array of message for the current user.",
+     *     queryString={
+     *         {"name": "ids", "type": "array", "description": "The message ids list."}
+     *     }
+     * )
      *
      * @return JsonResponse
      */
@@ -200,6 +253,12 @@ class MessageController extends AbstractCrudController
     /**
      * @EXT\Route("/remove", name="apiv2_message_user_remove")
      * @EXT\Method("DELETE")
+     * @ApiDoc(
+     *     description="Delete an array of message for the current user.",
+     *     queryString={
+     *         {"name": "ids", "type": "array", "description": "The message ids list."}
+     *     }
+     * )
      *
      * @return JsonResponse
      */

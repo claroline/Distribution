@@ -1,6 +1,6 @@
 {
   "id": "123²",
   "content": "Contenu du message... blablablablablabal et blablablabla",
-  "date": "2017-12-06T07:02:51",
-  "object": "bon...jour !"
+  "object": "bon...jour !",
+  "to": "riri;fifi;loulou;"
 }
