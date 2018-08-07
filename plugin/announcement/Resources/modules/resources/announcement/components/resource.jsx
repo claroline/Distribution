@@ -7,7 +7,7 @@ import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 
 import {RoutedPageContent} from '#/main/core/layout/router'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
@@ -21,7 +21,7 @@ import {select} from '#/plugin/announcement/resources/announcement/selectors'
 import {actions} from '#/plugin/announcement/resources/announcement/actions'
 
 const Resource = props =>
-  <ResourcePageContainer
+  <ResourcePage
     primaryAction="create-announce"
     customActions={[
       {
@@ -65,7 +65,7 @@ const Resource = props =>
         }
       ]}
     />
-  </ResourcePageContainer>
+  </ResourcePage>
 
 Resource.propTypes = {
   aggregateId: T.string.isRequired,

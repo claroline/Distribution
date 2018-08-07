@@ -17,19 +17,16 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
-use Claroline\CoreBundle\Form\Resource\UnlockType;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\EventManager;
 use Claroline\CoreBundle\Manager\FileManager;
 use Claroline\CoreBundle\Manager\LogManager;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
-use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\TransferManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Exception;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -37,7 +34,6 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -56,7 +52,6 @@ class ResourceOldController extends Controller
     private $tokenStorage;
     private $authorization;
     private $resourceManager;
-    private $resourceNodeManager;
     private $rightsManager;
     private $roleManager;
     private $translator;
@@ -91,7 +86,6 @@ class ResourceOldController extends Controller
      *     "formFactory"         = @DI\Inject("form.factory"),
      *     "userManager"         = @DI\Inject("claroline.manager.user_manager"),
      *     "eventDispatcher"     = @DI\Inject("event_dispatcher"),
-     *     "resourceNodeManager" = @DI\Inject("claroline.manager.resource_node"),
      *     "eventManager"        = @DI\Inject("claroline.event.manager")
      * })
      */
@@ -112,7 +106,6 @@ class ResourceOldController extends Controller
         FormFactory $formFactory,
         UserManager $userManager,
         EventDispatcherInterface $eventDispatcher,
-        ResourceNodeManager $resourceNodeManager,
         EventManager $eventManager
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -131,7 +124,6 @@ class ResourceOldController extends Controller
         $this->formFactory = $formFactory;
         $this->userManager = $userManager;
         $this->eventDispatcher = $eventDispatcher;
-        $this->resourceNodeManager = $resourceNodeManager;
         $this->eventManager = $eventManager;
     }
 
@@ -292,7 +284,7 @@ class ResourceOldController extends Controller
      *
      * @return array
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function renderBreadcrumbsAction(ResourceNode $node, $_breadcrumbs)
     {
@@ -405,40 +397,6 @@ class ResourceOldController extends Controller
         $response->headers->set('Connection', 'close');
 
         return $response;
-    }
-
-    //this method is not routed and called from the Resource/layout.html.twig file
-
-    /**
-     * @EXT\Template("ClarolineCoreBundle:resource:unlock_code_form.html.twig")
-     */
-    public function unlockCodeFormAction(ResourceNode $node)
-    {
-        $form = $this->formFactory->create(new UnlockType());
-
-        return ['form' => $form->createView(), 'node' => $node];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/resource/{node}/unlock",
-     *     name="claro_resource_form_unlock",
-     *     options={"expose"=true}
-     * )
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function unlockCodeAction(ResourceNode $node)
-    {
-        $form = $this->formFactory->create(new UnlockType());
-        $form->handleRequest($this->request);
-
-        if ($form->isValid()) {
-            $code = $form->get('code')->getData();
-            $this->resourceNodeManager->unlock($node, $code);
-        }
-
-        return new RedirectResponse($this->container->get('router')->generate('claro_resource_open_short', ['node' => $node->getId()]));
     }
 
     /**

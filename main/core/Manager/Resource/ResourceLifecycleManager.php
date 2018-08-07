@@ -9,6 +9,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\PublicationChangeEvent;
 use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
@@ -48,6 +49,14 @@ class ResourceLifecycleManager
 
     public function load(ResourceNode $resourceNode)
     {
+        /** @var LoadResourceEvent $event */
+        $event = $this->dispatcher->dispatch(
+            static::eventName('load', $resourceNode),
+            'Resource\LoadResource',
+            [$this->getResourceFromNode($resourceNode)]
+        );
+
+        return $event;
     }
 
     public function create(ResourceNode $resourceNode)
@@ -174,7 +183,9 @@ class ResourceLifecycleManager
     private function getResourceFromNode(ResourceNode $resourceNode)
     {
         /** @var AbstractResource $resource */
-        $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
+        $resource = $this->om
+            ->getRepository($resourceNode->getClass())
+            ->findOneBy(['resourceNode' => $resourceNode]);
 
         return $resource;
     }

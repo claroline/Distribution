@@ -17,13 +17,13 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceRestrictionsManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Repository\ResourceRightsRepository;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -48,7 +48,7 @@ class ResourceVoter implements VoterInterface
     private $resourceManager;
     private $workspaceManager;
     private $rightsManager;
-    private $session;
+    private $restrictionsManager;
 
     /**
      * ResourceVoter constructor.
@@ -60,18 +60,17 @@ class ResourceVoter implements VoterInterface
      *     "maskManager"      = @DI\Inject("claroline.manager.mask_manager"),
      *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager"),
-     *     "session"          = @DI\Inject("session")
+     *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
-     * @param EntityManager       $em
-     * @param TranslatorInterface $translator
-     * @param Utilities           $ut
-     * @param MaskManager         $maskManager
-     * @param ResourceManager     $resourceManager
-     * @param WorkspaceManager    $workspaceManager
-     * @param RightsManager       $rightsManager
-     * @param SessionInterface    $session
+     * @param EntityManager               $em
+     * @param TranslatorInterface         $translator
+     * @param Utilities                   $ut
+     * @param MaskManager                 $maskManager
+     * @param ResourceManager             $resourceManager
+     * @param WorkspaceManager            $workspaceManager
+     * @param RightsManager               $rightsManager
+     * @param ResourceRestrictionsManager $restrictionsManager
      */
     public function __construct(
         EntityManager $em,
@@ -81,7 +80,7 @@ class ResourceVoter implements VoterInterface
         ResourceManager $resourceManager,
         WorkspaceManager $workspaceManager,
         RightsManager $rightsManager,
-        SessionInterface $session
+        ResourceRestrictionsManager $restrictionsManager
     ) {
         $this->em = $em;
         $this->repository = $em->getRepository('ClarolineCoreBundle:Resource\ResourceRights');
@@ -92,7 +91,7 @@ class ResourceVoter implements VoterInterface
         $this->resourceManager = $resourceManager;
         $this->workspaceManager = $workspaceManager;
         $this->rightsManager = $rightsManager;
-        $this->session = $session;
+        $this->restrictionsManager = $restrictionsManager;
     }
 
     public function vote(TokenInterface $token, $object, array $attributes)
@@ -124,14 +123,10 @@ class ResourceVoter implements VoterInterface
             $errors = [];
             if ('create' === strtolower($attributes[0])) {
                 if ($object->getResources()[0]) {
-                    //there should be one resource every time
-                    //(you only create resource one at a time in a single directory
-                    $targetWorkspace = $object->getResources()[0]->getWorkspace();
-
                     foreach ($object->getResources() as $resource) {
                         $errors = array_merge(
                             $errors,
-                            $this->checkCreation($object->getAttribute('type'), $resource, $token, $targetWorkspace)
+                            $this->checkCreation($object->getAttribute('type'), $resource, $token)
                         );
                     }
                 } else {
@@ -220,7 +215,7 @@ class ResourceVoter implements VoterInterface
      *
      * @throws \Exception
      */
-    public function checkAction($action, array $nodes, TokenInterface $token)
+    private function checkAction($action, array $nodes, TokenInterface $token)
     {
         $haveSameWorkspace = true;
         $ws = $nodes[0]->getWorkspace();
@@ -256,10 +251,6 @@ class ResourceVoter implements VoterInterface
         $action = strtolower($action);
 
         foreach ($nodes as $node) {
-            $accessibleFrom = $node->getAccessibleFrom();
-            $accessibleUntil = $node->getAccessibleUntil();
-            $currentDate = new \DateTime();
-
             if ($node->isActive()) {
                 $mask = $this->repository->findMaximumRights($this->ut->getRoles($token), $node);
                 $type = $node->getResourceType();
@@ -270,8 +261,8 @@ class ResourceVoter implements VoterInterface
 
                 // If user can administrate OR resource is open then check action
                 if ($canAdministrate ||
-                    ((is_null($accessibleFrom) || $currentDate >= $accessibleFrom) &&
-                    (is_null($accessibleUntil) || $currentDate <= $accessibleUntil) &&
+                    ($this->restrictionsManager->isStarted($node) &&
+                     !$this->restrictionsManager->isEnded($node) &&
                     $node->isPublished())) {
                     //gotta check
                     if (!$decoder) {
@@ -301,16 +292,11 @@ class ResourceVoter implements VoterInterface
      * @param $type
      * @param ResourceNode   $node
      * @param TokenInterface $token
-     * @param Workspace      $workspace
      *
      * @return array
      */
-    public function checkCreation(
-        $type,
-        ResourceNode $node,
-        TokenInterface $token,
-        Workspace $workspace
-    ) {
+    private function checkCreation($type, ResourceNode $node, TokenInterface $token)
+    {
         $errors = [];
 
         //even the workspace manager can't break the file limit.
@@ -365,14 +351,14 @@ class ResourceVoter implements VoterInterface
      *
      * @return array
      */
-    public function checkMove(ResourceNode $parent, $nodes, TokenInterface $token)
+    private function checkMove(ResourceNode $parent, $nodes, TokenInterface $token)
     {
         $errors = [];
 
         //first I need to know if I can create
         foreach ($nodes as $node) {
             $type = $node->getResourceType()->getName();
-            $errors = array_merge($errors, $this->checkCreation($type, $parent, $token, $parent->getWorkspace()));
+            $errors = array_merge($errors, $this->checkCreation($type, $parent, $token));
         }
 
         //then I need to know if I can copy
@@ -394,14 +380,14 @@ class ResourceVoter implements VoterInterface
      *
      * @return array
      */
-    public function checkCopy(ResourceNode $parent, array $nodes, TokenInterface $token)
+    private function checkCopy(ResourceNode $parent, array $nodes, TokenInterface $token)
     {
         //first I need to know if I can create what I want in the parent directory
         $errors = [];
 
         foreach ($nodes as $node) {
             $type = $node->getResourceType()->getName();
-            $errors = array_merge($errors, $this->checkCreation($type, $parent, $token, $parent->getWorkspace()));
+            $errors = array_merge($errors, $this->checkCreation($type, $parent, $token));
         }
 
         //then we need to know if we can copy
@@ -423,14 +409,14 @@ class ResourceVoter implements VoterInterface
             );
     }
 
-    public function isWorkspaceManager(Workspace $workspace, TokenInterface $token)
+    private function isWorkspaceManager(Workspace $workspace, TokenInterface $token)
     {
         $managerRoleName = 'ROLE_WS_MANAGER_'.$workspace->getGuid();
 
         return in_array($managerRoleName, $this->ut->getRoles($token)) ? true : false;
     }
 
-    public function isUsurpatingWorkspaceRole(TokenInterface $token)
+    private function isUsurpatingWorkspaceRole(TokenInterface $token)
     {
         foreach ($token->getRoles() as $role) {
             if ('ROLE_USURPATE_WORKSPACE_ROLE' === $role->getRole()) {
@@ -441,7 +427,7 @@ class ResourceVoter implements VoterInterface
         return false;
     }
 
-    public function validateAccesses($object)
+    private function validateAccesses($object)
     {
         if ($object instanceof ResourceNode) {
             $nodes = [$object];
@@ -451,21 +437,16 @@ class ResourceVoter implements VoterInterface
 
         /** @var ResourceNode $node */
         foreach ($nodes as $node) {
-            $ips = $node->getAllowedIps();
-
-            if (!empty($ips) && !$this->validateIP($ips, $_SERVER['REMOTE_ADDR'])) {
+            if (!$this->restrictionsManager->isUnlocked($node)
+                || !$this->restrictionsManager->isIpAuthorized($node)) {
                 return false;
-            }
-
-            if ($node->getAccessCode()) {
-                return $this->session->get($node->getGuid());
             }
         }
 
         return true;
     }
 
-    public function isAdmin($object)
+    private function isAdmin($object)
     {
         if ($object instanceof ResourceNode) {
             $nodes = [$object];
@@ -480,25 +461,5 @@ class ResourceVoter implements VoterInterface
         }
 
         return true;
-    }
-
-    public function validateIP($allowed, $current)
-    {
-        $currentParts = explode('.', $current);
-
-        foreach ($allowed as $allowedIp) {
-            $allowedParts = explode('.', $allowedIp);
-            $allowBlock = [];
-
-            foreach ($allowedParts as $key => $val) {
-                $allowBlock[] = ($val === $currentParts[$key] || '*' === $val);
-            }
-
-            if (!in_array(false, $allowBlock)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

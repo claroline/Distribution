@@ -73,12 +73,10 @@ const Routes = props =>
           <Routes
             {...route}
             key={`route-${routeIndex}`}
-            blockingStep={props.blockingSteps}
           /> :
           <Route
             {...route}
             key={`route-${routeIndex}`}
-            blockingStep={props.blockingSteps}
           />
         )
       }
@@ -98,7 +96,6 @@ const Routes = props =>
 Routes.propTypes = {
   path: T.string,
   exact: T.bool,
-  blockingSteps: T.bool,
   routes: T.arrayOf(
     T.shape(RouteTypes.propTypes).isRequired // todo : allow more than one nesting in prop-types
   ),
@@ -114,7 +111,6 @@ Routes.defaultProps = {
   path: '',
   exact: false,
   redirect: [],
-  blockingStep: false
 }
 
 const Router = props => !props.embedded ?

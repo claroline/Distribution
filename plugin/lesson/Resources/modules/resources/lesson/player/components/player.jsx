@@ -6,7 +6,7 @@ import {PropTypes as T} from '#/main/core/scaffolding/prop-types'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
 
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {PageContent} from '#/main/core/layout/page/index'
 import {SummarizedContent} from '#/main/app/content/summary/components/content'
@@ -39,7 +39,7 @@ class PlayerComponent extends Component {
 
   render() {
     return (
-      <ResourcePageContainer
+      <ResourcePage
         customActions={[
           {
             type: LINK_BUTTON,
@@ -102,7 +102,7 @@ class PlayerComponent extends Component {
             ]}/>
           </SummarizedContent>
         </PageContent>
-      </ResourcePageContainer>
+      </ResourcePage>
     )
   }
 }

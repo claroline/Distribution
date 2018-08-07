@@ -28,7 +28,7 @@ const ButtonComponent = props => {
     }
   ), [
     props.icon &&
-      <span key="button-icon" className={classes('action-icon', props.icon)} aria-hidden={true} />,
+      <span key="button-icon" className={classes('action-icon', props.icon, !props.hideLabel && 'icon-with-text-right')} aria-hidden={true} />,
     props.hideLabel ? <span key="button-label" className="sr-only">{props.label}</span> : props.label,
     props.subscript &&
       <span key="button-subscript" className={classes('action-subscript', `${props.subscript.type} ${props.subscript.type}-${props.subscript.status || 'primary'}`)}>{props.subscript.value}</span>

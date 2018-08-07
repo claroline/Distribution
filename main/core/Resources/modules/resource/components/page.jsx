@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {Page} from '#/main/app/page/components/page'
@@ -10,6 +11,7 @@ import {UserEvaluation as UserEvaluationTypes} from '#/main/core/resource/prop-t
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {getActions, getToolbar} from '#/main/core/resource/utils'
 
+import {ResourceRestrictions} from '#/main/core/resource/components/restrictions'
 import {UserProgression} from '#/main/core/resource/components/user-progression'
 
 class ResourcePage extends Component {
@@ -18,7 +20,19 @@ class ResourcePage extends Component {
 
     // open resource in fullscreen if configured
     this.state = {
-      fullscreen: !this.props.embedded && this.props.resourceNode.display.fullscreen
+      fullscreen: !this.props.embedded && get(this.props.resourceNode, 'display.fullscreen')
+    }
+  }
+
+  componentDidMount() {
+    this.props.loadResource(this.props.resourceNode)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // the embedded resource has changed
+    if (this.props.resourceNode.id !== nextProps.resourceNode.id) {
+      // load the new one
+      this.props.loadResource(nextProps.resourceNode)
     }
   }
 
@@ -73,7 +87,9 @@ class ResourcePage extends Component {
           ])
         })}
       >
-        {this.props.children}
+        <ResourceRestrictions />
+
+        {/*this.props.children*/}
       </Page>
     )
   }
@@ -87,6 +103,7 @@ ResourcePage.propTypes = {
     ResourceNodeTypes.propTypes
   ).isRequired,
   updateNode: T.func.isRequired,
+  loadResource: T.func.isRequired,
 
   /**
    * The current user evaluation.

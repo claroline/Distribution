@@ -70,7 +70,7 @@ actions.updateResource = (prop, value) => formActions.updateProp(selectors.FORM_
  * @param {object} parent - the parent of the new resource
  */
 actions.create = (parent) => formActions.saveForm(selectors.FORM_NAME, ['claro_resource_action', {
-  resourceType: parent.meta.type,
+  type: parent.meta.type,
   action: 'add',
   id: parent.id
 }])

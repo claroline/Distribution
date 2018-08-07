@@ -8,7 +8,7 @@ import {hasPermission} from '#/main/core/resource/permissions'
 import {url} from '#/main/app/api'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {DOWNLOAD_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
@@ -21,7 +21,7 @@ import {DeletedSections} from '#/plugin/wiki/resources/wiki/deleted/components/d
 import {actions as historyActions} from '#/plugin/wiki/resources/wiki/history/store'
 
 const Resource = props =>
-  <ResourcePageContainer
+  <ResourcePage
     primaryAction="create-section"
     editor={{
       path: '/edit',
@@ -93,7 +93,7 @@ const Resource = props =>
         }
       ]}
     />
-  </ResourcePageContainer>
+  </ResourcePage>
 
 Resource.propTypes = {
   canEdit: T.bool.isRequired,

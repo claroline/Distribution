@@ -697,6 +697,18 @@ class RightsManager
         $this->om->endFlushSuite();
     }
 
+    /**
+     * Checks if the current user is a manager of a resource.
+     *
+     * A user is a manager of a resource if :
+     *   - It is the creator of the resource
+     *   - It is the manager of the parent workspace
+     *   - It is a platform admin
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return bool
+     */
     public function isManager(ResourceNode $resourceNode)
     {
         $token = $this->tokenStorage->getToken();

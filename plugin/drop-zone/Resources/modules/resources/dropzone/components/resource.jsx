@@ -7,7 +7,7 @@ import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {RoutedPageContent} from '#/main/core/layout/router'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
@@ -25,7 +25,7 @@ import {Drop} from '#/plugin/drop-zone/resources/dropzone/correction/components/
 import {PeerDrop} from '#/plugin/drop-zone/resources/dropzone/player/components/peer-drop.jsx'
 
 const Resource = props =>
-  <ResourcePageContainer
+  <ResourcePage
     customActions={[
       {
         type: LINK_BUTTON,
@@ -98,7 +98,7 @@ const Resource = props =>
         }
       ]}
     />
-  </ResourcePageContainer>
+  </ResourcePage>
 
 Resource.propTypes = {
   canEdit: T.bool.isRequired,

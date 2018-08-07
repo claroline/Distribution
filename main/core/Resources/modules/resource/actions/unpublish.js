@@ -18,7 +18,7 @@ const action = (resourceNodes, nodesRefresher) => ({ // todo collection
   request: {
     type: 'unpublish',
     url: ['claro_resource_action', {
-      resourceType: resourceNodes[0].meta.type,
+      type: resourceNodes[0].meta.type,
       action: 'unpublish',
       id: resourceNodes[0].id
     }],

@@ -7,7 +7,7 @@ import {selectors as resourceSelect} from '#/main/core/resource/store/selectors'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {RoutedPageContent} from '#/main/core/layout/router'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {currentUser} from '#/main/core/user/current'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
@@ -51,7 +51,7 @@ const Resource = props => {
   }
 
   return (
-    <ResourcePageContainer
+    <ResourcePage
       primaryAction="post"
       customActions={[
         {
@@ -103,7 +103,7 @@ const Resource = props => {
         redirect={redirect}
         routes={routes}
       />
-    </ResourcePageContainer>
+    </ResourcePage>
   )
 }
 

@@ -6,7 +6,7 @@ import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {RoutedPageContent} from '#/main/core/layout/router'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {select} from '#/plugin/path/resources/path/selectors'
@@ -15,7 +15,7 @@ import {Editor} from '#/plugin/path/resources/path/editor/components/editor'
 import {Player} from '#/plugin/path/resources/path/player/components/player'
 
 const Resource = props =>
-  <ResourcePageContainer
+  <ResourcePage
     customActions={[
       {
         type: LINK_BUTTON,
@@ -59,7 +59,7 @@ const Resource = props =>
         }
       ]}
     />
-  </ResourcePageContainer>
+  </ResourcePage>
 
 Resource.propTypes = {
   path: T.object.isRequired,

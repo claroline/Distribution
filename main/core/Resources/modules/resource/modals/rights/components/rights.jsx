@@ -76,7 +76,7 @@ const RightsModal = connect(
     },
     save(resourceNode, update) {
       dispatch(formActions.saveForm(selectors.STORE_NAME, ['claro_resource_action', {
-        resourceType: resourceNode.meta.type,
+        type: resourceNode.meta.type,
         action: 'rights',
         id: resourceNode.id
       }])).then((response) => update(response))

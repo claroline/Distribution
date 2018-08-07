@@ -13,7 +13,7 @@ const action = (resourceNodes, nodesRefresher) => ({ // todo collection
   },
   request: {
     url: ['claro_resource_action', {
-      resourceType: resourceNodes[0].meta.type,
+      type: resourceNodes[0].meta.type,
       action: 'delete',
       id: resourceNodes[0].id
     }],

@@ -3,17 +3,24 @@ import merge from 'lodash/merge'
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 
 import {
+  RESOURCE_LOAD,
   RESOURCE_UPDATE_NODE,
   USER_EVALUATION_UPDATE
 } from '#/main/core/resource/store/actions'
 
 const reducer = combineReducers({
+  loaded: makeReducer(false, {
+    [RESOURCE_LOAD]: () => true
+  }),
+
   embedded: makeReducer(false), // this can not be changed at runtime
 
   /**
    * Manages the ResourceNode of the resource.
    */
   node: makeReducer({}, {
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.resourceNode,
+
     /**
      * Updates the ResourceNode data.
      *
@@ -27,6 +34,7 @@ const reducer = combineReducers({
    * Manages current user's evaluation for the resource.
    */
   evaluation: makeReducer(null, {
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.evaluation,
     [USER_EVALUATION_UPDATE]: (state, action) => action.userEvaluation
   }),
 

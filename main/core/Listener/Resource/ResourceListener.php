@@ -250,47 +250,4 @@ class ResourceListener
             );
         }
     }
-
-    /**
-     * Handles resources access errors due to restrictions configuration.
-     *
-     * @DI\Observe("kernel.exception")
-     *
-     * @param GetResponseForExceptionEvent $event
-     *
-     * @todo : find another way to manage (maybe in the on open / load event)
-     */
-    public function handleAccessRestrictions(GetResponseForExceptionEvent $event)
-    {
-        // todo re implement
-
-        $exception = $event->getException()->getPrevious();
-        if ($exception && $exception instanceof ResourceAccessException) {
-            $toUnlock = [];
-            foreach ($exception->getNodes() as $node) {
-                $unlock = $this->serializer->requiresUnlock($node);
-
-                if ($unlock) {
-                    $toUnlock[] = $node;
-                }
-            }
-
-            if (0 === count($toUnlock)) {
-                return;
-            }
-
-            // currently, only support one resource unlocking
-            $node = $toUnlock[0];
-
-            $content = $this->templating->render(
-              'ClarolineCoreBundle:Resource:unlockCodeFormWithLayout.html.twig', [
-                  'node' => $node,
-                  '_resource' => $this->resourceManager->getResourceFromNode($node),
-              ]);
-
-            $event->setResponse(
-                new Response($content)
-            );
-        }
-    }
 }

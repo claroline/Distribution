@@ -3,10 +3,16 @@
 namespace Claroline\CoreBundle\Manager\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
+ * ResourceRestrictionsManager.
+ *
+ * It validates access restrictions on ResourceNodes.
+ *
  * @DI\Service("claroline.manager.resource_restrictions")
  */
 class ResourceRestrictionsManager
@@ -17,37 +23,164 @@ class ResourceRestrictionsManager
     /**
      * ResourceRestrictionsManager constructor.
      *
+     * @DI\InjectParams({
+     *     "session"       = @DI\Inject("session"),
+     *     "rightsManager" = @DI\Inject("claroline.manager.rights_manager")
+     * })
+     *
      * @param SessionInterface $session
+     * @param RightsManager    $rightsManager
      */
     public function __construct(
-        SessionInterface $session)
+        SessionInterface $session,
+        RightsManager $rightsManager)
     {
         $this->session = $session;
+        $this->rightsManager = $rightsManager;
     }
 
-    public function unlock(ResourceNode $resourceNode, $code)
+    /**
+     * Checks if the current user can bypass the restrictions.
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return bool
+     */
+    public function canByPass(ResourceNode $resourceNode): bool
     {
-        //if a code is defined
-        if ($accessCode = $resourceNode->getAccessCode()) {
-            if ($accessCode === $code) {
-                $this->session->set($resourceNode->getUuid(), true);
+        return $this->rightsManager->isManager($resourceNode);
+    }
 
-                return true;
-            } else {
-                $this->session->set($resourceNode->getUuid(), false);
+    /**
+     * Checks access restrictions of a ResourceNodes.
+     *
+     * @param ResourceNode $resourceNode
+     * @param Role[]       $userRoles
+     *
+     * @return array
+     */
+    public function check(ResourceNode $resourceNode, array $userRoles): array
+    {
+        return [
+            'rights' => $this->hasRights($resourceNode, $userRoles),
+            'active' => $resourceNode->isActive(),
+            'published' => $resourceNode->isPublished(),
+            'started' => $this->isStarted($resourceNode),
+            'ended' => $this->isEnded($resourceNode),
+            'unlocked' => $this->isUnlocked($resourceNode),
+            'location' => $this->isIpAuthorized($resourceNode),
+        ];
+    }
 
-                return false;
+    /**
+     * Checks if a user has at least the right to access to one of the resource action.
+     *
+     * @param ResourceNode $resourceNode
+     * @param Role[]       $userRoles
+     *
+     * @return bool
+     */
+    public function hasRights(ResourceNode $resourceNode, array $userRoles)
+    {
+        return 0 !== $this->rightsManager->getMaximumRights($userRoles, $resourceNode);
+    }
+
+    /**
+     * Checks if the access period of the resource is started.
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return bool
+     */
+    public function isStarted(ResourceNode $resourceNode): bool
+    {
+        return empty($resourceNode->getAccessibleFrom()) || $resourceNode->getAccessibleFrom() <= new \DateTime();
+    }
+
+    /**
+     * Checks if the access period of the resource is over.
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return bool
+     */
+    public function isEnded(ResourceNode $resourceNode): bool
+    {
+        return empty($resourceNode->getAccessibleUntil()) || $resourceNode->getAccessibleUntil() > new \DateTime();
+    }
+
+    /**
+     * Checks if the ip of the current user is allowed to access the resource.
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return bool
+     */
+    public function isIpAuthorized(ResourceNode $resourceNode): bool
+    {
+        $allowed = $resourceNode->getAllowedIps();
+        if (!empty($allowed)) {
+            $currentParts = explode('.', $_SERVER['REMOTE_ADDR']);
+
+            foreach ($allowed as $allowedIp) {
+                $allowedParts = explode('.', $allowedIp);
+                $allowBlock = [];
+
+                foreach ($allowedParts as $key => $val) {
+                    $allowBlock[] = ($val === $currentParts[$key] || '*' === $val);
+                }
+
+                if (!in_array(false, $allowBlock)) {
+                    return true;
+                }
             }
+
+            return false;
         }
 
         return true;
     }
 
+    public function isUnlocked(ResourceNode $node): bool
+    {
+        if ($node->getAccessCode()) {
+            return !empty($this->session->get($node->getUuid()));
+        }
+
+        return true;
+    }
+
+    public function unlock(ResourceNode $resourceNode, $code = null)
+    {
+        //if a code is defined
+        if ($accessCode = $resourceNode->getAccessCode()) {
+            if (empty($code) || $accessCode !== $code) {
+                $this->session->set($resourceNode->getUuid(), false);
+
+                throw new InvalidDataException('Invalid code sent');
+            }
+
+            $this->session->set($resourceNode->getUuid(), true);
+        }
+    }
+
+    /**
+     * @param ResourceNode $resourceNode
+     * @return bool
+     *
+     * @deprecated
+     */
     public function isCodeProtected(ResourceNode $resourceNode)
     {
         return !empty($resourceNode->getAccessCode());
     }
 
+    /**
+     * @param ResourceNode $resourceNode
+     * @return bool
+     *
+     * @deprecated
+     */
     public function requiresUnlock(ResourceNode $resourceNode)
     {
         $isProtected = $this->isCodeProtected($resourceNode);
@@ -56,14 +189,5 @@ class ResourceRestrictionsManager
         }
 
         return false;
-    }
-
-    public function isUnlocked(ResourceNode $node)
-    {
-        if ($node->getAccessCode()) {
-            $access = $this->session->get($node->getUuid());
-        }
-
-        return !empty($access);
     }
 }

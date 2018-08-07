@@ -43,7 +43,7 @@ const AnnouncesList = props =>
     {0 === props.posts.length &&
       <EmptyPlaceholder
         size="lg"
-        icon="fa fa-frown-o"
+        icon="fa fa-bullhorn"
         title={trans('no_announcement', {}, 'announcement')}
       />
     }

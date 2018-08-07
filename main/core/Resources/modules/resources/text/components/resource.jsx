@@ -8,12 +8,12 @@ import {RoutedPageContent} from '#/main/core/layout/router'
 import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {Player} from '#/main/core/resources/text/player/components/player'
 import {Editor} from '#/main/core/resources/text/editor/components/editor'
 
 const Resource = props =>
-  <ResourcePageContainer
+  <ResourcePage
     customActions={[
       {
         type: LINK_BUTTON,
@@ -38,7 +38,7 @@ const Resource = props =>
         }
       ]}
     />
-  </ResourcePageContainer>
+  </ResourcePage>
 
 Resource.propTypes = {
   text: T.shape(TextTypes.propTypes).isRequired,

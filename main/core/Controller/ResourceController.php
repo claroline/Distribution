@@ -11,65 +11,110 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceRestrictionsManager;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @EXT\Route("/resources", options={"expose"=true})
  */
 class ResourceController
 {
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
+    /** @var Utilities */
+    private $security;
+
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /** @var ResourceManager */
+    private $manager;
+
     /** @var ResourceActionManager */
     private $actionManager;
 
     /** @var ResourceRestrictionsManager */
     private $restrictionsManager;
 
+    /** @var ResourceLifecycleManager */
+    private $lifecycleManager;
+
     /**
      * ResourceController constructor.
      *
      * @DI\InjectParams({
+     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
+     *     "security"            = @DI\Inject("claroline.security.utilities"),
+     *     "serializer"          = @DI\Inject("claroline.api.serializer"),
+     *     "manager"             = @DI\Inject("claroline.manager.resource_manager"),
      *     "actionManager"       = @DI\Inject("claroline.manager.resource_action"),
-     *     "restrictionsManager" = @DI\Inject("claroline.manager.resource_restrictions")
+     *     "restrictionsManager" = @DI\Inject("claroline.manager.resource_restrictions"),
+     *     "lifecycleManager"    = @DI\Inject("claroline.manager.resource_lifecycle")
      * })
      *
+     * @param TokenStorageInterface       $tokenStorage
+     * @param Utilities                   $security
+     * @param SerializerProvider          $serializer
+     * @param ResourceManager             $manager
      * @param ResourceActionManager       $actionManager
      * @param ResourceRestrictionsManager $restrictionsManager
+     * @param ResourceLifecycleManager    $lifecycleManager
      */
     public function __construct(
+        TokenStorageInterface $tokenStorage,
+        Utilities $security,
+        SerializerProvider $serializer,
+        ResourceManager $manager,
         ResourceActionManager $actionManager,
-        ResourceRestrictionsManager $restrictionsManager)
+        ResourceRestrictionsManager $restrictionsManager,
+        ResourceLifecycleManager $lifecycleManager)
     {
+        $this->tokenStorage = $tokenStorage;
+        $this->security = $security;
+        $this->serializer = $serializer;
+        $this->manager = $manager;
         $this->actionManager = $actionManager;
         $this->restrictionsManager = $restrictionsManager;
+        $this->lifecycleManager = $lifecycleManager;
     }
 
     /**
-     * Displays a resource page.
+     * Gets a resource.
      *
-     * @EXT\Route("/{id}", name="claro_resource_show")
+     * @EXT\Route("/{id}", name="claro_resource_load_short")
+     * @EXT\Route("/{type}/{id}", name="claro_resource_load")
+     * @EXT\Method("GET")
      *
      * @param ResourceNode $resourceNode
+     *
+     * @return JsonResponse
      */
-    public function showAction(ResourceNode $resourceNode)
+    public function getAction(ResourceNode $resourceNode)
     {
+        return $this->sendResource($resourceNode);
     }
 
     /**
      * Executes an action on one resource.
      *
      * @EXT\Route("/{action}/{id}", name="claro_resource_action_short")
-     * @EXT\Route("/{resourceType}/{action}/{id}", name="claro_resource_action")
+     * @EXT\Route("/{type}/{action}/{id}", name="claro_resource_action")
      *
      * @param string       $action
      * @param ResourceNode $resourceNode
@@ -110,6 +155,7 @@ class ResourceController
      */
     public function executeCollectionAction(Request $request)
     {
+        // TODO : implement
     }
 
     /**
@@ -118,15 +164,36 @@ class ResourceController
      * @EXT\Route("/{id}/unlock", name="claro_resource_unlock")
      * @EXT\Method("POST")
      *
-     * @param Request $request
+     * @param ResourceNode $resourceNode
+     * @param Request      $request
      *
      * @return JsonResponse
      */
-    public function unlockAction(Request $request)
+    public function unlockAction(ResourceNode $resourceNode, Request $request)
     {
-        // todo finish implementation
+        $this->restrictionsManager->unlock($resourceNode, json_decode($request->getContent(), true));
 
-        return new JsonResponse($this->restrictionsManager->unlock($resourceNode, $code));
+        // try to directly give access to the unlocked resource
+        // even if the resource is still locked by some other restrictions
+        // we don't want to throw an access denied, has the current action has been
+        // executed with success
+        return $this->sendResource($resourceNode, 200);
+    }
+
+    /**
+     * Restore a soft deleted node.
+     *
+     * @EXT\Route("/{id}/restore", name="claro_resource_restore_short")
+     * @EXT\Route("/{type}/{id}/restore", name="claro_resource_restore")
+     * @EXT\Method("PUT")
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return JsonResponse
+     */
+    public function restoreAction(ResourceNode $resourceNode)
+    {
+        // TODO : implement
     }
 
     /**
@@ -141,5 +208,34 @@ class ResourceController
         if (!$this->actionManager->hasPermission($action, $collection)) {
             throw new ResourceAccessException($collection->getErrorsForDisplay(), $collection->getResources());
         }
+    }
+
+    /**
+     * Send the resource details or access errors to the client.
+     *
+     * @param ResourceNode $resourceNode - the resource node to return
+     * @param int          $failedStatus - the HTTP status code to use if restrictions are not met.
+     *
+     * @return JsonResponse - either contains the resource details
+     */
+    private function sendResource(ResourceNode $resourceNode, int $failedStatus = 403)
+    {
+        // gets the current user roles to check access restrictions
+        $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
+
+        $accessErrors = $this->restrictionsManager->check($resourceNode, $userRoles);
+        if (empty($accessErrors) || $this->restrictionsManager->canByPass($resourceNode)) {
+            $event = $this->lifecycleManager->load($resourceNode);
+
+            return new JsonResponse(
+                array_merge([
+                    'accessErrors' => $accessErrors,
+                    'resourceNode' => $this->serializer->serialize($resourceNode),
+                    'evaluation' => null, // todo flag evaluated resource types and auto load Evaluation if any
+                ], $event->getAdditionalData())
+            );
+        }
+
+        return new JsonResponse($accessErrors, $failedStatus);
     }
 }

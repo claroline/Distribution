@@ -42,7 +42,7 @@ class EmbeddedResource extends Component {
       .then(module => {
         // Load app data
         fetch(
-          url(['claro_resource_load', {type: resourceNode.meta.type, node: resourceNode.id}]), {
+          url(['claro_resource_load', {type: resourceNode.meta.type, id: resourceNode.id}]), {
             method: 'GET',
             credentials: 'include'
           })
