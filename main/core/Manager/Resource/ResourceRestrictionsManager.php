@@ -135,18 +135,23 @@ class ResourceRestrictionsManager
                 }
             }
 
+            // the current user ip is not in the allowed list
             return false;
         }
 
+        // the current resource does not restrict ips
         return true;
     }
 
     public function isUnlocked(ResourceNode $node): bool
     {
         if ($node->getAccessCode()) {
+            // check if the current user already has unlocked the resource
+            // maybe store it another way to avoid require it each time the user session expires
             return !empty($this->session->get($node->getUuid()));
         }
 
+        // the current resource does not require a code
         return true;
     }
 

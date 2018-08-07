@@ -54,13 +54,14 @@ class ResourceVoter implements VoterInterface
      * ResourceVoter constructor.
      *
      * @DI\InjectParams({
-     *     "em"               = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "translator"       = @DI\Inject("translator"),
-     *     "ut"               = @DI\Inject("claroline.security.utilities"),
-     *     "maskManager"      = @DI\Inject("claroline.manager.mask_manager"),
-     *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager")
+     *     "em"                  = @DI\Inject("doctrine.orm.entity_manager"),
+     *     "translator"          = @DI\Inject("translator"),
+     *     "ut"                  = @DI\Inject("claroline.security.utilities"),
+     *     "maskManager"         = @DI\Inject("claroline.manager.mask_manager"),
+     *     "resourceManager"     = @DI\Inject("claroline.manager.resource_manager"),
+     *     "workspaceManager"    = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "rightsManager"       = @DI\Inject("claroline.manager.rights_manager"),
+     *     "restrictionsManager" = @DI\Inject("claroline.manager.resource_restrictions")
      * })
      *
      * @param EntityManager               $em

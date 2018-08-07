@@ -45,12 +45,30 @@ const DeletedRestriction = props =>
   <Restriction
     icon="fa fa-fw fa-trash-o"
     title="La ressource est supprimée."
+    help="Vous ne pouvez plus accéder au contenu des ressources supprimées."
   >
     <Button
       className="btn btn-default"
       type={ASYNC_BUTTON}
       icon="fa fa-fw fa-recycle"
       label={trans('restore', {}, 'actions')}
+      request={{
+
+      }}
+    />
+  </Restriction>
+
+const PublishedRestriction = props =>
+  <Restriction
+    icon="fa fa-fw fa-eye-slash"
+    title="La ressource n'est pas encore publiée."
+    help="Veuillez patienter en attendant que l'un des gestionnaires publie la ressource."
+  >
+    <Button
+      className="btn btn-default"
+      type={ASYNC_BUTTON}
+      icon="fa fa-fw fa-eye"
+      label={trans('publish', {}, 'actions')}
       request={{
 
       }}
@@ -81,12 +99,13 @@ const CodeRestriction = props =>
     }
   </Restriction>
 
-const IpRestriction = props =>
+const LocationRestriction = props =>
   <Restriction
     icon="fa fa-fw fa-laptop"
     title="L'accès doit s'effectuer depuis un poste de travail authorisé."
     help="Veuillez utiliser l'un des postes de travail authorisés afin d'accéder à la ressource."
     validated={props.validated}
+    onlyWarn={true}
   >
 
   </Restriction>
@@ -99,24 +118,28 @@ const ResourceRestrictions = props =>
       title={trans('restricted_access')}
       help={trans('restricted_access_message', {}, 'resource')}
     >
+      <DeletedRestriction />
 
+      <PublishedRestriction
+        validated={false}
+      />
+
+      <DateRestriction
+        validated={false}
+      />
+
+      <CodeRestriction
+        validated={false}
+      />
+
+      <LocationRestriction
+        validated={false}
+      />
     </EmptyPlaceholder>
 
-    <h4 className="h3">Conditions à remplir</h4>
+    {/*<h4 className="h3">Conditions à remplir</h4>*/}
 
-    <DeletedRestriction />
 
-    <DateRestriction
-      validated={false}
-    />
-
-    <CodeRestriction
-      validated={false}
-    />
-
-    <IpRestriction
-      validated={false}
-    />
   </div>
 
 ResourceRestrictions.propTypes = {

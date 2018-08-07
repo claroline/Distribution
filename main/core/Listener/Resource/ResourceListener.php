@@ -6,14 +6,11 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
-use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -120,7 +117,10 @@ class ResourceListener
      */
     public function onAbout(ResourceActionEvent $event)
     {
-        // todo return the full serialized version of the resource node
+        $event->setResponse(
+            new JsonResponse($this->serializer->serialize($event->getResourceNode()))
+        );
+        $event->stopPropagation();
     }
 
     /**
@@ -197,6 +197,15 @@ class ResourceListener
 
         $event->setResponse(
             new JsonResponse(null, 204)
+        );
+    }
+
+    public function onRestore(ResourceActionEvent $event)
+    {
+        $this->resourceManager->restore($event->getResourceNode());
+
+        $event->setResponse(
+            new JsonResponse($this->serializer->serialize($event->getResourceNode()))
         );
     }
 

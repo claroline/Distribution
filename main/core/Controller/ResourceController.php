@@ -181,22 +181,6 @@ class ResourceController
     }
 
     /**
-     * Restore a soft deleted node.
-     *
-     * @EXT\Route("/{id}/restore", name="claro_resource_restore_short")
-     * @EXT\Route("/{type}/{id}/restore", name="claro_resource_restore")
-     * @EXT\Method("PUT")
-     *
-     * @param ResourceNode $resourceNode
-     *
-     * @return JsonResponse
-     */
-    public function restoreAction(ResourceNode $resourceNode)
-    {
-        // TODO : implement
-    }
-
-    /**
      * Checks the current user can execute the action on the requested nodes.
      *
      * @param MenuAction $action

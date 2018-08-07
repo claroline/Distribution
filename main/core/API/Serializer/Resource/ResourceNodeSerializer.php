@@ -203,7 +203,7 @@ class ResourceNodeSerializer
             'created' => DateNormalizer::normalize($resourceNode->getCreationDate()),
             'updated' => DateNormalizer::normalize($resourceNode->getModificationDate()),
             'published' => $resourceNode->isPublished(),
-            'deleted' => !$resourceNode->isActive(),
+            'active' => $resourceNode->isActive(),
             'views' => $resourceNode->getViewsCount(),
         ];
 

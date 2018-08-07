@@ -951,6 +951,19 @@ class ResourceManager
     }
 
     /**
+     * Restores a soft deleted resource node.
+     *
+     * @param ResourceNode $resourceNode
+     */
+    public function restore(ResourceNode $resourceNode)
+    {
+        $resourceNode->setActive(true);
+
+        $this->om->persist($resourceNode);
+        $this->om->flush();
+    }
+
+    /**
      * Returns an archive with the required content.
      *
      * @param ResourceNode[] $elements     - the nodes being exported
