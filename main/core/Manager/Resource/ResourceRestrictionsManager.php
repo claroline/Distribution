@@ -20,6 +20,9 @@ class ResourceRestrictionsManager
     /** @var SessionInterface */
     private $session;
 
+    /** @var RightsManager */
+    private $rightsManager;
+
     /**
      * ResourceRestrictionsManager constructor.
      *
@@ -46,7 +49,7 @@ class ResourceRestrictionsManager
      *
      * @return bool
      */
-    public function canByPass(ResourceNode $resourceNode): bool
+    public function canBypass(ResourceNode $resourceNode): bool
     {
         return $this->rightsManager->isManager($resourceNode);
     }
@@ -143,6 +146,14 @@ class ResourceRestrictionsManager
         return true;
     }
 
+    /**
+     * Checks if a resource is unlocked.
+     * (aka it has no access code, or user has already submitted it)
+     *
+     * @param ResourceNode $node
+     *
+     * @return bool
+     */
     public function isUnlocked(ResourceNode $node): bool
     {
         if ($node->getAccessCode()) {
@@ -155,6 +166,15 @@ class ResourceRestrictionsManager
         return true;
     }
 
+    /**
+     * Submits a code to unlock a resource.
+     * NB. The resource will stay unlocked as long as the user session stay alive.
+     *
+     * @param ResourceNode $resourceNode - The resource to unlock
+     * @param string       $code         - The code sent by the user
+     *
+     * @throws InvalidDataException - If the submitted code is incorrect
+     */
     public function unlock(ResourceNode $resourceNode, $code = null)
     {
         //if a code is defined
@@ -167,32 +187,5 @@ class ResourceRestrictionsManager
 
             $this->session->set($resourceNode->getUuid(), true);
         }
-    }
-
-    /**
-     * @param ResourceNode $resourceNode
-     * @return bool
-     *
-     * @deprecated
-     */
-    public function isCodeProtected(ResourceNode $resourceNode)
-    {
-        return !empty($resourceNode->getAccessCode());
-    }
-
-    /**
-     * @param ResourceNode $resourceNode
-     * @return bool
-     *
-     * @deprecated
-     */
-    public function requiresUnlock(ResourceNode $resourceNode)
-    {
-        $isProtected = $this->isCodeProtected($resourceNode);
-        if ($isProtected) {
-            return !$this->isUnlocked($resourceNode);
-        }
-
-        return false;
     }
 }

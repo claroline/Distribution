@@ -193,7 +193,6 @@ class ResourceListener
     public function onDelete(ResourceActionEvent $event)
     {
         $this->resourceManager->delete($event->getResourceNode());
-        //$this->resourceLifecycleManager->delete($event->getResourceNode());
 
         $event->setResponse(
             new JsonResponse(null, 204)

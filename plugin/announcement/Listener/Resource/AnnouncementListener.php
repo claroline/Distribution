@@ -17,35 +17,21 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
-use Claroline\CoreBundle\Form\ResourceNameType;
-use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\Form\FormFactory;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @DI\Service()
  */
 class AnnouncementListener
 {
-    /** @var FormFactory */
-    private $formFactory;
-    /** @var HttpKernelInterface */
-    private $httpKernel;
     /** @var ObjectManager */
     private $om;
-    /** @var Request */
-    private $request;
     /** @var TwigEngine */
     private $templating;
     /** @var AnnouncementManager */
@@ -59,95 +45,31 @@ class AnnouncementListener
      * AnnouncementListener constructor.
      *
      * @DI\InjectParams({
-     *     "formFactory"    = @DI\Inject("form.factory"),
-     *     "httpKernel"     = @DI\Inject("http_kernel"),
      *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *     "requestStack"   = @DI\Inject("request_stack"),
      *     "templating"     = @DI\Inject("templating"),
      *     "manager"        = @DI\Inject("claroline.manager.announcement_manager"),
      *     "roleSerializer" = @DI\Inject("claroline.serializer.role"),
-     *     "crud"            = @DI\Inject("claroline.api.crud")
+     *     "crud"           = @DI\Inject("claroline.api.crud")
      * })
      *
-     * @param FormFactory         $formFactory
-     * @param HttpKernelInterface $httpKernel
      * @param ObjectManager       $om
-     * @param RequestStack        $requestStack
      * @param TwigEngine          $templating
      * @param AnnouncementManager $manager
      * @param RoleSerializer      $roleSerializer,
      * @param Crud                $crud
      */
     public function __construct(
-        FormFactory $formFactory,
-        HttpKernelInterface $httpKernel,
         ObjectManager $om,
-        RequestStack $requestStack,
         TwigEngine $templating,
         AnnouncementManager $manager,
         RoleSerializer $roleSerializer,
         Crud $crud
     ) {
-        $this->formFactory = $formFactory;
-        $this->httpKernel = $httpKernel;
         $this->om = $om;
-        $this->request = $requestStack->getCurrentRequest();
         $this->templating = $templating;
         $this->manager = $manager;
         $this->roleSerializer = $roleSerializer;
         $this->crud = $crud;
-    }
-
-    /**
-     * @DI\Observe("create_form_claroline_announcement_aggregate")
-     *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new ResourceNameType(), new AnnouncementAggregate());
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig', [
-                'form' => $form->createView(),
-                'resourceType' => 'claroline_announcement_aggregate',
-            ]
-        );
-        $event->setResponseContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("create_claroline_announcement_aggregate")
-     *
-     * @param CreateResourceEvent $event
-     *
-     * @throws NoHttpRequestException
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        if (!$this->request) {
-            throw new NoHttpRequestException();
-        }
-
-        $form = $this->formFactory->create(new ResourceNameType(), new AnnouncementAggregate());
-        $form->handleRequest($this->request);
-
-        if ($form->isValid()) {
-            $announcementAggregate = $form->getData();
-            $event->setResources([$announcementAggregate]);
-            $event->stopPropagation();
-
-            return;
-        }
-
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig', [
-                'form' => $form->createView(),
-                'resourceType' => 'claroline_announcement_aggregate',
-            ]
-        );
-        $event->setErrorFormContent($content);
-        $event->stopPropagation();
     }
 
     /**
@@ -157,15 +79,6 @@ class AnnouncementListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        /** @var AnnouncementAggregate $aggregate */
-        $aggregate = $event->getResource();
-        $announcements = $aggregate->getAnnouncements();
-
-        if ($announcements) {
-            foreach ($announcements as $announcement) {
-                $this->manager->delete($announcement, false);
-            }
-        }
         $event->stopPropagation();
     }
 

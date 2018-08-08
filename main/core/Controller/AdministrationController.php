@@ -81,7 +81,7 @@ class AdministrationController extends Controller
     {
         $tools = $this->toolManager->getAdminToolsByRoles($this->tokenStorage->getToken()->getRoles());
 
-        if (count($tools) === 0) {
+        if (0 === count($tools)) {
             throw new AccessDeniedException();
         }
 
@@ -140,7 +140,7 @@ class AdministrationController extends Controller
                 return [
                     'icon' => $tool->getClass(),
                     'name' => $tool->getName(),
-                    'open' => ['claro_admin_open_tool', ['toolName' => $tool->getName()]]
+                    'open' => ['claro_admin_open_tool', ['toolName' => $tool->getName()]],
                 ];
             }, $tools),
         ];

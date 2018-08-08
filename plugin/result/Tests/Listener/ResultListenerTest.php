@@ -39,20 +39,6 @@ class ResultListenerTest extends TransactionalTestCase
         $this->persist = new Persister($this->om, $container);
     }
 
-    public function testOnCreateForm()
-    {
-        $event = new CreateFormResourceEvent();
-        $this->listener->setRequest(new Request());
-        $this->listener->onCreateForm($event);
-        $this->assertNotEmpty($event->getResponseContent());
-    }
-
-    public function testOnCreate()
-    {
-        $this->listener->setRequest(new Request());
-        $this->listener->onCreate(new CreateResourceEvent());
-    }
-
     public function testOnOpen()
     {
         $this->listener->setRequest(new Request());

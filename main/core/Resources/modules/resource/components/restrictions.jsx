@@ -41,6 +41,15 @@ Restriction.defaultProps = {
   onlyWarn: false
 }
 
+const RightsRestriction = props =>
+  <Restriction
+    icon="fa fa-fw fa-id-badge"
+    title="Vous n'avez pas les droits nécessaires pour accéder à cette ressource."
+    help="Veuillez contacter un gestionnaire si vous pensez que vous devriez avoir accès à cette ressource."
+  >
+
+  </Restriction>
+
 const DeletedRestriction = props =>
   <Restriction
     icon="fa fa-fw fa-trash-o"
@@ -118,6 +127,8 @@ const ResourceRestrictions = props =>
       title={trans('restricted_access')}
       help={trans('restricted_access_message', {}, 'resource')}
     >
+      <RightsRestriction />
+
       <DeletedRestriction />
 
       <PublishedRestriction

@@ -110,7 +110,7 @@ Routes.propTypes = {
 Routes.defaultProps = {
   path: '',
   exact: false,
-  redirect: [],
+  redirect: []
 }
 
 const Router = props => !props.embedded ?

@@ -198,7 +198,7 @@ class ResourceController
      * Send the resource details or access errors to the client.
      *
      * @param ResourceNode $resourceNode - the resource node to return
-     * @param int          $failedStatus - the HTTP status code to use if restrictions are not met.
+     * @param int          $failedStatus - the HTTP status code to use if restrictions are not met
      *
      * @return JsonResponse - either contains the resource details
      */
@@ -208,7 +208,7 @@ class ResourceController
         $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
 
         $accessErrors = $this->restrictionsManager->check($resourceNode, $userRoles);
-        if (empty($accessErrors) || $this->restrictionsManager->canByPass($resourceNode)) {
+        if (empty($accessErrors) || $this->restrictionsManager->canBypass($resourceNode)) {
             $event = $this->lifecycleManager->load($resourceNode);
 
             return new JsonResponse(
