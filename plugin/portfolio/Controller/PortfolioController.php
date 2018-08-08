@@ -28,10 +28,17 @@ class PortfolioController extends Controller
      * @ParamConverter("loggedUser", options={"authenticatedUser" = true})
      * @Template()
      */
-    public function indexAction(Request $request, User $loggedUser, $page, $guidedPage, $portfolioSlug)
+    public function indexAction($page, $guidedPage, $portfolioSlug)
     {
         $this->checkPortfolioToolAccess();
-        /*
+
+        return [];
+    }
+
+    public function oldIndexAction(Request $request, User $loggedUser, $page, $guidedPage, $portfolioSlug)
+    {
+        $this->checkPortfolioToolAccess();
+
         $ownedPortfolioQuery = $this->getDoctrine()->getRepository('IcapPortfolioBundle:Portfolio')->findByUserWithWidgetsAndComments($loggedUser, false);
         $portfoliosPager = $this->get('claroline.pager.pager_factory')->createPager($ownedPortfolioQuery, $page, 10);
 
@@ -44,6 +51,7 @@ class PortfolioController extends Controller
         $portfolioId = 0;
 
         if (null !== $portfolioSlug) {
+            /** @var \Icap\PortfolioBundle\Entity\Portfolio $portfolio */
             $portfolio = $this->getDoctrine()->getRepository('IcapPortfolioBundle:Portfolio')->findOneBySlug($portfolioSlug);
 
             if (null === $portfolio) {
@@ -53,6 +61,7 @@ class PortfolioController extends Controller
             $portfolioId = $portfolio->getId();
         }
 
+        /** @var \Icap\PortfolioBundle\Manager\WidgetTypeManager $widgetTypeManager */
         $widgetTypeManager = $this->get('icap_portfolio.manager.widget_type');
 
         $returnData = [
@@ -73,8 +82,6 @@ class PortfolioController extends Controller
         }
 
         return $returnData;
-        */
-        return [];
     }
 
     /**
