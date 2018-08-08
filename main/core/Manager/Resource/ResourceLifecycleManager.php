@@ -172,7 +172,7 @@ class ResourceLifecycleManager
      */
     private static function eventName($prefix, ResourceNode $resourceNode)
     {
-        return 'resource.'.'.'.$resourceNode->getResourceType()->getName().$prefix;
+        return 'resource.'.$resourceNode->getResourceType()->getName().'.'.$prefix;
     }
 
     /**

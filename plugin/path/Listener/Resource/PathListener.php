@@ -69,7 +69,9 @@ class PathListener
 
         $event->setData([
             'path' => $this->serializer->serialize($path),
-            'evaluation' => $this->userProgressionManager->getUpdatedResourceUserEvaluation($path)
+            'evaluation' => $this->serializer->serialize(
+                $this->userProgressionManager->getUpdatedResourceUserEvaluation($path)
+            ),
         ]);
         $event->stopPropagation();
     }
@@ -90,7 +92,9 @@ class PathListener
             'InnovaPathBundle:path:open.html.twig', [
                 '_resource' => $path,
                 'path' => $this->serializer->serialize($path),
-                'evaluation' => $this->userProgressionManager->getUpdatedResourceUserEvaluation($path),
+                'evaluation' => $this->serializer->serialize(
+                    $this->userProgressionManager->getUpdatedResourceUserEvaluation($path)
+                ),
             ]
         );
 

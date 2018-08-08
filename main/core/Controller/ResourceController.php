@@ -88,6 +88,7 @@ class ResourceController
         $this->tokenStorage = $tokenStorage;
         $this->security = $security;
         $this->serializer = $serializer;
+        $this->manager = $manager;
         $this->actionManager = $actionManager;
         $this->restrictionsManager = $restrictionsManager;
         $this->lifecycleManager = $lifecycleManager;

@@ -10,7 +10,7 @@ import {mount, unmount} from '#/main/app/mount'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {getResource} from '#/main/core/resources'
 
-class EmbeddedResource extends Component {
+class ResourceEmbedded extends Component {
   constructor(props) {
     super(props)
 
@@ -92,7 +92,7 @@ class EmbeddedResource extends Component {
   }
 }
 
-EmbeddedResource.propTypes = {
+ResourceEmbedded.propTypes = {
   className: T.string,
   showHeader: T.bool,
   showActions: T.bool,
@@ -108,10 +108,10 @@ EmbeddedResource.propTypes = {
   })
 }
 
-EmbeddedResource.defaultProps = {
+ResourceEmbedded.defaultProps = {
   lifecycle: {}
 }
 
 export {
-  EmbeddedResource
+  ResourceEmbedded
 }

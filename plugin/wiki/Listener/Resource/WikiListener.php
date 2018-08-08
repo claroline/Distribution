@@ -55,7 +55,7 @@ class WikiListener
      *     "templating"        = @DI\Inject("templating"),
      *     "tokenStorage"      = @DI\Inject("security.token_storage"),
      *     "objectManager"     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "objectManager"     = @DI\Inject("claroline.api.serializer"),
+     *     "serializer"        = @DI\Inject("claroline.api.serializer"),
      *     "wikiManager"       = @DI\Inject("icap.wiki.manager"),
      *     "sectionManager"    = @DI\Inject("icap.wiki.section_manager"),
      *     "evaluationManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
