@@ -3,7 +3,7 @@ function mediaSrcExtractor(tag, srcContent, srcs) {
   let ret = `[${tag} ${mainSource}`
 
   if (srcs) {
-    const sources = srcs.match(/src=[\'"]([^\'"]+)[\'"]/g)
+    const sources = srcs.match(/src=['"]([^'"]+)['"]/g)
     sources.forEach(source => ret += ` src="${source}"`)
   }
   ret += ']'
@@ -17,11 +17,11 @@ function getPlainText(htmlText, preserveMedia = false) {
 
     if (preserveMedia) {
       processedHtml = processedHtml.replace(
-        /<(img|embed)([^>]+src=[\'"]([^\'"]+)[\'"])*[^\/>]*\/?>/i,
+        /<(img|embed)([^>]+src=['"]([^'"]+)['"])*[^/>]*\/?>/i,
         '[$1 src="$3"]'
       )
       processedHtml = processedHtml.replace(
-        /<(video|audio)([^>]+src=[\'"]([^\'"]+)[\'"])*[^\/>]*\/?>([\s\S]*)<\/\1>/i,
+        /<(video|audio)([^>]+src=['"]([^'"]+)['"])*[^/>]*\/?>([\s\S]*)<\/\1>/i,
         (matches, tag, src, srcContent, srcs) => mediaSrcExtractor(tag, srcContent, srcs)
       )
     }
