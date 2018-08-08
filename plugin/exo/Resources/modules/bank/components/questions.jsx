@@ -6,7 +6,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {stripTagsFromHtml} from '#/main/app/utils/utils'
+import {getPlainText} from '#/main/app/data/html/utils'
 
 import {t, tex, trans, transChoice} from '#/main/core/translation'
 import {
@@ -64,7 +64,7 @@ const QuestionsPage = props =>
               if (rowData.title) {
                 return rowData.title
               } else {
-                const content = stripTagsFromHtml(rowData.content)
+                const content = getPlainText(rowData.content)
 
                 return 50 < content.length ? `${content.substr(0, 50)}...` : content
               }
