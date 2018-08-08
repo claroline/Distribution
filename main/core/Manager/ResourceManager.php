@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
@@ -752,6 +753,7 @@ class ResourceManager
         }
         $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
 
+        // todo : reuse lifecycle
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             'copy_'.$node->getResourceType()->getName(),
@@ -1543,6 +1545,11 @@ class ResourceManager
         return in_array($managerRoleName, $this->secut->getRoles($token)) ? true : false;
     }
 
+    /**
+     * @param ResourceNode $node
+     *
+     * @deprecated
+     */
     public function resetIcon(ResourceNode $node)
     {
         $this->om->startFlushSuite();
@@ -1609,9 +1616,11 @@ class ResourceManager
         $node->setWorkspace($workspace);
         $this->om->persist($node);
 
-        if ('directory' === $node->getResourceType()->getName()) {
+        if (!empty($node->getChildren())) {
+            // recursively load all children
             $children = $this->resourceNodeRepo->getChildren($node);
 
+            /** @var ResourceNode $child */
             foreach ($children as $child) {
                 $child->setWorkspace($workspace);
                 $this->om->persist($child);
@@ -1796,6 +1805,16 @@ class ResourceManager
         return $lastIndex;
     }
 
+    /**
+     * @param ResourceNode $node
+     * @param bool $throwException
+     *
+     * @return ResourceNode|null
+     *
+     * @throws \Exception
+     *
+     * @deprecated
+     */
     public function getRealTarget(ResourceNode $node, $throwException = true)
     {
         if ('Claroline\CoreBundle\Entity\Resource\ResourceShortcut' === $node->getClass()) {
@@ -1889,21 +1908,18 @@ class ResourceManager
         $this->om->endFlushSuite();
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
     public function getResourcesByIds(array $roles, $user, array $ids)
     {
         return count($ids) > 0 ? $this->resourceNodeRepo->findResourcesByIds($roles, $user, $ids) : [];
     }
 
+    /**
+     * @param ResourceNode $node
+     *
+     * @return AbstractResource
+     *
+     * @deprecated
+     */
     public function getResourceFromShortcut(ResourceNode $node)
     {
         $target = $this->getRealTarget($node);
@@ -1946,5 +1962,17 @@ class ResourceManager
         $this->om->flush();
 
         return $node;
+    }
+
+    public function load(ResourceNode $resourceNode)
+    {
+        /** @var LoadResourceEvent $event */
+        $event = $this->dispatcher->dispatch(
+            'resource.load',
+            LoadResourceEvent::class,
+            [$this->getResourceFromNode($resourceNode)]
+        );
+
+        return $event->getData();
     }
 }

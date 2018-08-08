@@ -52,7 +52,7 @@ class ResourceLifecycleManager
         /** @var LoadResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             static::eventName('load', $resourceNode),
-            'Resource\LoadResource',
+            LoadResourceEvent::class,
             [$this->getResourceFromNode($resourceNode)]
         );
 
@@ -72,7 +72,7 @@ class ResourceLifecycleManager
         /** @var OpenResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             static::eventName('open', $resourceNode),
-            CopyResourceEvent::class,
+            OpenResourceEvent::class,
             [$this->getResourceFromNode($resourceNode)]
         );
 
@@ -81,7 +81,9 @@ class ResourceLifecycleManager
 
     public function edit(ResourceNode $resourceNode)
     {
-        /** @var OpenResourceEvent $event */
+        // fixme : wrong event
+
+        /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             static::eventName('edit', $resourceNode),
             CopyResourceEvent::class,
@@ -170,7 +172,7 @@ class ResourceLifecycleManager
      */
     private static function eventName($prefix, ResourceNode $resourceNode)
     {
-        return 'resource.'.$prefix.'.'.$resourceNode->getResourceType()->getName();
+        return 'resource.'.'.'.$resourceNode->getResourceType()->getName().$prefix;
     }
 
     /**

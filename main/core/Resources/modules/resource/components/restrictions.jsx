@@ -6,6 +6,7 @@ import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action'
 import {ASYNC_BUTTON} from '#/main/app/buttons'
 import {Password} from '#/main/core/layout/form/components/field/password'
+import {ContentHelp} from '#/main/app/content/components/help'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 const Restriction = props =>
@@ -57,7 +58,7 @@ const DeletedRestriction = props =>
     help="Vous ne pouvez plus accéder au contenu des ressources supprimées."
   >
     <Button
-      className="btn btn-default"
+      className="btn"
       type={ASYNC_BUTTON}
       icon="fa fa-fw fa-recycle"
       label={trans('restore', {}, 'actions')}
@@ -74,7 +75,7 @@ const PublishedRestriction = props =>
     help="Veuillez patienter en attendant que l'un des gestionnaires publie la ressource."
   >
     <Button
-      className="btn btn-default"
+      className="btn"
       type={ASYNC_BUTTON}
       icon="fa fa-fw fa-eye"
       label={trans('publish', {}, 'actions')}
@@ -146,6 +147,19 @@ const ResourceRestrictions = props =>
       <LocationRestriction
         validated={false}
       />
+
+      <Button
+        className="btn btn-block btn-emphasis"
+        type={ASYNC_BUTTON}
+        icon="fa fa-fw fa-sign-in-alt"
+        label={trans('Accéder à la ressource', {}, 'actions')}
+        request={{
+
+        }}
+        primary={true}
+      />
+
+      <ContentHelp help="En tant que gestionnaire vous pouvez toujours accéder à la ressource, même si les conditions d'accès ne sont pas satisfaites." />
     </EmptyPlaceholder>
 
     {/*<h4 className="h3">Conditions à remplir</h4>*/}

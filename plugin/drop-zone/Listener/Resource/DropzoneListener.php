@@ -104,55 +104,7 @@ class DropzoneListener
     }
 
     /**
-     * @DI\Observe("create_form_claroline_dropzone")
-     *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreationForm(CreateFormResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new ResourceNameType(true), new Dropzone());
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'claroline_dropzone',
-            ]
-        );
-        $event->setResponseContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("create_claroline_dropzone")
-     *
-     * @param CreateResourceEvent $event
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new ResourceNameType(true), new Dropzone());
-        $form->handleRequest($this->request);
-
-        if ($form->isValid()) {
-            $published = $form->get('published')->getData();
-            $event->setPublished($published);
-            $dropzone = $form->getData();
-            $event->setResources([$dropzone]);
-            $event->stopPropagation();
-        } else {
-            $content = $this->templating->render(
-                'ClarolineCoreBundle:resource:create_form.html.twig',
-                [
-                    'form' => $form->createView(),
-                    'resourceType' => 'claroline_dropzone',
-                ]
-            );
-            $event->setErrorFormContent($content);
-            $event->stopPropagation();
-        }
-    }
-
-    /**
-     * @DI\Observe("load_claroline_dropzone")
+     * @DI\Observe("resource.claroline_dropzone.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -161,7 +113,7 @@ class DropzoneListener
         /** @var Dropzone $dropzone */
         $dropzone = $event->getResource();
 
-        $event->setAdditionalData(
+        $event->setData(
             $this->getDropzoneData($dropzone)
         );
         $event->stopPropagation();
@@ -218,6 +170,7 @@ class DropzoneListener
         $event->stopPropagation();
     }
 
+    // todo : move me elsewhere (in a manager for ex)
     private function getDropzoneData(Dropzone $dropzone)
     {
         $user = $this->tokenStorage->getToken()->getUser();

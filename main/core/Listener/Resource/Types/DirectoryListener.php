@@ -156,13 +156,13 @@ class DirectoryListener
     /**
      * Loads a directory.
      *
-     * @DI\Observe("load_directory")
+     * @DI\Observe("resource.directory.load")
      *
      * @param LoadResourceEvent $event
      */
     public function onLoad(LoadResourceEvent $event)
     {
-        $event->setAdditionalData([
+        $event->setData([
             'directory' => $this->serializer->serialize($event->getResource()),
         ]);
 

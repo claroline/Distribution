@@ -88,7 +88,6 @@ class ResourceController
         $this->tokenStorage = $tokenStorage;
         $this->security = $security;
         $this->serializer = $serializer;
-        $this->manager = $manager;
         $this->actionManager = $actionManager;
         $this->restrictionsManager = $restrictionsManager;
         $this->lifecycleManager = $lifecycleManager;
@@ -107,7 +106,21 @@ class ResourceController
      */
     public function getAction(ResourceNode $resourceNode)
     {
-        return $this->sendResource($resourceNode);
+        // gets the current user roles to check access restrictions
+        $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
+
+        $accessErrors = $this->restrictionsManager->check($resourceNode, $userRoles);
+        if (empty($accessErrors) || $this->restrictionsManager->canBypass($resourceNode)) {
+            $loaded = $this->manager->load($resourceNode);
+
+            return new JsonResponse(
+                array_merge([
+                    'accessErrors' => $accessErrors,
+                ], $loaded)
+            );
+        }
+
+        return new JsonResponse($accessErrors, 403);
     }
 
     /**
@@ -173,11 +186,7 @@ class ResourceController
     {
         $this->restrictionsManager->unlock($resourceNode, json_decode($request->getContent(), true));
 
-        // try to directly give access to the unlocked resource
-        // even if the resource is still locked by some other restrictions
-        // we don't want to throw an access denied, has the current action has been
-        // executed with success
-        return $this->sendResource($resourceNode, 200);
+        return new JsonResponse(null, 204);
     }
 
     /**
@@ -192,34 +201,5 @@ class ResourceController
         if (!$this->actionManager->hasPermission($action, $collection)) {
             throw new ResourceAccessException($collection->getErrorsForDisplay(), $collection->getResources());
         }
-    }
-
-    /**
-     * Send the resource details or access errors to the client.
-     *
-     * @param ResourceNode $resourceNode - the resource node to return
-     * @param int          $failedStatus - the HTTP status code to use if restrictions are not met
-     *
-     * @return JsonResponse - either contains the resource details
-     */
-    private function sendResource(ResourceNode $resourceNode, int $failedStatus = 403)
-    {
-        // gets the current user roles to check access restrictions
-        $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
-
-        $accessErrors = $this->restrictionsManager->check($resourceNode, $userRoles);
-        if (empty($accessErrors) || $this->restrictionsManager->canBypass($resourceNode)) {
-            $event = $this->lifecycleManager->load($resourceNode);
-
-            return new JsonResponse(
-                array_merge([
-                    'accessErrors' => $accessErrors,
-                    'resourceNode' => $this->serializer->serialize($resourceNode),
-                    'evaluation' => null, // todo flag evaluated resource types and auto load Evaluation if any
-                ], $event->getAdditionalData())
-            );
-        }
-
-        return new JsonResponse($accessErrors, $failedStatus);
     }
 }

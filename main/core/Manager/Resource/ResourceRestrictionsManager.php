@@ -148,7 +148,7 @@ class ResourceRestrictionsManager
 
     /**
      * Checks if a resource is unlocked.
-     * (aka it has no access code, or user has already submitted it)
+     * (aka it has no access code, or user has already submitted it).
      *
      * @param ResourceNode $node
      *

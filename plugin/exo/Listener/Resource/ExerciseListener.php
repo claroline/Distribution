@@ -117,69 +117,9 @@ class ExerciseListener
     }
 
     /**
-     * Displays a form to create an Exercise resource.
-     *
-     * @DI\Observe("create_form_ujm_exercise")
-     *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        /** @var FormInterface $form */
-        $form = $this->formFactory->create(new ExerciseType());
-
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig', [
-                'resourceType' => 'ujm_exercise',
-                'form' => $form->createView(),
-            ]
-        );
-
-        $event->setResponseContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
-     * Creates a new Exercise resource.
-     *
-     * @DI\Observe("create_ujm_exercise")
-     *
-     * @param CreateResourceEvent $event
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        /** @var FormInterface $form */
-        $form = $this->formFactory->create(new ExerciseType());
-        $request = $this->request->getMasterRequest();
-
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $exercise = $form->getData();
-            $published = (bool) $form->get('published')->getData();
-            $exercise->setPublishedOnce($published);
-            $event->setPublished($published);
-
-            $this->om->persist($exercise);
-
-            $event->setResources([$exercise]);
-        } else {
-            $content = $this->templating->render(
-                'ClarolineCoreBundle:resource:create_form.html.twig', [
-                    'resourceType' => 'ujm_exercise',
-                    'form' => $form->createView(),
-                ]
-            );
-
-            $event->setErrorFormContent($content);
-        }
-
-        $event->stopPropagation();
-    }
-
-    /**
      * Loads the Exercise resource.
      *
-     * @DI\Observe("load_ujm_exercise")
+     * @DI\Observe("resource.ujm_exercise.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -191,7 +131,7 @@ class ExerciseListener
 
         $canEdit = $this->authorization->isGranted('EDIT', new ResourceCollection([$exercise->getResourceNode()]));
 
-        $event->setAdditionalData([
+        $event->setData([
             'quiz' => $this->exerciseManager->serialize(
                 $exercise,
                 $canEdit ? [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_METRICS] : [Transfer::INCLUDE_METRICS]

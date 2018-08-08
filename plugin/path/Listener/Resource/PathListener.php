@@ -6,18 +6,11 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
-use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Claroline\CoreBundle\Form\ResourceNameType;
-use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\ScormBundle\Event\ExportScormResourceEvent;
 use Innova\PathBundle\Entity\InheritedResource;
 use Innova\PathBundle\Entity\Path\Path;
 use Innova\PathBundle\Entity\SecondaryResource;
@@ -25,7 +18,6 @@ use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Manager\UserProgressionManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -66,7 +58,7 @@ class PathListener
     /**
      * Loads the Path resource.
      *
-     * @DI\Observe("load_innova_path")
+     * @DI\Observe("resource.innova_path.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -75,7 +67,7 @@ class PathListener
         /** @var Path $path */
         $path = $event->getResource();
 
-        $event->setAdditionalData([
+        $event->setData([
             'path' => $this->serializer->serialize($path),
             'evaluation' => $this->userProgressionManager->getUpdatedResourceUserEvaluation($path)
         ]);
@@ -107,65 +99,6 @@ class PathListener
     }
 
     /**
-     * Fired when the form to create a new ResourceNode is displayed.
-     *
-     * @DI\Observe("create_form_innova_path")
-     *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        /** @var FormInterface $form */
-        $form = $this->container->get('form.factory')->create(new ResourceNameType(true), new Path());
-
-        $content = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig', [
-                'form' => $form->createView(),
-                'resourceType' => 'innova_path',
-            ]
-        );
-
-        $event->setResponseContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
-     * Fired when a new ResourceNode of type Path is opened.
-     *
-     * @DI\Observe("create_innova_path")
-     *
-     * @param CreateResourceEvent $event
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        /** @var FormInterface $form */
-        $form = $this->container->get('form.factory')->create(new ResourceNameType(true), new Path());
-
-        // Try to process the form data
-        $form->handleRequest($this->container->get('request_stack')->getMasterRequest());
-        if ($form->isValid()) {
-            $event->setPublished(
-                $form->get('published')->getData()
-            );
-
-            $event->setResources(
-                [$form->getData()]
-            );
-        } else {
-            $content = $this->container->get('templating')->render(
-                'ClarolineCoreBundle:resource:create_form.html.twig', [
-                    'form' => $form->createView(),
-                    'resourceType' => 'innova_path',
-                ]
-            );
-
-            $event->setErrorFormContent($content);
-        }
-
-        $event->stopPropagation();
-    }
-
-    /**
      * Fired when a ResourceNode of type Path is deleted.
      *
      * @DI\Observe("delete_innova_path")
@@ -192,7 +125,9 @@ class PathListener
         $this->om->startFlushSuite();
 
         $parent = $event->getParent();
-        $pathToCopy = $this->getPathFromEvent($event->getResource());
+
+        /** @var Path $pathToCopy */
+        $pathToCopy = $event->getResource();
         $pathNodes = [];
         $nodesCopy = [];
 
@@ -231,123 +166,6 @@ class PathListener
         $event->setCopy($path);
 
         $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("export_scorm_innova_path")
-     *
-     * @param \Claroline\ScormBundle\Event\ExportScormResourceEvent $event
-     */
-    public function onExportScorm(ExportScormResourceEvent $event)
-    {
-        /** @var Path $path */
-        $path = $event->getResource();
-
-        // Add embed resources
-        // Decode the path structure to grab embed resources ans generate resource URL
-        // We export them before rendering the template to have the correct structure in twig/angular
-        $structure = json_decode($path->getStructure());
-
-        if (!empty($structure->description)) {
-            $parsed = $this->container->get('claroline.scorm.rich_text_exporter')->parse($structure->description);
-            $structure->description = $parsed['text'];
-
-            foreach ($parsed['resources'] as $resource) {
-                $event->addEmbedResource($resource);
-            }
-        }
-
-        if (!empty($structure->steps)) {
-            foreach ($structure->steps as $step) {
-                $this->exportStepResources($event, $step);
-            }
-        }
-
-        $template = $this->container->get('templating')->render(
-            'InnovaPathBundle:Scorm:export.html.twig', [
-                '_resource' => $path,
-                'structure' => json_encode($structure),
-            ]
-        );
-
-        // Set export template
-        $event->setTemplate($template);
-
-        // Set translations
-        $event->addTranslationDomain('path');
-
-        // Add template required files
-        $webpack = $this->container->get('claroline.extension.webpack');
-        $event->addAsset('tinymce.jquery.min.js', 'bundles/stfalcontinymce/vendor/tinymce/tinymce.jquery.min.js');
-        $event->addAsset('jquery.tinymce.min.js', 'bundles/stfalcontinymce/vendor/tinymce/jquery.tinymce.min.js');
-        $event->addAsset('claroline-distribution-plugin-path-player.js', $webpack->hotAsset('dist/claroline-distribution-plugin-path-player.js', true));
-        $event->addAsset('claroline-home.js', 'bundles/clarolinecore/js/home/home.js');
-        $event->addAsset('claroline-common.js', 'bundles/clarolinecore/js/common.js');
-        $event->addAsset('claroline-tinymce.js', $webpack->hotAsset('dist/claroline-distribution-main-core-tinymce.js', true));
-
-        $event->addAsset('wizards.js', 'vendor/innovapath/wizards.js');
-        $event->addAsset('wizards.css', 'vendor/innovapath/wizards.css');
-
-        $event->stopPropagation();
-    }
-
-    private function exportStepResources(ExportScormResourceEvent $event, \stdClass $step)
-    {
-        if (!empty($step->description)) {
-            $parsed = $this->container->get('claroline.scorm.rich_text_exporter')->parse($step->description);
-            $step->description = $parsed['text'];
-            foreach ($parsed['resources'] as $resource) {
-                $event->addEmbedResource($resource);
-            }
-        }
-
-        if (!empty($step->primaryResource)) {
-            foreach ($step->primaryResource as $primary) {
-                $resource = $this->getResource($primary->resourceId);
-                $event->addEmbedResource($resource);
-                // Generate resource URL
-                $primary->url = '../scos/resource_'.$primary->resourceId.'.html';
-            }
-        }
-
-        if (!empty($step->resources)) {
-            foreach ($step->resources as $secondary) {
-                $resource = $this->getResource($secondary->resourceId);
-                $event->addEmbedResource($resource);
-                // Generate resource URL
-                $secondary->url = '../scos/resource_'.$secondary->resourceId.'.html';
-            }
-        }
-
-        if (!empty($step->children)) {
-            foreach ($step->children as $child) {
-                $this->exportStepResources($event, $child);
-            }
-        }
-    }
-
-    private function getResource($nodeId)
-    {
-        $node = $this->container->get('claroline.manager.resource_manager')->getById($nodeId);
-        $resource = $this->container->get('claroline.manager.resource_manager')->getResourceFromNode($node);
-
-        return $resource;
-    }
-
-    /**
-     * @param AbstractResource $convoyedResource
-     *
-     * @return Path
-     */
-    private function getPathFromEvent(AbstractResource $convoyedResource)
-    {
-        if ($convoyedResource instanceof ResourceShortcut) {
-            return $this->container->get('resource_manager')->getResourceFromShortcut($convoyedResource->getResourceNode());
-        } elseif ($convoyedResource instanceof Path) {
-            return $convoyedResource;
-        }
-
-        return null;
     }
 
     /**

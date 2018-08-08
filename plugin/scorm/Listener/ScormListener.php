@@ -131,7 +131,7 @@ class ScormListener
     }
 
     /**
-     * @DI\Observe("load_claroline_scorm")
+     * @DI\Observe("resource.claroline_scorm.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -143,7 +143,7 @@ class ScormListener
         if ('anon.' === $user) {
             $user = null;
         }
-        $event->setAdditionalData([
+        $event->setData([
             'scorm' => $this->serializer->serialize($scorm),
             'evaluation' => is_null($user) ?
                 null :

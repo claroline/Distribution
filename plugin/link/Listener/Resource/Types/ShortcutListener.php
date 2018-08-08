@@ -49,7 +49,7 @@ class ShortcutListener
      * Loads a shortcut.
      * It forwards the event to the target of the shortcut.
      *
-     * @DI\Observe("load_resource_shortcut")
+     * @DI\Observe("resource.shortcut.load")
      *
      * @param LoadResourceEvent $event
      */

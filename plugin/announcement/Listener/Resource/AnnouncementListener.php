@@ -15,10 +15,13 @@ use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
@@ -36,8 +39,8 @@ class AnnouncementListener
     private $templating;
     /** @var AnnouncementManager */
     private $manager;
-    /** @var RoleSerializer */
-    private $roleSerializer;
+    /** @var SerializerProvider */
+    private $serializer;
     /** @var Crud */
     private $crud;
 
@@ -45,40 +48,52 @@ class AnnouncementListener
      * AnnouncementListener constructor.
      *
      * @DI\InjectParams({
-     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *     "templating"     = @DI\Inject("templating"),
-     *     "manager"        = @DI\Inject("claroline.manager.announcement_manager"),
-     *     "roleSerializer" = @DI\Inject("claroline.serializer.role"),
-     *     "crud"           = @DI\Inject("claroline.api.crud")
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "templating" = @DI\Inject("templating"),
+     *     "manager"    = @DI\Inject("claroline.manager.announcement_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "crud"       = @DI\Inject("claroline.api.crud")
      * })
      *
      * @param ObjectManager       $om
      * @param TwigEngine          $templating
      * @param AnnouncementManager $manager
-     * @param RoleSerializer      $roleSerializer,
+     * @param SerializerProvider  $serializer
      * @param Crud                $crud
      */
     public function __construct(
         ObjectManager $om,
         TwigEngine $templating,
         AnnouncementManager $manager,
-        RoleSerializer $roleSerializer,
+        SerializerProvider $serializer,
         Crud $crud
     ) {
         $this->om = $om;
         $this->templating = $templating;
         $this->manager = $manager;
-        $this->roleSerializer = $roleSerializer;
+        $this->serializer = $serializer;
         $this->crud = $crud;
     }
 
     /**
-     * @DI\Observe("delete_claroline_announcement_aggregate")
+     * Loads an Announcement resource.
      *
-     * @param DeleteResourceEvent $event
+     * @DI\Observe("resource.claroline_announcement_aggregate.load")
+     *
+     * @param LoadResourceEvent $event
      */
-    public function onDelete(DeleteResourceEvent $event)
+    public function load(LoadResourceEvent $event)
     {
+        $resource = $event->getResource();
+        $workspace = $resource->getResourceNode()->getWorkspace();
+
+        $event->setData([
+            'announcement' => $this->serializer->serialize($resource),
+            'roles' => array_map(function (Role $role) {
+                return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
+            }, $workspace->getRoles()->toArray()),
+        ]);
+
         $event->stopPropagation();
     }
 
@@ -87,20 +102,18 @@ class AnnouncementListener
      *
      * @param OpenResourceEvent $event
      */
-    public function onOpen(OpenResourceEvent $event)
+    public function open(OpenResourceEvent $event)
     {
         $resource = $event->getResource();
-        $serializedRoles = [];
-        $roles = $resource->getResourceNode()->getWorkspace()->getRoles()->toArray();
-
-        foreach ($roles as $role) {
-            $serializedRoles[] = $this->roleSerializer->serialize($role);
-        }
+        $workspace = $resource->getResourceNode()->getWorkspace();
 
         $content = $this->templating->render(
             'ClarolineAnnouncementBundle:announcement:open.html.twig', [
                 '_resource' => $resource,
-                'roles' => $serializedRoles,
+                'announcement' => $this->serializer->serialize($resource),
+                'roles' => array_map(function (Role $role) {
+                    return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
+                }, $workspace->getRoles()->toArray()),
             ]
         );
 
@@ -113,7 +126,7 @@ class AnnouncementListener
      *
      * @param CopyResourceEvent $event
      */
-    public function onCopy(CopyResourceEvent $event)
+    public function copy(CopyResourceEvent $event)
     {
         /** @var AnnouncementAggregate $aggregate */
         $aggregate = $event->getResource();
@@ -136,6 +149,16 @@ class AnnouncementListener
         $this->om->endFlushSuite();
 
         $event->setCopy($copy);
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("delete_claroline_announcement_aggregate")
+     *
+     * @param DeleteResourceEvent $event
+     */
+    public function delete(DeleteResourceEvent $event)
+    {
         $event->stopPropagation();
     }
 }
