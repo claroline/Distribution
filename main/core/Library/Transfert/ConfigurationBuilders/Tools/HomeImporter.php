@@ -16,8 +16,8 @@ use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 //TODO FIXME ! NOT GONNA WORK ANYMORE
 use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Transfert\Importer;
 use Claroline\CoreBundle\Library\Transfert\RichTextInterface;

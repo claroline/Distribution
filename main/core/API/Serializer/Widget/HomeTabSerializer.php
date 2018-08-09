@@ -74,8 +74,6 @@ class HomeTabSerializer
 
         $containers = array_values($containers);
 
-        //throw new \Exception(count($savedContainers));
-
         $poster = null;
 
         if ($homeTab->getPoster()) {
@@ -167,10 +165,7 @@ class HomeTabSerializer
 
         foreach ($data['widgets'] as $position => $widgetContainer) {
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
-            //?
             $widgetContainer->setHomeTab($homeTab);
-
-            //temporary
             $widgetContainerConfig = $widgetContainer->getWidgetContainerConfigs()[0];
             $widgetContainerConfig->setPosition($position);
             $this->om->persist($widgetContainerConfig);
