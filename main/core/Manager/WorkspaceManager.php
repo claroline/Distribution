@@ -375,16 +375,6 @@ class WorkspaceManager
         ];
     }
 
-    /**
-     * @param int $orderedToolType
-     *
-     * @return Workspace[]
-     */
-    public function getWorkspacesByAnonymous($orderedToolType = 0)
-    {
-        return $this->workspaceRepo->findByAnonymous($orderedToolType);
-    }
-
     public function getWorkspacesByManager(User $user)
     {
         return $this->workspaceRepo->findWorkspacesByManager($user);
@@ -422,17 +412,6 @@ class WorkspaceManager
     public function getOpenableWorkspacesByRoles(array $roles)
     {
         return $this->workspaceRepo->findByRoles($roles);
-    }
-
-    /**
-     * @param string   $search
-     * @param string[] $roles
-     *
-     * @return Workspace[]
-     */
-    public function getOpenableWorkspacesByRolesAndSearch($search, array $roles)
-    {
-        return $this->workspaceRepo->findBySearchAndRoles($search, $roles);
     }
 
     /**
@@ -544,32 +523,6 @@ class WorkspaceManager
     }
 
     /**
-     * @param string   $search
-     * @param string[] $roles
-     * @param int      $page
-     * @param int      $max
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getOpenableWorkspacesBySearchAndRolesPager($search, array $roles, $page, $max)
-    {
-        $workspaces = $this->getOpenableWorkspacesByRolesAndSearch($search, $roles);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    /**
-     * @param User     $user
-     * @param string[] $roleNames
-     *
-     * @return int[]
-     */
-    public function getWorkspaceIdsByUserAndRoleNames(User $user, array $roleNames)
-    {
-        return $this->workspaceRepo->findIdsByUserAndRoleNames($user, $roleNames);
-    }
-
-    /**
      * @param User     $user
      * @param string[] $roleNames
      *
@@ -654,14 +607,6 @@ class WorkspaceManager
     }
 
     /**
-     * @return Workspace[]
-     */
-    public function getDisplayableWorkspaces()
-    {
-        return $this->workspaceRepo->findDisplayableWorkspaces();
-    }
-
-    /**
      * @param int $page
      * @param int $max
      *
@@ -676,16 +621,6 @@ class WorkspaceManager
 
     /**
      * @param string $search
-     *
-     * @return Workspace[]
-     */
-    public function getDisplayableWorkspacesBySearch($search)
-    {
-        return $this->workspaceRepo->findDisplayableWorkspacesBySearch($search);
-    }
-
-    /**
-     * @param string $search
      * @param int    $page
      * @param int    $max
      *
@@ -696,20 +631,6 @@ class WorkspaceManager
         $workspaces = $this->workspaceRepo->findDisplayableWorkspacesBySearch($search);
 
         return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    /**
-     * @param Role[] $roles
-     * @param int    $page
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getWorkspacesWithSelfUnregistrationByRoles($roles, $page)
-    {
-        $workspaces = $this->workspaceRepo
-            ->findWorkspacesWithSelfUnregistrationByRoles($roles);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page);
     }
 
     /**
@@ -965,30 +886,6 @@ class WorkspaceManager
             $logger(count($updated).' workspace updated ('.implode(',', $updated).')');
             $logger(count($created).' workspace created ('.implode(',', $created).')');
         }
-    }
-
-    public function getDisplayableNonPersonalWorkspaces(
-        $page = 1,
-        $max = 50,
-        $search = ''
-    ) {
-        $workspaces = '' === $search ?
-            $this->workspaceRepo->findDisplayableNonPersonalWorkspaces() :
-            $this->workspaceRepo->findDisplayableNonPersonalWorkspacesBySearch($search);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    public function getDisplayablePersonalWorkspaces(
-        $page = 1,
-        $max = 50,
-        $search = ''
-    ) {
-        $workspaces = '' === $search ?
-            $this->workspaceRepo->findDisplayablePersonalWorkspaces() :
-            $this->workspaceRepo->findDisplayablePersonalWorkspacesBySearch($search);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
     }
 
     public function getAllNonPersonalWorkspaces(

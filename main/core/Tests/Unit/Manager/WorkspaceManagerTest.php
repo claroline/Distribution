@@ -322,19 +322,6 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->assertEquals($workspaces, $this->getManager()->getWorkspacesByUser($user));
     }
 
-    public function testGetWorkspacesByAnonymous()
-    {
-        $workspaces = ['workspaceA', 'workspaceB'];
-
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findByAnonymous')
-            ->once()
-            ->andReturn($workspaces);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals($workspaces, $this->getManager()->getWorkspacesByAnonymous());
-    }
-
     public function testGetNbWorkspaces()
     {
         m::getConfiguration()->allowMockingNonExistentMethods(true);
@@ -361,25 +348,6 @@ class WorkspaceManagerTest extends MockeryTestCase
         m::getConfiguration()->allowMockingNonExistentMethods(false);
 
         $this->assertEquals($workspaces, $this->getManager()->getOpenableWorkspacesByRoles($roles));
-    }
-
-    public function testGetWorkspaceIdsByUserAndRoleNames()
-    {
-        $roleNames = ['ROLE_A', 'ROLE_B'];
-        $user = new User();
-        $workspaceIds = [1, 2, 3];
-
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findIdsByUserAndRoleNames')
-            ->with($user, $roleNames)
-            ->once()
-            ->andReturn($workspaceIds);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals(
-            $workspaceIds,
-            $this->getManager()->getWorkspaceIdsByUserAndRoleNames($user, $roleNames)
-        );
     }
 
     public function testGetWorkspacesByUserAndRoleNames()
@@ -485,39 +453,6 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->assertEquals(
             'workspace',
             $this->getManager()->getOneByGuid(1)
-        );
-    }
-
-    public function testGetDisplayableWorkspaces()
-    {
-        $workspaces = ['workspaceA', 'workspaceB'];
-
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findDisplayableWorkspaces')
-            ->once()
-            ->andReturn($workspaces);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals(
-            $workspaces,
-            $this->getManager()->getDisplayableWorkspaces()
-        );
-    }
-
-    public function testGetDisplayableWorkspacesBySearch()
-    {
-        $workspaces = ['workspaceA', 'workspaceB'];
-
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findDisplayableWorkspacesBySearch')
-            ->with('search')
-            ->once()
-            ->andReturn($workspaces);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals(
-            $workspaces,
-            $this->getManager()->getDisplayableWorkspacesBySearch('search')
         );
     }
 

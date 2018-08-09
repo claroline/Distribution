@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/app/router'
 import {
@@ -39,7 +40,8 @@ class WorkspaceComponent extends Component
           props.loadLog(props.workspace.code)
         }, 1500)
       } else {
-        props.history.push('/workspaces')
+        //code also is an identifier
+        props.history.push(url('claro_workspace_open', {workspaceId: props.workspace.code}))
       }
 
     }

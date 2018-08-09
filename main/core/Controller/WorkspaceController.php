@@ -375,7 +375,6 @@ class WorkspaceController extends Controller
      *     name="claro_workspace_open",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("workspace",  options={"mapping": {"workspaceId": "id"}})
      *
      * @param Workspace $workspace
      *
@@ -383,8 +382,9 @@ class WorkspaceController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function openAction(Workspace $workspace, Request $request)
+    public function openAction($workspaceId, Request $request)
     {
+        $workspace = $this->om->getRepository()
         $this->assertIsGranted('OPEN', $workspace);
         $this->forceWorkspaceLang($workspace, $request);
         $options = $workspace->getOptions();
@@ -453,34 +453,6 @@ class WorkspaceController extends Controller
         }
 
         return new JsonResponse($arWorkspace);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/list/non/personal/workspaces/page/{page}/max/{max}/search/{search}",
-     *     name="claro_all_non_personal_workspaces_list_pager",
-     *     defaults={"page"=1,"max"=20,"seach"=""},
-     *     options={"expose"=true}
-     * )
-     * @EXT\Template()
-     *
-     * @param int $page
-     *
-     * @return array
-     */
-    public function nonPersonalWorkspacesListPagerAction(
-        $page = 1,
-        $max = 20,
-        $search = ''
-    ) {
-        $nonPersonalWs = $this->workspaceManager
-            ->getDisplayableNonPersonalWorkspaces($page, $max, $search);
-
-        return [
-            'nonPersonalWs' => $nonPersonalWs,
-            'max' => $max,
-            'search' => $search,
-        ];
     }
 
     /**
