@@ -89,12 +89,11 @@ class Updater120000 extends Updater
 
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
-        //$this->updateTabsStructure();
-        //$this->updateWidgetsStructure();
-        //$this->linkWidgetsInstanceToContainers();
+        $this->updateTabsStructure();
+        $this->updateWidgetsStructure();
+        $this->linkWidgetsInstanceToContainers();
         $this->restoreWidgetInstancesConfigs();
         $this->checkDesktopTabs();
-        //Tricky because some of it was done before and no version bump...
     }
 
     private function updatePlatformParameters()

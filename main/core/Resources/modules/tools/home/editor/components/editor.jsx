@@ -85,6 +85,7 @@ const EditorComponent = props =>
           target: '/',
           exact: true
         }}
+        disabled={props.currentTab.locked && props.context.type !== 'administration'}
         sections={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -183,11 +184,13 @@ const EditorComponent = props =>
           }
         ]}
       >
-        <WidgetGridEditor
-          context={props.context}
-          widgets={props.widgets}
-          update={(widgets) => props.updateWidgets(props.currentTabIndex, widgets)}
-        />
+        {!(props.currentTab.locked && props.context.type !== 'administration') &&
+          <WidgetGridEditor
+            context={props.context}
+            widgets={props.widgets}
+            update={(widgets) => props.updateWidgets(props.currentTabIndex, widgets)}
+          />
+        }
       </FormData>
     </PageContent>
   </PageContainer>

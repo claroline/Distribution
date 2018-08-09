@@ -97,6 +97,7 @@ class HomeTabSerializer
             'icon' => $homeTabConfig->getIcon(),
             'type' => $homeTab->getType(),
             'position' => $homeTabConfig->getTabOrder(),
+            'locked' => $homeTabConfig->isLocked(),
             'roles' => array_map(function ($role) {
                 return $role->getUuid();
             }, $homeTabConfig->getRoles()),
@@ -129,6 +130,7 @@ class HomeTabSerializer
         $this->sipe('poster.url', 'setPoster', $data, $homeTabConfig);
         $this->sipe('icon', 'setIcon', $data, $homeTabConfig);
         $this->sipe('type', 'setType', $data, $homeTab);
+        $this->sipe('locked', 'setLocked', $data, $homeTabConfig);
 
         if (isset($data['roles'])) {
             foreach ($data['roles'] as $roleUuid) {

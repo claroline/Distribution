@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Tab;
 
+use Claroline\CoreBundle\Entity\Role;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
