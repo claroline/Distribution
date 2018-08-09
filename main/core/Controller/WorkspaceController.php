@@ -384,7 +384,6 @@ class WorkspaceController extends Controller
      */
     public function openAction($workspaceId, Request $request)
     {
-        $workspace = $this->om->getRepository()
         $this->assertIsGranted('OPEN', $workspace);
         $this->forceWorkspaceLang($workspace, $request);
         $options = $workspace->getOptions();
