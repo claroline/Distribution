@@ -14,8 +14,8 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Mockery as m;
 
