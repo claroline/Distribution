@@ -214,42 +214,10 @@ class HomeImporter extends Importer implements ConfigurationInterface, RichTextI
 
         foreach ($homeTabs as $homeTab) {
             $widgets = [];
-            $widgetConfigs = $this->container->get('claroline.manager.home_tab_manager')
-                ->getWidgetConfigsByWorkspace($homeTab->getHomeTab(), $workspace);
-
-            foreach ($widgetConfigs as $widgetConfig) {
-                $data = [];
-                $importer = $this->getImporterByName($widgetConfig->getWidgetInstance()->getWidget()->getName());
-
-                if ($importer) {
-                    $data = $importer->export($workspace, $files, $widgetConfig->getWidgetInstance());
-                }
-
-                $widgetDisplayConfigs = $this->container->get('claroline.manager.widget_manager')->getWidgetDisplayConfigsByWorkspaceAndWidgets(
-                    $workspace,
-                    [$widgetConfig->getWidgetInstance()]
-                );
-
-                $widgetDisplayConfig = isset($widgetDisplayConfigs[0]) ? $widgetDisplayConfigs[0] : null;
-
-                //export the widget content here
-                $widgetData = ['widget' => [
-                    'name' => $widgetConfig->getWidgetInstance()->getName(),
-                    'type' => $widgetConfig->getWidgetInstance()->getWidget()->getName(),
-                    'data' => $data,
-                    'row' => $widgetDisplayConfig ? $widgetDisplayConfig->getRow() : null,
-                    'column' => $widgetDisplayConfig ? $widgetDisplayConfig->getColumn() : null,
-                    'width' => $widgetDisplayConfig ? $widgetDisplayConfig->getWidth() : null,
-                    'height' => $widgetDisplayConfig ? $widgetDisplayConfig->getHeight() : null,
-                    'color' => $widgetDisplayConfig ? $widgetDisplayConfig->getColor() : null,
-                ]];
-
-                $widgets[] = $widgetData;
-            }
 
             $tabs[] = ['tab' => [
                 'name' => $homeTab->getHomeTab()->getName(),
-                'widgets' => $widgets,
+                'widgets' => [],
             ]];
         }
 

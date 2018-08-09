@@ -774,51 +774,6 @@ class HomeTabManager
         return $this->widgetHomeTabConfigRepo->findAdminWidgetConfigs($homeTab);
     }
 
-    public function getVisibleAdminWidgetConfigs(HomeTab $homeTab)
-    {
-        return $this->widgetHomeTabConfigRepo->findVisibleAdminWidgetConfigs($homeTab);
-    }
-
-    public function getWidgetConfigsByUser(HomeTab $homeTab, User $user)
-    {
-        return $this->widgetHomeTabConfigRepo->findWidgetConfigsByUser($homeTab, $user);
-    }
-
-    public function getVisibleWidgetConfigsByUser(HomeTab $homeTab, User $user)
-    {
-        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigsByUser($homeTab, $user);
-    }
-
-    public function getWidgetConfigsByWorkspace(HomeTab $homeTab, Workspace $workspace)
-    {
-        return $this->widgetHomeTabConfigRepo->findWidgetConfigsByWorkspace($homeTab, $workspace);
-    }
-
-    public function getVisibleWidgetConfigsByWorkspace(HomeTab $homeTab, Workspace $workspace)
-    {
-        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigsByWorkspace($homeTab, $workspace);
-    }
-
-    public function getVisibleWidgetConfigsByTabIdAndWorkspace($homeTabId, Workspace $workspace)
-    {
-        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigsByTabIdAndWorkspace($homeTabId, $workspace);
-    }
-
-    public function getVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace($widgetId, $homeTabId, Workspace $workspace)
-    {
-        return $this->widgetHomeTabConfigRepo->findVisibleWidgetConfigByWidgetIdAndTabIdAndWorkspace($widgetId, $homeTabId, $workspace);
-    }
-
-    public function getUserAdminWidgetInstanceConfig(HomeTab $homeTab, WidgetInstance $widgetInstance, User $user)
-    {
-        return $this->widgetHomeTabConfigRepo->findUserAdminWidgetInstanceConfig($homeTab, $widgetInstance, $user);
-    }
-
-    public function getWidgetInstanceConfigsByHomeTabAndType(HomeTab $homeTab, $type)
-    {
-        return $this->widgetHomeTabConfigRepo->findWidgetInstanceConfigsByHomeTabAndType($homeTab, $type);
-    }
-
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

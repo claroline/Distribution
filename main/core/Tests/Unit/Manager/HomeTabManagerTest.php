@@ -14,7 +14,6 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Mockery as m;
@@ -927,98 +926,6 @@ class HomeTabManagerTest extends MockeryTestCase
         );
     }
 
-    public function testGetVisibleAdminWidgetConfigs()
-    {
-        $homeTab = new HomeTab();
-        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
-
-        $this->widgetHomeTabConfigRepo
-            ->shouldReceive('findVisibleAdminWidgetConfigs')
-            ->with($homeTab)
-            ->once()
-            ->andReturn($adminWidgetConfigs);
-
-        $this->assertEquals(
-            $adminWidgetConfigs,
-            $this->getManager()->getVisibleAdminWidgetConfigs($homeTab)
-        );
-    }
-
-    public function testGetWidgetConfigsByUser()
-    {
-        $homeTab = new HomeTab();
-        $user = new User();
-        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
-
-        $this->widgetHomeTabConfigRepo
-            ->shouldReceive('findWidgetConfigsByUser')
-            ->with($homeTab, $user)
-            ->once()
-            ->andReturn($adminWidgetConfigs);
-
-        $this->assertEquals(
-            $adminWidgetConfigs,
-            $this->getManager()->getWidgetConfigsByUser($homeTab, $user)
-        );
-    }
-
-    public function testGetVisibleWidgetConfigsByUser()
-    {
-        $homeTab = new HomeTab();
-        $user = new User();
-        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
-
-        $this->widgetHomeTabConfigRepo
-            ->shouldReceive('findVisibleWidgetConfigsByUser')
-            ->with($homeTab, $user)
-            ->once()
-            ->andReturn($adminWidgetConfigs);
-
-        $this->assertEquals(
-            $adminWidgetConfigs,
-            $this->getManager()->getVisibleWidgetConfigsByUser($homeTab, $user)
-        );
-    }
-
-    public function testGetWidgetConfigsByWorkspace()
-    {
-        $homeTab = new HomeTab();
-        $workspace =
-            $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
-
-        $this->widgetHomeTabConfigRepo
-            ->shouldReceive('findWidgetConfigsByWorkspace')
-            ->with($homeTab, $workspace)
-            ->once()
-            ->andReturn($adminWidgetConfigs);
-
-        $this->assertEquals(
-            $adminWidgetConfigs,
-            $this->getManager()->getWidgetConfigsByWorkspace($homeTab, $workspace)
-        );
-    }
-
-    public function testGetVisibleWidgetConfigsByWorkspace()
-    {
-        $homeTab = new HomeTab();
-        $workspace =
-            $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $adminWidgetConfigs = ['whtc_a', 'whtc_b'];
-
-        $this->widgetHomeTabConfigRepo
-            ->shouldReceive('findVisibleWidgetConfigsByWorkspace')
-            ->with($homeTab, $workspace)
-            ->once()
-            ->andReturn($adminWidgetConfigs);
-
-        $this->assertEquals(
-            $adminWidgetConfigs,
-            $this->getManager()
-                ->getVisibleWidgetConfigsByWorkspace($homeTab, $workspace)
-        );
-    }
-
     public function testGetOrderOfLastWidgetInAdminHomeTab()
     {
         $homeTab = new HomeTab();
@@ -1069,26 +976,6 @@ class HomeTabManagerTest extends MockeryTestCase
             4,
             $this->getManager()
                 ->getOrderOfLastWidgetInHomeTabByWorkspace($homeTab, $workspace)
-        );
-    }
-
-    public function testGetUserAdminWidgetInstanceConfig()
-    {
-        $homeTab = new HomeTab();
-        $widget = new WidgetInstance();
-        $user = new User();
-        $widgetHomeTabConfig = new WidgetInstanceConfig();
-
-        $this->widgetHomeTabConfigRepo
-            ->shouldReceive('findUserAdminWidgetInstanceConfig')
-            ->with($homeTab, $widget, $user)
-            ->once()
-            ->andReturn($widgetHomeTabConfig);
-
-        $this->assertEquals(
-            $widgetHomeTabConfig,
-            $this->getManager()
-                ->getUserAdminWidgetInstanceConfig($homeTab, $widget, $user)
         );
     }
 
