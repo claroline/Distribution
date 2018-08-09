@@ -430,32 +430,6 @@ class WorkspaceController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/search/role/code/{code}",
-     *     name="claro_resource_find_role_by_code",
-     *     options={"expose"=true}
-     * )
-     *
-     * @todo check if it's still used and use finder if yes.
-     */
-    public function findRoleByWorkspaceCodeAction($code)
-    {
-        $roles = $this->roleManager->getRolesBySearchOnWorkspaceAndTag($code);
-        $arWorkspace = [];
-
-        foreach ($roles as $role) {
-            $arWorkspace[$role->getWorkspace()->getCode()][$role->getName()] = [
-                'name' => $role->getName(),
-                'translation_key' => $role->getTranslationKey(),
-                'id' => $role->getId(),
-                'workspace' => $role->getWorkspace()->getName(),
-            ];
-        }
-
-        return new JsonResponse($arWorkspace);
-    }
-
-    /**
-     * @EXT\Route(
      *     "/{workspace}/open/tool/home/tab/{tabId}",
      *     name="claro_display_workspace_home_tab",
      *     options = {"expose"=true}

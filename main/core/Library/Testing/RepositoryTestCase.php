@@ -29,7 +29,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\RelWorkspaceTag;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceTag;
-use Claroline\CoreBundle\Entity\Workspace\WorkspaceTagHierarchy;
 use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Entity\UserMessage;
 use Gedmo\Timestampable\TimestampableListener;
@@ -382,22 +381,6 @@ abstract class RepositoryTestCase extends WebTestCase
         $tagRelation->setWorkspace($workspace);
 
         self::$om->persist($tagRelation);
-        self::$om->flush();
-    }
-
-    protected static function createWorkspaceTagHierarchy(
-        WorkspaceTag $parent,
-        WorkspaceTag $child,
-        $level,
-        User $user = null
-    ) {
-        $tagHierarchy = new WorkspaceTagHierarchy();
-        $tagHierarchy->setParent($parent);
-        $tagHierarchy->setTag($child);
-        $tagHierarchy->setLevel($level);
-        $tagHierarchy->setUser($user);
-
-        self::$om->persist($tagHierarchy);
         self::$om->flush();
     }
 
