@@ -114,8 +114,9 @@ class Updater120000 extends Updater
 
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
-        $this->updateTabsStructure();
-        $this->updateWidgetsStructure();
+        //$this->updateTabsStructure();
+        //$this->updateWidgetsStructure();
+        $this->linkWidgetsInstanceToContainers();
         $this->checkDesktopTabs();
         //Tricky because some of it was done before and no version bump...
     }
@@ -165,7 +166,7 @@ class Updater120000 extends Updater
         $this->log('Update widget structure...');
 
         if (count($this->om->getRepository(WidgetContainer::class)->findAll()) > 0) {
-            $this->log('WidgetContainer already migrated');
+            $this->log('Containers already migrated. Truncate manually to try again.');
         } else {
             $this->log('Migrating WidgetDisplayConfig to WidgetContainer');
 
@@ -287,6 +288,38 @@ class Updater120000 extends Updater
         $tab->setName(strip_tags($tab->getLongTitle()));
 
         $this->om->persist($tab);
+    }
+
+    private function linkWidgetsInstanceToContainers()
+    {
+        $this->log('Link WidgetInstances to WidgetContainer...');
+
+        $sql = 'SELECT * FROM claro_widget_home_tab_config';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $i = 0;
+
+        foreach ($stmt->fetchAll() as $rowConfig) {
+            $this->restoreWidgetInstanceLink($rowConfig);
+            ++$i;
+            $this->log('Linking for homeTabConfig '.$rowConfig['id']);
+
+            if (0 === $i % 200) {
+                $this->om->flush();
+            }
+        }
+
+        $this->om->flush();
+    }
+
+    private function restoreWidgetInstanceLink($row)
+    {
+        $homeTab = $this->om->getRepository(HomeTab::class)->find($row['home_tab_id']);
+        $instance = $this->om->getRepository(WidgetInstance::class)->find($row['widget_instance_id']);
+        //only one instance per container during the migration
+        $container = $instance->getContainer();
+        $container->setHomeTab($homeTab);
+        $this->om->persist($container);
     }
 
     private function checkDesktopTabs()
