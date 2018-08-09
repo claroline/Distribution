@@ -81,31 +81,6 @@ class Updater120000 extends Updater
         }
 
         $this->om->flush();
-
-        $sql = 'SELECT * FROM claro_widget_instance_temp ';
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $i = 0;
-        $all = $stmt->fetchAll();
-        $total = count($all);
-
-        $this->log('Restoring WidgetInstanceConfigs...');
-
-        foreach ($stmt->fetchAll() as $rowConfig) {
-            ++$i;
-            $this->log('Restoring '.$i.' element.');
-            $configs = $this->om->getRepository(WidgetInstanceConfig::class)->find(['widgetInstance' => $rowConfig['id']]);
-
-            foreach ($configs as $config) {
-                $config->setName($rowConfig['widget_name']);
-                $config->setPosition($rowConfig['widget_position']);
-                $this->om->persist($config);
-            }
-
-            if (0 === $i % 300) {
-                $this->om->flush();
-            }
-        }
     }
 
     public function postUpdate()
@@ -116,7 +91,8 @@ class Updater120000 extends Updater
         $this->removeTool('claroline_activity_tool');
         //$this->updateTabsStructure();
         //$this->updateWidgetsStructure();
-        $this->linkWidgetsInstanceToContainers();
+        //$this->linkWidgetsInstanceToContainers();
+        $this->restoreWidgetInstancesConfigs();
         $this->checkDesktopTabs();
         //Tricky because some of it was done before and no version bump...
     }
@@ -300,9 +276,9 @@ class Updater120000 extends Updater
         $i = 0;
 
         foreach ($stmt->fetchAll() as $rowConfig) {
-            $this->restoreWidgetInstanceLink($rowConfig);
             ++$i;
             $this->log('Linking for homeTabConfig '.$rowConfig['id']);
+            $this->restoreWidgetInstanceLink($rowConfig);
 
             if (0 === $i % 200) {
                 $this->om->flush();
@@ -320,6 +296,7 @@ class Updater120000 extends Updater
         $container = $instance->getContainer();
         $container->setHomeTab($homeTab);
         $this->om->persist($container);
+        $this->om->persist($config);
     }
 
     private function checkDesktopTabs()
@@ -344,6 +321,25 @@ class Updater120000 extends Updater
 
             $this->om->persist($desktopHomeTabConfig);
             $this->om->flush();
+        }
+    }
+
+    private function restoreWidgetInstancesConfigs()
+    {
+        if (0 === $this->om->count(WidgetInstanceConfig::class)) {
+            $this->log('Copying WidgetInsanceConfigs');
+
+            $sql = '
+              INSERT INTO claro_widget_instance_config (id, widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked)
+              SELECT id, widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked from claro_widget_home_tab_config';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
+            $sql = 'UPDATE claro_widget_instance_config set widget_order = 0';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        } else {
+            $this->log('WidgetInstanceConfigs already copied');
         }
     }
 

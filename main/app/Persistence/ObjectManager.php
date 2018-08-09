@@ -291,7 +291,7 @@ class ObjectManager extends ObjectManagerDecorator
         $dql = "SELECT COUNT(object) FROM {$class} object";
         $query = $this->wrapped->createQuery($dql);
 
-        return $query->getSingleScalarResult();
+        return (int) $query->getSingleScalarResult();
     }
 
     private function assertIsSupported($isSupportedFlag, $method)
