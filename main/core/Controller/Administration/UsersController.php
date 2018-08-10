@@ -15,10 +15,6 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
-use Claroline\CoreBundle\Entity\Action\AdditionalAction;
-use Claroline\CoreBundle\Entity\Group;
-use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\AuthenticationManager;
@@ -36,7 +32,6 @@ use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -204,87 +199,5 @@ class UsersController extends Controller
         $response->headers->set('Connection', 'close');
 
         return $response;
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/workspace/personal/tool/config",
-     *     name="claro_admin_workspace_tool_config_index"
-     * )
-     * @EXT\Template("ClarolineCoreBundle:administration/user:personal_workspace_tool_config.html.twig").
-     *
-     * @return array
-     */
-    public function personalWorkspaceToolConfigIndexAction()
-    {
-        $personalWsToolConfigs = $this->toolManager->getPersonalWorkspaceToolConfigAsArray();
-        $maskDecoders = $this->toolManager->getAllWorkspaceMaskDecodersAsArray();
-        $roles = $this->roleManager->getAllPlatformRoles();
-        $tools = $this->toolManager->getAvailableWorkspaceTools();
-
-        return [
-            'personalWsToolConfigs' => $personalWsToolConfigs,
-            'roles' => $roles,
-            'tools' => $tools,
-            'maskDecoders' => $maskDecoders,
-        ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/pws/tool/activate/{perm}/{role}/{tool}",
-     *     name="claro_admin_pws_activate_tool",
-     *     options={"expose"=true}
-     * )
-     */
-    public function activatePersonalWorkspaceToolPermAction($perm, Role $role, Tool $tool)
-    {
-        $this->toolManager->activatePersonalWorkspaceToolPerm($perm, $tool, $role);
-
-        return new JsonResponse([], 200);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/pws/tool/remove/{perm}/{role}/{tool}",
-     *     name="claro_admin_pws_remove_tool",
-     *     options={"expose"=true}
-     * )
-     */
-    public function removePersonalWorkspaceToolPermAction($perm, Role $role, Tool $tool)
-    {
-        $this->toolManager->removePersonalWorkspaceToolPerm($perm, $tool, $role);
-
-        return new JsonResponse([], 200);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{user}/admin/action/{action}",
-     *     name="admin_user_action",
-     *     options={"expose"=true}
-     * )
-     */
-    public function executeUserAdminAction(User $user, AdditionalAction $action)
-    {
-        $event = $this->eventDispatcher->dispatch($action->getType().'_'.$action->getAction(), 'AdminUserAction', ['user' => $user]);
-
-        return $event->getResponse();
-    }
-
-    /**
-     * This method should be moved.
-     *
-     * @EXT\Route(
-     *     "/{group}/admin/action/{action}",
-     *     name="admin_group_action",
-     *     options={"expose"=true}
-     * )
-     */
-    public function executeGroupAdminAction(Group $group, AdditionalAction $action)
-    {
-        $event = $this->eventDispatcher->dispatch($action->getType().'_'.$action->getAction(), 'AdminGroupAction', ['group' => $group]);
-
-        return $event->getResponse();
     }
 }
