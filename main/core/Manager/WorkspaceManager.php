@@ -349,6 +349,8 @@ class WorkspaceManager
         return $this->workspaceRepo->findByUser($user);
     }
 
+    //only used by dashboard
+    //@todo remove
     public function exportWorkspace(Workspace $workspace)
     {
         return [
@@ -509,20 +511,6 @@ class WorkspaceManager
     }
 
     /**
-     * @param string[] $roles
-     * @param int      $page
-     * @param int      $max
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getOpenableWorkspacesByRolesPager(array $roles, $page, $max)
-    {
-        $workspaces = $this->getOpenableWorkspacesByRoles($roles);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    /**
      * @param User     $user
      * @param string[] $roleNames
      *
@@ -531,21 +519,6 @@ class WorkspaceManager
     public function getWorkspacesByUserAndRoleNames(User $user, array $roleNames)
     {
         return $this->workspaceRepo->findByUserAndRoleNames($user, $roleNames);
-    }
-
-    /**
-     * @param User     $user
-     * @param string[] $roleNames
-     * @param int[]    $restrictionIds
-     *
-     * @return Workspace[]
-     */
-    public function getWorkspacesByUserAndRoleNamesNotIn(
-        User $user,
-        array $roleNames,
-        array $restrictionIds = null
-    ) {
-        return $this->workspaceRepo->findByUserAndRoleNamesNotIn($user, $roleNames, $restrictionIds);
     }
 
     /**
@@ -586,6 +559,8 @@ class WorkspaceManager
 
     /**
      * @param string $guid
+     *
+     * only used one in LayoutController
      *
      * @return Workspace
      */
@@ -1316,6 +1291,10 @@ class WorkspaceManager
         $this->duplicateOrderedTools($workspace, $newWorkspace, $resourceInfo);
         $this->om->endFlushSuite();
 
+        $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($workspace);
+        //get home tabs from source
+        $this->duplicateHomeTabs($workspace, $newWorkspace, $homeTabs, $resourceInfos);
+
         $this->container->get('claroline.security.token_updater')->updateNormal($token);
 
         return $newWorkspace;
@@ -1531,11 +1510,6 @@ class WorkspaceManager
                 }
             }
         }
-
-        $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($source);
-        //get home tabs from source
-
-        $this->duplicateHomeTabs($source, $workspace, $homeTabs, $resourceInfos);
     }
 
     /**

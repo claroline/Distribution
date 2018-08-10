@@ -369,25 +369,6 @@ class WorkspaceManagerTest extends MockeryTestCase
         );
     }
 
-    public function testGetWorkspacesByUserAndRoleNamesNotIn()
-    {
-        $roleNames = ['ROLE_A', 'ROLE_B'];
-        $user = new User();
-        $workspaces = ['workspaceA', 'workspaceB'];
-
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findByUserAndRoleNamesNotIn')
-            ->with($user, $roleNames, null)
-            ->once()
-            ->andReturn($workspaces);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals(
-            $workspaces,
-            $this->getManager()->getWorkspacesByUserAndRoleNamesNotIn($user, $roleNames)
-        );
-    }
-
     public function testGetLatestWorkspacesByUser()
     {
         $user = new User();
