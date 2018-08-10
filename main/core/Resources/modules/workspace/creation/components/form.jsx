@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/app/router'
 import {
@@ -39,11 +38,7 @@ class WorkspaceComponent extends Component
 
           props.loadLog(props.workspace.code)
         }, 1500)
-      } else {
-        //code also is an identifier
-        props.history.push(url('claro_workspace_open', {workspaceId: props.workspace.code}))
       }
-
     }
   }
 
@@ -74,7 +69,7 @@ class WorkspaceComponent extends Component
           icon: 'fa fa-fw fa-upload',
           label: trans('save', {}, 'actions'),
           callback: () => {
-            props.save(props.workspace)
+            props.save(props.workspace, props.history)
             this.refreshLog()
             this.setState({refresh: true})
           }
@@ -371,8 +366,8 @@ const ConnectedForm = withRouter(connect(
     loadLog(filename) {
       dispatch(logActions.load(filename))
     },
-    save(workspace) {
-      dispatch(actions.save(workspace))
+    save(workspace, history) {
+      dispatch(actions.save(workspace, history))
     }
   })
 )(WorkspaceComponent))

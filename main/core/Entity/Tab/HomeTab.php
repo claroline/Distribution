@@ -76,6 +76,7 @@ class HomeTab
         $this->refreshUuid();
         $this->roles = new ArrayCollection();
         $this->homeTabConfigs = new ArrayCollection();
+        $this->widgetContainers = new ArrayCollection();
     }
 
     public function getName()

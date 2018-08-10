@@ -62,7 +62,7 @@ class HomeTabSerializer
     {
         $homeTabConfig = $this->getConfig($homeTab, $options);
 
-        $savedContainers = $homeTab->getWidgetContainers();
+        $savedContainers = $homeTab->getWidgetContainers()->toArray();
         $containers = [];
 
         foreach ($savedContainers as $container) {
