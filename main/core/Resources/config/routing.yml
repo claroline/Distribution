@@ -106,11 +106,6 @@ claro_admin:
     prefix: admin
     type: annotation
 
-claro_admin_desktop_configuration:
-    resource: "@ClarolineCoreBundle/Controller/Administration/DesktopConfigurationController.php"
-    prefix: admin
-    type: annotation
-
 claro_admin_portal_config:
     resource: "@ClarolineCoreBundle/Controller/Administration/PortalConfigurationController.php"
     prefix: admin/portal
