@@ -242,7 +242,7 @@ class CursusController extends Controller
         $order = 'ASC'
     ) {
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
-        $isAnon = $authenticatedUser === 'anon.';
+        $isAnon = 'anon.' === $authenticatedUser;
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $configCursus = $config->getCursus();
         $extra = $config->getExtra();
@@ -302,7 +302,7 @@ class CursusController extends Controller
             $courseId = $courseSession->getCourse()->getId();
             $status = $courseSession->getSessionStatus();
 
-            if ($status === 0 || $status === 1) {
+            if (0 === $status || 1 === $status) {
                 if (!isset($sessions[$courseId])) {
                     $sessions[$courseId] = [];
                 }
@@ -372,7 +372,7 @@ class CursusController extends Controller
     public function coursesListForRegistrationWidgetCalendarAction(WidgetInstance $widgetInstance, $search = '')
     {
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
-        $isAnon = $authenticatedUser === 'anon.';
+        $isAnon = 'anon.' === $authenticatedUser;
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $configCursus = $config->getCursus();
         $configPublicSessions = $config->isPublicSessionsOnly();
@@ -497,7 +497,7 @@ class CursusController extends Controller
             $setRegistrations = $this->cursusManager->getSessionEventUsersByUserAndEventSet($user, $eventSet);
             $isSetAvailable = $limit > count($setRegistrations);
         }
-        if (!$disableRegistration && ($sessionEvent->getRegistrationType() === CourseSession::REGISTRATION_PUBLIC) && $isSetAvailable) {
+        if (!$disableRegistration && (CourseSession::REGISTRATION_PUBLIC === $sessionEvent->getRegistrationType()) && $isSetAvailable) {
             $results = $this->cursusManager->selfRegisterUserToSessionEvent($sessionEvent, $user);
         }
 
@@ -819,7 +819,7 @@ class CursusController extends Controller
                 ];
             }
 
-            if ($sessionUser->getUserType() === CourseSessionUser::TEACHER) {
+            if (CourseSessionUser::TEACHER === $sessionUser->getUserType()) {
                 $editableSessions[$session->getId()] = true;
             }
         }
@@ -945,13 +945,13 @@ class CursusController extends Controller
         $type = 0
     ) {
         $user = $this->tokenStorage->getToken()->getUser();
-        $isAnon = $user === 'anon.';
+        $isAnon = 'anon.' === $user;
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $extra = $config->getExtra();
-        $disableWs = intval($withWorkspace) === 0;
-        $allInfos = intval($type) === 0;
+        $disableWs = 0 === intval($withWorkspace);
+        $allInfos = 0 === intval($type);
 
-        if (intval($withWorkspace) === 1) {
+        if (1 === intval($withWorkspace)) {
             $disableClosedSessionsWs = isset($extra['disableClosedSessionsWs']) ? $extra['disableClosedSessionsWs'] : false;
             $disableUnstartedSessionsWs = isset($extra['disableUnstartedSessionsWs']) ? $extra['disableUnstartedSessionsWs'] : false;
             $now = new \DateTime();
@@ -980,7 +980,7 @@ class CursusController extends Controller
             'tutors' => $tutors,
             'workspace' => $session->getWorkspace(),
             'disableWs' => $disableWs,
-            'withMail' => intval($withMail) === 1,
+            'withMail' => 1 === intval($withMail),
             'sessionEventUsersStatus' => $sessionEventUsersStatus,
             'allInfos' => $allInfos,
         ];
@@ -1004,7 +1004,7 @@ class CursusController extends Controller
             'location' => $sessionEvent->getLocation(),
             'locationExtra' => $sessionEvent->getLocationExtra(),
             'tutors' => $sessionEvent->getTutors(),
-            'withMail' => intval($withMail) === 1,
+            'withMail' => 1 === intval($withMail),
         ];
     }
 
@@ -1126,7 +1126,7 @@ class CursusController extends Controller
     public function coursesWidgetSessionEventSetRegistrationAction(WidgetInstance $widgetInstance, SessionEventSet $sessionEventSet)
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        $eventUsers = $user !== 'anon.' ?
+        $eventUsers = 'anon.' !== $user ?
             $this->cursusManager->getSessionEventUsersByUserAndEventSet($user, $sessionEventSet) :
             [];
         $registrations = [];

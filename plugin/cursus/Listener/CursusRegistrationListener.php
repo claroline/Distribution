@@ -58,7 +58,7 @@ class CursusRegistrationListener
         $group = $log->getReceiverGroup();
         $sessions = ['learner' => [], 'tutor' => []];
 
-        if ($action === 'group-add_user') {
+        if ('group-add_user' === $action) {
             $multipleCursus = $this->cursusManager->getCursusByGroup($group);
             //check if the user is already persisted in database
             $force = $user->getId() ? false : true;
@@ -69,9 +69,9 @@ class CursusRegistrationListener
             foreach ($sessionGroups as $sessionGroup) {
                 $groupType = $sessionGroup->getGroupType();
 
-                if ($groupType === 0) {
+                if (0 === $groupType) {
                     $sessions['learner'][] = $sessionGroup->getSession();
-                } elseif ($groupType === 1) {
+                } elseif (1 === $groupType) {
                     $sessions['tutor'][] = $sessionGroup->getSession();
                 }
             }
@@ -83,7 +83,7 @@ class CursusRegistrationListener
             if (count($sessions['tutor']) > 0) {
                 $this->cursusManager->registerUsersToSessions($sessions['tutor'], [$user], 1, $force);
             }
-        } elseif ($action === 'group-remove_user') {
+        } elseif ('group-remove_user' === $action) {
             $multipleCursus = $this->cursusManager->getCursusByGroup($group);
             $cursusUsers = $this->cursusManager->getCursusUsersFromCursusAndUsers(
                 $multipleCursus,
@@ -96,9 +96,9 @@ class CursusRegistrationListener
             foreach ($sessionGroups as $sessionGroup) {
                 $groupType = $sessionGroup->getGroupType();
 
-                if ($groupType === 0) {
+                if (0 === $groupType) {
                     $sessions['learner'][] = $sessionGroup->getSession();
-                } elseif ($groupType === 1) {
+                } elseif (1 === $groupType) {
                     $sessions['tutor'][] = $sessionGroup->getSession();
                 }
             }

@@ -12,8 +12,6 @@ namespace Claroline\CursusBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CursusBundle\Repository\CourseSessionGroupRepository")
@@ -33,7 +31,6 @@ class CourseSessionGroup
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_cursus", "api_cursus_min", "api_group_min"})
      */
     protected $id;
 
@@ -42,7 +39,6 @@ class CourseSessionGroup
      *     targetEntity="Claroline\CoreBundle\Entity\Group"
      * )
      * @ORM\JoinColumn(name="group_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_group_min"})
      */
     protected $group;
 
@@ -52,21 +48,16 @@ class CourseSessionGroup
      *     inversedBy="sessionGroups"
      * )
      * @ORM\JoinColumn(name="session_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_cursus", "api_group_min"})
      */
     protected $session;
 
     /**
      * @ORM\Column(name="registration_date", type="datetime", nullable=false)
-     * @Groups({"api_cursus", "api_cursus_min", "api_group_min"})
-     * @SerializedName("registrationDate")
      */
     protected $registrationDate;
 
     /**
      * @ORM\Column(name="group_type", type="integer", nullable=false)
-     * @Groups({"api_cursus", "api_cursus_min", "api_group_min"})
-     * @SerializedName("groupType")
      */
     protected $groupType = 0;
 

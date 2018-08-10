@@ -41,7 +41,7 @@ class CursusListener
     private $templating;
     /** @var ToolManager */
     private $toolManager;
-    /** @var PlatformConfigurationHandler  */
+    /** @var PlatformConfigurationHandler */
     private $platformConfigHandler;
 
     private $cursusManager;
