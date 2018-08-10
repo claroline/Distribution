@@ -295,7 +295,6 @@ class Updater120000 extends Updater
         $container = $instance->getContainer();
         $container->setHomeTab($homeTab);
         $this->om->persist($container);
-        $this->om->persist($config);
     }
 
     private function checkDesktopTabs()

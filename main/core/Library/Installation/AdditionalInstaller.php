@@ -42,13 +42,6 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         }
 
         try {
-            $updater = new Updater\Updater100000($this->container);
-            $updater->moveUploadsDirectory();
-        } catch (\Exception $e) {
-            $this->log($e->getMessage(), LogLevel::ERROR);
-        }
-
-        try {
             $updater = new Updater\Updater110000($this->container);
             $updater->lnPictureDirectory();
             $updater->lnPackageDirectory();
