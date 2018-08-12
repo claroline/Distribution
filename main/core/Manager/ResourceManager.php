@@ -43,7 +43,6 @@ use Claroline\CoreBundle\Repository\RoleRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use JMS\DiExtraBundle\Annotation as DI;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -1743,7 +1742,8 @@ class ResourceManager
         }
         $role = $this->roleManager->getRoleByName('ROLE_ANONYMOUS');
 
-        return $this->create(
+        /** @var Directory $publicDir */
+        $publicDir = $this->create(
             $directory,
             $this->getResourceTypeByName('directory'),
             $workspace->getCreator(),
@@ -1753,6 +1753,8 @@ class ResourceManager
             ['ROLE_ANONYMOUS' => ['open' => true, 'export' => true, 'create' => [], 'role' => $role]],
             true
         );
+
+        return $publicDir;
     }
 
     /**
@@ -1807,7 +1809,7 @@ class ResourceManager
 
     /**
      * @param ResourceNode $node
-     * @param bool $throwException
+     * @param bool         $throwException
      *
      * @return ResourceNode|null
      *
@@ -1869,6 +1871,11 @@ class ResourceManager
         $this->om->flush();
     }
 
+    /**
+     * @param $file
+     *
+     * @deprecated use new import/export system
+     */
     public function importDirectoriesFromCsv($file)
     {
         $data = file_get_contents($file);
@@ -1942,7 +1949,10 @@ class ResourceManager
      */
     public function replaceCreator(User $from, User $to)
     {
-        $nodes = $this->resourceNodeRepo->findByCreator($from);
+        /** @var ResourceNode[] $nodes */
+        $nodes = $this->resourceNodeRepo->findBy([
+            'creator' => $from,
+        ]);
 
         if (count($nodes) > 0) {
             foreach ($nodes as $node) {
@@ -1966,6 +1976,9 @@ class ResourceManager
 
     public function load(ResourceNode $resourceNode)
     {
+        // maybe use a specific log ?
+        $this->dispatcher->dispatch('log', 'Log\LogResourceRead', [$resourceNode]);
+
         /** @var LoadResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             'resource.load',

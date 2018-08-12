@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
-
+import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
 import {
   SUMMARY_PIN_TOGGLE,
   SUMMARY_OPEN_TOGGLE
@@ -20,9 +20,11 @@ import {getStepPath} from '#/plugin/path/resources/path/editor/utils'
 const reducer = {
   summary: combineReducers({
     pinned: makeReducer(false, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.path.display.openSummary,
       [SUMMARY_PIN_TOGGLE]: (state) => !state
     }),
     opened: makeReducer(false, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.path.display.openSummary,
       [SUMMARY_OPEN_TOGGLE]: (state) => !state
     })
   }),
@@ -32,6 +34,7 @@ const reducer = {
   }),
   pathForm: editorReducer.pathForm,
   path: makeReducer({}, {
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.path,
     // replaces path data after success updates
     [FORM_SUBMIT_SUCCESS+'/pathForm']: (state, action) => action.updatedData,
     [STEP_UPDATE_PROGRESSION]: (state, action) => {

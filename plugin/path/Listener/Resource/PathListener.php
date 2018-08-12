@@ -8,8 +8,8 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Innova\PathBundle\Entity\InheritedResource;
 use Innova\PathBundle\Entity\Path\Path;
@@ -17,8 +17,10 @@ use Innova\PathBundle\Entity\SecondaryResource;
 use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Manager\UserProgressionManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Used to integrate Path to Claroline resource manager.
@@ -27,13 +29,23 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PathListener
 {
-    private $container;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
+    /** @var TwigEngine */
+    private $templating;
+
+    /** @var TranslatorInterface */
+    private $translator;
 
     /* @var ObjectManager */
     private $om;
 
     /** @var SerializerProvider */
     private $serializer;
+
+    /** @var ResourceManager */
+    private $resourceManager;
 
     /** @var UserProgressionManager */
     private $userProgressionManager;
@@ -42,17 +54,39 @@ class PathListener
      * PathListener constructor.
      *
      * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
+     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
+     *     "templating"             = @DI\Inject("templating"),
+     *     "translator"             = @DI\Inject("translator"),
+     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer"             = @DI\Inject("claroline.api.serializer"),
+     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager"),
+     *     "userProgressionManager" = @DI\Inject("innova_path.manager.user_progression")
      * })
      *
-     * @param ContainerInterface $container
+     * @param TokenStorageInterface  $tokenStorage
+     * @param TwigEngine             $templating
+     * @param TranslatorInterface    $translator
+     * @param ObjectManager          $om
+     * @param SerializerProvider     $serializer
+     * @param ResourceManager        $resourceManager
+     * @param UserProgressionManager $userProgressionManager
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        TwigEngine $templating,
+        TranslatorInterface $translator,
+        ObjectManager $om,
+        SerializerProvider $serializer,
+        ResourceManager $resourceManager,
+        UserProgressionManager $userProgressionManager)
     {
-        $this->container = $container;
-        $this->om = $container->get('claroline.persistence.object_manager');
-        $this->serializer = $container->get('claroline.api.serializer');
-        $this->userProgressionManager = $container->get('innova_path.manager.user_progression');
+        $this->tokenStorage = $tokenStorage;
+        $this->templating = $templating;
+        $this->translator = $translator;
+        $this->om = $om;
+        $this->serializer = $serializer;
+        $this->resourceManager = $resourceManager;
+        $this->userProgressionManager = $userProgressionManager;
     }
 
     /**
@@ -88,7 +122,7 @@ class PathListener
         /** @var Path $path */
         $path = $event->getResource();
 
-        $content = $this->container->get('templating')->render(
+        $content = $this->templating->render(
             'InnovaPathBundle:path:open.html.twig', [
                 '_resource' => $path,
                 'path' => $this->serializer->serialize($path),
@@ -198,31 +232,27 @@ class PathListener
     /**
      * Create directory to store copies of resources.
      *
-     * @param ResourceNode $dest
+     * @param ResourceNode $destination
      * @param string       $pathName
      *
      * @return AbstractResource
      */
-    private function createResourcesCopyDirectory(ResourceNode $dest, $pathName)
+    private function createResourcesCopyDirectory(ResourceNode $destination, $pathName)
     {
         // Get current User
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
 
-        /** @var ResourceManager $manager */
-        $manager = $this->container->get('claroline.manager.resource_manager');
-        $translator = $this->container->get('translator');
-
-        $resourcesDir = $manager->createResource(
+        $resourcesDir = $this->resourceManager->createResource(
             'Claroline\CoreBundle\Entity\Resource\Directory',
-            $pathName.' ('.$translator->trans('resources', [], 'platform').')'
+            $pathName.' ('.$this->translator->trans('resources', [], 'platform').')'
         );
 
-        return $manager->create(
+        return $this->resourceManager->create(
             $resourcesDir,
-            $dest->getResourceType(),
+            $destination->getResourceType(),
             $user,
-            $dest->getWorkspace(),
-            $dest
+            $destination->getWorkspace(),
+            $destination
         );
     }
 
@@ -236,16 +266,12 @@ class PathListener
      */
     private function copyResources(array $resources, ResourceNode $newParent)
     {
-        $resourcesCopy = [];
-
         // Get current User
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
 
-        /** @var ResourceManager $manager */
-        $manager = $this->container->get('claroline.manager.resource_manager');
-
+        $resourcesCopy = [];
         foreach ($resources as $resourceNode) {
-            $copy = $manager->copy($resourceNode, $newParent, $user);
+            $copy = $this->resourceManager->copy($resourceNode, $newParent, $user);
             $resourcesCopy[$resourceNode->getGuid()] = $copy->getResourceNode();
         }
 

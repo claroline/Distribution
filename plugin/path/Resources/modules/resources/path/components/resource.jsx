@@ -21,7 +21,7 @@ const Resource = props =>
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-home',
         label: trans('show_overview'),
-        displayed: props.path.display.showOverview,
+        displayed: props.overview,
         target: '/',
         exact: true
       }, {
@@ -46,13 +46,13 @@ const Resource = props =>
           path: '/',
           exact: true,
           component: Overview,
-          disabled: !props.path.display.showOverview
+          disabled: !props.overview
         }
       ]}
       redirect={[
         // redirect to player when no overview
         {
-          disabled: props.path.display.showOverview,
+          disabled: props.overview,
           from: '/',
           to: '/play',
           exact: true
@@ -62,13 +62,13 @@ const Resource = props =>
   </ResourcePage>
 
 Resource.propTypes = {
-  path: T.object.isRequired,
-  editable: T.bool.isRequired
+  editable: T.bool.isRequired,
+  overview: T.bool.isRequired
 }
 
 const PathResource = connect(
   (state) => ({
-    path: select.path(state),
+    overview: select.showOverview(state),
     editable: hasPermission('edit', resourceSelect.resourceNode(state))
   })
 )(Resource)

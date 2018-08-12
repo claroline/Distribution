@@ -13,15 +13,15 @@ export const App = () => ({
   initialData: initialData => Object.assign({}, initialData, {
     resource: {
       node: initialData.resourceNode,
-      evaluation: initialData.evaluation
+      //evaluation: initialData.evaluation
     },
-    summary: {
+    /*summary: {
       opened: initialData.path.display.openSummary,
       pinned: initialData.path.display.openSummary
     },
     pathForm: {
       originalData: initialData.path,
       data: initialData.path
-    }
+    }*/
   })
 })

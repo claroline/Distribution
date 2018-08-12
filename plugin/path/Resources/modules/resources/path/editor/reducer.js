@@ -5,6 +5,8 @@ import {makeId} from '#/main/core/scaffolding/id'
 import {makeReducer} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
+import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
+
 import {
   getStepPath,
   manageInheritedResources,
@@ -41,7 +43,11 @@ const reducer = {
       [STEP_UPDATE_SECONDARY_RESOURCE_INHERITANCE]: () => true,
       [STEP_PASTE]: () => true
     }),
+    originalData: makeReducer(defaultState.originalData, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.path
+    }),
     data: makeReducer(defaultState.data, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.path,
       [STEP_ADD]: (state, action) => {
         const newState = cloneDeep(state)
 

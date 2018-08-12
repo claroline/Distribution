@@ -4,8 +4,6 @@ namespace UJM\ExoBundle\Listener\Resource;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
@@ -17,13 +15,11 @@ use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Form\Type\ExerciseType;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\DocimologyManager;
 use UJM\ExoBundle\Manager\ExerciseManager;
@@ -169,7 +165,7 @@ class ExerciseListener
                 ),
                 'userEvaluation' => 'anon.' === $user ?
                     null :
-                    $this->resourceEvalManager->getResourceUserEvaluation($exercise->getResourceNode(), $user)
+                    $this->resourceEvalManager->getResourceUserEvaluation($exercise->getResourceNode(), $user),
             ]
         );
 

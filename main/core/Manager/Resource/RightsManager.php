@@ -746,7 +746,7 @@ class RightsManager
     //maybe use that one in the voter later because it's going to be usefull
     public function getCurrentPermissionArray(ResourceNode $resourceNode)
     {
-        $currentRoles = $this->container->get('security.token_storage')->getToken()->getRoles();
+        $currentRoles = $this->tokenStorage->getToken()->getRoles();
 
         $roleNames = array_map(function (RoleInterface $roleName) {
             return $roleName->getRole();

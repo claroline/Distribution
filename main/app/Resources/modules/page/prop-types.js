@@ -9,6 +9,8 @@ import {Action, PromisedAction} from '#/main/app/action/prop-types'
  */
 const Page = {
   propTypes: {
+    className: T.string,
+
     /**
      * The title of the page.
      *

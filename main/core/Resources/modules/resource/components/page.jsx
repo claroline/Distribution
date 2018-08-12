@@ -5,10 +5,13 @@ import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {Page} from '#/main/app/page/components/page'
+import {Routes} from '#/main/app/router'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
-import {UserEvaluation as UserEvaluationTypes} from '#/main/core/resource/prop-types'
-import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
+import {
+  ResourceNode as ResourceNodeTypes,
+  UserEvaluation as UserEvaluationTypes
+} from '#/main/core/resource/prop-types'
 import {getActions, getToolbar} from '#/main/core/resource/utils'
 
 import {ResourceRestrictions} from '#/main/core/resource/components/restrictions'
@@ -29,7 +32,7 @@ class ResourcePage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // the embedded resource has changed
+    // the resource has changed
     if (this.props.resourceNode.id !== nextProps.resourceNode.id) {
       // load the new one
       this.props.loadResource(nextProps.resourceNode)
@@ -43,6 +46,7 @@ class ResourcePage extends Component {
   render() {
     return (
       <Page
+        className={classes('resource-page', `${this.props.resourceNode.meta.type}-page`)}
         embedded={this.props.embedded}
         fullscreen={this.state.fullscreen}
         title={this.props.resourceNode.name}
@@ -96,6 +100,7 @@ class ResourcePage extends Component {
 }
 
 ResourcePage.propTypes = {
+  embedded: T.bool,
   /**
    * The current resource node.
    */
@@ -118,9 +123,6 @@ ResourcePage.propTypes = {
   customActions: T.arrayOf(T.shape(
     ActionTypes.propTypes
   )),
-
-  // todo : reuse Page propTypes
-  embedded: T.bool,
   children: T.node.isRequired
 }
 

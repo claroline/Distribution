@@ -13,13 +13,10 @@ namespace Claroline\DropZoneBundle\Listener\Resource;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
-use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use Claroline\TeamBundle\Manager\TeamManager;

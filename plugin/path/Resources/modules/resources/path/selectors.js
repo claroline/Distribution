@@ -1,4 +1,5 @@
 import {createSelector} from 'reselect'
+import get from 'lodash/get'
 
 // path
 const path = state => state.path
@@ -11,6 +12,11 @@ const steps = createSelector(
 const empty = createSelector(
   [steps],
   (steps) => 0 === steps.length
+)
+
+const showOverview = createSelector(
+  [path],
+  (path) => get(path, 'display.showOverview') || false
 )
 
 // summary
@@ -42,5 +48,6 @@ export const select = {
   summaryPinned,
   summaryOpened,
   fullWidth,
-  navigationEnabled
+  navigationEnabled,
+  showOverview
 }

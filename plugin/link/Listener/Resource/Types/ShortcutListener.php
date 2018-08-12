@@ -114,12 +114,6 @@ class ShortcutListener
      */
     public function copy(CopyResourceEvent $event)
     {
-        /* @var Shortcut $shortcut */
-        /*$shortcut = $event->getResource();
-
-        $copy = new ResourceShortcut();
-        $copy->setTarget($shortcut->getTarget());
-
-        $event->setCopy($copy);*/
+        // TODO : implement
     }
 }

@@ -1,11 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
-import invariant from 'invariant'
 
-import {url} from '#/main/app/api'
 import {theme} from '#/main/app/config'
-import {mount, unmount} from '#/main/app/mount'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {getResource} from '#/main/core/resources'
@@ -20,7 +16,7 @@ class ResourceMain extends Component {
   render() {
     return (
       <Await
-        for={getResource(this.props.newNode.meta.type)()}
+        for={getResource(this.props.resourceNode.meta.type)()}
         then={module => {
           if (module.App) {
             this.setState({component: module.App()})
@@ -41,10 +37,6 @@ ResourceMain.propTypes = {
   resourceNode: T.shape(
     ResourceNodeTypes.propTypes
   ).isRequired
-}
-
-ResourceMain.defaultProps = {
-  lifecycle: {}
 }
 
 export {

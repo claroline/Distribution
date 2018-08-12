@@ -13,6 +13,10 @@ const reducer = combineReducers({
     [RESOURCE_LOAD]: () => true
   }),
 
+  accessErrors: makeReducer({}, {
+
+  }),
+
   embedded: makeReducer(false), // this can not be changed at runtime
 
   /**
