@@ -10,7 +10,7 @@ import {reducer}   from '#/main/core/resource/store/reducer'
 import {selectors} from '#/main/core/resource/store/selectors'
 
 // append the reducer to the store
-registry.add(selectors.STORE_NAME, reducer)
+//registry.add(selectors.STORE_NAME, reducer)
 
 // export store module
 export {

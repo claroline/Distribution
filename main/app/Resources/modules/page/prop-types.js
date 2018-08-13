@@ -86,12 +86,15 @@ const Page = {
      */
     sections: T.arrayOf(T.shape({
 
-    }))
+    })),
+
+    styles: T.arrayOf(T.string)
   },
   defaultProps: {
     embedded: false,
     fullscreen: false,
-    actions: []
+    actions: [],
+    styles: []
   }
 }
 

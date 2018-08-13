@@ -37,7 +37,7 @@ const ResourceNode = {
     display: T.shape({
       fullscreen: T.bool.isRequired,
       showIcon: T.bool
-    }).isRequired,
+    }),
 
     /**
      * Access restrictions.
@@ -70,6 +70,7 @@ const ResourceNode = {
       views: 0
     },
     display: {
+      fullscreen: false,
       showIcon: true
     },
     restrictions: {

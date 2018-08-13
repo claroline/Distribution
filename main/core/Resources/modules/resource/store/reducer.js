@@ -5,7 +5,8 @@ import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 import {
   RESOURCE_LOAD,
   RESOURCE_UPDATE_NODE,
-  USER_EVALUATION_UPDATE
+  USER_EVALUATION_UPDATE,
+  RESOURCE_RESTRICTIONS_DISMISS
 } from '#/main/core/resource/store/actions'
 
 const reducer = combineReducers({
@@ -13,8 +14,16 @@ const reducer = combineReducers({
     [RESOURCE_LOAD]: () => true
   }),
 
-  accessErrors: makeReducer({}, {
-
+  accessRestrictions: combineReducers({
+    dismissed: makeReducer(false, {
+      [RESOURCE_RESTRICTIONS_DISMISS]: () => true
+    }),
+    dismissible: makeReducer(false, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessRestrictions || {}
+    }),
+    errors: makeReducer({}, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessRestrictions || {}
+    })
   }),
 
   embedded: makeReducer(false), // this can not be changed at runtime

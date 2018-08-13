@@ -13,8 +13,8 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/core/translation'
 import {constants} from '#/plugin/lesson/resources/lesson/constants'
 import {buildParentChapterChoices} from '#/plugin/lesson/resources/lesson/components/tree/utils'
-import {actions as lessonActions} from '#/plugin/lesson/resources/lesson/store/'
-import {MODAL_LESSON_CHAPTER_DELETE} from '#/plugin/lesson/resources/lesson/player/modals/chapter'
+import {actions as lessonActions} from '#/plugin/lesson/resources/lesson/store'
+import {MODAL_LESSON_CHAPTER_DELETE} from '#/plugin/lesson/resources/lesson/modals/chapter'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 // todo : use standard form buttons

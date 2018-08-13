@@ -1,5 +1,6 @@
 import {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import invariant from 'invariant'
 import isEqual from 'lodash/isEqual'
 
 import {makeCancelable} from '#/main/app/api'
@@ -34,7 +35,10 @@ class Await extends Component {
 
             this.setState({status: 'success'})
           })
-          .catch(() => this.setState({status: 'error'}))
+          .catch((e) => {
+            console.log(e)
+            this.setState({status: 'error'})
+          })
       )
 
       this.pending.promise.then(

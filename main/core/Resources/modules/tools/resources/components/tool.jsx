@@ -29,10 +29,10 @@ const Tool = props =>
       primaryAction={(resourceNode) => ({ // todo : use resource default action
         type: 'url',
         label: trans('open', {}, 'actions'),
-        disabled: !hasPermission('open', resourceNode),
-        target: [ 'claro_resource_open', {
-          node: resourceNode.autoId,
-          resourceType: resourceNode.meta.type
+        //disabled: !hasPermission('open', resourceNode),
+        target: [ 'claro_resource_show', {
+          type: resourceNode.meta.type,
+          id: resourceNode.id
         }]
       })}
       actions={(resourceNodes) => getActions(resourceNodes, {

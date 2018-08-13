@@ -15,7 +15,8 @@ const ResourcePage = connect(
   (state) => ({
     embedded: selectors.embedded(state),
     resourceNode: selectors.resourceNode(state),
-    userEvaluation: selectors.resourceEvaluation(state)
+    userEvaluation: selectors.resourceEvaluation(state),
+    accessRestrictions: selectors.accessRestrictions(state)
   }),
   (dispatch) => ({
     updateNode(resourceNode) {
@@ -23,6 +24,9 @@ const ResourcePage = connect(
     },
     loadResource(resourceNode) {
       dispatch(actions.fetchResource(resourceNode))
+    },
+    dismissRestrictions() {
+      dispatch(actions.dismissRestrictions())
     }
   })
 )(ResourcePageComponent)

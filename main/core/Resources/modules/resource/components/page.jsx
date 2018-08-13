@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
 import {Page} from '#/main/app/page/components/page'
@@ -47,11 +48,12 @@ class ResourcePage extends Component {
     return (
       <Page
         className={classes('resource-page', `${this.props.resourceNode.meta.type}-page`)}
+        styles={this.props.styles}
         embedded={this.props.embedded}
         fullscreen={this.state.fullscreen}
         title={this.props.resourceNode.name}
         poster={this.props.resourceNode.poster ? this.props.resourceNode.poster.url : undefined}
-        icon={this.props.resourceNode.display.showIcon && this.props.userEvaluation &&
+        icon={get(this.props.resourceNode, 'display.showIcon') && this.props.userEvaluation &&
           <UserProgression
             userEvaluation={this.props.userEvaluation}
             width={70}
@@ -91,9 +93,16 @@ class ResourcePage extends Component {
           ])
         })}
       >
-        <ResourceRestrictions />
+        {(!isEmpty(this.props.accessRestrictions) && !this.props.accessRestrictions.dismissed) &&
+          <ResourceRestrictions
+            {...this.props.accessRestrictions}
+            dismiss={this.props.dismissRestrictions}
+          />
+        }
 
-        {/*this.props.children*/}
+        {(isEmpty(this.props.accessRestrictions) || this.props.accessRestrictions.dismissed) &&
+          this.props.children
+        }
       </Page>
     )
   }
@@ -107,8 +116,18 @@ ResourcePage.propTypes = {
   resourceNode: T.shape(
     ResourceNodeTypes.propTypes
   ).isRequired,
+
+  accessRestrictions: T.shape({
+    dismissible: T.bool.isRequired,
+    dismissed: T.bool.isRequired,
+    errors: T.shape({
+
+    }).isRequired
+  }),
+
   updateNode: T.func.isRequired,
   loadResource: T.func.isRequired,
+  dismissRestrictions: T.func.isRequired,
 
   /**
    * The current user evaluation.
@@ -123,6 +142,7 @@ ResourcePage.propTypes = {
   customActions: T.arrayOf(T.shape(
     ActionTypes.propTypes
   )),
+  styles: T.arrayOf(T.string),
   children: T.node.isRequired
 }
 

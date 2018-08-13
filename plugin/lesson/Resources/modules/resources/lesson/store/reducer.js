@@ -5,9 +5,7 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {FORM_SUBMIT_SUCCESS, FORM_RESET} from '#/main/app/content/form/store/actions'
 import {
   SUMMARY_PIN_TOGGLE,
-  SUMMARY_OPEN_TOGGLE
-} from '#/plugin/path/resources/path/actions'
-import {
+  SUMMARY_OPEN_TOGGLE,
   CHAPTER_LOAD,
   CHAPTER_RESET,
   TREE_LOADED,

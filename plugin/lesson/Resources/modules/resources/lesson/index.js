@@ -1,7 +1,6 @@
-import {Player} from '#/plugin/lesson/resources/lesson/player/components/player'
+
+import {LessonResource} from '#/plugin/lesson/resources/lesson/components/resource'
 import {reducer} from '#/plugin/lesson/resources/lesson/store'
-
-
 
 /**
  * Lesson resource application.
@@ -9,7 +8,7 @@ import {reducer} from '#/plugin/lesson/resources/lesson/store'
  * @constructor
  */
 export const App = () => ({
-  component: Player,
+  component: LessonResource,
   store: reducer,
   styles: 'claroline-distribution-plugin-lesson-lesson-resource',
   initialData: initialData => Object.assign({}, initialData, {

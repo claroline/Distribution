@@ -1,9 +1,9 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {App} from '#/main/core/resources/text'
+import {App} from '#/main/core/resource'
 
 // generate application
-const DirectoryApp = new App()
+const ResourceApp = new App()
 
 // mount the react application
-bootstrap('.directory-container', DirectoryApp.component, DirectoryApp.store, DirectoryApp.initialData)
+bootstrap('.resource-container', ResourceApp.component, ResourceApp.store, ResourceApp.initialData)

@@ -5,6 +5,8 @@ import {trans} from '#/main/core/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {FormData} from '#/main/app/content/form/components/data'
 
+// todo : don't create a form for a checkbox
+
 class ChapterDeleteModal extends Component {
   constructor(props) {
     super(props)

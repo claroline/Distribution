@@ -25,7 +25,7 @@ import {
   STEP_COPY,
   STEP_PASTE,
   STEP_COPY_RESET
-} from '#/plugin/path/resources/path/editor/actions'
+} from '#/plugin/path/resources/path/editor/store/actions'
 
 const defaultState = {
   data: [],

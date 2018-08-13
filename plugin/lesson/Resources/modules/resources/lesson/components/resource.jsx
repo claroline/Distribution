@@ -7,7 +7,7 @@ import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
 
 import {ResourcePage} from '#/main/core/resource/containers/page'
-import {RoutedPageContent} from '#/main/core/layout/router'
+import {Routes} from '#/main/app/router'
 import {PageContent} from '#/main/core/layout/page/index'
 import {SummarizedContent} from '#/main/app/content/summary/components/content'
 import {LINK_BUTTON, DOWNLOAD_BUTTON} from '#/main/app/buttons'
@@ -18,7 +18,7 @@ import {ChapterResource} from '#/plugin/lesson/resources/lesson/components/chapt
 import {normalizeTree} from '#/plugin/lesson/resources/lesson/components/tree/utils'
 import {ChapterForm} from '#/plugin/lesson/resources/lesson/components/chapter-form'
 
-class PlayerComponent extends Component {
+class Resource extends Component {
   constructor(props) {
     super(props)
 
@@ -59,56 +59,49 @@ class PlayerComponent extends Component {
           }
         ]}
       >
-        <PageContent>
-          <SummarizedContent
-            summary={{
-              displayed: true,
-              opened: true,
-              pinned: true,
-              title: trans('summary'),
-              links: normalizeTree(this.props.tree, this.props.lesson.id, this.props.canEdit).children
-            }}
-          >
-            <RoutedPageContent className="lesson-page-content" routes={[
-              {
-                path: '/',
-                component: ChapterResource,
-                exact: true
-              },
-              {
-                path: '/new',
-                component: ChapterForm,
-                exact: true,
-                onEnter: () => this.props.createChapter(this.props.lesson.id)
-              },
-              {
-                path: '/:slug',
-                component: ChapterResource,
-                exact: true,
-                onEnter: params => this.props.loadChapter(this.props.lesson.id, params.slug)
-              },
-              {
-                path: '/:slug/edit',
-                component: ChapterForm,
-                exact: true,
-                onEnter: params => this.props.editChapter(this.props.lesson.id, params.slug)
-              },
-              {
-                path: '/:slug/copy',
-                component: ChapterForm,
-                exact: true,
-                onEnter: params => this.props.copyChapter(this.props.lesson.id, params.slug)
-              }
-            ]}/>
-          </SummarizedContent>
-        </PageContent>
+        <SummarizedContent
+          summary={{
+            displayed: true,
+            opened: true,
+            pinned: true,
+            title: trans('summary'),
+            links: normalizeTree(this.props.tree, this.props.lesson.id, this.props.canEdit).children
+          }}
+        >
+          <Routes className="lesson-page-content" routes={[
+            {
+              path: '/',
+              component: ChapterResource,
+              exact: true
+            }, {
+              path: '/new',
+              component: ChapterForm,
+              exact: true,
+              onEnter: () => this.props.createChapter(this.props.lesson.id)
+            }, {
+              path: '/:slug',
+              component: ChapterResource,
+              exact: true,
+              onEnter: params => this.props.loadChapter(this.props.lesson.id, params.slug)
+            }, {
+              path: '/:slug/edit',
+              component: ChapterForm,
+              exact: true,
+              onEnter: params => this.props.editChapter(this.props.lesson.id, params.slug)
+            }, {
+              path: '/:slug/copy',
+              component: ChapterForm,
+              exact: true,
+              onEnter: params => this.props.copyChapter(this.props.lesson.id, params.slug)
+            }
+          ]}/>
+        </SummarizedContent>
       </ResourcePage>
     )
   }
 }
 
-
-PlayerComponent.propTypes = {
+Resource.propTypes = {
   invalidated: T.bool.isRequired,
   fetchChapterTree: T.func.isRequired,
   lesson: T.any.isRequired,
@@ -121,7 +114,7 @@ PlayerComponent.propTypes = {
   editChapter: T.func.isRequired
 }
 
-const Player = connect(
+const LessonResource = connect(
   state => ({
     lesson: state.lesson,
     tree: state.tree.data,
@@ -144,8 +137,8 @@ const Player = connect(
     },
     fetchChapterTree: lessonId => dispatch(actions.fetchChapterTree(lessonId))
   })
-)(PlayerComponent)
+)(Resource)
 
 export {
-  Player
+  LessonResource
 }

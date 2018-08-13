@@ -39,6 +39,17 @@ const published = createSelector(
   (meta) => meta.published
 )
 
+const resourceType = createSelector(
+  [meta],
+  (meta) => meta.type
+)
+
+// access restrictions selectors
+const accessRestrictions = createSelector(
+  [resource],
+  (resource) => resource.accessRestrictions
+)
+
 // evaluation selectors
 const resourceEvaluation = createSelector(
   [resource],
@@ -78,11 +89,14 @@ export const selectors = {
   embedded,
   // lifecycle
   resourceLifecycle,
+  // access restrictions
+  accessRestrictions,
   // node
   resourceNode,
   parent,
   meta,
   published,
+  resourceType,
   // evaluation
   resourceEvaluation,
   hasEvaluation,

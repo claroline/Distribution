@@ -7,6 +7,7 @@ import {selectors} from '#/main/core/resource/store/selectors'
 export const RESOURCE_UPDATE_NODE   = 'RESOURCE_UPDATE_NODE'
 export const USER_EVALUATION_UPDATE = 'USER_EVALUATION_UPDATE'
 export const RESOURCE_LOAD          = 'RESOURCE_LOAD'
+export const RESOURCE_RESTRICTIONS_DISMISS = 'RESOURCE_RESTRICTIONS_DISMISS'
 
 // action creators
 export const actions = {}
@@ -15,7 +16,8 @@ actions.loadResource = makeActionCreator(RESOURCE_LOAD, 'resourceData')
 actions.fetchResource = (resourceNode) => ({
   [API_REQUEST]: {
     url: ['claro_resource_load', {type: resourceNode.meta.type, id: resourceNode.id}],
-    success: (response, dispatch) => dispatch(actions.loadResource(response))
+    success: (response, dispatch) => dispatch(actions.loadResource(response)),
+    error: (response, dispatch) => console.log(response)
   }
 })
 
@@ -34,3 +36,5 @@ actions.triggerLifecycleAction = (action) => (dispatch, getState) => {
 }
 
 actions.updateUserEvaluation = makeActionCreator(USER_EVALUATION_UPDATE, 'userEvaluation')
+
+actions.dismissRestrictions = makeActionCreator(RESOURCE_RESTRICTIONS_DISMISS)

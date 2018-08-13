@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -95,6 +96,25 @@ class ResourceController
     }
 
     /**
+     * Renders a resource application.
+     *
+     * @EXT\Route("/show/{id}", name="claro_resource_show_short")
+     * @EXT\Route("/show/{type}/{id}", name="claro_resource_show")
+     * @EXT\Method("GET")
+     * @EXT\Template()
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return array
+     */
+    public function showAction(ResourceNode $resourceNode)
+    {
+        return [
+            'resourceNode' => $resourceNode,
+        ];
+    }
+
+    /**
      * Gets a resource.
      *
      * @EXT\Route("/{id}", name="claro_resource_load_short")
@@ -110,13 +130,19 @@ class ResourceController
         // gets the current user roles to check access restrictions
         $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
 
+        $dismissible = $this->restrictionsManager->canBypass($resourceNode);
         $accessErrors = $this->restrictionsManager->check($resourceNode, $userRoles);
-        if (empty($accessErrors) || $this->restrictionsManager->canBypass($resourceNode)) {
+        if (empty($accessErrors) || $dismissible) {
             $loaded = $this->manager->load($resourceNode);
 
             return new JsonResponse(
                 array_merge([
-                    'accessErrors' => $accessErrors,
+                    // append access restrictions to the loaded node
+                    // if any to let know the manager that other user can not enter the resource
+                    'accessRestrictions' => [
+                        'dismissible' => $dismissible,
+                        'errors' => $accessErrors,
+                    ],
                 ], $loaded)
             );
         }

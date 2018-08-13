@@ -1,8 +1,15 @@
 import {createSelector} from 'reselect'
 import get from 'lodash/get'
 
+const STORE_NAME = 'path'
+
+const resource = (state) => state[STORE_NAME]
+
 // path
-const path = state => state.path
+const path = createSelector(
+  [resource],
+  (resource) => resource.path
+)
 
 const steps = createSelector(
   [path],
@@ -19,8 +26,16 @@ const showOverview = createSelector(
   (path) => get(path, 'display.showOverview') || false
 )
 
+// is step navigation enabled ?
+const navigationEnabled = createSelector(
+  [resource]
+)
+
 // summary
-const summary = state => state.summary
+const summary = createSelector(
+  [resource],
+  (resource) => resource.summary
+)
 
 const summaryPinned = createSelector(
   [summary],
@@ -38,10 +53,9 @@ const fullWidth = createSelector(
   (summaryPinned, summaryOpened) => !summaryOpened || !summaryPinned
 )
 
-// is step navigation enabled ?
-const navigationEnabled = state => state.navigationEnabled
-
-export const select = {
+export const selectors = {
+  STORE_NAME,
+  resource,
   path,
   steps,
   empty,

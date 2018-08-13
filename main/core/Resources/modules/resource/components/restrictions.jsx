@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action'
-import {ASYNC_BUTTON} from '#/main/app/buttons'
+import {ASYNC_BUTTON, CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Password} from '#/main/core/layout/form/components/field/password'
 import {ContentHelp} from '#/main/app/content/components/help'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
@@ -121,54 +121,56 @@ const LocationRestriction = props =>
   </Restriction>
 
 const ResourceRestrictions = props =>
-  <div className="">
-    <EmptyPlaceholder
-      size="lg"
-      icon="fa fa-lock"
-      title={trans('restricted_access')}
-      help={trans('restricted_access_message', {}, 'resource')}
-    >
-      <RightsRestriction />
+  <EmptyPlaceholder
+    size="lg"
+    icon="fa fa-fw fa-lock"
+    title={trans('restricted_access')}
+    help={trans('restricted_access_message', {}, 'resource')}
+  >
+    <RightsRestriction />
 
-      <DeletedRestriction />
+    <DeletedRestriction />
 
-      <PublishedRestriction
-        validated={false}
-      />
+    <PublishedRestriction
+      validated={false}
+    />
 
-      <DateRestriction
-        validated={false}
-      />
+    <DateRestriction
+      validated={false}
+    />
 
-      <CodeRestriction
-        validated={false}
-      />
+    <CodeRestriction
+      validated={false}
+    />
 
-      <LocationRestriction
-        validated={false}
-      />
+    <LocationRestriction
+      validated={false}
+    />
 
+    {props.dismissible &&
       <Button
         className="btn btn-block btn-emphasis"
-        type={ASYNC_BUTTON}
+        type={CALLBACK_BUTTON}
         icon="fa fa-fw fa-sign-in-alt"
         label={trans('Accéder à la ressource', {}, 'actions')}
-        request={{
-
-        }}
+        callback={props.dismiss}
         primary={true}
       />
+    }
 
-      <ContentHelp help="En tant que gestionnaire vous pouvez toujours accéder à la ressource, même si les conditions d'accès ne sont pas satisfaites." />
-    </EmptyPlaceholder>
-
-    {/*<h4 className="h3">Conditions à remplir</h4>*/}
-
-
-  </div>
+    {props.dismissible &&
+      <ContentHelp
+        help="En tant que gestionnaire vous pouvez toujours accéder à la ressource, même si les conditions d'accès ne sont pas satisfaites."
+      />
+    }
+  </EmptyPlaceholder>
 
 ResourceRestrictions.propTypes = {
+  dismissible: T.bool,
+  errors: T.shape({
 
+  }).isRequired,
+  dismiss: T.func.isRequired
 }
 
 export {

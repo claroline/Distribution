@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {theme} from '#/main/app/config'
 
-import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
+import {Await} from '#/main/app/components/await'
 import {getResource} from '#/main/core/resources'
 
 class ResourceMain extends Component {
@@ -16,27 +16,28 @@ class ResourceMain extends Component {
   render() {
     return (
       <Await
-        for={getResource(this.props.resourceNode.meta.type)()}
+        for={getResource(this.props.resourceType)()}
         then={module => {
-          if (module.App) {
-            this.setState({component: module.App()})
+          const resourceApp = module.App()
+
+          console.log(resourceApp.component)
+
+          if (resourceApp) {
+            this.setState({
+              component: resourceApp.component,
+              styles: resourceApp.styles
+            })
           }
         }}
       >
         {this.state.component && React.createElement(this.state.component)}
-
-        {this.state.styles && 0 !== this.state.styles.length &&
-          <link rel="stylesheet" type="text/css" href={theme(this.state.styles)} />
-        }
       </Await>
     )
   }
 }
 
 ResourceMain.propTypes = {
-  resourceNode: T.shape(
-    ResourceNodeTypes.propTypes
-  ).isRequired
+  resourceType: T.string.isRequired
 }
 
 export {
