@@ -31,7 +31,12 @@ class WidgetContainer
     /**
      * The list of content instances.
      *
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Tab\HomeTab", inversedBy="container", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(
+     *    targetEntity="Claroline\CoreBundle\Entity\Tab\HomeTab",
+     *    inversedBy="container",
+     *    cascade={"persist", "remove"}
+     * )
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      * @ORM\OrderBy({"position" = "ASC"})
      */
     private $homeTab;

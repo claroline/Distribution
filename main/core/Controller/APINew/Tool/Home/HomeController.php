@@ -15,6 +15,7 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Controller\AbstractApiController;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -32,6 +33,8 @@ class HomeController extends AbstractApiController
     private $crud;
     /** @var SerializerProvider */
     private $serializer;
+    /** @var ObjectManager */
+    private $om;
 
     /**
      * HomeController constructor.
@@ -39,7 +42,8 @@ class HomeController extends AbstractApiController
      * @DI\InjectParams({
      *     "finder"     = @DI\Inject("claroline.api.finder"),
      *     "crud"       = @DI\Inject("claroline.api.crud"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param FinderProvider     $finder
@@ -49,11 +53,13 @@ class HomeController extends AbstractApiController
     public function __construct(
         FinderProvider $finder,
         Crud $crud,
-        SerializerProvider $serializer)
-    {
+        SerializerProvider $serializer,
+        ObjectManager $om
+    ) {
         $this->finder = $finder;
         $this->crud = $crud;
         $this->serializer = $serializer;
+        $this->om = $om;
     }
 
     /**
@@ -83,6 +89,8 @@ class HomeController extends AbstractApiController
             if (HomeTab::TYPE_ADMIN_DESKTOP !== $tab['type'] || 'administration' === $context) {
                 $updated[] = $this->crud->update(HomeTab::class, $tab, [$context]);
                 $ids[] = $tab['id']; // will be used to determine deleted tabs
+            } else {
+                $updated[] = $this->om->getObject($tab, HomeTab::class);
             }
         }
 
@@ -98,13 +106,12 @@ class HomeController extends AbstractApiController
           ]);
         }
 
-        /*
         foreach ($installedTabs as $installedTab) {
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
                 $this->crud->delete($installedTab);
             }
-        }*/
+        }
 
         return new JsonResponse(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);

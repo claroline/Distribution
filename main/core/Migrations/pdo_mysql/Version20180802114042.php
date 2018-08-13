@@ -147,6 +147,26 @@ class Version20180802114042 extends AbstractMigration
             DROP widget_name,
             DROP widget_position
         ');
+        $this->addSql('
+            ALTER TABLE claro_widget_container
+            DROP FOREIGN KEY FK_3B06DD75B628319
+        ');
+        $this->addSql('
+            ALTER TABLE claro_widget_container
+            ADD CONSTRAINT FK_3B06DD75B628319 FOREIGN KEY (homeTab_id)
+            REFERENCES claro_home_tab (id)
+            ON DELETE CASCADE
+        ');
+        $this->addSql('
+            ALTER TABLE claro_widget_instance
+            DROP FOREIGN KEY FK_5F89A385BC21F742
+        ');
+        $this->addSql('
+            ALTER TABLE claro_widget_instance
+            ADD CONSTRAINT FK_5F89A385BC21F742 FOREIGN KEY (container_id)
+            REFERENCES claro_widget_container (id)
+            ON DELETE CASCADE
+        ');
     }
 
     public function down(Schema $schema)
@@ -245,6 +265,24 @@ class Version20180802114042 extends AbstractMigration
             ALTER TABLE claro_widget_instance
             ADD widget_name VARCHAR(255) DEFAULT NULL COLLATE utf8_unicode_ci,
             ADD widget_position INT NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE claro_widget_container
+            DROP FOREIGN KEY FK_3B06DD75B628319
+        ');
+        $this->addSql('
+            ALTER TABLE claro_widget_container
+            ADD CONSTRAINT FK_3B06DD75B628319 FOREIGN KEY (homeTab_id)
+            REFERENCES claro_home_tab (id)
+        ');
+        $this->addSql('
+            ALTER TABLE claro_widget_instance
+            DROP FOREIGN KEY FK_5F89A385BC21F742
+        ');
+        $this->addSql('
+            ALTER TABLE claro_widget_instance
+            ADD CONSTRAINT FK_5F89A385BC21F742 FOREIGN KEY (container_id)
+            REFERENCES claro_widget_container (id)
         ');
     }
 }

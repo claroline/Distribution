@@ -62,6 +62,11 @@ class HomeTabSerializer
     {
         $homeTabConfig = $this->getConfig($homeTab, $options);
 
+        if (!$homeTabConfig) {
+            return [
+          ];
+        }
+
         $savedContainers = $homeTab->getWidgetContainers()->toArray();
         $containers = [];
 
@@ -173,14 +178,13 @@ class HomeTabSerializer
         }
 
         //readytoremove
-        /*
         $containers = $this->widgetContainerFinder->find(['homeTab' => $homeTab->getUuid()]);
 
         foreach ($containers as $container) {
             if (!in_array($container->getUuid(), $containerIds)) {
                 $this->om->remove($container);
             }
-        }*/
+        }
 
         return $homeTab;
     }
