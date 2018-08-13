@@ -1,5 +1,5 @@
 import {DirectoryResource} from '#/main/core/resources/directory/components/resource'
-import {reducer} from '#/main/core/resources/text/reducer'
+import {reducer} from '#/main/core/resources/directory/reducer'
 
 /**
  * Directory resource application.
