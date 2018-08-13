@@ -86,11 +86,16 @@ class HomeController extends AbstractApiController
         foreach ($tabs as $tab) {
             // do not update tabs set by the administration tool
 
-            if (HomeTab::TYPE_ADMIN_DESKTOP !== $tab['type'] || 'administration' === $context) {
+            if (HomeTab::TYPE_ADMIN_DESKTOP === $context) {
                 $updated[] = $this->crud->update(HomeTab::class, $tab, [$context]);
                 $ids[] = $tab['id']; // will be used to determine deleted tabs
             } else {
-                $updated[] = $this->om->getObject($tab, HomeTab::class);
+                if (HomeTab::TYPE_ADMIN_DESKTOP !== $tab['type']) {
+                    $updated[] = $this->crud->update(HomeTab::class, $tab, [$context]);
+                    $ids[] = $tab['id']; // will be used to determine deleted tabs
+                } else {
+                    $updated[] = $this->om->getObject($tab, HomeTab::class);
+                }
             }
         }
 
@@ -100,10 +105,13 @@ class HomeController extends AbstractApiController
             $installedTabs = $this->finder->fetch(HomeTab::class, ['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
         } else {
             $installedTabs = $this->finder->fetch(HomeTab::class, 'desktop' === $context ? [
-              'user' => $contextId,
-          ] : [
-              $context => $contextId,
-          ]);
+                'user' => $contextId,
+            ] : [
+                $context => $contextId,
+            ]);
+            $installedTabs = array_filter($installedTabs, function (HomeTab $tab) {
+                return HomeTab::TYPE_ADMIN_DESKTOP !== $tab->getType();
+            });
         }
 
         foreach ($installedTabs as $installedTab) {

@@ -87,6 +87,7 @@ class Updater120000 extends Updater
     {
         $this->updatePlatformParameters();
 
+        $this->updateHomeTabType();
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
         $this->updateTabsStructure();
@@ -94,6 +95,14 @@ class Updater120000 extends Updater
         $this->linkWidgetsInstanceToContainers();
         $this->restoreWidgetInstancesConfigs();
         $this->checkDesktopTabs();
+    }
+
+    private function updateHomeTabType()
+    {
+        $this->log('Updating hometab types...');
+        $sql = 'UPDATE claro_home_tab SET type = "administration" WHERE type LIKE "admin_desktop"';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     private function updatePlatformParameters()
