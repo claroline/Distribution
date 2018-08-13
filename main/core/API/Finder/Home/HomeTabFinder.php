@@ -27,7 +27,7 @@ class HomeTabFinder extends AbstractFinder
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Tab\HomeTab';
+        return HomeTab::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
@@ -35,12 +35,18 @@ class HomeTabFinder extends AbstractFinder
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'user':
+                    $qb->leftJoin('obj.homeTabConfigs', 'config');
                     $qb->leftJoin('obj.user', 'u');
                     $qb->andWhere($qb->expr()->orX(
                       $qb->expr()->eq('u.id', ':userId'),
                       $qb->expr()->eq('u.uuid', ':userId')
                     ));
-                    $qb->orWhere('obj.type = :desktopType');
+                    $qb->orWhere($qb->expr()->andX(
+                      $qb->expr()->eq('obj.type', ':desktopType'),
+                      $qb->expr()->eq('config.locked', true)//,
+                      //this option is missing in the config
+                      //$qb->expr()->eq('config.visible', true)
+                    ));
                     $qb->setParameter('userId', $filterValue);
                     $qb->setParameter('desktopType', HomeTab::TYPE_ADMIN_DESKTOP);
                     break;

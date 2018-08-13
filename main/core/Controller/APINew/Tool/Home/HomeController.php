@@ -98,12 +98,13 @@ class HomeController extends AbstractApiController
           ]);
         }
 
+        /*
         foreach ($installedTabs as $installedTab) {
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
                 $this->crud->delete($installedTab);
             }
-        }
+        }*/
 
         return new JsonResponse(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);

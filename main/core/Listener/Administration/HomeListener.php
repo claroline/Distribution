@@ -54,9 +54,11 @@ class HomeListener
           HomeTab::class,
           ['filters' => ['type' => HomeTab::TYPE_ADMIN_DESKTOP]]
         );
+
         $roles = $this->finder->search('Claroline\CoreBundle\Entity\Role',
           ['filters' => ['type' => Role::PLATFORM_ROLE]]
         );
+
         $content = $this->templating->render(
             'ClarolineCoreBundle:administration:home.html.twig', [
                 'editable' => true,
