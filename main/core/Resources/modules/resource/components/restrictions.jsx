@@ -63,7 +63,7 @@ const DeletedRestriction = props =>
       icon="fa fa-fw fa-recycle"
       label={trans('restore', {}, 'actions')}
       request={{
-
+        url: 'toto'
       }}
     />
   </Restriction>
@@ -80,7 +80,7 @@ const PublishedRestriction = props =>
       icon="fa fa-fw fa-eye"
       label={trans('publish', {}, 'actions')}
       request={{
-
+        url: 'toto'
       }}
     />
   </Restriction>
@@ -88,6 +88,7 @@ const PublishedRestriction = props =>
 const DateRestriction = props =>
   <Restriction
     icon="fa fa-fw fa-calendar"
+    title="date"
     validated={props.validated}
   >
   </Restriction>
@@ -147,7 +148,7 @@ const ResourceRestrictions = props =>
       validated={false}
     />
 
-    {props.dismissible &&
+    {props.managed &&
       <Button
         className="btn btn-block btn-emphasis"
         type={CALLBACK_BUTTON}
@@ -158,7 +159,7 @@ const ResourceRestrictions = props =>
       />
     }
 
-    {props.dismissible &&
+    {props.managed &&
       <ContentHelp
         help="En tant que gestionnaire vous pouvez toujours accéder à la ressource, même si les conditions d'accès ne sont pas satisfaites."
       />
@@ -166,7 +167,7 @@ const ResourceRestrictions = props =>
   </EmptyPlaceholder>
 
 ResourceRestrictions.propTypes = {
-  dismissible: T.bool,
+  managed: T.bool,
   errors: T.shape({
 
   }).isRequired,

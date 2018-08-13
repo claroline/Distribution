@@ -78,6 +78,7 @@ class ResourceListener
 
         $event->setData(array_merge([
             'resourceNode' => $this->serializer->serialize($resourceNode),
+            'managed' => $this->manager->isManager($resourceNode),
             'evaluation' => null, // todo flag evaluated resource types and auto load Evaluation if any
         ], $subEvent->getData()));
     }

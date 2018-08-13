@@ -19,13 +19,9 @@ class ResourceMain extends Component {
         for={getResource(this.props.resourceType)()}
         then={module => {
           const resourceApp = module.App()
-
-          console.log(resourceApp.component)
-
           if (resourceApp) {
             this.setState({
-              component: resourceApp.component,
-              styles: resourceApp.styles
+              component: resourceApp.component
             })
           }
         }}

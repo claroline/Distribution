@@ -130,19 +130,15 @@ class ResourceController
         // gets the current user roles to check access restrictions
         $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
 
-        $dismissible = $this->restrictionsManager->canBypass($resourceNode);
         $accessErrors = $this->restrictionsManager->check($resourceNode, $userRoles);
-        if (empty($accessErrors) || $dismissible) {
+        if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
             $loaded = $this->manager->load($resourceNode);
 
             return new JsonResponse(
                 array_merge([
                     // append access restrictions to the loaded node
                     // if any to let know the manager that other user can not enter the resource
-                    'accessRestrictions' => [
-                        'dismissible' => $dismissible,
-                        'errors' => $accessErrors,
-                    ],
+                    'accessErrors' => $accessErrors,
                 ], $loaded)
             );
         }

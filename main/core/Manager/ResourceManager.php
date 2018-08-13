@@ -1988,4 +1988,9 @@ class ResourceManager
 
         return $event->getData();
     }
+
+    public function isManager(ResourceNode $resourceNode)
+    {
+        return $this->rightsManager->isManager($resourceNode);
+    }
 }

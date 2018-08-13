@@ -43,18 +43,6 @@ class ResourceRestrictionsManager
     }
 
     /**
-     * Checks if the current user can bypass the restrictions.
-     *
-     * @param ResourceNode $resourceNode
-     *
-     * @return bool
-     */
-    public function canBypass(ResourceNode $resourceNode): bool
-    {
-        return $this->rightsManager->isManager($resourceNode);
-    }
-
-    /**
      * Checks access restrictions of a ResourceNodes.
      *
      * @param ResourceNode $resourceNode

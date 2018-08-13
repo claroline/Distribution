@@ -35,8 +35,10 @@ class Await extends Component {
 
             this.setState({status: 'success'})
           })
-          .catch((e) => {
-            console.log(e)
+          .catch(error => {
+            // this swallows the original error stack trace
+            // and make it complicated to debug but I don't find another way to do it.
+            invariant(false, `An error occurred in the awaited promise : ${error}`)
             this.setState({status: 'error'})
           })
       )

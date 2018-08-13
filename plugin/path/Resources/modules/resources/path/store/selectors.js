@@ -28,7 +28,8 @@ const showOverview = createSelector(
 
 // is step navigation enabled ?
 const navigationEnabled = createSelector(
-  [resource]
+  [resource],
+  (resource) => resource.navigationEnabled
 )
 
 // summary

@@ -1,24 +1,18 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import invariant from 'invariant'
 
-import {url} from '#/main/app/api'
-import {theme} from '#/main/app/config'
 import {mount, unmount} from '#/main/app/mount'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {getResource} from '#/main/core/resources'
 
+import {App} from '#/main/core/resource'
+
+// the class is because of the use of references and lifecycle
 class ResourceEmbedded extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {}
-  }
-
   componentDidMount() {
-    this.load(this.props.resourceNode)
+    this.mountResource(this.props.resourceNode, this.props.lifecycle)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -27,67 +21,25 @@ class ResourceEmbedded extends Component {
       // remove old app
       unmount(this.mountNode)
 
-      // load the new one
-      this.load(nextProps.resourceNode)
+      this.mountResource(nextProps.resourceNode, nextProps.lifecycle)
     }
   }
 
-  componentWillUnmount() {
-    unmount(this.mountNode)
-  }
+  mountResource(resourceNode, lifecycleActions) {
+    const ResourceApp = new App()
 
-  load(resourceNode) {
-    // Load app
-    getResource(resourceNode.meta.type)()
-      .then(module => {
-        // Load app data
-        fetch(
-          url(['claro_resource_load', {type: resourceNode.meta.type, id: resourceNode.id}]), {
-            method: 'GET',
-            credentials: 'include'
-          })
-          .then(response => response.json())
-          .then((responseData) => {
-            // generate the application
-            const embeddedApp = module.App()
-            if (embeddedApp) {
-              this.setState(
-                Object.assign({
-                  component: null,
-                  store: null,
-                  styles: null,
-                  initialData: (data) => data
-                }, embeddedApp),
-                () => {
-                  // append and bootstrap the app
-                  const initialData = this.state.initialData(responseData)
-
-                  // force some values in the embedded store
-                  initialData.resource.embedded = true
-                  initialData.resource.lifecycle = this.props.lifecycle
-
-                  mount(this.mountNode, this.state.component, this.state.store, initialData)
-                }
-              )
-            }
-          })
-      })
-      .catch(error => {
-        // this swallows the original error stack trace
-        // and make it complicated to debug but I don't find another way to do it.
-        invariant(false, `An error occurred while loading the EmbeddedApp : ${error}`)
-      })
+    mount(this.mountNode, ResourceApp.component, ResourceApp.store, {
+      resource: {
+        node: resourceNode,
+        embedded: true,
+        lifecycle: lifecycleActions
+      }
+    })
   }
 
   render() {
     return (
-      <section className={classes('embedded-resource', this.props.className)}>
-        <div ref={element => this.mountNode = element} className={`${this.props.resourceNode.meta.type}-container`} />
-
-        {this.state.styles && 0 !== this.state.styles.length &&
-          <link rel="stylesheet" type="text/css" href={theme(this.state.styles)} />
-        }
-      </section>
+      <div ref={element => this.mountNode = element} className={classes('resource-container embedded-resource-container', this.props.className)} />
     )
   }
 }

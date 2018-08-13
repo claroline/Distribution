@@ -12,6 +12,16 @@ const embedded = createSelector(
   (resource) => resource.embedded
 )
 
+const managed = createSelector(
+  [resource],
+  (resource) => resource.managed
+)
+
+const loaded = createSelector(
+  [resource],
+  (resource) => resource.loaded
+)
+
 // lifecycle selectors
 const resourceLifecycle = createSelector(
   [resource],
@@ -45,9 +55,9 @@ const resourceType = createSelector(
 )
 
 // access restrictions selectors
-const accessRestrictions = createSelector(
+const accessErrors = createSelector(
   [resource],
-  (resource) => resource.accessRestrictions
+  (resource) => !resource.accessErrors.dismissed && !isEmpty(resource.accessErrors.details) ? resource.accessErrors.details : {}
 )
 
 // evaluation selectors
@@ -87,10 +97,12 @@ export const selectors = {
   STORE_NAME,
   resource,
   embedded,
+  managed,
+  loaded,
   // lifecycle
   resourceLifecycle,
   // access restrictions
-  accessRestrictions,
+  accessErrors,
   // node
   resourceNode,
   parent,

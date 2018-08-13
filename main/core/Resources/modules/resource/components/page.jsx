@@ -18,6 +18,8 @@ import {getActions, getToolbar} from '#/main/core/resource/utils'
 import {ResourceRestrictions} from '#/main/core/resource/components/restrictions'
 import {UserProgression} from '#/main/core/resource/components/user-progression'
 
+// todo : manage fullscreen through store
+
 class ResourcePage extends Component {
   constructor(props) {
     super(props)
@@ -93,14 +95,15 @@ class ResourcePage extends Component {
           ])
         })}
       >
-        {(!isEmpty(this.props.accessRestrictions) && !this.props.accessRestrictions.dismissed) &&
+        {this.props.loaded && !isEmpty(this.props.accessErrors) &&
           <ResourceRestrictions
-            {...this.props.accessRestrictions}
+            errors={this.props.accessErrors}
             dismiss={this.props.dismissRestrictions}
+            managed={this.props.managed}
           />
         }
 
-        {(isEmpty(this.props.accessRestrictions) || this.props.accessRestrictions.dismissed) &&
+        {this.props.loaded && isEmpty(this.props.accessErrors) &&
           this.props.children
         }
       </Page>
@@ -109,7 +112,10 @@ class ResourcePage extends Component {
 }
 
 ResourcePage.propTypes = {
+  loaded: T.bool.isRequired,
   embedded: T.bool,
+  managed: T.bool.isRequired,
+
   /**
    * The current resource node.
    */
@@ -117,13 +123,7 @@ ResourcePage.propTypes = {
     ResourceNodeTypes.propTypes
   ).isRequired,
 
-  accessRestrictions: T.shape({
-    dismissible: T.bool.isRequired,
-    dismissed: T.bool.isRequired,
-    errors: T.shape({
-
-    }).isRequired
-  }),
+  accessErrors: T.object,
 
   updateNode: T.func.isRequired,
   loadResource: T.func.isRequired,

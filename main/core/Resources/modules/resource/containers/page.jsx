@@ -13,10 +13,12 @@ import {actions, selectors} from '#/main/core/resource/store'
  */
 const ResourcePage = connect(
   (state) => ({
+    loaded: selectors.loaded(state),
     embedded: selectors.embedded(state),
+    managed: selectors.managed(state),
     resourceNode: selectors.resourceNode(state),
     userEvaluation: selectors.resourceEvaluation(state),
-    accessRestrictions: selectors.accessRestrictions(state)
+    accessErrors: selectors.accessErrors(state)
   }),
   (dispatch) => ({
     updateNode(resourceNode) {

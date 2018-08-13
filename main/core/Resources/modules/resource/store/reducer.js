@@ -14,19 +14,20 @@ const reducer = combineReducers({
     [RESOURCE_LOAD]: () => true
   }),
 
-  accessRestrictions: combineReducers({
+  accessErrors: combineReducers({
     dismissed: makeReducer(false, {
       [RESOURCE_RESTRICTIONS_DISMISS]: () => true
     }),
-    dismissible: makeReducer(false, {
-      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessRestrictions || {}
-    }),
-    errors: makeReducer({}, {
-      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessRestrictions || {}
+    details: makeReducer({}, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessErrors || {}
     })
   }),
 
   embedded: makeReducer(false), // this can not be changed at runtime
+
+  managed: makeReducer(false, {
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.managed || false
+  }),
 
   /**
    * Manages the ResourceNode of the resource.

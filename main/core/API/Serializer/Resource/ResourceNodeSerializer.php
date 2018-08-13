@@ -211,7 +211,6 @@ class ResourceNodeSerializer
                 'authors' => $resourceNode->getAuthor(),
                 'license' => $resourceNode->getLicense(),
                 'portal' => $resourceNode->isPublishedToPortal(),
-                'isManager' => $this->rightsManager->isManager($resourceNode), // todo : data about current user should not be here (should be in `rights` section)
             ]);
         }
 

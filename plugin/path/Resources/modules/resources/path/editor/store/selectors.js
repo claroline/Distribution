@@ -16,11 +16,14 @@ const path = createSelector(
   (form) => form.data
 )
 
-const stepCopy = state => state.pathForm.copy
-
-const steps= createSelector(
+const steps = createSelector(
   [path],
   (path) => path.steps || []
+)
+
+const stepCopy = createSelector(
+  [form],
+  (form) => form.copy
 )
 
 export const selectors = {
