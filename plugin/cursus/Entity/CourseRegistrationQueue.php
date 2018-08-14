@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
@@ -27,6 +28,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  */
 class CourseRegistrationQueue
 {
+    use UuidTrait;
+
     const WAITING = 1;
     const WAITING_USER = 2;
     const WAITING_VALIDATOR = 4;
@@ -92,6 +95,11 @@ class CourseRegistrationQueue
      * @ORM\JoinColumn(name="organization_admin_id", nullable=true, onDelete="SET NULL")
      */
     protected $organizationAdmin;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

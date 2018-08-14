@@ -207,6 +207,7 @@ class CourseSession
     public function __construct()
     {
         $this->refreshUuid();
+        $this->creationDate = new \DateTime();
         $this->cursus = new ArrayCollection();
         $this->sessionUsers = new ArrayCollection();
         $this->sessionGroups = new ArrayCollection();
@@ -386,7 +387,7 @@ class CourseSession
         return $this->startDate;
     }
 
-    public function setStartDate($startDate)
+    public function setStartDate(\DateTime $startDate = null)
     {
         $this->startDate = $startDate;
     }
@@ -396,7 +397,7 @@ class CourseSession
         return $this->endDate;
     }
 
-    public function setEndDate($endDate)
+    public function setEndDate(\DateTime $endDate = null)
     {
         $this->endDate = $endDate;
     }

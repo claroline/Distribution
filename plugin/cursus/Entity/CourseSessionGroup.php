@@ -11,6 +11,7 @@
 namespace Claroline\CursusBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Group;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,6 +28,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CourseSessionGroup
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -60,6 +63,11 @@ class CourseSessionGroup
      * @ORM\Column(name="group_type", type="integer", nullable=false)
      */
     protected $groupType = 0;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

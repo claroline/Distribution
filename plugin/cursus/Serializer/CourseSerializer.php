@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
@@ -55,39 +56,49 @@ class CourseSerializer
 
     /**
      * @param Course $course
+     * @param array  $options
      *
      * @return array
      */
-    public function serialize(Course $course)
+    public function serialize(Course $course, array $options = [])
     {
-        return [
+        $serialized = [
             'id' => $course->getUuid(),
             'code' => $course->getCode(),
             'title' => $course->getTitle(),
             'description' => $course->getDescription(),
-            'meta' => [
-                'tutorRoleName' => $course->getTutorRoleName(),
-                'learnerRoleName' => $course->getLearnerRoleName(),
-                'icon' => $course->getIcon(),
-                'maxUsers' => $course->getMaxUsers(),
-                'defaultSessionDuration' => $course->getDefaultSessionDuration(),
-                'withSessionEvent' => $course->getWithSessionEvent(),
-                'displayOrder' => $course->getDisplayOrder(),
-            ],
-            'registration' => [
-                'publicRegistration' => $course->getPublicRegistration(),
-                'publicUnregistration' => $course->getPublicUnregistration(),
-                'registrationValidation' => $course->getRegistrationValidation(),
-                'userValidation' => $course->getUserValidation(),
-                'organizationValidation' => $course->getOrganizationValidation(),
-            ],
-            'workspaceModel' => $course->getWorkspaceModel() ?
-                $this->workspaceSerializer->serialize($course->getWorkspaceModel()) :
-                null,
-            'workspace' => $course->getWorkspace() ?
-                $this->workspaceSerializer->serialize($course->getWorkspace()) :
-                null,
         ];
+
+        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $serialized = array_merge($serialized, [
+                'meta' => [
+                    'workspaceModel' => $course->getWorkspaceModel() ?
+                        $this->workspaceSerializer->serialize($course->getWorkspaceModel(), [Options::SERIALIZE_MINIMAL]) :
+                        null,
+                    'workspace' => $course->getWorkspace() ?
+                        $this->workspaceSerializer->serialize($course->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
+                        null,
+                    'tutorRoleName' => $course->getTutorRoleName(),
+                    'learnerRoleName' => $course->getLearnerRoleName(),
+                    'icon' => $course->getIcon(),
+                    'defaultSessionDuration' => $course->getDefaultSessionDuration(),
+                    'withSessionEvent' => $course->getWithSessionEvent(),
+                    'displayOrder' => $course->getDisplayOrder(),
+                ],
+                'restrictions' => [
+                    'maxUsers' => $course->getMaxUsers(),
+                ],
+                'registration' => [
+                    'publicRegistration' => $course->getPublicRegistration(),
+                    'publicUnregistration' => $course->getPublicUnregistration(),
+                    'registrationValidation' => $course->getRegistrationValidation(),
+                    'userValidation' => $course->getUserValidation(),
+                    'organizationValidation' => $course->getOrganizationValidation(),
+                ],
+            ]);
+        }
+
+        return $serialized;
     }
 
     /**
@@ -102,33 +113,31 @@ class CourseSerializer
         $this->sipe('code', 'setCode', $data, $course);
         $this->sipe('title', 'setTitle', $data, $course);
         $this->sipe('description', 'setDescription', $data, $course);
+
         $this->sipe('meta.tutorRoleName', 'setTutorRoleName', $data, $course);
         $this->sipe('meta.learnerRoleName', 'setLearnerRoleName', $data, $course);
         $this->sipe('meta.icon', 'setIcon', $data, $course);
-        $this->sipe('meta.maxUsers', 'setMaxUsers', $data, $course);
         $this->sipe('meta.defaultSessionDuration', 'setDefaultSessionDuration', $data, $course);
         $this->sipe('meta.withSessionEvent', 'setWithSessionEvent', $data, $course);
         $this->sipe('meta.displayOrder', 'setDisplayOrder', $data, $course);
+
+        $this->sipe('restrictions.maxUsers', 'setMaxUsers', $data, $course);
+
         $this->sipe('registration.publicRegistration', 'setPublicRegistration', $data, $course);
         $this->sipe('registration.publicUnregistration', 'setPublicUnregistration', $data, $course);
         $this->sipe('registration.registrationValidation', 'setRegistrationValidation', $data, $course);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $course);
         $this->sipe('registration.organizationValidation', 'setOrganizationValidation', $data, $course);
 
-        if (isset($data['workspace']['uuid'])) {
-            $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspace']['uuid']]);
+        $workspace = isset($data['meta']['workspace']['uuid']) ?
+            $this->workspaceRepo->findOneBy(['uuid' => $data['meta']['workspace']['uuid']]) :
+            null;
+        $course->setWorkspace($workspace);
 
-            if ($workspace) {
-                $course->setWorkspace($workspace);
-            }
-        }
-        if (isset($data['workspaceModel']['uuid'])) {
-            $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspaceModel']['uuid']]);
-
-            if ($workspace) {
-                $course->setWorkspaceModel($workspace);
-            }
-        }
+        $workspaceModel = isset($data['meta']['workspaceModel']['uuid']) ?
+            $this->workspaceRepo->findOneBy(['uuid' => $data['meta']['workspaceModel']['uuid']]) :
+            null;
+        $course->setWorkspaceModel($workspaceModel);
 
         return $course;
     }

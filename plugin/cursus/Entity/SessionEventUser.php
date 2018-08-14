@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,6 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SessionEventUser
 {
+    use UuidTrait;
+
     const REGISTERED = 0;
     const PENDING = 1;
 
@@ -65,6 +68,11 @@ class SessionEventUser
      * @ORM\JoinColumn(name="presence_status_id", nullable=true, onDelete="SET NULL")
      */
     protected $presenceStatus;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

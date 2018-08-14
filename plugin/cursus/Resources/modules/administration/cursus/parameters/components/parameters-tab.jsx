@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 import {Routes} from '#/main/app/router'
 
-import {trans} from '#/main/core/translation'
 import {actions as formActions} from '#/main/app/content/form/store'
 
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
@@ -18,8 +17,8 @@ const ParametersTabComponent = props =>
         path: '/parameters',
         exact: true,
         component: Parameters,
-        onEnter: (params) => props.openForm(props.parameters),
-        onLeave: (params) => props.openForm(props.parameters)
+        onEnter: () => props.openForm(props.parameters),
+        onLeave: () => props.openForm(props.parameters)
       }
     ]}
   />

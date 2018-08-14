@@ -6,6 +6,9 @@ import {TabbedPageContainer} from '#/main/core/layout/tabs'
 // app sections
 import {ParametersTab} from '#/plugin/cursus/administration/cursus/parameters/components/parameters-tab'
 import {SessionTab, SessionTabActions} from '#/plugin/cursus/administration/cursus/session/components/session-tab'
+// import {CourseTab, CourseTabActions} from '#/plugin/cursus/administration/cursus/course/components/course-tab'
+// import {CursusTab, CursusTabActions} from '#/plugin/cursus/administration/cursus/cursus/components/cursus-tab'
+// import {SessionEventTab, SessionEventTabActions} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-tab'
 
 const CursusTool = props =>
   <TabbedPageContainer
@@ -24,21 +27,21 @@ const CursusTool = props =>
       // }, {
       //   icon: 'fa fa-tasks',
       //   title: trans('courses', {}, 'cursus'),
-      //   path: '/cursus',
-      //   actions: SessionTabActions,
-      //   content: SessionTab
+      //   path: '/courses',
+      //   actions: CourseTabActions,
+      //   content: CourseTab
       // }, {
       //   icon: 'fa fa-database',
       //   title: trans('cursus', {}, 'cursus'),
       //   path: '/cursus',
-      //   actions: SessionTabActions,
-      //   content: SessionTab
+      //   actions: CursusTabActions,
+      //   content: CursusTab
       // }, {
       //   icon: 'fa fa-clock-o',
-      //   title: trans('sessions', {}, 'cursus'),
-      //   path: '/cursus',
-      //   actions: SessionTabActions,
-      //   content: SessionTab
+      //   title: trans('session_events', {}, 'cursus'),
+      //   path: '/events',
+      //   actions: SessionEventTabActions,
+      //   content: SessionEventTab
       }, {
         icon: 'fa fa-cog',
         title: trans('parameters'),

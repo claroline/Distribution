@@ -19,14 +19,12 @@ use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
-use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventComment;
 use Claroline\CursusBundle\Entity\SessionEventSet;
 use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Form\CoursesWidgetConfigurationType;
 use Claroline\CursusBundle\Form\MyCoursesWidgetConfigurationType;
-use Claroline\CursusBundle\Form\PluginConfigurationType;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
@@ -88,111 +86,6 @@ class CursusController extends Controller
         $this->tokenStorage = $tokenStorage;
         $this->toolManager = $toolManager;
         $this->translator = $translator;
-    }
-
-    /********************************
-     * Plugin configuration methods *
-     ********************************/
-
-    /**
-     * @EXT\Route(
-     *     "/plugin/configure/form",
-     *     name="claro_cursus_plugin_configure_form"
-     * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     * @EXT\Template()
-     */
-    public function pluginConfigureFormAction()
-    {
-        $this->checkToolAccess();
-        $displayedWords = [];
-
-        foreach (CursusDisplayedWord::$defaultKey as $key) {
-            $displayedWords[$key] = $this->cursusManager->getDisplayedWord($key);
-        }
-
-        $form = $this->formFactory->create(
-            new PluginConfigurationType($this->platformConfigHandler),
-            $this->cursusManager->getConfirmationEmail()
-        );
-
-        return [
-            'form' => $form->createView(),
-            'defaultWords' => CursusDisplayedWord::$defaultKey,
-            'displayedWords' => $displayedWords,
-        ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/plugin/configure",
-     *     name="claro_cursus_plugin_configure"
-     * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     * @EXT\Template("ClarolineCursusBundle:cursus:plugin_configure_form.html.twig")
-     */
-    public function pluginConfigureAction()
-    {
-        $this->checkToolAccess();
-        $displayedWords = [];
-
-        foreach (CursusDisplayedWord::$defaultKey as $key) {
-            $displayedWords[$key] = $this->cursusManager->getDisplayedWord($key);
-        }
-
-        $formData = $this->request->get('cursus_plugin_configuration_form');
-        $this->cursusManager->persistConfirmationEmail($formData['content']);
-        $this->platformConfigHandler->setParameters(
-            [
-                'cursusbundle_default_session_start_date' => $formData['startDate'],
-                'cursusbundle_default_session_end_date' => $formData['endDate'],
-            ]
-        );
-        $form = $this->formFactory->create(
-            new PluginConfigurationType($this->platformConfigHandler),
-            $this->cursusManager->getConfirmationEmail()
-        );
-
-        return [
-            'form' => $form->createView(),
-            'defaultWords' => CursusDisplayedWord::$defaultKey,
-            'displayedWords' => $displayedWords,
-        ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/admin/displayed/word/{key}/change/{value}",
-     *     name="claro_cursus_change_displayed_word",
-     *     defaults={"value"=""},
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     */
-    public function displayedWordChangeAction($key, $value = '')
-    {
-        $this->authorization->isGranted('ROLE_ADMIN');
-        $displayedWord = $this->cursusManager->getOneDisplayedWordByWord($key);
-
-        if (is_null($displayedWord)) {
-            $displayedWord = new CursusDisplayedWord();
-            $displayedWord->setWord($key);
-        }
-        $displayedWord->setDisplayedWord($value);
-        $this->cursusManager->persistCursusDisplayedWord($displayedWord);
-
-        $sessionFlashBag = $this->get('session')->getFlashBag();
-        $msg = $this->translator->trans('the_displayed_word_for', [], 'cursus').
-            ' ['.
-            $key.
-            '] '.
-            $this->translator->trans('will_be', [], 'cursus').
-            ' ['
-            .$value.
-            ']';
-        $sessionFlashBag->add('success', $msg);
-
-        return new Response('success', 200);
     }
 
     /******************

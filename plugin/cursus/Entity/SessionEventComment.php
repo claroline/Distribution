@@ -56,6 +56,7 @@ class SessionEventComment
     public function __construct()
     {
         $this->refreshUuid();
+        $this->creationDate = new \DateTime();
     }
 
     public function getId()
