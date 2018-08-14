@@ -26,18 +26,18 @@ class ApiListener
     {
         if ($event->getRequest()->isXmlHttpRequest()) {
             // return json response with errors details
-            // $exception = $event->getException();
-            // if ($exception instanceof InvalidDataException) {
-            //     // return correct status code for invalid data sent by the user
-            //     $response = new JsonResponse($exception->getErrors(), 422);
-            // } else {
-            //     $response = new JsonResponse([
-            //         'message' => $exception->getMessage(),
-            //         'trace' => $exception->getTrace(),
-            //     ], 500);
-            // }
-            //
-            // $event->setResponse($response);
+            $exception = $event->getException();
+            if ($exception instanceof InvalidDataException) {
+                // return correct status code for invalid data sent by the user
+                $response = new JsonResponse($exception->getErrors(), 422);
+            } else {
+                $response = new JsonResponse([
+                    'message' => $exception->getMessage(),
+                    'trace' => $exception->getTrace(),
+                ], 500);
+            }
+
+            $event->setResponse($response);
         }
     }
 

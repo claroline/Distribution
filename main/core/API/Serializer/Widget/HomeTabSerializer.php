@@ -63,8 +63,8 @@ class HomeTabSerializer
         $homeTabConfig = $this->getConfig($homeTab, $options);
 
         if (!$homeTabConfig) {
-            return [
-          ];
+            //something went wrong
+            return [];
         }
 
         $savedContainers = $homeTab->getWidgetContainers()->toArray();
@@ -73,11 +73,10 @@ class HomeTabSerializer
         foreach ($savedContainers as $container) {
             //temporary
             $widgetContainerConfig = $container->getWidgetContainerConfigs()[0];
-
             $containers[$widgetContainerConfig->getPosition()] = $container;
         }
 
-        $containers = array_values($containers);
+        ksort($containers);
 
         $poster = null;
 
@@ -171,6 +170,8 @@ class HomeTabSerializer
         $containerIds = [];
 
         foreach ($data['widgets'] as $position => $widgetContainer) {
+            var_dump($position);
+            var_dump($widgetContainer['name']);
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
             $widgetContainer->setHomeTab($homeTab);
             $widgetContainerConfig = $widgetContainer->getWidgetContainerConfigs()[0];

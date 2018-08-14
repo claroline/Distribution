@@ -142,7 +142,7 @@ class WidgetContainerSerializer
             }
         }
 
-        // todo : remove superfluous
+        // todo : remove superfluous (or maybe not it looks ok as is)
 
         return $widgetContainer;
     }

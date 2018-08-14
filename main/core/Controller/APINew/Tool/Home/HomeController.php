@@ -121,6 +121,10 @@ class HomeController extends AbstractApiController
             }
         }
 
+        //return new JsonResponse($tabs);
+
+        //for some reason doesn't serialize the widgets content yet the first time
+
         return new JsonResponse(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);
         }, $updated));
