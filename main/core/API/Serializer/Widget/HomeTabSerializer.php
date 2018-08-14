@@ -170,8 +170,6 @@ class HomeTabSerializer
         $containerIds = [];
 
         foreach ($data['widgets'] as $position => $widgetContainer) {
-            var_dump($position);
-            var_dump($widgetContainer['name']);
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
             $widgetContainer->setHomeTab($homeTab);
             $widgetContainerConfig = $widgetContainer->getWidgetContainerConfigs()[0];

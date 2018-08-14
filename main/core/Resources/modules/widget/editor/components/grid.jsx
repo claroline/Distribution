@@ -98,9 +98,6 @@ class WidgetGridEditor extends Component {
                   const movedWidget = widgets[index]
                   widgets[index] = widgets[index - 1]
                   widgets[index - 1] = movedWidget
-
-                  console.log(widgets)
-
                   // propagate change
                   this.props.update(widgets)
                 }
