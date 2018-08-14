@@ -9,7 +9,7 @@ import {
   RESOURCE_RESTRICTIONS_DISMISS
 } from '#/main/core/resource/store/actions'
 
-const reducer = combineReducers({
+const reducer = {
   loaded: makeReducer(false, {
     [RESOURCE_LOAD]: () => true
   }),
@@ -32,7 +32,7 @@ const reducer = combineReducers({
   /**
    * Manages the ResourceNode of the resource.
    */
-  node: makeReducer({}, {
+  resourceNode: makeReducer({}, {
     [RESOURCE_LOAD]: (state, action) => action.resourceData.resourceNode,
 
     /**
@@ -47,13 +47,13 @@ const reducer = combineReducers({
   /**
    * Manages current user's evaluation for the resource.
    */
-  evaluation: makeReducer(null, {
-    [RESOURCE_LOAD]: (state, action) => action.resourceData.evaluation,
+  userEvaluation: makeReducer(null, {
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.userEvaluation,
     [USER_EVALUATION_UPDATE]: (state, action) => action.userEvaluation
   }),
 
   lifecycle: makeReducer({})
-})
+}
 
 
 export {

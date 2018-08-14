@@ -145,7 +145,7 @@ class ScormListener
         }
         $event->setData([
             'scorm' => $this->serializer->serialize($scorm),
-            'evaluation' => is_null($user) ?
+            'userEvaluation' => is_null($user) ?
                 null :
                 $this->serializer->serialize(
                     $this->resourceEvalManager->getResourceUserEvaluation($scorm->getResourceNode(), $user)

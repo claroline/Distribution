@@ -249,7 +249,7 @@ class DropzoneListener
             'myDrop' => !empty($myDrop) ? $this->serializer->serialize($myDrop) : null,
             'nbCorrections' => count($finishedPeerDrops),
             'tools' => $serializedTools,
-            'evaluation' => $this->serializer->serialize($userEvaluation),
+            'userEvaluation' => $this->serializer->serialize($userEvaluation),
             'teams' => $serializedTeams,
             'errorMessage' => $errorMessage,
         ];

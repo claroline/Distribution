@@ -10,13 +10,9 @@ import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceExplorer} from '#/main/core/resource/explorer/containers/explorer'
 
-import {
-  actions,
-  selectors as explorerSelectors
-} from '#/main/core/resource/explorer/store'
 import {selectors} from '#/main/core/resource/modals/explorer/store'
 
-const ExplorerModalComponent = props => {
+const ExplorerModal = props => {
   const selectAction = props.selectAction(props.selected)
 
   return (
@@ -44,7 +40,7 @@ const ExplorerModalComponent = props => {
   )
 }
 
-ExplorerModalComponent.propTypes = {
+ExplorerModal.propTypes = {
   root: T.shape(
     ResourceNodeTypes.propTypes
   ),
@@ -64,25 +60,13 @@ ExplorerModalComponent.propTypes = {
   fadeModal: T.func.isRequired
 }
 
-ExplorerModalComponent.defaultProps = {
+ExplorerModal.defaultProps = {
   icon: 'fa fa-fw fa-folder',
   title: trans('resource_explorer', {}, 'resource'),
   confirmText: trans('select', {}, 'actions'),
   filters: [],
   current: null
 }
-
-const ExplorerModal = connect(
-  (state) => ({
-    currentDirectory: explorerSelectors.current(explorerSelectors.explorer(state, selectors.STORE_NAME)),
-    selected: explorerSelectors.selectedFull(explorerSelectors.explorer(state, selectors.STORE_NAME))
-  }),
-  (dispatch) => ({
-    initialize(root, current, filters) {
-      dispatch(actions.initialize(selectors.STORE_NAME, root, current, filters))
-    }
-  })
-)(ExplorerModalComponent)
 
 export {
   ExplorerModal

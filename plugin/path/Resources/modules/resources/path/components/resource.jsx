@@ -1,20 +1,16 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {hasPermission} from '#/main/core/resource/permissions'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {ResourcePage} from '#/main/core/resource/containers/page'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {selectors} from '#/plugin/path/resources/path/store'
 import {Overview} from '#/plugin/path/resources/path/overview/components/overview'
 import {Editor} from '#/plugin/path/resources/path/editor/components/editor'
 import {Player} from '#/plugin/path/resources/path/player/components/player'
 
-const Resource = props =>
+const PathResource = props =>
   <ResourcePage
     styles={['claroline-distribution-plugin-path-path-resource']}
     customActions={[
@@ -62,17 +58,10 @@ const Resource = props =>
     />
   </ResourcePage>
 
-Resource.propTypes = {
+PathResource.propTypes = {
   editable: T.bool.isRequired,
   overview: T.bool.isRequired
 }
-
-const PathResource = connect(
-  (state) => ({
-    overview: selectors.showOverview(state),
-    editable: hasPermission('edit', resourceSelect.resourceNode(state))
-  })
-)(Resource)
 
 export {
   PathResource

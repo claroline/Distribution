@@ -132,7 +132,7 @@ class ExerciseListener
                 $exercise,
                 $canEdit ? [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_METRICS] : [Transfer::INCLUDE_METRICS]
             ),
-            'evaluation' => 'anon.' === $user ?
+            'userEvaluation' => 'anon.' === $user ?
                 null :
                 $this->serializer->serialize(
                     $this->resourceEvalManager->getResourceUserEvaluation($exercise->getResourceNode(), $user)

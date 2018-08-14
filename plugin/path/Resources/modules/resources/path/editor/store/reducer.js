@@ -27,13 +27,15 @@ import {
   STEP_COPY_RESET
 } from '#/plugin/path/resources/path/editor/store/actions'
 
+import {selectors} from '#/plugin/path/resources/path/editor/store/selectors'
+
 const defaultState = {
-  data: [],
+  data: {},
   copy: null
 }
 
 const reducer = {
-  pathForm: makeFormReducer('pathForm', defaultState, {
+  pathForm: makeFormReducer(selectors.FORM_NAME, defaultState, {
     pendingChanges: makeReducer(false, {
       [STEP_ADD]: () => true,
       [STEP_REMOVE]: () => true,
@@ -44,10 +46,10 @@ const reducer = {
       [STEP_PASTE]: () => true
     }),
     originalData: makeReducer(defaultState.originalData, {
-      [RESOURCE_LOAD]: (state, action) => action.resourceData.path
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.path || state
     }),
     data: makeReducer(defaultState.data, {
-      [RESOURCE_LOAD]: (state, action) => action.resourceData.path,
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.path || state,
       [STEP_ADD]: (state, action) => {
         const newState = cloneDeep(state)
 

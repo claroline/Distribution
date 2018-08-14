@@ -1,5 +1,5 @@
 
-import {PathResource} from '#/plugin/path/resources/path/components/resource'
+import {PathResource} from '#/plugin/path/resources/path/containers/resource'
 
 /**
  * Path resource application.

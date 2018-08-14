@@ -7,7 +7,6 @@ import {ResourcePage} from '#/main/core/resource/containers/page'
 
 import {Player} from '#/main/core/resources/text/player/components/player'
 import {Editor} from '#/main/core/resources/text/editor/components/editor'
-import {selectors} from '#/main/core/resources/text/store'
 
 const TextResource = props =>
   <ResourcePage>

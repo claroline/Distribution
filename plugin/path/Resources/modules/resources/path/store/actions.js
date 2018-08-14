@@ -32,8 +32,8 @@ actions.updateProgression = (stepId, status = constants.STATUS_SEEN) => ({
       body: JSON.stringify({status: status})
     },
     success: (data, dispatch) => {
-      dispatch(resourceActions.updateUserEvaluation(data['evaluation']))
-      dispatch(actions.updateStepProgression(data['userProgression']['stepId'], data['userProgression']['status']))
+      dispatch(resourceActions.updateUserEvaluation(data.userEvaluation))
+      dispatch(actions.updateStepProgression(data.userProgression.stepId, data.userProgression.status))
     }
   }
 })

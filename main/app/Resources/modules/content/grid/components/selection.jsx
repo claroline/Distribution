@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import omit from 'lodash/omit'
 import uniq from 'lodash/uniq'
 
 import {trans} from '#/main/core/translation'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
-import {Modal} from '#/main/app/overlay/modal/components/modal'
+
+// todo : enhance implementation (make it more generic)
+// todo : find better naming and location
 
 const GroupTabs = props =>
   <ul className="nav nav-tabs">
@@ -32,7 +33,7 @@ GroupTabs.propTypes = {
   activate: T.func.isRequired
 }
 
-class SelectionModal extends Component {
+class GridSelection extends Component {
   constructor(props) {
     super(props)
 
@@ -67,10 +68,7 @@ class SelectionModal extends Component {
       .filter(item => trans('all') === this.state.currentGroup || (item.tags && -1 !== item.tags.indexOf(this.state.currentGroup)))
 
     return (
-      <Modal
-        {...omit(this.props, 'items', 'handleSelect')}
-        className="generic-type-picker"
-      >
+      <div className="generic-type-picker">
         {0 !== tags.length &&
           <GroupTabs
             current={this.state.currentGroup}
@@ -90,7 +88,6 @@ class SelectionModal extends Component {
                 role="option"
                 onMouseOver={() => this.handleItemMouseOver(type)}
                 callback={() => {
-                  this.props.fadeModal()
                   this.props.handleSelect(type)
                 }}
               >
@@ -114,22 +111,21 @@ class SelectionModal extends Component {
             </div>
           }
         </div>
-      </Modal>
+      </div>
     )
   }
 }
 
-SelectionModal.propTypes = {
+GridSelection.propTypes = {
   items: T.arrayOf(T.shape({
     label: T.string.isRequired,
     icon: T.node.isRequired, // either a FontAwesome class string or a custom icon component
     description: T.string,
     tags: T.arrayOf(T.string)
   })).isRequired,
-  fadeModal: T.func.isRequired,
   handleSelect: T.func.isRequired
 }
 
 export {
-  SelectionModal
+  GridSelection
 }

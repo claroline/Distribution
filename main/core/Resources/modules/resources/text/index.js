@@ -1,10 +1,8 @@
 
-import {TextResource} from '#/main/core/resources/text/components/resource'
+import {TextResource} from '#/main/core/resources/text/containers/resource'
 
 /**
  * Text resource application.
- *
- * @constructor
  */
 export const App = () => ({
   component: TextResource
