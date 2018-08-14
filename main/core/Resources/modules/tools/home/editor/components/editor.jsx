@@ -35,6 +35,7 @@ const EditorComponent = props =>
       prefix="/edit"
       tabs={props.tabs}
       create={() => props.createTab(props.context, props.tabs.length, props.history.push)}
+      context={props.context}
     />
 
     <PageHeader
