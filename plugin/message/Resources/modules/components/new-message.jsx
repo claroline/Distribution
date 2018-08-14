@@ -13,6 +13,8 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
+import {selectors} from '#/plugin/message/selectors'
+
 const NewMessageFormWrapper = (props) =>
   <div className='user-message-container user-message-form-container user-message-left'>
     <UserAvatar picture={props.user.picture} />
@@ -45,6 +47,9 @@ NewMessageFormWrapper.propTypes = {
 
 const NewMessageComponent = (props) =>
   <div>
+    {!props.reply &&
+      <h2>{trans('new_message')}</h2>
+    }
     <NewMessageFormWrapper
       user={currentUser()}
       callback={() =>  props.saveForm(props.history.push)}
@@ -85,7 +90,8 @@ const NewMessageComponent = (props) =>
 
 const NewMessage = withRouter(connect(
   state => ({
-    newMessage: formSelectors.data(formSelectors.form(state, 'messageForm'))
+    newMessage: formSelectors.data(formSelectors.form(state, 'messageForm')),
+    reply: selectors.reply(state)
   }),
   (dispatch) => ({
     saveForm(push) {

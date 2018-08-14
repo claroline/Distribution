@@ -67,11 +67,6 @@ const UserMessage = props => {
               )}
             </div>
           }
-          {props.object &&
-          <div>
-            <h5 className="user-message-object">{`${t('message_form_object')} : ${props.object}`}</h5>
-          </div>
-          }
         </div>
 
         {React.createElement(

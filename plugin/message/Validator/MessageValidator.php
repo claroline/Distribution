@@ -42,14 +42,14 @@ class MessageValidator implements ValidatorInterface
                 return [];
             }
 
-            if ($object->getContent() !== $data['content']) {
+            if (isset($data['content']) && $object->getContent() !== $data['content']) {
                 $errors[] = [
                     'path' => 'content',
                     'message' => 'The content can not be changed.',
                 ];
             }
 
-            if ($object->getObject() !== $data['object']) {
+            if (isset($data['object']) && $object->getObject() !== $data['object']) {
                 $errors[] = [
                     'path' => 'object',
                     'message' => 'The object can not be changed.',
@@ -58,8 +58,9 @@ class MessageValidator implements ValidatorInterface
 
             return $errors;
         }
-
-        $error = $this->validateTo($data['to']);
+        if (isset($data['to'])) {
+            $error = $this->validateTo($data['to']);
+        }
 
         if ($error) {
             $errors[] = ['path' => 'to', 'message' => $error];
@@ -72,7 +73,7 @@ class MessageValidator implements ValidatorInterface
     {
         $error = null;
 
-        $to = trim($value);
+        $to = trim($to);
 
         if (';' === substr($to, -1, 1)) {
             $to = substr_replace($to, '', -1);
@@ -96,7 +97,7 @@ class MessageValidator implements ValidatorInterface
         }
 
         foreach ($usernames as $username) {
-            $user = $this->em->getRepository(User::class)->findOneBy(['username' => $username]);
+            $user = $this->om->getRepository(User::class)->findOneBy(['username' => $username]);
             if (null === $user) {
                 if (!$error) {
                     $error = 'User '.$username.' not found.';
@@ -107,7 +108,7 @@ class MessageValidator implements ValidatorInterface
         }
 
         foreach ($groupNames as $groupName) {
-            $group = $this->em->getRepository(Group::class)->findOneBy(['name' => $groupName]);
+            $group = $this->om->getRepository(Group::class)->findOneBy(['name' => $groupName]);
             if (null === $group) {
                 if (!$error) {
                     $error = 'Group '.$groupName.' not found.';
@@ -118,7 +119,7 @@ class MessageValidator implements ValidatorInterface
         }
 
         foreach ($workspaceCodes as $workspaceCode) {
-            $ws = $this->em->getRepository(Workspace::class)->findOneBy(['code' => $workspaceCode]);
+            $ws = $this->om->getRepository(Workspace::class)->findOneBy(['code' => $workspaceCode]);
             if (null === $ws) {
                 if (!$error) {
                     $error = 'Workspace '.$workspaceCode.' not found.';

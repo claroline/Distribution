@@ -9,6 +9,7 @@ import {MessageCard} from '#/plugin/message/data/components/message-card'
 
 const SentMessages = () =>
   <div>
+    <h2>{trans('messages_sent')}</h2>
     <ListData
       name="sentMessages"
       fetch={{
@@ -23,9 +24,6 @@ const SentMessages = () =>
         target: '/message/'+message.id,
         label: trans('open', {}, 'actions')
       })}
-      // display={{
-      //   current: props.forum.display.subjectDataList || listConst.DISPLAY_LIST
-      // }}
       definition={[
         {
           name: 'object',

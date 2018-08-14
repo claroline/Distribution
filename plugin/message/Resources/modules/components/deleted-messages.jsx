@@ -12,6 +12,7 @@ import {MessageCard} from '#/plugin/message/data/components/message-card'
 
 const DeletedMessagesComponent = (props) =>
   <div>
+    <h2>{trans('messages_removed')}</h2>
     <ListData
       name="deletedMessages"
       fetch={{

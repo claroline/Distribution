@@ -13,6 +13,7 @@ import {actions} from '#/plugin/message/actions'
 
 const ReceivedMessagesComponent = (props) =>
   <div>
+    <h2>{trans('messages_received')}</h2>
     <ListData
       name="receivedMessages"
       fetch={{
@@ -106,7 +107,7 @@ const ReceivedMessages = connect(
       )
     },
     markReadMessages(messages) {
-      dispatch(actions.markReadMessages(messages.map(message => message.id)))
+      dispatch(actions.markReadMessages(messages))
     }
   })
 )(ReceivedMessagesComponent)

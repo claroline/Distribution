@@ -12,10 +12,10 @@ import {selectors} from '#/plugin/message/selectors'
 import {Message as MessageTypes} from '#/plugin/message/prop-types'
 
 export const MESSAGE_LOAD = 'MESSAGE_LOAD'
-export const SET_TITLE = 'SET_TITLE'
+export const IS_REPLY = 'IS_REPLY'
 export const actions = {}
 
-actions.setTitle = makeActionCreator(SET_TITLE, 'title')
+actions.setAsReply = makeActionCreator(IS_REPLY)
 
 actions.newMessage = (id = null) => (dispatch) => {
   if (id) {
@@ -49,6 +49,8 @@ actions.newMessage = (id = null) => (dispatch) => {
   }
 }
 
+
+
 actions.removeMessages = (messages) => ({
   [API_REQUEST]: {
     url: ['apiv2_message_restore', {ids: messages.map(message => message.id)}],
@@ -76,7 +78,7 @@ actions.restoreMessages = (messages) => ({
 actions.loadMessage = makeActionCreator(MESSAGE_LOAD, 'message')
 actions.fetchMessage = (id) => ({
   [API_REQUEST]: {
-    url: ['apiv2_message_get', {id}],
+    url: ['apiv2_message_root', {id}],
     success: (data, dispatch) => {
       dispatch(actions.loadMessage(data))
     }
@@ -92,9 +94,9 @@ actions.openMessage = (id) => (dispatch, getState) => {
   }
 }
 
-actions.markReadMessages = (messagesId) => ({
+actions.markReadMessages = (messages) => ({
   [API_REQUEST]: {
-    url: ['apiv2_message_read', {ids: messagesId}],
+    url: ['apiv2_message_read', {ids: messages.map(message => message.id)}],
     request: {
       method: 'PUT'
     },

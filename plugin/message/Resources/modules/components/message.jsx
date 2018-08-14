@@ -15,11 +15,11 @@ import {actions} from '#/plugin/message/actions'
 
 const MessageComponent = (props) =>
   <div>
+    <h2>{props.message.object}</h2>
     <UserMessage
       user={get(props.message, 'from')}
       date={get(props.message, 'meta.date')}
       content={props.message.content}
-      object={props.message.object}
       allowHtml={true}
       actions={[
         {

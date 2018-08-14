@@ -137,7 +137,7 @@ class MessageSerializer
             }
 
             if (isset($data['meta']['read'])) {
-                $userMessage->setIsRead($data['meta']['removed']);
+                $userMessage->setIsRead($data['meta']['read']);
             }
 
             $this->om->persist($userMessage);

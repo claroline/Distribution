@@ -1,8 +1,8 @@
 
 const message = (state) => state.currentMessage
-const title = (state) => state.title
+const reply = (state) => state.messageForm.reply
 
 export const selectors = {
   message,
-  title
+  reply
 }

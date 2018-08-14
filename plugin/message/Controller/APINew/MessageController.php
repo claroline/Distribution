@@ -127,7 +127,7 @@ class MessageController extends AbstractCrudController
 
         foreach ($messages as $message) {
             $data = [
-                'id' => $message->getId(),
+                'id' => $message->getUuid(),
                 'meta' => [
                     'removed' => true,
                 ],
@@ -163,7 +163,7 @@ class MessageController extends AbstractCrudController
 
         foreach ($messages as $message) {
             $data = [
-                'id' => $message->getId(),
+                'id' => $message->getUuid(),
                 'meta' => [
                     'removed' => false,
                 ],
@@ -199,7 +199,7 @@ class MessageController extends AbstractCrudController
 
         foreach ($messages as $message) {
             $data = [
-                'id' => $message->getId(),
+                'id' => $message->getUuid(),
                 'meta' => [
                     'read' => true,
                 ],
@@ -235,7 +235,7 @@ class MessageController extends AbstractCrudController
 
         foreach ($messages as $message) {
             $data = [
-                'id' => $message->getId(),
+                'id' => $message->getUuid(),
                 'meta' => [
                     'read' => false,
                 ],
@@ -269,7 +269,7 @@ class MessageController extends AbstractCrudController
         $this->om->startFlushSuite();
 
         foreach ($ids as $id) {
-            $message = $this->om->getRepository($this->getClass())->find($id);
+            $message = $this->find($this->getClass(), $id);
             $this->container->get('claroline.manager.message_manager')->remove($message);
         }
 
