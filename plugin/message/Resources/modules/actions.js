@@ -8,7 +8,6 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as listActions} from '#/main/app/content/list/store'
 import {actions as formActions} from '#/main/app/content/form/store'
 
-import {selectors} from '#/plugin/message/selectors'
 import {Message as MessageTypes} from '#/plugin/message/prop-types'
 
 export const MESSAGE_LOAD = 'MESSAGE_LOAD'
@@ -21,7 +20,7 @@ actions.newMessage = (id = null) => (dispatch) => {
   if (id) {
     dispatch({
       [API_REQUEST]: {
-        url: ['apiv2_message_get', {id}],
+        url: ['apiv2_message_root', {id}],
         success: (data, dispatch) => {
           dispatch(formActions.resetForm(
             'messageForm',
@@ -50,22 +49,36 @@ actions.newMessage = (id = null) => (dispatch) => {
 }
 
 
-
-actions.removeMessages = (messages) => ({
+actions.deleteMessages = (messages) => ({
   [API_REQUEST]: {
-    url: ['apiv2_message_restore', {ids: messages.map(message => message.id)}],
+    url: ['apiv2_message_user_remove', {ids: messages.map(message => message.id)}],
     request: {
-      method: 'PUT'
+      method: 'DELETE'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('receivedMessages'))
+      dispatch(listActions.invalidateData('deletedMessages'))
     }
   }
 })
 
-actions.restoreMessages = (messages) => ({
+actions.removeMessages = (messages, form = null) => ({
   [API_REQUEST]: {
     url: ['apiv2_message_soft_delete', {ids: messages.map(message => message.id)}],
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      if (form) {
+        dispatch(listActions.invalidateData(form))
+      }
+    }
+  }
+})
+
+
+actions.restoreMessages = (messages) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_message_restore', {ids: messages.map(message => message.id)}],
     request: {
       method: 'PUT'
     },
@@ -85,18 +98,27 @@ actions.fetchMessage = (id) => ({
   }
 })
 
-actions.openMessage = (id) => (dispatch, getState) => {
-  const message = selectors.message(getState())
-  if (message.id !== id) {
-    dispatch(actions.loadMessage({id: id}))
-    dispatch(actions.fetchMessage(id))
-    dispatch(actions.markReadMessages([id]))
-  }
+actions.openMessage = (id) => (dispatch) => {
+  dispatch(actions.loadMessage({id: id}))
+  dispatch(actions.fetchMessage(id))
+  dispatch(actions.readMessages([id]))
 }
 
-actions.markReadMessages = (messages) => ({
+actions.readMessages = (messages) => ({
   [API_REQUEST]: {
     url: ['apiv2_message_read', {ids: messages.map(message => message.id)}],
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('receivedMessages'))
+    }
+  }
+})
+
+actions.unreadMessages = (messages) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_message_unread', {ids: messages.map(message => message.id)}],
     request: {
       method: 'PUT'
     },

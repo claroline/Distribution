@@ -69,45 +69,49 @@ const ReceivedMessagesComponent = (props) =>
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-check',
           label: trans('marked_read_message', {}, 'message'),
-          callback: () => props.markReadMessages(rows)
+          displayed: !rows[0].meta.read,
+          callback: () => props.readMessages(rows)
         }, {
-          type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-share',
-          label: trans('reply', {}, 'actions'),
-          target: '/message/'+rows[0].id,
-          context: 'row'
+          type: CALLBACK_BUTTON,
+          icon: 'fa fa-fw fa-times',
+          label: trans('marked_unread_message', {}, 'message'),
+          displayed: rows[0].meta.read,
+          callback: () => props.unreadMessages(rows)
         }, {
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-trash-o',
           label: trans('delete'),
           dangerous: true,
-          callback: () => props.removeMessages(rows)
+          callback: () => props.removeMessages(rows, 'receivedMessages')
         }
       ]}
-      // card={(props) =>
-      //   <MessageCard
-      //     {...props}
-      //     contentText={props.data.content}
-      //   />
-      // }
+      card={(props) =>
+        <MessageCard
+          {...props}
+          contentText={props.data.content}
+        />
+      }
     />
   </div>
 
 const ReceivedMessages = connect(
   null,
   dispatch => ({
-    removeMessages(messages) {
+    removeMessages(message) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
           title: trans('messages_delete_title'),
-          question: trans('messages_confirm_permanent_delete'),
+          question: trans('remove_message_confirm_message'),
           dangerous: true,
-          handleConfirm: () => dispatch(actions.removeMessages(messages))
+          handleConfirm: () => dispatch(actions.removeMessages(message))
         })
       )
     },
-    markReadMessages(messages) {
-      dispatch(actions.markReadMessages(messages))
+    readMessages(messages) {
+      dispatch(actions.readMessages(messages))
+    },
+    unreadMessages(messages) {
+      dispatch(actions.unreadMessages(messages))
     }
   })
 )(ReceivedMessagesComponent)

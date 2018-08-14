@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import {Router, Routes} from '#/main/app/router'
+import {actions as listActions} from '#/main/app/content/list/store'
 
 import {ReceivedMessages} from '#/plugin/message/components/received-messages'
 import {SentMessages} from '#/plugin/message/components/sent-messages'
@@ -9,6 +10,7 @@ import {DeletedMessages} from '#/plugin/message/components/deleted-messages'
 import {NewMessage} from '#/plugin/message/components/new-message'
 import {Message} from '#/plugin/message/components/message'
 import {actions} from '#/plugin/message/actions'
+
 
 
 const MessagesComponent = (props) =>
@@ -21,15 +23,18 @@ const MessagesComponent = (props) =>
         {
           path: '/received',
           exact: true,
-          component: ReceivedMessages
+          component: ReceivedMessages,
+          onEnter: () => props.invalidateData('receivedMessages')
         }, {
           path: '/sent',
           exact: true,
-          component: SentMessages
+          component: SentMessages,
+          onEnter: () => props.invalidateData('sentMessages')
         }, {
           path: '/deleted',
           exact: true,
-          component: DeletedMessages
+          component: DeletedMessages,
+          onEnter: () => props.invalidateData('deletedMessages')
         }, {
           path: '/new',
           exact: true,
@@ -62,6 +67,9 @@ const Messages = connect(
     },
     setAsReply() {
       dispatch(actions.setAsReply())
+    },
+    invalidateData(form) {
+      dispatch(listActions.invalidateData(form))
     }
   })
 )(MessagesComponent)

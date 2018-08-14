@@ -19,9 +19,6 @@ const DeletedMessagesComponent = (props) =>
         url: ['apiv2_message_removed'],
         autoload: true
       }}
-      delete={{
-        url: ['apiv2_message_user_remove']
-      }}
       primaryAction={(message) => ({
         type: LINK_BUTTON,
         target: '/message/'+message.id,
@@ -72,20 +69,36 @@ const DeletedMessagesComponent = (props) =>
           icon: 'fa fa-fw fa-sync-alt',
           label: trans('restore'),
           callback: () => props.restoreMessages(rows)
+        }, {
+          type: CALLBACK_BUTTON,
+          icon: 'fa fa-fw fa-trash-o',
+          label: trans('delete'),
+          dangerous: true,
+          callback: () => props.deleteMessages(rows)
         }
       ]}
-      // card={(props) =>
-      //   <MessageCard
-      //     {...props}
-      //     contentText={props.data.content}
-      //   />
-      // }
+      card={(props) =>
+        <MessageCard
+          {...props}
+          contentText={props.data.content}
+        />
+      }
     />
   </div>
 
 const DeletedMessages = connect(
   null,
   dispatch => ({
+    deleteMessages(messages) {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          title: trans('messages_delete_title'),
+          question: trans('messages_confirm_permanent_delete'),
+          dangerous: true,
+          handleConfirm: () => dispatch(actions.deleteMessages(messages))
+        })
+      )
+    },
     restoreMessages(messages) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {

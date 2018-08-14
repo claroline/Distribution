@@ -1,13 +1,17 @@
 import React from 'react'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {MessageCard} from '#/plugin/message/data/components/message-card'
+import {actions} from '#/plugin/message/actions'
 
 
-const SentMessages = () =>
+const SentMessagesComponent = (props) =>
   <div>
     <h2>{trans('messages_sent')}</h2>
     <ListData
@@ -15,9 +19,6 @@ const SentMessages = () =>
       fetch={{
         url: ['apiv2_message_sent'],
         autoload: true
-      }}
-      delete={{
-        url: ['apiv2_message_user_remove']
       }}
       primaryAction={(message) => ({
         type: LINK_BUTTON,
@@ -50,23 +51,45 @@ const SentMessages = () =>
           }
         }
       ]}
-      // actions={(rows) => [
-      //   {
-      //     type: LINK_BUTTON,
-      //     icon: 'fa fa-fw fa-eye',
-      //     label: trans('see_message', {}, 'message'),
-      //     target: '/message/'+rows[0].id,
-      //     context: 'row'
-      //   }
-      // ]}
-      // card={(props) =>
-      //   <MessageCard
-      //     {...props}
-      //     contentText={props.data.content}
-      //   />
-      // }
+      actions={(rows) => [
+        {
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-eye',
+          label: trans('see_message', {}, 'message'),
+          target: '/message/'+rows[0].id,
+          context: 'row'
+        }, {
+          type: CALLBACK_BUTTON,
+          icon: 'fa fa-fw fa-trash-o',
+          label: trans('delete'),
+          dangerous: true,
+          callback: () => props.removeMessages(rows, 'messages_sent')
+        }
+      ]}
+      card={(props) =>
+        <MessageCard
+          {...props}
+          contentText={props.data.content}
+        />
+      }
     />
   </div>
+
+const SentMessages = connect(
+  null,
+  dispatch => ({
+    removeMessages(message) {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          title: trans('messages_delete_title'),
+          question: trans('remove_message_confirm_message'),
+          dangerous: true,
+          handleConfirm: () => dispatch(actions.removeMessages(message))
+        })
+      )
+    }
+  })
+)(SentMessagesComponent)
 
 
 export {

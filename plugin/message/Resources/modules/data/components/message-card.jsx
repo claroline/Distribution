@@ -8,12 +8,9 @@ const MessageCard = (props) =>
   <DataCard
     {...props}
     id={props.data.id}
-    icon={<UserAvatar picture={props.data.message.creator ? props.data.message.creator.picture : undefined} alt={true}/>}
-    title={props.data.message.subject}
-    // flags={[
-    //   ['fa fa-fw fa-thumb-tack', trans('stuck', {}, 'forum')]
-    // ]}
-    contentText={getPlainText(props.data.message.content)}
+    icon={<UserAvatar picture={props.data.from ? props.data.from.picture : undefined} alt={true}/>}
+    title={props.data.object}
+    contentText={getPlainText(props.data.content)}
   />
 
 export {

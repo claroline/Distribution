@@ -22,24 +22,24 @@ class ApiListener
      *
      * @param GetResponseForExceptionEvent $event
      */
-    // public function onError(GetResponseForExceptionEvent $event)
-    // {
-    //     if ($event->getRequest()->isXmlHttpRequest()) {
-    //         // return json response with errors details
-    //         $exception = $event->getException();
-    //         if ($exception instanceof InvalidDataException) {
-    //             // return correct status code for invalid data sent by the user
-    //             $response = new JsonResponse($exception->getErrors(), 422);
-    //         } else {
-    //             $response = new JsonResponse([
-    //                 'message' => $exception->getMessage(),
-    //                 'trace' => $exception->getTrace(),
-    //             ], 500);
-    //         }
-    //
-    //         $event->setResponse($response);
-    //     }
-    // }
+    public function onError(GetResponseForExceptionEvent $event)
+    {
+        if ($event->getRequest()->isXmlHttpRequest()) {
+            // return json response with errors details
+            $exception = $event->getException();
+            if ($exception instanceof InvalidDataException) {
+                // return correct status code for invalid data sent by the user
+                $response = new JsonResponse($exception->getErrors(), 422);
+            } else {
+                $response = new JsonResponse([
+                    'message' => $exception->getMessage(),
+                    'trace' => $exception->getTrace(),
+                ], 500);
+            }
+
+            $event->setResponse($response);
+        }
+    }
 
     /**
      * If we're returning a JsonResponse, we can get the debug bar by passing ?debug=true on the query string.

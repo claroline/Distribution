@@ -32,17 +32,28 @@ const MessageComponent = (props) =>
           label: trans('delete'),
           action: () => props.removeMessage([props.message]),
           dangerous: true,
-          displayed: true
+          displayed: get(props.message, 'meta.removed')
+        }, {
+          icon: 'fa fa-fw fa-trash-o',
+          label: trans('delete'),
+          action: () => props.deleteMessage([props.message], props.history.push),
+          dangerous: true,
+          displayed: !get(props.message, 'meta.removed')
         }
       ]}
     />
-    {!get(props.message, 'meta.sent') && !get(props.message, 'meta.removed') &&
+    {(!get(props.message, 'meta.sent') && !get(props.message, 'meta.removed')) &&
       <NewMessage/>
     }
   </div>
 
 MessageComponent.propTypes = {
-  message: T.shape({})
+  message: T.shape({
+    content: T.string.isRequired,
+    object: T.string.isRequired
+  }),
+  restoreMessage: T.func.isRequired,
+  removeMessage: T.func.isRequired
 }
 
 MessageComponent.defaultProps = {
@@ -59,11 +70,24 @@ const Message = connect(
     message: selectors.message(state)
   }),
   dispatch => ({
-    removeMessage(message) {
+    deleteMessage(message, push) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
           title: trans('messages_delete_title'),
           question: trans('messages_confirm_permanent_delete'),
+          dangerous: true,
+          handleConfirm: () => {
+            dispatch(actions.deleteMessages(message))
+              .then(() => push('/received'))
+          }
+        })
+      )
+    },
+    removeMessage(message) {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          title: trans('messages_delete_title'),
+          question: trans('remove_message_confirm_message'),
           dangerous: true,
           handleConfirm: () => dispatch(actions.removeMessages(message))
         })
