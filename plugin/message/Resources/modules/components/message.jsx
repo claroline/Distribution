@@ -49,7 +49,7 @@ const MessageComponent = (props) =>
 
 MessageComponent.propTypes = {
   message: T.shape({
-    content: T.string.isRequired,
+    content: T.string,
     object: T.string.isRequired
   }),
   restoreMessage: T.func.isRequired,

@@ -8,6 +8,7 @@ const reducer = {
   receivedMessages: makeListReducer('receivedMessages', {}),
   sentMessages: makeListReducer('sentMessages', {}),
   deletedMessages: makeListReducer('deletedMessages', {}),
+  messagesParameters: makeFormReducer('messagesParameters'),
   messageForm : makeFormReducer('messageForm', {
     reply: false
   }, {

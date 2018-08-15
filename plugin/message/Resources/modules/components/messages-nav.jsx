@@ -23,6 +23,10 @@ const MessagesNav = () =>
         icon: 'fa fa-fw fa-plus',
         title: trans('new_message'),
         path: '/new'
+      }, {
+        icon: 'fa fa-fw fa-cogs',
+        title: trans('preferences'),
+        path: '/parameters'
       }
     ]}
   />

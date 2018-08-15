@@ -8,6 +8,7 @@ import {ReceivedMessages} from '#/plugin/message/components/received-messages'
 import {SentMessages} from '#/plugin/message/components/sent-messages'
 import {DeletedMessages} from '#/plugin/message/components/deleted-messages'
 import {NewMessage} from '#/plugin/message/components/new-message'
+import {MessagesParameters} from '#/plugin/message/components/messages-parameters'
 import {Message} from '#/plugin/message/components/message'
 import {actions} from '#/plugin/message/actions'
 
@@ -51,6 +52,10 @@ const MessagesComponent = (props) =>
             props.newMessage(params.id)
             props.setAsReply()
           }
+        }, {
+          path: '/parameters',
+          exact: true,
+          component: MessagesParameters
         }
       ]}
     />
