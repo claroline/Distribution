@@ -4,10 +4,8 @@ import classes from 'classnames'
 
 import {mount, unmount} from '#/main/app/mount'
 
-import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
-import {getResource} from '#/main/core/resources'
-
 import {App} from '#/main/core/resource'
+import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 
 // the class is because of the use of references and lifecycle
 class ResourceEmbedded extends Component {

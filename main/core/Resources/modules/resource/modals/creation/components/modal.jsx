@@ -125,6 +125,7 @@ ResourceCreationModal.propTypes = {
   fadeModal: T.func.isRequired,
 
   // from redux store
+  updateRights: T.func.isRequired,
   startCreation: T.func.isRequired,
   save: T.func.isRequired,
   saveEnabled: T.bool.isRequired,

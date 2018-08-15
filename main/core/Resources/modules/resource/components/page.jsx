@@ -6,7 +6,6 @@ import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
 import {Page} from '#/main/app/page/components/page'
-import {Routes} from '#/main/app/router'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 import {

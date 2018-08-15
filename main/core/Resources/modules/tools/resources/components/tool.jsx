@@ -8,7 +8,6 @@ import {Page} from '#/main/app/page/components/page'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceExplorer} from '#/main/core/resource/explorer/containers/explorer'
 import {getActions, getToolbar} from '#/main/core/resource/utils'
-import {hasPermission} from '#/main/core/resource/permissions'
 
 import {actions as explorerActions, selectors as explorerSelectors} from '#/main/core/resource/explorer/store'
 import {selectors} from '#/main/core/tools/resources/store'

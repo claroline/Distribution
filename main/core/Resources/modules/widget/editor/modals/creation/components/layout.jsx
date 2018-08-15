@@ -4,7 +4,6 @@ import fill from 'lodash/fill'
 import sum from 'lodash/sum'
 import times from 'lodash/times'
 
-import {trans} from '#/main/core/translation'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 const LayoutPreview = props => {

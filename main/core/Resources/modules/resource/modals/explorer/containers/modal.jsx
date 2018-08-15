@@ -2,9 +2,8 @@ import {connect} from 'react-redux'
 
 import {withReducer} from '#/main/app/store/components/withReducer'
 
-import {ResourceExplorer} from '#/main/core/resource/explorer/containers/explorer'
 import {
-  actions,
+  actions as explorerActions,
   selectors as explorerSelectors
 } from '#/main/core/resource/explorer/store'
 
@@ -19,7 +18,7 @@ const ExplorerModal = withReducer(selectors.STORE_NAME, reducer)(
     }),
     (dispatch) => ({
       initialize(root, current, filters) {
-        dispatch(actions.initialize(selectors.STORE_NAME, root, current, filters))
+        dispatch(explorerActions.initialize(selectors.STORE_NAME, root, current, filters))
       }
     })
   )(ExplorerModalComponent)

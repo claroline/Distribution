@@ -62,14 +62,14 @@ function createStore(reducers, initialState = {}, customEnhancers = []) {
   )
 
   // support for dynamic reducer loading
-  store.asyncReducers = {};
+  store.asyncReducers = {}
   store.injectReducer = (key, reducer) => {
-    store.asyncReducers[key] = reducer;
+    store.asyncReducers[key] = reducer
     store.replaceReducer(
       createReducer(merge({}, reducers, store.asyncReducers))
-    );
+    )
 
-    return store;
+    return store
   }
 
   return store

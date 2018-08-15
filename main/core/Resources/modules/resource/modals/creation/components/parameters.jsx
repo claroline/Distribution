@@ -1,10 +1,8 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
-import {ContentMeta} from '#/main/app/content/meta/components/meta'
 import {Await} from '#/main/app/components/await'
+import {ContentMeta} from '#/main/app/content/meta/components/meta'
 
 import {getResource} from '#/main/core/resources'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'

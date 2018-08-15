@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {theme} from '#/main/app/config'
-
 import {Await} from '#/main/app/components/await'
 import {getResource} from '#/main/core/resources'
 

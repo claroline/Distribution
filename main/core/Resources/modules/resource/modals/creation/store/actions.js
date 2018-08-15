@@ -1,7 +1,5 @@
 import merge from 'lodash/merge'
 
-import {makeActionCreator} from '#/main/app/store/actions'
-
 import {makeId} from '#/main/core/scaffolding/id'
 import {currentUser} from '#/main/core/user/current'
 import {actions as formActions} from '#/main/app/content/form/store/actions'

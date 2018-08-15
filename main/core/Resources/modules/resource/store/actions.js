@@ -17,7 +17,7 @@ actions.fetchResource = (resourceNode) => ({
   [API_REQUEST]: {
     url: ['claro_resource_load', {type: resourceNode.meta.type, id: resourceNode.id}],
     success: (response, dispatch) => dispatch(actions.loadResource(response)),
-    error: (response, dispatch) => console.log(response)
+    //error: (response, dispatch) => console.log(response)
   }
 })
 

@@ -2,12 +2,14 @@
 
 namespace Icap\BibliographyBundle\Listener\Resource;
 
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
@@ -47,17 +49,21 @@ class BibliographyListener
     /** @var ObjectManager */
     private $om;
 
+    /** @var SerializerProvider */
+    private $serializer;
+
     /** @var BookReferenceManager */
     protected $bookReferenceManager;
 
     /**
      * @DI\InjectParams({
-     *     "formFactory"                = @DI\Inject("form.factory"),
-     *     "templating"                 = @DI\Inject("templating"),
-     *     "tokenStorage"               = @DI\Inject("security.token_storage"),
-     *     "objectManager"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "requestStack"               = @DI\Inject("request_stack"),
-     *     "bookReferenceManager"       = @DI\Inject("icap.bookReference.manager")
+     *     "formFactory"          = @DI\Inject("form.factory"),
+     *     "templating"           = @DI\Inject("templating"),
+     *     "tokenStorage"         = @DI\Inject("security.token_storage"),
+     *     "objectManager"        = @DI\Inject("claroline.persistence.object_manager"),
+     *     "requestStack"         = @DI\Inject("request_stack"),
+     *     "serializer"           = @DI\Inject("claroline.api.serializer"),
+     *     "bookReferenceManager" = @DI\Inject("icap.bookReference.manager")
      * })
      *
      * @param FormFactoryInterface $formFactory
@@ -65,6 +71,7 @@ class BibliographyListener
      * @param TokenStorageInterface $tokenStorage
      * @param ObjectManager $objectManager
      * @param RequestStack $requestStack
+     * @param SerializerProvider $serializer
      * @param BookReferenceManager $bookReferenceManager
      */
     public function __construct(
@@ -73,14 +80,32 @@ class BibliographyListener
         TokenStorageInterface $tokenStorage,
         ObjectManager $objectManager,
         RequestStack $requestStack,
+        SerializerProvider $serializer,
         BookReferenceManager $bookReferenceManager
     ) {
         $this->formFactory = $formFactory;
         $this->templating = $templating;
+        $this->serializer = $serializer;
         $this->user = $tokenStorage->getToken()->getUser();
         $this->om = $objectManager;
         $this->request = $requestStack->getCurrentRequest();
         $this->bookReferenceManager = $bookReferenceManager;
+    }
+
+    /**
+     * Loads a Bibliography resource.
+     *
+     * @DI\Observe("resource.icap_bibliography.load")
+     *
+     * @param LoadResourceEvent $event
+     */
+    public function load(LoadResourceEvent $event)
+    {
+        $event->setData([
+            'bookReference' => $this->serializer->serialize($event->getResource()),
+        ]);
+
+        $event->stopPropagation();
     }
 
     /**
