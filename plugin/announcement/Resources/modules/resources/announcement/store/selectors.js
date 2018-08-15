@@ -1,11 +1,25 @@
 import isEmpty from 'lodash/isEmpty'
 import {createSelector} from 'reselect'
 
-const pageSize = () => 5
-const currentPage = state => state.currentPage
-const sortOrder = state => state.sortOrder
+const STORE_NAME = 'resource'
 
-const announcementForm = state => state.announcementForm
+const resource = (state) => state[STORE_NAME]
+
+const pageSize = () => 5
+
+const currentPage = createSelector(
+  [resource],
+  (resource) => resource.currentPage
+)
+const sortOrder = createSelector(
+  [resource],
+  (resource) => resource.sortOrder
+)
+
+const announcementForm = createSelector(
+  [resource],
+  (resource) => resource.announcementForm
+)
 const formHasPendingChanges = createSelector(
   [announcementForm],
   (announcementForm) => announcementForm.pendingChanges
@@ -31,7 +45,10 @@ const formValid = createSelector(
   (formErrors) => isEmpty(formErrors)
 )
 
-const announcement = state => state.announcement
+const announcement = createSelector(
+  [resource],
+  (resource) => resource.announcement
+)
 
 const aggregateId = createSelector(
   [announcement],
@@ -72,9 +89,13 @@ const detail = createSelector(
   (posts, announcementDetail) => posts.find(post => post.id === announcementDetail)
 )
 
-const workspaceRoles = state => state.workspaceRoles
+const workspaceRoles = createSelector(
+  [resource],
+  (resource) => resource.workspaceRoles
+)
 
-export const select = {
+export const selectors = {
+  STORE_NAME,
   aggregateId,
   posts,
   pageSize,

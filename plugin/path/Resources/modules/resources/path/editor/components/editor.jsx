@@ -193,7 +193,7 @@ const Editor = connect(
     removeInheritedResource(stepId, id) {
       dispatch(actions.removeInheritedResources(stepId, [id]))
     },
-    saveForm: (pathId) => dispatch(formActions.saveForm('pathForm', ['apiv2_path_update', {id: pathId}]))
+    saveForm: (pathId) => dispatch(formActions.saveForm(selectors.FORM_NAME, ['apiv2_path_update', {id: pathId}]))
   })
 )(EditorComponent)
 

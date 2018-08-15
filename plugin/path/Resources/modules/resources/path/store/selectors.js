@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect'
 import get from 'lodash/get'
 
-const STORE_NAME = 'path'
+const STORE_NAME = 'resource'
 
 const resource = (state) => state[STORE_NAME]
 

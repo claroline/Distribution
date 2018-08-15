@@ -88,7 +88,7 @@ class AnnouncementListener
 
         $event->setData([
             'announcement' => $this->serializer->serialize($resource),
-            'roles' => array_map(function (Role $role) {
+            'workspaceRoles' => array_map(function (Role $role) {
                 return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
             }, $workspace->getRoles()->toArray()),
         ]);

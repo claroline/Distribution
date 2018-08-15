@@ -1,8 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep'
 
+import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
-import {combineReducers, makeReducer} from '#/main/app/store/reducer'
+
+import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
 import {LIST_FILTER_ADD} from '#/main/app/content/list/store/actions'
 
 import {
@@ -13,7 +15,7 @@ import {
   ANNOUNCE_CHANGE,
   ANNOUNCES_SORT_TOGGLE,
   ANNOUNCES_PAGE_CHANGE
-} from '#/plugin/announcement/resources/announcement/actions'
+} from '#/plugin/announcement/resources/announcement/store/actions'
 
 /**
  * Manages announcement posts sort (posts can only be ordered by date).
@@ -34,6 +36,7 @@ const pageReducer = makeReducer(0, {
  * Manages announcements post CRUD actions.
  */
 const announcementReducer = makeReducer({posts: []}, {
+  [RESOURCE_LOAD]: (state, action) => action.resourceData.announcement,
   [ANNOUNCE_ADD]: (state, action) => {
     const newState = cloneDeep(state)
 
@@ -72,12 +75,19 @@ const announcementDetailReducer = makeReducer(null, {
   [ANNOUNCE_DETAIL_RESET]: () => null
 })
 
-const reducer = {
+const reducer = combineReducers({
   currentPage: pageReducer,
   sortOrder: sortReducer,
   announcement: announcementReducer,
 
-  announcementForm: makeFormReducer('announcementForm'),
+  announcementForm: makeFormReducer('announcementForm', {}, {
+    data: makeReducer({}, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.announcement
+    }),
+    originalData: makeReducer({}, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.announcement
+    })
+  }),
   announcementDetail: announcementDetailReducer,
 
   selected: combineReducers({
@@ -94,8 +104,10 @@ const reducer = {
       sortable: false
     })
   }),
-  workspaceRoles: makeReducer({})
-}
+  workspaceRoles: makeReducer({}, {
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.workspaceRoles
+  })
+})
 
 export {
   reducer

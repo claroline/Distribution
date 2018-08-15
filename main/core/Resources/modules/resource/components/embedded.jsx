@@ -29,11 +29,9 @@ class ResourceEmbedded extends Component {
     const ResourceApp = new App()
 
     mount(this.mountNode, ResourceApp.component, ResourceApp.store, {
-      resource: {
-        node: resourceNode,
-        embedded: true,
-        lifecycle: lifecycleActions
-      }
+      resourceNode: resourceNode,
+      embedded: true,
+      lifecycle: lifecycleActions
     })
   }
 
