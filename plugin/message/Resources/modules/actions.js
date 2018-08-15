@@ -14,7 +14,6 @@ export const MESSAGE_LOAD = 'MESSAGE_LOAD'
 export const IS_REPLY = 'IS_REPLY'
 export const actions = {}
 
-actions.setAsReply = makeActionCreator(IS_REPLY)
 
 actions.newMessage = (id = null) => (dispatch) => {
   if (id) {
@@ -61,15 +60,15 @@ actions.deleteMessages = (messages) => ({
   }
 })
 
-actions.removeMessages = (messages, form = null) => ({
+actions.removeMessages = (messages, formName = null) => ({
   [API_REQUEST]: {
     url: ['apiv2_message_soft_delete', {ids: messages.map(message => message.id)}],
     request: {
       method: 'PUT'
     },
     success: (data, dispatch) => {
-      if (form) {
-        dispatch(listActions.invalidateData(form))
+      if (formName) {
+        dispatch(listActions.invalidateData(formName))
       }
     }
   }
@@ -88,7 +87,10 @@ actions.restoreMessages = (messages) => ({
   }
 })
 
+actions.setAsReply = makeActionCreator(IS_REPLY)
 actions.loadMessage = makeActionCreator(MESSAGE_LOAD, 'message')
+
+
 actions.fetchMessage = (id) => ({
   [API_REQUEST]: {
     url: ['apiv2_message_root', {id}],
@@ -98,10 +100,18 @@ actions.fetchMessage = (id) => ({
   }
 })
 
-actions.openMessage = (id) => (dispatch) => {
-  dispatch(actions.loadMessage({id: id}))
+actions.markedAsReadWhenOpen = (id) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_message_read', {ids: [id]}],
+    request: {
+      method: 'PUT'
+    }
+  }
+})
+
+actions.openMessage = (id) =>  (dispatch) => {
   dispatch(actions.fetchMessage(id))
-  dispatch(actions.readMessages([id]))
+  dispatch(actions.markedAsReadWhenOpen(id))
 }
 
 actions.readMessages = (messages) => ({
