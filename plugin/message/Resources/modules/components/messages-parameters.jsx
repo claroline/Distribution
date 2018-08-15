@@ -1,7 +1,10 @@
 import React from 'react'
 
-import {trans} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
+import {currentUser} from '#/main/core/user/current'
+
+const authenticatedUser = currentUser()
 
 const MessagesParameters = () =>
   <div>
@@ -21,7 +24,7 @@ const MessagesParameters = () =>
             {
               name: 'emailNotifications',
               type: 'boolean',
-              label: trans('get_mail_notifications'),
+              label: transChoice('get_mail_notifications', authenticatedUser.email, {adress: authenticatedUser.email}),
               required: true
             }
           ]
