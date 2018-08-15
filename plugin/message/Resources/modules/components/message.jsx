@@ -53,7 +53,11 @@ MessageComponent.propTypes = {
     object: T.string.isRequired
   }),
   restoreMessage: T.func.isRequired,
-  removeMessage: T.func.isRequired
+  removeMessage: T.func.isRequired,
+  deleteMessage: T.func.isRequired,
+  history: T.shape({
+    push: T.func.isRequired
+  }).isRequired
 }
 
 MessageComponent.defaultProps = {

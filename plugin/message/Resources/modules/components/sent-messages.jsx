@@ -78,13 +78,13 @@ const SentMessagesComponent = (props) =>
 const SentMessages = connect(
   null,
   dispatch => ({
-    removeMessages(message) {
+    removeMessages(message, form) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
           title: trans('messages_delete_title'),
           question: trans('remove_message_confirm_message'),
           dangerous: true,
-          handleConfirm: () => dispatch(actions.removeMessages(message))
+          handleConfirm: () => dispatch(actions.removeMessages(message, form))
         })
       )
     }
