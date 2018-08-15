@@ -19,6 +19,7 @@ const bookReferenceId = createSelector(
 export const selectors = {
   STORE_NAME,
   FORM_NAME,
+  resource,
   bookReferenceId,
   bookReferenceForm,
   bookReferenceOriginal

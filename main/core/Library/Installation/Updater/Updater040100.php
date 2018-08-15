@@ -73,7 +73,7 @@ class Updater040100 extends Updater
         $this->log('Updating root directories...');
 
         foreach ($directories as $directory) {
-            $directory->setIsUploadDestination(true);
+            $directory->setUploadDestination(true);
             $em->persist($directory);
             ++$i;
 

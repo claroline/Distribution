@@ -8,16 +8,18 @@ export const RESOURCE_UPDATE_NODE   = 'RESOURCE_UPDATE_NODE'
 export const USER_EVALUATION_UPDATE = 'USER_EVALUATION_UPDATE'
 export const RESOURCE_LOAD          = 'RESOURCE_LOAD'
 export const RESOURCE_RESTRICTIONS_DISMISS = 'RESOURCE_RESTRICTIONS_DISMISS'
+export const RESOURCE_RESTRICTIONS_ERROR = 'RESOURCE_RESTRICTIONS_ERROR'
 
 // action creators
 export const actions = {}
 
+actions.setRestrictionsError = makeActionCreator(RESOURCE_RESTRICTIONS_ERROR, 'errors')
 actions.loadResource = makeActionCreator(RESOURCE_LOAD, 'resourceData')
 actions.fetchResource = (resourceNode) => ({
   [API_REQUEST]: {
     url: ['claro_resource_load', {type: resourceNode.meta.type, id: resourceNode.id}],
     success: (response, dispatch) => dispatch(actions.loadResource(response)),
-    //error: (response, dispatch) => console.log(response)
+    error: (response, dispatch) => dispatch(actions.setRestrictionsError(response))
   }
 })
 

@@ -1735,7 +1735,7 @@ class ResourceManager
         $directory = new Directory();
         $dirName = $this->translator->trans('my_public_documents', [], 'platform');
         $directory->setName($dirName);
-        $directory->setIsUploadDestination(true);
+        $directory->setUploadDestination(true);
         $parent = $this->getNodeScheduledForInsert($workspace, $workspace->getName());
         if (!$parent) {
             $parent = $this->resourceNodeRepo->findOneBy(['workspace' => $workspace->getId(), 'parent' => $parent]);

@@ -6,7 +6,8 @@ import {
   RESOURCE_LOAD,
   RESOURCE_UPDATE_NODE,
   USER_EVALUATION_UPDATE,
-  RESOURCE_RESTRICTIONS_DISMISS
+  RESOURCE_RESTRICTIONS_DISMISS,
+  RESOURCE_RESTRICTIONS_ERROR
 } from '#/main/core/resource/store/actions'
 
 const reducer = {
@@ -19,7 +20,8 @@ const reducer = {
       [RESOURCE_RESTRICTIONS_DISMISS]: () => true
     }),
     details: makeReducer({}, {
-      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessErrors || {}
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessErrors || {},
+      [RESOURCE_RESTRICTIONS_ERROR]: (state, action) => action.errors
     })
   }),
 

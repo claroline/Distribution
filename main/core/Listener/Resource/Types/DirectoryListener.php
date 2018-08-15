@@ -82,7 +82,7 @@ class DirectoryListener
     }
 
     /**
-     * Creates a new resource inside a directory.
+     * Adds a new resource inside a directory.
      *
      * @DI\Observe("resource.directory.add")
      *
@@ -144,6 +144,8 @@ class DirectoryListener
     }
 
     /**
+     * Creates a new directory.
+     *
      * @DI\Observe("resource.directory.create")
      *
      * @param CreateResourceEvent $event
@@ -181,7 +183,7 @@ class DirectoryListener
         $directory = $event->getResource();
 
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Directory:index.html.twig', [
+            'ClarolineCoreBundle:directory:index.html.twig', [
                 'directory' => $directory,
                 '_resource' => $directory,
             ]
@@ -215,6 +217,9 @@ class DirectoryListener
     public function onCopy(CopyResourceEvent $event)
     {
         $resourceCopy = new Directory();
+
+        // TODO : implement
+
         $event->setCopy($resourceCopy);
     }
 }

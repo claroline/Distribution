@@ -48,19 +48,47 @@ class ResourceRestrictionsManager
      * @param ResourceNode $resourceNode
      * @param Role[]       $userRoles
      *
-     * @return array
+     * @return bool
      */
-    public function check(ResourceNode $resourceNode, array $userRoles): array
+    public function isGranted(ResourceNode $resourceNode, array $userRoles): bool
     {
-        return [
-            'rights' => $this->hasRights($resourceNode, $userRoles),
-            'active' => $resourceNode->isActive(),
-            'published' => $resourceNode->isPublished(),
-            'started' => $this->isStarted($resourceNode),
-            'ended' => $this->isEnded($resourceNode),
-            'unlocked' => $this->isUnlocked($resourceNode),
-            'location' => $this->isIpAuthorized($resourceNode),
-        ];
+        return $this->hasRights($resourceNode, $userRoles)
+            && $resourceNode->isActive()
+            && $resourceNode->isPublished()
+            && ($this->isStarted($resourceNode) && !$this->isEnded($resourceNode))
+            && $this->isUnlocked($resourceNode)
+            && $this->isIpAuthorized($resourceNode);
+    }
+
+    public function getErrors(ResourceNode $resourceNode, array $userRoles): array
+    {
+        if (!$this->isGranted($resourceNode, $userRoles)) {
+            // return restrictions details
+            $errors = [
+                'noRights' => !$this->hasRights($resourceNode, $userRoles),
+                'deleted' => !$resourceNode->isActive(),
+                'notPublished' => !$resourceNode->isPublished()
+            ];
+
+            // optional restrictions
+            // we return them only if they are enabled
+            if (!empty($resourceNode->getAccessCode())) {
+                $errors['locked'] = !$this->isUnlocked($resourceNode);
+            }
+
+            if (!empty($resourceNode->getAccessibleFrom()) || !empty($resourceNode->getAccessibleUntil())) {
+                $errors['notStarted'] = !$this->isStarted($resourceNode);
+                $errors['ended'] = $this->isEnded($resourceNode);
+            }
+
+            if (!empty($resourceNode->getAllowedIps())) {
+                $errors['invalidLocation'] = !$this->isIpAuthorized($resourceNode);
+            }
+
+            return $errors;
+        }
+
+        return [];
     }
 
     /**
@@ -71,7 +99,7 @@ class ResourceRestrictionsManager
      *
      * @return bool
      */
-    public function hasRights(ResourceNode $resourceNode, array $userRoles)
+    public function hasRights(ResourceNode $resourceNode, array $userRoles): bool
     {
         return 0 !== $this->rightsManager->getMaximumRights($userRoles, $resourceNode);
     }
@@ -138,16 +166,16 @@ class ResourceRestrictionsManager
      * Checks if a resource is unlocked.
      * (aka it has no access code, or user has already submitted it).
      *
-     * @param ResourceNode $node
+     * @param ResourceNode $resourceNode
      *
      * @return bool
      */
-    public function isUnlocked(ResourceNode $node): bool
+    public function isUnlocked(ResourceNode $resourceNode): bool
     {
-        if ($node->getAccessCode()) {
+        if ($resourceNode->getAccessCode()) {
             // check if the current user already has unlocked the resource
             // maybe store it another way to avoid require it each time the user session expires
-            return !empty($this->session->get($node->getUuid()));
+            return !empty($this->session->get($resourceNode->getUuid()));
         }
 
         // the current resource does not require a code

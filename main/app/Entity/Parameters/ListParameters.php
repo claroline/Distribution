@@ -28,18 +28,18 @@ trait ListParameters
     private $paginated = true;
 
     /**
+     * @ORM\Column()
+     *
+     * @var string
+     */
+    private $sortBy;
+
+    /**
      * @ORM\Column(type="integer")
      *
      * @var int
      */
     private $pageSize = 20;
-
-    /**
-     * @ORM\Column(type="json_array")
-     *
-     * @var array
-     */
-    private $availablePageSizes = [10, 20, 50, 100, -1]; // -1 is for all
 
     /**
      * @ORM\Column()
@@ -60,7 +60,7 @@ trait ListParameters
      *
      * @var array
      */
-    private $defaultFilters = [];
+    private $filters = [];
 
     /**
      * @ORM\Column(type="json_array")
@@ -137,6 +137,26 @@ trait ListParameters
     }
 
     /**
+     * Get sort by.
+     *
+     * @return string
+     */
+    public function getSortBy()
+    {
+        return $this->sortBy;
+    }
+
+    /**
+     * Set sort by.
+     *
+     * @param string $sortBy
+     */
+    public function setSortBy($sortBy)
+    {
+        $this->sortBy = $sortBy;
+    }
+
+    /**
      * Get page size.
      *
      * @return int
@@ -201,19 +221,19 @@ trait ListParameters
      *
      * @return array
      */
-    public function getDefaultFilters()
+    public function getFilters()
     {
-        return $this->defaultFilters;
+        return $this->filters;
     }
 
     /**
      * Set default filters.
      *
-     * @param array $defaultFilters
+     * @param array $filters
      */
-    public function setDefaultFilters(array $defaultFilters)
+    public function setFilters(array $filters)
     {
-        $this->defaultFilters = $defaultFilters;
+        $this->filters = $filters;
     }
 
     /**

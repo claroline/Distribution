@@ -94,7 +94,7 @@ class PathSerializer
                 'description' => $path->getDescription(),
                 'showOverview' => $path->getShowOverview(),
                 'showSummary' => $path->getShowSummary(),
-                'openSummary' => $path->isSummaryDisplayed(),
+                'openSummary' => $path->getOpenSummary(),
                 'numbering' => $path->getNumbering() ? $path->getNumbering() : 'none',
                 'manualProgressionAllowed' => $path->isManualProgressionAllowed(),
             ],

@@ -130,7 +130,7 @@ class ResourceController
         // gets the current user roles to check access restrictions
         $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
 
-        $accessErrors = $this->restrictionsManager->check($resourceNode, $userRoles);
+        $accessErrors = $this->restrictionsManager->getErrors($resourceNode, $userRoles);
         if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
             $loaded = $this->manager->load($resourceNode);
 

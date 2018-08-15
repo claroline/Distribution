@@ -3,21 +3,23 @@ import React from 'react'
 import {RoutedPageContent} from '#/main/core/layout/router'
 
 import {ResourcePage} from '#/main/core/resource/containers/page'
-import {Player} from '#/main/core/resources/text/player/components/player'
-import {Editor} from '#/main/core/resources/text/editor/components/editor'
+import {DirectoryPlayer} from '#/main/core/resources/directory/player/components/directory'
+import {DirectoryEditor} from '#/main/core/resources/directory/editor/components/directory'
 
 const DirectoryResource = props =>
-  <ResourcePage>
+  <ResourcePage
+    primaryAction="add"
+  >
     <RoutedPageContent
       headerSpacer={true}
       routes={[
         {
           path: '/',
           exact: true,
-          component: Player
+          component: DirectoryPlayer
         }, {
           path: '/edit',
-          component: Editor
+          component: DirectoryEditor
         }
       ]}
     />
