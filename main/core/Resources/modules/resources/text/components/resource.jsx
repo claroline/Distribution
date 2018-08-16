@@ -1,14 +1,12 @@
 import React from 'react'
 
-import {trans} from '#/main/core/translation'
 import {RoutedPageContent} from '#/main/core/layout/router'
-import {LINK_BUTTON} from '#/main/app/buttons'
 import {ResourcePage} from '#/main/core/resource/containers/page'
 
 import {Player} from '#/main/core/resources/text/player/components/player'
 import {Editor} from '#/main/core/resources/text/editor/components/editor'
 
-const TextResource = props =>
+const TextResource = () =>
   <ResourcePage>
     <RoutedPageContent
       headerSpacer={true}

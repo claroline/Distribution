@@ -8,11 +8,11 @@ const Directory = {
     list: T.shape({
       columns: T.shape({
         default: T.arrayOf(T.string),
-        available: T.arrayOf(T.string),
+        available: T.arrayOf(T.string)
       }),
       display: T.shape({
         default: T.string,
-        available: T.arrayOf(T.string),
+        available: T.arrayOf(T.string)
       }),
       filters: T.shape({
 
@@ -22,7 +22,7 @@ const Directory = {
       }),
       sorting: T.shape({
 
-      }),
+      })
     })
   },
   defaultProps: {

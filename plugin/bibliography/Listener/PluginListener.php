@@ -64,7 +64,7 @@ class PluginListener
         $content = $this->templating->render(
             'IcapBibliographyBundle:configuration:open.html.twig',
             [
-                'configuration' => $this->bookReferenceManager->getConfig()
+                'configuration' => $this->bookReferenceManager->getConfig(),
             ]
         );
         $response = new Response($content);

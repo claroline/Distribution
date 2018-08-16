@@ -176,6 +176,7 @@ ResourceRestrictions.propTypes = {
     // optional restrictions (if we get nothing, the restriction is disabled)
     locked: T.bool,
     notStarted: T.bool,
+    ended: T.bool,
     invalidLocation: T.bool
   }).isRequired,
   dismiss: T.func.isRequired

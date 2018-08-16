@@ -53,7 +53,7 @@ class Updater040100 extends Updater
 
             ++$i;
 
-            if ($i % self::MAX_BATCH_SIZE === 0) {
+            if (0 === $i % self::MAX_BATCH_SIZE) {
                 $em->flush();
                 $i = 0;
             }
@@ -77,7 +77,7 @@ class Updater040100 extends Updater
             $em->persist($directory);
             ++$i;
 
-            if ($i % self::MAX_BATCH_SIZE === 0) {
+            if (0 === $i % self::MAX_BATCH_SIZE) {
                 $em->flush();
                 $i = 0;
             }
@@ -97,7 +97,7 @@ class Updater040100 extends Updater
         //count pwsToolConfigs
         $pwsToolConfigs = $em->getRepository('ClarolineCoreBundle:Tool\PwsToolConfig')->findAll();
 
-        if (count($pwsToolConfigs) === 0) {
+        if (0 === count($pwsToolConfigs)) {
             foreach ($tools as $tool) {
                 $pws = new PwsToolConfig();
                 $pws->setTool($tool);
@@ -123,7 +123,7 @@ class Updater040100 extends Updater
             $em->persist($pw);
             ++$i;
 
-            if ($i % self::MAX_BATCH_SIZE === 0) {
+            if (0 === $i % self::MAX_BATCH_SIZE) {
                 $em->flush();
                 $i = 0;
             }

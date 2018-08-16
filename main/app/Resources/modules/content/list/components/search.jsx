@@ -143,6 +143,11 @@ AvailableFilterContent.propTypes = {
   options: T.object,
   definition: T.shape({
     // DataType
+    parse: T.func.isRequired,
+    validate: T.func.isRequired,
+    components: T.shape({
+      search: T.node
+    })
   }).isRequired
 }
 

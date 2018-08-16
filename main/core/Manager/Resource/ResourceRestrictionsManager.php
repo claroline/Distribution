@@ -67,7 +67,7 @@ class ResourceRestrictionsManager
             $errors = [
                 'noRights' => !$this->hasRights($resourceNode, $userRoles),
                 'deleted' => !$resourceNode->isActive(),
-                'notPublished' => !$resourceNode->isPublished()
+                'notPublished' => !$resourceNode->isPublished(),
             ];
 
             // optional restrictions

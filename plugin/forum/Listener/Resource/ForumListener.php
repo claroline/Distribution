@@ -98,6 +98,7 @@ class ForumListener
     }
 
     /**
+     * Copies a forum resource.
      *
      * @DI\Observe("copy_claroline_forum")
      *
@@ -113,6 +114,7 @@ class ForumListener
     }
 
     /**
+     * Removes forum notifications when a user is deleted.
      *
      * @DI\Observe("delete_user")
      *
@@ -133,6 +135,7 @@ class ForumListener
     }
 
     /**
+     * Creates evaluation for forum resource.
      *
      * @DI\Observe("generate_resource_user_evaluation_claroline_forum")
      *

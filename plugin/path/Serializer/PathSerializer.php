@@ -207,7 +207,7 @@ class PathSerializer
     private function serializeUserProgression(Step $step)
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        $userProgression = $user !== 'anon.' ?
+        $userProgression = 'anon.' !== $user ?
             $this->userProgressionRepo->findOneBy(['step' => $step, 'user' => $user]) :
             null;
         $data = [

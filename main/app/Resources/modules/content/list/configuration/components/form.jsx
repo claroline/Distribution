@@ -39,9 +39,9 @@ const ConfigurationForm = props =>
                 type: 'choice',
                 displayed: (config) => config.pagination.enabled,
                 options: {
-                  choices: constants.AVAILABLE_PAGE_SIZES.reduce((acc, current) =>
-                    Object.assign(acc, {[current]: -1 !== current ? current : trans('all')})
-                  , {}),
+                  choices: constants.AVAILABLE_PAGE_SIZES.reduce(
+                    (acc, current) => Object.assign(acc, {[current]: -1 !== current ? current : trans('all')}), {}
+                  ),
                   noEmpty: true
                 }
               }

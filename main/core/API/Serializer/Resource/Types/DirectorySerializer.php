@@ -35,9 +35,7 @@ class DirectorySerializer
                     'available' => $directory->getAvailableColumns(),
                 ],
 
-                'card' => [
-
-                ],
+                'card' => [],
 
                 'display' => [
                     'default' => $directory->getDisplay(),
@@ -56,7 +54,7 @@ class DirectorySerializer
 
                 'sorting' => [
                     'enabled' => $directory->isSortable(),
-                    'default' => $directory->getSortBy()
+                    'default' => $directory->getSortBy(),
                 ]
             ],
         ];

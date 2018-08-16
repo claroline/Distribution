@@ -249,7 +249,6 @@ class ResourceEvaluationManager
     }
 
     /**
-     *
      * @param ResourceNode   $node
      * @param User           $user
      * @param array          $actions
