@@ -8,7 +8,7 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {Sessions} from '#/plugin/cursus/administration/cursus/session/components/sessions'
-import {Session} from '#/plugin/cursus/administration/cursus/session/components/session'
+import {SessionForm} from '#/plugin/cursus/administration/cursus/session/components/session-form'
 import {actions} from '#/plugin/cursus/administration/cursus/session/actions'
 
 const SessionTabActions = () =>
@@ -31,7 +31,7 @@ const SessionTabComponent = props =>
         component: Sessions
       }, {
         path: '/sessions/form/:id?',
-        component: Session,
+        component: SessionForm,
         // onEnter: (params) => props.openForm(params.id || null)
       }
     ]}

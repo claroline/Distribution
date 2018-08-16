@@ -73,7 +73,7 @@ class SessionEventController extends AbstractCrudController
     /**
      * @EXT\Route(
      *     "/list",
-     *     name="apiv2_cursus_session_events_list"
+     *     name="apiv2_cursus_session_event_list"
      * )
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *

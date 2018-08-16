@@ -4,13 +4,13 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
 const reducer = combineReducers({
-  list: makeListReducer('sessions.list', {}, {
+  list: makeListReducer('courses.list', {}, {
     invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/sessions.current']: () => true
+      [FORM_SUBMIT_SUCCESS+'/courses.current']: () => true
     })
   }),
-  current: makeFormReducer('sessions.current', {}, {
-    users: makeListReducer('sessions.current.users')
+  current: makeFormReducer('courses.current', {}, {
+    users: makeListReducer('courses.current.users')
   })
 })
 

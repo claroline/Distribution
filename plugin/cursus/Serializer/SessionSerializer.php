@@ -105,7 +105,7 @@ class SessionSerializer
                     'sessionStatus' => $session->getSessionStatus(),
                     'defaultSession' => $session->isDefaultSession(),
                     'creationDate' => DateNormalizer::normalize($session->getCreationDate()),
-                    'displayOrder' => $session->getDisplayOrder(),
+                    'order' => $session->getDisplayOrder(),
                     'color' => $session->getColor(),
                     'total' => $session->getTotal(),
                     'certificated' => $session->getCertificated(),
@@ -147,7 +147,7 @@ class SessionSerializer
         $this->sipe('meta.sessionStatus', 'setSessionStatus', $data, $session);
         $this->sipe('meta.defaultSession', 'setDefaultSession', $data, $session);
         $this->sipe('meta.creationDate', 'setCreationDate', $data, $session);
-        $this->sipe('meta.displayOrder', 'setDisplayOrder', $data, $session);
+        $this->sipe('meta.order', 'setDisplayOrder', $data, $session);
         $this->sipe('meta.color', 'setColor', $data, $session);
         $this->sipe('meta.total', 'setTotal', $data, $session);
         $this->sipe('meta.certificated', 'setCertificated', $data, $session);

@@ -73,7 +73,7 @@ class SessionController extends AbstractCrudController
     /**
      * @EXT\Route(
      *     "/list",
-     *     name="apiv2_cursus_sessions_list"
+     *     name="apiv2_cursus_session_list"
      * )
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *

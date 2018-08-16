@@ -14,10 +14,11 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
+import {Session as SessionType} from '#/plugin/cursus/administration/cursus/prop-types'
 // import {GroupList} from '#/main/core/administration/user/group/components/group-list'
 // import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
-const SessionForm = props =>
+const SessionFormComponent = props =>
   <div>
     Session
   </div>
@@ -187,17 +188,15 @@ const SessionForm = props =>
     {/*</FormSections>*/}
   {/*</FormData>*/}
 
-SessionForm.propTypes = {
+SessionFormComponent.propTypes = {
   new: T.bool.isRequired,
-  // session: T.shape(
-  //   RoleTypes.propTypes
-  // ).isRequired,
-  updateProp: T.func.isRequired,
+  session: T.shape(SessionType.propTypes).isRequired,
+  // updateProp: T.func.isRequired,
   // pickUsers: T.func.isRequired,
   // pickGroups: T.func.isRequired
 }
 
-const Session = connect(
+const SessionForm = connect(
   state => ({
     new: formSelect.isNew(formSelect.form(state, 'sessions.current')),
     session: formSelect.data(formSelect.form(state, 'sessions.current'))
@@ -237,8 +236,8 @@ const Session = connect(
   //     }))
   //   }
   // })
-)(SessionForm)
+)(SessionFormComponent)
 
 export {
-  Session
+  SessionForm
 }

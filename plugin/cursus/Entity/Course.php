@@ -369,7 +369,7 @@ class Course
 
     public function getOrganizations()
     {
-        return $this->organizations->toArray();
+        return $this->organizations;
     }
 
     public function addOrganization(Organization $organization)

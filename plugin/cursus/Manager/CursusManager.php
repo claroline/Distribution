@@ -270,7 +270,7 @@ class CursusManager
         $orderMax = is_null($parent) ? $this->getLastRootCursusOrder() : $this->getLastCursusOrderByParent($parent);
         $order = is_null($orderMax) ? 1 : intval($orderMax) + 1;
         $cursus->setCursusOrder($order);
-        $cursusOrganizations = empty($parent) ? $organizations : $parent->getOrganizations();
+        $cursusOrganizations = empty($parent) ? $organizations : $parent->getOrganizations()->toArray();
 
         foreach ($cursusOrganizations as $organization) {
             $cursus->addOrganization($organization);
@@ -493,7 +493,7 @@ class CursusManager
             $newCursus->setBlocking(false);
             ++$lastOrder;
             $newCursus->setCursusOrder($lastOrder);
-            $organizations = $parent->getOrganizations();
+            $organizations = $parent->getOrganizations()->toArray();
 
             foreach ($organizations as $organization) {
                 $newCursus->addOrganization($organization);
@@ -4774,14 +4774,14 @@ class CursusManager
     public function getOrganizationsByCourse(Course $course)
     {
         $organizations = [];
-        $courseOrgas = $course->getOrganizations();
+        $courseOrgas = $course->getOrganizations()->toArray();
         $courseCursus = $this->cursusRepo->findBy(['course' => $course]);
 
         foreach ($courseOrgas as $orga) {
             $organizations[$orga->getId()] = $orga;
         }
         foreach ($courseCursus as $cursus) {
-            $cursusOrgas = $cursus->getOrganizations();
+            $cursusOrgas = $cursus->getOrganizations()->toArray();
 
             foreach ($cursusOrgas as $orga) {
                 $organizations[$orga->getId()] = $orga;
@@ -4794,7 +4794,7 @@ class CursusManager
     public function updateCursusOrganizations(Cursus $cursus, array $organizations)
     {
         if (empty($cursus->getParent())) {
-            $cursusOrgasIds = $this->extractOrganizationsIds($cursus->getOrganizations());
+            $cursusOrgasIds = $this->extractOrganizationsIds($cursus->getOrganizations()->toArray());
             $orgasIds = $this->extractOrganizationsIds($organizations);
             $nbCursusOrgas = count($cursusOrgasIds);
             $nbOrgas = count($orgasIds);
@@ -5779,7 +5779,7 @@ class CursusManager
     public function checkCursusAccess(User $user, Cursus $cursus)
     {
         $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
-        $cursusOrgas = $this->extractOrganizationsIds($cursus->getOrganizations());
+        $cursusOrgas = $this->extractOrganizationsIds($cursus->getOrganizations()->toArray());
 
         if (!$this->authorization->isGranted('ROLE_ADMIN') && 0 === count(array_intersect($userOrgas, $cursusOrgas))) {
             throw new AccessDeniedException();

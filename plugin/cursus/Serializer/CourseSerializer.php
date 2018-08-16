@@ -15,9 +15,11 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
+use Claroline\CoreBundle\Repository\Organization\OrganizationRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\CursusBundle\Entity\Course;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.serializer.cursus.course")
@@ -29,9 +31,13 @@ class CourseSerializer
 
     /** @var ObjectManager */
     private $om;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
     /** @var WorkspaceSerializer */
     private $workspaceSerializer;
 
+    /** @var OrganizationRepository */
+    private $organizationRepo;
     /** @var WorkspaceRepository */
     private $workspaceRepo;
 
@@ -40,17 +46,24 @@ class CourseSerializer
      *
      * @DI\InjectParams({
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
+     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
      *     "workspaceSerializer" = @DI\Inject("claroline.serializer.workspace")
      * })
      *
-     * @param ObjectManager       $om
-     * @param WorkspaceSerializer $workspaceSerializer
+     * @param ObjectManager         $om
+     * @param TokenStorageInterface $tokenStorage
+     * @param WorkspaceSerializer   $workspaceSerializer
      */
-    public function __construct(ObjectManager $om, WorkspaceSerializer $workspaceSerializer)
-    {
+    public function __construct(
+        ObjectManager $om,
+        TokenStorageInterface $tokenStorage,
+        WorkspaceSerializer $workspaceSerializer
+    ) {
         $this->om = $om;
+        $this->tokenStorage = $tokenStorage;
         $this->workspaceSerializer = $workspaceSerializer;
 
+        $this->organizationRepo = $om->getRepository('Claroline\CoreBundle\Entity\Organization\Organization');
         $this->workspaceRepo = $om->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace');
     }
 
@@ -83,7 +96,7 @@ class CourseSerializer
                     'icon' => $course->getIcon(),
                     'defaultSessionDuration' => $course->getDefaultSessionDuration(),
                     'withSessionEvent' => $course->getWithSessionEvent(),
-                    'displayOrder' => $course->getDisplayOrder(),
+                    'order' => $course->getDisplayOrder(),
                 ],
                 'restrictions' => [
                     'maxUsers' => $course->getMaxUsers(),
@@ -119,7 +132,7 @@ class CourseSerializer
         $this->sipe('meta.icon', 'setIcon', $data, $course);
         $this->sipe('meta.defaultSessionDuration', 'setDefaultSessionDuration', $data, $course);
         $this->sipe('meta.withSessionEvent', 'setWithSessionEvent', $data, $course);
-        $this->sipe('meta.displayOrder', 'setDisplayOrder', $data, $course);
+        $this->sipe('meta.order', 'setDisplayOrder', $data, $course);
 
         $this->sipe('restrictions.maxUsers', 'setMaxUsers', $data, $course);
 
@@ -138,6 +151,37 @@ class CourseSerializer
             $this->workspaceRepo->findOneBy(['uuid' => $data['meta']['workspaceModel']['uuid']]) :
             null;
         $course->setWorkspaceModel($workspaceModel);
+
+        $organizations = $course->getOrganizations()->toArray();
+
+        // If Course is associated to no organization, initializes it with organizations administrated by authenticated user
+        // or at last resort with default organizations
+        if (0 === count($organizations)) {
+            $user = $this->tokenStorage->getToken()->getUser();
+            $useDefaultOrganizations = false;
+
+            if ('anon.' !== $user) {
+                $userOrganizations = $user->getAdministratedOrganizations()->toArray();
+
+                if (0 < count($userOrganizations)) {
+                    foreach ($userOrganizations as $organization) {
+                        $course->addOrganization($organization);
+                    }
+                } else {
+                    $useDefaultOrganizations = true;
+                }
+            } else {
+                $useDefaultOrganizations = true;
+            }
+            // Initializes Course with default organizations if no others organization is found
+            if ($useDefaultOrganizations) {
+                $defaultOrganizations = $this->organizationRepo->findBy(['default' => true]);
+
+                foreach ($defaultOrganizations as $organization) {
+                    $course->addOrganization($organization);
+                }
+            }
+        }
 
         return $course;
     }
