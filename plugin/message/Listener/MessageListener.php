@@ -11,6 +11,7 @@
 
 namespace Claroline\MessageBundle\Listener;
 
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Task\ScheduledTask;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
@@ -18,6 +19,7 @@ use Claroline\CoreBundle\Event\SendMessageEvent;
 use Claroline\CoreBundle\Manager\Task\ScheduledTaskManager;
 use Claroline\CoreBundle\Menu\ConfigureMenuEvent;
 use Claroline\CoreBundle\Menu\ContactAdditionalActionEvent;
+use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -38,6 +40,7 @@ class MessageListener
     private $request;
     private $httpKernel;
     private $taskManager;
+    private $finder;
 
     /**
      * @DI\InjectParams({
@@ -48,6 +51,7 @@ class MessageListener
      *     "httpKernel"      = @DI\Inject("http_kernel"),
      *     "requestStack"    = @DI\Inject("request_stack"),
      *     "taskManager"     = @DI\Inject("claroline.manager.scheduled_task_manager"),
+     *     "finder"          = @DI\Inject("claroline.api.finder")
      * })
      */
     public function __construct(
@@ -57,7 +61,8 @@ class MessageListener
         TranslatorInterface $translator,
         RequestStack $requestStack,
         HttpKernelInterface $httpKernel,
-        ScheduledTaskManager $taskManager
+        ScheduledTaskManager $taskManager,
+        FinderProvider $finder
     ) {
         $this->messageManager = $messageManager;
         $this->router = $router;
@@ -79,7 +84,14 @@ class MessageListener
         $tool = $event->getTool();
 
         if ('anon.' !== $user) {
-            $countUnreadMessages = $this->messageManager->getNbUnreadMessages($user);
+            $countUnreadMessages = $this->finderProvider->fetch(
+              Message::class,
+              ['removed' => false, 'sent' => false, 'read' => false],
+              null,
+              0,
+              -1,
+              true
+            );
             $messageTitle = $this->translator->trans(
                 'new_message_alert',
                 ['%count%' => $countUnreadMessages],
