@@ -6,6 +6,8 @@ import {ResourceExplorer} from '#/main/core/resource/explorer/containers/explore
 
 import {selectors} from '#/main/core/resources/directory/player/store'
 
+// TODO : fix reloading at resource creation
+
 const DirectoryPlayer = () =>
   <ResourceExplorer
     name={selectors.EXPLORER_NAME}

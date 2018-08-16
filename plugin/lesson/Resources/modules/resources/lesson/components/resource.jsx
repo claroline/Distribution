@@ -1,24 +1,22 @@
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import {PropTypes as T} from 'prop-types'
+import isEmpty from 'lodash/isEmpty'
+
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
-import {PropTypes as T} from '#/main/core/scaffolding/prop-types'
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {hasPermission} from '#/main/core/resource/permissions'
 
 import {ResourcePage} from '#/main/core/resource/containers/page'
 import {Routes} from '#/main/app/router'
-import {PageContent} from '#/main/core/layout/page/index'
 import {SummarizedContent} from '#/main/app/content/summary/components/content'
 import {LINK_BUTTON, DOWNLOAD_BUTTON} from '#/main/app/buttons'
 
 import {actions} from '#/plugin/lesson/resources/lesson/store/'
 import {constants} from '#/plugin/lesson/resources/lesson/constants'
 import {ChapterResource} from '#/plugin/lesson/resources/lesson/components/chapter'
-import {normalizeTree} from '#/plugin/lesson/resources/lesson/components/tree/utils'
+import {normalizeTree} from '#/plugin/lesson/resources/lesson/utils'
 import {ChapterForm} from '#/plugin/lesson/resources/lesson/components/chapter-form'
 
-class Resource extends Component {
+class LessonResource extends Component {
   constructor(props) {
     super(props)
 
@@ -26,7 +24,7 @@ class Resource extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.invalidated && this.props.invalidated !== prevProps.tree.invalidated) {
+    if (this.props.invalidated && this.props.invalidated !== prevProps.invalidated) {
       this.reload()
     }
   }
@@ -40,6 +38,7 @@ class Resource extends Component {
   render() {
     return (
       <ResourcePage
+        styles={['claroline-distribution-plugin-lesson-lesson-resource']}
         customActions={[
           {
             type: LINK_BUTTON,
@@ -65,7 +64,7 @@ class Resource extends Component {
             opened: true,
             pinned: true,
             title: trans('summary'),
-            links: normalizeTree(this.props.tree, this.props.lesson.id, this.props.canEdit).children
+            links: !isEmpty(this.props.tree) ? normalizeTree(this.props.tree, this.props.lesson.id, this.props.canEdit).children : []
           }}
         >
           <Routes className="lesson-page-content" routes={[
@@ -101,7 +100,7 @@ class Resource extends Component {
   }
 }
 
-Resource.propTypes = {
+LessonResource.propTypes = {
   invalidated: T.bool.isRequired,
   fetchChapterTree: T.func.isRequired,
   lesson: T.any.isRequired,
@@ -113,31 +112,6 @@ Resource.propTypes = {
   loadChapter: T.func.isRequired,
   editChapter: T.func.isRequired
 }
-
-const LessonResource = connect(
-  state => ({
-    lesson: state.lesson,
-    tree: state.tree.data,
-    invalidated: state.tree.invalidated,
-    canExport: hasPermission('export', resourceSelect.resourceNode(state)) && state.exportPdfEnabled,
-    canEdit: hasPermission('edit', resourceSelect.resourceNode(state))
-  }),
-  dispatch => ({
-    loadChapter: (lessonId, chapterSlug) => {
-      dispatch(actions.loadChapter(lessonId, chapterSlug))
-    },
-    editChapter: (lessonId, chapterSlug) => {
-      dispatch(actions.editChapter(constants.CHAPTER_EDIT_FORM_NAME, lessonId, chapterSlug))
-    },
-    copyChapter: (lessonId, chapterSlug) => {
-      dispatch(actions.copyChapter(constants.CHAPTER_EDIT_FORM_NAME, lessonId, chapterSlug))
-    },
-    createChapter: (lessonId, parentChapterSlug = null) => {
-      dispatch(actions.createChapter(constants.CHAPTER_EDIT_FORM_NAME, lessonId, parentChapterSlug))
-    },
-    fetchChapterTree: lessonId => dispatch(actions.fetchChapterTree(lessonId))
-  })
-)(Resource)
 
 export {
   LessonResource
