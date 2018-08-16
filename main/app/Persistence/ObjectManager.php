@@ -368,6 +368,19 @@ class ObjectManager extends ObjectManagerDecorator
     }
 
     /**
+     * @param string     $class
+     * @param string|int $id
+     */
+    public function find($class, $id)
+    {
+        return $this->wrapped->getRepository($class)->findOneBy(
+            !is_numeric($id) && property_exists($class, 'uuid') ?
+                ['uuid' => $id] :
+                ['id' => $id]
+        );
+    }
+
+    /**
      * Fetch an object from database according to the class and the id/uuid of the data.
      */
     public function getObject(array $data, $class)

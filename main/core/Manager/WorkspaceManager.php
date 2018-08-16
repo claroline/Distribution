@@ -1293,7 +1293,7 @@ class WorkspaceManager
 
         $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($workspace);
         //get home tabs from source
-        $this->duplicateHomeTabs($workspace, $newWorkspace, $homeTabs, $resourceInfos);
+        $this->duplicateHomeTabs($workspace, $newWorkspace, $homeTabs, $resourceInfo);
 
         $this->container->get('claroline.security.token_updater')->updateNormal($token);
 
