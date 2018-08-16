@@ -97,7 +97,7 @@ class MessageSerializer
 
         if (in_array(Options::IS_RECURSIVE, $options)) {
             $data['children'] = array_map(function (Message $child) {
-                return $this->serialize($child);
+                return $this->serialize($child, $options);
             }, $message->getChildren()->toArray());
         }
 
