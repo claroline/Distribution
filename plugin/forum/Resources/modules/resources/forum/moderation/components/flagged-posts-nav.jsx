@@ -3,7 +3,6 @@ import React from 'react'
 import {trans} from '#/main/core/translation'
 import {NavLink} from '#/main/app/router'
 
-
 const FlaggedPostsNav = () =>
   <div>
     <nav className="lateral-nav">
@@ -13,6 +12,7 @@ const FlaggedPostsNav = () =>
       >
         {trans('flagged_subjects', {}, 'forum')}
       </NavLink>
+
       <NavLink
         to='/moderation/flagged/messages'
         className="lateral-link"
@@ -21,9 +21,6 @@ const FlaggedPostsNav = () =>
       </NavLink>
     </nav>
   </div>
-
-
-
 
 export {
   FlaggedPostsNav
