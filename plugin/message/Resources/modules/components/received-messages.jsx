@@ -64,7 +64,7 @@ const ReceivedMessagesComponent = (props) =>
           icon: 'fa fa-fw fa-eye',
           label: trans('see_message', {}, 'message'),
           target: '/message/'+rows[0].id,
-          context: 'row'
+          scope: ['object']
         }, {
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-check',
