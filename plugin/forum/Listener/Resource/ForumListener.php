@@ -67,7 +67,6 @@ class ForumListener
         $this->evaluationManager = $evaluationManager;
     }
 
-
     /**
      * Loads a Forum resource.
      *
@@ -83,7 +82,6 @@ class ForumListener
 
         $event->stopPropagation();
     }
-
 
     /**
      * Deletes a forum resource.

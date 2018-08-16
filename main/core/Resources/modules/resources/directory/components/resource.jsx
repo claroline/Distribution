@@ -6,7 +6,7 @@ import {ResourcePage} from '#/main/core/resource/containers/page'
 import {DirectoryPlayer} from '#/main/core/resources/directory/player/components/directory'
 import {DirectoryEditor} from '#/main/core/resources/directory/editor/components/directory'
 
-const DirectoryResource = props =>
+const DirectoryResource = () =>
   <ResourcePage
     primaryAction="add"
   >

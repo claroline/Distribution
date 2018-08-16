@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {Page} from '#/main/app/page/components/page'
+import {URL_BUTTON} from '#/main/app/buttons'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceExplorer} from '#/main/core/resource/explorer/containers/explorer'
@@ -26,7 +27,7 @@ const Tool = props =>
     <ResourceExplorer
       name={selectors.STORE_NAME}
       primaryAction={(resourceNode) => ({ // todo : use resource default action
-        type: 'url',
+        type: URL_BUTTON,
         label: trans('open', {}, 'actions'),
         //disabled: !hasPermission('open', resourceNode),
         target: [ 'claro_resource_show', {
