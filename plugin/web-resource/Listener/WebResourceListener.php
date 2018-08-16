@@ -78,7 +78,7 @@ class WebResourceListener
             'ClarolineWebResourceBundle:web-resource:open.html.twig',
             [
                 'workspace' => $workspace,
-                'path' => $hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
+                'path' => $zipPath.$hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
                 '_resource' => $event->getResource(),
             ]
         );
@@ -97,9 +97,9 @@ class WebResourceListener
         $hash = $event->getResource()->getHashName();
         $workspace = $event->getResource()->getResourceNode()->getWorkspace();
         $zipPath = $this->container->getParameter('claroline.param.uploads_directory').DIRECTORY_SEPARATOR.'webresource'.DIRECTORY_SEPARATOR.$workspace->getUuid().DIRECTORY_SEPARATOR;
-        $event->setAdditionalData([
-              'path' => $hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
-            ]);
+        $event->setData([
+          'path' => $zipPath.$hash.DIRECTORY_SEPARATOR.$this->webResourceManager->guessRootFileFromUnzipped($zipPath.$hash),
+        ]);
 
         $event->stopPropagation();
     }

@@ -7,9 +7,7 @@ import {findInTree} from '#/plugin/wiki/resources/wiki/utils'
 
 const wiki = (state) => state.wiki
 
-const section = (state, id) => {
-  return findInTree(state.sections.tree, id, 'children', 'id')
-}
+const section = (state, id) => findInTree(state.sections.tree, id, 'children', 'id')
 
 const canEdit = (state) => hasPermission('edit', resourceSelect.resourceNode(state))
 const canExport = (state) => hasPermission('export', resourceSelect.resourceNode(state)) && param('is_pdf_export_active')
