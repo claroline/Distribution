@@ -124,6 +124,8 @@ class OperationExecutor
                     try {
                         return in_array('Claroline\InstallationBundle\Bundle\InstallableInterface', class_implements($var)) ? true : false;
                     } catch (\Exception $e) {
+                        $this->log($var.' not found.', LogLevel::ERROR);
+
                         return false;
                     }
                 });
