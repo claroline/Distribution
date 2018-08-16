@@ -87,7 +87,7 @@ class MessageListener
         if ('anon.' !== $user) {
             $countUnreadMessages = $this->finderProvider->fetch(
               Message::class,
-              ['removed' => false, 'sent' => false, 'read' => false],
+              ['removed' => false, 'read' => false],
               null,
               0,
               -1,

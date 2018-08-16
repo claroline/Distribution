@@ -73,11 +73,6 @@ class MessageSerializer
     {
         $userMessage = $this->getUserMessage($message);
 
-        if (!$userMessage) {
-            //this shouldn't happen but if something went wrong, it's a failsafe
-            $userMessage = new UserMessage();
-        }
-
         $data = [
           'id' => $message->getUuid(),
           'object' => $message->getObject(),
@@ -115,7 +110,7 @@ class MessageSerializer
      */
     public function deserialize($data, Message $message, array $options = [])
     {
-        $userMessage = $this->getUserMessage($message);
+        $userMessages = $this->getUserMessages($message);
 
         $this->sipe('object', 'setObject', $data, $message);
         $this->sipe('content', 'setContent', $data, $message);
@@ -131,19 +126,30 @@ class MessageSerializer
             $message->setSender($currentUser);
         }
 
-        if (isset($data['meta']) && $userMessage) {
-            if (isset($data['meta']['removed'])) {
-                $userMessage->setIsRemoved($data['meta']['removed']);
-            }
+        //when we create the message, the userMessage doesn't exist yet
+        if (isset($data['meta'])) {
+            foreach ($userMessages as $userMessage) {
+                if (isset($data['meta']['removed'])) {
+                    $userMessage->setIsRemoved($data['meta']['removed']);
+                }
 
-            if (isset($data['meta']['read'])) {
-                $userMessage->setIsRead($data['meta']['read']);
-            }
+                if (isset($data['meta']['read'])) {
+                    $userMessage->setIsRead($data['meta']['read']);
+                }
 
-            $this->om->persist($userMessage);
+                $this->om->persist($userMessage);
+            }
         }
 
         return $message;
+    }
+
+    //we return an array for backward compatibity. It used to create many messages for a single user.
+    private function getUserMessages(Message $message)
+    {
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+
+        return $this->om->getRepository(UserMessage::class)->findBy(['message' => $message, 'user' => $currentUser]);
     }
 
     private function getUserMessage(Message $message)
