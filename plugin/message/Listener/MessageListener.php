@@ -71,6 +71,7 @@ class MessageListener
         $this->request = $requestStack->getCurrentRequest();
         $this->httpKernel = $httpKernel;
         $this->taskManager = $taskManager;
+        $this->finderProvider = $finder;
     }
 
     /**

@@ -19,7 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\MessageBundle\Repository\MessageRepository")
+ * @ORM\Entity()
  * @ORM\Table(
  *     name="claro_message",
  *     indexes={

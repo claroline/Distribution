@@ -211,16 +211,6 @@ class MessageManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\User $user
-     *
-     * @return int
-     */
-    public function getNbUnreadMessages(User $user)
-    {
-        return $this->messageRepo->countUnread($user);
-    }
-
-    /**
      * Generates a string containing the usernames from a list of users.
      *
      * @param \Claroline\CoreBundle\Entity\User[]      $receivers
