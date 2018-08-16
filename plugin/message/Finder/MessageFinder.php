@@ -51,6 +51,8 @@ class MessageFinder extends AbstractFinder
 
         if ($this->tokenStorage && $this->tokenStorage->getToken() && 'anon.' !== $this->tokenStorage->getToken()->getUser()) {
             $userId = $this->tokenStorage->getToken()->getUser()->getId();
+            $qb->andWhere('currentUser.id = :userId');
+            $qb->setParameter('userId', $userId);
         }
 
         foreach ($searches as $filterName => $filterValue) {
@@ -58,10 +60,19 @@ class MessageFinder extends AbstractFinder
                 case 'sent':
                     $qb->andWhere("um.isSent = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
-                    if (false === $filterValue) {
-                        $qb->andWhere('currentUser.id != :userId');
+/*
+                    if (isset($searches['excludeCurrent'])) {
+                        $qb->leftJoin('obj.user', 'creator');
+                        $qb->andWhere('creator.id != :userId');
                         $qb->setParameter('userId', $filterValue);
                     }
+*/
+                    // if (isset($searches['excludeCurrent'])) {
+                    //     var_dump('yolo');
+                    //     $qb->andWhere('currentUser.id != :userId');
+                    //     $qb->setParameter('userId', $filterValue);
+                    // }
+
                     break;
                 case 'removed':
                     $qb->andWhere("um.isRemoved = :{$filterName}");
@@ -89,7 +100,7 @@ class MessageFinder extends AbstractFinder
                     $qb->setParameter('userIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
                 default:
-                  $this->setDefaults($qb, $filterName, $filterValue);
+                    $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 

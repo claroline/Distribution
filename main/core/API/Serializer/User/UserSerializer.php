@@ -347,6 +347,8 @@ class UserSerializer
     {
         $this->sipe('mailNotified', 'setIsMailNotified', $meta, $user);
         $this->sipe('description', 'setDescription', $meta, $user);
+        $this->sipe('mailNotified', 'setIsMailNotified', $meta, $user);
+
         if (empty($meta) || empty($meta['locale'])) {
             if (empty($user->getLocale())) {
                 // set default
