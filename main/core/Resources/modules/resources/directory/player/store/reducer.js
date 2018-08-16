@@ -18,7 +18,7 @@ const reducer = {
     }),
     directories: makeReducer({}, {
       [RESOURCE_LOAD]: (state, action) => action.resourceData.root ? [action.resourceData.root] : []
-    }),
+    })
   })
 }
 

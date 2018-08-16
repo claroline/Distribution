@@ -10,8 +10,6 @@ import {Routes} from '#/main/app/router'
 import {SummarizedContent} from '#/main/app/content/summary/components/content'
 import {LINK_BUTTON, DOWNLOAD_BUTTON} from '#/main/app/buttons'
 
-import {actions} from '#/plugin/lesson/resources/lesson/store/'
-import {constants} from '#/plugin/lesson/resources/lesson/constants'
 import {ChapterResource} from '#/plugin/lesson/resources/lesson/components/chapter'
 import {normalizeTree} from '#/plugin/lesson/resources/lesson/utils'
 import {ChapterForm} from '#/plugin/lesson/resources/lesson/components/chapter-form'

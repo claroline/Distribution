@@ -55,7 +55,7 @@ class DirectorySerializer
                 'sorting' => [
                     'enabled' => $directory->isSortable(),
                     'default' => $directory->getSortBy(),
-                ]
+                ],
             ],
         ];
     }
