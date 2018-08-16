@@ -245,7 +245,6 @@ class DropzoneListener
 
         return [
             'dropzone' => $this->serializer->serialize($dropzone),
-            'user' => $this->serializer->serialize($user),
             'myDrop' => !empty($myDrop) ? $this->serializer->serialize($myDrop) : null,
             'nbCorrections' => count($finishedPeerDrops),
             'tools' => $serializedTools,

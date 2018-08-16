@@ -2,24 +2,82 @@ import {createSelector} from 'reselect'
 
 import {trans} from '#/main/core/translation'
 import {now} from '#/main/core/scaffolding/date'
+import {currentUser} from '#/main/core/user/current'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
+
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
-const dropzone = state => state.dropzone
-const user = state => state.user
-const teams = state => state.teams
-const userEvaluation = state => state.userEvaluation
-const errorMessage = state => state.errorMessage
-const myDrop = state => state.myDrop
+const STORE_NAME = 'resource'
 
-const drops = state => state.drops
-const currentDrop = state => state.currentDrop
-const correctorDrop = state => state.correctorDrop
-const corrections = state => state.corrections
-const correctionForm = state => state.correctionForm
-const nbCorrections = state => state.nbCorrections
-const tools = state => state.tools.data
-const myDrops = state => state.myDrops
-const peerDrop = state => state.peerDrop
+const user = () => currentUser()
+const resource = (state) => state[STORE_NAME]
+
+const userEvaluation = state => resourceSelect.resourceEvaluation(state)
+
+const dropzone = createSelector(
+  [resource],
+  (resource) => resource.dropzone
+)
+
+const teams = createSelector(
+  [resource],
+  (resource) => resource.teams
+)
+
+const errorMessage = createSelector(
+  [resource],
+  (resource) => resource.errorMessage
+)
+
+const myDrop = createSelector(
+  [resource],
+  (resource) => resource.myDrop
+)
+
+const drops = createSelector(
+  [resource],
+  (resource) => resource.drops
+)
+
+const currentDrop = createSelector(
+  [resource],
+  (resource) => resource.currentDrop
+)
+
+const correctorDrop = createSelector(
+  [resource],
+  (resource) => resource.correctorDrop
+)
+
+const corrections = createSelector(
+  [resource],
+  (resource) => resource.corrections
+)
+
+const correctionForm = createSelector(
+  [resource],
+  (resource) => resource.correctionForm
+)
+
+const nbCorrections = createSelector(
+  [resource],
+  (resource) => resource.nbCorrections
+)
+
+const tools = createSelector(
+  [resource],
+  (resource) => resource.tools
+)
+
+const myDrops = createSelector(
+  [resource],
+  (resource) => resource.myDrops
+)
+
+const peerDrop = createSelector(
+  [resource],
+  (resource) => resource.peerDrop
+)
 
 const userHasTeam = createSelector(
   [teams],
@@ -253,6 +311,8 @@ const getMyDropStatus = createSelector(
 )
 
 export const select = {
+  STORE_NAME,
+  resource,
   user,
   userEvaluation,
   dropzone,
