@@ -28,11 +28,11 @@ trait ListParameters
     private $paginated = true;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(nullable=true)
      *
      * @var string
      */
-    private $sortBy;
+    private $sortBy = null;
 
     /**
      * @ORM\Column(type="integer")

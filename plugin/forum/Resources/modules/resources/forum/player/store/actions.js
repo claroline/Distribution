@@ -10,7 +10,7 @@ import {actions as listActions} from '#/main/app/content/list/store'
 
 
 import {Subject as SubjectTypes} from '#/plugin/forum/resources/forum/player/prop-types'
-import {select} from '#/plugin/forum/resources/forum/selectors'
+import {select} from '#/plugin/forum/resources/forum/store/selectors'
 
 export const SUBJECT_LOAD = 'SUBJECT_LOAD'
 export const SUBJECT_FORM_OPEN = 'SUBJECT_FORM_OPEN'

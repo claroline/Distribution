@@ -1,16 +1,64 @@
 import {createSelector} from 'reselect'
 
+const STORE_NAME = 'resource'
 
-const forum = state => state.forum
-const messages = state => state.subjects.messages
-const totalResults = state => state.subjects.messages.totalResults
-const sortOrder = state => state.subjects.messages.sortOrder
-const subjects = state => state.subjects
-const currentPage = state => state.subjects.messages.currentPage
-const lastMessages = state => state.lastMessages
-const bannedUser = state => state.forum.restrictions.banned
-const moderator = state => state.forum.restrictions.moderator
-const myMessages = state => state.forum.meta.myMessages
+const resource = (state) => state[STORE_NAME]
+
+const forum = createSelector(
+  [resource],
+  (resource) => resource.forum
+)
+
+const subjects = createSelector(
+  [resource],
+  (resource) => resource.subjects
+)
+
+const messages = createSelector(
+  [subjects],
+  (subjects) => subjects.messages
+)
+
+const currentPage = createSelector(
+  [messages],
+  (messages) => messages.currentPage
+)
+const totalResults = createSelector(
+  [messages],
+  (messages) => messages.totalResults
+)
+const sortOrder = createSelector(
+  [messages],
+  (messages) => messages.sortOrder
+)
+
+const lastMessages = createSelector(
+  [resource],
+  (resource) => resource.lastMessages
+)
+
+const restrictions = createSelector(
+  [forum],
+  (forum) => forum.restrictions
+)
+const meta = createSelector(
+  [forum],
+  (forum) => forum.meta
+)
+
+const bannedUser = createSelector(
+  [restrictions],
+  (restrictions) => restrictions.bannedUser
+)
+const moderator = createSelector(
+  [restrictions],
+  (restrictions) => restrictions.moderator
+)
+
+const myMessages = createSelector(
+  [meta],
+  (meta) => meta.myMessages
+)
 
 const subject = createSelector(
   [subjects],
@@ -56,6 +104,8 @@ const tagsCount = createSelector(
 )
 
 export const select = {
+  STORE_NAME,
+  resource,
   forum,
   subject,
   messages,

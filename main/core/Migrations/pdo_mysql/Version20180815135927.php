@@ -21,7 +21,7 @@ class Version20180815135927 extends AbstractMigration
             ADD filterable TINYINT(1) NOT NULL, 
             ADD sortable TINYINT(1) NOT NULL, 
             ADD paginated TINYINT(1) NOT NULL, 
-            ADD sortBy VARCHAR(255) NOT NULL, 
+            ADD sortBy VARCHAR(255) DEFAULT NULL, 
             ADD pageSize INT NOT NULL, 
             ADD display VARCHAR(255) NOT NULL, 
             ADD availableDisplays LONGTEXT NOT NULL COMMENT "(DC2Type:json_array)", 
@@ -31,7 +31,7 @@ class Version20180815135927 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE claro_widget_list 
-            ADD sortBy VARCHAR(255) NOT NULL, 
+            ADD sortBy VARCHAR(255) DEFAULT NULL, 
             CHANGE defaultFilters filters LONGTEXT NOT NULL COMMENT "(DC2Type:json_array)"
         ');
     }

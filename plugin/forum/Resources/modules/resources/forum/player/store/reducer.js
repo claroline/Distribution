@@ -8,11 +8,12 @@ import {
   SUBJECT_FORM_CLOSE,
   SUBJECT_EDIT,
   SUBJECT_STOP_EDIT
-} from '#/plugin/forum/resources/forum/player/actions'
+} from '#/plugin/forum/resources/forum/player/store/actions'
 
+import {select} from '#/plugin/forum/resources/forum/store/selectors'
 
 const reducer = combineReducers({
-  form: makeFormReducer('subjects.form', {
+  form: makeFormReducer(`${select.STORE_NAME}.subjects.form`, {
     showSubjectForm: false,
     editingSubject: false
   }, {
@@ -25,14 +26,14 @@ const reducer = combineReducers({
       [SUBJECT_STOP_EDIT]: () => false
     })
   }),
-  list: makeListReducer('subjects.list', {
+  list: makeListReducer(`${select.STORE_NAME}.subjects.list`, {
     sortBy: {property: 'sticked', direction: -1}
   }),
   current: makeReducer({}, {
-    [FORM_SUBMIT_SUCCESS+'/subjects.form']: (state, action) => action.updatedData,
+    [FORM_SUBMIT_SUCCESS+`/${select.STORE_NAME}.subjects.form`]: (state, action) => action.updatedData,
     [SUBJECT_LOAD]: (state, action) => action.subject
   }),
-  messages: makeListReducer('subjects.messages', {
+  messages: makeListReducer(`${select.STORE_NAME}.subjects.messages`, {
     pageSize: 10,
     sortBy: {property: 'creationDate', direction : 1}
   })
