@@ -3,7 +3,7 @@ import {API_REQUEST, url} from '#/main/app/api'
 
 import {actions as listActions} from '#/main/app/content/list/store'
 
-import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store/selectors'
 
 const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
 const RESOURCE_PARAMS_PROPERTY_UPDATE = 'RESOURCE_PARAMS_PROPERTY_UPDATE'
@@ -22,7 +22,7 @@ actions.updateResourceParamsProperty = makeActionCreator(RESOURCE_PARAMS_PROPERT
 
 actions.saveCategory = (category, isNew) => (dispatch, getState) => {
   if (isNew) {
-    const clacoFormId = getState().clacoForm.id
+    const clacoFormId = selectors.clacoForm(getState()).id
     category['clacoForm'] = {}
     category['clacoForm']['id'] = clacoFormId
 
@@ -73,7 +73,7 @@ actions.removeCategories = makeActionCreator(CATEGORIES_REMOVE, 'ids')
 
 actions.saveKeyword = (keyword, isNew) => (dispatch, getState) => {
   if (isNew) {
-    const clacoFormId = getState().clacoForm.id
+    const clacoFormId = selectors.clacoForm(getState()).id
     keyword['clacoForm'] = {}
     keyword['clacoForm']['id'] = clacoFormId
 

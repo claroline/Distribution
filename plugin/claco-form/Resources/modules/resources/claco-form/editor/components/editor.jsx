@@ -79,14 +79,14 @@ const EditorComponent = props =>
           title: trans('fields'),
           primary: true,
           fields: [
-            {
-              name: 'fields',
-              type: 'fields',
-              label: trans('fields_list'),
-              options: {
-                placeholder: trans('no_field', {}, 'clacoform')
-              }
-            }
+            // {
+            //   name: 'fields',
+            //   type: 'fields',
+            //   label: trans('fields_list'),
+            //   options: {
+            //     placeholder: trans('no_field', {}, 'clacoform')
+            //   }
+            // }
           ]
         }, {
           id: 'general',
@@ -650,7 +650,7 @@ const Editor = connect(
       dispatch(modalActions.showModal(type, props))
     },
     saveForm(id) {
-      dispatch(formActions.saveForm(selectors.STORE_NAME+'clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
+      dispatch(formActions.saveForm(selectors.STORE_NAME+'.clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
     }
   })
 )(EditorComponent)

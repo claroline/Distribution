@@ -1,7 +1,8 @@
 import {API_REQUEST} from '#/main/app/api'
 
-import {selectors, actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/store'
-import {actions as editorActions} from '#/plugin/claco-form/resources/claco-form/editor/store'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store/selectors'
+import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/store/actions'
+import {actions as editorActions} from '#/plugin/claco-form/resources/claco-form/editor/store/actions'
 
 export const actions = {}
 
@@ -16,7 +17,11 @@ actions.saveTemplate = (template, useTemplate) => (dispatch, getState) => {
       url: ['claro_claco_form_template_edit', {clacoForm: clacoFormId}],
       request: {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: new Headers({
+          //no Content type for automatic detection of boundaries.
+          'X-Requested-With': 'XMLHttpRequest'
+        })
       },
       success: (data, dispatch) => {
         dispatch(editorActions.updateResourceProperty('template', data.template))

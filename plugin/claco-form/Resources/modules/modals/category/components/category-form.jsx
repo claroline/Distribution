@@ -137,7 +137,7 @@ class CategoryFormModalComponent extends Component {
   registerCategory() {
     if (!this.state['hasError']) {
       this.props.saveCategory(this.cleanFieldsValues(), this.props.isNew)
-      this.props.fadeModal()
+      this.props.hideModal()
     }
   }
 
@@ -254,7 +254,7 @@ class CategoryFormModalComponent extends Component {
           />
         </div>
         <div className="modal-footer">
-          <button className="btn btn-default" onClick={this.props.fadeModal}>
+          <button className="btn btn-default" onClick={this.props.hideModal}>
             {trans('cancel')}
           </button>
           <button className="btn btn-primary" onClick={() => this.validateCategory()}>
@@ -271,7 +271,7 @@ CategoryFormModalComponent.propTypes = {
   isNew: T.bool.isRequired,
   fields: T.array,
   saveCategory: T.func.isRequired,
-  fadeModal: T.func.isRequired
+  hideModal: T.func.isRequired
 }
 
 const CategoryFormModal = connect(
@@ -282,8 +282,8 @@ const CategoryFormModal = connect(
     saveCategory(category, isNew) {
       dispatch(actions.saveCategory(category, isNew))
     },
-    fadeModal() {
-      dispatch(modalActions.fadeModal())
+    hideModal() {
+      dispatch(modalActions.hideModal())
     }
   })
 )(CategoryFormModalComponent)

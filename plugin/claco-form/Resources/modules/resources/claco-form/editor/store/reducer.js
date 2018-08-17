@@ -4,7 +4,7 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {makeReducer} from '#/main/app/store/reducer'
 
-import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store/selectors'
 import {
   CATEGORY_ADD,
   CATEGORY_UPDATE,

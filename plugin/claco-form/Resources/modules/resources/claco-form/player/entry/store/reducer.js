@@ -7,7 +7,7 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
 import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
 
-import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store/selectors'
 import {
   ENTRIES_UPDATE,
   ENTRY_CREATED,
