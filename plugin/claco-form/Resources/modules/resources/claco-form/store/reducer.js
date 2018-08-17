@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-import {makeReducer} from '#/main/app/store/reducer'
+import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
 import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
@@ -111,7 +111,7 @@ const clacoFormReducer = makeReducer({}, {
   }
 })
 
-const reducer = {
+const reducer = combineReducers({
   clacoForm: clacoFormReducer,
   clacoFormForm: editorReducer,
   entries: entriesReducer,
@@ -128,7 +128,7 @@ const reducer = {
   myRoles: makeReducer({}, {
     [RESOURCE_LOAD]: (state, action) => action.resourceData.myRoles || state,
   })
-}
+})
 
 export {
   reducer
