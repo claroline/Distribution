@@ -42,11 +42,6 @@ const useTemplate = createSelector(
   (clacoForm) => clacoForm.details['use_template']
 )
 
-const getParam = createSelector(
-  [clacoForm, property],
-  (clacoForm, property) => clacoForm.details[property]
-)
-
 const entries = createSelector(
   [resource],
   (resource) => resource.entries
@@ -245,12 +240,12 @@ export const selectors = {
   resource,
   clacoForm,
   isAnon,
+  params,
   canSearchEntry,
   fields,
   visibleFields,
   template,
   useTemplate,
-  getParam,
   entries,
   isCurrentEntryOwner,
   isCurrentEntryManager,

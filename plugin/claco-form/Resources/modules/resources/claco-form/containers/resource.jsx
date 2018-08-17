@@ -20,7 +20,7 @@ const ClacoFormResource = withReducer(selectors.STORE_NAME, reducer)(
       canEdit: selectors.canAdministrate(state),
       canAddEntry: selectors.canAddEntry(state),
       canSearchEntry: selectors.canSearchEntry(state),
-      defaultHome: selectors.getParam(state, 'default_home')
+      defaultHome: selectors.params(state).default_home
     }),
     (dispatch) => ({
       resetForm(formData) {

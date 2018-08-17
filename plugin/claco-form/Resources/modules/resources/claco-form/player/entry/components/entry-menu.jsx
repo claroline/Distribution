@@ -76,7 +76,7 @@ const EntryMenu = withRouter(connect(
   (state) => ({
     clacoFormId: selectors.clacoForm(state).id,
     canSearchEntry: selectors.canSearchEntry(state),
-    randomEnabled: selectors.getParam(state, 'random_enabled'),
+    randomEnabled: selectors.params(state).random_enabled,
     canAddEntry: selectors.canAddEntry(state)
   })
 )(EntryMenuComponent))
