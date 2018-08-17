@@ -79,14 +79,14 @@ const EditorComponent = props =>
           title: trans('fields'),
           primary: true,
           fields: [
-            // {
-            //   name: 'fields',
-            //   type: 'fields',
-            //   label: trans('fields_list'),
-            //   options: {
-            //     placeholder: trans('no_field', {}, 'clacoform')
-            //   }
-            // }
+            {
+              name: 'fields',
+              type: 'fields',
+              label: trans('fields_list'),
+              options: {
+                placeholder: trans('no_field', {}, 'clacoform')
+              }
+            }
           ]
         }, {
           id: 'general',
