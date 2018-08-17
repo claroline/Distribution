@@ -13,9 +13,10 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
-import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/store'
 import {MODAL_CATEGORY_FORM} from '#/plugin/claco-form/modals/category'
 import {MODAL_KEYWORD_FORM} from '#/plugin/claco-form/modals/keyword'
 
@@ -61,6 +62,7 @@ const EditorComponent = props =>
     <FormData
       level={3}
       name="clacoFormForm"
+      // name={selectors.FORM_NAME}
       buttons={true}
       save={{
         type: CALLBACK_BUTTON,
@@ -622,7 +624,7 @@ EditorComponent.propTypes = {
 const Editor = connect(
   (state) => ({
     clacoForm: formSelect.data(formSelect.form(state, 'clacoFormForm')),
-    roles: state.roles
+    roles: selectors.roles(state)
   }),
   (dispatch) => ({
     deleteCategories(categories) {

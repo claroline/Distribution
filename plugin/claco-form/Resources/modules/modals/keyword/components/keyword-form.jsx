@@ -3,13 +3,14 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
+import {trans} from '#/main/core/translation'
+
 import {Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/store'
 
 class KeywordFormModalComponent extends Component {
   constructor(props) {

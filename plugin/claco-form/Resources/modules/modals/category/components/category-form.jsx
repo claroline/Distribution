@@ -5,16 +5,17 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
+
+import {trans} from '#/main/core/translation'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker.jsx'
 
 import {Category as CategoryType} from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
-import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
-import {CategoryFieldsValues} from '#/plugin/claco-form/resources/claco-form/editor/components/category-fields-values.jsx'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/store'
+import {CategoryFieldsValues} from '#/plugin/claco-form/resources/claco-form/editor/components/category-fields-values'
 
 class CategoryFormModalComponent extends Component {
   constructor(props) {
@@ -275,7 +276,7 @@ CategoryFormModalComponent.propTypes = {
 
 const CategoryFormModal = connect(
   (state) => ({
-    fields: select.visibleFields(state)
+    fields: selectors.visibleFields(state)
   }),
   (dispatch) => ({
     saveCategory(category, isNew) {

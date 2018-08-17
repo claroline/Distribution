@@ -1,7 +1,7 @@
 import {API_REQUEST} from '#/main/app/api'
 
-import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/actions'
-import {actions as editorActions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
+import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/store'
+import {actions as editorActions} from '#/plugin/claco-form/resources/claco-form/editor/store'
 
 export const actions = {}
 

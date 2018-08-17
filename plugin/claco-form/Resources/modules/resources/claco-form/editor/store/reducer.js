@@ -9,7 +9,7 @@ import {
   CATEGORY_UPDATE,
   KEYWORD_ADD,
   KEYWORD_UPDATE
-} from '#/plugin/claco-form/resources/claco-form/editor/actions'
+} from '#/plugin/claco-form/resources/claco-form/editor/store/actions'
 
 const reducer = makeFormReducer('clacoFormForm', {}, {
   data: makeReducer({}, {

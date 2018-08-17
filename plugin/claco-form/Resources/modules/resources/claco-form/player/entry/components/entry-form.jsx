@@ -5,24 +5,25 @@ import {connect} from 'react-redux'
 
 import {mount} from '#/main/app/mount'
 import {withRouter} from '#/main/app/router'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {FormProp} from '#/main/app/content/form/components/prop'
+
 import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
-import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {actions as formActions} from '#/main/app/content/form/store/actions'
-import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {FormProp} from '#/main/app/content/form/components/prop'
 
-import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {
   Field as FieldType,
   Entry as EntryType,
   EntryUser as EntryUserType
 } from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/store'
 import {EntryFormData} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-form-data'
 
 const authenticatedUser = currentUser()
@@ -214,6 +215,7 @@ class EntryFormComponent extends Component {
           <FormData
             level={3}
             name="entries.current"
+            // name={selectors.FORM_NAME}
             sections={this.getSections()}
           />
         }
@@ -294,21 +296,21 @@ EntryFormComponent.propTypes = {
 const EntryForm = withRouter(connect(
   state => ({
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
-    clacoFormId: select.clacoForm(state).id,
-    fields: select.visibleFields(state),
-    useTemplate: select.getParam(state, 'use_template'),
-    template: select.template(state),
-    titleLabel: select.getParam(state, 'title_field_label'),
-    displayMetadata: select.getParam(state, 'display_metadata'),
-    isKeywordsEnabled: select.getParam(state, 'keywords_enabled'),
-    isNewKeywordsEnabled: select.getParam(state, 'new_keywords_enabled'),
-    isManager: select.isCurrentEntryManager(state),
+    clacoFormId: selectors.clacoForm(state).id,
+    fields: selectors.visibleFields(state),
+    useTemplate: selectors.getParam(state, 'use_template'),
+    template: selectors.template(state),
+    titleLabel: selectors.getParam(state, 'title_field_label'),
+    displayMetadata: selectors.getParam(state, 'display_metadata'),
+    isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
+    isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
+    isManager: selectors.isCurrentEntryManager(state),
     isNew: formSelect.isNew(formSelect.form(state, 'entries.current')),
     errors: formSelect.errors(formSelect.form(state, 'entries.current')),
     entry: formSelect.data(formSelect.form(state, 'entries.current')),
-    entryUser: select.entryUser(state),
-    categories: select.categories(state),
-    keywords: select.keywords(state)
+    entryUser: selectors.entryUser(state),
+    categories: selectors.categories(state),
+    keywords: selectors.keywords(state)
   }),
   (dispatch) => ({
     saveForm(entry, isNew, navigate) {

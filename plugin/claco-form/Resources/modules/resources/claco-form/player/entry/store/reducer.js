@@ -5,6 +5,8 @@ import {makeListReducer} from '#/main/app/content/list/store'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
+import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
+
 import {
   ENTRIES_UPDATE,
   ENTRY_CREATED,
@@ -20,7 +22,7 @@ import {
   ENTRY_KEYWORD_ADD,
   ENTRY_KEYWORD_REMOVE,
   USED_COUNTRIES_LOAD
-} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
+} from '#/plugin/claco-form/resources/claco-form/player/entry/store/actions'
 
 const reducer = combineReducers({
   list: makeListReducer('entries.list', {}, {
@@ -131,6 +133,7 @@ const reducer = combineReducers({
     }
   }),
   myEntriesCount: makeReducer({}, {
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.myEntriesCount || state,
     [ENTRY_CREATED]: (state) => {
       return state + 1
     }

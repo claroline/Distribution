@@ -3,16 +3,17 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {currentUser} from '#/main/core/user/current'
-import {trans} from '#/main/core/translation'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {UserMessage} from '#/main/core/user/message/components/user-message.jsx'
-import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
 
-import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
-import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
+import {currentUser} from '#/main/core/user/current'
+import {trans} from '#/main/core/translation'
+import {UserMessage} from '#/main/core/user/message/components/user-message'
+import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
+
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/store'
 
 const authenticatedUser = currentUser()
 
@@ -203,8 +204,8 @@ EntryCommentsComponent.propTypes = {
 const EntryComments = connect(
   (state) => ({
     entry: formSelect.data(formSelect.form(state, 'entries.current')),
-    displayCommentAuthor: select.getParam(state, 'display_comment_author'),
-    displayCommentDate: select.getParam(state, 'display_comment_date')
+    displayCommentAuthor: selectors.getParam(state, 'display_comment_author'),
+    displayCommentDate: selectors.getParam(state, 'display_comment_date')
   }),
   (dispatch) => ({
     createComment(entryId, content) {
