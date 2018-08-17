@@ -56,7 +56,7 @@ class ParametersModal extends Component {
   }
 
   render() {
-    return (this.state.typeDef ?
+    return (
       <FormDataModal
         {...this.props}
         save={fieldData => {
@@ -92,7 +92,7 @@ class ParametersModal extends Component {
                 label: trans('type'),
                 readOnly: true,
                 hideLabel: true,
-                calculated: () => this.state.typeDef.meta.label
+                calculated: () => this.state.typeDef ? this.state.typeDef.meta.label : ''
               }, {
                 name: 'label',
                 type: 'string',
@@ -108,7 +108,7 @@ class ParametersModal extends Component {
                 }
               }
             ]
-          }, {
+          }, this.state.typeDef && {
             id: 'parameters',
             icon: 'fa fa-fw fa-cog',
             title: trans('parameters'),
@@ -170,9 +170,8 @@ class ParametersModal extends Component {
               }
             ]
           }
-        ]}
-      /> :
-      null
+        ].filter(section => !!section)}
+      />
     )
   }
 }
