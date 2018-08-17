@@ -14,7 +14,6 @@ const authenticatedUser = currentUser()
 
 const MessagesParametersComponent = (props) =>
   <div>
-    {console.log(authenticatedUser)}
     <h2>{trans('preferences')}</h2>
     <FormData
       level={3}
@@ -46,7 +45,7 @@ const MessagesParametersComponent = (props) =>
 MessagesParametersComponent.propTypes = {
   setMailNotification: T.func.isRequired,
   messagesParameters: T.shape({
-    isMailNotified: T.bool
+    mailNotified: T.bool
   })
 }
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -85,6 +86,14 @@ const DeletedMessagesComponent = (props) =>
       }
     />
   </div>
+  
+DeletedMessagesComponent.propTypes = {
+  deleteMessages: T.func.isRequired,
+  restoreMessages: T.func.isRequired,
+  data: T.shape({
+    content: T.string
+  })
+}
 
 const DeletedMessages = connect(
   null,

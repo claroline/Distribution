@@ -10,7 +10,6 @@ import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {currentUser} from '#/main/core/user/current'
 import {FormData} from '#/main/app/content/form/containers/data'
-import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 import {selectors} from '#/plugin/message/selectors'
@@ -88,9 +87,18 @@ const NewMessageComponent = (props) =>
     </NewMessageFormWrapper>
   </div>
 
+NewMessageComponent.propTypes = {
+  deleteMessages: T.func.isRequired,
+  restoreMessages: T.func.isRequired,
+  saveForm: T.func.isRequired,
+  reply: T.bool.isRequired,
+  history: T.shape({
+    push: T.func.isRequired
+  }).isRequired
+}
+
 const NewMessage = withRouter(connect(
   state => ({
-    newMessage: formSelectors.data(formSelectors.form(state, 'messageForm')),
     reply: selectors.reply(state)
   }),
   (dispatch) => ({

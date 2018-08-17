@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -74,6 +75,13 @@ const SentMessagesComponent = (props) =>
       }
     />
   </div>
+
+SentMessagesComponent.propTypes = {
+  removeMessages: T.func.isRequired,
+  data: T.shape({
+    content: T.string
+  })
+}
 
 const SentMessages = connect(
   null,

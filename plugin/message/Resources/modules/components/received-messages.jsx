@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {ListData} from '#/main/app/content/list/containers/data'
@@ -93,6 +94,15 @@ const ReceivedMessagesComponent = (props) =>
       }
     />
   </div>
+
+ReceivedMessagesComponent.propTypes = {
+  removeMessages: T.func.isRequired,
+  unreadMessages: T.func.isRequired,
+  readMessages: T.func.isRequired,
+  data: T.shape({
+    content: T.string
+  })
+}
 
 const ReceivedMessages = connect(
   null,

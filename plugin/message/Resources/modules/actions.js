@@ -12,6 +12,7 @@ import {Message as MessageTypes} from '#/plugin/message/prop-types'
 
 export const MESSAGE_LOAD = 'MESSAGE_LOAD'
 export const IS_REPLY = 'IS_REPLY'
+export const MAIL_NOTIFICATION_UPDATE = 'MAIL_NOTIFICATION_UPDATE'
 export const actions = {}
 
 
@@ -138,12 +139,21 @@ actions.unreadMessages = (messages) => ({
   }
 })
 
+actions.uploadMailNotifications = makeActionCreator(MAIL_NOTIFICATION_UPDATE, 'notified')
 actions.setMailNotification = (user, mailNotified) => ({
   [API_REQUEST]: {
     url: ['apiv2_user_update', {id: user.id}],
     request: {
-      body: JSON.stringify(Object.assign({}, user, {meta: {mailNotified:mailNotified}})),
+      body: JSON.stringify(Object.assign({}, user, {
+        meta: merge({}, user.meta, {
+          mailNotified: mailNotified
+        })
+      })),
       method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(formActions.resetForm('messagesParameters', {mailNotified: data.meta.mailNotified}))
+      dispatch(actions.uploadMailNotifications(data.meta.mailNotified))
     }
   }
 })
