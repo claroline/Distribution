@@ -34,6 +34,7 @@ function getHome(type) {
 
 const ClacoFormResource = props =>
   <ResourcePage
+    styles={['claroline-distribution-plugin-claco-form-resource']}
     customActions={[
       {
         type: LINK_BUTTON,
