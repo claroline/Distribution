@@ -60,19 +60,6 @@ class MessageFinder extends AbstractFinder
                 case 'sent':
                     $qb->andWhere("um.isSent = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
-/*
-                    if (isset($searches['excludeCurrent'])) {
-                        $qb->leftJoin('obj.user', 'creator');
-                        $qb->andWhere('creator.id != :userId');
-                        $qb->setParameter('userId', $filterValue);
-                    }
-*/
-                    // if (isset($searches['excludeCurrent'])) {
-                    //     var_dump('yolo');
-                    //     $qb->andWhere('currentUser.id != :userId');
-                    //     $qb->setParameter('userId', $filterValue);
-                    // }
-
                     break;
                 case 'removed':
                     $qb->andWhere("um.isRemoved = :{$filterName}");

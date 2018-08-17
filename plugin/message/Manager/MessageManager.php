@@ -274,7 +274,6 @@ class MessageManager
 
     public function remove(Message $message)
     {
-        $userMessage = $this->getUserMessage($message);
         $this->om->remove($message);
         $this->om->flush();
     }

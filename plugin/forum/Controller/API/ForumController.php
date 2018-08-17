@@ -202,27 +202,6 @@ class ForumController extends AbstractCrudController
         return new JsonResponse(true);
     }
 
-    /**
-     * @EXT\Route("forum/{forum}/messages/list/blocked", name="apiv2_forum_message_blocked_list")
-     * @EXT\Method("GET")
-     *
-     * @param string  $id
-     * @param string  $class
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function getLastfdosghdpfisgh(Request $request, Forum $forum)
-    {
-        $result1 = $this->finder->search('Message');
-        $result2 = $this->finder->search('Subject');
-
-        $subjetResult = array_map(function ($sujet) {
-            return [
-            ];
-        }, $result2);
-    }
-
     public function getClass()
     {
         return "Claroline\ForumBundle\Entity\Forum";

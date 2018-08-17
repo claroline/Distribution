@@ -73,6 +73,11 @@ class MessageSerializer
     {
         $userMessage = $this->getUserMessage($message);
 
+        //mainly for tests or if someting went wrong
+        if (!$userMessage) {
+            $userMessage = new UserMessage();
+        }
+
         $data = [
           'id' => $message->getUuid(),
           'object' => $message->getObject(),
