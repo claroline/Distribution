@@ -214,7 +214,7 @@ class EntryFormComponent extends Component {
         {this.props.entry && (!this.props.useTemplate || !this.props.template) &&
           <FormData
             level={3}
-            name={selectors.FORM_NAME+'.entries.current'}
+            name={selectors.STORE_NAME+'.entries.current'}
             sections={this.getSections()}
           />
         }
@@ -304,9 +304,9 @@ const EntryForm = withRouter(connect(
     isKeywordsEnabled: selectors.params(state).keywords_enabled,
     isNewKeywordsEnabled: selectors.params(state).new_keywords_enabled,
     isManager: selectors.isCurrentEntryManager(state),
-    isNew: formSelect.isNew(formSelect.form(state, 'entries.current')),
-    errors: formSelect.errors(formSelect.form(state, 'entries.current')),
-    entry: formSelect.data(formSelect.form(state, 'entries.current')),
+    isNew: formSelect.isNew(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
+    errors: formSelect.errors(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
+    entry: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
     entryUser: selectors.entryUser(state),
     categories: selectors.categories(state),
     keywords: selectors.keywords(state)
@@ -314,19 +314,19 @@ const EntryForm = withRouter(connect(
   (dispatch) => ({
     saveForm(entry, isNew, navigate) {
       if (isNew) {
-        dispatch(formActions.saveForm('entries.current', ['apiv2_clacoformentry_create'])).then(
+        dispatch(formActions.saveForm(selectors.STORE_NAME+'.entries.current', ['apiv2_clacoformentry_create'])).then(
           (data) => navigate(`/entries/${data.id}`),
           () => true
         )
       } else {
-        dispatch(formActions.saveForm('entries.current', ['apiv2_clacoformentry_update', {id: entry.id}]))
+        dispatch(formActions.saveForm(selectors.STORE_NAME+'.entries.current', ['apiv2_clacoformentry_update', {id: entry.id}]))
       }
     },
     updateFormProp(propName, propValue) {
-      dispatch(formActions.updateProp('entries.current', propName, propValue))
+      dispatch(formActions.updateProp(selectors.STORE_NAME+'.entries.current', propName, propValue))
     },
     setErrors(errors) {
-      dispatch(formActions.setErrors('entries.current', errors))
+      dispatch(formActions.setErrors(selectors.STORE_NAME+'.entries.current', errors))
     },
     addCategory(category) {
       dispatch(actions.addCategory(category))

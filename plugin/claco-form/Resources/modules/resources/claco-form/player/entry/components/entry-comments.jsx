@@ -203,7 +203,7 @@ EntryCommentsComponent.propTypes = {
 
 const EntryComments = connect(
   (state) => ({
-    entry: formSelect.data(formSelect.form(state, 'entries.current')),
+    entry: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
     displayCommentAuthor: selectors.params(state).display_comment_author,
     displayCommentDate: selectors.params(state).display_comment_date
   }),

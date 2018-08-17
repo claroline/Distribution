@@ -447,7 +447,7 @@ class EntryComponent extends Component {
                   {this.generateTemplate()}
                 </HtmlText> :
                 <DetailsData
-                  name={selectors.FORM_NAME+'.entries.current'}
+                  name={selectors.STORE_NAME+'.entries.current'}
                   sections={this.getSections(this.props.fields, this.props.titleLabel)}
                 />
               }
@@ -547,7 +547,7 @@ const Entry = withRouter(connect(
   (state, ownProps) => ({
     clacoFormId: selectors.clacoForm(state).id,
     entryId: ownProps.match.params.id,
-    entry: formSelect.data(formSelect.form(state, 'entries.current')),
+    entry: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
     entryUser: selectors.entryUser(state),
 
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),

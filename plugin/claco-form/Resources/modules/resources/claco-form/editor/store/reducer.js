@@ -4,6 +4,7 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {makeReducer} from '#/main/app/store/reducer'
 
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {
   CATEGORY_ADD,
   CATEGORY_UPDATE,
@@ -11,7 +12,7 @@ import {
   KEYWORD_UPDATE
 } from '#/plugin/claco-form/resources/claco-form/editor/store/actions'
 
-const reducer = makeFormReducer('clacoFormForm', {}, {
+const reducer = makeFormReducer(selectors.STORE_NAME+'.clacoFormForm', {}, {
   data: makeReducer({}, {
     [CATEGORY_ADD]: (state, action) => {
       const newState = cloneDeep(state)
@@ -46,7 +47,7 @@ const reducer = makeFormReducer('clacoFormForm', {}, {
       return newState
     }
   }),
-  categories: makeListReducer('clacoFormForm.categories', {}, {
+  categories: makeListReducer(selectors.STORE_NAME+'.clacoFormForm.categories', {}, {
     data: makeReducer({}, {
       [CATEGORY_UPDATE]: (state, action) => {
         const newState = cloneDeep(state)
@@ -63,7 +64,7 @@ const reducer = makeFormReducer('clacoFormForm', {}, {
       [CATEGORY_ADD]: () => true
     })
   }),
-  keywords: makeListReducer('clacoFormForm.keywords', {}, {
+  keywords: makeListReducer(selectors.STORE_NAME+'.clacoFormForm.keywords', {}, {
     data: makeReducer({}, {
       [KEYWORD_UPDATE]: (state, action) => {
         const newState = cloneDeep(state)

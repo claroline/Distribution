@@ -1,12 +1,12 @@
 import {API_REQUEST} from '#/main/app/api'
 
-import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/store'
+import {selectors, actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/store'
 import {actions as editorActions} from '#/plugin/claco-form/resources/claco-form/editor/store'
 
 export const actions = {}
 
 actions.saveTemplate = (template, useTemplate) => (dispatch, getState) => {
-  const clacoFormId = getState().clacoForm.id
+  const clacoFormId = selectors.clacoForm(getState()).id
   const formData = new FormData()
   formData.append('template', template)
   formData.append('useTemplate', useTemplate ? 1 : 0)

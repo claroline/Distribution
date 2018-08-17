@@ -235,6 +235,11 @@ const canGeneratePdf = createSelector(
   (resource) => resource.canGeneratePdf
 )
 
+const message = createSelector(
+  [resource],
+  (resource) => resource.message
+)
+
 export const selectors = {
   STORE_NAME,
   resource,
@@ -263,5 +268,6 @@ export const selectors = {
   myRoles,
   entryUser,
   usedCountries,
-  canGeneratePdf
+  canGeneratePdf,
+  message
 }

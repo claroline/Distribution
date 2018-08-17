@@ -3,6 +3,8 @@ import {API_REQUEST, url} from '#/main/app/api'
 
 import {actions as listActions} from '#/main/app/content/list/store'
 
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+
 const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
 const RESOURCE_PARAMS_PROPERTY_UPDATE = 'RESOURCE_PARAMS_PROPERTY_UPDATE'
 
@@ -60,7 +62,7 @@ actions.deleteCategories = (categories) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.removeCategories(categories.map(c => c.id)))
-      dispatch(listActions.deleteItems('clacoFormForm.categories', categories))
+      dispatch(listActions.deleteItems(selectors.STORE_NAME+'.clacoFormForm.categories', categories))
     }
   }
 })
@@ -111,7 +113,7 @@ actions.deleteKeywords = (keywords) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.removeKeywords(keywords.map(k => k.id)))
-      dispatch(listActions.deleteItems('clacoFormForm.keywords', keywords))
+      dispatch(listActions.deleteItems(selectors.STORE_NAME+'.clacoFormForm.keywords', keywords))
     }
   }
 })

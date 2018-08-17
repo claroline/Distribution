@@ -7,6 +7,7 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
 import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
 
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {
   ENTRIES_UPDATE,
   ENTRY_CREATED,
@@ -25,7 +26,7 @@ import {
 } from '#/plugin/claco-form/resources/claco-form/player/entry/store/actions'
 
 const reducer = combineReducers({
-  list: makeListReducer('entries.list', {}, {
+  list: makeListReducer(selectors.STORE_NAME+'.entries.list', {}, {
     data: makeReducer({}, {
       [ENTRIES_UPDATE]: (state, action) => {
         const newState = cloneDeep(state)
@@ -42,10 +43,10 @@ const reducer = combineReducers({
       }
     }),
     invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/entries.current']: () => true
+      [FORM_SUBMIT_SUCCESS+'/'+selectors.STORE_NAME+'.entries.current']: () => true
     })
   }),
-  current: makeFormReducer('entries.current', {}, {
+  current: makeFormReducer(selectors.STORE_NAME+'.entries.current', {}, {
     data: makeReducer({}, {
       [CURRENT_ENTRY_LOAD]: (state, action) => {
         return action.entry

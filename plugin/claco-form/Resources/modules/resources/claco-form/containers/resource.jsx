@@ -20,11 +20,11 @@ const ClacoFormResource = withReducer(selectors.STORE_NAME, reducer)(
       canEdit: selectors.canAdministrate(state),
       canAddEntry: selectors.canAddEntry(state),
       canSearchEntry: selectors.canSearchEntry(state),
-      defaultHome: selectors.params(state).default_home
+      defaultHome: selectors.params(state) ? selectors.params(state).default_home : null
     }),
     (dispatch) => ({
       resetForm(formData) {
-        dispatch(formActions.resetForm('clacoFormForm', formData))
+        dispatch(formActions.resetForm(selectors.STORE_NAME+'.clacoFormForm', formData))
       },
       openEntryForm(id, clacoFormId, fields = []) {
         const defaultValue = {
@@ -43,10 +43,10 @@ const ClacoFormResource = withReducer(selectors.STORE_NAME, reducer)(
           }
         })
 
-        dispatch(entryActions.openForm('entries.current', id, defaultValue))
+        dispatch(entryActions.openForm(selectors.STORE_NAME+'.entries.current', id, defaultValue))
       },
       resetEntryForm() {
-        dispatch(formActions.resetForm('entries.current', {}, true))
+        dispatch(formActions.resetForm(selectors.STORE_NAME+'.entries.current', {}, true))
       },
       loadEntryUser(entryId) {
         dispatch(entryActions.loadEntryUser(entryId))
