@@ -441,8 +441,7 @@ class EntriesComponent extends Component {
             current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
             available: Object.keys(listConstants.DISPLAY_MODES)
           }}
-          name="entries.list"
-          // name={selectors.FORM_NAME}
+          name={selectors.FORM_NAME+'.entries.list'}
           primaryAction={(row) => ({
             type: LINK_BUTTON,
             label: trans('open'),

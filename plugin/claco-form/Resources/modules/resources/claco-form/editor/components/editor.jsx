@@ -61,8 +61,7 @@ const EditorComponent = props =>
     <h2>{trans('configuration', {}, 'platform')}</h2>
     <FormData
       level={3}
-      name="clacoFormForm"
-      // name={selectors.FORM_NAME}
+      name={selectors.FORM_NAME+'.clacoFormForm'}
       buttons={true}
       save={{
         type: CALLBACK_BUTTON,
@@ -464,7 +463,7 @@ const EditorComponent = props =>
           ]}
         >
           <ListData
-            name="clacoFormForm.categories"
+            name={selectors.FORM_NAME+'.clacoFormForm.categories'}
             fetch={{
               url: ['apiv2_clacoformcategory_list', {clacoForm: props.clacoForm.id}],
               autoload: true
@@ -564,7 +563,7 @@ const EditorComponent = props =>
             ]}
           >
             <ListData
-              name="clacoFormForm.keywords"
+              name={selectors.FORM_NAME+'.clacoFormForm.keywords'}
               fetch={{
                 url: ['apiv2_clacoformkeyword_list', {clacoForm: props.clacoForm.id}],
                 autoload: true

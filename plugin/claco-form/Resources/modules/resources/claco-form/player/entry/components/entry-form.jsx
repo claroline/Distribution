@@ -214,8 +214,7 @@ class EntryFormComponent extends Component {
         {this.props.entry && (!this.props.useTemplate || !this.props.template) &&
           <FormData
             level={3}
-            name="entries.current"
-            // name={selectors.FORM_NAME}
+            name={selectors.FORM_NAME+'.entries.current'}
             sections={this.getSections()}
           />
         }

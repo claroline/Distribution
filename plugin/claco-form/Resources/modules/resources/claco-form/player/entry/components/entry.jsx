@@ -447,8 +447,7 @@ class EntryComponent extends Component {
                   {this.generateTemplate()}
                 </HtmlText> :
                 <DetailsData
-                  name="entries.current"
-                  // name={selectors.FORM_NAME}
+                  name={selectors.FORM_NAME+'.entries.current'}
                   sections={this.getSections(this.props.fields, this.props.titleLabel)}
                 />
               }
