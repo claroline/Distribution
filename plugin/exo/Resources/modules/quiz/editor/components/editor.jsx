@@ -51,7 +51,10 @@ Editor.propTypes = {
   moveStep: T.func.isRequired,
   createStep: T.func.isRequired,
   deleteStepAndItems: T.func.isRequired,
-  showModal: T.func.isRequired
+  showModal: T.func.isRequired,
+  save: T.func.isRequired,
+  saveEnabled: T.bool.isRequired,
+  pendingChanges: T.bool.isRequired
 }
 
 function selectSubEditor(props) {
@@ -129,9 +132,7 @@ selectSubEditor.propTypes = {
   duplicateItem: T.func.isRequired,
   saveContentItemFile: T.func,
   showModal: T.func.isRequired,
-  fadeModal: T.func.isRequired,
-  saveEnabled: T.bool.isRequired,
-  pendingChanges: T.bool.isRequired
+  fadeModal: T.func.isRequired
 }
 
 Editor = connect(

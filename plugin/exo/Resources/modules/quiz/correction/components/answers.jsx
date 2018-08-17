@@ -134,5 +134,5 @@ const ConnectedAnswers = connect(
 )(Answers)
 
 export {
-    ConnectedAnswers as Answers
-  }
+  ConnectedAnswers as Answers
+}
