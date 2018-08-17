@@ -22,6 +22,7 @@ import {Statistics} from '#/plugin/exo/quiz/statistics/components/statistics'
 
 const QuizResource = props =>
   <ResourcePage
+    styles={['claroline-distribution-plugin-exo-quiz-resource']}
     customActions={[
       {
         type: LINK_BUTTON,

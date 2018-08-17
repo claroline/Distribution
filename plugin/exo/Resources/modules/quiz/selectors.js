@@ -12,6 +12,11 @@ const registered = () => null !== currentUser()
 
 const resource = (state) => state[STORE_NAME]
 
+const noServer = createSelector(
+  resource,
+  (resource) => resource.noServer
+)
+
 const steps = createSelector(
   resource,
   (resource) => resource.steps
@@ -19,6 +24,10 @@ const steps = createSelector(
 const items = createSelector(
   resource,
   (resource) => resource.items
+)
+const papers = createSelector(
+  resource,
+  (resource) => resource.papers
 )
 
 const viewMode = createSelector(
@@ -58,7 +67,7 @@ const description = createSelector(
 
 const parameters = createSelector(
   quiz,
-  (quiz) => quiz.parameters
+  (quiz) => quiz.parameters || {}
 )
 
 const title = createSelector(
@@ -68,21 +77,49 @@ const title = createSelector(
 
 const meta = createSelector(
   quiz,
-  (quiz) => quiz.meta
+  (quiz) => quiz.meta || {}
 )
 
+const hasUserPapers = createSelector(
+  meta,
+  (meta) => meta.userPaperCount > 0
+)
 
-const hasPapers = state => state.quiz.meta.paperCount > 0 || (state.papers.papers && state.papers.papers.length > 0)
-const hasUserPapers = state => state.quiz.meta.userPaperCount > 0
+const paperCount = createSelector(
+  meta,
+  (meta) => meta.paperCount || 0
+)
 
-const noItems = state => Object.keys(state.quiz.steps).length === 1 && Object.keys(state.items).length === 0
-const firstStepId = state => state.quiz.steps[0]
-const hasOverview = state => state.quiz.parameters.showOverview
+const hasPapers = createSelector(
+  [paperCount, papers],
+  (paperCount, papers) => paperCount > 0 || (papers.papers && papers.papers.length > 0)
+)
 
-const papersShowExpectedAnswers = state => state.quiz.parameters.showFullCorrection
-const papersShowStatistics = state => state.quiz.parameters.showStatistics
-const allPapersStatistics = state => state.quiz.parameters.allPapersStatistics
+const noItems = createSelector(
+  [steps, items],
+  (steps, items) => Object.keys(steps).length === 1 && Object.keys(items).length === 0
+)
+const firstStepId = createSelector(
+  quizSteps,
+  (quizSteps) => quizSteps[0]
+)
 
+const hasOverview = createSelector(
+  parameters,
+  (parameters) => parameters.showOverview || false
+)
+const papersShowExpectedAnswers = createSelector(
+  parameters,
+  (parameters) => parameters.showFullCorrection || false
+)
+const papersShowStatistics = createSelector(
+  parameters,
+  (parameters) => parameters.showStatistics
+)
+const allPapersStatistics = createSelector(
+  parameters,
+  (parameters) => parameters.allPapersStatistics
+)
 const quizNumbering = createSelector(
   parameters,
   (parameters) => parameters.numbering
@@ -102,11 +139,13 @@ const docimologyAdmin = createSelector(
 export default {
   STORE_NAME,
   resource,
+  noServer,
   id,
   quiz,
   steps,
   items,
   empty,
+  papers,
   hasPapers,
   hasUserPapers,
   papersAdmin,
@@ -130,11 +169,13 @@ export default {
 export const select = {
   STORE_NAME,
   resource,
+  noServer,
   id,
   quiz,
   steps,
   items,
   empty,
+  papers,
   hasPapers,
   hasUserPapers,
   papersAdmin,

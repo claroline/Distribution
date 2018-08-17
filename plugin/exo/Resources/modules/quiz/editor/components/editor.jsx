@@ -3,6 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {Form} from '#/main/app/content/form/components/form'
+import {LINK_BUTTON, CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {TYPE_QUIZ, TYPE_STEP} from './../../enums'
 
@@ -13,7 +15,20 @@ import {QuizEditor} from '#/plugin/exo/quiz/editor/components/quiz-editor'
 import {StepEditor} from '#/plugin/exo/quiz/editor/components/step-editor'
 
 let Editor = props =>
-  <div className="quiz-editor">
+  <Form
+    className="quiz-editor"
+    validating={props.validating}
+    pendingChanges={props.pendingChanges}
+    save={{
+      type: CALLBACK_BUTTON,
+      disabled: !props.saveEnabled,
+      callback: props.save
+    }}
+    cancel={{
+      type: LINK_BUTTON,
+      target: '/'
+    }}
+  >
     <ThumbnailBox
       thumbnails={props.thumbnails}
       validating={props.validating}
@@ -27,7 +42,7 @@ let Editor = props =>
     <div className="edit-zone user-select-disabled">
       {selectSubEditor(props)}
     </div>
-  </div>
+  </Form>
 
 Editor.propTypes = {
   thumbnails: T.array.isRequired,
@@ -114,7 +129,9 @@ selectSubEditor.propTypes = {
   duplicateItem: T.func.isRequired,
   saveContentItemFile: T.func,
   showModal: T.func.isRequired,
-  fadeModal: T.func.isRequired
+  fadeModal: T.func.isRequired,
+  saveEnabled: T.bool.isRequired,
+  pendingChanges: T.bool.isRequired
 }
 
 Editor = connect(
@@ -127,7 +144,9 @@ Editor = connect(
     activeQuizPanel: select.quizOpenPanel(state),
     activeStepPanel: select.stepOpenPanel(state),
     quizProperties: select.quiz(state),
-    validating: select.validating(state)
+    validating: select.validating(state),
+    pendingChanges: !select.saved(state),
+    saveEnabled: select.saveEnabled(state)
   }),
   Object.assign({}, modalActions, actions) // todo : only grab needed actions
 )(Editor)
