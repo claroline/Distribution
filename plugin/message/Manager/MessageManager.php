@@ -265,13 +265,6 @@ class MessageManager
         $this->send($message, true, $withMail);
     }
 
-    private function getUserMessage(Message $message)
-    {
-        $currentUser = $this->tokenStorage->getToken()->getUser();
-
-        return $this->om->getRepository(UserMessage::class)->findOneBy(['message' => $message, 'user' => $currentUser]);
-    }
-
     public function remove(Message $message)
     {
         $this->om->remove($message);
