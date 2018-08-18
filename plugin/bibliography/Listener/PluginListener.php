@@ -57,7 +57,7 @@ class PluginListener
         // If user is not platform admin, deny access
         if (
           !$this->tokenStorage->getToken() &&
-          $this->tokenStorage->getToken()->getUser() &&
+          'anon.' !== $this->tokenStorage->getToken()->getUser() &&
           !$this->tokenStorage->getToken()->getUser()->hasRole('ROLE_ADMIN')
         ) {
             throw new AccessDeniedHttpException(
