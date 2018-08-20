@@ -15,4 +15,13 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         $default = new DefaultData();
         $default->load($om);
     }
+
+    public function postUpdate($currentVersion, $targetVersion)
+    {
+        if (version_compare($currentVersion, '12.0.0', '<')) {
+            $updater = new Updater\Updater120000($this->container, $this->logger);
+            $updater->setLogger($this->logger);
+            $updater->postUpdate();
+        }
+    }
 }
