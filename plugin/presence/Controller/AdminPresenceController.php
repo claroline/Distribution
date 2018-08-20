@@ -82,90 +82,104 @@ class AdminPresenceController extends Controller
     public function adminToolIndexAction()
     {
         return [];
-//        $rightsValue = [];
-//
-//        $rightsForArray = $this->presenceManager->getAllPresenceRights();
-//
-//        foreach ($rightsForArray as $oneRightForArray) {
-//            $mask = $oneRightForArray->getMask();
-//            $oneValue = [];
-//            $oneValue['right'] = $oneRightForArray;
-//            $oneValue[PresenceRights::PERSONAL_ARCHIVES] = PresenceRights::PERSONAL_ARCHIVES === (PresenceRights::PERSONAL_ARCHIVES & $mask);
-//            $oneValue[PresenceRights::CHECK_PRESENCES] = PresenceRights::CHECK_PRESENCES === (PresenceRights::CHECK_PRESENCES & $mask);
-//            $oneValue[PresenceRights::READING_ARCHIVES] = PresenceRights::READING_ARCHIVES === (PresenceRights::READING_ARCHIVES & $mask);
-//            $oneValue[PresenceRights::EDIT_ARCHIVES] = PresenceRights::EDIT_ARCHIVES === (PresenceRights::EDIT_ARCHIVES & $mask);
-//            $rightsValue[] = $oneValue;
-//        }
-//
-//        $rightNameId = [];
-//        $rightNameId[] = PresenceRights::PERSONAL_ARCHIVES;
-//        $rightNameId[] = PresenceRights::CHECK_PRESENCES;
-//        $rightNameId[] = PresenceRights::READING_ARCHIVES;
-//        $rightNameId[] = PresenceRights::EDIT_ARCHIVES;
-//
-//        $rightName = [];
-//        $rightName[PresenceRights::PERSONAL_ARCHIVES] = 'Voir ses archives';
-//        $rightName[PresenceRights::CHECK_PRESENCES] = 'Relever les présences';
-//        $rightName[PresenceRights::READING_ARCHIVES] = 'Consulter les archives';
-//        $rightName[PresenceRights::EDIT_ARCHIVES] = 'Editer les archives';
-//
-//        $listStatus = $this->statuRepo->findAll();
-//        $NewStatusForm = $this->createFormBuilder()
-//
-//            ->add('name', 'text')
-//            ->add('color', 'text')
-//            ->add('principalStatus', 'checkbox', [
-//                  'required' => false, ]
-//            )
-//            ->add('valider', 'submit', [
-//                'label' => 'Ajouter', ])
-//
-//            ->getForm();
-//
-//        $request = $this->getRequest();
-//        if ('POST' === $request->getMethod()) {
-//            $NewStatusForm->handleRequest($request);
-//            $name = $NewStatusForm->get('name')->getData();
-//            $color = $NewStatusForm->get('color')->getData();
-//            $principal = $NewStatusForm->get('principalStatus')->getData();
-//
-//            $actualStatus = new Status();
-//            $actualStatus->setStatusName($name);
-//            $actualStatus->setStatusColor($color);
-//            $actualStatus->setStatusByDefault($principal);
-//            $this->em->persist($actualStatus);
-//            $this->em->flush();
-//
-//            return $this->redirect($this->generateUrl('formalibre_presence_admin_tool_index'));
-//        }
-//
-//        $ActualSchoolYear = $this->schoolYearRepo->findOneBySchoolYearActual(1);
-//        $AllSchoolYear = $this->schoolYearRepo->findAll();
-//
-//        $NewSchoolYearForm = $this->createFormBuilder()
-//
-//            ->add('name', 'text')
-//            ->add('beginDate', 'text')
-//            ->add('endDate', 'text')
-//            ->add('beginHour', 'text')
-//            ->add('endHour', 'text')
-//            ->add('actual', 'checkbox', [
-//                  'required' => false, ]
-//            )
-//            ->add('valider2', 'submit', [
-//                'label' => 'Ajouter', ])
-//
-//            ->getForm();
-//
-//        return ['rightsForArray' => $rightsForArray,
-//                     'rightsValue' => $rightsValue,
-//                     'rightNameId' => $rightNameId,
-//                     'rightName' => $rightName,
-//                     'NewStatusForm' => $NewStatusForm->createView(),
-//                     'NewSchoolYearForm' => $NewSchoolYearForm->createView(),
-//                     'listStatus' => $listStatus,
-//                     'allSchoolYear' => $AllSchoolYear,
-//                     'actualSchoolYear' => $ActualSchoolYear, ];
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/admin/presence/tool/index/old",
+     *     name="formalibre_presence_admin_tool_index_old",
+     *     options={"expose"=true}
+     * )
+     *
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\Template()
+     */
+    public function adminToolIndexOldAction()
+    {
+        $rightsValue = [];
+
+        $rightsForArray = $this->presenceManager->getAllPresenceRights();
+
+        foreach ($rightsForArray as $oneRightForArray) {
+            $mask = $oneRightForArray->getMask();
+            $oneValue = [];
+            $oneValue['right'] = $oneRightForArray;
+            $oneValue[PresenceRights::PERSONAL_ARCHIVES] = PresenceRights::PERSONAL_ARCHIVES === (PresenceRights::PERSONAL_ARCHIVES & $mask);
+            $oneValue[PresenceRights::CHECK_PRESENCES] = PresenceRights::CHECK_PRESENCES === (PresenceRights::CHECK_PRESENCES & $mask);
+            $oneValue[PresenceRights::READING_ARCHIVES] = PresenceRights::READING_ARCHIVES === (PresenceRights::READING_ARCHIVES & $mask);
+            $oneValue[PresenceRights::EDIT_ARCHIVES] = PresenceRights::EDIT_ARCHIVES === (PresenceRights::EDIT_ARCHIVES & $mask);
+            $rightsValue[] = $oneValue;
+        }
+
+        $rightNameId = [];
+        $rightNameId[] = PresenceRights::PERSONAL_ARCHIVES;
+        $rightNameId[] = PresenceRights::CHECK_PRESENCES;
+        $rightNameId[] = PresenceRights::READING_ARCHIVES;
+        $rightNameId[] = PresenceRights::EDIT_ARCHIVES;
+
+        $rightName = [];
+        $rightName[PresenceRights::PERSONAL_ARCHIVES] = 'Voir ses archives';
+        $rightName[PresenceRights::CHECK_PRESENCES] = 'Relever les présences';
+        $rightName[PresenceRights::READING_ARCHIVES] = 'Consulter les archives';
+        $rightName[PresenceRights::EDIT_ARCHIVES] = 'Editer les archives';
+
+        $listStatus = $this->statuRepo->findAll();
+        $NewStatusForm = $this->createFormBuilder()
+
+            ->add('name', 'text')
+            ->add('color', 'text')
+            ->add('principalStatus', 'checkbox', [
+                  'required' => false, ]
+            )
+            ->add('valider', 'submit', [
+                'label' => 'Ajouter', ])
+
+            ->getForm();
+
+        $request = $this->getRequest();
+        if ('POST' === $request->getMethod()) {
+            $NewStatusForm->handleRequest($request);
+            $name = $NewStatusForm->get('name')->getData();
+            $color = $NewStatusForm->get('color')->getData();
+            $principal = $NewStatusForm->get('principalStatus')->getData();
+
+            $actualStatus = new Status();
+            $actualStatus->setStatusName($name);
+            $actualStatus->setStatusColor($color);
+            $actualStatus->setStatusByDefault($principal);
+            $this->em->persist($actualStatus);
+            $this->em->flush();
+
+            return $this->redirect($this->generateUrl('formalibre_presence_admin_tool_index'));
+        }
+
+        $ActualSchoolYear = $this->schoolYearRepo->findOneBySchoolYearActual(1);
+        $AllSchoolYear = $this->schoolYearRepo->findAll();
+
+        $NewSchoolYearForm = $this->createFormBuilder()
+
+            ->add('name', 'text')
+            ->add('beginDate', 'text')
+            ->add('endDate', 'text')
+            ->add('beginHour', 'text')
+            ->add('endHour', 'text')
+            ->add('actual', 'checkbox', [
+                  'required' => false, ]
+            )
+            ->add('valider2', 'submit', [
+                'label' => 'Ajouter', ])
+
+            ->getForm();
+
+        return ['rightsForArray' => $rightsForArray,
+                     'rightsValue' => $rightsValue,
+                     'rightNameId' => $rightNameId,
+                     'rightName' => $rightName,
+                     'NewStatusForm' => $NewStatusForm->createView(),
+                     'NewSchoolYearForm' => $NewSchoolYearForm->createView(),
+                     'listStatus' => $listStatus,
+                     'allSchoolYear' => $AllSchoolYear,
+                     'actualSchoolYear' => $ActualSchoolYear, ];
     }
 
     /**

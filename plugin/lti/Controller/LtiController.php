@@ -26,23 +26,6 @@ class LtiController extends Controller
     public function appAction()
     {
         return [];
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $entity = new LtiApp();
-//        $form = $this->createForm(new AppType(), $entity);
-//        $vars['form'] = $form->createView();
-//
-//        if ($request->isMethod('POST')) {
-//            $form->handleRequest($request);
-//            if ($form->isValid()) {
-//                $em->persist($entity);
-//                $em->flush();
-//            }
-//        }
-//        $apps = $em->getRepository('UJMLtiBundle:LtiApp')->findAll();
-//        $vars['apps'] = $apps;
-//
-//        return $this->render('UJMLtiBundle:Lti:app.html.twig', $vars);
     }
 
     /**
