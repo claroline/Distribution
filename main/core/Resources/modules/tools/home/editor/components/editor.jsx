@@ -55,6 +55,7 @@ const EditorComponent = props =>
                 title: trans('home_tab_delete_confirm_title'),
                 message: trans('home_tab_delete_confirm_message')
               }}
+              disabled={props.currentTab.locked && props.context.type !== 'administration'}
               callback={() => props.deleteTab(props.tabs, props.currentTab, props.history.push)}
             />
           </PageGroupActions>
@@ -102,8 +103,8 @@ const EditorComponent = props =>
               }, {
                 name: 'locked',
                 type: 'boolean',
-                label: trans('lock_tab', {}, 'widget'),
-                help : trans('lock_tab_help', {}, 'widget'),
+                label: trans('publish_tab', {}, 'widget'),
+                help : trans('publish_tab_help', {}, 'widget'),
                 displayed: props.context.type === 'administration'
               }
             ]
