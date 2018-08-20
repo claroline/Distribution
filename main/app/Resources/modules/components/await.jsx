@@ -25,6 +25,7 @@ class Await extends Component {
   }
 
   load() {
+    console.log(this.props.for)
     if (!this.pending) {
       this.pending = makeCancelable(
         this.props.for
