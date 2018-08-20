@@ -12,7 +12,7 @@ import {
 import {selectors} from '#/plugin/blog/resources/blog/store/selectors'
 
 const reducer = {
-  posts: makeListReducer('posts', {
+  posts: makeListReducer(selectors.STORE_NAME + '.posts', {
     sortBy: {
       property: 'publicationDate',
       direction: -1

@@ -21,13 +21,6 @@ const Blog = props =>
         label: trans('show_overview'),
         target: '/',
         exact: true
-      }, {
-        type: LINK_BUTTON,
-        icon: 'fa fa-fw fa-plus',
-        displayed: props.canEdit || props.canPost,
-        label: trans('new_post', {}, 'icap_blog'),
-        target: '/new',
-        exact: true
       },{
         displayed : props.canEdit || props.canModerate,
         type: LINK_BUTTON,
