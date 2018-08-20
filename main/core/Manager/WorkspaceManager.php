@@ -229,7 +229,7 @@ class WorkspaceManager
         if (0 === count($workspace->getOrganizations())) {
             if (
                 $this->container->get('security.token_storage')->getToken() &&
-                $this->container->get('security.token_storage')->getToken()->getUser() &&
+                $this->container->get('security.token_storage')->getToken()->getUser() instanceof User &&
                 $this->container->get('security.token_storage')->getToken()->getUser()->getMainOrganization()
             ) {
                 //we want a min organization
@@ -1145,30 +1145,44 @@ class WorkspaceManager
 
     public function isManager(Workspace $workspace, TokenInterface $token)
     {
-        $roles = array_map(
-            function ($role) {
-                return $role->getRole();
-            },
-            $token->getRoles()
-        );
-
-        if (in_array('ROLE_ADMIN', $roles)) {
-            return true;
+        if (!$token->getUser() instanceof User) {
+            return false;
         }
 
-        $managerRole = $this->roleManager->getManagerRole($workspace);
-
-        if (!in_array('ROLE_USURPATE_WORKSPACE_ROLE', $roles) && $workspace->getCreator() === $token->getUser()) {
-            return true;
-        }
-
-        foreach ($roles as $role) {
-            if ($managerRole && $role === $managerRole->getName()) {
+        if (!$this->isUsurper($token)) {
+            if ($workspace->getCreator() === $token->getUser()) {
                 return true;
+            }
+
+            //if we're amongst the administrators of the organizations
+            $adminOrganizations = $token->getUser()->getAdministratedOrganizations();
+            $workspaceOrganizations = $workspace->getOrganizations();
+
+            foreach ($adminOrganizations as $adminOrganization) {
+                foreach ($workspaceOrganizations as $workspaceOrganization) {
+                    if ($workspaceOrganization === $adminOrganization) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        //or we have the role_manager
+        $managerRole = $workspace->getManagerRole();
+        if ($managerRole) {
+            foreach ($token->getRoles() as $role) {
+                if ($managerRole->getName() === $role->getRole()) {
+                    return true;
+                }
             }
         }
 
         return false;
+    }
+
+    protected function isUsurper(TokenInterface $token)
+    {
+        return $token instanceof ViewAsToken;
     }
 
     /**
