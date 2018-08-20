@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import merge from 'lodash/merge'
+import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
@@ -169,19 +170,26 @@ const EditorComponent = props =>
             displayed: props.context.type === 'workspace' || props.administration,
             fields: [
               {
-                name: 'roles',
-                label: trans('role'),
-                help: trans('home_tab_roles_explanation'),
-                type: 'choice',
-                options:{
-                  multiple : true,
-                  choices: props.context.type === 'workspace' || props.administration ?
-                    props.context.data.roles.reduce((acc, role) => {
-                      acc[role.id] = role.translationKey
-                      return acc
-                    }, {})
-                    : ''
-                }
+                name: 'restrictions',
+                type: 'boolean',
+                label: trans('restrictions_by_roles', {}, 'widget'),
+                linked: [
+                  {
+                    name: 'roles',
+                    label: trans('role'),
+                    displayed: props.currentTab.restrictions,
+                    type: 'choice',
+                    options:{
+                      multiple : true,
+                      choices: props.context.type === 'workspace' || props.administration ?
+                        props.context.data.roles.reduce((acc, role) => {
+                          acc[role.id] = role.translationKey
+                          return acc
+                        }, {})
+                        : ''
+                    }
+                  }
+                ]
               }
             ]
           }

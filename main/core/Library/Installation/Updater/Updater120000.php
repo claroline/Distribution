@@ -311,7 +311,7 @@ class Updater120000 extends Updater
 
     private function checkDesktopTabs()
     {
-        $tabs = $this->om->getRepository(HomeTab::class)->findBy(['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
+        $tabs = $this->om->getRepository(HomeTab::class)->findBy(['administration' => true]);
 
         if (0 === count($tabs)) {
             $this->log('Adding default admin desktop tab...');

@@ -12,6 +12,7 @@
     "new_widget": "Nouveau widget",
     "new_widget_select": "1. Choisir le type de widget à ajouter",
     "new_widget_configure": "2. Configurer le widget",
+    "restrictions_by_roles" : "Restreindre par rôles",
 
     "simple": "Contenu simple",
     "list": "Liste de données",

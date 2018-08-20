@@ -49,7 +49,8 @@ class HomeTabFinder extends AbstractFinder
                             JOIN role.users user
 
                             WHERE (user.uuid = :userId OR user.id = :userId)
-                            AND tab.type = :adminDesktop
+                            AND tab.type = :desktop
+                            AND tab.administration = true
                             AND htc.locked = true
                           ";
 
@@ -59,7 +60,8 @@ class HomeTabFinder extends AbstractFinder
                             JOIN tab2.homeTabConfigs htc2
                             LEFT JOIN htc2.roles role2
                             WHERE role2.id IS NULL
-                            AND tab2.type = :adminDesktop
+                            AND tab2.type = :desktop
+                            AND tab2.administration = true
                             AND htc2.locked = true
                           ";
 
@@ -68,13 +70,13 @@ class HomeTabFinder extends AbstractFinder
                             $qb->expr()->in('obj', $subQuery2)
                         );
 
-                        $qb->setParameter('adminDesktop', HomeTab::TYPE_ADMIN_DESKTOP);
+                        $qb->setParameter('administration', true);
                     } else {
                         $expr[] = $qb->expr()->orX(
                           $qb->expr()->eq('obj.type', ':adminDesktop'),
                           $qb->expr()->eq('config.locked', true)
                         );
-                        $qb->setParameter('adminDesktop', HomeTab::TYPE_ADMIN_DESKTOP);
+                        $qb->setParameter('administration', true);
                     }
 
                     $expr[] = $qb->expr()->orX(

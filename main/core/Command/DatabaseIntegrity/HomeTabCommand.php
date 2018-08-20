@@ -28,19 +28,21 @@ class HomeTabCommand extends ContainerAwareCommand
         $manager = $container->get('claroline.persistence.object_manager');
         $translator = $container->get('translator');
         $finder = $container->get('claroline.api.finder');
-        $tabs = $finder->fetch(HomeTab::class, ['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
+        $tabs = $finder->fetch(HomeTab::class, ['administration' => true]);
 
         if (0 === count($tabs)) {
             $output->writeln('No tabs found... restoring default.');
             $infoName = $translator->trans('informations', [], 'platform');
 
             $desktopHomeTab = new HomeTab();
-            $desktopHomeTab->setType(HomeTab::TYPE_ADMIN_DESKTOP);
+            $desktopHomeTab->setType(HomeTab::TYPE_DESKTOP);
+            $desktopHomeTab->setAdministration(true);
             $manager->persist($desktopHomeTab);
 
             $desktopHomeTabConfig = new HomeTabConfig();
             $desktopHomeTabConfig->setHomeTab($desktopHomeTab);
-            $desktopHomeTabConfig->setType(HomeTab::TYPE_ADMIN_DESKTOP);
+            $desktopHomeTabConfig->setType(HomeTab::TYPE_DESKTOP);
+            $desktopHomeTabConfig->setAdministration(true);
             $desktopHomeTabConfig->setVisible(true);
             $desktopHomeTabConfig->setLocked(false);
             $desktopHomeTabConfig->setTabOrder(1);

@@ -14,7 +14,7 @@ const Tab = {
       T.object
     ]),
     position: T.number,
-    type: T.oneOf(['workspace', 'admin_desktop', 'desktop', 'administration']),
+    type: T.oneOf(['workspace', 'admin_desktop', 'desktop']),
     widgets: T.arrayOf(T.shape(
       Widget.propTypes
     ))
@@ -23,7 +23,8 @@ const Tab = {
     icon: null,
     poster: null,
     widgets: [],
-    centerTitle: false
+    centerTitle: false,
+    restrictions: false
   }
 }
 

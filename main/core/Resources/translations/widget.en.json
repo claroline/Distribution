@@ -12,6 +12,7 @@
     "new_content_select": "1. Choose the type of content to add",
     "new_content_configure": "2. Configure the content",
     "no_widget": "No widget have been added yet.",
+    "restrictions_by_roles" : "Restriction by roles",
 
     "simple": "Simple content",
     "list": "Data list",

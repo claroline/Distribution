@@ -29,9 +29,9 @@ const sortedTabs = createSelector(
 )
 
 const visibleTabs = createSelector(
-  [sortedTabs, context],
-  (sortedTabs, context) => {
-    if (context.type === 'administration') {
+  [sortedTabs, administration],
+  (sortedTabs, administration) => {
+    if (administration) {
       return sortedTabs
     }
 

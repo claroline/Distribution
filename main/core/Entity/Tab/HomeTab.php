@@ -31,12 +31,17 @@ class HomeTab
 
     const TYPE_WORKSPACE = 'workspace';
     const TYPE_DESKTOP = 'desktop';
-    const TYPE_ADMIN_DESKTOP = 'administration';
+
 
     /**
      * @ORM\Column(nullable=false)
      */
     protected $type;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $administration = false;
 
     /**
      * @ORM\ManyToOne(
@@ -96,6 +101,15 @@ class HomeTab
     public function setType($type)
     {
         $this->type = $type;
+    }
+    public function isAdministration()
+    {
+        return $this->administration;
+    }
+
+    public function setAdministration($administration)
+    {
+        $this->administration = $administration;
     }
 
     public function getUser()
