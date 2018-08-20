@@ -21,9 +21,37 @@ class LtiController extends Controller
      * @Route("/apps", name="ujm_admin_lti")
      * @Template
      *
+     * @return array
+     */
+    public function appAction()
+    {
+        return [];
+//        $em = $this->getDoctrine()->getManager();
+//
+//        $entity = new LtiApp();
+//        $form = $this->createForm(new AppType(), $entity);
+//        $vars['form'] = $form->createView();
+//
+//        if ($request->isMethod('POST')) {
+//            $form->handleRequest($request);
+//            if ($form->isValid()) {
+//                $em->persist($entity);
+//                $em->flush();
+//            }
+//        }
+//        $apps = $em->getRepository('UJMLtiBundle:LtiApp')->findAll();
+//        $vars['apps'] = $apps;
+//
+//        return $this->render('UJMLtiBundle:Lti:app.html.twig', $vars);
+    }
+
+    /**
+     * @Route("/apps_old", name="ujm_admin_lti_old")
+     * @Template
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function appAction(Request $request)
+    public function appOldAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
