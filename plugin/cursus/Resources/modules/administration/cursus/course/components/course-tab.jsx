@@ -4,10 +4,11 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
 import {Routes} from '#/main/app/router'
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
+
+import {trans} from '#/main/core/translation'
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {
@@ -16,7 +17,7 @@ import {
 } from '#/plugin/cursus/administration/cursus/prop-types'
 import {Courses} from '#/plugin/cursus/administration/cursus/course/components/courses'
 import {CourseForm} from '#/plugin/cursus/administration/cursus/course/components/course-form'
-import {actions} from '#/plugin/cursus/administration/cursus/course/actions'
+import {actions} from '#/plugin/cursus/administration/cursus/course/store'
 
 const CourseTabActions = () =>
   <PageActions>
