@@ -20,3 +20,5 @@ actions.startCreation = (widgetLayout) => (dispatch) => {
   // (I do it in 2 steps to let the form toggle the pending changes flag)
   dispatch(formActions.updateProp(selectors.STORE_NAME, 'display.layout', widgetLayout))
 }
+
+actions.reset = () => formActions.resetForm(selectors.FORM_NAME, merge({id: makeId()}, WidgetContainerTypes.defaultProps), true)
