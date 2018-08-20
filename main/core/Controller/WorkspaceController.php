@@ -375,10 +375,10 @@ class WorkspaceController extends Controller
                 if (!is_null($resourceNode)) {
                     $this->session->set('isDesktop', false);
                     $route = $this->router->generate(
-                        'claro_resource_open',
+                        'claro_resource_show',
                         [
-                            'node' => $resourceNode->getId(),
-                            'resourceType' => $resourceNode->getResourceType()->getName(),
+                            'id' => $resourceNode->getUuid(),
+                            'type' => $resourceNode->getResourceType()->getName(),
                         ]
                     );
 
