@@ -32,12 +32,14 @@ const RedactorsComponent = props =>
   </div>
 
 RedactorsComponent.propTypes = {
+  blogId: T.string,
   authors: T.array,
   getPostsByAuthor: T.func.isRequired
 }
 
 const Redactors = connect(
   state => ({
+    blogId: selectors.blog(state).id,
     authors: selectors.blog(state).data.authors
   }),
   dispatch => ({
