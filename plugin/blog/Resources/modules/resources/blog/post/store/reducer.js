@@ -9,7 +9,7 @@ import {
   POST_RESET,
   POST_UPDATE_PUBLICATION
 } from '#/plugin/blog/resources/blog/post/store/actions'
-import {select} from '#/plugin/blog/resources/blog/selectors'
+import {selectors} from '#/plugin/blog/resources/blog/store/selectors'
 
 const reducer = {
   posts: makeListReducer('posts', {
@@ -19,8 +19,8 @@ const reducer = {
     }
   },{
     invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/' + select.STORE_NAME + '.post_edit']: () => true,
-      [FORM_SUBMIT_SUCCESS+'/' + select.STORE_NAME + '.blog.data.options']: () => true,
+      [FORM_SUBMIT_SUCCESS+'/' + selectors.STORE_NAME + '.post_edit']: () => true,
+      [FORM_SUBMIT_SUCCESS+'/' + selectors.STORE_NAME + '.blog.data.options']: () => true,
       [POST_UPDATE_PUBLICATION]: () => true,
       [INIT_DATALIST]: () => true,
       [POST_DELETE]: () => true
@@ -33,7 +33,7 @@ const reducer = {
     [POST_UPDATE_PUBLICATION]: (state, action) => action.post,
     [POST_RESET]: () => ({})
   }),
-  post_edit: makeFormReducer(select.STORE_NAME + '.post_edit')
+  post_edit: makeFormReducer(selectors.STORE_NAME + '.post_edit')
 }
 
 export {

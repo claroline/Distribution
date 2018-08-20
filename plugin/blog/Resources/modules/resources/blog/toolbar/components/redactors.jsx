@@ -8,7 +8,7 @@ import {trans} from '#/main/core/translation'
 import {UrlButton} from '#/main/app/buttons/url/components/button'
 import {actions as listActions} from '#/main/app/content/list/store'
 import {UserAvatar} from '#/main/core/user/components/avatar'
-import {select} from '#/plugin/blog/resources/blog/selectors'
+import {selectors} from '#/plugin/blog/resources/blog/store'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store/actions'
 
 const RedactorsComponent = props =>
@@ -38,7 +38,7 @@ RedactorsComponent.propTypes = {
 
 const Redactors = connect(
   state => ({
-    authors: select.blog(state).data.authors
+    authors: selectors.blog(state).data.authors
   }),
   dispatch => ({
     getPostsByAuthor: (blogId, authorName) => {

@@ -13,7 +13,7 @@ import {Player} from '#/plugin/blog/resources/blog/player/components/player'
 
 const Blog = props =>
   <ResourcePage
-    primaryAction="post"
+    primaryAction="blog_post"
     customActions={[
       {
         type: LINK_BUTTON,
@@ -50,15 +50,17 @@ const Blog = props =>
       }
     ]}
   >
-    <RoutedPageContent className={'blog-page'}routes={[
-      {
-        path: '/moderation',
-        component: Moderation
-      },{
-        path: '/',
-        component: Player
-      }
-    ]}/>
+    <RoutedPageContent
+      className={'blog-page'}
+      routes={[
+        {
+          path: '/moderation',
+          component: Moderation
+        }, {
+          path: '/',
+          component: Player
+        }
+      ]}/>
   </ResourcePage>
 
 Blog.propTypes = {
