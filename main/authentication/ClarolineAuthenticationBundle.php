@@ -61,12 +61,6 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
         }
     }
 
-    public function getRequiredExtensions()
-    {
-        //maybe ldap shouldnt be required here
-        //return ['ldap']
-    }
-
     private function buildPath($file, $folder = 'suggested')
     {
         return __DIR__."/Resources/config/{$folder}/{$file}.yml";

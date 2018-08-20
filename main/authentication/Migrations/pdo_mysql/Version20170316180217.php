@@ -17,7 +17,8 @@ class Version20170316180217 extends AbstractMigration
 
     public function up(Schema $schema)
     {
-        $this->skipIf($this->checkTable('claro_cas_user', $this->connection));
+        $this->skipIf($this->checkTableExists('claro_cas_user', $this->connection));
+
         $this->addSql('
             CREATE TABLE claro_cas_user (
                 id INT AUTO_INCREMENT NOT NULL, 

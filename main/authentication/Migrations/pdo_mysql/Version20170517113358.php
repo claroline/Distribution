@@ -2,6 +2,7 @@
 
 namespace Claroline\AuthenticationBundle\Migrations\pdo_mysql;
 
+use Claroline\CoreBundle\Library\Migration\ConditionalMigrationTrait;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
@@ -12,8 +13,12 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20170517113358 extends AbstractMigration
 {
+    use ConditionalMigrationTrait;
+
     public function up(Schema $schema)
     {
+        $this->skipIf($this->checkTableExists('claro_external_synchronized_user', $this->connection));
+
         $this->addSql('
             CREATE TABLE claro_external_synchronized_user (
                 id INT AUTO_INCREMENT NOT NULL, 

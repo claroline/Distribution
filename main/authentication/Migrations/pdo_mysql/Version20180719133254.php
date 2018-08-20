@@ -18,7 +18,7 @@ class Version20180719133254 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // If table exists from previous Oauth plugin, just rename it
-        $tableExists = $this->checkTable('icap__oauth_user', $this->connection);
+        $tableExists = $this->checkTableExists('icap__oauth_user', $this->connection);
         if ($tableExists) {
             $this->addSql(
                 'RENAME TABLE icap__oauth_user TO claro_oauth_user'
