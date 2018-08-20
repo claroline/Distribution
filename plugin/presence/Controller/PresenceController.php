@@ -75,34 +75,34 @@ class PresenceController extends Controller
      *
      * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      *
-     * @param User $user
      * @EXT\Template()
      */
-    public function ToolIndexAction(User $user)
+    public function ToolIndexAction()
     {
-        $SchoolYear = $this->schoolYearRepo->findOneBySchoolYearActual(true);
-        $Presences = $this->presenceRepo->findAll();
-        $Periods = $this->periodRepo->findByVisibility(true);
-        $canViewPersonalArchives = $this->presenceManager->checkRights($user, PresenceRights::PERSONAL_ARCHIVES);
-        $canCkeckPresences = $this->presenceManager->checkRights($user, PresenceRights::CHECK_PRESENCES);
-        $canViewArchives = $this->presenceManager->checkRights($user, PresenceRights::READING_ARCHIVES);
-
-        if (!is_null($SchoolYear)) {
-            $SchoolYearBeginHour = $SchoolYear->getSchoolDayBeginHour();
-            $SchoolYearEndHour = $SchoolYear->getSchoolDayEndHour();
-        } else {
-            $SchoolYearBeginHour = '08:00:00';
-            $SchoolYearEndHour = '18:00:00';
-        }
-
-        return ['user' => $user,
-                     'presences' => $Presences,
-                     'periods' => $Periods,
-                     'canViewPersonalArchives' => $canViewPersonalArchives,
-                     'canCheckPresences' => $canCkeckPresences,
-                     'canViewArchives' => $canViewArchives,
-                     'schoolYearBeginHour' => $SchoolYearBeginHour,
-                     'schoolYearEndHour' => $SchoolYearEndHour, ];
+        return [];
+//        $SchoolYear = $this->schoolYearRepo->findOneBySchoolYearActual(true);
+//        $Presences = $this->presenceRepo->findAll();
+//        $Periods = $this->periodRepo->findByVisibility(true);
+//        $canViewPersonalArchives = $this->presenceManager->checkRights($user, PresenceRights::PERSONAL_ARCHIVES);
+//        $canCkeckPresences = $this->presenceManager->checkRights($user, PresenceRights::CHECK_PRESENCES);
+//        $canViewArchives = $this->presenceManager->checkRights($user, PresenceRights::READING_ARCHIVES);
+//
+//        if (!is_null($SchoolYear)) {
+//            $SchoolYearBeginHour = $SchoolYear->getSchoolDayBeginHour();
+//            $SchoolYearEndHour = $SchoolYear->getSchoolDayEndHour();
+//        } else {
+//            $SchoolYearBeginHour = '08:00:00';
+//            $SchoolYearEndHour = '18:00:00';
+//        }
+//
+//        return ['user' => $user,
+//                     'presences' => $Presences,
+//                     'periods' => $Periods,
+//                     'canViewPersonalArchives' => $canViewPersonalArchives,
+//                     'canCheckPresences' => $canCkeckPresences,
+//                     'canViewArchives' => $canViewArchives,
+//                     'schoolYearBeginHour' => $SchoolYearBeginHour,
+//                     'schoolYearEndHour' => $SchoolYearEndHour, ];
     }
 
     /**
