@@ -55,11 +55,10 @@ claro_log:
     prefix: log
     type: annotation
 
-# old
-claro_profile:
-    resource: "@ClarolineCoreBundle/Controller/ProfileController.php"
-    prefix: profile
+claro_user:
+    resource: "@ClarolineCoreBundle/Controller/UserController.php"
     type: annotation
+    prefix: user
 
 # new
 claro_user_profile:
@@ -103,30 +102,12 @@ claro_workspace_tool_tools_properties:
 
 claro_admin:
     resource: "@ClarolineCoreBundle/Controller/AdministrationController.php"
-    prefix: admin
-    type: annotation
-
-claro_admin_desktop_configuration:
-    resource: "@ClarolineCoreBundle/Controller/Administration/DesktopConfigurationController.php"
-    prefix: admin
-    type: annotation
-
-claro_admin_home_tab:
-    resource: "@ClarolineCoreBundle/Controller/Administration/HomeTabController.php"
-    prefix: admin
     type: annotation
 
 claro_admin_portal_config:
     resource: "@ClarolineCoreBundle/Controller/Administration/PortalConfigurationController.php"
     prefix: admin/portal
     type: annotation
-
-claro_resources_node_api:
-    resource: "@ClarolineCoreBundle/Controller/API/Resource/ResourceNodeController.php"
-    prefix: api
-    type: annotation
-    options:
-        expose: true
 
 # todo : remove me
 claro_resource_old:
@@ -162,11 +143,6 @@ claro_file:
     resource: "@ClarolineCoreBundle/Controller/FileController.php"
     type: annotation
     prefix: file
-
-claro_user:
-    resource: "@ClarolineCoreBundle/Controller/UserController.php"
-    type: annotation
-    prefix: user
 
 claro_admin_parameters:
     prefix: admin/parameters
@@ -207,11 +183,6 @@ claro_plugin_api:
 claro_portal:
     resource: "@ClarolineCoreBundle/Controller/PortalController.php"
     prefix: portal
-    type: annotation
-
-claro_admin_widget:
-    prefix: admin/widget
-    resource: "@ClarolineCoreBundle/Controller/Administration/WidgetController.php"
     type: annotation
 
 claro_client:

@@ -5,9 +5,11 @@ namespace Claroline\CoreBundle\API\Serializer\Widget;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\DataSource;
 use Claroline\CoreBundle\Entity\Widget\Type\AbstractWidget;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -45,12 +47,13 @@ class WidgetInstanceSerializer
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Widget\WidgetInstance';
+        return WidgetInstance::class;
     }
 
     public function serialize(WidgetInstance $widgetInstance, array $options = []): array
     {
         $widget = $widgetInstance->getWidget();
+        $dataSource = $widgetInstance->getDataSource();
 
         // retrieves the custom configuration of the widget if any
         $parameters = new \stdClass();
@@ -70,14 +73,24 @@ class WidgetInstanceSerializer
         return [
             'id' => $this->getUuid($widgetInstance, $options),
             'type' => $widget->getName(),
-            'source' => null, // todo
+            'source' => $dataSource ? $dataSource->getName() : null,
             'parameters' => $parameters,
         ];
     }
 
     public function deserialize($data, WidgetInstance $widgetInstance, array $options = []): WidgetInstance
     {
+        $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
+
+        if (!$widgetInstanceConfig) {
+            $widgetInstanceConfig = new WidgetInstanceConfig();
+            $widgetInstanceConfig->setWidgetInstance($widgetInstance);
+        }
+
         $this->sipe('id', 'setUuid', $data, $widgetInstance);
+        $this->sipe('type', 'setType', $data, $widgetInstanceConfig);
+
+        $this->om->persist($widgetInstanceConfig);
 
         /** @var Widget $widget */
         $widget = $this->om
@@ -111,6 +124,14 @@ class WidgetInstanceSerializer
                 $this->om->persist($typeParameters);
                 $this->om->persist($widgetInstance);
             }
+        }
+
+        if (!empty($data['source'])) {
+            $dataSource = $this->om
+                ->getRepository(DataSource::class)
+                ->findOneBy(['name' => $data['source']]);
+
+            $widgetInstance->setDataSource($dataSource);
         }
 
         return $widgetInstance;

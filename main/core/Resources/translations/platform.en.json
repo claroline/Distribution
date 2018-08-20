@@ -683,6 +683,7 @@
     "logout": "Logout",
     "logs": "tracking",
     "logs_error_location": "The log files are located in app/logs/update-xxx.log.",
+    "mailbox": "Mailbox",
     "mail_click": "Click on this link to reset your password",
     "mail_config_problem": "Please contact your administrator to reinitialize your password.",
     "mail_invalid": "Mail format is not valid",
@@ -726,7 +727,7 @@
     "merge_confirmation": "Merging account process will result in keeping user: %username% account. Do you still want to proceed?",
     "message": "Message",
     "message_form_content": "Content",
-    "message_form_object": "Object",
+    "message_form_object": "Subject",
     "message_form_to": "To",
     "message_sending": "Message sending",
     "messages": "Message",
@@ -1467,6 +1468,7 @@
     "list_columns_title": "Available columns (click to display/hide columns)",
     "list_display_modes": "Display modes",
     "list_display_modes_title": "Display modes (click to change mode)",
+    "list_display_mode_default": "Default display mode",
     "list_display_list": "Detailed list",
     "list_display_list_sm": "List",
     "list_display_table": "Table",
@@ -1672,5 +1674,6 @@
     "transfer": "Transfer",
     "unzip_file": "Unzip the file",
     "group_password_reset": "Reset the user passwords",
-        "send_password_reset": "Do you really want to initialize the passwords of the following groups: %groups%"
+    "send_password_reset": "Do you really want to initialize the passwords of the following groups: %groups%",
+    "restricted_access": "Restricted access"
 }

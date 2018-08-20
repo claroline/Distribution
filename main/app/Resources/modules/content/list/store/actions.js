@@ -1,5 +1,7 @@
+import invariant from 'invariant'
+
 import {url} from '#/main/app/api'
-import {makeInstanceActionCreator} from '#/main/app/store/actions'
+import {makeInstanceAction, makeInstanceActionCreator} from '#/main/app/store/actions'
 
 import {API_REQUEST} from '#/main/app/api'
 import {select as listSelect} from '#/main/app/content/list/store/selectors'
@@ -10,7 +12,17 @@ export const actions = {}
 export const LIST_FILTER_ADD    = 'LIST_FILTER_ADD'
 export const LIST_FILTER_REMOVE = 'LIST_FILTER_REMOVE'
 
-actions.addFilter    = makeInstanceActionCreator(LIST_FILTER_ADD, 'property', 'value')
+actions.addFilter = (listName, property, value, locked = false) => {
+  invariant(property, 'property is required.')
+  invariant(value, 'value is required.')
+
+  return ({
+    type: makeInstanceAction(LIST_FILTER_ADD, listName),
+    property,
+    value,
+    locked
+  })
+}
 actions.removeFilter = makeInstanceActionCreator(LIST_FILTER_REMOVE, 'filter')
 
 

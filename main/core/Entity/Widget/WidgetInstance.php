@@ -13,6 +13,8 @@ namespace Claroline\CoreBundle\Entity\Widget;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\CoreBundle\Entity\DataSource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,26 +27,6 @@ class WidgetInstance
 {
     use Id;
     use Uuid;
-
-    /**
-     * The name of the instance.
-     *
-     * @ORM\Column(name="widget_name", nullable=true)
-     *
-     * @var string
-     *
-     * @deprecated. moved on WidgetContainer. Kept for migration.
-     */
-    private $name;
-
-    /**
-     * The position of the instance inside its container.
-     *
-     * @ORM\Column(name="widget_position", type="integer")
-     *
-     * @var int
-     */
-    private $position = 0;
 
     /**
      * The widget which is rendered.
@@ -60,7 +42,7 @@ class WidgetInstance
      * The parent container.
      *
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetContainer", inversedBy="instances", cascade={"persist"})
-     * @ORM\JoinColumn(name="container_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="container_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @var WidgetContainer
      */
@@ -68,40 +50,30 @@ class WidgetInstance
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig",
+     *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig",
      *     mappedBy="widgetInstance"
      * )
      */
-    protected $widgetHomeTabConfigs;
+    private $widgetInstanceConfigs;
 
     /**
-     * Get name.
+     * The data source to fill the widget if any.
      *
-     * @return string
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\DataSource")
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
+     *
+     * @var DataSource
      */
-    public function getName()
-    {
-        return $this->name;
-    }
+    private $dataSource = null;
 
     /**
-     * Get position.
-     *
-     * @return int
+     * WidgetContainer constructor.
      */
-    public function getPosition()
+    public function __construct()
     {
-        return $this->position;
-    }
+        $this->refreshUuid();
 
-    /**
-     * Set position.
-     *
-     * @param int $position
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
+        $this->widgetInstanceConfigs = new ArrayCollection();
     }
 
     /**
@@ -142,5 +114,37 @@ class WidgetInstance
     public function setContainer(WidgetContainer $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * Get data source.
+     *
+     * @return DataSource
+     */
+    public function getDataSource()
+    {
+        return $this->dataSource;
+    }
+
+    /**
+     * Set data source.
+     *
+     * @param DataSource $dataSource
+     */
+    public function setDataSource(DataSource $dataSource)
+    {
+        $this->dataSource = $dataSource;
+    }
+
+    public function getWidgetInstanceConfigs()
+    {
+        return $this->widgetInstanceConfigs;
+    }
+
+    public function addWidgetInstanceConfig(WidgetInstanceConfig $config)
+    {
+        if (!$this->widgetInstanceConfigs->contains($config)) {
+            $this->widgetInstanceConfigs->add($config);
+        }
     }
 }
