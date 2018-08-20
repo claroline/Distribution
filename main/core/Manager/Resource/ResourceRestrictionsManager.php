@@ -101,7 +101,7 @@ class ResourceRestrictionsManager
      */
     public function hasRights(ResourceNode $resourceNode, array $userRoles): bool
     {
-        return 0 !== $this->rightsManager->getMaximumRights($userRoles, $resourceNode);
+        return 0 !== $this->rightsManager->getMaximumRights($userRoles, $resourceNode) || in_array('ROLE_ADMIN', $userRoles);
     }
 
     /**
