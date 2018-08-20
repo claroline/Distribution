@@ -2,21 +2,22 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {withRouter} from '#/main/app/router'
-import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
-import {displayDate} from '#/main/core/scaffolding/date'
+import {withRouter} from '#/main/app/router'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {DetailsData} from '#/main/app/content/details/containers/data'
+import {Button} from '#/main/app/action/components/button'
+
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
-import {TooltipLink} from '#/main/core/layout/button/components/tooltip-link.jsx'
-import {UserMicro} from '#/main/core/user/components/micro.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {DataDetailsContainer} from '#/main/core/data/details/containers/details.jsx'
+import {trans} from '#/main/core/translation'
+import {displayDate} from '#/main/core/scaffolding/date'
+import {UserMicro} from '#/main/core/user/components/micro'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group'
+import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {
   Field as FieldType,
@@ -24,31 +25,32 @@ import {
   EntryUser as EntryUserType
 } from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
-import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
-import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
-import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
-import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu.jsx'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/store'
+import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments'
+import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu'
 
 const EntryActions = props =>
   <div className="entry-actions">
     <div className="btn-group margin-right-sm" role="group">
-      <TooltipButton
+      <Button
         id="tooltip-button-notifications"
-        className="btn-link-default"
-        title={props.notificationsEnabled ?
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon={`fa fa-w fa-${props.notificationsEnabled ? 'bell-slash-o' : 'bell-o'}`}
+        label={props.notificationsEnabled ?
           trans('deactivate_notifications', {}, 'clacoform') :
           trans('activate_notifications', {}, 'clacoform')
         }
-        onClick={() => props.updateNotification({
+        tooltip="top"
+        callback={() => props.updateNotification({
           notifyEdition: !props.notificationsEnabled,
           notifyComment: !props.notificationsEnabled
         })}
-      >
-        <span className={`fa fa-w fa-${props.notificationsEnabled ? 'bell-slash-o' : 'bell-o'}`} />
-      </TooltipButton>
+      />
 
       {props.displayComments &&
-        <button type="button" className="btn btn-link-default dropdown-toggle" data-toggle="dropdown">
+        <button type="button" className="btn btn-link dropdown-toggle" data-toggle="dropdown">
           <span className="fa fa-caret-down" />
         </button>
       }
@@ -76,91 +78,100 @@ const EntryActions = props =>
     </div>
 
     {props.canAdministrate &&
-      <TooltipButton
+      <Button
         id="tooltip-button-owner"
-        className="btn-link-default"
-        title={trans('change_entry_owner', {}, 'clacoform')}
-        onClick={props.changeOwner}
-      >
-        <span className="fa fa-fw fa-user" />
-      </TooltipButton>
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon="fa fa-fw fa-user"
+        label={trans('change_entry_owner', {}, 'clacoform')}
+        tooltip="top"
+        callback={props.changeOwner}
+      />
     }
 
     {props.canGeneratePdf &&
-      <TooltipButton
+      <Button
         id="tooltip-button-print"
-        className="btn-link-default"
-        title={trans('print_entry', {}, 'clacoform')}
-        onClick={props.downloadPdf}
-      >
-        <span className="fa fa-fw fa-print" />
-      </TooltipButton>
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon="fa fa-fw fa-print"
+        label={trans('print_entry', {}, 'clacoform')}
+        tooltip="top"
+        callback={props.downloadPdf}
+      />
     }
 
     {props.canShare &&
-      <TooltipButton
+      <Button
         id="tooltip-button-share"
-        className="btn-link-default"
-        title={trans('share_entry', {}, 'clacoform')}
-        onClick={props.share}
-      >
-        <span className="fa fa-fw fa-share-alt" />
-      </TooltipButton>
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon="fa fa-fw fa-share-alt"
+        label={trans('share_entry', {}, 'clacoform')}
+        tooltip="top"
+        callback={props.share}
+      />
     }
 
     {!props.locked && props.canEdit &&
-      <TooltipLink
+      <Button
         id="entry-edit"
-        className="btn-link-default"
-        title={trans('edit')}
+        className="btn-link"
+        type={LINK_BUTTON}
+        icon="fa fa-fw fa-pencil"
+        label={trans('edit')}
+        tooltip="top"
         target={`#/entry/form/${props.entryId}`}
-      >
-        <span className="fa fa-fw fa-pencil" />
-      </TooltipLink>
+      />
     }
 
     {!props.locked && props.canManage &&
-      <TooltipButton
+      <Button
         id="tooltip-button-status"
-        className="btn-link-default"
-        title={props.status === 1 ? trans('unpublish') : trans('publish')}
-        onClick={props.toggleStatus}
-      >
-        <span className={`fa fa-fw fa-${props.status === 1 ? 'eye-slash' : 'eye'}`} />
-      </TooltipButton>
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon={`fa fa-fw fa-${props.status === 1 ? 'eye-slash' : 'eye'}`}
+        label={props.status === 1 ? trans('unpublish') : trans('publish')}
+        tooltip="top"
+        callback={props.toggleStatus}
+      />
     }
 
     {!props.locked && props.canAdministrate &&
-      <TooltipButton
+      <Button
         id="tooltip-button-lock"
-        className="btn-link-default"
-        title={trans('lock_entry', {}, 'clacoform')}
-        onClick={props.toggleLock}
-      >
-        <span className="fa fa-fw fa-lock" />
-      </TooltipButton>
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon="fa fa-fw fa-lock"
+        label={trans('lock_entry', {}, 'clacoform')}
+        tooltip="top"
+        callback={props.toggleLock}
+      />
     }
 
     {props.locked && props.canAdministrate &&
-      <TooltipButton
+      <Button
         id="tooltip-button-lock"
-        className="btn-link-default"
-        title={trans('unlock_entry', {}, 'clacoform')}
-        onClick={props.toggleLock}
-      >
-        <span className="fa fa-fw fa-unlock" />
-      </TooltipButton>
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon="fa fa-fw fa-unlock"
+        label={trans('unlock_entry', {}, 'clacoform')}
+        tooltip="top"
+        callback={props.toggleLock}
+      />
     }
 
     {!props.locked && props.canManage &&
-      <TooltipButton
+      <Button
         id="entry-delete"
-        className="btn-link-danger"
-        title={trans('delete')}
-        onClick={props.delete}
-      >
-        <span className="fa fa-fw fa-trash-o" />
-      </TooltipButton>
+        className="btn-link"
+        type={CALLBACK_BUTTON}
+        icon="fa fa-fw fa-trash-o"
+        label={trans('delete')}
+        tooltip="top"
+        callback={props.delete}
+        dangerous={true}
+      />
     }
   </div>
 
@@ -435,8 +446,8 @@ class EntryComponent extends Component {
                 <HtmlText>
                   {this.generateTemplate()}
                 </HtmlText> :
-                <DataDetailsContainer
-                  name="entries.current"
+                <DetailsData
+                  name={selectors.STORE_NAME+'.entries.current'}
                   sections={this.getSections(this.props.fields, this.props.titleLabel)}
                 />
               }
@@ -534,33 +545,33 @@ EntryComponent.propTypes = {
 
 const Entry = withRouter(connect(
   (state, ownProps) => ({
-    clacoFormId: select.clacoForm(state).id,
+    clacoFormId: selectors.clacoForm(state).id,
     entryId: ownProps.match.params.id,
-    entry: formSelect.data(formSelect.form(state, 'entries.current')),
-    entryUser: select.entryUser(state),
+    entry: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
+    entryUser: selectors.entryUser(state),
 
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
-    canEditEntry: select.canEditCurrentEntry(state),
-    canViewEntry: select.canOpenCurrentEntry(state),
-    canAdministrate: select.canAdministrate(state),
-    canGeneratePdf: state.canGeneratePdf,
-    canComment: select.canComment(state),
-    canViewComments: select.canViewComments(state),
-    fields: select.visibleFields(state),
-    displayMetadata: select.getParam(state, 'display_metadata'),
-    displayKeywords: select.getParam(state, 'display_keywords'),
-    displayCategories: select.getParam(state, 'display_categories'),
-    displayComments: select.getParam(state, 'display_comments'),
-    openComments: select.getParam(state, 'open_comments'),
-    commentsEnabled: select.getParam(state, 'comments_enabled'),
-    anonymousCommentsEnabled: select.getParam(state, 'anonymous_comments_enabled'),
-    menuPosition: select.getParam(state, 'menu_position'),
-    isOwner: select.isCurrentEntryOwner(state),
-    isManager: select.isCurrentEntryManager(state),
-    randomEnabled: select.getParam(state, 'random_enabled'),
-    useTemplate: select.getParam(state, 'use_template'),
-    template: select.template(state),
-    titleLabel: select.getParam(state, 'title_field_label')
+    canEditEntry: selectors.canEditCurrentEntry(state),
+    canViewEntry: selectors.canOpenCurrentEntry(state),
+    canAdministrate: selectors.canAdministrate(state),
+    canGeneratePdf: selectors.canGeneratePdf(state),
+    canComment: selectors.canComment(state),
+    canViewComments: selectors.canViewComments(state),
+    fields: selectors.visibleFields(state),
+    displayMetadata: selectors.params(state).display_metadata,
+    displayKeywords: selectors.params(state).display_keywords,
+    displayCategories: selectors.params(state).display_categories,
+    displayComments: selectors.params(state).display_comments,
+    openComments: selectors.params(state).open_comments,
+    commentsEnabled: selectors.params(state).comments_enabled,
+    anonymousCommentsEnabled: selectors.params(state).anonymous_comments_enabled,
+    menuPosition: selectors.params(state).menu_position,
+    isOwner: selectors.isCurrentEntryOwner(state),
+    isManager: selectors.isCurrentEntryManager(state),
+    randomEnabled: selectors.params(state).random_enabled,
+    useTemplate: selectors.params(state).use_template,
+    template: selectors.template(state),
+    titleLabel: selectors.params(state).title_field_label
   }),
   (dispatch, ownProps) => ({
     deleteEntry(entry) {

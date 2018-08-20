@@ -26,23 +26,49 @@ class DirectorySerializer
     {
         return [
             'display' => [
-                'showSummary' => true,
-                'defaultDisplay' => 'grid-sm',
-                'availableDisplays' => ['grid-sm', 'table'],
-            ]
+                'showSummary' => $directory->getShowSummary(),
+                'openSummary' => $directory->getOpenSummary(),
+            ],
+            'list' => [
+                'columns' => [
+                    'default' => $directory->getDisplayedColumns(),
+                    'available' => $directory->getAvailableColumns(),
+                ],
+
+                'card' => [],
+
+                'display' => [
+                    'default' => $directory->getDisplay(),
+                    'available' => $directory->getAvailableDisplays(),
+                ],
+
+                'filters' => [
+                    'enabled' => $directory->isFilterable(),
+                    'default' => $directory->getFilters(),
+                ],
+
+                'pagination' => [
+                    'enabled' => $directory->isPaginated(),
+                    'default' => $directory->getPageSize(),
+                ],
+
+                'sorting' => [
+                    'enabled' => $directory->isSortable(),
+                    'default' => $directory->getSortBy(),
+                ],
+            ],
         ];
     }
 
     /**
      * Deserializes directory data into an Entity.
      *
-     * @param array $data
+     * @param array     $data
      * @param Directory $directory
      *
      * @return Text
      */
     public function deserialize(array $data, Directory $directory)
     {
-
     }
 }

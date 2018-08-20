@@ -1,20 +1,28 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from '#/main/app/router'
+
+// todo : remove me
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/core/translation'
 import {constants} from '#/plugin/lesson/resources/lesson/constants'
-import {buildParentChapterChoices} from '#/plugin/lesson/resources/lesson/components/tree/utils'
-import {actions as lessonActions} from '#/plugin/lesson/resources/lesson/store/'
-import {MODAL_LESSON_CHAPTER_DELETE} from '#/plugin/lesson/resources/lesson/player/modals/chapter'
+import {buildParentChapterChoices} from '#/plugin/lesson/resources/lesson/utils'
+import {actions as lessonActions} from '#/plugin/lesson/resources/lesson/store'
+import {MODAL_LESSON_CHAPTER_DELETE} from '#/plugin/lesson/resources/lesson/modals/chapter'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
+import {selectors} from '#/plugin/lesson/resources/lesson/store'
+
+// todo : use standard form buttons
+
 const ChapterFormComponent = props =>
-  <FormContainer
+  <FormData
     name={constants.CHAPTER_EDIT_FORM_NAME}
     sections={[
       {
@@ -109,7 +117,7 @@ const ChapterFormComponent = props =>
         primary={true}
         label={trans(props.isNew ? 'create' : 'save')}
         icon="fa fa-save"
-        type="callback"
+        type={CALLBACK_BUTTON}
         className="btn"
         callback={() => {
           props.save(props.isNew, props.lesson.id, props.isNew ? props.parentSlug : props.chapter.slug, props.history)
@@ -118,7 +126,7 @@ const ChapterFormComponent = props =>
       <Button
         label={trans('cancel')}
         title={trans('cancel')}
-        type="callback"
+        type={CALLBACK_BUTTON}
         className="btn"
         callback={() => {props.cancel(props.history, props.chapter.slug || props.lesson.firstChapterSlug || '')}}
       />
@@ -127,20 +135,20 @@ const ChapterFormComponent = props =>
         title={trans('delete')}
         dangerous={true}
         icon="fa fa-trash"
-        type="callback"
+        type={CALLBACK_BUTTON}
         className="btn float-right"
         callback={() => {props.delete(props.lesson.id, props.chapter.slug, props.chapter.title, props.history)}}
       />}
     </ButtonToolbar>
 
-  </FormContainer>
+  </FormData>
 
 const ChapterForm = withRouter(connect(
   state => ({
-    lesson: state.lesson,
-    chapter: state.chapter,
-    tree: state.tree.data,
-    mode: state.mode,
+    lesson: selectors.lesson(state),
+    chapter: selectors.chapter(state),
+    tree: selectors.treeData(state),
+    mode: selectors.mode(state),
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, constants.CHAPTER_EDIT_FORM_NAME)),
     isNew: formSelect.isNew(formSelect.form(state, constants.CHAPTER_EDIT_FORM_NAME)),
     parentSlug: formSelect.data(formSelect.form(state, constants.CHAPTER_EDIT_FORM_NAME)).parentSlug || null,

@@ -7,12 +7,11 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Finder\Home\WidgetContainerFinder;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
-use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -61,23 +60,29 @@ class HomeTabSerializer
 
     public function serialize(HomeTab $homeTab, array $options = []): array
     {
-        $widgetHomeTabConfigs = $homeTab->getWidgetHomeTabConfigs();
+        $homeTabConfig = $this->getConfig($homeTab, $options);
+
+        if (!$homeTabConfig) {
+            //something went wrong
+            return [];
+        }
+
+        $savedContainers = $homeTab->getWidgetContainers()->toArray();
         $containers = [];
 
-        foreach ($widgetHomeTabConfigs as $config) {
-            $container = $config->getWidgetInstance()->getContainer();
+        foreach ($savedContainers as $container) {
+            //temporary
+            $widgetContainerConfig = $container->getWidgetContainerConfigs()[0];
 
-            if ($container) {
-                $containers[$container->getUuid()] = $container;
+            if ($widgetContainerConfig) {
+                $containers[$widgetContainerConfig->getPosition()] = $container;
             }
         }
 
-        $containers = array_values($containers);
-
-        $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
-          ->findOneBy(['homeTab' => $homeTab]);
+        ksort($containers);
 
         $poster = null;
+
         if ($homeTab->getPoster()) {
             $file = $this->om
                 ->getRepository('Claroline\CoreBundle\Entity\File\PublicFile')
@@ -90,16 +95,19 @@ class HomeTabSerializer
 
         return [
             'id' => $this->getUuid($homeTab, $options),
-            'title' => $homeTab->getName(),
-            'longTitle' => $homeTab->getLongTitle(),
-            'centerTitle' => $homeTab->isCenterTitle(),
+            'title' => $homeTabConfig->getName(),
+            'longTitle' => $homeTabConfig->getLongTitle(),
+            'centerTitle' => $homeTabConfig->isCenterTitle(),
             'poster' => $poster,
-            'icon' => $homeTab->getIcon(),
+            'icon' => $homeTabConfig->getIcon(),
             'type' => $homeTab->getType(),
             'position' => $homeTabConfig->getTabOrder(),
+            'locked' => $homeTabConfig->isLocked(),
+            //bot used yet
+            'visible' => $homeTabConfig->isVisible(),
             'roles' => array_map(function ($role) {
                 return $role->getUuid();
-            }, $homeTab->getRoles()),
+            }, $homeTabConfig->getRoles()),
             'user' => $homeTab->getUser() ? $this->serializer->serialize($homeTab->getUser(), [Options::SERIALIZE_MINIMAL]) : null,
             'workspace' => $homeTab->getWorkspace() ? $this->serializer->serialize($homeTab->getWorkspace(), [Options::SERIALIZE_MINIMAL]) : null,
             'widgets' => array_map(function ($container) use ($options) {
@@ -110,44 +118,42 @@ class HomeTabSerializer
 
     public function deserialize(array $data, HomeTab $homeTab, array $options = []): HomeTab
     {
-        $this->sipe('id', 'setUuid', $data, $homeTab);
-        $this->sipe('title', 'setName', $data, $homeTab);
-        $this->sipe('longTitle', 'setLongTitle', $data, $homeTab);
-        $this->sipe('centerTitle', 'setCenterTitle', $data, $homeTab);
-        $this->sipe('poster.url', 'setPoster', $data, $homeTab);
-        $this->sipe('icon', 'setIcon', $data, $homeTab);
-        $this->sipe('type', 'setType', $data, $homeTab);
-
-        if (isset($data['roles'])) {
-            foreach ($data['roles'] as $roleUuid) {
-                $role = $this->om->getRepository(Role::class)
-              ->findOneBy(['uuid' => $roleUuid]);
-                $homeTab->addRole($role);
-            }
-
-            $existingRoles = $homeTab->getRoles();
-            foreach ($existingRoles as $role) {
-                if (!in_array($role->getUuid(), $data['roles'])) {
-                    // the role no longer exist we can remove it
-                    $homeTab->removeRole($role);
-                }
-            }
-        }
-
         $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
-            ->findOneBy(['homeTab' => $homeTab]);
+          ->findOneBy(['homeTab' => $homeTab]);
 
         if (!$homeTabConfig) {
             $homeTabConfig = new HomeTabConfig();
             $homeTabConfig->setHomeTab($homeTab);
-
-            if (isset($data['type'])) {
-                $homeTabConfig->setType($data['type']);
-            }
         }
 
         if (isset($data['position'])) {
             $homeTabConfig->setPosition($data['position']);
+        }
+
+        $this->sipe('id', 'setUuid', $data, $homeTab);
+        $this->sipe('title', 'setName', $data, $homeTabConfig);
+        $this->sipe('longTitle', 'setLongTitle', $data, $homeTabConfig);
+        $this->sipe('centerTitle', 'setCenterTitle', $data, $homeTabConfig);
+        $this->sipe('poster.url', 'setPoster', $data, $homeTab);
+        $this->sipe('icon', 'setIcon', $data, $homeTabConfig);
+        $this->sipe('type', 'setType', $data, $homeTab);
+        $this->sipe('locked', 'setLocked', $data, $homeTabConfig);
+
+        if (isset($data['roles'])) {
+            foreach ($data['roles'] as $roleUuid) {
+                $role = $this->om->getRepository(Role::class)->findOneBy(['uuid' => $roleUuid]);
+
+                $homeTabConfig->addRole($role);
+            }
+
+            $existingRoles = $homeTabConfig->getRoles();
+
+            foreach ($existingRoles as $role) {
+                if (!in_array($role->getUuid(), $data['roles'])) {
+                    // the role no longer exist we can remove it
+                    $homeTabConfig->removeRole($role);
+                }
+            }
         }
 
         $workspace = $user = null;
@@ -155,36 +161,24 @@ class HomeTabSerializer
         if (isset($data['workspace'])) {
             $workspace = $this->serializer->deserialize(Workspace::class, $data['workspace']);
             $homeTab->setWorkspace($workspace);
-            $homeTabConfig->setWorkspace($workspace);
         }
 
         if (isset($data['user'])) {
             $user = $this->serializer->deserialize(User::class, $data['user'], $options);
             $homeTab->setUser($user);
-            $homeTabConfig->setUser($user);
         }
 
         // We either do this or cascade persist ¯\_(ツ)_/¯
         $this->om->persist($homeTabConfig);
         $containerIds = [];
 
-        foreach ($data['widgets'] as $widgetContainer) {
+        foreach ($data['widgets'] as $position => $widgetContainer) {
             $widgetContainer = $this->serializer->deserialize(WidgetContainer::class, $widgetContainer, $options);
+            $widgetContainer->setHomeTab($homeTab);
+            $widgetContainerConfig = $widgetContainer->getWidgetContainerConfigs()[0];
+            $widgetContainerConfig->setPosition($position);
+            $this->om->persist($widgetContainerConfig);
             $containerIds[] = $widgetContainer->getUuid();
-
-            //ptet rajouter les instances ici ? je sais pas
-            foreach ($widgetContainer->getInstances() as $key => $instance) {
-                $widgetHomeTabConfig = new WidgetHomeTabConfig();
-                $widgetHomeTabConfig->setUser($user);
-                $widgetHomeTabConfig->setWorkspace($workspace);
-                $widgetHomeTabConfig->setHomeTab($homeTab);
-                $widgetHomeTabConfig->setVisible(true);
-                $widgetHomeTabConfig->setLocked(false);
-                $widgetHomeTabConfig->setType($homeTab->getType());
-                $widgetHomeTabConfig->setWidgetOrder($key);
-                $widgetHomeTabConfig->setWidgetInstance($instance);
-                $this->om->persist($widgetHomeTabConfig);
-            }
         }
 
         //readytoremove
@@ -197,5 +191,13 @@ class HomeTabSerializer
         }
 
         return $homeTab;
+    }
+
+    public function getConfig(HomeTab $tab, array $options)
+    {
+        $homeTabConfig = $this->om->getRepository(HomeTabConfig::class)
+          ->findOneBy(['homeTab' => $tab]);
+
+        return $homeTabConfig;
     }
 }

@@ -1,26 +1,28 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {constants as listConst} from '#/main/core/data/list/constants'
+
 import {trans} from '#/main/core/translation'
-import {Button} from '#/main/app/action/components/button'
-import {PostCard} from '#/plugin/blog/resources/blog/post/components/post.jsx'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
+import {PostCard} from '#/plugin/blog/resources/blog/post/components/post'
 import {hasPermission} from '#/main/core/resource/permissions'
-import isEmpty from 'lodash/isEmpty'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {select} from '#/plugin/blog/resources/blog/selectors'
 
 const PostsList = props =>
   <div className={'posts-list'}>
-    <DataListContainer
-      name="posts"
+    <ListData
+      name={select.STORE_NAME + '.posts'}
       fetch={{
         url: ['apiv2_blog_post_list', {blogId: props.blogId}],
         autoload: true
       }}
-      open={{
-        action: (row) => `#/${row.slug}`
-      }}
+      open={(row) => ({
+        type: LINK_BUTTON,
+        target: `/${row.slug}`
+      })}
       definition={[
         {
           name: 'title',
@@ -64,23 +66,12 @@ const PostsList = props =>
 
       selection={{}}
       card={PostCard}
-    
+
       display={{
         available : [listConst.DISPLAY_LIST],
         current: listConst.DISPLAY_LIST
       }}
     />
-    {!isEmpty(props.posts) &&
-      <Button
-        icon={'fa fa-4x fa-arrow-circle-up'}
-        label={trans('go-up', {}, 'icap_blog')}
-        type="callback"
-        tooltip="bottom"
-        callback={() => props.goUp()}
-        className="btn-link button-go-to-top pull-right"
-        target={'/new'}
-      />
-    }
   </div>
 
 PostsList.propTypes ={
@@ -93,18 +84,10 @@ PostsList.propTypes ={
 
 const PostsContainer = connect(
   state => ({
-    posts: state.posts.data,
-    blogId: state.blog.data.id,
+    posts: select.posts(state).data,
+    blogId: select.blog(state).data.id,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canPost: hasPermission('post', resourceSelect.resourceNode(state))
-  }),
-  () => ({
-    goUp: () => {
-      let node = document.getElementById('blog-top-page')
-      if (node) {
-        node.scrollIntoView({block: 'end', behavior: 'smooth', inline: 'center'})
-      }
-    }
   })
 )(PostsList)
 

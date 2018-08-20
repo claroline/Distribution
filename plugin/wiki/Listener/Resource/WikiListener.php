@@ -2,24 +2,19 @@
 
 namespace Icap\WikiBundle\Listener\Resource;
 
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Icap\WikiBundle\Entity\Wiki;
-use Icap\WikiBundle\Form\WikiType;
 use Icap\WikiBundle\Manager\SectionManager;
 use Icap\WikiBundle\Manager\WikiManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -30,20 +25,17 @@ class WikiListener
 {
     use PermissionCheckerTrait;
 
-    /** @var null|\Symfony\Component\HttpFoundation\Request */
-    private $request;
-
-    /** @var FormFactoryInterface */
-    private $formFactory;
-
     /** @var EngineInterface */
     private $templating;
 
-    /** @var null|\Claroline\CoreBundle\Entity\User */
-    private $user;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
 
     /** @var ObjectManager */
     private $om;
+
+    /** @var SerializerProvider */
+    private $serializer;
 
     /** @var WikiManager */
     private $wikiManager;
@@ -55,102 +47,68 @@ class WikiListener
     private $evaluationManager;
 
     /**
+     * WikiListener constructor.
+     *
      * @DI\InjectParams({
-     *     "formFactory"            = @DI\Inject("form.factory"),
-     *     "templating"             = @DI\Inject("templating"),
-     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
-     *     "objectManager"          = @DI\Inject("claroline.persistence.object_manager"),
-     *     "wikiManager"            = @DI\Inject("icap.wiki.manager"),
-     *     "sectionManager"         = @DI\Inject("icap.wiki.section_manager"),
-     *     "evaluationManager"      = @DI\Inject("claroline.manager.resource_evaluation_manager"),
-     *     "requestStack"           = @DI\Inject("request_stack")
+     *     "templating"        = @DI\Inject("templating"),
+     *     "tokenStorage"      = @DI\Inject("security.token_storage"),
+     *     "objectManager"     = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer"        = @DI\Inject("claroline.api.serializer"),
+     *     "wikiManager"       = @DI\Inject("icap.wiki.manager"),
+     *     "sectionManager"    = @DI\Inject("icap.wiki.section_manager"),
+     *     "evaluationManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
      * })
+     *
+     * @param EngineInterface           $templating
+     * @param TokenStorageInterface     $tokenStorage
+     * @param ObjectManager             $objectManager
+     * @param SerializerProvider        $serializer
+     * @param WikiManager               $wikiManager
+     * @param SectionManager            $sectionManager
+     * @param ResourceEvaluationManager $evaluationManager
      */
     public function __construct(
-        FormFactoryInterface $formFactory,
         EngineInterface $templating,
         TokenStorageInterface $tokenStorage,
         ObjectManager $objectManager,
+        SerializerProvider $serializer,
         WikiManager $wikiManager,
         SectionManager $sectionManager,
-        ResourceEvaluationManager $evaluationManager,
-        RequestStack $requestStack
+        ResourceEvaluationManager $evaluationManager
     ) {
-        $this->formFactory = $formFactory;
         $this->templating = $templating;
         $this->tokenStorage = $tokenStorage;
         $this->om = $objectManager;
+        $this->serializer = $serializer;
         $this->wikiManager = $wikiManager;
         $this->sectionManager = $sectionManager;
         $this->evaluationManager = $evaluationManager;
-        $this->request = $requestStack->getCurrentRequest();
     }
 
     /**
-     * @DI\Observe("create_form_icap_wiki")
+     * Loads a Wiki resource.
      *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new WikiType(), new Wiki());
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:resource:create_form.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'icap_wiki',
-            ]
-        );
-        $event->setResponseContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("create_icap_wiki")
+     * @DI\Observe("resource.icap_wiki.load")
      *
-     * @param CreateResourceEvent $event
+     * @param LoadResourceEvent $event
      */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new WikiType(), new Wiki());
-        $form->handleRequest($this->request);
-
-        if ($form->isValid()) {
-            $wiki = $form->getData();
-            $event->setResources([$wiki]);
-        } else {
-            $content = $this->templating->render(
-                'ClarolineCoreBundle:resource:create_form.html.twig',
-                [
-                    'form' => $form->createView(),
-                    'resourceType' => 'icap_wiki',
-                ]
-            );
-            $event->setErrorFormContent($content);
-        }
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("open_icap_wiki")
-     *
-     * @param OpenResourceEvent $event
-     */
-    public function onOpen(OpenResourceEvent $event)
+    public function load(LoadResourceEvent $event)
     {
         $resourceNode = $event->getResourceNode();
+
+        /** @var Wiki $wiki */
         $wiki = $event->getResource();
-        $this->checkPermission('OPEN', $resourceNode, [], true);
-        $isAdmin = $this->checkPermission('EDIT', $resourceNode);
-        $sectionTree = $this->sectionManager->getSerializedSectionTree($wiki, $this->tokenStorage->getToken()->getUser(), $isAdmin);
-        $content = $this->templating->render(
-            'IcapWikiBundle:wiki:open.html.twig',
-            [
-                '_resource' => $wiki,
-                'sectionTree' => $sectionTree,
-            ]
+        $sectionTree = $this->sectionManager->getSerializedSectionTree(
+            $wiki,
+            $this->tokenStorage->getToken()->getUser(),
+            $this->checkPermission('EDIT', $resourceNode)
         );
-        $event->setResponse(new Response($content));
+
+        $event->setData([
+            'wiki' => $this->serializer->serialize($wiki),
+            'sections' => $sectionTree,
+        ]);
+
         $event->stopPropagation();
     }
 
@@ -163,6 +121,7 @@ class WikiListener
     {
         $this->om->remove($event->getResource());
         $this->om->flush();
+
         $event->stopPropagation();
     }
 
@@ -173,8 +132,10 @@ class WikiListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
+        /** @var Wiki $wiki */
         $wiki = $event->getResource();
         $newWiki = $this->wikiManager->copyWiki($wiki, $this->tokenStorage->getToken()->getUser());
+
         $event->setCopy($newWiki);
         $event->stopPropagation();
     }

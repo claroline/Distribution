@@ -2,27 +2,29 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {FormData} from '#/main/app/content/form/containers/data'
+
 import {trans} from '#/main/core/translation'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
 import {constants} from '#/plugin/scorm/resources/scorm/constants'
 import {Scorm as ScormType} from '#/plugin/scorm/resources/scorm/prop-types'
-import {select} from '#/plugin/scorm/resources/scorm/selectors'
+import {selectors} from '#/plugin/scorm/resources/scorm/store'
 
 const EditorComponent = props =>
   <section className="resource-section">
     <h2>{trans('configuration')}</h2>
-    <FormContainer
+    <FormData
       level={3}
-      name="scormForm"
+      name={selectors.STORE_NAME+'.scormForm'}
       buttons={true}
       save={{
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         callback: () => props.saveForm(props.scorm.id)
       }}
       cancel={{
-        type: 'link',
+        type: LINK_BUTTON,
         target: '/',
         exact: true
       }}
@@ -67,14 +69,14 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   (state) => ({
-    scorm: select.scorm(state)
+    scorm: selectors.scorm(state)
   }),
   (dispatch) => ({
     updateProp(propName, propValue) {
-      dispatch(formActions.updateProp('scormForm', propName, propValue))
+      dispatch(formActions.updateProp(selectors.STORE_NAME+'.scormForm', propName, propValue))
     },
     saveForm(id) {
-      dispatch(formActions.saveForm('scormForm', ['apiv2_scorm_update', {scorm: id}]))
+      dispatch(formActions.saveForm(selectors.STORE_NAME+'.scormForm', ['apiv2_scorm_update', {scorm: id}]))
     }
   })
 )(EditorComponent)

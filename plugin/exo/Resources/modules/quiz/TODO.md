@@ -12,6 +12,7 @@
 - [ ] merge `contents` and `items` (merge directories and defs, merge player).
 - [ ] remove `-content` suffix in contents module names.
 - [ ] clean translations.
+- [ ] use new modal format.
 
 # Evaluation
 - [ ] implement `ResourceEvaluation`.
@@ -29,4 +30,4 @@
 - [ ] use standard form reducer and components
 
 # Papers
-- [ ] use DataListContainer
+- [ ] use ListData

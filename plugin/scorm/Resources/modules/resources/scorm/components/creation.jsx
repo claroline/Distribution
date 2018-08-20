@@ -3,13 +3,16 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 
+// TODO : should reuse the standard file resource creation
+
 const ScormForm = props =>
-  <FormContainer
+  <FormData
     level={5}
-    name={selectors.FORM_NAME}
+    name={selectors.STORE_NAME}
+    dataPart={selectors.FORM_RESOURCE_PART}
     sections={[
       {
         title: trans('general'),
@@ -37,7 +40,7 @@ ScormForm.propTypes = {
 
 const ScormCreation = connect(
   state => ({
-    workspaceId: selectors.parent(state).workspace.id
+    workspaceId: selectors.newNode(state).workspace.id
   }),
   (dispatch) => ({
     update(data) {

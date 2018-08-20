@@ -3,17 +3,19 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {FormData} from '#/main/app/content/form/containers/data'
+
+import {selectors} from '#/main/core/resources/text/editor/store'
 import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
-import {FormContainer} from '#/main/core/data/form/containers/form'
 
 const EditorComponent = (props) =>
-  <FormContainer
-    name="textForm"
+  <FormData
+    name={selectors.FORM_NAME}
     target={['apiv2_resource_text_update', {id: props.text.id}]}
     buttons={true}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}
@@ -45,7 +47,7 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   state => ({
-    text: formSelect.data(formSelect.form(state, 'textForm'))
+    text: selectors.text(state)
   })
 )(EditorComponent)
 

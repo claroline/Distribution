@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\Entity;
 
 use Claroline\AppBundle\Entity\FromPlugin;
 use Claroline\AppBundle\Entity\Identifier\Id;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,16 +12,18 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Describes a DataSource provided by a plugin.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\DataSourceRepository")
  * @ORM\Table(name="claro_data_source")
  */
 class DataSource
 {
     use Id;
+    use Uuid;
     use FromPlugin;
 
     const CONTEXT_DESKTOP = 'desktop';
     const CONTEXT_WORKSPACE = 'workspace';
+    const CONTEXT_ADMINISTRATION = 'administration';
 
     /**
      * The name of the source.
@@ -50,6 +53,7 @@ class DataSource
     private $context = [
         self::CONTEXT_DESKTOP,
         self::CONTEXT_WORKSPACE,
+        self::CONTEXT_ADMINISTRATION,
     ];
 
     /**
@@ -60,6 +64,14 @@ class DataSource
      * @var array
      */
     private $tags = [];
+
+    /**
+     * DataSource constructor.
+     */
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     /**
      * Get name.

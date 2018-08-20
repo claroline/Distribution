@@ -5,25 +5,26 @@ import {connect} from 'react-redux'
 
 import {mount} from '#/main/app/mount'
 import {withRouter} from '#/main/app/router'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {FormProp} from '#/main/app/content/form/components/prop'
+
 import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {FormField} from '#/main/core/data/form/components/field.jsx'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+import {HtmlText} from '#/main/core/layout/components/html-text'
 
-import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {
   Field as FieldType,
   Entry as EntryType,
   EntryUser as EntryUserType
 } from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
-import {EntryFormData} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-form-data.jsx'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/store'
+import {EntryFormData} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-form-data'
 
 const authenticatedUser = currentUser()
 
@@ -111,7 +112,7 @@ class EntryFormComponent extends Component {
   renderTemplateFields() {
     if (this.props.useTemplate && this.props.template) {
       const titleComponent =
-        <FormField
+        <FormProp
           id="field-title"
           type="string"
           name={'title'}
@@ -150,7 +151,7 @@ class EntryFormComponent extends Component {
 
           if (['file', 'date'].indexOf(f.type) > -1) {
             const fieldComponent = () =>
-              <FormField
+              <FormProp
                 key={`field-${f.id}`}
                 id={`field-${f.id}`}
                 type={f.type}
@@ -169,7 +170,7 @@ class EntryFormComponent extends Component {
             mount(fieldEl, fieldComponent, {})
           } else {
             const fieldComponent =
-              <FormField
+              <FormProp
                 key={`field-${f.id}`}
                 id={`field-${f.id}`}
                 type={f.type}
@@ -211,9 +212,9 @@ class EntryFormComponent extends Component {
           </HtmlText>
         }
         {this.props.entry && (!this.props.useTemplate || !this.props.template) &&
-          <FormContainer
+          <FormData
             level={3}
-            name="entries.current"
+            name={selectors.STORE_NAME+'.entries.current'}
             sections={this.getSections()}
           />
         }
@@ -294,38 +295,38 @@ EntryFormComponent.propTypes = {
 const EntryForm = withRouter(connect(
   state => ({
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
-    clacoFormId: select.clacoForm(state).id,
-    fields: select.visibleFields(state),
-    useTemplate: select.getParam(state, 'use_template'),
-    template: select.template(state),
-    titleLabel: select.getParam(state, 'title_field_label'),
-    displayMetadata: select.getParam(state, 'display_metadata'),
-    isKeywordsEnabled: select.getParam(state, 'keywords_enabled'),
-    isNewKeywordsEnabled: select.getParam(state, 'new_keywords_enabled'),
-    isManager: select.isCurrentEntryManager(state),
-    isNew: formSelect.isNew(formSelect.form(state, 'entries.current')),
-    errors: formSelect.errors(formSelect.form(state, 'entries.current')),
-    entry: formSelect.data(formSelect.form(state, 'entries.current')),
-    entryUser: select.entryUser(state),
-    categories: select.categories(state),
-    keywords: select.keywords(state)
+    clacoFormId: selectors.clacoForm(state).id,
+    fields: selectors.visibleFields(state),
+    useTemplate: selectors.params(state).use_template,
+    template: selectors.template(state),
+    titleLabel: selectors.params(state).title_field_label,
+    displayMetadata: selectors.params(state).display_metadata,
+    isKeywordsEnabled: selectors.params(state).keywords_enabled,
+    isNewKeywordsEnabled: selectors.params(state).new_keywords_enabled,
+    isManager: selectors.isCurrentEntryManager(state),
+    isNew: formSelect.isNew(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
+    errors: formSelect.errors(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
+    entry: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
+    entryUser: selectors.entryUser(state),
+    categories: selectors.categories(state),
+    keywords: selectors.keywords(state)
   }),
   (dispatch) => ({
     saveForm(entry, isNew, navigate) {
       if (isNew) {
-        dispatch(formActions.saveForm('entries.current', ['apiv2_clacoformentry_create'])).then(
+        dispatch(formActions.saveForm(selectors.STORE_NAME+'.entries.current', ['apiv2_clacoformentry_create'])).then(
           (data) => navigate(`/entries/${data.id}`),
           () => true
         )
       } else {
-        dispatch(formActions.saveForm('entries.current', ['apiv2_clacoformentry_update', {id: entry.id}]))
+        dispatch(formActions.saveForm(selectors.STORE_NAME+'.entries.current', ['apiv2_clacoformentry_update', {id: entry.id}]))
       }
     },
     updateFormProp(propName, propValue) {
-      dispatch(formActions.updateProp('entries.current', propName, propValue))
+      dispatch(formActions.updateProp(selectors.STORE_NAME+'.entries.current', propName, propValue))
     },
     setErrors(errors) {
-      dispatch(formActions.setErrors('entries.current', errors))
+      dispatch(formActions.setErrors(selectors.STORE_NAME+'.entries.current', errors))
     },
     addCategory(category) {
       dispatch(actions.addCategory(category))

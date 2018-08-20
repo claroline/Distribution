@@ -3,10 +3,14 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {Button} from '#/main/app/action'
-import {FormContainer} from '#/main/core/data/form/containers/form'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {buildSectionMoveChoices} from '#/plugin/wiki/resources/wiki/utils'
+import {selectors} from '#/plugin/wiki/resources/wiki/store/selectors'
+
+// todo : use standard form buttons
 
 class WikiSectionFormComponent extends Component
 {
@@ -20,13 +24,13 @@ class WikiSectionFormComponent extends Component
       node.scrollIntoView({block: 'end', behavior: 'smooth'})
     }
   }
-  
+
   render() {
     return (
-      <FormContainer
+      <FormData
         className={'wiki-section-form'}
         level={3}
-        name="sections.currentSection"
+        name={selectors.STORE_NAME + '.sections.currentSection'}
         sections={[
           {
             icon: 'fa fa-fw fa-cog',
@@ -86,7 +90,7 @@ class WikiSectionFormComponent extends Component
           <Button
             id="wiki-section-save-btn"
             icon="fa fa-fw fa-save"
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             primary={true}
             disabled={!this.props.saveEnabled || !this.props.valid}
@@ -97,14 +101,14 @@ class WikiSectionFormComponent extends Component
 
           <Button
             id="wiki-section-cancel-btn"
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => this.props.cancelChanges()}
             label={trans('cancel')}
             title={trans('cancel')}
           />
         </div>
-      </FormContainer>     
+      </FormData>
     )
   }
 }
@@ -121,16 +125,14 @@ WikiSectionFormComponent.propTypes = {
 
 const WikiSectionForm = connect(
   state => ({
-    isNew: formSelect.isNew(formSelect.form(state, 'sections.currentSection')),
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'sections.currentSection')),
-    valid: formSelect.valid(formSelect.form(state, 'sections.currentSection')),
-    isRoot: formSelect.data(formSelect.form(state, 'sections.currentSection')).id === state.sections.tree.id,
-    sectionChoices: buildSectionMoveChoices(state.sections.tree, formSelect.data(formSelect.form(state, 'sections.currentSection')).id)
+    isNew: formSelect.isNew(formSelect.form(state, selectors.STORE_NAME + '.sections.currentSection')),
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, selectors.STORE_NAME + '.sections.currentSection')),
+    valid: formSelect.valid(formSelect.form(state, selectors.STORE_NAME + '.sections.currentSection')),
+    isRoot: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.sections.currentSection')).id === selectors.sectionsTree(state).id,
+    sectionChoices: buildSectionMoveChoices(selectors.sectionsTree(state), formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.sections.currentSection')).id)
   })
 )(WikiSectionFormComponent)
 
 export {
   WikiSectionForm
 }
-
-  

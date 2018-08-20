@@ -4,19 +4,18 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {withRouter} from '#/main/app/router'
-
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelectors} from '#/main/core/data/form/selectors'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 
 import {Announcement as AnnouncementTypes} from '#/plugin/announcement/resources/announcement/prop-types'
-import {actions} from '#/plugin/announcement/resources/announcement/actions'
-import {select} from '#/plugin/announcement/resources/announcement/selectors'
+import {actions, selectors} from '#/plugin/announcement/resources/announcement/store'
 
 const restrictByDates = (announcement) => announcement.restrictions.enableDates || (announcement.restrictions.dates && 0 !== announcement.restrictions.dates.length)
 
 const AnnounceFormComponent = props =>
-  <FormContainer
+  <FormData
     name="announcementForm"
     target={(announcement, isNew) => isNew ?
       ['claro_announcement_create', {aggregateId: props.aggregateId}] :
@@ -24,7 +23,7 @@ const AnnounceFormComponent = props =>
     }
     buttons={true}
     save={{
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       target: `/${props.announcement.id}`,
       callback: () => {
         if (props.new) {
@@ -38,7 +37,7 @@ const AnnounceFormComponent = props =>
       }
     }}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}
@@ -123,7 +122,7 @@ const AnnounceForm = connect(
   (state) => ({
     new: formSelectors.isNew(formSelectors.form(state, 'announcementForm')),
     announcement: formSelectors.data(formSelectors.form(state, 'announcementForm')),
-    aggregateId: select.aggregateId(state)
+    aggregateId: selectors.aggregateId(state)
   }),
   (dispatch) => ({
     addAnnounce(announcement) {

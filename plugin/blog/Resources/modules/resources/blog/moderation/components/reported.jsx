@@ -1,21 +1,25 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+
 import {trans} from '#/main/core/translation'
-import {constants as listConst} from '#/main/core/data/list/constants'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation.jsx'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {constants as listConst} from '#/main/app/content/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {CommentModerationCard} from '#/plugin/blog/resources/blog/comment/components/comment-moderation'
+import {select} from '#/plugin/blog/resources/blog/selectors'
 
 const ReportedComponent = (props) =>
-  <DataListContainer
-    name="reportedComments"
+  <ListData
+    name={select.STORE_NAME + '.reportedComments'}
     fetch={{
       url: ['apiv2_blog_comment_reported', {blogId: props.blogId}],
       autoload: true
     }}
-    open={{
-      action: (row) => `#/${row.slug}`
-    }}
+    open={(row) => ({
+      type: LINK_BUTTON,
+      target: `/${row.slug}`
+    })}
     definition={[
       {
         name: 'creationDate',
@@ -34,7 +38,6 @@ const ReportedComponent = (props) =>
         type: 'string'
       }
     ]}
-    selection={{}}
     card={CommentModerationCard}
     display={{
       available : [listConst.DISPLAY_LIST],
@@ -48,7 +51,7 @@ ReportedComponent.propTypes = {
 
 const Reported = connect(
   state => ({
-    blogId: state.blog.data.id
+    blogId: select.blog(state).data.id
   })
 )(ReportedComponent)
 

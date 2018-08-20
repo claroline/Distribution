@@ -3,11 +3,11 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {TagCloud} from '#/main/app/content/meta/components/tag-cloud'
-import {actions as listActions} from '#/main/core/data/list/actions'
+import {actions as listActions} from '#/main/app/content/list/store'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store/actions'
-import {select} from '#/plugin/blog/resources/blog/selectors.js'
-import {constants} from '#/plugin/blog/resources/blog/constants.js'
-import {cleanTag} from '#/plugin/blog/resources/blog/utils.js'
+import {select} from '#/plugin/blog/resources/blog/selectors'
+import {constants} from '#/plugin/blog/resources/blog/constants'
+import {cleanTag} from '#/plugin/blog/resources/blog/utils'
 import isEmpty from 'lodash/isEmpty'
 import {withRouter} from '#/main/app/router'
 
@@ -45,9 +45,9 @@ TagsComponent.propTypes = {
 
 const Tags = withRouter(connect(
   state => ({
-    tags: state.blog.data.options.data.tagCloud === constants.TAGCLOUD_TYPE_CLASSIC_NUM ? select.displayTagsFrequency(state) : state.blog.data.tags,
-    tagMode: state.blog.data.options.data.tagCloud,
-    maxSize: state.blog.data.options.data.maxTag
+    tags: select.blog(state).data.options.data.tagCloud === constants.TAGCLOUD_TYPE_CLASSIC_NUM ? select.displayTagsFrequency(state) : state.blog.data.tags,
+    tagMode: select.blog(state).data.options.data.tagCloud,
+    maxSize: select.blog(state).data.options.data.maxTag
   }),
   dispatch => ({
     searchByTag: (tag) => {
@@ -59,5 +59,5 @@ const Tags = withRouter(connect(
     }
   })
 )(TagsComponent))
-    
+
 export {Tags}

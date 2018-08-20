@@ -1,26 +1,28 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 import {trans} from '#/main/core/translation'
 import {BlogOptionsType} from '#/plugin/blog/resources/blog/editor/components/prop-types'
-import {ToolManager} from '#/plugin/blog/resources/blog/editor/components/tool-manager.jsx'
-import {constants} from '#/plugin/blog/resources/blog/constants.js'
-import {FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+import {ToolManager} from '#/plugin/blog/resources/blog/editor/components/tool-manager'
+import {constants} from '#/plugin/blog/resources/blog/constants'
+import {FormSection} from '#/main/core/layout/form/components/form-sections'
 import {withRouter} from '#/main/app/router'
 import {actions as toolbarActions} from '#/plugin/blog/resources/blog/toolbar/store'
+import {select} from '#/plugin/blog/resources/blog/selectors'
 
 const BlogOptionsComponent = props =>
   <section className="resource-section">
     <h2 className="h-first">{trans('configure_blog', {}, 'icap_blog')}</h2>
     {props.mode === constants.EDIT_OPTIONS &&
-      <FormContainer
+      <FormData
         level={2}
-        name="blog.data.options"
+        name={select.STORE_NAME + '.blog.data.options'}
         sections={[
           {
             id: 'display',
@@ -143,7 +145,7 @@ const BlogOptionsComponent = props =>
             disabled={!props.saveEnabled}
             primary={true}
             label={trans('save')}
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => {
               props.saveOptions(props.blogId, props.tagOptionsChanged)
@@ -151,17 +153,17 @@ const BlogOptionsComponent = props =>
           />
           <Button
             label={trans('icap_blog_options_form_init', {}, 'icap_blog')}
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => {
               props.cancel(props.history)
             }}
           />
         </ButtonToolbar>
-      </FormContainer>
+      </FormData>
     }
   </section>
-    
+
 BlogOptionsComponent.propTypes = {
   options: T.shape(BlogOptionsType.propTypes),
   mode: T.string,
@@ -175,23 +177,23 @@ BlogOptionsComponent.propTypes = {
 
 const BlogOptions = withRouter(connect(
   state => ({
-    blogId: state.blog.data.id,
-    options: formSelect.data(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)),
-    mode: state.mode,
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)),
-    tagOptionsChanged:formSelect.data(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).tagTopMode !== formSelect.originalData(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).tagTopMode
-    || formSelect.data(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).maxTag !== formSelect.originalData(formSelect.form(state, constants.OPTIONS_EDIT_FORM_NAME)).maxTag
-  }), 
+    blogId: select.blog(state).data.id,
+    options: formSelect.data(formSelect.form(state, select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)),
+    mode: select.mode(state),
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)),
+    tagOptionsChanged:formSelect.data(formSelect.form(state, select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)).tagTopMode !== formSelect.originalData(formSelect.form(state, select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)).tagTopMode
+    || formSelect.data(formSelect.form(state, select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)).maxTag !== formSelect.originalData(formSelect.form(state, select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)).maxTag
+  }),
   dispatch => ({
     cancel: (history) => {
       dispatch(
-        formActions.cancelChanges(constants.OPTIONS_EDIT_FORM_NAME)
+        formActions.cancelChanges(select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)
       )
       history.push('/')
     },
     saveOptions: (blogId, tagOptionsChanged) => {
       dispatch(
-        formActions.saveForm(constants.OPTIONS_EDIT_FORM_NAME, ['apiv2_blog_options_update', {blogId: blogId}])
+        formActions.saveForm(select.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME, ['apiv2_blog_options_update', {blogId: blogId}])
       ).then(
         () => {
           //if tag options changed

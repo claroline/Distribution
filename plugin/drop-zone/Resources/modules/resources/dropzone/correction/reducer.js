@@ -1,7 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer} from '#/main/app/store/reducer'
-import {makeListReducer} from '#/main/core/data/list/reducer'
+import {makeListReducer} from '#/main/app/content/list/store'
+
+import {select} from '#/plugin/drop-zone/resources/dropzone/store/selectors'
 
 import {
   DROP_UPDATE,
@@ -94,7 +96,7 @@ const correctionsReducer = makeReducer(null, {
 })
 
 const reducer = {
-  drops: makeListReducer('drops', {}, {data: dropsReducer}),
+  drops: makeListReducer(select.STORE_NAME+'.drops', {}, {data: dropsReducer}),
   currentDrop: currentDropReducer,
   correctorDrop: correctorDropReducer,
   corrections: correctionsReducer

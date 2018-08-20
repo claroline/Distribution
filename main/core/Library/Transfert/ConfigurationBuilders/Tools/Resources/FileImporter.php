@@ -78,7 +78,7 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
 
     public function supports($type)
     {
-        return $type === 'yml' ? true : false;
+        return 'yml' === $type;
     }
 
     public function validate(array $data)
@@ -93,15 +93,15 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
             $file = new File();
             $tmpFile = new SfFile($this->getRootPath().DIRECTORY_SEPARATOR.$item['file']['path']);
 
-            $file = $this->container->get('claroline.listener.file_listener')->createFile(
-                $file, $tmpFile,  $name, $item['file']['mime_type'], $workspace
+            $file = $this->container->get('claroline.manager.file_manager')->create(
+                $file, $tmpFile, $name, $item['file']['mime_type'], $workspace
             );
 
             return $file;
         }
 
-        return $this->container->get('claroline.listener.file_listener')->createFile(
-            new File(), new SfFile(tempnam('/tmp', 'claroimport')),  $name, 'none', $workspace
+        return $this->container->get('claroline.manager.file_manager')->create(
+            new File(), new SfFile(tempnam('/tmp', 'claroimport')), $name, 'none', $workspace
         );
     }
 
@@ -137,6 +137,7 @@ class FileImporter extends Importer implements ConfigurationInterface, RichTextI
     //    data:
     //        -
     //             file: { path: 57a1a8a17766f.html, mime_type: text/html }
+
     /**
      * @param array $data The file informations from the yml file,
      */

@@ -9,10 +9,10 @@ import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 import {Routes} from '#/main/app/router'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {select as editorSelect} from '#/plugin/path/resources/path/editor/selectors'
-import {actions} from '#/plugin/path/resources/path/editor/actions'
+import {actions, selectors} from '#/plugin/path/resources/path/editor/store'
 import {PathCurrent} from '#/plugin/path/resources/path/components/current'
 import {PathSummary} from '#/plugin/path/resources/path/components/summary'
 import {ParametersForm} from '#/plugin/path/resources/path/editor/components/parameters-form'
@@ -136,9 +136,9 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   state => ({
-    path: editorSelect.path(state),
-    steps: flattenSteps(editorSelect.steps(state)),
-    copy: editorSelect.stepCopy(state),
+    path: selectors.path(state),
+    steps: flattenSteps(selectors.steps(state)),
+    copy: selectors.stepCopy(state),
     resourceParent: resourceSelect.parent(state)
   }),
   dispatch => ({
@@ -176,7 +176,7 @@ const Editor = connect(
         title: title,
         current: current,
         selectAction: (selected) => ({
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           callback: () => callback(selected)
         })
       }))
@@ -193,7 +193,7 @@ const Editor = connect(
     removeInheritedResource(stepId, id) {
       dispatch(actions.removeInheritedResources(stepId, [id]))
     },
-    saveForm: (pathId) => dispatch(formActions.saveForm('pathForm', ['apiv2_path_update', {id: pathId}]))
+    saveForm: (pathId) => dispatch(formActions.saveForm(selectors.FORM_NAME, ['apiv2_path_update', {id: pathId}]))
   })
 )(EditorComponent)
 

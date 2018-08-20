@@ -1,14 +1,16 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
+import {selectors} from '#/plugin/path/resources/path/editor/store'
 
 const PrimaryResourceSection = props =>
   <div className="step-primary-resource">
@@ -125,18 +127,18 @@ InheritedResourcesSection.propTypes = {
 }
 
 const StepForm = props =>
-  <FormContainer
+  <FormData
     level={3}
     displayLevel={2}
-    name="pathForm"
+    name={selectors.FORM_NAME}
     dataPart={props.stepPath}
     buttons={true}
     save={{
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       callback: () => props.saveForm()
     }}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}
@@ -228,7 +230,7 @@ const StepForm = props =>
         </FormSection>
       }
     </FormSections>
-  </FormContainer>
+  </FormData>
 
 implementPropTypes(StepForm, StepTypes, {
   stepPath: T.string.isRequired,

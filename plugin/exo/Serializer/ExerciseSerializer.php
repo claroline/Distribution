@@ -22,6 +22,7 @@ use UJM\ExoBundle\Manager\Item\ItemManager;
  * Serializer for exercise data.
  *
  * @DI\Service("ujm_exo.serializer.exercise")
+ * @DI\Tag("claroline.serializer")
  */
 class ExerciseSerializer implements SerializerInterface
 {
@@ -36,6 +37,11 @@ class ExerciseSerializer implements SerializerInterface
 
     /** @var PaperManager */
     private $paperManager;
+
+    public function getClass()
+    {
+        return Exercise::class;
+    }
 
     /**
      * Converts an Exercise into a JSON-encodable structure.

@@ -1,4 +1,4 @@
-import {Component} from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import isEqual from 'lodash/isEqual'
 
@@ -9,7 +9,8 @@ class Await extends Component {
     super(props)
 
     this.state = {
-      status: 'pending'
+      status: 'pending',
+      error: null
     }
   }
 
@@ -34,7 +35,17 @@ class Await extends Component {
 
             this.setState({status: 'success'})
           })
-          .catch(() => this.setState({status: 'error'}))
+          .catch(error => {
+            this.setState({
+              status: 'error',
+              error: error
+            })
+
+            // TODO : find better. I don't understand why invariant is not thrown
+            /* eslint-disable no-console */
+            console.error(error)
+            /* eslint-enable no-console */
+          })
       )
 
       this.pending.promise.then(
@@ -53,7 +64,12 @@ class Await extends Component {
         return this.props.children || null
 
       case 'error':
-        return this.props.error || null
+        return (
+          <div className="alert alert-danger">
+            <b>{this.state.error.message}</b>
+            <p>{this.state.error.stack}</p>
+          </div>
+        )
     }
 
     return null
@@ -76,7 +92,6 @@ Await.propTypes = {
    * The placeholder to display while waiting.
    */
   placeholder: T.node,
-  error: T.node,
   children: T.node
 }
 

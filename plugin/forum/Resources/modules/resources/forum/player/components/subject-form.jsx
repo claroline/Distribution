@@ -6,15 +6,15 @@ import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {User as UserTypes} from '#/main/core/user/prop-types'
-import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action'
+import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action' // todo : use Button
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {currentUser} from '#/main/core/user/current'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 
-import {select} from '#/plugin/forum/resources/forum/selectors'
-
+import {select} from '#/plugin/forum/resources/forum/store/selectors'
 
 const SubjectFormWrapper = (props) =>
   <div>
@@ -26,6 +26,7 @@ const SubjectFormWrapper = (props) =>
           <div className="user-message-info">
             {props.user.name}
           </div>
+
           {(props.editingSubject && props.cancel) &&
             <div className="user-message-actions">
               <TooltipAction
@@ -39,13 +40,15 @@ const SubjectFormWrapper = (props) =>
             </div>
           }
         </div>
+
         <div className="user-message-content embedded-form-section">
           {props.children}
         </div>
+
         <Button
           className="btn btn-block btn-save btn-emphasis"
           label={props.editingSubject ? trans('save') : trans('post_the_subject', {}, 'forum')}
-          type="callback"
+          type={CALLBACK_BUTTON}
           callback={props.callback}
           primary={true}
         />
@@ -89,11 +92,10 @@ const SubjectFormComponent = (props) =>
         cancel={() => props.history.push(`/subjects/show/${props.subject.id}`)}
         editingSubject={props.editingSubject}
       >
-        <FormContainer
+        <FormData
           level={3}
           displayLevel={2}
-          name="subjects.form"
-          // title={trans('new_subject', {}, 'forum')}
+          name={`${select.STORE_NAME}.subjects.form`}
           className="content-container"
           sections={[
             {
@@ -102,7 +104,7 @@ const SubjectFormComponent = (props) =>
               fields: [
                 {
                   name: 'title',
-                  type: 'text',
+                  type: 'string',
                   label: trans('forum_subject_title_form_title', {}, 'forum'),
                   required: true
                 },
@@ -114,7 +116,7 @@ const SubjectFormComponent = (props) =>
                 },
                 {
                   name: 'tags',
-                  type: 'text',
+                  type: 'string',
                   label: trans('tags'),
                   help: trans('tag_form_help', {}, 'forum')
                 }
@@ -123,16 +125,6 @@ const SubjectFormComponent = (props) =>
               icon: 'fa fa-fw fa-desktop',
               title: trans('display_parameters'),
               fields: [
-                // {
-                //   name: 'sortBy',
-                //   type: 'choice',
-                //   label: trans('messages_sort_display', {}, 'forum'),
-                //   options: {
-                //     noEmpty: true,
-                //     choices: constants.MESSAGE_SORT_DISPLAY,
-                //     condensed: true
-                //   }
-                // },
                 {
                   name: 'meta.sticky',
                   alias: 'sticked',
@@ -159,17 +151,17 @@ const SubjectForm = withRouter(connect(
   state => ({
     forumId: select.forumId(state),
     bannedUser: select.bannedUser(state),
-    subject: formSelect.data(formSelect.form(state, 'subjects.form')),
+    subject: formSelect.data(formSelect.form(state, `${select.STORE_NAME}.subjects.form`)),
     editingSubject: select.editingSubject(state)
   }),
   (dispatch, ownProps) => ({
     saveForm(forumId, editingSubject, subjectId) {
       if (editingSubject) {
-        dispatch(formActions.saveForm('subjects.form', ['apiv2_forum_subject_update', {id: subjectId}])).then(() => {
+        dispatch(formActions.saveForm(`${select.STORE_NAME}.subjects.form`, ['apiv2_forum_subject_update', {id: subjectId}])).then(() => {
           ownProps.history.push(`/subjects/show/${subjectId}`)
         })
       } else {
-        dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
+        dispatch(formActions.saveForm(`${select.STORE_NAME}.subjects.form`, ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
           ownProps.history.push(`/subjects/show/${subjectId}`)
         })
       }

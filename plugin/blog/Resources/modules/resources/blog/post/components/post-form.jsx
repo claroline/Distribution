@@ -1,26 +1,33 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {trans} from '#/main/core/translation'
 import isEmpty from 'lodash/isEmpty'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+
+// todo : remove me
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
+
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {actions as toolbarActions} from '#/plugin/blog/resources/blog/toolbar/store'
 import {PostType} from '#/plugin/blog/resources/blog/post/components/prop-types'
-import {constants} from '#/plugin/blog/resources/blog/constants.js'
+import {constants} from '#/plugin/blog/resources/blog/constants'
 import {currentUser} from '#/main/core/user/current'
 import {withRouter} from '#/main/app/router'
+import {select} from '#/plugin/blog/resources/blog/selectors'
 
 const loggedUser = currentUser()
+
+// todo : use standard form buttons
 
 const PostFormComponent = props =>
   <div>
     {(props.mode === constants.CREATE_POST || !isEmpty(props.post.data)) &&
-      <FormContainer
-        name="post_edit"
+      <FormData
+        name={select.STORE_NAME + '.post_edit'}
         sections={[
           {
             id: 'Post',
@@ -67,7 +74,7 @@ const PostFormComponent = props =>
             disabled={!props.saveEnabled}
             primary={true}
             label={trans('save')}
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => {
               props.save(props.blogId, props.mode, props.postId, props.history, props.originalTags)
@@ -75,14 +82,14 @@ const PostFormComponent = props =>
           />
           <Button
             label={trans('cancel')}
-            type="callback"
+            type={CALLBACK_BUTTON}
             className="btn"
             callback={() => {
               props.cancel(props.history)
             }}
           />
         </ButtonToolbar>
-      </FormContainer>   
+      </FormData>
     }
   </div>
 
@@ -101,18 +108,18 @@ PostFormComponent.propTypes = {
 
 const PostForm = withRouter(connect(
   state => ({
-    mode: state.mode,
-    blogId: state.blog.data.id,
-    originalTags: formSelect.originalData(formSelect.form(state, 'post_edit')).tags,
+    mode: select.mode(state),
+    blogId: select.blog(state).data.id,
+    originalTags: formSelect.originalData(formSelect.form(state, select.STORE_NAME + '.post_edit')).tags,
     postId: !isEmpty(state.post_edit) ? state.post_edit.data.id : null,
-    post: state.post_edit,
-    goHome: state.goHome,
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'post_edit'))
+    post: select.postEdit(state),
+    goHome: select.goHome(state),
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, select.STORE_NAME + '.post_edit'))
   }), dispatch => ({
     save: (blogId, mode, postId, history, originalTags) => {
       if (mode === constants.CREATE_POST){
         dispatch(
-          formActions.saveForm(constants.POST_EDIT_FORM_NAME, ['apiv2_blog_post_new', {blogId: blogId}])
+          formActions.saveForm(select.STORE_NAME + '.' + constants.POST_EDIT_FORM_NAME, ['apiv2_blog_post_new', {blogId: blogId}])
         ).then((response) => {
           if (response && !isEmpty(response.tags)){
             //update tag list
@@ -124,7 +131,7 @@ const PostForm = withRouter(connect(
         })
       }else if (mode === constants.EDIT_POST && postId !== null){
         dispatch(
-          formActions.saveForm(constants.POST_EDIT_FORM_NAME, ['apiv2_blog_post_update', {blogId: blogId, postId: postId}])
+          formActions.saveForm(select.STORE_NAME + '.' + constants.POST_EDIT_FORM_NAME, ['apiv2_blog_post_update', {blogId: blogId, postId: postId}])
         ).then((response) => {
           if (response && originalTags !== response.tags){
             //update tag list
@@ -136,11 +143,11 @@ const PostForm = withRouter(connect(
     },
     cancel: (history) => {
       dispatch(
-        formActions.cancelChanges(constants.POST_EDIT_FORM_NAME)
+        formActions.cancelChanges(select.STORE_NAME + '.' + constants.POST_EDIT_FORM_NAME)
       )
       history.push('/')
     }
-    
+
   })
 )(PostFormComponent))
 

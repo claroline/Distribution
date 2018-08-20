@@ -2,17 +2,19 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {currentUser} from '#/main/core/user/current'
-import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
+import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {t, trans} from '#/main/core/translation'
 import isEmpty from 'lodash/isEmpty'
-import {CommentCard} from '#/plugin/blog/resources/blog/comment/components/comment.jsx'
+import {CommentCard} from '#/plugin/blog/resources/blog/comment/components/comment'
 import {actions as commentActions} from '#/plugin/blog/resources/blog/comment/store'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
 import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {constants} from '#/plugin/blog/resources/blog/constants'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {select} from '#/plugin/blog/resources/blog/selectors'
 
 const authenticatedUser = currentUser()
 
@@ -69,13 +71,11 @@ const CommentsComponent = props =>
       {props.opened  &&
         <section className="comments-section">
           <h4>{trans('all_comments', {}, 'icap_blog')}</h4>
-          <DataListContainer
-            name="comments"
+          <ListData
+            name={select.STORE_NAME + '.comments'}
             fetch={{
               url: ['apiv2_blog_comment_list', {blogId: props.blogId, postId: props.postId}],
               autoload: true
-            }}
-            open={{
             }}
             definition={[
               {
@@ -95,7 +95,6 @@ const CommentsComponent = props =>
                 type: 'string'
               }
             ]}
-            selection={{}}
             card={CommentCard}
             display={{
               available : [listConst.DISPLAY_LIST],
@@ -106,7 +105,7 @@ const CommentsComponent = props =>
             <Button
               icon={'fa fa-4x fa-arrow-circle-up'}
               label={trans('go-up', {}, 'icap_blog')}
-              type="callback"
+              type={CALLBACK_BUTTON}
               tooltip="bottom"
               callback={() => props.goUp()}
               className="btn-link button-go-to-top pull-right"
@@ -117,7 +116,7 @@ const CommentsComponent = props =>
       }
     </section>
   </div>
-        
+
 CommentsComponent.propTypes = {
   switchCommentFormDisplay: T.func.isRequired,
   switchCommentsDisplay: T.func.isRequired,
@@ -138,14 +137,14 @@ CommentsComponent.propTypes = {
   canEdit: T.bool,
   canModerate: T.bool
 }
-        
+
 const Comments = connect(
   state => ({
-    user: state.user,
-    opened: state.showComments,
-    isModerated: state.blog.data.options.data.commentModerationMode !== constants.COMMENT_MODERATION_MODE_NONE,
-    showForm: state.showCommentForm,
-    showEditCommentForm: state.showEditCommentForm,
+    user: select.user(state),
+    opened: select.showComments(state),
+    isModerated: select.blog(state).data.options.data.commentModerationMode !== constants.COMMENT_MODERATION_MODE_NONE,
+    showForm: select.showCommentForm(state),
+    showEditCommentForm: select.showEditCommentForm(state),
     comments: state.comments.data,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canModerate: hasPermission('moderate', resourceSelect.resourceNode(state))
@@ -170,6 +169,6 @@ const Comments = connect(
       }
     }
   })
-)(CommentsComponent) 
-    
+)(CommentsComponent)
+
 export {Comments}

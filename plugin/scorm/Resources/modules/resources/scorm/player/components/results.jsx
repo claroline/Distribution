@@ -2,18 +2,19 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {ListData} from '#/main/app/content/list/containers/data'
+
 import {trans} from '#/main/core/translation'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box.jsx'
 
 import {Scorm as ScormType, Sco as ScoType} from '#/plugin/scorm/resources/scorm/prop-types'
 import {constants} from '#/plugin/scorm/resources/scorm/constants'
-import {select} from '#/plugin/scorm/resources/scorm/selectors'
+import {selectors} from '#/plugin/scorm/resources/scorm/store'
 import {flattenScos} from '#/plugin/scorm/resources/scorm/utils'
 
 const ResultsComponent = props =>
-  <DataListContainer
-    name="results"
+  <ListData
+    name={selectors.STORE_NAME+'.results'}
     fetch={{
       url: ['apiv2_scormscotracking_list', {scorm: props.scorm.id}],
       autoload: true
@@ -48,9 +49,16 @@ const ResultsComponent = props =>
         type: 'number',
         label: trans('best_score'),
         displayed: true,
-        render: (rowData) => (rowData.scoreRaw || 0 === rowData.scoreRaw) && (rowData.scoreMax || 0 === rowData.scoreMax) ?
-          <ScoreBox size="sm" score={rowData.scoreRaw} scoreMax={rowData.scoreMax} /> :
-          rowData.scoreRaw
+        render: (rowData) => {
+          let Score
+          if ((rowData.scoreRaw || 0 === rowData.scoreRaw) && (rowData.scoreMax || 0 === rowData.scoreMax)) {
+            Score = <ScoreBox size="sm" score={rowData.scoreRaw} scoreMax={rowData.scoreMax} />
+          } else {
+            Score = rowData.scoreRaw
+          }
+
+          return Score
+        }
       }, {
         name: 'lessonStatus',
         type: 'string',
@@ -92,7 +100,6 @@ const ResultsComponent = props =>
         }
       }
     ]}
-    actions={() => []}
   />
 
 ResultsComponent.propTypes = {
@@ -102,8 +109,8 @@ ResultsComponent.propTypes = {
 
 const Results = connect(
   (state) => ({
-    scorm: select.scorm(state),
-    scos: flattenScos(select.scos(state))
+    scorm: selectors.scorm(state),
+    scos: flattenScos(selectors.scos(state))
   })
 )(ResultsComponent)
 

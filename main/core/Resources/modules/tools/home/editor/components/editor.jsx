@@ -16,8 +16,10 @@ import {
   PageAction,
   PageGroupActions
 } from '#/main/core/layout/page'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+
 import {WidgetGridEditor} from '#/main/core/widget/editor/components/grid'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 
@@ -33,6 +35,7 @@ const EditorComponent = props =>
       prefix="/edit"
       tabs={props.tabs}
       create={() => props.createTab(props.context, props.tabs.length, props.history.push)}
+      context={props.context}
     />
 
     <PageHeader
@@ -44,7 +47,7 @@ const EditorComponent = props =>
         {1 < props.tabs.length &&
           <PageGroupActions>
             <PageAction
-              type="callback"
+              type={CALLBACK_BUTTON}
               label={trans('delete')}
               icon="fa fa-fw fa-trash-o"
               dangerous={true}
@@ -59,7 +62,7 @@ const EditorComponent = props =>
 
         <PageGroupActions>
           <PageAction
-            type="link"
+            type={LINK_BUTTON}
             label={trans('configure', {}, 'actions')}
             icon="fa fa-fw fa-cog"
             target="/edit"
@@ -70,7 +73,7 @@ const EditorComponent = props =>
     </PageHeader>
 
     <PageContent>
-      <FormContainer
+      <FormData
         name="editor"
         dataPart={`[${props.currentTabIndex}]`}
         buttons={true}
@@ -79,10 +82,11 @@ const EditorComponent = props =>
           contextId: props.context.data ? props.context.data.uuid : currentUser().id
         }]}
         cancel={{
-          type: 'link',
+          type: LINK_BUTTON,
           target: '/',
           exact: true
         }}
+        disabled={props.currentTab.locked && props.context.type !== 'administration'}
         sections={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -95,6 +99,12 @@ const EditorComponent = props =>
                 label: trans('title'),
                 required: true,
                 onChange: (title) => props.updateTitle(props.currentTabIndex, 'title', title.substring(0, 20))
+              }, {
+                name: 'locked',
+                type: 'boolean',
+                label: trans('lock_tab', {}, 'widget'),
+                help : trans('lock_tab_help', {}, 'widget'),
+                displayed: props.context.type === 'administration'
               }
             ]
           }, {
@@ -154,7 +164,7 @@ const EditorComponent = props =>
           }, {
             icon: 'fa fa-fw fa-key',
             title: trans('access_restrictions'),
-            displayed: props.context.type === 'workspace',
+            displayed: props.context.type === 'workspace' || props.context.type === 'administration',
             fields: [
               {
                 name: 'roles',
@@ -163,23 +173,26 @@ const EditorComponent = props =>
                 type: 'choice',
                 options:{
                   multiple : true,
-                  choices: props.context.data.roles.reduce((acc, role) => {
-                    acc[role.id] = role.translationKey
-
-                    return acc
-                  }, {})
+                  choices: props.context.type === 'workspace' || props.context.type === 'administration' ?
+                    props.context.data.roles.reduce((acc, role) => {
+                      acc[role.id] = role.translationKey
+                      return acc
+                    }, {})
+                    : ''
                 }
               }
             ]
           }
         ]}
       >
-        <WidgetGridEditor
-          context={props.context}
-          widgets={props.widgets}
-          update={(widgets) => props.updateWidgets(props.currentTabIndex, widgets)}
-        />
-      </FormContainer>
+        {!(props.currentTab.locked && props.context.type !== 'administration') &&
+          <WidgetGridEditor
+            context={props.context}
+            widgets={props.widgets}
+            update={(widgets) => props.updateWidgets(props.currentTabIndex, widgets)}
+          />
+        }
+      </FormData>
     </PageContent>
   </PageContainer>
 

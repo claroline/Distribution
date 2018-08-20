@@ -1,15 +1,13 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {hasPermission} from '#/main/core/resource/permissions'
 import {url} from '#/main/app/api'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+
+
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {RoutedPageContent} from '#/main/core/layout/router'
+import {DOWNLOAD_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {Editor} from '#/plugin/wiki/resources/wiki/editor/components/editor'
 import {Player} from '#/plugin/wiki/resources/wiki/player/components/player'
@@ -17,25 +15,20 @@ import {History} from '#/plugin/wiki/resources/wiki/history/components/history'
 import {VersionDetail} from '#/plugin/wiki/resources/wiki/history/components/version-detail'
 import {VersionCompare} from '#/plugin/wiki/resources/wiki/history/components/version-compare'
 import {DeletedSections} from '#/plugin/wiki/resources/wiki/deleted/components/deleted-sections'
-import {actions as historyActions} from '#/plugin/wiki/resources/wiki/history/store'
 
 const Resource = props =>
-  <ResourcePageContainer
+  <ResourcePage
     primaryAction="create-section"
-    editor={{
-      path: '/edit',
-      label: trans('configure', {}, 'platform')
-    }}
     customActions={[
       {
-        type: 'link',
+        type: LINK_BUTTON,
         icon: 'fa fa-fw fa-home',
         label: trans('show_overview'),
         target: '/',
         primary: false
       },
       {
-        type: 'download',
+        type: DOWNLOAD_BUTTON,
         icon: 'fa fa-fw fa-file-pdf-o',
         displayed: props.canExport,
         label: trans('pdf_export'),
@@ -44,7 +37,7 @@ const Resource = props =>
         }
       },
       {
-        type: 'link',
+        type: LINK_BUTTON,
         icon: 'fa fa-fw fa-trash-o',
         displayed: props.canEdit,
         label: trans('deleted_sections', {}, 'icap_wiki'),
@@ -92,34 +85,18 @@ const Resource = props =>
         }
       ]}
     />
-  </ResourcePageContainer>
+  </ResourcePage>
 
 Resource.propTypes = {
   canEdit: T.bool.isRequired,
   canExport: T.bool.isRequired,
   wiki: T.object.isRequired,
-  saveEnabled: T.bool.isRequired,
   resetForm: T.func.isRequired,
   setCurrentHistorySection: T.func.isRequired,
   setCurrentHistoryVersion: T.func.isRequired,
   setCurrentHistoryCompareSet: T.func.isRequired
 }
 
-const WikiResource = connect(
-  (state) => ({
-    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
-    canExport: hasPermission('export', resourceSelect.resourceNode(state)) && state.exportPdfEnabled,
-    wiki: state.wiki,
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'wikiForm'))
-  }),
-  (dispatch) => ({
-    resetForm: (formData) => dispatch(formActions.resetForm('wikiForm', formData)),
-    setCurrentHistorySection: (sectionId = null) => dispatch(historyActions.setCurrentHistorySection(sectionId)),
-    setCurrentHistoryVersion: (sectionId = null, contributionId = null) => dispatch(historyActions.setCurrentHistoryVersion(sectionId, contributionId)),
-    setCurrentHistoryCompareSet: (sectionId = null, id1 = null, id2 = null) => dispatch(historyActions.setCurrentHistoryCompareSet(sectionId, id1, id2))
-  })
-)(Resource)
-
 export {
-  WikiResource
+  Resource
 }

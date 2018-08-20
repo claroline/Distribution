@@ -3,14 +3,14 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {actions as creationActions, selectors} from '#/main/core/resource/modals/creation/store'
-
+import {FormData} from '#/main/app/content/form/containers/data'
+import {actions, selectors} from '#/main/core/resource/modals/creation/store'
 
 const WebResourceForm = props =>
-  <FormContainer
+  <FormData
     level={5}
-    name={selectors.FORM_NAME}
+    name={selectors.STORE_NAME}
+    dataPart={selectors.FORM_RESOURCE_PART}
     sections={[
       {
         title: trans('general'),
@@ -45,8 +45,8 @@ const WebResourceCreation = connect(
   (dispatch) => ({
     update(data) {
       // update resource props
-      dispatch(creationActions.updateResource('size', data.size))
-      dispatch(creationActions.updateResource('hashName', data.hashName))
+      dispatch(actions.updateResource('size', data.size))
+      dispatch(actions.updateResource('hashName', data.hashName))
 
     }
   })

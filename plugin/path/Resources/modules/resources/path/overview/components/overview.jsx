@@ -3,12 +3,13 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {ResourceOverview} from '#/main/core/resource/components/overview'
 import {selectors as resourceSelectors} from '#/main/core/resource/store/selectors'
 import {UserEvaluation as UserEvaluationTypes} from '#/main/core/resource/prop-types'
 
 import {Summary} from '#/plugin/path/resources/path/overview/components/summary'
-import {select} from '#/plugin/path/resources/path/selectors'
+import {selectors} from '#/plugin/path/resources/path/store'
 import {Path as PathTypes} from '#/plugin/path/resources/path/prop-types'
 
 const OverviewComponent = props =>
@@ -24,7 +25,7 @@ const OverviewComponent = props =>
     }}
     actions={[
       { // TODO : implement continue and restart
-        type: 'link',
+        type: LINK_BUTTON,
         icon: 'fa fa-fw fa-play icon-with-text-right',
         label: trans('start_path', {}, 'path'),
         target: '/play',
@@ -60,8 +61,8 @@ OverviewComponent.defaultProps = {
 
 const Overview = connect(
   (state) => ({
-    path: select.path(state),
-    empty: select.empty(state),
+    path: selectors.path(state),
+    empty: selectors.empty(state),
     evaluation: resourceSelectors.resourceEvaluation(state)
   })
 )(OverviewComponent)

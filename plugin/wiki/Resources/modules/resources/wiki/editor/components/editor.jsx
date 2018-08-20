@@ -3,24 +3,25 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
-
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {selectors} from '#/plugin/wiki/resources/wiki/store/selectors'
 import {Wiki as WikiTypes} from '#/plugin/wiki/resources/wiki/prop-types'
 import {WIKI_MODES, WIKI_MODE_CHOICES} from '#/plugin/wiki/resources/wiki/constants'
 
 const EditorComponent = props =>
-  <FormContainer
+  <FormData
     level={2}
     buttons={true}
     target={() => ['apiv2_wiki_update_options', {id: props.wiki.id}]}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}
     title={trans('configure', {}, 'platform')}
-    name="wikiForm"
+    name={selectors.STORE_NAME + '.wikiForm'}
     sections={[
       {
         icon: 'fa fa-fw fa-desktop',
@@ -64,7 +65,7 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   state => ({
-    wiki: formSelect.data(formSelect.form(state, 'wikiForm'))
+    wiki: formSelect.data(formSelect.form(state, selectors.STORE_NAME +'.wikiForm'))
   })
 )(EditorComponent)
 

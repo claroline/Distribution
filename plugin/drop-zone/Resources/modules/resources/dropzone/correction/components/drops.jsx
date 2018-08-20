@@ -3,28 +3,30 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
-import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {select} from '#/plugin/drop-zone/resources/dropzone/store/selectors'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
 // TODO : restore list grid display
 
 const DropsList = props =>
-  <section className="resource-section">
+  <section className="resource-section drop-list">
     <h2>{trans('corrections_management', {}, 'dropzone')}</h2>
 
-    <DataListContainer
-      name="drops"
+    <ListData
+      name={`${select.STORE_NAME}.drops`}
       fetch={{
         url: ['claro_dropzone_drops_search', {id: props.dropzone.id}],
         autoload: true
       }}
       primaryAction={(row) => ({
-        type: 'link',
-        target: `/drop/${row.id}`
+        type: LINK_BUTTON,
+        target: `/drop/${row.id}`,
+        label: trans('correct_a_copy', {}, 'dropzone')
       })}
       definition={[
         {
@@ -54,6 +56,16 @@ const DropsList = props =>
           label: trans('submitted', {}, 'dropzone'),
           type: 'boolean'
         }, {
+          name: 'unlockedDrop',
+          label: trans('unlocked', {}, 'dropzone'),
+          type: 'boolean',
+          displayed: true
+        }, {
+          name: 'autoClosedDrop',
+          label: trans('incomplete', {}, 'platform'),
+          type: 'boolean',
+          displayed: true
+        }, {
           name: 'evaluated',
           label: trans('evaluated', {}, 'dropzone'),
           type: 'boolean',
@@ -67,16 +79,6 @@ const DropsList = props =>
           filterable: false,
           sortable: false
         }, {
-          name: 'unlockedDrop',
-          label: trans('unlocked', {}, 'dropzone'),
-          type: 'boolean',
-          displayed: true
-        }, {
-          name: 'autoClosedDrop',
-          label: trans('incomplete', {}, 'platform'),
-          type: 'boolean',
-          displayed: true
-        }, {
           name: 'score',
           label: trans('score', {}, 'platform'),
           type: 'score',
@@ -88,21 +90,28 @@ const DropsList = props =>
       ]}
       actions={(rows) => [
         {
-          type: 'callback',
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-pencil',
+          label: trans('correct_the_copy', {}, 'dropzone'),
+          target: `/drop/${rows[0].id}`,
+          scope: ['object']
+        },
+        {
+          type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-unlock',
           label: trans('unlock_drop', {}, 'dropzone'),
           displayed: !rows[0].unlockedDrop,
           callback: () => props.unlockDrop(rows[0].id),
           scope: ['object'] // todo should be selection action too
         }, {
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-undo',
           label: trans('cancel_drop_submission', {}, 'dropzone'),
           displayed: rows[0].finished,
-          callback: (rows) => props.cancelDrop(rows[0].id),
+          callback: () => props.cancelDrop(rows[0].id),
           scope: ['object'] // todo should be selection action too
         }, {
-          type: 'callback',
+          type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-download',
           label: trans('download', {}, 'platform'),
           callback: () => props.downloadDrops(rows)

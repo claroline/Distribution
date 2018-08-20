@@ -2,25 +2,26 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {currentUser} from '#/main/core/user/current'
-import {constants as intlConstants} from '#/main/app/intl/constants'
 import {url} from '#/main/app/api'
-import {trans, transChoice} from '#/main/core/translation'
-import {displayDate} from '#/main/core/scaffolding/date'
+import {constants as intlConstants} from '#/main/app/intl/constants'
+import {constants as listConstants} from '#/main/app/content/list/constants'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {ListData} from '#/main/app/content/list/containers/data'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {DataCard} from '#/main/core/data/components/data-card'
-import {constants as listConstants} from '#/main/core/data/list/constants'
+import {currentUser} from '#/main/core/user/current'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/core/resource/permissions'
+import {trans, transChoice} from '#/main/core/translation'
+import {displayDate} from '#/main/core/scaffolding/date'
+import {DataCard} from '#/main/core/data/components/data-card'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 
-import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/store'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
-import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
+import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 
 const authenticatedUser = currentUser()
 
@@ -246,7 +247,7 @@ class EntriesComponent extends Component {
 
   generateActions(rows) {
     const dataListActions = [{
-      type: 'link',
+      type: LINK_BUTTON,
       icon: 'fa fa-fw fa-eye',
       label: trans('view_entry', {}, 'clacoform'),
       target: `/entries/${rows[0].id}`,
@@ -256,14 +257,14 @@ class EntriesComponent extends Component {
     if (this.props.canGeneratePdf) {
       // todo : both actions must be merged
       dataListActions.push({
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-print',
         label: trans('print_entry', {}, 'clacoform'),
         callback: () => this.props.downloadEntryPdf(rows[0].id),
         scope: ['object']
       })
       dataListActions.push({
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-w fa-print',
         label: trans('print_selected_entries', {}, 'clacoform'),
         callback: () => this.props.downloadEntriesPdf(rows),
@@ -271,7 +272,7 @@ class EntriesComponent extends Component {
       })
     }
     dataListActions.push({
-      type: 'link',
+      type: LINK_BUTTON,
       icon: 'fa fa-fw fa-pencil',
       label: trans('edit'),
       target: `/entry/form/${rows[0].id}`,
@@ -279,7 +280,7 @@ class EntriesComponent extends Component {
       scope: ['object']
     })
     dataListActions.push({
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       icon: 'fa fa-fw fa-eye',
       label: trans('publish'),
       callback: () => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_PUBLISHED),
@@ -287,7 +288,7 @@ class EntriesComponent extends Component {
         rows.filter(e => e.status === constants.ENTRY_STATUS_PUBLISHED).length !== rows.length
     })
     dataListActions.push({
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       icon: 'fa fa-fw fa-eye-slash',
       label: trans('unpublish'),
       callback: () => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_UNPUBLISHED),
@@ -297,14 +298,14 @@ class EntriesComponent extends Component {
 
     if (this.props.canAdministrate) {
       dataListActions.push({
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-w fa-lock',
         label: trans('lock'),
         callback: () => this.props.switchEntriesLock(rows, true),
         displayed: rows.filter(e => e.locked).length !== rows.length
       })
       dataListActions.push({
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-w fa-unlock',
         label: trans('unlock'),
         callback: () => this.props.switchEntriesLock(rows, false),
@@ -312,7 +313,7 @@ class EntriesComponent extends Component {
       })
     }
     dataListActions.push({
-      type: 'callback',
+      type: CALLBACK_BUTTON,
       icon: 'fa fa-w fa-trash-o',
       label: trans('delete'),
       callback: () => this.deleteEntries(rows),
@@ -435,14 +436,14 @@ class EntriesComponent extends Component {
     return (
       <div>
         <h2>{trans('entries_list', {}, 'clacoform')}</h2>
-        <DataListContainer
+        <ListData
           display={{
             current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
             available: Object.keys(listConstants.DISPLAY_MODES)
           }}
-          name="entries.list"
+          name={selectors.STORE_NAME+'.entries.list'}
           primaryAction={(row) => ({
-            type: 'link',
+            type: LINK_BUTTON,
             label: trans('open'),
             target: `/entries/${row.id}`
           })}
@@ -516,26 +517,26 @@ const Entries = connect(
   (state) => ({
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canAdministrate: hasPermission('administrate', resourceSelect.resourceNode(state)),
-    fields: select.fields(state),
-    canGeneratePdf: state.canGeneratePdf,
-    clacoFormId: state.clacoForm.id,
-    searchEnabled: select.getParam(state, 'search_enabled'),
-    searchColumnEnabled: select.getParam(state, 'search_column_enabled'),
-    searchRestricted: select.getParam(state, 'search_restricted') || false,
-    editionEnabled: select.getParam(state, 'edition_enabled'),
-    defaultDisplayMode: select.getParam(state, 'default_display_mode'),
-    displayTitle: select.getParam(state, 'display_title'),
-    displaySubtitle: select.getParam(state, 'display_subtitle'),
-    displayContent: select.getParam(state, 'display_content'),
-    searchColumns: select.getParam(state, 'search_columns'),
-    searchRestrictedColumns: select.getParam(state, 'search_restricted_columns') || [],
-    displayMetadata: select.getParam(state, 'display_metadata'),
-    displayCategories: select.getParam(state, 'display_categories'),
-    displayKeywords: select.getParam(state, 'display_keywords'),
-    titleLabel: select.getParam(state, 'title_field_label'),
-    isCategoryManager: select.isCategoryManager(state),
-    entries: state.entries.list,
-    countries: select.usedCountries(state)
+    fields: selectors.fields(state),
+    canGeneratePdf: selectors.canGeneratePdf(state),
+    clacoFormId: selectors.clacoForm(state).id,
+    searchEnabled: selectors.params(state).search_enabled,
+    searchColumnEnabled: selectors.params(state).search_column_enabled,
+    searchRestricted: selectors.params(state).search_restricted || false,
+    editionEnabled: selectors.params(state).edition_enabled,
+    defaultDisplayMode: selectors.params(state).default_display_mode,
+    displayTitle: selectors.params(state).display_title,
+    displaySubtitle: selectors.params(state).display_subtitle,
+    displayContent: selectors.params(state).display_content,
+    searchColumns: selectors.params(state).search_columns,
+    searchRestrictedColumns: selectors.params(state).search_restricted_columns || [],
+    displayMetadata: selectors.params(state).display_metadata,
+    displayCategories: selectors.params(state).display_categories,
+    displayKeywords: selectors.params(state).display_keywords,
+    titleLabel: selectors.params(state).title_field_label,
+    isCategoryManager: selectors.isCategoryManager(state),
+    entries: selectors.entries(state).list,
+    countries: selectors.usedCountries(state)
   }),
   (dispatch) => ({
     downloadEntryPdf(entryId) {

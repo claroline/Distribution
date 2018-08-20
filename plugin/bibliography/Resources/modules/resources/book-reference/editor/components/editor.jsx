@@ -3,17 +3,19 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {FormContainer} from '#/main/core/data/form/containers/form'
-import {select as formSelectors} from '#/main/core/data/form/selectors'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {FormData} from '#/main/app/content/form/containers/data'
+
+import {selectors} from '#/plugin/bibliography/resources/book-reference/store'
 
 const EditorComponent = (props) =>
-  <FormContainer
+  <FormData
     level={3}
-    name="bookReference"
+    name={selectors.FORM_NAME}
     target={['apiv2_book_reference_update', {id: props.id}]}
     buttons={true}
     cancel={{
-      type: 'link',
+      type: LINK_BUTTON,
       target: '/',
       exact: true
     }}
@@ -95,7 +97,7 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   (state) => ({
-    id: formSelectors.data(formSelectors.form(state, 'bookReference')).id
+    id: selectors.bookReferenceId(state)
   })
 )(EditorComponent)
 

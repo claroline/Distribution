@@ -1,21 +1,19 @@
 import React from 'react'
-// import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
-import {constants as listConst} from '#/main/core/data/list/constants'
-import {actions as listActions} from '#/main/core/data/list/actions'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
+import {actions as listActions} from '#/main/app/content/list/store'
 
-import {actions} from '#/plugin/forum/resources/forum/player/actions'
-import {select} from '#/plugin/forum/resources/forum/selectors'
+import {actions} from '#/plugin/forum/resources/forum/player/store/actions'
+import {select} from '#/plugin/forum/resources/forum/store/selectors'
 import {MessageCard} from '#/plugin/forum/resources/forum/data/components/message-card'
 
-
 const FlaggedMessagesComponent = (props) =>
-
-  <DataListContainer
-    name="moderation.flaggedMessages"
+  <ListData
+    name={`${select.STORE_NAME}.moderation.flaggedMessages`}
     fetch={{
       url: ['apiv2_forum_message_flagged_list', {forum: props.forum.id}],
       autoload: true
@@ -56,24 +54,20 @@ const FlaggedMessagesComponent = (props) =>
     ]}
     actions={(rows) => [
       {
-        type: 'link',
+        type: LINK_BUTTON,
         icon: 'fa fa-fw fa-eye',
         label: trans('see_message_context', {}, 'forum'),
         target: '/subjects/show/'+rows[0].subject.id,
-        context: 'row'
+        scope: ['object']
       }, {
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-flag',
         label: trans('unflag', {}, 'forum'),
         displayed: true,
         callback: () => props.unFlag(rows[0], rows[0].subject.id)
       }
     ]}
-    card={(props) =>
-      <MessageCard
-        {...props}
-      />
-    }
+    card={(props) => <MessageCard {...props} />}
   />
 
 
@@ -86,7 +80,7 @@ const FlaggedMessages = connect(
   dispatch => ({
     unFlag(message, subjectId) {
       dispatch(actions.unFlag(message, subjectId))
-      dispatch(listActions.invalidateData('moderation.flaggedMessages'))
+      dispatch(listActions.invalidateData(`${select.STORE_NAME}.moderation.flaggedMessages`))
     }
   })
 )(FlaggedMessagesComponent)

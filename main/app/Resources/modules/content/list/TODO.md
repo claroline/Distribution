@@ -1,0 +1,8 @@
+- [ ] implement better loader.
+- [ ] append list filters to URL.
+- [ ] add default filter select in search.
+- [ ] add the possibility to override list translations
+- [ ] move grid inside another module
+- [ ] move table inside another module
+- [ ] move pagination
+- [ ] move search

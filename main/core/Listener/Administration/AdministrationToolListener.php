@@ -62,18 +62,6 @@ class AdministrationToolListener
     }
 
     /**
-     * @DI\Observe("administration_tool_desktop_and_home")
-     *
-     * @param OpenAdministrationToolEvent $event
-     */
-    public function opDesktopAndHome(OpenAdministrationToolEvent $event)
-    {
-        $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration/DesktopConfiguration:adminDesktopConfigMenu',
-        ], $event);
-    }
-
-    /**
      * @DI\Observe("administration_tool_desktop_tools")
      *
      * @param OpenAdministrationToolEvent $event
@@ -82,18 +70,6 @@ class AdministrationToolListener
     {
         $this->redirect([
             '_controller' => 'ClarolineCoreBundle:Administration/Tools:showTool',
-        ], $event);
-    }
-
-    /**
-     * @DI\Observe("administration_tool_widgets_management")
-     *
-     * @param OpenAdministrationToolEvent $event
-     */
-    public function onOpenWidgetsManagement(OpenAdministrationToolEvent $event)
-    {
-        $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration/Widget:widgetsManagement',
         ], $event);
     }
 

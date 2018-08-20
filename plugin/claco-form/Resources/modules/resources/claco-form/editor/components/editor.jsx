@@ -4,17 +4,19 @@ import {PropTypes as T} from 'prop-types'
 
 import {makeId} from '#/main/core/scaffolding/id'
 import {trans, transChoice} from '#/main/core/translation'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {FormData} from '#/main/app/content/form/containers/data'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
+import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
-import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/store'
 import {MODAL_CATEGORY_FORM} from '#/plugin/claco-form/modals/category'
 import {MODAL_KEYWORD_FORM} from '#/plugin/claco-form/modals/keyword'
 
@@ -57,16 +59,16 @@ const generateRestrictedList = (fields) => {
 const EditorComponent = props =>
   <section className="resource-section">
     <h2>{trans('configuration', {}, 'platform')}</h2>
-    <FormContainer
+    <FormData
       level={3}
-      name="clacoFormForm"
+      name={selectors.STORE_NAME+'.clacoFormForm'}
       buttons={true}
       save={{
-        type: 'callback',
+        type: CALLBACK_BUTTON,
         callback: () => props.saveForm(props.clacoForm.id)
       }}
       cancel={{
-        type: 'link',
+        type: LINK_BUTTON,
         target: '/',
         exact: true
       }}
@@ -438,7 +440,7 @@ const EditorComponent = props =>
           title={trans('categories')}
           actions={[
             {
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-plus',
               label: trans('create_a_category', {}, 'clacoform'),
               callback: () => props.showModal(MODAL_CATEGORY_FORM, {
@@ -460,14 +462,14 @@ const EditorComponent = props =>
             }
           ]}
         >
-          <DataListContainer
-            name="clacoFormForm.categories"
+          <ListData
+            name={selectors.STORE_NAME+'.clacoFormForm.categories'}
             fetch={{
               url: ['apiv2_clacoformcategory_list', {clacoForm: props.clacoForm.id}],
               autoload: true
             }}
             primaryAction={(row) => ({
-              type: 'callback',
+              type: CALLBACK_BUTTON,
               label: trans('edit'),
               callback: () => props.showModal(MODAL_CATEGORY_FORM, {
                 title: trans('edit_category', {}, 'clacoform'),
@@ -519,7 +521,7 @@ const EditorComponent = props =>
             ]}
             actions={(rows) => [
               {
-                type: 'callback',
+                type: CALLBACK_BUTTON,
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit'),
                 callback: () => props.showModal(MODAL_CATEGORY_FORM, {
@@ -529,7 +531,7 @@ const EditorComponent = props =>
                 }),
                 scope: ['object']
               }, {
-                type: 'callback',
+                type: CALLBACK_BUTTON,
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 dangerous: true,
@@ -546,7 +548,7 @@ const EditorComponent = props =>
             title={trans('keywords')}
             actions={[
               {
-                type: 'callback',
+                type: CALLBACK_BUTTON,
                 icon: 'fa fa-fw fa-plus',
                 label: trans('create_a_keyword', {}, 'clacoform'),
                 callback: () => props.showModal(MODAL_KEYWORD_FORM, {
@@ -560,14 +562,14 @@ const EditorComponent = props =>
               }
             ]}
           >
-            <DataListContainer
-              name="clacoFormForm.keywords"
+            <ListData
+              name={selectors.STORE_NAME+'.clacoFormForm.keywords'}
               fetch={{
                 url: ['apiv2_clacoformkeyword_list', {clacoForm: props.clacoForm.id}],
                 autoload: true
               }}
               primaryAction={(row) => ({
-                type: 'callback',
+                type: CALLBACK_BUTTON,
                 label: trans('edit'),
                 callback: () => props.showModal(MODAL_KEYWORD_FORM, {
                   title: trans('edit_keyword', {}, 'clacoform'),
@@ -585,7 +587,7 @@ const EditorComponent = props =>
               ]}
               actions={(rows) => [
                 {
-                  type: 'callback',
+                  type: CALLBACK_BUTTON,
                   icon: 'fa fa-fw fa-pencil',
                   label: trans('edit'),
                   callback: () => props.showModal(MODAL_KEYWORD_FORM, {
@@ -595,7 +597,7 @@ const EditorComponent = props =>
                   }),
                   scope: ['object']
                 }, {
-                  type: 'callback',
+                  type: CALLBACK_BUTTON,
                   icon: 'fa fa-fw fa-trash-o',
                   label: trans('delete'),
                   dangerous: true,
@@ -606,7 +608,7 @@ const EditorComponent = props =>
           </FormSection>
         }
       </FormSections>
-    </FormContainer>
+    </FormData>
   </section>
 
 EditorComponent.propTypes = {
@@ -620,8 +622,8 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   (state) => ({
-    clacoForm: formSelect.data(formSelect.form(state, 'clacoFormForm')),
-    roles: state.roles
+    clacoForm: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.clacoFormForm')),
+    roles: selectors.roles(state)
   }),
   (dispatch) => ({
     deleteCategories(categories) {
@@ -648,7 +650,7 @@ const Editor = connect(
       dispatch(modalActions.showModal(type, props))
     },
     saveForm(id) {
-      dispatch(formActions.saveForm('clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
+      dispatch(formActions.saveForm(selectors.STORE_NAME+'.clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
     }
   })
 )(EditorComponent)
