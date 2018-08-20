@@ -18,7 +18,8 @@ function getFile(mimeType) {
   })
 
   if (knownType) {
-    return knownTypes[knownType]
+    console.log( knownTypes[knownType])
+    return Promise.resolve(knownTypes[knownType])
   }
 
   return () => Promise.resolve(null)
