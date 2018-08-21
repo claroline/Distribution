@@ -17,9 +17,7 @@ const PlayerComponent = props =>
   <PageContainer>
     {1 < props.sortedTabs.length &&
       <Tabs
-        tabs={props.context.type === 'workspace' || props.administration ?
-          props.visibleTabs : props.sortedTabs}
-
+        tabs={props.context.type === 'workspace' ? props.visibleTabs : props.sortedTabs}
         context={props.context}
       />
     }
