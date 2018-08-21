@@ -52,7 +52,7 @@ class HomeListener
     {
         $tabs = $this->finder->search(
           HomeTab::class,
-          ['filters' => ['administration' => true]]
+          ['filters' => ['type' => HomeTab::TYPE_ADMIN_DESKTOP]]
         );
 
         $roles = $this->finder->search('Claroline\CoreBundle\Entity\Role',
