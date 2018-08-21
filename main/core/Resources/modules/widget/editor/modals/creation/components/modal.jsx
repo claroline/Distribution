@@ -59,11 +59,13 @@ class WidgetCreationModal extends Component {
         )
     }
   }
+
   close() {
     this.props.fadeModal()
     this.changeStep('layout')
     this.props.reset()
   }
+
   render() {
     return (
       <Modal
@@ -84,7 +86,7 @@ class WidgetCreationModal extends Component {
             label={trans('add', {}, 'actions')}
             callback={() => {
               this.props.create(this.props.widget)
-              this.props.fadeModal()
+              this.close()
             }}
           />
         }
@@ -103,6 +105,7 @@ WidgetCreationModal.propTypes = {
     WidgetContainerTypes.propTypes
   ).isRequired,
   startCreation: T.func.isRequired,
+  reset: T.func.isRequired,
   saveEnabled: T.bool.isRequired
 }
 

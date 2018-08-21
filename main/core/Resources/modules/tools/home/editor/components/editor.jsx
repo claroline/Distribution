@@ -257,7 +257,7 @@ const Editor = withRouter(connect(
         title: trans('tab'),
         longTitle: trans('tab'),
         position: position + 1,
-        type: context.type,
+        type: administration ? 'administration' : context.type,
         administration: administration,
         user: context.type === 'desktop' ? currentUser() : null,
         workspace: context.type === 'workspace' ? {uuid: context.data.uuid} : null

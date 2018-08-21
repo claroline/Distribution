@@ -19,6 +19,7 @@ const PlayerComponent = props =>
       <Tabs
         tabs={props.administration ? props.sortedTabs : props.visibleTabs}
         context={props.context}
+        administration={props.administration}
       />
     }
     <PageHeader

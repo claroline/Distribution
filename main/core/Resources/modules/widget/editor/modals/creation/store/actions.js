@@ -21,4 +21,4 @@ actions.startCreation = (widgetLayout) => (dispatch) => {
   dispatch(formActions.updateProp(selectors.STORE_NAME, 'display.layout', widgetLayout))
 }
 
-actions.reset = () => formActions.resetForm(selectors.FORM_NAME, merge({id: makeId()}, WidgetContainerTypes.defaultProps), true)
+actions.reset = () => formActions.resetForm(selectors.STORE_NAME, merge({}, WidgetContainerTypes.defaultProps), true)
