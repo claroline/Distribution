@@ -2,14 +2,16 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {selectors} from '#/main/core/resources/text/store'
-import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
+import {selectors} from '#/plugin/url/resources/url/store'
 
-const PlayerComponent = props =>
-  alert(props)
+const PlayerComponent = props => {
+  window.location.href = props.url.url
+}
 
 PlayerComponent.propTypes = {
-  url: T.shape(TextTypes.propTypes).isRequired
+  url: T.shape({
+    'id': T.number.isRequired
+  }).isRequired
 }
 
 const Player = connect(

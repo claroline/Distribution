@@ -10,7 +10,6 @@ const UrlForm = () =>
   <FormData
     level={5}
     name={selectors.STORE_NAME}
-    dataPart={selectors.FORM_RESOURCE_PART}
     sections={[
       {
         title: trans('url'),

@@ -1,14 +1,10 @@
-import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
-import {selectors as fileSelectors} from '#/main/core/resources/file/store/selectors'
+import {selectors as urlSelectors} from '#/plugin/url/resources/url/store/selectors'
 
-const FORM_NAME = `${fileSelectors.STORE_NAME}.urlForm`
+const FORM_NAME = `${urlSelectors.STORE_NAME}.urlForm`
 
-const url = () => formSelectors.data(formSelectors.form(FORM_NAME))
-
-const mimeType = fileSelectors.mimeType
+const url = (state) => urlSelectors.url(state)
 
 export const selectors = {
   FORM_NAME,
-  mimeType,
   url
 }

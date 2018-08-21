@@ -22,6 +22,11 @@ class UrlSerializer
         ];
     }
 
+    public function getClass()
+    {
+        return Url::class;
+    }
+
     public function deserialize($data, Url $url)
     {
         $this->sipe('url', 'setUrl', $data, $url);
