@@ -1,6 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
@@ -27,18 +25,6 @@ const UrlForm = () =>
     ]}
   />
 
-UrlForm.propTypes = {
-  newNode: T.shape({
-    name: T.string
-  })
-}
-
-const UrlCreation = connect(
-  (state) => ({
-    newNode: selectors.newNode(state)
-  })
-)(UrlForm)
-
 export {
-  UrlCreation
+  UrlForm as UrlEditor
 }
