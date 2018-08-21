@@ -34,7 +34,7 @@ const EditorComponent = props =>
     <Tabs
       prefix="/edit"
       tabs={props.tabs}
-      create={() => props.createTab(props.context, props.tabs.length, props.history.push)}
+      create={() => props.createTab(props.context, props.administration, props.tabs.length, props.history.push)}
       context={props.context}
       administration={props.administration}
     />
@@ -79,10 +79,15 @@ const EditorComponent = props =>
         name="editor"
         dataPart={`[${props.currentTabIndex}]`}
         buttons={true}
-        target={['apiv2_home_update', {
+        target={props.administration ? ['apiv2_home_admin', {
           context: props.context.type,
           contextId: props.context.data ? props.context.data.uuid : currentUser().id
-        }]}
+        }]
+          :
+          ['apiv2_home_update', {
+            context: props.context.type,
+            contextId: props.context.data ? props.context.data.uuid : currentUser().id
+          }]}
         cancel={{
           type: LINK_BUTTON,
           target: '/',
@@ -244,7 +249,7 @@ const Editor = withRouter(connect(
     setErrors(errors) {
       dispatch(formActions.setErrors('editor', errors))
     },
-    createTab(context, position, navigate){
+    createTab(context, administration, position, navigate){
       const newTabId = makeId()
 
       dispatch(formActions.updateProp('editor', `[${position}]`, merge({}, TabTypes.defaultProps, {
@@ -253,6 +258,7 @@ const Editor = withRouter(connect(
         longTitle: trans('tab'),
         position: position + 1,
         type: context.type,
+        administration: administration,
         user: context.type === 'desktop' ? currentUser() : null,
         workspace: context.type === 'workspace' ? {uuid: context.data.uuid} : null
       })))
