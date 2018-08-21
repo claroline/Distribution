@@ -13,6 +13,12 @@ plugin:
         - action: resource-read
         - action: resource-claroline_forum-create_message
 
+  data_sources:
+    - name: forum_messages
+      type: list
+      context: [workspace, desktop]
+      tags: [resources, community]
+
   #widgets:
   #   - name: claroline_forum_widget
   #     is_configurable: true
