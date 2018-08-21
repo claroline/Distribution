@@ -14,9 +14,9 @@ const ResourceWidgetParameters = (props) =>
         primary: true,
         fields: [
           {
-            name: 'parameters.content',
+            name: 'parameters.resource',
             label: trans('content'),
-            type: 'html',
+            type: 'resource',
             required: true
           }
         ]
