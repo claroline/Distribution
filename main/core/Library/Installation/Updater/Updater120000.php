@@ -10,7 +10,6 @@ use Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainerConfig;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\InstallationBundle\Updater\Updater;
@@ -84,7 +83,6 @@ class Updater120000 extends Updater
         $this->removeTool('claroline_activity_tool');
         $this->updateTabsStructure();
         $this->updateWidgetsStructure();
-        $this->linkWidgetsInstanceToContainers();
         $this->restoreWidgetInstancesConfigs();
         $this->checkDesktopTabs();
         $this->deactivateActivityResourceType();
@@ -145,24 +143,43 @@ class Updater120000 extends Updater
         if (count($this->om->getRepository(WidgetContainer::class)->findAll()) > 0) {
             $this->log('Containers already migrated. Truncate manually to try again.');
         } else {
-            $this->log('Migrating WidgetDisplayConfig to WidgetContainer');
+            $this->log('WidgetContainer migration.');
+            $sql = '
+                INSERT INTO claro_widget_container (id, uuid)
+                SELECT id, (SELECT UUID()) as uuid FROM claro_widget_display_config';
 
-            $sql = 'SELECT * FROM claro_widget_display_config ';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
-            $i = 0;
-
-            foreach ($stmt->fetchAll() as $rowConfig) {
-                $this->restoreWidgetContainer($rowConfig);
-                ++$i;
-
-                if (0 === $i % 200) {
-                    $this->om->flush();
-                }
-            }
-
-            $this->om->flush();
         }
+
+        if (count($this->om->getRepository(WidgetContainerConfig::class)->findAll()) > 0) {
+            $this->log('Containers Config already migrated. Truncate manually to try again.');
+        } else {
+            $this->log('WidgetContainerConfig migration.');
+            $sql = "
+                INSERT INTO claro_widget_container_config (id, uuid, widget_name, color, backgroundType, background, position, layout, widget_container_id)
+                SELECT container.id, (SELECT UUID()) as uuid, instance_temp.name, temp.color, 'none', temp.color, '0', '[1]', container.id
+                FROM claro_widget_container container
+                LEFT JOIN claro_widget_instance instance ON instance.container_id = container.id
+                LEFT JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = instance.id
+                LEFT JOIN claro_widget_display_config temp ON temp.widget_instance_id = instance_temp.id";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        }
+
+        $this->log('Link container to home tab.');
+        $sql =
+          '
+            UPDATE claro_widget_container container
+            LEFT JOIN claro_widget_home_tab_config htc ON htc.id = container.id
+            LEFT JOIN claro_home_tab tab ON tab.id = htc.home_tab_id
+            LEFT JOIN claro_widget_instance instance ON instance.id = htc.widget_instance_id
+            SET container.homeTab_id = tab.id
+          ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
 
         if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
             $this->log('SimpleTextWidget already migrated');
@@ -189,46 +206,23 @@ class Updater120000 extends Updater
         }
 
         $this->log('Updating HomeTabs titles...');
+        /*
+                $tabs = $this->om->getRepository(HomeTabConfig::class)->findAll();
+                $i = 0;
 
-        $tabs = $this->om->getRepository(HomeTabConfig::class)->findAll();
-        $i = 0;
+                foreach ($tabs as $tab) {
+                    if (!$tab->getLongTitle() || !$tab->getName()) {
+                        $this->updateTabTitle($tab);
+                    }
 
-        foreach ($tabs as $tab) {
-            if (!$tab->getLongTitle() || !$tab->getName()) {
-                $this->updateTabTitle($tab);
-            }
+                    ++$i;
 
-            ++$i;
+                    if (0 === $i % 200) {
+                        $this->om->flush();
+                    }
+                }
 
-            if (0 === $i % 200) {
-                $this->om->flush();
-            }
-        }
-
-        $this->om->flush();
-    }
-
-    private function restoreWidgetContainer($row)
-    {
-        $widgetContainer = new WidgetContainer();
-        $widgetContainerConfig = new WidgetContainerConfig();
-        $widgetContainerConfig->setWidgetContainer($widgetContainer);
-
-        $sql = 'SELECT * FROM claro_widget_instance_temp where id = '.$row['widget_instance_id'];
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $widgetInstance = $stmt->fetch();
-
-        $this->log('migrating '.$widgetInstance['name'].' ...');
-        $entity = $this->om->getRepository(WidgetInstance::class)->find($row['widget_instance_id']);
-        $widgetContainer->addInstance($entity);
-        $widgetContainerConfig->setBackground($row['color']);
-        $widgetContainerConfig->setName($widgetInstance['name']);
-        $widgetContainerConfig->setLayout([1]);
-        $widgetContainerConfig->setWidgetContainer($widgetContainer);
-
-        $this->om->persist($widgetContainer);
-        $this->om->persist($widgetContainerConfig);
+                $this->om->flush();*/
     }
 
     private function updateTabTitle(HomeTabConfig $tab)
@@ -247,41 +241,6 @@ class Updater120000 extends Updater
         $tab->setName(strip_tags($tab->getLongTitle()));
 
         $this->om->persist($tab);
-    }
-
-    private function linkWidgetsInstanceToContainers()
-    {
-        $this->log('Link WidgetInstances to WidgetContainer...');
-
-        $sql = 'SELECT * FROM claro_widget_home_tab_config';
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $i = 0;
-
-        foreach ($stmt->fetchAll() as $rowConfig) {
-            ++$i;
-            $this->log('Linking for homeTabConfig '.$rowConfig['id']);
-            $this->restoreWidgetInstanceLink($rowConfig);
-
-            if (0 === $i % 200) {
-                $this->om->flush();
-            }
-        }
-
-        $this->om->flush();
-    }
-
-    private function restoreWidgetInstanceLink($row)
-    {
-        $homeTab = $this->om->getRepository(HomeTab::class)->find($row['home_tab_id']);
-        $instance = $this->om->getRepository(WidgetInstance::class)->find($row['widget_instance_id']);
-        //only one instance per container during the migration
-        $container = $instance->getContainer();
-        // /shrug
-        if ($container) {
-            $container->setHomeTab($homeTab);
-            $this->om->persist($container);
-        }
     }
 
     private function checkDesktopTabs()
