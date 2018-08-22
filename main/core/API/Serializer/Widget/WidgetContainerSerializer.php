@@ -133,7 +133,7 @@ class WidgetContainerSerializer
                     $widgetInstance = $this->serializer->deserialize(WidgetInstance::class, $content, $options);
                     $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
                     $widgetInstanceConfig->setPosition($index);
-                    $widgetInstance->setContainer($widgetContainer);
+                    $widgetContainer->addInstance($widgetInstance);
 
                     // We either do this or cascade persist ¯\_(ツ)_/¯
                     $this->om->persist($widgetInstance);

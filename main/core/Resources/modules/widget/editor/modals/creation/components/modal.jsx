@@ -60,13 +60,20 @@ class WidgetCreationModal extends Component {
     }
   }
 
+  close() {
+    this.props.fadeModal()
+    this.changeStep('layout')
+    this.props.reset()
+  }
+
   render() {
     return (
       <Modal
-        {...omit(this.props, 'widget', 'saveEnabled', 'startCreation', 'create')}
+        {...omit(this.props, 'widget', 'saveEnabled', 'startCreation', 'create', 'reset')}
         icon="fa fa-fw fa-plus"
         title={trans('new_section')}
         subtitle={this.renderStepTitle()}
+        fadeModal={() => this.close()}
       >
         {this.renderStep()}
 
@@ -79,7 +86,7 @@ class WidgetCreationModal extends Component {
             label={trans('add', {}, 'actions')}
             callback={() => {
               this.props.create(this.props.widget)
-              this.props.fadeModal()
+              this.close()
             }}
           />
         }
@@ -91,6 +98,7 @@ class WidgetCreationModal extends Component {
 WidgetCreationModal.propTypes = {
   create: T.func.isRequired,
   fadeModal: T.func.isRequired,
+  reset: T.func,
 
   // from redux store
   widget: T.shape(
