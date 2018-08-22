@@ -69,8 +69,6 @@ class UrlListener
      */
     public function load(LoadResourceEvent $event)
     {
-        $resourceNode = $event->getResourceNode();
-
         /** @var Url $url */
         $url = $event->getResource();
 
