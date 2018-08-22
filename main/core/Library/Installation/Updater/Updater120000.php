@@ -55,32 +55,24 @@ class Updater120000 extends Updater
 
     public function updateTabsStructure()
     {
-        $sql = 'SELECT * FROM claro_home_tab_temp ';
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $i = 0;
-        $all = $stmt->fetchAll();
-
         $this->log('Restoring HomeTabConfigs...');
 
-        foreach ($all as $rowConfig) {
-            ++$i;
-            $this->log('Restoring '.$i.' element.');
-            $configs = $this->om->getRepository(HomeTabConfig::class)->findBy(['homeTab' => $rowConfig['id']]);
+        $sql = '
+            UPDATE claro_home_tab_config config
+            LEFT JOIN claro_home_tab_temp tab
+            ON config.home_tab_id = tab.id
+            SET config.name = tab.name';
 
-            foreach ($configs as $config) {
-                $config->setName($rowConfig['name']);
-                $config->setCenterTitle(false);
-                $config->setLongTitle('');
-                $this->om->persist($config);
-            }
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
 
-            if (0 === $i % 100) {
-                $this->om->flush();
-            }
-        }
+        $sql = 'UPDATE claro_home_tab_config set longTitle = ""';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
 
-        $this->om->flush();
+        $sql = 'UPDATE claro_home_tab_config set centerTitle = false';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     public function postUpdate()
@@ -95,7 +87,7 @@ class Updater120000 extends Updater
         $this->linkWidgetsInstanceToContainers();
         $this->restoreWidgetInstancesConfigs();
         $this->checkDesktopTabs();
-        $this->deactivateActivityResourceType();        
+        $this->deactivateActivityResourceType();
     }
 
     private function updateHomeTabType()
@@ -177,21 +169,23 @@ class Updater120000 extends Updater
         } else {
             $this->log('Migrating SimpleTextWidget to SimpleWidget...');
 
-            $sql = 'SELECT * FROM claro_simple_text_widget_config ';
+            $sql = '
+              INSERT INTO claro_widget_simple (id, content, widgetInstance_id)
+              SELECT id, content, widgetInstance_id from claro_simple_text_widget_config';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
-            $i = 0;
 
-            foreach ($stmt->fetchAll() as $rowConfig) {
-                $this->restoreTextConfig($rowConfig);
-                ++$i;
+            $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
 
-                if (0 === $i % 200) {
-                    $this->om->flush();
-                }
-            }
-
-            $this->om->flush();
+            $sql = "
+              UPDATE claro_widget_instance instance
+              LEFT JOIN claro_widget widget
+              ON instance.widget_id = instance.id
+              SET instance.widget_id = {$widget->getId()}
+              WHERE widget.name LIKE 'simple_text'"
+            ;
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
         }
 
         $this->log('Updating HomeTabs titles...');
@@ -235,26 +229,6 @@ class Updater120000 extends Updater
 
         $this->om->persist($widgetContainer);
         $this->om->persist($widgetContainerConfig);
-    }
-
-    private function restoreTextConfig($row)
-    {
-        $sql = 'SELECT * FROM claro_widget_instance_temp where id = '.$row['widgetInstance_id'];
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $widgetInstance = $stmt->fetch();
-
-        $this->log('migrating '.$widgetInstance['name'].' ...');
-        $entity = $this->om->getRepository(WidgetInstance::class)->find($row['widgetInstance_id']);
-
-        $simpleWidget = new SimpleWidget();
-        $simpleWidget->setContent($row['content']);
-        $this->log('migrating content of default'.$widgetInstance['name'].' ...');
-        $simpleWidget->setWidgetInstance($entity);
-        $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
-        $entity->setWidget($widget);
-        $this->om->persist($entity);
-        $this->om->persist($simpleWidget);
     }
 
     private function updateTabTitle(HomeTabConfig $tab)
