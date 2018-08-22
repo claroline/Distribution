@@ -181,6 +181,19 @@ class Updater120000 extends Updater
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
 
+        $this->log('Link instances to container.');
+
+        $sql =
+          '
+            UPDATE claro_widget_instance instance
+            LEFT JOIN claro_widget_display_config wdc ON wdc.widget_instance_id = instance.id
+            LEFT JOIN claro_widget_container container ON container.id = wdc.id
+            SET instance.container_id = container.id
+          ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
         if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
             $this->log('SimpleTextWidget already migrated');
         } else {
