@@ -19,7 +19,6 @@ import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/content/
 import {selectors} from '#/main/core/widget/content/modals/creation/store'
 
 const ContentCreationModal = props => {
-
   const renderStepTitle = () => {
     switch(props.currentStep) {
       case 'widget':

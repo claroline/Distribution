@@ -6,7 +6,7 @@ import {selectors as contentSelectors} from '#/main/core/widget/content/store'
 
 const ResourceWidget = connect(
   (state) => ({
-    resource: contentSelectors.parameters(state).resource
+    resourceNode: contentSelectors.parameters(state).resource
   })
 )(ResourceWidgetComponent)
 

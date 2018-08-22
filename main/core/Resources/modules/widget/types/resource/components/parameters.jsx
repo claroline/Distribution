@@ -8,7 +8,6 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/data/types/resource/prop-types'
 
-import {actions as widgetContentActions} from '#/main/core/widget/content/modals/creation/store'
 import {MODAL_WIDGET_CONTENT} from '#/main/core/widget/content/modals/creation'
 
 const ResourceWidgetForm = (props) =>
@@ -44,7 +43,6 @@ ResourceWidgetForm.propTypes = {
   showContentParametersModal: T.func.isRequired
 }
 
-
 const ResourceWidgetParameters = connect(
   null,
   (dispatch) => ({
@@ -52,7 +50,6 @@ const ResourceWidgetParameters = connect(
       dispatch(formActions.updateProp(formName, prop, value))
     },
     showContentParametersModal(resource) {
-      dispatch(widgetContentActions.setStep('parameters'))
       dispatch(modalActions.showModal(MODAL_WIDGET_CONTENT, {resource: resource}))
     }
   })
