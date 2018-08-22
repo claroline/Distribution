@@ -38,7 +38,6 @@ class LoadHomeTabData implements RequiredFixture
         $desktopHomeTabConfig = new HomeTabConfig();
         $desktopHomeTabConfig->setHomeTab($desktopHomeTab);
         $desktopHomeTabConfig->setType(HomeTab::TYPE_ADMIN_DESKTOP);
-        $desktopHomeTab->setAdministration(true);
         $desktopHomeTabConfig->setVisible(true);
         $desktopHomeTabConfig->setLocked(false);
         $desktopHomeTabConfig->setTabOrder(1);
