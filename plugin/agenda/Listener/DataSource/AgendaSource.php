@@ -49,6 +49,7 @@ class AgendaSource
         $options = $event->getOptions() ? $event->getOptions() : [];
         $options['sortBy'] = 'start';
         $options['hiddenFilters']['types'] = ['event'];
+        $options['hiddenFilters']['endAfter'] = new \DateTime();
 
         if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
             $options['hiddenFilters']['workspaces'] = [$event->getWorkspace()->getUuid()];
@@ -70,6 +71,7 @@ class AgendaSource
         $options = $event->getOptions() ? $event->getOptions() : [];
         $options['sortBy'] = 'start';
         $options['hiddenFilters']['types'] = ['task'];
+        $options['hiddenFilters']['endAfter'] = new \DateTime();
 
         if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
             $options['hiddenFilters']['workspaces'] = [$event->getWorkspace()->getUuid()];

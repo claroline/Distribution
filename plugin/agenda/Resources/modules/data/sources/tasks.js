@@ -18,6 +18,12 @@ export default {
         label: trans('description'),
         displayed: true
       }, {
+        name: 'meta.isTaskDone',
+        alias: 'isTaskDone',
+        type: 'boolean',
+        label: trans('task_done', {}, 'agenda'),
+        displayed: true
+      }, {
         name: 'allDay',
         type: 'boolean',
         label: trans('all_day', {}, 'agenda'),
