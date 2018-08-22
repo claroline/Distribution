@@ -56,7 +56,6 @@ class DataSource
         self::CONTEXT_ADMINISTRATION,
     ];
 
-
     /**
      * A list of tags to group similar sources.
      *

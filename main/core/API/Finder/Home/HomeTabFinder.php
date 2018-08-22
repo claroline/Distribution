@@ -68,7 +68,6 @@ class HomeTabFinder extends AbstractFinder
                             $qb->expr()->in('obj', $subQuery2)
                         );
                         $qb->setParameter('adminDesktop', HomeTab::TYPE_ADMIN_DESKTOP);
-
                     } else {
                         $expr[] = $qb->expr()->orX(
                           $qb->expr()->eq('obj.type', ':adminDesktop'),

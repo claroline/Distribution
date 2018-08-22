@@ -34,7 +34,6 @@ class HomeTab
     const TYPE_DESKTOP = 'desktop';
     const TYPE_ADMIN_DESKTOP = 'administration';
 
-
     /**
      * @ORM\Column(nullable=false)
      */

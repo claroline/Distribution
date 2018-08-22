@@ -105,7 +105,6 @@ WidgetCreationModal.propTypes = {
     WidgetContainerTypes.propTypes
   ).isRequired,
   startCreation: T.func.isRequired,
-  reset: T.func.isRequired,
   saveEnabled: T.bool.isRequired
 }
 
