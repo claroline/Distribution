@@ -1,16 +1,16 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {PropTypes as T} from 'prop-types'
+// import {connect} from 'react-redux'
+// import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {actions as formActions} from '#/main/app/content/form/store'
-import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/data/types/resource/prop-types'
+// import {actions as modalActions} from '#/main/app/overlay/modal/store'
+// import {actions as formActions} from '#/main/app/content/form/store'
+// import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/data/types/resource/prop-types'
+//
+// import {MODAL_CONTENT_PARAMETERS} from '#/main/core/widget/content/modals/parameters'
 
-import {MODAL_CONTENT_PARAMETERS} from '#/main/core/widget/content/modals/parameters'
-
-const ResourceWidgetForm = (props) =>
+const ResourceWidgetParameters = (props) =>
   <FormData
     embedded={true}
     level={5}
@@ -37,29 +37,29 @@ const ResourceWidgetForm = (props) =>
     ]}
   />
 
-ResourceWidgetForm.propTypes = {
-  name: T.string.isRequired,
-  resource: T.shape(ResourceNodeTypes.propTypes),
-  updateProp: T.func.isRequired,
-  showContentParametersModal: T.func.isRequired,
-  modal: T.bool.isRequired
-}
+// ResourceWidgetForm.propTypes = {
+//   name: T.string.isRequired,
+//   resource: T.shape(ResourceNodeTypes.propTypes),
+//   updateProp: T.func.isRequired,
+//   showContentParametersModal: T.func.isRequired,
+//   modal: T.bool.isRequired
+// }
 
-ResourceWidgetForm.defaultProps = {
-  modal: false
-}
+// ResourceWidgetForm.defaultProps = {
+//   modal: false
+// }
 
-const ResourceWidgetParameters = connect(
-  null
-  // (dispatch) => ({
-  //   updateProp(formName, prop, value) {
-  //     dispatch(formActions.updateProp(formName, prop, value))
-  //   },
-  //   showContentParametersModal(resource) {
-  //     dispatch(modalActions.showModal(MODAL_CONTENT_PARAMETERS, {resource: resource}))
-  //   }
-  // })
-)(ResourceWidgetForm)
+// const ResourceWidgetParameters = connect(
+//   null
+//   // (dispatch) => ({
+//   //   updateProp(formName, prop, value) {
+//   //     dispatch(formActions.updateProp(formName, prop, value))
+//   //   },
+//   //   showContentParametersModal(resource) {
+//   //     dispatch(modalActions.showModal(MODAL_CONTENT_PARAMETERS, {resource: resource}))
+//   //   }
+//   // })
+// )(ResourceWidgetForm)
 
 export {
   ResourceWidgetParameters
