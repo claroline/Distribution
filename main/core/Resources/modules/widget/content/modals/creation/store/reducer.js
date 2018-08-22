@@ -6,9 +6,12 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
 import {WidgetInstance as WidgetInstanceTypes} from '#/main/core/widget/content/prop-types'
 import {selectors} from '#/main/core/widget/content/modals/creation/store/selectors'
-import {WIDGET_CONTENTS_LOAD} from '#/main/core/widget/content/modals/creation/store/actions'
+import {WIDGET_CONTENTS_LOAD, MODAL_STEP_SET} from '#/main/core/widget/content/modals/creation/store/actions'
 
 const reducer = combineReducers({
+  currentStep: makeReducer('widget', {
+    [MODAL_STEP_SET]: (state, action) => action.stepName
+  }),
   widgets: makeReducer([], {
     [WIDGET_CONTENTS_LOAD]: (state, action) => action.widgets
   }),

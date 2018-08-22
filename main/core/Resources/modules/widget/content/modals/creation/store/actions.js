@@ -10,6 +10,7 @@ import {selectors} from '#/main/core/widget/content/modals/creation/store/select
 
 // action names
 export const WIDGET_CONTENTS_LOAD = 'WIDGET_CONTENTS_LOAD'
+export const MODAL_STEP_SET = 'MODAL_STEP_SET'
 
 // action creators
 export const actions = {}
@@ -22,6 +23,8 @@ actions.fetchContents = (context) => ({
     success: (response, dispatch) => dispatch(actions.loadContents(response.widgets, response.dataSources))
   }
 })
+
+actions.setStep = makeActionCreator(MODAL_STEP_SET, 'stepName')
 
 /**
  * Shortcut to update the content.

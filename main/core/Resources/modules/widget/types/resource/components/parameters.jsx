@@ -27,12 +27,8 @@ const ResourceWidgetForm = (props) =>
             type: 'resource',
             required: true,
             onChange: (selected) => {
-              console.log('onChange')
-              console.log(selected)
               props.updateProp(props.name, 'parameters.resource', selected)
-              // if (props.modal) {
               props.showContentParametersModal(props.resource)
-              // }
             }
           }
         ]
@@ -44,13 +40,9 @@ ResourceWidgetForm.propTypes = {
   name: T.string.isRequired,
   resource: T.shape(ResourceNodeTypes.propTypes),
   updateProp: T.func.isRequired,
-  showContentParametersModal: T.func.isRequired,
-  modal: T.bool.isRequired
+  showContentParametersModal: T.func.isRequired
 }
 
-ResourceWidgetForm.defaultProps = {
-  modal: false
-}
 
 const ResourceWidgetParameters = connect(
   null,
