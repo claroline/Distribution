@@ -19,7 +19,8 @@ export default {
         displayed: true
       }, {
         name: 'meta.publishedAt',
-        type: 'string',
+        alias: 'publicationDate',
+        type: 'date',
         label: trans('date'),
         displayed: true
       }, {

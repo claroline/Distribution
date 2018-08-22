@@ -19,7 +19,8 @@ export default {
         displayed: true
       }, {
         name: 'meta.created',
-        type: 'string',
+        alias: 'creationDate',
+        type: 'date',
         label: trans('date'),
         displayed: true
       }, {

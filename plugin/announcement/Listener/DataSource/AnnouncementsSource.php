@@ -47,6 +47,7 @@ class AnnouncementsSource
     public function getData(DataSourceEvent $event)
     {
         $options = $event->getOptions() ? $event->getOptions() : [];
+        $options['sortBy'] = '-publicationDate';
         $options['hiddenFilters']['visible'] = true;
 
         if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
