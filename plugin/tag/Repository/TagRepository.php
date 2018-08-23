@@ -138,7 +138,10 @@ class TagRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('name', $name);
 
-        return $query->getOneOrNullResult();
+        //integrity constraints don't force that so it may have errors
+        $results = $query->getResult();
+
+        return 0 === count($results) ? null : $results[0];
     }
 
     public function findOneUserTagByName(User $user, $name)
@@ -153,7 +156,10 @@ class TagRepository extends EntityRepository
         $query->setParameter('user', $user);
         $query->setParameter('name', $name);
 
-        return $query->getOneOrNullResult();
+        //integrity constraints don't force that so it may have errors
+        $results = $query->getResult();
+
+        return 0 === count($results) ? null : $results[0];
     }
 
     public function findTagsByObject(

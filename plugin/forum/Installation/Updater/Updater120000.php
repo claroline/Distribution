@@ -43,6 +43,7 @@ class Updater120000 extends Updater
 
         $this->restoreSubjectCategories();
         $this->createForumUsers();
+        $this->flagFirstMessage();
     }
 
     private function restoreSubjectCategories()
@@ -50,7 +51,7 @@ class Updater120000 extends Updater
         $sql = "
           SELECT COUNT(object.id) as count
           FROM claro_tagbundle_tagged_object object
-          WHERE object.object_class LIKE 'Claroline\ForumBundle\Entity\Subject'
+          WHERE object.object_class LIKE 'Claroline\\ForumBundle\\Entity\\Subject'
         ";
         $stmt = $this->executeSql($sql);
         $count = $stmt->fetchColumn(0);
@@ -65,11 +66,13 @@ class Updater120000 extends Updater
         $this->log('Set subject forums...');
 
         $sql = '
-          UPDATE claro_forum_subject subject
-          JOIN claro_forum_subject_temp_new tmp on tmp.id = subject.id
-          JOIN claro_forum_category tmp.category_id = category.id
-          SET subject.forum_id = category.forum_id
+            UPDATE claro_forum_subject subject
+            JOIN claro_forum_subject_temp_new tmp on tmp.id = subject.id
+            JOIN claro_forum_category category on tmp.category_id = category.id
+            SET subject.forum_id = category.forum_id;
         ';
+
+        $this->executeSql($sql);
 
         //step 2: restore tags from categories
         $this->log('Insert tags...');
@@ -84,7 +87,7 @@ class Updater120000 extends Updater
 
         $sql = "
             INSERT INTO claro_tagbundle_tagged_object (tag_id, object_class, object_id, object_name)
-            SELECT tag.id, 'Claroline\ForumBundle\Entity\Subject', subject.uuid, subject.title
+            SELECT tag.id, 'Claroline\\ForumBundle\\Entity\\Subject', subject.uuid, subject.title
             FROM claro_forum_category category
             LEFT JOIN claro_forum_subject_temp_new tmp on tmp.category_id = category.id
             LEFT JOIN claro_forum_subject subject on tmp.id = subject.id
@@ -133,5 +136,15 @@ class Updater120000 extends Updater
         } else {
             $this->log('Users already loaded...');
         }
+    }
+
+    private function flagFirstMessage()
+    {
+        $sql = '
+            UPDATE claro_forum_message message
+            JOIN claro_forum_subject subject on message.subject_id = subject.id
+            JOIN claro_forum_category tmp.category_id = category.id
+            SET message.first = true
+        ';
     }
 }
