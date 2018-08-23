@@ -6,7 +6,7 @@ import {trans} from '#/main/core/translation'
 import {actions as listActions} from '#/main/app/content/list/store'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store'
 import {Calendar} from '#/main/core/layout/calendar/components/calendar'
-import {select} from '#/plugin/blog/resources/blog/selectors'
+import {selectors} from '#/plugin/blog/resources/blog/store'
 
 const BlogCalendarComponent = props =>
   <div key='redactors' className="panel panel-default">
@@ -27,11 +27,11 @@ BlogCalendarComponent.propTypes = {
 
 const BlogCalendar = connect(
   state => ({
-    calendarSelectedDate: select.calendarSelectedDate(state)
+    calendarSelectedDate: selectors.calendarSelectedDate(state)
   }),
   dispatch => ({
     searchByDate: (date) => {
-      dispatch(listActions.addFilter('posts', 'publicationDate', date))
+      dispatch(listActions.addFilter(selectors.STORE_NAME+'.posts', 'publicationDate', date))
       dispatch(postActions.initDataList())
     }
   })

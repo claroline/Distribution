@@ -11,7 +11,7 @@ import {trans} from '#/main/core/translation'
 import {actions as listActions} from '#/main/app/content/list/store'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store'
 import {Section, Sections} from '#/main/core/layout/components/sections'
-import {select} from '#/plugin/blog/resources/blog/selectors'
+import {selectors} from '#/plugin/blog/resources/blog/store'
 
 const ArchivesComponent = props =>
   <div key='redactors' className="panel panel-default">
@@ -49,14 +49,14 @@ ArchivesComponent.propTypes = {
 
 const Archives = connect(
   state => ({
-    archives: select.blog(state).data.archives
+    archives: selectors.blog(state).data.archives
   }),
   dispatch => ({
     searchByRange: (month, year) => {
       let from = moment([year, month])
       let format = getApiFormat()
-      dispatch(listActions.addFilter('posts', 'fromDate', from.format(format)))
-      dispatch(listActions.addFilter('posts', 'toDate', from.endOf('month').format(format)))
+      dispatch(listActions.addFilter(selectors.STORE_NAME+'.posts', 'fromDate', from.format(format)))
+      dispatch(listActions.addFilter(selectors.STORE_NAME+'.posts', 'toDate', from.endOf('month').format(format)))
       dispatch(postActions.initDataList())
     }
   })
