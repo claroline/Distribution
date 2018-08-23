@@ -60,16 +60,8 @@ class Updater120000 extends Updater
             UPDATE claro_home_tab_config config
             LEFT JOIN claro_home_tab_temp tab
             ON config.home_tab_id = tab.id
-            SET config.name = tab.name';
+            SET config.name = tab.name, config.longTitle = name, config.centerTitle = false';
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-
-        $sql = 'UPDATE claro_home_tab_config set longTitle = ""';
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-
-        $sql = 'UPDATE claro_home_tab_config set centerTitle = false';
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
     }
@@ -210,50 +202,13 @@ class Updater120000 extends Updater
             $sql = "
               UPDATE claro_widget_instance instance
               LEFT JOIN claro_widget widget
-              ON instance.widget_id = instance.id
+              ON instance.widget_id = widget.id
               SET instance.widget_id = {$widget->getId()}
               WHERE widget.name LIKE 'simple_text'"
             ;
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
         }
-
-        $this->log('Updating HomeTabs titles...');
-        /*
-                $tabs = $this->om->getRepository(HomeTabConfig::class)->findAll();
-                $i = 0;
-
-                foreach ($tabs as $tab) {
-                    if (!$tab->getLongTitle() || !$tab->getName()) {
-                        $this->updateTabTitle($tab);
-                    }
-
-                    ++$i;
-
-                    if (0 === $i % 200) {
-                        $this->om->flush();
-                    }
-                }
-
-                $this->om->flush();*/
-    }
-
-    private function updateTabTitle(HomeTabConfig $tab)
-    {
-        $this->log('Renaming tab '.$tab->getName().'...');
-
-        if ('' === trim(strip_tags($tab->getName()))) {
-            $tab->setName('Unknown');
-        }
-
-        if (!$tab->getLongTitle()) {
-            $tab->setLongTitle(strip_tags($tab->getName()));
-        }
-
-        //maybe substr here
-        $tab->setName(strip_tags($tab->getLongTitle()));
-
-        $this->om->persist($tab);
     }
 
     private function checkDesktopTabs()
