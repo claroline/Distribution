@@ -43,7 +43,6 @@ class Updater120000 extends Updater
 
         $this->restoreSubjectCategories();
         $this->createForumUsers();
-        $this->restoreForeignKeys();
     }
 
     private function restoreSubjectCategories()
@@ -94,68 +93,6 @@ class Updater120000 extends Updater
         ";
 
         $this->executeSql($sql);
-    }
-
-    //constraints from migrations. Put them back if they weren't here yet
-    private function restoreForeignKeys()
-    {
-        $this->executeSql('
-            ALTER TABLE claro_forum_subject
-            ADD CONSTRAINT FK_273AA20B29CCBAD0 FOREIGN KEY (forum_id)
-            REFERENCES claro_forum (id)
-            ON DELETE CASCADE
-        ', true);
-
-        $this->executeSql('
-            ALTER TABLE claro_forum_subject
-            ADD CONSTRAINT FK_273AA20B5BB66C05 FOREIGN KEY (poster_id)
-            REFERENCES claro_public_file (id)
-            ON DELETE SET NULL
-        ', true);
-        $this->executeSql('
-            CREATE UNIQUE INDEX UNIQ_273AA20BD17F50A6 ON claro_forum_subject (uuid)
-        ', true);
-        $this->executeSql('
-            CREATE INDEX IDX_273AA20B29CCBAD0 ON claro_forum_subject (forum_id)
-        ', true);
-        $this->executeSql('
-            CREATE INDEX IDX_273AA20B5BB66C05 ON claro_forum_subject (poster_id)
-        ', true);
-        $this->executeSql("
-            ALTER TABLE claro_forum
-            ADD validationMode VARCHAR(255) NOT NULL,
-            ADD maxComment INT NOT NULL,
-            ADD displayMessages INT NOT NULL,
-            ADD dataListOptions VARCHAR(255) NOT NULL,
-            ADD lockDate DATETIME DEFAULT NULL,
-            ADD show_overview TINYINT(1) DEFAULT '1' NOT NULL,
-            ADD description LONGTEXT DEFAULT NULL,
-            ADD uuid VARCHAR(36) NOT NULL,
-            DROP activate_notifications
-        ", true);
-        $this->executeSql('
-            CREATE UNIQUE INDEX UNIQ_F2869DFD17F50A6 ON claro_forum (uuid)
-        ', true);
-        $this->executeSql('
-            ALTER TABLE claro_forum_message
-            ADD parent_id INT DEFAULT NULL,
-            ADD uuid VARCHAR(36) NOT NULL,
-            ADD moderation VARCHAR(255) NOT NULL,
-            ADD flagged TINYINT(1) NOT NULL,
-            ADD first TINYINT(1) NOT NULL
-        ', true);
-        $this->executeSql('
-            ALTER TABLE claro_forum_message
-            ADD CONSTRAINT FK_6A49AC0E727ACA70 FOREIGN KEY (parent_id)
-            REFERENCES claro_forum_message (id)
-            ON DELETE CASCADE
-        ', true);
-        $this->executeSql('
-            CREATE UNIQUE INDEX UNIQ_6A49AC0ED17F50A6 ON claro_forum_message (uuid)
-        ', true);
-        $this->executeSql('
-            CREATE INDEX IDX_6A49AC0E727ACA70 ON claro_forum_message (parent_id)
-        ', true);
     }
 
     private function executeSql($sql, $force = false)
