@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\AnnouncementBundle\Listener\DataSource;
+namespace Claroline\AgendaBundle\Listener\DataSource;
 
-use Claroline\AnnouncementBundle\Entity\Announcement;
+use Claroline\AgendaBundle\Entity\Event;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\DataSource;
 use Claroline\CoreBundle\Event\DataSource\DataSourceEvent;
@@ -20,13 +20,13 @@ use JMS\DiExtraBundle\Annotation as DI;
 /**
  * @DI\Service
  */
-class AnnouncementsSource
+class AgendaSource
 {
     /** @var FinderProvider */
     private $finder;
 
     /**
-     * AnnouncementsSource constructor.
+     * AgendaSource constructor.
      *
      * @DI\InjectParams({
      *     "finder" = @DI\Inject("claroline.api.finder")
@@ -40,21 +40,40 @@ class AnnouncementsSource
     }
 
     /**
-     * @DI\Observe("data_source.announcements.load")
+     * @DI\Observe("data_source.events.load")
      *
      * @param DataSourceEvent $event
      */
-    public function getData(DataSourceEvent $event)
+    public function getEventsData(DataSourceEvent $event)
     {
         $options = $event->getOptions() ? $event->getOptions() : [];
-        $options['sortBy'] = '-publicationDate';
-        $options['hiddenFilters']['visible'] = true;
+        $options['hiddenFilters']['types'] = ['event'];
 
         if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
-            $options['hiddenFilters']['workspace'] = $event->getWorkspace()->getUuid();
+            $options['hiddenFilters']['workspaces'] = [$event->getWorkspace()->getUuid()];
         }
         $event->setData(
-            $this->finder->search(Announcement::class, $options)
+            $this->finder->search(Event::class, $options)
+        );
+
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("data_source.tasks.load")
+     *
+     * @param DataSourceEvent $event
+     */
+    public function getTasksData(DataSourceEvent $event)
+    {
+        $options = $event->getOptions() ? $event->getOptions() : [];
+        $options['hiddenFilters']['types'] = ['task'];
+
+        if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
+            $options['hiddenFilters']['workspaces'] = [$event->getWorkspace()->getUuid()];
+        }
+        $event->setData(
+            $this->finder->search(Event::class, $options)
         );
 
         $event->stopPropagation();
