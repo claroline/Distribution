@@ -55,6 +55,7 @@
     "move_destination": "Move chapter to :",
     "new_chapter": "New chapter",
     "new_subchapter": "New subchapter",
+    "no_configuration_for_resource": "There is no configuration for this resource.",
     "next": "Next chapter",
     "parent_chapter": "Parent chapter",
     "previous": "Previous chapter",

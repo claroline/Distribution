@@ -56,6 +56,7 @@
     "new_chapter": "Nouveau chapitre",
     "new_subchapter": "Nouveau sous-chapitre",
     "next": "Chapitre suivant",
+    "no_configuration_for_resource": "Il n'y a pas de configuration pour cette ressource.",
     "parent_chapter": "Chapitre parent",
     "previous": "Chapitre précédent",
     "reorganize": "Réorganiser",
