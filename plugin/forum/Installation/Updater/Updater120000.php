@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
+use Claroline\ForumBundle\Entity\Validation\User;
 use Claroline\InstallationBundle\Updater\Updater;
 use Doctrine\DBAL\Connection;
 
@@ -63,6 +64,11 @@ class Updater120000 extends Updater
             return;
         }
 
+        //step 1: restore forum subject
+
+        //step 2: restore tags from categories
+
+/*
         $sql = 'SELECT * FROM claro_forum_category where id =  '.$subject['category_id'];
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -98,39 +104,26 @@ class Updater120000 extends Updater
         ]);
 
         $this->container->get('event_dispatcher')->dispatch('claroline_tag_multiple_data', $event);
+        */
     }
 
     private function createForumUsers()
     {
-        $this->log('Build forum users...');
-        $forums = $this->om->getRepository('Claroline\ForumBundle\Entity\Forum')->findAll();
-        $i = 0;
+        $users = $this->om->getRepository(User::class)->findAll();
 
-        $this->om->startFlushSuite();
+        if (0 === count($users)) {
+            $this->log('Build forum users...');
 
-        foreach ($forums as $forum) {
-            $this->log('Build forum users for forum...'.$forum->getName());
+            $sql = '
+                INSERT INTO claro_forum_user (user_id, forum_id)
+                SELECT DISTINCT user.id, forum.id
+                FROM claro_forum forum
+                LEFT JOIN claro_forum_message message ON message.forum_id = forum.id
+                LEFT JOIN claro_user user on message.creator_id = user.id
+            ';
 
-            $messages = $this->container->get('claroline.api.finder')
-              ->fetch('Claroline\ForumBundle\Entity\Message', ['forum' => $forum->getUuid()]);
-
-            foreach ($messages as $message) {
-                $this->log('Build forum user for '.$message->getCreator()->getUsername());
-
-                $this->container->get('claroline.manager.forum_manager')->getValidationUser(
-                    $message->getCreator(),
-                    $forum,
-                    true
-                );
-            }
-
-            ++$i;
-
-            if (0 === $i % 100) {
-                $this->om->forceFlush();
-            }
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
         }
-
-        $this->om->endFlushSuite();
     }
 }
