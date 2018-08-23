@@ -60,7 +60,7 @@ class Updater120000 extends Updater
             UPDATE claro_home_tab_config config
             LEFT JOIN claro_home_tab_temp tab
             ON config.home_tab_id = tab.id
-            SET config.name = tab.name, config.longTitle = name, config.centerTitle = false';
+            SET config.name = tab.name, config.longTitle = tab.name, config.centerTitle = false';
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
