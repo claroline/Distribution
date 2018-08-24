@@ -13,6 +13,5 @@ actions.open = (formName, id = null) => (dispatch) => {
         }
       }
     })
-  } else {
   }
 }

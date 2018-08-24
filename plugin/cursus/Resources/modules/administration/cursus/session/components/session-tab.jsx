@@ -48,7 +48,6 @@ const SessionTab = connect(
     openForm(id = null) {
       if (id) {
         dispatch(actions.open('sessions.current', {}, id))
-      } else {
       }
     }
   })

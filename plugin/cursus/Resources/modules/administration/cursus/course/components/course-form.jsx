@@ -5,19 +5,19 @@ import {connect} from 'react-redux'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 // import {actions as formActions} from '#/main/app/content/form/store/actions'
 // import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+import {LINK_BUTTON} from '#/main/app/buttons'
+// import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {FormData} from '#/main/app/content/form/containers/data'
-import {ListData} from '#/main/app/content/list/containers/data'
+// import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans} from '#/main/core/translation'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+// import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 
 import {Course as CourseType} from '#/plugin/cursus/administration/cursus/prop-types'
 // import {GroupList} from '#/main/core/administration/user/group/components/group-list'
 // import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
-const CourseFormComponent = props =>
+const CourseFormComponent = () =>
   <FormData
     level={3}
     name="courses.current"
@@ -150,45 +150,11 @@ const CourseFormComponent = props =>
       }
     ]}
   >
-    {/*<FormSections level={3}>*/}
-      {/*<FormSection*/}
-        {/*className="embedded-list-section"*/}
-        {/*icon="fa fa-fw fa-user"*/}
-        {/*title={trans('users')}*/}
-        {/*disabled={props.new}*/}
-        {/*actions={[*/}
-          {/*{*/}
-            {/*type: CALLBACK_BUTTON,*/}
-            {/*icon: 'fa fa-fw fa-plus',*/}
-            {/*label: trans('add_user'),*/}
-            {/*callback: () => props.pickUsers(props.role.id),*/}
-            {/*disabled: props.role.restrictions && null !== props.role.restrictions.maxUsers && props.role.restrictions.maxUsers <= props.role.meta.users*/}
-          {/*}*/}
-        {/*]}*/}
-      {/*>*/}
-        {/*<ListData*/}
-          {/*name="roles.current.users"*/}
-          {/*fetch={{*/}
-            {/*url: ['apiv2_role_list_users', {id: props.role.id}],*/}
-            {/*autoload: props.role.id && !props.new*/}
-          {/*}}*/}
-          {/*primaryAction={UserList.open}*/}
-          {/*delete={{*/}
-            {/*url: ['apiv2_role_remove_users', {id: props.role.id}]*/}
-          {/*}}*/}
-          {/*definition={UserList.definition}*/}
-          {/*card={UserList.card}*/}
-        {/*/>*/}
-      {/*</FormSection>*/}
-    {/*</FormSections>*/}
   </FormData>
 
 CourseFormComponent.propTypes = {
   new: T.bool.isRequired,
-  course: T.shape(CourseType.propTypes).isRequired,
-  // updateProp: T.func.isRequired,
-  // pickUsers: T.func.isRequired,
-  // pickGroups: T.func.isRequired
+  course: T.shape(CourseType.propTypes).isRequired
 }
 
 const CourseForm = connect(

@@ -3,17 +3,17 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {MODAL_DATA_LIST} from '#/main/app/modals/list'
-import {FormData} from '#/main/app/content/form/containers/data'
-import {ListData} from '#/main/app/content/list/containers/data'
+import {LINK_BUTTON} from '#/main/app/buttons'
+// import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+// import {FormData} from '#/main/app/content/form/containers/data'
+// import {ListData} from '#/main/app/content/list/containers/data'
 
-import {trans} from '#/main/core/translation'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+// import {trans} from '#/main/core/translation'
+// import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 
 import {Session as SessionType} from '#/plugin/cursus/administration/cursus/prop-types'
 
-const SessionFormComponent = props =>
+const SessionFormComponent = () =>
   <div>
     Session
   </div>
