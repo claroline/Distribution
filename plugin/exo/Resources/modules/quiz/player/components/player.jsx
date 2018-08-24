@@ -129,7 +129,7 @@ class PlayerComponent extends Component {
             {this.props.isProgressionDisplayed && this.props.paper && this.props.paper.structure && this.props.allAnswers && papersSelect.paperItemsCount(this.props.paper) &&
               <div className="quiz-progression-container">
                 <ScoreGauge
-                  userScore={Object.values(this.props.allAnswers).filter(a => a.data && a.data.length > 0).length || 0}
+                  userScore={Object.values(this.props.allAnswers).filter(a => a.data && a.data.length > 0).length}
                   maxScore={papersSelect.paperItemsCount(this.props.paper)}
                   size="sm"
                 />
