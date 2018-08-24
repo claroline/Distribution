@@ -114,6 +114,26 @@ class Version20180814085831 extends AbstractMigration
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_21DFDBA8D17F50A6 ON claro_cursusbundle_session_event_comment (uuid)
         ');
+        $this->addSql('
+            ALTER TABLE claro_cursusbundle_course_session_registration_queue 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE claro_cursusbundle_course_session_registration_queue SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_334FC296D17F50A6 ON claro_cursusbundle_course_session_registration_queue (uuid)
+        ');
+        $this->addSql('
+            ALTER TABLE claro_cursusbundle_document_model 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE claro_cursusbundle_document_model SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_A346BB4DD17F50A6 ON claro_cursusbundle_document_model (uuid)
+        ');
     }
 
     public function down(Schema $schema)
@@ -186,6 +206,20 @@ class Version20180814085831 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE claro_cursusbundle_session_event_user 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_334FC296D17F50A6 ON claro_cursusbundle_course_session_registration_queue
+        ');
+        $this->addSql('
+            ALTER TABLE claro_cursusbundle_course_session_registration_queue 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_A346BB4DD17F50A6 ON claro_cursusbundle_document_model
+        ');
+        $this->addSql('
+            ALTER TABLE claro_cursusbundle_document_model 
             DROP uuid
         ');
     }

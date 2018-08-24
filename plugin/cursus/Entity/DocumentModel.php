@@ -2,6 +2,7 @@
 
 namespace Claroline\CursusBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -11,6 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class DocumentModel
 {
+    use UuidTrait;
+
     const SESSION_INVITATION = 0;
     const SESSION_EVENT_INVITATION = 1;
     const SESSION_CERTIFICATE = 2;
@@ -41,6 +44,11 @@ class DocumentModel
      * @Assert\NotBlank()
      */
     protected $documentType;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {
