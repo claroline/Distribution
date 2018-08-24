@@ -1,4 +1,4 @@
-<?php
+mysql<?php
 
 namespace Claroline\ForumBundle\Installation\Updater;
 
@@ -145,6 +145,9 @@ class Updater120000 extends Updater
             JOIN claro_forum_subject subject on message.subject_id = subject.id
             JOIN claro_forum_category tmp.category_id = category.id
             SET message.first = true
+            WHERE 
         ';
+
+        $this->executeSql($sql);
     }
 }
