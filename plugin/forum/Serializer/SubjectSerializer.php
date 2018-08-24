@@ -143,6 +143,11 @@ class SubjectSerializer
      */
     public function deserialize($data, Subject $subject, array $options = [])
     {
+        $first = $this->messageFinder->findOneBy([
+          'subject' => $subject->getId(),
+          'first' => true,
+        ]);
+
         $this->sipe('id', 'setUuid', $data, $subject);
         $this->sipe('title', 'setTitle', $data, $subject);
         $this->sipe('meta.sticky', 'setSticked', $data, $subject);
@@ -150,11 +155,6 @@ class SubjectSerializer
         $this->sipe('meta.flagged', 'setFlagged', $data, $subject);
 
         if (isset($data['content'])) {
-            $first = $this->messageFinder->findOneBy([
-              'subject' => $subject->getId(),
-              'first' => true,
-            ]);
-
             if (!$first) {
                 $messageData = ['content' => $data['content']];
 
@@ -186,7 +186,9 @@ class SubjectSerializer
 
                 if ($creator) {
                     $subject->setCreator($creator);
-                    $first->setCreator($creator);
+                    if ($first) {
+                        $first->setCreator($creator);
+                    }
                 }
             }
         }
@@ -224,7 +226,9 @@ class SubjectSerializer
             }
         }
 
-        $this->om->persist($first);
+        if ($first) {
+            $this->om->persist($first);
+        }
 
         return $subject;
     }
