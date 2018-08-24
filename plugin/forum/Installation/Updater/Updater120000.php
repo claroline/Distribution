@@ -85,7 +85,7 @@ class Updater120000 extends Updater
             JOIN claro_resource_node node on forum.resourceNode_id = node.id
         ';
 
-        $this->executeSql($sql);
+        $this->executeSql($sql, true);
 
         $this->log('Insert tagged objects...');
 
@@ -156,6 +156,6 @@ class Updater120000 extends Updater
             WHERE
         ';
 
-        $this->executeSql($sql);
+        $this->executeSql($sql, true);
     }
 }
