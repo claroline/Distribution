@@ -52,6 +52,14 @@ const WidgetCol = props =>
           callback={() => props.stopMovingContent()}
         />
         }
+        <Button
+          className="btn-link"
+          type="callback"
+          icon="fa fa-fw fa-trash-o"
+          label={trans('delete', {}, 'actions')}
+          dangerous={true}
+          callback={() => console.log(props.content)}
+        />
       </div>
     }
     {props.content &&
