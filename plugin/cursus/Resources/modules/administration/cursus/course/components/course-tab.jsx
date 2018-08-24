@@ -46,7 +46,7 @@ const CourseTabComponent = props =>
   />
 
 CourseTabComponent.propTypes = {
-  paramters: T.shape(ParametersType.propTypes),
+  parameters: T.shape(ParametersType.propTypes),
   openForm: T.func.isRequired
 }
 

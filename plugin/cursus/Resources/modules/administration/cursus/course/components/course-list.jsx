@@ -1,7 +1,6 @@
-import React from 'react'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
 
 const CourseList = {
   open: (row) => ({

@@ -1,10 +1,5 @@
-import {url} from '#/main/app/api'
-
 import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
-import {actions as listActions} from '#/main/app/content/list/store'
-
-// import {Role as RoleTypes} from '#/main/core/user/prop-types'
 
 export const actions = {}
 
@@ -19,19 +14,5 @@ actions.open = (formName, id = null) => (dispatch) => {
       }
     })
   } else {
-    // dispatch(formActions.resetForm(formName, RoleTypes.defaultProps, true))
   }
 }
-
-// actions.addUsers = (id, users) => ({
-//   [API_REQUEST]: {
-//     url: url(['apiv2_role_add_users', {id: id}], {ids: users}),
-//     request: {
-//       method: 'PATCH'
-//     },
-//     success: (data, dispatch) => {
-//       dispatch(listActions.invalidateData('roles.list'))
-//       dispatch(listActions.invalidateData('roles.current.users'))
-//     }
-//   }
-// })

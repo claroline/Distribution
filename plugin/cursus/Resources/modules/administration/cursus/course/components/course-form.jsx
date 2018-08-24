@@ -1,18 +1,17 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import classes from 'classnames'
-
-import {trans} from '#/main/core/translation'
 
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {actions as formActions} from '#/main/app/content/form/store/actions'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {FormData} from '#/main/app/content/form/containers/data'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
-import {ListData} from '#/main/app/content/list/containers/data'
-import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+// import {actions as formActions} from '#/main/app/content/form/store/actions'
+// import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+import {FormData} from '#/main/app/content/form/containers/data'
+import {ListData} from '#/main/app/content/list/containers/data'
+
+import {trans} from '#/main/core/translation'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 
 import {Course as CourseType} from '#/plugin/cursus/administration/cursus/prop-types'
 // import {GroupList} from '#/main/core/administration/user/group/components/group-list'
@@ -196,7 +195,7 @@ const CourseForm = connect(
   state => ({
     new: formSelect.isNew(formSelect.form(state, 'courses.current')),
     course: formSelect.data(formSelect.form(state, 'courses.current'))
-  }),
+  })
   // dispatch => ({
   //   updateProp(propName, propValue) {
   //     dispatch(formActions.updateProp('roles.current', propName, propValue))

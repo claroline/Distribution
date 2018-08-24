@@ -9,7 +9,7 @@ import {CourseTab, CourseTabActions} from '#/plugin/cursus/administration/cursus
 // import {CursusTab, CursusTabActions} from '#/plugin/cursus/administration/cursus/cursus/components/cursus-tab'
 // import {SessionEventTab, SessionEventTabActions} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-tab'
 
-const CursusTool = props =>
+const CursusTool = () =>
   <TabbedPageContainer
     title={trans('claroline_cursus_tool', {}, 'tools')}
     redirect={[

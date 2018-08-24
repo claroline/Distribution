@@ -13,7 +13,7 @@ const reducer = {
   }),
   parametersForm: parametersReducer,
   courses: coursesReducer,
-  sessions: sessionsReducer,
+  sessions: sessionsReducer
   // cursus: cursusReducer,
   // sessionEvents: sessionEventsReducer
 }

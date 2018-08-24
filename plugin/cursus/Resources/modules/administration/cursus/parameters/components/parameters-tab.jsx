@@ -2,9 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {Routes} from '#/main/app/router'
-
 import {actions as formActions} from '#/main/app/content/form/store'
+import {Routes} from '#/main/app/router'
 
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {Parameters} from '#/plugin/cursus/administration/cursus/parameters/components/parameters'

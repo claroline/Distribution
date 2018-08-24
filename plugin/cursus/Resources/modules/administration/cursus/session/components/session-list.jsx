@@ -1,7 +1,6 @@
-import React from 'react'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
 
 const SessionList = {
   open: (row) => ({
@@ -21,8 +20,7 @@ const SessionList = {
       type: 'string',
       label: trans('course', {}, 'cursus'),
       displayed: true,
-      calculated: (session) => session.course.title,
-      // render: (rowData) => rowData.course.title
+      calculated: (session) => session.course.title
     }, {
       name: 'meta.sessionStatus',
       alias: 'sessionStatus',

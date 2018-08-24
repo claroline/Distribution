@@ -3,8 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {Routes} from '#/main/app/router'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
@@ -25,7 +23,7 @@ const SessionTabActions = () =>
     />
   </PageActions>
 
-const SessionTabComponent = props =>
+const SessionTabComponent = () =>
   <Routes
     routes={[
       {
@@ -34,7 +32,7 @@ const SessionTabComponent = props =>
         component: Sessions
       }, {
         path: '/sessions/form/:id?',
-        component: SessionForm,
+        component: SessionForm
         // onEnter: (params) => props.openForm(params.id || null)
       }
     ]}
@@ -51,27 +49,6 @@ const SessionTab = connect(
       if (id) {
         dispatch(actions.open('sessions.current', {}, id))
       } else {
-        // dispatch(modalActions.showModal(MODAL_DATA_LIST, {
-        //   icon: 'fa fa-fw fa-user',
-        //   title: trans('register_users'),
-        //   subtitle: trans('workspace_register_select_users'),
-        //   confirmText: trans('select', {}, 'actions'),
-        //   name: 'users.picker',
-        //   definition: UserList.definition,
-        //   card: UserList.card,
-        //   fetch: {
-        //     url: ['apiv2_user_list_registerable'],
-        //     autoload: true
-        //   },
-        //   handleSelect: (users) => {
-        //     dispatch(modalActions.showModal(MODAL_DATA_LIST, getModalDefinition(
-        //       'fa fa-fw fa-user',
-        //       trans('register_users'),
-        //       workspace,
-        //       (roles) => roles.forEach(role => dispatch(actions.addUsersToRole(role, users)))
-        //     )))
-        //   }
-        // }))
       }
     }
   })

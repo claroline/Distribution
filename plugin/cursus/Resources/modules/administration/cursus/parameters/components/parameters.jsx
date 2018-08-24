@@ -2,10 +2,11 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {FormData} from '#/main/app/content/form/containers/data'
+
+import {trans} from '#/main/core/translation'
 
 import {actions} from '#/plugin/cursus/administration/cursus/parameters/store'
 import {Parameters as ParametersType} from '#/plugin/cursus/administration/cursus/prop-types'
