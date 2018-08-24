@@ -148,12 +148,19 @@ class Updater120000 extends Updater
 
     private function flagFirstMessage()
     {
+        //this is sql wizzardy on multiple levels
+        //keep first
+        //https://stackoverflow.com/questions/19414474/sql-select-distinct-but-keep-first
+        //and UPDATE
+        //https://stackoverflow.com/questions/45494/mysql-error-1093-cant-specify-target-table-for-update-in-from-clause
+
         $sql = '
-            UPDATE claro_forum_message message
-            JOIN claro_forum_subject subject on message.subject_id = subject.id
-            JOIN claro_forum_category tmp.category_id = category.id
-            SET message.first = true
-            WHERE
+            UPDATE claro_forum_message
+            SET first = true
+            WHERE id IN (
+              SELECT * from (SELECT message.id FROM claro_forum_message message GROUP BY message.subject_id ORDER BY MIN(id) ASC)
+              as t
+            )
         ';
 
         $this->executeSql($sql, true);
