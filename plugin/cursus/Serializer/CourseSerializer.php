@@ -68,6 +68,14 @@ class CourseSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/cursus/course.json';
+    }
+
+    /**
      * @param Course $course
      * @param array  $options
      *

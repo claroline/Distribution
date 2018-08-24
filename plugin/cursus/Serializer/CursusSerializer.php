@@ -71,6 +71,14 @@ class CursusSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/cursus/cursus.json';
+    }
+
+    /**
      * @param Cursus $cursus
      * @param array  $options
      *
@@ -124,10 +132,10 @@ class CursusSerializer
         $this->sipe('code', 'setCode', $data, $cursus);
         $this->sipe('title', 'setTitle', $data, $cursus);
         $this->sipe('description', 'setDescription', $data, $cursus);
-        $this->sipe('order', 'setCursusOrder', $data, $cursus);
-        $this->sipe('blocking', 'setBlocking', $data, $cursus);
-        $this->sipe('icon', 'setIcon', $data, $cursus);
-        $this->sipe('details', 'setDetails', $data, $cursus);
+        $this->sipe('meta.order', 'setCursusOrder', $data, $cursus);
+        $this->sipe('meta.blocking', 'setBlocking', $data, $cursus);
+        $this->sipe('meta.icon', 'setIcon', $data, $cursus);
+        $this->sipe('meta.details', 'setDetails', $data, $cursus);
 
         $parent = isset($data['parent']['id']) ?
             $this->cursusRepo->findOneBy(['uuid' => $data['parent']['id']]) :
