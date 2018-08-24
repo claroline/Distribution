@@ -116,8 +116,8 @@ class Message extends AbstractMessage
         return $this->flagged;
     }
 
-    public function setIsFirst()
+    public function setIsFirst($isFirst)
     {
-        $this->fist = true;
+        $this->first = $isFirst;
     }
 }

@@ -1,4 +1,4 @@
-mysql<?php
+<?php
 
 namespace Claroline\ForumBundle\Installation\Updater;
 
@@ -76,9 +76,13 @@ class Updater120000 extends Updater
 
         //step 2: restore tags from categories
         $this->log('Insert tags...');
+
         $sql = '
-            INSERT INTO claro_tagbundle_tag (tag_name)
-            SELECT name FROM claro_forum_category
+            INSERT INTO claro_tagbundle_tag (tag_name, user_id)
+            SELECT DISTINCT category.name, node.creator_id
+            FROM claro_forum_category category
+            JOIN claro_forum forum on category.forum_id = forum.id
+            JOIN claro_resource_node node on forum.resourceNode_id = node.id
         ';
 
         $this->executeSql($sql);
@@ -87,12 +91,16 @@ class Updater120000 extends Updater
 
         $sql = "
             INSERT INTO claro_tagbundle_tagged_object (tag_id, object_class, object_id, object_name)
-            SELECT tag.id, 'Claroline\\ForumBundle\\Entity\\Subject', subject.uuid, subject.title
+            SELECT DISTINCT tag.id, 'Claroline\\ForumBundle\\Entity\\Subject', subject.uuid, subject.title
             FROM claro_forum_category category
             LEFT JOIN claro_forum_subject_temp_new tmp on tmp.category_id = category.id
             LEFT JOIN claro_forum_subject subject on tmp.id = subject.id
             LEFT JOIN claro_tagbundle_tag tag on tag.tag_name = category.name
             LEFT JOIN claro_forum forum on category.forum_id = forum.id
+            JOIN claro_resource_node node on forum.resourceNode_id = node.id
+            JOIN claro_user clarouser on node.creator_id = clarouser.id
+            WHERE tag.user_id = clarouser.id
+
         ";
 
         $this->executeSql($sql);
@@ -145,7 +153,7 @@ class Updater120000 extends Updater
             JOIN claro_forum_subject subject on message.subject_id = subject.id
             JOIN claro_forum_category tmp.category_id = category.id
             SET message.first = true
-            WHERE 
+            WHERE
         ';
 
         $this->executeSql($sql);

@@ -219,5 +219,13 @@ class Version20180823161728 extends AbstractMigration
         $this->addSql('
             CREATE INDEX IDX_273AA20B12469DE2 ON claro_forum_subject (category_id)
         ');
+        $this->addSql('
+            CREATE UNIQUE INDEX `unique` ON claro_tagbundle_tagged_object (
+                object_id, object_class, object_name
+            )
+        ', false);
+        $this->addSql('
+            CREATE UNIQUE INDEX `unique` ON claro_tagbundle_tag (tag_name, user_id)
+        ', false);
     }
 }
