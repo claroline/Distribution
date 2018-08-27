@@ -75,6 +75,14 @@ class SessionSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/cursus/session.json';
+    }
+
+    /**
      * @param CourseSession $session
      * @param array         $options
      *
@@ -146,7 +154,6 @@ class SessionSerializer
         $this->sipe('meta.type', 'setType', $data, $session);
         $this->sipe('meta.sessionStatus', 'setSessionStatus', $data, $session);
         $this->sipe('meta.defaultSession', 'setDefaultSession', $data, $session);
-        $this->sipe('meta.creationDate', 'setCreationDate', $data, $session);
         $this->sipe('meta.order', 'setDisplayOrder', $data, $session);
         $this->sipe('meta.color', 'setColor', $data, $session);
         $this->sipe('meta.total', 'setTotal', $data, $session);
@@ -170,15 +177,6 @@ class SessionSerializer
         $session->setStartDate($startDate);
         $session->setEndDate($endDate);
 
-        // TODO: meta.learnerRole && meta.tutorRole
-
-        if (isset($data['meta']['workspace']['uuid'])) {
-            $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspace']['uuid']]);
-
-            if ($workspace) {
-                $session->setWorkspace($workspace);
-            }
-        }
         $course = $session->getCourse();
 
         if (empty($course) && isset($data['meta']['course']['id'])) {
@@ -188,6 +186,15 @@ class SessionSerializer
                 $session->setCourse($course);
             }
         }
+
+        /* TODO: Creates session workspace & roles */
+//        if (isset($data['meta']['workspace']['uuid'])) {
+//            $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspace']['uuid']]);
+//
+//            if ($workspace) {
+//                $session->setWorkspace($workspace);
+//            }
+//        }
 
         return $session;
     }

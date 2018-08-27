@@ -67,6 +67,14 @@ class SessionEventSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/cursus/session-event.json';
+    }
+
+    /**
      * @param SessionEvent $event
      * @param array        $options
      *
