@@ -85,7 +85,6 @@ class Updater120000 extends Updater
         $this->restoreWidgetInstancesConfigs();
         $this->checkDesktopTabs();
         $this->updateWidgetInstanceConfigType();
-        //$this->removeOldWidgets();
         $this->deactivateActivityResourceType();
     }
 
