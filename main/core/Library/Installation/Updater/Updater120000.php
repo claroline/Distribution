@@ -63,6 +63,7 @@ class Updater120000 extends Updater
     public function truncateTables()
     {
         $tables = [
+            'innova_path_widget_config_tags',
             'innova_path_widget_config',
         ];
 
