@@ -53,7 +53,7 @@ class Updater120000 extends Updater
         $sql = "
             UPDATE claro_widget
             SET plugin_id = {$core->getId()}
-            WHERE plugin_id = null";
+            WHERE plugin_id IS NULL";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
