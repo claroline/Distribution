@@ -85,7 +85,6 @@ class Updater120000 extends Updater
         $this->restoreWidgetInstancesConfigs();
         $this->checkDesktopTabs();
         $this->updateWidgetInstanceConfigType();
-        //$this->removeOldWidgets();
         $this->deactivateActivityResourceType();
     }
 
@@ -180,6 +179,13 @@ class Updater120000 extends Updater
         if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
             $this->log('SimpleTextWidget already migrated');
         } else {
+            $this->log('Truncate claro_widget_instance');
+
+            $sql = 'TRUNCATE TABLE claro_widget_instance';
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
             $this->log('Migrating SimpleTextWidget to SimpleWidget...');
 
             $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
