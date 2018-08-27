@@ -58,7 +58,7 @@ const WidgetCol = props =>
           icon="fa fa-fw fa-trash-o"
           label={trans('delete', {}, 'actions')}
           dangerous={true}
-          callback={() => console.log(props.content)}
+          callback={() => props.deleteContent(props.content)}
         />
       </div>
     }
@@ -145,6 +145,13 @@ const WidgetEditor = props =>
               widget.contents[col] = newContent
               // propagate change
               props.update(widget)
+            }}
+            deleteContent={(content) => {
+              const widgets = cloneDeep(props.widget)
+              const contentIndex = widgets.contents.findIndex(widget => widget.id === content.id)
+              // removes the content to delete and replace by null
+              widgets.contents[contentIndex] = null
+              props.update(widgets)
             }}
             startMovingContent={props.startMovingContent}
             moveContent={(movingContentId) => props.moveContent(movingContentId, props.widget.id, col)}
