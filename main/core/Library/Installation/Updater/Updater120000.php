@@ -179,9 +179,13 @@ class Updater120000 extends Updater
         if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
             $this->log('SimpleTextWidget already migrated');
         } else {
-            $this->log('Truncate claro_widget_instance');
+            $this->log('Truncate old tables');
 
-            $sql = 'TRUNCATE TABLE claro_widget_instance';
+            $sql = '
+                TRUNCATE TABLE claro_widget_display_config;
+                TRUNCATE TABLE claro_widget_home_tab_config;
+                TRUNCATE TABLE claro_widget_instance;
+            ';
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
