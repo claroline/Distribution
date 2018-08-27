@@ -69,7 +69,11 @@ class Updater120000 extends Updater
 
         foreach ($tables as $table) {
             $this->log('TRUNCATE '.$table);
-            $sql = 'TRUNCATE TABLE '.$table;
+            $sql = '
+                SET FOREIGN_KEY_CHECKS=0;
+                TRUNCATE TABLE '.$table.';
+                SET FOREIGN_KEY_CHECKS=1;
+            ';
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
