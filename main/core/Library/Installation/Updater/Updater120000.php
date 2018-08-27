@@ -38,6 +38,25 @@ class Updater120000 extends Updater
     public function preUpdate()
     {
         $this->saveOldTabsTables();
+        $this->setWidgetPlugin();
+    }
+
+    public function setWidgetPlugin()
+    {
+        $this->log('Set widgets plugins');
+
+        $core = $this->om->getRepository('Claroline\CoreBundle\Entity\Plugin')->findOneBy([
+          'vendorName' => 'Claroline',
+          'bundleName' => 'CoreBundle',
+        ]);
+
+        $sql = "
+            UPDATE claro_widget
+            SET plugin_id = {$core->getId()}
+            WHERE plugin_id = null";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     public function saveOldTabsTables()
