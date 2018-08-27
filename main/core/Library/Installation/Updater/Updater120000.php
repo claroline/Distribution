@@ -57,6 +57,29 @@ class Updater120000 extends Updater
         foreach ($toCopy as $table) {
             $tableManager->copy($table);
         }
+
+        $this->log('Truncate old tables');
+
+        $sql = '
+            TRUNCATE TABLE claro_widget_display_config
+        ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $sql = '
+            TRUNCATE TABLE claro_widget_home_tab_config
+        ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $sql = '
+            TRUNCATE TABLE claro_widget_instance
+        ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     public function updateTabsStructure()
@@ -179,17 +202,6 @@ class Updater120000 extends Updater
         if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
             $this->log('SimpleTextWidget already migrated');
         } else {
-            $this->log('Truncate old tables');
-
-            $sql = '
-                TRUNCATE TABLE claro_widget_display_config;
-                TRUNCATE TABLE claro_widget_home_tab_config;
-                TRUNCATE TABLE claro_widget_instance;
-            ';
-
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-
             $this->log('Migrating SimpleTextWidget to SimpleWidget...');
 
             $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
