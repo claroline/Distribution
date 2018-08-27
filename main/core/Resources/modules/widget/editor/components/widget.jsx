@@ -103,6 +103,7 @@ WidgetCol.propTypes = {
   moveContent: T.func.isRequired,
   startMovingContent: T.func.isRequired,
   stopMovingContent:T.func.isRequired,
+  deleteContent:T.func.isRequired,
   isMoving: T.string
 }
 
