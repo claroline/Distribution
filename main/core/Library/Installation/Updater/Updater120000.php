@@ -39,6 +39,7 @@ class Updater120000 extends Updater
     {
         $this->saveOldTabsTables();
         $this->setWidgetPlugin();
+        $this->truncateTables();
     }
 
     public function setWidgetPlugin()
@@ -57,6 +58,21 @@ class Updater120000 extends Updater
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
+    }
+
+    public function truncateTables()
+    {
+        $tables = [
+            'innova_path_widget_config',
+        ];
+
+        foreach ($tables as $table) {
+            $this->log('TRUNCATE '.$table);
+            $sql = 'TRUNCATE TABLE '.$table;
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        }
     }
 
     public function saveOldTabsTables()
