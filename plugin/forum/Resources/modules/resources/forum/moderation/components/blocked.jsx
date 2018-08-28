@@ -3,9 +3,9 @@ import React from 'react'
 import {Routes} from '#/main/app/router'
 import {trans} from '#/main/core/translation'
 
-import {BlockedMessages} from '#/plugin/forum/resources/forum/moderation/components/flagged-messages'
-import {BlockedSubjects} from '#/plugin/forum/resources/forum/moderation/components/flagged-subjects'
-import {BlockedPostsNav} from '#/plugin/forum/resources/forum/moderation/components/flagged-posts-nav'
+import {BlockedMessages} from '#/plugin/forum/resources/forum/moderation/components/blocked-messages'
+import {BlockedSubjects} from '#/plugin/forum/resources/forum/moderation/components/blocked-subjects'
+import {BlockedPostsNav} from '#/plugin/forum/resources/forum/moderation/components/blocked-posts-nav'
 
 const Blocked = () =>
   <div>
@@ -18,10 +18,10 @@ const Blocked = () =>
         <Routes
           routes={[
             {
-              path: '/moderation/flagged/subjects',
+              path: '/moderation/blocked/subjects',
               component: BlockedSubjects
             }, {
-              path: '/moderation/flagged/messages',
+              path: '/moderation/blocked/messages',
               component: BlockedMessages
             }
           ]}

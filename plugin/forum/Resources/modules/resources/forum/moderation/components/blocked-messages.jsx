@@ -11,85 +11,82 @@ import {actions} from '#/plugin/forum/resources/forum/store/actions'
 import {MessageCard} from '#/plugin/forum/resources/forum/data/components/message-card'
 
 const BlockedMessagesComponent = (props) =>
-  <div>
-    <h2>{trans('moderated_messages', {}, 'forum')}</h2>
-    <ListData
-      name={`${select.STORE_NAME}.moderation.blockedMessages`}
-      fetch={{
-        url: ['apiv2_forum_message_blocked_list', {forum: props.forum.id}],
-        autoload: true
-      }}
-      delete={{
-        url: ['apiv2_forum_message_delete_bulk']
-      }}
-      display={{
-        current: listConst.DISPLAY_LIST
-      }}
-      definition={[
-        {
-          name: 'content',
-          type: 'string',
-          label: trans('message'),
-          displayed: true,
-          primary: true
-        }, {
-          name: 'subject.title',
-          type: 'string',
-          label: trans('subject_title', {}, 'forum'),
-          displayed: true
-        }, {
-          name: 'meta.creator.username',
-          type: 'string',
-          label: trans('creator'),
-          displayed: true,
-          searchable: false
-        }, {
-          name: 'meta.updated',
-          type: 'date',
-          label: trans('last_modification'),
-          displayed: true,
-          option: {
-            time: true
-          }
+  <ListData
+    name={`${select.STORE_NAME}.moderation.blockedMessages`}
+    fetch={{
+      url: ['apiv2_forum_message_blocked_list', {forum: props.forum.id}],
+      autoload: true
+    }}
+    delete={{
+      url: ['apiv2_forum_message_delete_bulk']
+    }}
+    display={{
+      current: listConst.DISPLAY_LIST
+    }}
+    definition={[
+      {
+        name: 'content',
+        type: 'string',
+        label: trans('message'),
+        displayed: true,
+        primary: true
+      }, {
+        name: 'subject.title',
+        type: 'string',
+        label: trans('subject_title', {}, 'forum'),
+        displayed: true
+      }, {
+        name: 'meta.creator.username',
+        type: 'string',
+        label: trans('creator'),
+        displayed: true,
+        searchable: false
+      }, {
+        name: 'meta.updated',
+        type: 'date',
+        label: trans('last_modification'),
+        displayed: true,
+        option: {
+          time: true
         }
-      ]}
-      actions={(rows) => [
-        {
-          type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-eye',
-          label: trans('see_subject', {}, 'forum'),
-          target: '/subjects/show/'+rows[0].subject.id,
-          scope: ['object']
-        },
-        // if moderation all => validateMessage
-        // if moderation once => validateUser
-        {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-check',
-          label: trans('validate_message', {}, 'forum'),
-          displayed: props.forum.moderation === 'PRIOR_ALL',
-          callback: () => props.validateMessage(rows[0], rows[0].subject.id, 'moderation.blockedMessages')
-        }, {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-check',
-          label: trans('validate_user', {}, 'forum'),
-          displayed: props.forum.moderation === 'PRIOR_ONCE',
-          callback: () => props.unLockUser(rows[0].meta.creator.id, props.forum.id)
-        }, {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-times',
-          label: trans('block_user', {}, 'forum'),
-          displayed: props.forum.moderation === 'PRIOR_ONCE',
-          callback: () => props.banUser(rows[0].meta.creator.id, props.forum.id)
-        }
-      ]}
-      card={(props) =>
-        <MessageCard
-          {...props}
-        />
       }
-    />
-  </div>
+    ]}
+    actions={(rows) => [
+      {
+        type: LINK_BUTTON,
+        icon: 'fa fa-fw fa-eye',
+        label: trans('see_subject', {}, 'forum'),
+        target: '/subjects/show/'+rows[0].subject.id,
+        scope: ['object']
+      },
+      // if moderation all => validateMessage
+      // if moderation once => validateUser
+      {
+        type: CALLBACK_BUTTON,
+        icon: 'fa fa-fw fa-check',
+        label: trans('validate_message', {}, 'forum'),
+        displayed: props.forum.moderation === 'PRIOR_ALL',
+        callback: () => props.validateMessage(rows[0], rows[0].subject.id, 'moderation.blockedMessages')
+      }, {
+        type: CALLBACK_BUTTON,
+        icon: 'fa fa-fw fa-check',
+        label: trans('validate_user', {}, 'forum'),
+        displayed: props.forum.moderation === 'PRIOR_ONCE',
+        callback: () => props.unLockUser(rows[0].meta.creator.id, props.forum.id)
+      }, {
+        type: CALLBACK_BUTTON,
+        icon: 'fa fa-fw fa-times',
+        label: trans('block_user', {}, 'forum'),
+        displayed: props.forum.moderation === 'PRIOR_ONCE',
+        callback: () => props.banUser(rows[0].meta.creator.id, props.forum.id)
+      }
+    ]}
+    card={(props) =>
+      <MessageCard
+        {...props}
+      />
+    }
+  />
 
 
 const BlockedMessages = connect(
