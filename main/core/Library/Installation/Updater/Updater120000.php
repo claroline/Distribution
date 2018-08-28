@@ -97,6 +97,29 @@ class Updater120000 extends Updater
         foreach ($toCopy as $table) {
             $tableManager->copy($table);
         }
+
+        $this->log('Truncate old tables');
+
+        $sql = '
+            TRUNCATE TABLE claro_widget_display_config
+        ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $sql = '
+            TRUNCATE TABLE claro_widget_home_tab_config
+        ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        $sql = '
+            TRUNCATE TABLE claro_widget_instance
+        ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     public function updateTabsStructure()
