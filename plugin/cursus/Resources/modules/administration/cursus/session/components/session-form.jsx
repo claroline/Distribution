@@ -14,6 +14,7 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {constants} from '#/plugin/cursus/administration/cursus/constants'
 import {Session as SessionType} from '#/plugin/cursus/administration/cursus/prop-types'
 import {actions} from '#/plugin/cursus/administration/cursus/session/store'
+import {SessionEventList} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-list'
 
 const SessionFormComponent = (props) => props.session && props.session.meta && props.session.meta.course ?
   <FormData
@@ -113,54 +114,55 @@ const SessionFormComponent = (props) => props.session && props.session.meta && p
         title: trans('restrictions'),
         fields: [
           {
+            name: 'restrictions.dates',
+            type: 'date-range',
+            label: trans('access_dates'),
+            required: true,
+            options: {
+              time: true
+            }
+          }, {
             name: 'restrictions.maxUsers',
             type: 'number',
             label: trans('maxUsers'),
             options: {
               min: 0
             }
-          }, {
-            name: 'restrictions.dates',
-            type: 'date-range',
-            label: trans('access_dates'),
-            options: {
-              time: true
-            }
           }
         ]
       }
     ]}
   >
-    {/*<FormSections level={3}>*/}
-      {/*<FormSection*/}
-        {/*className="embedded-list-section"*/}
-        {/*icon="fa fa-fw fa-building"*/}
-        {/*title={trans('organizations')}*/}
-        {/*disabled={props.new}*/}
-        {/*actions={[*/}
-          {/*{*/}
-            {/*type: CALLBACK_BUTTON,*/}
-            {/*icon: 'fa fa-fw fa-plus',*/}
-            {/*label: trans('add_organizations'),*/}
-            {/*callback: () => props.pickOrganizations(props.course.id)*/}
-          {/*}*/}
-        {/*]}*/}
-      {/*>*/}
-        {/*<ListData*/}
-          {/*name="courses.current.organizations.list"*/}
-          {/*fetch={{*/}
-            {/*url: ['apiv2_cursus_course_list_organizations', {id: props.course.id}],*/}
-            {/*autoload: props.course.id && !props.new*/}
-          {/*}}*/}
-          {/*primaryAction={OrganizationList.open}*/}
-          {/*delete={{*/}
-            {/*url: ['apiv2_cursus_course_remove_organizations', {id: props.course.id}]*/}
-          {/*}}*/}
-          {/*definition={OrganizationList.definition}*/}
-          {/*card={OrganizationList.card}*/}
-        {/*/>*/}
-      {/*</FormSection>*/}
-    {/*</FormSections>*/}
+    <FormSections level={3}>
+      <FormSection
+        className="embedded-list-section"
+        icon="fa fa-fw fa-clock-o"
+        title={trans('session_events', {}, 'cursus')}
+        disabled={props.new}
+        actions={[
+          {
+            type: CALLBACK_BUTTON,
+            icon: 'fa fa-fw fa-plus',
+            label: trans('create_session_event', {}, 'cursus'),
+            callback: () => console.log(props.session)
+          }
+        ]}
+      >
+        <ListData
+          name="sessions.current.events"
+          fetch={{
+            url: ['apiv2_cursus_session_list_events', {id: props.session.id}],
+            autoload: props.session.id && !props.new
+          }}
+          primaryAction={SessionEventList.open}
+          delete={{
+            url: ['apiv2_cursus_session_event_delete_bulk']
+          }}
+          definition={SessionEventList.definition}
+          card={SessionEventList.card}
+        />
+      </FormSection>
+    </FormSections>
   </FormData> :
   <div className="alert alert-danger">
     {trans('session_creation_impossible_no_course', {}, 'cursus')}

@@ -11,12 +11,12 @@
 
 namespace Claroline\CursusBundle\Controller\APINew;
 
-use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ToolManager;
+use Claroline\CursusBundle\Entity\Cursus;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,10 +25,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * @ApiMeta(
- *     class="Claroline\CursusBundle\Entity\Cursus",
- *     ignore={"exist", "copyBulk", "schema", "find", "list"}
- * )
  * @EXT\Route("/cursus")
  */
 class CursusController extends AbstractCrudController
@@ -68,6 +64,16 @@ class CursusController extends AbstractCrudController
     public function getName()
     {
         return 'cursus';
+    }
+
+    public function getClass()
+    {
+        return Cursus::class;
+    }
+
+    public function getIgnore()
+    {
+        return ['exist', 'copyBulk', 'schema', 'find', 'list'];
     }
 
     /**

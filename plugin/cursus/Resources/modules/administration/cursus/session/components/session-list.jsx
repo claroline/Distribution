@@ -2,6 +2,7 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
 
+import {constants} from '#/plugin/cursus/administration/cursus/constants'
 import {SessionCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-card'
 
 const SessionList = {
@@ -19,6 +20,7 @@ const SessionList = {
       primary: true
     }, {
       name: 'course',
+      alias: 'courseTitle',
       type: 'string',
       label: trans('course', {}, 'cursus'),
       displayed: true,
@@ -26,9 +28,12 @@ const SessionList = {
     }, {
       name: 'meta.sessionStatus',
       alias: 'sessionStatus',
-      type: 'number',
+      type: 'choice',
       label: trans('status'),
-      displayed: true
+      displayed: true,
+      options: {
+        choices: constants.SESSION_STATUS
+      }
     }, {
       name: 'restrictions.dates[0]',
       alias: 'startDate',

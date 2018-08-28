@@ -15,6 +15,7 @@ import {OrganizationList} from '#/main/core/administration/user/organization/com
 
 import {Course as CourseType} from '#/plugin/cursus/administration/cursus/prop-types'
 import {actions} from '#/plugin/cursus/administration/cursus/course/store'
+import {SessionList} from '#/plugin/cursus/administration/cursus/session/components/session-list'
 
 const CourseFormComponent = (props) =>
   <FormData
@@ -176,6 +177,34 @@ const CourseFormComponent = (props) =>
           }}
           definition={OrganizationList.definition}
           card={OrganizationList.card}
+        />
+      </FormSection>
+      <FormSection
+        className="embedded-list-section"
+        icon="fa fa-fw fa-cubes"
+        title={trans('sessions', {}, 'cursus')}
+        disabled={props.new}
+        actions={[
+          {
+            type: CALLBACK_BUTTON,
+            icon: 'fa fa-fw fa-plus',
+            label: trans('create_session', {}, 'cursus'),
+            callback: () => console.log(props.course)
+          }
+        ]}
+      >
+        <ListData
+          name="courses.current.sessions"
+          fetch={{
+            url: ['apiv2_cursus_course_list_sessions', {id: props.course.id}],
+            autoload: props.course.id && !props.new
+          }}
+          primaryAction={SessionList.open}
+          delete={{
+            url: ['apiv2_cursus_session_delete_bulk']
+          }}
+          definition={SessionList.definition}
+          card={SessionList.card}
         />
       </FormSection>
     </FormSections>

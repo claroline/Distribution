@@ -165,6 +165,15 @@ const SessionEvent = {
     registration: T.shape({
       registrationType: T.number
     })
+  },
+  defaultProps: {
+    name: '',
+    meta: {
+      type: constants.EVENT_TYPE_NONE
+    },
+    registration: {
+      registrationType: constants.REGISTRATION_AUTO
+    }
   }
 }
 

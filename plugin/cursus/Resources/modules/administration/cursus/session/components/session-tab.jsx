@@ -10,10 +10,15 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
 import {trans} from '#/main/core/translation'
+import {now, nowAdd} from '#/main/core/scaffolding/date'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
+import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {actions} from '#/plugin/cursus/administration/cursus/session/store'
-import {Session as SessionType} from '#/plugin/cursus/administration/cursus/prop-types'
+import {
+  Parameters as ParametersType,
+  Session as SessionType
+} from '#/plugin/cursus/administration/cursus/prop-types'
 import {CourseList} from '#/plugin/cursus/administration/cursus/course/components/course-list'
 import {Sessions} from '#/plugin/cursus/administration/cursus/session/components/sessions'
 import {SessionForm} from '#/plugin/cursus/administration/cursus/session/components/session-form'
@@ -39,21 +44,24 @@ const SessionTabComponent = (props) =>
       }, {
         path: '/sessions/form/:id?',
         component: SessionForm,
-        onEnter: (params) => props.openForm(params.id),
+        onEnter: (params) => props.openForm(props.parameters.session_default_duration, props.parameters.session_default_total, params.id),
         onLeave: () => props.resetForm()
       }
     ]}
   />
 
 SessionTabComponent.propTypes = {
+  parameters: T.shape(ParametersType.propTypes),
   openForm: T.func.isRequired,
   resetForm: T.func.isRequired
 }
 
 const SessionTab = connect(
-  null,
-  dispatch => ({
-    openForm(id = null) {
+  (state) => ({
+    parameters: selectors.parameters(state)
+  }),
+  (dispatch) => ({
+    openForm(duration, total, id = null) {
       if (id) {
         dispatch(actions.open('sessions.current', {}, id))
       } else {
@@ -70,7 +78,10 @@ const SessionTab = connect(
           },
           handleSelect: (selected) => {
             const defaultProps = cloneDeep(SessionType.defaultProps)
+            const dates = [now(), nowAdd({days: duration ? duration : 1})]
             set(defaultProps, 'meta.course.id', selected[0])
+            set(defaultProps, 'meta.total', total)
+            set(defaultProps, 'restrictions.dates', dates)
             dispatch(actions.open('sessions.current', defaultProps))
           }
         }))

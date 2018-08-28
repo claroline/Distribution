@@ -18,6 +18,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Manager\CursusManager;
 use Claroline\CursusBundle\Repository\CourseRepository;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -172,17 +173,42 @@ class SessionSerializer
         $session->setEndDate($endDate);
 
         $course = $session->getCourse();
-
+        // Sets course at creation
         if (empty($course) && isset($data['meta']['course']['id'])) {
             $course = $this->courseRepo->findOneBy(['uuid' => $data['meta']['course']['id']]);
 
             if ($course) {
                 $session->setCourse($course);
             }
+            // Creates default session event
+            if ($course->getWithSessionEvent()) {
+                $eventData = [
+                    'name' => $session->getName(),
+                    'meta' => [
+                        'type' => SessionEvent::TYPE_NONE,
+                    ],
+                    'restrictions' => [
+                        'dates' => [
+                            $session->getStartDate() ? DateNormalizer::normalize($session->getStartDate()) : null,
+                            $session->getEndDate() ? DateNormalizer::normalize($session->getEndDate()) : null,
+                        ]
+                    ],
+                    'registration' => [
+                        'registrationType' => $session->getEventRegistrationType(),
+                    ],
+                ];
+                $event = $this->serializer->deserialize('Claroline\CursusBundle\Entity\SessionEvent', $eventData);
+                $event->setSession($session);
+                $this->om->persist($event);
+            }
+        }
+        // Removes default session flag on all other sessions if this one is the default one
+        if ($session->isDefaultSession()) {
+            $this->cursusManager->resetDefaultSessionByCourse($course, $session);
         }
 
         $workspace = $session->getWorkspace();
-
+        // Creates workspace, roles and default session event at creation
         if (empty($workspace) && !empty($course)) {
             $workspace = $course->getWorkspace();
 

@@ -17,6 +17,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CursusBundle\Entity\SessionEvent;
+use Claroline\CursusBundle\Entity\SessionEventSet;
 use Claroline\CursusBundle\Repository\CourseSessionRepository;
 use Claroline\CursusBundle\Repository\SessionEventSetRepository;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -50,10 +51,8 @@ class SessionEventSerializer
      * @param ObjectManager      $om
      * @param SerializerProvider $serializer
      */
-    public function __construct(
-        ObjectManager $om,
-        SerializerProvider $serializer
-    ) {
+    public function __construct(ObjectManager $om, SerializerProvider $serializer)
+    {
         $this->om = $om;
         $this->serializer = $serializer;
 
@@ -146,10 +145,10 @@ class SessionEventSerializer
             $eventSet = $this->eventSetRepo->findSessionEventSetBySessionAndName($session, $data['meta']['set']);
 
             if (empty($eventSet)) {
-                $set = new SessionEventSet();
-                $set->setSession($session);
-                $set->setName($data['meta']['set']);
-                $this->om->persist($set);
+                $eventSet = new SessionEventSet();
+                $eventSet->setSession($session);
+                $eventSet->setName($data['meta']['set']);
+                $this->om->persist($eventSet);
             }
             $event->setEventSet($eventSet);
         } else {

@@ -11,7 +11,6 @@
 
 namespace Claroline\CursusBundle\Controller\APINew;
 
-use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
@@ -27,10 +26,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * @ApiMeta(
- *     class="Claroline\CursusBundle\Entity\Course",
- *     ignore={"exist", "copyBulk", "schema", "find", "list", "listOrganizations"}
- * )
  * @EXT\Route("/cursus_course")
  */
 class CourseController extends AbstractCrudController
@@ -74,6 +69,16 @@ class CourseController extends AbstractCrudController
         return 'course';
     }
 
+    public function getClass()
+    {
+        return Course::class;
+    }
+
+    public function getIgnore()
+    {
+        return ['exist', 'copyBulk', 'schema', 'find', 'list'];
+    }
+
     /**
      * @EXT\Route(
      *     "/list",
@@ -89,17 +94,52 @@ class CourseController extends AbstractCrudController
     public function coursesListAction(User $user, Request $request)
     {
         $this->checkToolAccess();
-        $params = $request->query->all();
 
-        if (!isset($params['hiddenFilters'])) {
-            $params['hiddenFilters'] = [];
-        }
-        $params['hiddenFilters']['organizations'] = array_map(function (Organization $organization) {
-            return $organization->getUuid();
-        }, $user->getAdministratedOrganizations()->toArray());
-        $data = $this->finder->search('Claroline\CursusBundle\Entity\Course', $params);
+        return new JsonResponse(
+            $this->finder->search('Claroline\CursusBundle\Entity\Course', array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => [
+                    'organizations' => array_map(function (Organization $organization) {
+                        return $organization->getUuid();
+                    }, $user->getAdministratedOrganizations()->toArray()),
+                ]]
+            ))
+        );
+    }
 
-        return new JsonResponse($data, 200);
+    /**
+     * @EXT\Route(
+     *     "/{id}/sessions",
+     *     name="apiv2_cursus_course_list_sessions"
+     * )
+     * @EXT\ParamConverter(
+     *     "course",
+     *     class="ClarolineCursusBundle:Course",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param User    $user
+     * @param Course  $course
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function sessionsListAction(User $user, Course $course, Request $request)
+    {
+        $this->checkToolAccess();
+
+        return new JsonResponse(
+            $this->finder->search('Claroline\CursusBundle\Entity\CourseSession', array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => [
+                    'organizations' => array_map(function (Organization $organization) {
+                        return $organization->getUuid();
+                    }, $user->getAdministratedOrganizations()->toArray()),
+                    'course' => $course->getUuid(),
+                ]]
+            ))
+        );
     }
 
     /**

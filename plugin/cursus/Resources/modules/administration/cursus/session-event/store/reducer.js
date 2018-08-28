@@ -5,17 +5,15 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 import {LIST_DATA_DELETE} from '#/main/app/content/list/store/actions'
 
 const reducer = combineReducers({
-  list: makeListReducer('sessions.list', {}, {
+  list: makeListReducer('events.list', {}, {
     invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/sessions.current']: () => true,
-      [LIST_DATA_DELETE+'/courses.current.sessions']: () => true
+      [FORM_SUBMIT_SUCCESS+'/events.current']: () => true,
+      [LIST_DATA_DELETE+'/sessions.current.events']: () => true
     })
   }),
-  current: makeFormReducer('sessions.current', {}, {
-    users: makeListReducer('sessions.current.users'),
-    events: makeListReducer('sessions.current.events')
-  }),
-  picker: makeListReducer('sessions.picker')
+  current: makeFormReducer('events.current', {}, {
+    users: makeListReducer('events.current.users')
+  })
 })
 
 export {

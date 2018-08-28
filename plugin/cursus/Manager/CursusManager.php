@@ -261,8 +261,8 @@ class CursusManager
         $workspace->setDescription($course->getDescription());
 
         if (is_null($model)) {
-            $template = new File($this->defaultTemplate);
-            $workspace = $this->workspaceManager->create($workspace, $template);
+            $defaultModel = $this->workspaceManager->getDefaultModel();
+            $workspace = $this->workspaceManager->copy($defaultModel, $workspace);
         } else {
             $workspace = $this->workspaceManager->copy($model, $workspace);
         }
@@ -316,6 +316,28 @@ class CursusManager
         }
 
         return $role;
+    }
+
+    /**
+     * Sets all sessions from a course (excepted given one) as non-default.
+     *
+     * @param Course             $course
+     * @param CourseSession|null $session
+     * @param boolean            $noFlush
+     */
+    public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null, $noFlush = true)
+    {
+        $defaultSessions = $this->courseSessionRepo->findBy(['course' => $course, 'defaultSession' => true]);
+
+        foreach ($defaultSessions as $defaultSession) {
+            if ($defaultSession !== $session) {
+                $defaultSession->setDefaultSession(false);
+                $this->om->persist($defaultSession);
+            }
+        }
+        if (!$noFlush) {
+            $this->om->flush();
+        }
     }
 
     /**
@@ -1811,20 +1833,6 @@ class CursusManager
         }
 
         return $createdSessionEvents;
-    }
-
-    public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null)
-    {
-        $defaultSessions = $this->getDefaultSessionsByCourse($course);
-
-        $this->om->startFlushSuite();
-
-        foreach ($defaultSessions as $defaultSession) {
-            if ($defaultSession !== $session) {
-                $defaultSession->setDefaultSession(false);
-            }
-        }
-        $this->om->endFlushSuite();
     }
 
     public function deleteCourseSessionUsers(array $sessionUsers)

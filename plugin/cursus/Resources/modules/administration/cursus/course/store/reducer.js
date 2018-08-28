@@ -14,7 +14,8 @@ const reducer = combineReducers({
     organizations: combineReducers({
       list: makeListReducer('courses.current.organizations.list'),
       picker: makeListReducer('courses.current.organizations.picker')
-    })
+    }),
+    sessions: makeListReducer('courses.current.sessions')
   }),
   picker: makeListReducer('courses.picker')
 })
