@@ -28,7 +28,6 @@ describe('<ItemForm/>', () => {
       'validating',
       'children',
       'showModal',
-      'closeModal',
       'onChange',
       'onHintsChange',
       'mandatoryQuestions'
@@ -82,8 +81,7 @@ describe('<ItemForm/>', () => {
           updatedValue = value
         },
         onHintsChange: () => true,
-        showModal: () => true,
-        closeModal: () => true
+        showModal: () => true
       }, React.createElement('input'))
     )
 
