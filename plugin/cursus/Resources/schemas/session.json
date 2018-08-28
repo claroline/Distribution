@@ -56,7 +56,7 @@
           "description": "Whether the session is certificated or not"
         }
       },
-      "required": ["defaultSession", "order", "total", "certificated"]
+      "required": ["defaultSession", "order", "certificated"]
     },
     "restrictions": {
       "type": "object",
@@ -100,7 +100,7 @@
   },
   "required": ["name"],
   "claroline": {
-    "requiredAtCreation": ["name", "meta.course"],
+    "requiredAtCreation": ["name"],
     "ids": ["id"]
   }
 }

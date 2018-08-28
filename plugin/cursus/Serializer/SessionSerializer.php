@@ -13,12 +13,12 @@ namespace Claroline\CursusBundle\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
-use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Manager\CursusManager;
 use Claroline\CursusBundle\Repository\CourseRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -32,12 +32,10 @@ class SessionSerializer
 
     /** @var ObjectManager */
     private $om;
-    /** @var CourseSerializer */
-    private $courseSerializer;
-    /** @var RoleSerializer */
-    private $roleSerializer;
-    /** @var WorkspaceSerializer */
-    private $workspaceSerializer;
+    /** @var CursusManager */
+    private $cursusManager;
+    /** @var SerializerProvider */
+    private $serializer;
 
     /** @var CourseRepository */
     private $courseRepo;
@@ -48,27 +46,23 @@ class SessionSerializer
      * SessionSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "courseSerializer"    = @DI\Inject("claroline.serializer.cursus.course"),
-     *     "roleSerializer"      = @DI\Inject("claroline.serializer.role"),
-     *     "workspaceSerializer" = @DI\Inject("claroline.serializer.workspace")
+     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
+     *     "cursusManager" = @DI\Inject("claroline.manager.cursus_manager"),
+     *     "serializer"    = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param ObjectManager       $om
-     * @param CourseSerializer    $courseSerializer
-     * @param RoleSerializer      $roleSerializer
-     * @param WorkspaceSerializer $workspaceSerializer
+     * @param ObjectManager      $om
+     * @param CursusManager      $cursusManager
+     * @param SerializerProvider $serializer
      */
     public function __construct(
         ObjectManager $om,
-        CourseSerializer $courseSerializer,
-        RoleSerializer $roleSerializer,
-        WorkspaceSerializer $workspaceSerializer
+        CursusManager $cursusManager,
+        SerializerProvider $serializer
     ) {
         $this->om = $om;
-        $this->courseSerializer = $courseSerializer;
-        $this->roleSerializer = $roleSerializer;
-        $this->workspaceSerializer = $workspaceSerializer;
+        $this->cursusManager = $cursusManager;
+        $this->serializer = $serializer;
 
         $this->courseRepo = $om->getRepository('Claroline\CursusBundle\Entity\Course');
         $this->workspaceRepo = $om->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace');
@@ -100,15 +94,15 @@ class SessionSerializer
             $serialized = array_merge($serialized, [
                 'meta' => [
                     'type' => $session->getType(),
-                    'course' => $this->courseSerializer->serialize($session->getCourse(), [Options::SERIALIZE_MINIMAL]),
+                    'course' => $this->serializer->serialize($session->getCourse(), [Options::SERIALIZE_MINIMAL]),
                     'workspace' => $session->getWorkspace() ?
-                        $this->workspaceSerializer->serialize($session->getWorkspace()) :
+                        $this->serializer->serialize($session->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
                         null,
                     'learnerRole' => $session->getLearnerRole() ?
-                        $this->roleSerializer->serialize($session->getLearnerRole(), [Options::SERIALIZE_MINIMAL]) :
+                        $this->serializer->serialize($session->getLearnerRole(), [Options::SERIALIZE_MINIMAL]) :
                         null,
                     'tutorRole' => $session->getTutorRole() ?
-                        $this->roleSerializer->serialize($session->getTutorRole(), [Options::SERIALIZE_MINIMAL]) :
+                        $this->serializer->serialize($session->getTutorRole(), [Options::SERIALIZE_MINIMAL]) :
                         null,
                     'sessionStatus' => $session->getSessionStatus(),
                     'defaultSession' => $session->isDefaultSession(),
@@ -187,14 +181,30 @@ class SessionSerializer
             }
         }
 
-        /* TODO: Creates session workspace & roles */
-//        if (isset($data['meta']['workspace']['uuid'])) {
-//            $workspace = $this->workspaceRepo->findOneBy(['uuid' => $data['workspace']['uuid']]);
-//
-//            if ($workspace) {
-//                $session->setWorkspace($workspace);
-//            }
-//        }
+        $workspace = $session->getWorkspace();
+
+        if (empty($workspace) && !empty($course)) {
+            $workspace = $course->getWorkspace();
+
+            if (empty($workspace)) {
+                $workspace = $this->cursusManager->generateWorkspace($session);
+            }
+            $session->setWorkspace($workspace);
+
+            $learnerRole = $this->cursusManager->generateRoleForSession(
+                $workspace,
+                $course->getLearnerRoleName(),
+                'learner'
+            );
+            $session->setLearnerRole($learnerRole);
+
+            $tutorRole = $this->cursusManager->generateRoleForSession(
+                $workspace,
+                $course->getTutorRoleName(),
+                'manager'
+            );
+            $session->setTutorRole($tutorRole);
+        }
 
         return $session;
     }

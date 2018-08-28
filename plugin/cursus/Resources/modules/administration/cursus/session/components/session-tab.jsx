@@ -46,7 +46,8 @@ const SessionTabComponent = (props) =>
   />
 
 SessionTabComponent.propTypes = {
-  openForm: T.func.isRequired
+  openForm: T.func.isRequired,
+  resetForm: T.func.isRequired
 }
 
 const SessionTab = connect(

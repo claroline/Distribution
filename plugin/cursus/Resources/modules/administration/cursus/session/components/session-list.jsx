@@ -22,7 +22,7 @@ const SessionList = {
       type: 'string',
       label: trans('course', {}, 'cursus'),
       displayed: true,
-      calculated: (session) => session.course.title
+      calculated: (session) => session.meta.course.title
     }, {
       name: 'meta.sessionStatus',
       alias: 'sessionStatus',

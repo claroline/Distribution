@@ -13,8 +13,8 @@ namespace Claroline\CursusBundle\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\CursusBundle\Entity\Cursus;
 use Claroline\CursusBundle\Repository\CourseRepository;
@@ -31,10 +31,8 @@ class CursusSerializer
 
     /** @var ObjectManager */
     private $om;
-    /** @var CourseSerializer */
-    private $courseSerializer;
-    /** @var WorkspaceSerializer */
-    private $workspaceSerializer;
+    /** @var SerializerProvider */
+    private $serializer;
 
     /** @var CourseRepository */
     private $courseRepo;
@@ -47,23 +45,19 @@ class CursusSerializer
      * CourseSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "courseSerializer"    = @DI\Inject("claroline.serializer.cursus.course"),
-     *     "workspaceSerializer" = @DI\Inject("claroline.serializer.workspace")
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param ObjectManager       $om
-     * @param CourseSerializer    $courseSerializer
-     * @param WorkspaceSerializer $workspaceSerializer
+     * @param ObjectManager      $om
+     * @param SerializerProvider $serializer
      */
     public function __construct(
         ObjectManager $om,
-        CourseSerializer $courseSerializer,
-        WorkspaceSerializer $workspaceSerializer
+        SerializerProvider $serializer
     ) {
         $this->om = $om;
-        $this->courseSerializer = $courseSerializer;
-        $this->workspaceSerializer = $workspaceSerializer;
+        $this->serializer = $serializer;
 
         $this->courseRepo = $om->getRepository('Claroline\CursusBundle\Entity\Course');
         $this->cursusRepo = $om->getRepository('Claroline\CursusBundle\Entity\Cursus');
@@ -98,10 +92,10 @@ class CursusSerializer
             $serialized = array_merge($serialized, [
                 'meta' => [
                     'course' => $cursus->getCourse() ?
-                        $this->courseSerializer->serialize($cursus->getCourse(), [Options::SERIALIZE_MINIMAL]) :
+                        $this->serializer->serialize($cursus->getCourse(), [Options::SERIALIZE_MINIMAL]) :
                         null,
                     'workspace' => $cursus->getWorkspace() ?
-                        $this->workspaceSerializer->serialize($cursus->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
+                        $this->serializer->serialize($cursus->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
                         null,
                     'order' => $cursus->getCursusOrder(),
                     'icon' => $cursus->getIcon(),

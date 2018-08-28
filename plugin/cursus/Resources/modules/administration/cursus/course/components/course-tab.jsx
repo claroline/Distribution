@@ -48,7 +48,8 @@ const CourseTabComponent = props =>
 
 CourseTabComponent.propTypes = {
   parameters: T.shape(ParametersType.propTypes),
-  openForm: T.func.isRequired
+  openForm: T.func.isRequired,
+  resetForm: T.func.isRequired
 }
 
 const CourseTab = connect(

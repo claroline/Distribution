@@ -38,7 +38,7 @@ class SessionFinder extends AbstractFinder
                 case 'organizations':
                     break;
                 case 'course':
-                    $qb->andWhere("UPPER(course.title) LIKE :{$filterName}");
+                    $qb->andWhere("UPPER(c.title) LIKE :{$filterName}");
                     $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
                     break;
                 default:

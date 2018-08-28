@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {asset} from '#/main/core/scaffolding/asset'
 import {DataCard} from '#/main/core/data/components/data-card'
 
 import {Session as SessionType} from '#/plugin/cursus/administration/cursus/prop-types'
