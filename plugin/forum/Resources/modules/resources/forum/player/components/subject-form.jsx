@@ -83,14 +83,12 @@ SubjectFormWrapper.propTypes = {
 
 const SubjectFormComponent = (props) => {
   const saveSubjectForm = (forumId, editingSubject, subjectId) => {
-    console.log(editingSubject)
     if (editingSubject) {
       props.editSubject(forumId, subjectId)
     }
     else if (!props.moderator &&
       props.forum.moderation === 'PRIOR_ALL' ||
       props.forum.moderation === 'PRIOR_ONCE') {
-      console.log(forumId)
       props.createModeratedSubject(forumId, subjectId, props.forum.moderation)
       props.showModal(MODAL_ALERT, {
         title: trans('moderated_posts', {}, 'forum'),
