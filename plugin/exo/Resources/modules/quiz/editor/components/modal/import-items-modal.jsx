@@ -124,9 +124,9 @@ class ImportItems extends Component {
             </tbody>
           </table>
         }
-          <button className="modal-btn btn btn-primary" disabled={this.state.selected.length === 0} onClick={this.handleClick.bind(this)}>
-            {trans('import', {}, 'actions')}
-          </button>
+        <button className="modal-btn btn btn-primary" disabled={this.state.selected.length === 0} onClick={this.handleClick.bind(this)}>
+          {trans('import', {}, 'actions')}
+        </button>
       </Modal>
     )
   }
