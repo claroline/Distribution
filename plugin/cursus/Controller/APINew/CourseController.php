@@ -14,9 +14,11 @@ namespace Claroline\CursusBundle\Controller\APINew;
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ToolManager;
+use Claroline\CursusBundle\Entity\Course;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,12 +29,14 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * @ApiMeta(
  *     class="Claroline\CursusBundle\Entity\Course",
- *     ignore={"exist", "copyBulk", "schema", "find", "list"}
+ *     ignore={"exist", "copyBulk", "schema", "find", "list", "listOrganizations"}
  * )
  * @EXT\Route("/cursus_course")
  */
 class CourseController extends AbstractCrudController
 {
+    use HasOrganizationsTrait;
+
     /** @var AuthorizationCheckerInterface */
     protected $authorization;
 
@@ -96,6 +100,38 @@ class CourseController extends AbstractCrudController
         $data = $this->finder->search('Claroline\CursusBundle\Entity\Course', $params);
 
         return new JsonResponse($data, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/{id}/organization",
+     *     name="apiv2_cursus_course_list_organizations"
+     * )
+     * @EXT\ParamConverter(
+     *     "course",
+     *     class="ClarolineCursusBundle:Course",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     *
+     * @param Course  $course
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function listOrganizationsAction(Course $course, Request $request)
+    {
+        $this->checkToolAccess();
+
+        $ids = array_map(function (Organization $organization) {
+            return $organization->getUuid();
+        }, $course->getOrganizations()->toArray());
+
+        return new JsonResponse(
+            $this->finder->search('Claroline\CoreBundle\Entity\Organization\Organization', array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['whitelist' => $ids]]
+            ))
+        );
     }
 
     /**

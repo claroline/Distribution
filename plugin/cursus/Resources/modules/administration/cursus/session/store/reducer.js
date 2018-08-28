@@ -11,7 +11,8 @@ const reducer = combineReducers({
   }),
   current: makeFormReducer('sessions.current', {}, {
     users: makeListReducer('sessions.current.users')
-  })
+  }),
+  picker: makeListReducer('sessions.picker')
 })
 
 export {

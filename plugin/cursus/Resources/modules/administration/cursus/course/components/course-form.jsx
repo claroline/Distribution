@@ -3,21 +3,20 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-// import {actions as formActions} from '#/main/app/content/form/store/actions'
-// import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {LINK_BUTTON} from '#/main/app/buttons'
-// import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {FormData} from '#/main/app/content/form/containers/data'
-// import {ListData} from '#/main/app/content/list/containers/data'
+import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans} from '#/main/core/translation'
-// import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
+import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
 
 import {Course as CourseType} from '#/plugin/cursus/administration/cursus/prop-types'
-// import {GroupList} from '#/main/core/administration/user/group/components/group-list'
-// import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {actions} from '#/plugin/cursus/administration/cursus/course/store'
 
-const CourseFormComponent = () =>
+const CourseFormComponent = (props) =>
   <FormData
     level={3}
     name="courses.current"
@@ -82,10 +81,10 @@ const CourseFormComponent = () =>
             type: 'string',
             label: trans('workspace_model')
           }, {
-            name: 'meta.icon',
-            type: 'file',
-            label: trans('icon')
-          }, {
+          //   name: 'meta.icon',
+          //   type: 'file',
+          //   label: trans('icon')
+          // }, {
             name: 'meta.defaultSessionDuration',
             type: 'number',
             label: trans('default_session_duration_label', {}, 'cursus'),
@@ -150,53 +149,66 @@ const CourseFormComponent = () =>
       }
     ]}
   >
+    <FormSections level={3}>
+      <FormSection
+        className="embedded-list-section"
+        icon="fa fa-fw fa-building"
+        title={trans('organizations')}
+        disabled={props.new}
+        actions={[
+          {
+            type: CALLBACK_BUTTON,
+            icon: 'fa fa-fw fa-plus',
+            label: trans('add_organizations'),
+            callback: () => props.pickOrganizations(props.course.id)
+          }
+        ]}
+      >
+        <ListData
+          name="courses.current.organizations.list"
+          fetch={{
+            url: ['apiv2_cursus_course_list_organizations', {id: props.course.id}],
+            autoload: props.course.id && !props.new
+          }}
+          primaryAction={OrganizationList.open}
+          delete={{
+            url: ['apiv2_cursus_course_remove_organizations', {id: props.course.id}]
+          }}
+          definition={OrganizationList.definition}
+          card={OrganizationList.card}
+        />
+      </FormSection>
+    </FormSections>
   </FormData>
 
 CourseFormComponent.propTypes = {
   new: T.bool.isRequired,
-  course: T.shape(CourseType.propTypes).isRequired
+  course: T.shape(CourseType.propTypes).isRequired,
+  pickOrganizations: T.func.isRequired
 }
 
 const CourseForm = connect(
   state => ({
     new: formSelect.isNew(formSelect.form(state, 'courses.current')),
     course: formSelect.data(formSelect.form(state, 'courses.current'))
+  }),
+  dispatch => ({
+    pickOrganizations(courseId) {
+      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
+        icon: 'fa fa-fw fa-building',
+        title: trans('add_organizations'),
+        confirmText: trans('add'),
+        name: 'courses.current.organizations.picker',
+        definition: OrganizationList.definition,
+        card: OrganizationList.card,
+        fetch: {
+          url: ['apiv2_organization_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addOrganizations(courseId, selected))
+      }))
+    }
   })
-  // dispatch => ({
-  //   updateProp(propName, propValue) {
-  //     dispatch(formActions.updateProp('roles.current', propName, propValue))
-  //   },
-  //   pickUsers(roleId) {
-  //     dispatch(modalActions.showModal(MODAL_DATA_LIST, {
-  //       icon: 'fa fa-fw fa-user',
-  //       title: trans('add_users'),
-  //       confirmText: trans('add'),
-  //       name: 'users.picker',
-  //       definition: UserList.definition,
-  //       card: UserList.card,
-  //       fetch: {
-  //         url: ['apiv2_user_list'],
-  //         autoload: true
-  //       },
-  //       handleSelect: (selected) => dispatch(actions.addUsers(roleId, selected))
-  //     }))
-  //   },
-  //   pickGroups(roleId){
-  //     dispatch(modalActions.showModal(MODAL_DATA_LIST, {
-  //       icon: 'fa fa-fw fa-users',
-  //       title: trans('add_groups'),
-  //       confirmText: trans('add'),
-  //       name: 'groups.picker',
-  //       definition: GroupList.definition,
-  //       card: GroupList.card,
-  //       fetch: {
-  //         url: ['apiv2_group_list'],
-  //         autoload: true
-  //       },
-  //       handleSelect: (selected) => dispatch(actions.addGroups(roleId, selected))
-  //     }))
-  //   }
-  // })
 )(CourseFormComponent)
 
 export {

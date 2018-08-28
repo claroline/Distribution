@@ -10,8 +10,13 @@ const reducer = combineReducers({
     })
   }),
   current: makeFormReducer('courses.current', {}, {
-    users: makeListReducer('courses.current.users')
-  })
+    users: makeListReducer('courses.current.users'),
+    organizations: combineReducers({
+      list: makeListReducer('courses.current.organizations.list'),
+      picker: makeListReducer('courses.current.organizations.picker')
+    })
+  }),
+  picker: makeListReducer('courses.picker')
 })
 
 export {

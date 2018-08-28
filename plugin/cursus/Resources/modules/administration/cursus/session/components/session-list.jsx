@@ -2,6 +2,8 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
 
+import {SessionCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-card'
+
 const SessionList = {
   open: (row) => ({
     type: LINK_BUTTON,
@@ -76,7 +78,8 @@ const SessionList = {
       label: trans('organization_validation', {}, 'cursus'),
       displayed: true
     }
-  ]
+  ],
+  card: SessionCard
 }
 
 export {

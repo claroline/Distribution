@@ -4,6 +4,8 @@ import {Role as RoleType} from '#/main/core/user/prop-types'
 import {User as UserType} from '#/main/core/user/prop-types'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 
+import {constants} from '#/plugin/cursus/administration/cursus/constants'
+
 const Parameters = {
   propTypes: {
     disable_certificates: T.bool.isRequired,
@@ -45,9 +47,11 @@ const Course = {
     })
   },
   defaultProps: {
+    code: '',
+    title: '',
     meta: {
       withSessionEvent: true,
-      order: 500
+      order: constants.DEFAULT_ORDER
     },
     registration: {
       publicRegistration: false,
@@ -114,6 +118,22 @@ const Session = {
       organizationValidation: T.bool,
       eventRegistrationType: T.number
     })
+  },
+  defaultProps: {
+    name: '',
+    meta: {
+      defaultSession: false,
+      order: constants.DEFAULT_ORDER,
+      certificated: true
+    },
+    registration: {
+      publicRegistration: false,
+      publicUnregistration: false,
+      registrationValidation: false,
+      userValidation: false,
+      organizationValidation: false,
+      eventRegistrationType: constants.REGISTRATION_AUTO
+    }
   }
 }
 
