@@ -15,7 +15,6 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CursusBundle\Entity\SessionEventComment;
 use Claroline\CursusBundle\Repository\SessionEventRepository;

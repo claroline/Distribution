@@ -1,5 +1,6 @@
 import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
+import {actions as listActions} from '#/main/app/content/list/store'
 
 export const actions = {}
 
@@ -20,4 +21,5 @@ actions.open = (formName, defaultProps, id = null) => (dispatch) => {
 
 actions.reset = (formName) => (dispatch) => {
   dispatch(formActions.resetForm(formName, {}, true))
+  dispatch(listActions.invalidateData(formName+'.events', {}, true))
 }

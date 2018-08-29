@@ -15,7 +15,11 @@ const reducer = combineReducers({
       list: makeListReducer('courses.current.organizations.list'),
       picker: makeListReducer('courses.current.organizations.picker')
     }),
-    sessions: makeListReducer('courses.current.sessions')
+    sessions: makeListReducer('courses.current.sessions', {}, {
+      invalidated: makeReducer(false, {
+        [FORM_SUBMIT_SUCCESS+'/sessions.current']: () => true
+      })
+    })
   }),
   picker: makeListReducer('courses.picker')
 })

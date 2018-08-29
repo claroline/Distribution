@@ -323,7 +323,7 @@ class CursusManager
      *
      * @param Course             $course
      * @param CourseSession|null $session
-     * @param boolean            $noFlush
+     * @param bool               $noFlush
      */
     public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null, $noFlush = true)
     {

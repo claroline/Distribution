@@ -21,7 +21,7 @@ import {
 } from '#/plugin/cursus/administration/cursus/prop-types'
 import {CourseList} from '#/plugin/cursus/administration/cursus/course/components/course-list'
 import {Sessions} from '#/plugin/cursus/administration/cursus/session/components/sessions'
-import {SessionForm} from '#/plugin/cursus/administration/cursus/session/components/session-form'
+import {Session} from '#/plugin/cursus/administration/cursus/session/components/session'
 
 const SessionTabActions = () =>
   <PageActions>
@@ -43,7 +43,7 @@ const SessionTabComponent = (props) =>
         component: Sessions
       }, {
         path: '/sessions/form/:id?',
-        component: SessionForm,
+        component: Session,
         onEnter: (params) => props.openForm(props.parameters.session_default_duration, props.parameters.session_default_total, params.id),
         onLeave: () => props.resetForm()
       }

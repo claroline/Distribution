@@ -13,7 +13,11 @@ const reducer = combineReducers({
   }),
   current: makeFormReducer('sessions.current', {}, {
     users: makeListReducer('sessions.current.users'),
-    events: makeListReducer('sessions.current.events')
+    events: makeListReducer('sessions.current.events', {}, {
+      invalidated: makeReducer(false, {
+        [FORM_SUBMIT_SUCCESS+'/events.current']: () => true
+      })
+    })
   }),
   picker: makeListReducer('sessions.picker')
 })

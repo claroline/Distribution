@@ -20,7 +20,7 @@ import {
 } from '#/plugin/cursus/administration/cursus/prop-types'
 import {SessionList} from '#/plugin/cursus/administration/cursus/session/components/session-list'
 import {SessionEvents} from '#/plugin/cursus/administration/cursus/session-event/components/session-events'
-import {SessionEventForm} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-form'
+import {SessionEvent} from '#/plugin/cursus/administration/cursus/session-event/components/session-event'
 
 const SessionEventTabActions = () =>
   <PageActions>
@@ -42,7 +42,7 @@ const SessionEventTabComponent = (props) =>
         component: SessionEvents
       }, {
         path: '/events/form/:id?',
-        component: SessionEventForm,
+        component: SessionEvent,
         onEnter: (params) => props.openForm(params.id),
         onLeave: () => props.resetForm()
       }

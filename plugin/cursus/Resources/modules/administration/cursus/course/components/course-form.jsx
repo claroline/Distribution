@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep'
+import set from 'lodash/set'
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
@@ -10,11 +12,19 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans} from '#/main/core/translation'
+import {now, nowAdd} from '#/main/core/scaffolding/date'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
 
-import {Course as CourseType} from '#/plugin/cursus/administration/cursus/prop-types'
+import {
+  Course as CourseType,
+  Session as SessionType,
+  Parameters as ParametersType
+} from '#/plugin/cursus/administration/cursus/prop-types'
+import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {actions} from '#/plugin/cursus/administration/cursus/course/store'
+import {actions as sessionActions} from '#/plugin/cursus/administration/cursus/session/store'
+import {MODAL_SESSION_FORM} from '#/plugin/cursus/administration/modals/session-form'
 import {SessionList} from '#/plugin/cursus/administration/cursus/session/components/session-list'
 
 const CourseFormComponent = (props) =>
@@ -189,7 +199,7 @@ const CourseFormComponent = (props) =>
             type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-plus',
             label: trans('create_session', {}, 'cursus'),
-            callback: () => console.log(props.course)
+            callback: () => props.openSessionForm(props.course.id, props.parameters.session_default_duration, props.parameters.session_default_total)
           }
         ]}
       >
@@ -212,12 +222,15 @@ const CourseFormComponent = (props) =>
 
 CourseFormComponent.propTypes = {
   new: T.bool.isRequired,
+  parameters: T.shape(ParametersType.propTypes).isRequired,
   course: T.shape(CourseType.propTypes).isRequired,
+  session: T.shape(SessionType.propTypes),
   pickOrganizations: T.func.isRequired
 }
 
 const CourseForm = connect(
   state => ({
+    parameters: selectors.parameters(state),
     new: formSelect.isNew(formSelect.form(state, 'courses.current')),
     course: formSelect.data(formSelect.form(state, 'courses.current'))
   }),
@@ -236,6 +249,15 @@ const CourseForm = connect(
         },
         handleSelect: (selected) => dispatch(actions.addOrganizations(courseId, selected))
       }))
+    },
+    openSessionForm(courseId, duration, total) {
+      const defaultProps = cloneDeep(SessionType.defaultProps)
+      const dates = [now(), nowAdd({days: duration ? duration : 1})]
+      set(defaultProps, 'meta.course.id', courseId)
+      set(defaultProps, 'meta.total', total)
+      set(defaultProps, 'restrictions.dates', dates)
+      dispatch(sessionActions.open('sessions.current', defaultProps))
+      dispatch(modalActions.showModal(MODAL_SESSION_FORM))
     }
   })
 )(CourseFormComponent)

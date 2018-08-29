@@ -191,7 +191,7 @@ class SessionSerializer
                         'dates' => [
                             $session->getStartDate() ? DateNormalizer::normalize($session->getStartDate()) : null,
                             $session->getEndDate() ? DateNormalizer::normalize($session->getEndDate()) : null,
-                        ]
+                        ],
                     ],
                     'registration' => [
                         'registrationType' => $session->getEventRegistrationType(),

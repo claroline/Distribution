@@ -156,7 +156,7 @@ const SessionEvent = {
     meta: T.shape({
       type: T.number,
       session: T.shape(Session.propTypes),
-      set: T.shape(SessionEventSet.propTypes)
+      set: T.string
     }),
     restrictions: T.shape({
       maxUsers: T.number,
