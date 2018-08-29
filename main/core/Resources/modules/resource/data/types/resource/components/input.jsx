@@ -7,6 +7,7 @@ import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {ModalButton} from '#/main/app/buttons/modal/containers/button'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/data/types/resource/prop-types'
@@ -21,7 +22,7 @@ const ResourceInput = props => !isEmpty(props.value) ?
         type: MODAL_BUTTON,
         icon: 'fa fa-fw fa-recycle',
         label: trans('replace', {}, 'actions'),
-        modal: ['MODAL_RESOURCE_EXPLORER', {
+        modal: [MODAL_RESOURCE_EXPLORER, {
           title: props.picker.title,
           current: props.picker.current,
           root: props.picker.root,
@@ -30,13 +31,19 @@ const ResourceInput = props => !isEmpty(props.value) ?
             callback: () => props.onChange(selected[0])
           })
         }]
-      }, { // todo confirm
+      }, {
         name: 'delete',
-        type: CALLBACK_BUTTON,
-        icon: 'fa fa-fw fa-recycle',
+        type: MODAL_BUTTON,
+        icon: 'fa fa-fw fa-trash-o',
         label: trans('delete', {}, 'actions'),
         dangerous: true,
-        callback: () => props.onChange(null)
+        modal: [MODAL_CONFIRM, {
+          dangerous: true,
+          icon: 'fa fa-fw fa-trash-o',
+          title: trans('resources_delete_confirm'),
+          question: trans('resource_delete_message'),
+          handleConfirm: () => props.onChange(null)
+        }]
       }
     ]}
   /> :
