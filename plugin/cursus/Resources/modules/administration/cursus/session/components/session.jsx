@@ -4,12 +4,13 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {
+  selectors as formSelect,
+  actions as formActions
+} from '#/main/app/content/form/store'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
-import {FormData} from '#/main/app/content/form/containers/data'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
@@ -17,12 +18,10 @@ import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
 import {
   Session as SessionType,
   SessionEvent as SessionEventType
 } from '#/plugin/cursus/administration/cursus/prop-types'
-import {actions} from '#/plugin/cursus/administration/cursus/session/store'
 import {actions as sessionEventActions} from '#/plugin/cursus/administration/cursus/session-event/store'
 import {MODAL_SESSION_EVENT_FORM} from '#/plugin/cursus/administration/modals/session-event-form'
 import {SessionForm} from '#/plugin/cursus/administration/cursus/session/components/form'
@@ -110,11 +109,11 @@ SessionComponent.propTypes = {
 }
 
 const Session = connect(
-  state => ({
+  (state) => ({
     new: formSelect.isNew(formSelect.form(state, 'sessions.current')),
     session: formSelect.data(formSelect.form(state, 'sessions.current'))
   }),
-  dispatch => ({
+  (dispatch) => ({
     selectCourse() {
       dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-tasks',

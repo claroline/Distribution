@@ -6,6 +6,7 @@ import {connect} from 'react-redux'
 
 import {Routes} from '#/main/app/router'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
@@ -13,12 +14,8 @@ import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
-import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {actions} from '#/plugin/cursus/administration/cursus/session-event/store'
-import {
-  Parameters as ParametersType,
-  SessionEvent as SessionEventType
-} from '#/plugin/cursus/administration/cursus/prop-types'
+import {SessionEvent as SessionEventType} from '#/plugin/cursus/administration/cursus/prop-types'
 import {SessionList} from '#/plugin/cursus/administration/cursus/session/components/session-list'
 import {SessionEvents} from '#/plugin/cursus/administration/cursus/session-event/components/session-events'
 import {SessionEvent} from '#/plugin/cursus/administration/cursus/session-event/components/session-event'
@@ -51,20 +48,21 @@ const SessionEventTabComponent = (props) =>
   />
 
 SessionEventTabComponent.propTypes = {
-  parameters: T.shape(ParametersType.propTypes),
   openForm: T.func.isRequired,
   resetForm: T.func.isRequired
 }
 
 const SessionEventTab = connect(
-  (state) => ({
-    parameters: selectors.parameters(state)
-  }),
+  null,
   (dispatch) => ({
     openForm(id = null) {
       if (id) {
         dispatch(actions.open('events.current', {}, id))
       } else {
+        const defaultProps = cloneDeep(SessionEventType.defaultProps)
+        set(defaultProps, 'id', makeId())
+        dispatch(actions.open('events.current', defaultProps))
+
         dispatch(modalActions.showModal(MODAL_DATA_LIST, {
           icon: 'fa fa-fw fa-cubes',
           title: trans('select_a_session', {}, 'cursus'),
@@ -78,12 +76,9 @@ const SessionEventTab = connect(
           },
           onlyId: false,
           handleSelect: (selected) => {
-            const defaultProps = cloneDeep(SessionEventType.defaultProps)
-            set(defaultProps, 'id', makeId())
-            set(defaultProps, 'meta.session', selected[0])
-            set(defaultProps, 'registration.registrationType', selected[0].registration.eventRegistrationType)
-            set(defaultProps, 'restrictions.dates', selected[0].restrictions.dates)
-            dispatch(actions.open('events.current', defaultProps))
+            dispatch(formActions.updateProp('events.current', 'meta.session.id', selected[0].id))
+            dispatch(formActions.updateProp('events.current', 'registration.registrationType', selected[0].registration.eventRegistrationType))
+            dispatch(formActions.updateProp('events.current', 'restrictions.dates', selected[0].restrictions.dates))
           }
         }))
       }

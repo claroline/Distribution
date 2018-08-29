@@ -17,8 +17,8 @@ actions.open = (formName, defaultProps, id = null) => (dispatch) => {
     })
   } else {
     dispatch(formActions.resetForm(formName, defaultProps, true))
-      dispatch(listActions.invalidateData(formName+'.sessions'))
-      dispatch(listActions.invalidateData(formName+'.organizations.list'))
+    dispatch(listActions.invalidateData(formName+'.sessions'))
+    dispatch(listActions.invalidateData(formName+'.organizations.list'))
   }
 }
 

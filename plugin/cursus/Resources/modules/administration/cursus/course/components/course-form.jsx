@@ -226,7 +226,8 @@ CourseFormComponent.propTypes = {
   parameters: T.shape(ParametersType.propTypes).isRequired,
   course: T.shape(CourseType.propTypes).isRequired,
   session: T.shape(SessionType.propTypes),
-  pickOrganizations: T.func.isRequired
+  pickOrganizations: T.func.isRequired,
+  openSessionForm: T.func.isRequired
 }
 
 const CourseForm = connect(
