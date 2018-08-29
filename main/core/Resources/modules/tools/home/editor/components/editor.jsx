@@ -125,7 +125,7 @@ const EditorComponent = props =>
               }, {
                 name: 'position',
                 type: 'number',
-                label: trans('position'),
+                label: trans('tab_position'),
                 options : {
                   min : 1,
                   max : props.tabs.length + 1

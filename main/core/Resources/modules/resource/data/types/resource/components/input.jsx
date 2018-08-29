@@ -16,6 +16,7 @@ import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/data/types
 import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 
 const ResourceInput = props =>
+// todo return()
   <div>
     {!isEmpty(props.value) && !props.embedded &&
       <ResourceCard

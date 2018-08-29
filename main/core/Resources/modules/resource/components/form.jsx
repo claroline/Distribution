@@ -95,11 +95,11 @@ const ResourceFormComponent = (props) =>
             name: 'display.fullscreen',
             label: trans('resource_fullscreen', {}, 'resource'),
             type: 'boolean'
-          }, /*{
+          } /*{
             name: 'display.closable',
             label: trans('resource_closable', {}, 'resource'),
             type: 'boolean'
-          }, */{
+          }, {
             name: 'display.closeTarget',
             label: trans('resource_close_target', {}, 'resource'),
             type: 'choice',
@@ -109,7 +109,7 @@ const ResourceFormComponent = (props) =>
               condensed: true,
               choices: constants.RESOURCE_CLOSE_TARGETS
             }
-          }
+          }*/
         ]
       }, {
         icon: 'fa fa-fw fa-key',
