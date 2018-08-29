@@ -251,6 +251,8 @@
     "repeat_session_event": "Répéter la séance",
     "repetition": "Répétition",
     "required_places_msg": "Seulement %remainingPlaces% place(s) restante(s). Nécessaire : %requiredPlaces%.",
+    "select_a_course": "Sélectionnez une formation",
+    "select_a_session": "Sélectionnez une session",
     "select_course_for_session_creation": "Sélectionnez la formation pour laquelle vous voulez créer une session",
     "select_session": "Sélectionnez une session de formation",
     "selected_sessions": "Sessions de formation sélectionnées",

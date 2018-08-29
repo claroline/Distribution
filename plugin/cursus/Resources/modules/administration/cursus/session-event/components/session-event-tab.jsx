@@ -10,6 +10,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
 import {trans} from '#/main/core/translation'
+import {makeId} from '#/main/core/scaffolding/id'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
@@ -66,7 +67,7 @@ const SessionEventTab = connect(
       } else {
         dispatch(modalActions.showModal(MODAL_DATA_LIST, {
           icon: 'fa fa-fw fa-cubes',
-          title: trans('select_session', {}, 'cursus'),
+          title: trans('select_a_session', {}, 'cursus'),
           confirmText: trans('select', {}, 'actions'),
           name: 'sessions.picker',
           definition: SessionList.definition,
@@ -78,6 +79,7 @@ const SessionEventTab = connect(
           onlyId: false,
           handleSelect: (selected) => {
             const defaultProps = cloneDeep(SessionEventType.defaultProps)
+            set(defaultProps, 'id', makeId())
             set(defaultProps, 'meta.session', selected[0])
             set(defaultProps, 'registration.registrationType', selected[0].registration.eventRegistrationType)
             set(defaultProps, 'restrictions.dates', selected[0].restrictions.dates)

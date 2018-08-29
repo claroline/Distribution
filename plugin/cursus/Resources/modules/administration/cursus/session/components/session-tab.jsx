@@ -6,10 +6,12 @@ import {connect} from 'react-redux'
 
 import {Routes} from '#/main/app/router'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
 import {trans} from '#/main/core/translation'
+import {makeId} from '#/main/core/scaffolding/id'
 import {now, nowAdd} from '#/main/core/scaffolding/date'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
@@ -65,6 +67,13 @@ const SessionTab = connect(
       if (id) {
         dispatch(actions.open('sessions.current', {}, id))
       } else {
+        const defaultProps = cloneDeep(SessionType.defaultProps)
+        const dates = [now(), nowAdd({days: duration ? duration : 1})]
+        set(defaultProps, 'id', makeId())
+        set(defaultProps, 'meta.total', total)
+        set(defaultProps, 'restrictions.dates', dates)
+        dispatch(actions.open('sessions.current', defaultProps))
+
         dispatch(modalActions.showModal(MODAL_DATA_LIST, {
           icon: 'fa fa-fw fa-tasks',
           title: trans('select_course_for_session_creation', {}, 'cursus'),
@@ -77,12 +86,7 @@ const SessionTab = connect(
             autoload: true
           },
           handleSelect: (selected) => {
-            const defaultProps = cloneDeep(SessionType.defaultProps)
-            const dates = [now(), nowAdd({days: duration ? duration : 1})]
-            set(defaultProps, 'meta.course.id', selected[0])
-            set(defaultProps, 'meta.total', total)
-            set(defaultProps, 'restrictions.dates', dates)
-            dispatch(actions.open('sessions.current', defaultProps))
+            dispatch(formActions.updateProp('sessions.current', 'meta.course.id', selected[0]))
           }
         }))
       }

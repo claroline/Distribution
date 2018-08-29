@@ -250,6 +250,8 @@
     "repeat_session_event": "Repeat session event",
     "repetition": "Repetition",
     "required_places_msg": "Only %remainingPlaces% remaining place(s). Needed : %requiredPlaces%.",
+    "select_a_course": "Select a training",
+    "select_a_session": "Select a training session",
     "select_course_for_session_creation": "Select training for which you want to create a session",
     "select_session": "Select a training session",
     "selected_sessions": "Selected training sessions",

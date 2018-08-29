@@ -12,6 +12,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans} from '#/main/core/translation'
+import {makeId} from '#/main/core/scaffolding/id'
 import {now, nowAdd} from '#/main/core/scaffolding/date'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
@@ -253,6 +254,7 @@ const CourseForm = connect(
     openSessionForm(courseId, duration, total) {
       const defaultProps = cloneDeep(SessionType.defaultProps)
       const dates = [now(), nowAdd({days: duration ? duration : 1})]
+      set(defaultProps, 'id', makeId())
       set(defaultProps, 'meta.course.id', courseId)
       set(defaultProps, 'meta.total', total)
       set(defaultProps, 'restrictions.dates', dates)
