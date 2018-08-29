@@ -6,7 +6,7 @@ import {TabbedPageContainer} from '#/main/core/layout/tabs'
 import {ParametersTab} from '#/plugin/cursus/administration/cursus/parameters/components/parameters-tab'
 import {SessionTab, SessionTabActions} from '#/plugin/cursus/administration/cursus/session/components/session-tab'
 import {CourseTab, CourseTabActions} from '#/plugin/cursus/administration/cursus/course/components/course-tab'
-// import {CursusTab, CursusTabActions} from '#/plugin/cursus/administration/cursus/cursus/components/cursus-tab'
+import {CursusTab, CursusTabActions} from '#/plugin/cursus/administration/cursus/cursus/components/cursus-tab'
 import {SessionEventTab, SessionEventTabActions} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-tab'
 
 const CursusTool = () =>
@@ -34,12 +34,12 @@ const CursusTool = () =>
         path: '/events',
         actions: SessionEventTabActions,
         content: SessionEventTab
-      // }, {
-      //   icon: 'fa fa-database',
-      //   title: trans('cursus', {}, 'cursus'),
-      //   path: '/cursus',
-      //   actions: CursusTabActions,
-      //   content: CursusTab
+      }, {
+        icon: 'fa fa-database',
+        title: trans('cursus', {}, 'cursus'),
+        path: '/cursus',
+        actions: CursusTabActions,
+        content: CursusTab
       }, {
         icon: 'fa fa-cog',
         title: trans('parameters'),

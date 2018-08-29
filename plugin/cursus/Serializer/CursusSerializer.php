@@ -15,11 +15,13 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Repository\Organization\OrganizationRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\CursusBundle\Entity\Cursus;
 use Claroline\CursusBundle\Repository\CourseRepository;
 use Claroline\CursusBundle\Repository\CursusRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.serializer.cursus")
@@ -33,11 +35,15 @@ class CursusSerializer
     private $om;
     /** @var SerializerProvider */
     private $serializer;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
 
     /** @var CourseRepository */
     private $courseRepo;
     /** @var CursusRepository */
     private $cursusRepo;
+    /** @var OrganizationRepository */
+    private $organizationRepo;
     /** @var WorkspaceRepository */
     private $workspaceRepo;
 
@@ -45,22 +51,27 @@ class CursusSerializer
      * CourseSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer"   = @DI\Inject("claroline.api.serializer"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage")
      * })
      *
-     * @param ObjectManager      $om
-     * @param SerializerProvider $serializer
+     * @param ObjectManager         $om
+     * @param SerializerProvider    $serializer
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         ObjectManager $om,
-        SerializerProvider $serializer
+        SerializerProvider $serializer,
+        TokenStorageInterface $tokenStorage
     ) {
         $this->om = $om;
         $this->serializer = $serializer;
+        $this->tokenStorage = $tokenStorage;
 
         $this->courseRepo = $om->getRepository('Claroline\CursusBundle\Entity\Course');
         $this->cursusRepo = $om->getRepository('Claroline\CursusBundle\Entity\Cursus');
+        $this->organizationRepo = $om->getRepository('Claroline\CoreBundle\Entity\Organization\Organization');
         $this->workspaceRepo = $om->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace');
     }
 
@@ -100,7 +111,7 @@ class CursusSerializer
                     'order' => $cursus->getCursusOrder(),
                     'icon' => $cursus->getIcon(),
                     'blocking' => $cursus->isBlocking(),
-                    'details' => $cursus->getDetails(),
+                    'color' => $cursus->getColor(),
                 ],
                 'structure' => [
                     'root' => $cursus->getRoot(),
@@ -129,7 +140,7 @@ class CursusSerializer
         $this->sipe('meta.order', 'setCursusOrder', $data, $cursus);
         $this->sipe('meta.blocking', 'setBlocking', $data, $cursus);
         $this->sipe('meta.icon', 'setIcon', $data, $cursus);
-        $this->sipe('meta.details', 'setDetails', $data, $cursus);
+        $this->sipe('meta.color', 'setColor', $data, $cursus);
 
         $parent = isset($data['parent']['id']) ?
             $this->cursusRepo->findOneBy(['uuid' => $data['parent']['id']]) :
@@ -145,6 +156,37 @@ class CursusSerializer
             $this->workspaceRepo->findOneBy(['uuid' => $data['meta']['workspace']['uuid']]) :
             null;
         $cursus->setWorkspace($workspace);
+
+        $organizations = $cursus->getOrganizations()->toArray();
+
+        // If Cursus is associated to no organization, initializes it with organizations administrated by authenticated user
+        // or at last resort with default organizations
+        if (0 === count($organizations)) {
+            $user = $this->tokenStorage->getToken()->getUser();
+            $useDefaultOrganizations = false;
+
+            if ('anon.' !== $user) {
+                $userOrganizations = $user->getAdministratedOrganizations()->toArray();
+
+                if (0 < count($userOrganizations)) {
+                    foreach ($userOrganizations as $organization) {
+                        $cursus->addOrganization($organization);
+                    }
+                } else {
+                    $useDefaultOrganizations = true;
+                }
+            } else {
+                $useDefaultOrganizations = true;
+            }
+            // Initializes Cursus with default organizations if no others organization is found
+            if ($useDefaultOrganizations) {
+                $defaultOrganizations = $this->organizationRepo->findBy(['default' => true]);
+
+                foreach ($defaultOrganizations as $organization) {
+                    $cursus->addOrganization($organization);
+                }
+            }
+        }
 
         return $cursus;
     }

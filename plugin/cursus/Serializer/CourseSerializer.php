@@ -31,10 +31,10 @@ class CourseSerializer
 
     /** @var ObjectManager */
     private $om;
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
     /** @var SerializerProvider */
     private $serializer;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
 
     /** @var OrganizationRepository */
     private $organizationRepo;
@@ -45,9 +45,9 @@ class CourseSerializer
      * CourseSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "serializer"          = @DI\Inject("claroline.api.serializer"),
-     *     "tokenStorage"        = @DI\Inject("security.token_storage")
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer"   = @DI\Inject("claroline.api.serializer"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage")
      * })
      *
      * @param ObjectManager         $om

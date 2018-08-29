@@ -1,7 +1,9 @@
 {
+    "blocking": "Bloquant",
     "course": "Formation",
     "courses": "Formations",
     "create_course": "Créer une formation",
+    "create_cursus": "Créer un cursus",
     "create_session": "Créer une session de formation",
     "create_session_event": "Créer une séance",
     "cursus": "Curriculum",

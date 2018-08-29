@@ -8,6 +8,7 @@ import {Routes} from '#/main/app/router'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
+import {makeId} from '#/main/core/scaffolding/id'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
@@ -59,6 +60,7 @@ const CourseTab = connect(
   (dispatch) => ({
     openForm(parameters, id = null) {
       const defaultProps = cloneDeep(CourseType.defaultProps)
+      set(defaultProps, 'id', makeId())
       set(defaultProps, 'meta.defaultSessionDuration', parameters['session_default_duration'])
 
       dispatch(actions.open('courses.current', defaultProps, id))

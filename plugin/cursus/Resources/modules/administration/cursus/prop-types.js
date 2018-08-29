@@ -76,7 +76,7 @@ const Cursus = {
       order: T.number,
       icon: T.string,
       blocking: T.bool,
-      details: T.object
+      color: T.string
     }),
     structure: T.shape({
       root: T.number,
@@ -84,6 +84,13 @@ const Cursus = {
       lft: T.number,
       rgt: T.number
     })
+  },
+  defaultProps: {
+    title: '',
+    meta: {
+      order: 0,
+      blocking: false
+    }
   }
 }
 
