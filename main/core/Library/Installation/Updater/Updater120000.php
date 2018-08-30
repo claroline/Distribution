@@ -249,10 +249,8 @@ class Updater120000 extends Updater
         }
     }
 
-    private function updateWidgetInstances()
+    private function restoreTextsWidgets()
     {
-        $this->log('Update widget instances...');
-
         if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
             $this->log('SimpleTextWidget already migrated');
         } else {
@@ -282,6 +280,45 @@ class Updater120000 extends Updater
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
         }
+    }
+
+    private function restoreListsWidgets()
+    {
+        $lists = [
+          'agenda_' => ['events'],
+          'my_workspaces' => ['my_workspaces'],
+          'agenda_task' => ['tasks'],
+          'claroline_announcement_widget' => ['announcements'],
+          'blog_list' => ['blog_posts'],
+          'claroline_forum_widget' => ['forum_messages'],
+        ];
+
+        foreach ($lists as $oldList => $data) {
+            $this->log("Migrating {$oldList} widgets...");
+
+            $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'list']);
+            $dataSource = $this->om->getRepository('ClarolineCoreBundle:DataSource')->findOneByName($data[0]);
+
+            $sql = "
+              INSERT INTO claro_widget_instance (id, widget_id, uuid, container_id, dataSource_id)
+              SELECT conf.id, {$widget->getId()}, (SELECT UUID()) as uuid, container.id, {$dataSource->getId()}
+              FROM claro_widget_display_config_temp conf
+              JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
+              JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+              JOIN claro_widget_container container ON container.id = conf.id
+              WHERE widget_temp.name = '{$oldList}'
+          ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        }
+    }
+
+    private function updateWidgetInstances()
+    {
+        $this->log('Update widget instances...');
+        $this->restoreTextsWidgets();
+        $this->restoreListsWidgets();
 
         if (0 === $this->om->count(WidgetInstanceConfig::class)) {
             $this->log('Copying WidgetInsanceConfigs');
