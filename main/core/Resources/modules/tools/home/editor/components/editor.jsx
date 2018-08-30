@@ -197,7 +197,7 @@ const EditorComponent = props =>
           }
         ]}
       >
-        {!(props.currentTab.locked && !props.administration) &&
+        {!(props.currentTab.locked && props.context.type === 'desktop' && !props.administration) &&
           <WidgetGridEditor
             context={props.context}
             widgets={props.widgets}

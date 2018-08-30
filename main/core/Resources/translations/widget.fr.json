@@ -6,7 +6,7 @@
     "widget_delete_confirm_message": "Êtes-vous sûr de vouloir supprimer ce widget ?",
     "insert_widget": "Déposer le widget",
     "publish_tab": "Publier l'onglet",
-    "publish_tab_help": "Un onglet publié sera visibile dans le bureau, mais ne pourra être ni édité ni supprimé par l'utilisateur. Un onglet non pulié ne sera pas visible dans le bureau.",
+    "publish_section": "Publier la section",
     "modify_widget": "Modifier le widget",
     "move_widget": "Déplacer le widget",
     "new_section_select": "1. Choisir le style de section à ajouter",
