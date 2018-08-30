@@ -20,45 +20,39 @@ import {Button as ButtonTypes} from '#/main/app/buttons/prop-types'
  * @param props
  * @constructor
  */
-const LinkButton = withRouter(props => {
-  // disable button if location is target
-  let disableLink = false
-  if (matchPath(props.location.pathname, {path: props.target, exact: true})) {
-    disableLink = true
-  } else {
-    disableLink = false
-  }
+const LinkButtonComponent = props =>
+  <NavLink
+    {...omit(props, 'displayed', 'primary', 'dangerous', 'size', 'target', 'confirm', 'history', 'match', 'staticContext')}
+    tabIndex={props.tabIndex}
+    to={props.target}
+    exact={props.exact}
+    disabled={props.disabled || matchPath(props.location.pathname, {path: props.target, exact: true})}
+    className={classes(
+      props.className,
+      props.size && `btn-${props.size}`,
+      {
+        disabled: props.disabled,
+        default: !props.primary && !props.dangerous,
+        primary: props.primary,
+        danger: props.dangerous,
+        active: props.active
+      }
+    )}
+  >
+    {props.children}
+  </NavLink>
 
-  return(
-    <NavLink
-      {...omit(props, 'displayed', 'primary', 'dangerous', 'size', 'target', 'confirm', 'history', 'match', 'staticContext')}
-      tabIndex={props.tabIndex}
-      to={props.target}
-      exact={props.exact}
-      disabled={props.disabled || disableLink}
-      className={classes(
-        props.className,
-        props.size && `btn-${props.size}`,
-        {
-          disabled: props.disabled,
-          default: !props.primary && !props.dangerous,
-          primary: props.primary,
-          danger: props.dangerous,
-          active: props.active
-        }
-      )}
-    >
-      {props.children}
-    </NavLink>
-  )
-})
-
-implementPropTypes(LinkButton, ButtonTypes, {
+implementPropTypes(LinkButtonComponent, ButtonTypes, {
   target: T.string,
+  location: T.shapeOf({
+    pathname: T.string
+  }),
   exact: T.bool
 }, {
   exact: false
 })
+
+const LinkButton = withRouter(LinkButtonComponent)
 
 export {
   LinkButton
