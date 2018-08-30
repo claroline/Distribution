@@ -7,7 +7,7 @@ const ResourceFilesCreationModal = connect(
   null,
   (dispatch) => ({
     createFiles(parent, files, callback) {
-      dispatch(actions.createFiles(parent, files)).then(callback)
+      dispatch(actions.createFiles(parent, files, callback))
     }
   })
 )(ResourceFilesCreationModalComponent)

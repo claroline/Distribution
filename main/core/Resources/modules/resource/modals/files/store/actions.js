@@ -4,15 +4,13 @@ import {currentUser} from '#/main/core/user/current'
 
 export const actions = {}
 
-actions.createFiles = (parentId, files) => {
+actions.createFiles = (parent, files, onSuccess) => {
   const formData = new FormData()
-  // formData.append('file', file)
-  // formData.append('fileName', file.name)
-  // formData.append('sourceType', 'uploadedfile')
+  files.forEach((file, index) => formData.append(`files[${index}]`, file))
 
   return ({
     [API_REQUEST]: {
-      url: ['apiv2_resource_files_create', {parent: parentId}],
+      url: ['apiv2_resource_files_create', {parent: parent.id}],
       type: 'upload',
       request: {
         method: 'POST',
@@ -22,7 +20,7 @@ actions.createFiles = (parentId, files) => {
           'X-Requested-With': 'XMLHttpRequest'
         })
       },
-      // success: (response) => Array.isArray(response) ? onSuccess(response[0]) : onSuccess(response)
+      success: (response) => onSuccess(response)
     }
   })
 }
