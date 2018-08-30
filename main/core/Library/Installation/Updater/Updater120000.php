@@ -283,37 +283,6 @@ class Updater120000 extends Updater
             $stmt->execute();
         }
 
-        /*
-                if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
-                    $this->log('SimpleTextWidget already migrated');
-                } else {
-                    $this->log('Migrating SimpleTextWidget to SimpleWidget...');
-        
-                    $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
-        
-                    $sql = "
-                        INSERT INTO claro_widget_instance (id, widget_id, uuid, container_id)
-                        SELECT conf.id, {$widget->getId()}, (SELECT UUID()) as uuid, container.id
-                        FROM claro_widget_display_config_temp conf
-                        JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
-                        JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
-                        JOIN claro_widget_container container ON container.id = conf.id
-                        WHERE widget_temp.name = 'simple_text'
-                    ";
-                    $stmt = $this->conn->prepare($sql);
-                    $stmt->execute();
-        
-                    $sql = '
-                        INSERT INTO claro_widget_simple (id, content, widgetInstance_id)
-                        SELECT text.id, text.content, config.id from claro_simple_text_widget_config_temp text
-                        JOIN claro_widget_display_config_temp config ON text.widgetInstance_id = config.widget_instance_id
-                        JOIN claro_widget_container container ON container.id = config.id
-                    ';
-        
-                    $stmt = $this->conn->prepare($sql);
-                    $stmt->execute();
-                }*/
-
         if (0 === $this->om->count(WidgetInstanceConfig::class)) {
             $this->log('Copying WidgetInsanceConfigs');
 
