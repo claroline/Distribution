@@ -69,6 +69,7 @@ class Updater120000 extends Updater
             'claro_widget_instance_config',
             'claro_widget_simple',
             'claro_widget_container',
+            'claro_widget_list',
             'claro_widget_container_config',
         ];
 
@@ -98,6 +99,7 @@ class Updater120000 extends Updater
           'claro_widget_home_tab_config',
           'claro_simple_text_widget_config',
           'claro_widget_roles',
+          'claro_widget_list',
           'claro_widget',
         ];
 
@@ -285,12 +287,12 @@ class Updater120000 extends Updater
     private function restoreListsWidgets()
     {
         $lists = [
-          'agenda_' => ['events'],
-          'my_workspaces' => ['my_workspaces'],
-          'agenda_task' => ['tasks'],
-          'claroline_announcement_widget' => ['announcements'],
-          'blog_list' => ['blog_posts'],
-          'claroline_forum_widget' => ['forum_messages'],
+            'agenda_' => ['events', ['-start']],
+            'my_workspaces' => ['my_workspaces', ['-id']],
+            'agenda_task' => ['tasks', ['-start']],
+            'claroline_announcement_widget' => ['announcements', ['-id']],
+            'blog_list' => ['blog_posts', ['-id']],
+            'claroline_forum_widget' => ['forum_messages', ['-id']],
         ];
 
         foreach ($lists as $oldList => $data) {
@@ -300,17 +302,36 @@ class Updater120000 extends Updater
             $dataSource = $this->om->getRepository('ClarolineCoreBundle:DataSource')->findOneByName($data[0]);
 
             $sql = "
-              INSERT INTO claro_widget_instance (id, widget_id, uuid, container_id, dataSource_id)
-              SELECT conf.id, {$widget->getId()}, (SELECT UUID()) as uuid, container.id, {$dataSource->getId()}
-              FROM claro_widget_display_config_temp conf
-              JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
-              JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
-              JOIN claro_widget_container container ON container.id = conf.id
-              WHERE widget_temp.name = '{$oldList}'
-          ";
+                INSERT INTO claro_widget_instance (id, widget_id, uuid, container_id, dataSource_id)
+                SELECT conf.id, {$widget->getId()}, (SELECT UUID()) as uuid, container.id, {$dataSource->getId()}
+                FROM claro_widget_display_config_temp conf
+                JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
+                JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+                JOIN claro_widget_container container ON container.id = conf.id
+                WHERE widget_temp.name = '{$oldList}'
+            ";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
+
+            if (isset($data[1])) {
+                $parameters = $data[1];
+                $sortBy = $parameters[0];
+
+                $this->log('Setting default list parameters...');
+
+                $sql = "
+                    INSERT INTO claro_widget_list (sortBy, widgetInstance_id)
+                    SELECT '{$sortBy}', conf.id from claro_widget_display_config_temp conf
+                    JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
+                    JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+                    JOIN claro_widget_instance instance ON instance.id = conf.id
+                    WHERE widget_temp.name = '{$oldList}';
+                ";
+
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute();
+            }
         }
     }
 
