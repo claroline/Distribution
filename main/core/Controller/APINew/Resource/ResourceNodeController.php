@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\Controller\APINew\Resource;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -96,5 +97,42 @@ class ResourceNodeController extends AbstractCrudController
         return new JsonResponse(
             $this->finder->search(ResourceNode::class, $options)
         );
+    }
+
+    /**
+     * @EXT\Route(
+     *     "{parent}/files",
+     *     name="apiv2_resource_files_create"
+     * )
+     * @EXT\ParamConverter(
+     *     "parent",
+     *     class="ClarolineCoreBundle:Resource\ResourceNode",
+     *     options={"mapping": {"parent": "uuid"}}
+     * )
+     *
+     * @param ResourceNode $parent
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function resourceFilesCreateAction(ResourceNode $parent, Request $request)
+    {
+        $files = $request->files->all();
+        $handler = $request->get('handler');
+        $objects = [];
+        /** @var StrictDispatcher */
+        $dispatcher = $this->container->get('claroline.event.event_dispatcher');
+
+        foreach ($files as $file) {
+            $object = $this->crud->create(
+                'Claroline\CoreBundle\Entity\File\PublicFile',
+                [],
+                ['file' => $file]
+            );
+            $dispatcher->dispatch(strtolower('upload_file_'.$handler), 'File\UploadFile', [$object]);
+            $objects[] = $object;
+        }
+
+        return $objects;
     }
 }
