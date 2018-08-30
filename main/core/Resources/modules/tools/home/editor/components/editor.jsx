@@ -36,7 +36,7 @@ const EditorComponent = props =>
       tabs={props.tabs}
       create={() => props.createTab(props.context, props.administration, props.tabs.length, props.history.push)}
       context={props.context}
-      administration={props.administration}
+      editing={true}
     />
 
     <PageHeader
@@ -93,7 +93,7 @@ const EditorComponent = props =>
           target: '/',
           exact: true
         }}
-        disabled={props.currentTab.locked && !props.administration}
+        disabled={props.currentTab.locked && props.context.type === 'desktop' && !props.administration}
         sections={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -110,7 +110,6 @@ const EditorComponent = props =>
                 name: 'locked',
                 type: 'boolean',
                 label: trans('publish_tab', {}, 'widget')
-                // displayed: props.administration
               }
             ]
           }, {
