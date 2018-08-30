@@ -64,6 +64,7 @@ const ResourceExplorer = props => {
             primary: true
           }, {
             name: 'meta.published',
+            alias: 'published',
             type: 'boolean',
             label: trans('published'),
             displayed: true
