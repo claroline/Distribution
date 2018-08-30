@@ -44,7 +44,7 @@ const LinkButtonComponent = props =>
 
 implementPropTypes(LinkButtonComponent, ButtonTypes, {
   target: T.string,
-  location: T.shapeOf({
+  location: T.shape({
     pathname: T.string
   }),
   exact: T.bool
