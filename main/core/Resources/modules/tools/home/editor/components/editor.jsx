@@ -109,9 +109,8 @@ const EditorComponent = props =>
               }, {
                 name: 'locked',
                 type: 'boolean',
-                label: trans('publish_tab', {}, 'widget'),
-                help : trans('publish_tab_help', {}, 'widget'),
-                displayed: props.administration
+                label: trans('publish_tab', {}, 'widget')
+                // displayed: props.administration
               }
             ]
           }, {
