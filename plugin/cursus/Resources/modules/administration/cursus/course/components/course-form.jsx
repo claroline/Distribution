@@ -85,14 +85,14 @@ const CourseFormComponent = (props) =>
             displayed: (course) => !course.meta || (!course.meta.workspace && !course.meta.workspaceModel),
             required: true
           }, {
-            name: 'meta.workspace',
-            type: 'string',
-            label: trans('workspace')
-          }, {
-            name: 'meta.workspaceModel',
-            type: 'string',
-            label: trans('workspace_model')
-          }, {
+          //   name: 'meta.workspace',
+          //   type: 'string',
+          //   label: trans('workspace')
+          // }, {
+          //   name: 'meta.workspaceModel',
+          //   type: 'string',
+          //   label: trans('workspace_model')
+          // }, {
           //   name: 'meta.icon',
           //   type: 'file',
           //   label: trans('icon')

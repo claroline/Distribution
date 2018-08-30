@@ -36,6 +36,7 @@ const CursusTabComponent = props =>
         component: Cursus
       }, {
         path: '/cursus/form/:id?',
+        exact: true,
         component: CursusForm,
         onEnter: (params) => props.openForm(params.id),
         onLeave: () => props.resetForm()
