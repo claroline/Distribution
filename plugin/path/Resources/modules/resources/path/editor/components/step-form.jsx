@@ -6,6 +6,7 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {selectors} from '#/plugin/path/resources/path/editor/store'
@@ -138,7 +139,7 @@ const StepFormComponent = props =>
             label: trans('resource'),
             options: {
               embedded: true,
-              showHeader: false
+              showHeader: false //props.stepForm.showResourceHeader
             }
           },
           {
@@ -196,7 +197,7 @@ implementPropTypes(StepFormComponent, StepTypes, {
 
 const StepForm = connect(
   state=> ({
-    currentStep: selectors.steps(state)
+    stepForm: formSelect.data(formSelect.form(state, selectors.FORM_NAME))
   })
 )(StepFormComponent)
 
