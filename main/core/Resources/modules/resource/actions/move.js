@@ -1,6 +1,7 @@
-import {trans} from '#/main/core/translation'
+import {url} from '#/main/app/api'
 import {ASYNC_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 
+import {trans} from '#/main/core/translation'
 import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 
 const action = (resourceNodes, nodesRefresher) => ({ // todo : collection
@@ -14,7 +15,10 @@ const action = (resourceNodes, nodesRefresher) => ({ // todo : collection
     selectAction: (selected) => ({
       type: ASYNC_BUTTON,
       request: {
-        url: ['claro_resource_action_short', {id: resourceNodes[0].id, action: 'move'}],
+        url: url(
+          ['claro_resource_collection_action', {action: 'move'}],
+          {ids: resourceNodes.map(resourceNode => resourceNode.id)}
+        ),
         request: {
           method: 'PUT',
           body: JSON.stringify({destination: selected[0]})
