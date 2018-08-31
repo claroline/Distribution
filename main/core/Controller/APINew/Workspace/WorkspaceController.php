@@ -368,7 +368,7 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
             array_merge($request->query->all(), ['hiddenFilters' => ['displayable' => true, 'selfRegistration' => true]]),
-            $options = $this->getOptions()['list']
+            $this->getOptions()['list']
         ));
     }
 
@@ -386,7 +386,7 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
             array_merge($request->query->all(), ['hiddenFilters' => ['displayable' => true, 'model' => false, 'sameOrganization' => true]]),
-            $options = $this->getOptions()['list']
+            $this->getOptions()['list']
         ));
     }
 
@@ -406,7 +406,7 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
             array_merge($request->query->all(), ['hiddenFilters' => ['user' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]]),
-            $options = $this->getOptions()['list']
+            $this->getOptions()['list']
         ));
     }
 
@@ -424,7 +424,7 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
             array_merge($request->query->all(), ['hiddenFilters' => ['administrated' => true]]),
-            $options = $this->getOptions()['list']
+            $this->getOptions()['list']
         ));
     }
 
