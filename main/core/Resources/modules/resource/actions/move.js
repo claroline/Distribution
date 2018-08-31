@@ -4,7 +4,7 @@ import {ASYNC_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/core/translation'
 import {MODAL_RESOURCE_EXPLORER} from '#/main/core/resource/modals/explorer'
 
-const action = (resourceNodes, nodesRefresher) => ({ // todo : collection
+const action = (resourceNodes, nodesRefresher) => ({
   name: 'move',
   type: MODAL_BUTTON,
   icon: 'fa fa-fw fa-arrows',

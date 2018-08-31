@@ -6,7 +6,7 @@ import {ASYNC_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
 
-const action = (resourceNodes, nodesRefresher) => ({ // todo collection
+const action = (resourceNodes, nodesRefresher) => ({
   name: 'unpublish',
   type: ASYNC_BUTTON,
   icon: 'fa fa-fw fa-eye-slash',
