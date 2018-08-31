@@ -39,6 +39,7 @@ class Updater120000 extends Updater
     {
         $this->saveOldTabsTables();
         $this->setWidgetPlugin();
+        $this->truncateTables();
     }
 
     public function setWidgetPlugin()
@@ -77,6 +78,7 @@ class Updater120000 extends Updater
             $this->log('TRUNCATE '.$table);
             $sql = '
                 SET FOREIGN_KEY_CHECKS=0;
+                CREATE TABLE IF NOT EXISTS '.$table.' .
                 TRUNCATE TABLE '.$table.';
                 SET FOREIGN_KEY_CHECKS=1;
             ';
@@ -129,7 +131,6 @@ class Updater120000 extends Updater
     public function postUpdate()
     {
         $this->updatePlatformParameters();
-        $this->truncateTables();
         $this->updateHomeTabType();
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
