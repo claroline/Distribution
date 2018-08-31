@@ -209,8 +209,8 @@ class Updater120000 extends Updater
         } else {
             $this->log('WidgetContainer migration.');
             $sql = '
-                INSERT INTO claro_widget_container (id, uuid, is_visible)
-                SELECT temp.id, (SELECT UUID(), true) as uuid FROM claro_widget_display_config_temp temp
+                INSERT INTO claro_widget_container (id, uuid)
+                SELECT temp.id, (SELECT UUID()) as uuid FROM claro_widget_display_config_temp temp
                 WHERE temp.user_id IS NULL OR temp.workspace_id IS NOT NULL';
 
             $stmt = $this->conn->prepare($sql);
@@ -234,8 +234,8 @@ class Updater120000 extends Updater
         } else {
             $this->log('WidgetContainerConfig migration.');
             $sql = "
-                INSERT INTO claro_widget_container_config (id, uuid, backgroundType, position, layout, widget_container_id)
-                SELECT container.id, (SELECT UUID()) as uuid, 'none', config.row_position, '[1]', container.id
+                INSERT INTO claro_widget_container_config (id, uuid, backgroundType, position, layout, widget_container_id, is_visible)
+                SELECT container.id, (SELECT UUID()) as uuid, 'none', config.row_position, '[1]', container.id, true
                 FROM claro_widget_container container
                 JOIN claro_widget_display_config_temp config ON config.id = container.id
             ";
