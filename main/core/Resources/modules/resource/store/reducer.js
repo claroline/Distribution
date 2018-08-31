@@ -32,6 +32,8 @@ const reducer = {
   }),
 
   embedded: makeReducer(false), // this can not be changed at runtime
+  
+  showHeader: makeReducer(false),
 
   managed: makeReducer(false, {
     [RESOURCE_LOAD]: (state, action) => action.resourceData.managed || false

@@ -1,4 +1,5 @@
 import React from 'react'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -62,7 +63,7 @@ InheritedResourcesSection.propTypes = {
   removeInheritedResource: T.func.isRequired
 }
 
-const StepForm = props =>
+const StepFormComponent = props =>
   <FormData
     level={3}
     displayLevel={2}
@@ -136,8 +137,14 @@ const StepForm = props =>
             type: 'resource',
             label: trans('resource'),
             options: {
-              embedded: true
+              embedded: true,
+              showHeader: false
             }
+          },
+          {
+            name: 'showResourceHeader',
+            type: 'boolean',
+            label: trans('show_resource_header')
           }
         ]
       }
@@ -175,7 +182,7 @@ const StepForm = props =>
     </FormSections>
   </FormData>
 
-implementPropTypes(StepForm, StepTypes, {
+implementPropTypes(StepFormComponent, StepTypes, {
   stepPath: T.string.isRequired,
   customNumbering: T.bool,
   pickSecondaryResources: T.func.isRequired,
@@ -186,6 +193,12 @@ implementPropTypes(StepForm, StepTypes, {
 }, {
   customNumbering: false
 })
+
+const StepForm = connect(
+  state=> ({
+    currentStep: selectors.steps(state)
+  })
+)(StepFormComponent)
 
 export {
   StepForm

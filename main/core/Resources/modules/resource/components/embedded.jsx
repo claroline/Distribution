@@ -10,7 +10,7 @@ import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types
 // the class is because of the use of references and lifecycle
 class ResourceEmbedded extends Component {
   componentDidMount() {
-    this.mountResource(this.props.resourceNode, this.props.lifecycle)
+    this.mountResource(this.props.resourceNode, this.props.lifecycle, this.props.showHeader)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -23,12 +23,13 @@ class ResourceEmbedded extends Component {
     }
   }
 
-  mountResource(resourceNode, lifecycleActions) {
+  mountResource(resourceNode, lifecycleActions, showHeader) {
     const ResourceApp = new App()
 
     mount(this.mountNode, ResourceApp.component, ResourceApp.store, {
       resourceNode: resourceNode,
       embedded: true,
+      showHeader: showHeader,
       lifecycle: lifecycleActions
     })
   }
