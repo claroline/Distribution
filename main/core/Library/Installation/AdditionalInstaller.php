@@ -175,6 +175,12 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
 
     public function end()
     {
+        if (version_compare($currentVersion, '12.0.0', '<')) {
+            $updater = new Updater\Updater120000($this->container, $this->logger);
+            $updater->setLogger($this->logger);
+            $updater->end();
+        }
+
         $this->container->get('claroline.installation.refresher')->installAssets();
         $this->log('Updating resource icons...');
         $this->container->get('claroline.manager.icon_set_manager')->setLogger($this->logger);
