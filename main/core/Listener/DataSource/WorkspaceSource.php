@@ -25,8 +25,8 @@ class WorkspaceSource
      * @param FinderProvider $finder
      */
     public function __construct(
-        FinderProvider $finder)
-    {
+        FinderProvider $finder
+    ) {
         $this->finder = $finder;
     }
 

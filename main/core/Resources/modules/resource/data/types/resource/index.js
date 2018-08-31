@@ -11,7 +11,6 @@ const dataType = {
     label: trans('resource', {}, 'data'),
     description: trans('resource_desc', {}, 'data')
   },
-
   // todo : maybe create a validator based on propTypes (would be helpful for this)
   //validate: (value, options) => chain(value, options, [string, match, lengthInRange]),
   components: {

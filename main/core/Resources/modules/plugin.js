@@ -23,8 +23,9 @@ registry.add('core', {
     'unpublish': () => { return import(/* webpackChunkName: "core-action-unpublish" */ '#/main/core/resource/actions/unpublish') },
 
     // directory resource
-    'add'      : () => { return import(/* webpackChunkName: "core-action-add" */       '#/main/core/resources/directory/actions/add') },
-    'import'   : () => { return import(/* webpackChunkName: "core-action-import" */    '#/main/core/resources/directory/actions/import') }
+    'add'       : () => { return import(/* webpackChunkName: "core-action-add" */       '#/main/core/resources/directory/actions/add') },
+    'import'    : () => { return import(/* webpackChunkName: "core-action-import" */    '#/main/core/resources/directory/actions/import') },
+    'add_files' : () => { return import(/* webpackChunkName: "core-action-add-files" */ '#/main/core/resources/directory/actions/add-files') }
 
     // file resource
     //'download' : () => { return import(/* webpackChunkName: "resource-action-download" */       '#/main/core/resources/file/actions/download') }
@@ -52,7 +53,8 @@ registry.add('core', {
     sources: {
       'resources' : () => { return import(/* webpackChunkName: "core-data-resources" */  '#/main/core/data/sources/resources') },
       'users'     : () => { return import(/* webpackChunkName: "core-data-users" */      '#/main/core/data/sources/users') },
-      'workspaces': () => { return import(/* webpackChunkName: "core-data-workspaces" */ '#/main/core/data/sources/workspaces') }
+      'workspaces': () => { return import(/* webpackChunkName: "core-data-workspaces" */ '#/main/core/data/sources/workspaces') },
+      'my_workspaces': () => { return import(/* webpackChunkName: "core-data-workspaces" */ '#/main/core/data/sources/workspaces') }
     }
   },
 

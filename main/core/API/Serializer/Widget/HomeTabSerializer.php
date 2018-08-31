@@ -73,13 +73,17 @@ class HomeTabSerializer
         foreach ($savedContainers as $container) {
             //temporary
             $widgetContainerConfig = $container->getWidgetContainerConfigs()[0];
-
             if ($widgetContainerConfig) {
-                $containers[$widgetContainerConfig->getPosition()] = $container;
+                if (!array_key_exists($widgetContainerConfig->getPosition(), $containers)) {
+                    $containers[$widgetContainerConfig->getPosition()] = $container;
+                } else {
+                    $containers[] = $container;
+                }
             }
         }
 
         ksort($containers);
+        $containers = array_values($containers);
 
         $poster = null;
 

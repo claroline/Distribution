@@ -129,6 +129,12 @@ plugin:
                 group: transfer
                 api: [POST]
 
+              # Creates one or several File resources in the directory
+              - name: add_files
+                decoder: create
+                group: management
+                api: [POST]
+
         - name: text
           class: Claroline\CoreBundle\Entity\Resource\Text
           tags: [content]
@@ -177,7 +183,7 @@ plugin:
         - name: profile
           class: Claroline\CoreBundle\Entity\Widget\Type\ProfileWidget
           context: [workspace, desktop]
-          tags: [users]
+          tags: [community]
 
         - name: resource
           class: Claroline\CoreBundle\Entity\Widget\Type\ResourceWidget
@@ -195,10 +201,15 @@ plugin:
           context: [desktop]
           tags: [workspaces]
 
+        - name: my_workspaces
+          type: list
+          context: [desktop]
+          tags: [workspaces]
+
         - name: users
           type: list
           context: [workspace, desktop]
-          tags: [users]
+          tags: [community]
 
     tools:
         - name: home
