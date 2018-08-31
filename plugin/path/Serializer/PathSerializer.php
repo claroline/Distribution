@@ -282,6 +282,10 @@ class PathSerializer
             null;
         $step->setResource($resource);
 
+        if (isset($data['showResourceHeader'])) {
+            $step->setShowResourceHeader($data['showResourceHeader']);
+        }
+
         if (isset($options['path'])) {
             $step->setPath($options['path']);
         }
