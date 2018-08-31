@@ -497,14 +497,15 @@ class NotificationManager
     /**
      * @param User           $user
      * @param ResourceNode[] $resourceNodes
+     * @param string         $mode
      *
      * @return array
      */
-    public function toggleFollowResources(User $user, array $resourceNodes)
+    public function toggleFollowResources(User $user, array $resourceNodes, $mode)
     {
         if (0 < count($resourceNodes)) {
-            $follower = $this->getFollowerResource($user->getId(), $resourceNodes[0]->getId(), $resourceNodes[0]->getClass());
-            $mode = empty($follower) ? 'create' : 'delete';
+//            $follower = $this->getFollowerResource($user->getId(), $resourceNodes[0]->getId(), $resourceNodes[0]->getClass());
+//            $mode = empty($follower) ? 'create' : 'delete';
 
             $this->om->startFlushSuite();
 
