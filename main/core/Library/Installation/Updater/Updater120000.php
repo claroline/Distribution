@@ -75,16 +75,24 @@ class Updater120000 extends Updater
         ];
 
         foreach ($tables as $table) {
+            $this->truncate($table);
+        }
+    }
+
+    private function truncate($table)
+    {
+        try {
             $this->log('TRUNCATE '.$table);
             $sql = '
                 SET FOREIGN_KEY_CHECKS=0;
-                CREATE TABLE IF NOT EXISTS '.$table.' .
                 TRUNCATE TABLE '.$table.';
                 SET FOREIGN_KEY_CHECKS=1;
             ';
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
+        } catch (\Exception $e) {
+            $this->log('Couldnt truncate '.$table);
         }
     }
 
@@ -131,19 +139,19 @@ class Updater120000 extends Updater
     public function postUpdate()
     {
         $this->updatePlatformParameters();
-        $this->updateHomeTabType();
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
         $this->updateTabsStructure();
         $this->buildContainers();
-        $this->checkDesktopTabs();
-        $this->updateWidgetInstanceConfigType();
         $this->deactivateActivityResourceType();
     }
 
     public function end()
     {
         $this->updateWidgetInstances();
+        $this->updateWidgetInstanceConfigType();
+        $this->updateHomeTabType();
+        $this->checkDesktopTabs();
     }
 
     private function updateHomeTabType()
