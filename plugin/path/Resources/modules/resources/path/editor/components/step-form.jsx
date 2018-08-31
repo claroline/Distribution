@@ -64,124 +64,128 @@ InheritedResourcesSection.propTypes = {
   removeInheritedResource: T.func.isRequired
 }
 
-const StepFormComponent = props =>
-  <FormData
-    level={3}
-    displayLevel={2}
-    name={selectors.FORM_NAME}
-    dataPart={props.stepPath}
-    buttons={true}
-    save={{
-      type: CALLBACK_BUTTON,
-      callback: () => props.saveForm()
-    }}
-    cancel={{
-      type: LINK_BUTTON,
-      target: '/',
-      exact: true
-    }}
-    sections={[
-      {
-        title: trans('information'),
-        primary: true,
-        fields: [
-          {
-            name: 'description',
-            type: 'html',
-            label: trans('content')
-          }
-        ]
-      }, {
-        title: trans('information'),
-        icon: 'fa fa-fw fa-info',
-        fields: [
-          {
-            name: 'title',
-            type: 'string',
-            label: trans('title'),
-            required: true
-          }
-        ]
-      }, {
-        icon: 'fa fa-fw fa-desktop',
-        title: trans('display_parameters'),
-        fields: [
-          {
-            name: 'poster',
-            type: 'image',
-            label: trans('poster'),
-            options: {
-              ratio: '3:1'
+const StepFormComponent = props => {
+  const currentStep = props.steps.find(step => props.step.id === step.id)
+  return(
+    <FormData
+      level={3}
+      displayLevel={2}
+      name={selectors.FORM_NAME}
+      dataPart={props.stepPath}
+      buttons={true}
+      save={{
+        type: CALLBACK_BUTTON,
+        callback: () => props.saveForm()
+      }}
+      cancel={{
+        type: LINK_BUTTON,
+        target: '/',
+        exact: true
+      }}
+      sections={[
+        {
+          title: trans('information'),
+          primary: true,
+          fields: [
+            {
+              name: 'description',
+              type: 'html',
+              label: trans('content')
             }
-          }, {
-            name: 'display.numbering',
-            type: 'string',
-            label: trans('step_numbering', {}, 'path'),
-            displayed: props.customNumbering
-          }, {
-            name: 'display.height',
-            type: 'number',
-            label: trans('step_content_height', {}, 'path'),
-            options: {
-              min: 0,
-              unit: 'px',
-              help: trans('step_content_height_info', {}, 'path')
+          ]
+        }, {
+          title: trans('information'),
+          icon: 'fa fa-fw fa-info',
+          fields: [
+            {
+              name: 'title',
+              type: 'string',
+              label: trans('title'),
+              required: true
             }
-          }
-        ]
-      }, {
-        icon: 'fa fa-fw fa-folder-open-o',
-        title: trans('primary_resource', {}, 'path'),
-        fields: [
-          {
-            name: 'primaryResource',
-            type: 'resource',
-            label: trans('resource'),
-            options: {
-              embedded: true,
-              showHeader: false //props.stepForm.showResourceHeader
+          ]
+        }, {
+          icon: 'fa fa-fw fa-desktop',
+          title: trans('display_parameters'),
+          fields: [
+            {
+              name: 'poster',
+              type: 'image',
+              label: trans('poster'),
+              options: {
+                ratio: '3:1'
+              }
+            }, {
+              name: 'display.numbering',
+              type: 'string',
+              label: trans('step_numbering', {}, 'path'),
+              displayed: props.customNumbering
+            }, {
+              name: 'display.height',
+              type: 'number',
+              label: trans('step_content_height', {}, 'path'),
+              options: {
+                min: 0,
+                unit: 'px',
+                help: trans('step_content_height_info', {}, 'path')
+              }
             }
-          },
-          {
-            name: 'showResourceHeader',
-            type: 'boolean',
-            label: trans('show_resource_header')
-          }
-        ]
-      }
-    ]}
-  >
+          ]
+        }, {
+          icon: 'fa fa-fw fa-folder-open-o',
+          title: trans('primary_resource', {}, 'path'),
+          fields: [
+            {
+              name: 'primaryResource',
+              type: 'resource',
+              label: trans('resource'),
+              options: {
+                embedded: true,
+                showHeader: false //currentStep.showResourceHeader
+              }
+            },
+            {
+              name: 'showResourceHeader',
+              type: 'boolean',
+              label: trans('show_resource_header')
+            }
+          ]
+        }
+      ]}
+    >
 
-    <FormSections level={3}>
-      <FormSection
-        className="embedded-list-section"
-        icon="fa fa-fw fa-folder-open-o"
-        title={trans('secondary_resources', {}, 'path')}
-      >
-        <SecondaryResourcesSection
-          stepId={props.id}
-          secondaryResources={props.secondaryResources}
-          pickSecondaryResources={props.pickSecondaryResources}
-          removeSecondaryResource={props.removeSecondaryResource}
-          updateSecondaryResourceInheritance={props.updateSecondaryResourceInheritance}
-        />
-      </FormSection>
-
-      {props.inheritedResources.length > 0 &&
+      <FormSections level={3}>
         <FormSection
           className="embedded-list-section"
           icon="fa fa-fw fa-folder-open-o"
-          title={trans('inherited_resources', {}, 'path')}
+          title={trans('secondary_resources', {}, 'path')}
         >
-          <InheritedResourcesSection
+          <SecondaryResourcesSection
             stepId={props.id}
-            inheritedResources={props.inheritedResources}
-            removeInheritedResource={props.removeInheritedResource}
+            secondaryResources={props.secondaryResources}
+            pickSecondaryResources={props.pickSecondaryResources}
+            removeSecondaryResource={props.removeSecondaryResource}
+            updateSecondaryResourceInheritance={props.updateSecondaryResourceInheritance}
           />
         </FormSection>
-      }
-    </FormSections>
-  </FormData>
+
+        {props.inheritedResources.length > 0 &&
+          <FormSection
+            className="embedded-list-section"
+            icon="fa fa-fw fa-folder-open-o"
+            title={trans('inherited_resources', {}, 'path')}
+          >
+            <InheritedResourcesSection
+              stepId={props.id}
+              inheritedResources={props.inheritedResources}
+              removeInheritedResource={props.removeInheritedResource}
+            />
+          </FormSection>
+        }
+      </FormSections>
+    </FormData>
+  )
+}
 
 implementPropTypes(StepFormComponent, StepTypes, {
   stepPath: T.string.isRequired,
@@ -197,7 +201,7 @@ implementPropTypes(StepFormComponent, StepTypes, {
 
 const StepForm = connect(
   state=> ({
-    stepForm: formSelect.data(formSelect.form(state, selectors.FORM_NAME))
+    steps: selectors.steps(state)
   })
 )(StepFormComponent)
 

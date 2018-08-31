@@ -19,7 +19,7 @@ class ResourceEmbedded extends Component {
       // remove old app
       unmount(this.mountNode)
 
-      this.mountResource(nextProps.resourceNode, nextProps.lifecycle)
+      this.mountResource(nextProps.resourceNode, nextProps.lifecycle, nextProps.showHeader)
     }
   }
 

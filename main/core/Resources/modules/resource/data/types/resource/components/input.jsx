@@ -71,7 +71,6 @@ const ResourceInput = props => {
         </ModalButton>
         <ResourceEmbedded
           resourceNode={props.value}
-          showHeader={props.showHeader}
         />
       </div>
     )
@@ -113,7 +112,6 @@ implementPropTypes(ResourceInput, FormFieldTypes, {
     ResourceNodeTypes.propTypes
   ),
   embedded: T.bool,
-  showHeader: T.bool,
   picker: T.shape({
     title: T.string,
     current: T.shape(ResourceNodeTypes.propTypes),

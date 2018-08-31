@@ -42,16 +42,16 @@ const Page = props =>
     })}
   >
     <AlertOverlay />
-    {props.showHeader &&
-      <PageHeader
-        title={props.title}
-        subtitle={props.subtitle}
-        icon={props.icon}
-        poster={props.poster}
-        toolbar={props.toolbar}
-        actions={props.actions}
-      />
-    }
+
+    <PageHeader
+      title={props.title}
+      subtitle={props.subtitle}
+      icon={props.icon}
+      poster={props.poster}
+      toolbar={props.toolbar}
+      actions={props.actions}
+    />
+    <div>{props.showHeader}</div>
     <div className="page-content" role="presentation">
       {props.children}
     </div>
@@ -65,7 +65,8 @@ const Page = props =>
 
 
 implementPropTypes(Page, PageTypes, {
-  children: T.node.isRequired
+  children: T.node.isRequired,
+  showHeader: T.bool.isRequired
 })
 
 export {
