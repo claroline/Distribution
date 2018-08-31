@@ -191,7 +191,7 @@ const EditorComponent = props =>
                       multiple : true,
                       choices: props.context.type === 'workspace' || props.administration ?
                         props.context.data.roles.reduce((acc, role) => {
-                          acc[role.id] = role.translationKey
+                          acc[role.id] = trans(role.translationKey)
                           return acc
                         }, {})
                         : ''
