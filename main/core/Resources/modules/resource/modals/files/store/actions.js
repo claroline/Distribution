@@ -1,7 +1,5 @@
 import {API_REQUEST} from '#/main/app/api'
 
-import {currentUser} from '#/main/core/user/current'
-
 export const actions = {}
 
 actions.createFiles = (parent, files, onSuccess) => {
