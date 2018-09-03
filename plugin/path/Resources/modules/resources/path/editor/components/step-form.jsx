@@ -150,7 +150,10 @@ const StepForm = props =>
             label: trans('resource'),
             options: {
               embedded: true,
-              showHeader: true
+              showHeader: true,
+              picker: {
+                current : props.resourceParent
+              }
             }
           },
           {
