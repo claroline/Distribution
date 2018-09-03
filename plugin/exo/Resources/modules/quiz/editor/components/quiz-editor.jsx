@@ -97,6 +97,12 @@ const Display = props =>
       value={props.parameters.numbering}
       onChange={numbering => props.onChange('parameters.numbering', numbering)}
     />
+    <CheckGroup
+      id="quiz-show-progression"
+      value={props.parameters.progressionDisplayed}
+      label={tex('show_progression_gauge')}
+      onChange={checked => props.onChange('parameters.progressionDisplayed', checked)}
+    />
   </fieldset>
 
 Display.propTypes = {
@@ -108,7 +114,8 @@ Display.propTypes = {
     showEndPage: T.bool.isRequired,
     endMessage: T.string,
     endNavigation: T.bool,
-    numbering: T.string
+    numbering: T.string,
+    progressionDisplayed: T.bool
   }).isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired
@@ -498,19 +505,17 @@ function hasPanelError(allProps, errorPropNames) {
 }
 
 const QuizEditor = props =>
-  <form>
-    <PanelGroup
-      accordion
-      activeKey={props.activePanelKey}
-    >
-      {makePanel(Display, trans('display_parameters'), 'display_mode', props)}
-      {makePanel(Picking, tex('step_picking'), 'step-picking', props, ['picking'])}
-      {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
-      {makePanel(Correction, trans('correction'), 'correction', props)}
-      {makePanel(Notation, trans('notation'), 'notation', props)}
-      {makePanel(Access, tex('access'), 'access', props)}
-    </PanelGroup>
-  </form>
+  <PanelGroup
+    accordion
+    activeKey={props.activePanelKey}
+  >
+    {makePanel(Display, trans('display_parameters'), 'display_mode', props)}
+    {makePanel(Picking, tex('step_picking'), 'step-picking', props, ['picking'])}
+    {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
+    {makePanel(Correction, trans('correction'), 'correction', props)}
+    {makePanel(Notation, trans('notation'), 'notation', props)}
+    {makePanel(Access, tex('access'), 'access', props)}
+  </PanelGroup>
 
 QuizEditor.propTypes = {
   quiz: T.shape({

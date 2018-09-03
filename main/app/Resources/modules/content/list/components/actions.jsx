@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {transChoice} from '#/main/core/translation'
-
 import {Button} from '#/main/app/action/components/button'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {
@@ -86,14 +85,16 @@ const ListBulkActions = props =>
       {transChoice('list_selected_count', props.count, {count: props.count}, 'platform')}
     </div>
 
-    <div className="list-selected-actions">
-      <Toolbar
-        buttonName="btn btn-link"
-        tooltip="left"
-        actions={props.actions}
-        scope="collection"
-      />
-    </div>
+    {props.actions &&
+      <div className="list-selected-actions">
+        <Toolbar
+          buttonName="btn btn-link"
+          tooltip="left"
+          actions={props.actions}
+          scope="collection"
+        />
+      </div>
+    }
   </div>
 
 ListBulkActions.propTypes = {
@@ -107,7 +108,7 @@ ListBulkActions.propTypes = {
     T.shape(
       PromisedActionTypes.propTypes
     )
-  ]).isRequired
+  ])
 }
 
 export {

@@ -1,4 +1,4 @@
-import {Component} from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import isEqual from 'lodash/isEqual'
 
@@ -9,7 +9,8 @@ class Await extends Component {
     super(props)
 
     this.state = {
-      status: 'pending'
+      status: 'pending',
+      error: null
     }
   }
 
@@ -23,24 +24,44 @@ class Await extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.pending) {
+      this.pending.cancel()
+      this.pending = null
+    }
+  }
+
   load() {
     if (!this.pending) {
-      this.pending = makeCancelable(
-        this.props.for
-          .then((results) => {
+      this.pending = makeCancelable(this.props.for)
+
+      this.pending.promise
+        .then(
+          (results) => {
             if (this.props.then) {
               this.props.then(results)
             }
 
             this.setState({status: 'success'})
-          })
-          .catch(() => this.setState({status: 'error'}))
-      )
+          },
+          (error) => {
+            if (typeof error !== 'object' || !error.isCanceled) {
+              this.setState({
+                status: 'error',
+                error: error
+              })
 
-      this.pending.promise.then(
-        () => this.pending = null,
-        () => this.pending = null
-      )
+              // TODO : find better. I don't understand why invariant is not thrown
+              /* eslint-disable no-console */
+              console.error(error)
+              /* eslint-enable no-console */
+            }
+          }
+        )
+        .then(
+          () => this.pending = null,
+          () => this.pending = null
+        )
     }
   }
 
@@ -53,7 +74,12 @@ class Await extends Component {
         return this.props.children || null
 
       case 'error':
-        return this.props.error || null
+        return (
+          <div className="alert alert-danger">
+            <b>{this.state.error.message}</b>
+            <p>{this.state.error.stack}</p>
+          </div>
+        )
     }
 
     return null
@@ -76,7 +102,6 @@ Await.propTypes = {
    * The placeholder to display while waiting.
    */
   placeholder: T.node,
-  error: T.node,
   children: T.node
 }
 

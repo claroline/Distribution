@@ -557,14 +557,20 @@ class RightsManager
     {
         return array_map(function (ResourceRights $rights) use ($resourceNode) {
             $role = $rights->getRole();
+            $permissions = $this->maskManager->decodeMask($rights->getMask(), $resourceNode->getResourceType());
+
+            if ('directory' === $resourceNode->getResourceType()->getName()) {
+                // ugly hack to only get create rights for directories (it's the only one that can handle it).
+                $permissions = array_merge(
+                    $permissions,
+                    ['create' => $this->getCreatableTypes([$role->getName()], $resourceNode)]
+                );
+            }
 
             return [
                 'name' => $role->getName(),
                 'translationKey' => $role->getTranslationKey(),
-                'permissions' => array_merge(
-                    $this->maskManager->decodeMask($rights->getMask(), $resourceNode->getResourceType()),
-                    ['create' => $this->getCreatableTypes([$role->getName()], $resourceNode)]
-                ),
+                'permissions' => $permissions,
             ];
         }, $resourceNode->getRights()->toArray());
     }
@@ -697,6 +703,18 @@ class RightsManager
         $this->om->endFlushSuite();
     }
 
+    /**
+     * Checks if the current user is a manager of a resource.
+     *
+     * A user is a manager of a resource if :
+     *   - It is the creator of the resource
+     *   - It is the manager of the parent workspace
+     *   - It is a platform admin
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return bool
+     */
     public function isManager(ResourceNode $resourceNode)
     {
         $token = $this->tokenStorage->getToken();
@@ -734,7 +752,7 @@ class RightsManager
     //maybe use that one in the voter later because it's going to be usefull
     public function getCurrentPermissionArray(ResourceNode $resourceNode)
     {
-        $currentRoles = $this->container->get('security.token_storage')->getToken()->getRoles();
+        $currentRoles = $this->tokenStorage->getToken()->getRoles();
 
         $roleNames = array_map(function (RoleInterface $roleName) {
             return $roleName->getRole();

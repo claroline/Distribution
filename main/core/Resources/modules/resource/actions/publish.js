@@ -1,8 +1,10 @@
 import get from 'lodash/get'
 
+import {url} from '#/main/app/api'
 import {number} from '#/main/app/intl'
-import {trans} from '#/main/core/translation'
 import {ASYNC_BUTTON} from '#/main/app/buttons'
+
+import {trans} from '#/main/core/translation'
 
 const action = (resourceNodes, nodesRefresher) => ({
   name: 'publish',
@@ -17,7 +19,10 @@ const action = (resourceNodes, nodesRefresher) => ({
   } : undefined,
   request: {
     type: 'publish',
-    url: ['claro_resource_node_publish', {ids: resourceNodes.map(node => node.id)}],
+    url: url(
+      ['claro_resource_collection_action', {action: 'publish'}],
+      {ids: resourceNodes.map(resourceNode => resourceNode.id)}
+    ),
     request: {
       method: 'PUT'
     },

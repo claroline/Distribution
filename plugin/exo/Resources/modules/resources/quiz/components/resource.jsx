@@ -1,23 +1,12 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
-import {DragNDropContext} from '#/main/app/overlay/dnd'
 import {trans} from '#/main/core/translation'
 import {RoutedPageContent} from '#/main/core/layout/router/components/page'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {hasPermission} from '#/main/core/resource/permissions'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 import {CustomDragLayer} from '#/plugin/exo/utils/custom-drag-layer'
-import {TYPE_QUIZ} from '#/plugin/exo/quiz/enums'
-import {select} from '#/plugin/exo/quiz/selectors'
-import {actions as correctionActions} from '#/plugin/exo/quiz/correction/actions'
-import {actions as editorActions} from '#/plugin/exo/quiz/editor/actions'
-import {actions as papersActions} from '#/plugin/exo/quiz/papers/actions'
-import {actions as playerActions} from '#/plugin/exo/quiz/player/actions'
-import {actions as statisticsActions} from '#/plugin/exo/quiz/statistics/actions'
 
 import {Overview}   from '#/plugin/exo/quiz/overview/overview'
 import {Player}     from '#/plugin/exo/quiz/player/components/player'
@@ -29,15 +18,11 @@ import {Questions}  from '#/plugin/exo/quiz/correction/components/questions'
 import {Answers}    from '#/plugin/exo/quiz/correction/components/answers'
 import {Statistics} from '#/plugin/exo/quiz/statistics/components/statistics'
 
-const Resource = props =>
-  <ResourcePageContainer
-    editor={{
-      path: '/edit',
-      save: {
-        disabled: !props.saveEnabled,
-        action: props.save
-      }
-    }}
+// todo : restore editor buttons
+
+const QuizResource = props =>
+  <ResourcePage
+    styles={['claroline-distribution-plugin-exo-quiz-resource']}
     customActions={[
       {
         type: LINK_BUTTON,
@@ -166,12 +151,10 @@ const Resource = props =>
       ]}
     />
 
-    <CustomDragLayer
-      key="drag-layer"
-    />
-  </ResourcePageContainer>
+    <CustomDragLayer key="drag-layer" />
+  </ResourcePage>
 
-Resource.propTypes = {
+QuizResource.propTypes = {
   quizId: T.string.isRequired,
   resourceNodeId: T.string.isRequired,
   editable: T.bool.isRequired,
@@ -180,8 +163,6 @@ Resource.propTypes = {
   hasPapers: T.bool.isRequired,
   registeredUser: T.bool.isRequired,
   hasOverview: T.bool.isRequired,
-  saveEnabled: T.bool.isRequired,
-  save: T.func.isRequired,
   edit: T.func.isRequired,
   testMode: T.func.isRequired,
   statistics: T.func.isRequired,
@@ -189,49 +170,6 @@ Resource.propTypes = {
   loadCurrentPaper: T.func.isRequired,
   resetCurrentPaper: T.func.isRequired
 }
-
-const QuizResource = DragNDropContext(
-  connect(
-    (state) => ({
-      quizId: select.id(state),
-      resourceNodeId: resourceSelect.resourceNode(state).id,
-      editable: hasPermission('edit', resourceSelect.resourceNode(state)),
-      hasPapers: select.hasPapers(state),
-      hasOverview: select.hasOverview(state),
-      papersAdmin: select.papersAdmin(state),
-      docimologyAdmin: select.docimologyAdmin(state),
-      registeredUser: select.registered(),
-      saveEnabled: select.saveEnabled(state)
-    }),
-    (dispatch) => ({
-      save() {
-        dispatch(editorActions.save())
-      },
-      edit(quizId) {
-        dispatch(editorActions.selectObject(quizId, TYPE_QUIZ))
-      },
-      testMode(testMode) {
-        dispatch(playerActions.setTestMode(testMode))
-      },
-      statistics() {
-        dispatch(statisticsActions.displayStatistics())
-      },
-      correction(questionId = null) {
-        if (!questionId) {
-          dispatch(correctionActions.displayQuestions())
-        } else {
-          dispatch(correctionActions.displayQuestionAnswers(questionId))
-        }
-      },
-      loadCurrentPaper(paperId) {
-        dispatch(papersActions.loadCurrentPaper(paperId))
-      },
-      resetCurrentPaper() {
-        dispatch(papersActions.setCurrentPaper(null))
-      }
-    })
-  )(Resource)
-)
 
 export {
   QuizResource

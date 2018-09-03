@@ -94,7 +94,7 @@ class PathSerializer
                 'description' => $path->getDescription(),
                 'showOverview' => $path->getShowOverview(),
                 'showSummary' => $path->getShowSummary(),
-                'openSummary' => $path->isSummaryDisplayed(),
+                'openSummary' => $path->getOpenSummary(),
                 'numbering' => $path->getNumbering() ? $path->getNumbering() : 'none',
                 'manualProgressionAllowed' => $path->isManualProgressionAllowed(),
             ],
@@ -117,7 +117,7 @@ class PathSerializer
         $this->sipe('display.description', 'setDescription', $data, $path);
         $this->sipe('display.showOverview', 'setShowOverview', $data, $path);
         $this->sipe('display.showSummary', 'setShowSummary', $data, $path);
-        $this->sipe('display.openSummary', 'setSummaryDisplayed', $data, $path);
+        $this->sipe('display.openSummary', 'setOpenSummary', $data, $path);
         $this->sipe('display.numbering', 'setNumbering', $data, $path);
         $this->sipe('display.manualProgressionAllowed', 'setManualProgressionAllowed', $data, $path);
 
@@ -153,6 +153,7 @@ class PathSerializer
             'description' => $step->getDescription(),
             'poster' => $poster,
             'primaryResource' => $step->getResource() ? $this->resourceNodeSerializer->serialize($step->getResource()) : null,
+            'showResourceHeader' => $step->getShowResourceHeader(),
             'secondaryResources' => array_map(function (SecondaryResource $secondaryResource) {
                 return $this->serializeSecondaryResource($secondaryResource);
             }, $step->getSecondaryResources()->toArray()),
@@ -207,7 +208,7 @@ class PathSerializer
     private function serializeUserProgression(Step $step)
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        $userProgression = $user !== 'anon.' ?
+        $userProgression = 'anon.' !== $user ?
             $this->userProgressionRepo->findOneBy(['step' => $step, 'user' => $user]) :
             null;
         $data = [
@@ -280,6 +281,10 @@ class PathSerializer
             $this->resourceNodeRepo->findOneBy(['uuid' => $data['primaryResource']['id']]) :
             null;
         $step->setResource($resource);
+
+        if (isset($data['showResourceHeader'])) {
+            $step->setShowResourceHeader($data['showResourceHeader']);
+        }
 
         if (isset($options['path'])) {
             $step->setPath($options['path']);

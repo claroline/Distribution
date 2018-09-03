@@ -4,6 +4,7 @@ import {ToolConfig} from '#/plugin/blog/resources/blog/editor/components/tool-co
 import {trans} from '#/main/core/translation'
 import {PropTypes as T} from 'prop-types'
 import differenceBy from 'lodash/differenceBy'
+import {selectors} from '#/plugin/blog/resources/blog/store'
 
 const ToolManagerComponent = props =>
   <div>
@@ -17,7 +18,7 @@ const ToolManagerComponent = props =>
           templateName: panel.nameTemplate,
           visibility: panel.visibility,
           id: trans(panel.id, {}, 'icap_blog')
-        })       
+        })
       ))}
       {props.panelDiff && props.panelDiff.map((panel, index) =>(
         React.createElement(ToolConfig, {
@@ -28,7 +29,7 @@ const ToolManagerComponent = props =>
           templateName: panel.nameTemplate,
           visibility: false,
           id: trans(panel.id, {}, 'icap_blog')
-        })       
+        })
       ))}
     </ul>
   </div>
@@ -42,10 +43,10 @@ ToolManagerComponent.propTypes = {
 
 const ToolManager = connect(
   state => ({
-    orderedPanels: state.blog.data.options.data.widgetOrder,
-    orderedPanelsSize: state.blog.data.options.data.widgetOrder.length,
-    panels: state.blog.data.options.data.widgetList,
-    panelDiff: differenceBy(state.blog.data.options.data.widgetList, state.blog.data.options.data.widgetOrder, 'id')
+    orderedPanels: selectors.blog(state).data.options.data.widgetOrder,
+    orderedPanelsSize: selectors.blog(state).data.options.data.widgetOrder.length,
+    panels: selectors.blog(state).data.options.data.widgetList,
+    panelDiff: differenceBy(selectors.blog(state).data.options.data.widgetList, selectors.blog(state).data.options.data.widgetOrder, 'id')
   })
 )(ToolManagerComponent)
 

@@ -1,5 +1,6 @@
 {
   "add": "Add",
+  "administrate": "Administrate",
   "cancel": "Cancel",
   "click_here": "Click here",
   "collapse": "Collapse",
@@ -10,6 +11,7 @@
   "edit": "Edit",
   "edit-rights": "Manage rights",
   "edit-tags": "Manage tags",
+  "exit": "Exit",
   "expand": "Expand",
   "export": "Export",
   "delete": "Delete",
@@ -30,6 +32,7 @@
   "register": "Register",
   "replace": "Replace",
   "restart": "Restart",
+  "restore": "Restore",
   "save": "Save",
   "select": "Select",
   "self-register": "Register",

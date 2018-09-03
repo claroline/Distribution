@@ -5,6 +5,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 
 const SimpleWidgetParameters = (props) =>
   <FormData
+    embedded={true}
     level={5}
     name={props.name}
     sections={[
@@ -16,7 +17,10 @@ const SimpleWidgetParameters = (props) =>
             name: 'parameters.content',
             label: trans('content'),
             type: 'html',
-            required: true
+            required: true,
+            options: {
+              minimal: false
+            }
           }
         ]
       }

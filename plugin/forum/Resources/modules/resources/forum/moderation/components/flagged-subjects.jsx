@@ -7,13 +7,13 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {constants as listConst} from '#/main/app/content/list/constants'
 import {actions as listActions} from '#/main/app/content/list/store'
 
-import {actions} from '#/plugin/forum/resources/forum/player/actions'
-import {select} from '#/plugin/forum/resources/forum/selectors'
+import {actions} from '#/plugin/forum/resources/forum/player/store/actions'
+import {select} from '#/plugin/forum/resources/forum/store/selectors'
 import {SubjectCard} from '#/plugin/forum/resources/forum/data/components/subject-card'
 
 const FlaggedSubjectsComponent = (props) =>
   <ListData
-    name="moderation.flaggedSubjects"
+    name={`${select.STORE_NAME}.moderation.flaggedSubjects`}
     fetch={{
       url: ['apiv2_forum_subject_flagged_list', {forum: props.forum.id}],
       autoload: true
@@ -58,7 +58,7 @@ const FlaggedSubjectsComponent = (props) =>
         icon: 'fa fa-fw fa-eye',
         label: trans('see_subject', {}, 'forum'),
         target: '/subjects/show/'+rows[0].id,
-        context: 'row'
+        scope: ['object']
       }, {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-flag',
@@ -84,7 +84,7 @@ const FlaggedSubjects = connect(
   dispatch => ({
     unFlagSubject(subject) {
       dispatch(actions.unFlag(subject))
-      dispatch(listActions.invalidateData('moderation.flaggedSubjects'))
+      dispatch(listActions.invalidateData(`${select.STORE_NAME}.moderation.flaggedSubjects`))
     }
   })
 )(FlaggedSubjectsComponent)

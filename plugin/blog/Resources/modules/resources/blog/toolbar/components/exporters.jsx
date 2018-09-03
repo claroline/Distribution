@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/app/api'
 import {PropTypes as T} from 'prop-types'
+import {selectors} from '#/plugin/blog/resources/blog/store'
 
 const ExportersComponent = props =>
   <div className="panel panel-default">
@@ -17,7 +18,7 @@ const ExportersComponent = props =>
       }
     </div>
   </div>
-        
+
 ExportersComponent.propTypes = {
   blogId: T.string.isRequired,
   pdfEnabled: T.bool
@@ -25,8 +26,8 @@ ExportersComponent.propTypes = {
 
 const Exporters = connect(
   state => ({
-    blogId: state.blog.data.id,
-    pdfEnabled: state.pdfenabled
+    blogId: selectors.blog(state).data.id,
+    pdfEnabled: selectors.pdfEnabled(state)
   })
 )(ExportersComponent)
 

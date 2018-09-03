@@ -26,11 +26,16 @@ class ResourceWidget extends AbstractWidget
     private $resourceNode = null;
 
     /**
+     * Choose to display the header of the resource.
+     */
+    private $showResourceHeader = true;
+
+    /**
      * Get resource node.
      *
      * @return ResourceNode
      */
-    public function getUser()
+    public function getResourceNode()
     {
         return $this->resourceNode;
     }
@@ -40,8 +45,24 @@ class ResourceWidget extends AbstractWidget
      *
      * @param ResourceNode $resourceNode
      */
-    public function setUser(ResourceNode $resourceNode = null)
+    public function setResourceNode(ResourceNode $resourceNode = null)
     {
         $this->resourceNode = $resourceNode;
+    }
+
+    /**
+     * Get showResourceHeader.
+     */
+    public function getShowResourceHeader()
+    {
+        return $this->showResourceHeader;
+    }
+
+    /**
+     * Set showResourceHeader.
+     */
+    public function setShowResourceHeader($showResourceHeader)
+    {
+        $this->showResourceHeader = $showResourceHeader;
     }
 }

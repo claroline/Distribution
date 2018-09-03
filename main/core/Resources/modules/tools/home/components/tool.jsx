@@ -6,17 +6,17 @@ import {Router, Routes} from '#/main/app/router'
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {selectors} from '#/main/core/tools/home/selectors'
-
 import {actions} from '#/main/core/tools/home/actions'
-import {Editor} from '#/main/core/tools/home/editor/components/editor'
 import {Player} from '#/main/core/tools/home/player/components/player'
+import {Editor} from '#/main/core/tools/home/editor/components/editor'
+import {selectors as editorSelectors} from '#/main/core/tools/home/editor/selectors'
 
 const Tool = props =>
   <Router>
     <Routes
       redirect={[
-        {from: '/', exact: true, to: '/tab/'+props.sortedTabs[0].id },
-        {from: '/edit', exact: true, to: '/edit/tab/'+props.sortedTabs[0].id}
+        {from: '/', exact: true, to: '/tab/'+props.tabs[0].id },
+        {from: '/edit', exact: true, to: '/edit/tab/'+props.editorTabs[0].id}
       ]}
       routes={[
         {
@@ -41,10 +41,10 @@ Tool.propTypes = {
       name: T.string.isRequired
     })
   }),
-  sortedTabs: T.arrayOf(T.shape(
+  tabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
-  sortedEditorTabs: T.arrayOf(T.shape(
+  editorTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
@@ -55,7 +55,8 @@ Tool.propTypes = {
 const HomeTool = connect(
   (state) => ({
     editable: selectors.editable(state),
-    sortedTabs: selectors.sortedTabs(state),
+    tabs: selectors.tabs(state),
+    editorTabs: editorSelectors.editorTabs(state),
     currentTab: selectors.currentTab(state)
   }),
   (dispatch) => ({

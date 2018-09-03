@@ -1,5 +1,22 @@
 import {PropTypes as T} from 'prop-types'
 
+const DataSource = {
+  propTypes: {
+    id: T.string.isRequired,
+    name: T.string,
+    meta: T.shape({
+      context: T.arrayOf(T.string)
+    }),
+    tags: T.arrayOf(T.string)
+  },
+  defaultProps: {
+    meta: {
+      exportable: false
+    },
+    tags: []
+  }
+}
+
 const Widget = {
   propTypes: {
     id: T.string.isRequired,
@@ -37,6 +54,7 @@ const WidgetContainer = {
   propTypes: {
     id: T.string.isRequired,
     name: T.string,
+    visible : T.bool.isRequired,
     display: T.shape({
       layout: T.arrayOf(
         T.number // the ratio for each col
@@ -53,6 +71,7 @@ const WidgetContainer = {
     ))
   },
   defaultProps: {
+    visible: true,
     display: {
       layout: [1],
       color: '#333333',
@@ -65,6 +84,7 @@ const WidgetContainer = {
 }
 
 export {
+  DataSource,
   Widget,
   WidgetInstance,
   WidgetContainer

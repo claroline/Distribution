@@ -1,5 +1,6 @@
 {
   "add": "Ajouter",
+  "administrate": "Administrer",
   "cancel": "Annuler",
   "click_here": "Cliquez ici",
   "collapse": "Replier",
@@ -11,6 +12,7 @@
   "edit": "Modifier",
   "edit-rights": "Gérer les droits",
   "edit-tags": "Gérer les tags",
+  "exit": "Quitter",
   "expand": "Déplier",
   "export": "Exporter",
   "delete": "Supprimer",
@@ -32,6 +34,7 @@
   "replace": "Remplacer",
   "reply": "Répondre",
   "restart": "Recommencer",
+  "restore": "Restaurer",
   "save": "Sauvegarder",
   "select": "Sélectionner",
   "self-register": "M'inscrire",

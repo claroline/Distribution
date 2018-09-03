@@ -38,10 +38,7 @@ class WorkspaceComponent extends Component
 
           props.loadLog(props.workspace.code)
         }, 1500)
-      } else {
-        props.history.push('/workspaces')
       }
-
     }
   }
 
@@ -69,10 +66,8 @@ class WorkspaceComponent extends Component
         buttons={true}
         save={{
           type: 'callback',
-          icon: 'fa fa-fw fa-upload',
-          label: trans('save', {}, 'actions'),
           callback: () => {
-            props.save(props.workspace)
+            props.save(props.workspace, props.history)
             this.refreshLog()
             this.setState({refresh: true})
           }
@@ -170,6 +165,7 @@ class WorkspaceComponent extends Component
                     name: 'opening.target',
                     type: 'string',
                     label: trans('resource'),
+                    help: trans('opening_target_resource_help'),
                     required: true,
                     displayed: (workspace) => workspace.opening && 'resource' === workspace.opening.type
                   }
@@ -369,8 +365,8 @@ const ConnectedForm = withRouter(connect(
     loadLog(filename) {
       dispatch(logActions.load(filename))
     },
-    save(workspace) {
-      dispatch(actions.save(workspace))
+    save(workspace, history) {
+      dispatch(actions.save(workspace, history))
     }
   })
 )(WorkspaceComponent))

@@ -13,18 +13,19 @@ import {displayDate} from '#/main/core/scaffolding/date'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {actions as listActions} from '#/main/app/content/list/store'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {UrlButton} from '#/main/app/buttons/url/components/button'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-
+import {selectors} from '#/plugin/blog/resources/blog/store'
 import {PostType} from '#/plugin/blog/resources/blog/post/components/prop-types'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store'
 import {Comments} from '#/plugin/blog/resources/blog/comment/components/comments'
 import {getCommentsNumber, splitArray} from '#/plugin/blog/resources/blog/utils'
+import {withRouter} from '#/main/app/router'
+import {updateQueryParameters} from '#/plugin/blog/resources/blog/utils'
 
 const PostComponent = props =>
   <div className='data-card-blog'>
@@ -36,6 +37,7 @@ const PostComponent = props =>
               <a href={`#/${props.post.slug}`}>{props.post.title}</a>
             </h2>
             <InfoBar
+              {...props}
               displayViews={props.displayViews}
               blogId={props.blogId}
               getPostsByAuthor={props.getPostsByAuthor}
@@ -89,7 +91,7 @@ const PostComponent = props =>
       </div>
     }
   </div>
-    
+
 PostComponent.propTypes = {
   canEdit: T.bool,
   full: T.bool,
@@ -111,8 +113,8 @@ PostComponent.propTypes = {
 }
 
 const PostCard = props =>
-  <PostComponent 
-    {...props} 
+  <PostComponent
+    {...props}
     post={props.data}
   />
 
@@ -122,9 +124,9 @@ PostCard.propTypes = {
 
 const InfoBar = props =>
   <ul className="list-inline post-infos">
-    <li 
+    <li
       onClick={(e) => {
-        props.getPostsByAuthor(props.blogId, props.post.author.firstName + ' ' + props.post.author.lastName)
+        props.getPostsByAuthor(props.history, props.location.search, props.blogId, props.post.author.firstName + ' ' + props.post.author.lastName)
         e.preventDefault()
         e.stopPropagation()
       }}>
@@ -132,12 +134,12 @@ const InfoBar = props =>
         <UrlButton target={['claro_user_profile', {publicUrl: get(props.post.author, 'meta.publicUrl')}]}>
           <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} />
         </UrlButton>
-        <a className="user-name" href='#'>{props.post.author.firstName} {props.post.author.lastName}</a>
+        <a className="user-name link">{props.post.author.firstName} {props.post.author.lastName}</a>
       </span>
     </li>
     <li><span className="fa fa-calendar"></span> {displayDate(props.post.publicationDate, false, false)} </li>
     {props.displayViews &&
-      <li><span className="fa fa-eye"></span> {transChoice('display_views', props.post.viewCounter, {'%count%': props.post.viewCounter}, 'platform')}</li> 
+      <li><span className="fa fa-eye"></span> {transChoice('display_views', props.post.viewCounter, {'%count%': props.post.viewCounter}, 'platform')}</li>
     }
     {props.post.pinned &&
       <li><span className="label label-success">{trans('icap_blog_post_pinned', {}, 'icap_blog')}</span></li>
@@ -146,12 +148,14 @@ const InfoBar = props =>
     <li><span className="label label-danger">{props.post.status ? trans('unpublished_date', {}, 'icap_blog') : trans('unpublished', {}, 'icap_blog')}</span></li>
     }
   </ul>
-    
+
 InfoBar.propTypes = {
   getPostsByAuthor: T.func.isRequired,
   blogId: T.string.isRequired,
   post: T.shape(PostType.propTypes),
-  displayViews: T.bool
+  displayViews: T.bool,
+  history: T.object,
+  location: T.object
 }
 
 const ActionBar = props =>
@@ -217,7 +221,7 @@ ActionBar.propTypes = {
   deletePost: T.func.isRequired,
   pinPost: T.func.isRequired
 }
-    
+
 const Footer = props =>
   <div>
     <ul className='list-inline post-tags pull-left'>
@@ -225,8 +229,8 @@ const Footer = props =>
       {!isEmpty(props.post.tags) ? (
         splitArray(props.post.tags).map((tag, index) =>(
           <li key={index}>
-            <a href="#" onClick={() => {
-              props.getPostsByTag(tag)
+            <a className='link' onClick={() => {
+              props.getPostsByTag(props.history, props.location.search, tag)
             }}>{tag}</a>
           </li>
         ))
@@ -237,17 +241,19 @@ const Footer = props =>
     <ul className='list-inline pull-right'>
       <li><span className="fa fa-comments"></span></li>
       <li>
-        {getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished) > 0
-          ? transChoice('comments_number', getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished),
-            {'%count%': getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished)}, 'icap_blog')
-          : trans('no_comment', {}, 'icap_blog')}
-        {props.canEdit && props.post.commentsNumberUnpublished 
-          ? transChoice('comments_pending', props.post.commentsNumberUnpublished, {'%count%': props.post.commentsNumberUnpublished}, 'icap_blog')
-          : ''}
+        <a href={`#/${props.post.slug}`}>
+          {getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished) > 0
+            ? transChoice('comments_number', getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished),
+              {'%count%': getCommentsNumber(props.canEdit, props.post.commentsNumber, props.post.commentsNumberUnpublished)}, 'icap_blog')
+            : trans('no_comment', {}, 'icap_blog')}
+          {props.canEdit && props.post.commentsNumberUnpublished
+            ? transChoice('comments_pending', props.post.commentsNumberUnpublished, {'%count%': props.post.commentsNumberUnpublished}, 'icap_blog')
+            : ''}
+        </a>
       </li>
     </ul>
   </div>
-        
+
 Footer.propTypes = {
   commentNumber: T.number,
   canEdit:T.bool,
@@ -256,18 +262,20 @@ Footer.propTypes = {
   canAnonymousComment:T.bool,
   displayViews:T.bool,
   getPostsByTag:T.func.isRequired,
-  post: T.shape(PostType.propTypes)
-}    
+  post: T.shape(PostType.propTypes),
+  history: T.object,
+  location: T.object
+}
 
-const PostCardContainer = connect(
+const PostCardContainer = withRouter(connect(
   (state) => ({
-    blogId: state.blog.data.id,
+    blogId: selectors.blog(state).data.id,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canModerate: hasPermission('moderate', resourceSelect.resourceNode(state)),
-    canComment: state.blog.data.options.data.authorizeComment,
-    canAnonymousComment: state.blog.data.options.data.authorizeAnonymousComment,
-    displayViews: state.blog.data.options.data.displayPostViewCounter,
-    commentsLoaded: !state.comments.invalidated
+    canComment: selectors.blog(state).data.options.data.authorizeComment,
+    canAnonymousComment: selectors.blog(state).data.options.data.authorizeAnonymousComment,
+    displayViews: selectors.blog(state).data.options.data.displayPostViewCounter,
+    commentsLoaded: !selectors.comments(state).invalidated
   }),
   dispatch => ({
     publishPost: (blogId, postId) => {
@@ -283,22 +291,20 @@ const PostCardContainer = connect(
         handleConfirm: () => dispatch(postActions.deletePost(blogId, postId))
       }))
     },
-    getPostsByAuthor: (blogId, authorName) => {
-      dispatch(listActions.addFilter('posts', 'authorName', authorName))
-      dispatch(postActions.initDataList())
+    getPostsByAuthor: (history, querystring, blogId, authorName) => {
+      history.push(updateQueryParameters(querystring, 'author', authorName))
     },
-    getPostsByTag: (tag) => {
-      dispatch(listActions.addFilter('posts', 'tags', tag))
-      dispatch(postActions.initDataList())
+    getPostsByTag: (history, querystring, tag) => {
+      history.push(updateQueryParameters(querystring, 'tags', tag))
     }
   })
-)(PostCard)
-  
+)(PostCard))
+
 const PostContainer = connect(
   state => ({
-    data: state.post,
+    data: selectors.post(state),
     full: true
   })
 )(PostCardContainer)
-    
+
 export {PostCardContainer as PostCard, PostContainer as Post}

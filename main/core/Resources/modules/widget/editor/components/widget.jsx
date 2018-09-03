@@ -8,6 +8,7 @@ import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Button} from '#/main/app/action/components/button'
 import {MODAL_BUTTON} from '#/main/app/buttons'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 import {
@@ -52,11 +53,25 @@ const WidgetCol = props =>
           callback={() => props.stopMovingContent()}
         />
         }
+        <Button
+          className="btn-link"
+          type={MODAL_BUTTON}
+          icon="fa fa-fw fa-trash-o"
+          label={trans('delete', {}, 'actions')}
+          dangerous={true}
+          modal={[MODAL_CONFIRM, {
+            dangerous: true,
+            icon: 'fa fa-fw fa-trash-o',
+            title: trans('widget_delete_confirm_title', {}, 'widget'),
+            question: trans('widget_delete_confirm_message', {}, 'widget'),
+            handleConfirm: () => props.deleteContent(props.content)
+          }]}
+        />
       </div>
     }
     {props.content &&
       <WidgetContent
-        {...props.content}
+        instance={props.content}
         context={props.context}
       />
     }
@@ -95,6 +110,7 @@ WidgetCol.propTypes = {
   moveContent: T.func.isRequired,
   startMovingContent: T.func.isRequired,
   stopMovingContent:T.func.isRequired,
+  deleteContent:T.func.isRequired,
   isMoving: T.string
 }
 
@@ -112,7 +128,7 @@ const WidgetEditor = props =>
 
     <section className="widget" style={computeStyles(props.widget)}>
       {props.widget.name &&
-            <h2 className="h-first widget-title">{props.widget.name}</h2>
+        <h2 className="h-first widget-title">{props.widget.name}</h2>
       }
 
       <div className="row">
@@ -137,6 +153,13 @@ const WidgetEditor = props =>
               widget.contents[col] = newContent
               // propagate change
               props.update(widget)
+            }}
+            deleteContent={(content) => {
+              const widgets = cloneDeep(props.widget)
+              const contentIndex = widgets.contents.findIndex(widget => widget.id === content.id)
+              // removes the content to delete and replace by null
+              widgets.contents[contentIndex] = null
+              props.update(widgets)
             }}
             startMovingContent={props.startMovingContent}
             moveContent={(movingContentId) => props.moveContent(movingContentId, props.widget.id, col)}

@@ -14,6 +14,7 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {hasPermission} from '#/main/core/resource/permissions'
 import {constants} from '#/plugin/blog/resources/blog/constants'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {selectors} from '#/plugin/blog/resources/blog/store'
 
 const authenticatedUser = currentUser()
 
@@ -71,7 +72,7 @@ const CommentsComponent = props =>
         <section className="comments-section">
           <h4>{trans('all_comments', {}, 'icap_blog')}</h4>
           <ListData
-            name="comments"
+            name={selectors.STORE_NAME + '.comments'}
             fetch={{
               url: ['apiv2_blog_comment_list', {blogId: props.blogId, postId: props.postId}],
               autoload: true
@@ -102,7 +103,7 @@ const CommentsComponent = props =>
           />
           {!isEmpty(props.comments) &&
             <Button
-              icon={'fa fa-4x fa-arrow-circle-up'}
+              icon={'fa fa-3x fa-arrow-circle-up'}
               label={trans('go-up', {}, 'icap_blog')}
               type={CALLBACK_BUTTON}
               tooltip="bottom"
@@ -115,7 +116,7 @@ const CommentsComponent = props =>
       }
     </section>
   </div>
-        
+
 CommentsComponent.propTypes = {
   switchCommentFormDisplay: T.func.isRequired,
   switchCommentsDisplay: T.func.isRequired,
@@ -136,15 +137,15 @@ CommentsComponent.propTypes = {
   canEdit: T.bool,
   canModerate: T.bool
 }
-        
+
 const Comments = connect(
   state => ({
-    user: state.user,
-    opened: state.showComments,
-    isModerated: state.blog.data.options.data.commentModerationMode !== constants.COMMENT_MODERATION_MODE_NONE,
-    showForm: state.showCommentForm,
-    showEditCommentForm: state.showEditCommentForm,
-    comments: state.comments.data,
+    user: selectors.user(state),
+    opened: selectors.showComments(state),
+    isModerated: selectors.blog(state).data.options.data.commentModerationMode !== constants.COMMENT_MODERATION_MODE_NONE,
+    showForm: selectors.showCommentForm(state),
+    showEditCommentForm: selectors.showEditCommentForm(state),
+    comments: selectors.comments(state).data,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
     canModerate: hasPermission('moderate', resourceSelect.resourceNode(state))
   }),
@@ -168,6 +169,6 @@ const Comments = connect(
       }
     }
   })
-)(CommentsComponent) 
-    
+)(CommentsComponent)
+
 export {Comments}

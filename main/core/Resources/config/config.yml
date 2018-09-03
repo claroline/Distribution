@@ -49,12 +49,20 @@ plugin:
           api: [GET]
           recursive: true
 
-        # Deletes a one or more resources
+        # Deletes one or more resources
         - name: delete
           decoder: delete
           group: management
           scope: [object, collection] # The action can be executed on multiple resources at once.
           api: [DELETE]
+          recursive: true
+
+        # Restores one or more soft deleted resources
+        - name: restore
+          decoder: delete
+          group: management
+          scope: [object, collection] # The action can be executed on multiple resources at once.
+          api: [POST]
           recursive: true
 
         # Changes common resources info (the one from the node) for one or more resources
@@ -121,13 +129,19 @@ plugin:
                 group: transfer
                 api: [POST]
 
+              # Creates one or several File resources in the directory
+              - name: add_files
+                decoder: create
+                group: management
+                api: [POST]
+
         - name: text
           class: Claroline\CoreBundle\Entity\Resource\Text
           tags: [content]
           exportable: true
 
-        - name: activity
-          class: Claroline\CoreBundle\Entity\Resource\Activity
+#        - name: activity
+#          class: Claroline\CoreBundle\Entity\Resource\Activity
 
     admin_tools:
         - name: platform_parameters
@@ -169,7 +183,7 @@ plugin:
         - name: profile
           class: Claroline\CoreBundle\Entity\Widget\Type\ProfileWidget
           context: [workspace, desktop]
-          tags: [users]
+          tags: [community]
 
         - name: resource
           class: Claroline\CoreBundle\Entity\Widget\Type\ResourceWidget
@@ -187,10 +201,15 @@ plugin:
           context: [desktop]
           tags: [workspaces]
 
+        - name: my_workspaces
+          type: list
+          context: [desktop]
+          tags: [workspaces]
+
         - name: users
           type: list
           context: [workspace, desktop]
-          tags: [users]
+          tags: [community]
 
     tools:
         - name: home

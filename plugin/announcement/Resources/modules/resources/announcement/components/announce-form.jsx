@@ -10,14 +10,13 @@ import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 
 import {Announcement as AnnouncementTypes} from '#/plugin/announcement/resources/announcement/prop-types'
-import {actions} from '#/plugin/announcement/resources/announcement/actions'
-import {select} from '#/plugin/announcement/resources/announcement/selectors'
+import {actions, selectors} from '#/plugin/announcement/resources/announcement/store'
 
 const restrictByDates = (announcement) => announcement.restrictions.enableDates || (announcement.restrictions.dates && 0 !== announcement.restrictions.dates.length)
 
 const AnnounceFormComponent = props =>
   <FormData
-    name="announcementForm"
+    name={selectors.STORE_NAME+'.announcementForm'}
     target={(announcement, isNew) => isNew ?
       ['claro_announcement_create', {aggregateId: props.aggregateId}] :
       ['claro_announcement_update', {aggregateId: props.aggregateId, id: announcement.id}]
@@ -121,9 +120,9 @@ const RoutedAnnounceForm = withRouter(AnnounceFormComponent)
 
 const AnnounceForm = connect(
   (state) => ({
-    new: formSelectors.isNew(formSelectors.form(state, 'announcementForm')),
-    announcement: formSelectors.data(formSelectors.form(state, 'announcementForm')),
-    aggregateId: select.aggregateId(state)
+    new: formSelectors.isNew(formSelectors.form(state, selectors.STORE_NAME+'.announcementForm')),
+    announcement: formSelectors.data(formSelectors.form(state, selectors.STORE_NAME+'.announcementForm')),
+    aggregateId: selectors.aggregateId(state)
   }),
   (dispatch) => ({
     addAnnounce(announcement) {
@@ -133,7 +132,7 @@ const AnnounceForm = connect(
       dispatch(actions.changeAnnounce(announcement))
     },
     updateProp(propName, propValue) {
-      dispatch(formActions.updateProp('announcementForm', propName, propValue))
+      dispatch(formActions.updateProp(selectors.STORE_NAME+'.announcementForm', propName, propValue))
     }
   })
 )(RoutedAnnounceForm)

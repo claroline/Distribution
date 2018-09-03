@@ -53,14 +53,14 @@ class SubjectController extends AbstractCrudController
         return new JsonResponse(
           $this->finder->search('Claroline\ForumBundle\Entity\Message', array_merge(
               $request->query->all(),
-              ['hiddenFilters' => ['subject' => $id, 'parent' => null]]
+              ['hiddenFilters' => ['subject' => $id, 'parent' => null, 'first' => false]]
             ))
         );
     }
 
     /**
      * @EXT\Route("/{id}/message")
-     * @EXT\Method("POST")
+     * @EXT\Method({"POST", "PUT"})
      * @EXT\ParamConverter("subject", class = "ClarolineForumBundle:Subject",  options={"mapping": {"id": "uuid"}})
      *
      * @ApiDoc(
@@ -174,6 +174,27 @@ class SubjectController extends AbstractCrudController
         $this->finder->search($this->getClass(), array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => ['flagged' => true, 'forum' => $forum->getUuid()]]
+            ))
+      );
+    }
+
+    /**
+     * @EXT\Route("forum/{forum}/subjects/list/blocked", name="apiv2_forum_subject_blocked_list")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forum": "uuid"}})
+     *
+     * @param string  $id
+     * @param string  $class
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getBlockedSubjectsAction(Request $request, Forum $forum)
+    {
+        return new JsonResponse(
+        $this->finder->search($this->getClass(), array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['moderation' => true, 'forum' => $forum->getUuid()]]
             ))
       );
     }

@@ -3,13 +3,14 @@
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
-use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Entity\Widget\WidgetContainerConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstanceConfig;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,17 +32,148 @@ class Updater120000 extends Updater
         $this->om = $container->get('claroline.persistence.object_manager');
         $this->conn = $container->get('doctrine.dbal.default_connection');
         $this->config = $container->get('claroline.config.platform_config_handler');
+        $this->container = $container;
+    }
+
+    public function preUpdate()
+    {
+        $this->saveOldTabsTables();
+        $this->setWidgetPlugin();
+        $this->truncateTables();
+    }
+
+    public function setWidgetPlugin()
+    {
+        $this->log('Set widgets plugins');
+
+        $core = $this->om->getRepository('Claroline\CoreBundle\Entity\Plugin')->findOneBy([
+          'vendorName' => 'Claroline',
+          'bundleName' => 'CoreBundle',
+        ]);
+
+        $sql = "
+            UPDATE claro_widget
+            SET plugin_id = {$core->getId()}
+            WHERE plugin_id IS NULL";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+    }
+
+    public function truncateTables()
+    {
+        $tables = [
+            'innova_path_widget_config_tags',
+            'innova_path_widget_config',
+            'claro_widget_instance',
+            'claro_widget_instance_config',
+            'claro_widget_simple',
+            'claro_widget_container',
+            'claro_widget_list',
+            'claro_home_tab_roles',
+            'claro_widget_container_config',
+        ];
+
+        foreach ($tables as $table) {
+            $this->truncate($table);
+        }
+    }
+
+    private function truncate($table)
+    {
+        try {
+            $this->log('TRUNCATE '.$table);
+            $sql = '
+                SET FOREIGN_KEY_CHECKS=0;
+                TRUNCATE TABLE '.$table.';
+                SET FOREIGN_KEY_CHECKS=1;
+            ';
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        } catch (\Exception $e) {
+            $this->log('Couldnt truncate '.$table);
+        }
+    }
+
+    public function saveOldTabsTables()
+    {
+        $tableManager = $this->container->get('claroline.persistence.table_manager');
+        $tableManager->setLogger($this->logger);
+
+        $toCopy = [
+          'claro_home_tab',
+          'claro_home_tab_config',
+          'claro_widget_instance',
+          'claro_widget_display_config',
+          'claro_widget_home_tab_config',
+          'claro_simple_text_widget_config',
+          'claro_widget_roles',
+          'claro_widget',
+          'claro_home_tab_roles',
+        ];
+
+        foreach ($toCopy as $table) {
+            $tableManager->copy($table);
+        }
+    }
+
+    public function updateTabsStructure()
+    {
+        $this->log('Restoring HomeTabConfigs...');
+
+        $sql = '
+            UPDATE claro_home_tab_config config
+            LEFT JOIN claro_home_tab_temp tab
+            ON config.home_tab_id = tab.id
+            SET
+                config.name = tab.name,
+                config.longTitle = tab.name,
+                config.centerTitle = false,
+                config.is_visible = true,
+                config.is_locked = true
+
+            ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     public function postUpdate()
     {
         $this->updatePlatformParameters();
-
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
+
         $this->removeAdminTool('widgets_management');
-        $this->updateWidgetsStructure();
+
+        $this->updateTabsStructure();
+        $this->buildContainers();
+        $this->deactivateActivityResourceType();
+    }
+
+    public function end()
+    {
+        $this->updateWidgetInstances();
+        $this->updateWidgetInstanceConfigType();
+        $this->updateHomeTabType();
         $this->checkDesktopTabs();
+    }
+
+    private function updateHomeTabType()
+    {
+        $this->log('Updating hometab types...');
+        $sql = 'UPDATE claro_home_tab SET type = "administration" WHERE type LIKE "admin_desktop" OR type LIKE "admin"';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+    }
+
+    private function updateWidgetInstanceConfigType()
+    {
+        $this->log('Updating hometab types...');
+        $sql = 'UPDATE claro_widget_instance_config SET type = "administration" WHERE type LIKE "admin_desktop" OR type LIKE "admin"';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     private function updatePlatformParameters()
@@ -95,116 +227,175 @@ class Updater120000 extends Updater
         }
     }
 
-    private function updateWidgetsStructure()
+    private function buildContainers()
     {
-        $this->log('Update widget structure...');
-
         if (count($this->om->getRepository(WidgetContainer::class)->findAll()) > 0) {
-            $this->log('WidgetContainer already migrated');
+            $this->log('Containers already migrated. Truncate manually to try again.');
         } else {
-            $this->log('Migrating WidgetDisplayConfig to WidgetContainer');
+            $this->log('WidgetContainer migration.');
+            $sql = '
+                INSERT INTO claro_widget_container (id, uuid)
+                SELECT temp.id, (SELECT UUID()) as uuid FROM claro_widget_display_config_temp temp
+                WHERE temp.user_id IS NULL OR temp.workspace_id IS NOT NULL';
 
-            $sql = 'SELECT * FROM claro_widget_display_config ';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
-            $i = 0;
-
-            foreach ($stmt->fetchAll() as $rowConfig) {
-                $this->restoreWidgetContainer($rowConfig);
-                ++$i;
-
-                if (0 === $i % 200) {
-                    $this->om->flush();
-                }
-            }
-
-            $this->om->flush();
         }
 
+        $this->log('Link container to home tab.');
+        $sql =
+          '
+              UPDATE claro_widget_container container
+              JOIN claro_widget_display_config_temp wtc ON wtc.id = container.id
+              JOIN claro_widget_home_tab_config_temp htc ON wtc.widget_instance_id = htc.widget_instance_id
+              SET container.homeTab_id = htc.home_tab_id
+          ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        if (count($this->om->getRepository(WidgetContainerConfig::class)->findAll()) > 0) {
+            $this->log('Containers Config already migrated. Truncate manually to try again.');
+        } else {
+            $this->log('WidgetContainerConfig migration.');
+            $sql = "
+                INSERT INTO claro_widget_container_config (
+                    id,
+                    uuid,
+                    backgroundType,
+                    position,
+                    layout,
+                    widget_container_id,
+                    is_visible
+                )
+                SELECT container.id, (SELECT UUID()) as uuid, 'none', config.row_position, '[1]', container.id, true
+                FROM claro_widget_container container
+                JOIN claro_widget_display_config_temp config ON config.id = container.id
+            ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
+            $sql = '
+                UPDATE claro_widget_container_config config
+                JOIN claro_widget_container container ON container.id = config.id
+                JOIN claro_widget_display_config_temp wtc ON wtc.id = container.id
+                JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = wtc.widget_instance_id
+                SET config.widget_name = instance_temp.name
+            ';
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        }
+    }
+
+    private function restoreTextsWidgets()
+    {
         if (count($this->om->getRepository(SimpleWidget::class)->findAll()) > 0) {
             $this->log('SimpleTextWidget already migrated');
         } else {
             $this->log('Migrating SimpleTextWidget to SimpleWidget...');
 
-            $sql = 'SELECT * FROM claro_simple_text_widget_config ';
+            $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
+
+            $sql = "
+                INSERT INTO claro_widget_instance (id, widget_id, uuid, container_id)
+                SELECT conf.id, {$widget->getId()}, (SELECT UUID()) as uuid, container.id
+                FROM claro_widget_display_config_temp conf
+                JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
+                JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+                JOIN claro_widget_container container ON container.id = conf.id
+                WHERE widget_temp.name = 'simple_text'
+            ";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
-            $i = 0;
 
-            foreach ($stmt->fetchAll() as $rowConfig) {
-                $this->restoreTextConfig($rowConfig);
-                ++$i;
+            $sql = '
+                INSERT INTO claro_widget_simple (id, content, widgetInstance_id)
+                SELECT text.id, text.content, config.id from claro_simple_text_widget_config_temp text
+                JOIN claro_widget_display_config_temp config ON text.widgetInstance_id = config.widget_instance_id
+                JOIN claro_widget_container container ON container.id = config.id
+            ';
 
-                if (0 === $i % 200) {
-                    $this->om->flush();
-                }
-            }
-
-            $this->om->flush();
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
         }
-
-        $this->log('Updating HomeTabs titles...');
-
-        $tabs = $this->om->getRepository(HomeTab::class)->findAll();
-        $i = 0;
-
-        foreach ($tabs as $tab) {
-            if (!$tab->getLongTitle() || !$tab->getName()) {
-                $this->updateTabTitle($tab);
-            }
-
-            ++$i;
-
-            if (0 === $i % 200) {
-                $this->om->flush();
-            }
-        }
-
-        $this->om->flush();
     }
 
-    private function restoreWidgetContainer($row)
+    private function restoreListsWidgets()
     {
-        $widgetContainer = new WidgetContainer();
-        $widgetInstance = $this->om->getRepository(WidgetInstance::class)->find($row['widget_instance_id']);
-        $this->log('migrating '.$widgetInstance->getName().' ...');
-        $widgetContainer->addInstance($widgetInstance);
-        $widgetContainer->setBackground($row['color']);
-        $widgetContainer->setName($widgetInstance->getName());
-        $widgetContainer->setLayout([1]);
+        $lists = [
+            'agenda_' => ['events', ['-start']],
+            'my_workspaces' => ['my_workspaces', ['-id']],
+            'agenda_task' => ['tasks', ['-start']],
+            'claroline_announcement_widget' => ['announcements', ['-id']],
+            'blog_list' => ['blog_posts', ['-id']],
+            'claroline_forum_widget' => ['forum_messages', ['-id']],
+        ];
 
-        $this->om->persist($widgetContainer);
+        foreach ($lists as $oldList => $data) {
+            $this->log("Migrating {$oldList} widgets...");
+
+            $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'list']);
+            $dataSource = $this->om->getRepository('ClarolineCoreBundle:DataSource')->findOneByName($data[0]);
+
+            $sql = "
+                INSERT INTO claro_widget_instance (id, widget_id, uuid, container_id, dataSource_id)
+                SELECT conf.id, {$widget->getId()}, (SELECT UUID()) as uuid, container.id, {$dataSource->getId()}
+                FROM claro_widget_display_config_temp conf
+                JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
+                JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+                JOIN claro_widget_container container ON container.id = conf.id
+                WHERE widget_temp.name = '{$oldList}'
+            ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
+            if (isset($data[1])) {
+                $parameters = $data[1];
+                $sortBy = $parameters[0];
+
+                $this->log('Setting default list parameters...');
+
+                $sql = "
+                    INSERT INTO claro_widget_list (sortBy, widgetInstance_id, display, displayedColumns)
+                    SELECT '{$sortBy}', conf.id, 'list', '[]' from claro_widget_display_config_temp conf
+                    JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
+                    JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+                    JOIN claro_widget_instance instance ON instance.id = conf.id
+                    WHERE widget_temp.name = '{$oldList}';
+                ";
+
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute();
+            }
+        }
     }
 
-    private function restoreTextConfig($row)
+    private function updateWidgetInstances()
     {
-        $simpleWidget = new SimpleWidget();
-        $simpleWidget->setContent($row['content']);
-        $widgetInstance = $this->om->getRepository(WidgetInstance::class)->find($row['widgetInstance_id']);
-        $this->log('migrating content of default'.$widgetInstance->getName().' ...');
-        $simpleWidget->setWidgetInstance($widgetInstance);
-        $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'simple']);
-        $widgetInstance->setWidget($widget);
-        $this->om->persist($widgetInstance);
-        $this->om->persist($simpleWidget);
-    }
+        $this->log('Update widget instances...');
+        $this->restoreTextsWidgets();
+        $this->restoreListsWidgets();
 
-    private function updateTabTitle(HomeTab $tab)
-    {
-        $this->log('Renaming tab '.$tab->getName().'...');
+        if (0 === $this->om->count(WidgetInstanceConfig::class)) {
+            $this->log('Copying WidgetInsanceConfigs');
 
-        if ('' === trim(strip_tags($tab->getName()))) {
-            $tab->setName('Unknown');
+            $sql = '
+                INSERT INTO claro_widget_instance_config (id, widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked)
+                SELECT temp.id, temp.widget_instance_id, temp.workspace_id, temp.widget_order, temp.type, temp.is_visible, temp.is_locked from claro_widget_home_tab_config_temp temp
+                JOIN claro_widget_instance instance on instance.id = temp.widget_instance_id
+            ';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
+            $sql = 'UPDATE claro_widget_instance_config set widget_order = 0';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+        } else {
+            $this->log('WidgetInstanceConfigs already copied');
         }
-
-        if (!$tab->getLongTitle()) {
-            $tab->setLongTitle(strip_tags($tab->getName()));
-        }
-
-        //maybe substr here
-        $tab->setName(strip_tags($tab->getLongTitle()));
-
-        $this->om->persist($tab);
     }
 
     private function checkDesktopTabs()
@@ -229,6 +420,22 @@ class Updater120000 extends Updater
 
             $this->om->persist($desktopHomeTabConfig);
             $this->om->flush();
+        }
+    }
+
+    private function deactivateActivityResourceType()
+    {
+        $resourceTypeRepo = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
+        $activityType = $resourceTypeRepo->findOneBy(['name' => 'activity']);
+
+        if (!empty($activityType)) {
+            $this->log('Deactivating Activity resource...');
+
+            $activityType->setEnabled(false);
+            $this->om->persist($activityType);
+            $this->om->flush();
+
+            $this->log('Activity resource is deactivated.');
         }
     }
 }

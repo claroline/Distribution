@@ -84,8 +84,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
 
     // filtering
-    addFilter(property, value) {
-      dispatch(listActions.addFilter(ownProps.name, property, value))
+    addFilter(property, value, locked) {
+      dispatch(listActions.addFilter(ownProps.name, property, value, locked))
     },
     removeFilter(filter) {
       dispatch(listActions.removeFilter(ownProps.name, filter))
@@ -158,7 +158,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     fetch:         ownProps.fetch,
     definition:    ownProps.definition,
     card:          ownProps.card,
-    filterColumns: ownProps.filterColumns,
     display:       ownProps.display,
     translations:  ownProps.translations,
     readOnly:      stateProps.readOnly,

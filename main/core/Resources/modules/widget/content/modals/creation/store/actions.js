@@ -10,35 +10,23 @@ import {selectors} from '#/main/core/widget/content/modals/creation/store/select
 
 // action names
 export const WIDGET_CONTENTS_LOAD = 'WIDGET_CONTENTS_LOAD'
+export const SET_MODAL_STEP = 'SET_MODAL_STEP'
 
 // action creators
 export const actions = {}
 
-actions.loadContents = makeActionCreator(WIDGET_CONTENTS_LOAD, 'types')
+actions.loadContents = makeActionCreator(WIDGET_CONTENTS_LOAD, 'widgets', 'dataSources')
 
 actions.fetchContents = (context) => ({
   [API_REQUEST]: {
     url: ['apiv2_widget_available', {context: context}],
-    success: (response, dispatch) => dispatch(actions.loadContents(response))
+    success: (response, dispatch) => {
+      dispatch(actions.loadContents(response.widgets, response.dataSources))
+    }
   }
 })
 
-/**
- * Starts the creation of the selected resource type.
- * It initializes the new resource node with the default & parent values.
- *
- * @param {string}      type
- * @param {string|null} source
- */
-actions.startCreation = (type, source = null) => (dispatch) => {
-  // initialize the form with default values
-  dispatch(formActions.resetForm(selectors.FORM_NAME, merge({}, WidgetInstanceTypes.defaultProps, {
-    id: makeId()
-  }), true))
-
-  dispatch(formActions.updateProp(selectors.FORM_NAME, 'type', type))
-  dispatch(formActions.updateProp(selectors.FORM_NAME, 'source', source))
-}
+actions.setStep = makeActionCreator(SET_MODAL_STEP, 'stepName')
 
 /**
  * Shortcut to update the content.
@@ -47,3 +35,5 @@ actions.startCreation = (type, source = null) => (dispatch) => {
  * @param {*}      value - the new value for the content's prop
  */
 actions.update = (prop, value) => formActions.updateProp(selectors.FORM_NAME, prop, value)
+
+actions.reset = () => formActions.resetForm(selectors.FORM_NAME, merge({id: makeId()}, WidgetInstanceTypes.defaultProps), true)

@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
+import set from 'lodash/set'
 
-import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 
 import {Heading} from '#/main/core/layout/components/heading'
@@ -23,7 +24,7 @@ const AdvancedSection = props =>
     hideText={props.hideText}
   >
     {props.fields.map(field =>
-      <FormField
+      <FormProp
         key={field.name}
         {...field}
       />
@@ -58,12 +59,25 @@ class FormData extends Component {
           <FormProp
             {...field}
             key={field.name}
+            id={field.name.replace(/\./g, '-')}
             value={field.calculated ? field.calculated(this.props.data) : get(this.props.data, field.name)}
             disabled={this.props.disabled || (typeof field.disabled === 'function' ? field.disabled(this.props.data) : field.disabled)}
             validating={this.props.validating}
             error={get(this.props.errors, field.name)}
             updateProp={this.props.updateProp}
-            setErrors={this.props.setErrors}
+
+            onChange={(value) => {
+              this.props.updateProp(field.name, value)
+              if (field.onChange) {
+                field.onChange(value)
+              }
+            }}
+            setErrors={(errors) => {
+              const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
+              set(newErrors, field.name, errors)
+
+              this.props.setErrors(newErrors)
+            }}
           />
         )
       }
@@ -138,6 +152,7 @@ class FormData extends Component {
                 key={toKey(section.title)}
                 icon={section.icon}
                 title={section.title}
+                subtitle={section.subtitle}
                 errors={this.props.errors}
                 validating={this.props.validating}
               >

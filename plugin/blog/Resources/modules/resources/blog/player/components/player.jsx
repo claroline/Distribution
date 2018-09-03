@@ -2,24 +2,27 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
-import {RoutedPageContent} from '#/main/core/layout/router'
 import Grid from 'react-bootstrap/lib/Grid'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
-import {Posts} from '#/plugin/blog/resources/blog/post/components/posts.jsx'
-import {Post} from '#/plugin/blog/resources/blog/post/components/post.jsx'
-import {PostForm} from '#/plugin/blog/resources/blog/post/components/post-form.jsx'
+
 import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {Tools} from '#/plugin/blog/resources/blog/toolbar/components/toolbar.jsx'
-import {BlogOptions} from '#/plugin/blog/resources/blog/editor/components/blog-options.jsx'
+import {hasPermission} from '#/main/core/resource/permissions'
+import {RoutedPageContent} from '#/main/core/layout/router'
+
 import {actions as editorActions} from '#/plugin/blog/resources/blog/editor/store'
 import {actions as postActions} from '#/plugin/blog/resources/blog/post/store'
-import {actions} from '#/plugin/blog/resources/blog/store'
+import {actions, selectors} from '#/plugin/blog/resources/blog/store'
 import {constants} from '#/plugin/blog/resources/blog/constants'
-import {hasPermission} from '#/main/core/resource/permissions'
+import {Posts} from '#/plugin/blog/resources/blog/post/components/posts'
+import {Post} from '#/plugin/blog/resources/blog/post/components/post'
+import {PostForm} from '#/plugin/blog/resources/blog/post/components/post-form'
+import {Tools} from '#/plugin/blog/resources/blog/toolbar/components/toolbar'
+import {BlogOptions} from '#/plugin/blog/resources/blog/editor/components/blog-options'
+import {initDatalistFilters} from '#/plugin/blog/resources/blog/utils'
 
 const PlayerComponent = props =>
-  <Grid key="blog-grid" className="blog-page">
+  <Grid key="blog-grid" className="blog-container  blog-page">
     <Row className="show-grid">
       <Col xs={12} md={9} className={'posts-list'}>
         <RoutedPageContent
@@ -54,7 +57,10 @@ const PlayerComponent = props =>
               path: '/',
               component: Posts,
               exact: true,
-              onEnter: () => props.switchMode(constants.LIST_POSTS)
+              onEnter: () => {
+                props.switchMode(constants.LIST_POSTS)
+                props.initDataListFilters(props.location.search)
+              }
             }
           ]}
         />
@@ -75,14 +81,16 @@ PlayerComponent.propTypes = {
   getPostByAuthor: T.func.isRequired,
   editPost: T.func.isRequired,
   editBlogOptions: T.func.isRequired,
-  switchMode: T.func.isRequired
+  switchMode: T.func.isRequired,
+  initDataListFilters: T.func.isRequired,
+  location: T.object
 }
 
 const Player = connect(
   state => ({
-    blogId: state.blog.data.id,
-    postId: !isEmpty(state.post_edit) ? state.post_edit.data.id : null,
-    mode: state.mode,
+    blogId: selectors.blog(state).data.id,
+    postId: !isEmpty(selectors.postEdit(state)) ? selectors.postEdit(state).data.id : null,
+    mode: selectors.mode(state),
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state))
   }),
   dispatch => ({
@@ -90,19 +98,22 @@ const Player = connect(
       dispatch(postActions.getPost(blogId, postId))
     },
     createPost: () => {
-      dispatch(postActions.createPost(constants.POST_EDIT_FORM_NAME))
+      dispatch(postActions.createPost(selectors.STORE_NAME+'.'+constants.POST_EDIT_FORM_NAME))
     },
     getPostByAuthor: (blogId, authorName) => {
       dispatch(postActions.getPostByAuthor(blogId, authorName))
     },
     editPost: (blogId, postId) => {
-      dispatch(postActions.editPost(constants.POST_EDIT_FORM_NAME, blogId, postId))
+      dispatch(postActions.editPost(selectors.STORE_NAME+'.'+constants.POST_EDIT_FORM_NAME, blogId, postId))
     },
     editBlogOptions: (blogId) => {
-      dispatch(editorActions.editBlogOptions(constants.OPTIONS_EDIT_FORM_NAME, blogId))
+      dispatch(editorActions.editBlogOptions(selectors.STORE_NAME+'.'+constants.OPTIONS_EDIT_FORM_NAME, blogId))
     },
     switchMode: (mode) => {
       dispatch(actions.switchMode(mode))
+    },
+    initDataListFilters: (query) => {
+      initDatalistFilters(dispatch, query)
     }
   })
 )(PlayerComponent)

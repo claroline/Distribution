@@ -51,14 +51,14 @@ class ForumController extends AbstractCrudController
         return new JsonResponse(
             $this->finder->search('Claroline\ForumBundle\Entity\Subject', array_merge(
                 $request->query->all(),
-                ['hiddenFilters' => ['forum' => [$id]]]
+                ['hiddenFilters' => ['forum' => [$id], 'moderation' => Forum::VALIDATE_NONE]]
             ))
         );
     }
 
     /**
      * @EXT\Route("/{id}/subject")
-     * @EXT\Method("POST")
+     * @EXT\Method({"POST", "PUT"})
      * @ParamConverter("forum", options={"mapping": {"id": "uuid"}})
      *
      * @ApiDoc(

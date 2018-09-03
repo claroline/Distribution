@@ -22,8 +22,8 @@ const Tabs = props =>
         <span className={classes('fa fa-fw', `fa-${tab.icon}`, tab.title && 'icon-with-text-right')} />
         }
         {tab.title}
-        {tab.locked &&
-          <span className="fa fa-fw fa-lock icon-with-text-left" />
+        {!tab.locked && props.editing &&
+          <span className="fa fa-fw fa-eye-slash icon-with-text-left" />
         }
       </LinkButton>
     )}
@@ -41,6 +41,8 @@ const Tabs = props =>
   </nav>
 
 Tabs.propTypes = {
+  context: T.object.isRequired,
+  editing: T.bool.isRequired,
   prefix: T.string,
   tabs: T.arrayOf(T.shape(
     TabTypes.propTypes

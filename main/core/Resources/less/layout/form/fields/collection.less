@@ -1,0 +1,47 @@
+.collection-control {
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    .no-item-info {
+        font-style: italic;
+        text-align: center;
+
+        // todo use vars
+        line-height: 30px;
+        border: 1px dashed #999;
+        border-radius: 4px;
+        padding: 5px;
+        color: #999;
+    }
+
+    .collection-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background: @gray-lighter;
+        padding: 5px;
+
+        + .collection-item {
+            margin-top: 5px;
+        }
+
+        .border-radius(@border-radius-base);
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .btn-link {
+            margin-left: floor(@grid-gutter-width / 2);
+            padding: 4px;
+        }
+    }
+
+    .btn-add {
+        margin-top: 5px;
+    }
+}

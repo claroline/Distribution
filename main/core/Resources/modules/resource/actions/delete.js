@@ -1,22 +1,26 @@
-import {trans} from '#/main/core/translation'
+import get from 'lodash/get'
+
+import {url} from '#/main/app/api'
 import {ASYNC_BUTTON} from '#/main/app/buttons'
 
-const action = (resourceNodes, nodesRefresher) => ({ // todo collection
+import {trans} from '#/main/core/translation'
+
+const action = (resourceNodes, nodesRefresher) => ({
   name: 'delete',
   type: ASYNC_BUTTON,
   icon: 'fa fa-fw fa-trash-o',
   label: trans('delete', {}, 'actions'),
+  displayed: -1 !== resourceNodes.findIndex(node => get(node, 'meta.active')),
   dangerous: true,
   confirm: {
     title: trans('resources_delete_confirm'),
     message: trans('resources_delete_message')
   },
   request: {
-    url: ['claro_resource_action', {
-      resourceType: resourceNodes[0].meta.type,
-      action: 'delete',
-      id: resourceNodes[0].id
-    }],
+    url: url(
+      ['claro_resource_collection_action', {action: 'delete'}],
+      {ids: resourceNodes.map(resourceNode => resourceNode.id)}
+    ),
     request: {
       method: 'DELETE'
     },

@@ -1,12 +1,26 @@
 import React from 'react'
 
+import {LINK_BUTTON} from '#/main/app/buttons'
+
+import {trans} from '#/main/core/translation'
 import {RoutedPageContent} from '#/main/core/layout/router'
-import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {ResourcePage} from '#/main/core/resource/containers/page'
 
 import {Player} from '#/plugin/web-resource/resources/web-resource/player/components/player'
+import {Editor} from '#/plugin/web-resource/resources/web-resource/editor/components/editor'
 
 const WebResource = () =>
-  <ResourcePageContainer>
+  <ResourcePage
+    customActions={[
+      {
+        type: LINK_BUTTON,
+        icon: 'fa fa-home',
+        label: trans('show_overview'),
+        target: '/',
+        exact: true
+      }
+    ]}
+  >
     <RoutedPageContent
       headerSpacer={true}
       routes={[
@@ -14,10 +28,13 @@ const WebResource = () =>
           path: '/',
           exact: true,
           component: Player
+        }, {
+          path: '/edit',
+          component: Editor
         }
       ]}
     />
-  </ResourcePageContainer>
+  </ResourcePage>
 
 
 export {

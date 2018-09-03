@@ -34,7 +34,9 @@ const EditorComponent = props =>
     <Tabs
       prefix="/edit"
       tabs={props.tabs}
-      create={() => props.createTab(props.context, props.tabs.length, props.history.push)}
+      create={() => props.createTab(props.context, props.administration, props.tabs.length, props.history.push)}
+      context={props.context}
+      editing={true}
     />
 
     <PageHeader
@@ -54,6 +56,10 @@ const EditorComponent = props =>
                 title: trans('home_tab_delete_confirm_title'),
                 message: trans('home_tab_delete_confirm_message')
               }}
+              disabled={props.currentTab.type === 'administration' &&
+              props.currentTab.locked &&
+              props.context.type === 'desktop' &&
+              !props.administration}
               callback={() => props.deleteTab(props.tabs, props.currentTab, props.history.push)}
             />
           </PageGroupActions>
@@ -76,15 +82,24 @@ const EditorComponent = props =>
         name="editor"
         dataPart={`[${props.currentTabIndex}]`}
         buttons={true}
-        target={['apiv2_home_update', {
+        target={props.administration ? ['apiv2_home_admin', {
           context: props.context.type,
           contextId: props.context.data ? props.context.data.uuid : currentUser().id
-        }]}
+        }]
+          :
+          ['apiv2_home_update', {
+            context: props.context.type,
+            contextId: props.context.data ? props.context.data.uuid : currentUser().id
+          }]}
         cancel={{
           type: LINK_BUTTON,
           target: '/',
           exact: true
         }}
+        disabled={props.currentTab.type === 'administration' &&
+          props.currentTab.locked &&
+          props.context.type === 'desktop' &&
+          !props.administration}
         sections={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -100,9 +115,7 @@ const EditorComponent = props =>
               }, {
                 name: 'locked',
                 type: 'boolean',
-                label: trans('lock_tab', {}, 'widget'),
-                help : trans('lock_tab_help', {}, 'widget'),
-                displayed: props.context.type === 'administration'
+                label: trans('publish_tab', {}, 'widget')
               }
             ]
           }, {
@@ -116,7 +129,7 @@ const EditorComponent = props =>
               }, {
                 name: 'position',
                 type: 'number',
-                label: trans('position'),
+                label: trans('tab_position'),
                 options : {
                   min : 1,
                   max : props.tabs.length + 1
@@ -162,32 +175,44 @@ const EditorComponent = props =>
           }, {
             icon: 'fa fa-fw fa-key',
             title: trans('access_restrictions'),
-            displayed: props.context.type === 'workspace' || props.context.type === 'administration',
+            displayed: props.context.type === 'workspace' || props.administration,
             fields: [
               {
-                name: 'roles',
-                label: trans('role'),
-                help: trans('home_tab_roles_explanation'),
-                type: 'choice',
-                options:{
-                  multiple : true,
-                  choices: props.context.type === 'workspace' || props.context.type === 'administration' ?
-                    props.context.data.roles.reduce((acc, role) => {
-                      acc[role.id] = role.translationKey
-                      return acc
-                    }, {})
-                    : ''
-                }
+                name: 'restrictions',
+                type: 'boolean',
+                label: trans('restrictions_by_roles', {}, 'widget'),
+                linked: [
+                  {
+                    name: 'roles',
+                    label: trans('role'),
+                    displayed: props.currentTab.restrictions,
+                    type: 'choice',
+                    options:{
+                      multiple : true,
+                      choices: props.context.type === 'workspace' || props.administration ?
+                        props.context.data.roles.reduce((acc, role) => {
+                          acc[role.id] = trans(role.translationKey)
+                          return acc
+                        }, {})
+                        : ''
+                    }
+                  }
+                ]
               }
             ]
           }
         ]}
       >
-        <WidgetGridEditor
-          context={props.context}
-          widgets={props.widgets}
-          update={(widgets) => props.updateWidgets(props.currentTabIndex, widgets)}
-        />
+        {!(props.currentTab.type === 'administration' &&
+          props.currentTab.locked &&
+          props.context.type === 'desktop' &&
+          !props.administration) &&
+          <WidgetGridEditor
+            context={props.context}
+            widgets={props.widgets}
+            update={(widgets) => props.updateWidgets(props.currentTabIndex, widgets)}
+          />
+        }
       </FormData>
     </PageContent>
   </PageContainer>
@@ -195,6 +220,7 @@ const EditorComponent = props =>
 
 EditorComponent.propTypes = {
   context: T.object.isRequired,
+  administration: T.bool.isRequired,
   tabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
@@ -217,6 +243,7 @@ EditorComponent.propTypes = {
 const Editor = withRouter(connect(
   state => ({
     context: selectors.context(state),
+    administration: selectors.administration(state),
     tabs: editorSelectors.editorTabs(state),
     widgets: editorSelectors.widgets(state),
     currentTabIndex: editorSelectors.currentTabIndex(state),
@@ -229,7 +256,7 @@ const Editor = withRouter(connect(
     setErrors(errors) {
       dispatch(formActions.setErrors('editor', errors))
     },
-    createTab(context, position, navigate){
+    createTab(context, administration, position, navigate){
       const newTabId = makeId()
 
       dispatch(formActions.updateProp('editor', `[${position}]`, merge({}, TabTypes.defaultProps, {
@@ -237,8 +264,9 @@ const Editor = withRouter(connect(
         title: trans('tab'),
         longTitle: trans('tab'),
         position: position + 1,
-        type: context.type,
-        user: context.type === 'desktop' ? currentUser() : null,
+        type: administration ? 'administration' : context.type,
+        administration: administration,
+        user: context.type === 'desktop' && !administration ? currentUser() : null,
         workspace: context.type === 'workspace' ? {uuid: context.data.uuid} : null
       })))
 

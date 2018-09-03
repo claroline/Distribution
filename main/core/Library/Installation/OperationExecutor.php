@@ -15,7 +15,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Detector\Detector;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
-use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Manager\VersionManager;
 use Claroline\InstallationBundle\Manager\InstallationManager;
 use Doctrine\DBAL\Exception\TableNotFoundException;
@@ -121,7 +120,13 @@ class OperationExecutor
             if (array_key_exists('bundles', $extra)) {
                 //this is only valid for installable bundles
                 $bundles = array_filter($extra['bundles'], function ($var) {
-                    return in_array('Claroline\InstallationBundle\Bundle\InstallableInterface', class_implements($var)) ? true : false;
+                    try {
+                        return in_array('Claroline\InstallationBundle\Bundle\InstallableInterface', class_implements($var)) ? true : false;
+                    } catch (\Exception $e) {
+                        $this->log($var.' not found.', LogLevel::ERROR);
+
+                        return false;
+                    }
                 });
 
                 foreach ($bundles as $bundle) {
@@ -268,17 +273,23 @@ class OperationExecutor
         $this->log('Removing previous local repository snapshot...');
         $filesystem = new Filesystem();
         $filesystem->remove($this->previousRepoFile);
-        $this->end();
+        $this->end($operations);
     }
 
-    public function end()
+    public function end(array $operations)
     {
         $this->log('Ending operations...');
         $bundles = $this->getBundlesByFqcn();
 
-        foreach ($bundles as $bundle) {
-            if ($bundle instanceof PluginBundleInterface) {
-                $this->pluginInstaller->end($bundle);
+        foreach ($operations as $operation) {
+            if (Operation::INSTALL === $operation->getType()) {
+                $this->pluginInstaller->end($bundles[$operation->getBundleFqcn()]);
+            } elseif (Operation::UPDATE === $operation->getType()) {
+                $this->pluginInstaller->end(
+                    $bundles[$operation->getBundleFqcn()],
+                    $operation->getFromVersion(),
+                    $operation->getToVersion()
+                );
             }
         }
     }

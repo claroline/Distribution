@@ -9,7 +9,6 @@ import thunk from 'redux-thunk'
 import merge from 'lodash/merge'
 
 import {combineReducers} from '#/main/app/store/reducer'
-import {registry} from '#/main/app/store/registry'
 
 import {apiMiddleware} from '#/main/app/api/store/middleware'
 
@@ -27,47 +26,60 @@ if (process.env.NODE_ENV !== 'production') { // todo : retrieve current env else
 /**
  * Generates a new pre-configured application store.
  *
- * @param {object} reducers        - an object containing a list of reducers to mount in the store.
- * @param {object} initialState    - the data to preload in the store at creation.
- * @param {Array}  customEnhancers - [Advanced use] a list of custom store enhancers.
+ * @param {string} name         - the name of the store
+ * @param {object} reducers     - an object containing a list of reducers to mount in the store.
+ * @param {object} initialState - the data to preload in the store at creation.
  *
  * @return {*}
  */
-function createStore(reducers, initialState = {}, customEnhancers = []) {
+function createStore(name, reducers, initialState = {}) {
   // preserve initial state for not-yet-loaded reducers
-  const combine = (reducers) => {
+  const createReducer = (reducers) => {
     const reducerNames = Object.keys(reducers)
     Object.keys(initialState).forEach(item => {
       if (reducerNames.indexOf(item) === -1) {
         reducers[item] = (state = null) => state
       }
     })
+
     return combineReducers(reducers)
   }
 
   // register browser extension
   // we must do it at each store creation in order to register all
   // of them in the dev console
-  const enhancers = []
-  if (window.devToolsExtension) {
-    enhancers.push(window.devToolsExtension())
-  }
+  const composeEnhancers =
+    process.env.NODE_ENV !== 'production' &&
+    typeof window === 'object' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        name: name,
+        // this is required by dynamic reducer
+        // without it, all actions stack is replayed at each reducer injection
+        shouldHotReload: false
+      }) : compose
 
   const store = baseCreate(
-    combine(merge({}, reducers, registry.all())),
+    createReducer(reducers),
     initialState,
-    compose(
-      applyMiddleware(...middleware),
-      ...enhancers.concat(customEnhancers)
+    composeEnhancers(
+      applyMiddleware(...middleware)
     )
   )
 
-  // replace the store's reducer whenever a new reducer is registered.
-  registry.on('add', () => {
-    store.replaceReducer(
-      combine(merge({}, reducers, registry.all()))
-    )
-  })
+  // support for dynamic reducer loading
+  store.asyncReducers = {}
+  store.injectReducer = (key, reducer) => {
+    if (!store.asyncReducers[key]) {
+      // only append non mounted reducers
+      store.asyncReducers[key] = reducer
+      store.replaceReducer(
+        createReducer(merge({}, reducers, store.asyncReducers))
+      )
+    }
+
+    return store
+  }
 
   return store
 }

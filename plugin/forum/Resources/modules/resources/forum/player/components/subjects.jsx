@@ -7,8 +7,8 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {constants as listConst} from '#/main/app/content/list/constants'
 import {currentUser} from '#/main/core/user/current'
 
-import {select} from '#/plugin/forum/resources/forum/selectors'
-import {actions} from '#/plugin/forum/resources/forum/player/actions'
+import {select} from '#/plugin/forum/resources/forum/store/selectors'
+import {actions} from '#/plugin/forum/resources/forum/player/store/actions'
 import {SubjectCard} from '#/plugin/forum/resources/forum/data/components/subject-card'
 
 const authenticatedUser = currentUser()
@@ -17,7 +17,7 @@ const SubjectsList = props =>
   <div>
     <h2>{trans('subjects', {}, 'forum')}</h2>
     <ListData
-      name="subjects.list"
+      name={`${select.STORE_NAME}.subjects.list`}
       fetch={{
         url: ['claroline_forum_api_forum_getsubjects', {id: props.forum.id}],
         autoload: true
@@ -130,13 +130,13 @@ const SubjectsList = props =>
           icon: 'fa fa-fw fa-eye',
           label: trans('see_subject', {}, 'forum'),
           target: '/subjects/show/'+rows[0].id,
-          context: 'row'
+          scope: ['object']
         }, {
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-pencil',
           label: trans('edit'),
           target: '/subjects/form/'+rows[0].id,
-          context: 'row',
+          scope: ['object'],
           displayed: rows[0].meta.creator.id === authenticatedUser.id
         }, {
           type: CALLBACK_BUTTON,
@@ -156,14 +156,14 @@ const SubjectsList = props =>
           label: trans('flag', {}, 'forum'),
           displayed: !rows[0].meta.flagged && (rows[0].meta.creator.id !== authenticatedUser.id),
           callback: () => props.flagSubject(rows[0]),
-          context: 'row'
+          scope: ['object']
         }, {
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-flag',
           label: trans('unflag', {}, 'forum'),
           displayed: rows[0].meta.flagged && rows[0].meta.creator.id !== authenticatedUser.id,
           callback: () => props.unFlagSubject(rows[0]),
-          context: 'row'
+          scope: ['object']
         }, {
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-times-circle',

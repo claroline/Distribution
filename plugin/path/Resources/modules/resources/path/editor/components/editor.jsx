@@ -12,8 +12,7 @@ import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {select as editorSelect} from '#/plugin/path/resources/path/editor/selectors'
-import {actions} from '#/plugin/path/resources/path/editor/actions'
+import {actions, selectors} from '#/plugin/path/resources/path/editor/store'
 import {PathCurrent} from '#/plugin/path/resources/path/components/current'
 import {PathSummary} from '#/plugin/path/resources/path/components/summary'
 import {ParametersForm} from '#/plugin/path/resources/path/editor/components/parameters-form'
@@ -94,8 +93,6 @@ const EditorComponent = props =>
                   numbering={getNumbering(props.path.display.numbering, props.path.steps, step)}
                   customNumbering={constants.NUMBERING_CUSTOM === props.path.display.numbering}
                   stepPath={getFormDataPart(step.id, props.path.steps)}
-                  pickPrimaryResource={stepId => props.pickResources(stepId, 'primary', props.resourceParent)}
-                  removePrimaryResource={props.removePrimaryResource}
                   pickSecondaryResources={stepId => props.pickResources(stepId, 'secondary', props.resourceParent)}
                   removeSecondaryResource={props.removeSecondaryResource}
                   updateSecondaryResourceInheritance={props.updateSecondaryResourceInheritance}
@@ -124,7 +121,6 @@ EditorComponent.propTypes = {
   addStep: T.func.isRequired,
   removeStep: T.func.isRequired,
   pickResources: T.func.isRequired,
-  removePrimaryResource: T.func.isRequired,
   removeSecondaryResource: T.func.isRequired,
   updateSecondaryResourceInheritance: T.func.isRequired,
   removeInheritedResource: T.func.isRequired,
@@ -137,9 +133,9 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   state => ({
-    path: editorSelect.path(state),
-    steps: flattenSteps(editorSelect.steps(state)),
-    copy: editorSelect.stepCopy(state),
+    path: selectors.path(state),
+    steps: flattenSteps(selectors.steps(state)),
+    copy: selectors.stepCopy(state),
     resourceParent: resourceSelect.parent(state)
   }),
   dispatch => ({
@@ -166,10 +162,7 @@ const Editor = connect(
     pickResources(stepId, usage = 'primary', current = null) {
       let title
       let callback
-      if ('primary' === usage) {
-        title = trans('add_primary_resource', {}, 'path')
-        callback = (selected) => dispatch(actions.updatePrimaryResource(stepId, selected[0]))
-      } else if ('secondary' === usage) {
+      if ('secondary' === usage) {
         title = trans('add_secondary_resources', {}, 'path')
         callback = (selected) => dispatch(actions.addSecondaryResources(stepId, selected))
       }
@@ -182,9 +175,6 @@ const Editor = connect(
         })
       }))
     },
-    removePrimaryResource(stepId) {
-      dispatch(actions.updatePrimaryResource(stepId, null))
-    },
     removeSecondaryResource(stepId, id) {
       dispatch(actions.removeSecondaryResources(stepId, [id]))
     },
@@ -194,7 +184,7 @@ const Editor = connect(
     removeInheritedResource(stepId, id) {
       dispatch(actions.removeInheritedResources(stepId, [id]))
     },
-    saveForm: (pathId) => dispatch(formActions.saveForm('pathForm', ['apiv2_path_update', {id: pathId}]))
+    saveForm: (pathId) => dispatch(formActions.saveForm(selectors.FORM_NAME, ['apiv2_path_update', {id: pathId}]))
   })
 )(EditorComponent)
 

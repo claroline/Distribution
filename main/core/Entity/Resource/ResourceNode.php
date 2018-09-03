@@ -303,7 +303,6 @@ class ResourceNode
         $this->rights = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->logs = new ArrayCollection();
-        $this->fields = new ArrayCollection();
     }
 
     public function isHidden()
@@ -489,7 +488,7 @@ class ResourceNode
      *
      * @param ResourceNode $parent
      */
-    public function setParent(ResourceNode $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }
@@ -660,7 +659,7 @@ class ResourceNode
      *
      * @param ResourceNode $resourceNode
      */
-    public function addChild(ResourceNode $resourceNode)
+    public function addChild(self $resourceNode)
     {
         if (!$this->children->contains($resourceNode)) {
             $this->children->add($resourceNode);
@@ -855,6 +854,16 @@ class ResourceNode
     public function setAccessCode($code)
     {
         $this->accesses['code'] = $code;
+    }
+
+    public function getAccesses()
+    {
+        return $this->accesses;
+    }
+
+    public function setAccesses(array $accesses)
+    {
+        $this->accesses = $accesses;
     }
 
     public function getLogs()

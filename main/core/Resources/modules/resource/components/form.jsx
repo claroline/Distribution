@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
@@ -9,7 +10,10 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 import {ResourceType} from '#/main/core/resource/components/type'
-import {constants} from '#/main/core/resource/constants'
+
+const restrictedByDates = (node) => get(node, 'restrictions.enableDates') || !isEmpty(get(node, 'restrictions.dates'))
+const restrictedByCode = (node) => get(node, 'restrictions.enableCode') || !!get(node, 'restrictions.code')
+const restrictedByIps = (node) => get(node, 'restrictions.enableIps') || !isEmpty(get(node, 'restrictions.allowedIps'))
 
 const ResourceFormComponent = (props) =>
   <FormData
@@ -90,21 +94,7 @@ const ResourceFormComponent = (props) =>
             name: 'display.fullscreen',
             label: trans('resource_fullscreen', {}, 'resource'),
             type: 'boolean'
-          }, /*{
-            name: 'display.closable',
-            label: trans('resource_closable', {}, 'resource'),
-            type: 'boolean'
-          }, */{
-            name: 'display.closeTarget',
-            label: trans('resource_close_target', {}, 'resource'),
-            type: 'choice',
-            required: true,
-            options: {
-              noEmpty: true,
-              condensed: true,
-              choices: constants.RESOURCE_CLOSE_TARGETS
-            }
-          }
+          } 
         ]
       }, {
         icon: 'fa fa-fw fa-key',
@@ -119,7 +109,7 @@ const ResourceFormComponent = (props) =>
             name: 'restrictions.enableDates',
             label: trans('restrict_by_dates'),
             type: 'boolean',
-            calculated: (node) => node.restrictions.enableDates || !isEmpty(node.restrictions.dates),
+            calculated: restrictedByDates,
             onChange: activated => {
               if (!activated) {
                 props.updateProp('restrictions.dates', [])
@@ -130,7 +120,7 @@ const ResourceFormComponent = (props) =>
                 name: 'restrictions.dates',
                 type: 'date-range',
                 label: trans('access_dates'),
-                displayed: (node) => node.restrictions.enableDates || !isEmpty(node.restrictions.dates),
+                displayed: restrictedByDates,
                 required: true,
                 options: {
                   time: true
@@ -141,7 +131,7 @@ const ResourceFormComponent = (props) =>
             name: 'restrictions.enableCode',
             label: trans('resource_access_code', {}, 'resource'),
             type: 'boolean',
-            calculated: (node) => node.restrictions.enableCode || !!node.restrictions.code,
+            calculated: restrictedByCode,
             onChange: activated => {
               if (!activated) {
                 props.updateProp('restrictions.code', null)
@@ -151,7 +141,7 @@ const ResourceFormComponent = (props) =>
               {
                 name: 'restrictions.code',
                 label: trans('access_code'),
-                displayed: (node) => node.restrictions.enableCode || !!node.restrictions.code,
+                displayed: restrictedByCode,
                 type: 'password',
                 required: true
               }
@@ -160,7 +150,7 @@ const ResourceFormComponent = (props) =>
             name: 'restrictions.enableIps',
             label: trans('resource_access_ips', {}, 'resource'),
             type: 'boolean',
-            calculated: (node) => node.restrictions.enableIps || !isEmpty(node.restrictions.allowedIps),
+            calculated: restrictedByIps,
             onChange: activated => {
               if (!activated) {
                 props.updateProp('restrictions.ips', [])
@@ -172,7 +162,7 @@ const ResourceFormComponent = (props) =>
                 label: trans('resource_allowed_ip'),
                 type: 'ip',
                 required: true,
-                displayed: (node) => node.restrictions.enableIps || !isEmpty(node.restrictions.allowedIps),
+                displayed: restrictedByIps,
                 options: {
                   placeholder: trans('resource_no_allowed_ip', {}, 'resource'),
                   multiple: true

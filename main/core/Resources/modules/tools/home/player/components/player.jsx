@@ -15,10 +15,11 @@ import {Tabs} from '#/main/core/tools/home/components/tabs'
 
 const PlayerComponent = props =>
   <PageContainer>
-    {1 < props.sortedTabs.length &&
+    {1 < props.tabs.filter(tab => tab.locked === true).length &&
       <Tabs
-        tabs={props.context.type === 'workspace' || props.context.type === 'administration' ?
-          props.visibleTabs : props.sortedTabs}
+        tabs={props.tabs.filter(tab => tab.locked === true)}
+        context={props.context}
+        editing={false}
       />
     }
     <PageHeader
@@ -49,10 +50,7 @@ const PlayerComponent = props =>
 
 PlayerComponent.propTypes = {
   context: T.object.isRequired,
-  sortedTabs: T.arrayOf(T.shape(
-    TabTypes.propTypes
-  )),
-  visibleTabs:T.arrayOf(T.shape(
+  tabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
   currentTab: T.shape(TabTypes.propTypes),
@@ -66,8 +64,7 @@ const Player = connect(
   (state) => ({
     context: selectors.context(state),
     editable: selectors.editable(state),
-    sortedTabs: selectors.sortedTabs(state),
-    visibleTabs: selectors.visibleTabs(state),
+    tabs: selectors.tabs(state),
     currentTab: selectors.currentTab(state),
     widgets: selectors.widgets(state)
   })

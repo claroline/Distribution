@@ -17,12 +17,12 @@ use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\AbstractRoleSubject;
-use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceFavourite;
@@ -229,7 +229,7 @@ class WorkspaceManager
         if (0 === count($workspace->getOrganizations())) {
             if (
                 $this->container->get('security.token_storage')->getToken() &&
-                $this->container->get('security.token_storage')->getToken()->getUser() &&
+                $this->container->get('security.token_storage')->getToken()->getUser() instanceof User &&
                 $this->container->get('security.token_storage')->getToken()->getUser()->getMainOrganization()
             ) {
                 //we want a min organization
@@ -349,6 +349,8 @@ class WorkspaceManager
         return $this->workspaceRepo->findByUser($user);
     }
 
+    //only used by dashboard
+    //@todo remove
     public function exportWorkspace(Workspace $workspace)
     {
         return [
@@ -373,16 +375,6 @@ class WorkspaceManager
           'isAccessDate' => $workspace->getIsAccessDate(),
           'type' => $workspace->getWorkspaceType(),
         ];
-    }
-
-    /**
-     * @param int $orderedToolType
-     *
-     * @return Workspace[]
-     */
-    public function getWorkspacesByAnonymous($orderedToolType = 0)
-    {
-        return $this->workspaceRepo->findByAnonymous($orderedToolType);
     }
 
     public function getWorkspacesByManager(User $user)
@@ -422,17 +414,6 @@ class WorkspaceManager
     public function getOpenableWorkspacesByRoles(array $roles)
     {
         return $this->workspaceRepo->findByRoles($roles);
-    }
-
-    /**
-     * @param string   $search
-     * @param string[] $roles
-     *
-     * @return Workspace[]
-     */
-    public function getOpenableWorkspacesByRolesAndSearch($search, array $roles)
-    {
-        return $this->workspaceRepo->findBySearchAndRoles($search, $roles);
     }
 
     /**
@@ -530,46 +511,6 @@ class WorkspaceManager
     }
 
     /**
-     * @param string[] $roles
-     * @param int      $page
-     * @param int      $max
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getOpenableWorkspacesByRolesPager(array $roles, $page, $max)
-    {
-        $workspaces = $this->getOpenableWorkspacesByRoles($roles);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    /**
-     * @param string   $search
-     * @param string[] $roles
-     * @param int      $page
-     * @param int      $max
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getOpenableWorkspacesBySearchAndRolesPager($search, array $roles, $page, $max)
-    {
-        $workspaces = $this->getOpenableWorkspacesByRolesAndSearch($search, $roles);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    /**
-     * @param User     $user
-     * @param string[] $roleNames
-     *
-     * @return int[]
-     */
-    public function getWorkspaceIdsByUserAndRoleNames(User $user, array $roleNames)
-    {
-        return $this->workspaceRepo->findIdsByUserAndRoleNames($user, $roleNames);
-    }
-
-    /**
      * @param User     $user
      * @param string[] $roleNames
      *
@@ -578,21 +519,6 @@ class WorkspaceManager
     public function getWorkspacesByUserAndRoleNames(User $user, array $roleNames)
     {
         return $this->workspaceRepo->findByUserAndRoleNames($user, $roleNames);
-    }
-
-    /**
-     * @param User     $user
-     * @param string[] $roleNames
-     * @param int[]    $restrictionIds
-     *
-     * @return Workspace[]
-     */
-    public function getWorkspacesByUserAndRoleNamesNotIn(
-        User $user,
-        array $roleNames,
-        array $restrictionIds = null
-    ) {
-        return $this->workspaceRepo->findByUserAndRoleNamesNotIn($user, $roleNames, $restrictionIds);
     }
 
     /**
@@ -634,6 +560,8 @@ class WorkspaceManager
     /**
      * @param string $guid
      *
+     * only used one in LayoutController
+     *
      * @return Workspace
      */
     public function getOneByGuid($guid)
@@ -654,14 +582,6 @@ class WorkspaceManager
     }
 
     /**
-     * @return Workspace[]
-     */
-    public function getDisplayableWorkspaces()
-    {
-        return $this->workspaceRepo->findDisplayableWorkspaces();
-    }
-
-    /**
      * @param int $page
      * @param int $max
      *
@@ -676,16 +596,6 @@ class WorkspaceManager
 
     /**
      * @param string $search
-     *
-     * @return Workspace[]
-     */
-    public function getDisplayableWorkspacesBySearch($search)
-    {
-        return $this->workspaceRepo->findDisplayableWorkspacesBySearch($search);
-    }
-
-    /**
-     * @param string $search
      * @param int    $page
      * @param int    $max
      *
@@ -696,20 +606,6 @@ class WorkspaceManager
         $workspaces = $this->workspaceRepo->findDisplayableWorkspacesBySearch($search);
 
         return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    /**
-     * @param Role[] $roles
-     * @param int    $page
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getWorkspacesWithSelfUnregistrationByRoles($roles, $page)
-    {
-        $workspaces = $this->workspaceRepo
-            ->findWorkspacesWithSelfUnregistrationByRoles($roles);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page);
     }
 
     /**
@@ -965,30 +861,6 @@ class WorkspaceManager
             $logger(count($updated).' workspace updated ('.implode(',', $updated).')');
             $logger(count($created).' workspace created ('.implode(',', $created).')');
         }
-    }
-
-    public function getDisplayableNonPersonalWorkspaces(
-        $page = 1,
-        $max = 50,
-        $search = ''
-    ) {
-        $workspaces = '' === $search ?
-            $this->workspaceRepo->findDisplayableNonPersonalWorkspaces() :
-            $this->workspaceRepo->findDisplayableNonPersonalWorkspacesBySearch($search);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    public function getDisplayablePersonalWorkspaces(
-        $page = 1,
-        $max = 50,
-        $search = ''
-    ) {
-        $workspaces = '' === $search ?
-            $this->workspaceRepo->findDisplayablePersonalWorkspaces() :
-            $this->workspaceRepo->findDisplayablePersonalWorkspacesBySearch($search);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
     }
 
     public function getAllNonPersonalWorkspaces(
@@ -1273,30 +1145,44 @@ class WorkspaceManager
 
     public function isManager(Workspace $workspace, TokenInterface $token)
     {
-        $roles = array_map(
-            function ($role) {
-                return $role->getRole();
-            },
-            $token->getRoles()
-        );
-
-        if (in_array('ROLE_ADMIN', $roles)) {
-            return true;
+        if (!$token->getUser() instanceof User) {
+            return false;
         }
 
-        $managerRole = $this->roleManager->getManagerRole($workspace);
-
-        if (!in_array('ROLE_USURPATE_WORKSPACE_ROLE', $roles) && $workspace->getCreator() === $token->getUser()) {
-            return true;
-        }
-
-        foreach ($roles as $role) {
-            if ($managerRole && $role === $managerRole->getName()) {
+        if (!$this->isUsurper($token)) {
+            if ($workspace->getCreator() === $token->getUser()) {
                 return true;
+            }
+
+            //if we're amongst the administrators of the organizations
+            $adminOrganizations = $token->getUser()->getAdministratedOrganizations();
+            $workspaceOrganizations = $workspace->getOrganizations();
+
+            foreach ($adminOrganizations as $adminOrganization) {
+                foreach ($workspaceOrganizations as $workspaceOrganization) {
+                    if ($workspaceOrganization === $adminOrganization) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        //or we have the role_manager
+        $managerRole = $workspace->getManagerRole();
+        if ($managerRole) {
+            foreach ($token->getRoles() as $role) {
+                if ($managerRole->getName() === $role->getRole() || $role->getRole() === 'ROLE_ADMIN') {
+                    return true;
+                }
             }
         }
 
         return false;
+    }
+
+    protected function isUsurper(TokenInterface $token)
+    {
+        return $token instanceof ViewAsToken;
     }
 
     /**
@@ -1418,6 +1304,10 @@ class WorkspaceManager
         $this->om->forceFlush();
         $this->duplicateOrderedTools($workspace, $newWorkspace, $resourceInfo);
         $this->om->endFlushSuite();
+
+        $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($workspace);
+        //get home tabs from source
+        $this->duplicateHomeTabs($workspace, $newWorkspace, $homeTabs, $resourceInfo);
 
         $this->container->get('claroline.security.token_updater')->updateNormal($token);
 
@@ -1634,11 +1524,6 @@ class WorkspaceManager
                 }
             }
         }
-
-        $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($source);
-        //get home tabs from source
-
-        $this->duplicateHomeTabs($source, $workspace, $homeTabs, $resourceInfos);
     }
 
     /**

@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import isEmpty from 'lodash/isEmpty'
+import {selectors} from '#/plugin/blog/resources/blog/store'
 
 const InfobarComponent = props =>
   <div className="panel panel-default">
@@ -15,14 +16,14 @@ const InfobarComponent = props =>
     }
 
   </div>
-    
+
 InfobarComponent.propTypes = {
   infos: T.string
 }
 
 const Infobar = connect(
   state => ({
-    infos: !isEmpty(state.blog.data.options.data) ? state.blog.data.options.data.infos : state.blog.data.originalOptions.infos
+    infos: !isEmpty(selectors.blog(state).data.options.data) ? selectors.blog(state).data.options.data.infos : selectors.blog(state).data.originalOptions.infos
   })
 )(InfobarComponent)
 

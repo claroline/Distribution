@@ -22,6 +22,7 @@ use UJM\ExoBundle\Manager\Item\ItemManager;
  * Serializer for exercise data.
  *
  * @DI\Service("ujm_exo.serializer.exercise")
+ * @DI\Tag("claroline.serializer")
  */
 class ExerciseSerializer implements SerializerInterface
 {
@@ -36,6 +37,11 @@ class ExerciseSerializer implements SerializerInterface
 
     /** @var PaperManager */
     private $paperManager;
+
+    public function getClass()
+    {
+        return Exercise::class;
+    }
 
     /**
      * Converts an Exercise into a JSON-encodable structure.
@@ -183,6 +189,7 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->maxPapers = $exercise->getMaxPapers();
         $parameters->showFeedback = $exercise->getShowFeedback();
         $parameters->timeLimited = $exercise->isTimeLimited();
+        $parameters->progressionDisplayed = $exercise->isProgressionDisplayed();
         $parameters->duration = $exercise->getDuration();
         $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
         $parameters->interruptible = $exercise->isInterruptible();
@@ -265,6 +272,10 @@ class ExerciseSerializer implements SerializerInterface
 
         if (isset($parameters->timeLimited)) {
             $exercise->setTimeLimited($parameters->timeLimited);
+        }
+
+        if (isset($parameters->progressionDisplayed)) {
+            $exercise->setProgressionDisplayed($parameters->progressionDisplayed);
         }
 
         if (isset($parameters->duration)) {

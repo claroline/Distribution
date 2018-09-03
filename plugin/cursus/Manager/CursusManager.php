@@ -36,7 +36,6 @@ use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
 use Claroline\CursusBundle\Entity\Cursus;
-use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\CursusGroup;
 use Claroline\CursusBundle\Entity\CursusUser;
 use Claroline\CursusBundle\Entity\DocumentModel;
@@ -101,6 +100,7 @@ class CursusManager
     private $messageManager;
     private $om;
     private $pagerFactory;
+    private $pdfManager;
     private $platformConfigHandler;
     private $roleManager;
     private $router;
@@ -123,10 +123,10 @@ class CursusManager
     private $cursusRepo;
     private $cursusGroupRepo;
     private $cursusUserRepo;
-    private $cursusWordRepo;
     private $documentModelRepo;
     private $organizationRepo;
     private $reservationResourceRepo;
+    private $sessionEventCommentRepo;
     private $sessionEventRepo;
     private $sessionEventSetRepo;
     private $sessionEventUserRepo;
@@ -225,7 +225,6 @@ class CursusManager
         $this->cursusRepo = $om->getRepository('ClarolineCursusBundle:Cursus');
         $this->cursusGroupRepo = $om->getRepository('ClarolineCursusBundle:CursusGroup');
         $this->cursusUserRepo = $om->getRepository('ClarolineCursusBundle:CursusUser');
-        $this->cursusWordRepo = $om->getRepository('ClarolineCursusBundle:CursusDisplayedWord');
         $this->documentModelRepo = $om->getRepository('ClarolineCursusBundle:DocumentModel');
         $this->organizationRepo = $om->getRepository('ClarolineCoreBundle:Organization\Organization');
         $this->reservationResourceRepo = $om->getRepository('FormaLibre\ReservationBundle\Entity\Resource');
@@ -239,27 +238,140 @@ class CursusManager
         $this->locationRepo = $om->getRepository('ClarolineCoreBundle:Organization\Location');
     }
 
-    public function persistCursusDisplayedWord(CursusDisplayedWord $word)
+    /**
+     * Generates a workspace from CourseSession.
+     *
+     * @param CourseSession $session
+     *
+     * @return Workspace
+     */
+    public function generateWorkspace(CourseSession $session)
     {
-        $this->om->persist($word);
-        $this->om->flush();
+        $user = $this->tokenStorage->getToken()->getUser();
+        $course = $session->getCourse();
+
+        $model = $course->getWorkspaceModel();
+        $name = $course->getTitle().' ['.$session->getName().']';
+        $code = $this->generateWorkspaceCode($course->getCode());
+
+        $workspace = new Workspace();
+        $workspace->setCreator($user);
+        $workspace->setName($name);
+        $workspace->setCode($code);
+        $workspace->setDescription($course->getDescription());
+
+        if (is_null($model)) {
+            $defaultModel = $this->workspaceManager->getDefaultModel();
+            $workspace = $this->workspaceManager->copy($defaultModel, $workspace);
+        } else {
+            $workspace = $this->workspaceManager->copy($model, $workspace);
+        }
+        $workspace->setWorkspaceType(0);
+        $workspace->setStartDate($session->getStartDate());
+        $workspace->setEndDate($session->getEndDate());
+        $this->om->persist($workspace);
+
+        return $workspace;
     }
 
-    public function getDisplayedWord($word)
+    /**
+     * Gets/generates workspace role for session depending on given role name and type.
+     *
+     * @param Workspace $workspace
+     * @param string    $roleName
+     * @param string    $type
+     *
+     * @return \Claroline\CoreBundle\Entity\Role
+     */
+    public function generateRoleForSession(Workspace $workspace, $roleName, $type = 'learner')
     {
-        $cursusDisplayedWord = $this->cursusWordRepo->findOneByWord($word);
-
-        if (is_null($cursusDisplayedWord)) {
-            $result = $this->translator->trans($word, [], 'cursus');
+        if (empty($roleName)) {
+            if ('manager' === $type) {
+                $role = $this->roleManager->getManagerRole($workspace);
+            } else {
+                $role = $this->roleManager->getCollaboratorRole($workspace);
+            }
         } else {
-            $displayedWord = $cursusDisplayedWord->getDisplayedWord();
-            $result = empty($displayedWord) ?
-                $this->translator->trans($word, [], 'cursus') :
-                $displayedWord;
+            $roles = $this->roleManager->getRolesByWorkspaceCodeAndTranslationKey(
+                $workspace->getCode(),
+                $roleName
+            );
+
+            if (count($roles) > 0) {
+                $role = $roles[0];
+            } else {
+                $uuid = $workspace->getUuid();
+                $wsRoleName = 'ROLE_WS_'.strtoupper($roleName).'_'.$uuid;
+
+                $role = $this->roleManager->getRoleByName($wsRoleName);
+
+                if (is_null($role)) {
+                    $role = $this->roleManager->createWorkspaceRole(
+                        $wsRoleName,
+                        $roleName,
+                        $workspace
+                    );
+                }
+            }
         }
 
-        return $result;
+        return $role;
     }
+
+    /**
+     * Sets all sessions from a course (excepted given one) as non-default.
+     *
+     * @param Course             $course
+     * @param CourseSession|null $session
+     * @param bool               $noFlush
+     */
+    public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null, $noFlush = true)
+    {
+        $defaultSessions = $this->courseSessionRepo->findBy(['course' => $course, 'defaultSession' => true]);
+
+        foreach ($defaultSessions as $defaultSession) {
+            if ($defaultSession !== $session) {
+                $defaultSession->setDefaultSession(false);
+                $this->om->persist($defaultSession);
+            }
+        }
+        if (!$noFlush) {
+            $this->om->flush();
+        }
+    }
+
+    /**
+     * Generates an unique workspace code from given one by iterating it.
+     *
+     * @param string $code
+     *
+     * @return string
+     */
+    private function generateWorkspaceCode($code)
+    {
+        $workspaceCodes = $this->workspaceManager->getWorkspaceCodesWithPrefix($code);
+        $existingCodes = [];
+
+        foreach ($workspaceCodes as $wsCode) {
+            $existingCodes[] = $wsCode['code'];
+        }
+
+        $index = count($existingCodes) + 1;
+        $currentCode = $code.'_'.$index;
+        $upperCurrentCode = strtoupper($currentCode);
+
+        while (in_array($upperCurrentCode, $existingCodes)) {
+            ++$index;
+            $currentCode = $code.'_'.$index;
+            $upperCurrentCode = strtoupper($currentCode);
+        }
+
+        return $currentCode;
+    }
+
+    /*******************
+     *   Old methods   *
+     *******************/
 
     public function createCursus(
         $title,
@@ -289,7 +401,7 @@ class CursusManager
         $orderMax = is_null($parent) ? $this->getLastRootCursusOrder() : $this->getLastCursusOrderByParent($parent);
         $order = is_null($orderMax) ? 1 : intval($orderMax) + 1;
         $cursus->setCursusOrder($order);
-        $cursusOrganizations = empty($parent) ? $organizations : $parent->getOrganizations();
+        $cursusOrganizations = empty($parent) ? $organizations : $parent->getOrganizations()->toArray();
 
         foreach ($cursusOrganizations as $organization) {
             $cursus->addOrganization($organization);
@@ -512,7 +624,7 @@ class CursusManager
             $newCursus->setBlocking(false);
             ++$lastOrder;
             $newCursus->setCursusOrder($lastOrder);
-            $organizations = $parent->getOrganizations();
+            $organizations = $parent->getOrganizations()->toArray();
 
             foreach ($organizations as $organization) {
                 $newCursus->addOrganization($organization);
@@ -1508,12 +1620,12 @@ class CursusManager
         $learnerRole = $this->generateRoleForSession(
             $workspace,
             $course->getLearnerRoleName(),
-            0
+            'learner'
         );
         $tutorRole = $this->generateRoleForSession(
             $workspace,
             $course->getTutorRoleName(),
-            1
+            'tutor'
         );
         $session->setLearnerRole($learnerRole);
         $session->setTutorRole($tutorRole);
@@ -1723,20 +1835,6 @@ class CursusManager
         return $createdSessionEvents;
     }
 
-    public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null)
-    {
-        $defaultSessions = $this->getDefaultSessionsByCourse($course);
-
-        $this->om->startFlushSuite();
-
-        foreach ($defaultSessions as $defaultSession) {
-            if ($defaultSession !== $session) {
-                $defaultSession->setDefaultSession(false);
-            }
-        }
-        $this->om->endFlushSuite();
-    }
-
     public function deleteCourseSessionUsers(array $sessionUsers)
     {
         $this->om->startFlushSuite();
@@ -1747,88 +1845,6 @@ class CursusManager
             $this->om->remove($sessionUser);
         }
         $this->om->endFlushSuite();
-    }
-
-    public function generateWorkspace(Course $course, CourseSession $session)
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-        $model = $course->getWorkspaceModel();
-        $description = $course->getDescription();
-        $displayable = false;
-        $selfRegistration = false;
-        $selfUnregistration = false;
-        $registrationValidation = false;
-        $name = $course->getTitle().
-            ' ['.
-            $session->getName().
-            ']';
-        $code = $this->generateWorkspaceCode($course->getCode());
-        $workspace = new Workspace();
-        $workspace->setCreator($user);
-        $workspace->setName($name);
-        $workspace->setCode($code);
-        $workspace->setDisplayable($displayable);
-        $workspace->setSelfRegistration($selfRegistration);
-        $workspace->setSelfUnregistration($selfUnregistration);
-        $workspace->setRegistrationValidation($registrationValidation);
-        $workspace->setDescription($description);
-
-        if (is_null($model)) {
-            $template = new File($this->defaultTemplate);
-            $workspace = $this->workspaceManager->create($workspace, $template);
-        } else {
-            $workspace = $this->workspaceManager->copy($model, $workspace);
-        }
-        $workspace->setWorkspaceType(0);
-
-        $startDate = $session->getStartDate();
-        $endDate = $session->getEndDate();
-
-        if (!is_null($startDate)) {
-            $workspace->setStartDate($startDate);
-        }
-
-        if (!is_null($endDate)) {
-            $workspace->setEndDate($endDate);
-        }
-        $this->workspaceManager->editWorkspace($workspace);
-
-        return $workspace;
-    }
-
-    public function generateRoleForSession(Workspace $workspace, $roleName, $type)
-    {
-        if (empty($roleName)) {
-            if (1 === $type) {
-                $role = $this->roleManager->getManagerRole($workspace);
-            } else {
-                $role = $this->roleManager->getCollaboratorRole($workspace);
-            }
-        } else {
-            $roles = $this->roleManager->getRolesByWorkspaceCodeAndTranslationKey(
-                $workspace->getCode(),
-                $roleName
-            );
-
-            if (count($roles) > 0) {
-                $role = $roles[0];
-            } else {
-                $guid = $workspace->getGuid();
-                $wsRoleName = 'ROLE_WS_'.strtoupper($roleName).'_'.$guid;
-
-                $role = $this->roleManager->getRoleByName($wsRoleName);
-
-                if (is_null($role)) {
-                    $role = $this->roleManager->createWorkspaceRole(
-                        $wsRoleName,
-                        $roleName,
-                        $workspace
-                    );
-                }
-            }
-        }
-
-        return $role;
     }
 
     public function associateCursusToSessions(Cursus $cursus, array $sessions)
@@ -1851,28 +1867,6 @@ class CursusManager
             $this->getConfirmationEmail(),
             $datas
         );
-    }
-
-    private function generateWorkspaceCode($code)
-    {
-        $workspaceCodes = $this->workspaceManager->getWorkspaceCodesWithPrefix($code);
-        $existingCodes = [];
-
-        foreach ($workspaceCodes as $wsCode) {
-            $existingCodes[] = $wsCode['code'];
-        }
-
-        $index = count($existingCodes) + 1;
-        $currentCode = $code.'_'.$index;
-        $upperCurrentCode = strtoupper($currentCode);
-
-        while (in_array($upperCurrentCode, $existingCodes)) {
-            ++$index;
-            $currentCode = $code.'_'.$index;
-            $upperCurrentCode = strtoupper($currentCode);
-        }
-
-        return $currentCode;
     }
 
     public function saveIcon(UploadedFile $tmpFile, $object)
@@ -4793,14 +4787,14 @@ class CursusManager
     public function getOrganizationsByCourse(Course $course)
     {
         $organizations = [];
-        $courseOrgas = $course->getOrganizations();
+        $courseOrgas = $course->getOrganizations()->toArray();
         $courseCursus = $this->cursusRepo->findBy(['course' => $course]);
 
         foreach ($courseOrgas as $orga) {
             $organizations[$orga->getId()] = $orga;
         }
         foreach ($courseCursus as $cursus) {
-            $cursusOrgas = $cursus->getOrganizations();
+            $cursusOrgas = $cursus->getOrganizations()->toArray();
 
             foreach ($cursusOrgas as $orga) {
                 $organizations[$orga->getId()] = $orga;
@@ -4813,7 +4807,7 @@ class CursusManager
     public function updateCursusOrganizations(Cursus $cursus, array $organizations)
     {
         if (empty($cursus->getParent())) {
-            $cursusOrgasIds = $this->extractOrganizationsIds($cursus->getOrganizations());
+            $cursusOrgasIds = $this->extractOrganizationsIds($cursus->getOrganizations()->toArray());
             $orgasIds = $this->extractOrganizationsIds($organizations);
             $nbCursusOrgas = count($cursusOrgasIds);
             $nbOrgas = count($orgasIds);
@@ -4890,19 +4884,17 @@ class CursusManager
         return $data;
     }
 
-    public function persistSessionEventSet(SessionEventSet $sessionEventSet)
+    public function getSessionEventSet(CourseSession $session, $name)
     {
-        $this->om->persist($sessionEventSet);
-        $this->om->flush();
-    }
+        $set = $this->sessionEventSetRepo->findSessionEventSetBySessionAndName($session, $name);
 
-    public function createSessionEventSet(CourseSession $session, $name, $limit = 1)
-    {
-        $set = new SessionEventSet();
-        $set->setSession($session);
-        $set->setName($name);
-        $set->setLimit($limit);
-        $this->persistSessionEventSet($set);
+        if (empty($set)) {
+            $set = new SessionEventSet();
+            $set->setSession($session);
+            $set->setName($name);
+            $this->om->persist($set);
+            $this->om->flush();
+        }
 
         return $set;
     }
@@ -4911,26 +4903,6 @@ class CursusManager
     {
         $this->om->remove($sessionEventSet);
         $this->om->flush();
-    }
-
-    public function getSessionEventSet(CourseSession $session, $name)
-    {
-        $set = $this->getSessionEventSetsBySessionAndName($session, $name);
-
-        if (empty($set)) {
-            $set = $this->createSessionEventSet($session, $name);
-        }
-
-        return $set;
-    }
-
-    /***************************************************
-     * Access to CursusDisplayedWordRepository methods *
-     ***************************************************/
-
-    public function getOneDisplayedWordByWord($word)
-    {
-        return $this->cursusWordRepo->findOneByWord($word);
     }
 
     /**************************************
@@ -5707,20 +5679,6 @@ class CursusManager
         return $this->sessionEventCommentRepo->findBy(['sessionEvent' => $sessionEvent]);
     }
 
-    /***********************************************
-     * Access to SessionEventSetRepository methods *
-     ***********************************************/
-
-    public function getSessionEventSetsBySession(CourseSession $session)
-    {
-        return $this->sessionEventSetRepo->findSessionEventSetsBySession($session);
-    }
-
-    public function getSessionEventSetsBySessionAndName(CourseSession $session, $name)
-    {
-        return $this->sessionEventSetRepo->findSessionEventSetsBySessionAndName($session, $name);
-    }
-
     /******************
      * Others methods *
      ******************/
@@ -5834,7 +5792,7 @@ class CursusManager
     public function checkCursusAccess(User $user, Cursus $cursus)
     {
         $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
-        $cursusOrgas = $this->extractOrganizationsIds($cursus->getOrganizations());
+        $cursusOrgas = $this->extractOrganizationsIds($cursus->getOrganizations()->toArray());
 
         if (!$this->authorization->isGranted('ROLE_ADMIN') && 0 === count(array_intersect($userOrgas, $cursusOrgas))) {
             throw new AccessDeniedException();
