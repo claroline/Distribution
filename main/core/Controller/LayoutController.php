@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Entity\User;
@@ -47,6 +49,7 @@ class LayoutController extends Controller
     private $configHandler;
     private $toolManager;
     private $homeManager;
+    private $serializer;
 
     /**
      * LayoutController constructor.
@@ -61,7 +64,8 @@ class LayoutController extends Controller
      *     "configHandler"    = @DI\Inject("claroline.config.platform_config_handler"),
      *     "toolManager"      = @DI\Inject("claroline.manager.tool_manager"),
      *     "homeManager"      = @DI\Inject("claroline.manager.home_manager"),
-     *     "dispatcher"       = @DI\Inject("claroline.event.event_dispatcher")
+     *     "dispatcher"       = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "serializer"       = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param RoleManager                  $roleManager
@@ -74,6 +78,7 @@ class LayoutController extends Controller
      * @param PlatformConfigurationHandler $configHandler
      * @param HomeManager                  $homeManager
      * @param StrictDispatcher             $dispatcher
+     * @param SerializerProvider           $serializer
      */
     public function __construct(
         RoleManager $roleManager,
@@ -85,7 +90,8 @@ class LayoutController extends Controller
         TranslatorInterface $translator,
         PlatformConfigurationHandler $configHandler,
         HomeManager $homeManager,
-        StrictDispatcher $dispatcher
+        StrictDispatcher $dispatcher,
+        SerializerProvider $serializer
     ) {
         $this->roleManager = $roleManager;
         $this->workspaceManager = $workspaceManager;
@@ -97,18 +103,7 @@ class LayoutController extends Controller
         $this->configHandler = $configHandler;
         $this->homeManager = $homeManager;
         $this->dispatcher = $dispatcher;
-    }
-
-    /**
-     * @EXT\Template()
-     *
-     * Displays the platform header.
-     *
-     * @return array
-     */
-    public function headerAction()
-    {
-        return [];
+        $this->serializer = $serializer;
     }
 
     /**
@@ -162,65 +157,54 @@ class LayoutController extends Controller
             $user = $token->getUser();
         }
 
-        $registerTarget = null;
-        $loginTarget = null;
-        $workspaces = null;
-        $personalWs = null;
-
+        // todo : find what is it
         $homeMenu = $this->configHandler->getParameter('home_menu');
         if (is_numeric($homeMenu)) {
             $homeMenu = $this->homeManager->getContentByType('menu', $homeMenu);
         }
 
-        $isLogged = false;
-        $canAdministrate = false;
-        $adminTools = [];
+        $workspaces = [];
+        $personalWs = null;
         if ($user instanceof User) {
-            $isLogged = true;
-            $adminTools = $this->toolManager->getAdminToolsByRoles($token->getRoles());
-            $canAdministrate = count($adminTools) > 0;
             $personalWs = $user->getPersonalWorkspace();
             $workspaces = $this->findWorkspacesFromLogs();
-        } else {
-            $workspaces = [];
-
-            if ($this->configHandler->getParameter('allow_self_registration') &&
-                $this->roleManager->validateRoleInsert(
-                    new User(),
-                    $this->roleManager->getRoleByName('ROLE_USER')
-                )
-            ) {
-                $registerTarget = $this->router->generate('claro_user_registration');
-            }
-
-            $loginTargetRoute = $this->configHandler->getParameter('login_target_route');
-            if (!$loginTargetRoute) {
-                $loginTarget = $this->router->generate('claro_security_login');
-            } else {
-                $loginTarget = $this->routeExists($loginTargetRoute) ? $this->router->generate($loginTargetRoute) : $loginTargetRoute;
-            }
         }
 
-        $translator = $this->translator;
-        usort($adminTools, function (AdminTool $a, AdminTool $b) use ($translator) {
-            return $translator->trans($a->getName(), [], 'tools') > $translator->trans($b->getName(), [], 'tools');
-        });
+        // if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()
+        // if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole)
 
+        // I think we will need to merge this with the default platform config object
+        // this can be done when the top bar will be moved in the main react app
         return [
-            'isLogged' => $isLogged,
-            'register_target' => $registerTarget,
-            'login_target' => $loginTarget,
-            'workspaces' => $workspaces,
-            'personalWs' => $personalWs,
-            'isImpersonated' => $this->isImpersonated(),
-            'isInAWorkspace' => null !== $workspace,
-            'currentWorkspace' => $workspace,
-            'canAdministrate' => $canAdministrate,
-            'headerLocale' => $this->configHandler->getParameter('header_locale'),
-            'homeMenu' => $homeMenu,
-            'adminTools' => $adminTools,
-            'showHelpButton' => $this->configHandler->getParameter('show_help_button'),
-            'helpUrl' => $this->configHandler->getParameter('help_url'),
+            'display' => [
+                'about' => $this->configHandler->getParameter('show_about_button'),
+                'help' => $this->configHandler->getParameter('show_help_button'),
+                'registration' => $this->configHandler->getParameter('allow_self_registration'),
+                'locale' => $this->configHandler->getParameter('header_locale'),
+            ],
+
+            'workspaces' => [
+                'current' => $workspace ? $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]) : null,
+                'personal' => $personalWs ? $this->serializer->serialize($personalWs, [Options::SERIALIZE_MINIMAL]) : null,
+                'history' => array_map(function (Workspace $workspace) { // TODO : async load it on ws menu open
+                    return $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
+                }, $workspaces),
+            ],
+
+            'notifications' => [
+                'count' => 200,
+                'refreshDelay' => $this->configHandler->getParameter('notifications_refresh_delay'),
+            ],
+
+            //'isImpersonated' => $this->isImpersonated(),
+            //'homeMenu' => $homeMenu,
+            'administration' => array_map(function (AdminTool $tool) {
+                return [
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
+                    'open' => ['claro_admin_open_tool', ['toolName' => $tool->getName()]]
+                ];
+            }, $this->toolManager->getAdminToolsByRoles($token->getRoles())),
         ];
     }
 
