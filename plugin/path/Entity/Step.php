@@ -643,7 +643,7 @@ class Step
     /**
      * @return bool
      */
-    public function isShowResourceHeader()
+    public function getShowResourceHeader()
     {
         return $this->showResourceHeader;
     }

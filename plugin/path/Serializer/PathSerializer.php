@@ -153,7 +153,7 @@ class PathSerializer
             'description' => $step->getDescription(),
             'poster' => $poster,
             'primaryResource' => $step->getResource() ? $this->resourceNodeSerializer->serialize($step->getResource()) : null,
-            'showResourceHeader' => $step->isShowResourceHeader(),
+            'showResourceHeader' => $step->getShowResourceHeader(),
             'secondaryResources' => array_map(function (SecondaryResource $secondaryResource) {
                 return $this->serializeSecondaryResource($secondaryResource);
             }, $step->getSecondaryResources()->toArray()),
