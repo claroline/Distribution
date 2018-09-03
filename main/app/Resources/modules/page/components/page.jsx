@@ -43,7 +43,7 @@ const Page = props =>
   >
     <AlertOverlay />
 
-    {/* {(props.embedded && props.showHeader) && */}
+    {props.showHeader &&
     <PageHeader
       title={props.title}
       subtitle={props.subtitle}
@@ -52,7 +52,7 @@ const Page = props =>
       toolbar={props.toolbar}
       actions={props.actions}
     />
-
+    }
     <div className="page-content" role="presentation">
       {props.children}
     </div>

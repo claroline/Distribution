@@ -51,7 +51,7 @@ class ResourcePage extends Component {
         className={classes('resource-page', `${this.props.resourceNode.meta.type}-page`)}
         styles={this.props.styles}
         embedded={this.props.embedded}
-        showHeader={'undefined' === typeof(this.props.showHeader) ? true : this.props.showHeader}
+        showHeader={this.props.embedded ? this.props.showHeader : true}
         fullscreen={this.state.fullscreen}
         title={this.props.resourceNode.name}
         poster={this.props.resourceNode.poster ? this.props.resourceNode.poster.url : undefined}

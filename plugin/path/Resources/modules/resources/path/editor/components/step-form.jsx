@@ -40,7 +40,7 @@ const SecondaryResourcesSection = props =>
 
     <button
       type="button"
-      className="btn btn-default"
+      className="btn btn-default btn-block"
       onClick={() => props.pickSecondaryResources(props.stepId)}
     >
       <span className="fa fa-fw fa-plus icon-with-text-right"/>
