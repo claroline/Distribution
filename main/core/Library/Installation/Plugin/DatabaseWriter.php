@@ -28,7 +28,6 @@ use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
-use Claroline\CoreBundle\Manager\IconManager;
 use Claroline\CoreBundle\Manager\IconSetManager;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\ToolManager;
@@ -60,7 +59,6 @@ class DatabaseWriter
     private $modifyTemplate = false;
     private $toolManager;
     private $toolMaskManager;
-    private $iconSetManager;
 
     /** @var PluginRepository */
     private $pluginRepository;
@@ -70,7 +68,6 @@ class DatabaseWriter
      *
      * @DI\InjectParams({
      *     "em"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "im"              = @DI\Inject("claroline.manager.icon_manager"),
      *     "mm"              = @DI\Inject("claroline.manager.mask_manager"),
      *     "fileSystem"      = @DI\Inject("filesystem"),
      *     "kernel"          = @DI\Inject("kernel"),
@@ -80,7 +77,6 @@ class DatabaseWriter
      * })
      *
      * @param ObjectManager          $em
-     * @param IconManager            $im
      * @param Filesystem             $fileSystem
      * @param KernelInterface        $kernel
      * @param MaskManager            $mm
@@ -90,7 +86,6 @@ class DatabaseWriter
      */
     public function __construct(
         ObjectManager $em,
-        IconManager $im,
         Filesystem $fileSystem,
         KernelInterface $kernel,
         MaskManager $mm,
@@ -99,7 +94,6 @@ class DatabaseWriter
         IconSetManager $iconSetManager
     ) {
         $this->em = $em;
-        $this->im = $im;
         $this->mm = $mm;
         $this->fileSystem = $fileSystem;
         $this->kernelRootDir = $kernel->getRootDir();
@@ -477,49 +471,8 @@ class DatabaseWriter
         $resourceIcon->setUuid(uniqid('', true));
         $resourceIcon->setShortcut(false);
         $this->em->persist($resourceIcon);
-        $this->im->createShortcutIcon($resourceIcon);
         // Also add the new resource type icon to default resource icon set
         $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet($resourceIcon);
-    }
-
-    /**
-     * @param array                 $resource
-     * @param ResourceType          $resourceType
-     * @param PluginBundleInterface $pluginBundle
-     */
-    private function updateIcons(array $resource, ResourceType $resourceType, PluginBundleInterface $pluginBundle)
-    {
-        $resourceIcon = $this->em
-            ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
-            ->findOneBy(['mimeType' => 'custom/'.$resourceType->getName()]);
-        $isNew = false;
-        if (null === $resourceIcon) {
-            $resourceIcon = new ResourceIcon();
-            $resourceIcon->setUuid(uniqid('', true));
-            $resourceIcon->setMimeType('custom/'.$resourceType->getName());
-            $isNew = true;
-        }
-
-        if (isset($resource['icon'])) {
-            $newRelativeUrl = "bundles/{$pluginBundle->getAssetsFolder()}/images/icons/{$resource['icon']}";
-        } else {
-            $defaultIcon = $this->em
-                ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
-                ->findOneBy(['mimeType' => 'custom/default']);
-            $newRelativeUrl = $defaultIcon->getRelativeUrl();
-        }
-        // If icon is new, create it and persist it to db
-        if ($isNew) {
-            $resourceIcon->setRelativeUrl($newRelativeUrl);
-            $resourceIcon->setShortcut(false);
-            $this->em->persist($resourceIcon);
-            $this->im->createShortcutIcon($resourceIcon);
-        }
-        // Also add/update the resource type icon to default resource icon set
-        $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet(
-            $resourceIcon,
-            $newRelativeUrl
-        );
     }
 
     /**

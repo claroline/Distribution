@@ -18,6 +18,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ResourceIconRepository")
  * @ORM\Table(name="claro_resource_icon")
+ *
+ * Somehow still used by the icon set so I could not remove it.
  */
 class ResourceIcon
 {
@@ -92,7 +94,7 @@ class ResourceIcon
         return $this->shortcutIcon;
     }
 
-    public function setShortcutIcon(ResourceIcon $shortcutIcon)
+    public function setShortcutIcon(self $shortcutIcon)
     {
         $this->shortcutIcon = $shortcutIcon;
     }

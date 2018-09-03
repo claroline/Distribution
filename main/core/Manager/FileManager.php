@@ -104,21 +104,6 @@ class FileManager
         return $file;
     }
 
-    public function changeFile(File $file, UploadedFile $upload)
-    {
-        $this->om->startFlushSuite();
-        $this->deleteContent($file);
-        $this->uploadContent($file, $upload);
-        $this->resManager->resetIcon($file->getResourceNode());
-        $this->om->endFlushSuite();
-
-        $this->dispatcher->dispatch(
-            'log',
-            'Log\LogResourceCustom',
-            [$file->getResourceNode(), 'update_file']
-        );
-    }
-
     public function deleteContent(File $file)
     {
         $ds = DIRECTORY_SEPARATOR;

@@ -18,7 +18,6 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceThumbnail;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -79,10 +78,6 @@ class ResourceManager
     private $roleManager;
     /** @var MaskManager */
     private $maskManager;
-    /** @var IconManager */
-    private $iconManager;
-    /** @var ThumbnailManager */
-    private $thumbnailManager;
     /** @var StrictDispatcher */
     private $dispatcher;
     /** @var ObjectManager */
@@ -104,8 +99,6 @@ class ResourceManager
      *
      * @DI\InjectParams({
      *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
-     *     "iconManager"           = @DI\Inject("claroline.manager.icon_manager"),
-     *     "thumbnailManager"      = @DI\Inject("claroline.manager.thumbnail_manager"),
      *     "maskManager"           = @DI\Inject("claroline.manager.mask_manager"),
      *     "container"             = @DI\Inject("service_container"),
      *     "rightsManager"         = @DI\Inject("claroline.manager.rights_manager"),
@@ -118,8 +111,6 @@ class ResourceManager
      * })
      *
      * @param RoleManager                  $roleManager
-     * @param IconManager                  $iconManager
-     * @param ThumbnailManager             $thumbnailManager
      * @param ContainerInterface           $container
      * @param RightsManager                $rightsManager
      * @param StrictDispatcher             $dispatcher
@@ -132,8 +123,6 @@ class ResourceManager
      */
     public function __construct(
         RoleManager $roleManager,
-        IconManager $iconManager,
-        ThumbnailManager $thumbnailManager,
         ContainerInterface $container,
         RightsManager $rightsManager,
         StrictDispatcher $dispatcher,
@@ -147,8 +136,6 @@ class ResourceManager
         $this->om = $om;
 
         $this->roleManager = $roleManager;
-        $this->iconManager = $iconManager;
-        $this->thumbnailManager = $thumbnailManager;
         $this->rightsManager = $rightsManager;
         $this->maskManager = $maskManager;
         $this->dispatcher = $dispatcher;
@@ -192,7 +179,9 @@ class ResourceManager
         User $creator,
         Workspace $workspace = null,
         ResourceNode $parent = null,
-        ResourceIcon $icon = null,
+        //@todo legacy parameter and unused anymore
+        //remove this
+        $icon = null,
         array $rights = [],
         $isPublished = true,
         $createRights = true
@@ -241,10 +230,6 @@ class ResourceManager
         $this->om->persist($node);
         $this->om->persist($resource);
 
-        if (null === $icon) {
-            $icon = $this->iconManager->getIcon($resource, $workspace);
-        }
-
         $parentPath = '';
 
         if ($parent) {
@@ -252,7 +237,6 @@ class ResourceManager
         }
 
         $node->setPathForCreationLog($parentPath.$node->getName());
-        $node->setIcon($icon);
 
         $usersToNotify = $workspace && $workspace->getId() ?
             $this->container->get('claroline.manager.user_manager')->getUsersByWorkspaces([$workspace], null, null, false) :
@@ -921,10 +905,6 @@ class ResourceManager
                         [[$node]]
                     );
 
-                    if ($node->getIcon() && $workspace) {
-                        $this->iconManager->delete($node->getIcon(), $workspace);
-                    }
-
                     /*
                      * If the child isn't removed here aswell, doctrine will fail to remove $resChild
                      * because it still has $resChild in its UnitOfWork or something (I have no idea
@@ -1139,48 +1119,6 @@ class ResourceManager
         }
 
         return $node;
-    }
-
-    /**
-     * Changes a node icon.
-     *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param \Symfony\Component\HttpFoundation\File\File        $file
-     *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceIcon
-     *
-     * @deprecated
-     */
-    public function changeIcon(ResourceNode $node, File $file)
-    {
-        $this->om->startFlushSuite();
-        $icon = $this->iconManager->createCustomIcon($file, $node->getWorkspace());
-        $this->iconManager->replace($node, $icon);
-        $this->logChangeSet($node);
-        $this->om->endFlushSuite();
-
-        return $icon;
-    }
-
-    /**
-     * Changes a node thumbnail.
-     *
-     * @param ResourceNode $node
-     * @param File         $file
-     *
-     * @return ResourceThumbnail
-     *
-     * @deprecated
-     */
-    public function changeThumbnail(ResourceNode $node, File $file)
-    {
-        $this->om->startFlushSuite();
-        $thumbnail = $this->thumbnailManager->createCustomThumbnail($file, $node->getWorkspace());
-        $this->thumbnailManager->replace($node, $thumbnail);
-        $this->logChangeSet($node);
-        $this->om->endFlushSuite();
-
-        return $thumbnail;
     }
 
     /**
@@ -1542,22 +1480,6 @@ class ResourceManager
         $managerRoleName = 'ROLE_WS_MANAGER_'.$workspace->getGuid();
 
         return in_array($managerRoleName, $this->secut->getRoles($token)) ? true : false;
-    }
-
-    /**
-     * @param ResourceNode $node
-     *
-     * @deprecated
-     */
-    public function resetIcon(ResourceNode $node)
-    {
-        $this->om->startFlushSuite();
-        $icon = $this->iconManager->getIcon(
-            $this->getResourceFromNode($node),
-            $node->getWorkspace()
-        );
-        $node->setIcon($icon);
-        $this->om->endFlushSuite();
     }
 
     /**

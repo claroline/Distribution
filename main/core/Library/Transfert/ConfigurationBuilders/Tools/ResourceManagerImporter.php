@@ -21,8 +21,8 @@ use Claroline\CoreBundle\Library\Transfert\ResourceRichTextInterface;
 use Claroline\CoreBundle\Library\Transfert\RichTextInterface;
 use Claroline\CoreBundle\Library\Transfert\ToolRichTextInterface;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
-use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -889,13 +889,6 @@ class ResourceManagerImporter extends Importer implements ConfigurationInterface
         }
 
         return;
-    }
-
-    private function generateIcon($iconpath)
-    {
-        $file = new File($iconpath);
-
-        return $this->container->get('claroline.manager.icon_manager')->createCustomIcon($file, $this->getWorkspace());
     }
 
     public static function fileNotExists($v, $rootpath)
