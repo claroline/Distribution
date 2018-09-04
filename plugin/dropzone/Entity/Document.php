@@ -43,7 +43,7 @@ class Document
      *      targetEntity="Icap\DropzoneBundle\Entity\Drop",
      *      inversedBy="documents"
      * )
-     * @ORM\JoinColumn(name="drop_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="drop_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $drop;
 
