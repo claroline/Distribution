@@ -313,12 +313,12 @@ class Updater120000 extends Updater
     private function restoreListsWidgets()
     {
         $lists = [
-            'agenda_' => ['events', ['-start']],
-            'my_workspaces' => ['my_workspaces', ['-id']],
-            'agenda_task' => ['tasks', ['-start']],
-            'claroline_announcement_widget' => ['announcements', ['-id']],
-            'blog_list' => ['blog_posts', ['-id']],
-            'claroline_forum_widget' => ['forum_messages', ['-id']],
+            'agenda_' => ['events', ['-start', 'table', "['title', 'allDay', 'start', 'end']"]],
+            'my_workspaces' => ['my_workspaces', ['-id', 'list', '[]']],
+            'agenda_task' => ['tasks', ['-start', 'table', "['title', 'allDay', 'start', 'end']"]],
+            'claroline_announcement_widget' => ['announcements', ['-id', 'list', '[]']],
+            'blog_list' => ['blog_posts', ['-id', 'list', '[]']],
+            'claroline_forum_widget' => ['forum_messages', ['-id', 'list', '[]']],
         ];
 
         foreach ($lists as $oldList => $data) {
@@ -343,12 +343,14 @@ class Updater120000 extends Updater
             if (isset($data[1])) {
                 $parameters = $data[1];
                 $sortBy = $parameters[0];
+                $display = $parameters[1];
+                $displayedColumns = $parameters[2];
 
                 $this->log('Setting default list parameters...');
 
                 $sql = "
                     INSERT INTO claro_widget_list (sortBy, widgetInstance_id, display, displayedColumns)
-                    SELECT '{$sortBy}', conf.id, 'list', '[]' from claro_widget_display_config_temp conf
+                    SELECT '{$sortBy}', conf.id, '{$display}', '{$displayedColumns}' from claro_widget_display_config_temp conf
                     JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
                     JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
                     JOIN claro_widget_instance instance ON instance.id = conf.id
