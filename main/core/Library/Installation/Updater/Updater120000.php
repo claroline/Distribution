@@ -142,14 +142,14 @@ class Updater120000 extends Updater
     }
 
     public function postUpdate()
-    {/*
+    {
         $this->restoreResourceThumbnails();
         $this->updatePlatformParameters();
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
         $this->updateTabsStructure();
         $this->buildContainers();
-        $this->deactivateActivityResourceType();*/
+        $this->deactivateActivityResourceType();
     }
 
     public function end()
@@ -335,22 +335,19 @@ class Updater120000 extends Updater
 
             //configs are stored in a json array so we can't go full sql
             $sql = "
-                SELECT * FROM claro_widget_display_config_temp config
-                JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = config.widget_instance_id
-                JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
-                WHERE widget_temp.name = 'resource_text'
+                SELECT * FROM `claro_widget_display_config_temp` WHERE `details` LIKE '%nodeId%'
             ";
 
-            $stmt = $this->conn->query($sql);
+            $texts = $this->conn->query($sql);
 
-            while ($row = $stmt->fetch()) {
+            while ($row = $texts->fetch()) {
                 $details = json_decode($row['details'], true);
-
-                if (isset($details['node_id'])) {
+                if (isset($details['nodeId'])) {
                     $sql = "
-                      INSERT INTO claro_widget_resource (id, node_id, widgetInstance_id)
-                      VALUES ({$row['id']}, {$details['node_id']}, {$row['widget_instance_id']})
+                      INSERT INTO claro_widget_resource (id, node_id, widgetInstance_id, showResourceHeader)
+                      VALUES ({$row['id']}, {$details['nodeId']}, {$row['id']}, false)
                   ";
+                    var_dump($sql);
                     $stmt = $this->conn->prepare($sql);
                     $stmt->execute();
                 }
@@ -456,7 +453,7 @@ class Updater120000 extends Updater
         $this->restoreListsWidgets();
 
         if (0 === $this->om->count(WidgetInstanceConfig::class)) {
-            $this->log('Copying WidgetInsanceConfigs');
+            $this->log('Copying WidgetInstanceConfigs');
 
             $sql = '
                 INSERT INTO claro_widget_instance_config (id, widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked)
