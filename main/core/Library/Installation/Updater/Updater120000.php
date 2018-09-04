@@ -344,10 +344,9 @@ class Updater120000 extends Updater
                 $details = json_decode($row['details'], true);
                 if (isset($details['nodeId'])) {
                     $sql = "
-                      INSERT INTO claro_widget_resource (id, node_id, widgetInstance_id, showResourceHeader)
-                      VALUES ({$row['id']}, {$details['nodeId']}, {$row['id']}, false)
-                  ";
-                    var_dump($sql);
+                        INSERT INTO claro_widget_resource (id, node_id, widgetInstance_id, showResourceHeader)
+                        VALUES ({$row['id']}, {$details['nodeId']}, {$row['id']}, false)
+                    ";
                     $stmt = $this->conn->prepare($sql);
                     $stmt->execute();
                 }
