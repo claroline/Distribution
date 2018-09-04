@@ -82,7 +82,7 @@ class Drop
      *      targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
      *      cascade={"all"}
      * )
-     * @ORM\JoinColumn(name="hidden_directory_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="hidden_directory_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $hiddenDirectory;
 
