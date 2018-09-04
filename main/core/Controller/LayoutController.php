@@ -226,7 +226,7 @@ class LayoutController extends Controller
                     'name' => $tool->getName(),
                     'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
                 ];
-            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 1, [])),
+            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 1, $excludedTools)),
 
             'tools' => array_map(function (Tool $tool) {
                 return [
@@ -234,7 +234,7 @@ class LayoutController extends Controller
                     'name' => $tool->getName(),
                     'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
                 ];
-            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 0, [])),
+            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 0, $excludedTools)),
         ];
     }
 

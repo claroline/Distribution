@@ -59,9 +59,9 @@ const HeaderWorkspaces = props =>
       />
     }
   >
-    <span className="fa fa-fw fa-atlas" />
+    <span className="fa fa-fw fa-atlas icon-with-text-right" />
     <span>{props.current ? trans(props.current): trans('desktop')}</span>
-    <span className="fa fa-fw fa-caret-down" />
+    <span className="fa fa-fw fa-caret-down icon-with-text-left" />
   </MenuButton>
 
 HeaderWorkspaces.propTypes = {

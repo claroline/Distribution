@@ -9,6 +9,7 @@ import {MenuButton} from '#/main/app/buttons/menu/components/button'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {UserMicro} from '#/main/core/user/components/micro'
 import {constants as roleConstants} from '#/main/core/user/role/constants'
+import {User as UserTypes} from '#/main/core/user/prop-types'
 
 // TODO : add user poster when available
 
@@ -127,9 +128,7 @@ UserMenu.propTypes = {
   login: T.string.isRequired,
   registration: T.string,
   help: T.string,
-  currentUser: T.shape({
-
-  }).isRequired
+  currentUser: T.shape(UserTypes.propTypes).isRequired
 }
 
 const HeaderUser = props =>
