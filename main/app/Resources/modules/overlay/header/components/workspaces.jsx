@@ -10,6 +10,7 @@ const WorkspacesMenu = props =>
   <div className="app-workspaces dropdown-menu">
     <Button
       type={URL_BUTTON}
+      className="btn btn-block"
       icon="fa fa-fw fa-home"
       label={trans('home')}
       target={['claro_index']}
@@ -17,6 +18,7 @@ const WorkspacesMenu = props =>
 
     <Button
       type={URL_BUTTON}
+      className="btn btn-block"
       icon="fa fa-fw fa-atlas"
       label={trans('desktop')}
       target={['claro_desktop_open']}
@@ -25,16 +27,28 @@ const WorkspacesMenu = props =>
     {props.personal &&
       <Button
         type={URL_BUTTON}
+        className="btn btn-block"
         icon="fa fa-fw fa-book"
         label={trans('personal_ws')}
         target={['claro_desktop_open']}
       />
     }
+    {props.history &&
+      props.history.map(ws => {
+        <Button
+          type={URL_BUTTON}
+          className="btn btn-block"
+          icon="fa fa-fw fa-book"
+          label={ws.name}
+          target={['claro_desktop_open']}
+        />
+      })
+    }
   </div>
 
 const HeaderWorkspaces = props =>
   <MenuButton
-    id="app-workspaces-menu"
+    id="app-workspaces-menu btn-block"
     className="app-header-item app-header-btn"
     containerClassName="app-header-workspaces"
     menu={
