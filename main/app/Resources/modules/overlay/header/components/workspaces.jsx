@@ -60,9 +60,7 @@ const HeaderWorkspaces = props =>
     }
   >
     <span className="fa fa-fw fa-atlas" />
-
-    Desktop
-
+    <span>{props.current ? trans(props.current): trans('desktop')}</span>
     <span className="fa fa-fw fa-caret-down" />
   </MenuButton>
 

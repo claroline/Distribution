@@ -5,7 +5,8 @@ import {param} from '#/main/app/config'
 import {currentUser} from '#/main/core/user/current'
 
 const administration = (state) => state.administration
-
+const tools = (state) => state.tools
+const userTools = (state) => state.userTools
 const workspaces = (state) => state.workspaces
 
 const personalWorkspace = createSelector(
@@ -78,6 +79,8 @@ const maintenance = () => param('maintenance')
 
 export const selectors = {
   administration,
+  tools,
+  userTools,
   workspaces,
   personalWorkspace,
   currentWorkspace,

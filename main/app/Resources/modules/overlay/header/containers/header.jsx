@@ -20,6 +20,7 @@ const Header = connect(
     workspaces: selectors.workspaces(state),
     locale: selectors.locale(state),
     administration: selectors.administration(state),
+    tools: selectors.tools(state),
     maintenance: selectors.maintenance(state)
   }),
   (dispatch) => ({
@@ -28,5 +29,5 @@ const Header = connect(
 )(HeaderComponent)
 
 export {
-    Header
+  Header
 }

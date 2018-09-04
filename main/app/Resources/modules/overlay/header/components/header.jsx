@@ -57,6 +57,7 @@ const Header = props =>
       login={props.loginUrl}
       help={props.helpUrl}
       registration={props.registrationUrl}
+      userTools={props.userTools}
     />
 
     {props.display.locale &&
@@ -69,7 +70,7 @@ const Header = props =>
 Header.propTypes = {
   locale: T.shape({
     current: T.string.isRequired,
-    available: T.arrayOf(T.string).isRequired,
+    available: T.arrayOf(T.string).isRequired
   }).isRequired,
   logo: T.shape({
     url: T.string.isRequired,
@@ -90,6 +91,7 @@ Header.propTypes = {
   authenticated: T.bool.isRequired,
 
   tools: T.array,
+  userTools: T.array,
   administration: T.array,
 
   workspaces: T.shape({
@@ -113,6 +115,7 @@ Header.propTypes = {
 Header.defaultProps = {
   currentUser: null,
   tools: [],
+  userTools: [],
   administration: [],
   registration: false,
   maintenance: false

@@ -10,6 +10,7 @@ const reducer = {
   }),
   display: makeReducer({}),
   tools: makeReducer([]),
+  userTools: makeReducer([]),
   administration: makeReducer([])
 }
 

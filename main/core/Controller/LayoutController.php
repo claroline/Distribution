@@ -15,6 +15,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
+use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\InjectJavascriptEvent;
@@ -170,6 +171,19 @@ class LayoutController extends Controller
             $workspaces = $this->findWorkspacesFromLogs();
         }
 
+        $lockedOrderedTools = $this->toolManager->getOrderedToolsLockedByAdmin(1);
+        $adminTools = [];
+        $excludedTools = [];
+
+        foreach ($lockedOrderedTools as $lockedOrderedTool) {
+            $lockedTool = $lockedOrderedTool->getTool();
+
+            if ($lockedOrderedTool->isVisibleInDesktop()) {
+                $adminTools[] = $lockedTool;
+            }
+            $excludedTools[] = $lockedTool;
+        }
+
         // if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()
         // if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole)
 
@@ -202,9 +216,25 @@ class LayoutController extends Controller
                 return [
                     'icon' => $tool->getClass(),
                     'name' => $tool->getName(),
-                    'open' => ['claro_admin_open_tool', ['toolName' => $tool->getName()]]
+                    'open' => ['claro_admin_open_tool', ['toolName' => $tool->getName()]],
                 ];
             }, $this->toolManager->getAdminToolsByRoles($token->getRoles())),
+
+            'userTools' => array_map(function (Tool $tool) {
+                return [
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
+                    'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
+                ];
+            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 1, [])),
+
+            'tools' => array_map(function (Tool $tool) {
+                return [
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
+                    'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
+                ];
+            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 0, [])),
         ];
     }
 

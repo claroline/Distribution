@@ -73,21 +73,17 @@ const UserMenu = props =>
         />
       }
 
-      <Button
-        type={URL_BUTTON}
-        className="list-group-item"
-        icon="fa fa-fw fa-calendar"
-        label="Agenda"
-        target=""
-      />
-
-      <Button
-        type={URL_BUTTON}
-        className="list-group-item"
-        icon="fa fa-fw fa-folder"
-        label="Resources"
-        target=""
-      />
+      {props.userTools &&
+        props.userTools.map(tool => {
+          <Button
+            type={URL_BUTTON}
+            className="list-group-item"
+            icon={`fa fa-fw fa-${tool.icon}`}
+            label={trans(tool.name, {}, 'tools')}
+            target={tool.open}
+          />
+        })
+      }
     </div>
 
     <div className="app-current-user-footer">
@@ -102,14 +98,14 @@ const UserMenu = props =>
         />
       }
 
-      <Button
+      {/* <Button
         type={URL_BUTTON}
         className="app-current-user-btn"
         icon="fa fa-fw fa-info"
         label={trans('about')}
         tooltip="bottom"
         target=""
-      />
+      /> */}
 
       {props.authenticated &&
         <Button
@@ -127,6 +123,7 @@ const UserMenu = props =>
 
 UserMenu.propTypes = {
   authenticated: T.bool.isRequired,
+  userTools: T.array,
   login: T.string.isRequired,
   registration: T.string,
   help: T.string,
@@ -146,6 +143,7 @@ const HeaderUser = props =>
         login={props.login}
         registration={props.registration}
         help={props.help}
+        userTools={props.userTools}
       />
     }
   >
@@ -154,6 +152,7 @@ const HeaderUser = props =>
 
 HeaderUser.propTypes = {
   login: T.string.isRequired,
+  userTools: T.array,
   registration: T.string,
   help: T.string,
   authenticated: T.bool.isRequired,
