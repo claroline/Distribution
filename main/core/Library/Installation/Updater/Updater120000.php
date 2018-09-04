@@ -6,6 +6,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Widget\Type\ResourceWidget;
 use Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
@@ -310,6 +311,53 @@ class Updater120000 extends Updater
         }
     }
 
+    private function restoreResourceTextWidgets()
+    {
+        if (count($this->om->getRepository(ResourceWidget::class)->findAll()) > 0) {
+            $this->log('ResourceWidget already migrated');
+        } else {
+            $this->log('Migrating ResourceTextWidget to ResourceWidget...');
+
+            $widget = $this->om->getRepository(Widget::class)->findOneBy(['name' => 'resource']);
+
+            $sql = "
+                INSERT INTO claro_widget_instance (id, widget_id, uuid, container_id)
+                SELECT conf.id, {$widget->getId()}, (SELECT UUID()) as uuid, container.id
+                FROM claro_widget_display_config_temp conf
+                JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
+                JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+                JOIN claro_widget_container container ON container.id = conf.id
+                WHERE widget_temp.name = 'resource_text'
+            ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+
+            //configs are stored in a json array so we can't go full sql
+            $sql = "
+                SELECT * FROM claro_widget_display_config_temp config
+                JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = config.widget_instance_id
+                JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
+                WHERE widget_temp.name = 'resource_text'
+            ";
+
+            $stmt = $this->conn->query($sql);
+
+            while ($row = $stmt->fetch()) {
+                $details = json_decode($row['details'], true);
+                var_dump($details);
+                if (isset($details['node_id'])) {
+                    $sql = "
+                      INSERT INTO claro_widget_resource (id, node_id, widgetInstance_id)
+                      VALUES ({$row['id']}, {$details['node_id']}, {$row['widget_instance_id']})
+                  ";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->execute();
+                }
+            }
+        }
+    }
+
     private function restoreListsWidgets()
     {
         $lists = [
@@ -365,6 +413,7 @@ class Updater120000 extends Updater
     {
         $this->log('Update widget instances...');
         $this->restoreTextsWidgets();
+        $this->restoreResourceTextWidgets();
         $this->restoreListsWidgets();
 
         if (0 === $this->om->count(WidgetInstanceConfig::class)) {
