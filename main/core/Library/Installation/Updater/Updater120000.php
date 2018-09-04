@@ -142,14 +142,14 @@ class Updater120000 extends Updater
     }
 
     public function postUpdate()
-    {
+    {/*
         $this->restoreResourceThumbnails();
         $this->updatePlatformParameters();
         $this->removeTool('parameters');
         $this->removeTool('claroline_activity_tool');
         $this->updateTabsStructure();
         $this->buildContainers();
-        $this->deactivateActivityResourceType();
+        $this->deactivateActivityResourceType();*/
     }
 
     public function end()
@@ -345,7 +345,7 @@ class Updater120000 extends Updater
 
             while ($row = $stmt->fetch()) {
                 $details = json_decode($row['details'], true);
-                var_dump($details);
+
                 if (isset($details['node_id'])) {
                     $sql = "
                       INSERT INTO claro_widget_resource (id, node_id, widgetInstance_id)
@@ -361,9 +361,9 @@ class Updater120000 extends Updater
     private function restoreListsWidgets()
     {
         $lists = [
-            'agenda_' => ['events', ['-start', 'table', "['title', 'allDay', 'start', 'end']"]],
+            'agenda_' => ['events', ['-start', 'table', "[''title'', ''allDay'', ''start'', ''end'']"]],
             'my_workspaces' => ['my_workspaces', ['-id', 'list', '[]']],
-            'agenda_task' => ['tasks', ['-start', 'table', "['title', 'allDay', 'start', 'end']"]],
+            'agenda_task' => ['tasks', ['-start', 'table', "[''title'', ''allDay'', ''start'', ''end'']"]],
             'claroline_announcement_widget' => ['announcements', ['-id', 'list', '[]']],
             'blog_list' => ['blog_posts', ['-id', 'list', '[]']],
             'claroline_forum_widget' => ['forum_messages', ['-id', 'list', '[]']],
@@ -396,9 +396,46 @@ class Updater120000 extends Updater
 
                 $this->log('Setting default list parameters...');
 
+                $availableDisplays = "[''table'', ''table-sm'', ''tiles'', ''tiles-sm'', ''list'']";
+                $availablePageSizes = '[10, 20, 50, 100, -1]';
+
                 $sql = "
-                    INSERT INTO claro_widget_list (sortBy, widgetInstance_id, display, displayedColumns)
-                    SELECT '{$sortBy}', conf.id, '{$display}', '{$displayedColumns}' from claro_widget_display_config_temp conf
+                    INSERT INTO claro_widget_list (
+                      sortBy,
+                      widgetInstance_id,
+                      display,
+                      displayedColumns,
+                      count,
+                      columnsFilterable,
+                      paginated,
+                      sortable,
+                      filterable,
+                      availableDisplays,
+                      availableColumns,
+                      availableFilters,
+                      filters,
+                      availablePageSizes,
+                      pageSize,
+                      availableSort
+                    )
+                    SELECT
+                      '{$sortBy}',
+                      conf.id,
+                      '{$display}',
+                      '{$displayedColumns}',
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      '{$availableDisplays}',
+                      '[]',
+                      '[]',
+                      '[]',
+                      '{$availablePageSizes}',
+                      20,
+                      '[]'
+                    FROM claro_widget_display_config_temp conf
                     JOIN claro_widget_instance_temp instance_temp ON instance_temp.id = conf.widget_instance_id
                     JOIN claro_widget_temp widget_temp ON instance_temp.widget_id = widget_temp.id
                     JOIN claro_widget_instance instance ON instance.id = conf.id
