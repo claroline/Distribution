@@ -71,6 +71,7 @@ const EditorComponent = props =>
             label={trans('configure', {}, 'actions')}
             icon="fa fa-fw fa-cog"
             target="/edit"
+            disabled={true}
             primary={true}
           />
         </PageGroupActions>
