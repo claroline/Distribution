@@ -139,8 +139,9 @@ class WidgetGridEditor extends Component {
                 label: trans('delete', {}, 'actions'),
                 dangerous: true,
                 confirm: {
-                  title: transChoice('specific_section_delete_confirm_title', this.props.widgets[index].name, {section: this.props.widgets[index].name}),
-                  message: transChoice('specific_section_delete_confirm_message', this.props.widgets[index].name, {section: this.props.widgets[index].name})
+                  title: trans('section_delete_confirm_title'),
+                  message: trans('section_delete_confirm_message'),
+                  subtitle: this.props.widgets[index].name
                 },
                 callback: () => {
                   const widgets = this.props.widgets.slice(0) // copy array
