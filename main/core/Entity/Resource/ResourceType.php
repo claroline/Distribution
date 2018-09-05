@@ -126,6 +126,23 @@ class ResourceType
      */
     public function getClass()
     {
+        //some legacy compatibilty goes here
+        $classMap = [
+          'activity' => null,
+          'claroline_scorm_12' => null,
+          'claroline_scorm_2004' => null,
+          'icap_dropzone' => 'Icap\DropzoneBundle\Entity\Dropzone',
+          'claroline_result' => null,
+          'innova_video_recorder' => null,
+          'innova_audio_recorder' => null,
+          'claroline_chat_room' => null,
+          'ujm_lti_resource' => null,
+        ];
+
+        if (isset($classMap[$this->getName()])) {
+            return $classMap[$this->getName()];
+        }
+
         return $this->class;
     }
 
