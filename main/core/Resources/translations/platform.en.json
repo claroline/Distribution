@@ -1646,7 +1646,7 @@
     "workspace_register_select_roles": "2. Select roles to assign",
     "clipboard_copy": "Copy to clipboard",
     "image": "Image",
-    "textColor": "Text color",
+    "titleColor": "Title color",
     "background": "Background",
     "backgroundColor": "Background color",
     "backgroundImage": "Background image",

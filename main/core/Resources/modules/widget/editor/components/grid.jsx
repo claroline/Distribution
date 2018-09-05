@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 
-import {trans} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
@@ -139,8 +139,8 @@ class WidgetGridEditor extends Component {
                 label: trans('delete', {}, 'actions'),
                 dangerous: true,
                 confirm: {
-                  title: trans('section_delete_confirm_title'),
-                  message: trans('section_delete_confirm_message')
+                  title: transChoice('specific_section_delete_confirm_title', this.props.widgets[index].name, {section: this.props.widgets[index].name}),
+                  message: transChoice('specific_section_delete_confirm_message', this.props.widgets[index].name, {section: this.props.widgets[index].name})
                 },
                 callback: () => {
                   const widgets = this.props.widgets.slice(0) // copy array

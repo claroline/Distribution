@@ -188,6 +188,7 @@ const EditorComponent = props =>
                     displayed: props.currentTab.restrictions,
                     type: 'choice',
                     options:{
+                      inline: false,
                       multiple : true,
                       choices: props.context.type === 'workspace' || props.administration ?
                         props.context.data.roles.reduce((acc, role) => {
