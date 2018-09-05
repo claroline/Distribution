@@ -184,7 +184,6 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
             foreach ($workspaces as $key => $workspace) {
                 $this->getOutput()->writeln('Removing '.$i.'/'.count($workspaces));
                 $workspaceManager->deleteWorkspace($workspace);
-                $this->getOutput()->writeln('<comment> Flushing... </comment>');
                 ++$i;
             }
 
