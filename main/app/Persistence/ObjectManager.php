@@ -405,7 +405,7 @@ class ObjectManager extends ObjectManagerDecorator
     {
         $conn = $this->wrapped->getConnection();
         $sql = 'SET FOREIGN_KEY_CHECKS=0;';
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->execute();
     }
 
@@ -413,7 +413,7 @@ class ObjectManager extends ObjectManagerDecorator
     {
         $conn = $this->wrapped->getConnection();
         $sql = 'SET FOREIGN_KEY_CHECKS=1;';
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->execute();
     }
 }
