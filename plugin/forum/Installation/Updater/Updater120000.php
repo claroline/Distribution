@@ -65,12 +65,13 @@ class Updater120000 extends Updater
         //step 1: restore forum subject
         $this->log('Set subject forums...');
 
-        $sql = '
+        $sql = "
             UPDATE claro_forum_subject subject
             JOIN claro_forum_subject_temp_new tmp on tmp.id = subject.id
             JOIN claro_forum_category category on tmp.category_id = category.id
-            SET subject.forum_id = category.forum_id;
-        ';
+            SET subject.forum_id = category.forum_id,
+            subject.moderation = 'NONE'
+        ";
 
         $this->executeSql($sql);
 
