@@ -181,7 +181,7 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
 
             $om->startFlushSuite();
 
-            foreach ($workspaces as $key => $workspace) {
+            foreach ($workspaces as $workspace) {
                 $this->getOutput()->writeln('Removing '.$i.'/'.count($workspaces));
                 $workspaceManager->deleteWorkspace($workspace);
                 ++$i;
