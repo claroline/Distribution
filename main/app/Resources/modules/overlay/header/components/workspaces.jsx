@@ -6,7 +6,7 @@ import {Button} from '#/main/app/action/components/button'
 import {URL_BUTTON} from '#/main/app/buttons'
 import {MenuButton} from '#/main/app/buttons/menu/components/button'
 
-const WorkspacesMenu = props =>
+const WorkspacesMenu = props => 
   <div className="app-workspaces dropdown-menu">
     <Button
       type={URL_BUTTON}
@@ -34,35 +34,53 @@ const WorkspacesMenu = props =>
       />
     }
     {props.history &&
-      props.history.map(ws => {
+      props.history.map((ws) => 
         <Button
+          key ={ws.id}
           type={URL_BUTTON}
           className="btn btn-block"
           icon="fa fa-fw fa-book"
           label={ws.name}
           target={['claro_desktop_open']}
         />
-      })
+      )
     }
   </div>
 
-const HeaderWorkspaces = props =>
-  <MenuButton
-    id="app-workspaces-menu btn-block"
-    className="app-header-item app-header-btn"
-    containerClassName="app-header-workspaces"
-    menu={
-      <WorkspacesMenu
-        personal={props.personal}
-        current={props.current}
-        history={props.history}
-      />
-    }
-  >
-    <span className="fa fa-fw fa-atlas icon-with-text-right" />
-    <span>{props.current ? trans(props.current): trans('desktop')}</span>
-    <span className="fa fa-fw fa-caret-down icon-with-text-left" />
-  </MenuButton>
+const HeaderWorkspaces = props => {
+  const menuButtonTitle = () => {
+    // if (props.currentLocation) {
+      if ('claro_index' === props.currentLocation) {
+        return trans('home')
+      } 
+      else if ('claro_workspace_open_tool' === props.currentLocation) {
+        return props.current.name
+      } 
+      else {
+        return trans('desktop')
+      }
+    // }
+  }
+  
+  return (  
+    <MenuButton
+      id="app-workspaces-menu"
+      className="app-header-item app-header-btn"
+      containerClassName="app-header-workspaces"
+      menu={
+        <WorkspacesMenu
+          personal={props.personal}
+          current={props.current}
+          history={props.history}
+        />
+      }
+    >
+      <span className="fa fa-fw fa-atlas icon-with-text-right" />
+        {menuButtonTitle()}
+      <span className="fa fa-fw fa-caret-down icon-with-text-left" />
+    </MenuButton>)
+
+}
 
 HeaderWorkspaces.propTypes = {
   personal: T.shape({

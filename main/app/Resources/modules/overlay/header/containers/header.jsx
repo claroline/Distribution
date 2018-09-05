@@ -1,8 +1,5 @@
 import {connect} from 'react-redux'
 
-import {param} from '#/main/app/config'
-import {currentUser} from '#/main/core/user/current'
-
 import {selectors} from '#/main/app/overlay/header/store'
 import {Header as HeaderComponent} from '#/main/app/overlay/header/components/header'
 
@@ -22,10 +19,8 @@ const Header = connect(
     administration: selectors.administration(state),
     tools: selectors.tools(state),
     userTools: selectors.userTools(state),
-    maintenance: selectors.maintenance(state)
-  }),
-  (dispatch) => ({
-
+    maintenance: selectors.maintenance(state),
+    currentLocation: selectors.current(state)
   })
 )(HeaderComponent)
 

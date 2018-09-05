@@ -58,6 +58,7 @@ const Header = props =>
       help={props.helpUrl}
       registration={props.registrationUrl}
       userTools={props.userTools}
+      currentLocation={props.currentLocation}
     />
 
     {props.display.locale &&
@@ -89,7 +90,7 @@ Header.propTypes = {
 
   }).isRequired,
   authenticated: T.bool.isRequired,
-
+  currentLocation: T.string.isRequired,
   tools: T.array,
   userTools: T.array,
   administration: T.array,

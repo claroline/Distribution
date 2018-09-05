@@ -6,6 +6,7 @@
         data-administration="{{ administration | json_encode | raw | escape }}"
         data-user-tools="{{ userTools | json_encode | raw | escape }}"
         data-tools="{{ tools | json_encode | raw | escape }}"
+        data-current="{{ current | json_encode | raw | escape }}"
         data-notifications="{{ notifications | json_encode | raw | escape }}"
     ></div>
 {% endblock %}

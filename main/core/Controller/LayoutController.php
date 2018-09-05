@@ -28,6 +28,8 @@ use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -43,6 +45,7 @@ class LayoutController extends Controller
     private $dispatcher;
     private $roleManager;
     private $workspaceManager;
+    private $request;
     private $router;
     private $tokenStorage;
     private $utils;
@@ -58,6 +61,7 @@ class LayoutController extends Controller
      * @DI\InjectParams({
      *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "request"          = @DI\Inject("request_stack"),
      *     "router"           = @DI\Inject("router"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "utils"            = @DI\Inject("claroline.security.utilities"),
@@ -84,6 +88,7 @@ class LayoutController extends Controller
     public function __construct(
         RoleManager $roleManager,
         WorkspaceManager $workspaceManager,
+        RequestStack $request,
         ToolManager $toolManager,
         UrlGeneratorInterface $router,
         TokenStorageInterface $tokenStorage,
@@ -98,6 +103,7 @@ class LayoutController extends Controller
         $this->workspaceManager = $workspaceManager;
         $this->toolManager = $toolManager;
         $this->router = $router;
+        $this->request = $request;
         $this->tokenStorage = $tokenStorage;
         $this->utils = $utils;
         $this->translator = $translator;
@@ -147,10 +153,11 @@ class LayoutController extends Controller
      * @EXT\Template()
      *
      * @param Workspace $workspace
+     * @param Request   $request
      *
      * @return array
      */
-    public function topBarAction(Workspace $workspace = null)
+    public function topBarAction(Workspace $workspace = null, Request $request)
     {
         $user = null;
         $token = $this->tokenStorage->getToken();
@@ -183,6 +190,8 @@ class LayoutController extends Controller
             }
             $excludedTools[] = $lockedTool;
         }
+        // current context (desktop, index or workspace)
+        $current = $this->request->getMasterRequest()->get('_route');
 
         // if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()
         // if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole)
@@ -190,6 +199,7 @@ class LayoutController extends Controller
         // I think we will need to merge this with the default platform config object
         // this can be done when the top bar will be moved in the main react app
         return [
+            'current' => $current,
             'display' => [
                 'about' => $this->configHandler->getParameter('show_about_button'),
                 'help' => $this->configHandler->getParameter('show_help_button'),
@@ -226,7 +236,11 @@ class LayoutController extends Controller
                     'name' => $tool->getName(),
                     'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
                 ];
-            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 1, $excludedTools)),
+            }, $token->getUser() instanceof User ?
+              $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 1, $excludedTools)
+              :
+              []
+            ),
 
             'tools' => array_map(function (Tool $tool) {
                 return [
@@ -234,7 +248,10 @@ class LayoutController extends Controller
                     'name' => $tool->getName(),
                     'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
                 ];
-            }, $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 0, $excludedTools)),
+            }, $token->getUser() instanceof User ?
+            $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 0, $excludedTools)
+            : []
+          ),
         ];
     }
 

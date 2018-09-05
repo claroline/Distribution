@@ -75,8 +75,9 @@ const UserMenu = props =>
       }
 
       {props.userTools &&
-        props.userTools.map((tool) =>
+        props.userTools.map((tool, index) =>
           <Button
+            key ={index}
             type={URL_BUTTON}
             className="list-group-item"
             icon={`fa fa-fw fa-${tool.icon}`}
