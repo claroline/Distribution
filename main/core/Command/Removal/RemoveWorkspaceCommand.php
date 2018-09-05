@@ -177,6 +177,7 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
         if ($this->getForce() || $continue) {
             $om = $this->getContainer()->get('claroline.persistence.object_manager');
             $om->startFlushSuite();
+            $om->ignoreForeignKeys();
             $i = 0;
 
             foreach ($workspaces as $workspace) {
@@ -186,6 +187,7 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
 
             $this->getOutput()->writeln('<comment> Flushing... </comment>');
             $om->endFlushSuite();
+            $om->restoreForeignKeys();
             $om->clear();
         } else {
             //stop script here
