@@ -363,6 +363,7 @@ class Updater120000 extends Updater
             'claroline_announcement_widget' => ['announcements', ['-id', 'list', '[]']],
             'blog_list' => ['blog_posts', ['-id', 'list', '[]']],
             'claroline_forum_widget' => ['forum_messages', ['-id', 'list', '[]']],
+            'resources_widget' => ['resources', ['-name', 'list', '[]']],
         ];
 
         foreach ($lists as $oldList => $data) {
@@ -444,12 +445,44 @@ class Updater120000 extends Updater
         }
     }
 
+    private function restoreWidgetResourcesListConfig()
+    {
+        //configs are stored in a json array so we can't go full sql
+        $sql = '
+            SELECT instance.id as id, config.details as details FROM `claro_resources_widget_config` config
+            JOIN claro_widget_instance_temp tempWidget on config.widgetInstance_id = tempWidget.id
+            JOIN claro_widget_display_config_temp instance on instance.widget_instance_id = tempWidget.id
+        ';
+
+        $configs = $this->conn->query($sql);
+
+        while ($row = $configs->fetch()) {
+            $details = json_decode($row['details'], true);
+
+            if (isset($details['directories'])) {
+                $dirId = $details['directories'][0];
+
+                $filters = "[{\"property\": \"parent\", \"value\": $dirId}]";
+
+                $sql = "
+                    UPDATE claro_widget_list
+                    SET filters = '{$filters}'
+                    WHERE widgetInstance_id = {$row['id']}
+                ";
+
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute();
+            }
+        }
+    }
+
     private function updateWidgetInstances()
     {
         $this->log('Update widget instances...');
         $this->restoreTextsWidgets();
         $this->restoreResourceTextWidgets();
         $this->restoreListsWidgets();
+        $this->restoreWidgetResourcesListConfig();
 
         if (0 === $this->om->count(WidgetInstanceConfig::class)) {
             $this->log('Copying WidgetInstanceConfigs');
