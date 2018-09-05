@@ -31,7 +31,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @DI\Service("claroline.listener.log")
+ * @DI\Service
  */
 class LogListener
 {

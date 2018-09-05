@@ -173,7 +173,7 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
             $continue = $helper->ask($this->getInput(), $this->getOutput(), $question);
         }
 
-        $this->getContainer()->get('claroline.listener.log')->disable();
+        $this->getContainer()->get('claroline.core_bundle.listener.log.log_listener')->disable();
 
         if ($this->getForce() || $continue) {
             $om = $this->getContainer()->get('claroline.persistence.object_manager');
