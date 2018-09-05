@@ -21,6 +21,7 @@ const Header = connect(
     locale: selectors.locale(state),
     administration: selectors.administration(state),
     tools: selectors.tools(state),
+    userTools: selectors.userTools(state),
     maintenance: selectors.maintenance(state)
   }),
   (dispatch) => ({

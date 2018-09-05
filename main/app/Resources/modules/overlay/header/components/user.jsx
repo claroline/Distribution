@@ -75,7 +75,7 @@ const UserMenu = props =>
       }
 
       {props.userTools &&
-        props.userTools.map(tool => {
+        props.userTools.map((tool) =>
           <Button
             type={URL_BUTTON}
             className="list-group-item"
@@ -83,7 +83,7 @@ const UserMenu = props =>
             label={trans(tool.name, {}, 'tools')}
             target={tool.open}
           />
-        })
+        )
       }
     </div>
 
