@@ -36,6 +36,7 @@ const Header = props =>
 
     <HeaderWorkspaces
       {...props.workspaces}
+      currentLocation={props.currentLocation} 
     />
 
     {0 !== props.administration.length &&

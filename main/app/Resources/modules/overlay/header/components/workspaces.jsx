@@ -48,19 +48,14 @@ const WorkspacesMenu = props =>
   </div>
 
 const HeaderWorkspaces = props => {
-  const menuButtonTitle = () => {
-    // if (props.currentLocation) {
+  
+  let menuButtonTitle = trans('desktop')
       if ('claro_index' === props.currentLocation) {
-        return trans('home')
+        menuButtonTitle = trans('home')
+      } else if ('claro_workspace_open_tool' === props.currentLocation) {
+        menuButtonTitle = props.current.name
       } 
-      else if ('claro_workspace_open_tool' === props.currentLocation) {
-        return props.current.name
-      } 
-      else {
-        return trans('desktop')
-      }
-    // }
-  }
+
   
   return (  
     <MenuButton
@@ -76,7 +71,7 @@ const HeaderWorkspaces = props => {
       }
     >
       <span className="fa fa-fw fa-atlas icon-with-text-right" />
-        {menuButtonTitle()}
+        {menuButtonTitle}
       <span className="fa fa-fw fa-caret-down icon-with-text-left" />
     </MenuButton>)
 

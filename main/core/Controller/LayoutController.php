@@ -29,7 +29,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -61,7 +60,6 @@ class LayoutController extends Controller
      * @DI\InjectParams({
      *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "request"          = @DI\Inject("request_stack"),
      *     "router"           = @DI\Inject("router"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "utils"            = @DI\Inject("claroline.security.utilities"),
@@ -88,7 +86,6 @@ class LayoutController extends Controller
     public function __construct(
         RoleManager $roleManager,
         WorkspaceManager $workspaceManager,
-        RequestStack $request,
         ToolManager $toolManager,
         UrlGeneratorInterface $router,
         TokenStorageInterface $tokenStorage,
@@ -103,7 +100,6 @@ class LayoutController extends Controller
         $this->workspaceManager = $workspaceManager;
         $this->toolManager = $toolManager;
         $this->router = $router;
-        $this->request = $request;
         $this->tokenStorage = $tokenStorage;
         $this->utils = $utils;
         $this->translator = $translator;
@@ -191,7 +187,7 @@ class LayoutController extends Controller
             $excludedTools[] = $lockedTool;
         }
         // current context (desktop, index or workspace)
-        $current = $this->request->getMasterRequest()->get('_route');
+        $current = $request->get('_route');
 
         // if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()
         // if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole)
