@@ -94,7 +94,7 @@ const EditorComponent = props =>
           }]}
         cancel={{
           type: LINK_BUTTON,
-          target: '/',
+          target: `/tab/${props.currentTab.id}`,
           exact: true
         }}
         disabled={props.currentTab.type === 'administration' &&
