@@ -71,10 +71,6 @@ abstract class AbstractFinder implements FinderInterface
         $data = $this->find($filters);
 
         if (count($data) > 1) {
-            foreach ($data as $el) {
-                var_dump($el->getId());
-                var_dump($el->getSubject()->getTitle());
-            }
             throw new \Exception('Multiple results found ('.count($data).')');
         } elseif (0 === count($data)) {
             return null;
