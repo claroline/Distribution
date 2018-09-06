@@ -9,21 +9,9 @@ import {MenuButton} from '#/main/app/buttons/menu/components/button'
 
 const WorkspacesMenu = props =>
   <div className="app-workspaces dropdown-menu">
-    <Button
-      type={URL_BUTTON}
-      className="list-group-item"
-      icon="fa fa-fw fa-home"
-      label={trans('home')}
-      target={['claro_index']}
-    />
-
-    <Button
-      type={URL_BUTTON}
-      className="list-group-item"
-      icon="fa fa-fw fa-atlas"
-      label={trans('desktop')}
-      target={['claro_desktop_open']}
-    />
+    {props.history &&
+      <div className="dropdown-header">{trans('history')}</div>
+    }
     {props.history &&
       props.history.map((ws) =>
         <Button
@@ -36,15 +24,20 @@ const WorkspacesMenu = props =>
         />
       )
     }
-    {props.personal &&
-      <Button
-        type={URL_BUTTON}
-        className="list-group-item"
-        icon="fa fa-fw fa-book"
-        label={trans('personal_ws')}
-        target={['claro_workspace_open', {'workspaceId': props.personal.id}]}
-      />
-    }
+    <Button
+      type={URL_BUTTON}
+      className="list-group-item"
+      icon="fa fa-fw fa-home"
+      label={trans('home')}
+      target={['claro_index']}
+    />
+    <Button
+      type={URL_BUTTON}
+      className="list-group-item"
+      icon="fa fa-fw fa-atlas"
+      label={trans('desktop')}
+      target={['claro_desktop_open']}
+    />
     {/* user workspaces */}
     <Button
       type={URL_BUTTON}
