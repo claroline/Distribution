@@ -8,61 +8,73 @@ import {URL_BUTTON} from '#/main/app/buttons'
 import {MenuButton} from '#/main/app/buttons/menu/components/button'
 
 const WorkspacesMenu = props =>
-  <div className="app-workspaces dropdown-menu">
+  <ul className="app-workspaces dropdown-menu">
+    <li role="presentation">
+      <Button
+        type={URL_BUTTON}
+        icon="fa fa-fw fa-home"
+        label={trans('home')}
+        target={['claro_index']}
+      />
+    </li>
+    <li role="presentation">
+      <Button
+        type={URL_BUTTON}
+        icon="fa fa-fw fa-atlas"
+        label={trans('desktop')}
+        target={['claro_desktop_open']}
+      />
+    </li>
+    <li role="presentation" className="divider"/>
     {props.history &&
-      <div className="dropdown-header">{trans('history')}</div>
+      <li role="presentation" className="dropdown-header">{trans('history')}</li>
     }
     {props.history &&
       props.history.map((ws) =>
-        <Button
-          key ={ws.id}
-          type={URL_BUTTON}
-          className="list-group-item"
-          icon="fa fa-fw fa-book"
-          label={ws.name}
-          target={['claro_workspace_open', {'workspaceId': ws.id}]}
-        />
+        <li role="presentation" key ={ws.id}>
+          <Button
+            type={URL_BUTTON}
+            icon="fa fa-fw fa-book"
+            label={ws.name}
+            target={['claro_workspace_open', {'workspaceId': ws.id}]}
+          />
+        </li>
       )
     }
-    <Button
-      type={URL_BUTTON}
-      className="list-group-item"
-      icon="fa fa-fw fa-home"
-      label={trans('home')}
-      target={['claro_index']}
-    />
-    <Button
-      type={URL_BUTTON}
-      className="list-group-item"
-      icon="fa fa-fw fa-atlas"
-      label={trans('desktop')}
-      target={['claro_desktop_open']}
-    />
+    {props.history &&
+      <li role="presentation" className="divider"/>
+    }
+
     {/* user workspaces */}
-    <Button
-      type={URL_BUTTON}
-      className="list-group-item"
-      icon="fa fa-fw fa-book"
-      label={trans('my_workspaces')}
-      target={['claro_workspace_by_user']}
-    />
-    {/* public workspaces */}
-    <Button
-      type={URL_BUTTON}
-      className="list-group-item"
-      icon="fa fa-fw fa-book"
-      label={trans('find_workspaces')}
-      target={['claro_workspace_list']}
-    />
-    {/* create new workspace */}
-    <Button
-      type={URL_BUTTON}
-      className="list-group-item"
-      icon="fa fa-fw fa-plus"
-      label={trans('create_workspace')}
-      target={url(['claro_admin_open_tool', {'toolName': 'workspace_management'}])+'#/workspaces/creation/form'}
-    />
-  </div>
+    <li role="presentation">
+      <Button
+        type={URL_BUTTON}
+        icon="fa fa-fw fa-book"
+        label={trans('my_workspaces')}
+        target={['claro_workspace_by_user']}
+      />
+    </li>
+    <li role="presentation">
+      {/* public workspaces */}
+      <Button
+        type={URL_BUTTON}
+        icon="fa fa-fw fa-book"
+        label={trans('find_workspaces')}
+        target={['claro_workspace_list']}
+      />
+    </li>
+    <li role="presentation" className="divider"/>
+    <li role="presentation">
+      {/* create new workspace */}
+      <Button
+        type={URL_BUTTON}
+        primary={true}
+        icon="fa fa-fw fa-plus"
+        label={trans('create_workspace')}
+        target={url(['claro_admin_open_tool', {'toolName': 'workspace_management'}])+'#/workspaces/creation/form'}
+      />
+    </li>
+  </ul>
 
 const HeaderWorkspaces = props =>
   <MenuButton
