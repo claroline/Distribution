@@ -9,6 +9,7 @@ const Header = connect(
     title: selectors.title(state),
     subtitle: selectors.subtitle(state),
     display: selectors.display(state),
+    count: selectors.count(state),
     helpUrl: selectors.helpUrl(state),
     loginUrl: selectors.loginUrl(state),
     registrationUrl: selectors.registrationUrl(state),

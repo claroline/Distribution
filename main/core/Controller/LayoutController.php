@@ -25,6 +25,7 @@ use Claroline\CoreBundle\Manager\HomeManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
+use Icap\NotificationBundle\Manager\NotificationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -44,6 +45,7 @@ class LayoutController extends Controller
     private $dispatcher;
     private $roleManager;
     private $workspaceManager;
+    private $notificationManager;
     private $request;
     private $router;
     private $tokenStorage;
@@ -60,6 +62,7 @@ class LayoutController extends Controller
      * @DI\InjectParams({
      *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "notificationManager" = @DI\Inject("icap.notification.manager"),
      *     "router"           = @DI\Inject("router"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "utils"            = @DI\Inject("claroline.security.utilities"),
@@ -74,6 +77,7 @@ class LayoutController extends Controller
      * @param RoleManager                  $roleManager
      * @param WorkspaceManager             $workspaceManager
      * @param ToolManager                  $toolManager
+     * @param NotificationManager          $notificationManager
      * @param UrlGeneratorInterface        $router
      * @param TokenStorageInterface        $tokenStorage
      * @param Utilities                    $utils
@@ -87,6 +91,7 @@ class LayoutController extends Controller
         RoleManager $roleManager,
         WorkspaceManager $workspaceManager,
         ToolManager $toolManager,
+        NotificationManager $notificationManager,
         UrlGeneratorInterface $router,
         TokenStorageInterface $tokenStorage,
         Utilities $utils,
@@ -99,6 +104,7 @@ class LayoutController extends Controller
         $this->roleManager = $roleManager;
         $this->workspaceManager = $workspaceManager;
         $this->toolManager = $toolManager;
+        $this->notificationManager = $notificationManager;
         $this->router = $router;
         $this->tokenStorage = $tokenStorage;
         $this->utils = $utils;
@@ -219,7 +225,7 @@ class LayoutController extends Controller
             ],
 
             'notifications' => [
-                'count' => 200,
+                'count' => $token->getUser() instanceof User ? $this->notificationManager->countUnviewedNotifications($token->getUser()) : '',
                 'refreshDelay' => $this->configHandler->getParameter('notifications_refresh_delay'),
             ],
 

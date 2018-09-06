@@ -9,6 +9,7 @@ const current = (state) => state.current
 const tools = (state) => state.tools
 const userTools = (state) => state.userTools
 const workspaces = (state) => state.workspaces
+const count = (state) => state.notifications.count
 
 const personalWorkspace = createSelector(
   [workspaces],
@@ -84,6 +85,7 @@ export const selectors = {
   tools,
   userTools,
   workspaces,
+  count,
   personalWorkspace,
   currentWorkspace,
   workspacesHistory,

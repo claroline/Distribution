@@ -36,7 +36,8 @@ const Header = props =>
 
     <HeaderWorkspaces
       {...props.workspaces}
-      currentLocation={props.currentLocation} 
+      label={trans('history')}
+      currentLocation={props.currentLocation}
     />
 
     {0 !== props.administration.length &&
@@ -49,7 +50,7 @@ const Header = props =>
     }
 
     <HeaderNotifications
-
+      count={props.count}
     />
 
     <HeaderUser
@@ -90,6 +91,7 @@ Header.propTypes = {
   currentUser: T.shape({
 
   }).isRequired,
+  count: T.number,
   authenticated: T.bool.isRequired,
   currentLocation: T.string.isRequired,
   tools: T.array,
