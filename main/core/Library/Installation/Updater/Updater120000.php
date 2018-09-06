@@ -488,8 +488,8 @@ class Updater120000 extends Updater
             $this->log('Copying WidgetInstanceConfigs');
 
             $sql = '
-                INSERT INTO claro_widget_instance_config (id, widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked)
-                SELECT config.id, instance.id, temp.workspace_id, temp.widget_order, temp.type, temp.is_visible, temp.is_locked from claro_widget_home_tab_config_temp temp
+                INSERT INTO claro_widget_instance_config (widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked)
+                SELECT DISTINCT instance.id, temp.workspace_id, temp.widget_order, temp.type, temp.is_visible, temp.is_locked from claro_widget_home_tab_config_temp temp
                 JOIN claro_widget_display_config_temp config on temp.widget_instance_id = config.widget_instance_id
                 JOIN claro_widget_instance instance on instance.id = config.id
             ';
