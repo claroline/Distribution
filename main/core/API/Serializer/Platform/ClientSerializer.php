@@ -129,7 +129,7 @@ class ClientSerializer
         $request = $this->requestStack->getCurrentRequest();
 
         $logo = $this->fileUtilities->getOneBy([
-            'url' => $this->config->getParameter('logo')
+            'url' => $this->config->getParameter('logo'),
         ]);
 
         return [

@@ -37,7 +37,6 @@ class LtiResourceType extends AbstractType
             [
                 'label' => 'open_application_in_a_new_window',
             ]
-
         );
     }
 

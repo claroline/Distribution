@@ -6,7 +6,7 @@ import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
 import {MENU_BUTTON} from '#/main/app/buttons'
 
-const NotificationsMenu = props =>
+const NotificationsMenu = () =>
   <div className="app-notifications dropdown-menu dropdown-menu-right">
 
   </div>
@@ -28,7 +28,7 @@ const HeaderNotifications = props =>
     subscript={0 !== props.count ? {
       type: 'label',
       status: 'primary',
-        value: 100 > props.count ? props.count : '99+'
+      value: 100 > props.count ? props.count : '99+'
     } : undefined}
     tooltip="bottom"
     menu={

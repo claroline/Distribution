@@ -63,6 +63,7 @@ class AppType extends AbstractType
                 ]
             );
     }
+
     public function getName()
     {
         return 'platform_parameters_form';

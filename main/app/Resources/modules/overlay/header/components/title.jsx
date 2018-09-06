@@ -1,8 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {asset} from '#/main/app/config'
-
 const HeaderTitle = props =>
   <h1 className="app-header-item app-header-title">
     {props.title}

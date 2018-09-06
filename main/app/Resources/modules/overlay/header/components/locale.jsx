@@ -32,7 +32,7 @@ const HeaderLocale = props =>
 HeaderLocale.propTypes = {
   locale: T.shape({
     current: T.string.isRequired,
-    available: T.arrayOf(T.string).isRequired,
+    available: T.arrayOf(T.string).isRequired
   }).isRequired
 }
 

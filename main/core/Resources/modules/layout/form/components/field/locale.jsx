@@ -2,7 +2,6 @@ import React from 'react'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
-import {asset} from '#/main/core/scaffolding/asset'
 import {param} from '#/main/app/config'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'

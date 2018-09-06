@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import classes from 'classnames'
 import omit from 'lodash/omit'
 
-import RootCloseWrapper from 'react-overlays/lib/RootCloseWrapper';
+import RootCloseWrapper from 'react-overlays/lib/RootCloseWrapper'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {toKey} from '#/main/core/scaffolding/text/utils'
@@ -25,7 +25,7 @@ import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 class StandardMenu extends Component {
   // for custom menus
   handleRootClose(event) {
-    this.props.onClose(event, { source: 'rootClose' });
+    this.props.onClose(event, { source: 'rootClose' })
   }
 
   render() {
