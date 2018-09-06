@@ -187,7 +187,14 @@ class LayoutController extends Controller
             $excludedTools[] = $lockedTool;
         }
         // current context (desktop, index or workspace)
-        $current = $request->get('_route');
+        $current = 'desktop';
+        if ('claro_admin_open_tool' === $request->get('_route')) {
+            $current = 'administration';
+        } elseif ('claro_index' === $request->get('_route')) {
+            $current = 'home';
+        } elseif ('claro_workspace_open_tool' === $request->get('_route')) {
+            $current = 'workspace';
+        }
 
         // if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()
         // if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole)
