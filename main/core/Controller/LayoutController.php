@@ -25,6 +25,7 @@ use Claroline\CoreBundle\Manager\HomeManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
+use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Icap\NotificationBundle\Manager\NotificationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -42,6 +43,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class LayoutController extends Controller
 {
+    use PermissionCheckerTrait;
     private $dispatcher;
     private $roleManager;
     private $workspaceManager;
@@ -217,6 +219,7 @@ class LayoutController extends Controller
             ],
 
             'workspaces' => [
+                'creatable' => $this->authorization->isGranted('CREATE', new Workspace()),
                 'current' => $workspace ? $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]) : null,
                 'personal' => $personalWs ? $this->serializer->serialize($personalWs, [Options::SERIALIZE_MINIMAL]) : null,
                 'history' => array_map(function (Workspace $workspace) { // TODO : async load it on ws menu open
@@ -350,13 +353,5 @@ class LayoutController extends Controller
         }
 
         return $workspaces;
-    }
-
-    private function routeExists($name)
-    {
-        // I assume that you have a link to the container in your twig extension class
-        $router = $this->container->get('router');
-
-        return (null === $router->getRouteCollection()->get($name)) ? false : true;
     }
 }

@@ -9,6 +9,7 @@ import {MenuButton} from '#/main/app/buttons/menu/components/button'
 
 const WorkspacesMenu = props =>
   <ul className="app-workspaces dropdown-menu">
+    {'home' !== props.currentLocation &&
     <li role="presentation">
       <Button
         type={URL_BUTTON}
@@ -17,6 +18,8 @@ const WorkspacesMenu = props =>
         target={['claro_index']}
       />
     </li>
+    }
+    {'desktop' !== props.currentLocation &&
     <li role="presentation">
       <Button
         type={URL_BUTTON}
@@ -25,6 +28,7 @@ const WorkspacesMenu = props =>
         target={['claro_desktop_open']}
       />
     </li>
+    }
     <li role="presentation" className="divider"/>
     {props.history &&
       <li role="presentation" className="dropdown-header">{trans('history')}</li>
@@ -63,9 +67,13 @@ const WorkspacesMenu = props =>
         target={['claro_workspace_list']}
       />
     </li>
+
+    {/* create new workspace */}
+    {props.creatable &&
     <li role="presentation" className="divider"/>
+    }
+    {props.creatable &&
     <li role="presentation">
-      {/* create new workspace */}
       <Button
         type={URL_BUTTON}
         primary={true}
@@ -74,6 +82,7 @@ const WorkspacesMenu = props =>
         target={url(['claro_admin_open_tool', {'toolName': 'workspace_management'}])+'#/workspaces/creation/form'}
       />
     </li>
+    }
   </ul>
 
 const HeaderWorkspaces = props =>
@@ -86,14 +95,16 @@ const HeaderWorkspaces = props =>
         personal={props.personal}
         current={props.current}
         history={props.history}
+        creatable={props.creatable}
+        currentLocation={props.currentLocation}
       />
     }
   >
     <div className="header-workspaces">
       <span className="fa fa-fw fa-atlas icon-with-text-right" />
       {'workspace' === props.currentLocation ? props.current.name : trans(props.currentLocation)}
-      <span className="fa fa-fw fa-caret-down icon-with-text-left" />
     </div>
+    <span className="fa fa-fw fa-caret-down icon-with-text-left" />
   </MenuButton>
 
 HeaderWorkspaces.propTypes = {
@@ -106,7 +117,8 @@ HeaderWorkspaces.propTypes = {
   history: T.arrayOf(T.shape({
 
   })),
-  currentLocation: T.string.isRequired
+  currentLocation: T.string.isRequired,
+  creatable: T.bool.isRequired
 }
 
 HeaderWorkspaces.defaultProps = {
