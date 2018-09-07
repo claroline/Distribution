@@ -45,7 +45,7 @@ const WidgetForm = props =>
             label: trans('name')
           },{
             name: 'alignName',
-            label: trans('background'),
+            label: trans('title_align'),
             type: 'choice',
             required: true,
             options: {

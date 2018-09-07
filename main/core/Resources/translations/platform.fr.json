@@ -1260,6 +1260,7 @@
     "text_title_color": "Couleur du texte dans le titre",
     "text_right_align": "Aligner à droite",
     "text_left_align": "Aligner à gauche",
+    "title_align" : "Position du titre",
     "textarea_rows": "Nombre de lignes",
     "the_following_users_were_not_imported": "Les utilisateurs suivants n'ont pas pu être importés:",
     "the_workspace": "L'espace d'activités",
