@@ -30,10 +30,10 @@ const WorkspacesMenu = props =>
     </li>
     }
     <li role="presentation" className="divider"/>
-    {props.history &&
+    {0 !== props.history.length &&
       <li role="presentation" className="dropdown-header">{trans('history')}</li>
     }
-    {props.history &&
+    {0 !== props.history.length &&
       props.history.map((ws) =>
         <li role="presentation" key ={ws.id}>
           <Button
@@ -45,10 +45,9 @@ const WorkspacesMenu = props =>
         </li>
       )
     }
-    {props.history &&
+    {0 !== props.history.length &&
       <li role="presentation" className="divider"/>
     }
-
     {/* user workspaces */}
     <li role="presentation">
       <Button
