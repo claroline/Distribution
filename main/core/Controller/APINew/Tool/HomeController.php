@@ -17,6 +17,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Controller\AbstractApiController;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,7 +80,10 @@ class HomeController extends AbstractApiController
         $tabs = $this->decodeRequest($request);
 
         $ids = [];
+        $containerIds = [];
+        $instanceIds = [];
         $updated = [];
+
         foreach ($tabs as $tab) {
             // do not update tabs set by the administration tool
             if (HomeTab::TYPE_ADMIN_DESKTOP !== $tab['type']) {
@@ -88,7 +92,18 @@ class HomeController extends AbstractApiController
             } else {
                 $updated[] = $this->om->getObject($tab, HomeTab::class);
             }
+
+            foreach ($tab['widgets'] as $container) {
+                $containerIds[] = $container['id'];
+                foreach ($container['contents'] as $instance) {
+                    $instanceIds[] = $instance['id'];
+                }
+            }
         }
+
+        //ready to remove instances aswell. We must do it here or we might remove them too early in the serializer
+        //ie: if we move them from the top container to the bottom one
+        $installedInstances = [];
 
         // retrieve existing tabs for the context to remove deleted ones
         /** @var HomeTab[] $installedTabs */
@@ -104,9 +119,22 @@ class HomeController extends AbstractApiController
         });
 
         foreach ($installedTabs as $installedTab) {
+            $installedInstances = array_merge($installedInstances, $this->finder->fetch(
+                WidgetInstance::class, ['homeTab' => $installedTab->getUuid()]
+            ));
+
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
                 $this->crud->delete($installedTab);
+            }
+        }
+
+        // remove deleted widget instances
+        //readytoremove
+
+        foreach ($installedInstances as $instance) {
+            if (!in_array($instance->getUuid(), $instanceIds)) {
+                $this->crud->delete($instance);
             }
         }
 
@@ -130,10 +158,20 @@ class HomeController extends AbstractApiController
         $tabs = $this->decodeRequest($request);
 
         $ids = [];
+        $containerIds = [];
+        $instanceIds = [];
         $updated = [];
+
         foreach ($tabs as $tab) {
             $updated[] = $this->crud->update(HomeTab::class, $tab, [$context]);
             $ids[] = $tab['id']; // will be used to determine deleted tabs
+
+            foreach ($tab['widgets'] as $container) {
+                $containerIds[] = $container['id'];
+                foreach ($container['contents'] as $instance) {
+                    $instanceIds[] = $instance['id'];
+                }
+            }
         }
 
         // retrieve existing tabs for the context to remove deleted ones
@@ -141,9 +179,19 @@ class HomeController extends AbstractApiController
         $installedTabs = $this->finder->fetch(HomeTab::class, ['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
 
         foreach ($installedTabs as $installedTab) {
+            $installedInstances = array_merge($installedInstances, $this->finder->fetch(
+                WidgetInstance::class, ['homeTab' => $installedTab->getUuid()]
+            ));
+
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
                 $this->crud->delete($installedTab);
+            }
+        }
+
+        foreach ($installedInstances as $instance) {
+            if (!in_array($instance->getUuid(), $instanceIds)) {
+                $this->crud->delete($instance);
             }
         }
 
