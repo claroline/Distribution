@@ -25,7 +25,7 @@ class WidgetInstanceCrud
     }
 
     /**
-     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_widget_widget_instance")
+     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_widget_widgetinstance")
      *
      * @param DeleteEvent $event
      */
@@ -33,7 +33,7 @@ class WidgetInstanceCrud
     {
         $widgetInstance = $event->getObject();
 
-        foreach ($widgetInstance->getWidgetContainerConfigs() as $config) {
+        foreach ($widgetInstance->getWidgetInstanceConfigs() as $config) {
             $this->om->remove($config);
         }
     }

@@ -25,7 +25,7 @@ class HomeTabCrud
     }
 
     /**
-     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_tab_home_tab")
+     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_tab_hometab")
      *
      * @param DeleteEvent $event
      */
@@ -33,7 +33,7 @@ class HomeTabCrud
     {
         $homeTab = $event->getObject();
 
-        foreach ($container->getHomeTabConfigs() as $config) {
+        foreach ($homeTab->getHomeTabConfigs() as $config) {
             $this->om->remove($config);
         }
     }

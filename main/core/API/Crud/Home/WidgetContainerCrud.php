@@ -25,7 +25,7 @@ class WidgetContainerCrud
     }
 
     /**
-     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_widget_widget_container")
+     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_widget_widgetcontainer")
      *
      * @param DeleteEvent $event
      */
