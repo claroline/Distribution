@@ -20,7 +20,7 @@ const Header = props =>
       />
     }
 
-    {props.title &&
+    {(props.display.name && props.title) &&
       <HeaderTitle
         title={props.title}
         subtitle={props.subtitle}
@@ -86,7 +86,8 @@ Header.propTypes = {
   title: T.string,
   subtitle: T.string,
   display: T.shape({
-    locale: T.bool.isRequired
+    locale: T.bool.isRequired,
+    name: T.bool.isRequired
   }).isRequired,
 
   /**
