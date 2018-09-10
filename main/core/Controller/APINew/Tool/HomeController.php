@@ -117,9 +117,9 @@ class HomeController extends AbstractApiController
 
         $this->cleanDatabase($installedTabs, $instanceIds, $containerIds, $ids);
 
-        return new JsonResponse(array_map(function (HomeTab $tab) {
+        return new JsonResponse(array_values(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);
-        }, $updated));
+        }, $updated)));
     }
 
     /**
@@ -159,9 +159,9 @@ class HomeController extends AbstractApiController
 
         $this->cleanDatabase($installedTabs, $instanceIds, $containerIds, $ids);
 
-        return new JsonResponse(array_map(function (HomeTab $tab) {
+        return new JsonResponse(array_values(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);
-        }, $updated));
+        }, $updated)));
     }
 
     private function cleanDatabase(array $installedTabs, array $instanceIds, array $containerIds, array $ids)
