@@ -66,8 +66,7 @@ class HomeTab
     /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Widget\WidgetContainer",
-     *     mappedBy="homeTab",
-     *     cascade={"persist", "remove", "refresh"}
+     *     mappedBy="homeTab"
      * )
      */
     private $widgetContainers;
