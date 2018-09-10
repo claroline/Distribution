@@ -17,6 +17,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Controller\AbstractApiController;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -101,10 +102,6 @@ class HomeController extends AbstractApiController
             }
         }
 
-        //ready to remove instances aswell. We must do it here or we might remove them too early in the serializer
-        //ie: if we move them from the top container to the bottom one
-        $installedInstances = [];
-
         // retrieve existing tabs for the context to remove deleted ones
         /** @var HomeTab[] $installedTabs */
         $installedTabs = $this->finder->fetch(HomeTab::class, 'desktop' === $context ? [
@@ -118,25 +115,7 @@ class HomeController extends AbstractApiController
             return HomeTab::TYPE_ADMIN_DESKTOP !== $tab->getType();
         });
 
-        foreach ($installedTabs as $installedTab) {
-            $installedInstances = array_merge($installedInstances, $this->finder->fetch(
-                WidgetInstance::class, ['homeTab' => $installedTab->getUuid()]
-            ));
-
-            if (!in_array($installedTab->getUuid(), $ids)) {
-                // the tab no longer exist we can remove it
-                $this->crud->delete($installedTab);
-            }
-        }
-
-        // remove deleted widget instances
-        //readytoremove
-
-        foreach ($installedInstances as $instance) {
-            if (!in_array($instance->getUuid(), $instanceIds)) {
-                $this->crud->delete($instance);
-            }
-        }
+        $this->cleanDatabase($installedTabs, $instanceIds, $containerIds, $ids);
 
         return new JsonResponse(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);
@@ -178,10 +157,27 @@ class HomeController extends AbstractApiController
         /** @var HomeTab[] $installedTabs */
         $installedTabs = $this->finder->fetch(HomeTab::class, ['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
 
+        $this->cleanDatabase($installedTabs, $instanceIds, $containerIds, $ids);
+
+        return new JsonResponse(array_map(function (HomeTab $tab) {
+            return $this->serializer->serialize($tab);
+        }, $updated));
+    }
+
+    private function cleanDatabase(array $installedTabs, array $instanceIds, array $containerIds, array $ids)
+    {
+        //ready to remove instances aswell. We must do it here or we might remove them too early in the serializer
+        //ie: if we move them from the top container to the bottom one
+        $installedInstances = [];
+        $installedContainers = [];
+
         foreach ($installedTabs as $installedTab) {
             $installedInstances = array_merge($installedInstances, $this->finder->fetch(
-                WidgetInstance::class, ['homeTab' => $installedTab->getUuid()]
-            ));
+              WidgetInstance::class, ['homeTab' => $installedTab->getUuid()]
+          ));
+            $installedContainers = array_merge($installedContainers, $this->finder->fetch(
+              WidgetContainer::class, ['homeTab' => $installedTab->getUuid()]
+          ));
 
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
@@ -195,8 +191,10 @@ class HomeController extends AbstractApiController
             }
         }
 
-        return new JsonResponse(array_map(function (HomeTab $tab) {
-            return $this->serializer->serialize($tab);
-        }, $updated));
+        foreach ($installedContainers as $container) {
+            if (!in_array($container->getUuid(), $containerIds)) {
+                $this->crud->delete($container);
+            }
+        }
     }
 }

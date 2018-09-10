@@ -131,4 +131,9 @@ class HomeTab
             $this->widgetContainers->removeElement($widgetContainer);
         }
     }
+
+    public function getHomeTabConfigs()
+    {
+        return $this->homeTabConfigs;
+    }
 }

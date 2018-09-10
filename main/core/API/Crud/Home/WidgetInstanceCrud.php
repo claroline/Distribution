@@ -7,10 +7,10 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.crud.widget_container")
+ * @DI\Service("claroline.crud.widget_instance")
  * @DI\Tag("claroline.crud")
  */
-class WidgetContainerCrud
+class WidgetInstanceCrud
 {
     /**
      * @DI\InjectParams({
@@ -25,15 +25,15 @@ class WidgetContainerCrud
     }
 
     /**
-     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_widget_widget_container")
+     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_widget_widget_instance")
      *
      * @param DeleteEvent $event
      */
     public function preDelete(DeleteEvent $event)
     {
-        $container = $event->getObject();
+        $widgetInstance = $event->getObject();
 
-        foreach ($container->getWidgetContainerConfigs() as $config) {
+        foreach ($widgetInstance->getWidgetContainerConfigs() as $config) {
             $this->om->remove($config);
         }
     }
