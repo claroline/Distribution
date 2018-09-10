@@ -121,7 +121,8 @@ const HeaderWorkspaces = props =>
       <span className={classes('icon-with-text-right', {
         'fa fa-fw fa-home':   'home' === props.currentLocation,
         'fa fa-fw fa-atlas':  'desktop' === props.currentLocation,
-        'fa fa-fw fa-book':   'workspace' === props.currentLocation
+        'fa fa-fw fa-book':   'workspace' === props.currentLocation,
+        'fa fa-fw fa-cogs':   'administration'=== props.currentLocation
       })}/>
       {'workspace' === props.currentLocation ? props.current.name : trans(props.currentLocation)}
     </div>
