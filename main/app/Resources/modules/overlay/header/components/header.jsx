@@ -51,7 +51,7 @@ const Header = props =>
       />
     }
 
-    {'Invité' !== props.currentUser.name &&
+    {props.currentUser.id &&
       <HeaderNotifications
         count={props.count}
       />
