@@ -124,7 +124,7 @@ class MailManager
     {
         $users = $this->container->get('claroline.manager.user_manager')->getByEmailValidationHash($hash);
         $url = $this->router->generate('claro_security_validate_email', ['hash' => $hash], true);
-        $body = $this->translator->trans('email_validation_url_display', ['%url%' => $url], 'platform');
+        $body = $this->translator->trans('email_validation_url_display', ['%url%' => $_SERVER['SERVER_NAME'].$url], 'platform');
         $subject = $this->translator->trans('email_validation', [], 'platform');
 
         $this->send($subject, $body, $users, null, [], true);
