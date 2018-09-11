@@ -126,8 +126,6 @@ const ResourceRestrictions = props =>
         {props.errors.locked &&
           <Password
             id="access-code"
-            value=""
-            onChange={() => true}
           />
         }
       </Restriction>

@@ -320,6 +320,7 @@ class ResourceNodeSerializer
         // restrictions
         $this->sipe('restrictions.code', 'setAccessCode', $data, $resourceNode);
         $this->sipe('restrictions.ips', 'setAllowedIps', $data, $resourceNode);
+        $this->sipe('restrictions.hidden', 'setHidden', $data, $resourceNode);
 
         if (isset($data['restrictions']['dates'])) {
             $dateRange = DateRangeNormalizer::denormalize($data['restrictions']['dates']);
