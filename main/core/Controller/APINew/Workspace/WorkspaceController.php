@@ -29,6 +29,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -535,6 +536,11 @@ class WorkspaceController extends AbstractCrudController
      */
     private function getLogFile(Workspace $workspace)
     {
+        if (!$this->logDir) {
+            $fs = new Filesystem();
+            $fs->touch($this->logDir);
+        }
+
         return $this->logDir.DIRECTORY_SEPARATOR.$workspace->getCode().'.json';
     }
 
