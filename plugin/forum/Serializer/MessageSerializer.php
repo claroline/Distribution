@@ -84,9 +84,11 @@ class MessageSerializer
                 'id' => $subject->getUuid(),
                 'title' => $subject->getTitle(),
             ];
-            $data['meta']['resource'] = [
-                'id' => $subject->getForum()->getResourceNode()->getId(),
-            ];
+            if ($subject->getForum() && $subject->getForum()->getResourceNode()) {
+                $data['meta']['resource'] = [
+                    'id' => $subject->getForum()->getResourceNode()->getId(),
+                ];
+            }
         }
 
         $data['meta']['flagged'] = $message->isFlagged();
