@@ -234,7 +234,7 @@ class OauthController extends BaseAuthorizeController
             $user->setLastName($data['last_name']);
             $pw = uniqid();
             $user->setPlainPassword($pw);
-            $user = $this->container->get('claroline.manager.user_manager')->createUser($user, false);
+            $user = $this->container->get('claroline.manager.user_manager')->createUser($user, []);
         } else {
             $user = $users[0];
         }

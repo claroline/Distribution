@@ -148,18 +148,13 @@ class UserManager
      */
     public function createUser(
         User $user,
-        $sendMail = true,
-        $rolesToAdd = [],
-        array $options = []
+        array $options = [Options::SEND_EMAIL],
+        $rolesToAdd = []
     ) {
         $this->objectManager->startFlushSuite();
         $additionalRoles = [];
 
         $options = array_merge($options, [Options::ADD_NOTIFICATIONS]);
-
-        if ($sendMail) {
-            $options[] = Options::SEND_EMAIL;
-        }
 
         foreach ($rolesToAdd as $roleToAdd) {
             $additionalRoles[] = is_string($roleToAdd) ? $this->roleManager->getRoleByName($roleToAdd) : $roleToAdd;
@@ -1617,7 +1612,7 @@ class UserManager
             $user->disable();
             $user->remove();
 
-            $this->createUser($user, false, [], [Options::NO_PERSONAL_WORKSPACE]);
+            $this->createUser($user, [Options::NO_PERSONAL_WORKSPACE]);
         }
 
         $roleAdmin = $this->roleManager->getRoleByName('ROLE_ADMIN');
@@ -1644,7 +1639,7 @@ class UserManager
             $user->disable();
             $user->remove();
 
-            $this->createUser($user, false, [], [Options::NO_PERSONAL_WORKSPACE]);
+            $this->createUser($user, [Options::NO_PERSONAL_WORKSPACE]);
         }
 
         $roleUser = $this->roleManager->getRoleByName('ROLE_USER');
