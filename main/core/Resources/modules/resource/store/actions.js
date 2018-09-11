@@ -40,3 +40,7 @@ actions.triggerLifecycleAction = (action) => (dispatch, getState) => {
 actions.updateUserEvaluation = makeActionCreator(USER_EVALUATION_UPDATE, 'userEvaluation')
 
 actions.dismissRestrictions = makeActionCreator(RESOURCE_RESTRICTIONS_DISMISS)
+
+actions.checkAccessCode = (code) => ({
+  // TODO
+})

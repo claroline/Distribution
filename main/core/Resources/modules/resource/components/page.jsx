@@ -101,6 +101,7 @@ class ResourcePage extends Component {
             errors={this.props.accessErrors}
             dismiss={this.props.dismissRestrictions}
             managed={this.props.managed}
+            checkAccessCode={(code) => this.props.checkAccessCode(code)}
           />
         }
 
@@ -130,6 +131,7 @@ ResourcePage.propTypes = {
   updateNode: T.func.isRequired,
   loadResource: T.func.isRequired,
   dismissRestrictions: T.func.isRequired,
+  checkAccessCode: T.func,
 
   /**
    * The current user evaluation.
