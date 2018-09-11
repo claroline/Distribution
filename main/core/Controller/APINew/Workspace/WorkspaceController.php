@@ -106,7 +106,7 @@ class WorkspaceController extends AbstractCrudController
             return new JsonResponse($workspace, 400);
         }
 
-        $model = $this->om->getRepository(Workspace::class)->find($modelId);
+        $model = $this->om->getRepository(Workspace::class)->findOneBy(['uuid' => $modelId]);
 
         if (!$model) {
             $model = $this->workspaceManager->getDefaultModel();
