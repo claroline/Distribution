@@ -87,7 +87,6 @@ class MessageSerializer
             $data['meta']['resource'] = [
                 'id' => $subject->getForum()->getResourceNode()->getId(),
             ];
-
         }
 
         $data['meta']['flagged'] = $message->isFlagged();
