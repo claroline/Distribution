@@ -244,9 +244,6 @@ class OauthController extends BaseAuthorizeController
         return new RedirectResponse($this->container->get('router')->generate('claro_desktop_open'));
     }
 
-    /**
-     * @return ClientInterface.
-     */
     protected function getClient()
     {
         if (null === $this->client) {
