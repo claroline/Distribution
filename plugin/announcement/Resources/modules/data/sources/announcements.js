@@ -11,7 +11,7 @@ export default {
     primaryAction: (announcement) => ({
       type: URL_BUTTON,
       target: url([ 'claro_resource_show_short', {
-        id: announcement.meta.aggregate.id
+        id: announcement.meta.resource.id
       }]) + `#/${announcement.id}`
     }),
     definition: [

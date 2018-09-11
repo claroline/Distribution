@@ -67,7 +67,7 @@ class AnnouncementSerializer
             'title' => $announce->getTitle(),
             'content' => $announce->getContent(),
             'meta' => [
-                'aggregate' => [
+                'resource' => [
                     'id' => $announce->getAggregate()->getResourceNode()->getUuid(),
                 ],
                 'created' => $announce->getCreationDate()->format('Y-m-d\TH:i:s'),
