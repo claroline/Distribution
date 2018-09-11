@@ -42,8 +42,21 @@ class AnnouncementFinder extends AbstractFinder
                     $qb->andWhere("w.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
+                case 'meta.publishedAt':
+                    break;
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);
+            }
+        }
+
+        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
+            $sortByProperty = $sortBy['property'];
+            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
+
+            switch ($sortByProperty) {
+                case 'meta.publishedAt':
+                    $qb->orderBy('obj.publicationDate', $sortByDirection);
+                    break;
             }
         }
     }
