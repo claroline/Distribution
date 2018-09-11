@@ -97,8 +97,16 @@ class UserCrud
             $nManager->processUpdate($notifications, $user);
         }
 
-        if (in_array(Options::ADD_PERSONAL_WORKSPACE, $options)) {
-            $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model'] : null);
+        $createWs = false;
+
+        foreach ($user->getEntityRoles() as $role) {
+            if ($role->getPersonalWorkspaceCreationEnabled()) {
+                $createWs = true;
+            }
+        }
+
+        if ($createWs) {
+            $this->userManager->setPersonalWorkspace($user);
         }
 
         $token = $this->container->get('security.token_storage')->getToken();

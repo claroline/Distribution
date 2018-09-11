@@ -458,7 +458,7 @@ class ExternalSynchronizationManager
                     $publicUrl = $this->userManager->generatePublicUrl($user);
                     $publicUrl .= in_array($publicUrl, $publicUrlList) ? '_'.uniqid() : '';
                     $publicUrlList[] = $publicUrl;
-                    $this->userManager->createUser($user, false, $rolesToAdd, null, $publicUrl, [], true);
+                    $this->userManager->createUser($user, false, $rolesToAdd, null, $publicUrl, []);
                     $this->externalUserManager->createExternalUser(
                         $externalSourceUser['id'],
                         $sourceName,

@@ -140,64 +140,29 @@ class UserManager
      * @todo use crud instead
      * @todo REMOVE ME (caution: this is used to create users in Command\User\CreateCommand and default User in fixtures, and other things)
      *
-     * @param User      $user
-     * @param bool      $sendMail               do we need to email the new user ?
-     * @param array     $rolesToAdd
-     * @param Workspace $model                  a model to create workspace
-     * @param string    $publicUrl
-     * @param array     $organizations
-     * @param bool      $forcePersonalWorkspace
-     * @param bool      $addNotifications
+     * @param User  $user
+     * @param bool  $sendMail   do we need to email the new user ?
+     * @param array $rolesToAdd
      *
      * @return User
      */
     public function createUser(
         User $user,
         $sendMail = true,
-        $rolesToAdd = [],
-        $model = null,
-        $publicUrl = null,
-        $organizations = [],
-        $forcePersonalWorkspace = null,
-        $addNotifications = true
+        $rolesToAdd = []
     ) {
         $this->objectManager->startFlushSuite();
         $additionalRoles = [];
 
-        $options = [];
+        $options = [Options::ADD_NOTIFICATIONS];
 
         if ($sendMail) {
             $options[] = Options::SEND_EMAIL;
         }
 
-        if ($addNotifications) {
-            $options[] = Options::ADD_NOTIFICATIONS;
-        }
-
-        if ($forcePersonalWorkspace) {
-            $options[] = Options::ADD_PERSONAL_WORKSPACE;
-        }
-
-        if (!empty($publicUrl)) {
-            $user->setPublicUrl($publicUrl);
-        }
-
-        $this->container->get('claroline.crud.user')->create(
-            $user,
-            $options,
-            ['model' => $model]
-        );
-
         foreach ($rolesToAdd as $roleToAdd) {
             $additionalRoles[] = is_string($roleToAdd) ? $this->roleManager->getRoleByName($roleToAdd) : $roleToAdd;
         }
-
-        if (0 === count($organizations) && 0 === count($user->getOrganizations())) {
-            $organizations = [$this->organizationManager->getDefault(true)];
-            $user->setOrganizations($organizations);
-        }
-
-        $user->setOrganizations($organizations);
 
         foreach ($additionalRoles as $role) {
             if ($role) {
@@ -205,6 +170,7 @@ class UserManager
             }
         }
 
+        $this->container->get('claroline.crud.user')->create($user, $options);
         $this->objectManager->endFlushSuite();
 
         return $user;
