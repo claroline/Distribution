@@ -95,7 +95,7 @@ class ResourcePage extends Component {
           ])
         })}
       >
-        {/* {this.props.loaded &&*/} 
+        {/* {this.props.loaded &&*/}
         {!isEmpty(this.props.accessErrors) &&
           <ResourceRestrictions
             errors={this.props.accessErrors}
