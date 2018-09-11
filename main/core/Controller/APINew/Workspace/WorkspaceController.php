@@ -112,7 +112,8 @@ class WorkspaceController extends AbstractCrudController
             $model = $this->workspaceManager->getDefaultModel();
         }
 
-        $logger = new JsonLogger($this->getLogFile($workspace));
+        $logFile = $this->getLogFile($workspace);
+        $logger = new JsonLogger($logFile);
         $this->workspaceManager->setLogger($logger);
 
         $this->workspaceManager->duplicateWorkspaceRoles($model, $workspace, $workspace->getCreator());
@@ -536,10 +537,8 @@ class WorkspaceController extends AbstractCrudController
      */
     private function getLogFile(Workspace $workspace)
     {
-        if (!$this->logDir) {
-            $fs = new Filesystem();
-            $fs->touch($this->logDir);
-        }
+        $fs = new Filesystem();
+        $fs->mkDir($this->logDir);
 
         return $this->logDir.DIRECTORY_SEPARATOR.$workspace->getCode().'.json';
     }
