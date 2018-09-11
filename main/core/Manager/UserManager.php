@@ -149,12 +149,13 @@ class UserManager
     public function createUser(
         User $user,
         $sendMail = true,
-        $rolesToAdd = []
+        $rolesToAdd = [],
+        array $options = []
     ) {
         $this->objectManager->startFlushSuite();
         $additionalRoles = [];
 
-        $options = [Options::ADD_NOTIFICATIONS];
+        $options = array_merge($options, [Options::ADD_NOTIFICATIONS]);
 
         if ($sendMail) {
             $options[] = Options::SEND_EMAIL;
@@ -1616,7 +1617,7 @@ class UserManager
             $user->disable();
             $user->remove();
 
-            $this->createUser($user, false, [], null, null, [], false, false);
+            $this->createUser($user, false, [], [Options::NO_PERSONAL_WORKSPACE]);
         }
 
         $roleAdmin = $this->roleManager->getRoleByName('ROLE_ADMIN');
@@ -1643,7 +1644,7 @@ class UserManager
             $user->disable();
             $user->remove();
 
-            $this->createUser($user, false, [], null, null, [], false, false);
+            $this->createUser($user, false, [], [Options::NO_PERSONAL_WORKSPACE]);
         }
 
         $roleUser = $this->roleManager->getRoleByName('ROLE_USER');

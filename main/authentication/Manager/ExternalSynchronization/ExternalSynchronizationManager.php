@@ -455,10 +455,7 @@ class ExternalSynchronizationManager
                     $user->setAdministrativeCode($this->utilities->stringToUtf8($externalSourceUser['code']));
                 }
                 if (is_null($alreadyImportedUser)) {
-                    $publicUrl = $this->userManager->generatePublicUrl($user);
-                    $publicUrl .= in_array($publicUrl, $publicUrlList) ? '_'.uniqid() : '';
-                    $publicUrlList[] = $publicUrl;
-                    $this->userManager->createUser($user, false, $rolesToAdd, null, $publicUrl, []);
+                    $this->userManager->createUser($user, false, $rolesToAdd);
                     $this->externalUserManager->createExternalUser(
                         $externalSourceUser['id'],
                         $sourceName,

@@ -99,9 +99,11 @@ class UserCrud
 
         $createWs = false;
 
-        foreach ($user->getEntityRoles() as $role) {
-            if ($role->getPersonalWorkspaceCreationEnabled()) {
-                $createWs = true;
+        if (!in_array(Options::NO_PERSONAL_WORKSPACE, $options)) {
+            foreach ($user->getEntityRoles() as $role) {
+                if ($role->getPersonalWorkspaceCreationEnabled()) {
+                    $createWs = true;
+                }
             }
         }
 
