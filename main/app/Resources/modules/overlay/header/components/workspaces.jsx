@@ -61,6 +61,9 @@ const WorkspacesMenu = props =>
         </li>
       )
     }
+    {0 !== props.history.length && !props.currentUser.id &&
+      <li role="presentation" className="divider"/>
+    }
     {props.currentUser.id &&
       <li role="presentation" className="divider"/>
     }
@@ -76,7 +79,6 @@ const WorkspacesMenu = props =>
     </li>
     }
     {/* public workspaces */}
-    <li role="presentation" className="divider"/>
     <li role="presentation">
       <Button
         type={URL_BUTTON}
