@@ -33,7 +33,12 @@ class WidgetInstanceCrud
     {
         $widgetInstance = $event->getObject();
 
-        foreach ($widgetInstance->getWidgetInstanceConfigs() as $config) {
+        $this->delete($instance);
+    }
+
+    public function delete($instance)
+    {
+        foreach ($instance->getWidgetInstanceConfigs() as $config) {
             $this->om->remove($config);
         }
     }

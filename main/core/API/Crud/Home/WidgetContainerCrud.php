@@ -32,7 +32,11 @@ class WidgetContainerCrud
     public function preDelete(DeleteEvent $event)
     {
         $container = $event->getObject();
+        $this->delete($container);
+    }
 
+    public function delete($container)
+    {
         foreach ($container->getWidgetContainerConfigs() as $config) {
             $this->om->remove($config);
         }
