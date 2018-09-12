@@ -74,7 +74,6 @@ class ResourceRestrictions extends Component {
   }
 
   submitCodeAccess() {
-    console.log(`au submit ${this.state.codeAccess}`)
     if (this.state.codeAccess) {
       this.props.checkAccessCode(this.state.codeAccess)
     }
@@ -154,6 +153,7 @@ class ResourceRestrictions extends Component {
                   className="btn btn-block btn-emphasis"
                   type={CALLBACK_BUTTON}
                   icon="fa fa-fw fa-sign-in-alt"
+                  disabled={!this.state.codeAccess}
                   label={trans('Accéder à la ressource', {}, 'actions')}
                   callback={() => this.submitCodeAccess()}
                   primary={true}
