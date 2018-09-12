@@ -133,7 +133,7 @@ class Updater120000 extends Updater
                 config.name = tab.name,
                 config.longTitle = tab.name,
                 config.centerTitle = false,
-                config.is_locked = temp.is_visible
+                config.is_locked = true
             ';
 
         $stmt = $this->conn->prepare($sql);
