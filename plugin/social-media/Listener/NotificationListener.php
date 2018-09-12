@@ -44,7 +44,7 @@ class NotificationListener
         $notificationView = $event->getNotificationView();
         $notification = $notificationView->getNotification();
         $content = $this->templating->render(
-            'IcapSocialmediaBundle:Notification:notification_item.html.twig',
+            'IcapSocialmediaBundle:notification:notification_item.html.twig',
             array(
                 'notification' => $notification,
                 'status' => $notificationView->getStatus(),
