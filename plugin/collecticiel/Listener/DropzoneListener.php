@@ -147,7 +147,7 @@ class DropzoneListener
      */
     public function onOpenCustom(CustomActionResourceEvent $event)
     {
-        $dropzone = get_class($event->getResource()) === 'Claroline\CoreBundle\Entity\Resource\ResourceShortcut' ?
+        $dropzone = get_class($event->getResource()) === 'Claroline\LinkBundle\Entity\Resource\Shortcut' ?
             $this->resourceManager->getResourceFromShortcut($event->getResource()->getResourceNode()) :
             $event->getResource();
         $dropzoneVoter = $this->container->get('innova.manager.dropzone_voter');
@@ -180,7 +180,7 @@ class DropzoneListener
      */
     public function onEdit(CustomActionResourceEvent $event)
     {
-        $resource = get_class($event->getResource()) === 'Claroline\CoreBundle\Entity\Resource\ResourceShortcut' ?
+        $resource = get_class($event->getResource()) === 'Claroline\LinkBundle\Entity\Resource\Shortcut' ?
             $this->resourceManager->getResourceFromShortcut($event->getResource()->getResourceNode()) :
             $event->getResource();
         $route = $this->container
