@@ -12,6 +12,7 @@ import {UserPageContainer} from '#/main/core/user/containers/page'
 import {UserDetails} from '#/main/core/user/components/details'
 import {Timeline} from '#/main/core/user/tracking/components/timeline'
 import {DateGroup} from '#/main/core/layout/form/components/group/date-group'
+import {actions} from '#/main/core/user/tracking/store'
 
 const Search = props =>
   <div className="panel panel-default">
@@ -40,10 +41,7 @@ const Search = props =>
       <div className="col-md-6 col-xs-12">
         <CallbackButton
           className="btn btn-primary traking-filter-button"
-          callback={() => {
-            console.log(props.startDate)
-            console.log(props.endDate)
-          }}
+          callback={() => props.onSearch(props.startDate, props.endDate)}
         >
           {trans('filter')}
         </CallbackButton>
@@ -54,7 +52,8 @@ const Search = props =>
 Search.propTypes = {
   startDate: T.string,
   endDate: T.string,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  onSearch: T.func.isRequired
 }
 
 const Summary = props =>
@@ -113,6 +112,7 @@ class TrackingComponent extends Component {
               startDate={this.state.filters.startDate}
               endDate={this.state.filters.endDate}
               onChange={this.updateProp}
+              onSearch={this.props.loadTrackings}
             />
 
             <Summary />
@@ -140,7 +140,8 @@ class TrackingComponent extends Component {
 
 TrackingComponent.propTypes = {
   user: T.shape(User.propTypes).isRequired,
-  evaluations: T.arrayOf(T.shape(ResourceUserEvaluation.propTypes))
+  evaluations: T.arrayOf(T.shape(ResourceUserEvaluation.propTypes)),
+  loadTrackings: T.func.isRequired
 }
 
 const Tracking = connect(
@@ -148,7 +149,11 @@ const Tracking = connect(
     user: state.user,
     evaluations: state.evaluations
   }),
-  null
+  dispatch => ({
+    loadTrackings(startDate, endDate) {
+      dispatch(actions.loadTrackings(startDate, endDate))
+    }
+  })
 )(TrackingComponent)
 
 export {
