@@ -60,8 +60,6 @@ class ResourceNodeController extends AbstractCrudController
      * @param string  $class
      *
      * @return JsonResponse
-     *
-     * @todo do not return hidden resources to standard users
      */
     public function listAction(Request $request, $parent, $class = ResourceNode::class)
     {
