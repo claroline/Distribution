@@ -106,18 +106,22 @@ actions.disable = (users) => ({
   }
 })
 
-actions.createWorkspace = (user) => ({
+actions.createWorkspace = (users) => ({
   [API_REQUEST]: {
-    url: ['apiv2_user_pws_create', {id: user.id}],
-    request: { method: 'POST'},
+    url: url(['apiv2_users_pws_create'], {ids: users.map(u => u.id)}),
+    request: {
+      method: 'POST'
+    },
     success: (data, dispatch) => dispatch(listActions.invalidateData('users.list'))
   }
 })
 
-actions.deleteWorkspace = (user) => ({
+actions.deleteWorkspace = (users) => ({
   [API_REQUEST]: {
-    url: ['apiv2_user_pws_delete', {id: user.id}],
-    request: {method: 'DELETE'},
+    url: url(['apiv2_users_pws_delete'], {ids: users.map(u => u.id)}),
+    request: {
+      method: 'DELETE'
+    },
     success: (data, dispatch) => dispatch(listActions.invalidateData('users.list'))
   }
 })

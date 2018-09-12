@@ -71,16 +71,16 @@ const UsersList = props =>
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-book',
         label: trans('enable_personal_ws'),
-        scope: ['object'], // todo should be a selection action too
-        displayed: !rows[0].meta.personalWorkspace,
-        callback: () => props.createWorkspace(rows[0])
+        scope: ['object', 'collection'],
+        displayed: 0 < rows.filter(u => !u.meta.personalWorkspace).length,
+        callback: () => props.createWorkspace(rows)
       }, {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-book',
         label: trans('disable_personal_ws'),
-        scope: ['object'], // todo should be a selection action too
-        displayed: rows[0].meta.personalWorkspace,
-        callback: () => props.deleteWorkspace(rows[0]),
+        scope: ['object', 'collection'],
+        displayed: 0 < rows.filter(u => u.meta.personalWorkspace).length,
+        callback: () => props.deleteWorkspace(rows),
         dangerous: true
       }, {
         type: LINK_BUTTON,
@@ -120,12 +120,12 @@ const Users = connect(
       // todo add confirm
       dispatch(actions.disable(users))
     },
-    createWorkspace(user) {
-      dispatch(actions.createWorkspace(user))
+    createWorkspace(users) {
+      dispatch(actions.createWorkspace(users))
     },
-    deleteWorkspace(user) {
+    deleteWorkspace(users) {
       // todo add confirm
-      dispatch(actions.deleteWorkspace(user))
+      dispatch(actions.deleteWorkspace(users))
     },
     updatePassword(user) {
       dispatch(
