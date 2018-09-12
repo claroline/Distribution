@@ -2,14 +2,14 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
-import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
-
-import {ListData} from '#/main/app/content/list/containers/data'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {ListData} from '#/main/app/content/list/containers/data'
+
+import {trans, transChoice} from '#/main/core/translation'
 import {MODAL_USER_PASSWORD} from '#/main/core/user/modals/password'
 import {actions as userActions} from '#/main/core/user/actions'
-
 import {actions} from '#/main/core/administration/user/user/actions'
 import {UserList, getUserListDefinition} from '#/main/core/administration/user/user/components/user-list'
 
@@ -117,15 +117,29 @@ const Users = connect(
       dispatch(actions.enable(users))
     },
     disable(users) {
-      // todo add confirm
-      dispatch(actions.disable(users))
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          icon: 'fa fa-fw fa-times-circle',
+          title: transChoice('disable_users', users.length, {count: users.length}),
+          question: trans('disable_users_confirm', {users_list: users.map(u => `${u.firstName} ${u.lastName}`).join(', ')}),
+          dangerous: true,
+          handleConfirm: () => dispatch(actions.disable(users))
+        })
+      )
     },
     createWorkspace(users) {
       dispatch(actions.createWorkspace(users))
     },
     deleteWorkspace(users) {
-      // todo add confirm
-      dispatch(actions.deleteWorkspace(users))
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          icon: 'fa fa-fw fa-book',
+          title: transChoice('disable_personal_workspaces', users.length, {count: users.length}),
+          question: trans('disable_personal_workspaces_confirm', {users_list: users.map(u => `${u.firstName} ${u.lastName}`).join(', ')}),
+          dangerous: true,
+          handleConfirm: () => dispatch(actions.deleteWorkspace(users))
+        })
+      )
     },
     updatePassword(user) {
       dispatch(
