@@ -82,11 +82,10 @@ actions.addOrganizations = (id, organizations) => ({
   }
 })
 
-actions.enable = (user) => ({
+actions.enable = (users) => ({
   [API_REQUEST]: {
-    url: ['apiv2_user_update', {id: user.id}],
+    url: url(['apiv2_users_enable'], {ids: users.map(u => u.id)}),
     request: {
-      body: JSON.stringify(Object.assign({}, user, {restrictions: {disabled:false}})),
       method: 'PUT'
     },
     success: (data, dispatch) => {
@@ -95,12 +94,11 @@ actions.enable = (user) => ({
   }
 })
 
-actions.disable = (user) => ({
+actions.disable = (users) => ({
   [API_REQUEST]: {
-    url: ['apiv2_user_update', {id: user.id}],
+    url: url(['apiv2_users_disable'], {ids: users.map(u => u.id)}),
     request: {
-      method: 'PUT',
-      body: JSON.stringify(Object.assign({}, user, {restrictions: {disabled:true}}))
+      method: 'PUT'
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('users.list'))

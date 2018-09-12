@@ -56,16 +56,16 @@ const UsersList = props =>
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-check-circle',
         label: trans('enable_user'),
-        scope: ['object'], // todo should be a selection action too
-        displayed: rows[0].restrictions.disabled,
-        callback: () => props.enable(rows[0])
+        scope: ['object', 'collection'],
+        displayed: 0 < rows.filter(u => u.restrictions.disabled).length,
+        callback: () => props.enable(rows)
       }, {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-times-circle',
         label: trans('disable_user'),
-        scope: ['object'], // todo should be a selection action too
-        displayed: !rows[0].restrictions.disabled,
-        callback: () => props.disable(rows[0]),
+        scope: ['object', 'collection'],
+        displayed: 0 < rows.filter(u => !u.restrictions.disabled).length,
+        callback: () => props.disable(rows),
         dangerous: true
       }, {
         type: CALLBACK_BUTTON,
@@ -113,12 +113,12 @@ const Users = connect(
     platformRoles: state.platformRoles
   }),
   dispatch => ({
-    enable(user) {
-      dispatch(actions.enable(user))
+    enable(users) {
+      dispatch(actions.enable(users))
     },
-    disable(user) {
+    disable(users) {
       // todo add confirm
-      dispatch(actions.disable(user))
+      dispatch(actions.disable(users))
     },
     createWorkspace(user) {
       dispatch(actions.createWorkspace(user))

@@ -325,4 +325,60 @@ class UserController extends AbstractCrudController
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
     }
+
+    /**
+     * @Route(
+     *    "/users/enable",
+     *    name="apiv2_users_enable"
+     * )
+     * @Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function usersEnableAction(Request $request)
+    {
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            $user->setIsEnabled(true);
+            $this->om->persist($user);
+        }
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->serializer->serialize($user);
+        }, $users));
+    }
+
+    /**
+     * @Route(
+     *    "/users/disable",
+     *    name="apiv2_users_disable"
+     * )
+     * @Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function usersDisableAction(Request $request)
+    {
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            $user->setIsEnabled(false);
+            $this->om->persist($user);
+        }
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->serializer->serialize($user);
+        }, $users));
+    }
 }
