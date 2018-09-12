@@ -32,6 +32,7 @@ class WidgetContainerCrud
     public function preDelete(DeleteEvent $event)
     {
         $container = $event->getObject();
+
         $this->delete($container);
     }
 

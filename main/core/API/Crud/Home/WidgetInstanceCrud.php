@@ -33,7 +33,7 @@ class WidgetInstanceCrud
     {
         $widgetInstance = $event->getObject();
 
-        $this->delete($instance);
+        $this->delete($widgetInstance);
     }
 
     public function delete($instance)
