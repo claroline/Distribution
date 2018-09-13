@@ -51,7 +51,7 @@ const Header = props =>
       />
     }
 
-    {props.currentUser.id &&
+    {props.authenticated &&
       <HeaderNotifications
         count={props.count}
       />
@@ -68,7 +68,7 @@ const Header = props =>
     />
 
     {props.display.locale &&
-      <HeaderLocale locale={props.locale} />
+    <HeaderLocale locale={props.locale} />
     }
   </header>
 
@@ -96,7 +96,10 @@ Header.propTypes = {
   currentUser: T.shape(
     UserTypes.propTypes
   ).isRequired,
-  count: T.number,
+  count: T.shape({
+    notifications: T.number,
+    messages: T.number
+  }),
   authenticated: T.bool.isRequired,
   currentLocation: T.string.isRequired,
   tools: T.array,
