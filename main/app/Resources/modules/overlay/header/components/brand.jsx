@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {asset} from '#/main/app/config'
+import {url} from '#/main/app/api'
 
 // todo add alt
 
@@ -18,7 +19,12 @@ const StandardLogo = props =>
 
 const HeaderBrand = props =>
   <div className="app-header-item app-header-brand">
-    {props.logo.colorized &&
+    {(props.logo.colorized && props.redirectHome) &&
+      <a href={url(['claro_index'])}>
+        <SvgLogo url={props.logo.url} />
+      </a>
+    }
+    {(props.logo.colorized && !props.redirectHome) &&
       <SvgLogo url={props.logo.url} />
     }
 
