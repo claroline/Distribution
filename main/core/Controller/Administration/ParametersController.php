@@ -475,7 +475,7 @@ class ParametersController extends Controller
     public function registrationMailFormAction()
     {
         $form = $this->formFactory->create(
-            new AdminForm\MailInscriptionType(),
+            AdminForm\MailInscriptionType::class,
             $this->mailManager->getMailInscription()
         );
 
@@ -494,7 +494,7 @@ class ParametersController extends Controller
      */
     public function submitRegistrationMailAction()
     {
-        $formData = $this->request->get('platform_parameters_form');
+        $formData = $this->request->request->get('mail_inscription');
         $form = $this->formFactory->create(AdminForm\MailInscriptionType::class, $formData['content']);
         $errors = $this->mailManager->validateMailVariable($formData['content'], '%password%');
 
