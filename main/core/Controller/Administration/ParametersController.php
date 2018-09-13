@@ -532,7 +532,7 @@ class ParametersController extends Controller
      */
     public function submitMailLayoutAction()
     {
-        $formData = $this->request->get('platform_parameters_form');
+        $formData = $this->request->request->get('mail_layout');
         $form = $this->formFactory->create(AdminForm\MailLayoutType::class, $formData['content']);
         $errors = $this->mailManager->validateMailVariable($formData['content'], '%content%');
 
