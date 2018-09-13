@@ -118,7 +118,7 @@ ResourcePage.propTypes = {
   embedded: T.bool,
   showHeader: T.bool,
   managed: T.bool.isRequired,
-
+  
   /**
    * The current resource node.
    */
