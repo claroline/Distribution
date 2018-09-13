@@ -21,6 +21,7 @@ use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
+use Claroline\CoreBundle\Manager\MailManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -36,18 +37,24 @@ class UserController extends AbstractCrudController
     /** @var StrictDispatcher */
     private $eventDispatcher;
 
+    /** @var MailManager */
+    private $mailManager;
+
     /**
      * UserController constructor.
      *
      * @DI\InjectParams({
-     *    "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher")
+     *    "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *    "mailManager"     = @DI\Inject("claroline.manager.mail_manager")
      * })
      *
      * @param StrictDispatcher $eventDispatcher
+     * @param MailManager      $mailManager
      */
-    public function __construct(StrictDispatcher $eventDispatcher)
+    public function __construct(StrictDispatcher $eventDispatcher, MailManager $mailManager)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->mailManager = $mailManager;
     }
 
     public function getName()
@@ -60,33 +67,57 @@ class UserController extends AbstractCrudController
     use HasGroupsTrait;
 
     /**
-     * @Route("/{id}/pws/create", name="apiv2_user_pws_create")
+     * @Route("/pws/create", name="apiv2_users_pws_create")
      * @Method("POST")
-     * @ParamConverter("user", options={"mapping": {"id": "uuid"}})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
-    public function createPersonalWorkspaceAction(User $user)
+    public function createPersonalWorkspaceAction(Request $request)
     {
-        if (!$user->getPersonalWorkspace()) {
-            $this->container->get('claroline.manager.user_manager')
-              ->setPersonalWorkspace($user);
-        } else {
-            throw new \Exception('Workspace already exists');
-        }
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
 
-        return new JsonResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            if (!$user->getPersonalWorkspace()) {
+                $this->container->get('claroline.manager.user_manager')->setPersonalWorkspace($user);
+            }
+        }
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->serializer->serialize($user);
+        }, $users));
     }
 
     /**
-     * @Route("/{id}/pws/delete", name="apiv2_user_pws_delete")
+     * @Route("/pws/delete", name="apiv2_users_pws_delete")
      * @Method("DELETE")
-     * @ParamConverter("user", options={"mapping": {"id": "uuid"}})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
-    public function deletePersonalWorkspaceAction(User $user)
+    public function deletePersonalWorkspaceAction(Request $request)
     {
-        $personalWorkspace = $user->getPersonalWorkspace();
-        $this->container->get('claroline.manager.workspace_manager')->deleteWorkspace($personalWorkspace);
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
 
-        return new JsonResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            $personalWorkspace = $user->getPersonalWorkspace();
+
+            if ($personalWorkspace) {
+                $this->container->get('claroline.manager.workspace_manager')->deleteWorkspace($personalWorkspace);
+            }
+        }
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->serializer->serialize($user);
+        }, $users));
     }
 
     /**
@@ -324,5 +355,92 @@ class UserController extends AbstractCrudController
             'Claroline\CoreBundle\Entity\User',
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
+    }
+
+    /**
+     * @Route(
+     *    "/users/enable",
+     *    name="apiv2_users_enable"
+     * )
+     * @Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function usersEnableAction(Request $request)
+    {
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            $user->setIsEnabled(true);
+            $this->om->persist($user);
+        }
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->serializer->serialize($user);
+        }, $users));
+    }
+
+    /**
+     * @Route(
+     *    "/users/disable",
+     *    name="apiv2_users_disable"
+     * )
+     * @Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function usersDisableAction(Request $request)
+    {
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            $user->setIsEnabled(false);
+            $this->om->persist($user);
+        }
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->serializer->serialize($user);
+        }, $users));
+    }
+
+    /**
+     * @Route(
+     *    "/password/reset",
+     *    name="apiv2_users_password_reset"
+     * )
+     * @Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function passwordResetAction(Request $request)
+    {
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+
+        $this->om->startFlushSuite();
+
+        foreach ($users as $user) {
+            $user->setHashTime(time());
+            $password = sha1(rand(1000, 10000).$user->getUsername().$user->getSalt());
+            $user->setResetPasswordHash($password);
+            $this->om->persist($user);
+            $this->mailManager->sendForgotPassword($user);
+        }
+        $this->om->endFlushSuite();
+
+        return new JsonResponse(array_map(function (User $user) {
+            return $this->serializer->serialize($user);
+        }, $users));
     }
 }
