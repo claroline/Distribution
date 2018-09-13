@@ -160,6 +160,16 @@ class ResourceRestrictions extends Component {
                 />
               </div>
             }
+            {!this.props.errors.locked &&
+              <Button
+                className="btn btn-block btn-emphasis"
+                type={CALLBACK_BUTTON}
+                icon="fa fa-fw fa-sign-in-alt"
+                label={trans('Accéder à la ressource', {}, 'actions')}
+                callback={this.props.dismiss}
+                primary={true}
+              />
+            }
           </Restriction>
         }
 
