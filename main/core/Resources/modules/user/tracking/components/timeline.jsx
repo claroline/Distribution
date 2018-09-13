@@ -87,6 +87,7 @@ EventWrapper.propTypes = {
     thumbnail: T.string,
     meta: T.shape({
       type: T.string.isRequired,
+      mimeType: T.string.isRequired,
       icon: T.string.isRequired
     }).isRequired
   })

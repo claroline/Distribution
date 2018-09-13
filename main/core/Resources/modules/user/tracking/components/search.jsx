@@ -11,23 +11,23 @@ const Search = props =>
     <div className="panel-body">
       <div className="col-md-6 col-xs-12">
         <DateGroup
-            id="tracking-start-date"
-            className="form-last"
-            calendarIcon="fa fa fa-fw fa-calendar-check-o"
-            label={trans('filter_from')}
-            value={props.startDate}
-            onChange={(date) => props.onChange('startDate', date)}
+          id="tracking-start-date"
+          className="form-last"
+          calendarIcon="fa fa fa-fw fa-calendar-check-o"
+          label={trans('filter_from')}
+          value={props.startDate}
+          onChange={(date) => props.onChange('startDate', date)}
         />
       </div>
       <div className="col-md-6 col-xs-12">
         <DateGroup
-            id="tracking-end-date"
-            className="form-last"
-            calendarIcon="fa fa fa-fw fa-calendar-check-o"
-            label={trans('date_range_end')}
-            value={props.endDate}
-            minDate={props.startDate}
-            onChange={(date) => props.onChange('endDate', date)}
+          id="tracking-end-date"
+          className="form-last"
+          calendarIcon="fa fa fa-fw fa-calendar-check-o"
+          label={trans('date_range_end')}
+          value={props.endDate}
+          minDate={props.startDate}
+          onChange={(date) => props.onChange('endDate', date)}
         />
       </div>
       <div className="col-md-6 col-xs-12">

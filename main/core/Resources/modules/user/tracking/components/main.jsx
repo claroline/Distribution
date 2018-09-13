@@ -20,7 +20,7 @@ class TrackingComponent extends Component {
     this.state = {
       filters: {
         startDate: null,
-        endDate: null,
+        endDate: null
       }
     }
     this.updateProp = this.updateProp.bind(this)

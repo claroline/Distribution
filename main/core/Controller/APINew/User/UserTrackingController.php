@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\User;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UserTrackingController extends AbstractCrudController
 {
-
     public function getName()
     {
         return 'usertracking';
@@ -31,7 +29,7 @@ class UserTrackingController extends AbstractCrudController
 
     public function getIgnore()
     {
-        return ['create', 'deleteBulk','exist', 'copyBulk', 'schema', 'find', 'list'];
+        return ['create', 'deleteBulk', 'exist', 'copyBulk', 'schema', 'find', 'list'];
     }
 
     /**
