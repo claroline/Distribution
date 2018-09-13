@@ -543,7 +543,7 @@ class ParametersController extends Controller
 
     /**
      * @EXT\Route("/email/layout/option/form", name="claro_admin_mail_option_form")
-     * @EXT\Template("ClarolineCoreBundle:administration/parameters:open_mail_form.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration/parameters:option_mail_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -551,7 +551,8 @@ class ParametersController extends Controller
     public function optionMailFormAction()
     {
         $form = $this->formFactory->create(
-            AdminForm\MailOptionType::class, ['from' => $this->mailManager->getMailerFrom()]
+            AdminForm\MailOptionType::class,
+            ['from' => $this->mailManager->getMailerFrom()]
         );
 
         return ['form' => $form->createView()];
