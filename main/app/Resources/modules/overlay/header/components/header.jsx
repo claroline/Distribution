@@ -25,6 +25,7 @@ const Header = props =>
       <HeaderTitle
         title={props.title}
         subtitle={props.subtitle}
+        redirectHome={props.redirectHome}
       />
     }
 
