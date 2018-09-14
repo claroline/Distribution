@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\Command\DatabaseIntegrity;
 
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +16,6 @@ class ResourceRightsIntegrityCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $consoleLogger = ConsoleLogger::get($output);
         $this->conn = $this->getContainer()->get('doctrine.dbal.default_connection');
         $roles[] = $this->getContainer()->get('claroline.persistence.object_manager')->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ANONYMOUS');
         $roles[] = $this->getContainer()->get('claroline.persistence.object_manager')->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_USER');
