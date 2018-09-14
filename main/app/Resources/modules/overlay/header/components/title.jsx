@@ -6,7 +6,7 @@ import {url} from '#/main/app/api'
 const HeaderTitle = props => {
   return (
     props.redirectHome ?
-      <a href={url(['claro_index'])}>
+      <a href={url(['claro_index'])} className="app-header-title-link">
         <h1 className="app-header-item app-header-title">
           {props.title}
 

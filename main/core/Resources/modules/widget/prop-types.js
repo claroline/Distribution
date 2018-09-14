@@ -43,10 +43,11 @@ const WidgetInstance = {
     type: T.string.isRequired,
     // specific parameters of the content
     // depends on the `type`
-    parameters: T.object
+    parameters: T.object,
+    showResourceHeader: T.bool
   },
   defaultProps: {
-
+    showResourceHeader: false
   }
 }
 

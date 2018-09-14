@@ -12,7 +12,7 @@ const WidgetInstance = {
   },
   defaultProps: {
     parameters: {},
-    showResourceHeader: true
+    showResourceHeader: false
   }
 }
 
