@@ -19,6 +19,7 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Removes users from the platform.
@@ -83,6 +84,9 @@ class RemoveUsersCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+	                $user = $this->getContainer()->get('claroline.manager.user_manager')->getDefaultClarolineAdmin();
+            $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+            $this->getContainer()->get('security.token_storage')->setToken($token);
         $this->setForce($input->getOption('force'));
         $this->setInput($input);
         $this->setOutput($output);
@@ -155,6 +159,7 @@ class RemoveUsersCommand extends ContainerAwareCommand
                 $userManager->deleteUser($user);
             }
 
+	    $om->forceFlush();
             $om->endFlushSuite();
             $om->clear();
         } else {

@@ -58,6 +58,7 @@ class Dashboard
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User"
      * )
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $creator;
 

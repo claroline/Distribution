@@ -36,7 +36,7 @@ class ApiListener
                 ], 500);
             }
 
-            $event->setResponse($response);
+	$event->setResponse($response);
         }
     }
 

@@ -91,7 +91,8 @@ class Paper
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true, 
+     *      onDelete="CASCADE")
      */
     private $user;
 

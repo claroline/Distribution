@@ -23,6 +23,7 @@ class Favourite
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
      * @Assert\NotNull
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $user;
 

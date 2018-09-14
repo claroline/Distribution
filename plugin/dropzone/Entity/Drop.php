@@ -65,7 +65,7 @@ class Drop
      * @ORM\ManyToOne(
      *      targetEntity="Claroline\CoreBundle\Entity\User"
      * )
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false,  onDelete="CASCADE")
      */
     protected $user;
 

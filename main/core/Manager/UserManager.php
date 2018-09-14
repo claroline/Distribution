@@ -303,6 +303,7 @@ class UserManager
     public function deleteUser(User $user)
     {
         $this->log('Removing '.$user->getUsername().'...');
+	$this->container->get('claroline.api.crud')->delete($user);
     }
 
     /**

@@ -32,8 +32,10 @@ class User
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User",
-     *     cascade={"persist"}
+     *     cascade={"persist"},
      * )
+     * @ORM\JoinColumn(onDelete="CASCADE")
+
      */
     protected $user;
 

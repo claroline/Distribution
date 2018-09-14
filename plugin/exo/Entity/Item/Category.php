@@ -41,6 +41,7 @@ class Category
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $user;
 

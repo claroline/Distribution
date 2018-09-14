@@ -33,6 +33,7 @@ class Hint implements PenaltyItemInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="Item", inversedBy="hints")
+     *     @ORM\JoinColumn(onDelete="CASCADE")
      *
      * @var Item
      */

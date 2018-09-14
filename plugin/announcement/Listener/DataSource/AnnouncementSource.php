@@ -52,7 +52,7 @@ class AnnouncementSource
     public function getData(DataSourceEvent $event)
     {
         $options = $event->getOptions() ? $event->getOptions() : [];
-        $options['hiddenFilters']['visible'] = true;
+//        $options['hiddenFilters']['visible'] = true;
 
         if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
             $options['hiddenFilters']['workspace'] = $event->getWorkspace()->getUuid();

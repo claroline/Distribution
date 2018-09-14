@@ -27,7 +27,7 @@ class AgendaSource
     private $finder;
 
     /**
-     * AgendaSource constructor.
+     * AnnouncementSource constructor.
      *
      * @DI\InjectParams({
      *     "finder"       = @DI\Inject("claroline.api.finder"),

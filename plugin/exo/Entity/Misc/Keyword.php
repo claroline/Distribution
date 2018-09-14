@@ -49,7 +49,7 @@ class Keyword implements AnswerPartInterface
      * @var OpenQuestion
      *
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\ItemType\OpenQuestion", inversedBy="keywords")
-     * @ORM\JoinColumn(name="interaction_open_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="interaction_open_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $interactionopen;
 

@@ -94,6 +94,7 @@ class Item
 
     /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\Item\Category")
+     * @ORM\JoinColumn( onDelete="CASCADE")
      *
      * @var Category
      */

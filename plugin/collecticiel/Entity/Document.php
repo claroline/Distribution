@@ -90,7 +90,7 @@ class Document
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User"
      * )
-     * @ORM\JoinColumn(name="sender_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="sender_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $sender;
 
