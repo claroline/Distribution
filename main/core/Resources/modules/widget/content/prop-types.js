@@ -11,8 +11,9 @@ const WidgetInstance = {
     showResourceHeader: T.bool
   },
   defaultProps: {
-    parameters: {},
-    showResourceHeader: false
+    parameters: {
+      showResourceHeader: false
+    }
   }
 }
 
