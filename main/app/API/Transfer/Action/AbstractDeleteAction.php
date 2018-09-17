@@ -35,11 +35,13 @@ abstract class AbstractDeleteAction extends AbstractAction
             $data[$this->getAction()[0]]
         );
 
-        $this->crud->delete($object);
+        if ($object->getId()) {
+            $this->crud->delete($object);
 
-        $successData['delete'][] = [
-          'data' => $data,
-        ];
+            $successData['delete'][] = [
+                'data' => $data,
+            ];
+        }
     }
 
     public function getSchema()
