@@ -34,6 +34,7 @@ abstract class AbstractDeleteAction extends AbstractAction
         );
 
         $this->crud->delete($object);
+
         $successData['delete'][] = [
           'data' => $data,
         ];

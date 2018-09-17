@@ -2,14 +2,14 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Action\Workspace;
 
-use Claroline\AppBundle\API\Transfer\Action\AbstractCreateAction;
+use Claroline\AppBundle\API\Transfer\Action\AbstractDeleteAction;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
  * @DI\Tag("claroline.transfer.action")
  */
-class Delete extends AbstractCreateAction
+class Delete extends AbstractDeleteAction
 {
     public function getClass()
     {
