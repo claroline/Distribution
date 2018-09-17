@@ -1,6 +1,5 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {url} from '#/main/app/api'
 import {trans} from '#/main/core/translation'
 
 import {Checkboxes} from '#/main/core/layout/form/components/field/checkboxes'
