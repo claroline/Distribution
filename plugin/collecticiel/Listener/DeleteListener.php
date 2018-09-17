@@ -11,7 +11,7 @@ namespace Innova\CollecticielBundle\Listener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Innova\CollecticielBundle\Entity\Document;
-use Proxies\__CG__\Innova\CollecticielBundle\Entity\Dropzone;
+use Innova\CollecticielBundle\Entity\Dropzone;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class DeleteListener
