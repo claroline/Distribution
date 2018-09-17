@@ -331,20 +331,4 @@ class ResourceOldController extends Controller
 
         return $event->getResponse();
     }
-
-    private function getRealTarget(ResourceNode $node)
-    {
-        if ('Claroline\LinkBundle\Entity\Resource\Shortcut' === $node->getClass()) {
-            $resource = $this->resourceManager->getResourceFromNode($node);
-            if (null === $resource) {
-                throw new \Exception('The resource was removed.');
-            }
-            $node = $resource->getTarget();
-            if (null === $node) {
-                throw new \Exception('The node target was removed.');
-            }
-        }
-
-        return $node;
-    }
 }
