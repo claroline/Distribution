@@ -20,4 +20,9 @@ class Delete extends AbstractDeleteAction
     {
         return ['workspace', self::MODE_DELETE];
     }
+
+    public function getBatchSize()
+    {
+        return 500;
+    }
 }
