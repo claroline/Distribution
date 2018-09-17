@@ -28,7 +28,7 @@ abstract class AbstractUpdateAction extends AbstractAction
         $user = $this->crud->update($this->getClass(), $data);
         $successData['update'][] = [
           'data' => $data,
-          'log' => 'The user '.$user->getUsername().' was successfully updated.',
+          'log' => $this->getAction()[0].' removed.',
         ];
     }
 
