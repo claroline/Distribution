@@ -70,7 +70,6 @@ class CsvAdapter implements AdapterInterface
     private function buildObjectFromLine(array $properties, array $headers, Explanation $explanation)
     {
         $object = [];
-        var_dump($properties);
 
         foreach ($headers as $index => $property) {
             //idiot condition proof in case something is wrong with the csv (like more lines or columns)
