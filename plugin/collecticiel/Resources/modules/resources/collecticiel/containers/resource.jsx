@@ -2,8 +2,6 @@ import {connect} from 'react-redux'
 
 import {withReducer} from '#/main/app/store/components/withReducer'
 
-import {hasPermission} from '#/main/core/resource/permissions'
-
 import {reducer, selectors} from '#/plugin/collecticiel/resources/collecticiel/store'
 import {CollecticielResource as CollecticielResourceComponent} from '#/plugin/collecticiel/resources/collecticiel/components/resource'
 
