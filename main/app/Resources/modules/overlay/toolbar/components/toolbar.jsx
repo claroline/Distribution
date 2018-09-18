@@ -18,6 +18,7 @@ import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 const ToolLink = props =>
   <Button
+    id={`tool-link-${props.name}`}
     className="tool-link"
     type={URL_BUTTON}
     icon={`fa fa-fw fa-${props.icon}`}
@@ -212,6 +213,8 @@ class Toolbar extends Component {
 
         <AlertOverlay />
         <ModalOverlay />
+
+        {this.props.children}
       </nav>
     )
   }
@@ -231,7 +234,10 @@ Toolbar.propTypes = {
   })),
   actions: T.arrayOf(T.shape(
     ActionTypes.propTypes
-  ))
+  )),
+
+  // I only use it to append the walkthrough.
+  children: T.node
 }
 
 Toolbar.defaultProps = {

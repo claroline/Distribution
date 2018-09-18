@@ -1,0 +1,134 @@
+@highlightColor: @brand-primary;
+
+// internal
+@moveLength: 4px;
+@smallCircleSize: 1px;
+@smallCircleOffset: 4px; // space between the 2 circles
+@largeCircleSize: 4px;
+@componentPadding: 2px;
+
+.walkthrough-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: @zindex-walkthrough;
+    background-color: @modal-backdrop-bg;
+    // Fade for backdrop
+    &.fade { .opacity(0); }
+    &.in { .opacity(@modal-backdrop-opacity); }
+}
+
+.walkthrough-popover {
+    z-index: @zindex-walkthrough + 2;
+    min-width: @popover-max-width;
+
+    .popover-content {
+        padding: 0;
+    }
+
+    .walkthrough-content {
+        padding: @popover-content-padding;
+    }
+
+    .walkthrough-actions {
+        display: flex;
+        flex-direction: row;
+
+        background: @popover-title-bg;
+        border-top: 1px solid @popover-title-border-color;
+        border-radius: 0 0 @popover-border-radius @popover-border-radius;
+
+        .btn,
+        .btn-link {
+            margin-top: -1px; // absorb container border
+            padding: @padding-small-vertical @popover-content-padding;
+        }
+
+        .btn-previous {
+            margin-left: auto; // push to right
+        }
+
+        .btn-next {
+            border-radius: 0 0 @border-radius-small 0;
+        }
+    }
+}
+
+// NB. this requires the parent to be positioned
+// NB2. all the important is to be sure the highlight override the default component behavior
+//      this may broke some advance styling using pseudo-classes.
+.walkthrough-highlight {
+    z-index: @zindex-walkthrough + 1;
+    box-shadow: 0 0 6px 1px rgba(0, 0, 0, .5);
+
+    &:before,
+    &:after {
+        border-radius: inherit !important;
+        content: " " !important;
+        position: absolute !important;
+        display: block !important;
+
+        width: auto !important;
+        height: auto !important;
+
+        animation-iteration-count: infinite !important;
+        animation-timing-function: ease-out !important;
+        animation-duration: 1.25s !important;
+
+        box-shadow: inset 0 0 2px 0 fadeOut(@highlightColor, .5),
+                          0 0 2px 0 fadeOut(@highlightColor, .5) !important;
+    }
+
+    &:before {
+        border: @largeCircleSize solid @highlightColor !important;
+        animation-name: circleLarge !important;
+    }
+
+    &:after {
+        border: @smallCircleSize solid @highlightColor !important;
+
+        animation-name: circleSmall !important;
+    }
+}
+
+@keyframes circleSmall {
+    from {
+        opacity: 1;
+
+        top   : -(@componentPadding + @largeCircleSize + @smallCircleSize);
+        left  : -(@componentPadding + @largeCircleSize + @smallCircleSize);
+        bottom: -(@componentPadding + @largeCircleSize + @smallCircleSize);
+        right : -(@componentPadding + @largeCircleSize + @smallCircleSize);
+    }
+
+    to {
+        opacity: .15;
+
+        top   : -(@largeCircleSize + @smallCircleOffset + @smallCircleSize + @moveLength);
+        left  : -(@largeCircleSize + @smallCircleOffset + @smallCircleSize + @moveLength);
+        bottom: -(@largeCircleSize + @smallCircleOffset + @smallCircleSize + @moveLength);
+        right : -(@largeCircleSize + @smallCircleOffset + @smallCircleSize + @moveLength);
+    }
+}
+
+@keyframes circleLarge {
+    from {
+        opacity: 1;
+
+        top   : -(@componentPadding + @largeCircleSize);
+        left  : -(@componentPadding + @largeCircleSize);
+        bottom: -(@componentPadding + @largeCircleSize);
+        right : -(@componentPadding + @largeCircleSize);
+    }
+
+    to {
+        opacity: .25;
+
+        top   : -(@largeCircleSize + @moveLength);
+        left  : -(@largeCircleSize + @moveLength);
+        bottom: -(@largeCircleSize + @moveLength);
+        right : -(@largeCircleSize + @moveLength);
+    }
+}

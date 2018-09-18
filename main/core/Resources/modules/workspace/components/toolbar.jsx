@@ -9,6 +9,8 @@ import {url} from '#/main/app/api'
 import {Toolbar} from '#/main/app/overlay/toolbar/components/toolbar'
 import {ASYNC_BUTTON, MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
+import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
+
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {hasPermission} from '#/main/core/workspace/permissions'
 import {select} from '#/main/core/workspace/selectors'
@@ -20,8 +22,7 @@ import {MODAL_WORKSPACE_PARAMETERS} from '#/main/core/workspace/modals/parameter
 const WorkspaceToolbarComponent = props =>
   <Toolbar
     active={props.openedTool}
-    primary={props.tools[0]}
-    tools={props.tools.slice(1)}
+    tools={props.tools}
     actions={[
       {
         type: MODAL_BUTTON,
@@ -75,7 +76,35 @@ const WorkspaceToolbarComponent = props =>
         }
       }
     ]}
-  />
+  >
+    <WalkthroughOverlay
+      steps={[
+        {
+          target: '.workspace-toolbar-container',
+          highlight: '.workspace-toolbar-container',
+          title: 'Let\'s discover the workspace toolbar together !',
+          message: 'The workspace toolbar will allow you to navigate to the different enabled tools.'
+        }, {
+          target: '.tools',
+          highlight: '.tools',
+          title: 'The workspace tools',
+          message: 'blah blah'
+        }
+      ].concat(props.tools.map(tool => ({
+        target: `#tool-link-${tool.name}`,
+        highlight: `#tool-link-${tool.name}`,
+        title: trans(tool.name, {}, 'tools'),
+        message: trans(`${tool.name}_desc`, {}, 'tools')
+      })), [
+        {
+          target: '.additional-tools',
+          highlight: '.additional-tools',
+          title: 'The workspace actions',
+          message: 'blah blah'
+        }
+      ])}
+    />
+  </Toolbar>
 
 WorkspaceToolbarComponent.propTypes = {
   workspace: T.shape(

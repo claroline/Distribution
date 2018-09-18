@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 
+// TODO : move in dom module
+
 // todo : find where I must put it
 // (I put it here for now because it's the root of all apps)
 import {asset} from '#/main/app/config'
