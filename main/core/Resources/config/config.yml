@@ -115,7 +115,7 @@ plugin:
               - name: change_file
                 decoder: edit
                 group: management
-                api: [PUT]
+                api: [POST]
 
         - name: directory
           class: Claroline\CoreBundle\Entity\Resource\Directory

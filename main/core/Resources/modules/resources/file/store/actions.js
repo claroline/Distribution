@@ -1,4 +1,4 @@
-import {API_REQUEST, url} from '#/main/app/api'
+import {API_REQUEST} from '#/main/app/api'
 
 export const actions = {}
 
@@ -8,7 +8,7 @@ actions.changeFile = (node, file) => {
 
   return ({
     [API_REQUEST]: {
-      url: ['apiv2_resource_file_change', {node: node.id}],
+      url: ['claro_resource_action_short', {action: 'change_file', id: node.id}],
       type: 'upload',
       request: {
         method: 'POST',
@@ -17,8 +17,7 @@ actions.changeFile = (node, file) => {
           //no Content type for automatic detection of boundaries.
           'X-Requested-With': 'XMLHttpRequest'
         })
-      },
-      success: (response, dispatch) => console.log(response)
+      }
     }
   })
 }
