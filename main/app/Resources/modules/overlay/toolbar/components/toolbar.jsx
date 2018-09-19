@@ -197,6 +197,7 @@ class Toolbar extends Component {
             {times(this.state.displayedActions, (i) =>
               <Button
                 {...displayedActions[i]}
+                id={`action-link-${displayedActions[i].name}`}
                 key={toKey(displayedActions[i].label)}
                 className="tool-link"
                 tooltip="right"

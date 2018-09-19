@@ -1,0 +1,26 @@
+{
+  "action": "Action : %actionName%",
+  "tool": "Outil : %toolName%",
+  "workspace": {
+    "sidebar": {
+      "title": "Découvrons la barre d'outils de l'espace d'activités ensemble !",
+      "general": "La barre d'outils vous permet de vous déplacer au sein de l'espace d'activités ouvert.",
+      "tools-group": "La section outils vous permet d'ouvrir les différents outils activés dans l'espace d'activités.",
+      "actions-group": "La section actions vous permet de gérer et consulter les informations de l'espace d'activités.",
+      "opened-tool": "Ceci est l'outils actuellement ouvert."
+    },
+    "tools": {
+      "analytics": "Affiche des statistiques sur l'usage de l'espace d'activités.",
+      "home": "Permet de créer une vue d'ensemble de l'espace d'activités.",
+      "logs": "Affiche les actions effectuées par les utilisateurs dans l'espace d'activités.",
+      "resource_manager": "Permet de voir et gérer les ressources de l'espace d'activités.",
+      "users": "Permet de voir les utilisateurs et les groupes inscrits, de changer leurs droits ainsi que d'en inscrire de nouveaux."
+    },
+    "actions": {
+      "about": "Affiche les informations générales de l'espace d'activités.",
+      "delete": "Permet de supprimer l'espace d'activités ainsi que tous ses contenus.",
+      "impersonation": "Permet de parcourir l'espace d'activités en utilisant un autre rôle afin de vois ce que ces utilisateurs voient.",
+      "parameters": "Permet de configurer l'espace d'activités."
+    }
+  }
+}

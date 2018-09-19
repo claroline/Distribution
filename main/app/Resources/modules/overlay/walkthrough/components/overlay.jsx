@@ -8,10 +8,6 @@ import {addClasses, removeClasses} from '#/main/app/dom/classes'
 import {WalkThroughPopover} from '#/main/app/overlay/walkthrough/components/popover'
 
 class WalkthroughOverlay extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   componentDidMount() {
     this.props.start(this.props.steps)
 

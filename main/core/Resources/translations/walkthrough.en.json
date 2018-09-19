@@ -1,0 +1,26 @@
+{
+  "action": "Action: %actionName%",
+  "tool": "Tool: %toolName%",
+  "workspace": {
+    "sidebar": {
+      "title": "Let's discover the workspace toolbar together !",
+      "general": "The toolbar will allow you to navigate inside the current workspace.",
+      "tools-group": "The tools group permits to open the different enabled tools.",
+      "actions-group": "The actions group permits to manage and show information about the workspace.",
+      "opened-tool": "This is the currently opened tool."
+    },
+    "tools": {
+      "analytics": "Shows some analytics data of the workspace usage.",
+      "home": "Permits to create an overview of the workspace.",
+      "logs": "Shows the actions done by users in the workspace.",
+      "resource_manager": "Permits to view and manage the resources of the workspace.",
+      "users": "Permits to view the registered users and groups, changes their rights and register new ones."
+    },
+    "actions": {
+      "about": "Shows general information about the workspace.",
+      "delete": "Permits to delete the workspace and all of its contents.",
+      "impersonation": "Permits to navigate inside the workspace with another role to see what those users see.",
+      "parameters": "Permits to configure the workspace."
+    }
+  }
+}
