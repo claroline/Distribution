@@ -13,7 +13,7 @@ namespace Claroline\AppBundle\API\Finder;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\ORM\NativeQuery;
-use Doctrine\ORM\Query\Query;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -113,8 +113,11 @@ abstract class AbstractFinder implements FinderInterface
                 if (is_string($value)) {
                     $sql .= "'{$value}'";
                 } elseif (is_array($value)) {
+			$value = array_map(function($val) {
+                            return is_string($val) ? "'$val'": $val;
+			}, $value);
+		    $sql .= implode(',', $value);
                 } elseif (is_int($value)) {
-                } elseif (is_bool($value)) {
                 } else {
                     $sql .= $value;
                 }
