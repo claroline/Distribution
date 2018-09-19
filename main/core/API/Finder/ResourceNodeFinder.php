@@ -136,7 +136,7 @@ class ResourceNodeFinder extends AbstractFinder
                         }
                     }
 
-                    $managerSearch = $roleSerach = $searches;
+                    $managerSearch = $roleSearch = $searches;
                     $managerSearch['_managerRoles'] = $managerRoles;
                     $roleSearch['_roles'] = $otherRoles;
                     unset($managerSearch['roles']);
