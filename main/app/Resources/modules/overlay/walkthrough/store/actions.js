@@ -5,10 +5,12 @@ export const WALKTHROUGH_START = 'WALKTHROUGH_START'
 export const WALKTHROUGH_FINISH = 'WALKTHROUGH_FINISH'
 export const WALKTHROUGH_NEXT = 'WALKTHROUGH_NEXT'
 export const WALKTHROUGH_PREVIOUS = 'WALKTHROUGH_PREVIOUS'
+export const WALKTHROUGH_RESTART = 'WALKTHROUGH_RESTART'
 
 export const actions = {}
 
 actions.start = makeActionCreator(WALKTHROUGH_START, 'steps')
+actions.restart = makeActionCreator(WALKTHROUGH_RESTART)
 actions.finish = makeActionCreator(WALKTHROUGH_FINISH)
 actions.skip = makeActionCreator(WALKTHROUGH_SKIP)
 

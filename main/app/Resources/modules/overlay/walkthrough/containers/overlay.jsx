@@ -17,6 +17,9 @@ const WalkthroughOverlay = withReducer(selectors.STORE_NAME, reducer)(
       start(steps) {
         dispatch(actions.start(steps))
       },
+      restart() {
+        dispatch(actions.restart())
+      },
       skip() {
         dispatch(actions.skip())
       },

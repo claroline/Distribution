@@ -5,7 +5,8 @@ import {
   WALKTHROUGH_SKIP,
   WALKTHROUGH_FINISH,
   WALKTHROUGH_NEXT,
-  WALKTHROUGH_PREVIOUS
+  WALKTHROUGH_PREVIOUS,
+  WALKTHROUGH_RESTART
 } from '#/main/app/overlay/walkthrough/store/actions'
 
 const reducer = combineReducers({
@@ -14,7 +15,8 @@ const reducer = combineReducers({
    */
   started: makeReducer(false, {
     [WALKTHROUGH_START]: () => true,
-    [WALKTHROUGH_FINISH]: () => false
+    [WALKTHROUGH_FINISH]: () => false,
+    [WALKTHROUGH_RESTART]: () => true
   }),
 
   /**
@@ -22,7 +24,8 @@ const reducer = combineReducers({
    */
   skipped: makeReducer(false, {
     [WALKTHROUGH_START]: () => false,
-    [WALKTHROUGH_SKIP]: () => true
+    [WALKTHROUGH_SKIP]: () => true,
+    [WALKTHROUGH_RESTART]: () => false
   }),
 
   /**
@@ -30,7 +33,8 @@ const reducer = combineReducers({
    */
   finished: makeReducer(false, {
     [WALKTHROUGH_START]: () => false,
-    [WALKTHROUGH_FINISH]: () => true
+    [WALKTHROUGH_FINISH]: () => true,
+    [WALKTHROUGH_RESTART]: () => false
   }),
 
   current: makeReducer(null, {
@@ -38,7 +42,8 @@ const reducer = combineReducers({
     [WALKTHROUGH_NEXT]: (state, action) => state + 1,
     [WALKTHROUGH_PREVIOUS]: (state, action) => state - 1,
     [WALKTHROUGH_FINISH]: () => null,
-    [WALKTHROUGH_SKIP]: () => null
+    [WALKTHROUGH_SKIP]: () => null,
+    [WALKTHROUGH_RESTART]: () => 0
   }),
 
   /**

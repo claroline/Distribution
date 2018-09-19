@@ -24,6 +24,12 @@
     z-index: @zindex-walkthrough + 2;
     min-width: @popover-max-width;
 
+    &.walkthrough-popover-centered {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
     .popover-content {
         padding: 0;
     }

@@ -7,7 +7,7 @@
       "general": "La barre d'outils vous permet de vous déplacer au sein de l'espace d'activités ouvert.",
       "tools-group": "La section outils vous permet d'ouvrir les différents outils activés dans l'espace d'activités.",
       "actions-group": "La section actions vous permet de gérer et consulter les informations de l'espace d'activités.",
-      "opened-tool": "Ceci est l'outils actuellement ouvert."
+      "opened-tool": "Ceci est l'outil actuellement ouvert."
     },
     "tools": {
       "analytics": "Affiche des statistiques sur l'usage de l'espace d'activités.",

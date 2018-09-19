@@ -23,6 +23,12 @@ const WorkspaceToolbarComponent = props => {
   const openedTool = props.tools.find(tool => props.openedTool === tool.name)
   const actions = [
     {
+      name: 'walkthrough',
+      type: MODAL_BUTTON,
+      icon: 'fa fa-street-view',
+      label: trans('show-walkthrough', {}, 'actions'),
+      modal: []
+    }, {
       name: 'about',
       type: MODAL_BUTTON,
       icon: 'fa fa-info',
@@ -89,46 +95,82 @@ const WorkspaceToolbarComponent = props => {
       <WalkthroughOverlay
         steps={[
           {
-            target: '.workspace-toolbar-container',
-            highlight: '.workspace-toolbar-container',
-            title: trans('workspace.sidebar.title', {}, 'walkthrough'),
-            message: trans('workspace.sidebar.general', {}, 'walkthrough')
+            highlight: ['.workspace-toolbar-container'],
+            content: {
+              title: trans('workspace.sidebar.title', {}, 'walkthrough'),
+              message: trans('workspace.sidebar.general', {}, 'walkthrough')
+            },
+            position: {
+              target: '.workspace-toolbar-container',
+              placement: 'right'
+            }
           }, {
-            target: '.tools',
-            highlight: '.tools',
-            title: trans('tools'),
-            message: trans('workspace.sidebar.tools-group', {}, 'walkthrough')
+            highlight: ['.tools'],
+            content: {
+              title: trans('tools'),
+              message: trans('workspace.sidebar.tools-group', {}, 'walkthrough')
+            },
+            position: {
+              target: '.tools',
+              placement: 'right'
+            }
           }
         ].concat(
           // help for active tool
           openedTool ? [{
-            target: `#tool-link-${openedTool.name}`,
-            highlight: `#tool-link-${openedTool.name}`,
-            message: trans(`workspace.sidebar.opened-tool`, {}, 'walkthrough')
+            highlight: [`#tool-link-${openedTool.name}`],
+            content: {
+              message: trans(`workspace.sidebar.opened-tool`, {}, 'walkthrough')
+            },
+            position: {
+              target: `#tool-link-${openedTool.name}`,
+              placement: 'right'
+            }
           }] : [],
           // help for each tool
           props.tools.map(tool => ({
-            target: `#tool-link-${tool.name}`,
-            highlight: `#tool-link-${tool.name}`,
-            title: trans('tool', {toolName: trans(tool.name, {}, 'tools')}, 'walkthrough'),
-            message: trans(`workspace.tools.${tool.name}`, {}, 'walkthrough')
+            highlight: [`#tool-link-${tool.name}`],
+            content: {
+              title: trans('tool', {toolName: trans(tool.name, {}, 'tools')}, 'walkthrough'),
+              message: trans(`workspace.tools.${tool.name}`, {}, 'walkthrough')
+            },
+            position: {
+              target: `#tool-link-${tool.name}`,
+              placement: 'right'
+            }
           })),
           // help for action group
           [{
-            target: '.additional-tools',
-            highlight: '.additional-tools',
-            title: trans('actions'),
-            message: trans('workspace.sidebar.actions-group', {}, 'walkthrough')
+            highlight: ['.additional-tools'],
+            content: {
+              title: trans('actions'),
+              message: trans('workspace.sidebar.actions-group', {}, 'walkthrough')
+            },
+            position: {
+              target: '.additional-tools',
+              placement: 'right'
+            }
           }],
           // help for each displayed action
           actions
-            .filter(action => action.displayed)
+            .filter(action => undefined === action.displayed || action.displayed)
             .map(action => ({
-              target: `#action-link-${action.name}`,
-              highlight: `#action-link-${action.name}`,
-              title: trans('action', {actionName: action.label}, 'walkthrough'),
-              message: trans(`workspace.actions.${action.name}`, {}, 'walkthrough')
-            }))
+              highlight: [`#action-link-${action.name}`],
+              content: {
+                title: trans('action', {actionName: action.label}, 'walkthrough'),
+                message: trans(`workspace.actions.${action.name}`, {}, 'walkthrough')
+              },
+              position: {
+                target: `#action-link-${action.name}`,
+                placement: 'right'
+              }
+            })),
+          [{
+            highlight: [`#action-link-walkthrough`],
+            content: {
+              message: trans('workspace.sidebar.end', {}, 'walkthrough')
+            }
+          }]
         )}
       />
     </Toolbar>
