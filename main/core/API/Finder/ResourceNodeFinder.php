@@ -12,14 +12,13 @@
 namespace Claroline\CoreBundle\API\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  * @DI\Service("claroline.api.finder.resource_node")
@@ -54,8 +53,8 @@ class ResourceNodeFinder extends AbstractFinder
         EntityManager $em
     ) {
         $this->authChecker = $authChecker;
-	$this->tokenStorage = $tokenStorage;
-	$this->_em = $em;
+        $this->tokenStorage = $tokenStorage;
+        $this->_em = $em;
     }
 
     public function getClass()
@@ -63,7 +62,7 @@ class ResourceNodeFinder extends AbstractFinder
         return 'Claroline\CoreBundle\Entity\Resource\ResourceNode';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null,  array $options = ['count' => false, 'page' => 0, 'limit' => -1])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
         $qb->join('obj.resourceType', 'ort');
         $qb->join('obj.workspace', 'ow');
@@ -142,8 +141,8 @@ class ResourceNodeFinder extends AbstractFinder
                     $roleSearch['_roles'] = $otherRoles;
                     unset($managerSearch['roles']);
                     unset($roleSearch['roles']);
-		    unset($searches['roles']);
-		    
+            unset($searches['roles']);
+
                     $qbManager = $this->om->createQueryBuilder();
                     $qbManager->select('DISTINCT obj')->from($this->getClass(), 'obj');
                     $this->configureQueryBuilder($qbManager, $managerSearch, $sortBy);
@@ -157,8 +156,8 @@ class ResourceNodeFinder extends AbstractFinder
                     //this is the second part of the union
                     $sqlRoles = $this->getSql($qbRoles->getQuery());
                     $sqlRoles = $this->removeAlias($sqlRoles);
-		    $together = $sqlManager.' UNION '.$sqlRoles;
- 
+            $together = $sqlManager.' UNION '.$sqlRoles;
+
                     //we might want to add a count somehere here
                     //add limit & offset too
 
@@ -184,7 +183,7 @@ class ResourceNodeFinder extends AbstractFinder
                     }
 
                     return $query;
- 
+
                     break;
                 case '_managerRoles':
                     $qb->leftJoin('ow.roles', 'owr');
@@ -274,13 +273,13 @@ class ResourceNodeFinder extends AbstractFinder
           'AS icon_id_28',
           'AS parent_id_29',
           'AS workspace_id_30',
-          'AS creator_id_31'
+          'AS creator_id_31',
         ];
 
-      foreach ($aliases as $alias) {
-          $sql = str_replace($alias, '', $sql);
-      }
+        foreach ($aliases as $alias) {
+            $sql = str_replace($alias, '', $sql);
+        }
 
-      return $sql;
+        return $sql;
     }
 }
