@@ -141,7 +141,7 @@ class ResourceNodeFinder extends AbstractFinder
                     $roleSearch['_roles'] = $otherRoles;
                     unset($managerSearch['roles']);
                     unset($roleSearch['roles']);
-            unset($searches['roles']);
+                    unset($searches['roles']);
 
                     $qbManager = $this->om->createQueryBuilder();
                     $qbManager->select('DISTINCT obj')->from($this->getClass(), 'obj');
@@ -156,7 +156,7 @@ class ResourceNodeFinder extends AbstractFinder
                     //this is the second part of the union
                     $sqlRoles = $this->getSql($qbRoles->getQuery());
                     $sqlRoles = $this->removeAlias($sqlRoles);
-            $together = $sqlManager.' UNION '.$sqlRoles;
+                    $together = $sqlManager.' UNION '.$sqlRoles;
 
                     //we might want to add a count somehere here
                     //add limit & offset too
