@@ -128,12 +128,63 @@ class ResourceNodeFinder extends AbstractFinder
                             $otherRoles[] = $roleName;
                         }
                     }
+
+                    $managerSearch = $roleSerach = $searches;
+                    $managerSearch['_managerRoles'] = $managerRoles;
+                    $roleSerach['_roles'] = $otherRoles;
+                    unset($byUserSearch['roles']);
+                    unset($byGroupSearch['roles']);
+                    $qbManager = $this->om->createQueryBuilder();
+                    $qbManager->select('DISTINCT obj')->from($this->getClass(), 'obj');
+                    $this->configureQueryBuilder($qbManager, $managerSearch, $sortBy);
+                    //this is our first part of the union
+                    $sqlManager = $this->getSql($qbManager->getQuery());
+                    $sqlManager = $this->removeAlias($sqlManager);
+                    $qbRoles = $this->om->createQueryBuilder();
+                    $qbRoles->select('DISTINCT obj')->from($this->getClass(), 'obj');
+                    $this->configureQueryBuilder($qbRoles, $roleSerach, $sortBy);
+                    //this is the second part of the union
+                    $sqlRoles = $this->getSql($qbRoles->getQuery());
+                    $sqlRoles = $this->removeAlias($sqlRoles);
+                    $together = $sqlManager.' UNION '.$sqlRoles;
+                    //we might want to add a count somehere here
+                    //add limit & offset too
+
+                    if ($options['count']) {
+                        $together = "SELECT COUNT(*) as count FROM ($together) AS wathever";
+                        $rsm = new ResultSetMapping();
+                        $rsm->addScalarResult('count', 'count', 'integer');
+                        $query = $this->_em->createNativeQuery($together, $rsm);
+                    } else {
+                        //add page & limit
+                        if ($options['limit'] > -1) {
+                            $together .= ' LIMIT '.$options['limit'];
+                        }
+
+                        if ($options['limit'] > 0) {
+                            $offset = $options['limit'] * $options['page'];
+                            $together .= ' OFFSET  '.$offset;
+                        }
+
+                        $rsm = new ResultSetMappingBuilder($this->_em);
+                        $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
+                        $query = $this->_em->createNativeQuery($together, $rsm);
+                    }
+
+                    return $query;
+
+                    break;
+                case '_managerRoles':
                     $qb->leftJoin('ow.roles', 'owr');
+                    $qb->andWhere('wr.name IN (:managerRoles)');
+                    $qb->setParameter('managerRoles', $managerRoles);
+                    break;
+                case '_roles':
                     $qb->leftJoin('obj.rights', 'rights');
                     $qb->join('rights.role', 'rightsr');
-                    $qb->andWhere('(owr.name IN (:managerRoles)) OR ((rightsr.name IN (:otherRoles)) AND (BIT_AND(rights.mask, 1) = 1))');
-                    $qb->setParameter('managerRoles', $managerRoles);
-                    $qb->setParameter('otherRoles', $otherRoles);
+                    $qb->andWhere('rightsr.name IN (:otherRoles)');
+                    $qb->andWere('BIT_AND(rights.mask, 1) = 1');
+                      $qb->setParameter('otherRoles', $otherRoles);
                     break;
                 default:
                     if (is_string($filterValue)) {
@@ -174,5 +225,9 @@ class ResourceNodeFinder extends AbstractFinder
         }
 
         return $qb;
+    }
+
+    public function removeAlias()
+    {
     }
 }
