@@ -120,7 +120,7 @@ const WorkspaceToolbarComponent = props => {
           openedTool ? [{
             highlight: [`#tool-link-${openedTool.name}`],
             content: {
-              message: trans(`workspace.sidebar.opened-tool`, {}, 'walkthrough')
+              message: trans('workspace.sidebar.opened-tool', {}, 'walkthrough')
             },
             position: {
               target: `#tool-link-${openedTool.name}`,
@@ -166,7 +166,7 @@ const WorkspaceToolbarComponent = props => {
               }
             })),
           [{
-            highlight: [`#action-link-walkthrough`],
+            highlight: ['#action-link-walkthrough'],
             content: {
               message: trans('workspace.sidebar.end', {}, 'walkthrough')
             }

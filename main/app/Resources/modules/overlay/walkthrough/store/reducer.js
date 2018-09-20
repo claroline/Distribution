@@ -39,8 +39,8 @@ const reducer = combineReducers({
 
   current: makeReducer(null, {
     [WALKTHROUGH_START]: () => 0,
-    [WALKTHROUGH_NEXT]: (state, action) => state + 1,
-    [WALKTHROUGH_PREVIOUS]: (state, action) => state - 1,
+    [WALKTHROUGH_NEXT]: (state) => state + 1,
+    [WALKTHROUGH_PREVIOUS]: (state) => state - 1,
     [WALKTHROUGH_FINISH]: () => null,
     [WALKTHROUGH_SKIP]: () => null,
     [WALKTHROUGH_RESTART]: () => 0

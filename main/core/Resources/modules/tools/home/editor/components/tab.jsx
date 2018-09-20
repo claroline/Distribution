@@ -22,8 +22,7 @@ const TabEditor = props =>
       ['apiv2_home_admin', {
         context: props.context.type,
         contextId: props.context.data ? props.context.data.uuid : currentUser().id
-      }]
-      :
+      }] :
       ['apiv2_home_update', {
         context: props.context.type,
         contextId: props.context.data ? props.context.data.uuid : currentUser().id

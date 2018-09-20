@@ -20,6 +20,7 @@ const WalkthroughPosition = props => props.position ?
   props.children
 
 WalkthroughPosition.propTypes = {
+  children: T.node.isRequired,
   position: T.shape({
     target: T.string.isRequired,
     placement: T.oneOf(['left', 'top', 'right', 'bottom']).isRequired

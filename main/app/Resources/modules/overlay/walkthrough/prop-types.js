@@ -8,7 +8,7 @@ const WalkthroughStep = {
     highlight: T.arrayOf(T.string),
     content: T.shape({
       title: T.string,
-      message: T.string.isRequired,
+      message: T.string.isRequired
     }).isRequired,
     position: T.shape({
       target: T.string.isRequired,

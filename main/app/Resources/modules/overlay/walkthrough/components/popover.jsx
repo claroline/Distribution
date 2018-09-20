@@ -70,6 +70,8 @@ const WalkThroughPopover = props =>
 WalkThroughPopover.propTypes = {
   className: T.string,
   placement: T.oneOf(['left', 'top', 'right', 'bottom']),
+  positionLeft: T.number,
+  positionTop: T.number,
   title: T.string,
   message: T.string.isRequired,
   hasPrevious: T.bool.isRequired,

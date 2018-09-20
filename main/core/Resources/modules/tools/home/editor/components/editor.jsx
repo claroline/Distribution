@@ -11,9 +11,10 @@ import {
   PageContainer,
   PageHeader,
   PageContent,
+  PageGroupActions,
   PageActions,
   PageAction,
-  PageGroupActions
+  MoreAction
 } from '#/main/core/layout/page'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -42,24 +43,6 @@ const EditorComponent = props =>
       />
 
       <PageActions>
-        {1 < props.tabs.length &&
-          <PageGroupActions>
-            <PageAction
-              type={CALLBACK_BUTTON}
-              label={trans('delete', {}, 'actions')}
-              icon="fa fa-fw fa-trash-o"
-              dangerous={true}
-              confirm={{
-                title: trans('home_tab_delete_confirm_title'),
-                message: trans('home_tab_delete_confirm_message'),
-                subtitle: props.currentTab.title
-              }}
-              disabled={props.readOnly}
-              callback={() => props.deleteTab(props.tabs, props.currentTab, props.history.push)}
-            />
-          </PageGroupActions>
-        }
-
         <PageGroupActions>
           <PageAction
             type={LINK_BUTTON}
@@ -68,6 +51,32 @@ const EditorComponent = props =>
             target="/edit"
             disabled={true}
             primary={true}
+          />
+        </PageGroupActions>
+
+        <PageGroupActions>
+          <MoreAction
+            actions={[
+              {
+                name: 'walkthrough',
+                type: CALLBACK_BUTTON,
+                icon: 'fa fa-street-view',
+                label: trans('show-walkthrough', {}, 'actions'),
+                callback: () => true
+              }, {
+                type: CALLBACK_BUTTON,
+                label: trans('delete', {}, 'actions'),
+                icon: 'fa fa-fw fa-trash-o',
+                dangerous: true,
+                confirm: {
+                  title: trans('home_tab_delete_confirm_title'),
+                  message: trans('home_tab_delete_confirm_message'),
+                  subtitle: props.currentTab.title
+                },
+                disabled: props.readOnly || 1 >= props.tabs.length,
+                callback: () => props.deleteTab(props.tabs, props.currentTab, props.history.push)
+              }
+            ]}
           />
         </PageGroupActions>
       </PageActions>
