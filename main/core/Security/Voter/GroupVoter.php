@@ -29,7 +29,6 @@ class GroupVoter extends AbstractVoter
         $collection = isset($options['collection']) ? $options['collection'] : null;
 
         switch ($attributes[0]) {
-            case self::CREATE: return $this->checkCreation($token);
             case self::EDIT:   return $this->checkEdit($token, $object);
             case self::DELETE: return $this->checkDelete($token, $object);
             case self::VIEW:   return $this->checkView($token, $object);

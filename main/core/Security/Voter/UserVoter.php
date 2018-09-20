@@ -38,7 +38,6 @@ class UserVoter extends AbstractVoter
 
         switch ($attributes[0]) {
             case self::VIEW:   return $this->checkView($token, $object);
-            case self::CREATE: return $this->checkCreation();
             case self::EDIT:   return $this->checkEdit($token, $object);
             case self::DELETE: return $this->checkDelete($token, $object);
             case self::PATCH:  return $this->checkPatch($token, $object, $collection);
