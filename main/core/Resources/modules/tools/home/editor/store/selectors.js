@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect'
 
 import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
-import {selectors as homeSelectors} from '#/main/core/tools/home/selectors'
+import {selectors as homeSelectors} from '#/main/core/tools/home/store/selectors'
 
 const editorTabs = (state) => formSelectors.data(formSelectors.form(state, 'editor'))
 
@@ -25,10 +25,18 @@ const sortedEditorTabs = createSelector(
   (editorTabs) => editorTabs.sort((a,b) => a.position - b.position)
 )
 
+const readOnly = createSelector(
+  [homeSelectors.context, homeSelectors.administration, currentTab],
+  (context, administration, currentTab) => currentTab.type === 'administration' &&
+    currentTab.locked &&
+    context.type === 'desktop' && !administration
+)
+
 export const selectors = {
   editorTabs,
   currentTab,
   currentTabIndex,
   widgets,
-  sortedEditorTabs
+  sortedEditorTabs,
+  readOnly
 }

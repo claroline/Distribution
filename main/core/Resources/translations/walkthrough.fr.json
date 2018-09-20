@@ -1,6 +1,6 @@
 {
-  "action": "Action : %actionName%",
-  "tool": "Outil : %toolName%",
+  "action": "L'action \"%actionName%\"",
+  "tool": "L'outil \"%toolName%\"",
   "workspace": {
     "sidebar": {
       "title": "Découvrons la barre d'outils de l'espace d'activités ensemble !",
@@ -19,7 +19,7 @@
     "actions": {
       "about": "Affiche les informations générales de l'espace d'activités.",
       "delete": "Permet de supprimer l'espace d'activités ainsi que tous ses contenus.",
-      "impersonation": "Permet de parcourir l'espace d'activités en utilisant un autre rôle afin de vois ce que ces utilisateurs voient.",
+      "impersonation": "Permet de parcourir l'espace d'activités en utilisant un autre rôle afin de voir ce que ces utilisateurs voient.",
       "parameters": "Permet de configurer l'espace d'activités."
     }
   }

@@ -88,7 +88,7 @@ class WalkthroughOverlay extends Component {
             >
               <WalkThroughPopover
                 {...this.props.current.content}
-                className={!this.props.current.position && 'walkthrough-popover-centered'}
+                className={!this.props.current.position ? 'walkthrough-popover-centered' : undefined}
                 skip={this.props.skip}
                 hasPrevious={this.props.hasPrevious}
                 previous={this.props.previous}
