@@ -184,6 +184,11 @@ class ResourceController
      */
     public function showAction(ResourceNode $resourceNode)
     {
+        if ('shortcut' === $resourceNode->getResourceType()->getName()) {
+            $shortcut = $this->manager->getResourceFromNode($resourceNode);
+            $resourceNode = $shortcut->getTarget();
+        }
+
         return [
             'resourceNode' => $resourceNode,
         ];
