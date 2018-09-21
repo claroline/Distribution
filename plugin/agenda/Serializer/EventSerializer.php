@@ -44,7 +44,7 @@ class EventSerializer
     public function serialize(Event $event)
     {
         $editable = $event->getWorkspace() ?
-            $editableWorkspace = $this->authorization->isGranted('EDIT', $event) :
+            $this->authorization->isGranted('EDIT', $event) :
             false !== $event->isEditable();
 
         return [

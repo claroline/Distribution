@@ -38,13 +38,6 @@ class GroupVoter extends AbstractVoter
         return VoterInterface::ACCESS_ABSTAIN;
     }
 
-    private function checkCreation(TokenInterface $token)
-    {
-        return $this->hasAdminToolAccess($token, 'user_management') ?
-             VoterInterface::ACCESS_GRANTED :
-             VoterInterface::ACCESS_DENIED;
-    }
-
     private function checkEdit($token, Group $group)
     {
         if (!$this->isGroupManaged($token, $group)) {

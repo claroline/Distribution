@@ -47,18 +47,6 @@ class UserVoter extends AbstractVoter
     }
 
     /**
-     * @return int
-     */
-    private function checkCreation()
-    {
-        /** @var \Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler */
-        $handler = $this->getContainer()->get('claroline.config.platform_config_handler');
-
-        return $handler->getParameter('allow_self_registration') ?
-             VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_ABSTAIN;
-    }
-
-    /**
      * We currently check this manually inside the Controller. This should change and be checked here.
      *
      * @param TokenInterface $token
