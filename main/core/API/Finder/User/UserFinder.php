@@ -182,13 +182,13 @@ class UserFinder extends AbstractFinder
                     unset($byGroupSearch['workspace']);
                     $qbUser = $this->om->createQueryBuilder();
                     $qbUser->select('DISTINCT obj')->from($this->getClass(), 'obj');
-                    $this->configureQueryBuilder($qbUser, $byUserSearch, $sortBy);
+                    $this->configureQueryBuilder($qbUser, $byUserSearch);
                     //this is our first part of the union
                     $sqlUser = $this->getSql($qbUser);
                     $sqlUser = $this->removeAlias($sqlUser);
                     $qbGroup = $this->om->createQueryBuilder();
                     $qbGroup->select('DISTINCT obj')->from($this->getClass(), 'obj');
-                    $this->configureQueryBuilder($qbGroup, $byGroupSearch, $sortBy);
+                    $this->configureQueryBuilder($qbGroup, $byGroupSearch);
                     //this is the second part of the union
                     $sqlGroup = $this->getSql($qbGroup);
                     $sqlGroup = $this->removeAlias($sqlGroup);
