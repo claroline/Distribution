@@ -21,6 +21,99 @@ import {WorkspaceList} from '#/main/core/administration/workspace/workspace/comp
 
 // todo : restore custom actions the same way resource actions are implemented
 
+const registerGroupModal = (dispatch, workspaces, roles) => {
+  const choices = {}
+  roles.forEach(role => {
+    choices[role] = trans(role)
+  })
+
+  return modalActions.showModal(MODAL_DATA_LIST, {
+    icon: 'fa fa-fw fa-users',
+    title: trans('register'),
+    confirmText: trans('register'),
+    name: 'selected.group',
+    definition: GroupList.definition,
+    card: GroupList.card,
+    fetch: {
+      url: ['apiv2_group_list_managed'],
+      autoload: true
+    },
+    handleSelect: (groups) => {
+      dispatch(modalActions.showModal(MODAL_DATA_FORM, {
+        title: trans('register'),
+        save: role => {
+
+          console.log(dispatch, actions, workspaces, groups, role.role)
+          dispatch(actions.registerGroups(role.role, workspaces, groups))
+        },
+        sections: [
+          {
+            title: trans('roles'),
+            primary: true,
+            fields: [{
+              name: 'role',
+              type: 'choice',
+              label: trans('role'),
+              required: true,
+              options: {
+                multiple: false,
+                condensed: false,
+                choices
+              }
+            }]
+          }
+        ]
+      }))
+    }
+  })
+
+}
+
+const registerUserModal = (dispatch, workspaces, roles) => {
+  const choices = {}
+  roles.forEach(role => {
+    choices[role] = trans(role)
+  })
+
+  return modalActions.showModal(MODAL_DATA_LIST, {
+    icon: 'fa fa-fw fa-user',
+    title: trans('register'),
+    confirmText: trans('register'),
+    name: 'selected.user',
+    definition: UserList.definition,
+    card: UserList.card,
+    fetch: {
+      url: ['apiv2_user_list_managed_organization'],
+      autoload: true
+    },
+    handleSelect: (users) => {
+      dispatch(modalActions.showModal(MODAL_DATA_FORM, {
+        title: trans('register'),
+        save: role => {
+          dispatch(actions.registerUsers(role.role, workspaces, users))
+        },
+        sections: [
+          {
+            title: trans('roles'),
+            primary: true,
+            fields: [{
+              name: 'role',
+              type: 'choice',
+              label: trans('role'),
+              required: true,
+              options: {
+                multiple: false,
+                condensed: false,
+                choices
+              }
+            }]
+          }
+        ]
+      }))
+    }
+  })
+}
+
 const WorkspacesList = props =>
   <ListData
     name="workspaces.list"
@@ -107,93 +200,10 @@ const Workspaces = connect(
     },
 
     registerUsers(workspaces) {
-      dispatch(
-        modalActions.showModal(MODAL_DATA_LIST, {
-          icon: 'fa fa-fw fa-user',
-          title: trans('register'),
-          confirmText: trans('register'),
-          name: 'selected.user',
-          definition: UserList.definition,
-          card: UserList.card,
-          fetch: {
-            url: ['apiv2_user_list_managed_organization'],
-            autoload: true
-          },
-          handleSelect: (users) => {
-            dispatch(modalActions.showModal(MODAL_DATA_FORM, {
-              title: trans('register'),
-              save: role => {
-                dispatch(actions.registerUsers(role.role, workspaces, users))
-              },
-              sections: [
-                {
-                  title: trans('roles'),
-                  primary: true,
-                  fields: [{
-                    name: 'role',
-                    type: 'choice',
-                    label: trans('role'),
-                    required: true,
-                    options: {
-                      multiple: false,
-                      condensed: false,
-                      choices: {
-                        'collaborator': trans('collaborator'),
-                        'manager': trans('manager')
-                      }
-                    }
-                  }]
-                }
-              ]
-            }))
-          }
-        })
-      )
+      dispatch(actions.openRegistrationModal(workspaces, registerUserModal))
     },
-
     registerGroups(workspaces) {
-      dispatch(
-        modalActions.showModal(MODAL_DATA_LIST, {
-          icon: 'fa fa-fw fa-users',
-          title: trans('register'),
-          confirmText: trans('register'),
-          name: 'selected.group',
-          definition: GroupList.definition,
-          card: GroupList.card,
-          fetch: {
-            url: ['apiv2_group_list_managed'],
-            autoload: true
-          },
-          handleSelect: (groups) => {
-            dispatch(modalActions.showModal(MODAL_DATA_FORM, {
-              title: trans('register'),
-              save: role => {
-                dispatch(actions.registerGroups(role.role, workspaces, groups))
-              },
-              sections: [
-                {
-                  title: trans('roles'),
-                  primary: true,
-                  fields: [{
-                    name: 'role',
-                    type: 'choice',
-                    label: trans('role'),
-                    required: true,
-                    options: {
-                      multiple: false,
-                      condensed: false,
-                      choices: {
-                        'collaborator': trans('collaborator'),
-                        'manager': trans('manager')
-                      }
-                    }
-                  }]
-                }
-              ]
-            }))
-          }
-        })
-      )
+      dispatch(actions.openRegistrationModal(workspaces, registerGroupModal))
     }
   })
 )(WorkspacesList)

@@ -497,6 +497,41 @@ class WorkspaceController extends AbstractCrudController
     }
 
     /**
+     * @Route(
+     *    "/roles/common",
+     *    name="apiv2_workspace_roles_common"
+     * )
+     * @Method("GET")
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function getCommonRolesAction(Request $request)
+    {
+        $workspaces = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace', 'workspaces');
+        $roles = [];
+
+        foreach ($workspaces as $workspace) {
+            foreach ($workspace->getRoles() as $role) {
+                if (!isset($roles[$role->getTranslationKey()])) {
+                    $roles[$role->getTranslationKey()] = 1;
+                } else {
+                    ++$roles[$role->getTranslationKey()];
+                }
+            }
+        }
+
+        if (count($workspaces) > 1) {
+            $roles = array_filter($roles, function ($amount) {
+                return $amount > 1;
+            });
+        }
+
+        return new JsonResponse(array_keys($roles));
+    }
+
+    /**
      * @Route("/{workspace}/unregister/{user}", name="apiv2_workspace_unregister")
      * @Method("DELETE")
      * @ParamConverter("user", class = "ClarolineCoreBundle:User",  options={"mapping": {"user": "uuid"}})

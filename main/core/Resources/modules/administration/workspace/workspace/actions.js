@@ -125,3 +125,17 @@ actions.registerGroups = (role, workspaces, groups) => ({
     }
   }
 })
+
+actions.openRegistrationModal = (workspaces, callback) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_workspace_roles_common', {
+      workspaces: workspaces.map(workspace => workspace.id)
+    }]),
+    request: {
+      method: 'GET'
+    },
+    success: (data, dispatch) => {
+      dispatch(callback(dispatch, workspaces, data))
+    }
+  }
+})
