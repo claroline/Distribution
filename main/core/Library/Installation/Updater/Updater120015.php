@@ -36,6 +36,7 @@ class Updater120015 extends Updater
             'claroline_scorm_2004',
             'innova_collecticiel',
             'icap_dropzone',
+            'innova_audio_recorder',
         ];
 
         $typeList = implode(',', array_map(function ($type) {
