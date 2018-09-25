@@ -26,7 +26,7 @@ const reducer = {
       organizations: makeListReducer('workspaces.current.organizations'),
       managers: makeListReducer('workspaces.current.managers')
     }),
-    registration: makeReducer(['manager', 'collaborator'], {
+    registerableRoles: makeReducer(['manager', 'collaborator'], {
       [LOAD_ROLES] : (state, action) => action.roles
     })
   }),

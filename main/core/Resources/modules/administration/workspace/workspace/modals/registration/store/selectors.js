@@ -1,6 +1,13 @@
+import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 
-const STORE_NAME = 'workspaceRolesForm'
+export const STORE_NAME = 'workspaceRolesForm'
+
+const roles = (state) => state.workspaces.registerableRoles
+
+const selectedRole = (state) => formSelectors.data(formSelectors.form(state, STORE_NAME)).role
 
 export const selectors = {
-  STORE_NAME
+  STORE_NAME,
+  roles,
+  selectedRole
 }

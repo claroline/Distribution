@@ -20,6 +20,7 @@ use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ResourceManager;
@@ -447,9 +448,10 @@ class WorkspaceController extends AbstractCrudController
         $users = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\User', 'users');
 
         foreach ($workspaces as $workspace) {
-            $role = $this->om->getRepository(Role::class)
+            $roleEntity = $this->om->getRepository(Role::class)
               ->findOneBy(['translationKey' => $role, 'workspace' => $workspace]);
-            $this->crud->patch($role, 'user', Crud::COLLECTION_ADD, $users);
+
+            $this->crud->patch($roleEntity, 'user', Crud::COLLECTION_ADD, $users);
         }
 
         return new JsonResponse(array_map(function ($workspace) {
@@ -474,9 +476,10 @@ class WorkspaceController extends AbstractCrudController
         $groups = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\Group', 'groups');
 
         foreach ($workspaces as $workspace) {
-            $role = $this->om->getRepository(Role::class)
+            $roleEntity = $this->om->getRepository(Role::class)
                 ->findOneBy(['translationKey' => $role, 'workspace' => $workspace]);
-            $this->crud->patch($role, 'group', Crud::COLLECTION_ADD, $groups);
+
+            $this->crud->patch($roleEntity, 'group', Crud::COLLECTION_ADD, $groups);
         }
 
         return new JsonResponse(array_map(function ($workspace) {

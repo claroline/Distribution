@@ -1,28 +1,24 @@
 import {connect} from 'react-redux'
-
 import {withReducer} from '#/main/app/store/components/withReducer'
-
-import {
-  actions as formActions,
-  selectors as formSelect
-} from '#/main/app/content/form/store'
 
 import {RoleRegistrationModal as RoleRegistrationModalComponent} from '#/main/core/administration/workspace/workspace/modals/registration/components/modal'
 import {selectors} from '#/main/core/administration/workspace/workspace/modals/registration/store/selectors'
 import {reducer} from '#/main/core/administration/workspace/workspace/modals/registration/store/reducer'
+import {actions} from '#/main/core/administration/workspace/workspace/actions'
 
 const RoleRegistrationModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
-      //saveEnabled: formSelect.saveEnabled(formSelect.form(state, selectors.STORE_NAME))
+      roles: selectors.roles(state),
+      selectedRole: selectors.selectedRole(state)
     }),
     (dispatch) => ({
-      /*loadWorkspace(workspace) {
-        dispatch(formActions.resetForm(selectors.STORE_NAME, workspace))
+      registerUsers(role, workspaces, users) {
+        dispatch(actions.registerUsers(role, workspaces, users))
       },
-      saveWorkspace(workspace) {
-        dispatch(formActions.saveForm(selectors.STORE_NAME, ['apiv2_workspace_update', {id: workspace.id}]))
-      }*/
+      registerGroups(role, workspaces, groups) {
+        dispatch(actions.registerGroups(role, workspaces, groups))
+      }
     })
   )(RoleRegistrationModalComponent)
 )

@@ -63,7 +63,7 @@ const WorkspacesList = props =>
           },
           onEntering:() => props.loadRoles(rows),
           handleSelect: (users) => {
-            props.showRolesModal(users)
+            props.showRolesModal(rows, users, 'user')
           }
         }]
       }, {
@@ -83,7 +83,7 @@ const WorkspacesList = props =>
             autoload: true
           },
           handleSelect: (groups) => {
-            props.showRolesModal(groups)
+            props.showRolesModal(rows, groups, 'group')
           }
         }]
       },
@@ -141,9 +141,8 @@ const Workspaces = connect(
       dispatch(actions.loadRoles(workspaces))
     },
 
-    showRolesModal() {
-      console.log('showRolesModal')
-      dispatch(modalActions.showModal(MODAL_WORKSPACE_ROLES, {}))
+    showRolesModal(workspaces, objects, mode) {
+      dispatch(modalActions.showModal(MODAL_WORKSPACE_ROLES, {workspaces, objects, mode}))
     }
   })
 )(WorkspacesList)
