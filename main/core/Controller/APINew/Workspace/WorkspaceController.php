@@ -447,14 +447,8 @@ class WorkspaceController extends AbstractCrudController
         $users = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\User', 'users');
 
         foreach ($workspaces as $workspace) {
-            if ('collaborator' === $role) {
-                $role = $this->roleManager->getCollaboratorRole($workspace);
-            } elseif ('manager' === $role) {
-                $role = $this->roleManager->getManagerRole($workspace);
-            } else {
-                throw new \Exception('The role '.$role.' does not exists');
-            }
-
+            $role = $this->om->getRepository(Role::class)
+              ->findOneBy(['translationKey' => $role, 'workspace' => $workspace]);
             $this->crud->patch($role, 'user', Crud::COLLECTION_ADD, $users);
         }
 
@@ -480,14 +474,8 @@ class WorkspaceController extends AbstractCrudController
         $groups = $this->decodeQueryParam($request, 'Claroline\CoreBundle\Entity\Group', 'groups');
 
         foreach ($workspaces as $workspace) {
-            if ('collaborator' === $role) {
-                $role = $this->roleManager->getCollaboratorRole($workspace);
-            } elseif ('manager' === $role) {
-                $role = $this->roleManager->getManagerRole($workspace);
-            } else {
-                throw new \Exception('The role '.$role.' does not exists');
-            }
-
+            $role = $this->om->getRepository(Role::class)
+                ->findOneBy(['translationKey' => $role, 'workspace' => $workspace]);
             $this->crud->patch($role, 'group', Crud::COLLECTION_ADD, $groups);
         }
 

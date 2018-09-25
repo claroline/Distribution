@@ -1,6 +1,7 @@
+import {makeActionCreator} from '#/main/app/store/actions'
+
 import {url} from '#/main/app/api'
 import {API_REQUEST} from '#/main/app/api'
-
 import {actions as listActions} from '#/main/app/content/list/store'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {actions as alertActions} from '#/main/app/overlay/alert/store'
@@ -9,7 +10,10 @@ import {constants as actionConstants} from '#/main/app/action/constants'
 
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
+export const LOAD_ROLES = 'LOAD_ROLES'
 export const actions = {}
+
+actions.setRoles = makeActionCreator(LOAD_ROLES, 'roles')
 
 actions.open = (formName, id = null) => {
   if (id) {
@@ -126,7 +130,7 @@ actions.registerGroups = (role, workspaces, groups) => ({
   }
 })
 
-actions.openRegistrationModal = (workspaces, callback) => ({
+actions.loadRoles = (workspaces) => ({
   [API_REQUEST]: {
     url: url(['apiv2_workspace_roles_common', {
       workspaces: workspaces.map(workspace => workspace.id)
@@ -135,7 +139,8 @@ actions.openRegistrationModal = (workspaces, callback) => ({
       method: 'GET'
     },
     success: (data, dispatch) => {
-      dispatch(callback(dispatch, workspaces, data))
+      console.log(data)
+      dispatch(actions.setRoles(data))
     }
   }
 })
