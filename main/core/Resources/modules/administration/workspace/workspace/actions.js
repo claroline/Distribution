@@ -139,7 +139,6 @@ actions.loadRoles = (workspaces) => ({
       method: 'GET'
     },
     success: (data, dispatch) => {
-      console.log(data)
       dispatch(actions.setRoles(data))
     }
   }
