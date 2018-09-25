@@ -45,7 +45,7 @@ class Updater120015 extends Updater
         $sql = "
           DELETE c FROM claro_list_type_creation c
           JOIN claro_resource_type t on t.id = c.resource_type_id
-          WHERE t.name NOT IN ({$typeList})
+          WHERE t.name IN ({$typeList})
         ";
 
         $stmt = $this->conn->prepare($sql);
