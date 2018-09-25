@@ -37,6 +37,9 @@ class Updater120015 extends Updater
             'innova_collecticiel',
             'icap_dropzone',
             'innova_audio_recorder',
+            'innova_video_recorder',
+            'innova_media_resource',
+            'claroline_flashcard',
         ];
 
         $typeList = implode(',', array_map(function ($type) {
