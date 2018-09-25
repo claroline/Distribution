@@ -14,7 +14,9 @@ const Tabs = props =>
     {props.tabs.map((tab) =>
       <LinkButton
         key={tab.id}
-        className="nav-tab"
+        className={classes('nav-tab', {
+          'nav-tab-hidden': props.editing && tab.restrictions && tab.restrictions.hidden
+        })}
         target={`${props.prefix}/tab/${tab.id}`}
         exact={true}
       >
@@ -23,10 +25,6 @@ const Tabs = props =>
         }
 
         {tab.title}
-
-        {!tab.locked && props.editing &&
-          <span className="fa fa-fw fa-eye-slash icon-with-text-left" />
-        }
       </LinkButton>
     )}
 

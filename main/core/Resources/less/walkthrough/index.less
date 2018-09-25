@@ -22,7 +22,8 @@
 
 .walkthrough-popover {
     z-index: @zindex-walkthrough + 2;
-    min-width: @popover-max-width;
+    min-width: 300px;
+    max-width: 300px;
 
     &.walkthrough-popover-centered {
         top: 50%;
@@ -32,13 +33,40 @@
 
     .popover-content {
         padding: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .walkthrough-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: @popover-content-padding;
+
+        // for .fa
+        width: 36px + @popover-content-padding*2;
+        font-size: 36px;
+    }
+
+    .walkthrough-title {
+        margin-top: 0;
+        font-weight: bold;
+        font-size: @font-size-large;
     }
 
     .walkthrough-content {
+        flex: 1;
         padding: @popover-content-padding;
     }
 
+    .walkthrough-link {
+        margin-top: @popover-content-padding;
+    }
+
     .walkthrough-actions {
+        width: 100%;
         display: flex;
         flex-direction: row;
 
@@ -62,10 +90,10 @@
     }
 }
 
-// NB. this requires the parent to be positioned
-// NB2. all the important is to be sure the highlight override the default component behavior
-//      this may broke some advance styling using pseudo-classes.
+// NB. all the important is to be sure the highlight override the default component behavior
+//     this may broke some advance styling using pseudo-classes.
 .walkthrough-highlight {
+    position: relative;
     z-index: @zindex-walkthrough + 1;
     box-shadow: 0 0 6px 1px rgba(0, 0, 0, .5);
 
@@ -84,7 +112,7 @@
         animation-duration: 1.25s !important;
 
         box-shadow: inset 0 0 2px 0 fadeOut(@highlightColor, .5),
-                          0 0 2px 0 fadeOut(@highlightColor, .5) !important;
+        0 0 2px 0 fadeOut(@highlightColor, .5) !important;
     }
 
     &:before {
@@ -96,6 +124,19 @@
         border: @smallCircleSize solid @highlightColor !important;
 
         animation-name: circleSmall !important;
+    }
+}
+
+.walkthroughs-list {
+    .list-group-item {
+        font-weight: bold;
+    }
+
+    small {
+        margin-top: 5px;
+        display: block;
+        color: @text-muted;
+        font-weight: normal;
     }
 }
 

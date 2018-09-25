@@ -17,8 +17,11 @@ import {
   MoreAction
 } from '#/main/core/layout/page'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, MODAL_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
+import {MODAL_WALKTHROUGHS} from '#/main/app/overlay/walkthrough/modals/walkthroughs'
 
+import {getWalkthroughs} from '#/main/core/tools/home/walkthroughs'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {selectors} from '#/main/core/tools/home/store'
@@ -28,7 +31,9 @@ import {Tabs} from '#/main/core/tools/home/components/tabs'
 import {TabEditor} from '#/main/core/tools/home/editor/components/tab'
 
 const EditorComponent = props =>
-  <PageContainer>
+  <PageContainer
+    className="home-tool"
+  >
     <PageHeader
       alignTitle={true === props.currentTab.centerTitle ? 'center' : 'left'}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
@@ -59,10 +64,12 @@ const EditorComponent = props =>
             actions={[
               {
                 name: 'walkthrough',
-                type: CALLBACK_BUTTON,
+                type: MODAL_BUTTON,
                 icon: 'fa fa-street-view',
                 label: trans('show-walkthrough', {}, 'actions'),
-                callback: () => true
+                modal: [MODAL_WALKTHROUGHS, {
+                  walkthroughs: getWalkthroughs()
+                }]
               }, {
                 type: CALLBACK_BUTTON,
                 label: trans('delete', {}, 'actions'),
@@ -98,6 +105,8 @@ const EditorComponent = props =>
         setErrors={props.setErrors}
       />
     </PageContent>
+
+    <WalkthroughOverlay />
   </PageContainer>
 
 EditorComponent.propTypes = {
@@ -126,7 +135,7 @@ EditorComponent.propTypes = {
 }
 
 const Editor = withRouter(connect(
-  state => ({
+  (state) => ({
     context: selectors.context(state),
     administration: selectors.administration(state),
     readOnly: editorSelectors.readOnly(state),
@@ -136,7 +145,7 @@ const Editor = withRouter(connect(
     currentTabIndex: editorSelectors.currentTabIndex(state),
     currentTab: editorSelectors.currentTab(state)
   }),
-  dispatch => ({
+  (dispatch) => ({
     updateTab(currentTabIndex, field, value) {
       dispatch(formActions.updateProp('editor', `[${currentTabIndex}].${field}`, value))
     },

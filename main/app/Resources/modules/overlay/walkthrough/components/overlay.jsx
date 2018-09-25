@@ -28,14 +28,6 @@ WalkthroughPosition.propTypes = {
 }
 
 class WalkthroughOverlay extends Component {
-  componentDidMount() {
-    this.props.start(this.props.steps)
-
-    if (get(this.props, 'current.highlight')) {
-      this.addHighlight(get(this.props, 'current.highlight'))
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     const highlight = get(this.props, 'current.highlight')
     const nextHighlight = get(nextProps, 'current.highlight')
@@ -49,6 +41,10 @@ class WalkthroughOverlay extends Component {
         this.addHighlight(nextHighlight)
       }
     }
+
+    /*document.querySelector('.hello').scrollIntoView({
+      behavior: 'smooth'
+    })*/
   }
 
   componentWillUnmount() {
@@ -110,12 +106,8 @@ WalkthroughOverlay.propTypes = {
   current: T.shape(
     WalkthroughStepTypes.propTypes
   ),
-  steps: T.arrayOf(T.shape(
-    WalkthroughStepTypes.propTypes
-  )).isRequired,
   hasNext: T.bool,
   hasPrevious: T.bool,
-  start: T.func.isRequired,
   skip: T.func.isRequired,
   finish: T.func.isRequired,
   previous: T.func.isRequired,

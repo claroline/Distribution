@@ -45,24 +45,16 @@ const TabEditor = props =>
             label: trans('title'),
             required: true,
             onChange: (title) => props.update(props.currentTabIndex, 'title', title.substring(0, 20))
-          }, {
-            name: 'locked',
-            type: 'boolean',
-            label: trans('publish_tab', {}, 'widget')
           }
         ]
       }, {
-        icon: 'fa fa-fw fa-desktop',
-        title: trans('display_parameters'),
+        icon: 'fa fa-fw fa-grip-horizontal',
+        title: trans('menu'),
         fields: [
           {
-            name: 'centerTitle',
-            type: 'boolean',
-            label: trans('center_title')
-          }, {
             name: 'position',
             type: 'number',
-            label: trans('tab_position'),
+            label: trans('position'),
             options : {
               min: 0,
               max: props.tabs.length + 1
@@ -72,7 +64,7 @@ const TabEditor = props =>
           }, {
             name: 'title',
             type: 'string',
-            label: trans('menu_title'),
+            label: trans('title'),
             help: trans('menu_title_help'),
             options: {
               maxLength: 20
@@ -96,6 +88,16 @@ const TabEditor = props =>
                 })
               }
             }
+          }
+        ]
+      }, {
+        icon: 'fa fa-fw fa-desktop',
+        title: trans('display_parameters'),
+        fields: [
+          {
+            name: 'centerTitle',
+            type: 'boolean',
+            label: trans('center_title')
           }, {
             name: 'poster',
             label: trans('poster'),
@@ -111,20 +113,24 @@ const TabEditor = props =>
         displayed: props.context.type === 'workspace' || props.administration,
         fields: [
           {
+            name: 'restrictions.hidden',
+            type: 'boolean',
+            label: trans('restrict_hidden')
+          }, {
             name: 'restrictByRole',
             type: 'boolean',
             label: trans('restrictions_by_roles', {}, 'widget'),
-            calculated: (tab) => tab.restrictByRole || (tab.roles && 0 < tab.roles.length),
+            calculated: (tab) => tab.restrictByRole || (tab.restrictions && !isEmpty(tab.restrictions.roles)),
             onChange: (checked) => {
               if (!checked) {
-                props.update(props.currentTabIndex, 'roles', [])
+                props.update(props.currentTabIndex, 'restrictions.roles', [])
               }
             },
             linked: [
               {
-                name: 'roles',
+                name: 'restrictions.roles',
                 label: trans('role'),
-                displayed: (tab) => tab.restrictByRole || (tab.roles && 0 < tab.roles.length),
+                displayed: (tab) => tab.restrictByRole || (tab.restrictions && !isEmpty(tab.restrictions.roles)),
                 type: 'choice',
                 required: true,
                 options:{

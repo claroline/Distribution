@@ -28,7 +28,6 @@ const sortedEditorTabs = createSelector(
 const readOnly = createSelector(
   [homeSelectors.context, homeSelectors.administration, currentTab],
   (context, administration, currentTab) => currentTab.type === 'administration' &&
-    currentTab.locked &&
     context.type === 'desktop' && !administration
 )
 
