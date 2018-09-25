@@ -48,8 +48,6 @@ class Updater120015 extends Updater
           WHERE t.name NOT IN ({$typeList})
         ";
 
-        var_dump($sql);
-
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
     }
