@@ -107,12 +107,13 @@ class OptimizedRightsManager
         $sql =
           "
             INSERT INTO claro_resource_rights (role_id, mask, resourceNode_id)
-            SELECT ({$role->getId()}, {$mask}, node.id) FROM claro_resource_node node
-            WHERE node.materializedPath LIKE CONCAT('".\mysql_real_escape_string($node->getPath())."', '%')
+            SELECT {$role->getId()}, {$mask}, node.id FROM claro_resource_node node
+            WHERE node.path LIKE ?
             ON DUPLICATE KEY UPDATE mask = {$mask};
           ";
 
         $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(1, $node->getPath().'%', \PDO::PARAM_STR);
         $stmt->execute();
 
         return;
