@@ -143,10 +143,11 @@ class ResourceListener
         // forward to the resource type
         $options = [];
 
-        /*
-                if (true) {
-                    $options[] = Options::IS_RECURSIVE;
-                }*/
+        $params = $event->getOptions();
+
+        if (isset($params['recursive']) && $params['recursive']) {
+            $options[] = Options::IS_RECURSIVE;
+        }
 
         $data = $event->getData();
         $this->crud->update(ResourceNode::class, $data, $options);

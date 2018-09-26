@@ -34,7 +34,7 @@ const RightsModal = props =>
         id={'recursive-node-' + props.resourceNode.id}
         label={trans('apply_recursively_to_directories', {}, 'platform')}
         checked={props.recursiveEnabled}
-        onChange={() => alert('change')}
+        onChange={value => props.setRecursiveEnabled(value)}
       />
     </div>
 
@@ -45,7 +45,7 @@ const RightsModal = props =>
       label={trans('save', {}, 'actions')}
       disabled={!props.saveEnabled}
       callback={() => {
-        props.save(props.nodeForm, props.updateNode)
+        props.save(props.nodeForm, props.updateNode, props.recursiveEnabled)
         props.fadeModal()
       }}
     />
@@ -64,6 +64,7 @@ RightsModal.propTypes = {
   loadNode: T.func.isRequired,
   updateNode: T.func.isRequired,
   fadeModal: T.func.isRequired,
+  setRecursiveEnabled: T.func.isRequired,
   recursiveEnabled: T.bool.isRequired
 }
 
