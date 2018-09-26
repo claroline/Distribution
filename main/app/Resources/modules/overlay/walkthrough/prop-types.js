@@ -50,11 +50,12 @@ const Walkthrough = {
   propTypes: {
     title: T.string.isRequired,
     description: T.string,
+    documentation: T.string,
     difficulty: T.oneOf(['easy', 'intermediate', 'hard', 'expert']),
     scenario: T.arrayOf(T.shape(
       WalkthroughStep.propTypes
     )).isRequired,
-
+    additional: T.arrayOf(T.object) // other walkthroughs
   },
   defaultProps: {
 

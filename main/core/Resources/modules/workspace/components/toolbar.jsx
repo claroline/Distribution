@@ -138,7 +138,8 @@ class WorkspaceToolbarComponent extends Component {
         content: {
           icon: `fa fa-${tool.icon}`,
           title: trans('tool', {toolName: trans(tool.name, {}, 'tools')}, 'walkthrough'),
-          message: trans(`workspace.tools.${tool.name}`, {}, 'walkthrough')
+          message: trans(`workspace.tools.${tool.name}.message`, {}, 'walkthrough'),
+          link: trans(`workspace.tools.${tool.name}.documentation`, {}, 'walkthrough')
         },
         position: {
           target: `#tool-link-${tool.name}`,
@@ -171,13 +172,7 @@ class WorkspaceToolbarComponent extends Component {
             target: `#action-link-${action.name}`,
             placement: 'right'
           }
-        })),
-      [{
-        highlight: ['#action-link-walkthrough'],
-        content: {
-          message: trans('workspace.sidebar.end', {}, 'walkthrough')
-        }
-      }]
+        }))
     ))
   }
 

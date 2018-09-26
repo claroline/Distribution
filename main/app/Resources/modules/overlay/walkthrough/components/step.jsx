@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
@@ -10,7 +11,7 @@ import {ProgressBar} from '#/main/core/layout/components/progress-bar'
 
 // todo : manage icon components
 
-const WalkThroughPopover = props =>
+const WalkThroughStep = props =>
   <Popover
     id={toKey(props.title || props.message)}
     placement={props.placement}
@@ -32,7 +33,10 @@ const WalkThroughPopover = props =>
       {props.message}
 
       {props.link &&
-        <a className="walkthrough-link pull-right" href={props.link}>{trans('learn-more', {}, 'actions')}</a>
+        <a className="walkthrough-link pull-right" href={props.link}>
+          <span className="fa fa-fw fa-question-circle icon-with-text-right" />
+          {trans('learn-more', {}, 'actions')}
+        </a>
       }
     </div>
 
@@ -43,28 +47,15 @@ const WalkThroughPopover = props =>
       </div>
     }
 
-    <div className="walkthrough-actions">
-      {props.hasNext &&
-        <CallbackButton
-          className="btn-link btn-skip"
-          callback={props.skip}
-          primary={true}
-          size="sm"
-        >
-          {trans('skip', {}, 'actions')}
-        </CallbackButton>
-      }
-
-      {!props.hasNext &&
-        <CallbackButton
-          className="btn-link btn-restart"
-          callback={props.restart}
-          primary={true}
-          size="sm"
-        >
-          {trans('restart', {}, 'actions')}
-        </CallbackButton>
-      }
+    <div className="walkthrough-nav">
+      <CallbackButton
+        className="btn-link btn-skip"
+        callback={props.skip}
+        primary={true}
+        size="sm"
+      >
+        {trans('skip', {}, 'actions')}
+      </CallbackButton>
 
       <CallbackButton
         className="btn-link btn-previous"
@@ -79,19 +70,20 @@ const WalkThroughPopover = props =>
       <CallbackButton
         className="btn btn-next"
         callback={props.next}
+        disabled={!isEmpty(props.requiredInteraction)}
         primary={true}
         size="sm"
       >
-        {props.hasNext ? trans('next') : trans('finish', {}, 'actions')}
+        {isEmpty(props.requiredInteraction) ? trans('next') : trans('action_required')}
 
-        {props.hasNext &&
+        {isEmpty(props.requiredInteraction) &&
           <span className="fa fa-angle-double-right icon-with-text-left"/>
         }
       </CallbackButton>
     </div>
   </Popover>
 
-WalkThroughPopover.propTypes = {
+WalkThroughStep.propTypes = {
   className: T.string,
   progression: T.number,
 
@@ -115,18 +107,16 @@ WalkThroughPopover.propTypes = {
 
   // navigation
   hasPrevious: T.bool.isRequired,
-  hasNext: T.bool.isRequired,
   skip: T.func.isRequired,
   previous: T.func.isRequired,
-  next: T.func.isRequired,
-  restart: T.func.isRequired
+  next: T.func.isRequired
 }
 
-WalkThroughPopover.defaultProps = {
+WalkThroughStep.defaultProps = {
   progression: 0,
   placement: 'bottom'
 }
 
 export {
-  WalkThroughPopover
+  WalkThroughStep
 }

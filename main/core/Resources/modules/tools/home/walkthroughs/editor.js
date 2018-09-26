@@ -4,6 +4,7 @@ export default {
   title: 'Discover the home editor',
   description: 'We will walk through the base home feature.',
   difficulty: 'easy',
+
   scenario: [
     // Intro
     {
@@ -89,7 +90,56 @@ export default {
       requiredInteraction: {
         type: 'click',
         target: '.btn-add-section',
-        message: 'Click the button to create a new section'
+        message: 'Click the button to create a new section.'
+      }
+    },
+    // Section layout
+    {
+      highlight: ['.home-section-layout'],
+      content: {
+        message: trans('home.editor.section_layout', {}, 'walkthrough')
+      },
+      position: {
+        target: '.home-section-layout',
+        placement: 'top'
+      }
+    },
+    // Select section layout
+    {
+      highlight: ['#layout-cols-1-1-1'],
+      content: {
+        message: trans('home.editor.section_select_layout', {}, 'walkthrough')
+      },
+      position: {
+        target: '#layout-cols-1-1-1',
+        placement: 'top'
+      },
+      requiredInteraction: {
+        type: 'click',
+        target: '#layout-cols-1-1-1',
+        message: 'Click the button to select the 3 columns layout.'
+      }
+    },
+    // Configure section
+    {
+      highlight: ['.widget-section-form'],
+      content: {
+        message: trans('home.editor.section_configure', {}, 'walkthrough')
+      },
+      position: {
+        target: '.widget-section-form',
+        placement: 'top'
+      }
+    },
+    // Save modifications
+    {
+      highlight: ['#widget-section-form-save'],
+      content: {
+        message: trans('home.editor.section_save', {}, 'walkthrough')
+      },
+      position: {
+        target: '#widget-section-form-save',
+        placement: 'top'
       }
     }
   ]

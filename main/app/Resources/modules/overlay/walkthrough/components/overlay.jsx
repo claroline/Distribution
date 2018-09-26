@@ -9,7 +9,8 @@ import {Overlay, Position, Transition} from 'react-overlays'
 
 import {addClasses, removeClasses} from '#/main/app/dom/classes'
 
-import {WalkThroughPopover} from '#/main/app/overlay/walkthrough/components/popover'
+import {WalkThroughStep} from '#/main/app/overlay/walkthrough/components/step'
+import {WalkThroughEnd} from '#/main/app/overlay/walkthrough/components/end'
 import {WalkthroughStep as WalkthroughStepTypes} from '#/main/app/overlay/walkthrough/prop-types'
 
 const WalkthroughPosition = props => props.position ?
@@ -87,9 +88,7 @@ class WalkthroughOverlay extends Component {
 
   doUserAction() {
     // FIXME
-    setTimeout(() => {
-      this.next()
-    }, 500)
+    setTimeout(this.props.next, 500)
   }
 
   componentWillUnmount() {
@@ -117,14 +116,6 @@ class WalkthroughOverlay extends Component {
     )
   }
 
-  next() {
-    if (this.props.hasNext) {
-      return this.props.next()
-    }
-
-    return this.props.finish()
-  }
-
   render() {
     return (
       <Overlay show={this.props.active}>
@@ -143,18 +134,23 @@ class WalkthroughOverlay extends Component {
             <WalkthroughPosition
               position={this.props.current.position}
             >
-              <WalkThroughPopover
-                {...this.props.current.content}
-                className={!this.props.current.position ? 'walkthrough-popover-centered' : undefined}
-                requiredInteraction={this.props.current.requiredInteraction}
-                progression={this.props.progression}
-                skip={this.props.skip}
-                hasPrevious={this.props.hasPrevious}
-                previous={this.props.previous}
-                hasNext={this.props.hasNext}
-                next={() => this.next()}
-                restart={this.props.restart}
-              />
+              {this.props.hasNext ?
+                <WalkThroughStep
+                  {...this.props.current.content}
+                  className={!this.props.current.position ? 'walkthrough-popover-centered' : undefined}
+                  requiredInteraction={this.props.current.requiredInteraction}
+                  progression={this.props.progression}
+                  skip={this.props.skip}
+                  hasPrevious={this.props.hasPrevious}
+                  previous={this.props.previous}
+                  next={this.props.next}
+                /> :
+                <WalkThroughEnd
+                  {...this.props.current.content}
+                  finish={this.props.finish}
+                  restart={this.props.restart}
+                />
+              }
             </WalkthroughPosition>
           }
         </div>

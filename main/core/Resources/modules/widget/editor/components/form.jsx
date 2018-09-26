@@ -9,6 +9,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 
 const WidgetForm = props =>
   <FormData
+    className="widget-section-form"
     level={props.level}
     name={props.name}
     sections={[

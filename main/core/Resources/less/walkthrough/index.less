@@ -80,6 +80,8 @@
 
     .walkthrough-link {
         margin-top: @popover-content-padding;
+        display: block;
+        text-align: right;
     }
 
     .walkthrough-interaction {
@@ -92,7 +94,7 @@
         border-radius: @border-radius-small;
     }
 
-    .walkthrough-actions {
+    .walkthrough-nav {
         width: 100%;
         display: flex;
         flex-direction: row;
@@ -115,9 +117,20 @@
             border-radius: 0 0 @border-radius-small 0 !important;
         }
     }
+
+    .walkthrough-btns {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+
+        .btn {
+            margin: @popover-content-padding;
+            flex: 1;
+        }
+    }
 }
 
-// NB. all the important is to be sure the highlight override the default component behavior
+// NB. all the !important are to be sure the highlight override the default component behavior
 //     this may broke some advance styling using pseudo-classes.
 .walkthrough-highlight {
     position: relative;

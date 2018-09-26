@@ -1,5 +1,7 @@
 import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 
+import {trans} from '#/main/core/translation'
+
 import {
   WALKTHROUGH_START,
   WALKTHROUGH_SKIP,
@@ -50,7 +52,17 @@ const reducer = combineReducers({
    * The available steps of the walkthrough.
    */
   steps: makeReducer([], {
-    [WALKTHROUGH_START]: (state, action) => action.steps
+    [WALKTHROUGH_START]: (state, action) => [].concat(action.steps, [
+      // TODO : find a better way to manage last step
+      {
+        content: {
+          icon: 'fa fa-street-view',
+          title: trans('end.title', {}, 'walkthrough'),
+          message: trans('end.message', {}, 'walkthrough'),
+          link: 'http://www.google.fr/'
+        }
+      }
+    ])
   })
 })
 

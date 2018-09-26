@@ -1,6 +1,12 @@
 {
   "action": "Action: %actionName%",
+  "actions": "The actions",
   "tool": "Tool: %toolName%",
+  "tools": "The tools",
+  "end": {
+    "title": "Congratulations ! You have finished this tutorial.",
+    "message": "You can replay it now and choose another tutorial to follow. Also note, you can find available tutorials by searching the tutorial icons in Claroline interface."
+  },
   "workspace": {
     "sidebar": {
       "title": "Let's discover the workspace toolbar together !",
@@ -10,11 +16,26 @@
       "opened-tool": "This is the currently opened tool."
     },
     "tools": {
-      "analytics": "Shows some analytics data of the workspace usage.",
-      "home": "Permits to create an overview of the workspace.",
-      "logs": "Shows the actions done by users in the workspace.",
-      "resource_manager": "Permits to view and manage the resources of the workspace.",
-      "users": "Permits to view the registered users and groups, changes their rights and register new ones."
+      "analytics": {
+        "documentation": "",
+        "message": "Shows some analytics data of the workspace usage."
+      },
+      "home": {
+        "documentation": "https://claroline.gitbooks.io/claroline-connect-documentation/content/fr/workspaces/ws-homepage.html",
+        "message": "Permits to create an overview of the workspace."
+      },
+      "logs": {
+        "documentation": "",
+        "message": "Shows the actions done by users in the workspace."
+      },
+      "resource_manager": {
+        "documentation": "https://claroline.gitbooks.io/claroline-connect-documentation/content/fr/resources/resources.html",
+        "message": "Permits to view and manage the resources of the workspace."
+      },
+      "users": {
+        "documentation": "https://claroline.gitbooks.io/claroline-connect-documentation/content/fr/tools/manage-users.html",
+        "message": "Permits to view the registered users and groups, changes their rights and register new ones."
+      }
     },
     "actions": {
       "about": "Shows general information about the workspace.",
