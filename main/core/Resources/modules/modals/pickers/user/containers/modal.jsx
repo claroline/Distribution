@@ -12,7 +12,7 @@ import {UsersPickerModal as UsersPickerModalComponent} from '#/main/core/modals/
 const UsersPickerModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
-      selectedFull: listSelect.selectedFull(listSelect.list(state, selectors.STORE_NAME))
+      selected: listSelect.selectedFull(listSelect.list(state, selectors.STORE_NAME))
     }),
     (dispatch) => ({
       resetSelect() {
