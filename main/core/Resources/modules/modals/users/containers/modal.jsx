@@ -6,8 +6,8 @@ import {
   select as listSelect
 } from '#/main/app/content/list/store'
 
-import {reducer, selectors} from '#/main/core/modals/pickers/user/store'
-import {UsersPickerModal as UsersPickerModalComponent} from '#/main/core/modals/pickers/user/components/modal'
+import {reducer, selectors} from '#/main/core/modals/users/store'
+import {UsersPickerModal as UsersPickerModalComponent} from '#/main/core/modals/users/components/modal'
 
 const UsersPickerModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(

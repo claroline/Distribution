@@ -6,8 +6,8 @@ import {
   select as listSelect
 } from '#/main/app/content/list/store'
 
-import {reducer, selectors} from '#/main/core/modals/pickers/group/store'
-import {GroupsPickerModal as GroupsPickerModalComponent} from '#/main/core/modals/pickers/group/components/modal'
+import {reducer, selectors} from '#/main/core/modals/groups/store'
+import {GroupsPickerModal as GroupsPickerModalComponent} from '#/main/core/modals/groups/components/modal'
 
 const GroupsPickerModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(

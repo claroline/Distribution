@@ -8,27 +8,22 @@ import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {Group as GroupType} from '#/main/core/user/prop-types'
 import {GroupCard} from '#/main/core/user/data/components/group-card'
 
-const GroupsDisplay = (props) =>
+const GroupsDisplay = (props) => !isEmpty(props.data) ?
   <div>
-    {!isEmpty(props.data) ?
-      <div>
-        {props.data.map(group =>
-          <GroupCard
-            key={`group-card-${group.id}`}
-            data={group}
-            size="sm"
-            orientation="col"
-          />
-        )}
-      </div> :
-      <EmptyPlaceholder
-        size="lg"
-        icon="fa fa-users"
-        title={trans('no_group')}
+    {props.data.map(group =>
+      <GroupCard
+        key={`group-card-${group.id}`}
+        data={group}
+        size="sm"
+        orientation="col"
       />
-    }
-  </div>
-
+    )}
+  </div> :
+  <EmptyPlaceholder
+    size="lg"
+    icon="fa fa-users"
+    title={trans('no_group')}
+  />
 
 GroupsDisplay.propTypes = {
   data: T.arrayOf(T.shape(GroupType.propTypes))

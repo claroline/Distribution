@@ -1,6 +1,6 @@
 import {makeListReducer} from '#/main/app/content/list/store'
 
-import {selectors} from '#/main/core/modals/pickers/group/store/selectors'
+import {selectors} from '#/main/core/modals/groups/store/selectors'
 
 const reducer = makeListReducer(selectors.STORE_NAME)
 

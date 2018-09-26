@@ -7,7 +7,7 @@
 import {registry} from '#/main/app/modals/registry'
 
 // gets the modal component
-import {UsersPickerModal} from '#/main/core/modals/pickers/user/containers/modal'
+import {UsersPickerModal} from '#/main/core/modals/users/containers/modal'
 
 const MODAL_USERS_PICKER = 'MODAL_USERS_PICKER'
 

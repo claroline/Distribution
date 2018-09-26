@@ -10,7 +10,7 @@ import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {UserCard} from '#/main/core/user/data/components/user-card'
 import {User as UserType} from '#/main/core/user/prop-types'
-import {MODAL_USERS_PICKER} from '#/main/core/modals/pickers/user'
+import {MODAL_USERS_PICKER} from '#/main/core/modals/users'
 
 const UsersInput = props => {
   if (!isEmpty(props.value)) {

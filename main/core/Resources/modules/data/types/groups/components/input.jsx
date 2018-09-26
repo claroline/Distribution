@@ -10,7 +10,7 @@ import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {GroupCard} from '#/main/core/user/data/components/group-card'
 import {Group as GroupType} from '#/main/core/user/prop-types'
-import {MODAL_GROUPS_PICKER} from '#/main/core/modals/pickers/group'
+import {MODAL_GROUPS_PICKER} from '#/main/core/modals/groups'
 
 const GroupsInput = props => {
   if (!isEmpty(props.value)) {
