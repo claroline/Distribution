@@ -33,7 +33,7 @@ const WalkThroughStep = props =>
       {props.message}
 
       {props.link &&
-        <a className="walkthrough-link pull-right" href={props.link}>
+        <a className="walkthrough-link" href={props.link}>
           <span className="fa fa-fw fa-question-circle icon-with-text-right" />
           {trans('learn-more', {}, 'actions')}
         </a>

@@ -93,10 +93,6 @@ class WorkspaceToolbarComponent extends Component {
     }
   }
 
-  componentDidMount() {
-    this.startWalkthrough()
-  }
-
   startWalkthrough() {
     this.props.startWalkthrough([
       {
