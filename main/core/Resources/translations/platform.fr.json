@@ -1757,5 +1757,9 @@
     "rich_text_upload_directory_help": "Ce dossier sera proposé aux utilisateurs lors de l'ajout de nouveaux fichiers dans les éditeurs de textes riches.",
     "directory_not_implemented_display": "Attention. Les 'Paramètres d'affichage' ainsi que la configuration de la liste sont en cours de développement. Les modifications apportées à ces propriétés ne sont pas encore utilisées.",
     "walkthroughs": "Tutoriels",
-    "menu": "Menu"
+    "menu": "Menu",
+    "easy": "Facile",
+    "intermediate": "Intermédiaire",
+    "hard": "Difficile",
+    "expert": "Expert"
 }

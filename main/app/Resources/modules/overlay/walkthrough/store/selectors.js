@@ -30,6 +30,11 @@ const steps = createSelector(
   (store) => store.steps
 )
 
+const countSteps = createSelector(
+  [steps],
+  (steps) => steps.length || 0
+)
+
 const currentStep = createSelector(
   [steps, current],
   (steps, current) => steps[current]
@@ -50,6 +55,11 @@ const hasNext = createSelector(
   (steps, current) => steps.length - 1 !== current
 )
 
+const progression = createSelector(
+  [countSteps, current],
+  (countSteps, current) => Math.floor(((current+1) / countSteps) * 100)
+)
+
 export const selectors = {
   STORE_NAME,
 
@@ -61,5 +71,6 @@ export const selectors = {
   current,
   currentStep,
   hasPrevious,
-  hasNext
+  hasNext,
+  progression
 }

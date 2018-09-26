@@ -106,8 +106,6 @@ const WidgetCol = props =>
     }
   </div>
 
-
-
 WidgetCol.propTypes = {
   disabled: T.bool,
   size: T.number.isRequired,

@@ -1722,5 +1722,9 @@
     "rich_text_upload_directory_help": "This folder will be proposed to users when adding new files in rich text editors.",
     "directory_not_implemented_display": "Attention. The 'Display Settings' as well as the configuration of the list are being developed. Changes to these properties are not used yet.",
     "walkthroughs": "Tutorials",
-    "menu": "Menu"
+    "menu": "Menu",
+    "easy": "Easy",
+    "intermediate": "Intermediate",
+    "hard": "Hard",
+    "expert": "Expert"
 }

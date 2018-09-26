@@ -1,11 +1,14 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
+
+import {Walkthrough as WalkthroughTypes} from '#/main/app/overlay/walkthrough/prop-types'
 
 const WalkthroughsModal = props =>
   <Modal
@@ -23,6 +26,17 @@ const WalkthroughsModal = props =>
             props.start(walkthrough.scenario)
           }}
         >
+          {walkthrough.difficulty &&
+            <span className={classes('label', {
+              'label-success': 'easy'         === walkthrough.difficulty,
+              'label-warning': 'intermediate' === walkthrough.difficulty,
+              'label-danger' : 'hard'         === walkthrough.difficulty,
+              'label-black'  : 'expert'       === walkthrough.difficulty
+            })}>
+              {trans(walkthrough.difficulty)}
+            </span>
+          }
+
           {walkthrough.title}
           {walkthrough.description &&
             <small>{walkthrough.description}</small>
@@ -33,9 +47,9 @@ const WalkthroughsModal = props =>
   </Modal>
 
 WalkthroughsModal.propTypes = {
-  walkthroughs: T.arrayOf(T.shape({
-
-  })),
+  walkthroughs: T.arrayOf(T.shape(
+    WalkthroughTypes.propTypes
+  )),
   start: T.func.isRequired,
   fadeModal: T.func.isRequired
 }

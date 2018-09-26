@@ -3,6 +3,7 @@ import {trans} from '#/main/core/translation'
 export default {
   title: 'Discover the home editor',
   description: 'We will walk through the base home feature.',
+  difficulty: 'easy',
   scenario: [
     // Intro
     {
@@ -11,19 +12,32 @@ export default {
         message: trans('home.editor.general', {}, 'walkthrough')
       }
     },
+    // Tabs
+    {
+      highlight: ['.tool-nav'],
+      content: {
+        message: trans('home.editor.tabs', {}, 'walkthrough')
+      },
+      position: {
+        target: '.tool-nav',
+        placement: 'bottom'
+      }
+    },
     // Create a new tab
     {
       highlight: ['.tool-nav .nav-add-tab'],
       content: {
+        icon: 'fa fa-plus',
         message: trans('home.editor.add_tab', {}, 'walkthrough')
       },
       position: {
         target: '.tool-nav .nav-add-tab',
         placement: 'bottom'
       },
-      next: {
+      requiredInteraction: {
         type: 'click',
-        target: '.tool-nav .nav-add-tab'
+        target: '.tool-nav .nav-add-tab',
+        message: 'Click the button to create a new tab'
       }
     },
     // New tab intro
@@ -71,6 +85,11 @@ export default {
       position: {
         target: '.btn-add-section',
         placement: 'top'
+      },
+      requiredInteraction: {
+        type: 'click',
+        target: '.btn-add-section',
+        message: 'Click the button to create a new section'
       }
     }
   ]

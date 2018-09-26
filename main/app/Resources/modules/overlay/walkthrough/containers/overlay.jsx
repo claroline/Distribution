@@ -9,6 +9,7 @@ const WalkthroughOverlay = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
       active: selectors.active(state),
+      progression: selectors.progression(state),
       current: selectors.currentStep(state),
       hasNext: selectors.hasNext(state),
       hasPrevious: selectors.hasPrevious(state)

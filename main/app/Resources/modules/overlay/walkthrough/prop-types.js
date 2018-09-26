@@ -28,9 +28,18 @@ const WalkthroughStep = {
       placement: T.oneOf(['left', 'top', 'right', 'bottom']).isRequired
     }),
 
-    actions: [
+    requiredInteraction: T.shape({
+      type: T.oneOf(['click']),
+      target: T.string.isRequired,
+      message: T.string.isRequired
+    }),
 
-    ]
+    before: T.arrayOf(T.shape({
+
+    })),
+    after: T.arrayOf(T.shape({
+
+    })),
   },
   defaultProps: {
 
