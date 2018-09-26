@@ -104,13 +104,31 @@ class OptimizedRightsManager
 
     private function recursiveUpdate(ResourceNode $node, Role $role, $mask = 1, $types = [])
     {
-        //TODO: take into account the fact that some node have type with extended permissions
+        //take into account the fact that some node have type with extended permissions
+        //default actions should be set in stone with that way of doing it
+        $defaults = MaskManager::getDefaultActions();
+        $fullDirectoryMask = pow(2, count($defaults)) - 1;
+
+        /**
+         * For complexes resources the bits look loke this.
+         *
+         * common      | custom
+         * 1 1 0 1 1 0 | 1 1
+         *
+         * We only want to change the first part
+         * How do we do that ?
+         * First we reset the common part with the bitwise NOT (~) operator because we know the full common mask.
+         * Then we use the bitwise AND (&) operator
+         *
+         * the php equivalent would be
+         *  newMask | oldMask &~ $fullDirectoryMask
+         */
         $sql =
           "
             INSERT INTO claro_resource_rights (role_id, mask, resourceNode_id)
             SELECT {$role->getId()}, {$mask}, node.id FROM claro_resource_node node
             WHERE node.path LIKE ?
-            ON DUPLICATE KEY UPDATE mask = {$mask};
+            ON DUPLICATE KEY UPDATE mask = {$mask} | mask &~ {$fullDirectoryMask};
           ";
 
         $stmt = $this->conn->prepare($sql);
