@@ -76,11 +76,9 @@ class OptimizedRightsManager
             return;
         }
 
-        $typeList = implode(',', array_map(function ($type) {
-            return "'{$type->getName()}'";
-        }, $types));
-
-        //todo: prepared statements for type list
+        $typeList = array_map(function ($type) {
+            return $type->getName();
+        }, $types);
 
         $sql = "
           INSERT INTO claro_list_type_creation (resource_rights_id, resource_type_id)
@@ -99,9 +97,11 @@ class OptimizedRightsManager
           ) as t GROUP BY tid
         ";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(1, $typeList, Connection::PARAM_STR_ARRAY);
-        $stmt->execute();
+        $this->conn->executeQuery(
+          $sql,
+          [$typeList],
+          [Connection::PARAM_STR_ARRAY]
+        );
     }
 
     private function recursiveUpdate(ResourceNode $node, Role $role, $mask = 1, $types = [])
@@ -137,30 +137,33 @@ class OptimizedRightsManager
             return;
         }
 
-        $typeList = implode(',', array_map(function ($type) {
-            return "'{$type->getName()}'";
-        }, $types));
+        $typeList = array_map(function ($type) {
+            return $type->getName();
+        }, $types);
 
         $sql = "
-        INSERT INTO claro_list_type_creation (resource_rights_id, resource_type_id)
-        SELECT r.id as rid, t.id as tid FROM (
-          SELECT rights.id
-          FROM claro_resource_rights rights
-          JOIN claro_resource_node node ON rights.resourceNode_id = node.id
-          JOIN claro_role role ON rights.role_id = role.id
-          WHERE node.path LIKE ?
-          AND role.id = {$role->getId()}
-        ) as r, (
-          SELECT id
-          FROM claro_resource_type
-          WHERE name IN
-          (?)
-        ) as t GROUP BY tid
-      ";
+          INSERT IGNORE INTO claro_list_type_creation (resource_rights_id, resource_type_id)
+          SELECT r.id as rid, t.id as tid FROM (
+            SELECT rights.id
+            FROM claro_resource_rights rights
+            JOIN claro_resource_node node ON rights.resourceNode_id = node.id
+            JOIN claro_role role ON rights.role_id = role.id
+            JOIN claro_resource_type type on node.resource_type_id = type.id
+            WHERE node.path LIKE ?
+            AND role.id = {$role->getId()}
+            AND type.name = 'directory'
+          ) as r, (
+            SELECT id
+            FROM claro_resource_type
+            WHERE name IN
+            (?)
+          ) as t
+        ";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(1, $node->getPath().'%', \PDO::PARAM_STR);
-        $stmt->bindValue(2, $typeList, Connection::PARAM_STR_ARRAY);
-        $stmt->execute();
+        $this->conn->executeQuery(
+          $sql,
+          [$node->getPath(), $typeList],
+          [\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY]
+      );
     }
 }
