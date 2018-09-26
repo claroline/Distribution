@@ -159,7 +159,7 @@ class OptimizedRightsManager
 
         $this->conn->executeQuery(
           $sql,
-          [$node->getPath(), $typeList],
+          [$node->getPath().'%', $typeList],
           [\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY]
       );
     }
