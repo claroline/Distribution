@@ -65,7 +65,7 @@ const NewMessageComponent = (props) =>
             fields: [
               {
                 name: 'to',
-                type: 'groups',
+                type: 'username',
                 label: trans('message_form_to'),
                 required: true
               },
