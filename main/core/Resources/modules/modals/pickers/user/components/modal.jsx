@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {ListData} from '#/main/app/content/list/containers/data'
@@ -79,7 +78,7 @@ UsersPickerModal.propTypes = {
 
 UsersPickerModal.defaultProps = {
   title: trans('user_selector'),
-  confirmText: trans('select', {}, 'actions'),
+  confirmText: trans('select', {}, 'actions')
 }
 
 export {
