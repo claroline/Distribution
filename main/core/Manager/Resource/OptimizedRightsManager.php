@@ -46,7 +46,6 @@ class OptimizedRightsManager
             $this->singleUpdate($node, $role, $mask, $types);
     }
 
-    //todo: use prepared statements instead
     private function singleUpdate(ResourceNode $node, Role $role, $mask = 1, $types = [])
     {
         $sql =
@@ -59,7 +58,6 @@ class OptimizedRightsManager
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
 
-        //then update the ResourceRightsList
         $sql = "
             DELETE list FROM claro_list_type_creation list
             JOIN claro_resource_rights rights ON list.resource_rights_id = rights.id
@@ -106,7 +104,7 @@ class OptimizedRightsManager
 
     private function recursiveUpdate(ResourceNode $node, Role $role, $mask = 1, $types = [])
     {
-        //TODO: take into account the fact that some
+        //TODO: take into account the fact that some node have type with extended permissions
         $sql =
           "
             INSERT INTO claro_resource_rights (role_id, mask, resourceNode_id)
@@ -119,7 +117,6 @@ class OptimizedRightsManager
         $stmt->bindValue(1, $node->getPath().'%', \PDO::PARAM_STR);
         $stmt->execute();
 
-        //then update the ResourceRightsList
         $sql = "
           DELETE list FROM claro_list_type_creation list
           JOIN claro_resource_rights rights ON list.resource_rights_id = rights.id

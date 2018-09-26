@@ -23,11 +23,12 @@ const RightsModal = withReducer(selectors.STORE_NAME, reducer)(
       loadNode(resourceNode) {
         dispatch(formActions.resetForm(selectors.STORE_NAME, resourceNode))
       },
-      save(resourceNode, update) {
+      save(resourceNode, update, recursive = false) {
         dispatch(formActions.saveForm(selectors.STORE_NAME, ['claro_resource_action', {
           type: resourceNode.meta.type,
           action: 'rights',
-          id: resourceNode.id
+          id: resourceNode.id,
+          recursive
         }])).then((response) => update(response))
       }
     })
