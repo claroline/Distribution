@@ -8,18 +8,18 @@ import {trans} from '#/main/core/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
-import {UserCard} from '#/main/core/user/data/components/user-card'
-import {User as UserType} from '#/main/core/user/prop-types'
-import {MODAL_USERS_PICKER} from '#/main/core/modals/pickers/user'
+import {GroupCard} from '#/main/core/user/data/components/group-card'
+import {Group as GroupType} from '#/main/core/user/prop-types'
+import {MODAL_GROUPS_PICKER} from '#/main/core/modals/pickers/group'
 
-const UsersInput = props => {
+const GroupsInput = props => {
   if (!isEmpty(props.value)) {
     return(
       <div>
-        {props.value.map(user =>
-          <UserCard
-            key={`user-card-${user.id}`}
-            data={user}
+        {props.value.map(group =>
+          <GroupCard
+            key={`group-card-${group.id}`}
+            data={group}
             size="sm"
             orientation="col"
             actions={[
@@ -31,7 +31,7 @@ const UsersInput = props => {
                 dangerous: true,
                 callback: () => {
                   const newValue = props.value
-                  const index = newValue.findIndex(u => u.id === user.id)
+                  const index = newValue.findIndex(g => g.id === group.id)
 
                   if (-1 < index) {
                     newValue.splice(index, 1)
@@ -43,21 +43,21 @@ const UsersInput = props => {
           />
         )}
         <ModalButton
-          className="btn btn-users-primary"
+          className="btn btn-groups-primary"
           style={{marginTop: 10}}
           primary={true}
-          modal={[MODAL_USERS_PICKER, {
+          modal={[MODAL_GROUPS_PICKER, {
             title: props.picker.title,
             confirmText: props.picker.confirmText,
             selectAction: (selected) => ({
               type: CALLBACK_BUTTON,
               callback: () => {
                 const newValue = props.value
-                selected.forEach(user => {
-                  const index = newValue.findIndex(u => u.id === user.id)
+                selected.forEach(group => {
+                  const index = newValue.findIndex(g => g.id === group.id)
 
                   if (-1 === index) {
-                    newValue.push(user)
+                    newValue.push(group)
                   }
                 })
                 props.picker.handleSelect ? props.onChange(props.picker.handleSelect(newValue)) : props.onChange(newValue)
@@ -65,8 +65,8 @@ const UsersInput = props => {
             })
           }]}
         >
-          <span className="fa fa-fw fa-user-plus icon-with-text-right" />
-          {trans('add_users')}
+          <span className="fa fa-fw fa-users icon-with-text-right" />
+          {trans('add_groups')}
         </ModalButton>
       </div>
     )
@@ -74,13 +74,13 @@ const UsersInput = props => {
     return (
       <EmptyPlaceholder
         size="lg"
-        icon="fa fa-user"
-        title={trans('no_user')}
+        icon="fa fa-users"
+        title={trans('no_group')}
       >
         <ModalButton
-          className="btn btn-users-primary"
+          className="btn btn-groups-primary"
           primary={true}
-          modal={[MODAL_USERS_PICKER, {
+          modal={[MODAL_GROUPS_PICKER, {
             title: props.picker.title,
             confirmText: props.picker.confirmText,
             selectAction: (selected) => ({
@@ -89,16 +89,16 @@ const UsersInput = props => {
             })
           }]}
         >
-          <span className="fa fa-fw fa-user-plus icon-with-text-right" />
-          {trans('add_users')}
+          <span className="fa fa-fw fa-users icon-with-text-right" />
+          {trans('add_groups')}
         </ModalButton>
       </EmptyPlaceholder>
     )
   }
 }
 
-implementPropTypes(UsersInput, FormFieldTypes, {
-  value: T.arrayOf(T.shape(UserType.propTypes)),
+implementPropTypes(GroupsInput, FormFieldTypes, {
+  value: T.arrayOf(T.shape(GroupType.propTypes)),
   picker: T.shape({
     title: T.string,
     confirmText: T.string,
@@ -107,11 +107,11 @@ implementPropTypes(UsersInput, FormFieldTypes, {
 }, {
   value: null,
   picker: {
-    title: trans('user_selector'),
+    title: trans('groups_picker'),
     confirmText: trans('select', {}, 'actions')
   }
 })
 
 export {
-  UsersInput
+  GroupsInput
 }
