@@ -108,7 +108,7 @@ class WorkspaceToolbarComponent extends Component {
       }, {
         highlight: ['.tools'],
         content: {
-          title: trans('tools', {}, 'walkthrough'),
+          title: trans('workspace_tools', {}, 'walkthrough'),
           message: trans('workspace.sidebar.tools_group.message', {}, 'walkthrough')
         },
         position: {

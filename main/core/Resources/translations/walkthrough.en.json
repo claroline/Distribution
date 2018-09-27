@@ -3,7 +3,11 @@
   "action": "Action: %actionName%",
   "actions": "The actions",
   "tool": "Tool: %toolName%",
-  "tools": "The tools",
+  "desktop_tools": "The tools",
+  "administration": "The administration tools",
+  "workspace_tools": "The workspace tools",
+  "user_tools": "The user tools",
+
   "end": {
     "title": "Congratulations ! You have finished this tutorial.",
     "message": "You can replay it now and choose another tutorial to follow. Also note, you can find available tutorials by searching the tutorial icons in Claroline interface."
@@ -16,19 +20,22 @@
     "platform_brand": {
 
     },
-    "tools": {
+    "tools_group": {
 
     },
     "workspaces_menu": {
 
     },
-    "administration": {
+    "administration_group": {
 
     },
     "messages": {
 
     },
     "user_menu": {
+
+    },
+    "user_tools": {
 
     },
     "locale": {

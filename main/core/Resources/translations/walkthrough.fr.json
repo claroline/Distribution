@@ -3,7 +3,11 @@
   "action": "L'action \"%actionName%\"",
   "actions": "Les actions",
   "tool": "L'outil \"%toolName%\"",
-  "tools": "Les outils",
+  "desktop_tools": "Les outils",
+  "administration": "Les outils d'administration",
+  "workspace_tools": "Les outils de l'espace d'activités",
+  "user_tools": "Les outils de l'utilisateur",
+
   "end": {
     "title": "Félicitations ! Vous avez terminé ce tutoriel.",
     "message": "Vous pouvez le rejouer maintenant ou choisir un autre tutoriel à suivre. Vous pouvez aussi retrouver tous les tutoriels disponibles en cherchant les icônes tutoriel dans l'interface."
@@ -13,26 +17,42 @@
     "name": "Découvrir le menu Claroline.",
     "description": "Familiarisez-vous avec les fonctionnalités du menu Claroline.",
 
-    "platform_brand": {
+    "intro": {
 
     },
-    "tools": {
-
+    "tools_group": {
+      "message": "",
+      "action": "Cliquez sur le bouton pour ouvrir le menu Outils."
     },
     "workspaces_menu": {
 
     },
-    "administration": {
-
+    "administration_group": {
+      "message": "",
+      "action": "Cliquez sur le bouton pour ouvrir le menu Administration."
     },
     "messages": {
 
     },
     "user_menu": {
-
+      "action": "Cliquez sur le bouton pour ouvrir le menu Utilisateur."
     },
     "locale": {
 
+    },
+
+    "tools": {
+      "resource_manager": {
+        "documentation": "https://claroline.gitbooks.io/claroline-connect-documentation/content/fr/resources/resources.html",
+        "message": "Permet de voir et gérer toutes vos ressources."
+      }
+    },
+
+    "administration": {
+      "user_management": {
+        "documentation": "",
+        "message": "Permet de voir les utilisateurs et les groupes inscrits, de changer leurs droits ainsi que d'en inscrire de nouveaux."
+      }
     }
   },
 
