@@ -17,9 +17,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -165,12 +162,7 @@ class UserFinder extends AbstractFinder
                     $qb->andWhere('ao.uuid IN (:administratedOrganizations)');
                     $qb->setParameter('administratedOrganizations', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
-                //case 'contactable':
                 case 'workspace':
-                    //this one is REALLY tricky for performance reasons.
-                    //we need to make a union but it's not supported by the querybuilder.
-                    //It's not supported at all by doctrine actually.
-                    //Let's return a query object with the correct sql.
                     if (!is_array($filterValue)) {
                         $filterValue = [$filterValue];
                     }
@@ -180,46 +172,9 @@ class UserFinder extends AbstractFinder
                     $byGroupSearch['_workspace_group'] = $filterValue;
                     unset($byUserSearch['workspace']);
                     unset($byGroupSearch['workspace']);
-                    $qbUser = $this->om->createQueryBuilder();
-                    $qbUser->select('DISTINCT obj')->from($this->getClass(), 'obj');
-                    $this->configureQueryBuilder($qbUser, $byUserSearch);
-                    //this is our first part of the union
-                    $sqlUser = $this->getSql($qbUser);
-                    $sqlUser = $this->removeAlias($sqlUser);
-                    $qbGroup = $this->om->createQueryBuilder();
-                    $qbGroup->select('DISTINCT obj')->from($this->getClass(), 'obj');
-                    $this->configureQueryBuilder($qbGroup, $byGroupSearch);
-                    //this is the second part of the union
-                    $sqlGroup = $this->getSql($qbGroup);
-                    $sqlGroup = $this->removeAlias($sqlGroup);
-                    $together = $sqlUser.' UNION '.$sqlGroup;
-                    //we might want to add a count somehere here
-                    //add limit & offset too
 
-                    if ($options['count']) {
-                        $together = "SELECT COUNT(*) as count FROM ($together) AS wathever";
-                        $rsm = new ResultSetMapping();
-                        $rsm->addScalarResult('count', 'count', 'integer');
-                        $query = $this->_em->createNativeQuery($together, $rsm);
-                    } else {
-                        //add page & limit
-                        $together .= ' '.$this->getSqlOrderBy($sortBy);
+                    return $this->union($byUserSearch, $byGroupSearch, $options, $sortBy);
 
-                        if ($options['limit'] > -1) {
-                            $together .= ' LIMIT '.$options['limit'];
-                        }
-
-                        if ($options['limit'] > 0) {
-                            $offset = $options['limit'] * $options['page'];
-                            $together .= ' OFFSET  '.$offset;
-                        }
-
-                        $rsm = new ResultSetMappingBuilder($this->_em);
-                        $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
-                        $query = $this->_em->createNativeQuery($together, $rsm);
-                    }
-
-                    return $query;
                     break;
                 case '_workspace_user':
                     $filterValue = array_map(function ($value) {
@@ -336,7 +291,7 @@ class UserFinder extends AbstractFinder
     }
 
     //should be cleaner
-    private function removeAlias($sql)
+    public function removeAlias($sql)
     {
         $aliases = [
           'AS id_0',

@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\API\Finder\Workspace;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -51,10 +52,10 @@ class WorkspaceFinder extends AbstractFinder
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Workspace\Workspace';
+        return Workspace::class;
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
         foreach ($searches as $filterName => $filterValue) {
             //remap some filters...
@@ -120,20 +121,38 @@ class WorkspaceFinder extends AbstractFinder
                     $qb->andWhere('o.uuid IN (:organizationIds)');
                     $qb->setParameter('organizationIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
-                case 'user':
+                case '_user':
                     $qb->leftJoin('obj.roles', 'r');
                     $qb->leftJoin('r.users', 'ru');
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->eq('ru.id', ':currentUserId'),
+                        $qb->expr()->eq('ru.uuid', ':currentUserId')
+                    ));
+                    $qb->andWhere('r.name != :roleUser');
+                    $qb->setParameter('currentUserId', $filterValue);
+                    $qb->setParameter('roleUser', 'ROLE_USER');
+
+                    break;
+                case '_group':
+                    $qb->leftJoin('obj.roles', 'r');
                     $qb->leftJoin('r.groups', 'rg');
                     $qb->leftJoin('rg.users', 'rgu');
                     $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->eq('ru.id', ':currentUserId'),
-                        $qb->expr()->eq('ru.uuid', ':currentUserId'),
                         $qb->expr()->eq('rgu.id', ':currentUserId'),
                         $qb->expr()->eq('rgu.uuid', ':currentUserId')
                     ));
                     $qb->andWhere('r.name != :roleUser');
                     $qb->setParameter('currentUserId', $filterValue);
                     $qb->setParameter('roleUser', 'ROLE_USER');
+                    break;
+                case 'user':
+                    $byUserSearch = $byGroupSearch = $searches;
+                    $byUserSearch['_user'] = $filterValue;
+                    $byGroupSearch['_group'] = $filterValue;
+                    unset($byUserSearch['user']);
+                    unset($byGroupSearch['user']);
+
+                    return $this->union($byUserSearch, $byGroupSearch, $options, $sortBy);
                     break;
                     //use this whith the 'user' property
                 case 'isManager':

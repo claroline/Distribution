@@ -12,8 +12,11 @@
 namespace Claroline\AppBundle\API\Finder;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -22,17 +25,20 @@ abstract class AbstractFinder implements FinderInterface
     use FinderTrait;
 
     protected $om;
+    protected $_em;
 
     /**
      * @DI\InjectParams({
-     *      "om" = @DI\Inject("claroline.persistence.object_manager")
+     *      "om" = @DI\Inject("claroline.persistence.object_manager"),
+     *      "em" = @DI\Inject("doctrine.orm.entity_manager")
      * })
      *
      * @param ObjectManager $om
      */
-    public function setObjectManager(ObjectManager $om)
+    public function setObjectManager(ObjectManager $om, EntityManager $em)
     {
         $this->om = $om;
+        $this->_em = $em;
     }
 
     public function find(array $filters = [], array $sortBy = null, $page = 0, $limit = -1, $count = false)
@@ -99,8 +105,61 @@ abstract class AbstractFinder implements FinderInterface
         }
     }
 
+    //     .--..--..--..--..--..--.
+    //   .' \  (`._   (_)     _   \
+    // .'    |  '._)         (_)  |
+    // \ _.')\      .----..---.   /
+    // |(_.'  |    /    .-\-.  \  |
+    // \     0|    |   ( O| O) | o|
+    //  |  _  |  .--.____.'._.-.  |
+    //  \ (_) | o         -` .-`  |
+    //   |    \   |`-._ _ _ _ _\ /
+    //   \    |   |  `. |_||_|   |
+    //   | o  |    \_      \     |     -.   .-.
+    //   |.-.  \     `--..-'   O |     `.`-' .'
+    // _.'  .' |     `-.-'      /-.__   ' .-'
+    // .' `-.` '.|='=.='=.='=.='=|._/_ `-'.'
+    // `-._  `.  |________/\_____|    `-.'
+    //  .'   ).| '=' '='\/ '=' |
+    //  `._.`  '---------------'
+    //          //___\   //___\
+    //            ||       ||
+    //            ||_.-.   ||_.-.
+    //           (_.--__) (_.--__)
+    //
+    // This is going to be wtf until the end of file. We're more or less implementing the union for our query builder.
+    //
+    public function union(array $firstSearch, array $secondSearch, array $options = [], array $sortBy = null)
+    {
+        //let doctrine do its stuff for the fist part
+        $firstQb = $this->om->createQueryBuilder();
+        $firstQb->select('DISTINCT obj')->from($this->getClass(), 'obj');
+        $this->configureQueryBuilder($firstQb, $firstSearch);
+        //this is our first part of the union
+        $firstSql = $this->getSql($firstQb);
+        $firstSql = $this->removeAlias($firstSql, $firstQb);
+
+        //new qb for the 2nd part
+        $secQb = $this->om->createQueryBuilder();
+        $secQb->select('DISTINCT obj')->from($this->getClass(), 'obj');
+        $this->configureQueryBuilder($secQb, $secondSearch);
+        //this is the second part of the union
+        $secSql = $this->getSql($secQb);
+        $secSql = $this->removeAlias($secSql, $secQb);
+        $sql = $firstSql.' UNION '.$secSql;
+
+        //make a query from the sql
+        return $this->buildQueryFromSql($sql, $options, $sortBy);
+    }
+
+    public function removeAlias($sql, QueryBuilder $qb)
+    {
+        return $sql;
+    }
+
     //bad way to do it but otherwise we use a prepared statement and the sql contains '?'
     //https://stackoverflow.com/questions/2095394/doctrine-how-to-print-out-the-real-sql-not-just-the-prepared-statement/28294482
+    //todo: Keep the '?' and use the prepared statement
     protected function getSql(QueryBuilder $qb)
     {
         $query = $qb->getQuery();
@@ -127,7 +186,37 @@ abstract class AbstractFinder implements FinderInterface
             }
         }
 
+        //would be GREAT if aliases could be removed here
+
         return $sql;
+    }
+
+    public function buildQueryFromSql($sql, array $options, array $sortBy = null)
+    {
+        if ($options['count']) {
+            $sql = "SELECT COUNT(*) as count FROM ($sql) AS wathever";
+            $rsm = new ResultSetMapping();
+            $rsm->addScalarResult('count', 'count', 'integer');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+        } else {
+            //add page & limit
+            $sql .= ' '.$this->getSqlOrderBy($sortBy);
+
+            if ($options['limit'] > -1) {
+                $sql .= ' LIMIT '.$options['limit'];
+            }
+
+            if ($options['limit'] > 0) {
+                $offset = $options['limit'] * $options['page'];
+                $sql .= ' OFFSET  '.$offset;
+            }
+
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+        }
+
+        return $query;
     }
 
     public function getSqlOrderBy(array $sortBy = null)

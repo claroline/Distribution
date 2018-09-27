@@ -13,8 +13,6 @@ namespace Claroline\CoreBundle\API\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -141,53 +139,8 @@ class ResourceNodeFinder extends AbstractFinder
                     $roleSearch['_roles'] = $otherRoles;
                     unset($managerSearch['roles']);
                     unset($roleSearch['roles']);
-                    unset($searches['roles']);
 
-                    $qbManager = $this->om->createQueryBuilder();
-                    $qbManager->select('DISTINCT obj')->from($this->getClass(), 'obj');
-                    $this->configureQueryBuilder($qbManager, $managerSearch);
-                    //this is our first part of the union
-                    $sqlManager = $this->getSql($qbManager);
-                    $sqlManager = $this->removeAlias($sqlManager);
-
-                    $qbRoles = $this->om->createQueryBuilder();
-                    $qbRoles->select('DISTINCT obj')->from($this->getClass(), 'obj');
-                    $this->configureQueryBuilder($qbRoles, $roleSearch);
-                    //this is the second part of the union
-                    $sqlRoles = $this->getSql($qbRoles);
-                    $sqlRoles = $this->removeAlias($sqlRoles);
-
-                    $together = $sqlRoles;
-
-                    if (count($managerRoles) > 0) {
-                        $together .= ' UNION '.$sqlManager;
-                    }
-
-                    //we might want to add a count somehere here
-                    //add limit & offset too
-
-                    if ($options['count']) {
-                        $together = "SELECT COUNT(*) as count FROM ($together) AS wathever";
-                        $rsm = new ResultSetMapping();
-                        $rsm->addScalarResult('count', 'count', 'integer');
-                        $query = $this->_em->createNativeQuery($together, $rsm);
-                    } else {
-                        //add page & limit
-                        if ($options['limit'] > -1) {
-                            $together .= ' LIMIT '.$options['limit'];
-                        }
-
-                        if ($options['limit'] > 0) {
-                            $offset = $options['limit'] * $options['page'];
-                            $together .= ' OFFSET  '.$offset;
-                        }
-
-                        $rsm = new ResultSetMappingBuilder($this->_em);
-                        $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
-                        $query = $this->_em->createNativeQuery($together, $rsm);
-                    }
-
-                    return $query;
+                    return $this->union($managerSearch, $roleSearch, $options, $sortBy);
 
                     break;
                 case '_managerRoles':

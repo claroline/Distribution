@@ -78,10 +78,10 @@ class AnnouncementFinder extends AbstractFinder
                   $qb->leftJoin('r.groups', 'rg');
                   $qb->leftJoin('rg.users', 'rgu');
                   $qb->andWhere($qb->expr()->orX(
-                      $qb->expr()->eq('ru.uuid', ':currentUserId'),
-                      $qb->expr()->eq('rgu.uuid', ':currentUserId'),
-                      $qb->expr()->eq('ru.id', ':currentUserId'),
-                      $qb->expr()->eq('rgu.id', ':currentUserId')
+                      $qb->expr()->eq('ru.uuid', ':currentUserId')
+                      // $qb->expr()->eq('rgu.uuid', ':currentUserId'),
+                      // $qb->expr()->eq('ru.id', ':currentUserId'),
+                      // $qb->expr()->eq('rgu.id', ':currentUserId')
                   ));
                   $qb->andWhere('r.name != :roleUser');
                   $qb->setParameter('currentUserId', $filterValue);
