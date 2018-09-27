@@ -12,6 +12,7 @@
 namespace Claroline\AppBundle\API\Finder;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
@@ -136,65 +137,45 @@ abstract class AbstractFinder implements FinderInterface
         $firstQb->select('DISTINCT obj')->from($this->getClass(), 'obj');
         $this->configureQueryBuilder($firstQb, $firstSearch);
         //this is our first part of the union
-        $firstSql = $this->getSql($firstQb);
-        $firstSql = $this->removeAlias($firstSql, $firstQb);
+
+        $firstQ = $firstQb->getQuery();
+        $firstSql = $this->getSql($firstQ);
 
         //new qb for the 2nd part
         $secQb = $this->om->createQueryBuilder();
         $secQb->select('DISTINCT obj')->from($this->getClass(), 'obj');
         $this->configureQueryBuilder($secQb, $secondSearch);
         //this is the second part of the union
-        $secSql = $this->getSql($secQb);
-        $secSql = $this->removeAlias($secSql, $secQb);
+        $secQ = $secQb->getQuery();
+        $secSql = $this->getSql($secQ);
+
         $sql = $firstSql.' UNION '.$secSql;
 
-        //make a query from the sql
-        return $this->buildQueryFromSql($sql, $options, $sortBy);
+        $query = $this->buildQueryFromSql($sql, $options, $sortBy);
+
+        $parameters = new ArrayCollection(array_merge(
+          $firstQb->getParameters()->toArray(),
+          $secQb->getParameters()->toArray()
+        ));
+
+        foreach ($parameters as $k => $p) {
+            $query->setParameter($k, $p->getValue(), $p->getType());
+        }
+
+        return $query;
     }
 
-    public function removeAlias($sql)
+    private function getSql(Query $query)
     {
+        $sql = $query->getSql();
+
         $sql = preg_replace('/ AS \S+/', ',', $sql);
         $sql = str_replace(', FROM', ' FROM', $sql);
 
         return $sql;
     }
 
-    //bad way to do it but otherwise we use a prepared statement and the sql contains '?'
-    //https://stackoverflow.com/questions/2095394/doctrine-how-to-print-out-the-real-sql-not-just-the-prepared-statement/28294482
-    //todo: Keep the '?' and use the prepared statement
-    protected function getSql(QueryBuilder $qb)
-    {
-        $query = $qb->getQuery();
-
-        $vals = $query->getParameters();
-
-        foreach (explode('?', $query->getSql()) as $i => $part) {
-            $sql = (isset($sql) ? $sql : null).$part;
-            if (isset($vals[$i])) {
-                $value = $vals[$i]->getValue();
-                //oh god... maybe more will required to be added here
-                if (is_string($value)) {
-                    $sql .= "'{$value}'";
-                } elseif (is_array($value)) {
-                    $value = array_map(function ($val) {
-                        return is_string($val) ? "'$val'" : $val;
-                    }, $value);
-                    $sql .= implode(',', $value);
-                } elseif (is_bool($value)) {
-                    $sql .= $value ? 'TRUE' : 'FALSE';
-                } else {
-                    $sql .= $value;
-                }
-            }
-        }
-
-        //would be GREAT if aliases could be removed here
-
-        return $sql;
-    }
-
-    public function buildQueryFromSql($sql, array $options, array $sortBy = null)
+    private function buildQueryFromSql($sql, array $options, array $sortBy = null)
     {
         if ($options['count']) {
             $sql = "SELECT COUNT(*) as count FROM ($sql) AS wathever";
@@ -222,7 +203,7 @@ abstract class AbstractFinder implements FinderInterface
         return $query;
     }
 
-    public function getSqlOrderBy(array $sortBy = null)
+    private function getSqlOrderBy(array $sortBy = null)
     {
         if ($sortBy && $sortBy['property'] && 0 !== $sortBy['direction']) {
             // no order by defined
@@ -241,7 +222,7 @@ abstract class AbstractFinder implements FinderInterface
         return '';
     }
 
-    public function getSqlPropertyFromMapping($property)
+    private function getSqlPropertyFromMapping($property)
     {
         $metadata = $this->om->getClassMetadata($this->getClass());
 

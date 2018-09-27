@@ -81,10 +81,10 @@ class WorkspaceFinder extends AbstractFinder
                         $qb->leftJoin('uo.users', 'ua');
 
                         $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->eq('ua.id', ':userId')
+                            $qb->expr()->eq('ua.id', ':userOganizationId')
                         ));
 
-                        $qb->setParameter('userId', $currentUser->getId());
+                        $qb->setParameter('userOganizationId', $currentUser->getId());
                     }
 
                     break;
@@ -98,14 +98,16 @@ class WorkspaceFinder extends AbstractFinder
                         $qb->leftJoin('obj.roles', 'r');
                         $qb->leftJoin('r.users', 'ru');
                         $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->eq('ua.id', ':userId'),
-                            $qb->expr()->eq('creator.id', ':userId'),
+                            $qb->expr()->eq('ua.id', ':uaId'),
+                            $qb->expr()->eq('creator.id', ':cId'),
                             $qb->expr()->andX(
                                 $qb->expr()->eq('r.name', "CONCAT('ROLE_WS_MANAGER_', obj.uuid)"),
-                                $qb->expr()->eq('ru.id', ':userId')
+                                $qb->expr()->eq('ru.id', ':ruId')
                             )
                         ));
-                        $qb->setParameter('userId', $currentUser->getId());
+                        $qb->setParameter('uaId', $currentUser->getId());
+                        $qb->setParameter('cId', $currentUser->getId());
+                        $qb->setParameter('ruId', $currentUser->getId());
                     }
                     break;
                 case 'createdAfter':
@@ -125,11 +127,12 @@ class WorkspaceFinder extends AbstractFinder
                     $qb->leftJoin('obj.roles', 'r');
                     $qb->leftJoin('r.users', 'ru');
                     $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->eq('ru.id', ':currentUserId'),
-                        $qb->expr()->eq('ru.uuid', ':currentUserId')
+                        $qb->expr()->eq('ru.id', ':_userId'),
+                        $qb->expr()->eq('ru.uuid', ':_userUuid')
                     ));
                     $qb->andWhere('r.name != :roleUser');
-                    $qb->setParameter('currentUserId', $filterValue);
+                    $qb->setParameter('_userId', $filterValue);
+                    $qb->setParameter('_userUuid', $filterValue);
                     $qb->setParameter('roleUser', 'ROLE_USER');
 
                     break;
@@ -138,11 +141,12 @@ class WorkspaceFinder extends AbstractFinder
                     $qb->leftJoin('r.groups', 'rg');
                     $qb->leftJoin('rg.users', 'rgu');
                     $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->eq('rgu.id', ':currentUserId'),
-                        $qb->expr()->eq('rgu.uuid', ':currentUserId')
+                        $qb->expr()->eq('rgu.id', ':_groupUserId'),
+                        $qb->expr()->eq('rgu.uuid', ':_groupUserUuid')
                     ));
                     $qb->andWhere('r.name != :roleUser');
-                    $qb->setParameter('currentUserId', $filterValue);
+                    $qb->setParameter('_groupUserId', $filterValue);
+                    $qb->setParameter('_groupUserUuid', $filterValue);
                     $qb->setParameter('roleUser', 'ROLE_USER');
                     break;
                 case 'user':
