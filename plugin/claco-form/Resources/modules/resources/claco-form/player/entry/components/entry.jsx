@@ -121,7 +121,7 @@ const EntryActions = props =>
         icon="fa fa-fw fa-pencil"
         label={trans('edit')}
         tooltip="top"
-        target={`#/entry/form/${props.entryId}`}
+        target={`/entry/form/${props.entryId}`}
       />
     }
 
