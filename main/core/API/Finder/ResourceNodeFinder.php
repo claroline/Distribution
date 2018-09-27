@@ -196,48 +196,4 @@ class ResourceNodeFinder extends AbstractFinder
 
         return $qb;
     }
-
-    public function removeAlias($sql)
-    {
-        $aliases = [
-          'AS license_0',
-          'AS creation_date_1',
-          'AS modification_date_2',
-          'AS showIcon_3',
-          'AS name_4',
-          'AS hidden_5',
-          'AS lvl_6',
-          'AS path_7',
-          'AS value_8',
-          'AS mime_type_9',
-          'AS published_10',
-          'AS published_to_portal_11',
-          'AS author_12',
-          'AS active_13',
-          'AS fullscreen_14',
-          'AS closable_15',
-          'AS closeTarget_16',
-          'AS accesses_17',
-          'AS views_count_18',
-          'AS deletable_19',
-          'AS id_20',
-          'AS uuid_21',
-          'AS thumbnail_22',
-          'AS poster_23 ',
-          'AS description_24',
-          'AS accessible_from_25',
-          'AS accessible_until_26',
-          'AS resource_type_id_27',
-          'AS icon_id_28',
-          'AS parent_id_29',
-          'AS workspace_id_30',
-          'AS creator_id_31',
-        ];
-
-        foreach ($aliases as $alias) {
-            $sql = str_replace($alias, '', $sql);
-        }
-
-        return $sql;
-    }
 }

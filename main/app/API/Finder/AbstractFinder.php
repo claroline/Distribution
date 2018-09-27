@@ -152,8 +152,11 @@ abstract class AbstractFinder implements FinderInterface
         return $this->buildQueryFromSql($sql, $options, $sortBy);
     }
 
-    public function removeAlias($sql, QueryBuilder $qb)
+    public function removeAlias($sql)
     {
+        $sql = preg_replace('/ AS \S+/', ',', $sql);
+        $sql = str_replace(', FROM', ' FROM', $sql);
+
         return $sql;
     }
 
