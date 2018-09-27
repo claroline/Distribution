@@ -147,6 +147,9 @@ class WalkthroughOverlay extends Component {
                 /> :
                 <WalkThroughEnd
                   {...this.props.current.content}
+
+                  additional={this.props.additional}
+                  start={this.props.start}
                   finish={this.props.finish}
                   restart={this.props.restart}
                 />
@@ -171,7 +174,9 @@ WalkthroughOverlay.propTypes = {
   finish: T.func.isRequired,
   previous: T.func.isRequired,
   next: T.func.isRequired,
-  restart: T.func.isRequired
+  start: T.func.isRequired,
+  restart: T.func.isRequired,
+  additional: T.array
 }
 
 WalkthroughOverlay.defaultProps = {

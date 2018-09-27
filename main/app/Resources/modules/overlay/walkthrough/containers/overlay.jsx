@@ -8,13 +8,20 @@ import {actions, selectors, reducer} from '#/main/app/overlay/walkthrough/store'
 const WalkthroughOverlay = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
+      // current progression
       active: selectors.active(state),
       progression: selectors.progression(state),
       current: selectors.currentStep(state),
       hasNext: selectors.hasNext(state),
-      hasPrevious: selectors.hasPrevious(state)
+      hasPrevious: selectors.hasPrevious(state),
+
+      // general info
+      additional: selectors.additional(state)
     }),
     (dispatch) => ({
+      start(steps, additional, documentation) {
+        dispatch(actions.start(steps, additional, documentation))
+      },
       restart() {
         dispatch(actions.restart())
       },

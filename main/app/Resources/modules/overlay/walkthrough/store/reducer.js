@@ -39,6 +39,9 @@ const reducer = combineReducers({
     [WALKTHROUGH_RESTART]: () => false
   }),
 
+  /**
+   * The current playing step.
+   */
   current: makeReducer(null, {
     [WALKTHROUGH_START]: () => 0,
     [WALKTHROUGH_NEXT]: (state) => state + 1,
@@ -59,10 +62,17 @@ const reducer = combineReducers({
           icon: 'fa fa-street-view',
           title: trans('end.title', {}, 'walkthrough'),
           message: trans('end.message', {}, 'walkthrough'),
-          link: 'http://www.google.fr/'
+          link: action.documentation
         }
       }
     ])
+  }),
+
+  /**
+   * Additional walkthroughs related to the current one.
+   */
+  additional: makeReducer([], {
+    [WALKTHROUGH_START]: (state, action) => action.additional
   })
 })
 

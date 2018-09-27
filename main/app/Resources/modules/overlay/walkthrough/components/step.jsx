@@ -34,7 +34,7 @@ const WalkThroughStep = props =>
 
       {props.link &&
         <a className="walkthrough-link" href={props.link}>
-          <span className="fa fa-fw fa-question-circle icon-with-text-right" />
+          <span className="fa fa-question-circle icon-with-text-right" />
           {trans('learn-more', {}, 'actions')}
         </a>
       }
@@ -42,7 +42,7 @@ const WalkThroughStep = props =>
 
     {props.requiredInteraction &&
       <div className="walkthrough-interaction">
-        <span className="fa fa-fw fa-hand-pointer icon-with-text-right" />
+        <span className="fa fa-hand-pointer icon-with-text-right" />
         {props.requiredInteraction.message}
       </div>
     }
@@ -74,7 +74,7 @@ const WalkThroughStep = props =>
         primary={true}
         size="sm"
       >
-        {isEmpty(props.requiredInteraction) ? trans('next') : trans('action_required')}
+        {isEmpty(props.requiredInteraction) ? trans('next') : trans('action_required', {}, 'walkthrough')}
 
         {isEmpty(props.requiredInteraction) &&
           <span className="fa fa-angle-double-right icon-with-text-left"/>

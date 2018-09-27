@@ -1,21 +1,61 @@
 {
+  "action_required": "Action requise",
   "action": "L'action \"%actionName%\"",
   "actions": "Les actions",
   "tool": "L'outil \"%toolName%\"",
   "tools": "Les outils",
   "end": {
-    "title": "Félicitations ! You have finished this tutorial.",
-    "message": "You can replay it now and choose another tutorial to follow. Also note, you can find available tutorials by searching the tutorial icons in Claroline interface."
+    "title": "Félicitations ! Vous avez terminé ce tutoriel.",
+    "message": "Vous pouvez le rejouer maintenant ou choisir un autre tutoriel à suivre. Vous pouvez aussi retrouver tous les tutoriels disponibles en cherchant les icônes tutoriel dans l'interface."
+  },
+
+  "header": {
+    "name": "Découvrir le menu Claroline.",
+    "description": "Familiarisez-vous avec les fonctionnalités du menu Claroline.",
+
+    "platform_brand": {
+
+    },
+    "tools": {
+
+    },
+    "workspaces_menu": {
+
+    },
+    "administration": {
+
+    },
+    "messages": {
+
+    },
+    "user_menu": {
+
+    },
+    "locale": {
+
+    }
   },
 
   "workspace": {
     "sidebar": {
-      "title": "Découvrons la barre d'outils de l'espace d'activités ensemble !",
-      "general": "La barre d'outils vous permet de vous déplacer au sein de l'espace d'activités ouvert.",
-      "tools-group": "La section outils vous permet d'ouvrir les différents outils activés dans l'espace d'activités.",
-      "actions-group": "La section actions vous permet de gérer et consulter les informations de l'espace d'activités.",
-      "opened-tool": "Ceci est l'outil actuellement ouvert."
+      "name": "Découvrir la barre d'outils de l'espace d'activités",
+      "description": "Familiarisez-vous avec les fonctionnalités accessible depuis la barre d'outils de l'espace d'activités.",
+
+      "intro": {
+        "title": "Découvrons la barre d'outils de l'espace d'activités ensemble !",
+        "message": "La barre d'outils vous permet de vous déplacer au sein de l'espace d'activités ouvert."
+      },
+      "tools_group": {
+        "message": "La section outils vous permet d'ouvrir les différents outils activés dans l'espace d'activités."
+      },
+      "actions_group": {
+        "message": "La section actions vous permet de gérer et consulter les informations de l'espace d'activités."
+      },
+      "opened_tool": {
+        "message": "Ceci est l'outil actuellement ouvert."
+      }
     },
+
     "tools": {
       "analytics": {
         "documentation": "",
@@ -38,22 +78,75 @@
         "message": "Permet de voir les utilisateurs et les groupes inscrits, de changer leurs droits ainsi que d'en inscrire de nouveaux."
       }
     },
+
     "actions": {
       "about": "Affiche les informations générales de l'espace d'activités.",
       "delete": "Permet de supprimer l'espace d'activités ainsi que tous ses contenus.",
       "impersonation": "Permet de parcourir l'espace d'activités en utilisant un autre rôle afin de voir ce que ces utilisateurs voient.",
-      "parameters": "Permet de configurer l'espace d'activités."
+      "parameters": "Permet de configurer l'espace d'activités.",
+      "walkthrough": "Affiche les tutoriels disponibles dans l'espace d'activités."
     }
   },
 
   "home": {
     "editor": {
-      "title": "",
-      "general": "",
-      "add_tab": "",
-      "created_tab": "",
-      "tab_form": "",
-      "tab_sections": ""
+      "name": "Découvrir la configuration de l'accueil",
+      "description": "Familiarisez-vous avec l'éditeur en parcourant ses fonctionnalités de base.",
+
+      "intro": {
+        "title": "Bienvenue dans la configuration de l'accueil",
+        "message": "Cet éditeur vous permet de configurer les différentes parties composant l'accueil : les onglets, les sections et les widgets."
+      },
+      "tabs": {
+        "title": "Les onglets",
+        "message": "L'accueil est composé de différents onglets accessibles via ce menu."
+      },
+      "add_tab": {
+        "message": "Permet d'ajouter de nouveaux onglets sur l'accueil.",
+        "action": "Cliquez sur le bouton pour créer un nouvel onglet et continuer ce tutoriel."
+      },
+      "created_tab": {
+        "message": "Après la création, le nouvel onglet est automatiquement ouvert."
+      },
+      "tab_form": {
+        "title": "La configuration l'onglet",
+        "message": "Toutes les options disponibles pour l'onglet sont regroupées dans ce formulaire (la configuration avancée des onglets est détaillée dans un autre tutoriel)."
+      },
+      "tab_sections": {
+        "title": "Les sections de l'onglet",
+        "message": "Chaque onglet peut contenir une ou plusieurs sections qui permettront d'organiser et de mettre en forme les widgets. Comme nous venons de créer cet onglet, il n'y a aucune section pour le moment."
+      },
+      "add_section": {
+        "message": "Nous allons maintenant ajouter une section à notre onglet.",
+        "action": "Cliquez sur le bouton pour créer une nouvelle section et continuer ce tutoriel."
+      },
+      "section_layout": {
+        "message": "Avant de pouvoir utiliser la section, vous devez choisir son style qui déterminera le nombre de widgets de la section ainsi que leur position."
+      },
+      "select_layout": {
+        "message": "Le bouton vous montre le nombre et la taille des colonnes qui seront affichées.",
+        "action": "Cliquez sur le bouton pour créer une section à 3 colonnes."
+      }
+    },
+
+    "create-widget": {
+      "name": "Créer un widget",
+      "description": "Apprenez comment ajouter un nouveau widget dans une section existante."
+    },
+
+    "create-widget-list": {
+      "name": "Créer un widget : le widget Liste",
+      "description": "Apprenez comment ajouter et configurer un widget contenant une liste de données."
+    },
+
+    "create-widget-simple": {
+      "name": "Créer un widget : le widget Contenu",
+      "description": "Apprenez comment ajouter et configurer un widget contenant un contenu riche."
+    },
+
+    "create-widget-resource": {
+      "name": "Créer un widget : le widget Ressource",
+      "description": "Apprenez comment ajouter et configurer un widget contenant une ressource."
     }
   }
 }

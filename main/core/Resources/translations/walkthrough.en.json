@@ -1,4 +1,5 @@
 {
+  "action_required": "Action required",
   "action": "Action: %actionName%",
   "actions": "The actions",
   "tool": "Tool: %toolName%",
@@ -7,14 +8,54 @@
     "title": "Congratulations ! You have finished this tutorial.",
     "message": "You can replay it now and choose another tutorial to follow. Also note, you can find available tutorials by searching the tutorial icons in Claroline interface."
   },
+
+  "header": {
+    "name": "Discover the Claroline menu",
+    "description": "Familiarize yourself with the features available in the Claroline menu.",
+
+    "platform_brand": {
+
+    },
+    "tools": {
+
+    },
+    "workspaces_menu": {
+
+    },
+    "administration": {
+
+    },
+    "messages": {
+
+    },
+    "user_menu": {
+
+    },
+    "locale": {
+
+    }
+  },
+
   "workspace": {
     "sidebar": {
-      "title": "Let's discover the workspace toolbar together !",
-      "general": "The toolbar will allow you to navigate inside the current workspace.",
-      "tools-group": "The tools group permits to open the different enabled tools.",
-      "actions-group": "The actions group permits to manage and show information about the workspace.",
-      "opened-tool": "This is the currently opened tool."
+      "name": "Discover the workspace sidebar",
+      "description": "Familiarize yourself with the features available in the workspace sidebar.",
+
+      "intro": {
+        "title": "Let's discover the workspace toolbar together !",
+        "message": "The toolbar will allow you to navigate inside the current workspace."
+      },
+      "tools_group": {
+        "message": "The tools group permits to open the different enabled tools."
+      },
+      "opened_tool": {
+        "message": "This is the currently opened tool."
+      },
+      "actions_group": {
+        "message": "The actions group permits to manage and show information about the workspace."
+      }
     },
+
     "tools": {
       "analytics": {
         "documentation": "",
@@ -37,11 +78,75 @@
         "message": "Permits to view the registered users and groups, changes their rights and register new ones."
       }
     },
+
     "actions": {
       "about": "Shows general information about the workspace.",
       "delete": "Permits to delete the workspace and all of its contents.",
       "impersonation": "Permits to navigate inside the workspace with another role to see what those users see.",
-      "parameters": "Permits to configure the workspace."
+      "parameters": "Permits to configure the workspace.",
+      "walkthrough": "Shows the list of available workspace tutorials."
+    }
+  },
+
+  "home": {
+    "editor": {
+      "name": "Discover the home configuration",
+      "description": "Familiarize yourself with the editor by browsing through its basic features.",
+
+      "intro": {
+        "title": "Welcome in the home configuration",
+        "message": "This editor allows you to configure all the parts of the home: tabs, sections and widgets."
+      },
+      "tabs": {
+        "title": "The tabs",
+        "message": "Home is composed of different tabs accessible through this menu."
+      },
+      "add_tab": {
+        "message": "Permits to add new tabs to the home.",
+        "action": "Click the button to add a new tab and continue this tutorial."
+      },
+      "created_tab": {
+        "message": "After creation, the new tab is automatically opened."
+      },
+      "tab_form": {
+        "title": "The configuration of the tab",
+        "message": "All of the options available for the tab are in this form (advanced configuration of tabs is explained in another tutorial)."
+      },
+      "tab_sections": {
+        "title": "The sections of the tab",
+        "message": "Each tab can contain one or more sections that will organize and format the widgets. Since we just created this tab, there is no section at the moment."
+      },
+      "add_section": {
+        "message": "We will now add a section to our tab.",
+        "action": "Click the button to add a new section and continue this tutorial."
+      },
+      "section_layout": {
+        "message": "Before you can use the section, you must choose its layout that will determine the number of widgets in the section and their position."
+      },
+      "select_layout": {
+        "message": "The button shows the number and size of the columns which will be displayed.",
+        "action": "Click the button to create 3 columns section."
+      }
+    },
+
+    "create-widget": {
+      "name": "Create a widget",
+      "description": "Learn how to add a new widget to an existing section."
+    },
+
+    "create-widget-list": {
+      "name": "Create a widget: the List widget",
+      "description": "Learn how to add a new List widget."
+    },
+
+    "create-widget-simple": {
+      "name": "Create a widget: the Content widget",
+      "description": "Learn how to add a new Content widget."
+    },
+
+    "create-widget-resource": {
+      "name": "Create a widget: the Resource widget",
+      "description": "Learn how to add a new Resource widget."
     }
   }
 }

@@ -60,6 +60,11 @@ const progression = createSelector(
   (countSteps, current) => Math.floor(((current+1) / countSteps) * 100)
 )
 
+const additional = createSelector(
+  [store],
+  (store) => store.additional
+)
+
 export const selectors = {
   STORE_NAME,
 
@@ -72,5 +77,6 @@ export const selectors = {
   currentStep,
   hasPrevious,
   hasNext,
-  progression
+  progression,
+  additional
 }

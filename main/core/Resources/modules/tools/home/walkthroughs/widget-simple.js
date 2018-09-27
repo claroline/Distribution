@@ -1,8 +1,8 @@
 import {trans} from '#/main/core/translation'
 
 export default {
-  title: 'Create a widget : the Content widget',
-  description: 'You will learn how to add and configure a new Content widget.',
+  title: trans('home.create-widget-simple.name', {}, 'walkthrough'),
+  description: trans('home.create-widget-simple.description', {}, 'walkthrough'),
   difficulty: 'easy',
   scenario: []
 }

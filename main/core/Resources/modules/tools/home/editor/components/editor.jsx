@@ -18,7 +18,6 @@ import {
 } from '#/main/core/layout/page'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {CALLBACK_BUTTON, MODAL_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
 import {MODAL_WALKTHROUGHS} from '#/main/app/overlay/walkthrough/modals/walkthroughs'
 
 import {getWalkthroughs} from '#/main/core/tools/home/walkthroughs'
@@ -105,8 +104,6 @@ const EditorComponent = props =>
         setErrors={props.setErrors}
       />
     </PageContent>
-
-    <WalkthroughOverlay />
   </PageContainer>
 
 EditorComponent.propTypes = {

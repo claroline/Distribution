@@ -1,3 +1,5 @@
+import invariant from 'invariant'
+
 import {makeActionCreator} from '#/main/app/store/actions'
 
 export const WALKTHROUGH_SKIP = 'WALKTHROUGH_SKIP'
@@ -9,7 +11,16 @@ export const WALKTHROUGH_RESTART = 'WALKTHROUGH_RESTART'
 
 export const actions = {}
 
-actions.start = makeActionCreator(WALKTHROUGH_START, 'steps')
+actions.start = (steps, additional = [], documentation = null) => {
+  invariant(steps, 'steps is required.')
+
+  return {
+    type: WALKTHROUGH_START,
+    steps,
+    additional,
+    documentation
+  }
+}
 actions.restart = makeActionCreator(WALKTHROUGH_RESTART)
 actions.finish = makeActionCreator(WALKTHROUGH_FINISH)
 actions.skip = makeActionCreator(WALKTHROUGH_SKIP)

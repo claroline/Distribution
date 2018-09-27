@@ -98,8 +98,8 @@ class WorkspaceToolbarComponent extends Component {
       {
         highlight: ['.workspace-toolbar-container'],
         content: {
-          title: trans('workspace.sidebar.title', {}, 'walkthrough'),
-          message: trans('workspace.sidebar.general', {}, 'walkthrough')
+          title: trans('workspace.sidebar.intro.title', {}, 'walkthrough'),
+          message: trans('workspace.sidebar.intro.message', {}, 'walkthrough')
         },
         position: {
           target: '.workspace-toolbar-container',
@@ -109,7 +109,7 @@ class WorkspaceToolbarComponent extends Component {
         highlight: ['.tools'],
         content: {
           title: trans('tools', {}, 'walkthrough'),
-          message: trans('workspace.sidebar.tools-group', {}, 'walkthrough')
+          message: trans('workspace.sidebar.tools_group.message', {}, 'walkthrough')
         },
         position: {
           target: '.tools',
@@ -121,7 +121,7 @@ class WorkspaceToolbarComponent extends Component {
       this.state.openedTool ? [{
           highlight: [`#tool-link-${this.state.openedTool.name}`],
           content: {
-            message: trans('workspace.sidebar.opened-tool', {}, 'walkthrough')
+            message: trans('workspace.sidebar.opened_tool.message', {}, 'walkthrough')
           },
           position: {
             target: `#tool-link-${this.state.openedTool.name}`,
@@ -147,7 +147,7 @@ class WorkspaceToolbarComponent extends Component {
         highlight: ['.additional-tools'],
         content: {
           title: trans('actions', {}, 'walkthrough'),
-          message: trans('workspace.sidebar.actions-group', {}, 'walkthrough')
+          message: trans('workspace.sidebar.actions_group.message', {}, 'walkthrough')
         },
         position: {
           target: '.additional-tools',

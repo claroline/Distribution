@@ -1,8 +1,8 @@
 import {trans} from '#/main/core/translation'
 
 export default {
-  title: 'Create a widget : the Resource widget',
-  description: 'You will learn how to add and configure a new Resource widget.',
+  title: trans('home.create-widget-resource.name', {}, 'walkthrough'),
+  description: trans('home.create-widget-resource.description', {}, 'walkthrough'),
   difficulty: 'easy',
   scenario: []
 }

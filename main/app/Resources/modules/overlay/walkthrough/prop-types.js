@@ -28,6 +28,9 @@ const WalkthroughStep = {
       placement: T.oneOf(['left', 'top', 'right', 'bottom']).isRequired
     }),
 
+    /**
+     * An action required by the user to pass to the next step.
+     */
     requiredInteraction: T.shape({
       type: T.oneOf(['click']),
       target: T.string.isRequired,

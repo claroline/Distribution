@@ -15,6 +15,7 @@
     left: 0;
     z-index: @zindex-walkthrough;
     background-color: @modal-backdrop-bg;
+
     // Fade for backdrop
     &.fade { .opacity(0); }
     &.in { .opacity(@modal-backdrop-opacity); }
@@ -26,6 +27,8 @@
     max-width: 300px;
 
     &.walkthrough-popover-centered {
+        min-width: 340px;
+        max-width: 340px;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -76,12 +79,15 @@
     .walkthrough-content {
         flex: 1;
         padding: @popover-content-padding;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .walkthrough-link {
-        margin-top: @popover-content-padding;
-        display: block;
-        text-align: right;
+        margin-top: floor(@popover-content-padding / 2);
+        /*display: block;
+        text-align: right;*/
         font-size: @font-size-small;
     }
 
@@ -153,7 +159,7 @@
         animation-duration: 1.25s !important;
 
         box-shadow: inset 0 0 2px 0 fadeOut(@highlightColor, .5),
-        0 0 2px 0 fadeOut(@highlightColor, .5) !important;
+                          0 0 2px 0 fadeOut(@highlightColor, .5) !important;
     }
 
     &:before {

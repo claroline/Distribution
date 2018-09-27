@@ -23,7 +23,7 @@ const WalkthroughsModal = props =>
           className="list-group-item"
           callback={() => {
             props.fadeModal()
-            props.start(walkthrough.scenario)
+            props.start(walkthrough.scenario, walkthrough.additional, walkthrough.documentation)
           }}
         >
           {walkthrough.difficulty &&

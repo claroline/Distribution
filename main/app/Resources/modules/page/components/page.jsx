@@ -7,6 +7,7 @@ import {theme} from '#/main/app/config'
 import {Router} from '#/main/app/router'
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
 import {AlertOverlay} from '#/main/app/overlay/alert/containers/overlay'
+import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
 
 import {Page as PageTypes} from '#/main/app/page/prop-types'
 import {PageHeader} from '#/main/app/page/components/header'
@@ -58,6 +59,7 @@ const Page = props =>
     </div>
 
     <ModalOverlay />
+    <WalkthroughOverlay />
 
     {props.styles.map(styleName =>
       <link key={styleName} rel="stylesheet" type="text/css" href={theme(styleName)} />
