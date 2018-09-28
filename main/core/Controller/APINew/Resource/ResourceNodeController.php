@@ -132,7 +132,7 @@ class ResourceNodeController extends AbstractCrudController
 
     /**
      * @EXT\Route(
-     *     "{parent}/files",
+     *     "/{parent}/files",
      *     name="apiv2_resource_files_create"
      * )
      * @EXT\ParamConverter(
