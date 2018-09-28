@@ -17,7 +17,9 @@ bootstrap(
   WorkspaceToolbar,
   {
     // the current workspace
-    workspace: makeReducer({}, {}),
+    workspace: makeReducer({}, {
+      ['FORM_SUBMIT_SUCCESS/workspaceParameters']: (state, action) => action.updatedData
+    }),
 
     // the current opened tool
     openedTool: makeReducer(null, {}),
