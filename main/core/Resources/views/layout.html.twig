@@ -58,7 +58,13 @@
             {% block breadcrumb %}{% endblock %}
         {% endif %}
 
+        {{ macros.flashBox() }}
+
         {% block content %}
+            {#
+                The following HTML is only used to mimic React apps in old twig templates.
+                It will be removed when all apps will be in react.
+            #}
             <div class="page-container">
                 <main class="page">
                     {% block page %}
@@ -70,7 +76,7 @@
                             {% endblock %}
                         </header>
 
-                        <div class="page-content">
+                        <div class="page-content page-content-shift">
                             {% block page_content %}
                             {% endblock %}
                         </div>
@@ -84,6 +90,13 @@
                 {{ render(controller('ClarolineCoreBundle:layout:footer')) }}
             {% endblock%}
         {% endif %}
+    </div>
+
+    {# Anchor for UI portals (eg. modals, walkthroughs) #}
+    <div class="app-overlays">
+        {# We force overlay order to have the correct stacking #}
+        <div class="app-modal"></div>
+        <div class="app-walkthrough"></div>
     </div>
 {% endblock %}
 

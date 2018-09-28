@@ -3,12 +3,11 @@ import React from 'react'
 import {trans} from '#/main/core/translation'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
-
 const MessagesNav = () =>
   <Vertical
     tabs={[
       {
-        icon: 'fa fa-fw fa-envelope',
+        icon: 'fa fa-fw fa-inbox',
         title: trans('messages_received'),
         path: '/received'
       }, {
@@ -24,8 +23,8 @@ const MessagesNav = () =>
         title: trans('new_message'),
         path: '/new'
       }, {
-        icon: 'fa fa-fw fa-cogs',
-        title: trans('preferences'),
+        icon: 'fa fa-fw fa-cog',
+        title: trans('parameters'),
         path: '/parameters'
       }
     ]}

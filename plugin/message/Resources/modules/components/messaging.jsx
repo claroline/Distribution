@@ -1,12 +1,15 @@
 import React from 'react'
 
-import {PageContainer} from '#/main/core/layout/page'
+import {trans} from '#/main/core/translation'
+import {Page} from '#/main/app/page/components/page'
 
 import {MessagesNav} from '#/plugin/message/components/messages-nav'
 import {Messages} from '#/plugin/message/components/messages'
 
 const Messaging = () =>
-  <PageContainer>
+  <Page
+    title={trans('message', {}, 'tools')}
+  >
     <div className="row">
       <div className="col-md-3">
         <MessagesNav/>
@@ -15,7 +18,7 @@ const Messaging = () =>
         <Messages/>
       </div>
     </div>
-  </PageContainer>
+  </Page>
 
 
 export {

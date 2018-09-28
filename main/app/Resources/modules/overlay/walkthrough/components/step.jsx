@@ -14,8 +14,9 @@ import {ProgressBar} from '#/main/core/layout/components/progress-bar'
 const WalkThroughStep = props =>
   <Popover
     id={toKey(props.title || props.message)}
-    placement={props.placement}
     className={classes('walkthrough-popover', props.className)}
+    tabIndex={-1}
+    placement={props.placement}
     positionLeft={props.positionLeft}
     positionTop={props.positionTop}
   >

@@ -37,6 +37,17 @@ export default {
         placement: 'bottom'
       }
     },
+    // Opened tab
+    {
+      highlight: ['.tool-nav .nav-tab.active'],
+      content: {
+        message: trans('home.editor.opened_tab.message', {}, 'walkthrough')
+      },
+      position: {
+        target: '.tool-nav .nav-tab.active',
+        placement: 'bottom'
+      }
+    },
     // Create a new tab
     {
       highlight: ['.tool-nav .nav-add-tab'],

@@ -15,6 +15,7 @@ const WalkThroughEnd = props =>
   <Popover
     id="walkthrough-end-step"
     className="walkthrough-popover walkthrough-popover-centered"
+    tabIndex={-1}
   >
     {props.icon &&
       <span className={classes('walkthrough-icon', props.icon)} />

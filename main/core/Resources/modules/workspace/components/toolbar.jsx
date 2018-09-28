@@ -9,7 +9,6 @@ import {url} from '#/main/app/api'
 import {Toolbar} from '#/main/app/overlay/toolbar/components/toolbar'
 import {ASYNC_BUTTON, CALLBACK_BUTTON, MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
-import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
 import {actions as walkthroughActions} from '#/main/app/overlay/walkthrough/store'
 
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
@@ -178,9 +177,7 @@ class WorkspaceToolbarComponent extends Component {
         active={this.props.openedTool}
         tools={this.props.tools}
         actions={this.state.actions}
-      >
-        <WalkthroughOverlay />
-      </Toolbar>
+      />
     )
   }
 }

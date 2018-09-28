@@ -121,6 +121,9 @@
         "title": "Les onglets",
         "message": "L'accueil est composé de différents onglets accessibles via ce menu."
       },
+      "opened_tab": {
+        "message": "Ceci est l'onglet actuellement ouvert."
+      },
       "add_tab": {
         "message": "Permet d'ajouter de nouveaux onglets sur l'accueil.",
         "action": "Cliquez sur le bouton pour créer un nouvel onglet et continuer ce tutoriel."

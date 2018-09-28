@@ -6,7 +6,7 @@ import get from 'lodash/get'
 import isEqual from 'lodash/isEqual'
 
 import {Overlay, Position, Transition} from 'react-overlays'
-
+import {getOverlayContainer} from '#/main/app/overlay'
 import {addClasses, removeClasses} from '#/main/app/dom/classes'
 
 import {WalkThroughStep} from '#/main/app/overlay/walkthrough/components/step'
@@ -32,26 +32,46 @@ WalkthroughPosition.propTypes = {
   })
 }
 
-class WalkthroughOverlay extends Component {
+class Walkthrough extends Component {
   constructor(props) {
     super(props)
 
     this.doUserAction = this.doUserAction.bind(this)
   }
 
+  componentDidMount() {
+    if (this.props.current) {
+      this.startStep(this.props.current)
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
-    let scrollTo
-    // scroll to the correct UI element if needed
-    const nextPosition = get(nextProps, 'current.position')
-    if (nextPosition) {
-      // scroll to the popover position
-      if (!isEqual(nextPosition, get(this.props, 'current.position'))) {
-        // scroll to the new position
-        scrollTo = nextPosition.target
+    if (!isEqual(this.props.current, nextProps.current)) {
+      if (this.props.current) {
+        this.endStep(this.props.current)
       }
-    } else {
+
+      if (nextProps.current) {
+        this.startStep(nextProps.current)
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.current) {
+      this.endStep(this.props.current)
+    }
+  }
+
+  startStep(step) {
+    // scroll to the correct UI element if needed
+    let scrollTo
+    if (step.position) {
+      // scroll to the popover position
+      scrollTo = step.position.target
+    } else if (step.highlight && 0 < step.highlight.length) {
       // scroll to the first highlighted
-      scrollTo = get(nextProps, 'current.highlight')
+      scrollTo = step.highlight[0]
     }
 
     if (scrollTo) {
@@ -59,30 +79,30 @@ class WalkthroughOverlay extends Component {
       document.querySelector(scrollTo).scrollIntoView({/*behavior: 'smooth'*/})
     }
 
-    // updates highlighted components
-    const highlight = get(this.props, 'current.highlight')
-    const nextHighlight = get(nextProps, 'current.highlight')
-    if (highlight !== nextHighlight) {
-      if (highlight) {
-        this.removeHighlight(highlight)
-      }
-
-      if (nextHighlight) {
-        this.addHighlight(nextHighlight)
-      }
+    // set highlighted components
+    if (step.highlight) {
+      step.highlight.map(selector =>
+        document.querySelectorAll(selector).forEach(highlightElement => addClasses(highlightElement, 'walkthrough-highlight'))
+      )
     }
 
     // handle next step
-    const requiredInteraction = get(this.props, 'current.requiredInteraction')
-    const nextRequiredInteraction = get(nextProps, 'current.requiredInteraction')
-    if (requiredInteraction !== nextRequiredInteraction) {
-      if (requiredInteraction) {
-        document.querySelector(requiredInteraction.target).removeEventListener(requiredInteraction.type, this.doUserAction)
-      }
+    if (step.requiredInteraction) {
+      document.querySelector(step.requiredInteraction.target).addEventListener(step.requiredInteraction.type, this.doUserAction)
+    }
+  }
 
-      if (nextRequiredInteraction) {
-        document.querySelector(nextRequiredInteraction.target).addEventListener(nextRequiredInteraction.type, this.doUserAction)
-      }
+  endStep(step) {
+    // remove highlights
+    if (step.highlight) {
+      step.highlight.map(selector =>
+        document.querySelectorAll(selector).forEach(highlightElement => removeClasses(highlightElement, 'walkthrough-highlight'))
+      )
+    }
+
+    // remove next step handler
+    if (step.requiredInteraction) {
+      document.querySelector(step.requiredInteraction.target).removeEventListener(step.requiredInteraction.type, this.doUserAction)
     }
   }
 
@@ -91,78 +111,51 @@ class WalkthroughOverlay extends Component {
     setTimeout(this.props.next, 500)
   }
 
-  componentWillUnmount() {
-    // remove highlight if any
-    if (get(this.props, 'current.highlight')) {
-      this.removeHighlight(get(this.props, 'current.highlight'))
-    }
-
-    // remove next handler if any
-    const requiredInteraction = get(this.props, 'current.requiredInteraction')
-    if (requiredInteraction) {
-      document.querySelector(requiredInteraction.target).removeEventListener(requiredInteraction.type, this.doUserAction)
-    }
-  }
-
-  addHighlight(selectors) {
-    selectors.map(selector =>
-      document.querySelectorAll(selector).forEach(highlightElement => addClasses(highlightElement, 'walkthrough-highlight'))
-    )
-  }
-
-  removeHighlight(selectors) {
-    selectors.map(selector =>
-      document.querySelectorAll(selector).forEach(highlightElement => removeClasses(highlightElement, 'walkthrough-highlight'))
-    )
-  }
-
   render() {
     return (
-      <Overlay show={this.props.active}>
-        <div role="dialog">
-          <Transition
-            in={this.props.active}
-            transitionAppear={true}
-            className="fade"
-            enteredClassName="in"
-            enteringClassName="in"
-          >
-            <div className="walkthrough-backdrop" />
-          </Transition>
+      <div role="dialog">
+        <Transition
+          in={this.props.active}
+          transitionAppear={true}
+          className="fade"
+          enteredClassName="in"
+          enteringClassName="in"
+        >
+          <div className="walkthrough-backdrop" />
+        </Transition>
 
-          {this.props.active &&
-            <WalkthroughPosition
-              position={this.props.current.position}
-            >
-              {this.props.hasNext ?
-                <WalkThroughStep
-                  {...this.props.current.content}
-                  className={!this.props.current.position ? 'walkthrough-popover-centered' : undefined}
-                  requiredInteraction={this.props.current.requiredInteraction}
-                  progression={this.props.progression}
-                  skip={this.props.skip}
-                  hasPrevious={this.props.hasPrevious}
-                  previous={this.props.previous}
-                  next={this.props.next}
-                /> :
-                <WalkThroughEnd
-                  {...this.props.current.content}
+        {this.props.active &&
+          <WalkthroughPosition position={this.props.current.position}>
+            {this.props.hasNext ?
+              <WalkThroughStep
+                {...this.props.current.content}
 
-                  additional={this.props.additional}
-                  start={this.props.start}
-                  finish={this.props.finish}
-                  restart={this.props.restart}
-                />
-              }
-            </WalkthroughPosition>
-          }
-        </div>
-      </Overlay>
+                className={!this.props.current.position ? 'walkthrough-popover-centered' : undefined}
+                requiredInteraction={this.props.current.requiredInteraction}
+                progression={this.props.progression}
+                skip={this.props.skip}
+                hasPrevious={this.props.hasPrevious}
+                previous={this.props.previous}
+                next={this.props.next}
+              /> :
+              <WalkThroughEnd
+                {...this.props.current.content}
+
+                additional={this.props.additional}
+                start={this.props.start}
+                finish={this.props.finish}
+                restart={this.props.restart}
+              />
+            }
+          </WalkthroughPosition>
+        }
+      </div>
     )
   }
 }
 
-WalkthroughOverlay.propTypes = {
+Walkthrough.propTypes = {
+  container: T.oneOfType([T.node, T.element]),
   active: T.bool.isRequired,
   progression: T.number,
   current: T.shape(
@@ -179,8 +172,17 @@ WalkthroughOverlay.propTypes = {
   additional: T.array
 }
 
-WalkthroughOverlay.defaultProps = {
+Walkthrough.defaultProps = {
 
+}
+
+const WalkthroughOverlay = props =>
+  <Overlay show={props.active} container={getOverlayContainer('walkthrough')}>
+    <Walkthrough {...props} />
+  </Overlay>
+
+WalkthroughOverlay.propTypes = {
+  active: T.bool.isRequired
 }
 
 export {

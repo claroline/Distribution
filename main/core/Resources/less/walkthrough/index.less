@@ -13,7 +13,6 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: @zindex-walkthrough;
     background-color: @modal-backdrop-bg;
 
     // Fade for backdrop
@@ -22,7 +21,7 @@
 }
 
 .walkthrough-popover {
-    z-index: @zindex-walkthrough + 2;
+    z-index: @zindex-modal + 2;
     min-width: 300px;
     max-width: 300px;
 
@@ -141,7 +140,7 @@
 //     this may broke some advance styling using pseudo-classes.
 .walkthrough-highlight {
     position: relative;
-    z-index: @zindex-walkthrough + 1 !important;
+    z-index: @zindex-modal + 1 !important;
     box-shadow: 0 0 6px 1px rgba(0, 0, 0, .5);
 
     &:before,
@@ -153,6 +152,7 @@
 
         width: auto !important;
         height: auto !important;
+        transform: none !important;
 
         animation-iteration-count: infinite !important;
         animation-timing-function: ease-out !important;

@@ -108,6 +108,9 @@
         "title": "The tabs",
         "message": "Home is composed of different tabs accessible through this menu."
       },
+      "opened_tab": {
+        "message": "This is the currently opened tab."
+      },
       "add_tab": {
         "message": "Permits to add new tabs to the home.",
         "action": "Click the button to add a new tab and continue this tutorial."

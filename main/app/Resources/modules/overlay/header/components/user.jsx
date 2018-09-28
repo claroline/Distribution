@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Button} from '#/main/app/action/components/button'
 import {URL_BUTTON} from '#/main/app/buttons'
@@ -92,6 +93,7 @@ const UserMenu = props =>
         {props.actions.map(action =>
           <Button
             {...action}
+            key={toKey(action.label)}
             className="app-current-user-btn"
             tooltip="bottom"
           />

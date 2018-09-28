@@ -7,6 +7,7 @@ import times from 'lodash/times'
 // TODO : remove us when toolbar bars will be mounted in the main app
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
 import {AlertOverlay} from '#/main/app/overlay/alert/containers/overlay'
+import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
@@ -213,9 +214,11 @@ class Toolbar extends Component {
         }
 
         <AlertOverlay />
-        <ModalOverlay />
 
         {this.props.children}
+
+        <ModalOverlay />
+        <WalkthroughOverlay />
       </nav>
     )
   }
