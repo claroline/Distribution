@@ -100,6 +100,10 @@ class ResourceNodeFinder extends AbstractFinder
                     $qb->setParameter('parent', '%'.strtoupper($filterValue).'%');
                     $this->usedJoin['parent'] = true;
                     break;
+                case 'path.after':
+                    $qb->andWhere('UPPER(obj.path) LIKE :path');
+                    $qb->setParameter('path', strtoupper($filterValue).'%');
+                    break;
                 case 'parent':
                     if (is_null($filterValue)) {
                         $qb->andWhere('obj.parent IS NULL');
