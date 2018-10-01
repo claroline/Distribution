@@ -3,24 +3,18 @@
  */
 
 .app-header-container {
-    position: fixed;
-    z-index: @zindex-navbar-fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     height: @top-bar-height;
+    color: @top-bar-color;
+    font-size: @top-bar-font-size;
+    border-bottom: @top-bar-border-bottom;
     background: @top-bar-bg;
+    .box-shadow(@top-bar-box-shadow);
 }
 
 .app-header {
     max-width: @top-bar-max-width;
     height: 100%;
     margin: 0 auto;
-    color: @top-bar-color;
-    //background: @top-bar-bg;
-    font-size: @top-bar-font-size;
-    border-bottom: @top-bar-border-bottom;
-    .box-shadow(@top-bar-box-shadow);
 
     display: flex;
     flex-direction: row;
@@ -32,7 +26,7 @@
     }
 
     .app-header-item {
-        padding: 0 15px;
+        padding: 0 floor(@grid-gutter-width / 2);
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -88,7 +82,7 @@
     padding: 0 floor(@grid-gutter-width / 2);
     margin: 0;
     line-height: 1;
-    font-size: 24px;
+    font-size: @top-bar-brand-font-size;
     font-weight: 900;
     color: @top-bar-brand-color;
 
@@ -104,7 +98,7 @@
 
 .app-header-btn {
     color: @top-bar-link-color;
-
+    background: @top-bar-link-bg;
     .action-icon,
     .fa {
         font-size: @font-size-large;
@@ -155,6 +149,24 @@
 
 .app-header-workspaces {
     flex: 1;
+    font-size: @font-size-large;
+
+    .dropdown-toggle {
+        width: 100%;
+
+        display: flex;
+        justify-content: space-between;
+
+        .header-workspaces {
+            .icon-with-text-right {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    .dropdown-menu {
+        min-width: 100%;
+    }
 }
 
 .app-current-user {
@@ -259,22 +271,8 @@
 
 }
 
-#app-workspaces-menu,
-.app-workspaces {
-    width: 100%;
-    font-size: @font-size-large;
-}
 
-#app-workspaces-menu {
-    display: flex;
-    justify-content: space-between;
-}
-
-.header-workspaces {
-    .icon-with-text-right {
-        margin-right: 15px;
-    }
-}
+// OLD
 
 .impersonalitation {
     &.spaced .spacer {
