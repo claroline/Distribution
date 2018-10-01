@@ -53,6 +53,11 @@ const CardHeader = props =>
         )}
       </div>
     }
+    {props.children &&
+      <div>
+        {props.children}
+      </div>
+    }
   </div>
 
 CardHeader.propTypes = {
@@ -116,7 +121,13 @@ const DataCard = props =>
       icon={props.icon}
       poster={props.poster}
       flags={props.flags}
-    />
+    >
+      {!(props.icon || props.flag) &&
+        <div key="data-card-description" className="data-card-description">
+          {getPlainText(props.contentText) + 'OHOHOHOHOHO'}
+        </div>
+      }
+    </CardHeader>
 
     <CardContent
       action={props.primaryAction}
@@ -132,7 +143,7 @@ const DataCard = props =>
         }
       </Heading>
 
-      {'sm' !== props.size && props.contentText &&
+      {'sm' !== props.size && props.contentText && props.poster &&
         <div key="data-card-description" className="data-card-description">
           {getPlainText(props.contentText)}
         </div>
