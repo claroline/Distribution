@@ -93,11 +93,7 @@
     </div>
 
     {# Anchor for UI portals (eg. modals, walkthroughs) #}
-    <div class="app-overlays">
-        {# We force overlay order to have the correct stacking #}
-        <div class="app-modal"></div>
-        <div class="app-walkthrough"></div>
-    </div>
+    <div class="app-overlays-container"></div>
 {% endblock %}
 
 {% block javascripts %}

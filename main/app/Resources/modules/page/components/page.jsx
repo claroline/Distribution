@@ -5,6 +5,7 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {theme} from '#/main/app/config'
 
 import {Router} from '#/main/app/router'
+import {OverlayStack} from '#/main/app/overlay/containers/stack'
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
 import {AlertOverlay} from '#/main/app/overlay/alert/containers/overlay'
 import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
@@ -59,8 +60,10 @@ const Page = props =>
       {props.children}
     </div>
 
-    <ModalOverlay />
-    <WalkthroughOverlay />
+    <OverlayStack>
+      <ModalOverlay />
+      <WalkthroughOverlay />
+    </OverlayStack>
 
     {props.styles.map(styleName =>
       <link key={styleName} rel="stylesheet" type="text/css" href={theme(styleName)} />

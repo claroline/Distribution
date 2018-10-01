@@ -120,11 +120,12 @@ export default {
         message: trans('home.editor.add_section.action', {}, 'walkthrough')
       }
     },
-    // Section layout
+    // Section
     {
-      highlight: ['.home-section-layout'],
+      //highlight: ['.home-section-layout'],
       content: {
-        message: trans('home.editor.section_layout.message', {}, 'walkthrough')
+        title: trans('home.editor.section_form.title', {}, 'walkthrough'),
+        message: trans('home.editor.section_form.message', {}, 'walkthrough')
       },
       /*position: {
         target: '.home-section-layout',
@@ -151,7 +152,7 @@ export default {
     {
       highlight: ['.widget-section-form'],
       content: {
-        message: trans('home.editor.section_configure', {}, 'walkthrough')
+        message: trans('home.editor.section_configure.message', {}, 'walkthrough')
       },
       position: {
         target: '.widget-section-form',
@@ -162,12 +163,50 @@ export default {
     {
       highlight: ['#widget-section-form-save'],
       content: {
-        message: trans('home.editor.section_save', {}, 'walkthrough')
+        message: trans('home.editor.section_save.message', {}, 'walkthrough')
       },
       position: {
         target: '#widget-section-form-save',
         placement: 'top'
+      },
+      requiredInteraction: {
+        type: 'click',
+        target: '#widget-section-form-save',
+        message: trans('home.editor.section_save.action', {}, 'walkthrough')
       }
+    },
+    // Created section
+    {
+      highlight: ['.widgets-grid .widget-container:last-child'],
+      content: {
+        message: trans('home.editor.created_section.message', {}, 'walkthrough')
+      },
+      position: {
+        target: '.widgets-grid .widget-container:last-child',
+        placement: 'top'
+      }
+    },
+    // Save modifications
+    {
+      highlight: ['.form-toolbar .btn-save'],
+      content: {
+        message: trans('home.editor.save.message', {}, 'walkthrough')
+      },
+      position: {
+        target: '.form-toolbar .btn-save',
+        placement: 'top'
+      },
+    },
+    // Exit editor
+    {
+      highlight: ['.form-toolbar .btn-exit'],
+      content: {
+        message: trans('home.editor.exit.message', {}, 'walkthrough')
+      },
+      position: {
+        target: '.form-toolbar .btn-exit',
+        placement: 'top'
+      },
     }
   ]
 }

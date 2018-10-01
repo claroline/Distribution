@@ -132,7 +132,7 @@
         "message": "Après la création, le nouvel onglet est automatiquement ouvert."
       },
       "tab_form": {
-        "title": "La configuration l'onglet",
+        "title": "La configuration de l'onglet",
         "message": "Toutes les options disponibles pour l'onglet sont regroupées dans ce formulaire (la configuration avancée des onglets est détaillée dans un autre tutoriel)."
       },
       "tab_sections": {
@@ -143,12 +143,29 @@
         "message": "Nous allons maintenant ajouter une section à notre onglet.",
         "action": "Cliquez sur le bouton pour créer une nouvelle section et continuer ce tutoriel."
       },
-      "section_layout": {
+      "section_form": {
+        "title": "La configuration de la section",
         "message": "Avant de pouvoir utiliser la section, vous devez choisir son style qui déterminera le nombre de widgets de la section ainsi que leur position."
       },
       "select_layout": {
         "message": "Le bouton vous montre le nombre et la taille des colonnes qui seront affichées.",
         "action": "Cliquez sur le bouton pour créer une section à 3 colonnes."
+      },
+      "section_configure": {
+        "message": ""
+      },
+      "section_save": {
+        "message": "",
+        "action": ""
+      },
+      "created_section": {
+        "message": ""
+      },
+      "save": {
+        "message": ""
+      },
+      "exit": {
+        "message": ""
       }
     },
 

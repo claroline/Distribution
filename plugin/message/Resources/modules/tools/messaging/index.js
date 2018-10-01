@@ -1,8 +1,8 @@
-import {Messaging} from '#/plugin/message/components/messaging'
+import {Messaging} from '#/plugin/message/tools/messaging/components/messaging'
 
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {reducer} from '#/plugin/message/reducer'
+import {reducer} from '#/plugin/message/tools/messaging/store'
 
 // mount the react application
 bootstrap(

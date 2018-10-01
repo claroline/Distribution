@@ -1,18 +1,18 @@
 {% extends 'ClarolineCoreBundle:desktop:layout.html.twig' %}
 
-{% block title %}{{ 'messages' | trans({}, 'platform') | striptags | raw }}{% endblock %}
+{% block title %}{{ 'messaging' | trans({}, 'tools') | striptags | raw }}{% endblock %}
+
 {% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 {% block breadcrumb %}
     {{
         macros.desktopBreadcrumbs([
             {
-                'name': 'message'|trans({}, 'tools'),
+                'name': 'messaging' | trans({}, 'tools'),
                 'href': ''
             }
         ])
     }}
 {% endblock %}
-
 
 {% block content %}
     <div class="page-container messaging-container"></div>

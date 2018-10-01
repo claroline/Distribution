@@ -12,7 +12,7 @@ import {currentUser} from '#/main/core/user/current'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
-import {selectors} from '#/plugin/message/selectors'
+import {selectors} from '#/plugin/message/tools/messaging/store'
 
 const NewMessageFormWrapper = (props) =>
   <div className='user-message-container user-message-form-container user-message-left'>

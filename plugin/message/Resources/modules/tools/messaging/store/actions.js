@@ -8,7 +8,7 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as listActions} from '#/main/app/content/list/store'
 import {actions as formActions} from '#/main/app/content/form/store'
 
-import {Message as MessageTypes} from '#/plugin/message/prop-types'
+import {Message as MessageTypes} from '#/plugin/message/tools/messaging/prop-types'
 
 export const MESSAGE_LOAD = 'MESSAGE_LOAD'
 export const IS_REPLY = 'IS_REPLY'

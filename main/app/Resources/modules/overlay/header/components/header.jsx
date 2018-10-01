@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {User as UserTypes} from '#/main/core/user/prop-types'
+import {OverlayStack} from '#/main/app/overlay/containers/stack'
 import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
 
 import {HeaderBrand} from '#/main/app/overlay/header/components/brand'
@@ -193,7 +194,9 @@ const Header = props =>
       <HeaderLocale locale={props.locale} />
     }
 
-    <WalkthroughOverlay />
+    <OverlayStack>
+      <WalkthroughOverlay />
+    </OverlayStack>
   </header>
 
 Header.propTypes = {

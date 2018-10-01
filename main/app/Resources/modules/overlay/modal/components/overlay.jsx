@@ -13,7 +13,7 @@ import {registry} from '#/main/app/modals/registry'
 class ModalOverlay extends Component {
   render() {
     return (
-      <div className="modal-overlay" ref={(el) => this.container = el}>
+      <div className="app-modal" ref={(el) => this.container = el}>
         {this.props.modals.map((modal, index) => React.createElement(
           // grab the correct modal component from registry
           registry.get(modal.type),
@@ -23,7 +23,7 @@ class ModalOverlay extends Component {
             key: modal.id,
             show: !modal.fading,
             disabled: 0 !== index,
-            container: getOverlayContainer('modal'),
+            container: this.container,
             fadeModal: () => this.props.fadeModal(modal.id),
             hideModal: () => this.props.hideModal(modal.id)
           }, modal.props || {})
@@ -35,6 +35,7 @@ class ModalOverlay extends Component {
 
 ModalOverlay.propTypes = {
   container: T.oneOfType([T.node, T.element]),
+  show: T.bool.isRequired,
   modal: T.shape(ModalTypes.propTypes),
   modals: T.arrayOf(T.shape(
     ModalTypes.propTypes

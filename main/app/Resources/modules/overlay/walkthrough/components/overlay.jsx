@@ -2,7 +2,6 @@
 
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import get from 'lodash/get'
 import isEqual from 'lodash/isEqual'
 
 import {Overlay, Position, Transition} from 'react-overlays'
@@ -76,7 +75,10 @@ class Walkthrough extends Component {
 
     if (scrollTo) {
       // TODO : find a way to enable smooth scrolling (as is the popover position will be wrong because it's calculated before end of scroll)
-      document.querySelector(scrollTo).scrollIntoView({/*behavior: 'smooth'*/})
+      const scrollToElement = document.querySelector(scrollTo)
+      if (scrollToElement) {
+        scrollToElement.scrollIntoView({/*behavior: 'smooth'*/})
+      }
     }
 
     // set highlighted components
@@ -102,7 +104,11 @@ class Walkthrough extends Component {
 
     // remove next step handler
     if (step.requiredInteraction) {
-      document.querySelector(step.requiredInteraction.target).removeEventListener(step.requiredInteraction.type, this.doUserAction)
+      const target = document.querySelector(step.requiredInteraction.target)
+      if (target) {
+        // remove event if element is still in the DOM
+        target.removeEventListener(step.requiredInteraction.type, this.doUserAction)
+      }
     }
   }
 
@@ -115,7 +121,7 @@ class Walkthrough extends Component {
     return (
       <div role="dialog">
         <Transition
-          in={this.props.active}
+          in={this.props.show}
           transitionAppear={true}
           className="fade"
           enteredClassName="in"
@@ -124,7 +130,7 @@ class Walkthrough extends Component {
           <div className="walkthrough-backdrop" />
         </Transition>
 
-        {this.props.active &&
+        {this.props.show &&
           <WalkthroughPosition position={this.props.current.position}>
             {this.props.hasNext ?
               <WalkThroughStep
@@ -156,7 +162,7 @@ class Walkthrough extends Component {
 
 Walkthrough.propTypes = {
   container: T.oneOfType([T.node, T.element]),
-  active: T.bool.isRequired,
+  show: T.bool.isRequired,
   progression: T.number,
   current: T.shape(
     WalkthroughStepTypes.propTypes
@@ -176,13 +182,20 @@ Walkthrough.defaultProps = {
 
 }
 
-const WalkthroughOverlay = props =>
-  <Overlay show={props.active} container={getOverlayContainer('walkthrough')}>
-    <Walkthrough {...props} />
-  </Overlay>
+class WalkthroughOverlay extends Component {
+  render() {
+    return (
+      <div className="app-walkthrough" ref={(el) => this.container = el}>
+        <Overlay show={this.props.show} container={this.container}>
+          <Walkthrough {...this.props} />
+        </Overlay>
+      </div>
+    )
+  }
+}
 
 WalkthroughOverlay.propTypes = {
-  active: T.bool.isRequired
+  show: T.bool.isRequired
 }
 
 export {

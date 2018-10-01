@@ -29,13 +29,13 @@ class WorkspaceToolbarComponent extends Component {
         {
           name: 'walkthrough',
           type: CALLBACK_BUTTON,
-          icon: 'fa fa-street-view',
+          icon: 'fa fa-fw fa-street-view',
           label: trans('show-walkthrough', {}, 'actions'),
           callback: () => this.startWalkthrough()
         }, {
           name: 'about',
           type: MODAL_BUTTON,
-          icon: 'fa fa-info',
+          icon: 'fa fa-fw fa-info',
           label: trans('show-info', {}, 'actions'),
           displayed: hasPermission('open', props.workspace),
           modal: [MODAL_WORKSPACE_ABOUT, {
@@ -44,7 +44,7 @@ class WorkspaceToolbarComponent extends Component {
         }, {
           name: 'parameters',
           type: MODAL_BUTTON,
-          icon: 'fa fa-cog',
+          icon: 'fa fa-fw fa-cog',
           label: trans('configure', {}, 'actions'),
           displayed: hasPermission('administrate', props.workspace),
           modal: [MODAL_WORKSPACE_PARAMETERS, {
@@ -53,7 +53,7 @@ class WorkspaceToolbarComponent extends Component {
         }, {
           name: 'impersonation',
           type: MODAL_BUTTON,
-          icon: 'fa fa-user-secret',
+          icon: 'fa fa-fw fa-user-secret',
           label: trans('view-as', {}, 'actions'),
           displayed: hasPermission('administrate', props.workspace),
           modal: [MODAL_WORKSPACE_IMPERSONATION, {
@@ -62,7 +62,7 @@ class WorkspaceToolbarComponent extends Component {
         }, {
           name: 'export',
           type: URL_BUTTON,
-          icon: 'fa fa-download',
+          icon: 'fa fa-fw fa-download',
           label: trans('export', {}, 'actions'),
           //displayed: hasPermission('export', props.workspace),
           displayed: false, //currently broken
@@ -70,7 +70,7 @@ class WorkspaceToolbarComponent extends Component {
         }, {
           name: 'delete',
           type: ASYNC_BUTTON,
-          icon: 'fa fa-trash-o',
+          icon: 'fa fa-fw fa-trash-o',
           label: trans('delete', {}, 'actions'),
           displayed: hasPermission('delete', props.workspace),
           request: {

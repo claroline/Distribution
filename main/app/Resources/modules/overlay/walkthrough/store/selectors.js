@@ -40,7 +40,7 @@ const currentStep = createSelector(
   (steps, current) => steps[current]
 )
 
-const active = createSelector(
+const show = createSelector(
   [started, skipped, finished, currentStep],
   (started, skipped, finished, currentStep) => started && !finished && !skipped && !isEmpty(currentStep)
 )
@@ -71,7 +71,7 @@ export const selectors = {
   skipped,
   started,
   finished,
-  active,
+  show,
   steps,
   current,
   currentStep,

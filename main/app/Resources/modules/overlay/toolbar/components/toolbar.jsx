@@ -5,6 +5,7 @@ import {PropTypes as T} from 'prop-types'
 import times from 'lodash/times'
 
 // TODO : remove us when toolbar bars will be mounted in the main app
+import {OverlayStack} from '#/main/app/overlay/containers/stack'
 import {ModalOverlay} from '#/main/app/overlay/modal/containers/overlay'
 import {AlertOverlay} from '#/main/app/overlay/alert/containers/overlay'
 import {WalkthroughOverlay} from '#/main/app/overlay/walkthrough/containers/overlay'
@@ -217,8 +218,10 @@ class Toolbar extends Component {
 
         {this.props.children}
 
-        <ModalOverlay />
-        <WalkthroughOverlay />
+        <OverlayStack>
+          <ModalOverlay />
+          <WalkthroughOverlay />
+        </OverlayStack>
       </nav>
     )
   }

@@ -8,24 +8,16 @@ const MessagesNav = () =>
     tabs={[
       {
         icon: 'fa fa-fw fa-inbox',
-        title: trans('messages_received'),
+        title: trans('messages_received', {}, 'message'),
         path: '/received'
       }, {
-        icon: 'fa fa-fw fa-share',
-        title: trans('messages_sent'),
+        icon: 'fa fa-fw fa-paper-plane',
+        title: trans('messages_sent', {}, 'message'),
         path: '/sent'
       },  {
         icon: 'fa fa-fw fa-trash',
-        title: trans('messages_removed'),
+        title: trans('messages_removed', {}, 'message'),
         path: '/deleted'
-      }, {
-        icon: 'fa fa-fw fa-plus',
-        title: trans('new_message'),
-        path: '/new'
-      }, {
-        icon: 'fa fa-fw fa-cog',
-        title: trans('parameters'),
-        path: '/parameters'
       }
     ]}
   />

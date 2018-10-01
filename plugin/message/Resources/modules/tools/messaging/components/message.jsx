@@ -8,9 +8,8 @@ import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
-import {NewMessage} from '#/plugin/message/components/new-message'
-import {selectors} from '#/plugin/message/selectors'
-import {actions} from '#/plugin/message/actions'
+import {NewMessage} from '#/plugin/message/tools/messaging/components/new-message'
+import {actions, selectors} from '#/plugin/message/tools/messaging/store'
 
 
 const MessageComponent = (props) =>
@@ -77,8 +76,8 @@ const Message = connect(
     deleteMessage(message, push) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
-          title: trans('messages_delete_title'),
-          question: trans('messages_confirm_permanent_delete'),
+          title: trans('messages_delete_title', {}, 'message'),
+          question: trans('messages_confirm_permanent_delete', {}, 'message'),
           dangerous: true,
           handleConfirm: () => {
             dispatch(actions.deleteMessages(message))
@@ -90,8 +89,8 @@ const Message = connect(
     removeMessage(message) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
-          title: trans('messages_delete_title'),
-          question: trans('remove_message_confirm_message'),
+          title: trans('messages_delete_title', {}, 'message'),
+          question: trans('remove_message_confirm_message', {}, 'message'),
           dangerous: true,
           handleConfirm: () => dispatch(actions.removeMessages(message))
         })
@@ -100,8 +99,8 @@ const Message = connect(
     restoreMessage(message) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
-          title: trans('messages_restore_title'),
-          question: trans('messages_confirm_restore'),
+          title: trans('messages_restore_title', {}, 'message'),
+          question: trans('messages_confirm_restore', {}, 'message'),
           handleConfirm: () => dispatch(actions.restoreMessages(message))
         })
       )

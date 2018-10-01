@@ -2,7 +2,7 @@ import {makeReducer} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {currentUser} from '#/main/core/user/current'
-import {MESSAGE_LOAD, IS_REPLY, MAIL_NOTIFICATION_UPDATE} from '#/plugin/message/actions'
+import {MESSAGE_LOAD, IS_REPLY, MAIL_NOTIFICATION_UPDATE} from '#/plugin/message/tools/messaging/store/actions'
 
 const authenticatedUser = currentUser()
 

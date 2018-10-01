@@ -8,39 +8,34 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {currentUser} from '#/main/core/user/current'
 import {selectors as formSelectors} from '#/main/app/content/form/store/selectors'
 
-import {actions} from '#/plugin/message/actions'
+import {actions} from '#/plugin/message/tools/messaging/store'
 
 const authenticatedUser = currentUser()
 
 const MessagesParametersComponent = (props) =>
-  <div>
-    <h2>{trans('preferences')}</h2>
-    <FormData
-      level={3}
-      displayLevel={2}
-      buttons={true}
-      save={{
-        type: CALLBACK_BUTTON,
-        callback: () => props.setMailNotification(authenticatedUser, props.messagesParameters.mailNotified)
-      }}
-      name="messagesParameters"
-      className="content-container"
-      sections={[
-        {
-          title: trans('general'),
-          primary: true,
-          fields: [
-            {
-              name: 'mailNotified',
-              type: 'boolean',
-              label: transChoice('get_mail_notifications', authenticatedUser.email, {adress: authenticatedUser.email}),
-              required: true
-            }
-          ]
-        }
-      ]}
-    />
-  </div>
+  <FormData
+    title={trans('parameters')}
+    name="messagesParameters"
+    buttons={true}
+    save={{
+      type: CALLBACK_BUTTON,
+      callback: () => props.setMailNotification(authenticatedUser, props.messagesParameters.mailNotified)
+    }}
+    sections={[
+      {
+        title: trans('general'),
+        primary: true,
+        fields: [
+          {
+            name: 'mailNotified',
+            type: 'boolean',
+            label: transChoice('get_mail_notifications', authenticatedUser.email, {adress: authenticatedUser.email}),
+            required: true
+          }
+        ]
+      }
+    ]}
+  />
 
 MessagesParametersComponent.propTypes = {
   setMailNotification: T.func.isRequired,
