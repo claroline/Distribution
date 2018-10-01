@@ -36,8 +36,8 @@ const WalkThroughEnd = props =>
 
     {0 !== props.additional.length &&
       <ul className="walkthrough-additional">
-        {props.additional.map(walkthrough =>
-          <li>
+        {props.additional.map((walkthrough) =>
+          <li key={toKey(walkthrough.title)}>
             <CallbackButton
               className="walkthrough-additional-link"
               callback={() => props.start(walkthrough.scenario, walkthrough.additional, walkthrough.documentation)}

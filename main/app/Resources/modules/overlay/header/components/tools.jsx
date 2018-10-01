@@ -7,7 +7,7 @@ import {MENU_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 const HeaderTools = props =>
   <Button
-    id={props.id}
+    id={`app-${props.type}`}
     type={MENU_BUTTON}
     className="app-header-btn app-header-item"
     icon={props.icon}
@@ -18,7 +18,7 @@ const HeaderTools = props =>
       align: props.right ? 'right' : 'left',
       label: props.label,
       items: props.tools.map(tool => ({
-        id: `app-tool-${tool.name}`,
+        id: `app-${props.type}-${tool.name}`,
         type: URL_BUTTON,
         icon: `fa fa-fw fa-${tool.icon}`,
         label: trans(tool.name, {}, 'tools'),
@@ -28,7 +28,7 @@ const HeaderTools = props =>
   />
 
 HeaderTools.propTypes = {
-  id: T.string.isRequired,
+  type: T.string.isRequired,
   icon: T.string.isRequired,
   label: T.string.isRequired,
   right: T.bool,

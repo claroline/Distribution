@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
@@ -15,7 +16,7 @@ import {HeaderTools} from '#/main/app/overlay/header/components/tools'
 import {HeaderUser} from '#/main/app/overlay/header/components/user'
 import {HeaderWorkspaces} from '#/main/app/overlay/header/components/workspaces'
 
-function getWalkthrough(tools = [], administration = []) {
+function getWalkthrough(tools = [], administration = [], authenticated = false, display = {}) {
   const walkthrough = [
     // Intro
     {
@@ -52,7 +53,7 @@ function getWalkthrough(tools = [], administration = []) {
 
     // help for each tool
     tools.map(tool => walkthrough.push({
-      highlight: [`#tool-link-${tool.name}`],
+      highlight: [`#app-tools-${tool.name}`],
       content: {
         icon: `fa fa-${tool.icon}`,
         title: trans('tool', {toolName: trans(tool.name, {}, 'tools')}, 'walkthrough'),
@@ -60,13 +61,30 @@ function getWalkthrough(tools = [], administration = []) {
         link: trans(`header.tools.${tool.name}.documentation`, {}, 'walkthrough')
       },
       position: {
-        target: `#tool-link-${tool.name}`,
+        target: `#app-tools-${tool.name}`,
         placement: 'right'
       }
     }))
   }
 
   // Workspaces
+  walkthrough.push({
+    highlight: ['#app-workspaces-menu'],
+    content: {
+      title: trans('header.workspaces_menu.title', {}, 'walkthrough'),
+      message: trans('header.workspaces_menu.message', {}, 'walkthrough')
+    },
+    position: {
+      target: '#app-workspaces-menu',
+      placement: 'bottom'
+    }/*,
+     requiredInteraction: {
+     type: 'click',
+     target: '#app-workspaces-menu',
+     message: trans('header.workspaces_menu.action', {}, 'walkthrough')
+     }*/
+
+  })
 
   // Administration
   if (0 !== administration.length) {
@@ -79,17 +97,18 @@ function getWalkthrough(tools = [], administration = []) {
       position: {
         target: '#app-administration',
         placement: 'bottom'
-      },
+      }/*,
       requiredInteraction: {
         type: 'click',
         target: '#app-administration',
         message: trans('header.administration_group.action', {}, 'walkthrough')
-      }
+      }*/
     })
 
     // help for each tool
-    administration.map(tool => walkthrough.push({
-      highlight: [`#app-tool-${tool.name}`],
+    // TODO : enable when
+    /*administration.map(tool => walkthrough.push({
+      highlight: [`#app-administration-${tool.name}`],
       content: {
         icon: `fa fa-${tool.icon}`,
         title: trans('tool', {toolName: trans(tool.name, {}, 'tools')}, 'walkthrough'),
@@ -97,10 +116,64 @@ function getWalkthrough(tools = [], administration = []) {
         link: trans(`header.administration.${tool.name}.documentation`, {}, 'walkthrough')
       },
       position: {
-        target: `#app-tool-${tool.name}`,
+        target: `#app-administration-${tool.name}`,
         placement: 'left'
       }
-    }))
+    }))*/
+  }
+
+  if (authenticated) {
+    // Notifications
+    walkthrough.push({
+      highlight: ['#app-notifications-menu'],
+      content: {
+        title: trans('header.notifications.title', {}, 'walkthrough'),
+        message: trans('header.notifications.message', {}, 'walkthrough')
+      },
+      position: {
+        target: '#app-administration',
+        placement: 'bottom'
+      }/*,
+       requiredInteraction: {
+       type: 'click',
+       target: '#app-notifications-menu',
+       message: trans('header.app-notifications-menu.action', {}, 'walkthrough')
+       }*/
+    })
+
+    // User menu
+    walkthrough.push({
+      highlight: ['#authenticated-user-menu'],
+      content: {
+        title: trans('header.user_menu.title', {}, 'walkthrough'),
+        message: trans('header.user_menu.message', {}, 'walkthrough')
+      },
+      position: {
+        target: '#app-administration',
+        placement: 'bottom'
+      }/*,
+      requiredInteraction: {
+        type: 'click',
+        target: '#authenticated-user-menu',
+        message: trans('header.user_menu.action', {}, 'walkthrough')
+      }*/
+    })
+  } else {
+    // TODO : anonymous user menu doc
+  }
+
+  // Locale menu
+  if (get(display, 'locale')) {
+    walkthrough.push({
+      highlight: ['#app-locale-select'],
+      content: {
+        message: trans('header.locale.message', {}, 'walkthrough')
+      },
+      position: {
+        target: '#app-locale-select',
+        placement: 'bottom'
+      }
+    })
   }
 
   return walkthrough
@@ -125,7 +198,7 @@ const Header = props =>
 
     {0 !== props.tools.length &&
       <HeaderTools
-        id="app-tools"
+        type="tools"
         icon="fa fa-fw fa-wrench"
         label={trans('tools')}
         tools={props.tools}
@@ -141,7 +214,7 @@ const Header = props =>
 
     {0 !== props.administration.length &&
       <HeaderTools
-        id="app-administration"
+        type="administration"
         icon="fa fa-fw fa-cogs"
         label={trans('administration')}
         tools={props.administration}
@@ -166,7 +239,7 @@ const Header = props =>
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-street-view',
           label: trans('show-walkthrough', {}, 'actions'),
-          callback: () => props.startWalkthrough(getWalkthrough(props.tools, props.administration))
+          callback: () => props.startWalkthrough(getWalkthrough(props.tools, props.administration, props.authenticated, props.display))
         }, {
           type: URL_BUTTON,
           icon: 'fa fa-fw fa-question',

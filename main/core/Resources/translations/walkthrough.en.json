@@ -4,7 +4,7 @@
   "actions": "The actions",
   "tool": "Tool: %toolName%",
   "desktop_tools": "The tools",
-  "administration": "The administration tools",
+  "administration_tools": "The administration tools",
   "workspace_tools": "The workspace tools",
   "user_tools": "The user tools",
 
@@ -17,29 +17,48 @@
     "name": "Discover the Claroline menu",
     "description": "Familiarize yourself with the features available in the Claroline menu.",
 
-    "platform_brand": {
+
+    "intro": {
 
     },
     "tools_group": {
-
+      "message": "The tools menu gives you access to all the tools added through your preference tool.",
+      "action": "Click the button to open the tools menu."
     },
     "workspaces_menu": {
-
+      "title": "The main menu",
+      "message": "This menu allows you to navigate to your desktop, the application home or browse your workspaces."
     },
     "administration_group": {
-
+      "message": "The administration menu gives you access to all the administration tools you have access to.",
+      "action": "Click the button to open the administration menu."
     },
-    "messages": {
-
+    "notifications": {
+      "title": "The notifications center",
+      "message": "The notifications center regroups all your communications inside the applications (eg. user messages, notifications)",
+      "action": "Click the button to open the notification center."
     },
     "user_menu": {
-
-    },
-    "user_tools": {
-
+      "title": "The user menu",
+      "message": "The user menu gives you access to your personal tools, your profile and your preference.",
+      "action": "Click the button to open the user menu."
     },
     "locale": {
+      "message": "You can change the application locale at any time through this menu."
+    },
 
+    "tools": {
+      "resource_manager": {
+        "documentation": "https://claroline.gitbooks.io/claroline-connect-documentation/content/fr/resources/resources.html",
+        "message": "Permet de voir et gérer toutes vos ressources."
+      }
+    },
+
+    "administration": {
+      "user_management": {
+        "documentation": "",
+        "message": "Permet de voir les utilisateurs et les groupes inscrits, de changer leurs droits ainsi que d'en inscrire de nouveaux."
+      }
     }
   },
 
