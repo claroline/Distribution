@@ -152,20 +152,20 @@
         "action": "Cliquez sur le bouton pour créer une section à 3 colonnes."
       },
       "section_configure": {
-        "message": ""
+        "message": "Toutes les options disponibles pour la section sont regroupées dans ce formulaire."
       },
       "section_save": {
-        "message": "",
-        "action": ""
+        "message": "Une fois que vous avez terminé de configurer votre section, vous devez sauvegarder vos changements.",
+        "action": "Cliquez sur le bouton pour ajouter la nouvelle section à l'onglet."
       },
       "created_section": {
-        "message": ""
+        "message": "Ceci est la section que vous venez de créer. Vous pourrez lui ajouter 3 widgets plus tard."
       },
       "save": {
-        "message": ""
+        "message": "Pensez à sauvegarder vos changements afin qu'ils soient pris en compte."
       },
       "exit": {
-        "message": ""
+        "message": "Ou vous pouvez tout simplement quitter l'éditeur si vous ne désirez pas conserver vos modifications."
       }
     },
 

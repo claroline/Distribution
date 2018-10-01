@@ -137,6 +137,22 @@
       "select_layout": {
         "message": "The button shows the number and size of the columns which will be displayed.",
         "action": "Click the button to create 3 columns section."
+      },
+      "section_configure": {
+        "message": "All of the options available for the section are in this form."
+      },
+      "section_save": {
+        "message": "Once you have finished to configure your section, you have to save your changes.",
+        "action": "Click the button to add the new section to the tab."
+      },
+      "created_section": {
+        "message": "This is the section you have created. You will be able to add 3 widgets in it later."
+      },
+      "save": {
+        "message": "Remember to save your changes if you want them to be applied to the home."
+      },
+      "exit": {
+        "message": "Or you can simply exit the editor if you don't want to keep your changes."
       }
     },
 
