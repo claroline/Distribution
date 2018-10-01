@@ -57,7 +57,7 @@ const SentMessagesComponent = (props) =>
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete', {}, 'actions'),
         dangerous: true,
-        callback: () => props.removeMessages(rows, 'messages_sent')
+        callback: () => props.removeMessages(rows, 'sentMessages')
       }
     ]}
     card={(props) =>
