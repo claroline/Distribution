@@ -102,7 +102,7 @@ class AnnouncementSerializer
             'roles' => array_map(function (Role $role) {
                 return $role->getUuid();
             }, $announce->getRoles()),
-            'poster' => $workspace->getPoster() && $this->om->getRepository(PublicFile::class)->findOneBy([
+            'poster' => $announce->getPoster() && $this->om->getRepository(PublicFile::class)->findOneBy([
                   'url' => $announce->getPoster(),
               ]) ? $this->serializer->serialize(
                 $this->om->getRepository(PublicFile::class)->findOneBy([
@@ -184,7 +184,7 @@ class AnnouncementSerializer
                 PublicFile::class,
                 $data['poster']
             );
-            $workspace->setPoster($data['poster']['url']);
+            $announce->setPoster($data['poster']['url']);
             $this->fileUt->createFileUse(
                 $poster,
                 Announcement::class,
