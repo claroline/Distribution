@@ -5,7 +5,6 @@ import {PropTypes as T} from 'prop-types'
 import isEqual from 'lodash/isEqual'
 
 import {Overlay, Position, Transition} from 'react-overlays'
-import {getOverlayContainer} from '#/main/app/overlay'
 import {addClasses, removeClasses} from '#/main/app/dom/classes'
 
 import {WalkThroughStep} from '#/main/app/overlay/walkthrough/components/step'

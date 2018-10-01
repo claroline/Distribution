@@ -2,8 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {toKey} from '#/main/core/scaffolding/text/utils'
-
 import {Button} from '#/main/app/action/components/button'
 import {MENU_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 

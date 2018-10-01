@@ -118,15 +118,15 @@ class WorkspaceToolbarComponent extends Component {
     ].concat(
       // help for active tool
       this.state.openedTool ? [{
-          highlight: [`#tool-link-${this.state.openedTool.name}`],
-          content: {
-            message: trans('workspace.sidebar.opened_tool.message', {}, 'walkthrough')
-          },
-          position: {
-            target: `#tool-link-${this.state.openedTool.name}`,
-            placement: 'right'
-          }
-        }] : [],
+        highlight: [`#tool-link-${this.state.openedTool.name}`],
+        content: {
+          message: trans('workspace.sidebar.opened_tool.message', {}, 'walkthrough')
+        },
+        position: {
+          target: `#tool-link-${this.state.openedTool.name}`,
+          placement: 'right'
+        }
+      }] : [],
       // help for each tool
       this.props.tools.map(tool => ({
         highlight: [`#tool-link-${tool.name}`],

@@ -42,7 +42,7 @@ const WalkthroughStep = {
     })),
     after: T.arrayOf(T.shape({
 
-    })),
+    }))
   },
   defaultProps: {
 

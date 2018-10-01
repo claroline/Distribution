@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {getOverlayContainer} from '#/main/app/overlay'
 import {Modal as ModalTypes} from '#/main/app/overlay/modal/prop-types'
 
 // get all modals registered in the application

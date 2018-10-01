@@ -18,7 +18,7 @@ const Tab = {
     position: T.number,
     restrictions: T.shape({
       hidden: T.bool,
-      roles: T.array,
+      roles: T.array
     }),
     widgets: T.arrayOf(T.shape(
       Widget.propTypes

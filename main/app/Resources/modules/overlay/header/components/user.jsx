@@ -140,7 +140,7 @@ HeaderUser.propTypes = {
   authenticated: T.bool.isRequired,
   currentUser: T.shape({
 
-  }).isRequired,
+  }).isRequired
 }
 
 HeaderUser.defaultProps = {

@@ -35,13 +35,14 @@ const WalkThroughEnd = props =>
     </div>
 
     {0 !== props.additional.length &&
-      <ul>
+      <ul className="walkthrough-additional">
         {props.additional.map(walkthrough =>
           <li>
             <CallbackButton
+              className="walkthrough-additional-link"
               callback={() => props.start(walkthrough.scenario, walkthrough.additional, walkthrough.documentation)}
             >
-              {walkthrough.name}
+              {walkthrough.title}
             </CallbackButton>
           </li>
         )}

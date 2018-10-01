@@ -122,15 +122,10 @@ export default {
     },
     // Section
     {
-      //highlight: ['.home-section-layout'],
       content: {
         title: trans('home.editor.section_form.title', {}, 'walkthrough'),
         message: trans('home.editor.section_form.message', {}, 'walkthrough')
-      },
-      /*position: {
-        target: '.home-section-layout',
-        placement: 'top'
-      }*/
+      }
     },
     // Select section layout
     {
@@ -177,12 +172,12 @@ export default {
     },
     // Created section
     {
-      highlight: ['.widgets-grid .widget-container:last-child'],
+      highlight: ['.widgets-grid .widget-container:last-of-type'],
       content: {
         message: trans('home.editor.created_section.message', {}, 'walkthrough')
       },
       position: {
-        target: '.widgets-grid .widget-container:last-child',
+        target: '.widgets-grid .widget-container:last-of-type',
         placement: 'top'
       }
     },
@@ -190,23 +185,25 @@ export default {
     {
       highlight: ['.form-toolbar .btn-save'],
       content: {
+        icon: 'fa fa-save',
         message: trans('home.editor.save.message', {}, 'walkthrough')
       },
       position: {
         target: '.form-toolbar .btn-save',
         placement: 'top'
-      },
+      }
     },
     // Exit editor
     {
       highlight: ['.form-toolbar .btn-exit'],
       content: {
+        icon: 'fa fa-sign-out-alt',
         message: trans('home.editor.exit.message', {}, 'walkthrough')
       },
       position: {
         target: '.form-toolbar .btn-exit',
         placement: 'top'
-      },
+      }
     }
   ]
 }

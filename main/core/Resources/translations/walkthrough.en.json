@@ -132,7 +132,7 @@
       },
       "section_form": {
         "title": "The configuration of the section",
-        "message": "Before you can use the section, you must choose its layout that will determine the number of widgets in the section and their position."
+        "message": "Before you can use it, you must choose the number and the size of columns to add to the section."
       },
       "select_layout": {
         "message": "The button shows the number and size of the columns which will be displayed.",

@@ -85,8 +85,6 @@
 
     .walkthrough-link {
         margin-top: floor(@popover-content-padding / 2);
-        /*display: block;
-        text-align: right;*/
         font-size: @font-size-small;
     }
 
@@ -121,6 +119,24 @@
 
         .btn-next {
             border-radius: 0 0 @border-radius-small 0 !important;
+        }
+    }
+
+    .walkthrough-additional {
+        width: 100%;
+        border-top: 1px solid @modal-footer-border-color;
+        border-bottom: 1px solid @modal-footer-border-color;
+        background: @modal-footer-bg;
+        padding: @popover-content-padding @popover-content-padding @popover-content-padding @popover-content-padding*4;
+    }
+
+    .walkthrough-additional-link {
+        color: @link-color;
+
+        &:hover,
+        &:focus {
+            color: @link-hover-color;
+            text-decoration: @link-hover-decoration;
         }
     }
 

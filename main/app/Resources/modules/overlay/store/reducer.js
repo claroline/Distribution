@@ -7,11 +7,14 @@ import {
 
 const reducer = makeReducer([], {
   [OVERLAY_SHOW]: (state, action) => {
-    const newState = state.slice(0)
+    if (-1 === state.indexOf(action.overlayId)) {
+      const newState = state.slice(0)
+      newState.push(action.overlayId)
 
-    newState.push(action.overlayId)
+      return newState
+    }
 
-    return newState
+    return state
   },
   [OVERLAY_HIDE]: (state, action) => {
     const newState = state.slice(0)

@@ -145,10 +145,10 @@
       },
       "section_form": {
         "title": "La configuration de la section",
-        "message": "Avant de pouvoir utiliser la section, vous devez choisir son style qui déterminera le nombre de widgets de la section ainsi que leur position."
+        "message": "Avant de pouvoir l'utiliser, vous devez choisir le nombre et la taille des colonnes à ajouter à la section."
       },
       "select_layout": {
-        "message": "Le bouton vous montre le nombre et la taille des colonnes qui seront affichées.",
+        "message": "Vous avez le choix entre plusieurs structures prédéfinies. Le bouton vous montre le nombre et la taille des colonnes qui seront affichées.",
         "action": "Cliquez sur le bouton pour créer une section à 3 colonnes."
       },
       "section_configure": {

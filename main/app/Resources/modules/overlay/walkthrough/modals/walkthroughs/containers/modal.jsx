@@ -6,8 +6,8 @@ import {actions} from '#/main/app/overlay/walkthrough/store'
 const WalkthroughsModal = connect(
   null,
   (dispatch) => ({
-    start(scenario) {
-      dispatch(actions.start(scenario))
+    start(scenario, additional, documentation) {
+      dispatch(actions.start(scenario, additional, documentation))
     }
   })
 )(WalkthroughsModalComponent)
