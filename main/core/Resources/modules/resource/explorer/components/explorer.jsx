@@ -82,11 +82,20 @@ const ResourceExplorer = props => {
             alias: 'modificationDate',
             displayed: true
           }, {
+            //these fields should be unified
             name: 'resourceType',
             label: trans('type'),
             type: 'string',
             displayable: false,
             filterable: true
+          }, {
+            name: 'meta.type',
+            label: trans('type'),
+            type: 'string',
+            render: (rowData) => trans(rowData.meta.type, {}, 'resource'),
+            displayable: true,
+            displayed: true,
+            filterable: false
           }
         ]}
         actions={props.actions}
