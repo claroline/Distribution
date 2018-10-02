@@ -86,7 +86,12 @@ LogTabActionsComponent.propTypes = {
   usersQuery: T.string
 }
 
-const LogTabActions = withRouter(LogTabActionsComponent)
+const LogTabActions = withRouter(connect(
+  state => ({
+    logsQuery: select.queryString(select.list(state, 'logs')),
+    usersQuery: select.queryString(select.list(state, 'userActions'))
+  })
+)(LogTabActionsComponent))
 
 const LogTabComponent = props =>
   <Routes
@@ -113,10 +118,7 @@ LogTabComponent.propTypes = {
 }
 
 const LogTab = connect(
-  state => ({
-    logsQuery: select.queryString(select.list(state, 'logs')),
-    usersQuery: select.queryString(select.list(state, 'userActions'))
-  }),
+  null,
   dispatch => ({
     openLog(id) {
       dispatch(logActions.openLog('apiv2_admin_tool_logs_get', {id}))

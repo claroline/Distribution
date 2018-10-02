@@ -2,23 +2,45 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {LINK_BUTTON, DOWNLOAD_BUTTON} from '#/main/app/buttons'
+import {url} from '#/main/app/api'
+import {select} from '#/main/app/content/list/store'
+import {DOWNLOAD_BUTTON} from '#/main/app/buttons'
 import {Routes} from '#/main/app/router'
 
 import {trans} from '#/main/core/translation'
 import {
   PageActions,
-  PageAction
+  MoreAction
 } from '#/main/core/layout/page/components/page-actions'
 import {Connections} from '#/main/core/administration/logs/connection/components/connections'
 
-const ConnectionTabActions = (props) =>
-  <PageActions/>
+const ConnectionTabActionsComponent = (props) =>
+  <PageActions>
+    <MoreAction
+      actions={[
+        {
+          type: DOWNLOAD_BUTTON,
+          file: {
+            url: url(['apiv2_log_connect_platform_list_csv']) + props.queryString
+          },
+          label: trans('download_csv_list', {}, 'log'),
+          icon: 'fa fa-download'
+        }
+      ]}
+    />
+  </PageActions>
 
-ConnectionTabActions.propTypes = {
+ConnectionTabActionsComponent.propTypes = {
+  queryString: T.string
 }
 
-const ConnectionTabComponent = props =>
+const ConnectionTabActions = connect(
+  state => ({
+    queryString: select.queryString(select.list(state, 'connections.list'))
+  })
+)(ConnectionTabActionsComponent)
+
+const ConnectionTab = () =>
   <Routes
     routes={[
       {
@@ -28,18 +50,6 @@ const ConnectionTabComponent = props =>
       }
     ]}
   />
-
-ConnectionTabComponent.propTypes = {
-  // openLog: T.func.isRequired
-}
-
-const ConnectionTab = connect(
-  state => ({
-  }),
-  dispatch => ({
-
-  })
-)(ConnectionTabComponent)
 
 export {
   ConnectionTabActions,
