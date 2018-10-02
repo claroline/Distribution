@@ -81,10 +81,14 @@ class LogConnectManager
             // Fetches all user's logs by desc order
             $userLogs = $this->logRepo->findBy(['doer' => $user], ['dateLog' => 'DESC']);
 
-            // Retrieves the second recent one. The first one is the one triggering this function
-            if (1 < count($userLogs)) {
-                $log = $userLogs[1];
-                $logDate = $log->getDateLog();
+            // Retrieves the first log which date is lower than log triggering this function
+            $index = 0;
+
+            while (isset($userLogs[$index]) && $userLogs[$index]->getDateLog() >= $date) {
+                ++$index;
+            }
+            if (isset($userLogs[$index])) {
+                $logDate = $userLogs[$index]->getDateLog();
                 $connectionDate = $connection->getConnectionDate();
 
                 if ($logDate >= $connectionDate) {
