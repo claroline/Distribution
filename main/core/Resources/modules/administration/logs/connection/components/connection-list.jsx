@@ -12,16 +12,19 @@ const ConnectionList = {
   }),
   definition: [
     {
-      name: 'openingDate',
+      name: 'date',
+      alias: 'connectionDate',
       type: 'date',
       label: trans('date'),
       displayed: true,
+      filterable: false,
       primary: true,
       options: {
         time: true
       }
     }, {
       name: 'user.name',
+      alias: 'name',
       type: 'string',
       label: trans('user'),
       displayed: true

@@ -28,14 +28,37 @@ class LogConnectPlatformFinder extends AbstractFinder
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
+        $userJoined = false;
+
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'organizations':
-                    $qb->join('obj.user', 'u');
+                    if (!$userJoined) {
+                        $qb->join('obj.user', 'u');
+                        $userJoined = true;
+                    }
                     $qb->leftJoin('u.userOrganizationReferences', 'oref');
                     $qb->leftJoin('oref.organization', 'o');
                     $qb->andWhere('o.uuid IN (:organizationIds)');
                     $qb->setParameter('organizationIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                case 'name':
+                    if (!$userJoined) {
+                        $qb->join('obj.user', 'u');
+                        $userJoined = true;
+                    }
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->like('UPPER(u.username)', ':name'),
+                        $qb->expr()->like(
+                            "CONCAT(CONCAT(UPPER(u.firstName), ' '), UPPER(u.lastName))",
+                            ':name'
+                        ),
+                        $qb->expr()->like(
+                            "CONCAT(CONCAT(UPPER(u.lastName), ' '), UPPER(u.firstName))",
+                            ':name'
+                        )
+                    ));
+                    $qb->setParameter('name', '%'.strtoupper($filterValue).'%');
                     break;
                 default:
                     if (is_bool($filterValue)) {
@@ -45,6 +68,23 @@ class LogConnectPlatformFinder extends AbstractFinder
                         $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                         $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
                     }
+            }
+        }
+
+        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
+            $sortByProperty = $sortBy['property'];
+            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
+
+            switch ($sortByProperty) {
+                case 'date':
+                case 'connectionDate':
+                case 'user':
+                case 'duration':
+                    $qb->orderBy("obj.{$sortByProperty}", $sortByDirection);
+                    break;
+                case 'name':
+                    $qb->orderBy('obj.user', $sortByDirection);
+                    break;
             }
         }
 

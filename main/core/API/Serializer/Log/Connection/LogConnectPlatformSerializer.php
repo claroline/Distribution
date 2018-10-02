@@ -48,7 +48,7 @@ class LogConnectPlatformSerializer
     {
         $serialized = [
             'id' => $log->getUuid(),
-            'date' => $log->getOpeningDate()->format('Y-m-d\TH:i:s'),
+            'date' => $log->getConnectionDate()->format('Y-m-d\TH:i:s'),
             'duration' => $log->getDuration(),
             'user' => $this->serializer->serialize($log->getUser(), [Options::SERIALIZE_MINIMAL]),
         ];

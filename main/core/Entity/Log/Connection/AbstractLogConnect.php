@@ -38,9 +38,9 @@ class AbstractLogConnect
     protected $user;
 
     /**
-     * @ORM\Column(name="opening_date", type="datetime")
+     * @ORM\Column(name="connection_date", type="datetime")
      */
-    protected $openingDate;
+    protected $connectionDate;
 
     /**
      * @ORM\Column(name="total_duration", type="integer", nullable=true)
@@ -53,7 +53,7 @@ class AbstractLogConnect
     public function __construct()
     {
         $this->refreshUuid();
-        $this->openingDate = new \DateTime();
+        $this->connectionDate = new \DateTime();
     }
 
     /**
@@ -83,17 +83,17 @@ class AbstractLogConnect
     /**
      * @return \DateTime
      */
-    public function getOpeningDate()
+    public function getConnectionDate()
     {
-        return $this->openingDate;
+        return $this->connectionDate;
     }
 
     /**
-     * @param \DateTime $openingDate
+     * @param \DateTime $connectionDate
      */
-    public function setOpeningDate(\DateTime $openingDate)
+    public function setConnectionDate(\DateTime $connectionDate)
     {
-        $this->openingDate = $openingDate;
+        $this->connectionDate = $connectionDate;
     }
 
     /**
