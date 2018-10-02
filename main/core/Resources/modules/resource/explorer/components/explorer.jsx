@@ -7,6 +7,7 @@ import {SummarizedContent} from '#/main/app/content/summary/components/content'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {constants as listConstants} from '#/main/app/content/list/constants'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {getTypes} from '#/main/core/resource/utils'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
@@ -82,21 +83,15 @@ const ResourceExplorer = props => {
             alias: 'modificationDate',
             displayed: true
           }, {
-            //these fields should be unified
-            name: 'resourceType',
-            label: trans('type'),
-            type: 'string',
-            displayable: false,
-            filterable: true
-          }, {
             name: 'meta.type',
+            alias: 'resourceType',
             label: trans('type'),
-            type: 'string',
-            render: (rowData) => trans(rowData.meta.type, {}, 'resource'),
-            displayable: true,
             displayed: true,
-            filterable: false,
-            sortable: false
+            type: 'choice',
+            options: {
+              choices: getTypes().reduce((resourceTypes, current) => Object.assign(resourceTypes, {[current.name]: trans(current.name, {}, 'resource')}), {}),
+              condensed: true
+            }
           }
         ]}
         actions={props.actions}
