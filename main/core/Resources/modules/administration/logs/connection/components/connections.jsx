@@ -1,12 +1,10 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 
 import {ListData} from '#/main/app/content/list/containers/data'
 
-import {trans} from '#/main/core/translation'
 import {ConnectionList} from '#/main/core/administration/logs/connection/components/connection-list'
 
-const Connections = props =>
+const Connections = () =>
   <ListData
     name="connections.list"
     fetch={{
