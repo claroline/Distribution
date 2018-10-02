@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 
-const ProfileWidget = props =>
+const ProfileWidget = () =>
   <div>
     RIEN DU TOUT ENCORE
   </div>
