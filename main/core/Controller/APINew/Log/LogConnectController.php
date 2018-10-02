@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew\Log;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\CoreBundle\Entity\Log\Connection\LogConnectPlatform;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ToolManager;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @EXT\Route("/log_connect")
@@ -29,13 +31,16 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class LogConnectController
 {
     /** @var AuthorizationCheckerInterface */
-    protected $authorization;
+    private $authorization;
 
     /** @var FinderProvider */
-    protected $finder;
+    private $finder;
 
     /** @var ToolManager */
     private $toolManager;
+
+    /** @var TranslatorInterface */
+    private $translator;
 
     /**
      * CourseController constructor.
@@ -43,21 +48,25 @@ class LogConnectController
      * @DI\InjectParams({
      *     "authorization" = @DI\Inject("security.authorization_checker"),
      *     "finder"        = @DI\Inject("claroline.api.finder"),
-     *     "toolManager"   = @DI\Inject("claroline.manager.tool_manager")
+     *     "toolManager"   = @DI\Inject("claroline.manager.tool_manager"),
+     *     "translator"    = @DI\Inject("translator")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param FinderProvider                $finder
      * @param ToolManager                   $toolManager
+     * @param TranslatorInterface           $translator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         FinderProvider $finder,
-        ToolManager $toolManager
+        ToolManager $toolManager,
+        TranslatorInterface $translator
     ) {
         $this->authorization = $authorization;
         $this->finder = $finder;
         $this->toolManager = $toolManager;
+        $this->translator = $translator;
     }
 
     public function getName()
@@ -103,23 +112,76 @@ class LogConnectController
      *     name="apiv2_log_connect_platform_list_csv"
      * )
      * @EXT\Method("GET")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
+     * @param User    $user
      * @param Request $request
      *
      * @return StreamedResponse
      */
-    public function logConnectPlatformListCsvAction(Request $request)
+    public function logConnectPlatformListCsvAction(User $user, Request $request)
     {
-        // Filter data, but return all of them
-//        $query = $this->addOrganizationFilter($request->query->all());
-//        $downloadDate = date('Y-m-d_H-i-s');
-//
-//        return new StreamedResponse(function () use ($query) {
-//            $this->logManager->exportUserActionToCsv($query);
-//        }, 200, [
-//            'Content-Type' => 'application/force-download',
-//            'Content-Disposition' => 'attachment; filename="connection_time_platform_'.$downloadDate.'.csv"',
-//        ]);
+        $this->checkToolAccess();
+        $isAdmin = $this->authorization->isGranted('ROLE_ADMIN');
+        $query = $request->query->all();
+        $filters = isset($query['filters']) ? $query['filters'] : [];
+        $sortBy = null;
+
+        if (isset($query['sortBy'])) {
+            $direction = '-' === substr($query['sortBy'], 0, 1) ? -1 : 1;
+            $property = 1 === $direction ? $query['sortBy'] : substr($query['sortBy'], 1);
+            $sortBy = ['property' => $property, 'direction' => $direction];
+        }
+
+        if (!$isAdmin) {
+            $filters['organizations'] = array_map(function (Organization $organization) {
+                return $organization->getUuid();
+            }, $user->getAdministratedOrganizations()->toArray());
+        }
+        $connections = $this->finder->get(LogConnectPlatform::class)->find($filters, $sortBy);
+
+        // Prepare CSV file
+        $handle = fopen('php://output', 'w+');
+        fputcsv($handle, [
+            $this->translator->trans('date', [], 'platform'),
+            $this->translator->trans('user', [], 'platform'),
+            $this->translator->trans('duration', [], 'platform'),
+        ], ';', '"');
+
+        foreach ($connections as $connection) {
+            $duration = $connection->getDuration();
+            $durationString = null;
+
+            if (!is_null($duration)) {
+                $hours = floor($duration / 3600);
+                $duration %= 3600;
+                $minutes = floor($duration / 60);
+                $seconds = $duration % 60;
+
+                $durationString = "{$hours}:";
+                $durationString .= 10 > $minutes ? "0{$minutes}:" : "{$minutes}:";
+                $durationString .= 10 > $seconds ? "0{$seconds}" : "{$seconds}";
+            }
+            fputcsv($handle, [
+                $connection->getConnectionDate()->format('Y-m-d H:i:s'),
+                $connection->getUser()->getFirstName().' '.$connection->getUser()->getLastName(),
+                $durationString,
+            ], ';', '"');
+        }
+        fclose($handle);
+
+        $downloadDate = date('Y-m-d_H-i-s');
+
+        return new StreamedResponse(
+            function () use ($handle) {
+                $handle;
+            },
+            200,
+            [
+                'Content-Type' => 'application/force-download',
+                'Content-Disposition' => 'attachment; filename="connection_time_platform_'.$downloadDate.'.csv"',
+            ]
+        );
     }
 
     /**
