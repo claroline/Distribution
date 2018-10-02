@@ -30,10 +30,27 @@ const ConnectionList = {
       displayed: true
     }, {
       name: 'duration',
-      type: 'number',
+      type: 'string',
       label: trans('duration'),
       displayed: true,
-      filterable: false
+      filterable: false,
+      calculated: (rowData) => {
+        let result = null
+        let duration = rowData.duration
+
+        if (duration !== null) {
+          const hours = Math.floor(duration / 3600)
+          duration %= 3600
+          const minutes = Math.floor(duration / 60)
+          const seconds = duration % 60
+
+          result = `${hours}:`
+          result += 10 > minutes ? `0${minutes}:` : `${minutes}:`
+          result += 10 > seconds ? `0${seconds}` : `${seconds}`
+        }
+
+        return result
+      },
     }
   ],
   card: LogConnectPlatformCard
