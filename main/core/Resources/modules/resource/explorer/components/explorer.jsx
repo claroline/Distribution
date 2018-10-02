@@ -95,7 +95,8 @@ const ResourceExplorer = props => {
             render: (rowData) => trans(rowData.meta.type, {}, 'resource'),
             displayable: true,
             displayed: true,
-            filterable: false
+            filterable: false,
+            sortable: false
           }
         ]}
         actions={props.actions}
