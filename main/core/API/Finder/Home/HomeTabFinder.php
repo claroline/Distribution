@@ -108,13 +108,23 @@ class HomeTabFinder extends AbstractFinder
                     $qb->setParameter('userId', $filterValue);
                     break;
                 case 'workspace':
-                    $freeSearch = $workspaceSearch = $searches;
-                    $freeSearch['_workspace_free'] = $filterValue;
-                    $workspaceSearch['_workspace_roles'] = $filterValue;
-                    unset($workspaceSearch['workspace']);
-                    unset($freeSearch['workspace']);
+                    $roleNames = array_map(function ($role) {
+                        return $role->getRole();
+                    }, $this->tokenStorage->getToken()->getRoles());
 
-                    return $this->union($freeSearch, $workspaceSearch, $options, $sortBy);
+                    if (in_array('ROLE_ADMIN', $roleNames) || in_array('ROLE_MANAGER_'.$filterValue, $roleNames)) {
+                        $qb->leftJoin('obj.workspace', 'w');
+                        $qb->andWhere("w.uuid = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    } else {
+                        $freeSearch = $workspaceSearch = $searches;
+                        $freeSearch['_workspace_free'] = $filterValue;
+                        $workspaceSearch['_workspace_roles'] = $filterValue;
+                        unset($workspaceSearch['workspace']);
+                        unset($freeSearch['workspace']);
+
+                        return $this->union($freeSearch, $workspaceSearch, $options, $sortBy);
+                    }
 
                     break;
                 case '_workspace_free':

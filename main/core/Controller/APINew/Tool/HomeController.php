@@ -123,6 +123,25 @@ class HomeController extends AbstractApiController
     }
 
     /**
+     * @EXT\Route("/workspace/{workspace}", name="apiv2_get_workspace_tab", options={"method_prefix"=false})
+     * @EXT\Method("GET")
+     *
+     * @param Request $request
+     * @param string  $context
+     *
+     * @return JsonResponse
+     */
+    public function getWorkspaceAction($workspace)
+    {
+        $tabs = $this->finder->search(
+          'Claroline\CoreBundle\Entity\Tab\HomeTab',
+          ['filters' => ['workspace' => $workspace]]
+        );
+
+        return new JsonResponse($tabs);
+    }
+
+    /**
      * @EXT\Route("/admin/{context}/{contextId}", name="apiv2_home_admin", options={"method_prefix"=false})
      * @EXT\Method("PUT")
      *
