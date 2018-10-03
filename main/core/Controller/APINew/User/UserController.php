@@ -76,6 +76,7 @@ class UserController extends AbstractCrudController
      */
     public function createPersonalWorkspaceAction(Request $request)
     {
+        /** @var User[] $users */
         $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
 
         $this->om->startFlushSuite();
@@ -102,6 +103,7 @@ class UserController extends AbstractCrudController
      */
     public function deletePersonalWorkspaceAction(Request $request)
     {
+        /** @var User[] $users */
         $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
 
         $this->om->startFlushSuite();
@@ -123,6 +125,10 @@ class UserController extends AbstractCrudController
     /**
      * @Route("/user/login", name="apiv2_user_create_and_login")
      * @Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function createAndLoginAction(Request $request)
     {
@@ -151,11 +157,11 @@ class UserController extends AbstractCrudController
             if (isset($data['mainOrganization'])) {
                 if (isset($data['mainOrganization']['vat']) && $data['mainOrganization']['vat'] !== null) {
                     $organization = $organizationRepository
-                      ->findOneByVat($data['mainOrganization']['vat']);
+                      ->findOneBy(['vat' => $data['mainOrganization']['vat']]);
                 //then by code
                 } else {
                     $organization = $organizationRepository
-                      ->findOneByCode($data['mainOrganization']['code']);
+                      ->findOneBy(['code' => $data['mainOrganization']['code']]);
                 }
             }
 
@@ -209,34 +215,14 @@ class UserController extends AbstractCrudController
 
     /**
      * @Route(
-     *    "/currentworkspaces",
-     *    name="apiv2_user_currentworkspace"
-     * )
-     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     * @Method("GET")
-     *
-     * @param User $user
-     *
-     * @return JsonResponse
-     */
-    public function getCurrentWorkspacesAction(User $user)
-    {
-        return new JsonResponse($this->finder->search(
-            'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            ['filters' => ['user' => $user->getUuid()]],
-            $this->options['list']
-        ));
-    }
-
-    /**
-     * @Route(
      *    "/list/registerable",
      *    name="apiv2_user_list_registerable"
      * )
      * @Method("GET")
      * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
-     * @param Workspace $workspace
+     * @param User    $user
+     * @param Request $request
      *
      * @return JsonResponse
      */
@@ -262,7 +248,8 @@ class UserController extends AbstractCrudController
      * @Method("GET")
      * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
-     * @param Workspace $workspace
+     * @param User    $user
+     * @param Request $request
      *
      * @return JsonResponse
      */
@@ -282,7 +269,7 @@ class UserController extends AbstractCrudController
 
     public function getClass()
     {
-        return "Claroline\CoreBundle\Entity\User";
+        return User::class;
     }
 
     /**
@@ -332,7 +319,8 @@ class UserController extends AbstractCrudController
      * @Method("GET")
      * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
-     * @param Workspace $workspace
+     * @param User    $user
+     * @param Request $request
      *
      * @return JsonResponse
      *
@@ -370,7 +358,8 @@ class UserController extends AbstractCrudController
      */
     public function usersEnableAction(Request $request)
     {
-        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        /** @var User[] $users */
+        $users = $this->decodeIdsString($request, User::class);
 
         $this->om->startFlushSuite();
 
@@ -398,6 +387,7 @@ class UserController extends AbstractCrudController
      */
     public function usersDisableAction(Request $request)
     {
+        /** @var User[] $users */
         $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
 
         $this->om->startFlushSuite();
@@ -426,6 +416,7 @@ class UserController extends AbstractCrudController
      */
     public function passwordResetAction(Request $request)
     {
+        /** @var User[] $users */
         $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
 
         $this->om->startFlushSuite();
@@ -457,16 +448,13 @@ class UserController extends AbstractCrudController
      */
     public function usersPickerListAction(Request $request)
     {
-        return new JsonResponse($this->finder->search(
-            'Claroline\CoreBundle\Entity\User',
-            array_merge(
-                $request->query->all(),
-                ['hiddenFilters' => [
-                    'isEnabled' => true,
-                    'isRemoved' => false,
-                    'contactable' => true,
-                ]]
-            )
+        return new JsonResponse($this->finder->search(User::class, array_merge(
+            $request->query->all(),
+            ['hiddenFilters' => [
+                'isEnabled' => true,
+                'isRemoved' => false,
+                'contactable' => true,
+            ]])
         ));
     }
 }
