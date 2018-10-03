@@ -24,6 +24,20 @@ export default {
         displayed: true,
         primary: true
       }, {
+        name: 'meta.type',
+        alias: 'resourceType',
+        label: trans('type'),
+        displayed: true,
+        type: 'choice',
+        options: {
+          choices: getTypes().reduce((resourceTypes, current) => Object.assign(resourceTypes, {[current.name]: trans(current.name, {}, 'resource')}), {}),
+          condensed: true
+        }
+      }, {
+        name: 'parent',
+        label: trans('parent'),
+        type: 'resource'
+      }, {
         name: 'meta.published',
         alias: 'published',
         type: 'boolean',
@@ -41,16 +55,6 @@ export default {
         type: 'date',
         alias: 'modificationDate',
         displayed: true
-      }, {
-        name: 'resourceType',
-        label: trans('type'),
-        type: 'choice',
-        options: {
-          choices: getTypes().reduce((resourceTypes, current) => Object.assign(resourceTypes, {[current.name]: trans(current.name, {}, 'resource')}), {}),
-          condensed: true
-        },
-        displayable: false,
-        filterable: true
       }
     ],
     card: ResourceCard
