@@ -61,19 +61,23 @@ class LogConnectManager
 
         switch ($action) {
             case LogUserLoginEvent::ACTION:
-                $this->managePlatformConnection($user, $dateLog);
+                $this->om->startFlushSuite();
+
+                $this->computeLastPlatformDuration($user, $dateLog);
+                $this->createLogConnectPlatform($user, $dateLog);
+
+                $this->om->endFlushSuite();
                 break;
         }
     }
 
-    private function managePlatformConnection(User $user, \DateTime $date)
+    private function computeLastPlatformDuration(User $user, \DateTime $date)
     {
         // Fetches connections with no duration
         $openConnections = $this->logPlatformRepo->findBy(
             ['user' => $user, 'duration' => null],
             ['connectionDate' => 'DESC']
         );
-        $this->om->startFlushSuite();
 
         // Computes duration for the most recent connection (with no duration) based on last log for user
         if (0 < count($openConnections)) {
@@ -95,15 +99,19 @@ class LogConnectManager
                     $duration = $logDate->getTimestamp() - $connectionDate->getTimestamp();
                     $connection->setDuration($duration);
                     $this->om->persist($connection);
+                    $this->om->flush();
                 }
             }
         }
+    }
 
+    private function createLogConnectPlatform(User $user, \DateTime $date)
+    {
         // Creates a new platform connection with no duration for this current connection
         $newConnection = new LogConnectPlatform();
         $newConnection->setUser($user);
         $newConnection->setConnectionDate($date);
         $this->om->persist($newConnection);
-        $this->om->endFlushSuite();
+        $this->om->flush();
     }
 }
