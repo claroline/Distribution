@@ -47,6 +47,20 @@ class Version20181003092851 extends AbstractMigration
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_60F90965D17F50A6 ON claro_tools (uuid)
         ');
+        $this->addSql('
+            ALTER TABLE claro_log_connect_tool 
+            ADD workspace_id INT DEFAULT NULL, 
+            CHANGE workspace_name workspace_name VARCHAR(255) DEFAULT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE claro_log_connect_tool 
+            ADD CONSTRAINT FK_DDD8A47082D40A1F FOREIGN KEY (workspace_id) 
+            REFERENCES claro_workspace (id) 
+            ON DELETE SET NULL
+        ');
+        $this->addSql('
+            CREATE INDEX IDX_DDD8A47082D40A1F ON claro_log_connect_tool (workspace_id)
+        ');
     }
 
     public function down(Schema $schema)
@@ -71,6 +85,18 @@ class Version20181003092851 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_tools 
             DROP uuid
+        ');
+        $this->addSql('
+            ALTER TABLE claro_log_connect_tool 
+            DROP FOREIGN KEY FK_DDD8A47082D40A1F
+        ');
+        $this->addSql('
+            DROP INDEX IDX_DDD8A47082D40A1F ON claro_log_connect_tool
+        ');
+        $this->addSql('
+            ALTER TABLE claro_log_connect_tool 
+            DROP workspace_id, 
+            CHANGE workspace_name workspace_name VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci
         ');
     }
 }

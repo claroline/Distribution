@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\API\Finder\Log\Connection;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
+use Claroline\CoreBundle\Entity\Log\Connection\LogConnectAdminTool;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -23,7 +24,7 @@ class LogConnectAdminToolFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Log\Connection\LogConnectAdminTool';
+        return LogConnectAdminTool::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
