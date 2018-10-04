@@ -34,20 +34,20 @@ const TeamsComponent = props =>
       }, {
         name: 'selfRegistration',
         label: trans('public_registration'),
-        displayed: true,
+        displayed: false,
         filterable: true,
         type: 'boolean'
       }, {
         name: 'selfUnregistration',
         label: trans('public_unregistration'),
-        displayed: true,
+        displayed: false,
         filterable: true,
         type: 'boolean'
       }, {
         name: 'publicDirectory',
         alias: 'isPublic',
         label: trans('public_directory', {}, 'team'),
-        displayed: true,
+        displayed: false,
         filterable: true,
         type: 'boolean'
       }, {
