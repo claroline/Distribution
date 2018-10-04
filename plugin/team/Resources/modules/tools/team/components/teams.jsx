@@ -115,6 +115,7 @@ TeamsComponent.propTypes = {
   myTeams: T.arrayOf(T.string),
   canEdit: T.bool.isRequired,
   selfRegister: T.func.isRequired,
+  selfUnregister: T.func.isRequired,
   fillTeams: T.func.isRequired,
   emptyTeams: T.func.isRequired
 }
