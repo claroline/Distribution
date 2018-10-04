@@ -19,12 +19,12 @@ const ConnectionsComponent = (props) =>
   />
 
 ConnectionsComponent.propTypes = {
-  workspaceId: T.string
+  workspaceId: T.number
 }
 
 const Connections = connect(
   state => ({
-    workspaceId: state.workspaceId,
+    workspaceId: state.workspaceId
     // workspaceUuid: workspaceSelect.workspace(state).uuid
   })
 )(ConnectionsComponent)

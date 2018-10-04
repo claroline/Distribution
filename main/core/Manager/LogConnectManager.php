@@ -70,6 +70,7 @@ class LogConnectManager
                 $this->om->startFlushSuite();
 
                 // Computes duration for the most recent connection (with no duration) based on last log for user
+                /*
                 $platformConnection = $this->getLogConnectPlatformToCompute($user);
                 $workspaceConnection = $this->getLogConnectWorkspaceToCompute($user);
                 $previousLog = (!is_null($platformConnection) || !is_null($workspaceConnection)) ?
@@ -84,6 +85,7 @@ class LogConnectManager
                         $this->computeLastConnectionDuration($workspaceConnection, $previousLog);
                     }
                 }
+                */
                 $this->createLogConnectPlatform($user, $dateLog);
 
                 $this->om->endFlushSuite();
@@ -91,9 +93,11 @@ class LogConnectManager
             case LogWorkspaceEnterEvent::ACTION:
                 $this->om->startFlushSuite();
 
+                $logWorkspace = $log->getWorkspace();
+
+                /*
                 // Computes duration for the most recent connection (with no duration) based on last log for user
                 $workspaceConnection = $this->getLogConnectWorkspaceToCompute($user);
-                $logWorkspace = $log->getWorkspace();
 
                 // Ignores log if previous workspace entering log & this one are associated to the same workspace
                 if (!is_null($workspaceConnection) && $workspaceConnection->getWorkspace() === $logWorkspace) {
@@ -107,6 +111,7 @@ class LogConnectManager
                 if (!is_null($previousLog)) {
                     $this->computeLastConnectionDuration($workspaceConnection, $previousLog);
                 }
+                */
                 $this->createLogConnectWorkspace($user, $logWorkspace, $dateLog);
 
                 $this->om->endFlushSuite();

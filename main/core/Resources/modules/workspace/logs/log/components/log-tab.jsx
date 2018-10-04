@@ -82,6 +82,7 @@ const LogTabActionsComponent = (props) => {
 
 LogTabActionsComponent.propTypes = {
   location: T.object.isRequired,
+  workspaceId: T.number,
   logsQuery: T.string,
   usersQuery: T.string
 }
