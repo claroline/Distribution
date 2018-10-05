@@ -1,7 +1,7 @@
 /**
- * Users picker modal.
+ * workspaces picker modal.
  *
- * Displays the users picker inside the modale.
+ * Displays the workspaces picker inside the modale.
  */
 
 import {registry} from '#/main/app/modals/registry'
@@ -15,5 +15,5 @@ const MODAL_WORKSPACES_PICKER = 'MODAL_WORKSPACES_PICKER'
 registry.add(MODAL_WORKSPACES_PICKER, WorkspacesPickerModal)
 
 export {
-  MODAL_USERS_PICKER
+  MODAL_WORKSPACES_PICKER
 }

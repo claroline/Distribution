@@ -1,5 +1,5 @@
 /**
- * Users picker modal store.
+ * workspaces picker modal store.
  */
 
 import {reducer} from '#/main/core/modals/workspaces/store/reducer'

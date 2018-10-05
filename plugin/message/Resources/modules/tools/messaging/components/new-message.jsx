@@ -78,6 +78,12 @@ const NewMessageComponent = (props) =>
                 type: 'groups',
                 label: trans('message_form_to'),
                 required: true
+              },
+              {
+                name: 'toWorkspaces',
+                type: 'workspaces',
+                label: trans('message_form_to'),
+                required: true
               }
             ]
           },

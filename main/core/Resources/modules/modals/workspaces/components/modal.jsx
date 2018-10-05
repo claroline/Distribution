@@ -7,8 +7,8 @@ import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans} from '#/main/core/translation'
-import {selectors} from '#/main/core/modals/users/store'
-import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {selectors} from '#/main/core/modals/workspaces/store'
+import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 
 const WorkspacesPickerModal = props => {
@@ -17,22 +17,22 @@ const WorkspacesPickerModal = props => {
   return (
     <Modal
       {...omit(props, 'confirmText', 'selected', 'selectAction', 'resetSelect')}
-      className="users-picker-modal"
-      icon="fa fa-fw fa-user"
+      className="workspaces-picker-modal"
+      icon="fa fa-fw fa-books"
       bsSize="lg"
       onExiting={() => props.resetSelect()}
     >
       <ListData
         name={selectors.STORE_NAME}
         fetch={{
-          url: ['apiv2_workspaces_picker_list'],
+          url: ['apiv2_administrated_list'],
           autoload: true
         }}
         definition={[
           {
             name: 'name',
             type: 'string',
-            label: trans('username'),
+            label: trans('name'),
             displayed: true
           }, {
             name: 'code',
@@ -41,7 +41,7 @@ const WorkspacesPickerModal = props => {
             displayed: true
           }
         ]}
-        card={UserList.card}
+        card={WorkspaceList.card}
         display={props.display}
       />
 
@@ -67,7 +67,7 @@ WorkspacesPickerModal.propTypes = {
 }
 
 WorkspacesPickerModal.defaultProps = {
-  title: trans('user_selector'),
+  title: trans('workspace_selector'),
   confirmText: trans('select', {}, 'actions')
 }
 
