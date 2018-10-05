@@ -95,23 +95,25 @@ class LogConnectManager
 
                 $logWorkspace = $log->getWorkspace();
 
-                /*
-                // Computes duration for the most recent connection (with no duration) based on last log for user
+                // Computes duration for the most recent workspace connection (with no duration)
+                // for the current user's session
                 $workspaceConnection = $this->getLogConnectWorkspaceToCompute($user);
+                // Gets current user's connection to platform
+                $platformConnection = $this->getLogConnectPlatformToCompute($user);
 
-                // Ignores log if previous workspace entering log & this one are associated to the same workspace
-                if (!is_null($workspaceConnection) && $workspaceConnection->getWorkspace() === $logWorkspace) {
-                    break;
+                $isComputable = !is_null($workspaceConnection) &&
+                    $this->isComputableWithoutLogs($workspaceConnection, $platformConnection);
+
+                if ($isComputable) {
+                    // Ignores log if previous workspace entering log and this one are associated to the same workspace
+                    // for the current session
+                    if ($workspaceConnection->getWorkspace() === $logWorkspace) {
+                        break;
+                    } else {
+                        $this->computeConnectionDuration($workspaceConnection, $dateLog);
+                    }
                 }
-
-                $previousLog = !is_null($workspaceConnection) ?
-                    $this->getPreviousUserLog($user, $dateLog) :
-                    null;
-
-                if (!is_null($previousLog)) {
-                    $this->computeLastConnectionDuration($workspaceConnection, $previousLog);
-                }
-                */
+                // Creates workspace log for current connection
                 $this->createLogConnectWorkspace($user, $logWorkspace, $dateLog);
 
                 $this->om->endFlushSuite();
@@ -154,13 +156,12 @@ class LogConnectManager
         return 0 < count($openConnections) ? $openConnections[0] : null;
     }
 
-    private function computeLastConnectionDuration(AbstractLogConnect $connection, Log $previousLog)
+    private function computeConnectionDuration(AbstractLogConnect $connection, \DateTime $date)
     {
-        $logDate = $previousLog->getDateLog();
         $connectionDate = $connection->getConnectionDate();
 
-        if ($logDate >= $connectionDate) {
-            $duration = $logDate->getTimestamp() - $connectionDate->getTimestamp();
+        if ($date >= $connectionDate) {
+            $duration = $date->getTimestamp() - $connectionDate->getTimestamp();
             $connection->setDuration($duration);
             $this->om->persist($connection);
             $this->om->flush();
@@ -186,5 +187,10 @@ class LogConnectManager
         $newConnection->setWorkspace($workspace);
         $this->om->persist($newConnection);
         $this->om->flush();
+    }
+
+    private function isComputableWithoutLogs(AbstractLogConnect $connection, LogConnectPlatform $platformConnect)
+    {
+        return $connection->getConnectionDate() > $platformConnect->getConnectionDate();
     }
 }
