@@ -15,11 +15,14 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Log\Connection\AbstractLogConnect;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectPlatform;
+use Claroline\CoreBundle\Entity\Log\Connection\LogConnectResource;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectTool;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectWorkspace;
 use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
@@ -44,6 +47,7 @@ class LogConnectManager
     private $logPlatformRepo;
     private $logWorkspaceRepo;
     private $logToolRepo;
+    private $logResourceRepo;
 
     /**
      * @DI\InjectParams({
@@ -65,6 +69,7 @@ class LogConnectManager
         $this->logPlatformRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectPlatform');
         $this->logWorkspaceRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectWorkspace');
         $this->logToolRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectTool');
+        $this->logResourceRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectResource');
     }
 
     public function manageConnection(Log $log)
@@ -134,7 +139,35 @@ class LogConnectManager
                     }
                 }
                 // Creates workspace tool log for current connection
-                $this->createLogConnectTool($user, $logWorkspace, $logToolName, $dateLog);
+                $this->createLogConnectTool($user, $logToolName, $dateLog, $logWorkspace);
+
+                $this->om->endFlushSuite();
+                break;
+            case LogResourceReadEvent::ACTION:
+                $this->om->startFlushSuite();
+
+                $logResourceNode = $log->getResourceNode();
+
+                // Computes duration for the most recent resource opening (with no duration)
+                // for the current user's session
+                $resourceConnection = $this->getLogConnectResourceToCompute($user);
+                // Gets current user's connection to platform
+                $platformConnection = $this->getLogConnectPlatformToCompute($user);
+
+                $isComputable = !is_null($resourceConnection) &&
+                    $this->isComputableWithoutLogs($resourceConnection, $platformConnection);
+
+                if ($isComputable) {
+                    // Ignores log if previous resource opening log and this one are associated to the same resource
+                    // for the current session
+                    if ($resourceConnection->getResource() === $logResourceNode) {
+                        break;
+                    } else {
+                        $this->computeConnectionDuration($resourceConnection, $dateLog);
+                    }
+                }
+                // Creates resource log for current connection
+                $this->createLogConnectResource($user, $logResourceNode, $dateLog);
 
                 $this->om->endFlushSuite();
                 break;
@@ -167,6 +200,17 @@ class LogConnectManager
     {
         // Fetches connections with no duration
         $openConnections = $this->logToolRepo->findBy(
+            ['user' => $user, 'duration' => null],
+            ['connectionDate' => 'DESC']
+        );
+
+        return 0 < count($openConnections) ? $openConnections[0] : null;
+    }
+
+    private function getLogConnectResourceToCompute(User $user)
+    {
+        // Fetches connections with no duration
+        $openConnections = $this->logResourceRepo->findBy(
             ['user' => $user, 'duration' => null],
             ['connectionDate' => 'DESC']
         );
@@ -207,7 +251,7 @@ class LogConnectManager
         $this->om->flush();
     }
 
-    private function createLogConnectTool(User $user, Workspace $workspace, $toolName, \DateTime $date)
+    private function createLogConnectTool(User $user, $toolName, \DateTime $date, Workspace $workspace = null)
     {
         $orderedTool = $this->orderedToolRepo->findOneBy(['workspace' => $workspace, 'name' => $toolName]);
 
@@ -220,6 +264,17 @@ class LogConnectManager
             $this->om->persist($newConnection);
             $this->om->flush();
         }
+    }
+
+    private function createLogConnectResource(User $user, ResourceNode $node, \DateTime $date)
+    {
+        // Creates a new resource connection with no duration for the current connection
+        $newConnection = new LogConnectResource();
+        $newConnection->setUser($user);
+        $newConnection->setConnectionDate($date);
+        $newConnection->setResource($node);
+        $this->om->persist($newConnection);
+        $this->om->flush();
     }
 
     private function isComputableWithoutLogs(AbstractLogConnect $connection, LogConnectPlatform $platformConnect)
