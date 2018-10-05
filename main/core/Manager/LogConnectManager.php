@@ -15,12 +15,14 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Log\Connection\AbstractLogConnect;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectPlatform;
+use Claroline\CoreBundle\Entity\Log\Connection\LogConnectTool;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectWorkspace;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
+use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -37,8 +39,11 @@ class LogConnectManager
     private $om;
 
     private $logRepo;
+    private $orderedToolRepo;
+
     private $logPlatformRepo;
     private $logWorkspaceRepo;
+    private $logToolRepo;
 
     /**
      * @DI\InjectParams({
@@ -55,8 +60,11 @@ class LogConnectManager
         $this->om = $om;
 
         $this->logRepo = $om->getRepository('ClarolineCoreBundle:Log\Log');
+        $this->orderedToolRepo = $om->getRepository('ClarolineCoreBundle:Tool\OrderedTool');
+
         $this->logPlatformRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectPlatform');
         $this->logWorkspaceRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectWorkspace');
+        $this->logToolRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectTool');
     }
 
     public function manageConnection(Log $log)
@@ -69,23 +77,6 @@ class LogConnectManager
             case LogUserLoginEvent::ACTION:
                 $this->om->startFlushSuite();
 
-                // Computes duration for the most recent connection (with no duration) based on last log for user
-                /*
-                $platformConnection = $this->getLogConnectPlatformToCompute($user);
-                $workspaceConnection = $this->getLogConnectWorkspaceToCompute($user);
-                $previousLog = (!is_null($platformConnection) || !is_null($workspaceConnection)) ?
-                    $this->getPreviousUserLog($user, $dateLog) :
-                    null;
-
-                if (!is_null($previousLog)) {
-                    if (!is_null($platformConnection)) {
-                        $this->computeLastConnectionDuration($platformConnection, $previousLog);
-                    }
-                    if (!is_null($workspaceConnection)) {
-                        $this->computeLastConnectionDuration($workspaceConnection, $previousLog);
-                    }
-                }
-                */
                 $this->createLogConnectPlatform($user, $dateLog);
 
                 $this->om->endFlushSuite();
@@ -118,20 +109,36 @@ class LogConnectManager
 
                 $this->om->endFlushSuite();
                 break;
+            case LogWorkspaceToolReadEvent::ACTION:
+                $this->om->startFlushSuite();
+
+                $logWorkspace = $log->getWorkspace();
+                $logToolName = $log->getToolName();
+
+                // Computes duration for the most recent workspace tool connection (with no duration)
+                // for the current user's session
+                $toolConnection = $this->getLogConnectToolToCompute($user);
+                // Gets current user's connection to platform
+                $platformConnection = $this->getLogConnectPlatformToCompute($user);
+
+                $isComputable = !is_null($toolConnection) &&
+                    $this->isComputableWithoutLogs($toolConnection, $platformConnection);
+
+                if ($isComputable) {
+                    // Ignores log if previous workspace tool opening log and this one are associated to the same workspace tool
+                    // for the current session
+                    if ($toolConnection->getWorkspace() === $logWorkspace && $toolConnection->getToolName() === $logToolName) {
+                        break;
+                    } else {
+                        $this->computeConnectionDuration($toolConnection, $dateLog);
+                    }
+                }
+                // Creates workspace tool log for current connection
+                $this->createLogConnectTool($user, $logWorkspace, $logToolName, $dateLog);
+
+                $this->om->endFlushSuite();
+                break;
         }
-    }
-
-    private function getPreviousUserLog(User $user, \DateTime $date)
-    {
-        $userLogs = $this->logRepo->findBy(['doer' => $user], ['dateLog' => 'DESC'], 20);
-        $index = 0;
-
-        // Retrieves the first log which date is lower than log triggering this function
-        while (isset($userLogs[$index]) && $userLogs[$index]->getDateLog() >= $date) {
-            ++$index;
-        }
-
-        return isset($userLogs[$index]) ? $userLogs[$index] : null;
     }
 
     private function getLogConnectPlatformToCompute(User $user)
@@ -149,6 +156,17 @@ class LogConnectManager
     {
         // Fetches connections with no duration
         $openConnections = $this->logWorkspaceRepo->findBy(
+            ['user' => $user, 'duration' => null],
+            ['connectionDate' => 'DESC']
+        );
+
+        return 0 < count($openConnections) ? $openConnections[0] : null;
+    }
+
+    private function getLogConnectToolToCompute(User $user)
+    {
+        // Fetches connections with no duration
+        $openConnections = $this->logToolRepo->findBy(
             ['user' => $user, 'duration' => null],
             ['connectionDate' => 'DESC']
         );
@@ -187,6 +205,21 @@ class LogConnectManager
         $newConnection->setWorkspace($workspace);
         $this->om->persist($newConnection);
         $this->om->flush();
+    }
+
+    private function createLogConnectTool(User $user, Workspace $workspace, $toolName, \DateTime $date)
+    {
+        $orderedTool = $this->orderedToolRepo->findOneBy(['workspace' => $workspace, 'name' => $toolName]);
+
+        if (!is_null($orderedTool)) {
+            // Creates a new workspace tool connection with no duration for the current connection
+            $newConnection = new LogConnectTool();
+            $newConnection->setUser($user);
+            $newConnection->setConnectionDate($date);
+            $newConnection->setTool($orderedTool);
+            $this->om->persist($newConnection);
+            $this->om->flush();
+        }
     }
 
     private function isComputableWithoutLogs(AbstractLogConnect $connection, LogConnectPlatform $platformConnect)
