@@ -149,7 +149,6 @@ class MessageSerializer
         //; is the separator
         //{} for groups
         //[] for workspaces
-        $to = '';
         $receivers = [];
 
         if (isset($data['toGroups'])) {
