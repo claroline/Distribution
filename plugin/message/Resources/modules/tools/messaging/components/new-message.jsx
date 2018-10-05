@@ -60,19 +60,14 @@ const NewMessageComponent = (props) =>
         className="content-container"
         sections={[
           {
-            title: trans('to'),
-            fields: [
+            title: 'message',
+            fields:[
               {
                 name: 'toUser',
                 type: 'users',
                 label: trans('message_form_to'),
                 required: true
-              }
-            ]
-          },
-          {
-            title: trans('other'),
-            fields: [
+              },
               {
                 name: 'toGroups',
                 type: 'groups',
@@ -84,13 +79,7 @@ const NewMessageComponent = (props) =>
                 type: 'workspaces',
                 label: trans('message_form_to'),
                 required: true
-              }
-            ]
-          },
-          {
-            title: trans('generdddal'),
-            defaultOpened: true,
-            fields:[
+              },
               {
                 name: 'object',
                 type: 'string',

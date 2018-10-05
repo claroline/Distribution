@@ -39,6 +39,12 @@ const WorkspacesPickerModal = props => {
             type: 'string',
             label: trans('code'),
             displayed: true
+          },
+          {
+            name: 'meta.personal',
+            label: trans('personal_workspace'),
+            type: 'boolean',
+            alias: 'personal'
           }
         ]}
         card={WorkspaceList.card}
