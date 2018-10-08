@@ -9,6 +9,7 @@ import {getFile} from '#/main/core/files'
 
 import {File as FileTypes} from '#/main/core/files/prop-types'
 import {selectors} from '#/main/core/resources/file/store'
+import {url} from '#/main/app/api'
 
 // TODO : find a way to make this kind of component generic (duplicated for all apps coming from dynamic loading)
 // TODO : display a standard player with file info if no custom one
@@ -28,7 +29,7 @@ class Player extends Component {
       <Await
         for={getFile(this.props.mimeType)}
         then={module => this.setState({
-          filePlayer: get(module, 'fileType.components.player') || null,
+          filePlayer: get(module, 'fileType.components.player') ? get(module, 'fileType.components.player'): window.location.href = url(['claro_resource_download', {ids: [this.props.resourceNode.id]}]),
           fileStyles: get(module, 'fileType.styles') || null
         })}
       >
@@ -48,6 +49,9 @@ class Player extends Component {
 
 Player.propTypes = {
   mimeType: T.string.isRequired,
+  resourceNode: T.shape({
+    id: T.string.isRequired
+  }).isRequired,
   file: T.shape(
     FileTypes.propTypes
   ).isRequired
@@ -56,7 +60,8 @@ Player.propTypes = {
 const FilePlayer = connect(
   (state) => ({
     mimeType: selectors.mimeType(state),
-    file: selectors.file(state)
+    file: selectors.file(state),
+    resourceNode: selectors.resourceNode(state)
   })
 )(Player)
 
