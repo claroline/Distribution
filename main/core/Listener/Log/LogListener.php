@@ -14,7 +14,9 @@ namespace Claroline\CoreBundle\Listener\Log;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
+use Claroline\CoreBundle\Event\Log\LogAdminToolReadEvent;
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
+use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogGroupDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogNotRepeatableInterface;
@@ -268,7 +270,7 @@ class LogListener
 
             // Always logs workspace entering, tool reading and resource reading if the target object is different from the previous one
             if ($event->getIsWorkspaceEnterEvent() || $event->getIsToolReadEvent() || $event->getIsResourceReadEvent()) {
-                $workspaceId = $event->getWorkspace()->getUuid();
+                $workspaceId = !is_null($event->getWorkspace()) ? $event->getWorkspace()->getUuid() : null;
                 $key = $event->getIsWorkspaceEnterEvent() ?
                     $workspaceId :
                     $event->getIsToolReadEvent() ?
@@ -450,6 +452,8 @@ class LogListener
         $breakingSignatures = [
             LogWorkspaceToolReadEvent::ACTION,
             LogResourceReadEvent::ACTION,
+            LogDesktopToolReadEvent::ACTION,
+            LogAdminToolReadEvent::ACTION,
         ];
 
         // Only checks for tools (desktop, workspace & admin) & resources opening
