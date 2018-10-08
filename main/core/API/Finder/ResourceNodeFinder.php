@@ -183,6 +183,9 @@ class ResourceNodeFinder extends AbstractFinder
                 case 'meta.updated':
                     $qb->orderBy('obj.modificationDate', $sortByDirection);
                     break;
+                case 'meta.published':
+                    $qb->orderBy('obj.published', $sortByDirection);
+                    break;
                 case 'meta.created':
                     $qb->orderBy('obj.creationDate', $sortByDirection);
                     break;
@@ -207,6 +210,7 @@ class ResourceNodeFinder extends AbstractFinder
         return [
           'meta.updated' => 'creation_date',
           'meta.created' => 'modification_date',
+          'meta.published' => 'published',
         ];
     }
 }
