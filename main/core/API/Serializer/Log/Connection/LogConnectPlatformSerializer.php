@@ -20,7 +20,7 @@ class LogConnectPlatformSerializer
     private $serializer;
 
     /**
-     * RoleSerializer constructor.
+     * LogConnectPlatformSerializer constructor.
      *
      * @DI\InjectParams({
      *     "serializer" = @DI\Inject("claroline.api.serializer")

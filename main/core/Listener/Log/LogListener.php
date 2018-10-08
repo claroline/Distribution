@@ -22,6 +22,7 @@ use Claroline\CoreBundle\Event\Log\LogResourceDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
+use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceRoleDeleteEvent;
 use Claroline\CoreBundle\Event\LogCreateEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -259,36 +260,73 @@ class LogListener
             $is = false;
             $pushInSession = true;
             $now = time();
+            $notRepeatableLogTimeInSeconds = $this->container->getParameter(
+                'non_repeatable_log_time_in_seconds'
+            );
 
-            //if ($session->get($event->getAction()) != null) {
-            if (null !== $session->get($event->getLogSignature())) {
-                $oldArray = json_decode($session->get($event->getLogSignature()));
-                $oldSignature = $oldArray->logSignature;
-                $oldTime = $oldArray->time;
+            // Always logs workspace entering, tool reading and resource reading if the target object is different from the previous one
+            if ($event->getIsWorkspaceEnterEvent() || $event->getIsToolReadEvent() || $event->getIsResourceReadEvent()) {
+                $workspaceId = $event->getWorkspace()->getUuid();
+                $key = $event->getIsWorkspaceEnterEvent() ?
+                    $workspaceId :
+                    $event->getIsToolReadEvent() ?
+                        $event->getToolName() :
+                        $event->getResource()->getUuid();
 
-                if ($oldSignature === $event->getLogSignature()) {
-                    $diff = ($now - $oldTime);
-                    $notRepeatableLogTimeInSeconds = $this->container->getParameter(
-                        'non_repeatable_log_time_in_seconds'
-                    );
+                if (!is_null($session->get($event->getAction()))) {
+                    $oldArray = json_decode($session->get($event->getAction()));
+                    $oldSignature = $oldArray->logSignature;
+                    $oldTime = $oldArray->time;
 
-                    if ($event->getIsWorkspaceEnterEvent()) {
-                        $notRepeatableLogTimeInSeconds = $notRepeatableLogTimeInSeconds * 3;
-                    }
+                    if ($oldSignature === $event->getAction()) {
+                        $diff = ($now - $oldTime);
+                        $oldWorkspaceId = $oldArray->workspaceId;
+                        $oldKey = $oldArray->key;
 
-                    if ($diff > $notRepeatableLogTimeInSeconds) {
-                        $is = false;
-                    } else {
-                        $is = true;
-                        $pushInSession = false;
+                        if (LogWorkspaceEnterEvent::ACTION === $event->getAction()) {
+                            $notRepeatableLogTimeInSeconds = $notRepeatableLogTimeInSeconds * 3;
+                        }
+                        if ($oldWorkspaceId !== $workspaceId || $oldKey !== $key || $diff > $notRepeatableLogTimeInSeconds) {
+                            $is = false;
+                        } else {
+                            $is = true;
+                            $pushInSession = false;
+                        }
                     }
                 }
-            }
+                if ($pushInSession) {
+                    //Update last log action for this event category
+                    $array = [
+                        'logSignature' => $event->getAction(),
+                        'time' => $now,
+                        'workspaceId' => $workspaceId,
+                        'key' => $key,
+                    ];
+                    $session->set($event->getAction(), json_encode($array));
+                }
+            } else {
+                if (null !== $session->get($event->getLogSignature())) {
+                    $oldArray = json_decode($session->get($event->getLogSignature()));
+                    $oldSignature = $oldArray->logSignature;
+                    $oldTime = $oldArray->time;
 
-            if ($pushInSession) {
-                //Update last logSignature for this event category
-                $array = ['logSignature' => $event->getLogSignature(), 'time' => $now];
-                $session->set($event->getLogSignature(), json_encode($array));
+                    if ($oldSignature === $event->getLogSignature()) {
+                        $diff = ($now - $oldTime);
+
+                        if ($diff > $notRepeatableLogTimeInSeconds) {
+                            $is = false;
+                        } else {
+                            $is = true;
+                            $pushInSession = false;
+                        }
+                    }
+                }
+
+                if ($pushInSession) {
+                    //Update last logSignature for this event category
+                    $array = ['logSignature' => $event->getLogSignature(), 'time' => $now];
+                    $session->set($event->getLogSignature(), json_encode($array));
+                }
             }
 
             return $is;
@@ -340,7 +378,7 @@ class LogListener
                     true
                 );
             }
-        } elseif ($event instanceof LogUserLoginEvent && $logCreated && $log) {
+        } elseif ($logCreated && $log && ($event instanceof LogUserLoginEvent || $event instanceof LogWorkspaceEnterEvent)) {
             $this->logConnectManager->manageConnection($log);
         }
     }

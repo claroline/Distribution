@@ -77,7 +77,7 @@ class UserController extends AbstractCrudController
     public function createPersonalWorkspaceAction(Request $request)
     {
         /** @var User[] $users */
-        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $users = $this->decodeIdsString($request, User::class);
 
         $this->om->startFlushSuite();
 
@@ -104,7 +104,7 @@ class UserController extends AbstractCrudController
     public function deletePersonalWorkspaceAction(Request $request)
     {
         /** @var User[] $users */
-        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $users = $this->decodeIdsString($request, User::class);
 
         $this->om->startFlushSuite();
 
@@ -179,7 +179,7 @@ class UserController extends AbstractCrudController
         }
 
         $user = $this->crud->create(
-           'Claroline\CoreBundle\Entity\User',
+           User::class,
             $this->decodeRequest($request)
         );
 
@@ -235,7 +235,7 @@ class UserController extends AbstractCrudController
           }, $user->getOrganizations())];
 
         return new JsonResponse($this->finder->search(
-            'Claroline\CoreBundle\Entity\User',
+            User::class,
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
     }
@@ -262,7 +262,7 @@ class UserController extends AbstractCrudController
           }, $user->getAdministratedOrganizations()->toArray())];
 
         return new JsonResponse($this->finder->search(
-            'Claroline\CoreBundle\Entity\User',
+            User::class,
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
     }
@@ -340,7 +340,7 @@ class UserController extends AbstractCrudController
           }, $managedWorkspaces)];
 
         return new JsonResponse($this->finder->search(
-            'Claroline\CoreBundle\Entity\User',
+            User::class,
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
     }
@@ -388,7 +388,7 @@ class UserController extends AbstractCrudController
     public function usersDisableAction(Request $request)
     {
         /** @var User[] $users */
-        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $users = $this->decodeIdsString($request, User::class);
 
         $this->om->startFlushSuite();
 
@@ -417,7 +417,7 @@ class UserController extends AbstractCrudController
     public function passwordResetAction(Request $request)
     {
         /** @var User[] $users */
-        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $users = $this->decodeIdsString($request, User::class);
 
         $this->om->startFlushSuite();
 
@@ -448,13 +448,17 @@ class UserController extends AbstractCrudController
      */
     public function usersPickerListAction(Request $request)
     {
-        return new JsonResponse($this->finder->search(User::class, array_merge(
-            $request->query->all(),
-            ['hiddenFilters' => [
-                'isEnabled' => true,
-                'isRemoved' => false,
-                'contactable' => true,
-            ]])
+        return new JsonResponse($this->finder->search(
+            User::class,
+            array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => [
+                    'isEnabled' => true,
+                    'isRemoved' => false,
+                    'contactable' => true,
+                ]]
+            ),
+            [Options::SERIALIZE_MINIMAL]
         ));
     }
 }

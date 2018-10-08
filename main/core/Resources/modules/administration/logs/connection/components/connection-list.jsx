@@ -2,8 +2,8 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/core/translation'
 
-import {convertTimestampToString} from '#/main/core/administration/logs/connection/utils'
-import {LogConnectPlatformCard} from '#/main/core/administration/logs/connection/data/components/log-connect-platform-card'
+import {convertTimestampToString} from '#/main/core/logs/utils'
+import {LogConnectPlatformCard} from '#/main/core/logs/data/components/log-connect-platform-card'
 
 const ConnectionList = {
   open: (row) => ({

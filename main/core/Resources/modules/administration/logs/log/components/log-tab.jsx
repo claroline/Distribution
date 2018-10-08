@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {url} from '#/main/app/api'
-import {select} from '#/main/app/content/list/store'
+import {select as listSelect} from '#/main/app/content/list/store'
 import {LINK_BUTTON, DOWNLOAD_BUTTON} from '#/main/app/buttons'
 import {
   matchPath,
@@ -88,8 +88,8 @@ LogTabActionsComponent.propTypes = {
 
 const LogTabActions = withRouter(connect(
   state => ({
-    logsQuery: select.queryString(select.list(state, 'logs')),
-    usersQuery: select.queryString(select.list(state, 'userActions'))
+    logsQuery: listSelect.queryString(listSelect.list(state, 'logs')),
+    usersQuery: listSelect.queryString(listSelect.list(state, 'userActions'))
   })
 )(LogTabActionsComponent))
 

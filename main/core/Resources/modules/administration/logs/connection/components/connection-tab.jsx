@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {url} from '#/main/app/api'
-import {select} from '#/main/app/content/list/store'
+import {select as listSelect} from '#/main/app/content/list/store'
 import {DOWNLOAD_BUTTON} from '#/main/app/buttons'
 import {Routes} from '#/main/app/router'
 
@@ -36,7 +36,7 @@ ConnectionTabActionsComponent.propTypes = {
 
 const ConnectionTabActions = connect(
   state => ({
-    queryString: select.queryString(select.list(state, 'connections.list'))
+    queryString: listSelect.queryString(listSelect.list(state, 'connections.list'))
   })
 )(ConnectionTabActionsComponent)
 

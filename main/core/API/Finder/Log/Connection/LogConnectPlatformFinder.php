@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\API\Finder\Log\Connection;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
+use Claroline\CoreBundle\Entity\Log\Connection\LogConnectPlatform;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -23,7 +24,7 @@ class LogConnectPlatformFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Log\Connection\LogConnectPlatform';
+        return LogConnectPlatform::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
@@ -76,15 +77,11 @@ class LogConnectPlatformFinder extends AbstractFinder
             $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
 
             switch ($sortByProperty) {
-                case 'date':
-                case 'connectionDate':
-                case 'user':
-                case 'duration':
-                    $qb->orderBy("obj.{$sortByProperty}", $sortByDirection);
-                    break;
                 case 'name':
                     $qb->orderBy('obj.user', $sortByDirection);
                     break;
+                default:
+                   $qb->orderBy("obj.{$sortByProperty}", $sortByDirection);
             }
         }
 
