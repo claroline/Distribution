@@ -384,7 +384,13 @@ class LogListener
                     true
                 );
             }
-        } elseif ($logCreated && $log && ($event instanceof LogUserLoginEvent || $event instanceof LogWorkspaceEnterEvent)) {
+        } elseif ($logCreated && $log && (
+            $event instanceof LogUserLoginEvent ||
+            $event instanceof LogWorkspaceEnterEvent ||
+            $event instanceof LogWorkspaceToolReadEvent ||
+            $event instanceof LogDesktopToolReadEvent ||
+            $event instanceof LogAdminToolReadEvent
+        )) {
             $this->logConnectManager->manageConnection($log);
         }
     }

@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Log\Connection\AbstractLogConnect;
+use Claroline\CoreBundle\Entity\Log\Connection\LogConnectAdminTool;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectPlatform;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectResource;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectTool;
@@ -22,6 +23,8 @@ use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\Log\LogAdminToolReadEvent;
+use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
@@ -43,11 +46,13 @@ class LogConnectManager
 
     private $logRepo;
     private $orderedToolRepo;
+    private $adminToolRepo;
 
     private $logPlatformRepo;
     private $logWorkspaceRepo;
     private $logToolRepo;
     private $logResourceRepo;
+    private $logAdminToolRepo;
 
     /**
      * @DI\InjectParams({
@@ -65,11 +70,13 @@ class LogConnectManager
 
         $this->logRepo = $om->getRepository('ClarolineCoreBundle:Log\Log');
         $this->orderedToolRepo = $om->getRepository('ClarolineCoreBundle:Tool\OrderedTool');
+        $this->adminToolRepo = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool');
 
         $this->logPlatformRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectPlatform');
         $this->logWorkspaceRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectWorkspace');
         $this->logToolRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectTool');
         $this->logResourceRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectResource');
+        $this->logAdminToolRepo = $om->getRepository('ClarolineCoreBundle:Log\Connection\LogConnectAdminTool');
     }
 
     public function manageConnection(Log $log)
@@ -110,43 +117,52 @@ class LogConnectManager
                 $this->om->endFlushSuite();
                 break;
             /*
-             * When opening workspace tool, computes duration for :
+             * When opening tool, computes duration for :
              * - last resource
-             * - last workspace tool
+             * - last admin tool
+             * - last tool
              */
             case LogWorkspaceToolReadEvent::ACTION:
+            case LogDesktopToolReadEvent::ACTION:
                 $this->om->startFlushSuite();
 
                 $logWorkspace = $log->getWorkspace();
                 $logToolName = $log->getToolName();
 
-                // Computes duration for the most recent workspace tool connection (with no duration)
+                // Computes duration for the most recent tool connection (with no duration)
                 // for the current user's session
                 $toolConnection = $this->getComputableLogTool($user);
                 $resourceConnection = $this->getComputableLogResource($user);
+                $adminToolConnection = $this->getComputableLogAdminTool($user);
 
                 // Computes last resource duration
-                if (!is_null($toolConnection)) {
+                if (!is_null($resourceConnection)) {
                     $this->computeConnectionDuration($resourceConnection, $dateLog);
                 }
-                // Computes last workspace tool duration
+                // Computes last admin tool duration
+                if (!is_null($adminToolConnection)) {
+                    $this->computeConnectionDuration($adminToolConnection, $dateLog);
+                }
+                // Computes last tool duration
                 if (!is_null($toolConnection)) {
-                    // Ignores log if previous workspace tool opening log and this one are associated to the same workspace tool
-                    // for the current session
-                    if ($toolConnection->getWorkspace() === $logWorkspace && $toolConnection->getToolName() === $logToolName) {
+                    // Ignores log if previous tool opening log and this one are associated to the same tool for the current session
+                    if (((is_null($toolConnection->getWorkspace()) && is_null($logWorkspace)) || $toolConnection->getWorkspace() === $logWorkspace) &&
+                        $toolConnection->getToolName() === $logToolName
+                    ) {
                         break;
                     } else {
                         $this->computeConnectionDuration($toolConnection, $dateLog);
                     }
                 }
-                // Creates workspace tool log for current connection
+                // Creates tool log for current connection
                 $this->createLogConnectTool($user, $logToolName, $dateLog, $logWorkspace);
 
                 $this->om->endFlushSuite();
                 break;
             /*
              * When opening resource, computes duration for :
-             * - last workspace tool
+             * - last tool
+             * - last admin tool
              * - last resource
              */
             case LogResourceReadEvent::ACTION:
@@ -158,10 +174,15 @@ class LogConnectManager
                 // for the current user's session
                 $resourceConnection = $this->getComputableLogResource($user);
                 $toolConnection = $this->getComputableLogTool($user);
+                $adminToolConnection = $this->getComputableLogAdminTool($user);
 
                 // Computes last workspace tool duration
                 if (!is_null($toolConnection)) {
                     $this->computeConnectionDuration($toolConnection, $dateLog);
+                }
+                // Computes last admin tool duration
+                if (!is_null($adminToolConnection)) {
+                    $this->computeConnectionDuration($adminToolConnection, $dateLog);
                 }
                 // Computes last resource duration
                 if (!is_null($resourceConnection)) {
@@ -175,6 +196,46 @@ class LogConnectManager
                 }
                 // Creates resource log for current connection
                 $this->createLogConnectResource($user, $logResourceNode, $dateLog);
+
+                $this->om->endFlushSuite();
+                break;
+            /*
+             * When opening admin tool, computes duration for :
+             * - last resource
+             * - last tool
+             * - last admin tool
+             */
+            case LogAdminToolReadEvent::ACTION:
+                $this->om->startFlushSuite();
+
+                $logToolName = $log->getToolName();
+
+                // Computes duration for the most recent admin tool connection (with no duration)
+                // for the current user's session
+                $adminToolConnection = $this->getComputableLogAdminTool($user);
+                $toolConnection = $this->getComputableLogTool($user);
+                $resourceConnection = $this->getComputableLogResource($user);
+
+                // Computes last resource duration
+                if (!is_null($resourceConnection)) {
+                    $this->computeConnectionDuration($resourceConnection, $dateLog);
+                }
+                // Computes last tool duration
+                if (!is_null($toolConnection)) {
+                    $this->computeConnectionDuration($toolConnection, $dateLog);
+                }
+                // Computes last admin tool duration
+                if (!is_null($adminToolConnection)) {
+                    // Ignores log if previous admin tool opening log and this one are associated to the same admin tool
+                    // for the current session
+                    if ($adminToolConnection->getToolName() === $logToolName) {
+                        break;
+                    } else {
+                        $this->computeConnectionDuration($adminToolConnection, $dateLog);
+                    }
+                }
+                // Creates admin tool log for current connection
+                $this->createLogConnectAdminTool($user, $logToolName, $dateLog);
 
                 $this->om->endFlushSuite();
                 break;
@@ -207,6 +268,17 @@ class LogConnectManager
     {
         // Fetches connections with no duration
         $openConnections = $this->logToolRepo->findBy(
+            ['user' => $user, 'duration' => null],
+            ['connectionDate' => 'DESC']
+        );
+
+        return 0 < count($openConnections) ? $openConnections[0] : null;
+    }
+
+    private function getLogConnectAdminTool(User $user)
+    {
+        // Fetches connections with no duration
+        $openConnections = $this->logAdminToolRepo->findBy(
             ['user' => $user, 'duration' => null],
             ['connectionDate' => 'DESC']
         );
@@ -259,6 +331,18 @@ class LogConnectManager
         $isComputable = !is_null($resourceConnection) && $this->isComputableWithoutLogs($resourceConnection, $platformConnection);
 
         return $isComputable ? $resourceConnection : null;
+    }
+
+    private function getComputableLogAdminTool(User $user)
+    {
+        // Gets the most recent admin tool connection (with no duration) for the current user's session
+        $toolConnection = $this->getLogConnectAdminTool($user);
+        // Gets current user's connection to platform
+        $platformConnection = $this->getLogConnectPlatform($user);
+
+        $isComputable = !is_null($toolConnection) && $this->isComputableWithoutLogs($toolConnection, $platformConnection);
+
+        return $isComputable ? $toolConnection : null;
     }
 
     private function computeConnectionDuration(AbstractLogConnect $connection, \DateTime $date)
@@ -318,6 +402,21 @@ class LogConnectManager
         $newConnection->setResource($node);
         $this->om->persist($newConnection);
         $this->om->flush();
+    }
+
+    private function createLogConnectAdminTool(User $user, $toolName, \DateTime $date)
+    {
+        $adminTool = $this->adminToolRepo->findOneBy(['name' => $toolName]);
+
+        if (!is_null($adminTool)) {
+            // Creates a new admin tool connection with no duration for the current connection
+            $newConnection = new LogConnectAdminTool();
+            $newConnection->setUser($user);
+            $newConnection->setConnectionDate($date);
+            $newConnection->setTool($adminTool);
+            $this->om->persist($newConnection);
+            $this->om->flush();
+        }
     }
 
     private function isComputableWithoutLogs(AbstractLogConnect $connection, LogConnectPlatform $platformConnect)
