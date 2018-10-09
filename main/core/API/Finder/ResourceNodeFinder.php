@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\API\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -57,7 +58,7 @@ class ResourceNodeFinder extends AbstractFinder
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Resource\ResourceNode';
+        return ResourceNode::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
@@ -68,7 +69,7 @@ class ResourceNodeFinder extends AbstractFinder
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'meta.published':
-                    $qb->andWhere('obj.published LIKE :published');
+                    $qb->andWhere('obj.published = :published');
                     $qb->setParameter('published', $filterValue);
                     break;
                 case 'meta.type':
