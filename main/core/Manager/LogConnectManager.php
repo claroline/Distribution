@@ -143,6 +143,14 @@ class LogConnectManager
                 if (!is_null($adminToolConnection)) {
                     $this->computeConnectionDuration($adminToolConnection, $dateLog);
                 }
+                // Computes last workspace duration if opening desktop tool
+                if (is_null($logWorkspace)) {
+                    $workspaceConnection = $this->getComputableWorkspace($user);
+
+                    if (!is_null($workspaceConnection)) {
+                        $this->computeConnectionDuration($workspaceConnection, $dateLog);
+                    }
+                }
                 // Computes last tool duration
                 if (!is_null($toolConnection)) {
                     // Ignores log if previous tool opening log and this one are associated to the same tool for the current session
@@ -215,7 +223,12 @@ class LogConnectManager
                 $adminToolConnection = $this->getComputableLogAdminTool($user);
                 $toolConnection = $this->getComputableLogTool($user);
                 $resourceConnection = $this->getComputableLogResource($user);
+                $workspaceConnection = $this->getComputableWorkspace($user);
 
+                // Computes last workspace duration
+                if (!is_null($workspaceConnection)) {
+                    $this->computeConnectionDuration($workspaceConnection, $dateLog);
+                }
                 // Computes last resource duration
                 if (!is_null($resourceConnection)) {
                     $this->computeConnectionDuration($resourceConnection, $dateLog);
