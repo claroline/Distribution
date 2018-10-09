@@ -11,8 +11,6 @@ const file = createSelector(
   (resource) => resource.file
 )
 
-const resourceNode = (state) => state.resourceNode
-
 const url = createSelector(
   [file],
   (file) => file.url
@@ -25,6 +23,5 @@ export const selectors = {
   resource,
   file,
   url,
-  mimeType,
-  resourceNode
+  mimeType
 }

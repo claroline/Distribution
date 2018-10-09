@@ -9,6 +9,7 @@ import {getFile} from '#/main/core/files'
 
 import {File as FileTypes} from '#/main/core/files/prop-types'
 import {selectors} from '#/main/core/resources/file/store'
+import {selectors as nodeSelectors} from '#/main/core/resource/store/selectors'
 import {url} from '#/main/app/api'
 
 // TODO : find a way to make this kind of component generic (duplicated for all apps coming from dynamic loading)
@@ -61,7 +62,7 @@ const FilePlayer = connect(
   (state) => ({
     mimeType: selectors.mimeType(state),
     file: selectors.file(state),
-    resourceNode: selectors.resourceNode(state)
+    resourceNode: nodeSelectors.resourceNode(state)
   })
 )(Player)
 
