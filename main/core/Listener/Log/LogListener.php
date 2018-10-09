@@ -384,9 +384,11 @@ class LogListener
                     true
                 );
             }
-        } elseif ($logCreated && $log && (
+        }
+        if ($logCreated && $log && (
             $event instanceof LogUserLoginEvent ||
             $event instanceof LogWorkspaceEnterEvent ||
+            $event instanceof LogResourceReadEvent ||
             $event instanceof LogWorkspaceToolReadEvent ||
             $event instanceof LogDesktopToolReadEvent ||
             $event instanceof LogAdminToolReadEvent
