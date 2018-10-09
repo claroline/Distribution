@@ -222,7 +222,6 @@ class ResourceVoter implements VoterInterface
      */
     private function checkAction($action, array $nodes, TokenInterface $token)
     {
-        var_dump('check if can');
         $haveSameWorkspace = true;
         $ws = $nodes[0]->getWorkspace();
 
