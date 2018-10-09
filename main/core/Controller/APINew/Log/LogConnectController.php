@@ -13,10 +13,13 @@ namespace Claroline\CoreBundle\Controller\APINew\Log;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectPlatform;
+use Claroline\CoreBundle\Entity\Log\Connection\LogConnectResource;
 use Claroline\CoreBundle\Entity\Log\Connection\LogConnectWorkspace;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -37,6 +40,9 @@ class LogConnectController
 
     /** @var FinderProvider */
     private $finder;
+
+    /** @var RightsManager */
+    private $resourceRightsManager;
 
     /** @var ToolManager */
     private $toolManager;
@@ -291,6 +297,121 @@ class LogConnectController
             [
                 'Content-Type' => 'application/force-download',
                 'Content-Disposition' => 'attachment; filename="connection_time_workspace_'.$workspace->getUuid().'_'.$downloadDate.'.csv"',
+            ]
+        );
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/resource/{resource}/list",
+     *     name="apiv2_log_connect_resource_list"
+     * )
+     * @EXT\ParamConverter(
+     *     "resource",
+     *     class="ClarolineCoreBundle:Resource\ResourceNode",
+     *     options={"mapping": {"resource": "id"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param ResourceNode $resource
+     * @param User         $user
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function logConnectResourceListAction(ResourceNode $resource, User $user, Request $request)
+    {
+        $hiddenFilters = ['resource' => $resource->getUuid()];
+
+        if (!$this->authorization->isGranted('administrate', $resource->getWorkspace())) {
+            $hiddenFilters['user'] = $user->getUuid();
+        }
+
+        return new JsonResponse(
+            $this->finder->search('Claroline\CoreBundle\Entity\Log\Connection\LogConnectResource', array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => $hiddenFilters]
+            ))
+        );
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/resource/{resource}/csv",
+     *     name="apiv2_log_connect_resource_list_csv"
+     * )
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "resource",
+     *     class="ClarolineCoreBundle:Resource\ResourceNode",
+     *     options={"mapping": {"resource": "id"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param ResourceNode $resource
+     * @param User         $user
+     * @param Request      $request
+     *
+     * @return StreamedResponse
+     */
+    public function logConnectResourceListCsvAction(ResourceNode $resource, User $user, Request $request)
+    {
+        $query = $request->query->all();
+        $filters = isset($query['filters']) ? $query['filters'] : [];
+        $sortBy = null;
+
+        if (isset($query['sortBy'])) {
+            $direction = '-' === substr($query['sortBy'], 0, 1) ? -1 : 1;
+            $property = 1 === $direction ? $query['sortBy'] : substr($query['sortBy'], 1);
+            $sortBy = ['property' => $property, 'direction' => $direction];
+        }
+        $filters['resource'] = $resource->getUuid();
+
+        if (!$this->authorization->isGranted('administrate', $resource->getWorkspace())) {
+            $filters['user'] = $user->getUuid();
+        }
+        $connections = $this->finder->get(LogConnectResource::class)->find($filters, $sortBy);
+
+        // Prepare CSV file
+        $handle = fopen('php://output', 'w+');
+        fputcsv($handle, [
+            $this->translator->trans('date', [], 'platform'),
+            $this->translator->trans('user', [], 'platform'),
+            $this->translator->trans('duration', [], 'platform'),
+        ], ';', '"');
+
+        foreach ($connections as $connection) {
+            $duration = $connection->getDuration();
+            $durationString = null;
+
+            if (!is_null($duration)) {
+                $hours = floor($duration / 3600);
+                $duration %= 3600;
+                $minutes = floor($duration / 60);
+                $seconds = $duration % 60;
+
+                $durationString = "{$hours}:";
+                $durationString .= 10 > $minutes ? "0{$minutes}:" : "{$minutes}:";
+                $durationString .= 10 > $seconds ? "0{$seconds}" : "{$seconds}";
+            }
+            fputcsv($handle, [
+                $connection->getConnectionDate()->format('Y-m-d H:i:s'),
+                $connection->getUser()->getFirstName().' '.$connection->getUser()->getLastName(),
+                $durationString,
+            ], ';', '"');
+        }
+        fclose($handle);
+
+        $downloadDate = date('Y-m-d_H-i-s');
+
+        return new StreamedResponse(
+            function () use ($handle) {
+                $handle;
+            },
+            200,
+            [
+                'Content-Type' => 'application/force-download',
+                'Content-Disposition' => 'attachment; filename="connection_time_resource_'.$resource->getUuid().'_'.$downloadDate.'.csv"',
             ]
         );
     }
