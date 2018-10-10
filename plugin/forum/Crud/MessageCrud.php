@@ -3,7 +3,9 @@
 namespace Claroline\ForumBundle\Crud;
 
 use Claroline\AppBundle\Event\Crud\CreateEvent;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Finder\User\UserFinder;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\ForumBundle\Entity\Forum;
@@ -24,9 +26,11 @@ class MessageCrud
      * ForumSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "messageManager" = @DI\Inject("claroline.manager.message_manager")
+     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
+     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
+     *     "messageManager" = @DI\Inject("claroline.manager.message_manager"),
+     *     "dispatcher"     = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "userFinder"     = @DI\Inject("claroline.api.finder.user")
      * })
      *
      * @param FinderProvider $finder
@@ -34,11 +38,15 @@ class MessageCrud
     public function __construct(
         ObjectManager $om,
         TokenStorageInterface $tokenStorage,
-        MessageManager $messageManager
+        MessageManager $messageManager,
+        StrictDispatcher $dispatcher,
+        UserFinder $userFinder
     ) {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->messageManager = $messageManager;
+        $this->dispatcher = $dispatcher;
+        $this->userFinder = $userFinder;
     }
 
     /**
@@ -101,7 +109,11 @@ class MessageCrud
               return $userValidate->getUser();
           }, $usersValidate)
         );
+
         $this->messageManager->send($toSend);
+
+        $usersToNotify = $this->userFinder->find(['workspace' => $forum->getResourceNode()->getWorkspace()->getUuid()]);
+        $this->dispatcher->dispatch('log', 'Claroline\ForumBundle\Event\LogPostMessageEvent', [$message, $usersToNotify]);
 
         return $message;
     }

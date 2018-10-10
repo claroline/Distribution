@@ -201,6 +201,7 @@ class NotificationManager
                 $notification->setIconColor($notificationColor);
             }
             $eventName = 'create_notification_item_'.$notification->getActionKey();
+            var_dump($eventName);
             $event = new NotificationCreateDelegateViewEvent($notificationView, $this->platformName);
 
             /* @var EventDispatcher $eventDispatcher */
@@ -215,6 +216,7 @@ class NotificationManager
                 );
             }
         }
+
         $this->markNotificationsAsViewed($unviewedNotificationIds);
 
         return ['views' => $views, 'colors' => $colorChooser->getColorObjectArray()];
