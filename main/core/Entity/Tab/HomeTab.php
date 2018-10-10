@@ -135,9 +135,4 @@ class HomeTab
     {
         return $this->homeTabConfigs;
     }
-
-    public function getPosition()
-    {
-        return $this->homeTabConfigs->first();
-    }
 }
