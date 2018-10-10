@@ -29,7 +29,7 @@ const ListDataModal = props =>
       disabled={0 === props.selected.length}
       onClick={() => {
         if (0 < props.selected.length) {
-          props.fadeModal()
+          props.hideModal()
           props.handleSelect(props.onlyId ? props.selected : props.selectedFull)
           props.resetSelect()
         }
