@@ -177,33 +177,37 @@ class LogConnectManager
                 $this->om->startFlushSuite();
 
                 $logResourceNode = $log->getResourceNode();
+                $details = $log->getDetails();
+                $embedded = $details && isset($details['embedded']) ? $details['embedded'] : false;
 
-                // Computes duration for the most recent resource opening (with no duration)
-                // for the current user's session
-                $resourceConnection = $this->getComputableLogResource($user);
-                $toolConnection = $this->getComputableLogTool($user);
-                $adminToolConnection = $this->getComputableLogAdminTool($user);
+                if (!$embedded) {
+                    // Computes duration for the most recent resource opening (with no duration)
+                    // for the current user's session
+                    $resourceConnection = $this->getComputableLogResource($user);
+                    $toolConnection = $this->getComputableLogTool($user);
+                    $adminToolConnection = $this->getComputableLogAdminTool($user);
 
-                // Computes last workspace tool duration
-                if (!is_null($toolConnection)) {
-                    $this->computeConnectionDuration($toolConnection, $dateLog);
-                }
-                // Computes last admin tool duration
-                if (!is_null($adminToolConnection)) {
-                    $this->computeConnectionDuration($adminToolConnection, $dateLog);
-                }
-                // Computes last resource duration
-                if (!is_null($resourceConnection)) {
-                    // Ignores log if previous resource opening log and this one are associated to the same resource
-                    // for the current session
-                    if ($resourceConnection->getResource() === $logResourceNode) {
-                        break;
-                    } else {
-                        $this->computeConnectionDuration($resourceConnection, $dateLog);
+                    // Computes last workspace tool duration
+                    if (!is_null($toolConnection)) {
+                        $this->computeConnectionDuration($toolConnection, $dateLog);
+                    }
+                    // Computes last admin tool duration
+                    if (!is_null($adminToolConnection)) {
+                        $this->computeConnectionDuration($adminToolConnection, $dateLog);
+                    }
+                    // Computes last resource duration
+                    if (!is_null($resourceConnection)) {
+                        // Ignores log if previous resource opening log and this one are associated to the same resource
+                        // for the current session
+                        if ($resourceConnection->getResource() === $logResourceNode) {
+                            break;
+                        } else {
+                            $this->computeConnectionDuration($resourceConnection, $dateLog);
+                        }
                     }
                 }
                 // Creates resource log for current connection
-                $this->createLogConnectResource($user, $logResourceNode, $dateLog);
+                $this->createLogConnectResource($user, $logResourceNode, $dateLog, $embedded);
 
                 $this->om->endFlushSuite();
                 break;
@@ -303,7 +307,7 @@ class LogConnectManager
     {
         // Fetches connections with no duration
         $openConnections = $this->logResourceRepo->findBy(
-            ['user' => $user, 'duration' => null],
+            ['user' => $user, 'duration' => null, 'embedded' => false],
             ['connectionDate' => 'DESC']
         );
 
@@ -406,13 +410,14 @@ class LogConnectManager
         }
     }
 
-    private function createLogConnectResource(User $user, ResourceNode $node, \DateTime $date)
+    private function createLogConnectResource(User $user, ResourceNode $node, \DateTime $date, $embedded = false)
     {
         // Creates a new resource connection with no duration for the current connection
         $newConnection = new LogConnectResource();
         $newConnection->setUser($user);
         $newConnection->setConnectionDate($date);
         $newConnection->setResource($node);
+        $newConnection->setEmbedded($embedded);
         $this->om->persist($newConnection);
         $this->om->flush();
     }
@@ -435,5 +440,42 @@ class LogConnectManager
     private function isComputableWithoutLogs(AbstractLogConnect $connection, LogConnectPlatform $platformConnect)
     {
         return $connection->getConnectionDate() > $platformConnect->getConnectionDate();
+    }
+
+    public function computeAllPlatformDuration()
+    {
+        $usersDone = [];
+
+        // Fetches all platform connections with no duration
+        $connections = $this->logPlatformRepo->findBy(
+            ['duration' => null],
+            ['connectionDate' => 'ASC']
+        );
+
+        foreach ($connections as $connection) {
+            $user = $connection->getUser();
+
+            if (!isset($usersDone[$user->getUuid()])) {
+                $this->computeAllUserPlatformDuration($user);
+                $usersDone[$user->getUuid()] = true;
+            }
+        }
+    }
+
+    public function computeAllUserPlatformDuration(User $user)
+    {
+        // Fetches all platform connections with no duration for an user
+        $connections = $this->logPlatformRepo->findBy(
+            ['user' => $user, 'duration' => null],
+            ['connectionDate' => 'ASC']
+        );
+        $this->om->startFlushSuite();
+
+        foreach ($connections as $key => $connection) {
+            // Gets the following platform connection
+
+        }
+
+        $this->om->endFlushSuite();
     }
 }
