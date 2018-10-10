@@ -59,7 +59,7 @@ class HomeListener
             return $data !== [];
         });
 
-        foreach ($tabs as $position => $tab) {
+        foreach ($tabs as $tab) {
             $orderedTabs[$tab['position']] = $tab;
         }
         ksort($orderedTabs);
