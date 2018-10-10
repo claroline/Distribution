@@ -19,7 +19,7 @@ use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Claroline\CoreBundle\Manager\LogConnectManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -41,8 +41,8 @@ class LogConnectController
     /** @var FinderProvider */
     private $finder;
 
-    /** @var RightsManager */
-    private $resourceRightsManager;
+    /** @var LogConnectManager */
+    private $logConnectManager;
 
     /** @var ToolManager */
     private $toolManager;
@@ -54,25 +54,29 @@ class LogConnectController
      * CourseController constructor.
      *
      * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "finder"        = @DI\Inject("claroline.api.finder"),
-     *     "toolManager"   = @DI\Inject("claroline.manager.tool_manager"),
-     *     "translator"    = @DI\Inject("translator")
+     *     "authorization"     = @DI\Inject("security.authorization_checker"),
+     *     "finder"            = @DI\Inject("claroline.api.finder"),
+     *     "logConnectManager" = @DI\Inject("claroline.manager.log_connect"),
+     *     "toolManager"       = @DI\Inject("claroline.manager.tool_manager"),
+     *     "translator"        = @DI\Inject("translator")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param FinderProvider                $finder
+     * @param LogConnectManager             $logConnectManager
      * @param ToolManager                   $toolManager
      * @param TranslatorInterface           $translator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         FinderProvider $finder,
+        LogConnectManager $logConnectManager,
         ToolManager $toolManager,
         TranslatorInterface $translator
     ) {
         $this->authorization = $authorization;
         $this->finder = $finder;
+        $this->logConnectManager = $logConnectManager;
         $this->toolManager = $toolManager;
         $this->translator = $translator;
     }
@@ -414,6 +418,28 @@ class LogConnectController
                 'Content-Disposition' => 'attachment; filename="connection_time_resource_'.$resource->getUuid().'_'.$downloadDate.'.csv"',
             ]
         );
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/embedded/resource/{resource}/compute",
+     *     name="apiv2_log_connect_embedded_resource_compute"
+     * )
+     * @EXT\ParamConverter(
+     *     "resource",
+     *     class="ClarolineCoreBundle:Resource\ResourceNode",
+     *     options={"mapping": {"resource": "id"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param ResourceNode $resource
+     * @param User         $user
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function embeddedResourceComputeAction(ResourceNode $resource, User $user, Request $request)
+    {
     }
 
     /**
