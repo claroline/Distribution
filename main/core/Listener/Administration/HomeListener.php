@@ -60,9 +60,9 @@ class HomeListener
         });
 
         foreach ($tabs as $position => $tab) {
-            $orderedTabs[$position] = $tab;
-            $orderedTabs[$position]['position'] = $position + 1;
+            $orderedTabs[$tab['position']] = $tab;
         }
+        ksort($orderedTabs);
 
         $roles = $this->finder->search('Claroline\CoreBundle\Entity\Role',
           ['filters' => ['type' => Role::PLATFORM_ROLE]]

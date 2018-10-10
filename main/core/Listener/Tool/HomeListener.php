@@ -97,9 +97,9 @@ class HomeListener
         });
 
         foreach ($tabs as $position => $tab) {
-            $orderedTabs[$position + 1] = $tab;
-            $orderedTabs[$position + 1]['position'] = $position + 1;
+            $orderedTabs[$tab['position']] = $tab;
         }
+        ksort($orderedTabs);
 
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:home.html.twig', [
@@ -137,9 +137,9 @@ class HomeListener
         });
 
         foreach ($tabs as $position => $tab) {
-            $orderedTabs[$position] = $tab;
-            $orderedTabs[$position]['position'] = $position + 1;
+            $orderedTabs[$tab['position']] = $tab;
         }
+        ksort($orderedTabs);
 
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:home.html.twig', [
