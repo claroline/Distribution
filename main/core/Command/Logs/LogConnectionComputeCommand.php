@@ -21,7 +21,7 @@ class LogConnectionComputeCommand extends ContainerAwareCommand
     {
         parent::configure();
 
-        $this->setName('claroline:logs:duration')
+        $this->setName('claroline:connection:duration')
             ->setDescription('Computes duration for connection logs');
     }
 

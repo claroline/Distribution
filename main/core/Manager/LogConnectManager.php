@@ -292,7 +292,7 @@ class LogConnectManager
         foreach ($connections as $connection) {
             // Gets the following platform connection
             $filters = [
-                'user' => $user,
+                'user' => $user->getUuid(),
                 'afterDate' => $connection->getConnectionDate(),
             ];
             $sortBy = ['property' => 'connectionDate', 'direction' => 1];
