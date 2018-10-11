@@ -34,13 +34,20 @@ class NotificationListener
 
     /**
      * @param NotificationCreateDelegateViewEvent $event
-     * @DI\Observe("create_notification_item_forum-message-create")
+     * @DI\Observe("create_notification_item_forum_message-create")
      */
     public function onCreateNotificationItem(NotificationCreateDelegateViewEvent $event)
     {
         $notificationView = $event->getNotificationView();
         $notification = $notificationView->getNotification();
-        $content = 'NOTIFICATION FORUM';
+        $content = $this->templating->render(
+            'ClarolineForumBundle:notification:notification_item.html.twig',
+            [
+                'notification' => $notification,
+                'status' => $notificationView->getStatus(),
+                'systemName' => $event->getSystemName(),
+            ]
+        );
 
         $event->setResponseContent($content);
         $event->stopPropagation();

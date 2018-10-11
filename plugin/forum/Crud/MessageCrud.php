@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
+use Claroline\ForumBundle\Event\LogPostMessageEvent;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -113,7 +114,7 @@ class MessageCrud
         $this->messageManager->send($toSend);
 
         $usersToNotify = $this->userFinder->find(['workspace' => $forum->getResourceNode()->getWorkspace()->getUuid()]);
-        $this->dispatcher->dispatch('log', 'Claroline\ForumBundle\Event\LogPostMessageEvent', [$message, $usersToNotify]);
+        $this->dispatcher->dispatch('log', LogPostMessageEvent::class, [$message, $usersToNotify]);
 
         return $message;
     }

@@ -201,7 +201,6 @@ class NotificationManager
                 $notification->setIconColor($notificationColor);
             }
             $eventName = 'create_notification_item_'.$notification->getActionKey();
-            var_dump($eventName);
             $event = new NotificationCreateDelegateViewEvent($notificationView, $this->platformName);
 
             /* @var EventDispatcher $eventDispatcher */
@@ -361,6 +360,7 @@ class NotificationManager
     public function createNotificationAndNotify(NotifiableInterface $notifiable)
     {
         $userIds = $this->getUsersToNotifyForNotifiable($notifiable);
+
         $notification = null;
         if (count($userIds) > 0) {
             $resourceId = null;

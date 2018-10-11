@@ -34,6 +34,7 @@ class LogPostMessageEvent extends LogGenericEvent implements NotifiableInterface
                 'resource' => [
                     'name' => $node->getName(),
                     'path' => $node->getPathForCreationLog(),
+                    'id' => $node->getId(),
                     'guid' => $node->getGuid(),
                     'resourceType' => $node->getResourceType()->getName(),
                 ],
@@ -47,8 +48,10 @@ class LogPostMessageEvent extends LogGenericEvent implements NotifiableInterface
                   'uuid' => $message->getSubject()->getUuid(),
                 ],
                 'owner' => [
-                    'lastName' => $node->getCreator()->getLastName(),
-                    'firstName' => $node->getCreator()->getFirstName(),
+                    'id' => $message->getCreator()->getId(),
+                    'uuid' => $message->getCreator()->getUuid(),
+                    'lastName' => $message->getCreator()->getLastName(),
+                    'firstName' => $message->getCreator()->getFirstName(),
                 ],
             ],
             null,
@@ -56,7 +59,7 @@ class LogPostMessageEvent extends LogGenericEvent implements NotifiableInterface
             $node,
             null,
             $node->getWorkspace(),
-            $node->getCreator()
+            $message->getCreator()
         );
     }
 
@@ -71,8 +74,6 @@ class LogPostMessageEvent extends LogGenericEvent implements NotifiableInterface
     public static function getRestriction()
     {
         return [];
-
-        return [self::DISPLAYED_WORKSPACE, self::DISPLAYED_ADMIN];
     }
 
     /**
@@ -108,9 +109,7 @@ class LogPostMessageEvent extends LogGenericEvent implements NotifiableInterface
      */
     public function getExcludeUserIds()
     {
-        return [];
-
-        return [$this->node->getCreator()->getId()];
+        return [$this->message->getCreator()->getId()];
     }
 
     /**
