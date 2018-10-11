@@ -259,6 +259,68 @@ class LogConnectManager
         }
     }
 
+    public function computeAllPlatformDuration()
+    {
+        $usersDone = [];
+
+        // Fetches all platform connections with no duration
+        $connections = $this->logPlatformRepo->findBy(
+            ['duration' => null],
+            ['connectionDate' => 'ASC']
+        );
+
+        foreach ($connections as $connection) {
+            $user = $connection->getUser();
+
+            if (!isset($usersDone[$user->getUuid()])) {
+                $this->computeAllUserPlatformDuration($user);
+                $usersDone[$user->getUuid()] = true;
+            }
+        }
+    }
+
+    public function computeAllUserPlatformDuration(User $user)
+    {
+        // Fetches all platform connections with no duration for an user
+        $connections = $this->logPlatformRepo->findBy(
+            ['user' => $user, 'duration' => null],
+            ['connectionDate' => 'ASC']
+        );
+        $this->om->startFlushSuite();
+        $i = 0;
+
+        foreach ($connections as $connection) {
+            // Gets the following platform connection
+            $filters = [
+                'user' => $user,
+                'afterDate' => $connection->getConnectionDate(),
+            ];
+            $sortBy = ['property' => 'connectionDate', 'direction' => 1];
+            $nextConnections = $this->finder->get(LogConnectPlatform::class)->find($filters, $sortBy, null, 1);
+            $nextDate = 0 < count($nextConnections) ? $nextConnections[0]->getConnectionDate() : null;
+
+            // Gets most recent log preceding the following platform connection
+            if (!is_null($nextDate)) {
+                $logFilters = [
+                    'doer' => $user->getUuid(),
+                    'dateToStrict' => $nextDate,
+                ];
+                $logSortBy = ['property' => 'dateLog', 'direction' => -1];
+                $logs = $this->finder->get(Log::class)->find($logFilters, $logSortBy, null, 1);
+
+                if (1 === count($logs) && $this->computeConnectionDuration($connection, $logs[0]->getDateLog())) {
+                    ++$i;
+
+                    if (0 === $i % 200) {
+                        $this->om->forceFlush();
+                    }
+                }
+            }
+        }
+
+        $this->om->endFlushSuite();
+    }
+
     private function getLogConnectPlatform(User $user)
     {
         // Fetches connections with no duration
@@ -371,7 +433,11 @@ class LogConnectManager
             $connection->setDuration($duration);
             $this->om->persist($connection);
             $this->om->flush();
+
+            return $connection;
         }
+
+        return false;
     }
 
     private function createLogConnectPlatform(User $user, \DateTime $date)
@@ -440,42 +506,5 @@ class LogConnectManager
     private function isComputableWithoutLogs(AbstractLogConnect $connection, LogConnectPlatform $platformConnect)
     {
         return $connection->getConnectionDate() > $platformConnect->getConnectionDate();
-    }
-
-    public function computeAllPlatformDuration()
-    {
-        $usersDone = [];
-
-        // Fetches all platform connections with no duration
-        $connections = $this->logPlatformRepo->findBy(
-            ['duration' => null],
-            ['connectionDate' => 'ASC']
-        );
-
-        foreach ($connections as $connection) {
-            $user = $connection->getUser();
-
-            if (!isset($usersDone[$user->getUuid()])) {
-                $this->computeAllUserPlatformDuration($user);
-                $usersDone[$user->getUuid()] = true;
-            }
-        }
-    }
-
-    public function computeAllUserPlatformDuration(User $user)
-    {
-        // Fetches all platform connections with no duration for an user
-        $connections = $this->logPlatformRepo->findBy(
-            ['user' => $user, 'duration' => null],
-            ['connectionDate' => 'ASC']
-        );
-        $this->om->startFlushSuite();
-
-        foreach ($connections as $key => $connection) {
-            // Gets the following platform connection
-
-        }
-
-        $this->om->endFlushSuite();
     }
 }

@@ -61,6 +61,14 @@ class LogConnectPlatformFinder extends AbstractFinder
                     ));
                     $qb->setParameter('name', '%'.strtoupper($filterValue).'%');
                     break;
+                case 'afterDate':
+                    $qb->andWhere("obj.connectionDate > :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'beforeDate':
+                    $qb->andWhere("obj.connectionDate < :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
                 default:
                     if (is_bool($filterValue)) {
                         $qb->andWhere("obj.{$filterName} = :{$filterName}");

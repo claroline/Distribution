@@ -21,7 +21,7 @@ class LogConnectionComputeCommand extends ContainerAwareCommand
     {
         parent::configure();
 
-        $this->setName('claroline:log_connection:compute')
+        $this->setName('claroline:logs:duration')
             ->setDescription('Computes duration for connection logs');
     }
 
@@ -30,7 +30,7 @@ class LogConnectionComputeCommand extends ContainerAwareCommand
         $logConnectManager = $this->getContainer()->get('claroline.manager.log_connect');
 
         $output->writeln('<info>  Computing duration for platform connections...</info>');
-
+        $logConnectManager->computeAllPlatformDuration();
         $output->writeln('<info>  Duration for platform connections computed.</info>');
     }
 }
