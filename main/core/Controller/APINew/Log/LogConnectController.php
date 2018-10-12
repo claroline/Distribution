@@ -428,18 +428,20 @@ class LogConnectController
      * @EXT\ParamConverter(
      *     "resource",
      *     class="ClarolineCoreBundle:Resource\ResourceNode",
-     *     options={"mapping": {"resource": "id"}}
+     *     options={"mapping": {"resource": "uuid"}}
      * )
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param ResourceNode $resource
      * @param User         $user
-     * @param Request      $request
      *
      * @return JsonResponse
      */
-    public function embeddedResourceComputeAction(ResourceNode $resource, User $user, Request $request)
+    public function embeddedResourceComputeAction(ResourceNode $resource, User $user)
     {
+        $this->logConnectManager->computeEmbeddedResourceDuration($user, $resource);
+
+        return new JsonResponse();
     }
 
     /**

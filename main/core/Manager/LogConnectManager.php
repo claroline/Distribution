@@ -259,6 +259,16 @@ class LogConnectManager
         }
     }
 
+    public function computeEmbeddedResourceDuration(User $user, ResourceNode $resource)
+    {
+        $resourceConnection = $this->getLogConnectResourceEmbedded($user, $resource);
+
+        if (!is_null($resourceConnection)) {
+            $now = new \DateTime();
+            $this->computeConnectionDuration($resourceConnection, $now);
+        }
+    }
+
     public function computeAllPlatformDuration()
     {
         $usersDone = [];
@@ -370,6 +380,17 @@ class LogConnectManager
         // Fetches connections with no duration
         $openConnections = $this->logResourceRepo->findBy(
             ['user' => $user, 'duration' => null, 'embedded' => false],
+            ['connectionDate' => 'DESC']
+        );
+
+        return 0 < count($openConnections) ? $openConnections[0] : null;
+    }
+
+    private function getLogConnectResourceEmbedded(User $user, ResourceNode $resourceNode)
+    {
+        // Fetches connections with no duration
+        $openConnections = $this->logResourceRepo->findBy(
+            ['user' => $user, 'resource' => $resourceNode, 'duration' => null, 'embedded' => true],
             ['connectionDate' => 'DESC']
         );
 
