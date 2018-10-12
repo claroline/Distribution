@@ -283,19 +283,119 @@ class LogConnectManager
             $user = $connection->getUser();
 
             if (!isset($usersDone[$user->getUuid()])) {
-                $this->computeAllUserPlatformDuration($user);
+                // Fetches all platform connections with no duration for an user
+                $userConnections = $this->logPlatformRepo->findBy(
+                    ['user' => $user, 'duration' => null],
+                    ['connectionDate' => 'ASC']
+                );
+                $this->computeConnectionDurationFromLogs($user, $userConnections);
                 $usersDone[$user->getUuid()] = true;
             }
         }
     }
 
-    public function computeAllUserPlatformDuration(User $user)
+    public function computeAllWorkspacesDuration()
     {
-        // Fetches all platform connections with no duration for an user
-        $connections = $this->logPlatformRepo->findBy(
-            ['user' => $user, 'duration' => null],
+        $usersDone = [];
+
+        // Fetches all workspaces connections with no duration
+        $connections = $this->logWorkspaceRepo->findBy(
+            ['duration' => null],
             ['connectionDate' => 'ASC']
         );
+
+        foreach ($connections as $connection) {
+            $user = $connection->getUser();
+
+            if (!isset($usersDone[$user->getUuid()])) {
+                // Fetches all workspaces connections with no duration for an user
+                $userConnections = $this->logWorkspaceRepo->findBy(
+                    ['user' => $user, 'duration' => null],
+                    ['connectionDate' => 'ASC']
+                );
+                $this->computeConnectionDurationFromLogs($user, $userConnections);
+                $usersDone[$user->getUuid()] = true;
+            }
+        }
+    }
+
+    public function computeAllToolsDuration()
+    {
+        $usersDone = [];
+
+        // Fetches all tools connections with no duration
+        $connections = $this->logToolRepo->findBy(
+            ['duration' => null],
+            ['connectionDate' => 'ASC']
+        );
+
+        foreach ($connections as $connection) {
+            $user = $connection->getUser();
+
+            if (!isset($usersDone[$user->getUuid()])) {
+                // Fetches all tools connections with no duration for an user
+                $userConnections = $this->logToolRepo->findBy(
+                    ['user' => $user, 'duration' => null],
+                    ['connectionDate' => 'ASC']
+                );
+                $this->computeConnectionDurationFromLogs($user, $userConnections);
+                $usersDone[$user->getUuid()] = true;
+            }
+        }
+    }
+
+    public function computeAllAdminToolsDuration()
+    {
+        $usersDone = [];
+
+        // Fetches all tools connections with no duration
+        $connections = $this->logAdminToolRepo->findBy(
+            ['duration' => null],
+            ['connectionDate' => 'ASC']
+        );
+
+        foreach ($connections as $connection) {
+            $user = $connection->getUser();
+
+            if (!isset($usersDone[$user->getUuid()])) {
+                // Fetches all admin tools connections with no duration for an user
+                $userConnections = $this->logAdminToolRepo->findBy(
+                    ['user' => $user, 'duration' => null],
+                    ['connectionDate' => 'ASC']
+                );
+                $this->computeConnectionDurationFromLogs($user, $userConnections);
+                $usersDone[$user->getUuid()] = true;
+            }
+        }
+    }
+
+    public function computeAllResourcesDuration()
+    {
+        $usersDone = [];
+
+        // Fetches all resources connections with no duration
+        $connections = $this->logResourceRepo->findBy(
+            ['embedded' => false, 'duration' => null],
+            ['connectionDate' => 'ASC']
+        );
+
+        foreach ($connections as $connection) {
+            $user = $connection->getUser();
+
+            if (!isset($usersDone[$user->getUuid()])) {
+                // Fetches all resources connections with no duration for an user
+                $userConnections = $this->logResourceRepo->findBy(
+                    ['user' => $user, 'embedded' => false, 'duration' => null],
+                    ['connectionDate' => 'ASC']
+                );
+                $this->computeConnectionDurationFromLogs($user, $userConnections);
+                $usersDone[$user->getUuid()] = true;
+            }
+        }
+    }
+
+    public function computeConnectionDurationFromLogs(User $user, array $connections)
+    {
         $this->om->startFlushSuite();
         $i = 0;
 

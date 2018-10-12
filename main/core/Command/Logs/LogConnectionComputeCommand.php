@@ -29,8 +29,24 @@ class LogConnectionComputeCommand extends ContainerAwareCommand
     {
         $logConnectManager = $this->getContainer()->get('claroline.manager.log_connect');
 
-        $output->writeln('<info>  Computing duration for platform connections...</info>');
+        $output->writeln('<info>  Computing spent time in platform...</info>');
         $logConnectManager->computeAllPlatformDuration();
-        $output->writeln('<info>  Duration for platform connections computed.</info>');
+        $output->writeln('<info>  Spent time in platform computed.</info>');
+
+        $output->writeln('<info>  Computing spent time in workspaces...</info>');
+        $logConnectManager->computeAllWorkspacesDuration();
+        $output->writeln('<info>  Spent time in workspaces computed.</info>');
+
+        $output->writeln('<info>  Computing spent time in admin tools...</info>');
+        $logConnectManager->computeAllAdminToolsDuration();
+        $output->writeln('<info>  Spent time in admin tools computed.</info>');
+
+        $output->writeln('<info>  Computing spent time in tools...</info>');
+        $logConnectManager->computeAllToolsDuration();
+        $output->writeln('<info>  Spent time in tools computed.</info>');
+
+        $output->writeln('<info>  Computing spent time in resources...</info>');
+        $logConnectManager->computeAllResourcesDuration();
+        $output->writeln('<info>  Spent time in resources computed.</info>');
     }
 }
