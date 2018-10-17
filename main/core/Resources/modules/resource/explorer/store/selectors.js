@@ -4,9 +4,11 @@ import {select as listSelectors} from '#/main/app/content/list/store'
 
 const explorer = (state, name) => get(state, name)
 
-const initialized = (explorerState) => explorerState.initialized
 const root = (explorerState) => explorerState.root
-const current = (explorerState) => explorerState.current
+const filters = (explorerState) => explorerState.filters
+const currentId = (explorerState) => explorerState.currentId
+const currentNode = (explorerState) => explorerState.currentNode
+const currentConfiguration = (explorerState) => explorerState.currentConfiguration
 const directories = (explorerState) => explorerState.directories
 const selected = (explorerState) => listSelectors.selected(listSelectors.list(explorerState, 'resources'))
 const selectedFull = (explorerState) => listSelectors.selectedFull(listSelectors.list(explorerState, 'resources'))
@@ -25,10 +27,12 @@ const directory = (dirs, directoryId) => {
 }
 
 export const selectors = {
-  initialized,
   explorer,
   root,
-  current,
+  filters,
+  currentId,
+  currentNode,
+  currentConfiguration,
   currentResources,
   directories,
   directory,
