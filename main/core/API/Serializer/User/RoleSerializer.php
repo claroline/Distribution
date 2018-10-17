@@ -9,8 +9,10 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Finder\Workspace\OrderedToolFinder;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
+use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
 use Claroline\CoreBundle\Entity\Tool\ToolRights;
+use Claroline\CoreBundle\Entity\Tool\ToolRole;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Repository\OrderedToolRepository;
 use Claroline\CoreBundle\Repository\UserRepository;
@@ -134,6 +136,9 @@ class RoleSerializer
                     $serialized['tools'] = $this->serializeTools($role, $workspaceId);
                 }
             }
+            if (Role::PLATFORM_ROLE === $role->getType() && in_array(Options::SERIALIZE_ROLE_DESKTOP_TOOLS, $options)) {
+                $serialized['desktopTools'] = $this->serializeDesktopToolsConfig($role);
+            }
         }
 
         return $serialized;
@@ -206,6 +211,39 @@ class RoleSerializer
         }
 
         return count($tools) > 0 ? $tools : new \stdClass();
+    }
+
+    /**
+     * Serialize role configuration for desktop tools.
+     *
+     * @param Role $role
+     *
+     * @return array
+     */
+    private function serializeDesktopToolsConfig(Role $role)
+    {
+        $configs = [];
+        $desktopTools = $this->om->getRepository(Tool::class)->findBy(['isDisplayableInDesktop' => true]);
+        $toolsRole = $this->om->getRepository(ToolRole::class)->findBy(['role' => $role]);
+
+        foreach ($toolsRole as $toolRole) {
+            $configs[$toolRole->getTool()->getName()] = [
+                'visible' => $toolRole->isVisible(),
+                'locked' => $toolRole->isLocked(),
+            ];
+        }
+        foreach ($desktopTools as $desktopTool) {
+            $toolName = $desktopTool->getName();
+
+            if (!isset($configs[$toolName])) {
+                $configs[$toolName] = [
+                    'visible' => false,
+                    'locked' => false,
+                ];
+            }
+        }
+
+        return 0 < count($configs) ? $configs : new \stdClass();
     }
 
     /**
@@ -310,6 +348,26 @@ class RoleSerializer
                             $this->om->persist($rights);
                         }
                     }
+                }
+            }
+        }
+
+        // Sets desktop tools configuration for platform roles
+        if (Role::PLATFORM_ROLE === $role->getType() && isset($data['desktopTools'])) {
+            foreach ($data['desktopTools'] as $toolName => $toolData) {
+                $tool = $this->om->getRepository(Tool::class)->findOneBy(['name' => $toolName]);
+
+                if ($tool) {
+                    $toolRole = $this->om->getRepository(ToolRole::class)->findOneBy(['tool' => $tool, 'role' => $role]);
+
+                    if (!$toolRole) {
+                        $toolRole = new ToolRole();
+                        $toolRole->setTool($tool);
+                        $toolRole->setRole($role);
+                    }
+                    $toolRole->setVisible($toolData['visible']);
+                    $toolRole->setLocked($toolData['locked']);
+                    $this->om->persist($toolRole);
                 }
             }
         }

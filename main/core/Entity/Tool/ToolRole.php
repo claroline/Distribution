@@ -16,10 +16,10 @@ use Claroline\CoreBundle\Entity\Role;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ToolRepository")
+ * @ORM\Entity
  * @ORM\Table(
- *      name="claro_tools",
- *      uniqueConstraints={@ORM\UniqueConstraint(name="tool_plugin_unique",columns={"name", "plugin_id"})}
+ *      name="claro_tools_role",
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="tool_role_unique",columns={"tool_id", "role_id"})}
  * )
  */
 class ToolRole
@@ -35,7 +35,7 @@ class ToolRole
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Tool\Tool")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="tool_id", nullable=false, onDelete="CASCADE")
      *
      * @var Tool
      */
@@ -43,7 +43,7 @@ class ToolRole
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="role_id", nullable=false, onDelete="CASCADE")
      *
      * @var Role
      */
@@ -58,6 +58,11 @@ class ToolRole
      * @ORM\Column(name="locked", type="boolean")
      */
     protected $locked = false;
+
+    /**
+     * @ORM\Column(name="tool_order", type="integer", nullable=true)
+     */
+    protected $order;
 
     public function __construct()
     {
@@ -131,5 +136,21 @@ class ToolRole
     public function setLocked($locked)
     {
         $this->locked = $locked;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param int|null $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
     }
 }
