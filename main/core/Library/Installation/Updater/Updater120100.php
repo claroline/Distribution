@@ -69,6 +69,5 @@ class Updater120100 extends Updater
         } catch (\Exception $e) {
             $this->log('Couldnt truncate connection log tables');
         }
-
     }
 }
