@@ -25,4 +25,8 @@ final class ToolsOptions
         'my-learning-objectives',
         'my_portfolios',
     ];
+
+    const USER_CATEGORY = 'user';
+    const TOOL_CATEGORY = 'tool';
+    const NOTIFICATION_CATEGORY = 'notification';
 }

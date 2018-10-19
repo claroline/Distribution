@@ -15,6 +15,10 @@ class Version20181017153754 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->addSql('
+            ALTER TABLE claro_tools 
+            ADD desktop_category VARCHAR(255) DEFAULT NULL
+        ');
+        $this->addSql('
             CREATE TABLE claro_tools_role (
                 id INT AUTO_INCREMENT NOT NULL, 
                 tool_id INT NOT NULL, 
@@ -46,6 +50,10 @@ class Version20181017153754 extends AbstractMigration
 
     public function down(Schema $schema)
     {
+        $this->addSql('
+            ALTER TABLE claro_tools 
+            DROP desktop_category
+        ');
         $this->addSql('
             DROP TABLE claro_tools_role
         ');

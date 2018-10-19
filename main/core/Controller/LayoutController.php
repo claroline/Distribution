@@ -178,35 +178,20 @@ class LayoutController extends Controller
                 $orderedTools = $this->toolManager->getOrderedToolsByUser($user);
             }
         }
-        // List of displayable tools in tools menu
-        $toolsWhiteList = [
-            'dashboard',
-            'formalibre_bulletin_tool',
-            'formalibre_presence_tool',
-            'formalibre_reservation_agenda',
-            'formalibre_support_tool',
-            'inwicast_portal',
-            'ujm_questions',
-        ];
-        // List of displayable tools in user menu
-        $userToolsWhiteList = [
-            'agenda_',
-            'all_my_badges',
-            'my_contacts',
-            'my_portfolios',
-            'my-learning-objectives',
-            'resource_manager',
-        ];
 
-        $tools = array_filter($orderedTools, function (OrderedTool $ot) use ($toolsWhiteList) {
-            $toolName = $ot->getTool()->getName();
+        $tools = array_filter($orderedTools, function (OrderedTool $ot) {
+            $tool = $ot->getTool();
 
-            return $ot->isVisibleInDesktop() && !in_array($toolName, ToolsOptions::EXCLUDED_TOOLS) && in_array($toolName, $toolsWhiteList);
+            return $ot->isVisibleInDesktop() &&
+                !in_array($tool->getName(), ToolsOptions::EXCLUDED_TOOLS) &&
+                ToolsOptions::TOOL_CATEGORY === $tool->getDesktopCategory();
         });
-        $userTools = array_filter($orderedTools, function (OrderedTool $ot) use ($userToolsWhiteList) {
-            $toolName = $ot->getTool()->getName();
+        $userTools = array_filter($orderedTools, function (OrderedTool $ot) {
+            $tool = $ot->getTool();
 
-            return $ot->isVisibleInDesktop() && !in_array($toolName, ToolsOptions::EXCLUDED_TOOLS) && in_array($toolName, $userToolsWhiteList);
+            return $ot->isVisibleInDesktop() &&
+                !in_array($tool->getName(), ToolsOptions::EXCLUDED_TOOLS) &&
+                ToolsOptions::USER_CATEGORY === $tool->getDesktopCategory();
         });
 
         // current context (desktop, index or workspace)
