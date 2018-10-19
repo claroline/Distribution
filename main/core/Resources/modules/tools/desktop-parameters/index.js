@@ -15,6 +15,9 @@ bootstrap(
   reducer,
 
   (initialData) => ({
-    tools: initialData.tools
+    tools: initialData.tools,
+    toolsConfig: {
+      data: initialData.toolsConfig
+    }
   })
 )
