@@ -222,20 +222,32 @@ class RoleSerializer
      */
     private function serializeDesktopToolsConfig(Role $role)
     {
+        $excludedTools = [
+            'home',
+            'formalibre_presence_tool',
+            'my-learning-objectives',
+            'formalibre_reservation_agenda',
+            'dashboard',
+            'formalibre_support_tool',
+        ];
         $configs = [];
         $desktopTools = $this->om->getRepository(Tool::class)->findBy(['isDisplayableInDesktop' => true]);
         $toolsRole = $this->om->getRepository(ToolRole::class)->findBy(['role' => $role]);
 
         foreach ($toolsRole as $toolRole) {
-            $configs[$toolRole->getTool()->getName()] = [
-                'visible' => $toolRole->isVisible(),
-                'locked' => $toolRole->isLocked(),
-            ];
+            $toolName = $toolRole->getTool()->getName();
+
+            if (!in_array($toolName, $excludedTools)) {
+                $configs[$toolName] = [
+                    'visible' => $toolRole->isVisible(),
+                    'locked' => $toolRole->isLocked(),
+                ];
+            }
         }
         foreach ($desktopTools as $desktopTool) {
             $toolName = $desktopTool->getName();
 
-            if (!isset($configs[$toolName])) {
+            if (!in_array($toolName, $excludedTools) && !isset($configs[$toolName])) {
                 $configs[$toolName] = [
                     'visible' => false,
                     'locked' => false,

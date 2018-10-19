@@ -88,6 +88,14 @@ class ToolListener
      */
     public function onDisplayDesktopParameters(DisplayToolEvent $event)
     {
+        $excludedTools = [
+            'home',
+            'formalibre_presence_tool',
+            'my-learning-objectives',
+            'formalibre_reservation_agenda',
+            'dashboard',
+            'formalibre_support_tool',
+        ];
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ('anon.' === $user) {
@@ -107,7 +115,7 @@ class ToolListener
         foreach ($desktopTools as $desktopTool) {
             $toolName = $desktopTool->getName();
 
-            if ('home' !== $toolName && 'parameters' !== $toolName) {
+            if (!in_array($toolName, $excludedTools)) {
                 $tools[] = $desktopTool;
             }
         }
