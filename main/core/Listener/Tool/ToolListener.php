@@ -14,7 +14,6 @@ namespace Claroline\CoreBundle\Listener\Tool;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
@@ -101,11 +100,7 @@ class ToolListener
         if ('anon.' === $user) {
             throw new AccessDeniedException();
         }
-        $roles = array_filter($user->getEntityRoles(), function (Role $role) {
-            return Role::PLATFORM_ROLE === $role->getType();
-        });
-        $toolsRolesConfig = $this->toolManager->getDesktopToolsConfiguration($roles);
-
+        $toolsRolesConfig = $this->toolManager->getUserDesktopToolsConfiguration($user);
         $desktopTools = $this->finder->get(Tool::class)->find(
             ['isDisplayableInDesktop' => true],
             ['property' => 'name', 'direction' => 1]

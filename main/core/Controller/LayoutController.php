@@ -16,7 +16,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
-use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\InjectJavascriptEvent;
@@ -160,23 +160,59 @@ class LayoutController extends Controller
 
         $workspaces = [];
         $personalWs = null;
+        $orderedTools = [];
+
         if ($user instanceof User) {
             $personalWs = $user->getPersonalWorkspace();
             $workspaces = $this->workspaceManager->getRecentWorkspaceForUser($user, $this->utils->getRoles($token));
-        }
 
-        $lockedOrderedTools = $this->toolManager->getOrderedToolsLockedByAdmin(1);
-        $adminTools = [];
-        $excludedTools = [];
+            $session = $request->getSession();
 
-        foreach ($lockedOrderedTools as $lockedOrderedTool) {
-            $lockedTool = $lockedOrderedTool->getTool();
-
-            if ($lockedOrderedTool->isVisibleInDesktop()) {
-                $adminTools[] = $lockedTool;
+            if (is_null($session->get('ordered_tools-computed-'.$user->getUuid()))) {
+                $toolsRolesConfig = $this->toolManager->getUserDesktopToolsConfiguration($user);
+                $orderedTools = $this->toolManager->computeUserOrderedTools($user, $toolsRolesConfig);
+                $session->set('ordered_tools-computed-'.$user->getUuid(), true);
+            } else {
+                $orderedTools = $this->toolManager->getOrderedToolsByUser($user);
             }
-            $excludedTools[] = $lockedTool;
         }
+        $excludedTools = [
+            'dashboard',
+            'formalibre_presence_tool',
+            'formalibre_reservation_agenda',
+            'formalibre_support_tool',
+            'home',
+            'my-learning-objectives',
+        ];
+        $toolsWhiteList = [
+            'dashboard',
+            'formalibre_bulletin_tool',
+            'formalibre_presence_tool',
+            'formalibre_reservation_agenda',
+            'formalibre_support_tool',
+            'inwicast_portal',
+            'ujm_questions',
+        ];
+        $userToolsWhiteList = [
+            'agenda_',
+            'all_my_badges',
+            'my_contacts',
+            'my_portfolios',
+            'my-learning-objectives',
+            'resource_manager',
+        ];
+
+        $tools = array_filter($orderedTools, function (OrderedTool $ot) use ($excludedTools, $toolsWhiteList) {
+            $toolName = $ot->getTool()->getName();
+
+            return $ot->isVisibleInDesktop() && !in_array($toolName, $excludedTools) && in_array($toolName, $toolsWhiteList);
+        });
+        $userTools = array_filter($orderedTools, function (OrderedTool $ot) use ($excludedTools, $userToolsWhiteList) {
+            $toolName = $ot->getTool()->getName();
+
+            return $ot->isVisibleInDesktop() && !in_array($toolName, $excludedTools) && in_array($toolName, $userToolsWhiteList);
+        });
+
         // current context (desktop, index or workspace)
         $current = 'home';
 
@@ -237,28 +273,25 @@ class LayoutController extends Controller
                 ];
             }, $this->toolManager->getAdminToolsByRoles($token->getRoles())),
 
-            'userTools' => array_map(function (Tool $tool) {
-                return [
-                    'icon' => $tool->getClass(),
-                    'name' => $tool->getName(),
-                    'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
-                ];
-            }, $token->getUser() instanceof User ?
-              $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 1, $excludedTools)
-              :
-              []
-            ),
+            'userTools' => array_map(function (OrderedTool $orderedTool) {
+                $tool = $orderedTool->getTool();
 
-            'tools' => array_map(function (Tool $tool) {
                 return [
                     'icon' => $tool->getClass(),
                     'name' => $tool->getName(),
                     'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
                 ];
-            }, $token->getUser() instanceof User ?
-            $this->toolManager->getDisplayedDesktopOrderedTools($token->getUser(), 0, $excludedTools)
-            : []
-          ),
+            }, array_values($userTools)),
+
+            'tools' => array_map(function (OrderedTool $orderedTool) {
+                $tool = $orderedTool->getTool();
+
+                return [
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
+                    'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
+                ];
+            }, array_values($tools)),
         ];
     }
 

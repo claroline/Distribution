@@ -1244,6 +1244,15 @@ class ToolManager
         $this->om->flush();
     }
 
+    public function getUserDesktopToolsConfiguration(User $user)
+    {
+        $roles = array_filter($user->getEntityRoles(), function (Role $role) {
+            return Role::PLATFORM_ROLE === $role->getType();
+        });
+
+        return $this->getDesktopToolsConfiguration($roles);
+    }
+
     public function getDesktopToolsConfiguration(array $roles)
     {
         $config = [];
