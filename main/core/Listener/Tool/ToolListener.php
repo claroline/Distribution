@@ -88,12 +88,16 @@ class ToolListener
     public function onDisplayDesktopParameters(DisplayToolEvent $event)
     {
         $excludedTools = [
-            'home',
-            'formalibre_presence_tool',
-            'my-learning-objectives',
-            'formalibre_reservation_agenda',
+            'all_my_badges',
             'dashboard',
+            'formalibre_bulletin_tool',
+            'formalibre_presence_tool',
+            'formalibre_reservation_agenda',
             'formalibre_support_tool',
+            'home',
+            'inwicast_portal',
+            'my-learning-objectives',
+            'my_portfolios',
         ];
         $user = $this->tokenStorage->getToken()->getUser();
 

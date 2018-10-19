@@ -168,6 +168,7 @@ class LayoutController extends Controller
 
             $session = $request->getSession();
 
+            // Only computes tools configured by admin one time by session
             if (is_null($session->get('ordered_tools-computed-'.$user->getUuid()))) {
                 $toolsRolesConfig = $this->toolManager->getUserDesktopToolsConfiguration($user);
                 $orderedTools = $this->toolManager->computeUserOrderedTools($user, $toolsRolesConfig);
@@ -176,14 +177,20 @@ class LayoutController extends Controller
                 $orderedTools = $this->toolManager->getOrderedToolsByUser($user);
             }
         }
+        // List of deactivated tools
         $excludedTools = [
+            'all_my_badges',
             'dashboard',
+            'formalibre_bulletin_tool',
             'formalibre_presence_tool',
             'formalibre_reservation_agenda',
             'formalibre_support_tool',
             'home',
+            'inwicast_portal',
             'my-learning-objectives',
+            'my_portfolios',
         ];
+        // List of displayable tools in tools menu
         $toolsWhiteList = [
             'dashboard',
             'formalibre_bulletin_tool',
@@ -193,6 +200,7 @@ class LayoutController extends Controller
             'inwicast_portal',
             'ujm_questions',
         ];
+        // List of displayable tools in user menu
         $userToolsWhiteList = [
             'agenda_',
             'all_my_badges',

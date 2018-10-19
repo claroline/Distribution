@@ -223,12 +223,16 @@ class RoleSerializer
     private function serializeDesktopToolsConfig(Role $role)
     {
         $excludedTools = [
-            'home',
-            'formalibre_presence_tool',
-            'my-learning-objectives',
-            'formalibre_reservation_agenda',
+            'all_my_badges',
             'dashboard',
+            'formalibre_bulletin_tool',
+            'formalibre_presence_tool',
+            'formalibre_reservation_agenda',
             'formalibre_support_tool',
+            'home',
+            'inwicast_portal',
+            'my-learning-objectives',
+            'my_portfolios',
         ];
         $configs = [];
         $desktopTools = $this->om->getRepository(Tool::class)->findBy(['isDisplayableInDesktop' => true]);
