@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Controller;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\ToolsOptions;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
@@ -177,19 +178,6 @@ class LayoutController extends Controller
                 $orderedTools = $this->toolManager->getOrderedToolsByUser($user);
             }
         }
-        // List of deactivated tools
-        $excludedTools = [
-            'all_my_badges',
-            'dashboard',
-            'formalibre_bulletin_tool',
-            'formalibre_presence_tool',
-            'formalibre_reservation_agenda',
-            'formalibre_support_tool',
-            'home',
-            'inwicast_portal',
-            'my-learning-objectives',
-            'my_portfolios',
-        ];
         // List of displayable tools in tools menu
         $toolsWhiteList = [
             'dashboard',
@@ -210,15 +198,15 @@ class LayoutController extends Controller
             'resource_manager',
         ];
 
-        $tools = array_filter($orderedTools, function (OrderedTool $ot) use ($excludedTools, $toolsWhiteList) {
+        $tools = array_filter($orderedTools, function (OrderedTool $ot) use ($toolsWhiteList) {
             $toolName = $ot->getTool()->getName();
 
-            return $ot->isVisibleInDesktop() && !in_array($toolName, $excludedTools) && in_array($toolName, $toolsWhiteList);
+            return $ot->isVisibleInDesktop() && !in_array($toolName, ToolsOptions::EXCLUDED_TOOLS) && in_array($toolName, $toolsWhiteList);
         });
-        $userTools = array_filter($orderedTools, function (OrderedTool $ot) use ($excludedTools, $userToolsWhiteList) {
+        $userTools = array_filter($orderedTools, function (OrderedTool $ot) use ($userToolsWhiteList) {
             $toolName = $ot->getTool()->getName();
 
-            return $ot->isVisibleInDesktop() && !in_array($toolName, $excludedTools) && in_array($toolName, $userToolsWhiteList);
+            return $ot->isVisibleInDesktop() && !in_array($toolName, ToolsOptions::EXCLUDED_TOOLS) && in_array($toolName, $userToolsWhiteList);
         });
 
         // current context (desktop, index or workspace)

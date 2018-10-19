@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Listener\Tool;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\ToolsOptions;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
@@ -87,18 +88,6 @@ class ToolListener
      */
     public function onDisplayDesktopParameters(DisplayToolEvent $event)
     {
-        $excludedTools = [
-            'all_my_badges',
-            'dashboard',
-            'formalibre_bulletin_tool',
-            'formalibre_presence_tool',
-            'formalibre_reservation_agenda',
-            'formalibre_support_tool',
-            'home',
-            'inwicast_portal',
-            'my-learning-objectives',
-            'my_portfolios',
-        ];
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ('anon.' === $user) {
@@ -114,7 +103,7 @@ class ToolListener
         foreach ($desktopTools as $desktopTool) {
             $toolName = $desktopTool->getName();
 
-            if (!in_array($toolName, $excludedTools)) {
+            if (!in_array($toolName, ToolsOptions::EXCLUDED_TOOLS)) {
                 $tools[] = $desktopTool;
             }
         }

@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\API\Serializer\User;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\ToolsOptions;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Finder\Workspace\OrderedToolFinder;
 use Claroline\CoreBundle\Entity\Role;
@@ -222,18 +223,6 @@ class RoleSerializer
      */
     private function serializeDesktopToolsConfig(Role $role)
     {
-        $excludedTools = [
-            'all_my_badges',
-            'dashboard',
-            'formalibre_bulletin_tool',
-            'formalibre_presence_tool',
-            'formalibre_reservation_agenda',
-            'formalibre_support_tool',
-            'home',
-            'inwicast_portal',
-            'my-learning-objectives',
-            'my_portfolios',
-        ];
         $configs = [];
         $desktopTools = $this->om->getRepository(Tool::class)->findBy(['isDisplayableInDesktop' => true]);
         $toolsRole = $this->om->getRepository(ToolRole::class)->findBy(['role' => $role]);
@@ -241,7 +230,7 @@ class RoleSerializer
         foreach ($toolsRole as $toolRole) {
             $toolName = $toolRole->getTool()->getName();
 
-            if (!in_array($toolName, $excludedTools)) {
+            if (!in_array($toolName, ToolsOptions::EXCLUDED_TOOLS)) {
                 $configs[$toolName] = [
                     'visible' => $toolRole->isVisible(),
                     'locked' => $toolRole->isLocked(),
@@ -251,7 +240,7 @@ class RoleSerializer
         foreach ($desktopTools as $desktopTool) {
             $toolName = $desktopTool->getName();
 
-            if (!in_array($toolName, $excludedTools) && !isset($configs[$toolName])) {
+            if (!in_array($toolName, ToolsOptions::EXCLUDED_TOOLS) && !isset($configs[$toolName])) {
                 $configs[$toolName] = [
                     'visible' => false,
                     'locked' => false,
