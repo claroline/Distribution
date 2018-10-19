@@ -6,7 +6,7 @@ import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {selectors} from '#/main/core/tools/desktop-parameters/store'
 import {
   PageContainer,
