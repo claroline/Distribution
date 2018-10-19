@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Controller\APINew\Tool;
 
 use Claroline\AppBundle\Controller\AbstractApiController;
-use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
