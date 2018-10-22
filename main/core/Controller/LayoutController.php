@@ -193,6 +193,13 @@ class LayoutController extends Controller
                 !in_array($tool->getName(), ToolsOptions::EXCLUDED_TOOLS) &&
                 ToolsOptions::USER_CATEGORY === $tool->getDesktopCategory();
         });
+        $notificationTools = array_filter($orderedTools, function (OrderedTool $ot) {
+            $tool = $ot->getTool();
+
+            return $ot->isVisibleInDesktop() &&
+                !in_array($tool->getName(), ToolsOptions::EXCLUDED_TOOLS) &&
+                ToolsOptions::NOTIFICATION_CATEGORY === $tool->getDesktopCategory();
+        });
 
         // current context (desktop, index or workspace)
         $current = 'home';
@@ -273,6 +280,16 @@ class LayoutController extends Controller
                     'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
                 ];
             }, array_values($tools)),
+
+            'notificationTools' => array_map(function (OrderedTool $orderedTool) {
+                $tool = $orderedTool->getTool();
+
+                return [
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
+                    'open' => ['claro_desktop_open_tool', ['toolName' => $tool->getName()]],
+                ];
+            }, array_values($notificationTools)),
         ];
     }
 
