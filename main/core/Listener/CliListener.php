@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Listener;
 use Claroline\CoreBundle\Library\Security\TokenUpdater;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\UserManager;
+use Doctrine\DBAL\Exception\ConnectionException;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -67,8 +68,12 @@ class CliListener
      */
     public function setLocale(ConsoleCommandEvent $event)
     {
-        $user = $this->userManager->getDefaultClarolineAdmin();
-        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
-        $this->tokenStorage->setToken($token);
+        try {
+            $user = $this->userManager->getDefaultClarolineAdmin();
+            $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+            $this->tokenStorage->setToken($token);
+        } catch (ConnectionException $e) {
+            //database does not exists yet
+        }
     }
 }
