@@ -1,8 +1,8 @@
 import React from 'react'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
@@ -157,7 +157,8 @@ const StepForm = props =>
               showHeader: true,
               picker: {
                 current : props.resourceParent
-              }
+              },
+              onEmbeddedResourceClose: props.onEmbeddedResourceClose
             }
           },
           {
@@ -210,7 +211,8 @@ implementPropTypes(StepForm, StepTypes, {
   resourceParent: T.shape(ResourceNodeTypes.propTypes),
   updateSecondaryResourceInheritance: T.func.isRequired,
   removeInheritedResource: T.func.isRequired,
-  saveForm: T.func.isRequired
+  saveForm: T.func.isRequired,
+  onEmbeddedResourceClose: T.func
 }, {
   customNumbering: false
 })

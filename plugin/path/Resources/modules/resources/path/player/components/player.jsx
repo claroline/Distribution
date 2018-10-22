@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 import {currentUser} from '#/main/core/user/current'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
@@ -70,6 +70,7 @@ const PlayerComponent = props => {
                     updateProgression={props.updateProgression}
                     enableNavigation={props.enableNavigation}
                     disableNavigation={props.disableNavigation}
+                    onEmbeddedResourceClose={props.computeResourceDuration}
                   />
                 </PathCurrent>
 
@@ -93,7 +94,8 @@ PlayerComponent.propTypes = {
   )),
   updateProgression: T.func.isRequired,
   enableNavigation: T.func.isRequired,
-  disableNavigation: T.func.isRequired
+  disableNavigation: T.func.isRequired,
+  computeResourceDuration: T.func.isRequired
 }
 
 const Player = connect(
@@ -112,6 +114,9 @@ const Player = connect(
     },
     disableNavigation() {
       dispatch(actions.disableNavigation())
+    },
+    computeResourceDuration(resourceId) {
+      dispatch(actions.computeResourceDuration(resourceId))
     }
   })
 )(PlayerComponent)

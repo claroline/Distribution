@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
@@ -57,7 +57,11 @@ const SentMessagesComponent = (props) =>
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete', {}, 'actions'),
         dangerous: true,
-        callback: () => props.removeMessages(rows, 'sentMessages')
+        callback: () => props.removeMessages(rows, 'sentMessages'),
+        confirm: {
+          title: trans('messages_delete_title', {}, 'message'),
+          message: trans('messages_delete_confirm', {}, 'message')
+        }
       }
     ]}
     card={(props) =>

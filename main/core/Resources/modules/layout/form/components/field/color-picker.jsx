@@ -3,7 +3,7 @@ import classes from 'classnames'
 import Overlay from 'react-bootstrap/lib/Overlay'
 import {TwitterPicker} from 'react-color'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
 // TODO : rewrite me without external dependency
@@ -53,7 +53,11 @@ class ColorPicker extends Component {
             colors={this.props.colors}
             onChangeComplete={color => {
               this.setState({open: false})
-              this.props.onChange(color.hex)
+              if (color) {
+                this.props.onChange(color.hex)
+              } else {
+                this.props.onChange('')
+              }
             }}
           />
         </Overlay>

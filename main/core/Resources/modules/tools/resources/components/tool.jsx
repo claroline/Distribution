@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {Page} from '#/main/app/page/components/page'
 import {URL_BUTTON} from '#/main/app/buttons'
 
@@ -54,7 +54,7 @@ Tool.propTypes = {
 
 const ResourcesTool = connect(
   state => ({
-    current: explorerSelectors.current(explorerSelectors.explorer(state, selectors.STORE_NAME))
+    current: explorerSelectors.currentNode(explorerSelectors.explorer(state, selectors.STORE_NAME))
   }),
   dispatch => ({
     addNodes(resourceNodes) {

@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Controller;
 
 use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Claroline\CoreBundle\Manager\ToolManager;
+use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -41,34 +41,27 @@ class DesktopController
     /** @var SessionInterface */
     private $session;
 
-    /** @var ToolManager */
-    private $toolManager;
-
     /**
      * DesktopController constructor.
      *
      * @DI\InjectParams({
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "router"          = @DI\Inject("router"),
-     *     "session"         = @DI\Inject("session"),
-     *     "toolManager"     = @DI\Inject("claroline.manager.tool_manager")
+     *     "session"         = @DI\Inject("session")
      * })
      *
      * @param EventDispatcherInterface $eventDispatcher
      * @param UrlGeneratorInterface    $router
      * @param SessionInterface         $session
-     * @param ToolManager              $toolManager
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         UrlGeneratorInterface $router,
-        SessionInterface $session,
-        ToolManager $toolManager)
+        SessionInterface $session)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->router = $router;
         $this->session = $session;
-        $this->toolManager = $toolManager;
     }
 
     /**
@@ -101,8 +94,9 @@ class DesktopController
         /** @var DisplayToolEvent $event */
         $event = $this->eventDispatcher->dispatch('open_tool_desktop_'.$toolName, new DisplayToolEvent());
 
-        if ($toolName === 'resource_manager') {
-            // FIXME : but why ?
+        $this->eventDispatcher->dispatch('log', new LogDesktopToolReadEvent($toolName));
+
+        if ('resource_manager' === $toolName) {
             $this->session->set('isDesktop', true);
         }
 

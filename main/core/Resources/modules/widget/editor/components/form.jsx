@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import sum from 'lodash/sum'
 import times from 'lodash/times'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 
 const WidgetForm = props =>
@@ -56,7 +56,7 @@ const WidgetForm = props =>
         title: trans('display_parameters'),
         fields: [
           {
-            name: 'alignName',
+            name: 'display.alignName',
             label: trans('title_align'),
             type: 'choice',
             displayed: (section) => !!section.name,
@@ -75,6 +75,10 @@ const WidgetForm = props =>
             label: trans('titleColor'),
             type: 'color',
             displayed: (section) => !!section.name
+          }, {
+            name: 'display.borderColor',
+            label: trans('border'),
+            type: 'color'
           }, {
             name: 'display.backgroundType',
             label: trans('background'),

@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {url} from '#/main/app/api'
 
 import {select as workspaceSelect} from '#/main/core/workspace/selectors'
@@ -98,9 +98,7 @@ const WorkspaceFormComponent = (props) =>
                 resource: trans('open_workspace_resource')
               }
             },
-            onChange: () => {
-              props.updateProp('opening.target', null)
-            },
+            onChange: () => props.updateProp('opening.target', null),
             linked: [
               {
                 name: 'opening.target',

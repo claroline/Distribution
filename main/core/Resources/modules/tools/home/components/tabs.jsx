@@ -1,8 +1,9 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import get from 'lodash/get'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {LinkButton} from '#/main/app/buttons/link/components/button'
@@ -19,6 +20,10 @@ const Tabs = props =>
         })}
         target={`${props.prefix}/tab/${tab.id}`}
         exact={true}
+        activeStyle={{
+          backgroundColor: get(tab, 'display.color'),
+          borderColor: get(tab, 'display.color')
+        }}
       >
         {tab.icon &&
           <span className={classes('fa fa-fw', `fa-${tab.icon}`, tab.title && 'icon-with-text-right')} />

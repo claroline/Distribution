@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
@@ -65,12 +65,20 @@ const DeletedMessagesComponent = (props) =>
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-sync-alt',
         label: trans('restore', {}, 'actions'),
-        callback: () => props.restoreMessages(rows)
+        callback: () => props.restoreMessages(rows),
+        confirm: {
+          title: trans('messages_restore_title', {}, 'message'),
+          message: trans('messages_restore_confirm', {}, 'message')
+        }
       }, {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete', {}, 'actions'),
         dangerous: true,
+        confirm: {
+          title: trans('messages_delete_title', {}, 'message'),
+          message: trans('messages_delete_confirm_permanent', {}, 'message')
+        },
         callback: () => props.deleteMessages(rows)
       }
     ]}

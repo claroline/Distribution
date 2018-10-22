@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
 import {withRouter} from '#/main/app/router'
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
@@ -184,7 +184,7 @@ BlogOptionsComponent.propTypes = {
 
 const BlogOptions = withRouter(connect(
   state => ({
-    workspace: resourceSelectors.resource(state),
+    workspace: resourceSelectors.workspace(state),
     blogId: selectors.blog(state).data.id,
     options: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.' + constants.OPTIONS_EDIT_FORM_NAME)),
     mode: selectors.mode(state),

@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {withRouter} from '#/main/app/router'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {User as UserTypes} from '#/main/core/user/prop-types'
@@ -16,7 +16,7 @@ import {selectors} from '#/plugin/message/tools/messaging/store'
 
 const NewMessageFormWrapper = (props) =>
   <div className='user-message-container user-message-form-container user-message-left'>
-    <UserAvatar picture={props.user.picture} />
+    <UserAvatar picture={props.user.picture} alt={false} />
 
     <div className="user-message">
       <div className="user-message-meta">
@@ -47,7 +47,7 @@ NewMessageFormWrapper.propTypes = {
 const NewMessageComponent = (props) =>
   <div>
     {!props.reply &&
-      <h2>{trans('new_message')}</h2>
+      <h2>{trans('new_message', {}, 'message')}</h2>
     }
     <NewMessageFormWrapper
       user={currentUser()}
@@ -96,8 +96,6 @@ const NewMessageComponent = (props) =>
   </div>
 
 NewMessageComponent.propTypes = {
-  deleteMessages: T.func.isRequired,
-  restoreMessages: T.func.isRequired,
   saveForm: T.func.isRequired,
   reply: T.bool.isRequired,
   history: T.shape({

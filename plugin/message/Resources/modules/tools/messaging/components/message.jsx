@@ -3,14 +3,13 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {NewMessage} from '#/plugin/message/tools/messaging/components/new-message'
 import {actions, selectors} from '#/plugin/message/tools/messaging/store'
-
 
 const MessageComponent = (props) =>
   <div>
@@ -41,6 +40,7 @@ const MessageComponent = (props) =>
         }
       ]}
     />
+
     {(!get(props.message, 'meta.sent') && !get(props.message, 'meta.removed')) &&
       <NewMessage/>
     }
@@ -107,6 +107,7 @@ const Message = connect(
     }
   })
 )(MessageComponent)
+
 export {
   Message
 }

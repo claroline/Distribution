@@ -1,8 +1,8 @@
 import React from 'react'
 import isEmpty from 'lodash/isEmpty'
 
-import {trans} from '#/main/core/translation'
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
+import {trans} from '#/main/app/intl/translation'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {ResourceEmbedded} from '#/main/core/resource/components/embedded'
@@ -71,6 +71,7 @@ const ResourceInput = props => {
         </ModalButton>
         <ResourceEmbedded
           resourceNode={props.value}
+          onResourceClose={props.onEmbeddedResourceClose}
         />
       </div>
     )
@@ -117,7 +118,8 @@ implementPropTypes(ResourceInput, FormFieldTypes, {
     title: T.string,
     current: T.shape(ResourceNodeTypes.propTypes),
     root: T.shape(ResourceNodeTypes.propTypes)
-  })
+  }),
+  onEmbeddedResourceClose: T.func
 }, {
   value: null,
   picker: {

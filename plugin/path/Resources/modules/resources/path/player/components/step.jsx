@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import classes from 'classnames'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {url} from '#/main/app/api'
-import {asset} from '#/main/core/scaffolding/asset'
+import {asset} from '#/main/app/config/asset'
 import {currentUser} from '#/main/core/user/current'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
@@ -182,6 +182,7 @@ const Step = props =>
                 play: props.disableNavigation,
                 end: props.enableNavigation
               }}
+              onResourceClose={props.onEmbeddedResourceClose}
             />
           }
 
@@ -210,7 +211,8 @@ implementPropTypes(Step, StepTypes, {
   manualProgressionAllowed: T.bool.isRequired,
   updateProgression: T.func.isRequired,
   enableNavigation: T.func.isRequired,
-  disableNavigation: T.func.isRequired
+  disableNavigation: T.func.isRequired,
+  onEmbeddedResourceClose: T.func
 })
 
 export {

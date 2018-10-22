@@ -4,8 +4,8 @@ import classes from 'classnames'
 import merge from 'lodash/merge'
 import get from 'lodash/get'
 
-import {t} from '#/main/core/translation'
-import {displayDate} from '#/main/core/scaffolding/date'
+import {trans} from '#/main/app/intl/translation'
+import {displayDate} from '#/main/app/intl/date'
 
 import {Action as ActionTypes} from '#/main/core/layout/action/prop-types'
 import {User as UserTypes} from '#/main/core/user/prop-types'
@@ -46,11 +46,11 @@ const UserMessage = props => {
           <div className="user-message-info">
             {props.user && props.user.name ?
 
-              props.user.name : t('unknown')
+              props.user.name : trans('unknown')
             }
 
             {props.date &&
-              <div className="date">{t('published_at', {date: displayDate(props.date, true, true)})}</div>
+              <div className="date">{trans('published_at', {date: displayDate(props.date, true, true)})}</div>
             }
           </div>
 

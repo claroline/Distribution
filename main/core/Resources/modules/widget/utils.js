@@ -1,10 +1,14 @@
 import get from 'lodash/get'
 
-import {asset} from '#/main/core/scaffolding/asset'
+import {asset} from '#/main/app/config/asset'
 
 function computeStyles(widget) {
   const styles = {}
   const display = get(widget, 'display') || {}
+
+  if (display.borderColor) {
+    styles.borderColor = display.borderColor
+  }
 
   switch (display.backgroundType) {
     case 'none':
@@ -24,9 +28,14 @@ function computeTitleStyles(widget) {
   const styles = {}
   const display = get(widget, 'display') || {}
 
+  if (display.borderColor) {
+    styles.background = display.borderColor
+  }
+
   if (display.color) {
     styles.color = display.color
   }
+
   return styles
 }
 

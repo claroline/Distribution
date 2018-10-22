@@ -176,6 +176,12 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             $updater->postUpdate();
         }
 
+        if (version_compare($currentVersion, '12.1.0', '<')) {
+            $updater = new Updater\Updater120100($this->container, $this->logger);
+            $updater->setLogger($this->logger);
+            $updater->postUpdate();
+        }
+
         $termsOfServiceManager = $this->container->get('claroline.common.terms_of_service_manager');
         $termsOfServiceManager->sendDatas();
 
@@ -267,12 +273,11 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         $infoName = $translator->trans('informations', [], 'platform');
 
         $desktopHomeTab = new HomeTab();
-        $desktopHomeTab->setType('administration');
+        $desktopHomeTab->setType(HomeTab::TYPE_ADMIN_DESKTOP);
         $manager->persist($desktopHomeTab);
 
         $desktopHomeTabConfig = new HomeTabConfig();
         $desktopHomeTabConfig->setHomeTab($desktopHomeTab);
-        $desktopHomeTabConfig->setType(HomeTab::TYPE_ADMIN_DESKTOP);
         $desktopHomeTabConfig->setVisible(true);
         $desktopHomeTabConfig->setLocked(true);
         $desktopHomeTabConfig->setTabOrder(1);

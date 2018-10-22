@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
+import {trans} from '#/main/app/intl/translation'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
@@ -35,7 +35,7 @@ const ReceivedMessagesComponent = (props) =>
         name: 'from.username',
         alias: 'senderUsername',
         type: 'string',
-        label: trans('from_message'),
+        label: trans('from_message', {}, 'message'),
         displayed: true,
         filterable: false,
         sortable: true
@@ -78,6 +78,10 @@ const ReceivedMessagesComponent = (props) =>
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete'),
         dangerous: true,
+        confirm: {
+          title: trans('messages_delete_title', {}, 'message'),
+          message: trans('messages_delete_confirm', {}, 'message')
+        },
         callback: () => props.removeMessages(rows, 'receivedMessages')
       }
     ]}
