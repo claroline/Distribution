@@ -11,6 +11,7 @@
 
 namespace Claroline\WebResourceBundle\Listener;
 
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
@@ -45,6 +46,7 @@ class WebResourceListener
      *     "filesDir"           = @DI\Inject("%claroline.param.files_directory%"),
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "uploadDir"          = @DI\Inject("%claroline.param.uploads_directory%"),
+     *     "serializer"         = @DI\Inject("claroline.api.serializer"),
      *     "webResourceManager" = @DI\Inject("claroline.manager.web_resource_manager")
      * })
      *
@@ -57,12 +59,14 @@ class WebResourceListener
         $filesDir,
         ObjectManager $om,
         $uploadDir,
-        WebResourceManager $webResourceManager
+        WebResourceManager $webResourceManager,
+        SerializerProvider $serializer
     ) {
         $this->filesDir = $filesDir;
         $this->om = $om;
         $this->uploadDir = $uploadDir;
         $this->webResourceManager = $webResourceManager;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -82,6 +86,8 @@ class WebResourceListener
         $srcPath = 'uploads'.$ds.'webresource'.$ds.$workspace->getUuid().$ds.$hash;
         $event->setData([
           'path' => $srcPath.$ds.$this->webResourceManager->guessRootFileFromUnzipped($unzippedPath.$ds.$hash),
+          // common file data
+          'file' => $this->serializer->serialize($resource),
         ]);
 
         $event->stopPropagation();
