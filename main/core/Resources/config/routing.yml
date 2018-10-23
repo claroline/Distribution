@@ -119,8 +119,8 @@ claro_file:
     prefix: file
 
 claro_admin_settings_main:
-    prefix: admin/settings/main
-    resource: "@ClarolineCoreBundle/Controller/Administration/MainSettingsController.php"
+    prefix: admin/settings
+    resource: "@ClarolineCoreBundle/Controller/Administration/SettingsController.php"
     type: annotation
 
 claro_admin_oauth:

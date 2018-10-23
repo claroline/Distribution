@@ -4,10 +4,10 @@ import {PropTypes as T} from 'prop-types'
 
 import {withRouter, Routes} from '#/main/app/router'
 
-import {Main} from '#/main/core/administration/settings/main/components/page/main'
-import {I18n} from '#/main/core/administration/settings/main/components/page/i18n'
-import {Plugins} from '#/main/core/administration/settings/main/components/page/plugins'
-import {Portal} from '#/main/core/administration/settings/main/components/page/portal'
+import {Main} from '#/main/core/administration/parameters/main/components/main'
+import {I18n} from '#/main/core/administration/parameters/main/components/i18n'
+import {Plugins} from '#/main/core/administration/parameters/main/components/plugins'
+import {Portal} from '#/main/core/administration/parameters/main/components/portal'
 
 
 const SettingsComponent = (props) =>

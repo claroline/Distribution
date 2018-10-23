@@ -3,8 +3,8 @@ import React from 'react'
 import {trans} from '#/main/app/intl/translation'
 import {Page} from '#/main/app/page/components/page'
 
-import {Nav} from '#/main/core/administration/settings/main/components/nav'
-import {Settings} from '#/main/core/administration/settings/main/components/settings'
+import {Nav} from '#/main/core/administration/parameters/technical/components/nav'
+import {Settings} from '#/main/core/administration/parameters/technical/components/settings'
 
 const Tool = () =>
   <Page

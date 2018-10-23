@@ -19,16 +19,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 /**
  * @DI\Tag("security.secure_service")
  */
-class MainSettingsController extends Controller
+class SettingsController extends Controller
 {
     /**
-     * @EXT\Route("/", name="claro_admin_main_settings")
+     * @EXT\Route("/main", name="claro_admin_main_settings")
      * @EXT\Template("ClarolineCoreBundle:administration/settings:main.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('main_settings')")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function mainAction()
+    {
+        return [];
+    }
+
+    /**
+     * @EXT\Route("/technical", name="claro_admin_technical_settings")
+     * @EXT\Template("ClarolineCoreBundle:administration/settings:technical.html.twig")
+     * @SEC\PreAuthorize("canOpenAdminTool('technical_settings')")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function technicalAction()
     {
         return [];
     }
