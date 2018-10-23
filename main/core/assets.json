@@ -3,6 +3,7 @@
     "entry": {
       "tinymce": "tinymce/browser",
       "user-management": "administration/user",
+      "main-settings": "administration/settings/main",
       "workspace-management": "administration/workspace",
       "workspace-list": "workspace/list",
       "theme-management": "administration/appearance/theme",

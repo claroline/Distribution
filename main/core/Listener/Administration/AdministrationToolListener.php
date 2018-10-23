@@ -38,14 +38,14 @@ class AdministrationToolListener
     }
 
     /**
-     * @DI\Observe("administration_tool_platform_parameters")
+     * @DI\Observe("administration_tool_main_settings")
      *
      * @param OpenAdministrationToolEvent $event
      */
-    public function onOpenPlatformParameters(OpenAdministrationToolEvent $event)
+    public function onOpenPlatformMainSettings(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration/Parameters:index',
+            '_controller' => 'ClarolineCoreBundle:Administration/MainSettings:index',
         ], $event);
     }
 

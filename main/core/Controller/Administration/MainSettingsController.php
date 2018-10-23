@@ -9,23 +9,26 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\DropZoneBundle\Controller;
+namespace Claroline\CoreBundle\Controller\Administration;
 
+use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
- * @EXT\Route("/dropzone", options={"expose"=true})
+ * @DI\Tag("security.secure_service")
  */
-class PluginController extends Controller
+class MainSettingsController extends Controller
 {
     /**
+     * @EXT\Route("/", name="claro_admin_main_settings")
+     * @EXT\Template("ClarolineCoreBundle:administration/settings:main.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('main_settings')")
-     * @EXT\Route("/plugin/configure", name="claro_dropzone_plugin_configure")
-     * @EXT\Template()
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function configureAction()
+    public function indexAction()
     {
         return [];
     }

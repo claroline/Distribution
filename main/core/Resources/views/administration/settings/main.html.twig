@@ -1,0 +1,33 @@
+{% extends "ClarolineCoreBundle:administration:layout.html.twig" %}
+
+{% block title %}{{ parent() ~ ' - ' ~ 'settings' | trans({}, 'platform') | striptags | raw }}{% endblock %}
+{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
+{% block breadcrumb %}
+    {{
+      macros.breadcrumbs([
+      {
+          'icon': 'fa fa-cog',
+          'name': 'administration'|trans({}, 'platform'),
+          'href': path('claro_admin_index')
+      },
+      {
+          'name': 'main_settings'|trans({}, 'platform'),
+          'href': '#'
+      }])
+    }}
+{% endblock %}
+
+{% block page_title %}
+    {{ 'Settings'|trans({}, 'platform') }}
+    <small>{{ 'main'|trans({}, 'platform') }}</small>
+{% endblock %}
+
+{% block page_content %}
+  <div class="main-settings-container"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ hotAsset('dist/claroline-distribution-main-core-main-settings.js') }}"></script>
+{% endblock %}
