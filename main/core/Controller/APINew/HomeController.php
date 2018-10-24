@@ -111,7 +111,6 @@ class HomeController extends AbstractApiController
                 'type' => Widget::CONTEXT_HOME,
             ],
             'tabs' => array_values($orderedTabs),
-
         ];
     }
 }

@@ -55,7 +55,7 @@ class PostFinder extends AbstractFinder
                     $qb->andWhere("obj.{$filterName} >= :beginOfDay");
                     $qb->andWhere("obj.{$filterName} <= :endOfDay");
                     $qb->setParameter(':beginOfDay', $beginOfDay);
-                    $qb->setParameter(':endOfDay', $endOfDay);;
+                    $qb->setParameter(':endOfDay', $endOfDay);
                     break;
                 case 'fromDate':
                     $date = DateNormalizer::denormalize($filterValue);
