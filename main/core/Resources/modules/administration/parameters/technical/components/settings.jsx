@@ -14,6 +14,7 @@ import {Pdf} from '#/main/core/administration/parameters/technical/components/pd
 import {Security} from '#/main/core/administration/parameters/technical/components/security'
 import {Synchronization} from '#/main/core/administration/parameters/technical/components/synchronization'
 import {Token} from '#/main/core/administration/parameters/technical/components/token'
+import {Sessions} from '#/main/core/administration/parameters/technical/components/sessions'
 
 const SettingsComponent = (props) =>
   <Routes
@@ -25,6 +26,11 @@ const SettingsComponent = (props) =>
         path: '/authentication',
         exact: true,
         component: Authentication
+      },
+      {
+        path: '/sessions',
+        exact: true,
+        component: Sessions
       },
       {
         path: '/domain',
