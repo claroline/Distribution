@@ -88,6 +88,7 @@ class WebResourceManager
      */
     public function getHTMLFiles($directory)
     {
+	try {
         $dir = new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::NEW_CURRENT_AND_KEY);
         $files = new \RecursiveIteratorIterator($dir);
 
@@ -100,9 +101,12 @@ class WebResourceManager
                 $relativePath = str_replace($directory, '', $file->getPathname());
                 $list[] = ltrim($relativePath, '\\/');
             }
-        }
-
-        return $list;
+	}
+	
+	return $list;
+	} catch (\Exception $e) {
+		return [];
+	}
     }
 
     /**
