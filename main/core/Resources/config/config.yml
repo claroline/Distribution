@@ -178,11 +178,12 @@ plugin:
     widgets:
         - name: simple
           class: Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget
-          context: [workspace, desktop]
+          context: [workspace, desktop, home]
           tags: [content]
 
         - name: list
           class: Claroline\CoreBundle\Entity\Widget\Type\ListWidget
+          context: [workspace, desktop, home]
           sources: [list]
 
         # - name: profile
@@ -192,18 +193,18 @@ plugin:
 
         - name: resource
           class: Claroline\CoreBundle\Entity\Widget\Type\ResourceWidget
-          context: [workspace, desktop]
+          context: [workspace, desktop, home]
           tags: [resources]
 
     data_sources:
         - name: resources
           type: list
-          context: [workspace, desktop]
+          context: [workspace, desktop, home]
           tags: [resources]
 
         - name: workspaces
           type: list
-          context: [desktop]
+          context: [desktop, home, home]
           tags: [workspaces]
 
         - name: my_workspaces
