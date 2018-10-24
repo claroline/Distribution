@@ -204,7 +204,7 @@ plugin:
 
         - name: workspaces
           type: list
-          context: [desktop, home, home]
+          context: [desktop, home]
           tags: [workspaces]
 
         - name: my_workspaces
