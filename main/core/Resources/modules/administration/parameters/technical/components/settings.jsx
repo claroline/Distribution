@@ -18,7 +18,7 @@ import {Token} from '#/main/core/administration/parameters/technical/components/
 const SettingsComponent = (props) =>
   <Routes
     redirect={[
-      {from: '/', exact: true, to: '/received' }
+      {from: '/', exact: true, to: '/domain' }
     ]}
     routes={[
       {

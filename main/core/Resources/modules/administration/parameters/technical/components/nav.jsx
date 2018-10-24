@@ -28,6 +28,26 @@ const Nav = () =>
         icon: 'fa fa-fw fa-trash',
         title: trans('authentication'),
         path: '/authentication'
+      },
+      {
+        icon: 'fa fa-fw fa-trash',
+        title: trans('mailing'),
+        path: '/mailing'
+      },
+      {
+        icon: 'fa fa-fw fa-trash',
+        title: trans('indexing'),
+        path: '/indexing'
+      },
+      {
+        icon: 'fa fa-fw fa-trash',
+        title: trans('sessions'),
+        path: '/sessions'
+      },
+      {
+        icon: 'fa fa-fw fa-trash',
+        title: trans('synchronization'),
+        path: '/synchronization'
       }
     ]}
   />
