@@ -183,7 +183,6 @@ plugin:
 
         - name: list
           class: Claroline\CoreBundle\Entity\Widget\Type\ListWidget
-          context: [workspace, desktop, home]
           sources: [list]
 
         # - name: profile
