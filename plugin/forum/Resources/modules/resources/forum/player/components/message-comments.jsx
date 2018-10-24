@@ -88,22 +88,22 @@ class MessageCommentsComponent extends Component {
                       {
                         icon: 'fa fa-fw fa-pencil',
                         label: trans('edit'),
-                        displayed: (comment.meta.creator.id === authenticatedUser.id) && !get(this.props.subject, 'meta.closed'),
+                        displayed: authenticatedUser && (comment.meta.creator.id === authenticatedUser.id) && !get(this.props.subject, 'meta.closed'),
                         action: () => this.setState({showCommentForm: comment.id})
                       }, {
                         icon: 'fa fa-fw fa-flag-o',
                         label: trans('flag', {}, 'forum'),
-                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && !comment.meta.flagged,
+                        displayed: authenticatedUser && (comment.meta.creator.id !== authenticatedUser.id) && !comment.meta.flagged,
                         action: () => this.props.flag(comment, this.props.subject.id)
                       }, {
                         icon: 'fa fa-fw fa-flag',
                         label: trans('unflag', {}, 'forum'),
-                        displayed: (comment.meta.creator.id !== authenticatedUser.id) && comment.meta.flagged,
+                        displayed: authenticatedUser && (comment.meta.creator.id !== authenticatedUser.id) && comment.meta.flagged,
                         action: () => this.props.unFlag(comment, this.props.subject.id)
                       }, {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete'),
-                        displayed: comment.meta.creator.id === authenticatedUser.id || this.props.moderator,
+                        displayed: authenticatedUser && (comment.meta.creator.id === authenticatedUser.id || this.props.moderator),
                         action: () => this.deleteComment(comment.id),
                         dangerous: true
                       }
