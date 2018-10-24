@@ -6,7 +6,6 @@ import {withRouter, Routes} from '#/main/app/router'
 
 import {Authentication} from '#/main/core/administration/parameters/technical/components/authentication'
 import {Domain} from '#/main/core/administration/parameters/technical/components/domain'
-import {Indexing} from '#/main/core/administration/parameters/technical/components/indexing'
 import {Limits} from '#/main/core/administration/parameters/technical/components/limits'
 import {Mailing} from '#/main/core/administration/parameters/technical/components/mailing'
 import {Maintenance} from '#/main/core/administration/parameters/technical/components/maintenance'
@@ -36,10 +35,6 @@ const SettingsComponent = (props) =>
         path: '/domain',
         exact: true,
         component: Domain
-      }, {
-        path: '/indexing',
-        exact: true,
-        component: Indexing
       }, {
         path: '/limits',
         exact: true,

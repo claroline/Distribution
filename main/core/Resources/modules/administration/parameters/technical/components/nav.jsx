@@ -36,11 +36,6 @@ const Nav = () =>
       },
       {
         icon: 'fa fa-fw fa-trash',
-        title: trans('indexing'),
-        path: '/indexing'
-      },
-      {
-        icon: 'fa fa-fw fa-trash',
         title: trans('sessions'),
         path: '/sessions'
       },
