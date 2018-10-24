@@ -718,12 +718,13 @@ class ResourceManager
         $withDirectoryContent = true,
         array $rights = []
     ) {
-	$check = ['activity', 'claroline_scorm_12', 'claroline_scorm_2004'];
+        $check = ['activity', 'claroline_scorm_12', 'claroline_scorm_2004'];
 
-	if (in_array($node->getResourceType()->getName(), $check)) {
-		return;
-	}
-	$withDirectoryContent = true;    
+        if (in_array($node->getResourceType()->getName(), $check)) {
+            return;
+        }
+
+        $withDirectoryContent = true;
         $this->log("Copying {$node->getName()} from type {$node->getResourceType()->getName()}");
         $resource = $this->getResourceFromNode($node);
         $env = $this->container->get('kernel')->getEnvironment();
@@ -733,10 +734,10 @@ class ResourceManager
                 $message = 'The resource '.$node->getName().' was not found (node id is '.$node->getId().')';
                 $this->container->get('logger')->error($message);
 
- //               return;
+                return;
             } else {
                 //if something is malformed in production, try to not break everything if we don't need to. Just return null.
- //               return;
+                return;
             }
         }
         $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
@@ -759,15 +760,15 @@ class ResourceManager
         if ('directory' === $node->getResourceType()->getName() &&
             $withDirectoryContent) {
             $i = 1;
-	              $this->log('Copying '.count($node->getChildren()->toArray()).' resources for directory '.$node->getName());
+            $this->log('Copying '.count($node->getChildren()->toArray()).' resources for directory '.$node->getName());
 
             foreach ($node->getChildren() as $child) {
-		    $this->log('Loop for  '. $child->getName() . ':'. $child->getResourceType()->getName());
+                $this->log('Loop for  '.$child->getName().':'.$child->getResourceType()->getName());
 
-  //              if ($child->isActive()) {
-                    $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
-                    ++$i;
-   //             }
+                //              if ($child->isActive()) {
+                $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
+                ++$i;
+                //             }
             }
         }
 

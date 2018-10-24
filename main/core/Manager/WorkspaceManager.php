@@ -1301,7 +1301,7 @@ class WorkspaceManager
         $resourcesErrors = [];
         $this->log('Duplicating '.count($resourceNodes).' children...');
         foreach ($resourceNodes as $resourceNode) {
-           // try {
+            try {
                 $this->log('Duplicating '.$resourceNode->getName().' - '.$resourceNode->getId().' - from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
                 //activities will be removed anyway
                 //$bypass = ['activity'];
@@ -1327,7 +1327,7 @@ class WorkspaceManager
                         );
                     }
                 }
-          /* } catch (NotPopulatedEventException $e) {
+            } catch (NotPopulatedEventException $e) {
                 $resourcesErrors[] = [
                     'resourceName' => $resourceNode->getName(),
                     'resourceType' => $resourceNode->getResourceType()->getName(),
@@ -1335,7 +1335,7 @@ class WorkspaceManager
                     'error' => $e->getMessage(),
                 ];
                 continue;
-	   }*/
+            }
         }
 
         /*** Sets previous and next for each copied resource ***/

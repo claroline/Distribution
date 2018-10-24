@@ -272,10 +272,9 @@ class PathListener
         $resourcesCopy = [];
         foreach ($resources as $resourceNode) {
             $copy = $this->resourceManager->copy($resourceNode, $newParent, $user);
-	    if ($copy) {
-
+            if ($copy) {
                 $resourcesCopy[$resourceNode->getGuid()] = $copy->getResourceNode();
-	    }
+            }
         }
 
         return $resourcesCopy;
