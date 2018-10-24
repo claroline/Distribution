@@ -2,20 +2,20 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-const MainComponent = (props) =>
+const PdfComponent = (props) =>
   <div>
     MAIN
   </div>
 
 
-MainComponent.propTypes = {
+PdfComponent.propTypes = {
 }
 
-const Main = connect(
+const Pdf = connect(
   null,
   dispatch => ({ })
-)(MainComponent)
+)(PdfComponent)
 
 export {
-  Main
+  Pdf
 }

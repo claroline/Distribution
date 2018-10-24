@@ -23,7 +23,12 @@
 {% endblock %}
 
 {% block page_content %}
-  <div class="main-settings-container"/>
+  <div
+      class="main-settings-container"
+      data-parameters="{{ parameters | json_encode | raw | escape }}"
+      data-portal-resources="{{ portalResources | json_encode | raw | escape }}"
+      data-availables-locales="{{ availablesLocales | json_encode | raw | escape }}"
+  />
 {% endblock %}
 
 {% block javascripts %}

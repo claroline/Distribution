@@ -11,6 +11,9 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
+use Claroline\CoreBundle\Manager\LocaleManager;
+use Claroline\CoreBundle\Manager\PortalManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -22,6 +25,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class SettingsController extends Controller
 {
     /**
+     * SettingsController constructor.
+     *
+     * @DI\InjectParams({
+     *     "serializer"    = @DI\Inject("claroline.serializer.parameters"),
+     *     "localeManager" = @DI\Inject("claroline.manager.locale_manager"),
+     *     "portalManager" = @DI\Inject("claroline.manager.portal_manager")
+     * })
+     *
+     * @param SettingsController $serializer
+     */
+    public function __construct(
+        ParametersSerializer $serializer,
+        LocaleManager $localeManager,
+        PortalManager $portalManager
+    ) {
+        $this->serializer = $serializer;
+        $this->localeManager = $localeManager;
+        $this->portalManager = $portalManager;
+    }
+
+    /**
      * @EXT\Route("/main", name="claro_admin_main_settings")
      * @EXT\Template("ClarolineCoreBundle:administration/settings:main.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('main_settings')")
@@ -30,7 +54,11 @@ class SettingsController extends Controller
      */
     public function mainAction()
     {
-        return [];
+        return [
+            'parameters' => $this->serializer->serialize(),
+            'availablesLocales' => $this->localeManager->retrieveAvailableLocales(),
+            'portalResources' => $this->portalManager->getPortalEnabledResourceTypes(),
+        ];
     }
 
     /**
@@ -42,6 +70,8 @@ class SettingsController extends Controller
      */
     public function technicalAction()
     {
-        return [];
+        return [
+          'parameters' => $this->serializer->serialize(),
+        ];
     }
 }

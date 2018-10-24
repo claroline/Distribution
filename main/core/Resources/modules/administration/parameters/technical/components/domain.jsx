@@ -2,20 +2,20 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-const I18nComponent = (props) =>
+const DomainComponent = (props) =>
   <div>
     i18n
   </div>
 
 
-I18nComponent.propTypes = {
+DomainComponent.propTypes = {
 }
 
-const I18n = connect(
+const Domain = connect(
   null,
   dispatch => ({ })
-)(I18nComponent)
+)(DomainComponent)
 
 export {
-  I18n
+  Domain
 }

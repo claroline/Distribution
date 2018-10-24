@@ -2,20 +2,20 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-const PluginsComponent = (props) =>
+const LimitsComponent = (props) =>
   <div>
     plugins
   </div>
 
 
-PluginsComponent.propTypes = {
+LimitsComponent.propTypes = {
 }
 
-const Plugins = connect(
+const Limits = connect(
   null,
   dispatch => ({ })
-)(PluginsComponent)
+)(LimitsComponent)
 
 export {
-  Plugins
+  Limits
 }

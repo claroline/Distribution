@@ -1,7 +1,7 @@
-import {makeFormReducer} from '#/main/app/content/form/store/reducer'
+import {makeFormReducer, makeReducer} from '#/main/app/content/form/store/reducer'
 
 const reducer = {
-  parametersForm: makeFormReducer('parameters')
+  parameters: makeFormReducer('parameters')
 }
 
 export {

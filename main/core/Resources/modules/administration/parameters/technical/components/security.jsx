@@ -2,20 +2,20 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-const PortalComponent = (props) =>
+const SecurityComponent = (props) =>
   <div>
     portal
   </div>
 
 
-PortalComponent.propTypes = {
+SecurityComponent.propTypes = {
 }
 
-const Portal = connect(
+const Security = connect(
   null,
   dispatch => ({ })
-)(PortalComponent)
+)(SecurityComponent)
 
 export {
-  Portal
+  Security
 }
