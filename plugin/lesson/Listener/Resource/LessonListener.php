@@ -9,6 +9,7 @@ use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Icap\LessonBundle\Entity\Chapter;
 use Icap\LessonBundle\Entity\Lesson;
 use Icap\LessonBundle\Manager\ChapterManager;
 use Icap\LessonBundle\Repository\ChapterRepository;
@@ -129,8 +130,12 @@ class LessonListener
         $lesson = $event->getResource();
 
         $newLesson = new Lesson();
-        $newLesson->setName($lesson->getResourceNode()->getName());
+	$newLesson->setName($lesson->getResourceNode()->getName());
+        $newRoot = new Chapter();
+        $newRoot->setLesson($newLesson);
+	$newLesson->setRoot($newRoot);
 
+	$this->om->persist($newRoot);
         $this->om->persist($newLesson);
         $this->om->flush();
 
