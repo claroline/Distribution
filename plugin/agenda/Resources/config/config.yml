@@ -5,16 +5,17 @@ plugin:
           is_displayable_in_workspace: true
           is_displayable_in_desktop: true
           class: calendar-o
+          desktop_category: user
 
     data_sources:
         - name: events
           type: list
-          context: [workspace, desktop]
+          context: [workspace, desktop, home]
           tags: [agenda]
 
         - name: tasks
           type: list
-          context: [workspace, desktop]
+          context: [workspace, desktop, home]
           tags: [agenda]
 
     #widgets:

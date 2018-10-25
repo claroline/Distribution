@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,9 +20,30 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 /**
  * This controller is used to do some redirects/route alias. It's not always possible to do it
  * in the concerned controller because path do have prefixes we want to remove/override sometimes.
+ *
+ * @EXT\Route("/", options={"expose"=true})
  */
 class RedirectController extends Controller
 {
+    /**
+     * Renders a resource application. Used for old links compatibility.
+     *
+     * @EXT\Route("/resource/open/{node}", name="claro_resource_open_short")
+     * @EXT\Route("/resource/open/{resourceType}/{node}", name="claro_resource_open")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("resourceNode", class="ClarolineCoreBundle:Resource\ResourceNode", options={"mapping": {"node": "id"}})
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return RedirectResponse
+     */
+    public function openResourceAction(ResourceNode $resourceNode)
+    {
+        return $this->redirectToRoute('claro_resource_show', [
+            'id' => $resourceNode->getUuid(),
+        ]);
+    }
+
     /**
      * @EXT\Route("ws/{slug}/")
      * @EXT\Route("ws/{slug}")
@@ -39,11 +61,7 @@ class RedirectController extends Controller
     }
 
     /**
-     * @EXT\Route(
-     *     "ws/{slug}/subscription",
-     *     name="claro_workspace_subscription_url_generate",
-     *     options={"expose"=true}
-     * )
+     * @EXT\Route("ws/{slug}/subscription", name="claro_workspace_subscription_url_generate")
      * @EXT\ParamConverter("workspace", options={"mapping": {"slug": "slug"}})
      *
      * @param Workspace $workspace
