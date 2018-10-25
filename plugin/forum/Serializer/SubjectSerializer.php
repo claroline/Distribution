@@ -163,6 +163,7 @@ class SubjectSerializer
         $this->sipe('meta.sticky', 'setSticked', $data, $subject);
         $this->sipe('meta.closed', 'setClosed', $data, $subject);
         $this->sipe('meta.flagged', 'setFlagged', $data, $subject);
+        $this->sipe('meta.moderation', 'setModerated', $data, $subject);
 
         if (isset($data['content'])) {
             if (!$first) {
