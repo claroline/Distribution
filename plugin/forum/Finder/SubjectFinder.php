@@ -53,6 +53,11 @@ class SubjectFinder extends AbstractFinder
                     $qb->andWhere("creator.username LIKE :{$filterName}");
                     $qb->setParameter($filterName, '%'.$filterValue.'%');
                     break;
+                case 'creatorId':
+                    $qb->join('obj.creator', 'creator');
+                    $qb->andWhere("creator.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
                 case 'tags':
                     $qb->andWhere("obj.uuid IN (
                         SELECT to.objectId

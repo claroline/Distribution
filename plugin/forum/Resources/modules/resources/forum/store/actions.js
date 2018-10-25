@@ -53,6 +53,7 @@ actions.unLockUser = (userId, forumId) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData(select.STORE_NAME+'.moderation.blockedMessages'))
+      dispatch(listActions.invalidateData(select.STORE_NAME+'.moderation.blockedSubjects'))
     }
   }
 })
