@@ -21,6 +21,19 @@ const UrlForm = () =>
             label: trans('url'),
             type: 'url',
             required: true
+          },
+          {
+            name: 'mode',
+            label: trans('mode'),
+            type: 'choice',
+            required: true,
+            options: {
+              choices: {
+                'iframe': 'iframe',
+                'redirect': 'redirect',
+                'tab': 'tab'
+              }
+            }
           }
         ]
       }

@@ -12,11 +12,20 @@ use HeVinci\UrlBundle\Validator\Constraints as UrlAssert;
  */
 class Url extends AbstractResource
 {
+    const OPEN_IFRAME = 'iframe';
+    const OPEN_REDIRECT = 'redirect';
+    const OPEN_TAB = 'tab';
+
     /**
      * @ORM\Column(name="url", length=255)
      * @UrlAssert\ReachableUrl
      */
     protected $url;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $mode = 'redirect';
 
     /**
      * @ORM\Column(type="boolean", name="internal_url")
@@ -41,5 +50,15 @@ class Url extends AbstractResource
     public function getInternalUrl()
     {
         return $this->internalUrl;
+    }
+
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+
+    public function getMode()
+    {
+        return $this->mode;
     }
 }

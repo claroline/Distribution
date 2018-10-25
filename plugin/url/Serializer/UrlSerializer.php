@@ -19,6 +19,7 @@ class UrlSerializer
         return [
             'id' => $url->getId(),
             'url' => $url->getUrl(),
+            'mode' => null !== $url->getMode() && '' !== $url->getMode() ? $url->getMode() : 'redirect',
         ];
     }
 
@@ -30,6 +31,7 @@ class UrlSerializer
     public function deserialize($data, Url $url)
     {
         $this->sipe('url', 'setUrl', $data, $url);
+        $this->sipe('mode', 'setMode', $data, $url);
 
         return $url;
     }
