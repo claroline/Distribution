@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\WebResourceBundle\Manager\WebResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
@@ -41,6 +42,9 @@ class WebResourceListener
     /** @var WebResourceManager */
     private $webResourceManager;
 
+    /** @var ResourceManager */
+    private $resourceManager;
+
     /**
      * WebResourceListener constructor.
      *
@@ -49,12 +53,14 @@ class WebResourceListener
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "uploadDir"          = @DI\Inject("%claroline.param.uploads_directory%"),
      *     "serializer"         = @DI\Inject("claroline.api.serializer"),
-     *     "webResourceManager" = @DI\Inject("claroline.manager.web_resource_manager")
+     *     "webResourceManager" = @DI\Inject("claroline.manager.web_resource_manager"),
+     *     "resourceManager"    = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
      * @param string             $filesDir
      * @param ObjectManager      $om
      * @param string             $uploadDir
+     * @param ResourceManager    $resourceManager
      * @param WebResourceManager $webResourceManager
      */
     public function __construct(
@@ -62,6 +68,7 @@ class WebResourceListener
         ObjectManager $om,
         $uploadDir,
         WebResourceManager $webResourceManager,
+        ResourceManager $resourceManager,
         SerializerProvider $serializer
     ) {
         $this->filesDir = $filesDir;
@@ -69,6 +76,7 @@ class WebResourceListener
         $this->uploadDir = $uploadDir;
         $this->webResourceManager = $webResourceManager;
         $this->serializer = $serializer;
+        $this->resourceManager = $resourceManager;
     }
 
     /**
@@ -86,6 +94,11 @@ class WebResourceListener
         $workspace = $resource->getResourceNode()->getWorkspace();
         $unzippedPath = $this->uploadDir.$ds.'webresource'.$ds.$workspace->getUuid();
         $srcPath = 'uploads'.$ds.'webresource'.$ds.$workspace->getUuid().$ds.$hash;
+
+        if (!is_dir($srcPath)) {
+            $this->webResourceManager->unzip($hash, $workspace);
+        }
+
         $event->setData([
           'path' => rtrim($srcPath.$ds.$this->webResourceManager->guessRootFileFromUnzipped($unzippedPath.$ds.$hash), '/'),
           // common file data
@@ -218,24 +231,17 @@ class WebResourceListener
      */
     public function onFileChange(ResourceActionEvent $event)
     {
-        $files = $event->getFiles();
+        $parameters = $event->getData();
         $node = $event->getResourceNode();
 
-        $file = isset($files['file']) ? $files['file'] : null;
+        $resource = $this->resourceManager->getResourceFromNode($node);
 
-        if ($file) {
-            $publicFile = $this->fileUtils->createFile($file, null, ResourceNode::class, $node->getUuid());
-            $resource = $this->resourceManager->getResourceFromNode($node);
-
-            if ($resource && $publicFile) {
-                $this->om->persist($publicFile);
-                $resource->setHashName($publicFile->getUrl());
-                $resource->setMimeType($publicFile->getMimeType());
-                $resource->setSize($publicFile->getSize());
-                $this->om->persist($resource);
-                $this->om->flush();
-            }
+        if ($resource) {
+            $resource->setHashName($parameters['file']['hashName']);
+            $this->om->persist($resource);
+            $this->om->flush();
         }
+
         $event->setResponse(new JsonResponse($this->serializer->serialize($node)));
     }
 }
