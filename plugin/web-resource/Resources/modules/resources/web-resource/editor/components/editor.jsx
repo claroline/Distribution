@@ -4,19 +4,18 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
-import {selectors} from '#/plugin/web-resource/resources/web-resource/editor/store'
+import {selectors} from '#/plugin/web-resource/resources/web-resource/editor/store/selectors'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 const WebResourceForm = props =>
   <FormData
     level={5}
-    name={selectors.STORE_NAME}
-    dataPart={selectors.FORM_RESOURCE_PART}
+    name={selectors.FORM_NAME}
     buttons={true}
     save={{
       type: CALLBACK_BUTTON,
-      callback: () => props.saveForm(props.resource.id)
+      callback: () => props.saveForm(props.node)
     }}
     cancel={{
       type: LINK_BUTTON,
@@ -48,14 +47,14 @@ const WebResourceForm = props =>
 WebResourceForm.propTypes = {
   update: T.func.isRequired,
   workspaceId: T.string.isRequired,
-  resource: T.object.isRequired,
+  node: T.object.isRequired,
   saveForm: T.func.isRequired
 }
 
 const WebResourceEdit = connect(
   state => ({
     workspaceId: state.resourceNode.workspace.id,
-    resource: state.resource
+    node: state.resourceNode
   }),
   (dispatch) => ({
     update(data) {
@@ -64,8 +63,8 @@ const WebResourceEdit = connect(
       dispatch(formActions.updateProp(selectors.STORE_NAME, 'hashName', data.hashName))
 
     },
-    saveForm(resourceId) {
-      dispatch(formActions.saveForm(selectors.FORM_NAME, ['apiv2_webresource_update', {id: resourceId}]))
+    saveForm(node) {
+      dispatch(formActions.saveForm(selectors.FORM_NAME, ['claro_resource_action_short', {action: 'change_file', id: node.id}]))
     }
   })
 )(WebResourceForm)

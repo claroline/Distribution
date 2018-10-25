@@ -18,9 +18,11 @@ use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
+use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Claroline\WebResourceBundle\Manager\WebResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @DI\Service("claroline.listener.web_resource_listener")
@@ -85,7 +87,7 @@ class WebResourceListener
         $unzippedPath = $this->uploadDir.$ds.'webresource'.$ds.$workspace->getUuid();
         $srcPath = 'uploads'.$ds.'webresource'.$ds.$workspace->getUuid().$ds.$hash;
         $event->setData([
-          'path' => $srcPath.$ds.$this->webResourceManager->guessRootFileFromUnzipped($unzippedPath.$ds.$hash),
+          'path' => rtrim($srcPath.$ds.$this->webResourceManager->guessRootFileFromUnzipped($unzippedPath.$ds.$hash), '/'),
           // common file data
           'file' => $this->serializer->serialize($resource),
         ]);
@@ -205,5 +207,35 @@ class WebResourceListener
             }
         }
         rmdir($dirPath);
+    }
+
+    /**
+     * Changes actual file associated to File resource.
+     *
+     * @DI\Observe("resource.claroline_web_resource.change_file")
+     *
+     * @param ResourceActionEvent $event
+     */
+    public function onFileChange(ResourceActionEvent $event)
+    {
+        $files = $event->getFiles();
+        $node = $event->getResourceNode();
+
+        $file = isset($files['file']) ? $files['file'] : null;
+
+        if ($file) {
+            $publicFile = $this->fileUtils->createFile($file, null, ResourceNode::class, $node->getUuid());
+            $resource = $this->resourceManager->getResourceFromNode($node);
+
+            if ($resource && $publicFile) {
+                $this->om->persist($publicFile);
+                $resource->setHashName($publicFile->getUrl());
+                $resource->setMimeType($publicFile->getMimeType());
+                $resource->setSize($publicFile->getSize());
+                $this->om->persist($resource);
+                $this->om->flush();
+            }
+        }
+        $event->setResponse(new JsonResponse($this->serializer->serialize($node)));
     }
 }
