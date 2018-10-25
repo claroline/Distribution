@@ -44,8 +44,8 @@ class MessageCommentsComponent extends Component {
   createNewComment(messageId, comment) {
     this.props.createComment(messageId, comment, this.props.forum.moderation)
     this.setState({showNewCommentForm: null})
-    if (this.props.forum.moderation === 'PRIOR_ALL' ||
-    this.props.forum.moderation === 'PRIOR_ONCE' ) {
+
+    if (this.props.forum.moderation === 'PRIOR_ALL' || (this.props.forum.moderation === 'PRIOR_ONCE' && !this.props.isValidatedUser)) {
       this.props.showModal(MODAL_ALERT, {
         title: trans('moderated_posts', {}, 'forum'),
         message: trans('moderated_posts_explanation', {}, 'forum'),
@@ -176,16 +176,19 @@ MessageCommentsComponent.propTypes = {
   createComment: T.func.isRequired,
   showModal: T.func,
   bannedUser: T.bool.isRequired,
-  moderator: T.bool.isRequired
+  moderator: T.bool.isRequired,
+  isValidatedUser: T.bool.isRequired
 }
 
 MessageCommentsComponent.defaultProps = {
-  bannedUser: true
+  bannedUser: true,
+  isValidatedUser: false
 }
 
 const MessageComments =  withModal(connect(
   state => ({
     forum: select.forum(state),
+    isValidatedUser: select.isValidatedUser(state),
     subject: select.subject(state),
     bannedUser: select.bannedUser(state),
     moderator: select.moderator(state)
