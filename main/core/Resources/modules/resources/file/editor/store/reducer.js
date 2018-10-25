@@ -9,7 +9,6 @@ const reducer = {
   fileForm: makeFormReducer(selectors.FORM_NAME, {}, {
     data: makeReducer({}, {
       [RESOURCE_LOAD]: (state, action) => {
-        console.log('magix')
         action.resourceData.file
       }
     }),
