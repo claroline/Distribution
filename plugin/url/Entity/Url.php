@@ -32,6 +32,11 @@ class Url extends AbstractResource
      */
     protected $internalUrl = false;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $ratio = 56.25;
+
     public function setUrl($url)
     {
         $this->url = $url;
@@ -60,5 +65,15 @@ class Url extends AbstractResource
     public function getMode()
     {
         return $this->mode;
+    }
+
+    public function setRatio($ratio)
+    {
+        $this->ratio = $ratio;
+    }
+
+    public function getRatio()
+    {
+        return $this->ratio;
     }
 }

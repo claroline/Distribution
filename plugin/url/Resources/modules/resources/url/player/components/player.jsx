@@ -16,8 +16,20 @@ const PlayerComponent = props => {
   }
 
   return (
-    <div>
-      <iframe src={props.url.url}/>
+    <div
+      className="content-container claro-iframe-content-container"
+      style={props.url.ratio ?
+        {
+          position: 'relative',
+          paddingBottom: `${props.url.ratio}%`
+        } :
+        {}
+      }
+    >
+      <iframe
+        className="claro-iframe"
+        src={props.url.url}
+      />
     </div>
   )
 }
@@ -26,7 +38,8 @@ PlayerComponent.propTypes = {
   url: T.shape({
     'id': T.number.isRequired,
     'url': T.string.isRequired,
-    'mode': T.string.isRequired
+    'mode': T.string.isRequired,
+    'ratio': T.number.isRequired
   }).isRequired
 }
 
