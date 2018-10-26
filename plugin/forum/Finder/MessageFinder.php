@@ -65,6 +65,11 @@ class MessageFinder extends AbstractFinder
                     $qb->andWhere("creator.username LIKE :{$filterName}");
                     $qb->setParameter($filterName, '%'.$filterValue.'%');
                     break;
+                case 'creatorId':
+                    $qb->join('obj.creator', 'creator');
+                    $qb->andWhere("creator.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
                 case 'createdAfter':
                     $qb->andWhere("obj.creationDate >= :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
@@ -90,6 +95,15 @@ class MessageFinder extends AbstractFinder
                     $qb->join('node.workspace', 'w');
                     $qb->andWhere("w.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'anonymous':
+                    $qb->join('obj.subject', 'sf');
+                    $qb->join('sf.forum', 'forum');
+                    $qb->join('forum.resourceNode', 'node');
+                    $qb->join('node.rights', 'rights');
+                    $qb->join('rights.role', 'role');
+                    $qb->andWhere("role.name = 'ROLE_ANONYMOUS'");
+                    $qb->andWhere('BIT_AND(rights.mask, 1) = 1');
                     break;
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);

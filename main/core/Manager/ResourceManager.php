@@ -24,7 +24,6 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\Exception\ExportResourceException;
@@ -33,11 +32,9 @@ use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\RightsException;
 use Claroline\CoreBundle\Manager\Exception\WrongClassException;
-use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Repository\DirectoryRepository;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
-use Claroline\CoreBundle\Repository\ResourceRightsRepository;
 use Claroline\CoreBundle\Repository\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\RoleRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -67,18 +64,13 @@ class ResourceManager
     private $resourceTypeRepo;
     /** @var ResourceNodeRepository */
     private $resourceNodeRepo;
-    /** @var ResourceRightsRepository */
-    private $resourceRightsRepo;
 
-    private $shortcutRepo;
     /** @var RoleRepository */
     private $roleRepo;
     /** @var DirectoryRepository */
     private $directoryRepo;
     /** @var RoleManager */
     private $roleManager;
-    /** @var MaskManager */
-    private $maskManager;
     /** @var StrictDispatcher */
     private $dispatcher;
     /** @var ObjectManager */
@@ -100,7 +92,6 @@ class ResourceManager
      *
      * @DI\InjectParams({
      *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
-     *     "maskManager"           = @DI\Inject("claroline.manager.mask_manager"),
      *     "container"             = @DI\Inject("service_container"),
      *     "rightsManager"         = @DI\Inject("claroline.manager.rights_manager"),
      *     "dispatcher"            = @DI\Inject("claroline.event.event_dispatcher"),
@@ -118,7 +109,6 @@ class ResourceManager
      * @param ObjectManager                $om
      * @param ClaroUtilities               $ut
      * @param Utilities                    $secut
-     * @param MaskManager                  $maskManager
      * @param TranslatorInterface          $translator
      * @param PlatformConfigurationHandler $platformConfigHandler
      */
@@ -130,7 +120,6 @@ class ResourceManager
         ObjectManager $om,
         ClaroUtilities $ut,
         Utilities $secut,
-        MaskManager $maskManager,
         TranslatorInterface $translator,
         PlatformConfigurationHandler $platformConfigHandler
     ) {
@@ -138,7 +127,6 @@ class ResourceManager
 
         $this->roleManager = $roleManager;
         $this->rightsManager = $rightsManager;
-        $this->maskManager = $maskManager;
         $this->dispatcher = $dispatcher;
         $this->ut = $ut;
         $this->secut = $secut;
@@ -149,10 +137,13 @@ class ResourceManager
 
         $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
         $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
-        $this->resourceRightsRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceRights');
         $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
-        $this->shortcutRepo = $om->getRepository('ClarolineLinkBundle:Resource\Shortcut');
         $this->directoryRepo = $om->getRepository('ClarolineCoreBundle:Resource\Directory');
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -199,10 +190,8 @@ class ResourceManager
         $node->setName($resource->getName());
         $node->setCreator($creator);
 
-        if (!$workspace && $parent) {
-            if ($parent->getWorkspace()) {
-                $workspace = $parent->getWorkspace();
-            }
+        if (!$workspace && $parent && $parent->getWorkspace()) {
+            $workspace = $parent->getWorkspace();
         }
 
         if ($workspace) {
@@ -667,34 +656,6 @@ class ResourceManager
     }
 
     /**
-     * Builds an array used by the query builder from the query parameters.
-     *
-     * @see filterAction from ResourceController
-     *
-     * @param array $queryParameters
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    public function buildSearchArray($queryParameters)
-    {
-        $allowedStringCriteria = ['name', 'dateFrom', 'dateTo'];
-        $allowedArrayCriteria = ['types'];
-        $criteria = [];
-
-        foreach ($queryParameters as $parameter => $value) {
-            if (in_array($parameter, $allowedStringCriteria) && is_string($value)) {
-                $criteria[$parameter] = $value;
-            } elseif (in_array($parameter, $allowedArrayCriteria) && is_array($value)) {
-                $criteria[$parameter] = $value;
-            }
-        }
-
-        return $criteria;
-    }
-
-    /**
      * Copies a resource in a directory.
      *
      * @param ResourceNode $node
@@ -718,6 +679,13 @@ class ResourceManager
         $withDirectoryContent = true,
         array $rights = []
     ) {
+        $check = ['activity', 'claroline_scorm_12', 'claroline_scorm_2004'];
+
+        if (in_array($node->getResourceType()->getName(), $check)) {
+            return;
+        }
+
+        $withDirectoryContent = true;
         $this->log("Copying {$node->getName()} from type {$node->getResourceType()->getName()}");
         $resource = $this->getResourceFromNode($node);
         $env = $this->container->get('kernel')->getEnvironment();
@@ -753,12 +721,15 @@ class ResourceManager
         if ('directory' === $node->getResourceType()->getName() &&
             $withDirectoryContent) {
             $i = 1;
+            $this->log('Copying '.count($node->getChildren()->toArray()).' resources for directory '.$node->getName());
 
             foreach ($node->getChildren() as $child) {
-                if ($child->isActive()) {
-                    $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
-                    ++$i;
-                }
+                $this->log('Loop for  '.$child->getName().':'.$child->getResourceType()->getName());
+
+                //              if ($child->isActive()) {
+                $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
+                ++$i;
+                //             }
             }
         }
 
@@ -828,12 +799,11 @@ class ResourceManager
 
         $workspace = $resourceNode->getWorkspace();
         $nodes = $this->getDescendants($resourceNode);
-        $count = count($nodes);
         $nodes[] = $resourceNode;
         $softDelete = $this->platformConfigHandler->getParameter('resource_soft_delete');
 
         $this->om->startFlushSuite();
-        $this->log('Looping through '.$count.' children...');
+        $this->log('Looping through '.count($nodes).' children...');
         foreach ($nodes as $node) {
             $eventSoftDelete = false;
             $this->log('Removing '.$node->getName().'['.$node->getResourceType()->getName().':id:'.$node->getId().']');
@@ -1196,16 +1166,6 @@ class ResourceManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\User $user
-     *
-     * @return array
-     */
-    public function getRoots(User $user)
-    {
-        return $this->resourceNodeRepo->findWorkspaceRootsByUser($user);
-    }
-
-    /**
      * @param Workspace $workspace
      *
      * @return ResourceNode
@@ -1213,16 +1173,6 @@ class ResourceManager
     public function getWorkspaceRoot(Workspace $workspace)
     {
         return $this->resourceNodeRepo->findWorkspaceRoot($workspace);
-    }
-
-    /**
-     * @param ResourceNode $node
-     *
-     * @return array
-     */
-    public function getAncestors(ResourceNode $node)
-    {
-        return $this->resourceNodeRepo->findAncestors($node);
     }
 
     /**
@@ -1246,17 +1196,6 @@ class ResourceManager
 
     /**
      * @param ResourceNode $node
-     * @param bool         $includeStartNode
-     *
-     * @return array
-     */
-    public function getAllChildren(ResourceNode $node, $includeStartNode)
-    {
-        return $this->resourceNodeRepo->getChildren($node, $includeStartNode, 'path', 'DESC');
-    }
-
-    /**
-     * @param ResourceNode $node
      *
      * @return array
      */
@@ -1275,44 +1214,6 @@ class ResourceManager
     public function getByMimeTypeAndParent($mimeType, ResourceNode $parent, array $roles)
     {
         return $this->resourceNodeRepo->findByMimeTypeAndParent($mimeType, $parent, $roles);
-    }
-
-    /**
-     * Find all the nodes wich mach the search criteria.
-     * The search array must have the following structure (its array keys aren't required).
-     *
-     * array(
-     *     'types' => array('typename1', 'typename2'),
-     *     'roots' => array('rootpath1', 'rootpath2'),
-     *     'dateFrom' => 'date',
-     *     'dateTo' => 'date',
-     *     'name' => 'name',
-     *     'isExportable' => 'bool'
-     * )
-     *
-     *
-     * @param array           $criteria
-     * @param string[]|Role[] $userRoles
-     *
-     * @return array
-     *
-     * @deprecated use finder instead
-     */
-    public function getByCriteria(array $criteria, array $userRoles = null)
-    {
-        return $this->resourceNodeRepo->findByCriteria($criteria, $userRoles);
-    }
-
-    /**
-     * @todo define the array content
-     *
-     * @param array $nodesIds
-     *
-     * @return array
-     */
-    public function getWorkspaceInfoByIds(array $nodesIds)
-    {
-        return $this->resourceNodeRepo->findWorkspaceInfoByIds($nodesIds);
     }
 
     /**
@@ -1380,20 +1281,6 @@ class ResourceManager
             $ids,
             $orderStrict
         );
-
-        return $nodes;
-    }
-
-    /**
-     * @param int[] $ids
-     *
-     * @return ResourceNode[]
-     *
-     * @deprecated I think...
-     */
-    public function getByIdsLevelOrder(array $ids)
-    {
-        $nodes = $this->resourceNodeRepo->findBy(['id' => $ids], ['lvl' => 'ASC']);
 
         return $nodes;
     }
@@ -1702,48 +1589,6 @@ class ResourceManager
         return $publicDir;
     }
 
-    /**
-     * Returns the list of file upload destination choices.
-     *
-     * @param Workspace $workspace
-     *
-     * @return array
-     */
-    public function getDefaultUploadDestinations(Workspace $workspace = null)
-    {
-        /** @var User $user */
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        if ('anon.' === $user) {
-            return [];
-        }
-
-        $pws = $user->getPersonalWorkspace();
-        $defaults = [];
-
-        if ($pws) {
-            $defaults = array_merge(
-                $defaults,
-                $this->directoryRepo->findDefaultUploadDirectories($pws)
-            );
-        }
-
-        if ($workspace) {
-            $directories = array_filter($this->directoryRepo->findDefaultUploadDirectories($workspace), function (ResourceNode $node) {
-                $collection = new ResourceCollection([$node]);
-                $collection->setAttributes(['type' => 'file']);
-
-                return $this->container->get('security.authorization_checker')->isGranted('CREATE', $collection);
-            });
-
-            $defaults = array_merge(
-                $defaults,
-                $directories
-            );
-        }
-
-        return $defaults;
-    }
-
     public function getLastIndex(ResourceNode $parent)
     {
         try {
@@ -1833,17 +1678,23 @@ class ResourceManager
         $lines = str_getcsv($data, PHP_EOL);
         $this->om->startFlushSuite();
         $i = 0;
-        $resourceType = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName('directory');
+
+        /** @var ResourceType $resourceType */
+        $resourceType = $this->resourceTypeRepo->findOneBy(['name' => 'directory']);
 
         foreach ($lines as $line) {
             $values = str_getcsv($line, ';');
             $code = $values[0];
-            $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
+
+            /** @var Workspace $workspace */
+            $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['code' => $code]);
 
             $name = $values[1];
-            $directory = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->findOneBy(
-                ['workspace' => $workspace, 'name' => $name, 'resourceType' => $resourceType]
-            );
+            $directory = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->findOneBy([
+                'workspace' => $workspace,
+                'name' => $name,
+                'resourceType' => $resourceType,
+            ]);
             if (!$directory) {
                 $directory = new Directory();
                 $directory->setName($name);
@@ -1857,17 +1708,12 @@ class ResourceManager
             if (0 === $i % 100) {
                 $this->om->forceFlush();
                 $this->om->clear();
-                $resourceType = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName('directory');
+                $resourceType = $this->resourceTypeRepo->findOneBy(['name' => 'directory']);
                 $this->om->merge($resourceType);
             }
         }
 
         $this->om->endFlushSuite();
-    }
-
-    public function getResourcesByIds(array $roles, $user, array $ids)
-    {
-        return count($ids) > 0 ? $this->resourceNodeRepo->findResourcesByIds($roles, $user, $ids) : [];
     }
 
     /**
@@ -1942,10 +1788,5 @@ class ResourceManager
     public function isManager(ResourceNode $resourceNode)
     {
         return $this->rightsManager->isManager($resourceNode);
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
     }
 }
