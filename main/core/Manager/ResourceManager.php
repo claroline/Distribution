@@ -24,7 +24,6 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\Exception\ExportResourceException;
@@ -680,6 +679,13 @@ class ResourceManager
         $withDirectoryContent = true,
         array $rights = []
     ) {
+        $check = ['activity', 'claroline_scorm_12', 'claroline_scorm_2004'];
+
+        if (in_array($node->getResourceType()->getName(), $check)) {
+            return;
+        }
+
+        $withDirectoryContent = true;
         $this->log("Copying {$node->getName()} from type {$node->getResourceType()->getName()}");
         $resource = $this->getResourceFromNode($node);
         $env = $this->container->get('kernel')->getEnvironment();
@@ -715,12 +721,15 @@ class ResourceManager
         if ('directory' === $node->getResourceType()->getName() &&
             $withDirectoryContent) {
             $i = 1;
+            $this->log('Copying '.count($node->getChildren()->toArray()).' resources for directory '.$node->getName());
 
             foreach ($node->getChildren() as $child) {
-                if ($child->isActive()) {
-                    $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
-                    ++$i;
-                }
+                $this->log('Loop for  '.$child->getName().':'.$child->getResourceType()->getName());
+
+                //              if ($child->isActive()) {
+                $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
+                ++$i;
+                //             }
             }
         }
 
@@ -1578,48 +1587,6 @@ class ResourceManager
         );
 
         return $publicDir;
-    }
-
-    /**
-     * Returns the list of file upload destination choices.
-     *
-     * @param Workspace $workspace
-     *
-     * @return array
-     */
-    public function getDefaultUploadDestinations(Workspace $workspace = null)
-    {
-        /** @var User $user */
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        if ('anon.' === $user) {
-            return [];
-        }
-
-        $pws = $user->getPersonalWorkspace();
-        $defaults = [];
-
-        if ($pws) {
-            $defaults = array_merge(
-                $defaults,
-                $this->directoryRepo->findDefaultUploadDirectories($pws)
-            );
-        }
-
-        if ($workspace) {
-            $directories = array_filter($this->directoryRepo->findDefaultUploadDirectories($workspace), function (ResourceNode $node) {
-                $collection = new ResourceCollection([$node]);
-                $collection->setAttributes(['type' => 'file']);
-
-                return $this->container->get('security.authorization_checker')->isGranted('CREATE', $collection);
-            });
-
-            $defaults = array_merge(
-                $defaults,
-                $directories
-            );
-        }
-
-        return $defaults;
     }
 
     public function getLastIndex(ResourceNode $parent)
