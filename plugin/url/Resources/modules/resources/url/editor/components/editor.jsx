@@ -42,29 +42,29 @@ const UrlForm = props =>
                 'tab': 'tab'
               }
             }
-          }//,
-          // {
-          //   name: 'ratioList',
-          //   type: 'choice',
-          //   displayed: url => url.mode === 'iframe',
-          //   label: trans('display_ratio_list', {}, 'scorm'),
-          //   options: {
-          //     multiple: false,
-          //     condensed: false,
-          //     choices: constants.DISPLAY_RATIO_LIST
-          //   },
-          //   onChange: (ratio) => props.updateProp('ratio', parseFloat(ratio))
-          // }, {
-          //   name: 'ratio',
-          //   type: 'number',
-          //   displayed: url => url.mode === 'iframe',
-          //   label: trans('display_ratio', {}, 'scorm'),
-          //   options: {
-          //     min: 0,
-          //     unit: '%'
-          //   },
-          //   onChange: () => props.updateProp('ratioList', null)
-          // }
+          },
+          {
+            name: 'ratioList',
+            type: 'choice',
+            displayed: url => url.mode === 'iframe',
+            label: trans('display_ratio_list', {}, 'scorm'),
+            options: {
+              multiple: false,
+              condensed: false,
+              choices: constants.DISPLAY_RATIO_LIST
+            },
+            onChange: (ratio) => props.updateProp('ratio', parseFloat(ratio))
+          }, {
+            name: 'ratio',
+            type: 'number',
+            displayed: url => url.mode === 'iframe',
+            label: trans('display_ratio', {}, 'scorm'),
+            options: {
+              min: 0,
+              unit: '%'
+            },
+            onChange: () => props.updateProp('ratioList', null)
+          }
         ]
       }
     ]}
@@ -80,12 +80,12 @@ UrlForm.propTypes = {
 const Editor = connect(
   (state) => ({
     url: selectors.url(state)
-  })/*,
+  }),
   (dispatch) => ({
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(selectors.FORM_NAME, propName, propValue))
     }
-  })*/
+  })
 )(UrlForm)
 
 export {

@@ -1,12 +1,10 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors} from '#/main/core/resource/modals/creation/store'
 import {constants} from '#/plugin/scorm/resources/scorm/constants'
-import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 const UrlForm = props =>
   <FormData
@@ -40,7 +38,7 @@ const UrlForm = props =>
           {
             name: 'ratioList',
             type: 'choice',
-            displayed: url => url.mode === 'iframe',
+            displayed: url => url && url.mode === 'iframe',
             label: trans('display_ratio_list', {}, 'scorm'),
             options: {
               multiple: false,
@@ -48,10 +46,10 @@ const UrlForm = props =>
               choices: constants.DISPLAY_RATIO_LIST
             },
             onChange: (ratio) => props.updateProp('ratio', parseFloat(ratio))
-          }, {
+          },{
             name: 'ratio',
             type: 'number',
-            displayed: url => url.mode === 'iframe',
+            displayed: url => url && url.mode === 'iframe',
             label: trans('display_ratio', {}, 'scorm'),
             options: {
               min: 0,
@@ -71,17 +69,6 @@ UrlForm.propTypes = {
   updateProp: T.func.isRequired
 }
 
-const UrlCreation = connect(
-  (state) => ({
-    newNode: selectors.newNode(state)
-  }),
-  (dispatch) => ({
-    updateProp(propName, propValue) {
-      dispatch(formActions.updateProp(selectors.STORE_NAME, propName, propValue))
-    }
-  })
-)(UrlForm)
-
 export {
-  UrlCreation
+  UrlForm
 }
