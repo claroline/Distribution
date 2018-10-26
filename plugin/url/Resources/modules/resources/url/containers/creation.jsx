@@ -12,7 +12,7 @@ const UrlCreation = connect(
     updateProp(propName, propValue) {
       dispatch(
         formActions.updateProp(
-          selectors.STORE_NAME+'.'+selectors.FORM_RESOURCE_PART, propName, propValue
+          selectors.STORE_NAME, selectors.FORM_RESOURCE_PART+'.'+propName, propValue
         )
       )
     }

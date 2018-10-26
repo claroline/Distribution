@@ -45,7 +45,9 @@ const UrlForm = props =>
               condensed: false,
               choices: constants.DISPLAY_RATIO_LIST
             },
-            onChange: (ratio) => props.updateProp('ratio', parseFloat(ratio))
+            onChange: (ratio) => {
+              props.updateProp('ratio', parseFloat(ratio))
+            }
           },{
             name: 'ratio',
             type: 'number',
