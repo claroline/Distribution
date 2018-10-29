@@ -810,9 +810,14 @@ class ResourceManager
             $resource = $this->getResourceFromNode($node);
             /*
              * resChild can be null if a shortcut was removed
+             *
+             * activities must be ignored atm
              */
+
+            $ignore = ['activity'];
+
             if (null !== $resource) {
-                if (!$softDelete) {
+                if (!$softDelete && !in_array($node->getResourceType()->getName(), $ignore)) {
                     $event = $this->dispatcher->dispatch(
                         "delete_{$node->getResourceType()->getName()}",
                         'Resource\DeleteResource',
