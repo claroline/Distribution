@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {selectors} from '#/main/core/resources/file/editor/store/selectors'
 
 // TODO : find a way to make this kind of component generic (duplicated for all apps coming from dynamic loading)
@@ -21,6 +20,7 @@ class Editor extends Component {
   }
 
   render() {
+    //bad.
     return (
       <FormData
         level={5}
