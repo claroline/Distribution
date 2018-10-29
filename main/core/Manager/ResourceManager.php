@@ -1312,12 +1312,12 @@ class ResourceManager
      */
     public function getResourceFromNode(ResourceNode $node)
     {
-        /* @var AbstractResource $resource */
-        if ($this->om->getMetadataFactory()->isTransient($node->getClass())) {
+        try {
+            /* @var AbstractResource $resource */
             $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
 
             return $resource;
-        } else {
+        } catch (Doctrine\Common\Persistence\Mapping\MappingException $e) {
             $this->log('class '.$node->getClass().' doesnt exists', 'error');
         }
     }
