@@ -54,10 +54,16 @@ class SettingsController extends Controller
      */
     public function mainAction()
     {
+        $portalResources = $this->portalManager->getPortalEnabledResourceTypes();
+        $portalChoices = [];
+        foreach ($portalResources as $portalResource) {
+            $portalChoices[$portalResource] = $portalResource;
+        }
+
         return [
             'parameters' => $this->serializer->serialize(),
             'availablesLocales' => $this->localeManager->retrieveAvailableLocales(),
-            'portalResources' => $this->portalManager->getPortalEnabledResourceTypes(),
+            'portalResources' => $portalChoices,
         ];
     }
 

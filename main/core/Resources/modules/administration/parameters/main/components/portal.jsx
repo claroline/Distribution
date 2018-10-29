@@ -24,9 +24,15 @@ const PortalComponent = (props) =>
           fields: [
             {
               name: 'portal.enabled_resources',
-              type: 'string',
+              type: 'choice',
               label: trans('enabled_resources'),
-              required: false
+              required: false,
+              options: {
+                choices: props.portalResources,
+                multiple: true,
+                condensed: false,
+                inline: false
+              }
             }
           ]
         }
@@ -34,13 +40,15 @@ const PortalComponent = (props) =>
     />
   </div>
 
-
 PortalComponent.propTypes = {
+  portalResources: T.object.isRequired
 }
 
 const Portal = connect(
-  null,
-  dispatch => ({ })
+  state => ({
+    portalResources: state.portalResources
+  }),
+  null
 )(PortalComponent)
 
 export {

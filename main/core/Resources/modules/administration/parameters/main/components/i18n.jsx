@@ -5,8 +5,8 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-const I18nComponent = (props) =>
-  <FormData
+const I18nComponent = (props) => {
+  return(<FormData
     name="parameters"
     target={['apiv2_parameters_update']}
     buttons={true}
@@ -23,22 +23,31 @@ const I18nComponent = (props) =>
         fields: [
           {
             name: 'locales.available',
-            type: 'string',
+            type: 'choice',
             label: trans('languages'),
-            required: false
+            required: false,
+            options: {
+              choices: props.availablesLocales,
+              multiple: true,
+              condensed: false,
+              inline: false
+            }
           }
         ]
       }
     ]}
-  />
-
+  />)
+}
 
 I18nComponent.propTypes = {
+  availablesLocales: T.object.isRequired
 }
 
 const I18n = connect(
-  null,
-  dispatch => ({ })
+  state => ({
+    availablesLocales: state.availablesLocales
+  }),
+  null
 )(I18nComponent)
 
 export {
