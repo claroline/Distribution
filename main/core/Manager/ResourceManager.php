@@ -1313,7 +1313,7 @@ class ResourceManager
     public function getResourceFromNode(ResourceNode $node)
     {
         /* @var AbstractResource $resource */
-        if (class_exists($node->getClass())) {
+        if ($this->om->getMetadataFactory()->isTransient($node->getClass())) {
             $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
 
             return $resource;
