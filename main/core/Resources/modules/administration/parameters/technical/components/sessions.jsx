@@ -32,6 +32,19 @@ const SessionsComponent = (props) =>
         defaultOpened: true,
         fields: [
           {
+            name: 'security.cookie_lifetime',
+            type: 'number',
+            label: trans('cookie_lifetime'),
+            required: true,
+            options: {
+              choices: {
+                'native': 'native',
+                'claro_pdo': 'claro_pdo',
+                'pdo': 'pdo'
+              }
+            }
+          },
+          {
             name: 'session.storage_type',
             type: 'choice',
             label: trans('storage_type'),

@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 const SynchronizationComponent = (props) =>
   <div>
-    Synchronization
+    En construction
   </div>
 
 

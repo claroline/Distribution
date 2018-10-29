@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 const AuthenticationComponent = (props) =>
   <div>
-    Authentication
+    en construction
   </div>
 
 

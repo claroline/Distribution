@@ -1,13 +1,13 @@
 import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
-import {Page} from '#/main/app/page/components/page'
+import {PageFull} from '#/main/app/page/components/full'
 
 import {Nav} from '#/main/core/administration/parameters/technical/components/nav'
 import {Settings} from '#/main/core/administration/parameters/technical/components/settings'
 
 const Tool = () =>
-  <Page
+  <PageFull
     title={trans('main', {}, 'tools')}
   >
     <div className="row">
@@ -18,7 +18,7 @@ const Tool = () =>
         <Settings/>
       </div>
     </div>
-  </Page>
+  </PageFull>
 
 
 export {

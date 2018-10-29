@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 const PluginsComponent = (props) =>
   <div>
-    plugins
+    en construction
   </div>
 
 
