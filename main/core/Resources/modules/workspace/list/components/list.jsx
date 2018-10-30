@@ -12,9 +12,6 @@ import {currentUser, isAdmin} from '#/main/core/user/current'
 
 import {PageContainer, PageHeader,PageContent} from '#/main/core/layout/page/index'
 
-console.log(isAdmin())
-console.log(currentUser())
-
 const WorkspacesList = props => {
   const definition = WorkspaceList.definition
   const defaultProps = props.parameters.workspace.list.default_properties
