@@ -155,7 +155,7 @@ plugin:
         - name: technical_settings
           class: cog
 
-        - name: appearance
+        - name: appearance_settings
           class: cog
 
         - name: user_management

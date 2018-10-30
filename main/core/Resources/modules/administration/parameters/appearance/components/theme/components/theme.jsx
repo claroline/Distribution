@@ -11,10 +11,10 @@ import {trans, transChoice} from '#/main/app/intl/translation'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {actions} from '#/main/core/administration/appearance/theme/actions'
+import {actions} from '#/main/core/administration/parameters/appearance/components/theme/actions'
 
-import {select} from '#/main/core/administration/appearance/theme/selectors'
-import {validate} from '#/main/core/administration/appearance/theme/validator'
+import {select} from '#/main/core/administration/parameters/appearance/components/theme/selectors'
+import {validate} from '#/main/core/administration/parameters/appearance/components/theme/validator'
 
 import {
   PageContainer,

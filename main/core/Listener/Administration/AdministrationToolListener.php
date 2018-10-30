@@ -62,6 +62,18 @@ class AdministrationToolListener
     }
 
     /**
+     * @DI\Observe("administration_tool_appearance_settings")
+     *
+     * @param OpenAdministrationToolEvent $event
+     */
+    public function onOpenPlatformAppearanceSettings(OpenAdministrationToolEvent $event)
+    {
+        $this->redirect([
+                '_controller' => 'ClarolineCoreBundle:Administration/Settings:appearance',
+            ], $event);
+    }
+
+    /**
      * @DI\Observe("administration_tool_registration_to_workspace")
      *
      * @param OpenAdministrationToolEvent $event

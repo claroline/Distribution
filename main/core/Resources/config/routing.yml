@@ -25,10 +25,6 @@ claro_locale:
     resource: "@ClarolineCoreBundle/Controller/LocaleController.php"
     type: annotation
 
-claro_theme:
-    resource: "@ClarolineCoreBundle/Controller/Administration/ThemeController.php"
-    type: annotation
-
 claro_content_typeerror:
     path: /content/typeerror
     options: { expose: true }
