@@ -17,15 +17,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
  * @ApiMeta(
- *     class="Claroline\CoreBundle\Entity\Resource\Text",
+ *     class="Claroline\CoreBundle\Entity\Resource\File",
  *     ignore={"create", "exist", "list", "copyBulk", "deleteBulk", "schema", "find", "get"}
  * )
- * @EXT\Route("resource_text")
+ * @EXT\Route("resource_file")
  */
-class TextController extends AbstractCrudController
+class FileController extends AbstractCrudController
 {
     public function getName()
     {
-        return 'resource_text';
+        return 'file';
     }
 }
