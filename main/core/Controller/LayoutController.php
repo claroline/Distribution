@@ -45,15 +45,25 @@ class LayoutController extends Controller
 {
     use PermissionCheckerTrait;
 
+    /** @var StrictDispatcher */
     private $dispatcher;
+    /** @var RoleManager */
     private $roleManager;
+    /** @var WorkspaceManager */
     private $workspaceManager;
+    /** @var NotificationManager */
     private $notificationManager;
+    /** @var TokenStorageInterface */
     private $tokenStorage;
+    /** @var Utilities */
     private $utils;
+    /** @var PlatformConfigurationHandler */
     private $configHandler;
+    /** @var ToolManager */
     private $toolManager;
+    /** @var SerializerProvider */
     private $serializer;
+    /** @var FinderProvider */
     private $finder;
 
     /**
@@ -69,7 +79,7 @@ class LayoutController extends Controller
      *     "toolManager"         = @DI\Inject("claroline.manager.tool_manager"),
      *     "dispatcher"          = @DI\Inject("claroline.event.event_dispatcher"),
      *     "serializer"          = @DI\Inject("claroline.api.serializer"),
-     *     "finder"          = @DI\Inject("claroline.api.finder")
+     *     "finder"              = @DI\Inject("claroline.api.finder")
      * })
      *
      * @param RoleManager                  $roleManager
@@ -81,7 +91,7 @@ class LayoutController extends Controller
      * @param PlatformConfigurationHandler $configHandler
      * @param StrictDispatcher             $dispatcher
      * @param SerializerProvider           $serializer
-     * @param FinderProvider               $configHandler
+     * @param FinderProvider               $finder
      */
     public function __construct(
         RoleManager $roleManager,
@@ -104,13 +114,13 @@ class LayoutController extends Controller
         $this->configHandler = $configHandler;
         $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
-        $this->finderProvider = $finder;
+        $this->finder = $finder;
     }
 
     /**
-     * @EXT\Template()
+     * Renders the platform footer.
      *
-     * Displays the platform footer.
+     * @EXT\Template()
      *
      * @return array
      */
@@ -134,7 +144,7 @@ class LayoutController extends Controller
     }
 
     /**
-     * Displays the platform top bar. Its content depends on the user status
+     * Renders the platform top bar. Its content depends on the user status
      * (anonymous/logged, profile, etc.) and the platform options (e.g. self-
      * registration allowed/prohibited).
      *
@@ -159,14 +169,9 @@ class LayoutController extends Controller
             $user = $token->getUser();
         }
 
-        $workspaces = [];
-        $personalWs = null;
         $orderedTools = [];
 
         if ($user instanceof User) {
-            $personalWs = $user->getPersonalWorkspace();
-            $workspaces = $this->workspaceManager->getRecentWorkspaceForUser($user, $this->utils->getRoles($token));
-
             $session = $request->getSession();
 
             // Only computes tools configured by admin one time by session
@@ -202,14 +207,14 @@ class LayoutController extends Controller
         });
 
         // current context (desktop, index or workspace)
+        // TODO : find a more generic way to calculate it and use constants
         $current = 'home';
-
-        if ('claro_admin_open_tool' === $request->get('_route') || null === $request->get('_route')) {
+        if ($workspace) {
+            $current = 'workspace';
+        } elseif ('claro_admin_open_tool' === $request->get('_route') || null === $request->get('_route')) {
             $current = 'administration';
         } elseif ('claro_desktop_open_tool' === $request->get('_route')) {
             $current = 'desktop';
-        } elseif ('claro_workspace_open_tool' === $request->get('_route')) {
-            $current = 'workspace';
         }
 
         // if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated()
@@ -218,7 +223,12 @@ class LayoutController extends Controller
         // I think we will need to merge this with the default platform config object
         // this can be done when the top bar will be moved in the main react app
         return [
-            'current' => $current,
+            //'isImpersonated' => $this->isImpersonated(),
+            'mainMenu' => $this->configHandler->getParameter('header_menu'),
+            'context' => [
+                'type' => $current,
+                'data' => $workspace ? $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]) : null,
+            ],
             'display' => [
                 'about' => $this->configHandler->getParameter('show_about_button'),
                 'help' => $this->configHandler->getParameter('show_help_button'),
@@ -227,32 +237,20 @@ class LayoutController extends Controller
                 'name' => $this->configHandler->getParameter('name_active'),
             ],
 
-            'workspaces' => [
-                'creatable' => $this->authorization->isGranted('CREATE', new Workspace()),
-                'current' => $workspace ? $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]) : null,
-                'personal' => $personalWs ? $this->serializer->serialize($personalWs, [Options::SERIALIZE_MINIMAL]) : null,
-                'history' => array_map(function (Workspace $workspace) { // TODO : async load it on ws menu open
-                    return $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
-                }, $workspaces),
-            ],
-
             'notifications' => [
                 'count' => [
-                  'notifications' => $token->getUser() instanceof User ? $this->notificationManager->countUnviewedNotifications($token->getUser()) : '',
-                  'messages' => $token->getUser() instanceof User ? $this->finderProvider->fetch(
+                  'notifications' => $token->getUser() instanceof User ? $this->notificationManager->countUnviewedNotifications($token->getUser()) : 0,
+                  'messages' => $token->getUser() instanceof User ? $this->finder->fetch(
                     Message::class,
                     ['removed' => false, 'read' => false, 'sent' => false],
                     null,
                     0,
                     -1,
                     true
-                  ) : '',
+                  ) : 0,
                 ],
                 'refreshDelay' => $this->configHandler->getParameter('notifications_refresh_delay'),
             ],
-
-            //'isImpersonated' => $this->isImpersonated(),
-            //'homeMenu' => $homeMenu,
             'administration' => array_map(function (AdminTool $tool) {
                 return [
                     'icon' => $tool->getClass(),

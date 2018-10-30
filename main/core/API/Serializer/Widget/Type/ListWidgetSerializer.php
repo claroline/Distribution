@@ -25,7 +25,8 @@ class ListWidgetSerializer
         return [
             'maxResults' => $widget->getMaxResults(),
 
-            'count' => $widget->getCount(),
+            'actions' => $widget->hasActions(),
+            'count' => $widget->hasCount(),
 
             // display feature
             'display' => $widget->getDisplay(),
@@ -49,7 +50,10 @@ class ListWidgetSerializer
             'availableColumns' => $widget->getAvailableColumns(),
 
             // grid config
-            'card' => $widget->getCard(),
+            'card' => [
+                'display' => $widget->getCard(),
+                'mapping' => [], // TODO
+            ],
         ];
     }
 
@@ -59,6 +63,7 @@ class ListWidgetSerializer
 
         // todo : find a way to merge with directory serializer
         $this->sipe('count', 'setCount', $data, $widget);
+        $this->sipe('actions', 'setActions', $data, $widget);
 
         // display feature
         $this->sipe('display', 'setDisplay', $data, $widget);
@@ -82,7 +87,7 @@ class ListWidgetSerializer
         $this->sipe('availableColumns', 'setAvailableColumns', $data, $widget);
 
         // grid config
-        $this->sipe('card', 'setCard', $data, $widget);
+        $this->sipe('card.display', 'setCard', $data, $widget);
 
         return $widget;
     }

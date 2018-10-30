@@ -34,7 +34,8 @@ class DirectorySerializer
             // resource list config
             // todo : big c/c from Claroline\CoreBundle\API\Serializer\Widget\Type\ListWidgetSerializer
             'list' => [
-                'count' => $directory->getCount(),
+                'actions' => $directory->hasActions(),
+                'count' => $directory->hasCount(),
                 // display feature
                 'display' => $directory->getDisplay(),
                 'availableDisplays' => $directory->getAvailableDisplays(),
@@ -57,7 +58,10 @@ class DirectorySerializer
                 'availableColumns' => $directory->getAvailableColumns(),
 
                 // grid config
-                'card' => $directory->getCard(),
+                'card' => [
+                    'display' => $directory->getCard(),
+                    'mapping' => [], // TODO
+                ],
             ],
         ];
     }
@@ -80,6 +84,7 @@ class DirectorySerializer
         // resource list config
         // todo : big c/c from Claroline\CoreBundle\API\Serializer\Widget\Type\ListWidgetSerializer
         $this->sipe('list.count', 'setCount', $data, $directory);
+        $this->sipe('list.actions', 'setActions', $data, $directory);
 
         // display feature
         $this->sipe('list.display', 'setDisplay', $data, $directory);
@@ -103,7 +108,7 @@ class DirectorySerializer
         $this->sipe('list.availableColumns', 'setAvailableColumns', $data, $directory);
 
         // grid config
-        $this->sipe('list.card', 'setCard', $data, $directory);
+        $this->sipe('list.card.display', 'setCard', $data, $directory);
 
         return $directory;
     }

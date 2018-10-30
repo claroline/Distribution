@@ -9,6 +9,8 @@ import {getSource} from '#/main/app/data'
 
 import {selectors} from '#/main/core/widget/types/list/store'
 
+// todo : implement actions
+
 class ListWidget extends Component {
   constructor(props) {
     super(props)
@@ -46,10 +48,10 @@ class ListWidget extends Component {
   computeCard() {
     const baseCard = get(this.state, 'source.parameters.card')
     if (baseCard) {
-      if (get(this.props, 'card')) {
+      if (get(this.props, 'card.display')) {
         // append custom configuration to the card
         const ConfiguredCard = props => React.createElement(baseCard, merge({}, props, {
-          display: get(this.props, 'card')
+          display: get(this.props, 'card.display')
         }))
 
         return ConfiguredCard

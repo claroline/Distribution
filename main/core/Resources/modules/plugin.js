@@ -6,6 +6,16 @@ import {registry} from '#/main/app/plugins/registry'
  * Declares applications provided by the Core plugin.
  */
 registry.add('core', {
+  /**
+   * Provides menu which can be used as the main header menu.
+   */
+  header: {
+    'workspaces': () => { return import(/* webpackChunkName: "core-header-workspaces" */ '#/main/core/header/workspaces') }
+  },
+
+  /**
+   * Provides actions for resources.
+   */
   actions: {
     // all resources
     'about'    : () => { return import(/* webpackChunkName: "core-action-about" */     '#/main/core/resource/actions/about') },
@@ -32,6 +42,9 @@ registry.add('core', {
     'change_file' : () => { return import(/* webpackChunkName: "resource-action-change-file" */ '#/main/core/resources/file/actions/change-file') }
   },
 
+  /**
+   * Provides new types of resources
+   */
   resources: {
     'directory': () => { return import(/* webpackChunkName: "core-resource-directory" */ '#/main/core/resources/directory') },
     'file'     : () => { return import(/* webpackChunkName: "core-resource-file" */      '#/main/core/resources/file') },
@@ -56,9 +69,9 @@ registry.add('core', {
       'groups'      : () => { return import(/* webpackChunkName: "core-data-groups" */       '#/main/core/data/types/groups') }
     },
     sources: {
-      'resources' : () => { return import(/* webpackChunkName: "core-data-resources" */  '#/main/core/data/sources/resources') },
-      'users'     : () => { return import(/* webpackChunkName: "core-data-users" */      '#/main/core/data/sources/users') },
-      'workspaces': () => { return import(/* webpackChunkName: "core-data-workspaces" */ '#/main/core/data/sources/workspaces') },
+      'resources'    : () => { return import(/* webpackChunkName: "core-data-resources" */  '#/main/core/data/sources/resources') },
+      'users'        : () => { return import(/* webpackChunkName: "core-data-users" */      '#/main/core/data/sources/users') },
+      'workspaces'   : () => { return import(/* webpackChunkName: "core-data-workspaces" */ '#/main/core/data/sources/workspaces') },
       'my_workspaces': () => { return import(/* webpackChunkName: "core-data-workspaces" */ '#/main/core/data/sources/workspaces') }
     }
   },

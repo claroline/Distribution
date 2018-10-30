@@ -46,6 +46,15 @@ class ResourcePage extends Component {
   }
 
   render() {
+    // remove workspace root from path (it's already known by the breadcrumb)
+    // find a better way to handle this
+    let ancestors
+    if (this.props.resourceNode.workspace) {
+      ancestors = this.props.resourceNode.path.slice(1)
+    } else {
+      ancestors = this.props.resourceNode.path.slice(0)
+    }
+
     return (
       <ToolPage
         className={classes('resource-page', `${this.props.resourceNode.meta.type}-page`)}
@@ -54,10 +63,11 @@ class ResourcePage extends Component {
         showHeader={this.props.embedded ? this.props.showHeader : true}
         fullscreen={this.state.fullscreen}
         title={this.props.resourceNode.name}
-        path={this.props.resourceNode.path.map(ancestorNode => ({
+        subtitle={this.props.subtitle}
+        path={[].concat(ancestors.map(ancestorNode => ({
           label: ancestorNode.name,
           target: ['claro_resource_show_short', {id: ancestorNode.id}]
-        }))}
+        })), this.props.path)}
         poster={this.props.resourceNode.poster ? this.props.resourceNode.poster.url : undefined}
         icon={get(this.props.resourceNode, 'display.showIcon') && (this.props.userEvaluation ?
           <UserProgression
@@ -124,6 +134,11 @@ ResourcePage.propTypes = {
   embedded: T.bool,
   showHeader: T.bool,
   managed: T.bool.isRequired,
+  subtitle: T.string,
+  path: T.arrayOf(T.shape({
+    label: T.string.isRequired,
+    target: T.string.isRequired
+  })),
   
   /**
    * The current resource node.
@@ -154,6 +169,10 @@ ResourcePage.propTypes = {
   )),
   styles: T.arrayOf(T.string),
   children: T.node.isRequired
+}
+
+ResourcePage.defaultProps = {
+  path: []
 }
 
 export {

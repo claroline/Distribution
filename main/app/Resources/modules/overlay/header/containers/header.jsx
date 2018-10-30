@@ -7,6 +7,8 @@ import {Header as HeaderComponent} from '#/main/app/overlay/header/components/he
 
 const Header = connect(
   (state) => ({
+    mainMenu: selectors.mainMenu(state),
+    context: selectors.context(state),
     logo: selectors.logo(state),
     title: selectors.title(state),
     subtitle: selectors.subtitle(state),
@@ -17,14 +19,12 @@ const Header = connect(
     registrationUrl: selectors.registrationUrl(state),
     currentUser: selectors.user(state),
     authenticated: selectors.authenticated(state),
-    workspaces: selectors.workspaces(state),
     locale: selectors.locale(state),
     administration: selectors.administration(state),
     tools: selectors.tools(state),
     userTools: selectors.userTools(state),
     notificationTools: selectors.notificationTools(state),
     maintenance: selectors.maintenance(state),
-    currentLocation: selectors.current(state),
     redirectHome: selectors.redirectHome(state)
   }),
   (dispatch) => ({
