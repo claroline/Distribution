@@ -35,12 +35,7 @@ const Row = props =>
   </li>
 
 Row.propTypes = {
-  item: T.shape(ProgressionItemType.propTypes).isRequired,
-  levelMax: T.number.isRequired
-}
-
-Row.defaultProps = {
-  levelMax: 1
+  item: T.shape(ProgressionItemType.propTypes).isRequired
 }
 
 const List = props =>
@@ -49,7 +44,6 @@ const List = props =>
       <Row
         key={itemIndex}
         item={item}
-        levelMax={props.levelMax}
       />
     )}
   </ul>
