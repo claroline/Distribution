@@ -153,10 +153,10 @@ plugin:
           class: cog
 
         - name: technical_settings
-          class: cog
+          class: wrench
 
         - name: appearance_settings
-          class: cog
+          class: paint-brush
 
         - name: user_management
           class: user

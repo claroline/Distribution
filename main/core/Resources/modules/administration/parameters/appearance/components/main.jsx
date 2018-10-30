@@ -4,21 +4,9 @@ import {PropTypes as T} from 'prop-types'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
+import {selectors} from '#/main/core/administration/parameters/appearance/store/selectors'
 
-//display
-/**
-'footer' => $parameters['footer'],
-'logo' => $parameters['logo'],
-'theme' => $parameters['theme'],
-'home_menu' => $parameters['home_menu'],
-'footer_login' => $parameters['footer_login'],
-'footer_workspaces' => $parameters['footer_workspaces'],
-'header_locale' => $parameters['header_locale'],
-'resource_icon_set' => $parameters['resource_icon_set'],
-'name' => $parameters['name'],
-'name_active' => $parameters['name_active'],
-*/
-
+//todo add logo
 const MainComponent = props =>
   <FormData
     name="parameters"
@@ -35,7 +23,47 @@ const MainComponent = props =>
         title: trans('main'),
         defaultOpened: true,
         fields: [
-
+          {
+            name: 'display.footer',
+            type: 'string',
+            label: trans('footer'),
+            required: false
+          },
+          {
+            name: 'display.footer_login',
+            type: 'boolean',
+            label: trans('footer_login'),
+            required: false
+          },
+          {
+            name: 'display.footer_workspaces',
+            type: 'boolean',
+            label: trans('footer_workspace'),
+            required: false
+          },
+          {
+            name: 'display.header_locale',
+            type: 'boolean',
+            label: trans('header_locale'),
+            required: false
+          },
+          {
+            name: 'display.name_active',
+            type: 'boolean',
+            label: trans('name_active'),
+            required: false
+          },
+          {
+            name: 'display.theme',
+            type: 'choice',
+            label: trans('theme'),
+            required: true,
+            options: {
+              multiple: false,
+              condensed: true,
+              choices: props.themeChoices
+            }
+          }
         ]
       }
     ]}
@@ -43,10 +71,13 @@ const MainComponent = props =>
 
 
 MainComponent.propTypes = {
+  themeChoices: T.object.isRequired
 }
 
 const Main = connect(
-  null,
+  (state) => ({
+    themeChoices: selectors.themeChoices(state)
+  }),
   dispatch => ({ })
 )(MainComponent)
 

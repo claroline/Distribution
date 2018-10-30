@@ -7,7 +7,7 @@ const Nav = () =>
   <Vertical
     tabs={[
       {
-        icon: 'fa fa-fw fa-inbox',
+        icon: 'fa fa-fw fa-cog',
         title: trans('main'),
         path: '/main'
       }, {
@@ -15,12 +15,12 @@ const Nav = () =>
         title: trans('portal'),
         path: '/portal'
       },  {
-        icon: 'fa fa-fw fa-trash',
+        icon: 'fa fa-fw fa-language',
         title: trans('i18n'),
         path: '/i18n'
       },
       {
-        icon: 'fa fa-fw fa-trash',
+        icon: 'fa fa-fw fa-plug',
         title: trans('plugins'),
         path: '/plugins'
       }

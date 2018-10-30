@@ -28,7 +28,8 @@ const ThemesPage = props =>
       <ListData
         name="themes"
         fetch={{
-          url: ['apiv2_theme_list']
+          url: ['apiv2_theme_list'],
+          autoload: true
         }}
         definition={[
           {

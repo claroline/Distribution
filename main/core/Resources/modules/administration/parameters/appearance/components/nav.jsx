@@ -7,15 +7,15 @@ const Nav = () =>
   <Vertical
     tabs={[
       {
-        icon: 'fa fa-fw fa-inbox',
+        icon: 'fa fa-fw fa-cog',
         title: trans('main'),
         path: '/main'
       }, {
-        icon: 'fa fa-fw fa-paper-plane',
+        icon: 'fa fa-fw fa-edit',
         title: trans('icons'),
         path: '/icons'
       },  {
-        icon: 'fa fa-fw fa-trash',
+        icon: 'fa fa-fw fa-paint-brush',
         title: trans('themes'),
         path: '/themes'
       }

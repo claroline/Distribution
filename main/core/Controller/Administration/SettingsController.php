@@ -103,7 +103,7 @@ class SettingsController extends Controller
             'isReadOnly' => !$this->themeManager->isThemeDirWritable(),
             'themes' => $this->finder->search(
                 'Claroline\CoreBundle\Entity\Theme\Theme', [
-                    'limit' => 20,
+                    'limit' => -1,
                     'sortBy' => 'name',
                 ]
             ),

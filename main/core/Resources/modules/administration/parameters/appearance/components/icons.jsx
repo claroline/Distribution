@@ -7,7 +7,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 
 const IconsComponent = (props) =>
   <div>
-    Icons
+    En construction
   </div>
 
 
