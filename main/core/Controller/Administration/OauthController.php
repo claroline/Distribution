@@ -386,7 +386,7 @@ class OauthController extends Controller
     public function receiveOauthDataAction($id, $secret, $name)
     {
         $friendRequest = $this->oauthManager->findFriendRequestByName($name);
-        $access = $this->oauthManager->connect($friendRequest->getHost(), $id, $secret, $friendRequest);
+        $this->oauthManager->connect($friendRequest->getHost(), $id, $secret, $friendRequest);
 
         return new JsonResponse('done');
     }
