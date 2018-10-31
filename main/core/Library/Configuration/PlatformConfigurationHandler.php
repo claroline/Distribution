@@ -79,7 +79,7 @@ class PlatformConfigurationHandler
 
     public function setParameter($parameter, $value)
     {
-        $this->arrayUtils->set($this->parameters, $parameter);
+        $this->arrayUtils->set($this->parameters, $parameter, $value);
         $this->saveParameters();
     }
 

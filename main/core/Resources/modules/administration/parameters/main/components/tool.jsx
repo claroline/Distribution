@@ -1,6 +1,5 @@
 import React from 'react'
 
-import {trans} from '#/main/app/intl/translation'
 import {PageFull} from '#/main/app/page/components/full'
 
 import {Nav} from '#/main/core/administration/parameters/main/components/nav'
