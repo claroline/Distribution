@@ -5,7 +5,7 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-const MaintenanceComponent = (props) => {
+const MaintenanceComponent = () => {
   return(<FormData
     name="parameters"
     target={['apiv2_parameters_update']}
@@ -30,7 +30,7 @@ const MaintenanceComponent = (props) => {
           {
             name: 'maintenance.message',
             type: 'html',
-            label: trans('message'),
+            label: trans('content'),
             required: false,
             options: {
               long: true

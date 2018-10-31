@@ -5,7 +5,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
 
-const MainComponent = props =>
+const MainComponent = () =>
   <FormData
     name="parameters"
     target={['apiv2_parameters_update']}
@@ -47,7 +47,7 @@ MainComponent.propTypes = {
 
 const Main = connect(
   null,
-  dispatch => ({ })
+  () => ({ })
 )(MainComponent)
 
 export {

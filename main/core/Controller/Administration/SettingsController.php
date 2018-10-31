@@ -20,6 +20,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -34,6 +35,7 @@ class SettingsController extends Controller
      *     "localeManager" = @DI\Inject("claroline.manager.locale_manager"),
      *     "portalManager" = @DI\Inject("claroline.manager.portal_manager"),
      *     "finder"        = @DI\Inject("claroline.api.finder"),
+     *     "translator" = @DI\Inject("translator"),
      *     "themeManager"  = @DI\Inject("claroline.manager.theme_manager")
      * })
      *
@@ -44,13 +46,15 @@ class SettingsController extends Controller
         LocaleManager $localeManager,
         PortalManager $portalManager,
         FinderProvider $finder,
-        ThemeManager $themeManager
+        ThemeManager $themeManager,
+        TranslatorInterface $translator
     ) {
         $this->serializer = $serializer;
         $this->localeManager = $localeManager;
         $this->portalManager = $portalManager;
         $this->finder = $finder;
         $this->themeManager = $themeManager;
+        $this->translator = $translator;
     }
 
     /**
@@ -64,13 +68,14 @@ class SettingsController extends Controller
     {
         $portalResources = $this->portalManager->getPortalEnabledResourceTypes();
         $portalChoices = [];
+
         foreach ($portalResources as $portalResource) {
-            $portalChoices[$portalResource] = $portalResource;
+            $portalChoices[$portalResource] = $this->translator->trans($portalResource, [], 'resource');
         }
 
         return [
             'parameters' => $this->serializer->serialize(),
-            'availablesLocales' => $this->localeManager->retrieveAvailableLocales(),
+            'availablesLocales' => $this->localeManager->getImplementedLocales(),
             'portalResources' => $portalChoices,
         ];
     }

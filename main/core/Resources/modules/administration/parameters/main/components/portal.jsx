@@ -25,7 +25,7 @@ const PortalComponent = (props) =>
             {
               name: 'portal.enabled_resources',
               type: 'choice',
-              label: trans('enabled_resources'),
+              label: trans('portal_resources_configuration'),
               required: false,
               options: {
                 choices: props.portalResources,

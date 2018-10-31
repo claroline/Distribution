@@ -24,11 +24,23 @@ const I18nComponent = (props) => {
           {
             name: 'locales.available',
             type: 'choice',
-            label: trans('languages'),
+            label: trans('available_languages'),
             required: false,
             options: {
               choices: props.availablesLocales,
               multiple: true,
+              condensed: false,
+              inline: false
+            }
+          },
+          {
+            name: 'locales.default',
+            type: 'choice',
+            label: trans('default_language'),
+            required: false,
+            options: {
+              choices: props.availablesLocales,
+              multiple: false,
               condensed: false,
               inline: false
             }
