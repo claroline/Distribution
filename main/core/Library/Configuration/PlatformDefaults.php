@@ -157,7 +157,6 @@ class PlatformDefaults implements ParameterProviderInterface
             ],
             'security' => [
               'disabled_admin_tools' => [
-                'technical_settings',
               ],
             ],
             'logo_redirect_home' => true,

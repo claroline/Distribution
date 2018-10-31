@@ -50,6 +50,10 @@ claro_authentication:
     resource: "@ClarolineCoreBundle/Controller/AuthenticationController.php"
     type: annotation
 
+claro_maintenance:
+    resource: "@ClarolineCoreBundle/Controller/MaintenanceController.php"
+    type: annotation
+
 claro_log:
     resource: "@ClarolineCoreBundle/Controller/Log/LogController.php"
     prefix: log

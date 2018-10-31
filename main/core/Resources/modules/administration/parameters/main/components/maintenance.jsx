@@ -29,7 +29,7 @@ const MaintenanceComponent = (props) => {
           },
           {
             name: 'maintenance.message',
-            type: 'string',
+            type: 'html',
             label: trans('message'),
             required: false,
             options: {

@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\Utils\ArrayUtils;
 use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfiguration;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -49,6 +50,7 @@ class ParametersSerializer
         $this->config = $config;
         $this->serializer = $serializer;
         $this->finder = $finder;
+        $this->arrayUtils = new ArrayUtils();
     }
 
     /**
@@ -215,6 +217,10 @@ class ParametersSerializer
                 'roles_locked' => $parameters['profile_roles_locked'],
                 'roles_edition' => $parameters['profile_roles_edition'],
             ],
+            'maintenance' => [
+                'enable' => $parameters['maintenance']['enable'],
+                'message' => $parameters['maintenance']['message'],
+            ],
         ];
 
         if (in_array(self::ALL, $options)) {
@@ -349,7 +355,17 @@ class ParametersSerializer
             $this->deserializeProfile($parameters, $data);
         }
 
+        if (isset($data['maintenance'])) {
+            $this->deserializeMaintenance($parameters, $data);
+        }
+
         return new PlatformConfiguration($parameters);
+    }
+
+    public function deserializeMaintenance(array &$parameters, array $data)
+    {
+        $this->buildParameter('maintenance.enable', 'maintenance.enable', $parameters, $data);
+        $this->buildParameter('maintenance.message', 'maintenance.message', $parameters, $data);
     }
 
     public function deserializeDisplay(array &$parameters, array $data)
@@ -535,17 +551,6 @@ class ParametersSerializer
 
     private function buildParameter($serializedPath, $parametersPath, array &$parameters, array $data)
     {
-        $value = $data;
-        $keys = explode('.', $serializedPath);
-        foreach ($keys as $key) {
-            if (isset($value[$key])) {
-                $value = $value[$key];
-            } else {
-                //no key = keep old value and don't do anything
-                return;
-            }
-        }
-
-        $parameters[$parametersPath] = $value;
+        $this->arrayUtils->set($parameters, $parametersPath, $this->arrayUtils->get($data, $serializedPath));
     }
 }
