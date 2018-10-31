@@ -87,7 +87,6 @@ class ParametersSerializer
                 'resource_icon_set' => $parameters['resource_icon_set'],
                 'name' => $parameters['name'],
                 'name_active' => $parameters['name_active'],
-                'description' => $parameters['description'],
             ],
             'mailer' => [
                 'transport' => $parameters['mailer_transport'],
@@ -372,7 +371,6 @@ class ParametersSerializer
     public function deserializeDisplay(array &$parameters, array $data)
     {
         $this->buildParameter('display.footer', 'footer', $parameters, $data);
-        $this->buildParameter('display.description', 'description', $parameters, $data);
         $this->buildParameter('display.logo', 'logo', $parameters, $data);
         $this->buildParameter('display.theme', 'theme', $parameters, $data);
         $this->buildParameter('display.home_menu', 'home_menu', $parameters, $data);

@@ -25,7 +25,7 @@ const MainComponent = () =>
             type: 'string',
             label: trans('name'),
             required: false
-          },
+          }/*
           {
             name: 'display.description',
             type: 'string',
@@ -34,7 +34,7 @@ const MainComponent = () =>
             options: {
               long: true
             }
-          }
+          }*/
         ]
       }
     ]}
