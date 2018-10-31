@@ -8,7 +8,7 @@ const Nav = () =>
     tabs={[
       {
         icon: 'fa fa-fw fa-cog',
-        title: trans('main'),
+        title: trans('parameters'),
         path: '/main'
       }, {
         icon: 'fa fa-fw fa-edit',
@@ -16,7 +16,7 @@ const Nav = () =>
         path: '/icons'
       },  {
         icon: 'fa fa-fw fa-paint-brush',
-        title: trans('themes'),
+        title: trans('themes_management'),
         path: '/themes'
       }
     ]}

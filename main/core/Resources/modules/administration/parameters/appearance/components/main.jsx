@@ -32,25 +32,25 @@ const MainComponent = props =>
           {
             name: 'display.footer_login',
             type: 'boolean',
-            label: trans('footer_login'),
+            label: trans('show_connection_button_at_footer', {}, 'home'),
             required: false
           },
           {
             name: 'display.footer_workspaces',
             type: 'boolean',
-            label: trans('footer_workspace'),
+            label: trans('show_workspace_menu_at_footer', {}, 'home'),
             required: false
-          },
+          },/*
           {
             name: 'display.header_locale',
             type: 'boolean',
             label: trans('header_locale'),
             required: false
-          },
+          },*/
           {
             name: 'display.name_active',
             type: 'boolean',
-            label: trans('name_active'),
+            label: trans('show_name_in_top_bar'),
             required: false
           },
           {
@@ -78,7 +78,7 @@ const Main = connect(
   (state) => ({
     themeChoices: selectors.themeChoices(state)
   }),
-  dispatch => ({ })
+  () => ({ })
 )(MainComponent)
 
 export {

@@ -1,6 +1,5 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {PropTypes as T} from 'prop-types'
 
 import {withRouter, Routes} from '#/main/app/router'
 
@@ -9,7 +8,7 @@ import {Icons} from '#/main/core/administration/parameters/appearance/components
 import {ThemeTool as Themes} from '#/main/core/administration/parameters/appearance/components/theme/components/tool'
 
 
-const SettingsComponent = (props) =>
+const SettingsComponent = () =>
   <Routes
     redirect={[
       {from: '/', exact: true, to: '/main' }
@@ -36,8 +35,8 @@ SettingsComponent.propTypes = {
 }
 
 const Settings = withRouter(connect(
-  state => ({ }),
-  dispatch => ({ })
+  () => ({ }),
+  () => ({ })
 )(SettingsComponent))
 
 

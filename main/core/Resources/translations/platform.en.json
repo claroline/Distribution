@@ -1691,6 +1691,7 @@
     "e-mail": "E-mail",
     "sessions": "Sessions",
     "synchronization": "Synchronization",
-    "internet": "internet",
-    "ssl": "Ssl"
+    "internet": "Internet",
+    "ssl": "Ssl",
+    "icons": "Icons"
 }
