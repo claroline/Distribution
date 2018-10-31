@@ -17,7 +17,7 @@ const display = (transport, property) => {
   return displayFields[transport].indexOf(property) > -1
 }
 
-const MailingComponent = props =>
+const MailingComponent = () =>
   <FormData
     name="parameters"
     target={['apiv2_parameters_update']}

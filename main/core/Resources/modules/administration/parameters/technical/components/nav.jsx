@@ -8,11 +8,11 @@ const Nav = () =>
     tabs={[
       {
         icon: 'fa fa-fw fa-internet-explorer',
-        title: trans('domain'),
+        title: trans('internet'),
         path: '/domain'
       }, {
         icon: 'fa fa-fw fa-file-pdf',
-        title: trans('pdf'),
+        title: trans('PDF'),
         path: '/pdf'
       },  {
         icon: 'fa fa-fw fa-database',
@@ -31,7 +31,7 @@ const Nav = () =>
       },
       {
         icon: 'fa fa-fw fa-envelope',
-        title: trans('mailing'),
+        title: trans('e-mail'),
         path: '/mailing'
       },
       {

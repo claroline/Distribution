@@ -1,6 +1,5 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {PropTypes as T} from 'prop-types'
 
 import {withRouter, Routes} from '#/main/app/router'
 
@@ -15,7 +14,7 @@ import {Synchronization} from '#/main/core/administration/parameters/technical/c
 import {Token} from '#/main/core/administration/parameters/technical/components/token'
 import {Sessions} from '#/main/core/administration/parameters/technical/components/sessions'
 
-const SettingsComponent = (props) =>
+const SettingsComponent = () =>
   <Routes
     redirect={[
       {from: '/', exact: true, to: '/domain' }
@@ -71,8 +70,8 @@ SettingsComponent.propTypes = {
 }
 
 const Settings = withRouter(connect(
-  state => ({ }),
-  dispatch => ({ })
+  () => ({ }),
+  () => ({ })
 )(SettingsComponent))
 
 

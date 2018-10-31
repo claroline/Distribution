@@ -36,7 +36,7 @@ const SecurityComponent = (props) =>
           {
             name: 'security.default_root_anon_id',
             type: 'string',
-            label: trans('default_root'),
+            label: trans('default_admin'),
             required: false
           }
         ]

@@ -8,7 +8,6 @@ import {Settings} from '#/main/core/administration/parameters/main/components/se
 
 const Tool = () =>
   <PageFull
-    title={trans('main', {}, 'tools')}
   >
     <div className="row">
       <div className="col-md-3">

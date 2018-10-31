@@ -11,15 +11,14 @@
           'href': path('claro_admin_index')
       },
       {
-          'name': 'technical_settings'|trans({}, 'platform'),
+          'name': 'technical_settings'|trans({}, 'tools'),
           'href': '#'
       }])
     }}
 {% endblock %}
 
 {% block page_title %}
-    {{ 'Settings'|trans({}, 'platform') }}
-    <small>{{ 'technical'|trans({}, 'platform') }}</small>
+    {{ 'technical_settings'|trans({}, 'tools') }}
 {% endblock %}
 
 {% block page_content %}

@@ -35,7 +35,7 @@ const LimitsComponent = (props) =>
           },
           {
             name: 'workspace.max_workspace_users',
-            label: trans('max_workspace_users'),
+            label: trans('workspaces_max_users'),
             type: 'number',
             displayed: true
           }

@@ -1,11 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-const PdfComponent = (props) =>
+const PdfComponent = () =>
   <FormData
     name="parameters"
     target={['apiv2_parameters_update']}
@@ -18,13 +17,13 @@ const PdfComponent = (props) =>
     sections={[
       {
         icon: 'fa fa-fw fa-user-plus',
-        title: trans('pdf'),
+        title: trans('PDF'),
         defaultOpened: true,
         fields: [
           {
             name: 'pdf.active',
             type: 'boolean',
-            label: trans('active'),
+            label: trans('activated'),
             required: true
           }
         ]
@@ -38,7 +37,7 @@ PdfComponent.propTypes = {
 
 const Pdf = connect(
   null,
-  dispatch => ({ })
+  () => ({ })
 )(PdfComponent)
 
 export {

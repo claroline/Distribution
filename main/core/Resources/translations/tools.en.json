@@ -24,5 +24,8 @@
     "users": "Users",
     "workspace_management": "Workspaces management",
     "data_transfer": "Data import/export",
-    "users_management": "Users management"
+    "users_management": "Users management",
+    "main_settings": "Main settings",
+    "technical_settings": "Technical settings",
+    "appearance_settings": "Appearance"
 }

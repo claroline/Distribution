@@ -26,17 +26,17 @@ const DomainComponent = (props) =>
             type: 'string',
             label: trans('domain_name'),
             required: false
-          },
+          }/*,
           {
             name: 'internet.platform_url',
             type: 'string',
             label: trans('platform_url'),
             required: false
-          },
+          }*/,
           {
             name: 'internet.google_meta_tag',
             type: 'string',
-            label: trans('google_meta_tag'),
+            label: trans('google_tag_validation'),
             required: false
           }
         ]
@@ -55,7 +55,7 @@ const DomainComponent = (props) =>
           {
             name: 'ssl.version',
             type: 'string',
-            label: trans('ssl_version'),
+            label: trans('version'),
             required: false
           }
         ]

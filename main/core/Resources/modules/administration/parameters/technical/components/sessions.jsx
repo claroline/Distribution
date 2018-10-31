@@ -1,6 +1,5 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
@@ -15,7 +14,7 @@ const display = (transport, property) => {
   return displayFields[transport].indexOf(property) > -1
 }
 
-const SessionsComponent = (props) =>
+const SessionsComponent = () =>
   <FormData
     name="parameters"
     target={['apiv2_parameters_update']}
@@ -65,31 +64,31 @@ const SessionsComponent = (props) =>
           }, {
             name: 'session.db_id_col',
             type: 'string',
-            label: trans('db_id_col'),
+            label: trans('id_col'),
             required: false,
             displayed: parameters => display(parameters.session.storage_type, 'session.db_id_col')
           }, {
             name: 'session.db_data_col',
             type: 'string',
-            label: trans('db_data_col'),
+            label: trans('data_col'),
             required: false,
             displayed: parameters => display(parameters.session.storage_type, 'session.db_data_col')
           }, {
             name: 'session.db_dsn',
             type: 'string',
-            label: trans('db_dsn'),
+            label: trans('DSN'),
             required: false,
             displayed: parameters => display(parameters.session.storage_type, 'session.db_dsn')
           }, {
             name: 'session.db_user',
             type: 'string',
-            label: trans('db_user'),
+            label: trans('user'),
             required: false,
             displayed: parameters => display(parameters.session.storage_type, 'session.db_user')
           }, {
             name: 'session.db_password',
             type: 'string',
-            label: trans('db_password'),
+            label: trans('password'),
             required: false,
             displayed: parameters => display(parameters.session.storage_type, 'session.db_password')
           }
@@ -104,7 +103,7 @@ SessionsComponent.propTypes = {
 
 const Sessions = connect(
   null,
-  dispatch => ({ })
+  () => ({ })
 )(SessionsComponent)
 
 export {
