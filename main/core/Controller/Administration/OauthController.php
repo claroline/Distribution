@@ -21,6 +21,8 @@ use Claroline\CoreBundle\Manager\Exception\FriendRequestException;
 use Claroline\CoreBundle\Manager\OauthManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
@@ -341,8 +343,8 @@ class OauthController extends Controller
         //uncomment this for debugging puroposes...
 
         if ('dev' === $this->container->get('kernel')->getEnvironment()) {
-            $fileLogger = new \Monolog\Logger('claroline.debug.log');
-            $fileLogger->pushHandler(new \Monolog\Handler\StreamHandler($logFile));
+            $fileLogger = new Logger('claroline.debug.log');
+            $fileLogger->pushHandler(new StreamHandler($logFile));
             $fileLogger->addInfo(var_export($this->oauthManager->isAutoCreated($host), true));
         }
 
