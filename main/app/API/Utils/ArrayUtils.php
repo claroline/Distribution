@@ -57,4 +57,23 @@ class ArrayUtils
 
         throw new \Exception("Key `{$keys}` doesn't exist for array keys [".implode(',', array_keys($object)).']');
     }
+
+    /**
+     * @param array  $object - the array
+     * @param string $keys   - the property path
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function has(array $object, $keys)
+    {
+        try {
+            $this->get($object, $keys);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }
