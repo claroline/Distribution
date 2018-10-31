@@ -450,8 +450,6 @@ class OauthController extends Controller
             return new JsonResponse('done');
         }
 
-        //throw new \Exception($form->getErrorsAsString());
-
         return ['form' => $form->createView(), 'friend' => $friend];
     }
 }
