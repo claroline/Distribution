@@ -8,9 +8,7 @@ const EventPropLi = props =>
   <li className="list-group-item"> {trans(props.label, {}, 'agenda')} <span className="value"> {props.value} </span></li>
 
 const Description = props =>
-  <div className="well">
-    {props.description}
-  </div>
+  <div className="well" dangerouslySetInnerHTML={ {__html: props.description} }/>
 
 const Task = props =>
   <div>
