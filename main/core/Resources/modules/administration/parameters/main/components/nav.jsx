@@ -8,7 +8,7 @@ const Nav = () =>
     tabs={[
       {
         icon: 'fa fa-fw fa-cog',
-        title: trans('main'),
+        title: trans('parameters'),
         path: '/main'
       }, {
         icon: 'fa fa-fw fa-paper-plane',
@@ -16,13 +16,18 @@ const Nav = () =>
         path: '/portal'
       },  {
         icon: 'fa fa-fw fa-language',
-        title: trans('i18n'),
+        title: trans('language'),
         path: '/i18n'
       },
       {
         icon: 'fa fa-fw fa-plug',
         title: trans('plugins'),
         path: '/plugins'
+      },
+      {
+        icon: 'fa fa-fw fa-wrench',
+        title: trans('maintenance'),
+        path: '/maintenance'
       }
     ]}
   />
