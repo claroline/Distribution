@@ -96,14 +96,14 @@ class UpdateRichTextCommand extends ContainerAwareCommand
                 if ($input->getOption('regex')) {
                     $conn = $this->getContainer()->get('doctrine.dbal.default_connection');
                     $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-                    $metadata = $em->getClassMetadata($this->getClass());
+                    $metadata = $em->getClassMetadata($class);
 
                     $tableName = $metadata->getTableName();
                     $columnName = $metadata->getColumnName($property);
-                    $sql = 'SELECT * from '.$tableName.' WHERE '.$columnName."' RLIKE {$toMatch}'";
+                    $sql = 'SELECT * from '.$tableName." WHERE '".$columnName."' RLIKE '{$toMatch}'";
                     $rsm = new ResultSetMappingBuilder($em);
-                    $rsm->addRootEntityFromClassMetadata($class);
-                    $query = $this->em->createNativeQuery($sql, $rsm);
+                    $rsm->addRootEntityFromClassMetadata($class, '');
+                    $query = $em->createNativeQuery($sql, $rsm);
                     $data = $query->getResult();
                 } else {
                     $data = $em->getRepository($class)->createQueryBuilder('e')
