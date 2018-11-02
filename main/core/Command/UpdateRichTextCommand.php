@@ -100,7 +100,8 @@ class UpdateRichTextCommand extends ContainerAwareCommand
 
                     $tableName = $metadata->getTableName();
                     $columnName = $metadata->getColumnName($property);
-                    $sql = 'SELECT * from '.$tableName." WHERE '".$columnName."' RLIKE '{$toMatch}'";
+                    $sql = 'SELECT * from '.$tableName.' WHERE '.$columnName." RLIKE '{$toMatch}'";
+                    $output->writeln($sql);
                     $rsm = new ResultSetMappingBuilder($em);
                     $rsm->addRootEntityFromClassMetadata($class, '');
                     $query = $em->createNativeQuery($sql, $rsm);
