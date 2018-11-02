@@ -50,6 +50,12 @@ class UpdateRichTextCommand extends ContainerAwareCommand
                'a',
                InputOption::VALUE_NONE,
                'When set to true, all entities'
+           )
+           ->addOption(
+               'regex',
+               'r',
+               InputOption::VALUE_NONE,
+               'When set to true, use regex'
            );
     }
 
@@ -82,13 +88,14 @@ class UpdateRichTextCommand extends ContainerAwareCommand
         $classes = $input->getArgument('classes');
         $entities = [];
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $escaped = addcslashes($toMatch, '%_');
+        $operator = $input->getOption('regex') ? 'RLIKE' : 'LIKE';
+        $search = $input->getOption('regex') ? $toMatch : '%'.addcslashes($toMatch, '%_').'%';
 
         foreach ($classes as $class) {
             foreach ($parsable[$class] as $property) {
                 $data = $em->getRepository($class)->createQueryBuilder('e')
-                  ->where("e.{$property} LIKE :str")
-                  ->setParameter('str', "%{$escaped}%")
+                  ->where("e.{$property} {$operator} :str")
+                  ->setParameter('str', $search)
                   ->getQuery()
                   ->getResult();
 
@@ -133,7 +140,12 @@ class UpdateRichTextCommand extends ContainerAwareCommand
                 }
 
                 if ($continue) {
-                    $text = str_replace($toMatch, $toReplace, $text);
+                    if ($input->getOption('regex')) {
+                        $text = preg_replace($toMatch, $toReplace, $text);
+                    } else {
+                        $text = str_replace($toMatch, $toReplace, $text);
+                    }
+
                     $func = 'set'.ucfirst($property);
                     $entity->$func($text);
                     $em->persist($entity);
