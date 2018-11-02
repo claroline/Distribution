@@ -89,17 +89,18 @@ class ViewAsListener
             } else {
                 $guid = substr($viewAs, strripos($viewAs, '_') + 1);
                 $baseRole = substr($viewAs, 0, strripos($viewAs, '_'));
+                $role = $this->roleManager->getRoleByName($viewAs);
 
-                if ($this->authorization->isGranted('ROLE_WS_MANAGER_'.$guid)) {
+                if (null === $role) {
+                    throw new \Exception("The role {$viewAs} does not exists");
+                }
+
+                $managerRole = $this->roleManager->getManagerRole($role->getWorkspace());
+
+                if ($this->authorization->isGranted($managerRole->getName())) {
                     if ('ROLE_ANONYMOUS' === $baseRole) {
                         throw new \Exception('No implementation yet');
                     } else {
-                        $role = $this->roleManager->getRoleByName($viewAs);
-
-                        if (null === $role) {
-                            throw new \Exception("The role {$viewAs} does not exists");
-                        }
-
                         $token = new ViewAsToken(
                           ['ROLE_USER', $viewAs, 'ROLE_USURPATE_WORKSPACE_ROLE']
                         );
