@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Command;
 
 use Claroline\AppBundle\Command\BaseCommandTrait;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -88,16 +89,29 @@ class UpdateRichTextCommand extends ContainerAwareCommand
         $classes = $input->getArgument('classes');
         $entities = [];
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $operator = $input->getOption('regex') ? 'RLIKE' : 'LIKE';
-        $search = $input->getOption('regex') ? $toMatch : '%'.addcslashes($toMatch, '%_').'%';
+        $search = '%'.addcslashes($toMatch, '%_').'%';
 
         foreach ($classes as $class) {
             foreach ($parsable[$class] as $property) {
-                $data = $em->getRepository($class)->createQueryBuilder('e')
-                  ->where("e.{$property} {$operator} :str")
-                  ->setParameter('str', $search)
-                  ->getQuery()
-                  ->getResult();
+                if ($input->getOption('regex')) {
+                    $conn = $this->getContainer()->get('doctrine.dbal.default_connection');
+                    $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+                    $metadata = $em->getClassMetadata($this->getClass());
+
+                    $tableName = $metadata->getTableName();
+                    $columnName = $metadata->getColumnName($property);
+                    $sql = 'SELECT * from '.$tableName.' WHERE '.$columnName."' RLIKE {$toMatch}'";
+                    $rsm = new ResultSetMappingBuilder($em);
+                    $rsm->addRootEntityFromClassMetadata($class);
+                    $query = $this->em->createNativeQuery($sql, $rsm);
+                    $data = $query->getResult();
+                } else {
+                    $data = $em->getRepository($class)->createQueryBuilder('e')
+                      ->where("e.{$property} LIKE :str")
+                      ->setParameter('str', $search)
+                      ->getQuery()
+                      ->getResult();
+                }
 
                 if ($data) {
                     $entities = array_merge($entities, $data);
