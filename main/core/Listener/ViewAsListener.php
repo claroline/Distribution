@@ -87,7 +87,6 @@ class ViewAsListener
                     $this->tokenStorage->setToken($token);
                 }
             } else {
-                $guid = substr($viewAs, strripos($viewAs, '_') + 1);
                 $baseRole = substr($viewAs, 0, strripos($viewAs, '_'));
                 $role = $this->roleManager->getRoleByName($viewAs);
 
