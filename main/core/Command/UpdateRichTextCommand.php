@@ -141,7 +141,8 @@ class UpdateRichTextCommand extends ContainerAwareCommand
 
                 if ($continue) {
                     if ($input->getOption('regex')) {
-                        $text = preg_replace($toMatch, $toReplace, $text);
+                        $escapedMatcher = str_replace('#', '\#', $toMatch);
+                        $text = preg_replace('#'.$escapedMatcher.'#', $toReplace, $text);
                     } else {
                         $text = str_replace($toMatch, $toReplace, $text);
                     }
