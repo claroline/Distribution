@@ -48,13 +48,35 @@ class ArrayUtils
         $key = array_shift($parts);
 
         if (isset($object[$key])) {
-            if (!empty($parts)) {
+            if (!empty($parts) && is_array($object[$key])) {
                 return $this->get($object[$key], implode('.', $parts));
             }
 
             return $object[$key];
         }
 
+        if (array_key_exists($key, $object)) {
+            return null;
+        }
         throw new \Exception("Key `{$keys}` doesn't exist for array keys [".implode(',', array_keys($object)).']');
+    }
+
+    /**
+     * @param array  $object - the array
+     * @param string $keys   - the property path
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function has(array $object, $keys)
+    {
+        try {
+            $this->get($object, $keys);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

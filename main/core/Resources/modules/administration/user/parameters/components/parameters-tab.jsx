@@ -37,7 +37,14 @@ const Parameters = (props) => {
               calculated: () => url(['claro_user_registration', {}, true]),
               required: true,
               disabled: true
-            }, {
+            },
+            {
+              name: 'security.account_duration',
+              type: 'number',
+              label: trans('account_duration'),
+              required: false
+            },
+            {
               name: 'registration.self',
               type: 'boolean',
               label: trans('activate_self_registration'),
@@ -103,6 +110,32 @@ const Parameters = (props) => {
                 min: 0,
                 unit: trans('days')
               }
+            },
+            {
+              name: 'authentication.redirect_after_login_option',
+              type: 'choice',
+              label: trans('redirect_after_login_option'),
+              options: {
+                multiple: false,
+                condensed: false,
+                choices: {
+                  'DESKTOP': 'DESKTOP',
+                  'URL': 'URL',
+                  'WORKSPACE_TAG': 'WORKSPACE_TAG',
+                  'LAST': 'LAST'
+                }
+              }, linked: [{
+                name: 'authentication.redirect_after_login_url',
+                type: 'string',
+                label: trans('redirect_after_login_url'),
+                displayed: (data) => data.authentication.redirect_after_login_option === 'URL',
+                hideLabel: true
+              }]
+            },
+            {
+              name: 'registration.auto_logging',
+              type: 'boolean',
+              label: trans('auto_logging_after_registration')
             }
           ]
         }, {
@@ -160,10 +193,6 @@ const Parameters = (props) => {
               name: 'security.form_captcha',
               type: 'boolean',
               label: trans('display_captcha')
-            }, {
-              name: 'security.form_honeypot',
-              type: 'boolean',
-              label: trans('use_honeypot')
             }, {
               name: 'security.anonymous_public_profile',
               type: 'boolean',
