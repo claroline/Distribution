@@ -8,8 +8,8 @@ const Nav = () =>
     tabs={[
       {
         icon: 'fa fa-fw fa-cog',
-        title: trans('parameters'),
-        path: '/main'
+        title: trans('identification'),
+        path: '/identification'
       }, {
         icon: 'fa fa-fw fa-paper-plane',
         title: trans('portal'),

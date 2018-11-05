@@ -86,6 +86,7 @@ class ParametersSerializer
                 'header_locale' => $parameters['header_locale'],
                 'resource_icon_set' => $parameters['resource_icon_set'],
                 'name' => $parameters['name'],
+                'secondary_name' => $parameters['secondary_name'],
                 'name_active' => $parameters['name_active'],
             ],
             'mailer' => [

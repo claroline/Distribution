@@ -25,16 +25,16 @@ const MainComponent = () =>
             type: 'string',
             label: trans('name'),
             required: false
-          }/*
+          },
           {
-            name: 'display.description',
+            name: 'display.secondary_name',
             type: 'string',
-            label: trans('description'),
+            label: trans('secondary_name'),
             required: false,
             options: {
-              long: true
+              long: false
             }
-          }*/
+          }
         ]
       }
     ]}
