@@ -8,7 +8,6 @@ import {selectors} from '#/main/core/administration/parameters/appearance/store/
 
 const IconsComponent = (props) =>
 {
-  console.log(props)
   return (
     <FormData
       name="parameters"
