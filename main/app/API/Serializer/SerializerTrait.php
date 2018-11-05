@@ -56,7 +56,7 @@ trait SerializerTrait
      * @param $data   - the data array
      * @param $object - the object to use the setter on
      */
-    public function setIfPropertyExists($prop, $setter, $data, $object)
+    public function setIfPropertyExists($prop, $setter, $data = [], $object)
     {
         //date parsing just in case
 
@@ -64,11 +64,13 @@ trait SerializerTrait
             $this->arrayUtils = new ArrayUtils();
         }
 
-        try {
-            $value = $this->arrayUtils->get($data, $prop);
+        if ($data) {
+            try {
+                $value = $this->arrayUtils->get($data, $prop);
 
-            $object->{$setter}($value);
-        } catch (\Exception $e) {
+                $object->{$setter}($value);
+            } catch (\Exception $e) {
+            }
         }
     }
 
@@ -80,7 +82,7 @@ trait SerializerTrait
      * @param $data   - the data array
      * @param $object - the object to use the setter on
      */
-    public function sipe($prop, $setter, $data, $object)
+    public function sipe($prop, $setter, $data = [], $object)
     {
         $this->setIfPropertyExists($prop, $setter, $data, $object);
     }
