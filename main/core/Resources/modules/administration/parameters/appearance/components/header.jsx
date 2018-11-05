@@ -6,8 +6,7 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
 import {selectors} from '#/main/core/administration/parameters/appearance/store/selectors'
 
-//todo add logo
-const MainComponent = props =>
+const HeaderComponent = () =>
   <FormData
     name="parameters"
     target={['apiv2_parameters_update']}
@@ -19,32 +18,20 @@ const MainComponent = props =>
     }}
     sections={[
       {
-        icon: 'fa fa-fw fa-user-plus',
-        title: trans('main'),
+        icon: 'fa fa-fw fa-header',
+        title: trans('header'),
         defaultOpened: true,
         fields: [
-          {
-            name: 'display.footer',
-            type: 'string',
-            label: trans('footer'),
-            required: false
-          },
-          {
-            name: 'display.footer_login',
-            type: 'boolean',
-            label: trans('show_connection_button_at_footer', {}, 'home'),
-            required: false
-          },
-          {
-            name: 'display.footer_workspaces',
-            type: 'boolean',
-            label: trans('show_workspace_menu_at_footer', {}, 'home'),
-            required: false
-          },
           {
             name: 'display.name_active',
             type: 'boolean',
             label: trans('show_name_in_top_bar'),
+            required: false
+          },
+          {
+            name: 'display.header_locale',
+            type: 'boolean',
+            label: trans('header_locale'),
             required: false
           },
           {
@@ -54,6 +41,12 @@ const MainComponent = props =>
             required: false
           },
           {
+            name: 'display.logo_redirect_home',
+            type: 'boolean',
+            label: trans('logo_redirect_home'),
+            required: false
+          }
+          /*{
             name: 'display.theme',
             type: 'choice',
             label: trans('theme'),
@@ -63,24 +56,24 @@ const MainComponent = props =>
               condensed: true,
               choices: props.themeChoices
             }
-          }
+          }*/
         ]
       }
     ]}
   />
 
 
-MainComponent.propTypes = {
+HeaderComponent.propTypes = {
   themeChoices: T.object.isRequired
 }
 
-const Main = connect(
+const Header = connect(
   (state) => ({
     themeChoices: selectors.themeChoices(state)
   }),
   () => ({ })
-)(MainComponent)
+)(HeaderComponent)
 
 export {
-  Main
+  Header
 }

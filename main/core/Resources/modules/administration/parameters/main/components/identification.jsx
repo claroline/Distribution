@@ -4,20 +4,20 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
 
-const MainComponent = () =>
+const IdentificationComponent = () =>
   <FormData
     name="parameters"
     target={['apiv2_parameters_update']}
     buttons={true}
     cancel={{
       type: LINK_BUTTON,
-      target: '/main',
+      target: '/identification',
       exact: true
     }}
     sections={[
       {
         icon: 'fa fa-fw fa-user-plus',
-        title: trans('main'),
+        title: trans('Identification'),
         defaultOpened: true,
         fields: [
           {
@@ -41,14 +41,14 @@ const MainComponent = () =>
   />
 
 
-MainComponent.propTypes = {
+IdentificationComponent.propTypes = {
 }
 
-const Main = connect(
+const Identification = connect(
   null,
   () => ({ })
-)(MainComponent)
+)(IdentificationComponent)
 
 export {
-  Main
+  Identification
 }
