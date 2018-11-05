@@ -94,7 +94,6 @@ class UpdateRichTextCommand extends ContainerAwareCommand
         foreach ($classes as $class) {
             foreach ($parsable[$class] as $property) {
                 if ($input->getOption('regex')) {
-                    $conn = $this->getContainer()->get('doctrine.dbal.default_connection');
                     $em = $this->getContainer()->get('doctrine.orm.entity_manager');
                     $metadata = $em->getClassMetadata($class);
 
