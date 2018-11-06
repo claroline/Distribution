@@ -18,8 +18,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service("claroline.config.platform_config_handler")
  *
  * Service used for accessing or modifying the platform configuration parameters.
- *
- * @deprecated (use ParameterSerializer instead)
  */
 class PlatformConfigurationHandler
 {

@@ -28,9 +28,10 @@ class ParametersSerializer
      * ParametersSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "finder"     = @DI\Inject("claroline.api.finder"),
-     *     "filePath"   = @DI\Inject("%claroline.param.platform_options%")
+     *     "serializer"    = @DI\Inject("claroline.api.serializer"),
+     *     "finder"        = @DI\Inject("claroline.api.finder"),
+     *     "filePath"      = @DI\Inject("%claroline.param.platform_options%"),
+     *     "configHandler" = @DI\Inject("claroline.config.platform_config_handler")
      * })
      *
      * @param PlatformConfigurationHandler $config
@@ -40,17 +41,19 @@ class ParametersSerializer
     public function __construct(
         SerializerProvider $serializer,
         FinderProvider $finder,
+        PlatformConfigurationHandler $configHandler,
         $filePath
     ) {
         $this->serializer = $serializer;
         $this->finder = $finder;
         $this->arrayUtils = new ArrayUtils();
         $this->filePath = $filePath;
+        $this->configHandler = $configHandler;
     }
 
     public function serialize(array $options = [])
     {
-        $data = json_decode(file_get_contents($this->filePath), true);
+        $data = $this->configHandler->getParameters();
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $data['tos']['text'] = $this->serializeTos();

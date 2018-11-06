@@ -53,6 +53,7 @@ class Updater120101 extends Updater
                 'header_locale' => $parameters['header_locale'],
                 'resource_icon_set' => $parameters['resource_icon_set'],
                 'name' => $parameters['name'],
+                'secondary_name' => $parameters['secondary_name'],
                 'name_active' => $parameters['name_active'],
             ],
             'mailer' => [
@@ -98,6 +99,7 @@ class Updater120101 extends Updater
                 'account_duration' => $parameters['account_duration'],
                 'default_root_anon_id' => $parameters['default_root_anon_id'],
                 'anonymous_public_profile' => $parameters['anonymous_public_profile'],
+                'disabled_admin_tools' => $parameters['security']['disabled_admin_tools'],
             ],
             'tos' => [
                 'enabled' => $parameters['terms_of_service'],
