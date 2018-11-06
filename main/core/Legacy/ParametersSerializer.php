@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer\Legacy;
+namespace Claroline\CoreBundle\Legacy;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;

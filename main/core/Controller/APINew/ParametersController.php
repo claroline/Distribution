@@ -65,7 +65,6 @@ class ParametersController
     public function updateAction(Request $request)
     {
         $parameters = $this->serializer->deserialize(json_decode($request->getContent(), true));
-        $this->ch->setParameters($parameters);
 
         return new JsonResponse($this->serializer->serialize());
     }
