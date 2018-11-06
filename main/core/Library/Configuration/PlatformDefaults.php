@@ -35,6 +35,10 @@ class PlatformDefaults implements ParameterProviderInterface
     public function getDefaultParameters()
     {
         return [
+            'home' => [
+              'redirection_type' => null,
+              'redirection_url' => null,
+            ],
             'profile' => [
               'roles_confidential' => [],
               'roles_locked' => [],
@@ -154,6 +158,8 @@ class PlatformDefaults implements ParameterProviderInterface
               'header_locale' => true,
               'resource_icon_set' => 'claroline',
               'name' => 'Claroline Connect',
+              'secondary_name' => 'Easy & flexible learning',
+              'logo_redirect_home' => true,
               'name_active' => true,
             ],
             'mailer' => [
@@ -200,16 +206,12 @@ class PlatformDefaults implements ParameterProviderInterface
               'message' => null,
             ],
 
-            'secondary_name' => 'Easy & flexible learning',
             'header_menu' => 'workspaces',
             'show_about_button' => true,
 
             //not documented, for the cli tool claroline:user:mailing
             'notifications_refresh_delay' => 12000, // in ms
             'is_cron_configured' => false,
-            'logo_redirect_home' => true,
-            'home_redirection_type' => null,
-            'home_redirection_url' => null,
         ];
     }
 }
