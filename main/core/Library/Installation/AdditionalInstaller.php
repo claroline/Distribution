@@ -190,9 +190,6 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
 
         $termsOfServiceManager = $this->container->get('claroline.common.terms_of_service_manager');
         $termsOfServiceManager->sendDatas();
-
-        $docUpdater = new Updater\DocUpdater($this->container);
-        $docUpdater->updateDocUrl('http://doc.claroline.com');
     }
 
     public function end($currentVersion, $targetVersion)

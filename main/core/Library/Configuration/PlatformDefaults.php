@@ -44,7 +44,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'roles_locked' => [],
               'roles_edition' => [],
             ],
-            'country' => '-', ,
+            'country' => '-',
             'portal' => [
                 'enabled_resources' => null,
             ],
@@ -91,6 +91,7 @@ class PlatformDefaults implements ParameterProviderInterface
             'internet' => [
               'domain_name' => null,
               'platform_url' => null,
+              'google_meta_tag' => null,
             ],
             'workspace' => [
               'max_storage_size' => Workspace::DEFAULT_MAX_STORAGE_SIZE,
@@ -123,7 +124,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'validation' => self::REGISTRATION_MAIL_VALIDATION_PARTIAL,
               'auto_logging' => false,
               'register_button_at_login' => false,
-              'allow_workspace_at_registration' => false,
+              'allow_workspace' => false,
               'force_organization_creation' => false,
             ],
             'security' => [
@@ -132,7 +133,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'platform_limit_date' => null,
               'platform_init_date' => 1388534461, //1 june 2014
               'cookie_lifetime' => 3600,
-              'account_duration' => nul,
+              'account_duration' => null,
               'default_root_anon_id' => null,
               'anonymous_public_profile' => false,
               'disabled_admin_tools' => [
@@ -208,7 +209,6 @@ class PlatformDefaults implements ParameterProviderInterface
 
             'header_menu' => 'workspaces',
             'show_about_button' => true,
-
             //not documented, for the cli tool claroline:user:mailing
             'notifications_refresh_delay' => 12000, // in ms
             'is_cron_configured' => false,

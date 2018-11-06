@@ -68,12 +68,13 @@ class ParametersSerializer
      */
     public function deserialize(array $data)
     {
-        $exempted = ['tos'];
-
         $this->deserializeTos($data);
+        unset($data['tos']['text']);
 
         $data = array_merge($this->serialize([Options::SERIALIZE_MINIMAL]), $data);
+        ksort($data);
         $data = json_encode($data, JSON_PRETTY_PRINT);
+
         file_put_contents($this->filePath, $data);
     }
 
