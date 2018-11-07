@@ -32,7 +32,6 @@ use Claroline\CoreBundle\Entity\Workspace\WorkspaceRecent;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
 use Claroline\CoreBundle\Library\Security\Token\ViewAsToken;
 use Claroline\CoreBundle\Library\Security\Utilities;
-use Claroline\CoreBundle\Library\Transfert\Resolver;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRecentRepository;
@@ -918,36 +917,6 @@ class WorkspaceManager
     public function getLogger()
     {
         return $this->logger;
-    }
-
-    public function getTemplateData(File $file, $refresh = false)
-    {
-        //from cache
-        if (!$refresh) {
-            return $this->importData;
-        }
-
-        $archive = new \ZipArchive();
-        $fileName = $file->getBasename('.zip');
-        $extractPath = $this->templateDirectory.$fileName;
-
-        if ($archive->open($file->getPathname())) {
-            $fs = new FileSystem();
-            $fs->mkdir($extractPath);
-            $this->log("Extracting workspace to {$extractPath}...");
-
-            if (!$archive->extractTo($extractPath)) {
-                throw new \Exception("The workspace archive couldn't be extracted");
-            }
-
-            $archive->close();
-            $resolver = new Resolver($extractPath);
-            $this->importData = $resolver->resolve();
-
-            return $this->importData;
-        }
-
-        throw new \Exception("The workspace archive couldn't be opened");
     }
 
     public function removeTemplate(File $file)
