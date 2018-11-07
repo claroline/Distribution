@@ -97,7 +97,7 @@ class LegacyParametersMapping
             'resource_icon_set' => 'display.resource_icon_set',
             'direct_third_party_authentication' => 'authentication.direct_third_party',
             'workspace_users_csv_import_by_full_name' => 'workspace.users_csv_import_by_full_name',
-            'platform_log_enabled' => 'log.enabled',
+            'platform_log_enabled' => 'logs.enabled',
             //not documented, for the cli tool claroline:user:mailing
             'auto_validate_email' => 'database_restoration.auto_validate_email',
             'notifications_refresh_delay' => 'notifications_refresh_delay', // in ms

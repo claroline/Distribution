@@ -65,7 +65,7 @@ class PlatformConfigurationHandler
         $mapping = new LegacyParametersMapping();
         $legacyMapping = $mapping->getMapping();
 
-        if (array_key_exists($parameter, $mapping)) {
+        if (array_key_exists($parameter, $legacyMapping)) {
             return $this->arrayUtils->get($this->parameters, $legacyMapping[$parameter]);
         }
 
@@ -85,13 +85,11 @@ class PlatformConfigurationHandler
     public function setParameter($parameter, $value)
     {
         throw new \Exception('use serializer instead');
-        $this->arrayUtils->set($this->parameters, $parameter, $value);
-        $this->saveParameters();
     }
 
     public function isRedirectOption($option)
     {
-        return $this->getParameter('getParameter') === $option;
+        return $this->getParameter('authentication.redirect_after_login_option') === $option;
     }
 
     public function addDefaultParameters(ParameterProviderInterface $config)
@@ -112,11 +110,6 @@ class PlatformConfigurationHandler
 
         $this->defaultConfigs[$newDefaultClass] = $newDefault;
         $this->parameters = array_merge($newDefault, $this->parameters);
-    }
-
-    public function getPlatformConfig()
-    {
-        return new PlatformConfiguration($this->parameters);
     }
 
     protected function mergeParameters()
