@@ -23,7 +23,6 @@ use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
-use Claroline\CoreBundle\Manager\TransferManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -32,7 +31,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -77,8 +75,6 @@ class WorkspaceController
     private $om;
     /** @var ParametersSerializer */
     private $parametersSerializer;
-    /** @var TransferManager */
-    private $transferManager;
 
     /**
      * WorkspaceController constructor.
@@ -96,8 +92,7 @@ class WorkspaceController
      *     "utils"                = @DI\Inject("claroline.security.utilities"),
      *     "workspaceManager"     = @DI\Inject("claroline.manager.workspace_manager"),
      *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
-     *     "transferManager"      = @DI\Inject("claroline.manager.transfer_manager")
+     *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
@@ -113,7 +108,6 @@ class WorkspaceController
      * @param WorkspaceManager              $workspaceManager
      * @param ParametersSerializer          $parametersSerializer
      * @param ObjectManager                 $om
-     * @param TransferManager               $transferManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -128,8 +122,7 @@ class WorkspaceController
         Utilities $utils,
         WorkspaceManager $workspaceManager,
         ParametersSerializer $parametersSerializer,
-        ObjectManager $om,
-        TransferManager $transferManager
+        ObjectManager $om
     ) {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
@@ -144,7 +137,6 @@ class WorkspaceController
         $this->workspaceManager = $workspaceManager;
         $this->parametersSerializer = $parametersSerializer;
         $this->om = $om;
-        $this->transferManager = $transferManager;
     }
 
     /**
@@ -325,36 +317,6 @@ class WorkspaceController
                 'toolName' => $toolName,
             ])
         );
-    }
-
-    /**
-     * @EXT\Route("/{workspace}/export", name="claro_workspace_export")
-     *
-     * @param Workspace $workspace
-     *
-     * @return StreamedResponse
-     */
-    public function exportAction(Workspace $workspace)
-    {
-        $archive = $this->transferManager->export($workspace);
-
-        $fileName = $workspace->getCode().'.zip';
-        $response = new StreamedResponse();
-
-        $response->setCallBack(
-            function () use ($archive) {
-                readfile($archive);
-            }
-        );
-
-        $response->headers->set('Content-Transfer-Encoding', 'octet-stream');
-        $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename='.urlencode($fileName));
-        $response->headers->set('Content-Length', filesize($archive));
-        $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Connection', 'close');
-
-        return $response->send();
     }
 
     private function isUsurpator(TokenInterface $token = null)

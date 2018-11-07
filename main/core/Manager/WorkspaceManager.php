@@ -633,135 +633,6 @@ class WorkspaceManager
     }
 
     /**
-     * Import a workspace list from a csv data.
-     *
-     * @param array    $workspaces
-     * @param callable $logger
-     * @param bool     $update
-     *
-     * @deprecated
-     */
-    public function importWorkspaces(array $workspaces, $logger = null, $update = false)
-    {
-        $i = 0;
-        $this->om->startFlushSuite();
-
-        foreach ($workspaces as $workspace) {
-            $create = false;
-            ++$i;
-            $endDate = null;
-            $model = null;
-            $name = $workspace[0];
-            $code = $workspace[1];
-            $isVisible = $workspace[2];
-            $selfRegistration = $workspace[3];
-            $registrationValidation = $workspace[4];
-            $selfUnregistration = $workspace[5];
-
-            if (isset($workspace[6]) && '' !== trim($workspace[6])) {
-                $user = $this->om
-                    ->getRepository('ClarolineCoreBundle:User')
-                    ->findOneBy([
-                        'username' => $workspace[6],
-                    ]);
-            } else {
-                $user = $this->container->get('security.token_storage')->getToken()->getUser();
-            }
-
-            if (isset($workspace[7])) {
-                $model = $this->workspaceRepo->findOneBy([
-                    'code' => $workspace[7],
-                ]);
-            }
-
-            if (isset($workspace[8]) && is_int($workspace[8])) {
-                $endDate = new \DateTime();
-                $endDate->setTimestamp($workspace[8]);
-            }
-            if ($update) {
-                $workspace = $this->getOneByCode($code);
-                if (!$workspace) {
-                    //if the workspace doesn't exists, create it...
-                    $workspace = new Workspace();
-                    $workspace->setName($name);
-                    $create = true;
-                }
-                $this->rename($workspace, $name);
-                if ($logger) {
-                    $logger('Updating '.$code.' ('.$i.'/'.count($workspaces).') ...');
-                }
-            } else {
-                $workspace = new Workspace();
-                $workspace->setName($name);
-                $created[] = $name;
-                $create = true;
-            }
-
-            if ($create) {
-                $created[] = $code;
-            } else {
-                $updated[] = $code;
-            }
-
-            $workspace->setCode($code);
-            $workspace->setDisplayable($isVisible);
-            $workspace->setSelfRegistration($selfRegistration);
-            $workspace->setSelfUnregistration($selfUnregistration);
-            $workspace->setRegistrationValidation($registrationValidation);
-            $workspace->setCreator($user);
-
-            if ($endDate) {
-                $workspace->setEndDate($endDate);
-            }
-
-            if (!$update) {
-                if ($logger) {
-                    $logger('Creating '.$code.' ('.$i.'/'.count($workspaces).') ...');
-                }
-                if ($model) {
-                    $guid = $this->ut->generateGuid();
-                    $workspace->setGuid($guid);
-                    $date = new \Datetime(date('d-m-Y H:i'));
-                    $workspace->setCreationDate($date->getTimestamp());
-                    $this->copy($model, $workspace, $user);
-                } else {
-                    $template = new File($this->container->getParameter('claroline.param.default_template'));
-                    $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
-                }
-            } else {
-                if ($create) {
-                    $template = new File($this->container->getParameter('claroline.param.default_template'));
-                    $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
-                }
-
-                if ($model) {
-                    $this->duplicateOrderedTools($model, $workspace);
-                }
-            }
-
-            $this->om->persist($workspace);
-
-            if ($logger) {
-                $logger('UOW: '.$this->om->getUnitOfWork()->size());
-            }
-
-            if (0 === $i % 100) {
-                $this->om->forceFlush();
-                $user = $this->om->getRepository('ClarolineCoreBundle:User')->find($user->getId());
-                $this->om->merge($user);
-                $this->om->refresh($user);
-            }
-        }
-
-        $this->om->endFlushSuite();
-
-        if ($logger) {
-            $logger(count($updated).' workspace updated ('.implode(',', $updated).')');
-            $logger(count($created).' workspace created ('.implode(',', $created).')');
-        }
-    }
-
-    /**
      * Count the number of resources in a workspace.
      *
      * @param Workspace $workspace
@@ -901,14 +772,9 @@ class WorkspaceManager
     public function setLogger(LoggerInterface $logger)
     {
         $rm = $this->container->get('claroline.manager.resource_manager');
-        $tm = $this->container->get('claroline.manager.transfer_manager');
 
         if (!$rm->getLogger()) {
             $rm->setLogger($logger);
-        }
-
-        if (!$tm->getLogger()) {
-            $tm->setLogger($logger);
         }
 
         $this->logger = $logger;
@@ -1539,20 +1405,18 @@ class WorkspaceManager
 
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
 
-            $workspace = new Workspace();
+            $this->log('Build from json...');
+            $data = json_decode(file_get_contents($this->container->getParameter('claroline.param.workspace.default')), true);
+            $workspace = $this->container->get('claroline.api.crud')->create(Workspace::class, $data, [Options::LIGHT_COPY]);
+            $this->log('Add tools...');
+            $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
             $workspace->setName($name);
             $workspace->setPersonal($isPersonal);
             $workspace->setCode($name);
             $workspace->setModel(true);
             $this->log('Build and set default admin');
             $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultClarolineAdmin());
-            $templateName = $isPersonal ? 'claroline.param.personal_template' : 'claroline.param.default_template';
-            $template = new File($this->container->getParameter($templateName));
-            $this->log('Build from archive...');
-            $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->setDefaults();
-            $this->log('Add tools...');
-            $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
 
             if ($restore) {
                 $this->om->persist($workspace);

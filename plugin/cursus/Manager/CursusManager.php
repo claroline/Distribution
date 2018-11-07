@@ -105,7 +105,6 @@ class CursusManager
     private $roleManager;
     private $router;
     private $serializer;
-    private $defaultTemplate;
     private $templating;
     private $tokenStorage;
     private $toolManager;
@@ -151,7 +150,6 @@ class CursusManager
      *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
      *     "router"                = @DI\Inject("router"),
      *     "serializer"            = @DI\Inject("jms_serializer"),
-     *     "defaultTemplate"       = @DI\Inject("%claroline.param.default_template%"),
      *     "templating"            = @DI\Inject("templating"),
      *     "tokenStorage"          = @DI\Inject("security.token_storage"),
      *     "toolManager"           = @DI\Inject("claroline.manager.tool_manager"),
@@ -178,7 +176,6 @@ class CursusManager
         RoleManager $roleManager,
         UrlGeneratorInterface $router,
         Serializer $serializer,
-        $defaultTemplate,
         TwigEngine $templating,
         TokenStorageInterface $tokenStorage,
         ToolManager $toolManager,
@@ -205,7 +202,6 @@ class CursusManager
         $this->roleManager = $roleManager;
         $this->router = $router;
         $this->serializer = $serializer;
-        $this->defaultTemplate = $defaultTemplate;
         $this->templating = $templating;
         $this->tokenStorage = $tokenStorage;
         $this->toolManager = $toolManager;

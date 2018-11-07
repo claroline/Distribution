@@ -48,7 +48,7 @@ class ExportWorkspaceModelCommand extends ContainerAwareCommand
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    {/*
         $code = $input->getArgument('code');
         $path = $input->getArgument('export_directory');
         $username = $input->getArgument('owner_username');
@@ -91,6 +91,6 @@ class ExportWorkspaceModelCommand extends ContainerAwareCommand
             $arch = $transferManager->export($workspace);
             $output->writeln("<comment>Moving to export directory ($i/$count)</comment>");
             rename($arch, $expPath);
-        }
+        }*/
     }
 }
