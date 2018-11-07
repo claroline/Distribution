@@ -71,6 +71,7 @@ class ParametersSerializer
      */
     public function deserialize(array $data)
     {
+        $original = $data;
         $this->deserializeTos($data);
         unset($data['tos']['text']);
 
@@ -79,6 +80,8 @@ class ParametersSerializer
         $data = json_encode($data, JSON_PRETTY_PRINT);
 
         file_put_contents($this->filePath, $data);
+
+        return $original;
     }
 
     public function serializeTos()

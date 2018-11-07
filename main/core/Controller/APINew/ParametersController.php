@@ -66,6 +66,6 @@ class ParametersController
     {
         $parameters = $this->serializer->deserialize(json_decode($request->getContent(), true));
 
-        return new JsonResponse($this->serializer->serialize());
+        return new JsonResponse($parameters);
     }
 }
