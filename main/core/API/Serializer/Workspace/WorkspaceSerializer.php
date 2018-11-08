@@ -389,14 +389,6 @@ class WorkspaceSerializer
             );
         }
 
-        if (isset($data['registration']) && isset($data['registration']['defaultRole'])) {
-            $defaultRole = $this->serializer->deserialize(
-                'Claroline\CoreBundle\Entity\Role',
-                $data['registration']['defaultRole']
-            );
-            $workspace->setDefaultRole($defaultRole);
-        }
-
         if (isset($data['extra']) && isset($data['extra']['model'])) {
             $model = $this->serializer->deserialize(
               'Claroline\CoreBundle\Entity\Workspace\Workspace',
@@ -423,6 +415,31 @@ class WorkspaceSerializer
         $this->sipe('registration.selfRegistration', 'setSelfRegistration', $data, $workspace);
         $this->sipe('registration.selfUnregistration', 'setSelfUnregistration', $data, $workspace);
 
+        //during the creation from json file (not from copy)
+        if (in_array(Options::WORKSPACE_DESERIALIZE_ROLES, $options)) {
+            foreach ($data['roles'] as $roleData) {
+                $roleData['workspace']['uuid'] = $workspace->getUuid();
+                $role = $this->serializer->deserialize(Role::class, $roleData);
+                $this->om->persist($role);
+                $workspace->addRole($role);
+            }
+
+            foreach ($workspace->getRoles() as $role) {
+                if ($data['registration']['defaultRole']['translationKey'] === $role->getTranslationKey()) {
+                    $workspace->setDefaultRole($role);
+                }
+            }
+        } else {
+            //old one (from copy/update)
+            if (isset($data['registration']) && isset($data['registration']['defaultRole'])) {
+                $defaultRole = $this->serializer->deserialize(
+                  'Claroline\CoreBundle\Entity\Role',
+                  $data['registration']['defaultRole']
+              );
+                $workspace->setDefaultRole($defaultRole);
+            }
+        }
+
         if (!empty($data['restrictions'])) {
             // TODO : store raw file size to avoid this
             if (isset($data['restrictions']['maxStorage'])) {
@@ -440,6 +457,7 @@ class WorkspaceSerializer
         }
 
         $workspaceOptions = $workspace->getOptions();
+
         if (isset($data['display']) || isset($data['opening'])) {
             $details = $workspaceOptions->getDetails();
 

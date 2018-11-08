@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Event\NotPopulatedEventException;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -143,48 +144,6 @@ class WorkspaceManager
         $this->om->persist($workspace);
 
         $this->om->flush();
-    }
-
-    /**
-     * Creates a workspace.
-     *
-     * @param Workspace $workspace
-     * @param File      $template
-     *
-     * @return Workspace
-     */
-    public function create(Workspace $workspace, File $template)
-    {
-        $transferManager = $this->container->get('claroline.manager.transfer_manager');
-
-        if ($this->logger) {
-            $transferManager->setLogger($this->logger);
-        }
-
-        $workspace = $transferManager->createWorkspace($workspace, $template, false);
-
-        return $workspace;
-    }
-
-    /**
-     * Creates a workspace.
-     *
-     * @param Workspace $workspace
-     * @param string    $templateDirectory uncompressed template
-     *
-     * @return Workspace
-     */
-    public function createFromTemplate(Workspace $workspace, $templateDirectory)
-    {
-        $transferManager = $this->container->get('claroline.manager.transfer_manager');
-
-        if ($this->logger) {
-            $transferManager->setLogger($this->logger);
-        }
-
-        $workspace = $transferManager->createWorkspaceFromTemplate($workspace, $templateDirectory, false);
-
-        return $workspace;
     }
 
     public function createWorkspace(Workspace $workspace)
@@ -1393,7 +1352,7 @@ class WorkspaceManager
         $this->log('Search old default workspace...');
 
         $name = $isPersonal ? 'default_personal' : 'default_workspace';
-        $workspace = $this->workspaceRepo->findOneBy(['code' => $name, 'personal' => $isPersonal, 'model' => true]);
+        $workspace = $this->workspaceRepo->findOneBy(['code' => $name, 'model' => true]);
 
         if (!$workspace || $restore) {
             $this->log('Rebuilding...');
@@ -1401,13 +1360,18 @@ class WorkspaceManager
             //(some database tables aren't already created because they come from plugins)
             if ($workspace && $restore) {
                 $this->om->remove($workspace);
+                $this->om->flush();
             }
 
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
 
             $this->log('Build from json...');
             $data = json_decode(file_get_contents($this->container->getParameter('claroline.param.workspace.default')), true);
-            $workspace = $this->container->get('claroline.api.crud')->create(Workspace::class, $data, [Options::LIGHT_COPY]);
+            $data['code'] = $data['name'] = $name;
+            $workspace = $this->container->get('claroline.api.crud')->create(
+              Workspace::class, $data,
+              [Options::LIGHT_COPY, Options::WORKSPACE_DESERIALIZE_ROLES, Crud::NO_VALIDATE]
+            );
             $this->log('Add tools...');
             $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
             $workspace->setName($name);

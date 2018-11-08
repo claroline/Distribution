@@ -1,0 +1,38 @@
+{
+   "thumbnail":null,
+   "poster":null,
+   "meta":{
+      "forceLang":false,
+      "model":true,
+      "description":""
+   },
+   "restrictions":{
+      "hidden":true,
+      "dates":[],
+      "maxUsers":10000,
+      "maxStorage":1099511627776,
+      "maxResources":10000
+   },
+   "registration":{
+      "validation":false,
+      "waitingForRegistration":false,
+      "selfRegistration":false,
+      "selfUnregistration":false,
+      "defaultRole":{
+         "translationKey":"collaborator"
+      }
+   },
+   "notifications":{
+      "enabled":true
+   },
+   "roles":[
+      {
+         "translationKey":"collaborator",
+         "type": 2
+      },
+      {
+         "translationKey":"manager",
+         "type": 2
+      }
+   ]
+}
