@@ -2,7 +2,9 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Workspace;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\Tool\ToolSerializer;
+use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -19,14 +21,16 @@ class OrderedToolSerializer
      * PendingRegistrationSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "toolSerializer" = @DI\Inject("claroline.serializer.tool")
+     *     "toolSerializer" = @DI\Inject("claroline.serializer.tool"),
+     *     "roleSerializer" = @DI\Inject("claroline.serializer.role")
      * })
      *
      * @param ToolSerializer $toolSerializer
      */
-    public function __construct(ToolSerializer $toolSerializer)
+    public function __construct(ToolSerializer $toolSerializer, RoleSerializer $roleSerializer)
     {
         $this->toolSerializer = $toolSerializer;
+        $this->roleSerializer = $roleSerializer;
     }
 
     public function getClass()
@@ -38,8 +42,7 @@ class OrderedToolSerializer
     {
         return [
           //maybe remove tools. See later
-          'id' => $orderedTool->getId(),
-          'uuid' => $orderedTool->getUuid(),
+          'id' => $orderedTool->getUuid(),
           'tool' => $this->toolSerializer->serialize($orderedTool->getTool()),
           'position' => $orderedTool->getOrder(),
           'restrictions' => $this->serializeRestrictions($orderedTool),
@@ -48,6 +51,15 @@ class OrderedToolSerializer
 
     private function serializeRestrictions(OrderedTool $orderedTool): array
     {
-        return [];
+        $restrictions = [];
+
+        foreach ($orderedTool->getRights() as $right) {
+            $restrictions['roles'][] = [
+              'role' => $this->roleSerializer->serialize($right->getRole(), [Options::SERIALIZE_MINIMAL]),
+              'mask' => $right->getMask(),
+          ];
+        }
+
+        return $restrictions;
     }
 }

@@ -183,7 +183,7 @@ class WorkspaceSerializer
         }
 
         //if (in_array(Options::WORKSPACE_FETCH_ORDERED_TOOLS)) {
-        $serialized['tools'] = $serialized['managers'] = array_map(function (OrderedTool $tool) {
+        $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
             return $this->serializer->serialize($tool, []);
         }, $workspace->getOrderedTools()->toArray());
         //}
