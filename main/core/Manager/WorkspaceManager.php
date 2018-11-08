@@ -1349,9 +1349,8 @@ class WorkspaceManager
 
     public function getDefaultModel($isPersonal = false, $restore = false)
     {
-        $this->log('Search old default workspace...');
-
         $name = $isPersonal ? 'default_personal' : 'default_workspace';
+        $this->log('Search old default workspace '.$name);
         $workspace = $this->workspaceRepo->findOneBy(['code' => $name, 'model' => true]);
 
         if (!$workspace || $restore) {
@@ -1369,8 +1368,12 @@ class WorkspaceManager
             $data = json_decode(file_get_contents($this->container->getParameter('claroline.param.workspace.default')), true);
             $data['code'] = $data['name'] = $name;
             $workspace = $this->container->get('claroline.api.crud')->create(
-              Workspace::class, $data,
-              [Options::LIGHT_COPY, Options::WORKSPACE_DESERIALIZE_ROLES, Crud::NO_VALIDATE]
+                Workspace::class, $data,
+                [
+                  Options::LIGHT_COPY,
+                  Options::WORKSPACE_DESERIALIZE_ROLES,
+                  Crud::NO_VALIDATE,
+                ]
             );
             $this->log('Add tools...');
             $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);

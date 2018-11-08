@@ -10,6 +10,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
@@ -180,6 +181,12 @@ class WorkspaceSerializer
                 }, $workspace->getOrganizations()->toArray());
             }
         }
+
+        //if (in_array(Options::WORKSPACE_FETCH_ORDERED_TOOLS)) {
+        $serialized['tools'] = $serialized['managers'] = array_map(function (OrderedTool $tool) {
+            return $this->serializer->serialize($tool, []);
+        }, $workspace->getOrderedTools()->toArray());
+        //}
 
         // maybe do the same for users one day
         if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
@@ -420,8 +427,8 @@ class WorkspaceSerializer
             foreach ($data['roles'] as $roleData) {
                 $roleData['workspace']['uuid'] = $workspace->getUuid();
                 $role = $this->serializer->deserialize(Role::class, $roleData);
+                $role->setWorkspace($workspace);
                 $this->om->persist($role);
-                $workspace->addRole($role);
             }
 
             foreach ($workspace->getRoles() as $role) {

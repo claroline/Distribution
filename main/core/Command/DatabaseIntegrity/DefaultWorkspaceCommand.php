@@ -9,6 +9,7 @@
 namespace Claroline\CoreBundle\Command\DatabaseIntegrity;
 
 use Claroline\CoreBundle\Command\AdminCliCommand;
+use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,7 +24,9 @@ class DefaultWorkspaceCommand extends ContainerAwareCommand implements AdminCliC
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $consoleLogger = ConsoleLogger::get($output);
         $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
+        $workspaceManager->setLogger($consoleLogger);
         $workspaceManager->getDefaultModel(false, true);
         $workspaceManager->getDefaultModel(true, true);
     }
