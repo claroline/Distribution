@@ -52,6 +52,7 @@ fetch() {
     if [ $STATUS = 200 ]
     then
         echo "Success, extracting..."
+        ls
         tar -xzf "$ARCHIVE"
     else
         echo "Failure ($STATUS), executing $1..."
