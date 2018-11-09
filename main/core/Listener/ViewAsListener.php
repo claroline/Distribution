@@ -94,7 +94,6 @@ class ViewAsListener
                     throw new \Exception("The role {$viewAs} does not exists");
                 }
 
-                var_dump($role->getName());
                 $managerRole = $this->roleManager->getManagerRole($role->getWorkspace());
 
                 $tokenRoles = array_map(function ($role) {

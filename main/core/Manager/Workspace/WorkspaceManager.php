@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\CoreBundle\Manager\Workspace;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
@@ -34,6 +34,8 @@ use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
 use Claroline\CoreBundle\Library\Security\Token\ViewAsToken;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRecentRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
@@ -1367,14 +1369,7 @@ class WorkspaceManager
             $this->log('Build from json...');
             $data = json_decode(file_get_contents($this->container->getParameter('claroline.param.workspace.default')), true);
             $data['code'] = $data['name'] = $name;
-            $workspace = $this->container->get('claroline.api.crud')->create(
-                Workspace::class, $data,
-                [
-                  Options::LIGHT_COPY,
-                  Options::WORKSPACE_DESERIALIZE_ROLES,
-                  Crud::NO_VALIDATE,
-                ]
-            );
+            $workspace = $this->container->get('claroline.manager.workspace.importer')->create($data, $name);
             $this->log('Add tools...');
             $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
             $workspace->setName($name);

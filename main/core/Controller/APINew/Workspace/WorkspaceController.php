@@ -16,6 +16,7 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AppBundle\Logger\JsonLogger;
+use Claroline\CoreBundle\API\Serializer\Workspace\FullSerializer;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
@@ -26,7 +27,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
+use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -68,8 +69,9 @@ class WorkspaceController extends AbstractCrudController
      *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
      *     "translator"       = @DI\Inject("translator"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "utils"               = @DI\Inject("claroline.security.utilities"),
-     *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%")
+     *     "utils"            = @DI\Inject("claroline.security.utilities"),
+     *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%"),
+     *     "fullSerializer"   = @DI\Inject("claroline.serializer.workspace.full")
      * })
      *
      * @param TokenStorageInterface         $tokenStorage
@@ -89,6 +91,7 @@ class WorkspaceController extends AbstractCrudController
         RoleManager $roleManager,
         WorkspaceManager $workspaceManager,
         Utilities $utils,
+        FullSerializer $fullSerializer,
         $logDir
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -98,6 +101,7 @@ class WorkspaceController extends AbstractCrudController
         $this->roleManager = $roleManager;
         $this->workspaceManager = $workspaceManager;
         $this->utils = $utils;
+        $this->fullSerializer = $fullSerializer;
         $this->logDir = $logDir;
     }
 
@@ -213,6 +217,24 @@ class WorkspaceController extends AbstractCrudController
             'Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue',
             array_merge($request->query->all(), ['hiddenFilters' => ['workspace' => $workspace->getUuid()]])
         ));
+    }
+
+    /**
+     * @Route(
+     *    "/{id}/export",
+     *    name="apiv2_workspace_export"
+     * )
+     * @Method("GET")
+     * @ParamConverter("workspace", options={"mapping": {"id": "uuid"}})
+     *
+     * @param Request   $request
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function exportAction(Request $request, Workspace $workspace)
+    {
+        return new JsonResponse($this->fullSerializer->serialize($workspace));
     }
 
     /**

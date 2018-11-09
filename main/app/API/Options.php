@@ -71,6 +71,7 @@ final class Options
     const REGISTRATION = 'registration';
 
     //for workspace
+    const WORKSPACE_FULL = 'workspace_full';
     const WORKSPACE_MODEL = 'workspace_model';
     const WORKSPACE_FETCH_GROUPS = 'workspace_fetch_groups';
     const WORKSPACE_FETCH_ORDERED_TOOLS = 'workspace_fetch_ordered_tools';

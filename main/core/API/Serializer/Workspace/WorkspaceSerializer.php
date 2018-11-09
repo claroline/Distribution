@@ -10,7 +10,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
@@ -18,7 +17,7 @@ use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
+use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -181,12 +180,6 @@ class WorkspaceSerializer
                 }, $workspace->getOrganizations()->toArray());
             }
         }
-
-        //if (in_array(Options::WORKSPACE_FETCH_ORDERED_TOOLS)) {
-        $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
-            return $this->serializer->serialize($tool, []);
-        }, $workspace->getOrderedTools()->toArray());
-        //}
 
         // maybe do the same for users one day
         if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
@@ -422,29 +415,12 @@ class WorkspaceSerializer
         $this->sipe('registration.selfRegistration', 'setSelfRegistration', $data, $workspace);
         $this->sipe('registration.selfUnregistration', 'setSelfUnregistration', $data, $workspace);
 
-        //during the creation from json file (not from copy)
-        if (in_array(Options::WORKSPACE_DESERIALIZE_ROLES, $options)) {
-            foreach ($data['roles'] as $roleData) {
-                $roleData['workspace']['uuid'] = $workspace->getUuid();
-                $role = $this->serializer->deserialize(Role::class, $roleData);
-                $role->setWorkspace($workspace);
-                $this->om->persist($role);
-            }
-
-            foreach ($workspace->getRoles() as $role) {
-                if ($data['registration']['defaultRole']['translationKey'] === $role->getTranslationKey()) {
-                    $workspace->setDefaultRole($role);
-                }
-            }
-        } else {
-            //old one (from copy/update)
-            if (isset($data['registration']) && isset($data['registration']['defaultRole'])) {
-                $defaultRole = $this->serializer->deserialize(
-                  'Claroline\CoreBundle\Entity\Role',
-                  $data['registration']['defaultRole']
-              );
-                $workspace->setDefaultRole($defaultRole);
-            }
+        if (isset($data['registration']) && isset($data['registration']['defaultRole'])) {
+            $defaultRole = $this->serializer->deserialize(
+                'Claroline\CoreBundle\Entity\Role',
+                $data['registration']['defaultRole']
+            );
+            $workspace->setDefaultRole($defaultRole);
         }
 
         if (!empty($data['restrictions'])) {
