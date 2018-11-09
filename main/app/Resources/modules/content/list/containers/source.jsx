@@ -6,7 +6,7 @@ import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
 import {ListData} from '#/main/app/content/list/containers/data'
-import {constants as listConst} from '#/main/app/content/list/constants'
+import {createListDefinition} from '#/main/app/content/list/utils'
 import {ListParameters as ListParametersTypes} from '#/main/app/content/list/parameters/prop-types'
 
 const ListSource = props => {
@@ -14,12 +14,17 @@ const ListSource = props => {
   // and the configuration
   let computedDefinition = []
   const definition = get(props.source, 'parameters.definition')
-  if (definition) {
-    computedDefinition = definition.map(column => Object.assign({}, column, {
-      filterable : column.filterable  && -1 !== props.parameters.availableFilters.indexOf(column.name),
-      sortable   : column.sortable    && -1 !== props.parameters.availableSort.indexOf(column.name),
-      displayable: column.displayable && -1 !== props.parameters.availableColumns.indexOf(column.name),
-      displayed  : -1 !== props.parameters.columns.indexOf(column.name)
+  if (definition && props.parameters) {
+    const availableFilters = get(props.parameters, 'availableFilters') || []
+    const availableSort = get(props.parameters, 'availableSort') || []
+    const availableColumns = get(props.parameters, 'availableColumns') || []
+    const columns = get(props.parameters, 'columns') || []
+
+    computedDefinition = createListDefinition(definition).map(column => Object.assign({}, column, {
+      filterable : !!column.filterable  && -1 !== availableFilters.indexOf(column.name),
+      sortable   : !!column.sortable    && -1 !== availableSort.indexOf(column.name),
+      displayable: !!column.displayable && -1 !== availableColumns.indexOf(column.name),
+      displayed  : -1 !== columns.indexOf(column.name)
     }))
   }
 
@@ -29,7 +34,7 @@ const ListSource = props => {
   if (baseCard) {
     if (get(props.parameters, 'card.display')) {
       // append custom configuration to the card
-      const ConfiguredCard = props => React.createElement(baseCard, merge({}, props, {
+      const ConfiguredCard = cardProps => React.createElement(baseCard, merge({}, cardProps, {
         display: get(props.parameters, 'card.display')
       }))
 
@@ -49,7 +54,7 @@ const ListSource = props => {
       definition={computedDefinition}
       card={computedCard}
       display={{
-        current: props.parameters.display || listConst.DISPLAY_TILES_SM,
+        current: props.parameters.display,
         available: props.parameters.availableDisplays
       }}
       searchMode={get(props.parameters, 'searchMode') || undefined}
