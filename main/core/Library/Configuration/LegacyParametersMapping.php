@@ -89,7 +89,7 @@ class LegacyParametersMapping
             'google_geocoding_key' => 'geolocation.google.geocoding_key',
             'portal_enabled_resources' => 'portal.enabled_resources',
             'ssl_enabled' => 'ssl.enabled',
-            'ssl_version_value' => 'ssl.version_value',
+            'ssl_version_value' => 'ssl.version',
             'enable_rich_text_file_import' => 'workspace.enable_rich_text_file_import',
             'login_target_route' => 'authentication.login_target_route',
             'enable_opengraph' => 'text.enable_opengraph',
