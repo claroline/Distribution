@@ -105,7 +105,7 @@ class LegacyParametersMapping
             'auto_enable_notifications' => 'auto_enable_notifications',
             'default_root_anon_id' => 'security.default_root_anon_id',
             'is_cron_configured' => 'is_cron_configured',
-            'force_organization_creation' => 'registration.force_organizatfion_creation',
+            'force_organization_creation' => 'registration.force_organization_creation',
             'allow_workspace_at_registration' => 'registration.allow_workspace_at_registration',
             'profile_roles_confidential' => 'profile.roles_confidential',
             'profile_roles_locked' => 'profile.roles_locked',
