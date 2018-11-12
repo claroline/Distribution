@@ -85,7 +85,7 @@ class MessageFinder extends AbstractFinder
                         $qb->setParameter('prior_all', Forum::VALIDATE_PRIOR_ALL);
                     } else {
                         $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->eq('obj.moderation', ':prior_once'),
+                            $qb->expr()->eq('obj.moderation', ':filter_none'),
                             $qb->expr()->isNull('obj.moderation')
                         ));
 
