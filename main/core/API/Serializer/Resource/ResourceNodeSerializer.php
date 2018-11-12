@@ -12,6 +12,7 @@ use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
@@ -251,6 +252,10 @@ class ResourceNodeSerializer
                 'authors' => $resourceNode->getAuthor(),
                 'license' => $resourceNode->getLicense(),
                 'portal' => $resourceNode->isPublishedToPortal(),
+                'workspace' => [
+                  'code' => $resourceNode->getWorkspace()->getCode(),
+                  'uuid' => $resourceNode->getWorkspace(),
+                ],
             ]);
         }
 
@@ -289,6 +294,11 @@ class ResourceNodeSerializer
     public function deserialize(array $data, ResourceNode $resourceNode, array $options = [])
     {
         $this->sipe('name', 'setName', $data, $resourceNode);
+
+        if (isset($data['meta']['workspace'])) {
+            $workspace = $this->om->getRepository(Workspace::class)->findOneByUuid($data['meta']['workspace']['uuid']);
+            $resourceNode->setWorkspace($workspace);
+        }
 
         if (isset($data['poster']) && isset($data['poster']['url'])) {
             $resourceNode->setPoster($data['poster']['url']);
@@ -367,8 +377,16 @@ class ResourceNodeSerializer
 
             $recursive = in_array(Options::IS_RECURSIVE, $options) ? true : false;
 
-            /** @var Role $role */
-            $role = $this->om->getRepository(Role::class)->findOneBy(['name' => $right['name']]);
+            if (isset($right['name'])) {
+                $role = $this->om->getRepository(Role::class)->findOneBy(['name' => $right['name']]);
+            } else {
+                $role = $this->om->getRepository(Role::class)->findOneBy(
+                  [
+                    'translationKey' => $right['translationKey'],
+                    'workspace' => $resourceNode->getWorkspace()->getId(),
+                  ]
+                );
+            }
 
             //if we update (we need the id anyway)
             if ($resourceNode->getId()) {

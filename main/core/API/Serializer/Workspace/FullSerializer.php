@@ -6,10 +6,12 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * @DI\Service("claroline.serializer.workspace.full")
@@ -28,8 +30,9 @@ class FullSerializer
      * WorkspaceSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
+     *     "serializer"   = @DI\Inject("claroline.api.serializer"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
 
@@ -37,10 +40,12 @@ class FullSerializer
      */
     public function __construct(
         SerializerProvider $serializer,
+        TokenStorage $tokenStorage,
         ObjectManager $om
     ) {
         $this->serializer = $serializer;
         $this->om = $om;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -60,7 +65,9 @@ class FullSerializer
 
         //a voir plus tard pour bouger ce code
         $serialized['home'] = $this->serializeHome($workspace);
-        $serialized['resources'] = $this->serializeResources($workspace);
+        $serialized['root'] = $this->serializeResources($workspace);
+
+        $keyToRemove = [];
 
         return $serialized;
     }
@@ -71,6 +78,9 @@ class FullSerializer
 
     private function serializeResources(Workspace $workspace)
     {
+        $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
+
+        return $this->serializer->serialize($root, [Options::IS_RECURSIVE]);
     }
 
     /**
@@ -101,6 +111,21 @@ class FullSerializer
             }
         }
 
+        $this->om->persist($workspace);
+        $this->om->forceFlush();
+
+        $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
+        $root = $this->deserializeResource($data['root']);
+
         return $workspace;
+    }
+
+    private function deserializeResource(array $data)
+    {
+        $node = $this->serializer->deserialize(ResourceNode::class, $data);
+        $node->setCreator($this->tokenStorage->getToken()->getUser());
+
+        $this->om->persist($node);
+        $this->om->flush();
     }
 }
