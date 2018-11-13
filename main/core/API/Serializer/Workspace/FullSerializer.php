@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Workspace;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
@@ -29,6 +30,9 @@ class FullSerializer
     /** @var FinderProvider */
     private $finder;
 
+    /** @var Crud */
+    private $crud;
+
     /** @var ObjectManager */
     private $om;
 
@@ -37,7 +41,8 @@ class FullSerializer
      *
      * @DI\InjectParams({
      *     "serializer"   = @DI\Inject("claroline.api.serializer"),
-     *     "finder"   = @DI\Inject("claroline.api.finder"),
+     *     "finder"       = @DI\Inject("claroline.api.finder"),
+     *     "crud"         = @DI\Inject("claroline.api.crud"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
      *     "om"           = @DI\Inject("claroline.persistence.object_manager")
      * })
@@ -48,12 +53,14 @@ class FullSerializer
     public function __construct(
         SerializerProvider $serializer,
         FinderProvider $finder,
+        Crud $crud,
         TokenStorage $tokenStorage,
         ObjectManager $om
     ) {
         $this->serializer = $serializer;
         $this->om = $om;
         $this->finder = $finder;
+        $this->crud = $crud;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -73,7 +80,7 @@ class FullSerializer
         }, $workspace->getOrderedTools()->toArray());
 
         //a voir plus tard pour bouger ce code
-        $serialized['home'] = $this->serializeHome($workspace);
+        $serialized['home']['tabs'] = $this->serializeHome($workspace);
         $serialized['root'] = $this->serializeResources($workspace);
 
         $keyToRemove = [];
@@ -134,24 +141,25 @@ class FullSerializer
         $this->om->forceFlush();
 
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
-        $root = $this->deserializeResources($data['root']);
-        $this->deserializeHome($data['home']);
+        $root = $this->deserializeResources($data['root'], $workspace);
+        $this->deserializeHome($data['home']['tabs'], $workspace);
 
         return $workspace;
     }
 
-    private function deserializeResources(array $data)
+    private function deserializeResources(array $data, Workspace $workspace)
     {
-        $this->deserializeResource($data);
+        $this->deserializeResource($data, $workspace);
 
         foreach ($data['children'] as $child) {
-            $this->deserializeResources($data);
+            $this->deserializeResources($data, $workspace);
         }
     }
 
-    private function deserializeResource(array $data)
+    private function deserializeResource(array $data, Workspace $workspace)
     {
         $node = $this->serializer->deserialize(ResourceNode::class, $data);
+        $node->setWorkspace($workspace);
         $node->setCreator($this->tokenStorage->getToken()->getUser());
         $this->om->persist($node);
         $resourceType = $this->om->getRepository(ResourceType::class)->findOneByName($data['meta']['type']);
@@ -164,7 +172,20 @@ class FullSerializer
         $this->om->flush();
     }
 
-    private function deserialieHome(array $data)
+    private function deserializeHome(array $tabs, Workspace $workspace)
     {
+        foreach ($tabs as $tab) {
+            // do not update tabs set by the administration tool
+            $new = $this->crud->update(HomeTab::class, $tab);
+            $new->setWorkspace($workspace);
+
+            //a voir plus tard
+            foreach ($tab['widgets'] as $container) {
+                $containerIds[] = $container['id'];
+                foreach ($container['contents'] as $instance) {
+                    $instanceIds[] = $instance['id'];
+                }
+            }
+        }
     }
 }
