@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer\Resource;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
@@ -50,6 +51,9 @@ class ResourceNodeSerializer
     /** @var MaskManager */
     private $maskManager;
 
+    /** @var SerializerProvider */
+    private $serializer;
+
     /**
      * ResourceNodeManager constructor.
      *
@@ -60,7 +64,8 @@ class ResourceNodeSerializer
      *     "userSerializer"   = @DI\Inject("claroline.serializer.user"),
      *     "maskManager"      = @DI\Inject("claroline.manager.mask_manager"),
      *     "newRightsManager" = @DI\Inject("claroline.manager.optimized_rights_manager"),
-     *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager")
+     *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager"),
+     *     "serializer"       = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param ObjectManager          $om
@@ -69,7 +74,8 @@ class ResourceNodeSerializer
      * @param UserSerializer         $userSerializer
      * @param MaskManager            $maskManager
      * @param OptimizedRightsManager $newRightsManager
-     * @param RightsManager          $rightsManager
+     * @param RightsManager          $rightsManager,
+     * @param SerializerProvider     $serializer
      */
     public function __construct(
         ObjectManager $om,
@@ -78,7 +84,8 @@ class ResourceNodeSerializer
         UserSerializer $userSerializer,
         MaskManager $maskManager,
         OptimizedRightsManager $newRightsManager,
-        RightsManager $rightsManager
+        RightsManager $rightsManager,
+        SerializerProvider $serializer
     ) {
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
@@ -87,6 +94,7 @@ class ResourceNodeSerializer
         $this->newRightsManager = $newRightsManager;
         $this->maskManager = $maskManager;
         $this->rightsManager = $rightsManager;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -139,6 +147,11 @@ class ResourceNodeSerializer
                 'autoId' => $parent->getId(),
                 'name' => $parent->getName(),
             ];
+        }
+
+        if (in_array(Options::SERIALIZE_RESOURCE, $options)) {
+            $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
+            $serializedNode['resource'] = $this->serializer->serialize($resource);
         }
 
         if (in_array(Options::IS_RECURSIVE, $options)) {

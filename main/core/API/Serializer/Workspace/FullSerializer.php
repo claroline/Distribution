@@ -7,6 +7,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -80,7 +81,7 @@ class FullSerializer
     {
         $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
 
-        return $this->serializer->serialize($root, [Options::IS_RECURSIVE]);
+        return $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE]);
     }
 
     /**
@@ -115,17 +116,32 @@ class FullSerializer
         $this->om->forceFlush();
 
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
-        $root = $this->deserializeResource($data['root']);
+        $root = $this->deserializeResources($data['root']);
 
         return $workspace;
+    }
+
+    private function deserializeResources(array $data)
+    {
+        $this->deserializeResource($data);
+
+        foreach ($data['children'] as $child) {
+            $this->deserializeResources($data);
+        }
     }
 
     private function deserializeResource(array $data)
     {
         $node = $this->serializer->deserialize(ResourceNode::class, $data);
         $node->setCreator($this->tokenStorage->getToken()->getUser());
-
         $this->om->persist($node);
+        $resourceType = $this->om->getRepository(ResourceType::class)->findOneByName($data['meta']['type']);
+        $class = $resourceType->getClass();
+        $this->om->flush();
+        $resource = new $class();
+        $this->serializer->deserialize($class, $data['resource']);
+        $resource->setResourceNode($node);
+        $this->om->persist($resource);
         $this->om->flush();
     }
 }
