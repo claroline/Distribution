@@ -35,6 +35,23 @@
          "type": 2
       }
    ],
+  "home":[{
+    "title":"Accueil",
+    "longTitle":"Accueil",
+    "centerTitle":false,
+    "poster":null,
+    "icon":null,
+    "type":"workspace",
+    "position":1,
+    "restrictions":{
+      "hidden":false,
+      "roles":[]
+      },
+      "display":{
+        "color":"#277913"
+      },
+      "widgets":[]
+    }],
    "root":{
      "name":"default_workspace",
      "resource": {

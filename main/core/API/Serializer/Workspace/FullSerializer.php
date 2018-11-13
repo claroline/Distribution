@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Workspace;
 
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
@@ -9,6 +10,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -24,6 +26,9 @@ class FullSerializer
     /** @var SerializerProvider */
     private $serializer;
 
+    /** @var FinderProvider */
+    private $finder;
+
     /** @var ObjectManager */
     private $om;
 
@@ -32,6 +37,7 @@ class FullSerializer
      *
      * @DI\InjectParams({
      *     "serializer"   = @DI\Inject("claroline.api.serializer"),
+     *     "finder"   = @DI\Inject("claroline.api.finder"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
      *     "om"           = @DI\Inject("claroline.persistence.object_manager")
      * })
@@ -41,11 +47,13 @@ class FullSerializer
      */
     public function __construct(
         SerializerProvider $serializer,
+        FinderProvider $finder,
         TokenStorage $tokenStorage,
         ObjectManager $om
     ) {
         $this->serializer = $serializer;
         $this->om = $om;
+        $this->finder = $finder;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -75,6 +83,16 @@ class FullSerializer
 
     private function serializeHome(Workspace $workspace)
     {
+        $tabs = $this->finder->search(HomeTab::class, [
+            'filters' => ['workspace' => $workspace->getUuid()],
+        ]);
+
+        // but why ? finder should never give you an empty row
+        $tabs = array_filter($tabs['data'], function ($data) {
+            return $data !== [];
+        });
+
+        return $tabs;
     }
 
     private function serializeResources(Workspace $workspace)
@@ -117,6 +135,7 @@ class FullSerializer
 
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
         $root = $this->deserializeResources($data['root']);
+        $this->deserializeHome($data['home']);
 
         return $workspace;
     }
@@ -143,5 +162,9 @@ class FullSerializer
         $resource->setResourceNode($node);
         $this->om->persist($resource);
         $this->om->flush();
+    }
+
+    private function deserialieHome(array $data)
+    {
     }
 }
