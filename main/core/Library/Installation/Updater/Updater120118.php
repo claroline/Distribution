@@ -2,8 +2,10 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class Updater120118 extends Updater
 {
@@ -15,6 +17,7 @@ class Updater120118 extends Updater
     {
         $this->logger = $logger;
         $this->conn = $container->get('doctrine.dbal.default_connection');
+        $this->container = $container;
     }
 
     public function postUpdate()
@@ -113,7 +116,7 @@ class Updater120118 extends Updater
                     'account_duration' => $parameters['account_duration'],
                     'default_root_anon_id' => $parameters['default_root_anon_id'],
                     'anonymous_public_profile' => $parameters['anonymous_public_profile'],
-                    'disabled_admin_tools' => $parameters['security']['disabled_admin_tools'],
+                    'disabled_admin_tools' => ['technical_settings'],
                 ],
                 'tos' => [
                     'enabled' => $parameters['terms_of_service'],
@@ -200,8 +203,8 @@ class Updater120118 extends Updater
                     'roles_edition' => $parameters['profile_roles_edition'],
                 ],
                 'maintenance' => [
-                    'enable' => $parameters['maintenance']['enable'],
-                    'message' => $parameters['maintenance']['message'],
+                    'enable' => false,
+                    'message' => 'change me',
                 ],
             ];
 
