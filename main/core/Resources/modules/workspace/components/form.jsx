@@ -81,6 +81,7 @@ const WorkspaceFormComponent = (props) => {
             type: 'url',
             label: trans('url'),
             onChange: (data) => {
+              console.log('fetch dude')
               props.fetchArchive(data)
             }
           }
@@ -401,7 +402,7 @@ const WorkspaceForm = connect(
       dispatch(actions.loadArchive(data))
     },
     fetchArchive(data) {
-      dispatch(actions.fetch(data))
+      dispatch(actions.fetchArchive(data))
     }
   })
 )(WorkspaceFormComponent)

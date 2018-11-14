@@ -26,6 +26,19 @@ actions.fetchModel = (model) => ({
   }
 })
 
+actions.fetchArchive = (url) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_workspace_archive_fetch'],
+    request: {
+      method: 'POST',
+      body: JSON.stringify({url})
+    },
+    success: (response, dispatch) => {
+      dispatch(actions.loadArchive(response))
+    }
+  }
+})
+
 //récupérer l'action save du formulaire à la place
 actions.save = (workspace) => ({
   [API_REQUEST]: {

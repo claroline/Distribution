@@ -711,6 +711,30 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse($data);
     }
 
+    /**
+     * @Route(
+     *    "/archive/fetch",
+     *    name="apiv2_workspace_archive_fetch"
+     * )
+     * @Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function fetchArchiveAction(Request $request)
+    {
+        $url = $request->request->get('url');
+
+        $file = file_get_contents($url);
+        $object = $this->fileUtils->createFileFromData($file, 'workspace.json');
+
+        $data = json_decode($file, true);
+        $data['archive'] = $this->serializer->serialize($object);
+
+        return new JsonResponse($data);
+    }
+
     public function getOptions()
     {
         return [

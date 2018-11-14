@@ -36,9 +36,6 @@ const reducer = {
           workspace.meta.forceLang = !!workspace.meta.lang
 
           return workspace
-        },
-        [FETCH_ARCHIVE]: (state, action) => {
-
         }
       })
     }),
