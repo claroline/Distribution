@@ -10,7 +10,7 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 import {reducer as creationReducer} from '#/main/core/workspace/creation/store'
 
 import {LOAD_ROLES} from '#/main/core/administration/workspace/workspace/actions'
-import {LOAD_ARCHIVE} from '#/main/core/workspace/creation/store/actions'
+import {LOAD_ARCHIVE, FETCH_ARCHIVE} from '#/main/core/workspace/creation/store/actions'
 
 const reducer = {
   workspaces: combineReducers({
@@ -33,10 +33,12 @@ const reducer = {
       data: makeReducer({}, {
         [LOAD_ARCHIVE]: (state, action) => {
           const workspace = cloneDeep(action.data)
-          console.log(workspace)
           workspace.meta.forceLang = !!workspace.meta.lang
 
           return workspace
+        },
+        [FETCH_ARCHIVE]: (state, action) => {
+
         }
       })
     }),
