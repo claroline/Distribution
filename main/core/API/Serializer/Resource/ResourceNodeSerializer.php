@@ -155,8 +155,8 @@ class ResourceNodeSerializer
         }
 
         if (in_array(Options::IS_RECURSIVE, $options)) {
-            $serializedNode['children'] = array_map(function (ResourceNode $node) {
-                return $this->serialize($node);
+            $serializedNode['children'] = array_map(function (ResourceNode $node) use ($options) {
+                return $this->serialize($node, $options);
             }, $resourceNode->getChildren()->toArray());
         }
 

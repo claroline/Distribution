@@ -80,8 +80,14 @@ class FullSerializer
         }, $workspace->getOrderedTools()->toArray());
 
         //a voir plus tard pour bouger ce code
-        $serialized['home']['tabs'] = $this->serializeHome($workspace);
-        $serialized['root'] = $this->serializeResources($workspace);
+        $serialized['tools'][] = [
+          'name' => 'home',
+          'data' => $this->serializeHome($workspace),
+        ];
+        $serialized['tools'][] = [
+          'name' => 'resource_manager',
+          'data' => ['root' => $this->serializeResources($workspace)],
+        ];
 
         $keyToRemove = [];
 
@@ -141,6 +147,8 @@ class FullSerializer
         $this->om->forceFlush();
 
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
+
+        //change this tomorrow
         $root = $this->deserializeResources($data['root'], $workspace);
         $this->deserializeHome($data['home']['tabs'], $workspace);
 

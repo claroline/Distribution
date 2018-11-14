@@ -21,10 +21,12 @@ use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Utilities;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
@@ -58,6 +60,7 @@ class WorkspaceController extends AbstractCrudController
     protected $workspaceManager;
     private $utils;
     private $logDir;
+    private $fileUtils;
 
     /**
      * WorkspaceController constructor.
@@ -70,6 +73,7 @@ class WorkspaceController extends AbstractCrudController
      *     "translator"       = @DI\Inject("translator"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
      *     "utils"            = @DI\Inject("claroline.security.utilities"),
+     *     "fileUtils"        = @DI\Inject("claroline.utilities.file"),
      *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%"),
      *     "fullSerializer"   = @DI\Inject("claroline.serializer.workspace.full")
      * })
@@ -81,6 +85,7 @@ class WorkspaceController extends AbstractCrudController
      * @param RoleManager                   $roleManager
      * @param WorkspaceManager              $workspaceManager
      * @param Utilities                     $utils
+     * @param FileUtilities                 $fileUtils
      * @param string                        $logDir
      */
     public function __construct(
@@ -91,6 +96,7 @@ class WorkspaceController extends AbstractCrudController
         RoleManager $roleManager,
         WorkspaceManager $workspaceManager,
         Utilities $utils,
+        FileUtilities $fileUtils,
         FullSerializer $fullSerializer,
         $logDir
     ) {
@@ -103,6 +109,7 @@ class WorkspaceController extends AbstractCrudController
         $this->utils = $utils;
         $this->fullSerializer = $fullSerializer;
         $this->logDir = $logDir;
+        $this->fileUtils = $fileUtils;
     }
 
     public function getName()
@@ -673,6 +680,35 @@ class WorkspaceController extends AbstractCrudController
                 ]]
             ))
         );
+    }
+
+    /**
+     * @Route(
+     *    "/archive/upload",
+     *    name="apiv2_workspace_upload_archive"
+     * )
+     * @Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function uploadArchiveAction(Request $request)
+    {
+        $files = $request->files->all();
+
+        foreach ($files as $file) {
+            $object = $this->crud->create(
+                PublicFile::class,
+                [],
+                ['file' => $file]
+            );
+        }
+
+        $data = json_decode($this->fileUtils->getContents($object), true);
+        $data['archive'] = $object;
+
+        return new JsonResponse($data);
     }
 
     public function getOptions()
