@@ -59,35 +59,41 @@ class CreateEntriesFromCsvCommand extends ContainerAwareCommand
         $node = $resourceNodeRepo->findOneBy(['uuid' => $nodeId]);
         $clacoForm = $node ? $resourceManager->getResourceFromNode($node) : null;
 
-        if ($user && $clacoForm) {
-            if (1 < count($lines)) {
-                $data = [];
-                $keys = explode(';', $lines[0]);
+        if (!$user) {
+            $output->writeln("<error>Coudn't find user.</error>");
 
-                foreach ($lines as $index => $line) {
-                    if ($index > 0) {
-                        $lineNum = $index + 1;
-                        $lineData = [];
-                        $lineArray = explode(';', $line);
-
-                        if (count($lineArray) > count($keys)) {
-                            throw new \Exception("Line {$lineNum} has too many args.");
-                        }
-
-                        foreach ($lineArray as $key => $value) {
-                            $lineData[$keys[$key]] = $value;
-                        }
-                        $data[] = $lineData;
-                    }
-                }
-                $manager = $this->getContainer()->get('claroline.manager.claco_form_manager');
-                $manager->setLogger($consoleLogger);
-                $manager->importEntryFromCsv($clacoForm, $user, $data);
-            } else {
-                $output->writeln('<error>CSV file must contain more the 1 line.</error>');
-            }
-        } else {
+            return;
+        }
+        if (!$clacoForm) {
             $output->writeln("<error>Coudn't find ClacoForm resource.</error>");
+
+            return;
+        }
+        if (1 < count($lines)) {
+            $data = [];
+            $keys = explode(';', $lines[0]);
+
+            foreach ($lines as $index => $line) {
+                if ($index > 0) {
+                    $lineNum = $index + 1;
+                    $lineData = [];
+                    $lineArray = explode(';', $line);
+
+                    if (count($lineArray) > count($keys)) {
+                        throw new \Exception("Line {$lineNum} has too many args.");
+                    }
+
+                    foreach ($lineArray as $key => $value) {
+                        $lineData[$keys[$key]] = $value;
+                    }
+                    $data[] = $lineData;
+                }
+            }
+            $manager = $this->getContainer()->get('claroline.manager.claco_form_manager');
+            $manager->setLogger($consoleLogger);
+            $manager->importEntryFromCsv($clacoForm, $user, $data);
+        } else {
+            $output->writeln('<error>CSV file must contain more the 1 line.</error>');
         }
     }
 }

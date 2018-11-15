@@ -44,6 +44,7 @@ use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -1745,83 +1746,89 @@ class ClacoFormManager
             $now = new \DateTime();
 
             foreach ($data as $index => $entryData) {
+                $existingEntries = $this->entryRepo->findBy(['clacoForm' => $clacoForm, 'title' => $entryData['title']]);
                 $lineNum = $index + 1;
-                $this->log("Importing entry from line {$lineNum}...");
-                $entry = new Entry();
-                $entry->setUser($user);
-                $entry->setClacoForm($clacoForm);
-                $entry->setStatus(Entry::PUBLISHED);
-                $entry->setCreationDate($now);
-                $entry->setPublicationDate($now);
 
-                foreach ($entryData as $key => $value) {
-                    switch ($key) {
-                        case 'title':
-                            $entry->setTitle($value);
-                            break;
-                        case 'status':
-                            $entry->setStatus(intval($value));
-                            break;
-                        case 'categories':
-                            $categoriesNames = explode(',', $value);
+                if (0 === count($existingEntries)) {
+                    $this->log("Importing entry from line {$lineNum}...");
+                    $entry = new Entry();
+                    $entry->setUser($user);
+                    $entry->setClacoForm($clacoForm);
+                    $entry->setStatus(Entry::PUBLISHED);
+                    $entry->setCreationDate($now);
+                    $entry->setPublicationDate($now);
 
-                            foreach ($categoriesNames as $categoryName) {
-                                if (isset($categoriesMapping[$categoryName])) {
-                                    $entry->addCategory($categoriesMapping[$categoryName]);
+                    foreach ($entryData as $key => $value) {
+                        switch ($key) {
+                            case 'title':
+                                $entry->setTitle($value);
+                                break;
+                            case 'status':
+                                $entry->setStatus(intval($value));
+                                break;
+                            case 'categories':
+                                $categoriesNames = explode(',', $value);
+
+                                foreach ($categoriesNames as $categoryName) {
+                                    if (isset($categoriesMapping[$categoryName])) {
+                                        $entry->addCategory($categoriesMapping[$categoryName]);
+                                    }
                                 }
-                            }
-                            break;
-                        case 'keywords':
-                            $keywordsNames = explode(',', $value);
+                                break;
+                            case 'keywords':
+                                $keywordsNames = explode(',', $value);
 
-                            foreach ($keywordsNames as $keywordName) {
-                                if (isset($keywordsMapping[$keywordName])) {
-                                    $entry->addKeyword($keywordsMapping[$keywordName]);
+                                foreach ($keywordsNames as $keywordName) {
+                                    if (isset($keywordsMapping[$keywordName])) {
+                                        $entry->addKeyword($keywordsMapping[$keywordName]);
+                                    }
                                 }
-                            }
-                            break;
-                        default:
-                            if (isset($fieldsMapping[$key])) {
-                                $field = $fieldsMapping[$key];
-                                $fieldFacet = $field->getFieldFacet();
-                                $fieldValue = new FieldValue();
-                                $fieldValue->setEntry($entry);
-                                $fieldValue->setField($field);
+                                break;
+                            default:
+                                if (isset($fieldsMapping[$key])) {
+                                    $field = $fieldsMapping[$key];
+                                    $fieldFacet = $field->getFieldFacet();
+                                    $fieldValue = new FieldValue();
+                                    $fieldValue->setEntry($entry);
+                                    $fieldValue->setField($field);
 
-                                $fielFacetValue = new FieldFacetValue();
-                                $fielFacetValue->setUser($user);
-                                $fielFacetValue->setFieldFacet($fieldFacet);
+                                    $fielFacetValue = new FieldFacetValue();
+                                    $fielFacetValue->setUser($user);
+                                    $fielFacetValue->setFieldFacet($fieldFacet);
 
-                                $formattedValue = $value;
+                                    $formattedValue = $value;
 
-                                switch ($fieldFacet->getType()) {
-                                    case FieldFacet::NUMBER_TYPE:
-                                        $formattedValue = floatval($value);
-                                        break;
-                                    case FieldFacet::CASCADE_TYPE:
-                                    case FieldFacet::FILE_TYPE:
-                                        $formattedValue = explode(',', $value);
-                                        break;
-                                    case FieldFacet::BOOLEAN_TYPE:
-                                        $formattedValue = empty($value) || 'false' === $value ? false : true;
-                                        break;
-                                    case FieldFacet::CHOICE_TYPE:
-                                        $options = $fieldFacet->getOptions();
-
-                                        if (isset($options['multiple']) && $options['multiple']) {
+                                    switch ($fieldFacet->getType()) {
+                                        case FieldFacet::NUMBER_TYPE:
+                                            $formattedValue = floatval($value);
+                                            break;
+                                        case FieldFacet::CASCADE_TYPE:
+                                        case FieldFacet::FILE_TYPE:
                                             $formattedValue = explode(',', $value);
-                                        }
-                                        break;
-                                }
-                                $fielFacetValue->setValue($formattedValue);
-                                $this->om->persist($fielFacetValue);
+                                            break;
+                                        case FieldFacet::BOOLEAN_TYPE:
+                                            $formattedValue = empty($value) || 'false' === $value ? false : true;
+                                            break;
+                                        case FieldFacet::CHOICE_TYPE:
+                                            $options = $fieldFacet->getOptions();
 
-                                $fieldValue->setFieldFacetValue($fielFacetValue);
-                                $this->om->persist($fieldValue);
-                            }
+                                            if (isset($options['multiple']) && $options['multiple']) {
+                                                $formattedValue = explode(',', $value);
+                                            }
+                                            break;
+                                    }
+                                    $fielFacetValue->setValue($formattedValue);
+                                    $this->om->persist($fielFacetValue);
+
+                                    $fieldValue->setFieldFacetValue($fielFacetValue);
+                                    $this->om->persist($fieldValue);
+                                }
+                        }
                     }
+                    $this->om->persist($entry);
+                } else {
+                    $this->log("Entry from line {$lineNum} already existed.", LogLevel::ERROR);
                 }
-                $this->om->persist($entry);
             }
             $this->om->endFlushSuite();
         }
