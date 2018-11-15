@@ -29,6 +29,8 @@ use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\CoreBundle\Manager\ToolManager;
+use Claroline\CoreBundle\Manager\Workspace\Importer;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -61,6 +63,7 @@ class WorkspaceController extends AbstractCrudController
     private $utils;
     private $logDir;
     private $fileUtils;
+    private $toolManager;
 
     /**
      * WorkspaceController constructor.
@@ -70,10 +73,12 @@ class WorkspaceController extends AbstractCrudController
      *     "authorization"    = @DI\Inject("security.authorization_checker"),
      *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
      *     "roleManager"      = @DI\Inject("claroline.manager.role_manager"),
+     *     "toolManager"      = @DI\Inject("claroline.manager.tool_manager"),
      *     "translator"       = @DI\Inject("translator"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
      *     "utils"            = @DI\Inject("claroline.security.utilities"),
      *     "fileUtils"        = @DI\Inject("claroline.utilities.file"),
+     *     "importer"         = @DI\Inject("claroline.manager.workspace.importer"),
      *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%"),
      *     "fullSerializer"   = @DI\Inject("claroline.serializer.workspace.full")
      * })
@@ -84,8 +89,10 @@ class WorkspaceController extends AbstractCrudController
      * @param TranslatorInterface           $translator
      * @param RoleManager                   $roleManager
      * @param WorkspaceManager              $workspaceManager
+     * @param Importer                      $importer
      * @param Utilities                     $utils
      * @param FileUtilities                 $fileUtils
+     * @param ToolManager                   $toolManager
      * @param string                        $logDir
      */
     public function __construct(
@@ -94,18 +101,22 @@ class WorkspaceController extends AbstractCrudController
         ResourceManager $resourceManager,
         TranslatorInterface $translator,
         RoleManager $roleManager,
+        ToolManager $toolManager,
         WorkspaceManager $workspaceManager,
         Utilities $utils,
         FileUtilities $fileUtils,
         FullSerializer $fullSerializer,
+        Importer $importer,
         $logDir
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authorization = $authorization;
+        $this->importer = $importer;
         $this->resourceManager = $resourceManager;
         $this->translator = $translator;
         $this->roleManager = $roleManager;
         $this->workspaceManager = $workspaceManager;
+        $this->toolManager = $toolManager;
         $this->utils = $utils;
         $this->fullSerializer = $fullSerializer;
         $this->logDir = $logDir;
@@ -126,6 +137,13 @@ class WorkspaceController extends AbstractCrudController
     public function createAction(Request $request, $class)
     {
         $data = $this->decodeRequest($request);
+
+        if (isset($data['archive'])) {
+            $workspace = $this->importer->create($data, $data['name']);
+            $this->toolManager->addMissingWorkspaceTools($workspace);
+
+            return $workspace;
+        }
 
         /** @var Workspace $workspace */
         $workspace = $this->crud->create(

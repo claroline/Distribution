@@ -35,6 +35,10 @@ const reducer = {
           const workspace = cloneDeep(action.data)
           workspace.meta.forceLang = !!workspace.meta.lang
 
+          //if they exists...
+          delete workspace.id
+          delete workspace.uuid
+
           return workspace
         }
       })

@@ -164,14 +164,24 @@ class WorkspaceSerializer
                 'display' => $this->getDisplay($workspace),
                 'breadcrumb' => $this->getBreadcrumb($workspace),
                 'restrictions' => $this->getRestrictions($workspace),
-                'registration' => $this->getRegistration($workspace),
+                'registration' => $this->getRegistration($workspace, $options),
                 'notifications' => $this->getNotifications($workspace),
             ]);
 
             if (!in_array(Options::SERIALIZE_LIST, $options)) {
-                $serialized['roles'] = array_map(function (Role $role) {
-                    return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
-                }, array_values(array_unique(array_merge($this->workspaceManager->getRolesWithAccess($workspace), $workspace->getRoles()->toArray()))));
+                if (in_array(Options::WORKSPACE_FULL, $options)) {
+                    $serialized['roles'] = array_map(function (Role $role) {
+                        return [
+                          'translationKey' => $role->getTranslationKey(),
+                          'type' => $role->getType(),
+                        ];
+                    }, array_values(array_unique(array_merge($this->workspaceManager->getRolesWithAccess($workspace), $workspace->getRoles()->toArray()))));
+                } else {
+                    $serialized['roles'] = array_map(function (Role $role) {
+                        return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
+                    }, array_values(array_unique(array_merge($this->workspaceManager->getRolesWithAccess($workspace), $workspace->getRoles()->toArray()))));
+                }
+
                 $serialized['managers'] = array_map(function (User $manager) {
                     return $this->serializer->serialize($manager, [Options::SERIALIZE_MINIMAL]);
                 }, $this->workspaceManager->getManagers($workspace));
@@ -184,7 +194,7 @@ class WorkspaceSerializer
         // maybe do the same for users one day
         if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
             $groups = $this->om
-                ->getRepository('Claroline\CoreBundle\Entity\Group')
+                ->getRepository(Group::class)
                 ->findByWorkspace($workspace);
 
             $serialized['groups'] = array_map(function (Group $group) {
@@ -332,16 +342,27 @@ class WorkspaceSerializer
      *
      * @return array
      */
-    private function getRegistration(Workspace $workspace)
+    private function getRegistration(Workspace $workspace, array $options)
     {
+        if ($workspace->getDefaultRole()) {
+            if (in_array(Options::WORKSPACE_FULL)) {
+                $defaultRole = [
+                  'translationKey' => $workspace->getDefaultRole()->getTranslationKey(),
+                  'type' => $workspace->getDefaultRole()->getType(),
+                ];
+            } else {
+                $defaultRole = $this->serializer->serialize($workspace->getDefaultRole(), [Options::SERIALIZE_MINIMAL]);
+            }
+        } else {
+            $defaultRole = null;
+        }
+
         return [
             'validation' => $workspace->getRegistrationValidation(),
             'waitingForRegistration' => $workspace->getSelfRegistration() ? $this->waitingForRegistration($workspace) : false,
             'selfRegistration' => $workspace->getSelfRegistration(),
             'selfUnregistration' => $workspace->getSelfUnregistration(),
-            'defaultRole' => $workspace->getDefaultRole() ?
-              $this->serializer->serialize($workspace->getDefaultRole(), [Options::SERIALIZE_MINIMAL]) :
-              null,
+            'defaultRole' => $defaultRole,
         ];
     }
 

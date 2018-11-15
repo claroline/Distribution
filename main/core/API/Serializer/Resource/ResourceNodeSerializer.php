@@ -265,11 +265,14 @@ class ResourceNodeSerializer
                 'authors' => $resourceNode->getAuthor(),
                 'license' => $resourceNode->getLicense(),
                 'portal' => $resourceNode->isPublishedToPortal(),
-                'workspace' => [
-                  'code' => $resourceNode->getWorkspace()->getCode(),
-                  'uuid' => $resourceNode->getWorkspace(),
-                ],
             ]);
+
+            if (!in_array(Options::WORKSPACE_FULL, $options)) {
+                $meta['workspace'] = [
+                'code' => $resourceNode->getWorkspace()->getCode(),
+                'uuid' => $resourceNode->getWorkspace(),
+              ];
+            }
         }
 
         return $meta;

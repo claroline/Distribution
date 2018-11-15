@@ -74,7 +74,7 @@ class FullSerializer
      */
     public function serialize(Workspace $workspace, array $options = [])
     {
-        $serialized = $this->serializer->serialize($workspace);
+        $serialized = $this->serializer->serialize($workspace, [Options::WORKSPACE_FULL]);
         $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
             return $this->serializer->serialize($tool, []);
         }, $workspace->getOrderedTools()->toArray());
@@ -112,7 +112,7 @@ class FullSerializer
     {
         $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
 
-        return $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE]);
+        return $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE], [Options::WORKSPACE_FULL]);
     }
 
     /**
@@ -149,8 +149,8 @@ class FullSerializer
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
 
         //change this tomorrow
-        $root = $this->deserializeResources($data['root'], $workspace);
-        $this->deserializeHome($data['home']['tabs'], $workspace);
+        $root = $this->deserializeResources($this->getToolData($data, 'resource_manager')['root'], $workspace);
+        $this->deserializeHome($this->getToolData($data, 'home')['tabs'], $workspace);
 
         return $workspace;
     }
@@ -193,6 +193,15 @@ class FullSerializer
                 foreach ($container['contents'] as $instance) {
                     $instanceIds[] = $instance['id'];
                 }
+            }
+        }
+    }
+
+    private function getToolData(array $data, $name)
+    {
+        foreach ($data['tools'] as $tool) {
+            if ($tool['name'] === $name) {
+                return $tool['data'];
             }
         }
     }
