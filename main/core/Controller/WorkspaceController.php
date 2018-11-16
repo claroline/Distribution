@@ -21,7 +21,6 @@ use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Exception\WorkspaceAccessException;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -55,8 +54,6 @@ class WorkspaceController
     private $eventDispatcher;
     /** @var ResourceManager */
     private $resourceManager;
-    /** @var RoleManager */
-    private $roleManager;
     /** @var UrlGeneratorInterface */
     private $router;
     /** @var SessionInterface */
@@ -83,7 +80,6 @@ class WorkspaceController
      *     "authorization"        = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher"      = @DI\Inject("event_dispatcher"),
      *     "resourceManager"      = @DI\Inject("claroline.manager.resource_manager"),
-     *     "roleManager"          = @DI\Inject("claroline.manager.role_manager"),
      *     "router"               = @DI\Inject("router"),
      *     "session"              = @DI\Inject("session"),
      *     "tokenStorage"         = @DI\Inject("security.token_storage"),
@@ -98,7 +94,6 @@ class WorkspaceController
      * @param AuthorizationCheckerInterface $authorization
      * @param EventDispatcherInterface      $eventDispatcher
      * @param ResourceManager               $resourceManager
-     * @param RoleManager                   $roleManager
      * @param UrlGeneratorInterface         $router
      * @param SessionInterface              $session
      * @param TokenStorageInterface         $tokenStorage
@@ -113,7 +108,6 @@ class WorkspaceController
         AuthorizationCheckerInterface $authorization,
         EventDispatcherInterface $eventDispatcher,
         ResourceManager $resourceManager,
-        RoleManager $roleManager,
         UrlGeneratorInterface $router,
         SessionInterface $session,
         TokenStorageInterface $tokenStorage,
@@ -127,7 +121,6 @@ class WorkspaceController
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->resourceManager = $resourceManager;
-        $this->roleManager = $roleManager;
         $this->router = $router;
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
@@ -317,6 +310,49 @@ class WorkspaceController
                 'toolName' => $toolName,
             ])
         );
+    }
+
+    /**
+     * @EXT\Route("/{workspace}/denied", name="claro_workspace_denied")
+     * @EXT\Template
+     *
+     * @param Workspace $workspace
+     *
+     * @return Response
+     */
+    public function openDeniedAction(Workspace $workspace)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return [
+          'workspace' => $workspace,
+          'isInQueue' => $this->workspaceManager->isUserInValidationQueue($workspace, $user),
+        ];
+    }
+
+    /**
+     * @EXT\Route("/{workspace}/register/redirect", name="claro_workspace_register_redirect")
+     * @EXT\Template
+     *
+     * @param Workspace $workspace
+     *
+     * @return Response
+     */
+    public function registerAndRedirect(Workspace $workspace, Request $request)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        if ($workspace->getSelfRegistration()) {
+            if ($workspace->getRegistrationValidation()) {
+                $this->workspaceManager->addUserQueue($workspace, $user);
+            } else {
+                $this->workspaceManager->addUserAction($workspace, $user);
+            }
+
+            return $this->openAction($workspace->getId(), $request);
+        } else {
+            throw new \Exception('No self registration allowed');
+        }
     }
 
     private function isUsurpator(TokenInterface $token = null)
