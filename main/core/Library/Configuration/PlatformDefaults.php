@@ -118,7 +118,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'login_target_route' => 'claro_security_login',
             ],
             'registration' => [
-              'username_regex' => '/^[a-zA-Z0-9@\-_\.]*$/',
+              '' => '/^[a-zA-Z0-9@\-_\.]*$/',
               'self' => false,
               'default_role' => 'ROLE_USER',
               'validation' => self::REGISTRATION_MAIL_VALIDATION_PARTIAL,
@@ -136,6 +136,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'account_duration' => null,
               'default_root_anon_id' => null,
               'anonymous_public_profile' => false,
+              'username_regex' => '/^[a-zA-Z0-9@\-_\.]*$/',
               'disabled_admin_tools' => [
               ],
             ],
