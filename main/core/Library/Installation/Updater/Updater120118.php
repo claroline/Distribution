@@ -53,10 +53,10 @@ class Updater120118 extends Updater
         $parameters = Yaml::parse(file_get_contents($this->container->getParameter('claroline.param.platform_options_file'))) ?: [];
 
         $platformInitDate = new \DateTime();
-        $platformInitDate->setTimeStamp($this->setParameter($parameters, 'platform_init_date'));
+        $platformInitDate->setTimeStamp($parameters['platform_init_date']);
 
         $platformLimitDate = new \DateTime();
-        $platformLimitDate->setTimeStamp($this->setParameter($parameters, 'platform_limit_date'));
+        $platformLimitDate->setTimeStamp($parameters['platform_limit_date']);
 
         $serialized = [
                 'display' => [
