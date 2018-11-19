@@ -108,8 +108,6 @@ class ResourceNodeSerializer
     public function serialize(ResourceNode $resourceNode, array $options = [])
     {
         $serializedNode = [
-            'id' => $resourceNode->getUuid(),
-            'autoId' => $resourceNode->getId(), // TODO : remove me
             'name' => $resourceNode->getName(),
             'path' => $resourceNode->getAncestors(),
             'meta' => $this->serializeMeta($resourceNode, $options),
@@ -121,6 +119,11 @@ class ResourceNodeSerializer
             // we should compute simple access here to avoid exposing this big object
             'rights' => $this->rightsManager->getRights($resourceNode),
         ];
+
+        if (!in_array(Options::WORKSPACE_FULL, $options)) {
+            $serializedNode['id'] = $resourceNode->getUuid();
+            $serializedNode['autoId'] = $resourceNode->getId(); // TODO : remove me
+        }
 
         // TODO : it should not (I think) be available in minimal mode
         // for now I need it to compute rights

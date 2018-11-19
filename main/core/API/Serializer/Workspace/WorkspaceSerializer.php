@@ -131,8 +131,6 @@ class WorkspaceSerializer
     public function serialize(Workspace $workspace, array $options = [])
     {
         $serialized = [
-            'id' => $workspace->getId(),
-            'uuid' => $workspace->getUuid(), // todo: should be merged with `id`
             'name' => $workspace->getName(),
             'code' => $workspace->getCode(),
             'thumbnail' => $workspace->getThumbnail() && $this->om->getRepository(PublicFile::class)->findOneBy([
@@ -149,6 +147,11 @@ class WorkspaceSerializer
               ])
             ) : null,
         ];
+
+        if (!in_array(Options::WORKSPACE_FULL, $options)) {
+            $serialized['uuid'] = $workspace->getUuid();
+            $serialized['id'] = $workspace->getId(); // TODO : remove me
+        }
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [

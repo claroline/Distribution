@@ -58,7 +58,7 @@ class ResourceManagerSerializer
     {
         $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
 
-        return ['root' => $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE], [Options::WORKSPACE_FULL])];
+        return ['root' => $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE, Options::WORKSPACE_FULL])];
     }
 
     public function deserialize(array $data, Workspace $workspace)
@@ -68,11 +68,14 @@ class ResourceManagerSerializer
 
     private function deserializeResources(array $data, Workspace $workspace)
     {
-        $this->deserializeResource($data, $workspace);
+        $node = $this->deserializeResource($data, $workspace);
 
         foreach ($data['children'] as $child) {
-            $this->deserializeResources($data, $workspace);
+            $child = $this->deserializeResources($child, $workspace);
+            $child->setParent($node);
         }
+
+        return $node;
     }
 
     private function deserializeResource(array $data, Workspace $workspace)
@@ -92,5 +95,7 @@ class ResourceManagerSerializer
         $resource->setResourceNode($node);
         $this->om->persist($resource);
         $this->om->flush();
+
+        return $node;
     }
 }

@@ -142,7 +142,10 @@ class WorkspaceController extends AbstractCrudController
             $workspace = $this->importer->create($data, $data['name']);
             $this->toolManager->addMissingWorkspaceTools($workspace);
 
-            return $workspace;
+            return new JsonResponse(
+                $this->serializer->serialize($workspace, $this->options['get']),
+                201
+            );
         }
 
         /** @var Workspace $workspace */
@@ -254,7 +257,6 @@ class WorkspaceController extends AbstractCrudController
     public function exportAction(Request $request, Workspace $workspace)
     {
         $data = $this->fullSerializer->serialize($workspace);
-        unset($data['uuid']);
 
         return new JsonResponse($data);
     }
