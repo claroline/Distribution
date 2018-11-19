@@ -253,7 +253,10 @@ class WorkspaceController extends AbstractCrudController
      */
     public function exportAction(Request $request, Workspace $workspace)
     {
-        return new JsonResponse($this->fullSerializer->serialize($workspace));
+        $data = $this->fullSerializer->serialize($workspace);
+        unset($data['uuid']);
+
+        return new JsonResponse($data);
     }
 
     /**

@@ -55,7 +55,7 @@ class HomeSerializer
             return $data !== [];
         });
 
-        return $tabs;
+        return ['tabs' => $tabs];
     }
 
     public function deserialize(array $data, Workspace $workspace)

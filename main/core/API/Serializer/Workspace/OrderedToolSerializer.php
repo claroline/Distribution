@@ -50,7 +50,7 @@ class OrderedToolSerializer
     {
         $data = [
           'tool' => $orderedTool->getTool()->getName(),
-          'name' => $orderedTool->setName(),
+          'name' => $orderedTool->getName(),
           'position' => $orderedTool->getOrder(),
           'restrictions' => $this->serializeRestrictions($orderedTool, $options),
         ];
