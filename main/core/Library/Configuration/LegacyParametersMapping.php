@@ -12,8 +12,13 @@
 namespace Claroline\CoreBundle\Library\Configuration;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use JMS\DiExtraBundle\Annotation as DI;
 
-class LegacyParametersMapping
+/**
+ * @DI\Service()
+ * @DI\Tag("claroline.configuration.mapping.legacy")
+ */
+class LegacyParametersMapping implements LegacyParametersMappingInterface
 {
     public function getMapping()
     {

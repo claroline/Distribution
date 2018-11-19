@@ -12,24 +12,24 @@
 namespace Claroline\AuthenticationBundle\Library;
 
 use Claroline\AuthenticationBundle\Model\Oauth\OauthConfiguration;
-use Claroline\CoreBundle\Library\Configuration\ParameterProviderInterface;
+use Claroline\CoreBundle\Library\Configuration\LegacyParametersMappingInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
- * @DI\Tag("claroline.configuration")
+ * @DI\Tag("claroline.configuration.mapping.legacy")
  */
-class PlatformDefaults implements ParameterProviderInterface
+class LegacyParametersMapping implements LegacyParametersMappingInterface
 {
-    public function getDefaultParameters()
+    public function getMapping()
     {
         $parameters = [];
 
         foreach (OauthConfiguration::resourceOwners() as $resourceOwner) {
             $resourceOwnerStr = str_replace(' ', '_', strtolower($resourceOwner));
-            $parameters['external_authentication'][$resourceOwnerStr]['client_id'] = null;
-            $parameters['external_authentication'][$resourceOwnerStr]['client_secret'] = null;
-            $parameters['external_authentication'][$resourceOwnerStr]['client_active'] = null;
+            $parameters[$resourceOwnerStr.'_client_id'] = 'external_authentication.'.$resourceOwnerStr.'.client_id';
+            $parameters[$resourceOwnerStr.'_client_secret'] = 'external_authentication.'.$resourceOwnerStr.'.client_secret';
+            $parameters[$resourceOwnerStr.'_client_active'] = 'external_authentication.'.$resourceOwnerStr.'.client_active';
         }
 
         return $parameters;
