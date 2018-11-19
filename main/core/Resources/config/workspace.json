@@ -37,18 +37,15 @@
    ],
    "orderedTools":[{
       "tool":"home",
+      "name":"home",
       "position":1,
-      "restrictions":{
-         "roles":[
-            {
-               "role":{
-                  "type":2,
-                  "translationKey":"collaborator"
-               },
-               "mask":1
-            }
-         ]
-      },
+      "restrictions":[{
+         "role":{
+            "type":2,
+            "translationKey":"collaborator"
+         },
+         "mask":1
+      }],
       "data": {
         "tabs": [{
           "title":"Accueil",
@@ -70,18 +67,15 @@
       }
     }, {
       "tool":"resource_manager",
+      "name":"resource_manager",
       "position":2,
-      "restrictions":{
-         "roles":[
-            {
-               "role":{
-                  "type":2,
-                  "translationKey":"collaborator"
-               },
-               "mask":1
-            }
-         ]
-      },
+      "restrictions":[{
+         "role":{
+            "type":2,
+            "translationKey":"collaborator"
+         },
+         "mask":1
+      }],
       "data": {
         "root":{
           "name":"default_workspace",
