@@ -209,9 +209,9 @@ class Updater120118 extends Updater
         //serialize oauth data
         foreach (OauthConfiguration::resourceOwners() as $resourceOwner) {
             $resourceOwnerStr = str_replace(' ', '_', strtolower($resourceOwner));
-            $serialized['external_authentication'][$resourceOwnerStr]['client_id'] = $this->getParameters($resourceOwnerStr.'_client_id');
-            $serialized['external_authentication'][$resourceOwnerStr]['client_secret'] = $this->getParameters($resourceOwnerStr.'_client_secret');
-            $serialized['external_authentication'][$resourceOwnerStr]['client_active'] = $this->getParameters($resourceOwnerStr.'_client_active');
+            $serialized['external_authentication'][$resourceOwnerStr]['client_id'] = $this->getParameter($parameters, $resourceOwnerStr.'_client_id');
+            $serialized['external_authentication'][$resourceOwnerStr]['client_secret'] = $this->getParameter($parameters, $resourceOwnerStr.'_client_secret');
+            $serialized['external_authentication'][$resourceOwnerStr]['client_active'] = $this->getParameter($parameters, $resourceOwnerStr.'_client_active');
         }
 
         return $serialized;

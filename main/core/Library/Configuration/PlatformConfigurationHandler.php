@@ -65,8 +65,22 @@ class PlatformConfigurationHandler
             return $this->arrayUtils->get($this->parameters, $parameter);
         }
 
-        if (array_key_exists($parameter, $this->mapping)) {
+        if (array_key_exists($parameter, $this->mapping) && $this->arrayUtils->has($this->parameters, $this->mapping[$parameter])) {
             return $this->arrayUtils->get($this->parameters, $this->mapping[$parameter]);
+        }
+
+        //otherwise let's go default
+        $defaults = [];
+        foreach ($this->defaultConfigs as $default) {
+            $defaults = array_merge($default, $defaults);
+        }
+
+        if (array_key_exists($parameter, $defaults)) {
+            return $this->arrayUtils->get($defaults, $parameter);
+        }
+
+        if (array_key_exists($parameter, $this->mapping) && $this->arrayUtils->has($defaults, $this->mapping[$parameter])) {
+            return $this->arrayUtils->get($defaults, $this->mapping[$parameter]);
         }
 
         return null;
