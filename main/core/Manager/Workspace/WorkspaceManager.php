@@ -544,7 +544,7 @@ class WorkspaceManager
     {
         $wksrq = new WorkspaceRegistrationQueue();
         $wksrq->setUser($user);
-        $role = $this->roleManager->getCollaboratorRole($workspace);
+        $role = $workspace->getDefaultRole();
         $wksrq->setRole($role);
         $wksrq->setWorkspace($workspace);
         $this->dispatcher->dispatch(
