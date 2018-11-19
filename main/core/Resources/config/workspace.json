@@ -35,20 +35,32 @@
          "type": 2
       }
    ],
-  "tools": [{
-    "name": "home",
-    "data": {
-      "tabs": [{
-        "title":"Accueil",
-        "longTitle":"Accueil",
-        "centerTitle":false,
-        "poster":null,
-        "icon":null,
-        "type":"workspace",
-        "position":1,
-        "restrictions":{
-          "hidden":false,
-          "roles":[]
+   "orderedTools":[{
+      "tool":"home",
+      "position":1,
+      "restrictions":{
+         "roles":[
+            {
+               "role":{
+                  "type":2,
+                  "translationKey":"collaborator"
+               },
+               "mask":1
+            }
+         ]
+      },
+      "data": {
+        "tabs": [{
+          "title":"Accueil",
+          "longTitle":"Accueil",
+          "centerTitle":false,
+          "poster":null,
+          "icon":null,
+          "type":"workspace",
+          "position":1,
+          "restrictions":{
+            "hidden":false,
+            "roles":[]
           },
           "display":{
             "color":"#277913"
@@ -57,7 +69,19 @@
         }]
       }
     }, {
-      "name": "resource_manager",
+      "tool":"resource_manager",
+      "position":2,
+      "restrictions":{
+         "roles":[
+            {
+               "role":{
+                  "type":2,
+                  "translationKey":"collaborator"
+               },
+               "mask":1
+            }
+         ]
+      },
       "data": {
         "root":{
           "name":"default_workspace",

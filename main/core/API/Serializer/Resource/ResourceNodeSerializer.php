@@ -124,7 +124,7 @@ class ResourceNodeSerializer
 
         // TODO : it should not (I think) be available in minimal mode
         // for now I need it to compute rights
-        if (!empty($resourceNode->getWorkspace())) {
+        if ($resourceNode->getWorkspace() && !in_array(Options::WORKSPACE_FULL, $options)) {
             $serializedNode['workspace'] = [ // TODO : use workspace serializer with minimal option
                 'id' => $resourceNode->getWorkspace()->getUuid(),
                 'name' => $resourceNode->getWorkspace()->getName(),
@@ -265,13 +265,6 @@ class ResourceNodeSerializer
                 'authors' => $resourceNode->getAuthor(),
                 'license' => $resourceNode->getLicense(),
             ]);
-
-            if (!in_array(Options::WORKSPACE_FULL, $options)) {
-                $meta['workspace'] = [
-                'code' => $resourceNode->getWorkspace()->getCode(),
-                'uuid' => $resourceNode->getWorkspace(),
-              ];
-            }
         }
 
         return $meta;

@@ -96,4 +96,6 @@ final class Options
     //for resource node
     const SKIP_RESOURCE_NOTIFICATION = 'skip_resource_notification';
     const SERIALIZE_RESOURCE = 'serialize_resource';
+
+    const SERIALIZE_TOOL = 'serialize_tool';
 }

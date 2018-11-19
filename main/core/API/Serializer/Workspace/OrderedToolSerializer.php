@@ -6,11 +6,15 @@ use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\Tool\ToolSerializer;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
+use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("claroline.serializer.ordered_tool")
  * @DI\Tag("claroline.serializer")
+ * Not a true Serializer I guess
  */
 class OrderedToolSerializer
 {
@@ -22,15 +26,17 @@ class OrderedToolSerializer
      *
      * @DI\InjectParams({
      *     "toolSerializer" = @DI\Inject("claroline.serializer.tool"),
-     *     "roleSerializer" = @DI\Inject("claroline.serializer.role")
+     *     "roleSerializer" = @DI\Inject("claroline.serializer.role"),
+     *     "container"      = @DI\Inject("service_container")
      * })
      *
      * @param ToolSerializer $toolSerializer
      */
-    public function __construct(ToolSerializer $toolSerializer, RoleSerializer $roleSerializer)
+    public function __construct(ToolSerializer $toolSerializer, RoleSerializer $roleSerializer, ContainerInterface $container)
     {
         $this->toolSerializer = $toolSerializer;
         $this->roleSerializer = $roleSerializer;
+        $this->container = $container;
     }
 
     public function getClass()
@@ -38,28 +44,55 @@ class OrderedToolSerializer
         return OrderedTool::class;
     }
 
-    public function serialize(OrderedTool $orderedTool): array
+    public function serialize(OrderedTool $orderedTool, array $options = []): array
     {
-        return [
-          //maybe remove tools. See later
-          'uuid' => $orderedTool->getUuid(),
-          'tool' => $this->toolSerializer->serialize($orderedTool->getTool()),
+        $data = [
+          'tool' => $orderedTool->getTool()->getName(),
           'position' => $orderedTool->getOrder(),
-          'restrictions' => $this->serializeRestrictions($orderedTool),
+          'restrictions' => $this->serializeRestrictions($orderedTool, $options),
         ];
+
+        if (in_array(Options::SERIALIZE_TOOL, $options)) {
+            $serviceName = 'claroline.serializer.tool.'.$orderedTool->getTool()->getName();
+
+            if ($this->container->has($serviceName)) {
+                $data['data'] = $this->container->get($serviceName)->serialize($orderedTool->getWorkspace());
+            }
+        }
+
+        return $data;
     }
 
-    private function serializeRestrictions(OrderedTool $orderedTool): array
+    private function serializeRestrictions(OrderedTool $orderedTool, array $options = []): array
     {
         $restrictions = [];
 
         foreach ($orderedTool->getRights() as $right) {
+            if (in_array(Options::WORKSPACE_FULL, $options)) {
+                $role = ['translationKey' => $right->getRole()->getTranslationKey(), 'type' => $right->getRole()->getType()];
+            } else {
+                $role = $this->roleSerializer->serialize($right->getRole(), [Options::SERIALIZE_MINIMAL]);
+            }
+
             $restrictions['roles'][] = [
-              'role' => $this->roleSerializer->serialize($right->getRole(), [Options::SERIALIZE_MINIMAL]),
+              'role' => $role,
               'mask' => $right->getMask(),
-          ];
+            ];
         }
 
         return $restrictions;
+    }
+
+    public function deserialize(array $data, OrderedTool $orderedTool, array $options = [], Workspace $workspace = null)
+    {
+        $orderedTool->setWorkspace($workspace);
+        $tool = $this->container->get('claroline.persistence.object_manager')->getRepository(Tool::class)->findOneByName($data['tool']);
+        $orderedTool->setTool($tool);
+
+        $serviceName = 'claroline.serializer.tool.'.$orderedTool->getTool()->getName();
+
+        if ($this->container->has($serviceName)) {
+            $this->container->get($serviceName)->deserialize($data['data'], $orderedTool->getWorkspace());
+        }
     }
 }

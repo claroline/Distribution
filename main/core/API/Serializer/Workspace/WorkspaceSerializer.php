@@ -350,7 +350,7 @@ class WorkspaceSerializer
     private function getRegistration(Workspace $workspace, array $options)
     {
         if ($workspace->getDefaultRole()) {
-            if (in_array(Options::WORKSPACE_FULL)) {
+            if (!in_array(Options::WORKSPACE_FULL, $options)) {
                 $defaultRole = [
                   'translationKey' => $workspace->getDefaultRole()->getTranslationKey(),
                   'type' => $workspace->getDefaultRole()->getType(),

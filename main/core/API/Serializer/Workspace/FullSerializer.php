@@ -8,10 +8,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -75,44 +72,14 @@ class FullSerializer
     public function serialize(Workspace $workspace, array $options = [])
     {
         $serialized = $this->serializer->serialize($workspace, [Options::WORKSPACE_FULL]);
-        $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
-            return $this->serializer->serialize($tool, []);
-        }, $workspace->getOrderedTools()->toArray());
 
-        //a voir plus tard pour bouger ce code
-        $serialized['tools'][] = [
-          'name' => 'home',
-          'data' => $this->serializeHome($workspace),
-        ];
-        $serialized['tools'][] = [
-          'name' => 'resource_manager',
-          'data' => ['root' => $this->serializeResources($workspace)],
-        ];
+        $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
+            return $this->serializer->serialize($tool, [Options::SERIALIZE_TOOL, Options::WORKSPACE_FULL]);
+        }, $workspace->getOrderedTools()->toArray());
 
         $keyToRemove = [];
 
         return $serialized;
-    }
-
-    private function serializeHome(Workspace $workspace)
-    {
-        $tabs = $this->finder->search(HomeTab::class, [
-            'filters' => ['workspace' => $workspace->getUuid()],
-        ]);
-
-        // but why ? finder should never give you an empty row
-        $tabs = array_filter($tabs['data'], function ($data) {
-            return $data !== [];
-        });
-
-        return $tabs;
-    }
-
-    private function serializeResources(Workspace $workspace)
-    {
-        $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
-
-        return $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE], [Options::WORKSPACE_FULL]);
     }
 
     /**
@@ -148,61 +115,11 @@ class FullSerializer
 
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
 
-        //change this tomorrow
-        $root = $this->deserializeResources($this->getToolData($data, 'resource_manager')['root'], $workspace);
-        $this->deserializeHome($this->getToolData($data, 'home')['tabs'], $workspace);
+        foreach ($data['orderedTools'] as $orderedToolData) {
+            $orderedTool = new OrderedTool();
+            $this->serializer->get(OrderedTool::class)->deserialize($orderedToolData, $orderedTool, [], $workspace);
+        }
 
         return $workspace;
-    }
-
-    private function deserializeResources(array $data, Workspace $workspace)
-    {
-        $this->deserializeResource($data, $workspace);
-
-        foreach ($data['children'] as $child) {
-            $this->deserializeResources($data, $workspace);
-        }
-    }
-
-    private function deserializeResource(array $data, Workspace $workspace)
-    {
-        $node = $this->serializer->deserialize(ResourceNode::class, $data);
-        $node->setWorkspace($workspace);
-        $node->setCreator($this->tokenStorage->getToken()->getUser());
-        $this->om->persist($node);
-        $resourceType = $this->om->getRepository(ResourceType::class)->findOneByName($data['meta']['type']);
-        $class = $resourceType->getClass();
-        $this->om->flush();
-        $resource = new $class();
-        $this->serializer->deserialize($class, $data['resource']);
-        $resource->setResourceNode($node);
-        $this->om->persist($resource);
-        $this->om->flush();
-    }
-
-    private function deserializeHome(array $tabs, Workspace $workspace)
-    {
-        foreach ($tabs as $tab) {
-            // do not update tabs set by the administration tool
-            $new = $this->crud->update(HomeTab::class, $tab);
-            $new->setWorkspace($workspace);
-
-            //a voir plus tard
-            foreach ($tab['widgets'] as $container) {
-                $containerIds[] = $container['id'];
-                foreach ($container['contents'] as $instance) {
-                    $instanceIds[] = $instance['id'];
-                }
-            }
-        }
-    }
-
-    private function getToolData(array $data, $name)
-    {
-        foreach ($data['tools'] as $tool) {
-            if ($tool['name'] === $name) {
-                return $tool['data'];
-            }
-        }
     }
 }
