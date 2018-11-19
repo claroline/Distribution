@@ -209,7 +209,16 @@ class Updater120118 extends Updater
             $serialized['external_authentication'][$resourceOwnerStr]['client_id'] = $this->getParameter($parameters, $resourceOwnerStr.'_client_id');
             $serialized['external_authentication'][$resourceOwnerStr]['client_secret'] = $this->getParameter($parameters, $resourceOwnerStr.'_client_secret');
             $serialized['external_authentication'][$resourceOwnerStr]['client_active'] = $this->getParameter($parameters, $resourceOwnerStr.'_client_active');
+            $serialized['external_authentication'][$resourceOwnerStr]['client_force_reauthenticate'] = $this->getParameter($parameters, $resourceOwnerStr.'_client_force_reauthenticate');
         }
+
+        $serialized['external_authentication']['generic']['authorization_url'] = $this->getParameter($parameters, 'generic_authorization_url');
+        $serialized['external_authentication']['generic']['access_token_url'] = $this->getParameter($parameters, 'generic_access_token_url');
+        $serialized['external_authentication']['generic']['infos_url'] = $this->getParameter($parameters, 'generic_infos_url');
+        $serialized['external_authentication']['generic']['scope'] = $this->getParameter($parameters, 'generic_scope');
+        $serialized['external_authentication']['generic']['paths_login'] = $this->getParameter($parameters, 'generic_paths_login');
+        $serialized['external_authentication']['generic']['paths_email'] = $this->getParameter($parameters, 'generic_paths_email');
+        $serialized['external_authentication']['generic']['display_name'] = $this->getParameter($parameters, 'generic_display_name');
 
         return $serialized;
     }
