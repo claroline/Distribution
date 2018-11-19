@@ -49,7 +49,7 @@ class Updater120118 extends Updater
         file_put_contents($path, $data);
     }
 
-    public function serialize(array $options = [])
+    public function serialize()
     {
         $parameters = Yaml::parse(file_get_contents($this->container->getParameter('claroline.param.platform_options_file'))) ?: [];
 
