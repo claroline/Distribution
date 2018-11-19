@@ -191,9 +191,6 @@ class Updater120118 extends Updater
                 'resource' => [
                     'soft_delete' => $this->getParameter($parameters, 'resource_soft_delete'),
                 ],
-                'portal' => [
-                    'enabled_resources' => $this->getParameter($parameters, 'portal_enabled_resources'),
-                ],
                 'country' => $this->getParameter($parameters, 'country'),
                 'profile' => [
                     'roles_confidential' => $this->getParameter($parameters, 'profile_roles_confidential'),

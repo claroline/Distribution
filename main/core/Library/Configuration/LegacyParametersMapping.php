@@ -61,7 +61,6 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'platform_init_date' => 'security.platform_init_date', //1 june 2014
             'account_duration' => 'security.account_duration',
             'username_regex' => 'registration.username_regex',
-            'portal_enabled_resources' => 'portal.enabled_resources',
             'anonymous_public_profile' => 'security.anonymous_public_profile',
             'home_menu' => 'display.home_menu',
             'footer_login' => 'display.footer_login',
