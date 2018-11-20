@@ -148,9 +148,11 @@ class WorkspaceSerializer
             ) : null,
         ];
 
-        if (!in_array(Options::IGNORE_ID, $options)) {
+        if (!in_array(Options::REFRESH_UUID, $options)) {
             $serialized['uuid'] = $workspace->getUuid();
             $serialized['id'] = $workspace->getId(); // TODO : remove me
+        } else {
+            $serialized['uuid'] = $this->getUuid($workspace, $options);
         }
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
@@ -177,7 +179,7 @@ class WorkspaceSerializer
             ]);
 
             if (!in_array(Options::SERIALIZE_LIST, $options)) {
-                if (in_array(Options::IGNORE_ID, $options)) {
+                if (in_array(Options::REFRESH_UUID, $options)) {
                     $serialized['roles'] = array_map(function (Role $role) {
                         return [
                           'translationKey' => $role->getTranslationKey(),
@@ -353,7 +355,7 @@ class WorkspaceSerializer
     private function getRegistration(Workspace $workspace, array $options)
     {
         if ($workspace->getDefaultRole()) {
-            if (!in_array(Options::IGNORE_ID, $options)) {
+            if (!in_array(Options::REFRESH_UUID, $options)) {
                 $defaultRole = [
                   'translationKey' => $workspace->getDefaultRole()->getTranslationKey(),
                   'type' => $workspace->getDefaultRole()->getType(),

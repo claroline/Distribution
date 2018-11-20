@@ -71,7 +71,7 @@ class OrderedToolSerializer
         $restrictions = [];
 
         foreach ($orderedTool->getRights() as $right) {
-            if (in_array(Options::IGNORE_ID, $options)) {
+            if (in_array(Options::REFRESH_UUID, $options)) {
                 $role = ['translationKey' => $right->getRole()->getTranslationKey(), 'type' => $right->getRole()->getType()];
             } else {
                 $role = $this->roleSerializer->serialize($right->getRole(), [Options::SERIALIZE_MINIMAL]);

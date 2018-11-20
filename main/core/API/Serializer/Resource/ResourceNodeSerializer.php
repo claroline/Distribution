@@ -108,6 +108,8 @@ class ResourceNodeSerializer
     public function serialize(ResourceNode $resourceNode, array $options = [])
     {
         $serializedNode = [
+            'autoId' => $resourceNode->getId(),
+            'id' => $this->getUuid($resourceNode, $options),
             'name' => $resourceNode->getName(),
             'path' => $resourceNode->getAncestors(),
             'meta' => $this->serializeMeta($resourceNode, $options),
@@ -120,14 +122,9 @@ class ResourceNodeSerializer
             'rights' => $this->rightsManager->getRights($resourceNode),
         ];
 
-        if (!in_array(Options::IGNORE_ID, $options)) {
-            $serializedNode['id'] = $resourceNode->getUuid();
-            $serializedNode['autoId'] = $resourceNode->getId(); // TODO : remove me
-        }
-
         // TODO : it should not (I think) be available in minimal mode
         // for now I need it to compute rights
-        if ($resourceNode->getWorkspace() && !in_array(Options::IGNORE_ID, $options)) {
+        if ($resourceNode->getWorkspace() && !in_array(Options::REFRESH_UUID, $options)) {
             $serializedNode['workspace'] = [ // TODO : use workspace serializer with minimal option
                 'id' => $resourceNode->getWorkspace()->getUuid(),
                 'name' => $resourceNode->getWorkspace()->getName(),

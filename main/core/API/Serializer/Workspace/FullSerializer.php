@@ -71,10 +71,10 @@ class FullSerializer
      */
     public function serialize(Workspace $workspace, array $options = [])
     {
-        $serialized = $this->serializer->serialize($workspace, [Options::IGNORE_ID]);
+        $serialized = $this->serializer->serialize($workspace, [Options::REFRESH_UUID]);
 
         $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
-            return $this->serializer->serialize($tool, [Options::SERIALIZE_TOOL, Options::IGNORE_ID, Options::REFRESH_UUID]);
+            return $this->serializer->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
         }, $workspace->getOrderedTools()->toArray());
 
         $keyToRemove = [];
