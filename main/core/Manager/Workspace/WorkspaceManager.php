@@ -1363,7 +1363,10 @@ class WorkspaceManager
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
 
             $this->log('Build from json...');
-            $data = json_decode(file_get_contents($this->container->getParameter('claroline.param.workspace.default')), true);
+            $zip = new \ZipArchive();
+            $zip->open($this->container->getParameter('claroline.param.workspace.default'));
+            $json = $zip->getFromName('workspace.json');
+            $data = json_decode($json, true);
             $data['code'] = $data['name'] = $name;
             $workspace = $this->container->get('claroline.manager.workspace.importer')->create($data, $name);
             $this->log('Add tools...');

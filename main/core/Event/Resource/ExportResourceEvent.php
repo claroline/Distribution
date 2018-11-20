@@ -24,21 +24,27 @@ class ExportResourceEvent extends Event
     public function __construct(AbstractResource $resource, $data)
     {
         $this->resource = $resource;
+        $this->data = $data;
+        $this->files = [];
     }
 
     public function setFiles(array $files)
     {
+        $this->files = $files;
     }
 
     public function getFiles()
     {
+        return $this->files;
     }
 
     public function getData()
     {
+        return $this->data;
     }
 
     public function setData()
     {
+        $this->data = $data;
     }
 }

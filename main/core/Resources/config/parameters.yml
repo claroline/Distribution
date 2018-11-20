@@ -21,7 +21,7 @@ parameters:
     claroline.param.logos_directory: "%claroline.param.uploads_directory%/logos"
     claroline.param.relative_thumbnail_base_path: "uploads/thumbnails"
     claroline.param.templates_directory: "%claroline.param.files_directory%/templates/"
-    claroline.param.workspace.default: "%kernel.root_dir%/../vendor/claroline/distribution/main/core/Resources/config/workspace.json"
+    claroline.param.workspace.default: "%kernel.root_dir%/../vendor/claroline/distribution/main/core/Resources/config/workspace.zip"
     claroline.param.authentication_directory: "%kernel.root_dir%/config/Authentication"
     claroline.param.platform_config_handler_class: Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler
     #deprecated. Use json instead

@@ -16,6 +16,7 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AppBundle\Logger\JsonLogger;
+use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\CoreBundle\API\Serializer\Workspace\FullSerializer;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
@@ -37,6 +38,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -80,7 +83,8 @@ class WorkspaceController extends AbstractCrudController
      *     "fileUtils"        = @DI\Inject("claroline.utilities.file"),
      *     "importer"         = @DI\Inject("claroline.manager.workspace.importer"),
      *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%"),
-     *     "fullSerializer"   = @DI\Inject("claroline.serializer.workspace.full")
+     *     "fullSerializer"   = @DI\Inject("claroline.serializer.workspace.full"),
+     *     "tempFileManager"  = @DI\Inject("claroline.manager.temp_file")
      * })
      *
      * @param TokenStorageInterface         $tokenStorage
@@ -93,6 +97,7 @@ class WorkspaceController extends AbstractCrudController
      * @param Utilities                     $utils
      * @param FileUtilities                 $fileUtils
      * @param ToolManager                   $toolManager
+     * @param TempFileManager               $tempFileManager
      * @param string                        $logDir
      */
     public function __construct(
@@ -107,6 +112,7 @@ class WorkspaceController extends AbstractCrudController
         FileUtilities $fileUtils,
         FullSerializer $fullSerializer,
         Importer $importer,
+        TempFileManager $tempFileManager,
         $logDir
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -121,6 +127,7 @@ class WorkspaceController extends AbstractCrudController
         $this->fullSerializer = $fullSerializer;
         $this->logDir = $logDir;
         $this->fileUtils = $fileUtils;
+        $this->tempFileManager = $tempFileManager;
     }
 
     public function getName()
@@ -258,7 +265,15 @@ class WorkspaceController extends AbstractCrudController
     {
         $data = $this->fullSerializer->serialize($workspace);
 
-        return new JsonResponse($data);
+        $archive = new \ZipArchive();
+        $pathArch = $this->tempFileManager->generate();
+        $archive->open($pathArch, \ZipArchive::CREATE);
+        $archive->addFromString('workspace.json', json_encode($data, JSON_PRETTY_PRINT));
+        $archive->close();
+        $response = new BinaryFileResponse($pathArch);
+        $response->headers->set('Content-Type', 'application/zip');
+
+        return $response;
     }
 
     /**
@@ -728,7 +743,12 @@ class WorkspaceController extends AbstractCrudController
             );
         }
 
-        $data = json_decode($this->fileUtils->getContents($object), true);
+        $zip = new \ZipArchive();
+        $zip->open($this->fileUtils->getPath($object));
+        $json = $zip->getFromName('workspace.json');
+        $zip->close();
+
+        $data = json_decode($json, true);
         $data['archive'] = $object;
 
         return new JsonResponse($data);
@@ -750,10 +770,19 @@ class WorkspaceController extends AbstractCrudController
         $url = $request->request->get('url');
 
         $file = file_get_contents($url);
-        $object = $this->fileUtils->createFileFromData($file, 'workspace.json');
+        $tmp = @tempnam('claro', '_zip');
+        file_put_contents($tmp, $file);
+        $file = new File($tmp);
+        $object = $this->fileUtils->createFile($file);
+        $archive = $this->serializer->serialize($object);
+        //unlink($tmp);
+        $zip = new \ZipArchive();
+        $zip->open($this->fileUtils->getPath($object));
+        $json = $zip->getFromName('workspace.json');
+        $zip->close();
 
-        $data = json_decode($file, true);
-        $data['archive'] = $this->serializer->serialize($object);
+        $data = json_decode($json, true);
+        $data['archive'] = $archive;
 
         return new JsonResponse($data);
     }
