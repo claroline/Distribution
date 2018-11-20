@@ -102,6 +102,10 @@ class ProgressionListener
             'resourceTypeEnabled' => true,
             'workspace' => $workspace->getUuid(),
         ];
+        $sortBy = [
+            'property' => 'name',
+            'direction' => 1,
+        ] ;
 
         if (!in_array('ROLE_ADMIN', $roles)) {
             $filters['roles'] = $roles;
@@ -110,7 +114,7 @@ class ProgressionListener
         $nodes = $this->finder->get(ResourceNode::class)->find($filters);
         $filters['parent'] = $workspaceRoot;
         // Get all root resource nodes available for current user in the workspace
-        $rootNodes = $this->finder->get(ResourceNode::class)->find($filters);
+        $rootNodes = $this->finder->get(ResourceNode::class)->find($filters, $sortBy);
 
         $items = $this->formatNodes($user, $rootNodes, $nodes);
 
@@ -147,6 +151,10 @@ class ProgressionListener
             $items[] = $item;
 
             if (isset($item['children']) && 0 < count($item['children'])) {
+                usort($item['children'], function ($a, $b) {
+                    return strcmp($a['name'], $b['name']);
+                });
+
                 foreach ($item['children'] as $child) {
                     if (isset($nodesArray[$child['id']])) {
                         $childEval = $this->resourceEvalManager->getResourceUserEvaluation($nodesArray[$child['id']], $user, false);
