@@ -58,7 +58,7 @@ class ResourceManagerSerializer
     {
         $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
 
-        return ['root' => $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE, Options::WORKSPACE_FULL])];
+        return ['root' => $this->serializer->serialize($root, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE, Options::IGNORE_ID])];
     }
 
     public function deserialize(array $data, Workspace $workspace)

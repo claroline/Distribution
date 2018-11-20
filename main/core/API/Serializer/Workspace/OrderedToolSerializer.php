@@ -59,7 +59,7 @@ class OrderedToolSerializer
             $serviceName = 'claroline.serializer.tool.'.$orderedTool->getTool()->getName();
 
             if ($this->container->has($serviceName)) {
-                $data['data'] = $this->container->get($serviceName)->serialize($orderedTool->getWorkspace());
+                $data['data'] = $this->container->get($serviceName)->serialize($orderedTool->getWorkspace(), $options);
             }
         }
 
@@ -71,7 +71,7 @@ class OrderedToolSerializer
         $restrictions = [];
 
         foreach ($orderedTool->getRights() as $right) {
-            if (in_array(Options::WORKSPACE_FULL, $options)) {
+            if (in_array(Options::IGNORE_ID, $options)) {
                 $role = ['translationKey' => $right->getRole()->getTranslationKey(), 'type' => $right->getRole()->getType()];
             } else {
                 $role = $this->roleSerializer->serialize($right->getRole(), [Options::SERIALIZE_MINIMAL]);

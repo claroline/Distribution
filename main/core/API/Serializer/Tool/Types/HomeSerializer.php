@@ -44,11 +44,13 @@ class HomeSerializer
     /**
      * @return array
      */
-    public function serialize(Workspace $workspace): array
+    public function serialize(Workspace $workspace, array $options): array
     {
-        $tabs = $this->finder->search(HomeTab::class, [
-            'filters' => ['workspace' => $workspace->getUuid()],
-        ]);
+        $tabs = $this->finder->search(
+          HomeTab::class,
+          ['filters' => ['workspace' => $workspace->getUuid()]],
+          $options
+        );
 
         // but why ? finder should never give you an empty row
         $tabs = array_filter($tabs['data'], function ($data) {

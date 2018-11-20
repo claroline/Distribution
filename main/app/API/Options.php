@@ -71,7 +71,6 @@ final class Options
     const REGISTRATION = 'registration';
 
     //for workspace
-    const WORKSPACE_FULL = 'workspace_full';
     const WORKSPACE_MODEL = 'workspace_model';
     const WORKSPACE_FETCH_GROUPS = 'workspace_fetch_groups';
     const WORKSPACE_FETCH_ORDERED_TOOLS = 'workspace_fetch_ordered_tools';
@@ -97,5 +96,7 @@ final class Options
     const SKIP_RESOURCE_NOTIFICATION = 'skip_resource_notification';
     const SERIALIZE_RESOURCE = 'serialize_resource';
 
+    //todo: replace with refreshUuid
+    const IGNORE_ID = 'ignore_id';
     const SERIALIZE_TOOL = 'serialize_tool';
 }
