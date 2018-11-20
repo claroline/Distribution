@@ -472,7 +472,7 @@ class ResourceVoterTest extends MockeryTestCase
 
     private function getVoter(array $mockedMethods = [])
     {
-        if (count($mockedMethods) === 0) {
+        if (0 === count($mockedMethods)) {
             return new ResourceVoter(
               $this->em,
               $this->translator,

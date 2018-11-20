@@ -66,14 +66,6 @@ class HomeSerializer
             // do not update tabs set by the administration tool
             $new = $this->crud->update(HomeTab::class, $tab);
             $new->setWorkspace($workspace);
-
-            //a voir plus tard
-            foreach ($tab['widgets'] as $container) {
-                $containerIds[] = $container['id'];
-                foreach ($container['contents'] as $instance) {
-                    $instanceIds[] = $instance['id'];
-                }
-            }
         }
     }
 }

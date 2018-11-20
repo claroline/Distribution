@@ -77,8 +77,6 @@ class FullSerializer
             return $this->serializer->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
         }, $workspace->getOrderedTools()->toArray());
 
-        $keyToRemove = [];
-
         return $serialized;
     }
 

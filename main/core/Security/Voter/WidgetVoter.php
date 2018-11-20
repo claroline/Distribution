@@ -89,7 +89,7 @@ class WidgetVoter implements VoterInterface
                     ->findDisplayedByRolesAndWorkspace($roleStrings, $workspace);
 
                 foreach ($tools as $tool) {
-                    if ($tool->getName() === 'parameters') {
+                    if ('parameters' === $tool->getName()) {
                         return VoterInterface::ACCESS_GRANTED;
                     }
                 }
@@ -97,7 +97,7 @@ class WidgetVoter implements VoterInterface
                 //else we need to check the masks (c/c from WorkspaceVoter)
                 $accesses = $this->wm->getAccesses($token, [$workspace], 'home', 'edit');
 
-                return isset($accesses[$workspace->getId()]) && $accesses[$workspace->getId()] === true ?
+                return isset($accesses[$workspace->getId()]) && true === $accesses[$workspace->getId()] ?
                     VoterInterface::ACCESS_GRANTED :
                     VoterInterface::ACCESS_DENIED;
             }
