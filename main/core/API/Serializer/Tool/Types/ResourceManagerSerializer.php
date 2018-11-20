@@ -11,6 +11,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -31,6 +32,7 @@ class ResourceManagerSerializer
      *     "finder"       = @DI\Inject("claroline.api.finder"),
      *     "crud"         = @DI\Inject("claroline.api.crud"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "userManager"  = @DI\Inject("claroline.manager.user_manager"),
      *     "om"           = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
@@ -39,6 +41,7 @@ class ResourceManagerSerializer
      */
     public function __construct(
         SerializerProvider $serializer,
+        UserManager $userManager,
         FinderProvider $finder,
         Crud $crud,
         TokenStorage $tokenStorage,
@@ -49,6 +52,7 @@ class ResourceManagerSerializer
         $this->finder = $finder;
         $this->crud = $crud;
         $this->tokenStorage = $tokenStorage;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -85,7 +89,12 @@ class ResourceManagerSerializer
         $node = $this->serializer->deserialize(ResourceNode::class, $data);
         $node->setWorkspace($workspace);
         $this->serializer->get(ResourceNode::class)->deserialize(['rights' => $rights], $node);
-        $node->setCreator($this->tokenStorage->getToken()->getUser());
+        if ($this->tokenStorage->getToken()) {
+            $node->setCreator($this->tokenStorage->getToken()->getUser());
+        } else {
+            $creator = $this->userManager->getDefaultClarolineAdmin();
+            $node->setCreator($creator);
+        }
         $this->om->persist($node);
         $resourceType = $this->om->getRepository(ResourceType::class)->findOneByName($data['meta']['type']);
         $class = $resourceType->getClass();
