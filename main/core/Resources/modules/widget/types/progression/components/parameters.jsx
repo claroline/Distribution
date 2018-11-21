@@ -16,7 +16,7 @@ const ProgressionWidgetParameters = (props) =>
         fields: [
           {
             name: 'parameters.levelMax',
-            label: trans('level_max'),
+            label: trans('depth_in_resources_directories'),
             type: 'number',
             required: false,
             options: {

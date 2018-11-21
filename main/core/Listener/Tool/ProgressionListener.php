@@ -71,7 +71,7 @@ class ProgressionListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        $levelMax = 1;
+        $levelMax = null;
         $workspace = $event->getWorkspace();
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
         $user = 'anon.' !== $authenticatedUser ? $authenticatedUser : null;
@@ -85,7 +85,7 @@ class ProgressionListener
                     'data' => $this->serializer->serialize($workspace),
                 ],
                 'items' => $items,
-                'levelMax' => $levelMax,    // how deep to process children recursively
+                'levelMax' => null,    // how deep to process children recursively
             ]
         );
 

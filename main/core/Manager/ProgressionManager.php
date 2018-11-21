@@ -59,7 +59,7 @@ class ProgressionManager
      * Retrieves list of resource nodes accessible by user and formatted for the progression tool.
      *
      * @param Workspace $workspace
-     * @param User      $user
+     * @param User|null $user
      * @param int       $levelMax
      *
      * @return array
@@ -88,54 +88,60 @@ class ProgressionManager
             $filters['roles'] = $roles;
         }
         // Get all resource nodes available for current user in the workspace
-        $nodes = $this->finder->get(ResourceNode::class)->find($filters);
+        $visibleNodes = $this->finder->get(ResourceNode::class)->find($filters);
         $filters['parent'] = $workspaceRoot;
         // Get all root resource nodes available for current user in the workspace
         $rootNodes = $this->finder->get(ResourceNode::class)->find($filters, $sortBy);
+        $visibleNodesArray = [];
 
-        $items = $this->formatNodes($rootNodes, $nodes, $user);
+        foreach ($visibleNodes as $node) {
+            $visibleNodesArray[$node->getUuid()] = $node;
+        }
+        $items = [];
+        $this->formatNodes($items, $rootNodes, $visibleNodesArray, $user, $levelMax, 0);
 
         return $items;
     }
 
-    private function formatNodes(array $rootNodes, array $nodes, User $user = null)
+    /**
+     * Recursive function that filters visible nodes and adds serialized version to list after adding some extra params.
+     *
+     * @param array     $items
+     * @param array     $nodes
+     * @param array     $visibleNodes
+     * @param User|null $user
+     * @param int       $levelMax
+     * @param int       $level
+     */
+    private function formatNodes(array &$items, array $nodes, array $visibleNodes, User $user = null, $levelMax = 1, $level = 0)
     {
-        $items = [];
-        $nodesArray = [];
-
         foreach ($nodes as $node) {
-            $nodesArray[$node->getUuid()] = $node;
-        }
-        foreach ($rootNodes as $node) {
             $evaluation = $user ?
                 $this->resourceEvalManager->getResourceUserEvaluation($node, $user, false) :
                 null;
             $item = $this->serializer->serialize($node, [Options::SERIALIZE_MINIMAL, Options::IS_RECURSIVE]);
-            $item['level'] = 0;
+            $item['level'] = $level;
             $item['openingUrl'] = ['claro_resource_show_short', ['id' => $item['id']]];
             $item['validated'] = !is_null($evaluation) && 0 < $evaluation->getNbOpenings();
             $items[] = $item;
 
-            if (isset($item['children']) && 0 < count($item['children'])) {
+            if ((is_null($levelMax) || $level < $levelMax) && isset($item['children']) && 0 < count($item['children'])) {
+                $children = [];
+
                 usort($item['children'], function ($a, $b) {
                     return strcmp($a['name'], $b['name']);
                 });
 
                 foreach ($item['children'] as $child) {
-                    if (isset($nodesArray[$child['id']])) {
-                        $childEval = $user ?
-                            $this->resourceEvalManager->getResourceUserEvaluation($nodesArray[$child['id']], $user, false) :
-                            null;
-                        $childItem = $child;
-                        $childItem['level'] = 1;
-                        $childItem['openingUrl'] = ['claro_resource_show_short', ['id' => $childItem['id']]];
-                        $childItem['validated'] = !is_null($childEval) && 0 < $childEval->getNbOpenings();
-                        $items[] = $childItem;
+                    // Checks if node is visible
+                    if (isset($visibleNodes[$child['id']])) {
+                        $children[] = $visibleNodes[$child['id']];
                     }
+                }
+                if (0 < count($children)) {
+                    $this->formatNodes($items, $children, $visibleNodes, $user, $levelMax, $level + 1);
                 }
             }
         }
-
-        return $items;
     }
 }
