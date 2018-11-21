@@ -775,7 +775,6 @@ class WorkspaceController extends AbstractCrudController
         $file = new File($tmp);
         $object = $this->fileUtils->createFile($file);
         $archive = $this->serializer->serialize($object);
-        //unlink($tmp);
         $zip = new \ZipArchive();
         $zip->open($this->fileUtils->getPath($object));
         $json = $zip->getFromName('workspace.json');

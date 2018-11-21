@@ -63,4 +63,9 @@ class FileSerializer
         $this->sipe('hashName', 'setHashName', $data, $file);
         $this->sipe('autoDownload', 'setAutoDownload', $data, $file);
     }
+
+    private function export($data, File $file)
+    {
+        $data['extra']['path'] = 'cheminversfichier';
+    }
 }

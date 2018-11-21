@@ -160,7 +160,9 @@ class ResourceNodeSerializer
             }, $resourceNode->getChildren()->toArray());
         }
 
-        return $this->decorate($resourceNode, $serializedNode, $options);
+        $serializedNode = $this->decorate($resourceNode, $serializedNode, $options);
+
+        return $serializedNode;
     }
 
     /**
