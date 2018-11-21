@@ -71,7 +71,7 @@ class ProgressionListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        $levelMax = null;
+        $levelMax = 1;
         $workspace = $event->getWorkspace();
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
         $user = 'anon.' !== $authenticatedUser ? $authenticatedUser : null;

@@ -20,7 +20,7 @@ const ProgressionWidgetParameters = (props) =>
             type: 'number',
             required: false,
             options: {
-              min: 1
+              min: 0
             }
           }
         ]

@@ -14,7 +14,6 @@ actions.loadProgressionItems = (workspaceId, levelMax = null) => ({
       method: 'GET'
     },
     success: (response, dispatch) => {
-      console.log(response)
       dispatch(actions.loadWidgetProgressionItems(response))
     }
   }

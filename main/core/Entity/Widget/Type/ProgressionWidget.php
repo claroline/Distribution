@@ -21,7 +21,7 @@ class ProgressionWidget extends AbstractWidget
      *
      * @var int
      */
-    private $levelMax;
+    private $levelMax = 1;
 
     /**
      * Get level max.
