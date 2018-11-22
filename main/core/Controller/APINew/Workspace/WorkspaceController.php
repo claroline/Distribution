@@ -31,7 +31,7 @@ use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
-use Claroline\CoreBundle\Manager\Workspace\Importer;
+use Claroline\CoreBundle\Manager\Workspace\TransferManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -81,7 +81,7 @@ class WorkspaceController extends AbstractCrudController
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
      *     "utils"            = @DI\Inject("claroline.security.utilities"),
      *     "fileUtils"        = @DI\Inject("claroline.utilities.file"),
-     *     "importer"         = @DI\Inject("claroline.manager.workspace.importer"),
+     *     "importer"         = @DI\Inject("claroline.manager.workspace.transfer"),
      *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%"),
      *     "fullSerializer"   = @DI\Inject("claroline.serializer.workspace.full"),
      *     "tempFileManager"  = @DI\Inject("claroline.manager.temp_file")
@@ -93,7 +93,7 @@ class WorkspaceController extends AbstractCrudController
      * @param TranslatorInterface           $translator
      * @param RoleManager                   $roleManager
      * @param WorkspaceManager              $workspaceManager
-     * @param Importer                      $importer
+     * @param TransferManager               $importer
      * @param Utilities                     $utils
      * @param FileUtilities                 $fileUtils
      * @param ToolManager                   $toolManager
@@ -111,7 +111,7 @@ class WorkspaceController extends AbstractCrudController
         Utilities $utils,
         FileUtilities $fileUtils,
         FullSerializer $fullSerializer,
-        Importer $importer,
+        TransferManager $importer,
         TempFileManager $tempFileManager,
         $logDir
     ) {
@@ -263,13 +263,7 @@ class WorkspaceController extends AbstractCrudController
      */
     public function exportAction(Request $request, Workspace $workspace)
     {
-        $data = $this->fullSerializer->serialize($workspace);
-
-        $archive = new \ZipArchive();
-        $pathArch = $this->tempFileManager->generate();
-        $archive->open($pathArch, \ZipArchive::CREATE);
-        $archive->addFromString('workspace.json', json_encode($data, JSON_PRETTY_PRINT));
-        $archive->close();
+        $pathArch = $this->importer->export($workspace);
         $response = new BinaryFileResponse($pathArch);
         $response->headers->set('Content-Type', 'application/zip');
 

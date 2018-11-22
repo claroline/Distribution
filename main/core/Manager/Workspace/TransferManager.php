@@ -3,8 +3,10 @@
 namespace Claroline\CoreBundle\Manager\Workspace;
 
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\API\ValidatorProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Workspace\FullSerializer;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -12,9 +14,9 @@ use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.manager.workspace.importer")
+ * @DI\Service("claroline.manager.workspace.transfer")
  */
-class Importer
+class TransferManager
 {
     use PermissionCheckerTrait;
 
@@ -37,7 +39,8 @@ class Importer
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
      *     "dispatcher"          = @DI\Inject("claroline.event.event_dispatcher"),
      *     "fullSerializer"      = @DI\Inject("claroline.serializer.workspace.full"),
-     *     "validator"           = @DI\Inject("claroline.api.validator")
+     *     "validator"           = @DI\Inject("claroline.api.validator"),
+     *     "tempFileManager"  = @DI\Inject("claroline.manager.temp_file")
      * })
      *
      * @param ObjectManager      $om
@@ -49,12 +52,14 @@ class Importer
       ObjectManager $om,
       StrictDispatcher $dispatcher,
       FullSerializer $fullSerializer,
-      ValidatorProvider $validator
+      ValidatorProvider $validator,
+      TempFileManager $tempFileManager
     ) {
         $this->om = $om;
         $this->dispatcher = $dispatcher;
         $this->fullSerializer = $fullSerializer;
         $this->validator = $validator;
+        $this->tempFileManager = $tempFileManager;
     }
 
     /**
@@ -90,5 +95,20 @@ class Importer
         $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
 
         return $generic->isAllowed() && $specific->isAllowed();
+    }
+
+    public function export(Workspace $workspace)
+    {
+        $fileBag = new FileBag();
+        $data = $this->fullSerializer->serialize($workspace);
+        $this->fullSerializer->exportFiles($data, $fileBag);
+        //var_dump($data);
+        $archive = new \ZipArchive();
+        $pathArch = $this->tempFileManager->generate();
+        $archive->open($pathArch, \ZipArchive::CREATE);
+        $archive->addFromString('workspace.json', json_encode($data, JSON_PRETTY_PRINT));
+        $archive->close();
+
+        return $pathArch;
     }
 }

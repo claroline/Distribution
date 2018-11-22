@@ -7,6 +7,8 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\Utils\FileBag;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
@@ -39,6 +41,8 @@ class FullSerializer
      * @DI\InjectParams({
      *     "serializer"   = @DI\Inject("claroline.api.serializer"),
      *     "finder"       = @DI\Inject("claroline.api.finder"),
+     *     "dispatcher"   = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "ots"          = @DI\Inject("claroline.serializer.ordered_tool"),
      *     "crud"         = @DI\Inject("claroline.api.crud"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
      *     "om"           = @DI\Inject("claroline.persistence.object_manager")
@@ -49,6 +53,8 @@ class FullSerializer
      */
     public function __construct(
         SerializerProvider $serializer,
+        StrictDispatcher $dispatcher,
+        OrderedToolSerializer $ots,
         FinderProvider $finder,
         Crud $crud,
         TokenStorage $tokenStorage,
@@ -59,6 +65,8 @@ class FullSerializer
         $this->finder = $finder;
         $this->crud = $crud;
         $this->tokenStorage = $tokenStorage;
+        $this->ots = $ots;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -74,7 +82,7 @@ class FullSerializer
         $serialized = $this->serializer->serialize($workspace, [Options::REFRESH_UUID]);
 
         $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
-            return $this->serializer->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
+            return $this->ots->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
         }, $workspace->getOrderedTools()->toArray());
 
         return $serialized;
@@ -115,9 +123,22 @@ class FullSerializer
 
         foreach ($data['orderedTools'] as $orderedToolData) {
             $orderedTool = new OrderedTool();
-            $this->serializer->get(OrderedTool::class)->deserialize($orderedToolData, $orderedTool, [], $workspace);
+            $this->ots->deserialize($orderedToolData, $orderedTool, [], $workspace);
         }
 
         return $workspace;
+    }
+
+    public function exportFiles($data, FileBag $fileBag)
+    {
+        foreach ($data['orderedTools'] as $orderedToolData) {
+            //copied from crud
+            $name = 'export_tool_'.$orderedToolData['name'];
+            $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ExportObjectEvent', [
+                $data, $fileBag,
+            ]);
+        }
+
+        return $data;
     }
 }

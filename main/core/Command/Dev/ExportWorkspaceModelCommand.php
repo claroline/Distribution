@@ -11,20 +11,21 @@
 
 namespace Claroline\CoreBundle\Command\Dev;
 
+use Claroline\CoreBundle\Command\AdminCliCommand;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ExportWorkspaceModelCommand extends ContainerAwareCommand
+class ExportWorkspaceModelCommand extends ContainerAwareCommand implements AdminCliCommand
 {
     protected function configure()
     {
-        $this->setName('claroline:workspace:export_model')
-            ->setDescription('export workspace into archives');
+        $this->setName('claroline:workspace:archive')
+            ->setDescription('export workspace archive');
         $this->setDefinition(
             [
-                new InputArgument('export_directory', InputArgument::REQUIRED, 'The absolute path to the zip file.'),
                 new InputArgument('code', InputArgument::OPTIONAL, 'The workspace code'),
             ]
         );
@@ -32,5 +33,10 @@ class ExportWorkspaceModelCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $container = $this->getContainer();
+        $workspace = $container->get('doctrine.orm.entity_manager')->getRepository(Workspace::class)->findOneByCode($input->getArgument('code'));
+        $path = $container->get('claroline.manager.workspace.transfer')->export($workspace);
+
+        var_dump($path);
     }
 }

@@ -64,8 +64,15 @@ class FileSerializer
         $this->sipe('autoDownload', 'setAutoDownload', $data, $file);
     }
 
-    private function export($data, File $file)
+    /**
+     * @DI\Observe("export_mon_serializer_file")
+     */
+    private function export(ExportObject $exportEvent)
     {
-        $data['extra']['path'] = 'cheminversfichier';
+        $file = $exportEvent->getObject();
+        //get the filePath
+        $exportEvent->addFile('somedata', 'somemore');
+        $exportEvent->overwrite('hashName', 'somedata');
+        $exportEvent->stopPropagation();
     }
 }

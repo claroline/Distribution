@@ -15,8 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("claroline.serializer.ordered_tool")
- * @DI\Tag("claroline.serializer")
- * Not a true Serializer I guess
+ * Not a true Serializer I guess, need to see where it is used. Could be extended after a refactoring
  */
 class OrderedToolSerializer
 {
@@ -24,8 +23,6 @@ class OrderedToolSerializer
     private $toolSerializer;
 
     /**
-     * PendingRegistrationSerializer constructor.
-     *
      * @DI\InjectParams({
      *     "toolSerializer" = @DI\Inject("claroline.serializer.tool"),
      *     "roleSerializer" = @DI\Inject("claroline.serializer.role"),

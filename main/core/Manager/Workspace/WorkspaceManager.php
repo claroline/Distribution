@@ -1368,7 +1368,7 @@ class WorkspaceManager
             $json = $zip->getFromName('workspace.json');
             $data = json_decode($json, true);
             $data['code'] = $data['name'] = $name;
-            $workspace = $this->container->get('claroline.manager.workspace.importer')->create($data, $name);
+            $workspace = $this->container->get('claroline.manager.workspace.transfer')->create($data, $name);
             $this->log('Add tools...');
             $this->container->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
             $workspace->setName($name);

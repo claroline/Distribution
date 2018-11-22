@@ -166,6 +166,26 @@ class ResourceNodeSerializer
     }
 
     /**
+     * @DI\Observe("export_mon_serializer_resource_manager")
+     */
+    private function export(ExportObjectEvent $exportEvent)
+    {
+        $node = $exportEvent->getObject();
+        $options = $exportEvent->getOptions();
+
+        if (in_array(Options::IS_RECURSIVE, $options)) {
+            $serializedNode['children'] = array_map(function (ResourceNode $node) use ($options) {
+                $exportEvent = new ExportObjectEvent('data', 'moredata');
+                $this->export($exportEvent);
+            //un peu de traitement ici aussi
+            }, $resourceNode->getChildren()->toArray());
+        }
+
+        //get the filePath
+        $exportEvent->stopPropagation();
+    }
+
+    /**
      * Dispatches an event to let plugins add some custom data to the serialized node.
      * For example, SocialMedia adds the number of likes.
      *

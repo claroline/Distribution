@@ -107,4 +107,12 @@ class ResourceManagerSerializer
 
         return $node;
     }
+
+    /**
+     * @DI\Observe("export_tool_resource_manager")
+     */
+    public function onExport($event)
+    {
+        $data = $event->getData();
+    }
 }
