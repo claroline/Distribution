@@ -17,8 +17,7 @@ const Row = props =>
       <div
         key={`indent-${props.item.id}-${key}`}
         className="progression-indent"
-      >
-      </div>
+      />
     )}
 
     <div className={classes('progression-row-content', {'root-content': 0 === props.item.level})}>
@@ -40,7 +39,7 @@ Row.propTypes = {
 
 const List = props =>
   <ul className="progression-list">
-    {props.items.filter(item => item.level <= props.levelMax).map((item, itemIndex) =>
+    {props.items.filter(item => null === props.levelMax || item.level <= props.levelMax).map((item, itemIndex) =>
       <Row
         key={itemIndex}
         item={item}
@@ -50,7 +49,7 @@ const List = props =>
 
 List.propTypes = {
   items: T.arrayOf(T.shape(ProgressionItemType.propTypes)).isRequired,
-  levelMax: T.number.isRequired
+  levelMax: T.number
 }
 
 List.defaultProps = {
