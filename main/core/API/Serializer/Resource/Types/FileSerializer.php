@@ -4,7 +4,6 @@ namespace Claroline\CoreBundle\API\Serializer\Resource\Types;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Resource\File;
-use Claroline\CoreBundle\Event\ExportObjectEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -65,19 +64,5 @@ class FileSerializer
         $this->sipe('size', 'setSize', $data, $file);
         $this->sipe('hashName', 'setHashName', $data, $file);
         $this->sipe('autoDownload', 'setAutoDownload', $data, $file);
-    }
-
-    /**
-     * @DI\Observe("transfet_export_resource_file")
-     */
-    public function onTransferExport(ExportObjectEvent $exportEvent)
-    {
-        $file = $exportEvent->getObject();
-        $path = $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName();
-        $file = $exportEvent->getObject();
-        $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);
-        //get the filePath
-        $exportEvent->addFile($newPath, $path);
-        $exportEvent->overwrite('_path', $newPath);
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer\Tool\Types;
+namespace Claroline\CoreBundle\Manager\Workspace\Transfer\Tools;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
-use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
@@ -17,24 +17,21 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
- * @DI\Service("claroline.serializer.tool.resource_manager")
-
- * Not a true Serializer I guess. Move this elsewhere ?
+ * @DI\Service("claroline.transfer.resource_manager")
  */
-class ResourceManagerSerializer
+class ResourceManager
 {
-    use SerializerTrait;
-
     /**
      * WorkspaceSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "serializer"   = @DI\Inject("claroline.api.serializer"),
-     *     "finder"       = @DI\Inject("claroline.api.finder"),
-     *     "crud"         = @DI\Inject("claroline.api.crud"),
-     *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "userManager"  = @DI\Inject("claroline.manager.user_manager"),
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager")
+     *     "serializer"       = @DI\Inject("claroline.api.serializer"),
+     *     "finder"           = @DI\Inject("claroline.api.finder"),
+     *     "crud"             = @DI\Inject("claroline.api.crud"),
+     *     "tokenStorage"     = @DI\Inject("security.token_storage"),
+     *     "userManager"      = @DI\Inject("claroline.manager.user_manager"),
+     *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
+     *     "eventDispatcher"  = @DI\Inject("claroline.event.event_dispatcher")
      * })
      *
 
@@ -46,7 +43,8 @@ class ResourceManagerSerializer
         FinderProvider $finder,
         Crud $crud,
         TokenStorage $tokenStorage,
-        ObjectManager $om
+        ObjectManager $om,
+        StrictDispatcher $eventDispatcher
       ) {
         $this->serializer = $serializer;
         $this->om = $om;
@@ -54,6 +52,7 @@ class ResourceManagerSerializer
         $this->crud = $crud;
         $this->tokenStorage = $tokenStorage;
         $this->userManager = $userManager;
+        $this->dispatcher = $eventDispatcher;
     }
 
     /**
@@ -115,12 +114,15 @@ class ResourceManagerSerializer
     public function onExport(ExportObjectEvent $event)
     {
         $data = $event->getData();
-        //change this
-        $resource = new \StdClass();
 
-        $new = new ExportObjectEvent($resource, $event->getFileBag(), $data['root']);
+        if (isset($data['root'])) {
+            $new = $this->dispatcher->dispatch(
+              'transfer_export_claroline_corebundle_entity_resource_resourcenode',
+              'Claroline\\CoreBundle\\Event\\ExportObjectEvent',
+              [new \StdClass(), $event->getFileBag(), $data['root']]
+            );
 
-        $this->serializer->get(ResourceNode::class)->onTransferExport($new);
-        $event->overwrite('root', $new->getData());
+            $event->overwrite('root', $new->getData());
+        }
     }
 }

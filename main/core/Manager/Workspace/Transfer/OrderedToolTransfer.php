@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer\Workspace;
+namespace Claroline\CoreBundle\Manager\Workspace\Transfer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\Tool\ToolSerializer;
@@ -14,10 +14,10 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @DI\Service("claroline.serializer.ordered_tool")
+ * @DI\Service("claroline.transfer.ordered_tool")
  * Not a true Serializer I guess, need to see where it is used. Could be extended after a refactoring
  */
-class OrderedToolSerializer
+class OrderedToolTransfer
 {
     /** @var ToolSerializer */
     private $toolSerializer;
@@ -38,11 +38,6 @@ class OrderedToolSerializer
         $this->container = $container;
     }
 
-    public function getClass()
-    {
-        return OrderedTool::class;
-    }
-
     public function serialize(OrderedTool $orderedTool, array $options = []): array
     {
         $data = [
@@ -53,7 +48,7 @@ class OrderedToolSerializer
         ];
 
         if (in_array(Options::SERIALIZE_TOOL, $options)) {
-            $serviceName = 'claroline.serializer.tool.'.$orderedTool->getTool()->getName();
+            $serviceName = 'claroline.transfer.'.$orderedTool->getTool()->getName();
 
             if ($this->container->has($serviceName)) {
                 $data['data'] = $this->container->get($serviceName)->serialize($orderedTool->getWorkspace(), $options);
@@ -112,7 +107,8 @@ class OrderedToolSerializer
             $om->persist($rights);
         }
 
-        $serviceName = 'claroline.serializer.tool.'.$orderedTool->getTool()->getName();
+        //use event instead maybe ? or tagged service
+        $serviceName = 'claroline.transfer.'.$orderedTool->getTool()->getName();
 
         if ($this->container->has($serviceName)) {
             $this->container->get($serviceName)->deserialize($data['data'], $orderedTool->getWorkspace());

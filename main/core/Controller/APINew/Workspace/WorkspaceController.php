@@ -17,7 +17,6 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AppBundle\Logger\JsonLogger;
 use Claroline\AppBundle\Manager\File\TempFileManager;
-use Claroline\CoreBundle\API\Serializer\Workspace\FullSerializer;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
@@ -83,7 +82,6 @@ class WorkspaceController extends AbstractCrudController
      *     "fileUtils"        = @DI\Inject("claroline.utilities.file"),
      *     "importer"         = @DI\Inject("claroline.manager.workspace.transfer"),
      *     "logDir"           = @DI\Inject("%claroline.param.workspace_log_dir%"),
-     *     "fullSerializer"   = @DI\Inject("claroline.serializer.workspace.full"),
      *     "tempFileManager"  = @DI\Inject("claroline.manager.temp_file")
      * })
      *
@@ -110,7 +108,6 @@ class WorkspaceController extends AbstractCrudController
         WorkspaceManager $workspaceManager,
         Utilities $utils,
         FileUtilities $fileUtils,
-        FullSerializer $fullSerializer,
         TransferManager $importer,
         TempFileManager $tempFileManager,
         $logDir
@@ -124,7 +121,6 @@ class WorkspaceController extends AbstractCrudController
         $this->workspaceManager = $workspaceManager;
         $this->toolManager = $toolManager;
         $this->utils = $utils;
-        $this->fullSerializer = $fullSerializer;
         $this->logDir = $logDir;
         $this->fileUtils = $fileUtils;
         $this->tempFileManager = $tempFileManager;

@@ -1,21 +1,19 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer\Tool\Types;
+namespace Claroline\CoreBundle\Manager\Workspace\Transfer\Tools;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
-use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.serializer.tool.home")
- *
- * Not a true Serializer I guess. Move this elsewhere ?
+ * @DI\Service("claroline.transfer.home")
+ *  Should probably implements a "Transfer" interface
  */
-class HomeSerializer
+class Home
 {
     /**
      * WorkspaceSerializer constructor.
@@ -38,8 +36,6 @@ class HomeSerializer
         $this->finder = $finder;
         $this->crud = $crud;
     }
-
-    use SerializerTrait;
 
     /**
      * @return array

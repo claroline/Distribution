@@ -441,31 +441,4 @@ class ResourceNodeSerializer
             }
         }
     }
-
-    public function onTransferExport(ExportObjectEvent $event)
-    {
-        $data = $event->getData();
-
-        $resourceNode = $this->om->getRepository(ResourceNode::class)->find($data['autoId']);
-        $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
-        $serializer = $this->serializer->get($resource);
-        //use listener instead
-        if (method_exists($serializer, 'onTransferExport')) {
-            if (isset($data['resource'])) {
-                $new = new ExportObjectEvent($resource, $event->getFileBag(), $data['resource']);
-                $serializer->onTransferExport($new);
-                $event->overwrite('resource', $new->getData());
-            }
-        }
-
-        if (isset($data['children'])) {
-            foreach ($data['children'] as $key => $child) {
-                $resourceNode = $this->om->getRepository(ResourceNode::class)->find($child['autoId']);
-                $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
-                $recursive = new ExportObjectEvent($resource, $event->getFileBag(), $child);
-                $this->onTransferExport($recursive);
-                $event->overwrite('children.'.$key, $recursive->getData());
-            }
-        }
-    }
 }
