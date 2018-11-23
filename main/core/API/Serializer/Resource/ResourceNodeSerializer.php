@@ -448,11 +448,14 @@ class ResourceNodeSerializer
 
         $resourceNode = $this->om->getRepository(ResourceNode::class)->find($data['autoId']);
         $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
-        $new = new ExportObjectEvent($resource, $event->getFileBag(), $data);
         $serializer = $this->serializer->get($resource);
         //use listener instead
         if (method_exists($serializer, 'onTransferExport')) {
-            $serializer->onTransferExport($new);
+            if (isset($data['resource'])) {
+                $new = new ExportObjectEvent($resource, $event->getFileBag(), $data['resource']);
+                $serializer->onTransferExport($new);
+                $event->overwrite('resource', $new->getData());
+            }
         }
 
         if (isset($data['children'])) {
@@ -461,11 +464,8 @@ class ResourceNodeSerializer
                 $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
                 $recursive = new ExportObjectEvent($resource, $event->getFileBag(), $child);
                 $this->onTransferExport($recursive);
-                var_dump($recursive->getData());
                 $event->overwrite('children.'.$key, $recursive->getData());
             }
         }
-
-        //  var_dump($event->getData());
     }
 }
