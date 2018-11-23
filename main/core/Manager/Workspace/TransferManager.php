@@ -107,6 +107,11 @@ class TransferManager
         $pathArch = $this->tempFileManager->generate();
         $archive->open($pathArch, \ZipArchive::CREATE);
         $archive->addFromString('workspace.json', json_encode($data, JSON_PRETTY_PRINT));
+
+        foreach ($fileBag->all() as $archPath => $realPath) {
+            $archive->addFile($realPath, $archPath);
+        }
+
         $archive->close();
 
         return $pathArch;

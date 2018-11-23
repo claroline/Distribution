@@ -14,6 +14,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
@@ -108,6 +109,8 @@ class ResourceNodeSerializer
     public function serialize(ResourceNode $resourceNode, array $options = [])
     {
         $serializedNode = [
+            //also used for the export. It's not pretty.
+
             'autoId' => $resourceNode->getId(),
             'id' => $this->getUuid($resourceNode, $options),
             'name' => $resourceNode->getName(),
@@ -437,5 +440,32 @@ class ResourceNodeSerializer
                 );
             }
         }
+    }
+
+    public function onTransferExport(ExportObjectEvent $event)
+    {
+        $data = $event->getData();
+
+        $resourceNode = $this->om->getRepository(ResourceNode::class)->find($data['autoId']);
+        $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
+        $new = new ExportObjectEvent($resource, $event->getFileBag(), $data);
+        $serializer = $this->serializer->get($resource);
+        //use listener instead
+        if (method_exists($serializer, 'onTransferExport')) {
+            $serializer->onTransferExport($new);
+        }
+
+        if (isset($data['children'])) {
+            foreach ($data['children'] as $key => $child) {
+                $resourceNode = $this->om->getRepository(ResourceNode::class)->find($child['autoId']);
+                $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
+                $recursive = new ExportObjectEvent($resource, $event->getFileBag(), $child);
+                $this->onTransferExport($recursive);
+                var_dump($recursive->getData());
+                $event->overwrite('children.'.$key, $recursive->getData());
+            }
+        }
+
+        //  var_dump($event->getData());
     }
 }

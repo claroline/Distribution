@@ -131,12 +131,16 @@ class FullSerializer
 
     public function exportFiles($data, FileBag $fileBag)
     {
-        foreach ($data['orderedTools'] as $orderedToolData) {
+        foreach ($data['orderedTools'] as $key => $orderedToolData) {
             //copied from crud
             $name = 'export_tool_'.$orderedToolData['name'];
-            $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ExportObjectEvent', [
-                $data, $fileBag,
-            ]);
+            //use an other even. StdClass is not pretty
+            if (isset($orderedToolData['data'])) {
+                $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ExportObjectEvent', [
+                  new \StdClass(), $fileBag, $orderedToolData['data'],
+              ]);
+                $data['orderedTools'][$key] = $event->getData();
+            }
         }
 
         return $data;

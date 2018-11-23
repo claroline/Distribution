@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer\Resource\Types;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Resource\File;
+use Claroline\CoreBundle\Event\ExportObjectEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -22,14 +23,16 @@ class FileSerializer
      * ResourceNodeManager constructor.
      *
      * @DI\InjectParams({
-     *     "router" = @DI\Inject("router")
+     *     "router"    = @DI\Inject("router"),
+     *     "filesDir" = @DI\Inject("%claroline.param.files_directory%")
      * })
      *
      * @param RouterInterface $router
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, $filesDir)
     {
         $this->router = $router;
+        $this->filesDir = $filesDir;
     }
 
     /**
@@ -65,14 +68,16 @@ class FileSerializer
     }
 
     /**
-     * @DI\Observe("export_mon_serializer_file")
+     * @DI\Observe("transfet_export_resource_file")
      */
-    private function export(ExportObject $exportEvent)
+    public function onTransferExport(ExportObjectEvent $exportEvent)
     {
         $file = $exportEvent->getObject();
+        $path = $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName();
+        $file = $exportEvent->getObject();
+        $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);
         //get the filePath
-        $exportEvent->addFile('somedata', 'somemore');
-        $exportEvent->overwrite('hashName', 'somedata');
-        $exportEvent->stopPropagation();
+        $exportEvent->addFile($newPath, $path);
+        $exportEvent->overwrite('_path', $newPath);
     }
 }

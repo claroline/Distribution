@@ -9,15 +9,13 @@ class FileBag
         $this->files = [];
     }
 
-    public function add()
+    public function add($newPath, $location)
     {
-    }
-
-    public function get()
-    {
+        $this->files[$newPath] = $location;
     }
 
     public function all()
     {
+        return $this->files;
     }
 }

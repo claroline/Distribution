@@ -11,6 +11,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -111,8 +112,15 @@ class ResourceManagerSerializer
     /**
      * @DI\Observe("export_tool_resource_manager")
      */
-    public function onExport($event)
+    public function onExport(ExportObjectEvent $event)
     {
         $data = $event->getData();
+        //change this
+        $resource = new \StdClass();
+
+        $new = new ExportObjectEvent($resource, $event->getFileBag(), $data['root']);
+
+        $this->serializer->get(ResourceNode::class)->onTransferExport($new);
+        $event->overwrite('root', $new->getData());
     }
 }
