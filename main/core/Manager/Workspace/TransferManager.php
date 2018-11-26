@@ -86,6 +86,7 @@ class TransferManager
         $options = [Options::LIGHT_COPY];
         // gets entity from raw data.
         $workspace = $this->deserialize($data);
+        $this->importFiles
 
         // creates the entity if allowed
         $this->checkPermission('CREATE', $workspace, [], true);
@@ -131,14 +132,13 @@ class TransferManager
     }
 
     /**
-     * Serializes a Workspace entity for the JSON api.
+     * Returns a json description of the entire workspace.
      *
      * @param Workspace $workspace - the workspace to serialize
-     * @param array     $options   - a list of serialization options
      *
      * @return array - the serialized representation of the workspace
      */
-    public function serialize(Workspace $workspace, array $options = [])
+    public function serialize(Workspace $workspace)
     {
         $serialized = $this->serializer->serialize($workspace, [Options::REFRESH_UUID]);
 
@@ -198,6 +198,23 @@ class TransferManager
             //use an other even. StdClass is not pretty
             if (isset($orderedToolData['data'])) {
                 $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ExportObjectEvent', [
+                  new \StdClass(), $fileBag, $orderedToolData['data'],
+              ]);
+                $data['orderedTools'][$key] = $event->getData();
+            }
+        }
+
+        return $data;
+    }
+
+    public function importFiles($data, Workspace $workspace)
+    {
+        foreach ($data['orderedTools'] as $key => $orderedToolData) {
+            //copied from crud
+            $name = 'import_tool_'.$orderedToolData['name'];
+            //use an other even. StdClass is not pretty
+            if (isset($orderedToolData['data'])) {
+                $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ImportObjectEvent', [
                   new \StdClass(), $fileBag, $orderedToolData['data'],
               ]);
                 $data['orderedTools'][$key] = $event->getData();

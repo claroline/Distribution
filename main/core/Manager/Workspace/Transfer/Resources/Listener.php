@@ -87,13 +87,6 @@ class Listener
                 $recursive = new ExportObjectEvent($resource, $event->getFileBag(), $child);
                 $this->onExportResourceNode($recursive);
                 $event->overwrite('children.'.$key, $recursive->getData());
-                /*
-                $recursive = $this->dispatcher->dispatch(
-                  'transfer_export_'.$this->getUnderscoreClassName(get_class($resource)),
-                  'Claroline\\CoreBundle\\Event\\ExportObjectEvent',
-                  [$resource, $event->getFileBag(), $child]
-                );*/
-                $event->overwrite('children.'.$key, $recursive->getData());
             }
         }
     }
