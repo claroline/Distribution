@@ -74,6 +74,7 @@ class ResourceNodeFinder extends AbstractFinder
                     $qb->setParameter('published', $filterValue);
                     break;
                 case 'meta.type':
+                    //should be the same as resourceType but something is wrong somewhere. It's an alias
                 case 'meta.uploadDestination':
                     $qb->andWhere("ort.name = 'directory'");
                     $qb->join(Directory::class, 'dir', 'WITH', 'dir.resourceNode = obj.id');
@@ -191,6 +192,9 @@ class ResourceNodeFinder extends AbstractFinder
                 case 'meta.type':
                     $qb->orderBy('ort.name', $sortByDirection);
                     break;
+                case 'resourceType':
+                    $qb->orderBy('ort.name', $sortByDirection);
+                    break;
                 case 'meta.updated':
                     $qb->orderBy('obj.modificationDate', $sortByDirection);
                     break;
@@ -222,6 +226,7 @@ class ResourceNodeFinder extends AbstractFinder
           'meta.updated' => 'creation_date',
           'meta.created' => 'modification_date',
           'meta.published' => 'published',
+          'resourceType' => 'resource_type_id',
         ];
     }
 }
