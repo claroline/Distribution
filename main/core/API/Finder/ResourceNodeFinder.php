@@ -226,7 +226,23 @@ class ResourceNodeFinder extends AbstractFinder
           'meta.updated' => 'creation_date',
           'meta.created' => 'modification_date',
           'meta.published' => 'published',
-          'resourceType' => 'resource_type_id',
         ];
+    }
+
+    //required for the unions
+    public function getExtraSelect()
+    {
+        return [
+            //the alias is currently removed by doctrine
+          'ort.name',
+        ];
+    }
+
+    //add extra aliases for doctrine... not pretty
+    public function getAliases()
+    {
+        return [
+            'c1_.name' => 'resourceType',
+          ];
     }
 }
