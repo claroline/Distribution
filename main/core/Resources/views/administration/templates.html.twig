@@ -19,6 +19,8 @@
 {% block content %}
     <div
         class="page-container templates-container"
+        data-locales="{{ locales | json_encode | raw | escape }}"
+        data-default-locale="{{ defaultLocale | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

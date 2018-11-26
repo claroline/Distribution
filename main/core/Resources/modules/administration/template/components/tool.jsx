@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {actions} from '#/main/core/administration/template/store'
+import {actions, selectors} from '#/main/core/administration/template/store'
 import {
   PageContainer,
   PageActions,
@@ -42,26 +42,35 @@ const Tool = (props) =>
         }, {
           path: '/form/:id?',
           component: Template,
-          onEnter: (params) => props.openForm(params.id || null),
-          onLeave: () => props.resetForm()
+          onEnter: (params) => props.openForm(props.defaultLocale, params.id || null),
+          onLeave: () => props.resetForm(props.defaultLocale)
         }
       ]}
     />
   </PageContainer>
 
 Tool.propTypes = {
+  defaultLocale: T.string,
   openForm: T.func.isRequired,
   resetForm: T.func.isRequired
 }
 
 const TemplateTool = connect(
-  null,
-  dispatch => ({
-    openForm(id = null) {
-      dispatch(actions.openForm('template', id))
+  (state) => ({
+    defaultLocale: selectors.defaultLocale(state)
+  }),
+  (dispatch) => ({
+    openForm(defaultLocale, id = null) {
+      const defaultData = {
+        lang: defaultLocale
+      }
+      dispatch(actions.openForm('template', defaultData, id))
     },
-    resetForm() {
-      dispatch(actions.resetForm('template'))
+    resetForm(defaultLocale) {
+      const defaultData = {
+        lang: defaultLocale
+      }
+      dispatch(actions.resetForm('template', defaultData))
     }
   })
 )(Tool)

@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Listener\Administration;
 
+use Claroline\AppBundle\API\Options;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -26,6 +28,8 @@ class TemplateListener
 {
     /** @var AuthorizationCheckerInterface */
     private $authorization;
+    /** @var ParametersSerializer */
+    private $parametersSerializer;
     /** @var TwigEngine */
     private $templating;
     /** @var ToolManager */
@@ -33,21 +37,25 @@ class TemplateListener
 
     /**
      * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "templating"    = @DI\Inject("templating"),
-     *     "toolManager"   = @DI\Inject("claroline.manager.tool_manager")
+     *     "authorization"        = @DI\Inject("security.authorization_checker"),
+     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
+     *     "templating"           = @DI\Inject("templating"),
+     *     "toolManager"          = @DI\Inject("claroline.manager.tool_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
+     * @param ParametersSerializer          $parametersSerializer
      * @param TwigEngine                    $templating
      * @param ToolManager                   $toolManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
+        ParametersSerializer $parametersSerializer,
         TwigEngine $templating,
         ToolManager $toolManager
     ) {
         $this->authorization = $authorization;
+        $this->parametersSerializer = $parametersSerializer;
         $this->templating = $templating;
         $this->toolManager = $toolManager;
     }
@@ -64,8 +72,12 @@ class TemplateListener
         if (is_null($templatesTool) || !$this->authorization->isGranted('OPEN', $templatesTool)) {
             throw new AccessDeniedException();
         }
+        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
         $content = $this->templating->render(
-            'ClarolineCoreBundle:administration:templates.html.twig'
+            'ClarolineCoreBundle:administration:templates.html.twig', [
+                'locales' => isset($parameters['locales']['available']) ? $parameters['locales']['available'] : [],
+                'defaultLocale' => isset($parameters['locales']['default']) ? $parameters['locales']['default'] : null,
+            ]
         );
         $event->setResponse(new Response($content));
         $event->stopPropagation();

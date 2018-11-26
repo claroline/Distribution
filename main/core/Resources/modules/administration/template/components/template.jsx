@@ -7,15 +7,12 @@ import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
-// import {MODAL_DATA_LIST} from '#/main/app/modals/list'
-// import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
-import {actions} from '#/main/core/administration/template/store'
+import {actions, selectors} from '#/main/core/administration/template/store'
 import {constants} from '#/main/core/administration/template/constants'
 import {Template as TemplateType} from '#/main/core/administration/template/prop-types'
-import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
-const TemplateForm = props =>
+const TemplateForm = (props) =>
   <FormData
     level={2}
     name="template"
@@ -56,9 +53,18 @@ const TemplateForm = props =>
             required: true
           }, {
             name: 'lang',
-            type: 'string',
+            type: 'choice',
             label: trans('lang'),
-            required: true
+            required: true,
+            options: {
+              noEmpty: true,
+              condensed: true,
+              choices: props.locales.reduce((acc, locale) => {
+                acc[locale] = locale
+
+                return acc
+              }, {})
+            }
           }
         ]
       }
@@ -86,6 +92,12 @@ const TemplateForm = props =>
                 <td>{trans(`${placeholder}_desc`, {}, 'template')}</td>
               </tr>
             )}
+            {props.template.type && props.template.type.placeholders && props.template.type.placeholders.map(placeholder =>
+              <tr>
+                <td>{`%${placeholder}%`}</td>
+                <td>{trans(`${placeholder}_desc`, {}, 'template')}</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </FormSection>
@@ -95,30 +107,15 @@ const TemplateForm = props =>
 TemplateForm.propTypes = {
   new: T.bool.isRequired,
   template: T.shape(TemplateType.propTypes).isRequired,
+  locales: T.arrayOf(T.string)
 }
 
 const Template = connect(
   state => ({
     new: formSelect.isNew(formSelect.form(state, 'template')),
-    template: formSelect.data(formSelect.form(state, 'template'))
-  }),
-  // dispatch =>({
-  //   pickUsers(taskId) {
-  //     dispatch(modalActions.showModal(MODAL_DATA_LIST, {
-  //       icon: 'fa fa-fw fa-user',
-  //       title: trans('add_users'),
-  //       confirmText: trans('add'),
-  //       name: 'picker',
-  //       definition: UserList.definition,
-  //       card: UserList.card,
-  //       fetch: {
-  //         url: ['apiv2_user_list'],
-  //         autoload: true
-  //       },
-  //       handleSelect: (selected) => dispatch(actions.addUsers(taskId, selected))
-  //     }))
-  //   }
-  // })
+    template: formSelect.data(formSelect.form(state, 'template')),
+    locales: selectors.locales(state)
+  })
 )(TemplateForm)
 
 export {

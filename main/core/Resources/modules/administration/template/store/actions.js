@@ -3,7 +3,7 @@ import {actions as formActions} from '#/main/app/content/form/store'
 
 const actions = {}
 
-actions.openForm = (formName, id = null) => (dispatch) => {
+actions.openForm = (formName, defaultData = {}, id = null) => (dispatch) => {
   if (id) {
     dispatch({
       [API_REQUEST]: {
@@ -14,12 +14,12 @@ actions.openForm = (formName, id = null) => (dispatch) => {
       }
     })
   } else {
-    dispatch(actions.resetForm(formName))
+    dispatch(actions.resetForm(formName, defaultData))
   }
 }
 
-actions.resetForm = (formName) => (dispatch) => {
-  dispatch(formActions.resetForm(formName, {}, true))
+actions.resetForm = (formName, defaultData = {}) => (dispatch) => {
+  dispatch(formActions.resetForm(formName, defaultData, true))
 }
 
 export {

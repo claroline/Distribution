@@ -324,4 +324,5 @@ plugin:
         - name: Claroline Ruby
 
     templates:
-        - name: password
+        - name: forgotten_password
+          placeholders: [password]

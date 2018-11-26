@@ -9,7 +9,9 @@ const reducer = {
       [FORM_SUBMIT_SUCCESS+'/template']: () => true
     })
   }),
-  template: makeFormReducer('template')
+  template: makeFormReducer('template'),
+  locales:makeReducer([]),
+  defaultLocale:makeReducer(null)
 }
 
 export {
