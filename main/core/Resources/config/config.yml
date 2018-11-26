@@ -181,6 +181,9 @@ plugin:
         - name: data_transfer
           class: exchange
 
+        - name: templates_management
+          class: file-alt
+
     widgets:
         - name: simple
           class: Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget
@@ -319,3 +322,6 @@ plugin:
         - name: Claroline Black
         - name: Claroline Mint
         - name: Claroline Ruby
+
+    templates:
+        - name: password
