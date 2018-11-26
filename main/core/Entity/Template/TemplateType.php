@@ -56,6 +56,13 @@ class TemplateType
     private $placeholders;
 
     /**
+     * @ORM\Column(name="template_name", nullable=true)
+     *
+     * @var string
+     */
+    private $template;
+
+    /**
      * Template constructor.
      */
     public function __construct()
@@ -121,5 +128,25 @@ class TemplateType
     public function setPlaceholders(array $placeholders = null)
     {
         $this->placeholders = $placeholders;
+    }
+
+    /**
+     * Get template.
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * Set template.
+     *
+     * @param string $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
     }
 }
