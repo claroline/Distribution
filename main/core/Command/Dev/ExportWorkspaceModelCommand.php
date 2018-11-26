@@ -36,7 +36,6 @@ class ExportWorkspaceModelCommand extends ContainerAwareCommand implements Admin
         $container = $this->getContainer();
         $workspace = $container->get('doctrine.orm.entity_manager')->getRepository(Workspace::class)->findOneByCode($input->getArgument('code'));
         $path = $container->get('claroline.manager.workspace.transfer')->export($workspace);
-
-        var_dump($path);
+        $output->writeln($path);
     }
 }

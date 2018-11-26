@@ -429,7 +429,13 @@ class WorkspaceSerializer
             $workspace->setWorkspaceModel($model);
         }
 
-        $this->sipe('uuid', 'setUuid', $data, $workspace);
+        //not sure if keep that. Might be troublesome later for rich texts
+        if (!in_array(Options::REFRESH_UUID, $options)) {
+            $this->sipe('uuid', 'setUuid', $data, $workspace);
+        } else {
+            $workspace->refreshUuid();
+        }
+
         $this->sipe('code', 'setCode', $data, $workspace);
         $this->sipe('name', 'setName', $data, $workspace);
 

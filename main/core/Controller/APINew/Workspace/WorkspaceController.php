@@ -142,7 +142,7 @@ class WorkspaceController extends AbstractCrudController
         $data = $this->decodeRequest($request);
 
         if (isset($data['archive'])) {
-            $workspace = $this->importer->create($data, $data['name']);
+            $workspace = $this->importer->create($data);
             $this->toolManager->addMissingWorkspaceTools($workspace);
 
             return new JsonResponse(
@@ -739,7 +739,7 @@ class WorkspaceController extends AbstractCrudController
         $zip->close();
 
         $data = json_decode($json, true);
-        $data['archive'] = $object;
+        $data['archive'] = $this->serializer->serialize($object);
 
         return new JsonResponse($data);
     }

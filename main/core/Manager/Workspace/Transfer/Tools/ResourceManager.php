@@ -12,6 +12,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
+use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -123,6 +124,22 @@ class ResourceManager
             );
 
             $event->overwrite('root', $new->getData());
+        }
+    }
+
+    /**
+     * @DI\Observe("import_tool_resource_manager")
+     */
+    public function onImport(ImportObjectEvent $event)
+    {
+        $data = $event->getData();
+
+        if (isset($data['root'])) {
+            $new = $this->dispatcher->dispatch(
+              'transfer_import_claroline_corebundle_entity_resource_resourcenode',
+              'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+              []
+            );
         }
     }
 }

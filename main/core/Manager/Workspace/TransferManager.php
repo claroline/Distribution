@@ -83,10 +83,10 @@ class TransferManager
      */
     public function create(array $data)
     {
-        $options = [Options::LIGHT_COPY];
+        $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
-        $workspace = $this->deserialize($data);
-        $this->importFiles
+        $workspace = $this->deserialize($data, $options);
+        $this->importFiles($data, $workspace);
 
         // creates the entity if allowed
         $this->checkPermission('CREATE', $workspace, [], true);
@@ -143,7 +143,9 @@ class TransferManager
         $serialized = $this->serializer->serialize($workspace, [Options::REFRESH_UUID]);
 
         $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
-            return $this->ots->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
+            $data = $this->ots->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
+
+            return $data;
         }, $workspace->getOrderedTools()->toArray());
 
         return $serialized;
@@ -161,7 +163,7 @@ class TransferManager
     {
         $defaultRole = $data['registration']['defaultRole'];
         unset($data['registration']['defaultRole']);
-        $workspace = $this->serializer->deserialize(Workspace::class, $data);
+        $workspace = $this->serializer->deserialize(Workspace::class, $data, $options);
 
         foreach ($data['roles'] as $roleData) {
             $roleData['workspace']['uuid'] = $workspace->getUuid();
@@ -200,7 +202,7 @@ class TransferManager
                 $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ExportObjectEvent', [
                   new \StdClass(), $fileBag, $orderedToolData['data'],
               ]);
-                $data['orderedTools'][$key] = $event->getData();
+                $data['orderedTools'][$key]['data'] = $event->getData();
             }
         }
 
@@ -214,9 +216,7 @@ class TransferManager
             $name = 'import_tool_'.$orderedToolData['name'];
             //use an other even. StdClass is not pretty
             if (isset($orderedToolData['data'])) {
-                $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ImportObjectEvent', [
-                  new \StdClass(), $fileBag, $orderedToolData['data'],
-              ]);
+                $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ImportObjectEvent', []);
                 $data['orderedTools'][$key] = $event->getData();
             }
         }
