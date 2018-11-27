@@ -19,7 +19,7 @@ class Version20181126094536 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 plugin_id INT DEFAULT NULL, 
                 type_name VARCHAR(255) NOT NULL, 
-                template_name VARCHAR(255) DEFAULT NULL,
+                default_template VARCHAR(255) DEFAULT NULL,
                 placeholders LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_7428AC44D17F50A6 (uuid), 

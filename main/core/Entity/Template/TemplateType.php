@@ -56,11 +56,11 @@ class TemplateType
     private $placeholders;
 
     /**
-     * @ORM\Column(name="template_name", nullable=true)
+     * @ORM\Column(name="default_template", nullable=true)
      *
      * @var string
      */
-    private $template;
+    private $defaultTemplate;
 
     /**
      * Template constructor.
@@ -131,22 +131,22 @@ class TemplateType
     }
 
     /**
-     * Get template.
+     * Get default template.
      *
      * @return string
      */
-    public function getTemplate()
+    public function getDefaultTemplate()
     {
-        return $this->template;
+        return $this->defaultTemplate;
     }
 
     /**
-     * Set template.
+     * Set default template.
      *
-     * @param string $template
+     * @param string $defaultTemplate
      */
-    public function setTemplate($template)
+    public function setDefaultTemplate($defaultTemplate)
     {
-        $this->template = $template;
+        $this->defaultTemplate = $defaultTemplate;
     }
 }

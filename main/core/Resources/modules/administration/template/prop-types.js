@@ -4,7 +4,8 @@ const TemplateType = {
   propTypes: {
     id: T.string,
     name: T.string,
-    placeholders: T.arrayOf(T.string)
+    placeholders: T.arrayOf(T.string),
+    defaultTemplate: T.string
   }
 }
 

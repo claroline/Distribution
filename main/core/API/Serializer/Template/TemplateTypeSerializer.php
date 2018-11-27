@@ -35,6 +35,7 @@ class TemplateTypeSerializer
             'id' => $templateType->getUuid(),
             'name' => $templateType->getName(),
             'placeholders' => $templateType->getPlaceholders(),
+            'defaultTemplate' => $templateType->getDefaultTemplate(),
         ];
 
         return $serialized;

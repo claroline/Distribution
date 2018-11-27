@@ -60,14 +60,14 @@ class TemplateManager
         $templateType = $this->templateTypeRepo->findOneBy(['name' => $templateType]);
 
         // Checks if a template is associated to the template type
-        if ($templateType && $templateType->getTemplate()) {
+        if ($templateType && $templateType->getDefaultTemplate()) {
             $template = null;
 
             // Fetches template for the given type and locale
             if ($locale) {
                 $template = $this->templateRepo->findOneBy([
                     'type' => $templateType,
-                    'name' => $templateType->getTemplate(),
+                    'name' => $templateType->getDefaultTemplate(),
                     'lang' => $locale,
                 ]);
             }
@@ -79,7 +79,7 @@ class TemplateManager
                 if ($defaultLocale && $defaultLocale !== $locale) {
                     $template = $this->templateRepo->findOneBy([
                         'type' => $templateType,
-                        'name' => $templateType->getTemplate(),
+                        'name' => $templateType->getDefaultTemplate(),
                         'lang' => $defaultLocale,
                     ]);
                 }
