@@ -13,7 +13,7 @@ import {
   WORKSPACE_REGISTRATION_GROUP
 } from '#/plugin/planned-notification/tools/planned-notification/constants'
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
-import {Notification as NotificationTypes} from '#/plugin/planned-notification/tools/planned-notification/prop-types'
+import {Notification as NotificationType} from '#/plugin/planned-notification/tools/planned-notification/prop-types'
 
 const NotificationForm = props =>
   <FormData
@@ -91,7 +91,7 @@ const NotificationForm = props =>
 NotificationForm.propTypes = {
   canEdit: T.bool.isRequired,
   new: T.bool.isRequired,
-  notification: T.shape(NotificationTypes.propTypes).isRequired
+  notification: T.shape(NotificationType.propTypes).isRequired
 }
 
 const Notification = connect(
