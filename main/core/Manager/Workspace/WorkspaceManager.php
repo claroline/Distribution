@@ -193,9 +193,10 @@ class WorkspaceManager
         $this->dispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
 
         $this->om->startFlushSuite();
-        $root = $this->resourceManager->getWorkspaceRoot($workspace);
+        $roots = $this->om->getRepository(ResourceNode::class)->findBy(['workspace' => $workspace, 'parent' => null]);
 
-        if ($root) {
+        //in case 0 or multiple due to errors
+        foreach ($roots as $root) {
             $this->log('Removing root directory '.$root->getName().'[id:'.$root->getId().']');
             $children = $root->getChildren();
             $this->log('Looping through '.count($children).' children...');

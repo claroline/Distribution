@@ -33,7 +33,7 @@ class Listener
      * ResourceNodeManager constructor.
      *
      * @DI\InjectParams({
-     *     "filesDir" = @DI\Inject("%claroline.param.files_directory%"),
+     *     "filesDir"     = @DI\Inject("%claroline.param.files_directory%"),
      *     "serializer"   = @DI\Inject("claroline.api.serializer"),
      *     "finder"       = @DI\Inject("claroline.api.finder"),
      *     "crud"         = @DI\Inject("claroline.api.crud"),
@@ -141,9 +141,9 @@ class Listener
         $bag = $event->getFileBag();
         $fileSystem = new Filesystem();
         try {
-            $fileSystem->rename($bag->get($data['_path']), $data['hashName']);
+            $fileSystem->rename($bag->get($data['_path']), $this->filesDir.DIRECTORY_SEPARATOR.$data['hashName']);
         } catch (\Exception $e) {
-            //maybe do something ?
+            var_dump($e->getMessage());
         }
         //move filebags elements here
     }

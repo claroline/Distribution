@@ -82,36 +82,39 @@ class OrderedToolTransfer
     public function deserialize(array $data, OrderedTool $orderedTool, array $options = [], Workspace $workspace = null)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
-        $orderedTool->setWorkspace($workspace);
         $tool = $om->getRepository(Tool::class)->findOneByName($data['tool']);
-        $orderedTool->setTool($tool);
-        $orderedTool->setName($data['name']);
-        $orderedTool->setOrder($data['position']);
 
-        foreach ($data['restrictions'] as $restriction) {
-            if (isset($restriction['role']['name'])) {
-                $role = $om->getRepository(Role::class)->findOneBy(['name' => $restriction['role']['name']]);
-            } else {
-                $role = $om->getRepository(Role::class)->findOneBy(
+        if ($tool) {
+            $orderedTool->setWorkspace($workspace);
+            $orderedTool->setTool($tool);
+            $orderedTool->setName($data['name']);
+            $orderedTool->setOrder($data['position']);
+
+            foreach ($data['restrictions'] as $restriction) {
+                if (isset($restriction['role']['name'])) {
+                    $role = $om->getRepository(Role::class)->findOneBy(['name' => $restriction['role']['name']]);
+                } else {
+                    $role = $om->getRepository(Role::class)->findOneBy(
                 [
                   'translationKey' => $restriction['role']['translationKey'],
                   'workspace' => $workspace->getId(),
                 ]
               );
+                }
+
+                $rights = new ToolRights();
+                $rights->setRole($role);
+                $rights->setMask($restriction['mask']);
+                $rights->setOrderedTool($orderedTool);
+                $om->persist($rights);
             }
 
-            $rights = new ToolRights();
-            $rights->setRole($role);
-            $rights->setMask($restriction['mask']);
-            $rights->setOrderedTool($orderedTool);
-            $om->persist($rights);
-        }
+            //use event instead maybe ? or tagged service
+            $serviceName = 'claroline.transfer.'.$orderedTool->getTool()->getName();
 
-        //use event instead maybe ? or tagged service
-        $serviceName = 'claroline.transfer.'.$orderedTool->getTool()->getName();
-
-        if ($this->container->has($serviceName)) {
-            $this->container->get($serviceName)->deserialize($data['data'], $orderedTool->getWorkspace());
+            if ($this->container->has($serviceName)) {
+                $this->container->get($serviceName)->deserialize($data['data'], $orderedTool->getWorkspace());
+            }
         }
     }
 }

@@ -122,7 +122,7 @@ class ResourceNodeSerializer
             // TODO : it should not be available in minimal mode
             // for now I need it to compute simple access rights (for display)
             // we should compute simple access here to avoid exposing this big object
-            'rights' => $this->rightsManager->getRights($resourceNode),
+            'rights' => $this->rightsManager->getRights($resourceNode, $options),
         ];
 
         // TODO : it should not (I think) be available in minimal mode
