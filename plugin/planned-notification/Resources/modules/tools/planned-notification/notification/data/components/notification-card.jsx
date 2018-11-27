@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
-import {asset} from '#/main/app/config/asset'
 import {DataCard} from '#/main/app/content/card/components/data'
 
 import {Notification as NotificationType} from '#/plugin/planned-notification/tools/planned-notification/prop-types'
