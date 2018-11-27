@@ -238,16 +238,16 @@ class TransferManager
                     $filebag->add($fileName, $location);
                 }
 
-                foreach ($data['orderedTools'] as $key => $orderedToolData) {
+                foreach ($data['orderedTools'] as $orderedToolData) {
                     //copied from crud
                     $name = 'import_tool_'.$orderedToolData['name'];
                     //use an other even. StdClass is not pretty
                     if (isset($orderedToolData['data'])) {
-                        $event = $this->dispatcher->dispatch(
-                        $name,
-                        'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
-                        [$filebag, $orderedToolData['data']]
-                      );
+                        $this->dispatcher->dispatch(
+                            $name,
+                            'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                            [$filebag, $orderedToolData['data']]
+                        );
                     }
                 }
             } else {

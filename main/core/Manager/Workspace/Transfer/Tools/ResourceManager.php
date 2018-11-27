@@ -135,7 +135,7 @@ class ResourceManager
         $data = $event->getData();
 
         if (isset($data['root'])) {
-            $new = $this->dispatcher->dispatch(
+            $this->dispatcher->dispatch(
               'transfer_import_claroline_corebundle_entity_resource_resourcenode',
               'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
               [$event->getFileBag(), $data['root']]

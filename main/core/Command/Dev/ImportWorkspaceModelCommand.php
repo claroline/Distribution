@@ -70,6 +70,6 @@ class ImportWorkspaceModelCommand extends ContainerAwareCommand implements Admin
         $data['code'] = $input->getArgument('code');
         $data['archive'] = $this->getContainer()->get('claroline.api.serializer')->serialize($object);
 
-        $workspace = $this->getContainer()->get('claroline.manager.workspace.transfer')->create($data);
+        $this->getContainer()->get('claroline.manager.workspace.transfer')->create($data);
     }
 }

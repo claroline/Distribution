@@ -14,7 +14,6 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
@@ -166,26 +165,6 @@ class ResourceNodeSerializer
         $serializedNode = $this->decorate($resourceNode, $serializedNode, $options);
 
         return $serializedNode;
-    }
-
-    /**
-     * @DI\Observe("export_mon_serializer_resource_manager")
-     */
-    private function export(ExportObjectEvent $exportEvent)
-    {
-        $node = $exportEvent->getObject();
-        $options = $exportEvent->getOptions();
-
-        if (in_array(Options::IS_RECURSIVE, $options)) {
-            $serializedNode['children'] = array_map(function (ResourceNode $node) use ($options) {
-                $exportEvent = new ExportObjectEvent('data', 'moredata');
-                $this->export($exportEvent);
-            //un peu de traitement ici aussi
-            }, $resourceNode->getChildren()->toArray());
-        }
-
-        //get the filePath
-        $exportEvent->stopPropagation();
     }
 
     /**
