@@ -23,6 +23,15 @@ const NotificationsList = props =>
       url: ['apiv2_plannednotification_delete_bulk'],
       displayed: () => props.canEdit
     }}
+    actions={(rows) => [
+      {
+        type: LINK_BUTTON,
+        icon: 'fa fa-fw fa-edit',
+        label: trans('edit'),
+        scope: ['object'],
+        target: `/notifications/form/${rows[0].id}`
+      }
+    ]}
     definition={[
       {
         name: 'parameters.action',

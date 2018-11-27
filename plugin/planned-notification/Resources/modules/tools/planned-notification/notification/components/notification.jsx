@@ -52,7 +52,9 @@ const NotificationForm = props =>
                 label: trans('roles'),
                 type: 'workspace_roles',
                 required: false,
-                displayed: -1 < [WORKSPACE_REGISTRATION_USER, WORKSPACE_REGISTRATION_GROUP].indexOf(props.notification.parameters.action)
+                displayed: props.notification.parameters &&
+                  props.notification.parameters.action &&
+                  -1 < [WORKSPACE_REGISTRATION_USER, WORKSPACE_REGISTRATION_GROUP].indexOf(props.notification.parameters.action)
               }
             ]
           }, {
