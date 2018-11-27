@@ -216,41 +216,43 @@ class TransferManager
 
     public function importFiles($data, Workspace $workspace)
     {
-        $object = $this->serializer->deserialize(PublicFile::class, $data['archive']);
-        $filebag = new FileBag();
-        $archive = new \ZipArchive();
-        if ($archive->open($this->fileUts->getPath($object))) {
-            $dest = sys_get_temp_dir().'/'.uniqid();
-            if (!file_exists($dest)) {
-                mkdir($dest, 0777, true);
-            }
-            $archive->extractTo($dest);
+        if (isset($data['archive'])) {
+            $object = $this->serializer->deserialize(PublicFile::class, $data['archive']);
+            $filebag = new FileBag();
+            $archive = new \ZipArchive();
+            if ($archive->open($this->fileUts->getPath($object))) {
+                $dest = sys_get_temp_dir().'/'.uniqid();
+                if (!file_exists($dest)) {
+                    mkdir($dest, 0777, true);
+                }
+                $archive->extractTo($dest);
 
-            foreach (new \DirectoryIterator($dest) as $fileInfo) {
-                if ($fileInfo->isDot()) {
-                    continue;
+                foreach (new \DirectoryIterator($dest) as $fileInfo) {
+                    if ($fileInfo->isDot()) {
+                        continue;
+                    }
+
+                    $location = $fileInfo->getPathname();
+                    $fileName = $fileInfo->getFilename();
+
+                    $filebag->add($fileName, $location);
                 }
 
-                $location = $fileInfo->getPathname();
-                $fileName = $fileInfo->getFilename();
-
-                $filebag->add($fileName, $location);
-            }
-
-            foreach ($data['orderedTools'] as $key => $orderedToolData) {
-                //copied from crud
-                $name = 'import_tool_'.$orderedToolData['name'];
-                //use an other even. StdClass is not pretty
-                if (isset($orderedToolData['data'])) {
-                    $event = $this->dispatcher->dispatch(
-                      $name,
-                      'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
-                      [$filebag, $orderedToolData['data']]
-                    );
+                foreach ($data['orderedTools'] as $key => $orderedToolData) {
+                    //copied from crud
+                    $name = 'import_tool_'.$orderedToolData['name'];
+                    //use an other even. StdClass is not pretty
+                    if (isset($orderedToolData['data'])) {
+                        $event = $this->dispatcher->dispatch(
+                        $name,
+                        'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                        [$filebag, $orderedToolData['data']]
+                      );
+                    }
                 }
+            } else {
+                throw new \Exception('Archive could not be opened');
             }
-        } else {
-            throw new \Exception('Archive could not be opened');
         }
 
         return $data;
