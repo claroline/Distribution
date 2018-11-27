@@ -23,7 +23,6 @@ use Claroline\PlannedNotificationBundle\Entity\Message;
 use Claroline\PlannedNotificationBundle\Entity\PlannedNotification;
 use Claroline\PlannedNotificationBundle\Repository\PlannedNotificationRepository;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.manager.planned_notification_manager")
@@ -39,9 +38,6 @@ class PlannedNotificationManager
     /** @var ScheduledTaskManager */
     private $scheduledTaskManager;
 
-    /** @var TranslatorInterface */
-    private $translator;
-
     /** @var LogRepository */
     private $logRepo;
 
@@ -54,25 +50,21 @@ class PlannedNotificationManager
      * @DI\InjectParams({
      *     "mailManager"          = @DI\Inject("claroline.manager.mail_manager"),
      *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
-     *     "scheduledTaskManager" = @DI\Inject("claroline.manager.scheduled_task_manager"),
-     *     "translator"           = @DI\Inject("translator")
+     *     "scheduledTaskManager" = @DI\Inject("claroline.manager.scheduled_task_manager")
      * })
      *
      * @param MailManager          $mailManager
      * @param ObjectManager        $om
      * @param ScheduledTaskManager $scheduledTaskManager
-     * @param TranslatorInterface  $translator
      */
     public function __construct(
         MailManager $mailManager,
         ObjectManager $om,
-        ScheduledTaskManager $scheduledTaskManager,
-        TranslatorInterface $translator
+        ScheduledTaskManager $scheduledTaskManager
     ) {
         $this->mailManager = $mailManager;
         $this->om = $om;
         $this->scheduledTaskManager = $scheduledTaskManager;
-        $this->translator = $translator;
 
         $this->logRepo = $om->getRepository('Claroline\CoreBundle\Entity\Log\Log');
         $this->plannedNotificationRepo = $om->getRepository('Claroline\PlannedNotificationBundle\Entity\PlannedNotification');
@@ -120,7 +112,7 @@ class PlannedNotificationManager
                     continue;
                 }
             }
-            $name = $this->translator->trans($notification->getAction(), [], 'planned_notification');
+            $name = $notification->getMessage()->getTitle();
 
             if (!empty($user)) {
                 $name .= ' ('.$user->getUsername().')';
