@@ -125,7 +125,7 @@ class Listener
         }
 
         if (isset($data['children'])) {
-            foreach ($data['children'] as $key => $child) {
+            foreach ($data['children'] as $child) {
                 $recursive = new ImportObjectEvent($event->getFileBag(), $child);
                 $this->onImportResourceNode($recursive);
             }
@@ -143,7 +143,6 @@ class Listener
         try {
             $fileSystem->rename($bag->get($data['_path']), $this->filesDir.DIRECTORY_SEPARATOR.$data['hashName']);
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
         }
         //move filebags elements here
     }
