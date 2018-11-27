@@ -12,9 +12,11 @@ use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Workspace\FullSerializer;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -48,7 +50,8 @@ class TransferManager
      *     "finder"              = @DI\Inject("claroline.api.finder"),
      *     "ots"                 = @DI\Inject("claroline.transfer.ordered_tool"),
      *     "crud"                = @DI\Inject("claroline.api.crud"),
-     *     "tokenStorage"        = @DI\Inject("security.token_storage")
+     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
+     *     "fileUts"             = @DI\Inject("claroline.utilities.file")
      * })
      *
      * @param ObjectManager      $om
@@ -64,7 +67,8 @@ class TransferManager
       OrderedToolTransfer $ots,
       FinderProvider $finder,
       Crud $crud,
-      TokenStorage $tokenStorage
+      TokenStorage $tokenStorage,
+      FileUtilities $fileUts
     ) {
         $this->om = $om;
         $this->dispatcher = $dispatcher;
@@ -74,6 +78,7 @@ class TransferManager
         $this->crud = $crud;
         $this->tokenStorage = $tokenStorage;
         $this->ots = $ots;
+        $this->fileUts = $fileUts;
     }
 
     /**
@@ -211,14 +216,41 @@ class TransferManager
 
     public function importFiles($data, Workspace $workspace)
     {
-        foreach ($data['orderedTools'] as $key => $orderedToolData) {
-            //copied from crud
-            $name = 'import_tool_'.$orderedToolData['name'];
-            //use an other even. StdClass is not pretty
-            if (isset($orderedToolData['data'])) {
-                $event = $this->dispatcher->dispatch($name, 'Claroline\\CoreBundle\\Event\\ImportObjectEvent', []);
-                $data['orderedTools'][$key] = $event->getData();
+        $object = $this->serializer->deserialize(PublicFile::class, $data['archive']);
+        $filebag = new FileBag();
+        $archive = new \ZipArchive();
+        if ($archive->open($this->fileUts->getPath($object))) {
+            $dest = sys_get_temp_dir().'/'.uniqid();
+            if (!file_exists($dest)) {
+                mkdir($dest, 0777, true);
             }
+            $archive->extractTo($dest);
+
+            foreach (new \DirectoryIterator($dest) as $fileInfo) {
+                if ($fileInfo->isDot()) {
+                    continue;
+                }
+
+                $location = $fileInfo->getPathname();
+                $fileName = $fileInfo->getFilename();
+
+                $filebag->add($fileName, $location);
+            }
+
+            foreach ($data['orderedTools'] as $key => $orderedToolData) {
+                //copied from crud
+                $name = 'import_tool_'.$orderedToolData['name'];
+                //use an other even. StdClass is not pretty
+                if (isset($orderedToolData['data'])) {
+                    $event = $this->dispatcher->dispatch(
+                      $name,
+                      'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                      [$filebag, $orderedToolData['data']]
+                    );
+                }
+            }
+        } else {
+            throw new \Exception('Archive could not be opened');
         }
 
         return $data;

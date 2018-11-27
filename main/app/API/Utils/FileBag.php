@@ -18,4 +18,9 @@ class FileBag
     {
         return $this->files;
     }
+
+    public function get($key)
+    {
+        return $this->files[$key];
+    }
 }

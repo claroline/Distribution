@@ -63,7 +63,7 @@ class ResourceManager
     {
         $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
 
-        return ['root' => $this->serializer->serialize($root, array_merge($options, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE]))];
+        return ['root' => $this->serializer->serialize($root, array_merge($options, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE, Options::SERIALIZE_MINIMAL]))];
     }
 
     public function deserialize(array $data, Workspace $workspace)
@@ -101,7 +101,7 @@ class ResourceManager
         $class = $resourceType->getClass();
         $this->om->flush();
         $resource = new $class();
-        $this->serializer->deserialize($class, $data['resource']);
+        $resource = $this->serializer->deserialize($class, $data['resource']);
         $resource->setResourceNode($node);
         $this->om->persist($resource);
         $this->om->flush();
@@ -138,7 +138,7 @@ class ResourceManager
             $new = $this->dispatcher->dispatch(
               'transfer_import_claroline_corebundle_entity_resource_resourcenode',
               'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
-              []
+              [$event->getFileBag(), $data['root']]
             );
         }
     }

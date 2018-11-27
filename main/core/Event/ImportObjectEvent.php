@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\AppBundle\API\Utils\FileBag;
 use Symfony\Component\EventDispatcher\Event;
 
 class ImportObjectEvent extends Event
@@ -10,37 +10,19 @@ class ImportObjectEvent extends Event
     /**
      * TODO: write doc.
      */
-    public function __construct(
-    ) {
-    }
-
-    /**
-     * Gets the resource node being serialized.
-     *
-     * @return ResourceNode
-     */
-    public function getObject()
+    public function __construct(FileBag $fileBag, array $data)
     {
-        return $this->object;
-    }
-
-    public function setData($data)
-    {
+        $this->fileBag = $fileBag;
         $this->data = $data;
-    }
-
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    public function addFile($path, $file)
-    {
-        $this->fileBag->add($path, $file);
     }
 
     public function getFileBag()
     {
         return $this->fileBag;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 }

@@ -17,8 +17,11 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
+use Claroline\CoreBundle\Event\ImportObjectEvent;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
@@ -69,7 +72,6 @@ class Listener
         $resourceNode = $this->om->getRepository(ResourceNode::class)->find($data['autoId']);
         $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
 
-        //use listener instead
         if (isset($data['resource'])) {
             $new = $this->dispatcher->dispatch(
                 'transfer_export_'.$this->getUnderscoreClassName(get_class($resource)),
@@ -103,6 +105,47 @@ class Listener
         //get the filePath
         $exportEvent->addFile($newPath, $path);
         $exportEvent->overwrite('_path', $newPath);
+    }
+
+    /**
+     * @DI\Observe("transfer_import_claroline_corebundle_entity_resource_resourcenode")
+     */
+    public function onImportResourceNode(ImportObjectEvent $event)
+    {
+        $data = $event->getData();
+
+        if (isset($data['resource'])) {
+            $type = $data['meta']['type'];
+            $resourceType = $this->om->getRepository(ResourceType::class)->findOneByName($type);
+            $this->dispatcher->dispatch(
+                'transfer_import_'.$this->getUnderscoreClassName($resourceType->getClass()),
+                'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                [$event->getFileBag(), $data['resource']]
+            );
+        }
+
+        if (isset($data['children'])) {
+            foreach ($data['children'] as $key => $child) {
+                $recursive = new ImportObjectEvent($event->getFileBag(), $child);
+                $this->onImportResourceNode($recursive);
+            }
+        }
+    }
+
+    /**
+     * @DI\Observe("transfer_import_claroline_corebundle_entity_resource_file")
+     */
+    public function onImportFile(ImportObjectEvent $event)
+    {
+        $data = $event->getData();
+        $bag = $event->getFileBag();
+        $fileSystem = new Filesystem();
+        try {
+            $fileSystem->rename($bag->get($data['_path']), $data['hashName']);
+        } catch (\Exception $e) {
+            //maybe do something ?
+        }
+        //move filebags elements here
     }
 
     private function getUnderscoreClassName($className)

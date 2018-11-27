@@ -83,7 +83,6 @@ class OrderedToolTransfer
     {
         $om = $this->container->get('claroline.persistence.object_manager');
         $orderedTool->setWorkspace($workspace);
-        var_dump($data);
         $tool = $om->getRepository(Tool::class)->findOneByName($data['tool']);
         $orderedTool->setTool($tool);
         $orderedTool->setName($data['name']);
