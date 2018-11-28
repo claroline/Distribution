@@ -11,9 +11,11 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Template;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Template\Template;
 use Claroline\CoreBundle\Entity\Template\TemplateType;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -26,26 +28,41 @@ class TemplateSerializer
 {
     use SerializerTrait;
 
+    /** @var ObjectManager */
+    private $om;
+
+    /** @var ParametersSerializer */
+    private $parametersSerializer;
+
     /** @var SerializerProvider */
     private $serializer;
 
+    private $templateRepo;
     private $templateTypeRepo;
 
     /**
-     * CourseSerializer constructor.
+     * TemplateSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
+     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
+     *     "serializer"           = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param ObjectManager      $om
-     * @param SerializerProvider $serializer
+     * @param ObjectManager        $om
+     * @param ParametersSerializer $parametersSerializer
+     * @param SerializerProvider   $serializer
      */
-    public function __construct(ObjectManager $om, SerializerProvider $serializer)
-    {
+    public function __construct(
+        ObjectManager $om,
+        ParametersSerializer $parametersSerializer,
+        SerializerProvider $serializer
+    ) {
+        $this->om = $om;
+        $this->parametersSerializer = $parametersSerializer;
         $this->serializer = $serializer;
 
+        $this->templateRepo = $om->getRepository(Template::class);
         $this->templateTypeRepo = $om->getRepository(TemplateType::class);
     }
 
@@ -64,6 +81,7 @@ class TemplateSerializer
             'subject' => $template->getSubject(),
             'content' => $template->getContent(),
             'lang' => $template->getLang(),
+            'localized' => $this->serializeLocalized($template),
         ];
 
         return $serialized;
@@ -90,7 +108,57 @@ class TemplateSerializer
         if ($templateType) {
             $template->setType($templateType);
         }
+        if (isset($data['localized'])) {
+            foreach ($data['localized'] as $locale => $localizedData) {
+                if (isset($localizedData['subject']) && isset($localizedData['content'])) {
+                    $localizedTemplate = isset($localizedData['id']) ?
+                        $this->templateRepo->findOneBy(['uuid' => $localizedData['id']]) :
+                        null;
+
+                    if (!$localizedTemplate) {
+                        $localizedTemplate = new Template();
+                    }
+                    $localizedTemplate->setLang($locale);
+                    $localizedTemplate->setName($template->getName());
+                    $localizedTemplate->setType($template->getType());
+                    $localizedTemplate->setSubject($localizedData['subject']);
+                    $localizedTemplate->setContent($localizedData['content']);
+                    $this->om->persist($localizedTemplate);
+                }
+            }
+        }
 
         return $template;
+    }
+
+    /**
+     * @param Template $template
+     *
+     * @return array
+     */
+    private function serializeLocalized(Template $template)
+    {
+        $localized = [];
+        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
+        $locales = isset($parameters['locales']['available']) ? $parameters['locales']['available'] : [];
+        $templateLang = $template->getLang();
+
+        foreach ($locales as $locale) {
+            if ($locale !== $templateLang) {
+                $localizedTemplate = $this->templateRepo->findOneBy([
+                    'name' => $template->getName(),
+                    'type' => $template->getType(),
+                    'lang' => $locale,
+                ]);
+                $localized[$locale] = $localizedTemplate ? [
+                    'id' => $localizedTemplate->getUuid(),
+                    'subject' => $localizedTemplate->getSubject(),
+                    'content' => $localizedTemplate->getContent(),
+                    'lang' => $localizedTemplate->getLang(),
+                ] : new \stdClass();
+            }
+        }
+
+        return $localized;
     }
 }

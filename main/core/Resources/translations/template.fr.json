@@ -7,6 +7,8 @@
     "parameter": "Paramètre",
     "password_desc": "Le mot de passe de l'utilisateur cible",
     "placeholders_info": "Les paramètres suivants peuvent être utilisés dans le sujet et le contenu du template. Ils seront remplacés par leur valeur associée.",
+    "platform_name_desc": "Le nom de la plateforme",
+    "platform_url_desc": "L'URL de la platforme",
     "select_a_template_type": "Sélectionnez un type de template",
     "template_type": "Type de template",
     "template_type_selector": "Sélecteur de type de template",

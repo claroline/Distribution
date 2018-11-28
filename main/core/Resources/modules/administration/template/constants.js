@@ -1,6 +1,6 @@
-import {trans} from '#/main/app/intl/translation'
-
 const DEFAULT_PLACEHOLDERS = [
+  'platform_name',
+  'platform_url',
   'username',
   'first_name',
   'last_name'

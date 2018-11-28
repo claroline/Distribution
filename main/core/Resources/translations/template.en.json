@@ -7,6 +7,8 @@
     "parameter": "Parameter",
     "password_desc": "The password of the target user",
     "placeholders_info": "The following parameters can be used in the subject and the content of the template. They will be replaced by the corresponding value.",
+    "platform_name_desc": "The name of the platform",
+    "platform_url_desc": "The URL of the platform",
     "select_a_template_type": "Select a template type",
     "template_type": "Template type",
     "template_type_selector": "Template type picker",

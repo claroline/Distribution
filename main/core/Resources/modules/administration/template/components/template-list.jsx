@@ -25,11 +25,6 @@ const TemplateList = {
       filterable: false,
       calculated: (row) => trans(row.type.name, {}, 'template')
     }, {
-      name: 'lang',
-      type: 'string',
-      label: trans('lang'),
-      displayed: true
-    }, {
       name: 'subject',
       type: 'string',
       label: trans('subject'),

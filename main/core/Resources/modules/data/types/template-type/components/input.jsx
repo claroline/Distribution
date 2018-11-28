@@ -26,9 +26,7 @@ const TemplateTypeInput = props => {
               icon: 'fa fa-fw fa-trash-o',
               label: trans('delete', {}, 'actions'),
               dangerous: true,
-              callback: () => props.picker.handleSelect ?
-                props.onChange(props.picker.handleSelect(null)) :
-                props.onChange(null)
+              callback: () => props.onChange(null)
             }
           ]}
         />
@@ -41,9 +39,7 @@ const TemplateTypeInput = props => {
             confirmText: props.picker.confirmText,
             selectAction: (selected) => ({
               type: CALLBACK_BUTTON,
-              callback: () => props.picker.handleSelect ?
-                props.onChange(props.picker.handleSelect(selected[0])) :
-                props.onChange(selected[0])
+              callback: () => props.onChange(selected[0])
             })
           }]}
         >
@@ -67,9 +63,7 @@ const TemplateTypeInput = props => {
             confirmText: props.picker.confirmText,
             selectAction: (selected) => ({
               type: CALLBACK_BUTTON,
-              callback: () => props.picker.handleSelect ?
-                props.onChange(props.picker.handleSelect(selected[0])) :
-                props.onChange(selected[0])
+              callback: () => props.onChange(selected[0])
             })
           }]}
         >
@@ -85,8 +79,7 @@ implementPropTypes(TemplateTypeInput, FormFieldTypes, {
   value: T.shape(TemplateTypeType.propTypes),
   picker: T.shape({
     title: T.string,
-    confirmText: T.string,
-    handleSelect: T.func
+    confirmText: T.string
   })
 }, {
   value: null,

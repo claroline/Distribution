@@ -4,13 +4,64 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 
-import {actions, selectors} from '#/main/core/administration/template/store'
+import {selectors} from '#/main/core/administration/template/store'
 import {constants} from '#/main/core/administration/template/constants'
 import {Template as TemplateType} from '#/main/core/administration/template/prop-types'
+
+const generateSections = (defaultLocale, locales) => {
+  const sections = [
+    {
+      title: trans('general'),
+      primary: true,
+      fields: [
+        {
+          name: 'name',
+          type: 'string',
+          label: trans('name'),
+          required: true
+        }, {
+          name: 'type',
+          type: 'template_type',
+          label: trans('type'),
+          required: true
+        }, {
+          name: 'subject',
+          type: 'string',
+          label: trans('subject'),
+          required: true
+        }, {
+          name: 'content',
+          type: 'html',
+          label: trans('content'),
+          required: true
+        }
+      ]
+    }
+  ]
+  locales.filter(locale => locale !== defaultLocale).forEach(locale => {
+    const section = {
+      title: trans(locale),
+      fields: [
+        {
+          name: `localized.${locale}.subject`,
+          type: 'string',
+          label: trans('subject')
+        }, {
+          name: `localized.${locale}.content`,
+          type: 'html',
+          label: trans('content')
+        }
+      ]
+    }
+    sections.push(section)
+  })
+
+  return sections
+}
 
 const TemplateForm = (props) =>
   <FormData
@@ -26,49 +77,7 @@ const TemplateForm = (props) =>
       target: '/',
       exact: true
     }}
-    sections={[
-      {
-        title: trans('general'),
-        primary: true,
-        fields: [
-          {
-            name: 'name',
-            type: 'string',
-            label: trans('name'),
-            required: true
-          }, {
-            name: 'type',
-            type: 'template_type',
-            label: trans('type'),
-            required: true
-          }, {
-            name: 'subject',
-            type: 'string',
-            label: trans('subject'),
-            required: true
-          }, {
-            name: 'content',
-            type: 'html',
-            label: trans('content'),
-            required: true
-          }, {
-            name: 'lang',
-            type: 'choice',
-            label: trans('lang'),
-            required: true,
-            options: {
-              noEmpty: true,
-              condensed: true,
-              choices: props.locales.reduce((acc, locale) => {
-                acc[locale] = locale
-
-                return acc
-              }, {})
-            }
-          }
-        ]
-      }
-    ]}
+    sections={generateSections(props.defaultLocale, props.locales)}
   >
     <FormSections level={3}>
       <FormSection
@@ -86,14 +95,14 @@ const TemplateForm = (props) =>
             </tr>
           </thead>
           <tbody>
-            {constants.DEFAULT_PLACEHOLDERS.map(placeholder =>
-              <tr>
+            {constants.DEFAULT_PLACEHOLDERS.map((placeholder, idx) =>
+              <tr key={`default-placeholder-${idx}`}>
                 <td>{`%${placeholder}%`}</td>
                 <td>{trans(`${placeholder}_desc`, {}, 'template')}</td>
               </tr>
             )}
-            {props.template.type && props.template.type.placeholders && props.template.type.placeholders.map(placeholder =>
-              <tr>
+            {props.template.type && props.template.type.placeholders && props.template.type.placeholders.map((placeholder, idx) =>
+              <tr key={`custom-placeholder-${idx}`}>
                 <td>{`%${placeholder}%`}</td>
                 <td>{trans(`${placeholder}_desc`, {}, 'template')}</td>
               </tr>
@@ -107,6 +116,7 @@ const TemplateForm = (props) =>
 TemplateForm.propTypes = {
   new: T.bool.isRequired,
   template: T.shape(TemplateType.propTypes).isRequired,
+  defaultLocale: T.string,
   locales: T.arrayOf(T.string)
 }
 
@@ -114,6 +124,7 @@ const Template = connect(
   state => ({
     new: formSelect.isNew(formSelect.form(state, 'template')),
     template: formSelect.data(formSelect.form(state, 'template')),
+    defaultLocale: selectors.defaultLocale(state),
     locales: selectors.locales(state)
   })
 )(TemplateForm)

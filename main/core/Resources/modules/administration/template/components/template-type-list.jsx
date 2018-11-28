@@ -1,5 +1,4 @@
 import {trans} from '#/main/app/intl/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {TemplateTypeCard} from '#/main/core/administration/template/data/components/template-type-card'
 
