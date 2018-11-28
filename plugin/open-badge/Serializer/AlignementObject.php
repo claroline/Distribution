@@ -9,7 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service()
  * @DI\Tag("claroline.serializer")
  */
-class SignedBadgeSerializer
+class AlignementObject
 {
     use SerializerTrait;
 

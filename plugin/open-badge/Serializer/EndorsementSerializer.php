@@ -1,4 +1,3 @@
-
 <?php
 
 namespace Claroline\OpenBadgeBundle\Serializer;
@@ -10,7 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service()
  * @DI\Tag("claroline.serializer")
  */
-class EndorsmentSerializer
+class EndorsementSerializer
 {
     use SerializerTrait;
 

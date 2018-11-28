@@ -1,0 +1,52 @@
+<?php
+
+/*
+ * This file is part of the Claroline Connect package.
+ *
+ * (c) Claroline Consortium <consortium@claroline.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Claroline\OpenBadgeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="claro__open_badge_alignement_object")
+ */
+class AlignmentObject
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column()
+     */
+    private $targetName;
+
+    /**
+     * @ORM\Column()
+     */
+    private $targetUrl;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $targetDescription;
+
+    /**
+     * @ORM\Column()
+     */
+    private $targetFramework;
+
+    /**
+     * @ORM\Column()
+     */
+    private $targetCode;
+}
