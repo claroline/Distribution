@@ -50,7 +50,7 @@ class Template
     /**
      * @var string
      *
-     * @ORM\Column()
+     * @ORM\Column(nullable=true)
      */
     private $subject;
 

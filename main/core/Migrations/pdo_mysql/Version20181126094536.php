@@ -33,7 +33,7 @@ class Version20181126094536 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 claro_template_type INT NOT NULL, 
                 template_name VARCHAR(255) NOT NULL, 
-                subject VARCHAR(255) NOT NULL, 
+                subject VARCHAR(255) DEFAULT NULL, 
                 content LONGTEXT NOT NULL, 
                 lang VARCHAR(255) NOT NULL, 
                 uuid VARCHAR(36) NOT NULL, 

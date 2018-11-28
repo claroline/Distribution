@@ -110,7 +110,7 @@ class TemplateSerializer
         }
         if (isset($data['localized'])) {
             foreach ($data['localized'] as $locale => $localizedData) {
-                if (isset($localizedData['subject']) && isset($localizedData['content'])) {
+                if (isset($localizedData['content'])) {
                     $localizedTemplate = isset($localizedData['id']) ?
                         $this->templateRepo->findOneBy(['uuid' => $localizedData['id']]) :
                         null;
@@ -121,8 +121,11 @@ class TemplateSerializer
                     $localizedTemplate->setLang($locale);
                     $localizedTemplate->setName($template->getName());
                     $localizedTemplate->setType($template->getType());
-                    $localizedTemplate->setSubject($localizedData['subject']);
                     $localizedTemplate->setContent($localizedData['content']);
+
+                    if (isset($localizedData['subject'])) {
+                        $localizedTemplate->setSubject($localizedData['subject']);
+                    }
                     $this->om->persist($localizedTemplate);
                 }
             }

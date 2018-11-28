@@ -89,13 +89,36 @@ class TemplateManager
                         $result = $this->replacePlaceholders($template->getContent(), $placeholders);
                         break;
                     case 'subject':
-                        $result = $this->replacePlaceholders($template->getSubject(), $placeholders);
+                        $result = $template->getSubject() ?
+                            $this->replacePlaceholders($template->getSubject(), $placeholders) :
+                            '';
                         break;
                 }
             }
         }
 
         return $result;
+    }
+
+    /**
+     * @param Template $template
+     * @param array    $placeholders
+     * @param string   $mode
+     *
+     * @return string
+     */
+    public function getTemplateContent(Template $template, $placeholders = [], $mode = 'content')
+    {
+        switch ($mode) {
+            case 'content':
+                return $this->replacePlaceholders($template->getContent(), $placeholders);
+            case 'subject':
+                return $template->getSubject() ?
+                    $this->replacePlaceholders($template->getSubject(), $placeholders) :
+                    '';
+        }
+
+        return '';
     }
 
     /**
