@@ -174,7 +174,8 @@
             "Icap\\InwicastBundle\\": "plugin/inwicast",
             "Claroline\\DropZoneBundle\\": "plugin/drop-zone",
             "Claroline\\PlannedNotificationBundle\\": "plugin/planned-notification",
-            "Claroline\\LinkBundle\\": "plugin/link"
+            "Claroline\\LinkBundle\\": "plugin/link",
+            "Claroline\\OpenBadgeBundle\\": "plugin/open-badge"
         }
     },
     "extra": {
@@ -182,6 +183,7 @@
             "Claroline\\InstallationBundle\\ClarolineInstallationBundle",
             "Claroline\\MigrationBundle\\ClarolineMigrationBundle",
             "Claroline\\KernelBundle\\ClarolineKernelBundle",
+            "Claroline\\OpenBadgeBundle\\ClarolineOpenBadgeBundle",
             "Claroline\\CoreBundle\\ClarolineCoreBundle",
             "Claroline\\AppBundle\\ClarolineAppBundle",
             "Claroline\\AuthenticationBundle\\ClarolineAuthenticationBundle",
