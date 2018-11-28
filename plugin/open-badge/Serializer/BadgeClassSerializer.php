@@ -3,6 +3,7 @@
 namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -19,6 +20,6 @@ class BadgeClassSerializer
 
     public function getClass()
     {
-        return self::class;
+        return BadgeClass::class;
     }
 }

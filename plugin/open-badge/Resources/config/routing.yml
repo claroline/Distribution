@@ -1,4 +1,6 @@
-# claro_pdf_generator_controller:
-#     resource: "@ClarolinePdfGeneratorBundle/Controller/PdfController.php"
-#     type:     annotation
-#     prefix:   /
+claro_open_badge_api:
+    resource: "@ClarolineOpenBadgeBundle/Controller/API/"
+    prefix: api
+    type: api
+    options:
+        expose: true

@@ -3,6 +3,7 @@
 namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\OpenBadgeBundle\Entity\Assertion;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -19,6 +20,6 @@ class AssertionSerializer
 
     public function getClass()
     {
-        return self::class;
+        return Assertion::class;
     }
 }

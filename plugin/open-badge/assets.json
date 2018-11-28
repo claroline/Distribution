@@ -1,4 +1,7 @@
 {
-
-
+  "webpack": {
+    "entry": {
+      "administration": "administration/index"
+    }
+  }
 }
