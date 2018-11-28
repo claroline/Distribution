@@ -14,6 +14,7 @@ namespace Claroline\OpenBadgeBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Entity
  * @ORM\Table(name="claro__open_badge_alignement_object")
  */
 class AlignmentObject

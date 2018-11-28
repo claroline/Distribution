@@ -14,9 +14,10 @@ namespace Claroline\OpenBadgeBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Entity
  * @ORM\Table(name="claro__open_badge_signed_badge")
  */
-class Profile
+class SignedBadge
 {
     /**
      * @ORM\Column(type="integer")
