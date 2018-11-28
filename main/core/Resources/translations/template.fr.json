@@ -1,4 +1,5 @@
 {
+    "define_as_default_for_type": "Définir comme template par défaut pour son type",
     "first_name_desc": "Le prénom de l'utilisateur cible",
     "forgotten_password": "Mot de passe oublié",
     "forgotten_password_desc": "Template utilisé pour le mail envoyé afin de récupérer un mot de passe oublié.",

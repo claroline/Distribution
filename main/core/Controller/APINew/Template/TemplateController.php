@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Controller\APINew\Template;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Template\Template;
+use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -29,6 +30,9 @@ class TemplateController extends AbstractCrudController
     /** @var AuthorizationCheckerInterface */
     protected $authorization;
 
+    /** @var TemplateManager */
+    private $templateManager;
+
     /** @var ToolManager */
     private $toolManager;
 
@@ -36,18 +40,22 @@ class TemplateController extends AbstractCrudController
      * TemplateController constructor.
      *
      * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "toolManager"   = @DI\Inject("claroline.manager.tool_manager")
+     *     "authorization"   = @DI\Inject("security.authorization_checker"),
+     *     "templateManager" = @DI\Inject("claroline.manager.template_manager"),
+     *     "toolManager"     = @DI\Inject("claroline.manager.tool_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
+     * @param TemplateManager               $templateManager
      * @param ToolManager                   $toolManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
+        TemplateManager $templateManager,
         ToolManager $toolManager
     ) {
         $this->authorization = $authorization;
+        $this->templateManager = $templateManager;
         $this->toolManager = $toolManager;
     }
 
@@ -126,6 +134,30 @@ class TemplateController extends AbstractCrudController
         $this->crud->deleteBulk($toDelete, $options);
 
         return new JsonResponse(null, 204);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "{id}/default",
+     *     name="apiv2_template_default_define"
+     * )
+     * @EXT\ParamConverter(
+     *     "template",
+     *     class="ClarolineCoreBundle:Template\Template",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\Method("PUT")
+     *
+     * @param Template $template
+     *
+     * @return JsonResponse
+     */
+    public function templateDefaultDefineAction(Template $template)
+    {
+        $this->checkToolAccess();
+        $this->templateManager->defineTemplateAsDefault($template);
+
+        return new JsonResponse(null, 200);
     }
 
     /**

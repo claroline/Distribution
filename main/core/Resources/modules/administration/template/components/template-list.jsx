@@ -34,6 +34,14 @@ const TemplateList = {
       type: 'html',
       label: trans('content'),
       displayed: true
+    }, {
+      name: 'default',
+      type: 'boolean',
+      label: trans('default'),
+      displayed: true,
+      filterable: false,
+      sortable: false,
+      calculated: (row) => row.name === row.type.defaultTemplate
     }
   ],
   card: TemplateCard

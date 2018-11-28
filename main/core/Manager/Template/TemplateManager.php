@@ -23,6 +23,9 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class TemplateManager
 {
+    /** @var ObjectManager */
+    private $om;
+
     private $parameters;
 
     private $templateTypeRepo;
@@ -39,10 +42,22 @@ class TemplateManager
      */
     public function __construct(ObjectManager $om, ParametersSerializer $parametersSerializer)
     {
+        $this->om = $om;
         $this->parameters = $parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
 
         $this->templateTypeRepo = $om->getRepository(TemplateType::class);
         $this->templateRepo = $om->getRepository(Template::class);
+    }
+
+    /**
+     * @param Template $template
+     */
+    public function defineTemplateAsDefault(Template $template)
+    {
+        $templateType = $template->getType();
+        $templateType->setDefaultTemplate($template->getName());
+        $this->om->persist($templateType);
+        $this->om->flush();
     }
 
     /**
