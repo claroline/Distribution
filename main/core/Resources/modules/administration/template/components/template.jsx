@@ -29,9 +29,9 @@ const generateSections = (defaultLocale, locales) => {
           label: trans('type'),
           required: true
         }, {
-          name: 'subject',
+          name: 'title',
           type: 'string',
-          label: trans('subject'),
+          label: trans('title'),
           required: true
         }, {
           name: 'content',
@@ -47,9 +47,9 @@ const generateSections = (defaultLocale, locales) => {
       title: trans(locale),
       fields: [
         {
-          name: `localized.${locale}.subject`,
+          name: `localized.${locale}.title`,
           type: 'string',
-          label: trans('subject')
+          label: trans('title')
         }, {
           name: `localized.${locale}.content`,
           type: 'html',

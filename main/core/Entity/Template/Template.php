@@ -52,7 +52,7 @@ class Template
      *
      * @ORM\Column(nullable=true)
      */
-    private $subject;
+    private $title;
 
     /**
      * @var string
@@ -117,23 +117,23 @@ class Template
     }
 
     /**
-     * Get subject.
+     * Get title.
      *
      * @return string
      */
-    public function getSubject()
+    public function getTitle()
     {
-        return $this->subject;
+        return $this->title;
     }
 
     /**
-     * Set subject.
+     * Set title.
      *
-     * @param string $subject
+     * @param string $title
      */
-    public function setSubject($subject)
+    public function setTitle($title)
     {
-        $this->subject = $subject;
+        $this->title = $title;
     }
 
     /**

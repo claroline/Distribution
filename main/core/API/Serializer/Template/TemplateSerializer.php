@@ -78,7 +78,7 @@ class TemplateSerializer
             'id' => $template->getUuid(),
             'name' => $template->getName(),
             'type' => $this->serializer->serialize($template->getType()),
-            'subject' => $template->getSubject(),
+            'title' => $template->getTitle(),
             'content' => $template->getContent(),
             'lang' => $template->getLang(),
             'localized' => $this->serializeLocalized($template),
@@ -97,7 +97,7 @@ class TemplateSerializer
     {
         $this->sipe('id', 'setUuid', $data, $template);
         $this->sipe('name', 'setName', $data, $template);
-        $this->sipe('subject', 'setSubject', $data, $template);
+        $this->sipe('title', 'setTitle', $data, $template);
         $this->sipe('content', 'setContent', $data, $template);
         $this->sipe('lang', 'setLang', $data, $template);
 
@@ -123,8 +123,8 @@ class TemplateSerializer
                     $localizedTemplate->setType($template->getType());
                     $localizedTemplate->setContent($localizedData['content']);
 
-                    if (isset($localizedData['subject'])) {
-                        $localizedTemplate->setSubject($localizedData['subject']);
+                    if (isset($localizedData['title'])) {
+                        $localizedTemplate->setTitle($localizedData['title']);
                     }
                     $this->om->persist($localizedTemplate);
                 }
@@ -155,7 +155,7 @@ class TemplateSerializer
                 ]);
                 $localized[$locale] = $localizedTemplate ? [
                     'id' => $localizedTemplate->getUuid(),
-                    'subject' => $localizedTemplate->getSubject(),
+                    'title' => $localizedTemplate->getTitle(),
                     'content' => $localizedTemplate->getContent(),
                     'lang' => $localizedTemplate->getLang(),
                 ] : new \stdClass();
