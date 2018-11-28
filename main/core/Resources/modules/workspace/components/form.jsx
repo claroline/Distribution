@@ -62,7 +62,7 @@ const WorkspaceFormComponent = (props) => {
             displayed: props.new
           }
         ]
-      }, {
+      }, /*{
         title: trans('archive'),
         displayed: props.new,
         fields: [
@@ -85,7 +85,7 @@ const WorkspaceFormComponent = (props) => {
             }
           }
         ]
-      }, {
+      }, */{
         icon: 'fa fa-fw fa-info',
         title: trans('information'),
         fields: [
