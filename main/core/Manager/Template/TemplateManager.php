@@ -23,8 +23,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class TemplateManager
 {
-    /** @var ParametersSerializer */
-    private $parametersSerializer;
+    private $parameters;
 
     private $templateTypeRepo;
     private $templateRepo;
@@ -40,7 +39,7 @@ class TemplateManager
      */
     public function __construct(ObjectManager $om, ParametersSerializer $parametersSerializer)
     {
-        $this->parametersSerializer = $parametersSerializer;
+        $this->parameters = $parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
 
         $this->templateTypeRepo = $om->getRepository(TemplateType::class);
         $this->templateRepo = $om->getRepository(Template::class);
@@ -73,8 +72,7 @@ class TemplateManager
             }
             // If no template is found for the given locale or locale is null, uses default locale
             if (!$locale || !$template) {
-                $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
-                $defaultLocale = isset($parameters['locale']['default']) ? $parameters['locales']['default'] : null;
+                $defaultLocale = isset($this->parameters['locale']['default']) ? $this->parameters['locales']['default'] : null;
 
                 if ($defaultLocale && $defaultLocale !== $locale) {
                     $template = $this->templateRepo->findOneBy([
@@ -108,8 +106,14 @@ class TemplateManager
      */
     public function replacePlaceholders($text, $placeholders = [])
     {
-        $keys = [];
-        $values = [];
+        $keys = [
+            '%platform_name%',
+            '%platform_url%',
+        ];
+        $values = [
+            $this->parameters['display']['name'],
+            $this->parameters['internet']['platform_url'],
+        ];
 
         foreach ($placeholders as $key => $value) {
             $keys[] = '%'.$key.'%';
