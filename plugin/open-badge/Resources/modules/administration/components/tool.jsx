@@ -2,6 +2,7 @@ import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
 import {TabbedPageContainer} from '#/main/core/layout/tabs'
+import {BadgeTabActions, BadgeTab as BadgeTabComponent} from '#/plugin/open-badge/administration/badges/components/badge-tab'
 
 const Tool = () =>
   <TabbedPageContainer
@@ -15,8 +16,8 @@ const Tool = () =>
         icon: 'fa fa-book',
         title: trans('workspaces'),
         path: '/badges',
-        actions: () => {},
-        content: () => {}
+        actions: BadgeTabActions,
+        content: BadgeTabComponent
       }, {
         icon: 'fa fa-cog',
         title: trans('parameters'),
