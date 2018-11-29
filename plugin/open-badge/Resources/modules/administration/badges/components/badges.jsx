@@ -1,12 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
-
-
-
 import {BadgeList} from '#/plugin/open-badge/administration/badges/components/badge-list'
 import {ListData} from '#/main/app/content/list/containers/data'
-
-import {actions}    from '#/plugin/open-badge/administration/badges/actions'
 
 // todo : restore custom actions the same way resource actions are implemented
 const BadgesList = props =>

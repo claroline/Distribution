@@ -14,7 +14,7 @@ const Tool = () =>
     tabs={[
       {
         icon: 'fa fa-book',
-        title: trans('workspaces'),
+        title: trans('badges'),
         path: '/badges',
         actions: BadgeTabActions,
         content: BadgeTabComponent

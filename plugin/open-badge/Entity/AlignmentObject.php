@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * TODO: REMOVE LE E
  * @ORM\Table(name="claro__open_badge_alignement_object")
  */
 class AlignmentObject

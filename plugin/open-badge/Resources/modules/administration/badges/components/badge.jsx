@@ -13,22 +13,14 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {actions} from '#/main/core/administration/workspace/workspace/actions'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {WorkspaceForm} from '#/main/core/workspace/components/form'
-import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
-import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
+import {BadgeForm} from '#/main/core/workspace/components/form'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
 
-const WorkspaceComponent = (props) =>
+const BadgeComponent = (props) =>
   <div>
-    {!props.new && props.workspace.meta &&
-      <WorkspaceMetrics
-        className="component-container"
-        workspace={props.workspace}
-      />
-    }
 
-    <WorkspaceForm
+    <BadgeForm
       name="workspaces.current"
       buttons={true}
       target={(workspace, isNew) => isNew ?
@@ -100,27 +92,10 @@ const WorkspaceComponent = (props) =>
           />
         </FormSection>
       </FormSections>
-    </WorkspaceForm>
+    </BadgeForm>
   </div>
 
-WorkspaceComponent.propTypes = {
-  new: T.bool.isRequired,
-  workspace: T.shape(
-    WorkspaceTypes.propTypes
-  ).isRequired,
-  managerRole: T.shape({
-    id: T.string
-  }),
-  pickOrganizations: T.func.isRequired,
-  pickManagers: T.func.isRequired
-}
-
-WorkspaceComponent.defaultProps = {
-  managerRole: {},
-  workspace: WorkspaceTypes.defaultProps
-}
-
-const Workspace = connect(
+const Badge = connect(
   state => {
     const workspace = formSelect.data(formSelect.form(state, 'workspaces.current'))
 
@@ -132,43 +107,9 @@ const Workspace = connect(
         null
     }
   },
-  dispatch =>({
-    pickOrganizations(workspaceId) {
-      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
-        icon: 'fa fa-fw fa-buildings',
-        title: trans('add_organizations'),
-        confirmText: trans('add'),
-        name: 'organizations.picker',
-        definition: OrganizationList.definition,
-        card: OrganizationList.card,
-        fetch: {
-          url: ['apiv2_organization_list'],
-          autoload: true
-        },
-        handleSelect: (selected) => dispatch(actions.addOrganizations(workspaceId, selected))
-      }))
-    },
-    pickManagers(workspace) {
-      // this is not a pretty way to find it but it's ok for now
-      const managerRole = workspace.roles.find(role => role.name.indexOf('ROLE_WS_MANAGER') > -1)
-
-      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
-        icon: 'fa fa-fw fa-user',
-        title: trans('add_managers'),
-        confirmText: trans('add'),
-        name: 'managers.picker',
-        definition: UserList.definition,
-        card: UserList.card,
-        fetch: {
-          url: ['apiv2_user_list_managed_workspace'],
-          autoload: true
-        },
-        handleSelect: (selected) => dispatch(actions.addManagers(workspace.uuid, selected, managerRole.id))
-      }))
-    }
-  })
-)(WorkspaceComponent)
+  () => null
+)(BadgeComponent)
 
 export {
-  Workspace
+  Badge
 }
