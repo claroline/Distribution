@@ -550,4 +550,18 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
 
         return $returnedArray;
     }
+
+    public function findAncestors(ResourceNode $node)
+    {
+        $data = $node->getAncestors();
+        $ids = array_map(function ($el) {
+            return $el['id'];
+        }, $data);
+
+        $this->builder->selectAsArray()->whereIdIn($ids);
+        $query = $this->_em->createQuery($this->builder->getDql());
+        $query->setParameters($this->builder->getParameters());
+
+        return $this->executeQuery($query);
+    }
 }

@@ -102,7 +102,7 @@ class ResourceNodeSerializer
             'id' => $resourceNode->getUuid(),
             'autoId' => $resourceNode->getId(), // TODO : remove me
             'name' => $resourceNode->getName(),
-            'path' => $resourceNode->getAncestors(),
+            'path' => $this->getAncestors($resourceNode),
             'meta' => $this->serializeMeta($resourceNode, $options),
             'permissions' => $this->rightsManager->getCurrentPermissionArray($resourceNode),
             'poster' => $this->serializePoster($resourceNode),
@@ -388,5 +388,17 @@ class ResourceNodeSerializer
                 );
             }
         }
+    }
+
+    private function getAncestors(ResourceNode $resourceNode)
+    {
+        $descendants = $this->om->getRepository(ResourceNode::class)->findAncestors($resourceNode);
+
+        return array_map(function (array $resourceNode) {
+            return [
+              'id' => $resourceNode['uuid'],
+              'name' => $resourceNode['name'],
+            ];
+        }, $descendants);
     }
 }
