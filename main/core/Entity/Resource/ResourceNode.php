@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Ramsey\Uuid\Uuid as BaseUuid;
 
 /**
  * Base entity for all resources.
@@ -35,7 +36,47 @@ class ResourceNode
 {
     // identifiers
     use Id;
-    use Uuid;
+
+    /**
+     * @var string
+     *
+     * @Gedmo\TreePathSource
+     * @ORM\Column("uuid", type="string", length=36, unique=true)
+     */
+    private $uuid;
+
+    /**
+     * Gets UUID.
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Sets UUID.
+     *
+     * @param $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     * Generates a new UUID.
+     */
+    public function refreshUuid()
+    {
+        $this->uuid = $this->generateUuid();
+    }
+
+    public function generateUuid(): string
+    {
+        return BaseUuid::uuid4()->toString();
+    }
 
     // meta
     use Thumbnail;
@@ -180,6 +221,16 @@ class ResourceNode
      * @todo this property shouldn't be nullable (is it due to materialized path strategy ?)
      */
     protected $path;
+
+    /**
+     * @var string
+     *
+     * @Gedmo\TreePath(separator="/", appendId=false, startsWithSeparator=true, endsWithSeparator=false)
+     * @ORM\Column(length=3000, nullable=true)
+     *
+     * @todo this property shouldn't be nullable (is it due to materialized path strategy ?)
+     */
+    protected $materializedPath;
 
     /**
      * @var ArrayCollection|ResourceRights[]
