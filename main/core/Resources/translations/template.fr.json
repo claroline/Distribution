@@ -1,4 +1,9 @@
 {
+    "claro_mail_layout": "Layout de mail",
+    "claro_mail_layout_desc": "Le layout utilisé pour les mails envoyés par la plateforme.",
+    "claro_mail_registration": "Confirmation d'inscription à la plateforme",
+    "claro_mail_registration_desc": "Template utilisé pour le mail envoyé pour confirmer l'inscription à la plateforme.",
+    "content_desc": "Le contenu",
     "define_as_default_for_type": "Définir comme template par défaut pour son type",
     "first_name_desc": "Le prénom de l'utilisateur cible",
     "forgotten_password": "Mot de passe oublié",
@@ -13,5 +18,6 @@
     "select_a_template_type": "Sélectionnez un type de template",
     "template_type": "Type de template",
     "template_type_selector": "Sélecteur de type de template",
-    "username_desc": "Le nom d'utilisateur de l'utilisateur cible"
+    "username_desc": "Le nom d'utilisateur de l'utilisateur cible",
+    "validation_mail_desc": "Le lien pour valider l'adresse mail de l'utilisateur cible"
 }
