@@ -389,16 +389,4 @@ class ResourceNodeSerializer
             }
         }
     }
-
-    private function getAncestors(ResourceNode $resourceNode)
-    {
-        $descendants = $this->om->getRepository(ResourceNode::class)->findAncestors($resourceNode);
-
-        return array_map(function (array $resourceNode) {
-            return [
-              'id' => $resourceNode['uuid'],
-              'name' => $resourceNode['name'],
-            ];
-        }, $descendants);
-    }
 }
