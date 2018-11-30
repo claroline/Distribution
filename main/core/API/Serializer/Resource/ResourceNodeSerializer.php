@@ -102,7 +102,7 @@ class ResourceNodeSerializer
             'id' => $resourceNode->getUuid(),
             'autoId' => $resourceNode->getId(), // TODO : remove me
             'name' => $resourceNode->getName(),
-            'path' => $this->getAncestors($resourceNode),
+            'path' => $resourceNode->getAncestors(),
             'meta' => $this->serializeMeta($resourceNode, $options),
             'permissions' => $this->rightsManager->getCurrentPermissionArray($resourceNode),
             'poster' => $this->serializePoster($resourceNode),
