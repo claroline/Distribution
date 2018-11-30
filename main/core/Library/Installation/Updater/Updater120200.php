@@ -43,6 +43,7 @@ class Updater120200 extends Updater
 
             $this->log('Flush');
             $om->flush();
+            $om->clear();
         }
     }
 }
