@@ -49,16 +49,6 @@ const AttemptEnd = props => {
             />
           }
 
-          {/*{props.endNavigation && props.showStatistics &&*/}
-            {/*<Button*/}
-              {/*type={LINK_BUTTON}*/}
-              {/*className="btn btn-start btn-lg btn-block btn-primary"*/}
-              {/*icon="fa fa-fw fa-bar-chart"*/}
-              {/*label={tex('statistics')}*/}
-              {/*target="/statistics"*/}
-            {/*/>*/}
-          {/*}*/}
-
           {props.endNavigation && hasMoreAttempts &&
             <Button
               type={LINK_BUTTON}
@@ -102,7 +92,7 @@ const ConnectedAttemptEnd = connect(
     maxAttempts: quizSelectors.parameters(state).maxAttempts,
     maxAttemptsPerDay: quizSelectors.parameters(state).maxAttemptsPerDay,
     userPaperCount: quizSelectors.meta(state).userPaperCount,
-    userPaperDayCount: quizSelectors.meta(state).userPaperDayCount,
+    userPaperDayCount: quizSelectors.meta(state).userPaperDayCount
   })
 )(AttemptEnd)
 
