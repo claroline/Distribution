@@ -80,16 +80,6 @@ const meta = createSelector(
   (quiz) => quiz.meta || {}
 )
 
-const maxAttempts = createSelector(
-  parameters,
-  (parameters) => parameters.maxAttempts || 0
-)
-
-const maxAttemptsPerDay = createSelector(
-  parameters,
-  (parameters) => parameters.maxAttemptsPerDay || 0
-)
-
 const hasUserPapers = createSelector(
   meta,
   (meta) => meta.userPaperCount > 0
@@ -98,16 +88,6 @@ const hasUserPapers = createSelector(
 const paperCount = createSelector(
   meta,
   (meta) => meta.paperCount || 0
-)
-
-const userPaperCount = createSelector(
-  meta,
-  (meta) => meta.userPaperCount || 0
-)
-
-const userPaperDayCount = createSelector(
-  meta,
-  (meta) => meta.userPaperDayCount || 0
 )
 
 const hasPapers = createSelector(
@@ -183,11 +163,7 @@ export default {
   quizNumbering,
   papersShowExpectedAnswers,
   papersShowStatistics,
-  allPapersStatistics,
-  maxAttempts,
-  maxAttemptsPerDay,
-  userPaperCount,
-  userPaperDayCount
+  allPapersStatistics
 }
 
 export const select = {
@@ -217,9 +193,5 @@ export const select = {
   quizNumbering,
   papersShowExpectedAnswers,
   papersShowStatistics,
-  allPapersStatistics,
-  maxAttempts,
-  maxAttemptsPerDay,
-  userPaperCount,
-  userPaperDayCount
+  allPapersStatistics
 }
