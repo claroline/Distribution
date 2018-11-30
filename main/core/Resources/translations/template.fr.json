@@ -12,6 +12,7 @@
     "no_template_type": "Aucun type de template",
     "parameter": "Paramètre",
     "password_desc": "Le mot de passe de l'utilisateur cible",
+    "password_reset_link_desc": "Le lien pour réinitialiser le mot de passe",
     "placeholders_info": "Les paramètres suivants peuvent être utilisés dans le sujet et le contenu du template. Ils seront remplacés par leur valeur associée.",
     "platform_name_desc": "Le nom de la plateforme",
     "platform_url_desc": "L'URL de la platforme",

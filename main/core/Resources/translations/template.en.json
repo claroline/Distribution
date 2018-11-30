@@ -12,6 +12,7 @@
     "no_template_type": "No template type",
     "parameter": "Parameter",
     "password_desc": "The password of the target user",
+    "password_reset_link_desc": "The link to reset the password",
     "placeholders_info": "The following parameters can be used in the subject and the content of the template. They will be replaced by the corresponding value.",
     "platform_name_desc": "The name of the platform",
     "platform_url_desc": "The URL of the platform",

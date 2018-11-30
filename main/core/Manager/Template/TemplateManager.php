@@ -61,17 +61,17 @@ class TemplateManager
     }
 
     /**
-     * @param string      $templateType
+     * @param string      $templateTypeName
      * @param array       $placeholders
-     * @param string      $mode
      * @param string|null $locale
+     * @param string      $mode
      *
      * @return string|null
      */
-    public function getTemplate($templateType, $placeholders = [], $mode = 'content', $locale = null)
+    public function getTemplate($templateTypeName, $placeholders = [], $locale = null, $mode = 'content')
     {
         $result = null;
-        $templateType = $this->templateTypeRepo->findOneBy(['name' => $templateType]);
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => $templateTypeName]);
 
         // Checks if a template is associated to the template type
         if ($templateType && $templateType->getDefaultTemplate()) {

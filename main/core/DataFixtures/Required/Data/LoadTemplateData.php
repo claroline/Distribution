@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\DataFixtures\Required\Data;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Entity\Template\Template;
@@ -20,10 +21,14 @@ class LoadTemplateData implements RequiredFixture
 {
     public function load(ObjectManager $om)
     {
+        $translator = $this->container->get('translator');
+        $parameters = $this->container->get('claroline.serializer.parameters')->serialize([Options::SERIALIZE_MINIMAL]);
+
         $templateTypeRepo = $om->getRepository(TemplateType::class);
 
         $mailRegistrationType = $templateTypeRepo->findOneBy(['name' => 'claro_mail_registration']);
         $mailLayoutType = $templateTypeRepo->findOneBy(['name' => 'claro_mail_layout']);
+        $passwordType = $templateTypeRepo->findOneBy(['name' => 'forgotten_password']);
 
         if ($mailRegistrationType) {
             $mailRegistrationFR = new Template();
@@ -68,6 +73,25 @@ class LoadTemplateData implements RequiredFixture
 
             $mailLayoutType->setDefaultTemplate('claro_mail_layout');
             $om->persist($mailLayoutType);
+        }
+        if ($passwordType) {
+            foreach ($parameters['locales']['available'] as $locale) {
+                $template = new Template();
+                $template->setType($passwordType);
+                $template->setName('forgotten_password');
+                $template->setLang($locale);
+
+                $title = $translator->trans('resetting_your_password', [], 'platform', $locale);
+                $template->setTitle($title);
+
+                $content = '<div>'.$translator->trans('reset_password_txt', [], 'platform', $locale).'</div>';
+                $content .= '<div>'.$translator->trans('your_username', [], 'platform', $locale).' : %username%</div>';
+                $content .= '<a href="%password_reset_link%">'.$translator->trans('mail_click', [], 'platform', $locale).'</a>';
+                $template->setContent($content);
+                $om->persist($template);
+            }
+            $passwordType->setDefaultTemplate('forgotten_password');
+            $om->persist($passwordType);
         }
 
         $om->flush();

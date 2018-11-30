@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Entity\ContentTranslation;
@@ -19,13 +20,19 @@ use Claroline\CoreBundle\Entity\Template\TemplateType;
 use Claroline\InstallationBundle\Updater\Updater;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class Updater120200 extends Updater
 {
     protected $logger;
 
-    /** @var  ObjectManager */
+    /** @var ObjectManager */
     private $om;
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+    private $parameters;
 
     private $contentRepo;
     private $translationRepo;
@@ -35,8 +42,11 @@ class Updater120200 extends Updater
     public function __construct(ContainerInterface $container, $logger = null)
     {
         $this->logger = $logger;
-
         $this->om = $container->get('claroline.persistence.object_manager');
+        $this->translator = $container->get('translator');
+
+        $this->parameters = $container->get('claroline.serializer.parameters')->serialize([Options::SERIALIZE_MINIMAL]);
+
         $this->contentRepo = $this->om->getRepository(Content::class);
         $this->translationRepo = $this->om->getRepository(ContentTranslation::class);
         $this->templateRepo = $this->om->getRepository(Template::class);
@@ -53,14 +63,15 @@ class Updater120200 extends Updater
         $this->log('Generating platform templates...');
 
         $this->om->startFlushSuite();
-        $this->generateTemplate('claro_mail_registration');
-        $this->generateTemplate('claro_mail_layout');
+        $this->generateTemplateFromContent('claro_mail_registration');
+        $this->generateTemplateFromContent('claro_mail_layout');
+        $this->generateForgottenPasswordTemplate();
         $this->om->endFlushSuite();
 
-        $this->log('Platform templates generated.');
+        $this->log('Platform templates have been generated.');
     }
 
-    private function generateTemplate($type)
+    private function generateTemplateFromContent($type)
     {
         $this->log("Generating $type template...");
 
@@ -109,7 +120,7 @@ class Updater120200 extends Updater
                         }
                         $this->om->persist($translatedTemplate);
                     }
-                    $this->log("$type template generated.");
+                    $this->log("$type template has been generated.");
                 } else {
                     $this->log("$type content not found.", LogLevel::ERROR);
                 }
@@ -118,6 +129,43 @@ class Updater120200 extends Updater
             }
         } else {
             $this->log("$type type not found.", LogLevel::ERROR);
+        }
+    }
+
+    private function generateForgottenPasswordTemplate()
+    {
+        $this->log('Generating template for forgotten password...');
+
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => 'forgotten_password']);
+
+        if ($templateType) {
+            $templates = $this->templateRepo->findBy(['type' => $templateType]);
+
+            if (0 === count($templates)) {
+                foreach ($this->parameters['locales']['available'] as $locale) {
+                    $template = new Template();
+                    $template->setType($templateType);
+                    $template->setName('forgotten_password');
+                    $template->setLang($locale);
+
+                    $title = $this->translator->trans('resetting_your_password', [], 'platform', $locale);
+                    $template->setTitle($title);
+
+                    $content = '<div>'.$this->translator->trans('reset_password_txt', [], 'platform', $locale).'</div>';
+                    $content .= '<div>'.$this->translator->trans('your_username', [], 'platform', $locale).' : %username%</div>';
+                    $content .= '<a href="%password_reset_link%">'.$this->translator->trans('mail_click', [], 'platform', $locale).'</a>';
+                    $template->setContent($content);
+                    $this->om->persist($template);
+                }
+                $templateType->setDefaultTemplate('forgotten_password');
+                $this->om->persist($templateType);
+
+                $this->log('Template for forgotten password has been generated.');
+            } else {
+                $this->log('Template for forgotten password already exists.');
+            }
+        } else {
+            $this->log('Template type for forgotten password not found.', LogLevel::ERROR);
         }
     }
 }

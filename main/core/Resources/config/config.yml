@@ -325,6 +325,7 @@ plugin:
 
     templates:
         - name: forgotten_password
+          placeholders: [password_reset_link]
         - name: claro_mail_registration
           placeholders: [validation_mail, password]
         - name: claro_mail_layout
