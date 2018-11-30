@@ -175,16 +175,15 @@ class ResourceNode
      * @Gedmo\TreePath(separator="`")
      * @ORM\Column(length=3000, nullable=true)
      *
-     * @todo this property shouldn't be nullable (is it due to materialized path strategy ?)
+     * @todo a virer
      */
     protected $path;
 
     /**
      * @var string
      *
+     * nullable true because it's a new property and migrations/updaters were needed
      * @ORM\Column(length=3000, nullable=true)
-     *
-     * @todo this property shouldn't be nullable (is it due to materialized path strategy ?)
      */
     protected $materializedPath;
 
