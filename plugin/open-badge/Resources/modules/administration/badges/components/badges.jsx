@@ -4,7 +4,7 @@ import {BadgeList} from '#/plugin/open-badge/administration/badges/components/ba
 import {ListData} from '#/main/app/content/list/containers/data'
 
 // todo : restore custom actions the same way resource actions are implemented
-const BadgesList = props =>
+const BadgesList = () =>
   <ListData
     name="badges.list"
     fetch={{

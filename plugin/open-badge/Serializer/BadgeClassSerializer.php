@@ -55,7 +55,7 @@ class BadgeClassSerializer
     public function serialize(BadgeClass $badge, array $options = [])
     {
         return [
-            'id' => $this->router->generate('apiv2_badge-class_get', ['id' => $badge->getId()]),
+            'id' => $badge->getUuid(),
             'name' => $badge->getName(),
             'description' => $badge->getDescription(),
             'criteria' => $badge->getCriteria(),
