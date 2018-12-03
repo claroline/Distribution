@@ -47,7 +47,9 @@ class Assertion
     private $issuedOn;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\Image")
+     * @ORM\Column
+     *
+     * @var string
      */
     private $image;
 

@@ -27,7 +27,7 @@ class RevocationList
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\Profile")
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
      */
     private $issuer;
 

@@ -8,18 +8,12 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2018/11/30 05:10:04
+ * Generation date: 2018/12/03 04:29:03
  */
-class Version20181130171003 extends AbstractMigration
+class Version20181203162902 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
-            CREATE TABLE claro__open_badge_profile (
-                id INT AUTO_INCREMENT NOT NULL, 
-                PRIMARY KEY(id)
-            ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
         $this->addSql("
             CREATE TABLE claro__open_badge_endorsement (
                 id INT AUTO_INCREMENT NOT NULL, 
@@ -71,12 +65,13 @@ class Version20181130171003 extends AbstractMigration
         $this->addSql("
             CREATE TABLE claro__open_badge_badge_class (
                 id INT AUTO_INCREMENT NOT NULL, 
-                image_id INT DEFAULT NULL, 
                 issuer_id INT DEFAULT NULL, 
                 name VARCHAR(255) NOT NULL, 
                 description LONGTEXT NOT NULL, 
+                image VARCHAR(255) NOT NULL, 
                 criteria LONGTEXT NOT NULL, 
-                INDEX IDX_7A1CAEBE3DA5256D (image_id), 
+                uuid VARCHAR(36) NOT NULL, 
+                UNIQUE INDEX UNIQ_7A1CAEBED17F50A6 (uuid), 
                 INDEX IDX_7A1CAEBEBB9D6FEE (issuer_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
@@ -87,9 +82,9 @@ class Version20181130171003 extends AbstractMigration
                 recipient_id INT DEFAULT NULL, 
                 badge_id INT DEFAULT NULL, 
                 verification_id INT DEFAULT NULL, 
-                image_id INT DEFAULT NULL, 
                 evidences_id INT DEFAULT NULL, 
                 issuedOn DATETIME NOT NULL, 
+                image VARCHAR(255) NOT NULL, 
                 narrative LONGTEXT NOT NULL, 
                 expires DATETIME NOT NULL, 
                 revoked TINYINT(1) NOT NULL, 
@@ -97,17 +92,7 @@ class Version20181130171003 extends AbstractMigration
                 INDEX IDX_B6E0ABADE92F8F78 (recipient_id), 
                 INDEX IDX_B6E0ABADF7A2C2FC (badge_id), 
                 INDEX IDX_B6E0ABAD1623CB0A (verification_id), 
-                INDEX IDX_B6E0ABAD3DA5256D (image_id), 
                 INDEX IDX_B6E0ABAD8D74B52B (evidences_id), 
-                PRIMARY KEY(id)
-            ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
-            CREATE TABLE claro__open_badge_image (
-                id INT AUTO_INCREMENT NOT NULL, 
-                author_id INT DEFAULT NULL, 
-                caption LONGTEXT NOT NULL, 
-                INDEX IDX_52775031F675F31B (author_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
         ");
@@ -142,7 +127,7 @@ class Version20181130171003 extends AbstractMigration
         $this->addSql("
             ALTER TABLE claro__open_badge_endorsement 
             ADD CONSTRAINT FK_F2235FAEBB9D6FEE FOREIGN KEY (issuer_id) 
-            REFERENCES claro__open_badge_profile (id)
+            REFERENCES claro_user (id)
         ");
         $this->addSql("
             ALTER TABLE claro__open_badge_endorsement 
@@ -157,12 +142,7 @@ class Version20181130171003 extends AbstractMigration
         $this->addSql("
             ALTER TABLE claro__open_badge_cryptographic_key 
             ADD CONSTRAINT FK_E660B7257E3C61F9 FOREIGN KEY (owner_id) 
-            REFERENCES claro__open_badge_profile (id)
-        ");
-        $this->addSql("
-            ALTER TABLE claro__open_badge_badge_class 
-            ADD CONSTRAINT FK_7A1CAEBE3DA5256D FOREIGN KEY (image_id) 
-            REFERENCES claro__open_badge_image (id)
+            REFERENCES claro_user (id)
         ");
         $this->addSql("
             ALTER TABLE claro__open_badge_badge_class 
@@ -186,23 +166,13 @@ class Version20181130171003 extends AbstractMigration
         ");
         $this->addSql("
             ALTER TABLE claro__open_badge_assertion 
-            ADD CONSTRAINT FK_B6E0ABAD3DA5256D FOREIGN KEY (image_id) 
-            REFERENCES claro__open_badge_image (id)
-        ");
-        $this->addSql("
-            ALTER TABLE claro__open_badge_assertion 
             ADD CONSTRAINT FK_B6E0ABAD8D74B52B FOREIGN KEY (evidences_id) 
             REFERENCES claro__open_badge_evidence (id)
         ");
         $this->addSql("
-            ALTER TABLE claro__open_badge_image 
-            ADD CONSTRAINT FK_52775031F675F31B FOREIGN KEY (author_id) 
-            REFERENCES claro__open_badge_profile (id)
-        ");
-        $this->addSql("
             ALTER TABLE claro__open_badge_revocation_list 
             ADD CONSTRAINT FK_4635F096BB9D6FEE FOREIGN KEY (issuer_id) 
-            REFERENCES claro__open_badge_profile (id)
+            REFERENCES claro_user (id)
         ");
         $this->addSql("
             ALTER TABLE revocationlist_assertion 
@@ -220,22 +190,6 @@ class Version20181130171003 extends AbstractMigration
 
     public function down(Schema $schema)
     {
-        $this->addSql("
-            ALTER TABLE claro__open_badge_endorsement 
-            DROP FOREIGN KEY FK_F2235FAEBB9D6FEE
-        ");
-        $this->addSql("
-            ALTER TABLE claro__open_badge_cryptographic_key 
-            DROP FOREIGN KEY FK_E660B7257E3C61F9
-        ");
-        $this->addSql("
-            ALTER TABLE claro__open_badge_image 
-            DROP FOREIGN KEY FK_52775031F675F31B
-        ");
-        $this->addSql("
-            ALTER TABLE claro__open_badge_revocation_list 
-            DROP FOREIGN KEY FK_4635F096BB9D6FEE
-        ");
         $this->addSql("
             ALTER TABLE claro__open_badge_endorsement 
             DROP FOREIGN KEY FK_F2235FAE1623CB0A
@@ -261,23 +215,12 @@ class Version20181130171003 extends AbstractMigration
             DROP FOREIGN KEY FK_FDE09CC0245A6843
         ");
         $this->addSql("
-            ALTER TABLE claro__open_badge_badge_class 
-            DROP FOREIGN KEY FK_7A1CAEBE3DA5256D
-        ");
-        $this->addSql("
-            ALTER TABLE claro__open_badge_assertion 
-            DROP FOREIGN KEY FK_B6E0ABAD3DA5256D
-        ");
-        $this->addSql("
             ALTER TABLE revocationlist_assertion 
             DROP FOREIGN KEY FK_FDE09CC0412E672C
         ");
         $this->addSql("
             ALTER TABLE claro__open_badge_assertion 
             DROP FOREIGN KEY FK_B6E0ABAD8D74B52B
-        ");
-        $this->addSql("
-            DROP TABLE claro__open_badge_profile
         ");
         $this->addSql("
             DROP TABLE claro__open_badge_endorsement
@@ -299,9 +242,6 @@ class Version20181130171003 extends AbstractMigration
         ");
         $this->addSql("
             DROP TABLE claro__open_badge_assertion
-        ");
-        $this->addSql("
-            DROP TABLE claro__open_badge_image
         ");
         $this->addSql("
             DROP TABLE claro__open_badge_revocation_list

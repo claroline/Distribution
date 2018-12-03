@@ -11,6 +11,7 @@
 
 namespace Claroline\OpenBadgeBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,6 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class BadgeClass
 {
+    use UuidTrait;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -44,9 +47,9 @@ class BadgeClass
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\Image")
+     * @ORM\Column
      *
-     * @var Image
+     * @var string
      */
     private $image;
 
@@ -63,4 +66,156 @@ class BadgeClass
      * @var Organization
      */
     private $issuer;
+
+    /**
+     * Workspace constructor.
+     */
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
+
+    /**
+     * Get the value of Id.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set the value of Id.
+     *
+     * @param int id
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the value of Name.
+     *
+     * @param string name
+     *
+     * @return self
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set the value of Description.
+     *
+     * @param string description
+     *
+     * @return self
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Image.
+     *
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set the value of Image.
+     *
+     * @param string
+     *
+     * @return self
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Criteria.
+     *
+     * @return string
+     */
+    public function getCriteria()
+    {
+        return $this->criteria;
+    }
+
+    /**
+     * Set the value of Criteria.
+     *
+     * @param string criteria
+     *
+     * @return self
+     */
+    public function setCriteria($criteria)
+    {
+        $this->criteria = $criteria;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Issuer.
+     *
+     * @return Organization
+     */
+    public function getIssuer()
+    {
+        return $this->issuer;
+    }
+
+    /**
+     * Set the value of Issuer.
+     *
+     * @param Organization issuer
+     *
+     * @return self
+     */
+    public function setIssuer(Organization $issuer)
+    {
+        $this->issuer = $issuer;
+
+        return $this;
+    }
 }
