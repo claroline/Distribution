@@ -91,7 +91,7 @@ class ResourceRightsRepository extends EntityRepository
         $index = 0;
 
         foreach ($roles as $key => $role) {
-            $dql .= $index !== 0 ? ' OR ' : '';
+            $dql .= 0 !== $index ? ' OR ' : '';
             $dql .= "resource.id = {$node->getId()} AND role.name = :role_{$key}";
             ++$index;
         }
