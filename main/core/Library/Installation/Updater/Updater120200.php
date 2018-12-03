@@ -15,6 +15,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Entity\ContentTranslation;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Template\Template;
 use Claroline\CoreBundle\Entity\Template\TemplateType;
 use Claroline\InstallationBundle\Updater\Updater;
@@ -24,6 +25,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class Updater120200 extends Updater
 {
+    const BATCH_SIZE = 500;
+
     protected $logger;
 
     /** @var ObjectManager */
@@ -42,6 +45,7 @@ class Updater120200 extends Updater
     public function __construct(ContainerInterface $container, $logger = null)
     {
         $this->logger = $logger;
+
         $this->om = $container->get('claroline.persistence.object_manager');
         $this->translator = $container->get('translator');
 
@@ -55,10 +59,33 @@ class Updater120200 extends Updater
 
     public function postUpdate()
     {
+        $this->buildNewPaths();
         $this->generatePlatformTemplates();
     }
 
-    public function generatePlatformTemplates()
+    private function buildNewPaths()
+    {
+        $total = $this->om->count(ResourceNode::class);
+        $this->log('Building resource paths ('.$total.')');
+
+        $offset = 0;
+
+        while ($offset < $total) {
+            $nodes = $this->om->getRepository(ResourceNode::class)->findBy([], [], self::BATCH_SIZE, $offset);
+
+            foreach ($nodes as $node) {
+                $this->om->persist($node);
+                ++$offset;
+                $this->log('Building resource paths '.$offset.'/'.$total);
+            }
+
+            $this->log('Flush');
+            $this->om->flush();
+            $this->om->clear();
+        }
+    }
+
+    private function generatePlatformTemplates()
     {
         $this->log('Generating platform templates...');
 
