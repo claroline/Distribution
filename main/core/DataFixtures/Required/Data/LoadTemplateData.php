@@ -28,7 +28,10 @@ class LoadTemplateData implements RequiredFixture
 
         $mailRegistrationType = $templateTypeRepo->findOneBy(['name' => 'claro_mail_registration']);
         $mailLayoutType = $templateTypeRepo->findOneBy(['name' => 'claro_mail_layout']);
-        $passwordType = $templateTypeRepo->findOneBy(['name' => 'forgotten_password']);
+        $forgottenPasswordType = $templateTypeRepo->findOneBy(['name' => 'forgotten_password']);
+        $passwordInitializationType = $templateTypeRepo->findOneBy(['name' => 'password_initialization']);
+        $userActivationType = $templateTypeRepo->findOneBy(['name' => 'user_activation']);
+        $mailValidationType = $templateTypeRepo->findOneBy(['name' => 'claro_mail_validation']);
 
         if ($mailRegistrationType) {
             $mailRegistrationFR = new Template();
@@ -74,10 +77,10 @@ class LoadTemplateData implements RequiredFixture
             $mailLayoutType->setDefaultTemplate('claro_mail_layout');
             $om->persist($mailLayoutType);
         }
-        if ($passwordType) {
+        if ($forgottenPasswordType) {
             foreach ($parameters['locales']['available'] as $locale) {
                 $template = new Template();
-                $template->setType($passwordType);
+                $template->setType($forgottenPasswordType);
                 $template->setName('forgotten_password');
                 $template->setLang($locale);
 
@@ -90,8 +93,67 @@ class LoadTemplateData implements RequiredFixture
                 $template->setContent($content);
                 $om->persist($template);
             }
-            $passwordType->setDefaultTemplate('forgotten_password');
-            $om->persist($passwordType);
+            $forgottenPasswordType->setDefaultTemplate('forgotten_password');
+            $om->persist($forgottenPasswordType);
+        }
+        if ($passwordInitializationType) {
+            foreach ($parameters['locales']['available'] as $locale) {
+                $template = new Template();
+                $template->setType($passwordInitializationType);
+                $template->setName('password_initialization');
+                $template->setLang($locale);
+
+                $title = $translator->trans('initialize_your_password', [], 'platform', $locale);
+                $template->setTitle($title);
+
+                $content = '<div>'.$translator->trans('initialize_your_password', [], 'platform', $locale).'</div>';
+                $content .= '<div>'.$translator->trans('your_username', [], 'platform', $locale).' : %username%</div>';
+                $content .= '<a href="%password_initialization_link%">'.$translator->trans('mail_click', [], 'platform', $locale).'</a>';
+                $template->setContent($content);
+                $om->persist($template);
+            }
+            $passwordInitializationType->setDefaultTemplate('password_initialization');
+            $om->persist($passwordInitializationType);
+        }
+        if ($userActivationType) {
+            foreach ($parameters['locales']['available'] as $locale) {
+                $template = new Template();
+                $template->setType($userActivationType);
+                $template->setName('user_activation');
+                $template->setLang($locale);
+
+                $title = $translator->trans('activate_account', [], 'platform', $locale);
+                $template->setTitle($title);
+
+                $content = '<div>'.$translator->trans('activate_account', [], 'platform', $locale).'</div>';
+                $content .= '<a href="%user_activation_link%">'.$translator->trans('activate_account_click', [], 'platform', $locale).'</a>';
+                $template->setContent($content);
+                $om->persist($template);
+            }
+            $userActivationType->setDefaultTemplate('user_activation');
+            $om->persist($userActivationType);
+        }
+        if ($mailValidationType) {
+            foreach ($parameters['locales']['available'] as $locale) {
+                $template = new Template();
+                $template->setType($mailValidationType);
+                $template->setName('claro_mail_validation');
+                $template->setLang($locale);
+
+                $title = $translator->trans('email_validation', [], 'platform', $locale);
+                $template->setTitle($title);
+
+                $content = $this->translator->trans(
+                    'email_validation_url_display',
+                    ['%url%' => '%validation_mail%'],
+                    'platform',
+                    $locale
+                );
+                $template->setContent($content);
+                $om->persist($template);
+            }
+            $mailValidationType->setDefaultTemplate('claro_mail_validation');
+            $om->persist($mailValidationType);
         }
 
         $om->flush();

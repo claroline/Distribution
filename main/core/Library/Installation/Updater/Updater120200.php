@@ -93,6 +93,9 @@ class Updater120200 extends Updater
         $this->generateTemplateFromContent('claro_mail_registration');
         $this->generateTemplateFromContent('claro_mail_layout');
         $this->generateForgottenPasswordTemplate();
+        $this->generatePasswordInitializationTemplate();
+        $this->generateUserActivationTemplate();
+        $this->generateMailValidationTemplate();
         $this->om->endFlushSuite();
 
         $this->log('Platform templates have been generated.');
@@ -193,6 +196,119 @@ class Updater120200 extends Updater
             }
         } else {
             $this->log('Template type for forgotten password not found.', LogLevel::ERROR);
+        }
+    }
+
+    private function generatePasswordInitializationTemplate()
+    {
+        $this->log('Generating template for password initialization...');
+
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => 'password_initialization']);
+
+        if ($templateType) {
+            $templates = $this->templateRepo->findBy(['type' => $templateType]);
+
+            if (0 === count($templates)) {
+                foreach ($this->parameters['locales']['available'] as $locale) {
+                    $template = new Template();
+                    $template->setType($templateType);
+                    $template->setName('password_initialization');
+                    $template->setLang($locale);
+
+                    $title = $this->translator->trans('initialize_your_password', [], 'platform', $locale);
+                    $template->setTitle($title);
+
+                    $content = '<div>'.$this->translator->trans('initialize_your_password', [], 'platform', $locale).'</div>';
+                    $content .= '<div>'.$this->translator->trans('your_username', [], 'platform', $locale).' : %username%</div>';
+                    $content .= '<a href="%password_initialization_link%">'.$this->translator->trans('mail_click', [], 'platform', $locale).'</a>';
+                    $template->setContent($content);
+                    $this->om->persist($template);
+                }
+                $templateType->setDefaultTemplate('password_initialization');
+                $this->om->persist($templateType);
+
+                $this->log('Template for password initialization has been generated.');
+            } else {
+                $this->log('Template for password initialization  already exists.');
+            }
+        } else {
+            $this->log('Template type for password initialization  not found.', LogLevel::ERROR);
+        }
+    }
+
+    private function generateUserActivationTemplate()
+    {
+        $this->log('Generating template for user activation...');
+
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => 'user_activation']);
+
+        if ($templateType) {
+            $templates = $this->templateRepo->findBy(['type' => $templateType]);
+
+            if (0 === count($templates)) {
+                foreach ($this->parameters['locales']['available'] as $locale) {
+                    $template = new Template();
+                    $template->setType($templateType);
+                    $template->setName('user_activation');
+                    $template->setLang($locale);
+
+                    $title = $this->translator->trans('activate_account', [], 'platform', $locale);
+                    $template->setTitle($title);
+
+                    $content = '<div>'.$this->translator->trans('activate_account', [], 'platform', $locale).'</div>';
+                    $content .= '<a href="%user_activation_link%">'.$this->translator->trans('activate_account_click', [], 'platform', $locale).'</a>';
+                    $template->setContent($content);
+                    $this->om->persist($template);
+                }
+                $templateType->setDefaultTemplate('user_activation');
+                $this->om->persist($templateType);
+
+                $this->log('Template for user activation has been generated.');
+            } else {
+                $this->log('Template for user activation already exists.');
+            }
+        } else {
+            $this->log('Template type for user activation not found.', LogLevel::ERROR);
+        }
+    }
+
+    private function generateMailValidationTemplate()
+    {
+        $this->log('Generating template for mail validation...');
+
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => 'claro_mail_validation']);
+
+        if ($templateType) {
+            $templates = $this->templateRepo->findBy(['type' => $templateType]);
+
+            if (0 === count($templates)) {
+                foreach ($this->parameters['locales']['available'] as $locale) {
+                    $template = new Template();
+                    $template->setType($templateType);
+                    $template->setName('claro_mail_validation');
+                    $template->setLang($locale);
+
+                    $title = $this->translator->trans('email_validation', [], 'platform', $locale);
+                    $template->setTitle($title);
+
+                    $content = $this->translator->trans(
+                        'email_validation_url_display',
+                        ['%url%' => '%validation_mail%'],
+                        'platform',
+                        $locale
+                    );
+                    $template->setContent($content);
+                    $this->om->persist($template);
+                }
+                $templateType->setDefaultTemplate('claro_mail_validation');
+                $this->om->persist($templateType);
+
+                $this->log('Template for mail validation has been generated.');
+            } else {
+                $this->log('Template for mail validation already exists.');
+            }
+        } else {
+            $this->log('Template type for mail validation not found.', LogLevel::ERROR);
         }
     }
 }

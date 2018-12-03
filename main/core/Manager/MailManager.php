@@ -23,7 +23,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.manager.mail_manager")
@@ -48,9 +47,6 @@ class MailManager
     /** @var TwigEngine */
     private $templating;
 
-    /** @var TranslatorInterface */
-    private $translator;
-
     private $parameters;
 
     /**
@@ -61,8 +57,7 @@ class MailManager
      *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
      *     "router"               = @DI\Inject("router"),
      *     "templateManager"      = @DI\Inject("claroline.manager.template_manager"),
-     *     "templating"           = @DI\Inject("templating"),
-     *     "translator"           = @DI\Inject("translator")
+     *     "templating"           = @DI\Inject("templating")
      * })
      *
      * @param CacheManager          $cacheManager
@@ -72,7 +67,6 @@ class MailManager
      * @param UrlGeneratorInterface $router
      * @param TemplateManager       $templateManager
      * @param TwigEngine            $templating
-     * @param TranslatorInterface   $translator
      */
     public function __construct(
         CacheManager $cacheManager,
@@ -81,8 +75,7 @@ class MailManager
         ParametersSerializer $parametersSerializer,
         UrlGeneratorInterface $router,
         TemplateManager $templateManager,
-        TwigEngine $templating,
-        TranslatorInterface $translator
+        TwigEngine $templating
     ) {
         $this->cacheManager = $cacheManager;
         $this->container = $container;
@@ -90,7 +83,6 @@ class MailManager
         $this->router = $router;
         $this->templateManager = $templateManager;
         $this->templating = $templating;
-        $this->translator = $translator;
 
         $this->parameters = $parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
     }
@@ -139,12 +131,15 @@ class MailManager
             ['hash' => $hash],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
-        $subject = $this->translator->trans('initialize_your_password', [], 'platform');
-
-        $body = $this->templating->render(
-            'ClarolineCoreBundle:Mail:initialize_password.html.twig',
-            ['user' => $user, 'link' => $link]
-        );
+        $locale = $user->getLocale();
+        $placeholders = [
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
+            'username' => $user->getUsername(),
+            'password_initialization_link' => $link,
+        ];
+        $subject = $this->templateManager->getTemplate('password_initialization', $placeholders, $locale, 'subject');
+        $body = $this->templateManager->getTemplate('password_initialization', $placeholders, $locale);
 
         return $this->send($subject, $body, [$user], null, [], true);
     }
@@ -157,12 +152,15 @@ class MailManager
             ['hash' => $hash],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
-        $subject = $this->translator->trans('activate_account', [], 'platform');
-
-        $body = $this->templating->render(
-            'ClarolineCoreBundle:Mail:activateUser.html.twig',
-            ['user' => $user, 'link' => $link]
-        );
+        $locale = $user->getLocale();
+        $placeholders = [
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
+            'username' => $user->getUsername(),
+            'user_activation_link' => $link,
+        ];
+        $subject = $this->templateManager->getTemplate('user_activation', $placeholders, $locale, 'subject');
+        $body = $this->templateManager->getTemplate('user_activation', $placeholders, $locale);
 
         return $this->send($subject, $body, [$user], null, [], true);
     }
@@ -175,12 +173,15 @@ class MailManager
             ['hash' => $hash],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
-        $body = $this->translator->trans(
-            'email_validation_url_display',
-            ['%url%' => $url],
-            'platform'
-        );
-        $subject = $this->translator->trans('email_validation', [], 'platform');
+        $locale = $user->getLocale();
+        $placeholders = [
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
+            'username' => $user->getUsername(),
+            'validation_mail' => $url,
+        ];
+        $subject = $this->templateManager->getTemplate('claro_mail_validation', $placeholders, $locale, 'subject');
+        $body = $this->templateManager->getTemplate('claro_mail_validation', $placeholders, $locale);
 
         $this->send($subject, $body, [$user], null, [], true);
     }
@@ -198,14 +199,12 @@ class MailManager
             ['hash' => $user->getEmailValidationHash()],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
-        $validationLink = $this->translator->trans('email_validation_url_display', ['%url%' => $url], 'platform');
-
         $placeholders = [
             'first_name' => $user->getFirstName(),
             'last_name' => $user->getLastName(),
             'username' => $user->getUsername(),
             'password' => $user->getPlainPassword(),
-            'validation_mail' => $validationLink,
+            'validation_mail' => $url,
         ];
         $subject = $this->templateManager->getTemplate('claro_mail_registration', $placeholders, $locale, 'subject');
         $body = $this->templateManager->getTemplate('claro_mail_registration', $placeholders, $locale);
@@ -295,37 +294,6 @@ class MailManager
         }
 
         return false;
-    }
-
-    /**
-     * Validate a variable (placeholder) in a translated content.
-     *
-     * @param array  $translatedContents An array containing translated content
-     * @param string $mailVariable       the variable to validate
-     *
-     * @return array
-     */
-    public function validateMailVariable(array $translatedContents, $mailVariable)
-    {
-        $languages = array_keys($translatedContents);
-        $errors = [];
-        $voidCount = 0;
-
-        foreach ($languages as $language) {
-            if ($translatedContents[$language]['content'] !== '') {
-                if (!strpos($translatedContents[$language]['content'], $mailVariable)) {
-                    $errors[$language]['content'][] = 'missing_'.$mailVariable;
-                }
-            } else {
-                ++$voidCount;
-            }
-
-            if ($voidCount === count($languages)) {
-                $errors['no_content'] = 'need_at_least_one_translation';
-            }
-        }
-
-        return $errors;
     }
 
     /**

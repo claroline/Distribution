@@ -326,6 +326,12 @@ plugin:
     templates:
         - name: forgotten_password
           placeholders: [password_reset_link]
+        - name: password_initialization
+          placeholders: [password_initialization_link]
+        - name: user_activation
+          placeholders: [user_activation_link]
+        - name: claro_mail_validation
+          placeholders: [validation_mail]
         - name: claro_mail_registration
           placeholders: [validation_mail, password]
         - name: claro_mail_layout
