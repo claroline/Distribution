@@ -324,15 +324,19 @@ plugin:
         - name: Claroline Ruby
 
     templates:
-        - name: forgotten_password
-          placeholders: [password_reset_link]
-        - name: password_initialization
-          placeholders: [password_initialization_link]
-        - name: user_activation
-          placeholders: [user_activation_link]
-        - name: claro_mail_validation
-          placeholders: [validation_mail]
-        - name: claro_mail_registration
-          placeholders: [validation_mail, password]
         - name: claro_mail_layout
           placeholders: [content]
+        - name: user_activation
+          placeholders: [user_activation_link]
+        - name: claro_mail_registration
+          placeholders: [validation_mail, password]
+        - name: claro_mail_validation
+          placeholders: [validation_mail]
+        - name: password_initialization
+          placeholders: [password_initialization_link]
+        - name: forgotten_password
+          placeholders: [password_reset_link]
+        - name: workspace_registration
+          placeholders: [workspace_name, workspace_code, role_name]
+        - name: platform_role_registration
+          placeholders: [role_name]

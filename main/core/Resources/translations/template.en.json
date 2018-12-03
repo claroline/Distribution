@@ -20,7 +20,10 @@
     "password_reset_link_desc": "The link to reset the password",
     "placeholders_info": "The following parameters can be used in the subject and the content of the template. They will be replaced by the corresponding value.",
     "platform_name_desc": "The name of the platform",
+    "platform_role_registration": "Registration to a platform role",
+    "platform_role_registration_desc": "Template used for the mail sent when an user is registered to a platform role.",
     "platform_url_desc": "The URL of the platform",
+    "role_name_desc": "The name of the role",
     "select_a_template_type": "Select a template type",
     "template_type": "Template type",
     "template_type_selector": "Template type picker",
@@ -28,5 +31,9 @@
     "user_activation_desc": "Template used for the mail sent to activate the use account.",
     "user_activation_link_desc": "The link to activate the user account",
     "username_desc": "The username of the target user",
-    "validation_mail_desc": "The link to validate the mail address of the target user"
+    "validation_mail_desc": "The link to validate the mail address of the target user",
+    "workspace_code_desc": "The code of the workspace",
+    "workspace_name_desc": "The name of the workspace",
+    "workspace_registration": "Registration to a workspace",
+    "workspace_registration_desc": "Template used for the mail sent when an user is registered to a workspace."
 }

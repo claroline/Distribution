@@ -103,9 +103,9 @@ class TemplateManager
                     case 'content':
                         $result = $this->replacePlaceholders($template->getContent(), $placeholders);
                         break;
-                    case 'subject':
-                        $result = $template->getSubject() ?
-                            $this->replacePlaceholders($template->getSubject(), $placeholders) :
+                    case 'title':
+                        $result = $template->getTitle() ?
+                            $this->replacePlaceholders($template->getTitle(), $placeholders) :
                             '';
                         break;
                 }
@@ -127,9 +127,9 @@ class TemplateManager
         switch ($mode) {
             case 'content':
                 return $this->replacePlaceholders($template->getContent(), $placeholders);
-            case 'subject':
-                return $template->getSubject() ?
-                    $this->replacePlaceholders($template->getSubject(), $placeholders) :
+            case 'title':
+                return $template->getTitle() ?
+                    $this->replacePlaceholders($template->getTitle(), $placeholders) :
                     '';
         }
 

@@ -96,6 +96,8 @@ class Updater120200 extends Updater
         $this->generatePasswordInitializationTemplate();
         $this->generateUserActivationTemplate();
         $this->generateMailValidationTemplate();
+        $this->generateWorkspaceRegistrationTemplate();
+        $this->generatePlatformRegistrationTemplate();
         $this->om->endFlushSuite();
 
         $this->log('Platform templates have been generated.');
@@ -309,6 +311,86 @@ class Updater120200 extends Updater
             }
         } else {
             $this->log('Template type for mail validation not found.', LogLevel::ERROR);
+        }
+    }
+
+    private function generateWorkspaceRegistrationTemplate()
+    {
+        $this->log('Generating template for workspace registration...');
+
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => 'workspace_registration']);
+
+        if ($templateType) {
+            $templates = $this->templateRepo->findBy(['type' => $templateType]);
+
+            if (0 === count($templates)) {
+                foreach ($this->parameters['locales']['available'] as $locale) {
+                    $template = new Template();
+                    $template->setType($templateType);
+                    $template->setName('workspace_registration');
+                    $template->setLang($locale);
+
+                    $title = $this->translator->trans(
+                        'workspace_registration_message_object',
+                        ['%workspace_name%' => '%workspace_name%'],
+                        'platform',
+                        $locale
+                    );
+                    $template->setTitle($title);
+
+                    $content = $this->translator->trans(
+                        'workspace_registration_message',
+                        ['%workspace_name%' => '%workspace_name%'],
+                        'platform',
+                        $locale
+                    );
+                    $template->setContent($content);
+                    $this->om->persist($template);
+                }
+                $templateType->setDefaultTemplate('workspace_registration');
+                $this->om->persist($templateType);
+
+                $this->log('Template for workspace registration has been generated.');
+            } else {
+                $this->log('Template for workspace registration already exists.');
+            }
+        } else {
+            $this->log('Template type for workspace registration not found.', LogLevel::ERROR);
+        }
+    }
+
+    private function generatePlatformRegistrationTemplate()
+    {
+        $this->log('Generating template for platform role registration...');
+
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => 'platform_role_registration']);
+
+        if ($templateType) {
+            $templates = $this->templateRepo->findBy(['type' => $templateType]);
+
+            if (0 === count($templates)) {
+                foreach ($this->parameters['locales']['available'] as $locale) {
+                    $template = new Template();
+                    $template->setType($templateType);
+                    $template->setName('platform_role_registration');
+                    $template->setLang($locale);
+
+                    $title = $this->translator->trans('new_role_message_object', [], 'platform', $locale);
+                    $template->setTitle($title);
+
+                    $content = $this->translator->trans('new_role_message', ['%name%' => '%role_name%'], 'platform', $locale);
+                    $template->setContent($content);
+                    $this->om->persist($template);
+                }
+                $templateType->setDefaultTemplate('platform_role_registration');
+                $this->om->persist($templateType);
+
+                $this->log('Template for platform role registration has been generated.');
+            } else {
+                $this->log('Template for platform role registration already exists.');
+            }
+        } else {
+            $this->log('Template type for platform role registration not found.', LogLevel::ERROR);
         }
     }
 }

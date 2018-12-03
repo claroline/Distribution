@@ -32,6 +32,8 @@ class LoadTemplateData implements RequiredFixture
         $passwordInitializationType = $templateTypeRepo->findOneBy(['name' => 'password_initialization']);
         $userActivationType = $templateTypeRepo->findOneBy(['name' => 'user_activation']);
         $mailValidationType = $templateTypeRepo->findOneBy(['name' => 'claro_mail_validation']);
+        $workspaceRegistrationType = $templateTypeRepo->findOneBy(['name' => 'workspace_registration']);
+        $platformRoleRegistrationType = $templateTypeRepo->findOneBy(['name' => 'platform_role_registration']);
 
         if ($mailRegistrationType) {
             $mailRegistrationFR = new Template();
@@ -154,6 +156,50 @@ class LoadTemplateData implements RequiredFixture
             }
             $mailValidationType->setDefaultTemplate('claro_mail_validation');
             $om->persist($mailValidationType);
+        }
+        if ($workspaceRegistrationType) {
+            foreach ($parameters['locales']['available'] as $locale) {
+                $template = new Template();
+                $template->setType($workspaceRegistrationType);
+                $template->setName('workspace_registration');
+                $template->setLang($locale);
+
+                $title = $this->translator->trans(
+                    'workspace_registration_message_object',
+                    ['%workspace_name%' => '%workspace_name%'],
+                    'platform',
+                    $locale
+                );
+                $template->setTitle($title);
+
+                $content = $this->translator->trans(
+                    'workspace_registration_message',
+                    ['%workspace_name%' => '%workspace_name%'],
+                    'platform',
+                    $locale
+                );
+                $template->setContent($content);
+                $om->persist($template);
+            }
+            $workspaceRegistrationType->setDefaultTemplate('workspace_registration');
+            $om->persist($workspaceRegistrationType);
+        }
+        if ($platformRoleRegistrationType) {
+            foreach ($parameters['locales']['available'] as $locale) {
+                $template = new Template();
+                $template->setType($platformRoleRegistrationType);
+                $template->setName('platform_role_registration');
+                $template->setLang($locale);
+
+                $title = $this->translator->trans('new_role_message_object', [], 'platform', $locale);
+                $template->setTitle($title);
+
+                $content = $this->translator->trans('new_role_message', ['%name%' => '%role_name%'], 'platform', $locale);
+                $template->setContent($content);
+                $om->persist($template);
+            }
+            $platformRoleRegistrationType->setDefaultTemplate('platform_role_registration');
+            $om->persist($platformRoleRegistrationType);
         }
 
         $om->flush();

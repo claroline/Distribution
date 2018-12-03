@@ -116,7 +116,7 @@ class MailManager
             'password_reset_link' => $link,
         ];
         $locale = $user->getLocale();
-        $subject = $this->templateManager->getTemplate('forgotten_password', $placeholders, $locale, 'subject');
+        $subject = $this->templateManager->getTemplate('forgotten_password', $placeholders, $locale, 'title');
         $body = $this->templateManager->getTemplate('forgotten_password', $placeholders, $locale);
 
         return $this->send($subject, $body, [$user], null, [], true);
@@ -138,7 +138,7 @@ class MailManager
             'username' => $user->getUsername(),
             'password_initialization_link' => $link,
         ];
-        $subject = $this->templateManager->getTemplate('password_initialization', $placeholders, $locale, 'subject');
+        $subject = $this->templateManager->getTemplate('password_initialization', $placeholders, $locale, 'title');
         $body = $this->templateManager->getTemplate('password_initialization', $placeholders, $locale);
 
         return $this->send($subject, $body, [$user], null, [], true);
@@ -159,7 +159,7 @@ class MailManager
             'username' => $user->getUsername(),
             'user_activation_link' => $link,
         ];
-        $subject = $this->templateManager->getTemplate('user_activation', $placeholders, $locale, 'subject');
+        $subject = $this->templateManager->getTemplate('user_activation', $placeholders, $locale, 'title');
         $body = $this->templateManager->getTemplate('user_activation', $placeholders, $locale);
 
         return $this->send($subject, $body, [$user], null, [], true);
@@ -180,7 +180,7 @@ class MailManager
             'username' => $user->getUsername(),
             'validation_mail' => $url,
         ];
-        $subject = $this->templateManager->getTemplate('claro_mail_validation', $placeholders, $locale, 'subject');
+        $subject = $this->templateManager->getTemplate('claro_mail_validation', $placeholders, $locale, 'title');
         $body = $this->templateManager->getTemplate('claro_mail_validation', $placeholders, $locale);
 
         $this->send($subject, $body, [$user], null, [], true);
@@ -206,7 +206,7 @@ class MailManager
             'password' => $user->getPlainPassword(),
             'validation_mail' => $url,
         ];
-        $subject = $this->templateManager->getTemplate('claro_mail_registration', $placeholders, $locale, 'subject');
+        $subject = $this->templateManager->getTemplate('claro_mail_registration', $placeholders, $locale, 'title');
         $body = $this->templateManager->getTemplate('claro_mail_registration', $placeholders, $locale);
 
         return $this->send($subject, $body, [$user], null, [], true);

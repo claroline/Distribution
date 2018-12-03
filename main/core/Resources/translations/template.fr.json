@@ -20,7 +20,10 @@
     "password_reset_link_desc": "Le lien pour réinitialiser le mot de passe",
     "placeholders_info": "Les paramètres suivants peuvent être utilisés dans le sujet et le contenu du template. Ils seront remplacés par leur valeur associée.",
     "platform_name_desc": "Le nom de la plateforme",
+    "platform_role_registration": "Inscription à un rôle de la plateform",
+    "platform_role_registration_desc": "Template utilisé pour le mail envoyé lors de l'inscription à un rôle de la plateforme.",
     "platform_url_desc": "L'URL de la platforme",
+    "role_name_desc": "Le nom du rôle",
     "select_a_template_type": "Sélectionnez un type de template",
     "template_type": "Type de template",
     "template_type_selector": "Sélecteur de type de template",
@@ -28,5 +31,9 @@
     "user_activation_desc": "Template utilisé pour le mail envoyé afin d'activer le compte utilisateur.",
     "user_activation_link_desc": "Le lien pour activer le compte utilisateur",
     "username_desc": "Le nom d'utilisateur de l'utilisateur cible",
-    "validation_mail_desc": "Le lien pour valider l'adresse mail de l'utilisateur cible"
+    "validation_mail_desc": "Le lien pour valider l'adresse mail de l'utilisateur cible",
+    "workspace_code_desc": "Le code de l'espace d'activités",
+    "workspace_name_desc": "Le nom de l'espace d'activités",
+    "workspace_registration": "Inscription à un espace d'activités",
+    "workspace_registration_desc": "Template utilisé pour le mail envoyé lors de l'inscription à un espace d'activités."
 }
