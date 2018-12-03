@@ -27,11 +27,6 @@ class Evidence
     private $id;
 
     /**
-     * @ORM\Column()
-     */
-    private $iri;
-
-    /**
      * @ORM\Column(type="text")
      */
     private $narrative;

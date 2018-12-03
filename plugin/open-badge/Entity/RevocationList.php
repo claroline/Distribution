@@ -27,16 +27,6 @@ class RevocationList
     private $id;
 
     /**
-     * @ORM\Column(type="json_array")
-     */
-    private $type;
-
-    /**
-     * @ORM\Column()
-     */
-    private $iri;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\Profile")
      */
     private $issuer;

@@ -1,16 +1,12 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {ListData} from '#/main/app/content/list/containers/data'
-import {actions} from '#/main/core/administration/workspace/workspace/actions'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {BadgeForm} from '#/main/core/workspace/components/form'

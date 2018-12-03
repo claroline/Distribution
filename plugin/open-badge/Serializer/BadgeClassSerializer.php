@@ -5,6 +5,7 @@ namespace Claroline\OpenBadgeBundle\Serializer;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @DI\Service()
@@ -14,8 +15,18 @@ class BadgeClassSerializer
 {
     use SerializerTrait;
 
-    public function __construct()
+    /**
+     * Crud constructor.
+     *
+     * @DI\InjectParams({
+     *     "router" = @DI\Inject("router"),
+     * })
+     *
+     * @param Router $router
+     */
+    public function __construct(RouterInterface $router)
     {
+        $this->router = $router;
     }
 
     /**
@@ -29,8 +40,10 @@ class BadgeClassSerializer
     public function serialize(BadgeClass $badge, array $options = [])
     {
         return [
+            'id' => $this->router->generate('apiv2_badge-class_get', ['id' => $badge->getId()]),
             'name' => $badge->getName(),
             'description' => $badge->getDescription(),
+            'criteria' => $badge->getCriteria(),
         ];
     }
 
@@ -47,8 +60,7 @@ class BadgeClassSerializer
     {
         $this->sipe('name', 'setName', $data, $badge);
         $this->sipe('description', 'setDescription', $data, $badge);
-        //what is iri ?
-        $this->sipe('name', 'setIri', $data, $badge);
+        $this->sipe('criteria', 'setCriteria', $data, $badge);
 
         return $badge;
     }

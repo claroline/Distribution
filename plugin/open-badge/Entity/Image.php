@@ -27,16 +27,6 @@ class Image
     private $id;
 
     /**
-     * @ORM\Column(type="json_array")
-     */
-    private $type;
-
-    /**
-     * @ORM\Column()
-     */
-    private $iri;
-
-    /**
      * @ORM\Column(type="text")
      */
     private $caption;

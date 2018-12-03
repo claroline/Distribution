@@ -32,11 +32,6 @@ class IdentityObject
     private $identity;
 
     /**
-     * @ORM\Column()
-     */
-    private $type;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $hashed;

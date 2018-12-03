@@ -27,16 +27,6 @@ class Endorsement
     private $id;
 
     /**
-     * @ORM\Column()
-     */
-    private $iri;
-
-    /**
-     * @ORM\Column(type="json_array")
-     */
-    private $type;
-
-    /**
      * @ORM\Column(type="json_array")
      */
     private $claim;

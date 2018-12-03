@@ -27,11 +27,6 @@ class SignedBadge
     private $id;
 
     /**
-     * @ORM\Column(type="json_array")
-     */
-    private $type;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\CryptographicKey")
      */
     private $cryptographicKey;

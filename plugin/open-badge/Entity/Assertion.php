@@ -27,16 +27,6 @@ class Assertion
     private $id;
 
     /**
-     * @ORM\Column()
-     */
-    private $iri;
-
-    /**
-     * @ORM\Column(type="json_array")
-     */
-    private $type;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\IdentityObject")
      */
     private $recipient;

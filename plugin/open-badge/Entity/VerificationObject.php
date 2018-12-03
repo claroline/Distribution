@@ -27,11 +27,6 @@ class VerificationObject
     private $id;
 
     /**
-     * @ORM\Column(type="json_array")
-     */
-    private $type;
-
-    /**
      * @ORM\Column()
      */
     private $verificationProperty;

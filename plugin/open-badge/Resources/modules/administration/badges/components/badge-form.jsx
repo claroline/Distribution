@@ -38,9 +38,33 @@ const BadgeFormComponent = (props) => {
             },
             {
               name: 'description',
-              type: 'string',
+              type: 'html',
               label: trans('description'),
               required: false
+            },
+            {
+              name: 'criteria',
+              type: 'html',
+              label: trans('criteria'),
+              required: true
+            },
+            {
+              name: 'image',
+              type: 'file',
+              label: trans('image'),
+              required: false
+            },
+            {
+              name: 'issuer',
+              type: 'organization_2',
+              label: trans('organization'),
+              required: true
+            },
+            {
+              name: 'tags',
+              type: 'string',
+              label: trans('tags'),
+              help: trans('tag_form_help', {}, 'forum')
             }
           ]
         }
