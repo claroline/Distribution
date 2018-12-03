@@ -7,9 +7,9 @@ import {
 } from '#/main/app/content/list/store'
 
 import {reducer, selectors} from '#/main/core/modals/organization/store'
-import {OrganizationsPickerModal as OrganizationsPickerModalComponent} from '#/main/core/modals/organization/components/modal'
+import {OrganizationPickerModal as OrganizationPickerModalComponent} from '#/main/core/modals/organization/components/modal'
 
-const OrganizationsPickerModal = withReducer(selectors.STORE_NAME, reducer)(
+const OrganizationPickerModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
       selected: listSelect.selectedFull(listSelect.list(state, selectors.STORE_NAME))
@@ -19,9 +19,9 @@ const OrganizationsPickerModal = withReducer(selectors.STORE_NAME, reducer)(
         dispatch(listActions.resetSelect(selectors.STORE_NAME))
       }
     })
-  )(OrganizationsPickerModalComponent)
+  )(OrganizationPickerModalComponent)
 )
 
 export {
-  OrganizationsPickerModal
+  OrganizationPickerModal
 }

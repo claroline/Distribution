@@ -11,7 +11,7 @@ import {selectors} from '#/main/core/modals/organization/store'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list'
 import {Organization as OrganizationType} from '#/main/core/user/prop-types'
 
-const OrganizationsPickerModal = props => {
+const OrganizationPickerModal = props => {
   const selectAction = props.selectAction(props.selected)
 
   return (
@@ -44,7 +44,7 @@ const OrganizationsPickerModal = props => {
   )
 }
 
-OrganizationsPickerModal.propTypes = {
+OrganizationPickerModal.propTypes = {
   url: T.oneOfType([T.string, T.array]),
   title: T.string,
   selectAction: T.func.isRequired,
@@ -55,11 +55,11 @@ OrganizationsPickerModal.propTypes = {
   resetSelect: T.func.isRequired
 }
 
-OrganizationsPickerModal.defaultProps = {
+OrganizationPickerModal.defaultProps = {
   url: ['apiv2_organization_list'], //apiv2_group_list_registerable = filter by current user organizations
   title: trans('organizations_picker')
 }
 
 export {
-  OrganizationsPickerModal
+  OrganizationPickerModal
 }

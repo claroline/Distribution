@@ -73,9 +73,8 @@ registry.add('core', {
 
   data: {
     types: {
-      'organization': () => { return import(/* webpackChunkName: "core-data-organization" */ '#/main/core/user/data/types/organization') },
+      'organization': () => { return import(/* webpackChunkName: "core-data-organization" */ '#/main/core/data/types/organization') },
       'resource'    : () => { return import(/* webpackChunkName: "core-data-resource" */     '#/main/core/data/types/resource') },
-      'organization_2': () => { return import(/* webpackChunkName: "core-data-organization" */  '#/main/core/data/types/organization') },
       'users'       : () => { return import(/* webpackChunkName: "core-data-users" */        '#/main/core/data/types/users') },
       'workspace'   : () => { return import(/* webpackChunkName: "core-data-workspace" */    '#/main/core/data/types/workspace') },
       'workspaces'  : () => { return import(/* webpackChunkName: "core-data-workspaces" */   '#/main/core/data/types/workspaces') },

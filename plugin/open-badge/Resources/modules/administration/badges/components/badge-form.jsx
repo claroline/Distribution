@@ -56,7 +56,7 @@ const BadgeFormComponent = (props) => {
             },
             {
               name: 'issuer',
-              type: 'organization_2',
+              type: 'organization',
               label: trans('organization'),
               required: true
             },

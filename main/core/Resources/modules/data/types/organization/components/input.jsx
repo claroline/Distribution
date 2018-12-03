@@ -1,5 +1,4 @@
 import React from 'react'
-import isEmpty from 'lodash/isEmpty'
 
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
@@ -17,16 +16,15 @@ const OrganizationButton = props =>
     className="btn"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-users"
-    label={trans('add_organizations')}
+    icon="fa fa-fw fa-book"
+    label={trans('select_a_organization')}
     primary={true}
     modal={[MODAL_ORGANIZATION_PICKER, {
       url: ['apiv2_organization_list'],
       title: props.title,
       selectAction: (selected) => ({
         type: CALLBACK_BUTTON,
-        label: trans('select', {}, 'actions'),
-        callback: () => props.onChange(selected)
+        callback: () => props.onChange(selected[0])
       })
     }]}
   />
@@ -37,49 +35,28 @@ OrganizationButton.propTypes = {
 }
 
 const OrganizationInput = props => {
-  if (!isEmpty(props.value)) {
+  if (props.value) {
     return(
       <div>
-        {props.value.map(organization =>
-          <OrganizationCard
-            key={`organization-card-${organization.id}`}
-            data={organization}
-            size="sm"
-            orientation="col"
-            actions={[
-              {
-                name: 'delete',
-                type: CALLBACK_BUTTON,
-                icon: 'fa fa-fw fa-trash-o',
-                label: trans('delete', {}, 'actions'),
-                dangerous: true,
-                callback: () => {
-                  const newValue = props.value
-                  const index = newValue.findIndex(g => g.id === organization.id)
-
-                  if (-1 < index) {
-                    newValue.splice(index, 1)
-                    props.onChange(newValue)
-                  }
-                }
-              }
-            ]}
-          />
-        )}
+        <OrganizationCard
+          data={props.value}
+          size="sm"
+          orientation="col"
+          actions={[
+            {
+              name: 'delete',
+              type: CALLBACK_BUTTON,
+              icon: 'fa fa-fw fa-trash-o',
+              label: trans('delete', {}, 'actions'),
+              dangerous: true,
+              callback: () => props.onChange(null)
+            }
+          ]}
+        />
 
         <OrganizationButton
           {...props.picker}
-          onChange={(selected) => {
-            const newValue = props.value
-            selected.forEach(organization => {
-              const index = newValue.findIndex(g => g.id === organization.id)
-
-              if (-1 === index) {
-                newValue.push(organization)
-              }
-            })
-            props.onChange(newValue)
-          }}
+          onChange={props.onChange}
         />
       </div>
     )
@@ -87,7 +64,7 @@ const OrganizationInput = props => {
     return (
       <EmptyPlaceholder
         size="lg"
-        icon="fa fa-users"
+        icon="fa fa-book"
         title={trans('no_organization')}
       >
         <OrganizationButton
@@ -100,14 +77,14 @@ const OrganizationInput = props => {
 }
 
 implementPropTypes(OrganizationInput, FormFieldTypes, {
-  value: T.arrayOf(T.shape(OrganizationType.propTypes)),
+  value: T.shape(OrganizationType.propTypes),
   picker: T.shape({
     title: T.string
   })
 }, {
   value: null,
   picker: {
-    title: trans('organizations_picker')
+    title: trans('organization_selector')
   }
 })
 
