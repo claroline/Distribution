@@ -1,8 +1,8 @@
 const DEFAULT_PLACEHOLDERS = [
   'platform_name',
   'platform_url',
-  'current_date',
-  'current_date_time',
+  'date',
+  'datetime',
   'username',
   'first_name',
   'last_name'

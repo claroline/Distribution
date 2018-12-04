@@ -148,8 +148,8 @@ class TemplateManager
         $keys = [
             '%platform_name%',
             '%platform_url%',
-            '%current_date%',
-            '%current_date_time%',
+            '%date%',
+            '%datetime%',
         ];
         $values = [
             $this->parameters['display']['name'],
