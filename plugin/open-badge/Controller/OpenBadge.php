@@ -11,6 +11,7 @@
 
 namespace Claroline\OpenBadgeBundle\Controller;
 
+use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
@@ -18,4 +19,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class OpenBadgeController
 {
+    /**
+     * @DI\InjectParams({
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     * })
+     */
+    public function _construct(SerializerProvider $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    public function getBadgeAction(BadgeClass $badge)
+    {
+    }
+
+    public function getAssertionAction(BadgeClass $badge)
+    {
+    }
 }

@@ -68,6 +68,13 @@ class BadgeClass
     private $issuer;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var int
+     */
+    private $durationValidation;
+
+    /**
      * Workspace constructor.
      */
     public function __construct()

@@ -1,6 +1,9 @@
 import {makeActionCreator} from '#/main/app/store/actions'
+import {url} from '#/main/app/api'
+
 import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
+import {actions as listActions} from '#/main/app/content/list/store'
 
 export const actions = {}
 
@@ -21,3 +24,16 @@ actions.open = (formName, id = null) => {
     return formActions.resetForm(formName, {}, true)
   }
 }
+
+actions.addUsers = (id, users) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_badge_add_users', {badge: id}], {ids: users}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('badges.list'))
+      dispatch(listActions.invalidateData('badges.current.users'))
+    }
+  }
+})
