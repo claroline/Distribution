@@ -144,13 +144,18 @@ class TemplateManager
      */
     public function replacePlaceholders($text, $placeholders = [])
     {
+        $now = new \DateTime();
         $keys = [
             '%platform_name%',
             '%platform_url%',
+            '%current_date%',
+            '%current_date_time%',
         ];
         $values = [
             $this->parameters['display']['name'],
             $this->parameters['internet']['platform_url'],
+            $now->format('Y-m-d'),
+            $now->format('Y-m-d H:i:s'),
         ];
 
         foreach ($placeholders as $key => $value) {
