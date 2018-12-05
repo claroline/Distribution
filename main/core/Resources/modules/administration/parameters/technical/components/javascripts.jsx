@@ -23,7 +23,6 @@ const Javascripts = () =>
           label: trans('javascripts'),
           type: 'collection',
           options: {
-            name: 'javascript',
             type: 'file',
             placeholder: trans('no_javascript'),
             button: trans('add_javascript')
