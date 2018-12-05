@@ -131,7 +131,7 @@ const QuizResource = props =>
         }, {
           path: '/statistics',
           component: Statistics,
-          disabled: !props.papersAdmin,
+          disabled: !props.papersAdmin && !props.showStatistics,
           onEnter: () => props.statistics()
         }
       ]}
@@ -159,6 +159,7 @@ QuizResource.propTypes = {
   editable: T.bool.isRequired,
   papersAdmin: T.bool.isRequired,
   docimologyAdmin: T.bool.isRequired,
+  showStatistics: T.bool.isRequired,
   hasPapers: T.bool.isRequired,
   registeredUser: T.bool.isRequired,
   hasOverview: T.bool.isRequired,
