@@ -1,7 +1,8 @@
 {
   "webpack": {
     "entry": {
-      "administration": "administration/index"
+      "administration": "administration/index",
+      "desktop": "desktop/index"
     }
   }
 }

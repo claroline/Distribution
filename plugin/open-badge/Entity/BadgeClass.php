@@ -75,6 +75,11 @@ class BadgeClass
     private $durationValidation;
 
     /**
+     * @ORM\OneToMany(targetEntity="Claroline\OpenBadgeBundle\Entity\Assertion", mappedBy="badge")
+     */
+    private $assertions;
+
+    /**
      * Workspace constructor.
      */
     public function __construct()

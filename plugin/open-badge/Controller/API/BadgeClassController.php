@@ -20,6 +20,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @EXT\Route("/badge-class")
@@ -28,15 +29,19 @@ class BadgeClassController extends AbstractCrudController
 {
     /**
      * @DI\InjectParams({
-     *     "manager" = @DI\Inject("claroline.manager.open_badge_manager"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "manager"      = @DI\Inject("claroline.manager.open_badge_manager"),
      * })
      *
      * @param TwigEngine     $templating
      * @param FinderProvider $finder
      */
-    public function __construct(OpenBadgeManager $manager)
-    {
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        OpenBadgeManager $manager
+    ) {
         $this->manager = $manager;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function getName()
@@ -99,6 +104,7 @@ class BadgeClassController extends AbstractCrudController
     public function getAssertionsUsersAction(Request $request, BadgeClass $badge)
     {
         $params = $request->query->all();
+
         $assertions = $this->finder->fetch(
           Assertion::class,
           ['badge' => $badge->getUuid(), 'revoked' => false],
@@ -122,6 +128,24 @@ class BadgeClassController extends AbstractCrudController
 
         return new JsonResponse(
           ['data' => $users, 'page' => $params['page'], 'limit' => $params['limit'], 'totalResults' => $total]
+        );
+    }
+
+    /**
+     * @EXT\Route("/current-user", name="apiv2_badge-class_current_user_list")
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function getMyBadgesAction(Request $request)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return new JsonResponse(
+            $this->finder->search(BadgeClass::class, array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['recipient' => $user->getUuid()]]
+            ))
         );
     }
 }

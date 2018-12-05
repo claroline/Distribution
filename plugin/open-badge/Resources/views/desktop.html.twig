@@ -1,0 +1,19 @@
+{% extends 'ClarolineCoreBundle:desktop:layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}
+    {{ parent() ~ ' - ' ~ "open-badge" | trans({}, "tools") | striptags | raw }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-container open-badge-container"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-open-badge-desktop.js') }}"></script>
+{% endblock %}

@@ -31,6 +31,14 @@ class BadgeClassFinder extends AbstractFinder
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+              case 'recipient':
+                  $qb->join('obj.assertions', 'a');
+                  $qb->join('a.recipient', 'r');
+                  $qb->andWhere('r.uuid = :uuid');
+                  $qb->setParameter('uuid', $filterValue);
+                  break;
+              default:
+                $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 

@@ -17,7 +17,7 @@ use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.api.finder.openbadge.assertion")
+ * @DI\Service("claroline.api.open_badge.finder.assertion")
  * @DI\Tag("claroline.finder")
  */
 class AssertionFinder extends AbstractFinder
@@ -31,11 +31,18 @@ class AssertionFinder extends AbstractFinder
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'badge':
-                  $qb->leftJoin('obj.badge', 'badge');
-                  $qb->andWhere('badge.uuid = :uuid');
-                  $qb->setParameter('uuid', $filterValue);
-                  break;
+                case 'badge':
+                    $qb->join('obj.badge', 'b');
+                    $qb->andWhere('b.uuid = :uuid');
+                    $qb->setParameter('uuid', $filterValue);
+                    break;
+                case 'recipient':
+                    $qb->join('obj.recipient', 'r');
+                    $qb->andWhere('r.uuid = :uuid');
+                    $qb->setParameter('uuid', $filterValue);
+                    break;
+                default:
+                  $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 
