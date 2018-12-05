@@ -70,7 +70,7 @@ class TemplateManager
      */
     public function getTemplate($templateTypeName, $placeholders = [], $locale = null, $mode = 'content')
     {
-        $result = null;
+        $result = '';
         $templateType = $this->templateTypeRepo->findOneBy(['name' => $templateTypeName]);
 
         // Checks if a template is associated to the template type
