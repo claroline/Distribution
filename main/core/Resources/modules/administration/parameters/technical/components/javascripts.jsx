@@ -17,7 +17,6 @@ const Javascripts = () =>
       {
         icon: 'fa fa-fw fa-file',
         title: trans('javascripts'),
-        defaultOpened: true,
         fields: [{
           name: 'javascripts',
           label: trans('javascripts'),
