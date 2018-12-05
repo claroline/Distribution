@@ -4,7 +4,7 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-const JavascriptsComponent = () =>
+const Javascripts = () =>
   <FormData
     name="parameters"
     target={['apiv2_parameters_update']}
@@ -25,10 +25,7 @@ const JavascriptsComponent = () =>
           type: 'collection',
           options: {
             name: 'javascript',
-            label: trans('javascripts'),
             type: 'file',
-            displayed: true,
-            multiple: true,
             placeholder: trans('no_javascript'),
             button: trans('add_javascript')
           }
@@ -38,13 +35,7 @@ const JavascriptsComponent = () =>
   />
 
 
-JavascriptsComponent.propTypes = {
-}
-
-const Javascripts = connect(
-  null,
-  () => ({ })
-)(JavascriptsComponent)
+Javascripts.propTypes = {}
 
 export {
   Javascripts
