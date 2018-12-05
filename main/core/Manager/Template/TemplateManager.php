@@ -66,7 +66,7 @@ class TemplateManager
      * @param string|null $locale
      * @param string      $mode
      *
-     * @return string|null
+     * @return string
      */
     public function getTemplate($templateTypeName, $placeholders = [], $locale = null, $mode = 'content')
     {
