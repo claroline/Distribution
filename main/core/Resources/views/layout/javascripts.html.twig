@@ -68,6 +68,10 @@
 {# Topbar #}
 <script src="{{ hotAsset('claroline-distribution-main-app-header') }}"></script>
 
+{% for file in platform_config()['javascripts'] %}
+    <script src="{{ asset(file) }}"></script>
+{% endfor %}
+
 <script>
     $('body').tooltip({
         selector: '[data-toggle=tooltip]'
