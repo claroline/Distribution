@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\DataFixtures\Required\Data;
+namespace Claroline\CoreBundle\DataFixtures\PostInstall\Data;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -145,7 +145,7 @@ class LoadTemplateData implements RequiredFixture
                 $title = $translator->trans('email_validation', [], 'platform', $locale);
                 $template->setTitle($title);
 
-                $content = $this->translator->trans(
+                $content = $translator->trans(
                     'email_validation_url_display',
                     ['%url%' => '%validation_mail%'],
                     'platform',
@@ -164,7 +164,7 @@ class LoadTemplateData implements RequiredFixture
                 $template->setName('workspace_registration');
                 $template->setLang($locale);
 
-                $title = $this->translator->trans(
+                $title = $translator->trans(
                     'workspace_registration_message_object',
                     ['%workspace_name%' => '%workspace_name%'],
                     'platform',
@@ -172,7 +172,7 @@ class LoadTemplateData implements RequiredFixture
                 );
                 $template->setTitle($title);
 
-                $content = $this->translator->trans(
+                $content = $translator->trans(
                     'workspace_registration_message',
                     ['%workspace_name%' => '%workspace_name%'],
                     'platform',
@@ -191,10 +191,10 @@ class LoadTemplateData implements RequiredFixture
                 $template->setName('platform_role_registration');
                 $template->setLang($locale);
 
-                $title = $this->translator->trans('new_role_message_object', [], 'platform', $locale);
+                $title = $translator->trans('new_role_message_object', [], 'platform', $locale);
                 $template->setTitle($title);
 
-                $content = $this->translator->trans('new_role_message', ['%name%' => '%role_name%'], 'platform', $locale);
+                $content = $translator->trans('new_role_message', ['%name%' => '%role_name%'], 'platform', $locale);
                 $template->setContent($content);
                 $om->persist($template);
             }
