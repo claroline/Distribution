@@ -11,6 +11,7 @@
 
 namespace Claroline\OpenBadgeBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -20,6 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Assertion
 {
+    use UuidTrait;
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -74,6 +76,11 @@ class Assertion
      * @ORM\Column(type="text", nullable=true)
      */
     private $revocationReason;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     /**
      * Get the value of Id.

@@ -21,13 +21,14 @@ class BadgeClassSerializer
     use SerializerTrait;
 
     /**
-     * Crud constructor.
-     *
      * @DI\InjectParams({
-     *     "fileUt"     = @DI\Inject("claroline.utilities.file"),
-     *     "router"     = @DI\Inject("router"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
+     *     "fileUt"             = @DI\Inject("claroline.utilities.file"),
+     *     "router"             = @DI\Inject("router"),
+     *     "serializer"         = @DI\Inject("claroline.api.serializer"),
+     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
+     *     "criteriaSerializer" = @DI\Inject("claroline.serializer.open_badge.criteria"),
+     *     "imageSerializer"    = @DI\Inject("claroline.serializer.open_badge.image"),
+     *     "profileSerializer"  = @DI\Inject("claroline.serializer.open_badge.profile")
      * })
      *
      * @param Router $router
@@ -36,12 +37,18 @@ class BadgeClassSerializer
         FileUtilities $fileUt,
         RouterInterface $router,
         SerializerProvider $serializer,
-        ObjectManager $om
+        ObjectManager $om,
+        CriteriaSerializer $criteriaSerializer,
+        ProfileSerializer $profileSerializer,
+        ImageSerializer $imageSerializer
     ) {
         $this->router = $router;
         $this->fileUt = $fileUt;
         $this->serializer = $serializer;
         $this->om = $om;
+        $this->criteriaSerializer = $criteriaSerializer;
+        $this->profileSerializer = $profileSerializer;
+        $this->imageSerializer = $imageSerializer;
     }
 
     /**
@@ -54,7 +61,7 @@ class BadgeClassSerializer
      */
     public function serialize(BadgeClass $badge, array $options = [])
     {
-        return [
+        $data = [
             'id' => $badge->getUuid(),
             'name' => $badge->getName(),
             'description' => $badge->getDescription(),
@@ -67,6 +74,21 @@ class BadgeClassSerializer
             ) : null,
             'issuer' => $this->serializer->serialize($badge->getIssuer()),
         ];
+
+        if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
+            $data['id'] = $this->router->generate('apiv2_open_badge__badge_class', ['badge' => $badge->getUuid()]);
+            $data['type'] = 'BadgeClass';
+            $data['criteria'] = $this->criteriaSerializer->serialize($badge);
+            $image = $this->om->getRepository(PublicFile::class)->findOneBy(['url' => $badge->getImage()]);
+
+            if ($image) {
+                $data['image'] = $this->imageSerializer->serialize($image);
+            }
+
+            $data['issuer'] = $this->profileSerializer->serialize($badge->getIssuer());
+        }
+
+        return $data;
     }
 
     /**

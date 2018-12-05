@@ -79,9 +79,6 @@ class BadgeClass
      */
     private $assertions;
 
-    /**
-     * Workspace constructor.
-     */
     public function __construct()
     {
         $this->refreshUuid();
