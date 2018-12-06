@@ -7,9 +7,11 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -29,6 +31,7 @@ class BadgeClassSerializer
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "criteriaSerializer" = @DI\Inject("claroline.serializer.open_badge.criteria"),
      *     "imageSerializer"    = @DI\Inject("claroline.serializer.open_badge.image"),
+     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "profileSerializer"  = @DI\Inject("claroline.serializer.open_badge.profile")
      * })
      *
@@ -41,6 +44,7 @@ class BadgeClassSerializer
         ObjectManager $om,
         CriteriaSerializer $criteriaSerializer,
         ProfileSerializer $profileSerializer,
+        EventDispatcherInterface $eventDispatcher,
         ImageSerializer $imageSerializer
     ) {
         $this->router = $router;
@@ -50,6 +54,7 @@ class BadgeClassSerializer
         $this->criteriaSerializer = $criteriaSerializer;
         $this->profileSerializer = $profileSerializer;
         $this->imageSerializer = $imageSerializer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -67,6 +72,7 @@ class BadgeClassSerializer
             'name' => $badge->getName(),
             'description' => $badge->getDescription(),
             'criteria' => $badge->getCriteria(),
+            'duration' => $badge->getDurationValidation(),
             'image' => $badge->getImage() && $this->om->getRepository(PublicFile::class)->findOneBy([
                   'url' => $badge->getImage(),
               ]) ? $this->serializer->serialize($this->om->getRepository(PublicFile::class)->findOneBy([
@@ -74,6 +80,7 @@ class BadgeClassSerializer
               ])
             ) : null,
             'issuer' => $this->serializer->serialize($badge->getIssuer()),
+            'tags' => $this->serializeTags($badge),
         ];
 
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
@@ -106,6 +113,7 @@ class BadgeClassSerializer
         $this->sipe('name', 'setName', $data, $badge);
         $this->sipe('description', 'setDescription', $data, $badge);
         $this->sipe('criteria', 'setCriteria', $data, $badge);
+        $this->sipe('duration', 'setDurationValidation', $data, $badge);
 
         if (isset($data['issuer'])) {
             $badge->setIssuer($this->serializer->deserialize(
@@ -127,7 +135,43 @@ class BadgeClassSerializer
             );
         }
 
+        if (isset($data['tags'])) {
+            if (is_string($data['tags'])) {
+                $this->deserializeTags($badge, explode(',', $data['tags']));
+            } else {
+                $this->deserializeTags($badge, $data['tags']);
+            }
+        }
+
         return $badge;
+    }
+
+    private function deserializeTags(BadgeClass $badge, array $tags = [], array $options = [])
+    {
+        $event = new GenericDataEvent([
+            'tags' => $tags,
+            'data' => [
+                [
+                    'class' => BadgeClass::class,
+                    'id' => $badge->getUuid(),
+                    'name' => $badge->getName(),
+                ],
+            ],
+            'replace' => true,
+        ]);
+
+        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+    }
+
+    private function serializeTags(BadgeClass $badge)
+    {
+        $event = new GenericDataEvent([
+            'class' => BadgeClass::class,
+            'ids' => [$badge->getUuid()],
+        ]);
+        $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+
+        return $event->getResponse();
     }
 
     public function getClass()

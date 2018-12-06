@@ -24,7 +24,10 @@ const BadgeFormComponent = (props) => {
       name="badges.current"
       meta={true}
       buttons={true}
-      target={['apiv2_badge-class_create']}
+      target={(badge, isNew) => isNew ?
+        ['apiv2_badge-class_create'] :
+        ['apiv2_badge-class_update', {id: badge.id}]
+      }
       sections={[
         {
           title: trans('badge'),
@@ -59,6 +62,12 @@ const BadgeFormComponent = (props) => {
               type: 'organization',
               label: trans('issuer'),
               required: true
+            },
+            {
+              name: 'duration',
+              type: 'number',
+              label: trans('duration'),
+              required: false
             },
             {
               name: 'tags',

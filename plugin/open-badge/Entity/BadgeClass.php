@@ -72,7 +72,7 @@ class BadgeClass
      *
      * @var int
      */
-    private $durationValidation;
+    private $durationValidation = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Claroline\OpenBadgeBundle\Entity\Assertion", mappedBy="badge")
@@ -226,5 +226,15 @@ class BadgeClass
         $this->issuer = $issuer;
 
         return $this;
+    }
+
+    public function setDurationValidation($duration)
+    {
+        $this->durationValidation = $duration;
+    }
+
+    public function getDurationValidation()
+    {
+        return $this->durationValidation;
     }
 }
