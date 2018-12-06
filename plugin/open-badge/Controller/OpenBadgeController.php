@@ -12,7 +12,7 @@
 namespace Claroline\OpenBadgeBundle\Controller;
 
 use Claroline\AppBundle\API\SerializerProvider;
-use Claroline\CoreBundle\EntityFile\PublicFile;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Claroline\OpenBadgeBundle\Serializer\CriteriaSerializer;
@@ -81,7 +81,7 @@ class OpenBadgeController
      */
     public function getProfile($profile)
     {
-        return new JsonResponse();
+        return new JsonResponse($this->profileSerializer->serialize($profile));
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -27,7 +28,7 @@ class ImageSerializer
     {
         return  [
             'type' => 'Image',
-            'id' => $this->router->generate('apiv2_open_badge__image', ['image' => $file->getId()]),
+            'id' => $this->router->generate('apiv2_open_badge__image', ['image' => $file->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
             //no captions atm
             'caption' => '',
             'author' => $this->router->generate('apiv2_open_badge__profile', ['profile' => $file->getCreator()->getUuid()]),

@@ -4,6 +4,7 @@ namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -28,7 +29,7 @@ class CriteriaSerializer
         return  [
             'type' => 'Criteria',
             'narrative' => $badge->getCriteria(),
-            'id' => $this->router->generate('apiv2_open_badge__criteria', ['badge' => $badge->getUuid()]),
+            'id' => $this->router->generate('apiv2_open_badge__criteria', ['badge' => $badge->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
         ];
     }
 }

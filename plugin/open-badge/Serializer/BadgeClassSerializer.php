@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -76,7 +77,7 @@ class BadgeClassSerializer
         ];
 
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
-            $data['id'] = $this->router->generate('apiv2_open_badge__badge_class', ['badge' => $badge->getUuid()]);
+            $data['id'] = $this->router->generate('apiv2_open_badge__badge_class', ['badge' => $badge->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL);
             $data['type'] = 'BadgeClass';
             $data['criteria'] = $this->criteriaSerializer->serialize($badge);
             $image = $this->om->getRepository(PublicFile::class)->findOneBy(['url' => $badge->getImage()]);
