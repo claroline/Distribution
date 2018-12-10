@@ -66,6 +66,7 @@ class ParametersSerializer
         }
 
         $data['javascripts'] = $this->serializeJavascripts($data);
+        $data['display']['logo'] = $this->om->getRepository(PublicFile::class)->findOneByUrl($data['display']['logo']);
 
         return $data;
     }
@@ -82,6 +83,7 @@ class ParametersSerializer
         $original = $data;
         $this->deserializeTos($data);
         $data = $this->getJavascriptsData($data);
+        $data = $this->getLogoData($data);
         unset($data['tos']['text']);
 
         $data = array_merge($this->serialize([Options::SERIALIZE_MINIMAL]), $data);
@@ -154,5 +156,15 @@ class ParametersSerializer
         }
 
         return $uploadedFiles;
+    }
+
+    public function getLogoData(array $data)
+    {
+        if (isset($data['display']) && isset($data['display']['logo'])) {
+            $logo = $data['display']['logo'];
+            $data['display']['logo'] = $logo['url'];
+        }
+
+        return $data;
     }
 }
