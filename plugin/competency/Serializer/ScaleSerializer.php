@@ -57,13 +57,13 @@ class ScaleSerializer
         $this->scaleRepo = $om->getRepository(Scale::class);
     }
 
-//    /**
-//     * @return string
-//     */
-//    public function getSchema()
-//    {
-//        return '#/plugin/competency/scale.json';
-//    }
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/competency/scale.json';
+    }
 
     /**
      * @param Scale $scale

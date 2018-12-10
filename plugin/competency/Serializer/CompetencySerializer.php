@@ -55,13 +55,13 @@ class CompetencySerializer
         $this->scaleRepo = $om->getRepository(Scale::class);
     }
 
-//    /**
-//     * @return string
-//     */
-//    public function getSchema()
-//    {
-//        return '#/plugin/competency/competency.json';
-//    }
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/competency/competency.json';
+    }
 
     /**
      * @param Competency $competency
@@ -112,7 +112,6 @@ class CompetencySerializer
         $this->sipe('id', 'setUuid', $data, $competency);
         $this->sipe('name', 'setName', $data, $competency);
         $this->sipe('description', 'setDescription', $data, $competency);
-        $this->sipe('meta.resourceCount', 'setResourceCount', $data, $competency);
 
         $parent = isset($data['parent']['id']) ?
             $this->competencyRepo->findOneBy(['uuid' => $data['parent']['id']]) :
