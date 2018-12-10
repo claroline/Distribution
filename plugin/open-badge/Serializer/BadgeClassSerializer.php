@@ -2,11 +2,13 @@
 
 namespace Claroline\OpenBadgeBundle\Serializer;
 
+use Claroline\AppBundle\API\Options as APIOptions;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
@@ -79,6 +81,7 @@ class BadgeClassSerializer
                   'url' => $badge->getImage(),
               ])
             ) : null,
+            'workspace' => $badge->getWorkspace() ? $this->serializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null,
             'issuer' => $this->serializer->serialize($badge->getIssuer()),
             'tags' => $this->serializeTags($badge),
         ];
@@ -133,6 +136,11 @@ class BadgeClassSerializer
                 BadgeClass::class,
                 $badge->getUuid()
             );
+        }
+
+        if (isset([$data]['workspace'])) {
+            $workspace = $this->deserialize(Workspace::class, $data['workspace']);
+            $badge->setWorkspace($workspace);
         }
 
         if (isset($data['tags'])) {

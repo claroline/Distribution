@@ -13,6 +13,7 @@ namespace Claroline\OpenBadgeBundle\Controller\API;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Claroline\OpenBadgeBundle\Manager\OpenBadgeManager;
@@ -145,6 +146,23 @@ class BadgeClassController extends AbstractCrudController
             $this->finder->search(BadgeClass::class, array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => ['recipient' => $user->getUuid()]]
+            ))
+        );
+    }
+
+    /**
+     * @EXT\Route("/workspace/{workspace}", name="apiv2_badge-class_workspace_badge_list")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"mapping": {"workspace": "uuid"}})
+     *
+     * @return JsonResponse
+     */
+    public function getWorkspaceBadges(Request $request, Workspace $workspace)
+    {
+        return new JsonResponse(
+            $this->finder->search(BadgeClass::class, array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['workspace' => $workspace->getUuid()]]
             ))
         );
     }

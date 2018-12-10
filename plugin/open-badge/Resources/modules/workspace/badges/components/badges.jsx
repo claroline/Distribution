@@ -4,11 +4,11 @@ import {BadgeList} from '#/plugin/open-badge/workspace/badges/components/badge-l
 import {ListData} from '#/main/app/content/list/containers/data'
 
 // todo : restore custom actions the same way resource actions are implemented
-const BadgesList = () =>
+const BadgesList = props =>
   <ListData
     name="badges.list"
     fetch={{
-      url: ['apiv2_badge-class_list'],
+      url: ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}],
       autoload: true
     }}
     definition={BadgeList.definition}
@@ -19,7 +19,9 @@ const BadgesList = () =>
   />
 
 const Badges = connect(
-  null,
+  (state) => ({
+    workspace: state.workspace
+  }),
   null
 )(BadgesList)
 

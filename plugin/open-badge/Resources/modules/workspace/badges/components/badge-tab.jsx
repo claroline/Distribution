@@ -9,7 +9,7 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {Badges} from '#/plugin/open-badge/workspace/badges/components/badges'
 import {Badge}  from '#/plugin/open-badge/workspace/badges/components/badge'
-import {BadgeForm as BadgeCreation} from '#/plugin/open-badge/badge/badge-form'
+import {BadgeForm as BadgeCreation} from '#/plugin/open-badge/workspace/badges/components/badge-form'
 import {actions}    from '#/plugin/open-badge/workspace/badges/actions'
 
 const BadgeTabActions = () =>

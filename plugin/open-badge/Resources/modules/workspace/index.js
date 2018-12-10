@@ -16,8 +16,9 @@ bootstrap(
 
   // remap data-attributes set on the app DOM container
   // todo load remaining through ajax
-  () => {
-
-
+  (initialData) => {
+    return {
+      workspace: initialData.workspace
+    }
   }
 )

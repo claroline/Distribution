@@ -23,6 +23,12 @@ class BadgeClass
 {
     use UuidTrait;
 
+    const ISSUING_MODE_ORGANIZATION = 'organization';
+    const ISSUING_MODE_USER = 'user';
+    const ISSUING_MODE_PEER = 'peer';
+    const ISSUING_MODE_WORKSPACE = 'workspace';
+    const ISSUING_MODE_AUTO = 'auto';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -68,7 +74,7 @@ class BadgeClass
     private $issuer;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
      *
      * @var Organization
      */
@@ -105,7 +111,7 @@ class BadgeClass
      *
      * @var string
      */
-    private $issuingMode;
+    private $issuingMode = self::ISSUING_MODE_ORGANIZATION;
 
     public function __construct()
     {
