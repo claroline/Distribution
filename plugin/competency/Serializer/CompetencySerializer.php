@@ -76,13 +76,13 @@ class CompetencySerializer
             'name' => $competency->getName(),
             'description' => $competency->getDescription(),
             'parent' => $competency->getParent() ? $this->serialize($competency->getParent(), [Options::SERIALIZE_MINIMAL]) : null,
+            'scale' => $this->serializer->serialize($competency->getScale(), [Options::SERIALIZE_MINIMAL]),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'meta' => [
                     'resourceCount' => $competency->getResourceCount(),
-                    'scale' => $this->serialize($competency->getScale(), [Options::SERIALIZE_MINIMAL]),
                 ],
                 'structure' => [
                     'root' => $competency->getRoot(),
@@ -118,8 +118,8 @@ class CompetencySerializer
             null;
         $competency->setParent($parent);
 
-        $scale = isset($data['meta']['scale']['id']) ?
-            $this->scaleRepo->findOneBy(['uuid' => $data['meta']['scale']['id']]) :
+        $scale = isset($data['scale']['id']) ?
+            $this->scaleRepo->findOneBy(['uuid' => $data['scale']['id']]) :
             null;
         $competency->setScale($scale);
 

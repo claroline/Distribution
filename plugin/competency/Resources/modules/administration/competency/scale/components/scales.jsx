@@ -4,14 +4,12 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
+import {ScaleList} from '#/plugin/competency/administration/competency/scale/components/scale-list'
+
 const Scales = () =>
   <ListData
     name="scales.list"
-    primaryAction={(row) => ({
-      type: 'link',
-      label: trans('open'),
-      target: `/scales/form/${row.id}`
-    })}
+    primaryAction={ScaleList.open}
     fetch={{
       url: ['apiv2_competency_scale_list'],
       autoload: true
@@ -28,16 +26,8 @@ const Scales = () =>
     delete={{
       url: ['apiv2_competency_scale_delete_bulk']
     }}
-    definition={[
-      {
-        name: 'name',
-        label: trans('name'),
-        displayed: true,
-        filterable: true,
-        type: 'string',
-        primary: true
-      }
-    ]}
+    definition={ScaleList.definition}
+    card={ScaleList.card}
   />
 
 export {

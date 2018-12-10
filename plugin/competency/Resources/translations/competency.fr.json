@@ -3,7 +3,11 @@
     "level.add": "Ajouter un degré",
     "level.none": "Aucun degré",
     "levels": "Degrés",
+    "scale": "Échelle",
     "scale.create": "Créer une échelle",
+    "scale.none": "Aucune échelle",
+    "scale.picker": "Sélecteur d'échelle",
+    "scale.select": "Sélectionnez une échelle",
     "scales": "Échelles",
 
     "ability.add": "Ajouter une capacité",

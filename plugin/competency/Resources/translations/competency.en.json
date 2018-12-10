@@ -3,7 +3,11 @@
     "level.add": "Add a level",
     "level.none": "No level",
     "levels": "Levels",
+    "scale": "Scale",
     "scale.create": "Create a scale",
+    "scale.none": "No scale",
+    "scale.picker": "Scale picker",
+    "scale.select": "Select a scale",
     "scales": "Scales",
 
     "ability.add": "Add an ability",

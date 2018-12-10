@@ -24,23 +24,17 @@
         }
       }
     },
-    "meta": {
+    "scale": {
       "type": ["object"],
       "properties": {
-        "scale": {
-          "type": ["object"],
-          "properties": {
-            "id": {
-              "type": "string",
-              "description": "The uuid of the associated scale"
-            }
-          }
+        "id": {
+          "type": "string",
+          "description": "The uuid of the associated scale"
         }
-      },
-      "required": ["scale"]
+      }
     }
   },
-  "required": ["name"],
+  "required": ["name", "scale"],
   "claroline": {
     "ids": ["id"]
   }

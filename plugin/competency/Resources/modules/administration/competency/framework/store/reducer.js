@@ -8,10 +8,10 @@ const reducer = combineReducers({
     sortBy: {property: 'name', direction: 1}
   }, {
     invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/frameworks.root']: () => true
+      [FORM_SUBMIT_SUCCESS+'/frameworks.form']: () => true
     })
   }),
-  root: makeFormReducer('frameworks.root', {}, {}),
+  form: makeFormReducer('frameworks.form', {}, {}),
   current: makeFormReducer('frameworks.current', {}, {})
 })
 

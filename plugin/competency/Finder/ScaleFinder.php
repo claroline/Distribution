@@ -13,7 +13,7 @@ namespace HeVinci\CompetencyBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Doctrine\ORM\QueryBuilder;
-use HeVinci\CompetencyBundle\Entity\Competency;
+use HeVinci\CompetencyBundle\Entity\Scale;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
