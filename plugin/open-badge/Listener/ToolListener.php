@@ -79,8 +79,21 @@ class ToolListener
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
         $content = $this->templating->render('ClarolineOpenBadgeBundle::desktop.html.twig', []);
+        $event->setContent($content);
+
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("open_tool_workspace_open-badge")
+     *
+     * @param DisplayToolEvent $event
+     */
+    public function onDisplayWorkspaceAgenda(DisplayToolEvent $event)
+    {
+        $workspace = $event->getWorkspace();
+        $content = $this->templating->render('ClarolineOpenBadgeBundle::workspace.html.twig', ['workspace' => $workspace]);
 
         $event->setContent($content);
-        $event->stopPropagation();
     }
 }

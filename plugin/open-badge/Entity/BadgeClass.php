@@ -68,6 +68,20 @@ class BadgeClass
     private $issuer;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace", nullable=true)
+     *
+     * @var Organization
+     */
+    private $workspace;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     *
+     * @var int
+     */
+    private $isEnabled = true;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      *
      * @var int
@@ -78,6 +92,20 @@ class BadgeClass
      * @ORM\OneToMany(targetEntity="Claroline\OpenBadgeBundle\Entity\Assertion", mappedBy="badge")
      */
     private $assertions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
+     *
+     * @var Organization
+     */
+    private $allowedIssuers;
+
+    /**
+     * @ORM\Column(type="text")
+     *
+     * @var string
+     */
+    private $issuingMode;
 
     public function __construct()
     {
@@ -236,5 +264,25 @@ class BadgeClass
     public function getDurationValidation()
     {
         return $this->durationValidation;
+    }
+
+    public function setWorkspace(Workspace $workspace)
+    {
+        $this->workspace = $workspace;
+    }
+
+    public function getWorkspace()
+    {
+        return $this->workspace;
+    }
+
+    public function setIsEnabled($bool)
+    {
+        $this->isEnabled = $bool;
+    }
+
+    public function getIsEnabled()
+    {
+        return $this->isEnabled;
     }
 }

@@ -1,6 +1,5 @@
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-
 import {BadgeCard} from '#/plugin/open-badge/badge/badge-card'
 
 const BadgeList = {
@@ -15,11 +14,6 @@ const BadgeList = {
       label: trans('name'),
       displayed: true,
       primary: true
-    },
-    {
-      name: 'meta.enabled',
-      label: trans('enabled'),
-      displayed: true
     }
   ],
   card: BadgeCard

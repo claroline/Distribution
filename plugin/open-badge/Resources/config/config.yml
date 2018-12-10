@@ -5,11 +5,10 @@ plugin:
       - name: open-badge
         class: trophy
 
-
     tools:
         - name: open-badge
           class: trophy
-          is_displayable_in_workspace: false
+          is_displayable_in_workspace: true
           is_displayable_in_desktop: true
           is_configurable_in_workspace: false
           is_configurable_in_desktop: false
