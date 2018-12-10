@@ -48,6 +48,7 @@
     "add_a_choice": "Add a choice",
     "add_a_logo": "Add a logo",
     "add_a_task": "Schedule a task",
+    "add_a_template": "Add a template",
     "add_an_item": "Add an item",
     "add_category": "Add category",
     "add_contact_to_category": "Add the contact to a category",
@@ -711,6 +712,7 @@
     "merge": "Merge",
     "merge_accounts": "Merge selected accounts",
     "merge_confirmation": "Merging account process will result in keeping user: %username% account. Do you still want to proceed?",
+    "message": "Message",
     "messages": "Messages",
     "meta_tag_paste": "Paste the meta tag provided by Google Webmaster here",
     "method_of_work": "Method of work",
@@ -1155,6 +1157,7 @@
     "street": "Street",
     "street_number": "Street number",
     "subcategories": "Subcategories",
+    "subject": "Subject",
     "subscribe_groups": "Subscribe groups",
     "subscribe_selected_groups": "Subscribe selected groups",
     "subscribe_selected_users": "Subscribe selected users",
@@ -1697,5 +1700,13 @@
     "search_and_filters": "Search & filters",
     "disabled_admin_tools": "Admin tools disabled",
     "workspace_denied": "The workspace %workspace% is private.",
-    "workspace_private_registration": "An admin need to register you to this workspace."
+    "workspace_private_registration": "An admin need to register you to this workspace.",
+    "overview_message": "Welcome message",
+    "enable_overview": "Display home page",
+    "playback": "Playback",
+    "video": "Video",
+    "javascript": "Javascript",
+    "javascripts": "Javascripts",
+    "add_javascript": "Add a javascript",
+    "no_javascript": "No javascript"
 }

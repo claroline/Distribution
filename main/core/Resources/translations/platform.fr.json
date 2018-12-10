@@ -48,6 +48,7 @@
     "add_a_choice": "Ajouter un choix",
     "add_a_logo": "Ajouter un logo",
     "add_a_task": "Planifier une tâche",
+    "add_a_template": "Ajouter un template",
     "add_an_item": "Ajouter un élément",
     "add_category": "Ajouter une catégorie",
     "add_contact_to_category": "Ajouter le contact à une catégorie",
@@ -724,6 +725,7 @@
     "merge": "Fusionner",
     "merge_accounts": "Fusionner les comptes sélectionnés",
     "merge_confirmation": "La fusion de comptes va conserver le compte de l'utilisateur %username%. Souhaitez-vous continuer ?",
+    "message": "Message",
     "messages": "Messages",
     "meta_tag_paste": "Collez ici la balise meta fournie par Google Webmaster.",
     "method_of_work": "Modalités de travail",
@@ -1180,6 +1182,7 @@
     "street": "Rue",
     "street_number": "Numéro de rue",
     "subcategories": "Sous-catégories",
+    "subject": "Sujet",
     "subscribe_groups": "Inscrire des groupes",
     "subscribe_selected_groups": "Inscrire les groupes sélectionnés",
     "subscribe_selected_users": "Inscrire les utilisateurs sélectionnés",
@@ -1730,5 +1733,13 @@
     "search_and_filters": "Recherche & filters",
     "disabled_admin_tools": "Outils admins désactivés",
     "workspace_denied": "L'espace d'activité %workspace% vous est inaccessible.",
-    "workspace_private_registration": "Cet espace d'activté requiert une inscription par un gestionnaire."
+    "workspace_private_registration": "Cet espace d'activté requiert une inscription par un gestionnaire.",
+    "overview_message": "Message d'accueil",
+    "enable_overview": "Afficher la page d'accueil",
+    "playback": "Lecture",
+    "video": "Vidéo",
+    "javascript": "Javascript",
+    "javascripts": "Javascripts",
+    "add_javascript": "Ajouter un javascript",
+    "no_javascript": "Aucun javascript"
 }
