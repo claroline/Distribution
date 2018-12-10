@@ -48,6 +48,39 @@ class CompetencyManager
     }
 
     /**
+     * Returns whether there are scales registered in the database.
+     *
+     * @return bool
+     */
+    public function hasScales()
+    {
+        return $this->om->count(Scale::class) > 0;
+    }
+
+    /**
+     * Creates a default scale if no scale exists yet.
+     */
+    public function ensureHasScale()
+    {
+        if (!$this->hasScales()) {
+            $defaultScale = new Scale();
+            $defaultScale->setName(
+                $this->translator->trans('scale.default_name', [], 'competency')
+            );
+            $defaultLevel = new Level();
+            $defaultLevel->setValue(0);
+            $defaultLevel->setName(
+                $this->translator->trans('scale.default_level_name', [], 'competency')
+            );
+            $defaultScale->setLevels(new ArrayCollection([$defaultLevel]));
+            $this->om->persist($defaultScale);
+            $this->om->flush();
+        }
+    }
+
+    /****************************************************************************************************************/
+
+    /**
      * Returns the list of registered frameworks.
      *
      * @param bool $shortArrays Whether full entities or minimal arrays should be returned
@@ -67,16 +100,6 @@ class CompetencyManager
                     'description' => $framework->getDescription(),
                 ];
             }, $frameworks);
-    }
-
-    /**
-     * Returns whether there are scales registered in the database.
-     *
-     * @return bool
-     */
-    public function hasScales()
-    {
-        return $this->om->count('HeVinciCompetencyBundle:Scale') > 0;
     }
 
     /**
@@ -143,27 +166,6 @@ class CompetencyManager
 
         $this->om->remove($scale);
         $this->om->flush();
-    }
-
-    /**
-     * Creates a default scale if no scale exists yet.
-     */
-    public function ensureHasScale()
-    {
-        if (!$this->hasScales()) {
-            $defaultScale = new Scale();
-            $defaultScale->setName(
-                $this->translator->trans('scale.default_name', [], 'competency')
-            );
-            $defaultLevel = new Level();
-            $defaultLevel->setValue(0);
-            $defaultLevel->setName(
-                $this->translator->trans('scale.default_level_name', [], 'competency')
-            );
-            $defaultScale->setLevels(new ArrayCollection([$defaultLevel]));
-            $this->om->persist($defaultScale);
-            $this->om->flush();
-        }
     }
 
     /**

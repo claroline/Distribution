@@ -172,7 +172,7 @@ class AbilityProgress
         if (!is_null($this->failedResourceIds)) {
             $key = array_search($resource->getId(), $this->failedResourceIds);
 
-            if ($key !== false) {
+            if (false !== $key) {
                 array_splice($this->failedResourceIds, $key, 1);
             }
         }

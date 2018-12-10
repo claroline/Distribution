@@ -386,7 +386,7 @@ class ObjectiveController
     {
         return new JsonResponse(
             $result = $this->objectiveManager->removeUserObjective($objective, $user),
-            $result === false ? 204 : 200
+            false === $result ? 204 : 200
         );
     }
 

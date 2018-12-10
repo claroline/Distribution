@@ -19,7 +19,7 @@ class NotEmptyValidator extends ConstraintValidator
             );
         }
 
-        if (count($value) === 0) {
+        if (0 === count($value)) {
             $this->context->addViolation($constraint->message);
         }
     }

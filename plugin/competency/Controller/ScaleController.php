@@ -104,9 +104,9 @@ class ScaleController
             'form' => $this->formHandler->getView(
                 'hevinci_form_scale',
                 $scale,
-                ['read_only' => $edit == 0]
+                ['read_only' => 0 == $edit]
             ),
-            'scale' => $edit == 0 ? null : $scale,
+            'scale' => 0 == $edit ? null : $scale,
         ];
     }
 

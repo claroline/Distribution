@@ -21,7 +21,7 @@ class LevelTransformer implements DataTransformerInterface
     {
         $serialized = '';
 
-        if (!$levels instanceof Collection || $levels->count() === 0) {
+        if (!$levels instanceof Collection || 0 === $levels->count()) {
             return $serialized;
         }
 
