@@ -56,25 +56,12 @@ const CompetencyComponent = (props) =>
                 icon: 'fa fa-fw fa-plus-square',
                 label: trans('ability.create', {}, 'competency'),
                 target: `/frameworks/${props.competency.id}/ability`
+              }, {
+                type: LINK_BUTTON,
+                icon: 'fa fa-fw fa-plus',
+                label: trans('ability.add', {}, 'competency'),
+                target: `/frameworks/${props.competency.id}/ability_choice`
               }
-            //   {
-            //     type: MODAL_BUTTON,
-            //     icon: 'fa fa-fw fa-plus',
-            //     label: trans('add_organizations'),
-            //     modal: [MODAL_DATA_LIST, {
-            //       icon: 'fa fa-fw fa-building',
-            //       title: trans('add_organizations'),
-            //       confirmText: trans('add'),
-            //       name: 'courses.current.organizations.picker',
-            //       definition: OrganizationList.definition,
-            //       card: OrganizationList.card,
-            //       fetch: {
-            //         url: ['apiv2_organization_list'],
-            //         autoload: true
-            //       },
-            //       handleSelect: (selected) => props.addOrganizations(props.course.id, selected)
-            //     }]
-            //   }
             ]}
           >
             <ListData

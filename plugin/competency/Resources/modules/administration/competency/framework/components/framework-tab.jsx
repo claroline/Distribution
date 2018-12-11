@@ -16,6 +16,7 @@ import {FrameworkForm} from '#/plugin/competency/administration/competency/frame
 import {Framework} from '#/plugin/competency/administration/competency/framework/components/framework'
 import {Competency} from '#/plugin/competency/administration/competency/framework/components/competency'
 import {CompetencyAbility} from '#/plugin/competency/administration/competency/framework/components/competency-ability'
+import {CompetencyAbilityChoice} from '#/plugin/competency/administration/competency/framework/components/competency-ability-choice'
 
 const FrameworkTabActions = () =>
   <PageActions>
@@ -55,6 +56,11 @@ const FrameworkTabComponent = props =>
         path: '/frameworks/:competencyId/ability/:id?',
         component: CompetencyAbility,
         onEnter: (params) => props.openAbility(params.competencyId, params.id),
+        onLeave: () => props.resetAbility()
+      }, {
+        path: '/frameworks/:competencyId/ability_choice',
+        component: CompetencyAbilityChoice,
+        onEnter: (params) => props.openAbilityChoice(params.competencyId),
         onLeave: () => props.resetAbility()
       }
     ]}
@@ -108,6 +114,14 @@ const FrameworkTab = connect(
       set(defaultProps, 'ability', {'id': makeId()})
 
       dispatch(actions.openCompetencyAbility('frameworks.competency_ability', defaultProps, id))
+      dispatch(actions.open('frameworks.competency', {}, competencyId))
+    },
+    openAbilityChoice(competencyId) {
+      const defaultProps = {}
+      set(defaultProps, 'id', makeId())
+      set(defaultProps, 'competency', {'id': competencyId})
+
+      dispatch(actions.openCompetencyAbility('frameworks.competency_ability', defaultProps))
       dispatch(actions.open('frameworks.competency', {}, competencyId))
     },
     resetAbility() {

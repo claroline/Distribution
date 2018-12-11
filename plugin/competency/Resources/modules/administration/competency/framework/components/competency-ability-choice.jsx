@@ -12,17 +12,14 @@ import {
   CompetencyAbility as CompetencyAbilityType
 } from '#/plugin/competency/administration/competency/prop-types'
 
-const CompetencyAbilityComponent = (props) =>
+const CompetencyAbilityChoiceComponent = (props) =>
   <section className="resource-section">
-    <h2>{props.new ? trans('ability.creation', {}, 'competency') : trans('ability.edition', {}, 'competency')}</h2>
+    <h2>{trans('ability.addition', {}, 'competency')}</h2>
     <FormData
       level={3}
       name="frameworks.competency_ability"
       buttons={true}
-      target={(competencyAbility, isNew) => isNew ?
-        ['apiv2_competency_ability_create'] :
-        ['apiv2_competency_ability_update', {id: competencyAbility.id}]
-      }
+      target={['apiv2_competency_ability_create']}
       cancel={{
         type: LINK_BUTTON,
         target: props.competency && props.competency.parent ?
@@ -38,9 +35,9 @@ const CompetencyAbilityComponent = (props) =>
           primary: true,
           fields: [
             {
-              name: 'ability.name',
-              type: 'string',
-              label: trans('name'),
+              name: 'ability',
+              type: 'ability',
+              label: trans('ability', {}, 'competency'),
               required: true
             }, {
               name: 'level.id',
@@ -53,15 +50,6 @@ const CompetencyAbilityComponent = (props) =>
                   props.competency.scale.levels.reduce((acc, level) => Object.assign(acc, {[level.id]: level.value}), {}) :
                   {}
               }
-            }, {
-              name: 'ability.minResourceCount',
-              type: 'number',
-              label: trans('ability.min_resource_count', {}, 'competency'),
-              required: true,
-              options: {
-                min: 0,
-                max: 1000
-              }
             }
           ]
         }
@@ -69,20 +57,20 @@ const CompetencyAbilityComponent = (props) =>
     />
   </section>
 
-CompetencyAbilityComponent.propTypes = {
+CompetencyAbilityChoiceComponent.propTypes = {
   new: T.bool.isRequired,
   competencyAbility: T.shape(CompetencyAbilityType.propTypes),
   competency: T.shape(CompetencyType.propTypes)
 }
 
-const CompetencyAbility = connect(
+const CompetencyAbilityChoice = connect(
   state => ({
     new: formSelect.isNew(formSelect.form(state, 'frameworks.competency_ability')),
     competencyAbility: formSelect.data(formSelect.form(state, 'frameworks.competency_ability')),
     competency: formSelect.data(formSelect.form(state, 'frameworks.competency'))
   })
-)(CompetencyAbilityComponent)
+)(CompetencyAbilityChoiceComponent)
 
 export {
-  CompetencyAbility
+  CompetencyAbilityChoice
 }

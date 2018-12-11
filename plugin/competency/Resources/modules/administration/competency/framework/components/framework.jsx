@@ -27,6 +27,7 @@ const FrameworkComponent = () =>
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-plus',
         label: trans('competency.create_sub', {}, 'competency'),
+        displayed: 0 === rows[0].abilities.length,
         scope: ['object'],
         target: `/frameworks/${rows[0].id}/competency`
       }, {

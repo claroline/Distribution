@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {asset} from '#/main/app/config/asset'
 import {DataCard} from '#/main/app/content/card/components/data'
 
 import {Competency as CompetencyType} from '#/plugin/competency/administration/competency/prop-types'
