@@ -60,4 +60,45 @@ class CompetencyController extends AbstractCrudController
 
         return new JsonResponse($data, 200);
     }
+
+    /**
+     * @EXT\Route(
+     *     "/competency/{id}/list",
+     *     name="apiv2_competency_tree_list"
+     * )
+     * @EXT\ParamConverter(
+     *     "competency",
+     *     class="HeVinciCompetencyBundle:Competency",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     *
+     * @param Competency $competency
+     * @param Request    $request
+     *
+     * @return JsonResponse
+     */
+    public function competenciesTreeListAction(Competency $competency, Request $request)
+    {
+        $root = $competency;
+
+        while (!is_null($root->getParent())) {
+            $root = $root->getParent();
+        }
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['uuid'] = $root->getUuid();
+        $data = $this->finder->search(Competency::class, $params, [Options::SERIALIZE_MINIMAL, Options::IS_RECURSIVE]);
+
+        return new JsonResponse($data, 200);
+    }
+
+    public function getOptions()
+    {
+        return [
+            'get' => [Options::IS_RECURSIVE],
+        ];
+    }
 }

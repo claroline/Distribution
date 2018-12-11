@@ -12,7 +12,18 @@ const reducer = combineReducers({
     })
   }),
   form: makeFormReducer('frameworks.form', {}, {}),
-  current: makeFormReducer('frameworks.current', {}, {})
+  current: makeListReducer('frameworks.current', {}, {}),
+  competency: makeFormReducer('frameworks.competency', {}, {
+    abilities: combineReducers({
+      list: makeListReducer('frameworks.competency.abilities.list', {}, {
+        invalidated: makeReducer(false, {
+          [FORM_SUBMIT_SUCCESS+'/frameworks.competency_ability']: () => true
+        })
+      }),
+      picker: makeListReducer('frameworks.competency.abilities.picker')
+    })
+  }),
+  competency_ability: makeFormReducer('frameworks.competency_ability', {}, {})
 })
 
 export {

@@ -13,6 +13,9 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {actions} from '#/plugin/competency/administration/competency/framework/store'
 import {Frameworks} from '#/plugin/competency/administration/competency/framework/components/frameworks'
 import {FrameworkForm} from '#/plugin/competency/administration/competency/framework/components/framework-form'
+import {Framework} from '#/plugin/competency/administration/competency/framework/components/framework'
+import {Competency} from '#/plugin/competency/administration/competency/framework/components/competency'
+import {CompetencyAbility} from '#/plugin/competency/administration/competency/framework/components/competency-ability'
 
 const FrameworkTabActions = () =>
   <PageActions>
@@ -37,13 +40,35 @@ const FrameworkTabComponent = props =>
         component: FrameworkForm,
         onEnter: (params) => props.openForm(params.id),
         onLeave: () => props.resetForm()
+      }, {
+        path: '/frameworks/:id?',
+        exact: true,
+        component: Framework,
+        onEnter: (params) => props.loadCurrent(params.id),
+        onLeave: () => props.resetCurrent()
+      }, {
+        path: '/frameworks/:parentId/competency/:id?',
+        component: Competency,
+        onEnter: (params) => props.openCompetency(params.parentId, params.id),
+        onLeave: () => props.resetCompetency()
+      }, {
+        path: '/frameworks/:competencyId/ability/:id?',
+        component: CompetencyAbility,
+        onEnter: (params) => props.openAbility(params.competencyId, params.id),
+        onLeave: () => props.resetAbility()
       }
     ]}
   />
 
 FrameworkTabComponent.propTypes = {
   openForm: T.func.isRequired,
-  resetForm: T.func.isRequired
+  resetForm: T.func.isRequired,
+  loadCurrent: T.func.isRequired,
+  resetCurrent: T.func.isRequired,
+  openCompetency: T.func.isRequired,
+  resetCompetency: T.func.isRequired,
+  openAbility: T.func.isRequired,
+  resetAbility: T.func.isRequired
 }
 
 const FrameworkTab = connect(
@@ -58,6 +83,36 @@ const FrameworkTab = connect(
     },
     resetForm() {
       dispatch(actions.reset('frameworks.form'))
+    },
+    loadCurrent(id) {
+      dispatch(actions.loadCurrent('frameworks.current', id))
+    },
+    resetCurrent() {
+      dispatch(actions.resetCurrent('frameworks.current'))
+    },
+    openCompetency(parentId, id = null) {
+      const defaultProps = {}
+      set(defaultProps, 'id', makeId())
+      set(defaultProps, 'parent', {'id': parentId})
+
+      dispatch(actions.open('frameworks.competency', defaultProps, id))
+    },
+    resetCompetency() {
+      dispatch(actions.reset('frameworks.competency')),
+      dispatch(actions.invalidateList('frameworks.competency.abilities.list'))
+    },
+    openAbility(competencyId, id = null) {
+      const defaultProps = {}
+      set(defaultProps, 'id', makeId())
+      set(defaultProps, 'competency', {'id': competencyId})
+      set(defaultProps, 'ability', {'id': makeId()})
+
+      dispatch(actions.openCompetencyAbility('frameworks.competency_ability', defaultProps, id))
+      dispatch(actions.open('frameworks.competency', {}, competencyId))
+    },
+    resetAbility() {
+      dispatch(actions.reset('frameworks.competency'))
+      dispatch(actions.reset('frameworks.competency_ability'))
     }
   })
 )(FrameworkTabComponent)

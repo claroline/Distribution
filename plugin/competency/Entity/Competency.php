@@ -295,6 +295,14 @@ class Competency implements \JsonSerializable
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getCompetencyAbilities()
+    {
+        return $this->competencyAbilities;
+    }
+
+    /**
      * @param CompetencyAbility $link
      */
     public function addCompetencyAbility(CompetencyAbility $link)

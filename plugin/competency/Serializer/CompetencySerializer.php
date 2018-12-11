@@ -16,6 +16,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use HeVinci\CompetencyBundle\Entity\Competency;
+use HeVinci\CompetencyBundle\Entity\CompetencyAbility;
 use HeVinci\CompetencyBundle\Entity\Scale;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -77,6 +78,9 @@ class CompetencySerializer
             'description' => $competency->getDescription(),
             'parent' => $competency->getParent() ? $this->serialize($competency->getParent(), [Options::SERIALIZE_MINIMAL]) : null,
             'scale' => $this->serializer->serialize($competency->getScale(), [Options::SERIALIZE_MINIMAL]),
+            'abilities' => array_map(function (CompetencyAbility $competencyAbility) {
+                return $this->serializer->serialize($competencyAbility, [Options::SERIALIZE_MINIMAL]);
+            }, $competency->getCompetencyAbilities()->toArray()),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
@@ -118,9 +122,13 @@ class CompetencySerializer
             null;
         $competency->setParent($parent);
 
-        $scale = isset($data['scale']['id']) ?
-            $this->scaleRepo->findOneBy(['uuid' => $data['scale']['id']]) :
-            null;
+        if ($parent) {
+            $scale = $parent->getScale();
+        } else {
+            $scale = isset($data['scale']['id']) ?
+                $this->scaleRepo->findOneBy(['uuid' => $data['scale']['id']]) :
+                null;
+        }
         $competency->setScale($scale);
 
         return $competency;

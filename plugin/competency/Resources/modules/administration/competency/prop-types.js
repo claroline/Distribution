@@ -1,5 +1,13 @@
 import {PropTypes as T} from 'prop-types'
 
+const Level = {
+  propTypes: {
+    id: T.string,
+    name: T.string,
+    value: T.number
+  }
+}
+
 const Scale = {
   propTypes: {
     id: T.string,
@@ -26,11 +34,32 @@ const Competency = {
       lvl: T.number,
       lft: T.number,
       rgt: T.number
-    })
+    }),
+    abilities: T.arrayOf(T.object)
+  }
+}
+
+const Ability = {
+  propTypes: {
+    id: T.string,
+    name: T.string,
+    minResourceCount: T.number
+  }
+}
+
+const CompetencyAbility = {
+  propTypes: {
+    id: T.string,
+    competency: T.shape(Competency.propTypes),
+    ability: T.shape(Ability.propTypes),
+    level: T.shape(Level.propTypes),
   }
 }
 
 export {
+  Level,
   Scale,
-  Competency
+  Competency,
+  Ability,
+  CompetencyAbility
 }

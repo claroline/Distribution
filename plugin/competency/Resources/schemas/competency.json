@@ -34,7 +34,7 @@
       }
     }
   },
-  "required": ["name", "scale"],
+  "required": ["name"],
   "claroline": {
     "ids": ["id"]
   }
