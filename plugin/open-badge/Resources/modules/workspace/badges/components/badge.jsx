@@ -10,8 +10,9 @@ import {trans} from '#/main/app/intl/translation'
 import {BadgeForm} from '#/plugin/open-badge/workspace/badges/components/badge-form'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {AssertionList} from '#/plugin/open-badge/badge/assertion-list'
 import {ListData} from '#/main/app/content/list/containers/data'
-import {actions}    from '#/plugin/open-badge/workspace/badges/actions'
+import {actions}    from '#/plugin/open-badge/badge/actions'
 
 const BadgeComponent = props =>
   <div>
@@ -42,17 +43,17 @@ const BadgeComponent = props =>
           ]}
         >
           <ListData
-            name="badges.current.users"
+            name="badges.current.assertions"
             fetch={{
-              url: ['apiv2_badge_users_list', {badge: props.badge.id}],
+              url: ['apiv2_assertion_badges', {badge: props.badge.id}],
               autoload: props.badge.id && !props.new
             }}
-            primaryAction={UserList.open}
+            primaryAction={AssertionList.open}
             delete={{
               url: ['apiv2_badge_remove_users', {badge: props.badge.id}]
             }}
-            definition={UserList.definition}
-            card={UserList.card}
+            definition={AssertionList.definition}
+            card={AssertionList.card}
           />
         </FormSection>
       </FormSections>

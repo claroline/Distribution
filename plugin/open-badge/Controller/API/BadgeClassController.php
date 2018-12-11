@@ -84,10 +84,10 @@ class BadgeClassController extends AbstractCrudController
      */
     public function removeUserAction(BadgeClass $badge, Request $request)
     {
-        $users = $this->decodeIdsString($request, User::class);
+        $assertions = $this->decodeIdsString($request, Assertion::class);
 
-        foreach ($users as $user) {
-            $this->manager->revokeAssertion($badge, $user);
+        foreach ($assertions as $assertion) {
+            $this->manager->revokeAssertion($assertion);
         }
 
         return new JsonResponse(

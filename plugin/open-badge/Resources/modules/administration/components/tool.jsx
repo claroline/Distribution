@@ -8,7 +8,7 @@ const Tool = () =>
   <TabbedPageContainer
     title={trans('open-badge-management', {}, 'tools')}
     redirect={[
-      {from: '/', exact: true, to: '/open-badge'}
+      {from: '/', exact: true, to: '/badges'}
     ]}
 
     tabs={[

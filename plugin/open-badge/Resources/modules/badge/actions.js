@@ -6,11 +6,29 @@ import {actions as listActions} from '#/main/app/content/list/store'
 
 export const actions = {}
 
-actions.open = (formName, id = null) => {
+actions.openBadge = (formName, id = null) => {
   if (id) {
     return {
       [API_REQUEST]: {
         url: ['apiv2_badge-class_get', {id}],
+        before: (dispatch) => {
+          dispatch(formActions.resetForm(formName, {}, false))
+        },
+        success: (response, dispatch) => {
+          dispatch(formActions.resetForm(formName, response, false))
+        }
+      }
+    }
+  } else {
+    return formActions.resetForm(formName, {}, true)
+  }
+}
+
+actions.openAssertion = (formName, id = null) => {
+  if (id) {
+    return {
+      [API_REQUEST]: {
+        url: ['apiv2_assertion_get', {id}],
         before: (dispatch) => {
           dispatch(formActions.resetForm(formName, {}, false))
         },

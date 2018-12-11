@@ -3,6 +3,7 @@
 namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -14,8 +15,35 @@ class AssertionSerializer
 {
     use SerializerTrait;
 
-    public function __construct()
+    /**
+     * @DI\InjectParams({
+     *     "badgeSerializer" = @DI\Inject("claroline.serializer.open_badge.badge"),
+     *     "userSerializer"  = @DI\Inject("claroline.serializer.user")
+     * })
+     *
+     * @param Router $router
+     */
+    public function __construct(UserSerializer $userSerializer, BadgeClassSerializer $badgeSerializer)
     {
+        $this->userSerializer = $userSerializer;
+        $this->badgeSerializer = $badgeSerializer;
+    }
+
+    /**
+     * Serializes a Assertion entity.
+     *
+     * @param Assertion $assertion
+     * @param array     $options
+     *
+     * @return array
+     */
+    public function serialize(Assertion $assertion, array $options = [])
+    {
+        return [
+          'id' => $assertion->getUuid(),
+          'user' => $this->userSerializer->serialize($assertion->getRecipient()),
+          'badge' => $this->badgeSerializer->serialize($assertion->getBadge()),
+        ];
     }
 
     public function getClass()

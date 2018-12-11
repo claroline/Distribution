@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * @DI\Service()
+ * @DI\Service("claroline.serializer.open_badge.badge")
  * @DI\Tag("claroline.serializer")
  */
 class BadgeClassSerializer

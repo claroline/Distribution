@@ -44,9 +44,8 @@ class OpenBadgeManager
         $this->om->flush();
     }
 
-    public function revokeAssertion(BadgeClass $badge, User $user)
+    public function revokeAssertion(Assertion $assertion)
     {
-        $assertion = $this->om->getRepository(Assertion::class)->findOneBy(['badge' => $badge, 'recipient' => $user]);
         $assertion->setRevoked(true);
         $this->om->persist($assertion);
         $this->om->flush();

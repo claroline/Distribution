@@ -5,12 +5,13 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {actions}    from '#/plugin/open-badge/administration/badges/actions'
+import {actions}    from '#/plugin/open-badge/badge/actions'
 
 import {trans} from '#/main/app/intl/translation'
 import {BadgeForm} from '#/plugin/open-badge/badge/badge-form'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {AssertionList} from '#/plugin/open-badge/badge/assertion-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 const BadgeComponent = props =>
@@ -46,17 +47,17 @@ const BadgeComponent = props =>
           ]}
         >
           <ListData
-            name="badges.current.users"
+            name="badges.current.assertions"
             fetch={{
-              url: ['apiv2_badge_users_list', {badge: props.badge.id}],
+              url: ['apiv2_assertion_badges', {badge: props.badge.id}],
               autoload: props.badge.id && !props.new
             }}
-            primaryAction={UserList.open}
+            primaryAction={AssertionList.open}
             delete={{
               url: ['apiv2_badge_remove_users', {badge: props.badge.id}]
             }}
-            definition={UserList.definition}
-            card={UserList.card}
+            definition={AssertionList.definition}
+            card={AssertionList.card}
           />
         </FormSection>
       </FormSections>
@@ -65,11 +66,9 @@ const BadgeComponent = props =>
 
 const Badge = connect(
   state => {
-    const badge = formSelect.data(formSelect.form(state, 'badges.current'))
-
     return {
       new: formSelect.isNew(formSelect.form(state, 'badges.current')),
-      badge: badge
+      badge: formSelect.data(formSelect.form(state, 'badges.current'))
     }
   },
   dispatch =>({

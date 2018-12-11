@@ -8,7 +8,10 @@ const reducer = {
   badges: combineReducers({
     list: makeListReducer('badges.list'),
     current: makeFormReducer('badges.current', {}, {
-      users: makeListReducer('badges.current.users')
+      assertions: makeListReducer('badges.current.assertions')
+    }),
+    assertion: makeFormReducer('badges.assertion', {}, {
+      evidences: makeListReducer('badges.assertion.evidences')
     })
   }),
   users: combineReducers({

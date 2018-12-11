@@ -11,6 +11,7 @@
 
 namespace Claroline\OpenBadgeBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Evidence
 {
+    use UuidTrait;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -44,7 +47,7 @@ class Evidence
     /**
      * @ORM\Column()
      */
-    private $gere;
+    private $genre;
 
     /**
      * @ORM\Column(type="text")

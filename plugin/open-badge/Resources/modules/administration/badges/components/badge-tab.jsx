@@ -9,7 +9,8 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {Badge}  from '#/plugin/open-badge/administration/badges/components/badge'
 import {Badges} from '#/plugin/open-badge/administration/badges/components/badges'
-import {actions}    from '#/plugin/open-badge/administration/badges/actions'
+import {Assertion} from '#/plugin/open-badge/badge/assertion-page'
+import {actions}    from '#/plugin/open-badge/badge/actions'
 
 const BadgeTabActions = () =>
   <PageActions>
@@ -32,20 +33,28 @@ const BadgeTabComponent = props =>
       }, {
         path: '/badges/form/:id?',
         component: Badge,
-        onEnter: (params) => props.openForm(params.id)
+        onEnter: (params) => props.openBadge(params.id)
+      }, {
+        path: '/badges/assertion/:id',
+        component: Assertion,
+        onEnter: (params) => props.openAssertion(params.id)
       }
     ]}
   />
 
 BadgeTabComponent.propTypes = {
-  openForm: T.func.isRequired
+  openBadge: T.func.isRequired,
+  openAssertion: T.func.isRequired
 }
 
 const BadgeTab = connect(
   null,
   dispatch => ({
-    openForm(id = null) {
-      dispatch(actions.open('badges.current', id))
+    openBadge(id = null) {
+      dispatch(actions.openBadge('badges.current', id))
+    },
+    openAssertion(id) {
+      dispatch(actions.openAssertion('badges.assertion', id))
     }
   })
 )(BadgeTabComponent)

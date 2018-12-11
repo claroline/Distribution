@@ -4,7 +4,7 @@ import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {actions}    from '#/plugin/open-badge/workspace/badges/actions'
+import {actions}    from '#/plugin/open-badge/badge/actions'
 
 import {
   actions as formActions,
