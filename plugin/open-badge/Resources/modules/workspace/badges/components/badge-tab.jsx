@@ -9,7 +9,6 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {Badges} from '#/plugin/open-badge/workspace/badges/components/badges'
 import {Badge}  from '#/plugin/open-badge/workspace/badges/components/badge'
-import {BadgeForm as BadgeCreation} from '#/plugin/open-badge/workspace/badges/components/badge-form'
 import {actions}    from '#/plugin/open-badge/workspace/badges/actions'
 
 const BadgeTabActions = () =>
@@ -18,7 +17,7 @@ const BadgeTabActions = () =>
       type={LINK_BUTTON}
       icon="fa fa-plus"
       label={trans('add_badge')}
-      target="/badges/new"
+      target="/badges/form"
       primary={true}
     />
   </PageActions>
@@ -31,13 +30,9 @@ const BadgeTabComponent = props =>
         exact: true,
         component: Badges
       }, {
-        path: '/badges/form/:id',
+        path: '/badges/form/:id?',
         component: Badge,
         onEnter: (params) => props.openForm(params.id)
-      }, {
-        path: '/badges/new',
-        component: BadgeCreation,
-        onEnter: () => props.openForm()
       }
     ]}
   />
