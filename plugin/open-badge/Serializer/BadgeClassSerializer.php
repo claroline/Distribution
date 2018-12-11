@@ -138,8 +138,8 @@ class BadgeClassSerializer
             );
         }
 
-        if (isset([$data]['workspace'])) {
-            $workspace = $this->deserialize(Workspace::class, $data['workspace']);
+        if (isset($data['workspace'])) {
+            $workspace = $this->serializer->deserialize(Workspace::class, ['id' => $data['workspace']['id']]);
             $badge->setWorkspace($workspace);
         }
 

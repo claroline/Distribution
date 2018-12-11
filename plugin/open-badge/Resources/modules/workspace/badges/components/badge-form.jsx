@@ -4,6 +4,8 @@ import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
+import {actions}    from '#/plugin/open-badge/workspace/badges/actions'
+
 import {
   actions as formActions,
   selectors as formSelect
@@ -25,17 +27,11 @@ const BadgeFormComponent = (props) => {
       name="badges.current"
       meta={true}
       buttons={true}
-      target={(badge, isNew) => isNew ?
-        ['apiv2_badge-class_create'] :
-        ['apiv2_badge-class_update', {id: badge.id}]
-      }
       save={{
         type: CALLBACK_BUTTON,
-        icon: 'fa fa-fw fa-plus',
+        icon: 'fa fa-fw fa-save',
         label: trans('save', {}, 'actions'),
-        callback: (data) => {
-          console.log(data)
-        }
+        callback: () => props.save(props.badge, props.workspace, props.new)
       }}
       sections={[
         {
@@ -89,9 +85,13 @@ const BadgeFormComponent = (props) => {
 const BadgeForm = connect(
   (state) => ({
     new: formSelect.isNew(formSelect.form(state, 'badges.current')),
-    workspace: state.workspace
+    workspace: state.workspace,
+    badge: formSelect.data(formSelect.form(state, 'badges.current'))
   }),
   (dispatch, ownProps) =>({
+    save(badge, workspace, isNew) {
+      dispatch(actions.save('badges.current', badge, workspace, isNew))
+    },
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(ownProps.name, propName, propValue))
     }

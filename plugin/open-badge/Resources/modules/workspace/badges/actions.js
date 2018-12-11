@@ -38,15 +38,15 @@ actions.addUsers = (id, users) => ({
 })
 
 //calendarElement is required to refresh the calendar since it's outside react
-actions.create = (badge, workspace) => ({
+actions.save = (formName, badge, workspace, isNew) => ({
   [API_REQUEST]: {
-    url: ['apiv2_badge_create'],
+    url: isNew ? ['apiv2_badge-class_create']: ['apiv2_badge-class_update', {id: badge.id}],
     request: {
-      body: JSON.stringify(Object.assign({}, event, {workspace})),
-      method: 'POST'
+      body: JSON.stringify(Object.assign({}, badge, {workspace})),
+      method: isNew ? 'POST': 'PUT'
     },
-    success: (data) => {
-      //calendarRef.fullCalendar('renderEvent', data)
+    success: (response, dispatch) => {
+      dispatch(formActions.resetForm(formName, response, false))
     }
   }
 })
