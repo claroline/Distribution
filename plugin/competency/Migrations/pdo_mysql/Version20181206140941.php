@@ -84,6 +84,76 @@ class Version20181206140941 extends AbstractMigration
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_A5EB96D7D17F50A6 ON hevinci_level (uuid)
         ');
+        $this->addSql('
+            ALTER TABLE hevinci_objective_progress_log 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE hevinci_objective_progress_log SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_F125F347D17F50A6 ON hevinci_objective_progress_log (uuid)
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_user_progress_log 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE hevinci_user_progress_log SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_5125DF35D17F50A6 ON hevinci_user_progress_log (uuid)
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_objective_progress 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE hevinci_objective_progress SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_CAC2DC38D17F50A6 ON hevinci_objective_progress (uuid)
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_ability_progress 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE hevinci_ability_progress SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_C8ACD62ED17F50A6 ON hevinci_ability_progress (uuid)
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_competency_progress 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE hevinci_competency_progress SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_CB827A3D17F50A6 ON hevinci_competency_progress (uuid)
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_user_progress 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE hevinci_user_progress SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_53E81580D17F50A6 ON hevinci_user_progress (uuid)
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_competency_progress_log 
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            UPDATE hevinci_competency_progress_log SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_8522FF2AD17F50A6 ON hevinci_competency_progress_log (uuid)
+        ');
     }
 
     public function down(Schema $schema)
@@ -135,6 +205,55 @@ class Version20181206140941 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE hevinci_scale 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_C8ACD62ED17F50A6 ON hevinci_ability_progress
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_ability_progress 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_CB827A3D17F50A6 ON hevinci_competency_progress
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_competency_progress 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_8522FF2AD17F50A6 ON hevinci_competency_progress_log
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_competency_progress_log 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_CAC2DC38D17F50A6 ON hevinci_objective_progress
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_objective_progress 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_F125F347D17F50A6 ON hevinci_objective_progress_log
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_objective_progress_log 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_53E81580D17F50A6 ON hevinci_user_progress
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_user_progress 
+            DROP uuid
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_5125DF35D17F50A6 ON hevinci_user_progress_log
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_user_progress_log 
             DROP uuid
         ');
     }
