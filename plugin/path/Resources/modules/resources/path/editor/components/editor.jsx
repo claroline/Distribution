@@ -83,7 +83,7 @@ const EditorComponent = props =>
               >
                 <h3 className="h2 step-title">
                   {getNumbering(props.path.display.numbering, props.path.steps, step) &&
-                    <span className="step-numbering">{getNumbering(props.path.display.numbering, props.path.steps, step)}</span>
+                    <span className="h-numbering">{getNumbering(props.path.display.numbering, props.path.steps, step)}</span>
                   }
 
                   {step.title}
@@ -190,6 +190,7 @@ const Editor = withRouter(connect(
         current: current,
         selectAction: (selected) => ({
           type: CALLBACK_BUTTON,
+          label: trans('select', {}, 'actions'),
           callback: () => callback(selected)
         })
       }))
