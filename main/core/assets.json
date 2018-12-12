@@ -7,7 +7,7 @@
       "technical-settings": "administration/parameters/technical/bootstrap",
       "appearance-settings": "administration/parameters/appearance/bootstrap",
       "workspace-management": "administration/workspace",
-      "workspace-list": "workspace/list",
+      "workspace-list": "workspace/list/bootstrap",
       "transfer-management": "administration/transfer",
       "scheduled-task-management": "administration/scheduled-task",
       "user-registration": "user/registration",
@@ -35,6 +35,7 @@
 
   "styles": {
     "entry": {
+      "administration-parameters": "administration/parameters.less",
       "home-tool": "tools/home.less",
       "theme-management": "tools/theme-management.less",
       "iframe": "iframe/iframe.less"
