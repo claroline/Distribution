@@ -78,10 +78,10 @@ class WorkspaceFinder extends AbstractFinder
 
                     if ($currentUser instanceof User) {
                         $qb->leftJoin('obj.organizations', 'uo');
-                        $qb->leftJoin('uo.users', 'ua');
+                        $qb->leftJoin('uo.userOrganizationReferences', 'ua');
 
                         $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->eq('ua.id', ':userOganizationId')
+                            $qb->expr()->eq('ua.user', ':userOganizationId')
                         ));
 
                         $qb->setParameter('userOganizationId', $currentUser->getId());
@@ -127,8 +127,8 @@ class WorkspaceFinder extends AbstractFinder
                     $qb->leftJoin('obj.roles', 'r');
                     $qb->leftJoin('r.users', 'ru');
                     $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->eq('ru.id', ':_userId'),
-                        $qb->expr()->eq('ru.uuid', ':_userUuid')
+                        $qb->expr()->like('ru.id', ':_userId'),
+                        $qb->expr()->like('ru.uuid', ':_userUuid')
                     ));
                     $qb->andWhere('r.name != :roleUser');
                     $qb->setParameter('_userId', $filterValue);
@@ -141,8 +141,8 @@ class WorkspaceFinder extends AbstractFinder
                     $qb->leftJoin('r.groups', 'rg');
                     $qb->leftJoin('rg.users', 'rgu');
                     $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->eq('rgu.id', ':_groupUserId'),
-                        $qb->expr()->eq('rgu.uuid', ':_groupUserUuid')
+                        $qb->expr()->like('rgu.id', ':_groupUserId'),
+                        $qb->expr()->like('rgu.uuid', ':_groupUserUuid')
                     ));
                     $qb->andWhere('r.name != :roleUser');
                     $qb->setParameter('_groupUserId', $filterValue);

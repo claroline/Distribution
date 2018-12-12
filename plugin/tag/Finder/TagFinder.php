@@ -29,13 +29,57 @@ class TagFinder extends AbstractFinder
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
+        $objectJoin = false;
         foreach ($searches as $filterName => $filterValue) {
-            if (is_string($filterValue)) {
-                $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-            } else {
-                $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                $qb->setParameter($filterName, $filterValue);
+            switch ($filterName) {
+                case 'objectClass':
+                    if (!$objectJoin) {
+                        $objectJoin = true;
+                        $qb->join('obj.taggedObjects', 'to');
+                    }
+
+                    $qb->andWhere("to.objectClass = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+
+                    break;
+
+                case 'objectId':
+                    if (!$objectJoin) {
+                        $objectJoin = true;
+                        $qb->join('obj.taggedObjects', 'to');
+                    }
+
+                    if (is_array($filterValue)) {
+                        $qb->andWhere("to.objectId IN (:{$filterName})");
+                        $qb->setParameter($filterName, $filterValue);
+                    } else {
+                        $qb->andWhere("to.objectId = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    }
+
+                    break;
+
+                case 'user':
+                    if ($filterValue) {
+                        $qb->leftJoin('obj.user', 'u');
+                        $qb->andWhere("(obj.user IS NULL OR u.uuid = :{$filterName})");
+                    } else {
+                        $qb->andWhere('obj.user IS NULL');
+                    }
+                    $qb->setParameter($filterName, $filterValue);
+
+                    break;
+
+                default:
+                    if (is_string($filterValue)) {
+                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    } else {
+                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    }
+
+                    break;
             }
         }
 

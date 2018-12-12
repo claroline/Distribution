@@ -1,4 +1,5 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
@@ -9,7 +10,7 @@ const TagInput = () =>
   </div>
 
 implementPropTypes(TagInput, FormFieldTypes, {
-
+  value: T.arrayOf(T.string)
 }, {
 
 })

@@ -86,7 +86,7 @@ class AnnouncementFinder extends AbstractFinder
                     $qb->leftJoin('r.users', 'ru');
                     $qb->andWhere($qb->expr()->orX(
                         $qb->expr()->like('ru.uuid', ':_userUuid'),
-                        $qb->expr()->eq('ru.id', ':_userId')
+                        $qb->expr()->like('ru.id', ':_userId')
                     ));
                     $qb->andWhere('r.name != :roleUser');
                     $qb->setParameter('_userUuid', $filterValue);
@@ -102,7 +102,7 @@ class AnnouncementFinder extends AbstractFinder
                     $qb->leftJoin('rg.users', 'rgu');
                     $qb->andWhere($qb->expr()->orX(
                         $qb->expr()->like('rgu.uuid', ':_groupUserId'),
-                        $qb->expr()->eq('rgu.id', ':_groupUserUuid')
+                        $qb->expr()->like('rgu.id', ':_groupUserUuid')
                     ));
                     $qb->andWhere('r.name != :roleUser');
                     $qb->setParameter('_groupUserId', $filterValue);
