@@ -8,10 +8,10 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {actions}    from '#/plugin/open-badge/badge/actions'
 
 import {trans} from '#/main/app/intl/translation'
-import {BadgeForm} from '#/plugin/open-badge/badge/badge-form'
+import {BadgeForm} from '#/plugin/open-badge/badge/badges/components/badge-form'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
-import {AssertionList} from '#/plugin/open-badge/badge/assertion-list'
+import {AssertionList} from '#/plugin/open-badge/badge/badges/components/assertion-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 const BadgeComponent = props =>
@@ -68,7 +68,8 @@ const Badge = connect(
   state => {
     return {
       new: formSelect.isNew(formSelect.form(state, 'badges.current')),
-      badge: formSelect.data(formSelect.form(state, 'badges.current'))
+      badge: formSelect.data(formSelect.form(state, 'badges.current')),
+      context: state.context
     }
   },
   dispatch =>({

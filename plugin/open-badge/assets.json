@@ -1,9 +1,7 @@
 {
   "webpack": {
     "entry": {
-      "administration": "administration/index",
-      "desktop": "desktop/index",
-      "workspace": "workspace/index"
+      "badge": "badge/index"
     }
   }
 }

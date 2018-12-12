@@ -7,10 +7,10 @@ import {Routes} from '#/main/app/router'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {Badges} from '#/plugin/open-badge/workspace/badges/components/badges'
-import {Badge}  from '#/plugin/open-badge/workspace/badges/components/badge'
+import {Badge}  from '#/plugin/open-badge/badge/badges/components/badge'
+import {Badges} from '#/plugin/open-badge/badge/badges/components/badges'
+import {Assertion} from '#/plugin/open-badge/badge/badges/components/assertion-page'
 import {actions}    from '#/plugin/open-badge/badge/actions'
-import {Assertion} from '#/plugin/open-badge/badge/assertion-page'
 
 const BadgeTabActions = () =>
   <PageActions>
@@ -48,7 +48,9 @@ BadgeTabComponent.propTypes = {
 }
 
 const BadgeTab = connect(
-  null,
+  (state) => ({
+    context: state.context
+  }),
   dispatch => ({
     openBadge(id = null) {
       dispatch(actions.openBadge('badges.current', id))
@@ -60,5 +62,6 @@ const BadgeTab = connect(
 )(BadgeTabComponent)
 
 export {
-  BadgeTab, BadgeTabActions
+  BadgeTab,
+  BadgeTabActions
 }

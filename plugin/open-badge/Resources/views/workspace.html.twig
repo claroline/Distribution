@@ -9,11 +9,11 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page-container open-badge-container" data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"></div>
+    <div class="page-container open-badge-container" data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}" data-context="{{ "workspace" | json_encode | raw | escape }}"></div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
 
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-open-badge-workspace.js') }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-open-badge-badge.js') }}"></script>
 {% endblock %}

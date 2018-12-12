@@ -4,7 +4,7 @@ import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {ListData} from '#/main/app/content/list/containers/data'
-import {EvidenceList} from '#/plugin/open-badge/badge/evidence-list'
+import {EvidenceList} from '#/plugin/open-badge/badge/badges/components/evidence-list'
 
 import {
   actions as formActions,
@@ -81,6 +81,7 @@ const AssertionPageComponent = (props) => {
 
 const AssertionPage = connect(
   (state) => ({
+    context: state.context,
     new: formSelect.isNew(formSelect.form(state, 'badges.assertion')),
     assertion: formSelect.data(formSelect.form(state, 'badges.assertion'))
   }),

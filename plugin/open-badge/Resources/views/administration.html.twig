@@ -13,12 +13,12 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page-container open-badge-container">
+    <div class="page-container open-badge-container" data-context="{{ "administration" | json_encode | raw | escape }}">
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
 
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-open-badge-administration.js') }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-open-badge-badge.js') }}"></script>
 {% endblock %}

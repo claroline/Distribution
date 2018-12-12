@@ -1,14 +1,14 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {BadgeList} from '#/plugin/open-badge/administration/badges/components/badge-list'
+import {BadgeList} from '#/plugin/open-badge/badge/badges/components/badge-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 // todo : restore custom actions the same way resource actions are implemented
-const BadgesList = () =>
+const MyBadgesList = () =>
   <ListData
-    name="badges.list"
+    name="badges.mine"
     fetch={{
-      url: ['apiv2_badge-class_list'],
+      url: ['apiv2_badge-class_current_user_list'],
       autoload: true
     }}
     definition={BadgeList.definition}
@@ -18,11 +18,13 @@ const BadgesList = () =>
     card={BadgeList.card}
   />
 
-const Badges = connect(
-  null,
+const MyBadges = connect(
+  (state) => ({
+    context: state.context
+  }),
   null
-)(BadgesList)
+)(MyBadgesList)
 
 export {
-  Badges
+  MyBadges
 }

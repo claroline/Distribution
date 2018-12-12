@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-
 import {actions}    from '#/plugin/open-badge/badge/actions'
 
 import {
@@ -63,6 +62,12 @@ const BadgeFormComponent = (props) => {
               required: false
             },
             {
+              name: 'issuer',
+              type: 'organization',
+              label: trans('issuer'),
+              required: true
+            },
+            {
               name: 'duration',
               type: 'number',
               label: trans('duration'),
@@ -84,9 +89,9 @@ const BadgeFormComponent = (props) => {
 
 const BadgeForm = connect(
   (state) => ({
+    context: state.context,
     new: formSelect.isNew(formSelect.form(state, 'badges.current')),
-    workspace: state.workspace,
-    badge: formSelect.data(formSelect.form(state, 'badges.current'))
+    workspace: state.workspace
   }),
   (dispatch, ownProps) =>({
     save(badge, workspace, isNew) {

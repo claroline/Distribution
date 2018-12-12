@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {BadgeList} from '#/plugin/open-badge/desktop/badges/components/badge-list'
+import {BadgeList} from '#/plugin/open-badge/badge/badges/components/badge-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 // todo : restore custom actions the same way resource actions are implemented
@@ -19,7 +19,9 @@ const BadgesList = () =>
   />
 
 const Badges = connect(
-  null,
+  (state) => ({
+    context: state.context
+  }),
   null
 )(BadgesList)
 

@@ -1,7 +1,7 @@
 import {bootstrap} from '#/main/app/dom/bootstrap'
 
-import {OpenBadgeAdminTool} from '#/plugin/open-badge/administration/components/tool'
-import {reducer} from '#/plugin/open-badge/administration/reducer'
+import {OpenBadgeAdminTool} from '#/plugin/open-badge/badge/components/tool'
+import {reducer} from '#/plugin/open-badge/badge/reducer'
 
 // mount the react application
 bootstrap(
@@ -16,8 +16,10 @@ bootstrap(
 
   // remap data-attributes set on the app DOM container
   // todo load remaining through ajax
-  () => {
-
-
+  (initialData) => {
+    return {
+      workspace: initialData.workspace,
+      context: initialData.context
+    }
   }
 )
