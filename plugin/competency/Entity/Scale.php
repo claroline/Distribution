@@ -5,7 +5,6 @@ namespace HeVinci\CompetencyBundle\Entity;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use HeVinci\CompetencyBundle\Validator as CustomAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as BR;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -40,8 +39,6 @@ class Scale implements \JsonSerializable
      *     orphanRemoval=true
      * )
      * @ORM\OrderBy({"value" = "ASC"})
-     * @CustomAssert\NotEmpty
-     * @CustomAssert\NoDuplicate(property="name")
      */
     private $levels;
 

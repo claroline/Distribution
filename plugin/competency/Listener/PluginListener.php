@@ -4,7 +4,6 @@ namespace HeVinci\CompetencyBundle\Listener;
 
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
 use HeVinci\CompetencyBundle\Manager\CompetencyManager;
@@ -95,7 +94,15 @@ class PluginListener
      */
     public function onOpenLearningObjectivesTool(OpenAdministrationToolEvent $event)
     {
-        $this->forward('HeVinciCompetencyBundle:Objective:objectives', $event);
+        $competenciesTool = $this->toolManager->getAdminToolByName('competencies');
+
+        if (is_null($competenciesTool) || !$this->authorization->isGranted('OPEN', $competenciesTool)) {
+            throw new AccessDeniedException();
+        }
+        $this->competencyManager->ensureHasScale();
+        $content = $this->templating->render('HeVinciCompetencyBundle:objective:layout.html.twig');
+        $event->setResponse(new Response($content));
+        $event->stopPropagation();
     }
 
     /**
@@ -116,16 +123,6 @@ class PluginListener
     public function onOpenResourceCompetencies(CustomActionResourceEvent $event)
     {
         $this->forward('HeVinciCompetencyBundle:Resource:competencies', $event, true);
-    }
-
-    /**
-     * @DI\Observe("widget_my-learning-objectives")
-     *
-     * @param DisplayWidgetEvent $event
-     */
-    public function onDisplayObjectivesWidget(DisplayWidgetEvent $event)
-    {
-        $this->forward('HeVinciCompetencyBundle:Widget:objectives', $event);
     }
 
     private function forward($controller, Event $event, $withNode = false)
