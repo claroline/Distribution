@@ -25,7 +25,7 @@ const CompetencyComponent = (props) =>
       }
       cancel={{
         type: LINK_BUTTON,
-        target: props.competency.parent ? `/frameworks/${props.competency.parent.id}` : '/frameworks',
+        target: props.competency.parent ? `/frameworks/${props.competency.parent.id}` : `/frameworks/${props.competency.id}`,
         exact: true
       }}
       sections={[
@@ -53,12 +53,12 @@ const CompetencyComponent = (props) =>
             actions={[
               {
                 type: LINK_BUTTON,
-                icon: 'fa fa-fw fa-plus-square',
+                icon: 'fa fa-fw fa-plus',
                 label: trans('ability.create', {}, 'competency'),
                 target: `/frameworks/${props.competency.id}/ability`
               }, {
                 type: LINK_BUTTON,
-                icon: 'fa fa-fw fa-plus',
+                icon: 'fa fa-fw fa-plus-square',
                 label: trans('ability.add', {}, 'competency'),
                 target: `/frameworks/${props.competency.id}/ability_choice`
               }

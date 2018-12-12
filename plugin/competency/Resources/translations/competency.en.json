@@ -4,7 +4,7 @@
     "ability": "Ability",
     "ability.add": "Add an ability",
     "ability.addition": "Ability addition",
-    "ability.contains": "Contains abilities",
+    "ability.contains_desc": "Contains abilities. Sub-competency is not allowed anymore.",
     "ability.create": "Create an ability",
     "ability.creation": "Ability creation",
     "ability.edition": "Ability edition",
