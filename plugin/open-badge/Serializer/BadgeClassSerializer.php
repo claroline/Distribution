@@ -141,6 +141,7 @@ class BadgeClassSerializer
         if (isset($data['workspace'])) {
             $workspace = $this->serializer->deserialize(Workspace::class, ['id' => $data['workspace']['id']]);
             $badge->setWorkspace($workspace);
+            $badge->setIssuer($workspace->getOrganization());
         }
 
         if (isset($data['tags'])) {

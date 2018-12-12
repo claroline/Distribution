@@ -166,4 +166,23 @@ class BadgeClassController extends AbstractCrudController
             ))
         );
     }
+
+    /**
+     * @EXT\Route("/{badge}/assertion", name="apiv2_badge-class_assertion")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("badge", class="ClarolineOpenBadgeBundle:BadgeClass", options={"mapping": {"badge": "uuid"}})
+     *
+     * @return JsonResponse
+     */
+    public function getAssertionsAction(Request $request, BadgeClass $badge)
+    {
+        $params = $request->query->all();
+
+        return new JsonResponse(
+            $this->finder->search(Assertion::class, array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['badge' => $badge->getUuid(), 'revoked' => false]]
+            ))
+        );
+    }
 }

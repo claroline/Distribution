@@ -53,4 +53,9 @@ class Evidence
      * @ORM\Column(type="text")
      */
     private $audience;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\Assertion", inversedBy="evidences")
+     */
+    private $assertion;
 }

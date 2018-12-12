@@ -6,9 +6,9 @@ import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
-
 import {Badge}  from '#/plugin/open-badge/badge/badges/components/badge'
 import {Badges} from '#/plugin/open-badge/badge/badges/components/badges'
+import {BadgeViewer} from '#/plugin/open-badge/badge/badges/components/badge-viewer'
 import {Assertion} from '#/plugin/open-badge/badge/badges/components/assertion-page'
 import {actions}    from '#/plugin/open-badge/badge/actions'
 
@@ -40,7 +40,7 @@ const BadgeTabComponent = props =>
         onEnter: (params) => props.openAssertion(params.id)
       }, {
         path: '/badges/view/:id',
-        component: Badge,
+        component: BadgeViewer,
         onEnter: (params) => props.openBadge(params.id)
       }
     ]}

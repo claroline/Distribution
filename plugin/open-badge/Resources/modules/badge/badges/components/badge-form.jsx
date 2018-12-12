@@ -86,6 +86,13 @@ const BadgeFormComponent = (props) => {
           title: trans('badge'),
           primary: true,
           fields
+        },
+        {
+          title: trans('allowed_issuer'),
+          primary: false,
+          fields: [
+            
+          ]
         }
       ]}
     >

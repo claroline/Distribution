@@ -1,13 +1,16 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
+
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {ListData} from '#/main/app/content/list/containers/data'
+import {MODAL_BUTTON} from '#/main/app/buttons'
+
 import {EvidenceList} from '#/plugin/open-badge/badge/badges/components/evidence-list'
+import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/badge/badges/components/modals/evidence'
 
 import {
-  actions as formActions,
   selectors as formSelect
 } from '#/main/app/content/form/store'
 
@@ -17,7 +20,7 @@ const AssertionPageComponent = (props) => {
     <FormData
       {...props}
       name="badges.assertion"
-      meta={true}
+      meta={false}
       buttons={true}
       target={(assertion, isNew) => isNew ?
         ['apiv2_assertion_create'] :
@@ -64,15 +67,25 @@ const AssertionPageComponent = (props) => {
           <ListData
             name="badges.assertion.evidences"
             fetch={{
-              url: ['apiv2_assertion_evidences', {badge: props.assertion.id}],
+              url: ['apiv2_assertion_evidences', {assertion: props.assertion.id}],
               autoload: props.assertion.id && !props.new
             }}
             primaryAction={EvidenceList.open}
             delete={{
-              url: ['apiv2_badge_remove_users', {badge: props.assertion.id}]
+              url: ['apiv2_evidence_delete_bulk']
             }}
             definition={EvidenceList.definition}
             card={EvidenceList.card}
+            actions={[
+              {
+                type: MODAL_BUTTON,
+                icon: 'fa fa-fw fa-plus',
+                label: trans('add_evidence'),
+                modal: [MODAL_BADGE_EVIDENCE, {
+                  assertion: props.assertion
+                }]
+              }
+            ]}
           />
         </FormSection>
       </FormSections>
@@ -85,11 +98,7 @@ const AssertionPage = connect(
     new: formSelect.isNew(formSelect.form(state, 'badges.assertion')),
     assertion: formSelect.data(formSelect.form(state, 'badges.assertion'))
   }),
-  (dispatch, ownProps) =>({
-    updateProp(propName, propValue) {
-      dispatch(formActions.updateProp(ownProps.name, propName, propValue))
-    }
-  })
+  null
 )(AssertionPageComponent)
 
 export {

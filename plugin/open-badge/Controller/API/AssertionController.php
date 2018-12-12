@@ -13,7 +13,7 @@ namespace Claroline\OpenBadgeBundle\Controller\API;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
-use Claroline\OpenBadgeBundle\Entity\BadgeClass;
+use Claroline\OpenBadgeBundle\Entity\Evidence;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,20 +29,20 @@ class AssertionController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route("/badge/{badge}", name="apiv2_assertion_badges")
+     * @EXT\Route("/{assertion}/evidences", name="apiv2_assertion_evidences")
      * @EXT\Method("GET")
-     * @EXT\ParamConverter("badge", class="ClarolineOpenBadgeBundle:BadgeClass", options={"mapping": {"badge": "uuid"}})
+     * @EXT\ParamConverter("assertion", class="ClarolineOpenBadgeBundle:Assertion", options={"mapping": {"assertion": "uuid"}})
      *
      * @return JsonResponse
      */
-    public function getBadgeAssertionsAction(Request $request, BadgeClass $badge)
+    public function getEvidencesAction(Request $request, Assertion $assertion)
     {
         $params = $request->query->all();
 
         return new JsonResponse(
-            $this->finder->search(Assertion::class, array_merge(
+            $this->finder->search(Evidence::class, array_merge(
                 $request->query->all(),
-                ['hiddenFilters' => ['badge' => $badge->getUuid(), 'revoked' => false]]
+                ['hiddenFilters' => ['assertion' => $assertion->getUuid()]]
             ))
         );
     }
