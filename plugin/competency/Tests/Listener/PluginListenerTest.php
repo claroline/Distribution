@@ -63,14 +63,6 @@ class PluginListenerTest extends UnitTestCase
         $this->assertEquals($this->response, $event->getResponse());
     }
 
-    public function testDisplayObjectivesWidget()
-    {
-        $this->expectSubRequest(['_controller' => 'HeVinciCompetencyBundle:Widget:objectives']);
-        $event = new DisplayWidgetEvent($this->mock('Claroline\CoreBundle\Entity\Widget\WidgetInstance'));
-        $this->listener->onDisplayObjectivesWidget($event);
-        $this->assertEquals('Test response', $event->getContent());
-    }
-
     private function expectSubRequest(array $attributes)
     {
         $this->request
