@@ -1,6 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
@@ -8,7 +6,7 @@ import {TreeData} from '#/main/app/content/tree/containers/data'
 
 import {FrameworkList} from '#/plugin/competency/administration/competency/framework/components/framework-list'
 
-const FrameworkComponent = () =>
+const Framework = () =>
   <TreeData
     name="frameworks.current"
     primaryAction={(row) => ({
@@ -63,15 +61,6 @@ const FrameworkComponent = () =>
       ].filter(flag => !!flag)
     })}
   />
-
-FrameworkComponent.propTypes = {
-}
-
-const Framework = connect(
-  null,
-  (dispatch) => ({
-  })
-)(FrameworkComponent)
 
 export {
   Framework

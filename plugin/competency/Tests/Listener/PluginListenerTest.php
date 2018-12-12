@@ -4,7 +4,6 @@ namespace HeVinci\CompetencyBundle\Listener;
 
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use HeVinci\CompetencyBundle\Util\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;

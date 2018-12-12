@@ -52,7 +52,7 @@ const CompetencyAbility = {
     id: T.string,
     competency: T.shape(Competency.propTypes),
     ability: T.shape(Ability.propTypes),
-    level: T.shape(Level.propTypes),
+    level: T.shape(Level.propTypes)
   }
 }
 

@@ -1,13 +1,10 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-const ScaleComponent = (props) =>
+const Scale = () =>
   <FormData
     level={3}
     name="scales.current"
@@ -46,16 +43,6 @@ const ScaleComponent = (props) =>
       }
     ]}
   />
-
-ScaleComponent.propTypes = {
-  new: T.bool.isRequired
-}
-
-const Scale = connect(
-  state => ({
-    new: formSelect.isNew(formSelect.form(state, 'scales.current'))
-  })
-)(ScaleComponent)
 
 export {
   Scale

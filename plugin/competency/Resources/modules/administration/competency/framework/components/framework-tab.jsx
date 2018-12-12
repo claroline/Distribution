@@ -74,12 +74,12 @@ FrameworkTabComponent.propTypes = {
   openCompetency: T.func.isRequired,
   resetCompetency: T.func.isRequired,
   openAbility: T.func.isRequired,
+  openAbilityChoice: T.func.isRequired,
   resetAbility: T.func.isRequired
 }
 
 const FrameworkTab = connect(
-  (state) => ({
-  }),
+  null,
   (dispatch) => ({
     openForm(id = null) {
       const defaultProps = {}

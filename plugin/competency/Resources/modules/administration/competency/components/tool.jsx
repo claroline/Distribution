@@ -3,7 +3,6 @@ import React from 'react'
 import {trans} from '#/main/app/intl/translation'
 import {TabbedPageContainer} from '#/main/core/layout/tabs'
 
-import {selectors} from '#/plugin/competency/administration/competency/store'
 import {FrameworkTabActions, FrameworkTab} from '#/plugin/competency/administration/competency/framework/components/framework-tab'
 import {ScaleTabActions, ScaleTab} from '#/plugin/competency/administration/competency/scale/components/scale-tab'
 
