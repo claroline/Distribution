@@ -38,17 +38,9 @@ const AssertionPageComponent = (props) => {
               disabled: true
             },
             {
-              name: 'badge.name',
-              type: 'string',
-              label: trans('name'),
-              readOnly: true,
-              disabled: true
-            },
-            {
-              name: 'badge.image',
-              type: 'file',
-              label: trans('image'),
-              readOnly: true,
+              name: 'badge',
+              type: 'badge',
+              label: trans('badge'),
               disabled: true
             }
           ]
@@ -76,7 +68,7 @@ const AssertionPageComponent = (props) => {
             }}
             definition={EvidenceList.definition}
             card={EvidenceList.card}
-            actions={[
+            actions={() => [
               {
                 type: MODAL_BUTTON,
                 icon: 'fa fa-fw fa-plus',
