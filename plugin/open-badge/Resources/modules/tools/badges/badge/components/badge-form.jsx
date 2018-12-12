@@ -2,8 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {actions}    from '#/plugin/open-badge/badge/actions'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
 
 import {
   actions as formActions,
@@ -91,7 +91,7 @@ const BadgeFormComponent = (props) => {
           title: trans('allowed_issuer'),
           primary: false,
           fields: [
-            
+
           ]
         }
       ]}

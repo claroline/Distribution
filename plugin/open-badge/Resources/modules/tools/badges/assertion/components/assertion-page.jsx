@@ -7,8 +7,8 @@ import {FormSections, FormSection} from '#/main/app/content/form/components/sect
 import {ListData} from '#/main/app/content/list/containers/data'
 import {MODAL_BUTTON} from '#/main/app/buttons'
 
-import {EvidenceList} from '#/plugin/open-badge/badge/badges/components/evidence-list'
-import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/badge/badges/components/modals/evidence'
+import {EvidenceList} from '#/plugin/open-badge/tools/badges/evidence/components/evidence-list'
+import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/tools/badges/modals/evidence'
 
 import {
   selectors as formSelect

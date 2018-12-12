@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {BadgeList} from '#/plugin/open-badge/badge/badges/components/badge-list'
+import {BadgeList} from '#/plugin/open-badge/tools/badges/badge/components/badge-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 // todo : restore custom actions the same way resource actions are implemented
@@ -12,7 +12,6 @@ const MyBadgesList = () =>
       autoload: true
     }}
     definition={BadgeList.definition}
-
     primaryAction={BadgeList.open}
     actions={() => []}
     card={BadgeList.card}

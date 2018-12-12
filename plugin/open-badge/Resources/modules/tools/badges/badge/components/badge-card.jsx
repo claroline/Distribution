@@ -27,7 +27,6 @@ BadgeCard.propTypes = {
   ).isRequired
 }
 
-
 export {
   BadgeCard
 }

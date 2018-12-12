@@ -15,9 +15,6 @@ const reducer = {
       evidences: makeListReducer('badges.assertion.evidences')
     })
   }),
-  users: combineReducers({
-    picker: makeListReducer('users.picker')
-  }),
   parameters: makeFormReducer('parameters')
 }
 

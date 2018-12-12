@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {BadgeList} from '#/plugin/open-badge/badge/badges/components/badge-list'
+import {BadgeList} from '#/plugin/open-badge/tools/badges/badge/components/badge-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'

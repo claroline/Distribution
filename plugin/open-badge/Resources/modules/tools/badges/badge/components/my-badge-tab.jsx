@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {Routes} from '#/main/app/router'
 
-import {MyBadges} from '#/plugin/open-badge/badge/badges/components/my-badges'
+import {MyBadges} from '#/plugin/open-badge/tools/badges/badge/components/my-badges'
 
 const MyBadgeTabComponent = () =>
   <Routes

@@ -2,16 +2,17 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 
-import {actions}    from '#/plugin/open-badge/badge/actions'
+import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {UserList} from '#/main/core/administration/user/user/components/user-list'
-import {AssertionList} from '#/plugin/open-badge/badge/badges/components/assertion-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSection} from '#/main/app/content/form/components/sections'
+
+import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-list'
 
 import {
   selectors as formSelect

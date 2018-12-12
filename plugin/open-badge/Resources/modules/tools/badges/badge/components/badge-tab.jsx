@@ -6,11 +6,12 @@ import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {Badge}  from '#/plugin/open-badge/badge/badges/components/badge'
-import {Badges} from '#/plugin/open-badge/badge/badges/components/badges'
-import {BadgeViewer} from '#/plugin/open-badge/badge/badges/components/badge-viewer'
-import {Assertion} from '#/plugin/open-badge/badge/badges/components/assertion-page'
-import {actions}    from '#/plugin/open-badge/badge/actions'
+
+import {Badge}  from '#/plugin/open-badge/tools/badges/badge/components/badge'
+import {Badges} from '#/plugin/open-badge/tools/badges/badge/components/badges'
+import {BadgeViewer} from '#/plugin/open-badge/tools/badges/badge/components/badge-viewer'
+import {Assertion} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-page'
+import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
 
 const BadgeTabActions = () =>
   <PageActions>

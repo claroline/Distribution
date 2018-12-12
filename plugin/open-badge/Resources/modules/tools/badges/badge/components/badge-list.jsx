@@ -1,7 +1,7 @@
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {BadgeCard} from '#/plugin/open-badge/badge/badges/components/badge-card'
+import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/badge-card'
 
 const BadgeList = {
   open: (row) => ({

@@ -6,7 +6,7 @@
 import {registry} from '#/main/app/modals/registry'
 
 // gets the modal component
-import {EvidenceModal} from '#/main/core/workspace/modals/parameters/containers/modal'
+import {EvidenceModal} from '#/plugin/open-badge/tools/badges/modals/evidence/containers/modal'
 
 const MODAL_BADGE_EVIDENCE = 'MODAL_BADGE_EVIDENCE'
 

@@ -43,7 +43,12 @@ class AssertionSerializer
           'id' => $assertion->getUuid(),
           'user' => $this->userSerializer->serialize($assertion->getRecipient()),
           'badge' => $this->badgeSerializer->serialize($assertion->getBadge()),
+          'meta' => $this->serializeMeta($assertion),
         ];
+    }
+
+    public function serializeMeta(Assertion $assertion, array $options = [])
+    {
     }
 
     public function getClass()

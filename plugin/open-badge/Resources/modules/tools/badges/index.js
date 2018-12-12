@@ -1,7 +1,7 @@
 import {bootstrap} from '#/main/app/dom/bootstrap'
 
-import {OpenBadgeAdminTool} from '#/plugin/open-badge/badge/components/tool'
-import {reducer} from '#/plugin/open-badge/badge/reducer'
+import {OpenBadgeAdminTool} from '#/plugin/open-badge/tools/badges/components/tool'
+import {reducer} from '#/plugin/open-badge/tools/badges/store/reducer'
 
 // mount the react application
 bootstrap(

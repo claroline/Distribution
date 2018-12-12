@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {BadgeForm} from '#/plugin/open-badge/badge/badges/components/badge-form'
+import {BadgeForm} from  '#/plugin/open-badge/tools/badges/badge/components/badge-form'
 
 const BadgeComponent = () =>
   <div>

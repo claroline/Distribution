@@ -1,7 +1,7 @@
 {
   "webpack": {
     "entry": {
-      "badge": "badge/index"
+      "badge": "tools/badges/index"
     }
   }
 }
