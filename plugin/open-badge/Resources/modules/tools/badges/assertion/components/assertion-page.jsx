@@ -32,16 +32,16 @@ const AssertionPageComponent = (props) => {
           primary: true,
           fields: [
             {
-              name: 'user.username',
-              type: 'string',
-              readOnly: true,
-              disabled: true
+              name: 'user',
+              type: 'user',
+              disabled: true,
+              required: true
             },
             {
               name: 'badge',
               type: 'badge',
-              label: trans('badge'),
-              disabled: true
+              disabled: true,
+              required: true
             }
           ]
         }

@@ -13,6 +13,7 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSection} from '#/main/app/content/form/components/sections'
 
 import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-list'
+import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/badge-card'
 
 import {
   selectors as formSelect
@@ -22,9 +23,12 @@ import {
 const BadgeViewerComponent = (props) => {
   return (
     <div>
-      <div>
-        badge
-      </div>
+      <BadgeCard
+        data={props.badge}
+        size="sm"
+        orientation="col"
+      >
+      </BadgeCard>
 
       <FormSection
         className="embedded-list-section"
