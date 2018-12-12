@@ -108,6 +108,13 @@ class BadgeClass
     private $allowedIssuers;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Group")
+     *
+     * @var Organization
+     */
+    private $allowedIssuersGroups;
+
+    /**
      * @ORM\Column(type="text")
      *
      * @var string

@@ -38,6 +38,10 @@ const BadgeTabComponent = props =>
         path: '/badges/assertion/:id',
         component: Assertion,
         onEnter: (params) => props.openAssertion(params.id)
+      }, {
+        path: '/badges/view/:id',
+        component: Badge,
+        onEnter: (params) => props.openBadge(params.id)
       }
     ]}
   />

@@ -20,6 +20,55 @@ const BadgeFormComponent = (props) => {
     })
   }
 
+  const fields = [
+    {
+      name: 'name',
+      type: 'string',
+      label: trans('name'),
+      required: true
+    },
+    {
+      name: 'description',
+      type: 'html',
+      label: trans('description'),
+      required: false
+    },
+    {
+      name: 'criteria',
+      type: 'html',
+      label: trans('criteria'),
+      required: true
+    },
+    {
+      name: 'image',
+      type: 'file',
+      label: trans('image'),
+      required: false
+    },
+    {
+      name: 'issuer',
+      type: 'organization',
+      label: trans('issuer'),
+      required: true
+    },
+    {
+      name: 'duration',
+      type: 'number',
+      label: trans('duration'),
+      required: false
+    },
+    {
+      name: 'tags',
+      type: 'string',
+      label: trans('tags'),
+      help: trans('tag_form_help', {}, 'forum')
+    }
+  ]
+
+  if (props.workspace === null) {
+    fields.splice(4, 1)
+  }
+
   return (
     <FormData
       {...props}
@@ -36,50 +85,7 @@ const BadgeFormComponent = (props) => {
         {
           title: trans('badge'),
           primary: true,
-          fields: [
-            {
-              name: 'name',
-              type: 'string',
-              label: trans('name'),
-              required: true
-            },
-            {
-              name: 'description',
-              type: 'html',
-              label: trans('description'),
-              required: false
-            },
-            {
-              name: 'criteria',
-              type: 'html',
-              label: trans('criteria'),
-              required: true
-            },
-            {
-              name: 'image',
-              type: 'file',
-              label: trans('image'),
-              required: false
-            },
-            {
-              name: 'issuer',
-              type: 'organization',
-              label: trans('issuer'),
-              required: true
-            },
-            {
-              name: 'duration',
-              type: 'number',
-              label: trans('duration'),
-              required: false
-            },
-            {
-              name: 'tags',
-              type: 'string',
-              label: trans('tags'),
-              help: trans('tag_form_help', {}, 'forum')
-            }
-          ]
+          fields
         }
       ]}
     >

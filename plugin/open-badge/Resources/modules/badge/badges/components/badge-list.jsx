@@ -7,7 +7,7 @@ const BadgeList = {
   open: (row) => ({
     label: trans('open'),
     type: LINK_BUTTON,
-    target: `/badges/form/${row.id}`
+    target: `/badges/view/${row.id}`
   }),
   definition: [
     {
