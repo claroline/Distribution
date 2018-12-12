@@ -8,7 +8,13 @@ const EvidenceList = {
     label: trans('', {}, 'actions')
   }),
   definition: [
-
+    {
+      name: 'name',
+      type: 'string',
+      label: trans('name'),
+      displayed: true,
+      primary: true
+    }
   ]
 }
 

@@ -51,7 +51,7 @@ class Assertion
     private $issuedOn;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="text", nullable=true)
      *
      * @var string
      */

@@ -107,4 +107,16 @@ class OpenBadgeController
     {
         return new JsonResponse($this->serializer->serialize($assertion, [Options::ENFORCE_OPEN_BADGE_JSON]));
     }
+
+    /**
+     * @EXT\Route("/evidence/{evidence}", name="apiv2_open_badge__evidence")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("evidence", class="ClarolineOpenBadgeBundle:Evidence", options={"mapping": {"evidence": "uuid"}})
+     *
+     * @return JsonResponse
+     */
+    public function getEvidenceAction(Evidence $evidence)
+    {
+        return new JsonResponse($this->serializer->serialize($evidence, [Options::ENFORCE_OPEN_BADGE_JSON]));
+    }
 }

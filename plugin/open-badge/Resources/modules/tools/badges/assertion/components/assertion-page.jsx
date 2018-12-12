@@ -6,6 +6,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {MODAL_BUTTON} from '#/main/app/buttons'
+import {Button} from '#/main/app/action/components/button'
 
 import {EvidenceList} from '#/plugin/open-badge/tools/badges/evidence/components/evidence-list'
 import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/tools/badges/modals/evidence'
@@ -68,21 +69,26 @@ const AssertionPageComponent = (props) => {
             }}
             definition={EvidenceList.definition}
             card={EvidenceList.card}
-            actions={() => [
-              {
-                type: MODAL_BUTTON,
-                icon: 'fa fa-fw fa-plus',
-                label: trans('add_evidence'),
-                modal: [MODAL_BADGE_EVIDENCE, {
-                  assertion: props.assertion
-                }]
-              }
-            ]}
           />
         </FormSection>
       </FormSections>
+
+      <EvidenceButton assertion={props.assertion}/>
     </FormData>)
 }
+
+const EvidenceButton = props =>
+  <Button
+    className="btn"
+    style={{marginTop: 10}}
+    type={MODAL_BUTTON}
+    icon="fa fa-fw fa-plus"
+    label={trans('add_evidence')}
+    primary={true}
+    modal={[MODAL_BADGE_EVIDENCE, {
+      assertion: props.assertion
+    }]}
+  />
 
 const AssertionPage = connect(
   (state) => ({
