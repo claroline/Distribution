@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2018/12/04 02:47:58
+ * Generation date: 2018/12/13 12:51:57
  */
-class Version20181204144756 extends AbstractMigration
+class Version20181213125156 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -22,6 +22,8 @@ class Version20181204144756 extends AbstractMigration
                 claim LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', 
                 issuedOn DATETIME NOT NULL, 
                 comment LONGTEXT NOT NULL, 
+                uuid VARCHAR(36) NOT NULL, 
+                UNIQUE INDEX UNIQ_F2235FAED17F50A6 (uuid), 
                 INDEX IDX_F2235FAEBB9D6FEE (issuer_id), 
                 INDEX IDX_F2235FAE1623CB0A (verification_id), 
                 PRIMARY KEY(id)
@@ -58,6 +60,8 @@ class Version20181204144756 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 owner_id INT DEFAULT NULL, 
                 publicKeyParam LONGTEXT NOT NULL, 
+                uuid VARCHAR(36) NOT NULL, 
+                UNIQUE INDEX UNIQ_E660B725D17F50A6 (uuid), 
                 INDEX IDX_E660B7257E3C61F9 (owner_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
@@ -66,15 +70,39 @@ class Version20181204144756 extends AbstractMigration
             CREATE TABLE claro__open_badge_badge_class (
                 id INT AUTO_INCREMENT NOT NULL, 
                 issuer_id INT DEFAULT NULL, 
+                workspace_id INT DEFAULT NULL, 
                 name VARCHAR(255) NOT NULL, 
                 description LONGTEXT NOT NULL, 
                 image VARCHAR(255) NOT NULL, 
                 criteria LONGTEXT NOT NULL, 
-                durationValidation INT NOT NULL, 
+                isEnabled TINYINT(1) DEFAULT NULL, 
+                durationValidation INT DEFAULT NULL, 
+                created DATETIME NOT NULL, 
+                updated DATETIME NOT NULL, 
+                issuingMode LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_7A1CAEBED17F50A6 (uuid), 
                 INDEX IDX_7A1CAEBEBB9D6FEE (issuer_id), 
+                INDEX IDX_7A1CAEBE82D40A1F (workspace_id), 
                 PRIMARY KEY(id)
+            ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
+        ");
+        $this->addSql("
+            CREATE TABLE badgeclass_user (
+                badgeclass_id INT NOT NULL, 
+                user_id INT NOT NULL, 
+                INDEX IDX_45DE1F8F98CCE3D1 (badgeclass_id), 
+                INDEX IDX_45DE1F8FA76ED395 (user_id), 
+                PRIMARY KEY(badgeclass_id, user_id)
+            ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
+        ");
+        $this->addSql("
+            CREATE TABLE badgeclass_group (
+                badgeclass_id INT NOT NULL, 
+                group_id INT NOT NULL, 
+                INDEX IDX_1F0F6E8998CCE3D1 (badgeclass_id), 
+                INDEX IDX_1F0F6E89FE54D947 (group_id), 
+                PRIMARY KEY(badgeclass_id, group_id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
@@ -85,10 +113,12 @@ class Version20181204144756 extends AbstractMigration
                 verification_id INT DEFAULT NULL, 
                 evidences_id INT DEFAULT NULL, 
                 issuedOn DATETIME NOT NULL, 
-                image VARCHAR(255) NOT NULL, 
-                narrative LONGTEXT NOT NULL, 
+                image LONGTEXT DEFAULT NULL, 
+                narrative LONGTEXT DEFAULT NULL, 
                 revoked TINYINT(1) NOT NULL, 
-                revocationReason LONGTEXT NOT NULL, 
+                revocationReason LONGTEXT DEFAULT NULL, 
+                uuid VARCHAR(36) NOT NULL, 
+                UNIQUE INDEX UNIQ_B6E0ABADD17F50A6 (uuid), 
                 INDEX IDX_B6E0ABADE92F8F78 (recipient_id), 
                 INDEX IDX_B6E0ABADF7A2C2FC (badge_id), 
                 INDEX IDX_B6E0ABAD1623CB0A (verification_id), 
@@ -116,11 +146,15 @@ class Version20181204144756 extends AbstractMigration
         $this->addSql("
             CREATE TABLE claro__open_badge_evidence (
                 id INT AUTO_INCREMENT NOT NULL, 
+                assertion_id INT DEFAULT NULL, 
                 narrative LONGTEXT NOT NULL, 
                 name VARCHAR(255) NOT NULL, 
-                description LONGTEXT NOT NULL, 
-                gere VARCHAR(255) NOT NULL, 
-                audience LONGTEXT NOT NULL, 
+                description LONGTEXT DEFAULT NULL, 
+                genre VARCHAR(255) DEFAULT NULL, 
+                audience LONGTEXT DEFAULT NULL, 
+                uuid VARCHAR(36) NOT NULL, 
+                UNIQUE INDEX UNIQ_6F68173D17F50A6 (uuid), 
+                INDEX IDX_6F68173245A6843 (assertion_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
         ");
@@ -148,6 +182,35 @@ class Version20181204144756 extends AbstractMigration
             ALTER TABLE claro__open_badge_badge_class 
             ADD CONSTRAINT FK_7A1CAEBEBB9D6FEE FOREIGN KEY (issuer_id) 
             REFERENCES claro__organization (id)
+        ");
+        $this->addSql("
+            ALTER TABLE claro__open_badge_badge_class 
+            ADD CONSTRAINT FK_7A1CAEBE82D40A1F FOREIGN KEY (workspace_id) 
+            REFERENCES claro_workspace (id)
+        ");
+        $this->addSql("
+            ALTER TABLE badgeclass_user 
+            ADD CONSTRAINT FK_45DE1F8F98CCE3D1 FOREIGN KEY (badgeclass_id) 
+            REFERENCES claro__open_badge_badge_class (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE badgeclass_user 
+            ADD CONSTRAINT FK_45DE1F8FA76ED395 FOREIGN KEY (user_id) 
+            REFERENCES claro_user (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE badgeclass_group 
+            ADD CONSTRAINT FK_1F0F6E8998CCE3D1 FOREIGN KEY (badgeclass_id) 
+            REFERENCES claro__open_badge_badge_class (id) 
+            ON DELETE CASCADE
+        ");
+        $this->addSql("
+            ALTER TABLE badgeclass_group 
+            ADD CONSTRAINT FK_1F0F6E89FE54D947 FOREIGN KEY (group_id) 
+            REFERENCES claro_group (id) 
+            ON DELETE CASCADE
         ");
         $this->addSql("
             ALTER TABLE claro__open_badge_assertion 
@@ -186,6 +249,11 @@ class Version20181204144756 extends AbstractMigration
             REFERENCES claro__open_badge_assertion (id) 
             ON DELETE CASCADE
         ");
+        $this->addSql("
+            ALTER TABLE claro__open_badge_evidence 
+            ADD CONSTRAINT FK_6F68173245A6843 FOREIGN KEY (assertion_id) 
+            REFERENCES claro__open_badge_assertion (id)
+        ");
     }
 
     public function down(Schema $schema)
@@ -203,12 +271,24 @@ class Version20181204144756 extends AbstractMigration
             DROP FOREIGN KEY FK_F8B85F4EA7BA6769
         ");
         $this->addSql("
+            ALTER TABLE badgeclass_user 
+            DROP FOREIGN KEY FK_45DE1F8F98CCE3D1
+        ");
+        $this->addSql("
+            ALTER TABLE badgeclass_group 
+            DROP FOREIGN KEY FK_1F0F6E8998CCE3D1
+        ");
+        $this->addSql("
             ALTER TABLE claro__open_badge_assertion 
             DROP FOREIGN KEY FK_B6E0ABADF7A2C2FC
         ");
         $this->addSql("
             ALTER TABLE revocationlist_assertion 
             DROP FOREIGN KEY FK_FDE09CC0245A6843
+        ");
+        $this->addSql("
+            ALTER TABLE claro__open_badge_evidence 
+            DROP FOREIGN KEY FK_6F68173245A6843
         ");
         $this->addSql("
             ALTER TABLE revocationlist_assertion 
@@ -235,6 +315,12 @@ class Version20181204144756 extends AbstractMigration
         ");
         $this->addSql("
             DROP TABLE claro__open_badge_badge_class
+        ");
+        $this->addSql("
+            DROP TABLE badgeclass_user
+        ");
+        $this->addSql("
+            DROP TABLE badgeclass_group
         ");
         $this->addSql("
             DROP TABLE claro__open_badge_assertion

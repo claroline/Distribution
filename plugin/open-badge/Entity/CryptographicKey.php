@@ -11,6 +11,7 @@
 
 namespace Claroline\OpenBadgeBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CryptographicKey
 {
+    use UuidTrait;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -35,4 +38,9 @@ class CryptographicKey
      * @ORM\Column(type="text")
      */
     private $publicKeyParam;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 }

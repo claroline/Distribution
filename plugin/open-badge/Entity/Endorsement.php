@@ -11,6 +11,7 @@
 
 namespace Claroline\OpenBadgeBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Endorsement
 {
+    use UuidTrait;
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -50,4 +52,9 @@ class Endorsement
      * @ORM\Column(type="text")
      */
     private $comment;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 }

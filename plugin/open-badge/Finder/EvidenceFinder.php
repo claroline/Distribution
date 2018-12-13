@@ -37,7 +37,7 @@ class EvidenceFinder extends AbstractFinder
                   $qb->setParameter('assertion', $filterValue);
                   break;
               default:
-                $this->setDefaults($qb, $filterName, $filterValue);
+                  $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 
