@@ -120,10 +120,6 @@ class UserCrud
             }
         }
 
-        if ($createWs) {
-            $this->userManager->setPersonalWorkspace($user);
-        }
-
         $token = $this->container->get('security.token_storage')->getToken();
 
         if (null === $user->getMainOrganization()) {
@@ -133,6 +129,10 @@ class UserCrud
             } else {
                 $user->setMainOrganization($this->container->get('claroline.manager.organization.organization_manager')->getDefault());
             }
+        }
+
+        if ($createWs) {
+            $this->userManager->setPersonalWorkspace($user);
         }
 
         //we need this line for the log system
