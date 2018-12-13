@@ -158,7 +158,6 @@ class CompetencyController extends AbstractCrudController
     {
         $files = $request->files->all();
         $data = null;
-        $error = null;
 
         if (1 === count($files)) {
             foreach ($files as $file) {
