@@ -2,7 +2,6 @@
 
 namespace Claroline\OpenBadgeBundle\Serializer;
 
-use Claroline\AppBundle\API\Options as APIOptions;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -81,8 +80,8 @@ class BadgeClassSerializer
                   'url' => $badge->getImage(),
               ])
             ) : null,
-            'workspace' => $badge->getWorkspace() ? $this->serializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null,
             'issuer' => $this->serializer->serialize($badge->getIssuer()),
+
             'tags' => $this->serializeTags($badge),
         ];
 
@@ -97,6 +96,13 @@ class BadgeClassSerializer
             }
 
             $data['issuer'] = $this->profileSerializer->serialize($badge->getIssuer());
+        } else {
+            $data['issuingMode'] = $badge->getIssuingMode();
+            $data['meta'] = [
+               'created' => $badge->getCreated()->format('Y-m-d\TH:i:s'),
+               'updated' => $badge->getUpdated()->format('Y-m-d\TH:i:s'),
+            ];
+            $data['workspace'] = $badge->getWorkspace() ? $this->serializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null;
         }
 
         return $data;

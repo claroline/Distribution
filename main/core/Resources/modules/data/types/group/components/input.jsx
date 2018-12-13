@@ -7,21 +7,20 @@ import {trans} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
-import {User as UserType} from '#/main/core/user/prop-types'
-import {UserCard} from '#/main/core/user/data/components/user-card'
-import {MODAL_USERS_PICKER} from '#/main/core/modals/users'
+import {GroupCard} from '#/main/core/user/data/components/group-card'
+import {Group as GroupType} from '#/main/core/user/prop-types'
+import {MODAL_GROUPS_PICKER} from '#/main/core/modals/groups'
 
-//todo: implement badge picker
-const UserButton = props =>
+const GroupButton = props =>
   <Button
     className="btn"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-user"
-    label={trans('select_a_user')}
+    icon="fa fa-fw fa-users"
+    label={trans('add_groups')}
     primary={true}
-    modal={[MODAL_USERS_PICKER, {
-      url: ['apiv2_user_list_registerable'], // maybe not the correct URL
+    modal={[MODAL_GROUPS_PICKER, {
+      url: ['apiv2_group_list_registerable'],
       title: props.title,
       selectAction: (selected) => ({
         type: CALLBACK_BUTTON,
@@ -31,12 +30,12 @@ const UserButton = props =>
     }]}
   />
 
-UserButton.propTypes = {
+GroupButton.propTypes = {
   title: T.string,
   onChange: T.func.isRequired
 }
 
-const UserInput = props => {
+const GroupInput = props => {
   const actions = props.disabled ? []: [
     {
       name: 'delete',
@@ -51,7 +50,7 @@ const UserInput = props => {
   if (props.value) {
     return(
       <div>
-        <UserCard
+        <GroupCard
           data={props.value}
           size="sm"
           orientation="col"
@@ -59,7 +58,7 @@ const UserInput = props => {
         />
 
         {!props.disabled &&
-          <UserButton
+          <GroupButton
             {...props.picker}
             onChange={props.onChange}
           />
@@ -70,32 +69,30 @@ const UserInput = props => {
     return (
       <EmptyPlaceholder
         size="lg"
-        icon="fa fa-user"
-        title={trans('no_user')}
+        icon="fa fa-users"
+        title={trans('no_group')}
       >
-        {!props.disabled &&
-          <UserButton
-            {...props.picker}
-            onChange={props.onChange}
-          />
-        }
+        <GroupButton
+          {...props.picker}
+          onChange={props.onChange}
+        />
       </EmptyPlaceholder>
     )
   }
 }
 
-implementPropTypes(UserInput, FormFieldTypes, {
-  value: T.shape(UserType.propTypes),
+implementPropTypes(GroupInput, FormFieldTypes, {
+  value: T.arrayOf(T.shape(GroupType.propTypes)),
   picker: T.shape({
     title: T.string
   })
 }, {
   value: null,
   picker: {
-    title: trans('user_selector')
+    title: trans('groups_picker')
   }
 })
 
 export {
-  UserInput
+  GroupInput
 }

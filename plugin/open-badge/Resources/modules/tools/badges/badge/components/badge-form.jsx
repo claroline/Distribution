@@ -6,6 +6,15 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
 
 import {
+  ISSUING_MODE_ORGANIZATION,
+  ISSUING_MODE_USER,
+  ISSUING_MODE_GROUP,
+  ISSUING_MODE_PEER,
+  ISSUING_MODE_WORKSPACE,
+  ISSUING_MODE_AUTO
+} from '#/plugin/open-badge/tools/badges/badge/constants'
+
+import {
   actions as formActions,
   selectors as formSelect
 } from '#/main/app/content/form/store'
@@ -91,7 +100,42 @@ const BadgeFormComponent = (props) => {
           title: trans('allowed_issuer'),
           primary: false,
           fields: [
-
+            {
+              name: 'issuingMode',
+              type: 'choice',
+              label: trans('issuing_mode'),
+              options: {
+                choices:  {
+                  [ISSUING_MODE_ORGANIZATION]: trans(ISSUING_MODE_ORGANIZATION),
+                  [ISSUING_MODE_USER]: trans(ISSUING_MODE_USER),
+                  [ISSUING_MODE_GROUP]: trans(ISSUING_MODE_GROUP),
+                  [ISSUING_MODE_PEER]: trans(ISSUING_MODE_PEER),
+                  [ISSUING_MODE_WORKSPACE]: trans(ISSUING_MODE_WORKSPACE),
+                  [ISSUING_MODE_AUTO]: trans(ISSUING_MODE_AUTO)
+                },
+                multiple: true
+              }
+            }, {
+              name: 'user',
+              label: trans('users'),
+              type: 'collection',
+              displayed: badge =>  badge.issuingMode && badge.issuingMode.indexOf(ISSUING_MODE_USER) > -1,
+              options: {
+                type: 'user',
+                placeholder: trans('no_user'),
+                button: trans('add_user')
+              }
+            }, {
+              name: 'group',
+              label: trans('groups'),
+              type: 'collection',
+              displayed: badge =>  badge.issuingMode && badge.issuingMode.indexOf(ISSUING_MODE_GROUP) > -1,
+              options: {
+                type: 'group',
+                placeholder: trans('no_group'),
+                button: trans('add_group')
+              }
+            }
           ]
         }
       ]}

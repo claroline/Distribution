@@ -3,6 +3,9 @@ import {PropTypes as T} from 'prop-types'
 const Badge = {
   propTypes: {
     id: T.string
+  },
+  defaultProps: {
+    issuingMode: []
   }
 }
 

@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -26,6 +27,7 @@ class BadgeClass
 
     const ISSUING_MODE_ORGANIZATION = 'organization';
     const ISSUING_MODE_USER = 'user';
+    const ISSUING_MODE_GROUP = 'group';
     const ISSUING_MODE_PEER = 'peer';
     const ISSUING_MODE_WORKSPACE = 'workspace';
     const ISSUING_MODE_AUTO = 'auto';
@@ -101,6 +103,18 @@ class BadgeClass
     private $assertions;
 
     /**
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     */
+    protected $created;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     */
+    protected $updated;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
      *
      * @var Organization
@@ -115,11 +129,11 @@ class BadgeClass
     private $allowedIssuersGroups;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="json_array")
      *
      * @var string
      */
-    private $issuingMode = self::ISSUING_MODE_ORGANIZATION;
+    private $issuingMode = [self::ISSUING_MODE_ORGANIZATION];
 
     public function __construct()
     {
@@ -298,5 +312,15 @@ class BadgeClass
     public function getIsEnabled()
     {
         return $this->isEnabled;
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
     }
 }
