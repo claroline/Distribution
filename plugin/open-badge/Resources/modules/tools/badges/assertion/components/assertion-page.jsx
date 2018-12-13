@@ -6,7 +6,6 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {MODAL_BUTTON} from '#/main/app/buttons'
-import {Button} from '#/main/app/action/components/button'
 
 import {EvidenceList} from '#/plugin/open-badge/tools/badges/evidence/components/evidence-list'
 import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/tools/badges/modals/evidence'
@@ -56,6 +55,14 @@ const AssertionPageComponent = (props) => {
           icon="fa fa-fw fa-user"
           title={trans('evidences')}
           disabled={props.new}
+          actions={[{
+            type: MODAL_BUTTON,
+            icon: 'fa fa-fw fa-plus',
+            label: trans('add_evidence'),
+            modal: [MODAL_BADGE_EVIDENCE, {
+              assertion: props.assertion
+            }]
+          }]}
         >
           <ListData
             name="badges.assertion.evidences"
@@ -63,32 +70,26 @@ const AssertionPageComponent = (props) => {
               url: ['apiv2_assertion_evidences', {assertion: props.assertion.id}],
               autoload: props.assertion.id && !props.new
             }}
-            primaryAction={EvidenceList.open}
+            primaryAction={(row) => ({
+              type: MODAL_BUTTON,
+              modal: [MODAL_BADGE_EVIDENCE, {
+                assertion: props.assertion,
+                evidence: row
+              }]
+            })}
             delete={{
               url: ['apiv2_evidence_delete_bulk']
             }}
             definition={EvidenceList.definition}
             card={EvidenceList.card}
+
           />
         </FormSection>
       </FormSections>
-
-      <EvidenceButton assertion={props.assertion}/>
     </FormData>)
 }
 
-const EvidenceButton = props =>
-  <Button
-    className="btn"
-    style={{marginTop: 10}}
-    type={MODAL_BUTTON}
-    icon="fa fa-fw fa-plus"
-    label={trans('add_evidence')}
-    primary={true}
-    modal={[MODAL_BADGE_EVIDENCE, {
-      assertion: props.assertion
-    }]}
-  />
+
 
 const AssertionPage = connect(
   (state) => ({

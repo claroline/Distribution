@@ -41,6 +41,15 @@ const EvidenceModal = props =>
               options: {
                 long: true
               }
+            }, {
+              name: 'resources',
+              label: trans('resources'),
+              type: 'collection',
+              options: {
+                type: 'resource',
+                placeholder: trans('no_group'),
+                button: trans('add_resource')
+              }
             }
           ]
         }

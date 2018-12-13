@@ -1,4 +1,3 @@
-
 const STORE_NAME = 'evidenceForm'
 
 export const selectors = {
