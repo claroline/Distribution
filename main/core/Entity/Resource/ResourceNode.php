@@ -903,6 +903,16 @@ class ResourceNode
      */
     public function preFlush(PreFlushEventArgs $args)
     {
+	$ancestors = $this->getOldAncestors();
+        $ids = array_map(function($ancestor) {
+            return $ancestor['id'];
+        }, $ancestors);
+        $ids = array_unique($ids);
+
+        if (count($ids) !== count($ancestors)) {
+	    return;
+        }
+
         $entityManager = $args->getEntityManager();
 
         $this->materializedPath = $this->makePath($this);
