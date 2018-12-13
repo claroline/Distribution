@@ -44,7 +44,7 @@ actions.openAssertion = (formName, id = null) => {
 
 actions.addUsers = (id, users) => ({
   [API_REQUEST]: {
-    url: url(['apiv2_badge_add_users', {badge: id}], {ids: users}),
+    url: url(['apiv2_badge-class_add_users', {badge: id}], {ids: users}),
     request: {
       method: 'PATCH'
     },

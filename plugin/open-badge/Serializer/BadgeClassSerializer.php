@@ -6,7 +6,9 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
+use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
@@ -103,6 +105,12 @@ class BadgeClassSerializer
                'updated' => $badge->getUpdated()->format('Y-m-d\TH:i:s'),
             ];
             $data['workspace'] = $badge->getWorkspace() ? $this->serializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null;
+            $data['allowedUsers'] = array_map(function (User $user) {
+                return $this->serializer->serialize($user);
+            }, $badge->getAllowedIssuers()->toArray());
+            $data['allowedGroups'] = array_map(function (Group $group) {
+                return $this->serializer->serialize($group);
+            }, $badge->getAllowedIssuersGroups()->toArray());
         }
 
         return $data;
@@ -123,6 +131,7 @@ class BadgeClassSerializer
         $this->sipe('description', 'setDescription', $data, $badge);
         $this->sipe('criteria', 'setCriteria', $data, $badge);
         $this->sipe('duration', 'setDurationValidation', $data, $badge);
+        $this->sipe('issuingMode', 'setIssuingMode', $data, $badge);
 
         if (isset($data['issuer'])) {
             $badge->setIssuer($this->serializer->deserialize(
@@ -156,6 +165,22 @@ class BadgeClassSerializer
             } else {
                 $this->deserializeTags($badge, $data['tags']);
             }
+        }
+
+        if (isset($data['allowedUsers'])) {
+            $allowed = [];
+            foreach ($data['allowedUsers'] as $user) {
+                $allowed[] = $this->serializer->deserialize(User::class, $user);
+            }
+            $badge->setAllowedIssuers($allowed);
+        }
+
+        if (isset($data['allowedGroups'])) {
+            $allowed = [];
+            foreach ($data['allowedGroups'] as $group) {
+                $allowed[] = $this->serializer->deserialize(Group::class, $group);
+            }
+            $badge->setAllowedIssuersGroups($allowed);
         }
 
         return $badge;

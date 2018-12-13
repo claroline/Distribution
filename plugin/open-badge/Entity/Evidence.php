@@ -12,6 +12,7 @@
 namespace Claroline\OpenBadgeBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -59,9 +60,17 @@ class Evidence
      */
     private $assertion;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode")
+     *
+     * @var ResourceNode
+     */
+    private $resourceEvidences;
+
     public function __construct()
     {
         $this->refreshUuid();
+        $this->resourceEvidences = new ArrayCollection();
     }
 
     /**

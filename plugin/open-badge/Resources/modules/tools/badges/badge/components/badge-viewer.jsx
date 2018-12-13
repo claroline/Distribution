@@ -51,7 +51,7 @@ const BadgeViewerComponent = (props) => {
           }}
           primaryAction={AssertionList.open}
           delete={{
-            url: ['apiv2_badge_remove_users', {badge: props.badge.id}]
+            url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
           }}
           definition={AssertionList.definition}
           card={AssertionList.card}

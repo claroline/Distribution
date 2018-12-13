@@ -14,6 +14,7 @@ namespace Claroline\OpenBadgeBundle\Entity;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -138,6 +139,8 @@ class BadgeClass
     public function __construct()
     {
         $this->refreshUuid();
+        $this->allowedIssuers = new ArrayCollection();
+        $this->allowedIssuersGroups = new ArrayCollection();
     }
 
     /**
@@ -322,5 +325,37 @@ class BadgeClass
     public function getCreated()
     {
         return $this->created;
+    }
+
+    public function setAllowedIssuers(array $users)
+    {
+        $this->allowedIssuers->clear();
+        $this->allowedIssuers = $users;
+    }
+
+    public function setAllowedIssuersGroups(array $groups)
+    {
+        $this->allowedIssuersGroups->clear();
+        $this->allowedIssuersGroups = $groups;
+    }
+
+    public function getAllowedIssuers()
+    {
+        return $this->allowedIssuers;
+    }
+
+    public function getAllowedIssuersGroups()
+    {
+        return $this->allowedIssuersGroups;
+    }
+
+    public function setIssuingMode(array $issuingMode)
+    {
+        $this->issuingMode = $issuingMode;
+    }
+
+    public function getIssuingMode()
+    {
+        return $this->issuingMode;
     }
 }

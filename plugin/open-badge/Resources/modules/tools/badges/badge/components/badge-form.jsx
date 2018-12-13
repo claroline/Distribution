@@ -116,7 +116,7 @@ const BadgeFormComponent = (props) => {
                 multiple: true
               }
             }, {
-              name: 'user',
+              name: 'allowedUsers',
               label: trans('users'),
               type: 'collection',
               displayed: badge =>  badge.issuingMode && badge.issuingMode.indexOf(ISSUING_MODE_USER) > -1,
@@ -126,7 +126,7 @@ const BadgeFormComponent = (props) => {
                 button: trans('add_user')
               }
             }, {
-              name: 'group',
+              name: 'allowedGroups',
               label: trans('groups'),
               type: 'collection',
               displayed: badge =>  badge.issuingMode && badge.issuingMode.indexOf(ISSUING_MODE_GROUP) > -1,
@@ -148,6 +148,7 @@ const BadgeForm = connect(
   (state) => ({
     context: state.context,
     new: formSelect.isNew(formSelect.form(state, 'badges.current')),
+    badge: formSelect.data(formSelect.form(state, 'badges.current')),
     workspace: state.workspace
   }),
   (dispatch, ownProps) =>({
