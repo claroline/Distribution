@@ -56,7 +56,7 @@ class BadgeClassController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route("/{badge}/users/add", name="apiv2_badge_add_users")
+     * @EXT\Route("/{badge}/users/add", name="apiv2_badge-class_add_users")
      * @EXT\Method("PATCH")
      * @EXT\ParamConverter("badge", class="ClarolineOpenBadgeBundle:BadgeClass", options={"mapping": {"badge": "uuid"}})
      *

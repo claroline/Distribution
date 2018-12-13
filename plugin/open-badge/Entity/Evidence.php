@@ -240,4 +240,15 @@ class Evidence
 
         return $this;
     }
+
+    public function setResourceEvidences(array $nodes)
+    {
+        $this->resourceEvidences->clear();
+        $this->resourceEvidences = $nodes;
+    }
+
+    public function getResourceEvidences()
+    {
+        return $this->resourceEvidences;
+    }
 }

@@ -3,12 +3,10 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 
 import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
-import {MODAL_DATA_LIST} from '#/main/app/modals/list'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {MODAL_USERS_PICKER} from '#/main/core/modals/users'
+import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 
-import {UserList} from '#/main/core/administration/user/user/components/user-list'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSection} from '#/main/app/content/form/components/sections'
 
@@ -27,21 +25,26 @@ const BadgeViewerComponent = (props) => {
         data={props.badge}
         size="sm"
         orientation="col"
-      >
-      </BadgeCard>
+      />
 
       <FormSection
         className="embedded-list-section"
         icon="fa fa-fw fa-user"
         title={trans('users')}
-        actions={[
-          {
-            type: CALLBACK_BUTTON,
-            icon: 'fa fa-fw fa-plus',
-            label: trans('add_users'),
-            callback: () => props.pickUsers(props.badge.id)
-          }
-        ]}
+        actions={[{
+          type: MODAL_BUTTON,
+          icon: 'fa fa-fw fa-plus',
+          label: trans('add_users'),
+          modal: [MODAL_USERS_PICKER, {
+            url: ['apiv2_user_list_registerable'], // maybe not the correct URL
+            title: props.title,
+            selectAction: (selected) => ({
+              type: CALLBACK_BUTTON,
+              label: trans('select', {}, 'actions'),
+              callback: () => props.addUsers(props.badge.id, selected)
+            })
+          }]
+        }]}
       >
         <ListData
           name="badges.current.assertions"
@@ -70,20 +73,8 @@ const BadgeViewer = connect(
     save(badge, workspace, isNew) {
       dispatch(actions.save('badges.current', badge, workspace, isNew))
     },
-    pickUsers(groupId) {
-      dispatch(modalActions.showModal(MODAL_DATA_LIST, {
-        icon: 'fa fa-fw fa-user',
-        title: trans('add_users'),
-        confirmText: trans('add'),
-        name: 'users.picker',
-        definition: UserList.definition,
-        card: UserList.card,
-        fetch: {
-          url: ['apiv2_user_list'],
-          autoload: true
-        },
-        handleSelect: (selected) => dispatch(actions.addUsers(groupId, selected))
-      }))
+    addUsers(badgeId, selected) {
+      dispatch(actions.addUsers(badgeId, selected))
     }
   })
 )(BadgeViewerComponent)
