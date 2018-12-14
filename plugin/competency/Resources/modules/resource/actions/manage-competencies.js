@@ -8,5 +8,7 @@ export default (resourceNodes, refresher) => ({
   type: MODAL_BUTTON,
   icon: 'fa fa-fw fa-graduation-cap',
   label: trans('competency.associate', {}, 'competency'),
-  modal: [MODAL_COMPETENCY_RESOURCES_LINKS]
+  modal: [MODAL_COMPETENCY_RESOURCES_LINKS, {
+    nodeId: resourceNodes[0].id
+  }]
 })
