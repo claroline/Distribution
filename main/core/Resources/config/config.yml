@@ -256,6 +256,18 @@ plugin:
           is_anonymous_excluded: false
           desktop_category: user
 
+        - name: resource_trash
+          class: trash-alt
+          is_displayable_in_workspace: true
+          is_displayable_in_desktop: false
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: true
+          is_exportable: false
+          is_locked_for_admin: false
+          is_anonymous_excluded: false
+
         - name: logs
           class: line-chart
           is_displayable_in_workspace: true

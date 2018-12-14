@@ -46,7 +46,7 @@ class PlatformDefaults implements ParameterProviderInterface
             ],
             'country' => '-',
             'resource' => [
-                'soft_delete' => false,
+                'soft_delete' => true,
             ],
             'portfolio' => [
                 'url' => null,
