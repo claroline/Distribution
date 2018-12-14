@@ -44,7 +44,7 @@ const Ability = {
     id: T.string,
     name: T.string,
     minResourceCount: T.number,
-    minEvaluatedResourceCount: T.number,
+    minEvaluatedResourceCount: T.number
   }
 }
 
