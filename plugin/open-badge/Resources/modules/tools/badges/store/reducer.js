@@ -1,13 +1,13 @@
 import {Badge as BadgeType} from '#/plugin/open-badge/tools/badges/prop-types'
 
-import {combineReducers, makeReducer} from '#/main/app/store/reducer'
+import {combineReducers} from '#/main/app/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
 const reducer = {
   badges: combineReducers({
-    list: makeListReducer('badges.list'),
-    mine: makeListReducer('badges.mine'),
+    list: makeListReducer('badges.list', {}),
+    mine: makeListReducer('badges.mine', {}),
     current: makeFormReducer('badges.current', {
       data: BadgeType.defaultProps
     }, {

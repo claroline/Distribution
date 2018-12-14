@@ -5,6 +5,7 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
 
+import {constants as listConstants} from '#/main/app/content/list/constants'
 // todo : restore custom actions the same way resource actions are implemented
 const BadgesList = props =>
   <ListData

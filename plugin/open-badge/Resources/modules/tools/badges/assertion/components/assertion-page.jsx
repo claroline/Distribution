@@ -64,6 +64,7 @@ const AssertionPageComponent = (props) => {
             }]
           }]}
         >
+          //    dispatch(formActions.resetForm(formName, GroupTypes.defaultProps, true))
           <ListData
             name="badges.assertion.evidences"
             fetch={{
@@ -73,8 +74,8 @@ const AssertionPageComponent = (props) => {
             primaryAction={(row) => ({
               type: MODAL_BUTTON,
               modal: [MODAL_BADGE_EVIDENCE, {
-                assertion: props.assertion,
-                evidence: row
+                evidence: row,
+                onOpen: ()  => alert('open')
               }]
             })}
             delete={{
