@@ -10,6 +10,9 @@ export const App = () => ({
   component: TrashTool,
   store: reducer,
   initialData: initialData => ({
+    tool: {
+      name: 'resources'
+    },
     workspace: initialData.workspace
   })
 })

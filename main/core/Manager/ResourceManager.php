@@ -929,6 +929,16 @@ class ResourceManager
     public function restore(ResourceNode $resourceNode)
     {
         $resourceNode->setActive(true);
+        $workspace = $resourceNode->getWorkspace();
+
+        if ($workspace) {
+            $root = $this->getWorkspaceRoot($workspace);
+            $resourceNode->setParent($root);
+        }
+
+        $name = substr($resourceNode->getName(), 0, strrpos($resourceNode->getName(), '_'));
+        $resourceNode->setName($name);
+        $resourceNode->setName($this->getUniqueName($resourceNode));
 
         $this->om->persist($resourceNode);
         $this->om->flush();
