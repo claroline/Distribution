@@ -11,7 +11,7 @@ const ResourceList = {
   }),
   definition: [
     {
-      name: 'naem',
+      name: 'name',
       type: 'string',
       label: trans('name'),
       displayed: true,

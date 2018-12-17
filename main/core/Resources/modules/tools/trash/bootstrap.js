@@ -1,9 +1,9 @@
 import {bootstrap} from '#/main/app/dom/bootstrap'
 
-import {App} from '#/main/core/tools/resources'
+import {App} from '#/main/core/tools/trash'
 
 // generate application
-const ResourcesApp = new App()
+const TrashApp = new App()
 
 // mount the react application
-bootstrap('.trash-container', ResourcesApp.component, ResourcesApp.store, ResourcesApp.initialData)
+bootstrap('.trash-container', TrashApp.component, TrashApp.store, TrashApp.initialData)

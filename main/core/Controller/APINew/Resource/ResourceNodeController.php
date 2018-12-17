@@ -2,11 +2,13 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Resource;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
@@ -186,5 +188,64 @@ class ResourceNodeController extends AbstractCrudController
         return new JsonResponse(array_map(function (File $file) {
             return $this->serializer->serialize($file->getResourceNode());
         }, $resources));
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/{workspace}/workspace",
+     *     name="apiv2_resource_workspace_removed_list"
+     * )
+     * @EXT\ParamConverter(
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"workspace": "uuid"}}
+     * )
+     *
+     * @param Workspace $workspace
+     * @param Request   $request
+     *
+     * @return JsonResponse
+     */
+    public function listRemovedAction(Workspace $workspace, Request $request)
+    {
+        $filters = [
+            'workspace' => $workspace->getUuid(),
+            'active' => false,
+        ];
+
+        return new JsonResponse(
+            $this->finder->search(ResourceNode::class,
+            array_merge($request->query->all(), ['hiddenFilters' => $filters]))
+        );
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/{workspace}/restore",
+     *     name="apiv2_resource_workspace_restore"
+     * )
+     * @EXT\ParamConverter(
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"workspace": "uuid"}}
+     * )
+     * @EXT\Method("PATCH")
+     *
+     * @param Workspace $workspace
+     * @param Request   $request
+     *
+     * @return JsonResponse
+     */
+    public function restoreAction(Workspace $workspace, Request $request)
+    {
+        $nodes = $this->decodeIdsString($request, ResourceNode::class);
+
+        foreach ($nodes as $node) {
+            $this->crud->replace($node, 'active', true);
+        }
+
+        return new JsonResponse(array_map(function ($node) {
+            return $this->serializer->serialize($node, [Options::SERIALIZE_MINIMAL]);
+        }, $nodes));
     }
 }

@@ -1,11 +1,11 @@
 /**
- * Resources tool store.
+ * Trash tool store.
  */
 
-import {reducer} from '#/main/core/tools/resources/store/reducer'
-import {selectors} from '#/main/core/tools/resources/store/selectors'
+import {reducer} from '#/main/core/tools/trash/store/reducer'
+import {actions} from '#/main/core/tools/trash/store/actions'
 
 export {
   reducer,
-  selectors
+  actions
 }

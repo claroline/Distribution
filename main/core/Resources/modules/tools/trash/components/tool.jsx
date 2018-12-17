@@ -3,39 +3,46 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
-import {ResourceList} from '#/main/core/resource/data/components/resource-ResourceList'
+import {ResourceList} from '#/main/core/resource/data/components/resource-list'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {actions} from '#/main/core/tools/trash/store/actions'
-import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
+import {ToolPage} from '#/main/core/tool/containers/page'
 
 const TrashToolComponent = props =>
-  <ListData
-    name="users.list"
-    fetch={{
-      url: ['apiv2_user_list_managed_organization'],
-      autoload: true
-    }}
-    delete={{
-      url: ['apiv2_user_delete_bulk']
-    }}
-    primaryAction={ResourceList.open}
-    actions={(rows) => [
-
-    ]}
-    definition={ResourceList.definition}
-    card={ResourceList.card}
-  />
-
+  <ToolPage
+    subtitle={trans('trash')}
+    disabled={false}
+  >
+    <ListData
+      name="resources"
+      fetch={{
+        url: ['apiv2_resource_workspace_removed_list', {workspace: props.workspace.uuid}],
+        autoload: true
+      }}
+      delete={{
+        url: ['claro_resource_collection_action', {action: 'delete'}]
+      }}
+      primaryAction={ResourceList.open}
+      actions={(rows) => [
+        {
+          type: CALLBACK_BUTTON,
+          icon: 'fa fa-fw fa-undo-alt',
+          label: trans('restore', {}, 'actions'),
+          callback: () => props.restore(rows, props.workspace),
+          dangerous: false
+        }
+      ]}
+      definition={ResourceList.definition}
+      card={ResourceList.card}
+    />
+  </ToolPage>
 TrashToolComponent.propTypes = {
-  current: T.shape(
+  workspace: T.shape(
     ResourceNodeTypes.propTypes
   ),
-  loading: T.bool.isRequired,
-  addNodes: T.func.isRequired,
-  updateNodes: T.func.isRequired,
-  deleteNodes: T.func.isRequired
+  restore: T.func.isRequired
 }
 
 const TrashTool = connect(
@@ -43,12 +50,8 @@ const TrashTool = connect(
     workspace: state.workspace
   }),
   dispatch => ({
-    restore(resourceNodes) {
-      dispatch(actions.restore(resourceNodes))
-    },
-
-    delete(resourceNodes) {
-      dispatch(actions.delete(resourceNodes))
+    restore(resourceNodes, workspace) {
+      dispatch(actions.restore(resourceNodes, workspace))
     }
   })
 )(TrashToolComponent)

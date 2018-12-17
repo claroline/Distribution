@@ -4,28 +4,14 @@ import {actions as listActions} from '#/main/app/content/list/store/actions'
 
 export const actions = {}
 
-actions.restore = (id, groups) => ({
+actions.restore = (nodes, workspace) => ({
   [API_REQUEST]: {
-    url: url(['apiv2_user_add_groups', {id: id}], {ids: groups}),
+    url: url(['apiv2_resource_workspace_restore', {workspace: workspace.uuid}], {ids: nodes.map(node => node.id)}),
     request: {
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('users.current.groups'))
-    }
-  }
-})
-
-actions.delete = (id, groups) => ({
-  [API_REQUEST]: {
-    url: url(['apiv2_user_add_groups', {id: id}], {ids: groups}),
-    request: {
-      method: 'PATCH'
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('users.current.groups'))
+      dispatch(listActions.invalidateData('resources'))
     }
   }
 })
