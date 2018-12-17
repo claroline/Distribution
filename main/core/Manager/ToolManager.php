@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
@@ -108,8 +107,6 @@ class ToolManager
         $this->om->forceFlush();
         $this->toolMaskManager->createDefaultToolMaskDecoders($tool);
         $this->om->endFlushSuite();
-
-        $plugin = $this->om->getRepository(Plugin::class)->find($tool->getPlugin()->getId());
 
         //check if there are already workspace Tools, if not we add them
         $ot = $this->om->getRepository(OrderedTool::class)->findBy(['tool' => $tool], [], 1, 0);

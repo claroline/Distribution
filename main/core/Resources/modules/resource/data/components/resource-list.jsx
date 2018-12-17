@@ -4,7 +4,7 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 const ResourceList = {
-  open: (row) => ({
+  open: () => ({
     type: LINK_BUTTON,
     target: '/#',
     label: trans('open', {}, 'actions')
