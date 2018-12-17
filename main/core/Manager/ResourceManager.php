@@ -785,7 +785,7 @@ class ResourceManager
      *
      * @throws \LogicException
      */
-    public function delete(ResourceNode $resourceNode, $force = false)
+    public function delete(ResourceNode $resourceNode, $force = false, $softDelete = false)
     {
         $this->log('Removing '.$resourceNode->getName().'['.$resourceNode->getResourceType()->getName().':id:'.$resourceNode->getId().']');
 
@@ -796,10 +796,9 @@ class ResourceManager
         $workspace = $resourceNode->getWorkspace();
         $nodes = $this->getDescendants($resourceNode);
         $nodes[] = $resourceNode;
-        $softDelete = $this->platformConfigHandler->getParameter('resource_soft_delete');
-
         $this->om->startFlushSuite();
         $this->log('Looping through '.count($nodes).' children...');
+
         foreach ($nodes as $node) {
             $eventSoftDelete = false;
             $this->log('Removing '.$node->getName().'['.$node->getResourceType()->getName().':id:'.$node->getId().']');

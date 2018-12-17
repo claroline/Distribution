@@ -22,7 +22,7 @@ const TrashToolComponent = props =>
         autoload: true
       }}
       delete={{
-        url: ['claro_resource_collection_action', {action: 'delete'}]
+        url: ['claro_resource_collection_action', {action: 'hard_delete'}]
       }}
       primaryAction={ResourceList.open}
       actions={(rows) => [
@@ -30,7 +30,7 @@ const TrashToolComponent = props =>
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-undo-alt',
           label: trans('restore', {}, 'actions'),
-          callback: () => props.restore(rows, props.workspace),
+          callback: () => props.restore(rows),
           dangerous: false
         }
       ]}
@@ -50,8 +50,8 @@ const TrashTool = connect(
     workspace: state.workspace
   }),
   dispatch => ({
-    restore(resourceNodes, workspace) {
-      dispatch(actions.restore(resourceNodes, workspace))
+    restore(resourceNodes) {
+      dispatch(actions.restore(resourceNodes))
     }
   })
 )(TrashToolComponent)

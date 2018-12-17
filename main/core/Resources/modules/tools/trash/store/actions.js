@@ -4,11 +4,11 @@ import {actions as listActions} from '#/main/app/content/list/store/actions'
 
 export const actions = {}
 
-actions.restore = (nodes, workspace) => ({
+actions.restore = (nodes) => ({
   [API_REQUEST]: {
-    url: url(['apiv2_resource_workspace_restore', {workspace: workspace.uuid}], {ids: nodes.map(node => node.id)}),
+    url: url(['claro_resource_collection_action', {action: 'restore'}], {ids: nodes.map(node => node.id)}),
     request: {
-      method: 'PATCH'
+      method: 'POST'
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('resources'))
