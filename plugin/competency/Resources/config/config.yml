@@ -15,11 +15,8 @@ plugin:
           is_displayable_in_desktop: true
           desktop_category: user
 
-    #widgets:
-    #     - name: my-learning-objectives
-    #       is_configurable: false
-
     resource_actions:
         - name: manage_competencies
           group: management
           decoder: administrate
+          scope: [object]
