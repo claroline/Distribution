@@ -543,6 +543,14 @@ class ResourceManager
         if ($parent === $child) {
             throw new ResourceMoveException('You cannot move a directory into itself');
         }
+
+        $descendants = $this->getDescendants($child);
+        foreach ($descendants as $descendant) {
+            if ($parent === $descendant) {
+                throw new ResourceMoveException('You cannot move a directory into its descendants');
+            }
+        }
+
         $this->om->startFlushSuite();
         $this->setLastIndex($parent, $child);
         $child->setParent($parent);
@@ -785,7 +793,7 @@ class ResourceManager
      *
      * @throws \LogicException
      */
-    public function delete(ResourceNode $resourceNode, $force = false)
+    public function delete(ResourceNode $resourceNode, $force = false, $softDelete = false)
     {
         $this->log('Removing '.$resourceNode->getName().'['.$resourceNode->getResourceType()->getName().':id:'.$resourceNode->getId().']');
 
@@ -796,10 +804,9 @@ class ResourceManager
         $workspace = $resourceNode->getWorkspace();
         $nodes = $this->getDescendants($resourceNode);
         $nodes[] = $resourceNode;
-        $softDelete = $this->platformConfigHandler->getParameter('resource_soft_delete');
-
         $this->om->startFlushSuite();
         $this->log('Looping through '.count($nodes).' children...');
+
         foreach ($nodes as $node) {
             $eventSoftDelete = false;
             $this->log('Removing '.$node->getName().'['.$node->getResourceType()->getName().':id:'.$node->getId().']');
@@ -930,6 +937,16 @@ class ResourceManager
     public function restore(ResourceNode $resourceNode)
     {
         $resourceNode->setActive(true);
+        $workspace = $resourceNode->getWorkspace();
+
+        if ($workspace) {
+            $root = $this->getWorkspaceRoot($workspace);
+            $resourceNode->setParent($root);
+        }
+
+        $name = substr($resourceNode->getName(), 0, strrpos($resourceNode->getName(), '_'));
+        $resourceNode->setName($name);
+        $resourceNode->setName($this->getUniqueName($resourceNode));
 
         $this->om->persist($resourceNode);
         $this->om->flush();
