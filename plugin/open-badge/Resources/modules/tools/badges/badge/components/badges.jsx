@@ -24,6 +24,7 @@ const BadgesList = props =>
       scope: ['object']
     }]}
     card={BadgeList.card}
+    display={{current: listConstants.DISPLAY_LIST_SM}}
   />
 
 const Badges = connect(

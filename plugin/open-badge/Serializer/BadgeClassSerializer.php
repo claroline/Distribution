@@ -2,6 +2,7 @@
 
 namespace Claroline\OpenBadgeBundle\Serializer;
 
+use Claroline\AppBundle\API\Options as APIOptions;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -156,7 +157,8 @@ class BadgeClassSerializer
         if (isset($data['workspace'])) {
             $workspace = $this->serializer->deserialize(Workspace::class, ['id' => $data['workspace']['id']]);
             $badge->setWorkspace($workspace);
-            $badge->setIssuer($workspace->getOrganization());
+            //main orga maybe instead ? this is fishy
+            $badge->setIssuer($workspace->getOrganizations()[0]);
         }
 
         if (isset($data['tags'])) {

@@ -9,6 +9,8 @@ import {MODAL_BUTTON} from '#/main/app/buttons'
 
 import {EvidenceList} from '#/plugin/open-badge/tools/badges/evidence/components/evidence-list'
 import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/tools/badges/modals/evidence'
+import {selectors as evidenceSelectors} from '#/plugin/open-badge/tools/badges/modals/evidence/store/selectors'
+import {actions as formActions} from '#/main/app/content/form/store'
 
 import {
   selectors as formSelect
@@ -60,11 +62,11 @@ const AssertionPageComponent = (props) => {
             icon: 'fa fa-fw fa-plus',
             label: trans('add_evidence'),
             modal: [MODAL_BADGE_EVIDENCE, {
-              assertion: props.assertion
+              assertion: props.assertion,
+              initForm: props.initForm
             }]
           }]}
         >
-          //    dispatch(formActions.resetForm(formName, GroupTypes.defaultProps, true))
           <ListData
             name="badges.assertion.evidences"
             fetch={{
@@ -75,7 +77,8 @@ const AssertionPageComponent = (props) => {
               type: MODAL_BUTTON,
               modal: [MODAL_BADGE_EVIDENCE, {
                 evidence: row,
-                onOpen: ()  => alert('open')
+                assertion: props.assertion,
+                initForm: props.initForm
               }]
             })}
             delete={{
@@ -98,7 +101,15 @@ const AssertionPage = connect(
     new: formSelect.isNew(formSelect.form(state, 'badges.assertion')),
     assertion: formSelect.data(formSelect.form(state, 'badges.assertion'))
   }),
-  null
+  dispatch => ({
+    initForm(evidence = null) {
+      if (!evidence) {
+        dispatch(formActions.resetForm(evidenceSelectors.STORE_NAME, {}, true))
+      } else {
+        dispatch(formActions.resetForm(evidenceSelectors.STORE_NAME, evidence, false))
+      }
+    }
+  })
 )(AssertionPageComponent)
 
 export {

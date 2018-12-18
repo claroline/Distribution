@@ -15,6 +15,7 @@ const EvidenceModal = props =>
     icon="fa fa-fw fa-cog"
     title={trans('evidence')}
     subtitle={props.assertion.badge.name}
+    onEntering={() => props.initForm(props.evidence)}
   >
     <FormData
       {...props}

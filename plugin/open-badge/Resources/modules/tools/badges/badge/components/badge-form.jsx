@@ -74,7 +74,7 @@ const BadgeFormComponent = (props) => {
     }
   ]
 
-  if (props.workspace === null) {
+  if (props.workspace !== null) {
     fields.splice(4, 1)
   }
 
