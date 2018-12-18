@@ -50,12 +50,11 @@ actions.addUsers = (id, users) => ({
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('badges.list'))
-      dispatch(listActions.invalidateData('badges.current.users'))
+      dispatch(listActions.invalidateData('badges.current.assertions'))
     }
   }
 })
 
-//calendarElement is required to refresh the calendar since it's outside react
 actions.save = (formName, badge, workspace, isNew) => ({
   [API_REQUEST]: {
     url: isNew ? ['apiv2_badge-class_create']: ['apiv2_badge-class_update', {id: badge.id}],
@@ -65,6 +64,7 @@ actions.save = (formName, badge, workspace, isNew) => ({
     },
     success: (response, dispatch) => {
       dispatch(formActions.resetForm(formName, response, false))
+      dispatch(listActions.invalidateData('badges.list'))
     }
   }
 })

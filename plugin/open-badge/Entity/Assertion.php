@@ -36,6 +36,7 @@ class Assertion
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\BadgeClass", inversedBy="assertions")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $badge;
 

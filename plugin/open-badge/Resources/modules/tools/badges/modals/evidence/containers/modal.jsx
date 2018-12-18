@@ -1,6 +1,7 @@
 import {connect} from 'react-redux'
 
 import {withReducer} from '#/main/app/store/components/withReducer'
+import {actions as listActions} from '#/main/app/content/list/store'
 
 import {
   actions as formActions
@@ -15,6 +16,7 @@ const EvidenceModal = withReducer(selectors.STORE_NAME, reducer)(
     (dispatch) => ({
       saveEvidence(assertion) {
         dispatch(formActions.saveForm(selectors.STORE_NAME, ['apiv2_evidence_create_at', {assertion: assertion.id}]))
+        dispatch(listActions.invalidateData('badges.assertion.evidences'))
       }
     })
   )(EvidenceModalComponent)

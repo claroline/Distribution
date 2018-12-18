@@ -16,6 +16,9 @@ const BadgesList = props =>
     }}
     definition={BadgeList.definition}
     primaryAction={BadgeList.open}
+    delete={{
+      url: ['apiv2_badge-class_delete_bulk']
+    }}
     actions={(rows) => [{
       type: LINK_BUTTON,
       icon: 'fa fa-fw fa-pen',

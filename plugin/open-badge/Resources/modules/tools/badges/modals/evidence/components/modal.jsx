@@ -64,7 +64,10 @@ const EvidenceModal = props =>
       icon="fa fa-fw fa-save"
       label={trans('save')}
       primary={true}
-      callback={() => props.saveEvidence(props.assertion)}
+      callback={() => {
+        props.saveEvidence(props.assertion)
+        props.fadeModal()
+      }}
     />
   </Modal>
 
