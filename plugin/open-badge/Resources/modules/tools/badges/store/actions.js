@@ -54,17 +54,3 @@ actions.addUsers = (id, users) => ({
     }
   }
 })
-
-actions.save = (formName, badge, workspace, isNew) => ({
-  [API_REQUEST]: {
-    url: isNew ? ['apiv2_badge-class_create']: ['apiv2_badge-class_update', {id: badge.id}],
-    request: {
-      body: JSON.stringify(Object.assign({}, badge, {workspace})),
-      method: isNew ? 'POST': 'PUT'
-    },
-    success: (response, dispatch) => {
-      dispatch(formActions.resetForm(formName, response, false))
-      dispatch(listActions.invalidateData('badges.list'))
-    }
-  }
-})

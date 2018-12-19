@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
+import {actions}    from '#/plugin/open-badge/tools/badges/badge/store/actions'
 
 import {
   ISSUING_MODE_ORGANIZATION,

@@ -13,6 +13,9 @@ const BadgeCard = props =>
     title={props.data.name}
     subtitle={props.data.description}
     contentText={props.data.criteria}
+    flags={[
+      props.data.meta.enabled && ['fa fa-eye', trans('enabled')]
+    ].filter(flag => !!flag)}
     footer={
       <span>
         {props.data.issuer &&

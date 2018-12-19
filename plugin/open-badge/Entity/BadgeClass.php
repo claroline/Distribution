@@ -89,7 +89,7 @@ class BadgeClass
      *
      * @var int
      */
-    private $isEnabled = true;
+    private $enabled = true;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -307,14 +307,14 @@ class BadgeClass
         return $this->workspace;
     }
 
-    public function setIsEnabled($bool)
+    public function setEnabled($bool)
     {
-        $this->isEnabled = $bool;
+        $this->enabled = $bool;
     }
 
-    public function getIsEnabled()
+    public function getEnabled()
     {
-        return $this->isEnabled;
+        return $this->enabled;
     }
 
     public function getUpdated()

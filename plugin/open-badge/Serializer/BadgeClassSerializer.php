@@ -104,6 +104,7 @@ class BadgeClassSerializer
             $data['meta'] = [
                'created' => $badge->getCreated()->format('Y-m-d\TH:i:s'),
                'updated' => $badge->getUpdated()->format('Y-m-d\TH:i:s'),
+               'enabled' => $badge->getEnabled(),
             ];
             $data['workspace'] = $badge->getWorkspace() ? $this->serializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null;
             $data['allowedUsers'] = array_map(function (User $user) {

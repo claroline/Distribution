@@ -76,6 +76,48 @@ class BadgeClassController extends AbstractCrudController
     }
 
     /**
+     * @EXT\Route("/enable", name="apiv2_badge-class_enable")
+     * @EXT\Method("PUT")
+     *
+     * @return JsonResponse
+     */
+    public function enableAction(Request $request)
+    {
+        $badges = $this->decodeIdsString($request, BadgeClass::class);
+
+        foreach ($badges as $badge) {
+            $this->crud->replace($badge, 'enabled', true);
+        }
+
+        return new JsonResponse(
+            array_map(function (BadgeClass $badge) {
+                return $this->serializer->serialize($badge);
+            }, $badges)
+        );
+    }
+
+    /**
+     * @EXT\Route("/disable", name="apiv2_badge-class_disable")
+     * @EXT\Method("PUT")
+     *
+     * @return JsonResponse
+     */
+    public function disableAction(Request $request)
+    {
+        $badges = $this->decodeIdsString($request, BadgeClass::class);
+
+        foreach ($badges as $badge) {
+            $this->crud->replace($badge, 'enabled', false);
+        }
+
+        return new JsonResponse(
+            array_map(function (BadgeClass $badge) {
+                return $this->serializer->serialize($badge);
+            }, $badges)
+        );
+    }
+
+    /**
      * @EXT\Route("/{badge}/users/remove", name="apiv2_badge-class_remove_users")
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter("badge", class="ClarolineOpenBadgeBundle:BadgeClass", options={"mapping": {"badge": "uuid"}})

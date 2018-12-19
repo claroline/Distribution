@@ -27,7 +27,7 @@ class EvidenceVoter extends AbstractVoter
      *     "manager" = @DI\Inject("claroline.manager.open_badge_manager")
      * })
      */
-    public function __construct(OpenBadgeManager $manager)
+    public function setManager(OpenBadgeManager $manager)
     {
         $this->manager = $manager;
     }
