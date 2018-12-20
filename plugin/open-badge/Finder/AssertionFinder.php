@@ -27,7 +27,7 @@ class AssertionFinder extends AbstractFinder
         return Assertion::class;
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = [])
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
