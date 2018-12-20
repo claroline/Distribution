@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 
-import {OpenBadgeAdminTool as OpenBadgeAdminToolComponent} from '#/main/core/tools/badges/components/tool'
+import {OpenBadgeAdminTool as OpenBadgeAdminToolComponent} from '#/plugin/open-badge/tools/badges/components/tool'
 
 const ConnectedOpenBadgeAdminTool = connect(
   state => ({

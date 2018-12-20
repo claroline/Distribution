@@ -11,6 +11,7 @@ import {Badge}  from '#/plugin/open-badge/tools/badges/badge/components/badge'
 import {Badges} from '#/plugin/open-badge/tools/badges/badge/components/badges'
 import {BadgeViewer} from '#/plugin/open-badge/tools/badges/badge/components/badge-viewer'
 import {Assertion} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-page'
+
 import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
 
 const BadgeTabActions = () =>

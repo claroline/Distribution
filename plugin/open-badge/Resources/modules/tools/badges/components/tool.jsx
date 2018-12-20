@@ -4,6 +4,7 @@ import {trans} from '#/main/app/intl/translation'
 import {TabbedPageContainer} from '#/main/core/layout/tabs'
 import {BadgeTabActions, BadgeTab as BadgeTabComponent} from '#/plugin/open-badge/tools/badges/badge/components/badge-tab'
 import {MyBadges as MyBadgeTabComponent} from '#/plugin/open-badge/tools/badges/badge/components/my-badges'
+import {ParametersForm} from '#/plugin/open-badge/tools/badges/parameters/components/parameters'
 
 const Tool = props =>
   <TabbedPageContainer
@@ -25,16 +26,15 @@ const Tool = props =>
         path: '/badges',
         actions: BadgeTabActions,
         content: BadgeTabComponent
-      }/*, {
+      }, {
         icon: 'fa fa-cog',
         title: trans('parameters'),
         path: '/parameters',
         onlyIcon: true,
         //only for admin
-        displayed: true,
-        actions: () => {},
-        content: () => {}
-      }*/
+        displayed: props.context === 'administration',
+        content: ParametersForm
+      }
     ]}
   />
 

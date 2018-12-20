@@ -1,6 +1,6 @@
 import {bootstrap} from '#/main/app/dom/bootstrap'
 
-import {OpenBadgeAdminTool} from '#/plugin/open-badge/tools/badges/components/tool'
+import {OpenBadgeAdminTool} from '#/plugin/open-badge/tools/badges/containers/tool'
 import {reducer} from '#/plugin/open-badge/tools/badges/store/reducer'
 
 // mount the react application
@@ -19,7 +19,11 @@ bootstrap(
   (initialData) => {
     return {
       workspace: initialData.workspace || null,
-      context: initialData.context
+      context: initialData.context,
+      parameters: {
+        data: initialData.parameters || {},
+        originalData: initialData.parameters || {}
+      }
     }
   }
 )

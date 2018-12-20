@@ -4,6 +4,8 @@ import {combineReducers} from '#/main/app/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
+import {reducer as parametersReducer} from '#/plugin/open-badge/tools/badges/parameters/store/reducer'
+
 const reducer = {
   badges: combineReducers({
     list: makeListReducer('badges.list', {}),
@@ -17,7 +19,7 @@ const reducer = {
       evidences: makeListReducer('badges.assertion.evidences')
     })
   }),
-  parameters: makeFormReducer('parameters')
+  parameters: parametersReducer
 }
 
 export {

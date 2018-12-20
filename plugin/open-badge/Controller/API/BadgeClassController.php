@@ -175,24 +175,6 @@ class BadgeClassController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route("/current-user", name="apiv2_badge-class_current_user_list")
-     * @EXT\Method("GET")
-     *
-     * @return JsonResponse
-     */
-    public function getMyBadgesAction(Request $request)
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        return new JsonResponse(
-            $this->finder->search(BadgeClass::class, array_merge(
-                $request->query->all(),
-                ['hiddenFilters' => ['recipient' => $user->getUuid()]]
-            ))
-        );
-    }
-
-    /**
      * @EXT\Route("/workspace/{workspace}", name="apiv2_badge-class_workspace_badge_list")
      * @EXT\Method("GET")
      * @EXT\ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"mapping": {"workspace": "uuid"}})
