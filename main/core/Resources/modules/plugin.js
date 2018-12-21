@@ -59,9 +59,17 @@ registry.add('ClarolineCoreBundle', {
     },
 
     user: {
-
+      'disable'        : () => { return import(/* webpackChunkName: "core-action-user-disable" */         '#/main/core/user/actions/disable') },
+      'enable'         : () => { return import(/* webpackChunkName: "core-action-user-enable" */          '#/main/core/user/actions/enable') },
+      'password-change': () => { return import(/* webpackChunkName: "core-action-user-password-change" */ '#/main/core/user/actions/password-change') },
+      'password-reset' : () => { return import(/* webpackChunkName: "core-action-user-password-reset" */  '#/main/core/user/actions/password-reset') },
+      'show-as'        : () => { return import(/* webpackChunkName: "core-action-user-show-as" */         '#/main/core/user/actions/show-as') },
+      'show-profile'   : () => { return import(/* webpackChunkName: "core-action-user-show-profile" */    '#/main/core/user/actions/show-profile') },
+      'show-tracking'  : () => { return import(/* webpackChunkName: "core-action-user-show-tracking" */   '#/main/core/user/actions/show-tracking') },
+      'ws-disable'     : () => { return import(/* webpackChunkName: "core-action-user-ws-disable" */      '#/main/core/user/actions/ws-disable') },
+      'ws-enable'      : () => { return import(/* webpackChunkName: "core-action-user-ws-enable" */       '#/main/core/user/actions/ws-enable') },
+      'merge'          : () => { return import(/* webpackChunkName: "core-action-user-ws-merge" */        '#/main/core/user/actions/merge') }
     },
-
     group: {
 
     }

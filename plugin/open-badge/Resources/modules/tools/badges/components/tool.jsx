@@ -25,7 +25,8 @@ const Tool = props =>
         title: trans('badges'),
         path: '/badges',
         actions: BadgeTabActions,
-        content: BadgeTabComponent
+        content: BadgeTabComponent,
+        displayed: props.context !== 'profile'
       }, {
         icon: 'fa fa-cog',
         title: trans('parameters'),
@@ -34,6 +35,12 @@ const Tool = props =>
         //only for admin
         displayed: props.context === 'administration',
         content: ParametersForm
+      }, {
+        icon: 'fa fa-book',
+        title: trans('profile'),
+        path: '/profile/:id',
+        content: BadgeTabComponent,
+        displayed: props.context === 'profile'
       }
     ]}
   />

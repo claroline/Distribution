@@ -12,6 +12,7 @@
 namespace Claroline\OpenBadgeBundle\Controller\API;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\Evidence;
 use Claroline\OpenBadgeBundle\Manager\OpenBadgeManager;
@@ -76,6 +77,22 @@ class AssertionController extends AbstractCrudController
     public function getMyAssertionsAction(Request $request)
     {
         $user = $this->tokenStorage->getToken()->getUser();
+        $assertions = $this->finder->search(Assertion::class, array_merge(
+            $request->query->all(),
+            ['hiddenFilters' => ['recipient' => $user->getUuid()]]
+        ));
+
+        return new JsonResponse($assertions);
+    }
+
+    /**
+     * @EXT\Route("/user/{user}", name="apiv2_assertion_user_list")
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function getUserAssertionsAction(Request $request, User $user)
+    {
         $assertions = $this->finder->search(Assertion::class, array_merge(
             $request->query->all(),
             ['hiddenFilters' => ['recipient' => $user->getUuid()]]

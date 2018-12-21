@@ -138,43 +138,6 @@ class BadgeClassController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route("/{badge}/assertions/users", name="apiv2_badge-class_users_list")
-     * @EXT\Method("GET")
-     * @EXT\ParamConverter("badge", class="ClarolineOpenBadgeBundle:BadgeClass", options={"mapping": {"badge": "uuid"}})
-     *
-     * @return JsonResponse
-     */
-    public function getAssertionsUsersAction(Request $request, BadgeClass $badge)
-    {
-        $params = $request->query->all();
-
-        $assertions = $this->finder->fetch(
-          Assertion::class,
-          ['badge' => $badge->getUuid(), 'revoked' => false],
-          [],
-          $params['page'],
-          $params['limit']
-        );
-
-        $total = $this->finder->fetch(Assertion::class,
-            ['badge' => $badge->getUuid(), 'revoked' => false],
-            [],
-            $params['page'],
-            $params['limit'],
-            true
-        );
-
-        //not really clean but it allows us to not add anything to the core bundle for now
-        $users = array_map(function (Assertion $assertion) {
-            return $this->serializer->serialize($assertion->getRecipient());
-        }, $assertions);
-
-        return new JsonResponse(
-          ['data' => $users, 'page' => $params['page'], 'limit' => $params['limit'], 'totalResults' => $total]
-        );
-    }
-
-    /**
      * @EXT\Route("/workspace/{workspace}", name="apiv2_badge-class_workspace_badge_list")
      * @EXT\Method("GET")
      * @EXT\ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"mapping": {"workspace": "uuid"}})
