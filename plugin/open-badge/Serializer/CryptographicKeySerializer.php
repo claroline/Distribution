@@ -3,7 +3,7 @@
 namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use Claroline\OpenBadgeBundle\Entity\CryptographicKey;
+use Claroline\CoreBundle\Entity\Cryptography\CryptographicKey;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;

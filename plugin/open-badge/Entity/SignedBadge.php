@@ -27,7 +27,7 @@ class SignedBadge
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\CryptographicKey")
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Cryptography\CryptographicKey")
      */
     private $cryptographicKey;
 }
