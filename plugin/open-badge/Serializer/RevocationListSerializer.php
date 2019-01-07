@@ -17,6 +17,14 @@ class RevocationListSerializer
     {
     }
 
+    public function serialize($assertion)
+    {
+        return [
+            'type' => 'RevocationList',
+            //'id' => $this->router->generate('apiv2_open_badge__assertion', ['assertion' => $assertion->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
+        ];
+    }
+
     public function getClass()
     {
         return self::class;

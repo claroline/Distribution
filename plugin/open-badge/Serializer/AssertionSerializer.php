@@ -23,7 +23,8 @@ class AssertionSerializer
      *     "userSerializer"               = @DI\Inject("claroline.serializer.user"),
      *     "router"                       = @DI\Inject("router"),
      *     "profileSerializer"            = @DI\Inject("claroline.serializer.open_badge.profile"),
-     *     "verificationObjectSerializer" = @DI\Inject("claroline.serializer.open_badge.verification_object")
+     *     "verificationObjectSerializer" = @DI\Inject("claroline.serializer.open_badge.verification_object"),
+     *     "identityObjectSerializer"     = @DI\Inject("claroline.serializer.open_badge.identity_object")
      * })
      *
      * @param Router $router
@@ -33,13 +34,15 @@ class AssertionSerializer
         BadgeClassSerializer $badgeSerializer,
         ProfileSerializer $profileSerializer,
         RouterInterface $router,
-        VerificationObjectSerializer $verificationObjectSerializer
+        VerificationObjectSerializer $verificationObjectSerializer,
+        IdentityObjectSerializer $identityObjectSerializer
     ) {
         $this->userSerializer = $userSerializer;
         $this->badgeSerializer = $badgeSerializer;
         $this->profileSerializer = $profileSerializer;
         $this->router = $router;
         $this->verificationObjectSerializer = $verificationObjectSerializer;
+        $this->identityObjectSerializer = $identityObjectSerializer;
     }
 
     /**
@@ -56,10 +59,10 @@ class AssertionSerializer
             $data = [
                 'id' => $this->router->generate('apiv2_open_badge__assertion', ['assertion' => $assertion->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
                 'type' => 'Assertion',
-                'recipient' => $this->profileSerializer->serialize($assertion->getRecipient(), [Options::ENFORCE_OPEN_BADGE_JSON]),
+                'verification' => $this->verificationObjectSerializer->serialize($assertion),
+                'recipient' => $this->identityObjectSerializer->serialize($assertion->getRecipient(), [Options::ENFORCE_OPEN_BADGE_JSON]),
                 'badge' => $this->badgeSerializer->serialize($assertion->getBadge(), [Options::ENFORCE_OPEN_BADGE_JSON]),
                 'issuedOn' => $assertion->getIssuedOn()->format(\DateTime::ISO8601),
-                'verification' => $this->verificationObjectSerializer->serialize($assertion),
             ];
         } else {
             $data = [
