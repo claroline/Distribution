@@ -64,7 +64,7 @@ class SummaryLink extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.collapsed !== this.props.collapsed) {
       this.setState({collapsed: nextProps.collapsed || false})
     }

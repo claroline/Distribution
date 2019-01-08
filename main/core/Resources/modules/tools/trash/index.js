@@ -11,7 +11,7 @@ export const App = () => ({
   store: reducer,
   initialData: initialData => ({
     tool: {
-      name: 'resources'
+      name: 'resources',
     },
     workspace: initialData.workspace
   })

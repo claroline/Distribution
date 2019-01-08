@@ -12,7 +12,7 @@ export const App = () => ({
   initialData: initialData => ({
     tool: {
       name: 'resource_manager',
-      context: initialData.context
+      currentContext: initialData.currentContext
     },
     resourceManager: {
       root: initialData.root,

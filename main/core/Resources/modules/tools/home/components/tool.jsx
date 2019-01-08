@@ -34,12 +34,6 @@ const Tool = props =>
   </Router>
 
 Tool.propTypes = {
-  context: T.shape({
-    type: T.oneOf(['workspace', 'desktop']),
-    data: T.shape({
-      name: T.string.isRequired
-    })
-  }),
   sortedTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),

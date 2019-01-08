@@ -16,7 +16,7 @@ const icon = createSelector(
 
 const context = createSelector(
   [store],
-  (store) => store.context
+  (store) => store.currentContext
 )
 
 export const selectors = {

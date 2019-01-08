@@ -16,7 +16,7 @@ const FormWrapper = props => props.embedded ?
     {props.children}
   </fieldset>
   :
-  <form id={props.id} action="#" className={classes('form data-form', props.className)}>
+  <form id={props.id} className={classes('form data-form', props.className)} action="#">
     {props.children}
   </form>
 

@@ -1,5 +1,5 @@
 import {Component, createElement} from 'react'
-import {PropTypes as T} from 'prop-types'
+import {Provider, ReactReduxContext} from 'react-redux'
 import invariant from 'invariant'
 
 function getDisplayName(WrappedComponent) {
@@ -25,21 +25,22 @@ function withReducer(key, reducer) {
         super(props, context)
 
         invariant(context.store,
-          `Could not find "store" in either the context of ${wrappedDisplayName}. You may have called withReducers outside <Provider>.`
+          `Could not find "store" in the context of ${wrappedDisplayName}. You may have called withReducers outside <Provider>.`
         )
 
         context.store.injectReducer(key, reducer)
       }
 
       render() {
-        return createElement(WrappedComponent, this.props)
+        // Provider is required to make the new store available to the React sub-tree
+        return createElement(Provider, {
+          store: this.context.store
+        }, createElement(WrappedComponent, this.props))
       }
     }
 
     WithReducers.displayName = wrappedDisplayName
-    WithReducers.contextTypes = {
-      store: T.object.isRequired
-    }
+    WithReducers.contextType = ReactReduxContext
 
     return WithReducers
   }
