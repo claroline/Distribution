@@ -20,7 +20,7 @@ export const MyBadges = () => {
       definition={AssertionList.definition}
       actions={(rows) => [{
         type: CALLBACK_BUTTON,
-        icon: 'fa fa-fw fa-disk',
+        icon: 'fa fa-fw fa-save',
         label: trans('push-to-backpack'),
         scope: ['object'],
         displayed: true,
@@ -29,7 +29,9 @@ export const MyBadges = () => {
         }
       }]}
       card={AssertionList.card}
-      display={{current: listConstants.DISPLAY_LIST_SM}}
     />
   )
 }
+
+
+//display={{current: listConstants.DISPLAY_LIST_SM}}
