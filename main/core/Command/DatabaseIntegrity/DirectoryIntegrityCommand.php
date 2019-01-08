@@ -16,8 +16,8 @@ class DirectoryIntegrityCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('claroline:directory:check')
-            ->setDescription('Checks the resource nodes integrity of the platform.')
-            ->addOption('workspace', 'w', InputOption::VALUE_OPTIONAL, 'User login or email. Restore roles only for this user.');
+            ->setDescription('Checks the directory integrity of a workspace.')
+            ->addOption('workspace', 'w', InputOption::VALUE_OPTIONAL, 'The workspace code');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
