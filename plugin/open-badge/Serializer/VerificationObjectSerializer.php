@@ -33,9 +33,8 @@ class VerificationObjectSerializer
         $crypto = $issuer->getKeys()->toArray()[0];
 
         return [
-            'verificationProperty' => 'id',
             'type' => 'SignedBadge',
-            'id' => $this->router->generate(
+            'creator' => $this->router->generate(
                 'apiv2_open_badge__cryptographic_key',
                 ['key' => $crypto->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL
             ),

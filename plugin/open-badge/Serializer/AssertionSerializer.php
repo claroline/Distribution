@@ -59,10 +59,15 @@ class AssertionSerializer
             $data = [
                 'id' => $this->router->generate('apiv2_open_badge__assertion', ['assertion' => $assertion->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
                 'type' => 'Assertion',
-                'verification' => $this->verificationObjectSerializer->serialize($assertion),
+                'verify' => $this->verificationObjectSerializer->serialize($assertion),
+                //doc is uncomplete ? verify works but not verification
+                //'verification' => $this->verificationObjectSerializer->serialize($assertion),
                 'recipient' => $this->identityObjectSerializer->serialize($assertion->getRecipient(), [Options::ENFORCE_OPEN_BADGE_JSON]),
                 'badge' => $this->badgeSerializer->serialize($assertion->getBadge(), [Options::ENFORCE_OPEN_BADGE_JSON]),
                 'issuedOn' => $assertion->getIssuedOn()->format(\DateTime::ISO8601),
+                'expires' => $this->getExpireDate($assertion),
+                //no implementation right now
+                'revoked' => false,
             ];
         } else {
             $data = [
@@ -73,6 +78,15 @@ class AssertionSerializer
         }
 
         return $data;
+    }
+
+    public function getExpireDate(Assertion $assertion)
+    {
+        $badge = $assertion->getBadge();
+        $date = $assertion->getIssuedOn();
+        $date->modify('+ '.$badge->getDurationValidation().' day');
+
+        return $date->format(\DateTime::ISO8601);
     }
 
     public function serializeMeta(Assertion $assertion, array $options = [])
