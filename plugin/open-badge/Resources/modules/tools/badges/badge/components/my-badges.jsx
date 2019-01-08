@@ -22,9 +22,9 @@ export const MyBadges = () =>
       icon: 'fa fa-fw fa-disk',
       label: trans('push-to-backpack'),
       scope: ['object'],
+      displayed: true,
       callback: () => {
-        OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}])], (errors, successes) => {
-        })
+        OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}])], (errors, successes) => {})
       }
     }]}
     card={AssertionList.card}
