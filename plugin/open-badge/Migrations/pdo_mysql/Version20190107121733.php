@@ -38,7 +38,7 @@ class Version20190107121733 extends AbstractMigration
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
         ");
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro__open_badge_identity_object (
                 id INT AUTO_INCREMENT NOT NULL,
                 identity VARCHAR(255) NOT NULL,
@@ -46,7 +46,7 @@ class Version20190107121733 extends AbstractMigration
                 salt VARCHAR(255) NOT NULL,
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
+        ');
         $this->addSql('
             CREATE TABLE claro__open_badge_signed_badge (
                 id INT AUTO_INCREMENT NOT NULL,
@@ -165,7 +165,7 @@ class Version20190107121733 extends AbstractMigration
             ALTER TABLE claro__open_badge_endorsement
             ADD CONSTRAINT FK_F2235FAE1623CB0A FOREIGN KEY (verification_id)
             REFERENCES claro__open_badge_verification_object (id)
-        ');*
+        ');
         $this->addSql('
             ALTER TABLE claro__open_badge_signed_badge
             ADD CONSTRAINT FK_F8B85F4EA7BA6769 FOREIGN KEY (cryptographicKey_id)

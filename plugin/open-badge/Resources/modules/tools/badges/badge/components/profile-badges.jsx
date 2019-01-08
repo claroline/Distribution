@@ -24,7 +24,7 @@ const ProfileBadgeList = props =>
       scope: ['object'],
       displayed: true,
       callback: () => {
-        OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}])], (errors, successes) => {})
+        OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}, true])], (errors, successes) => {})
       }
     }]}
     card={AssertionList.card}
