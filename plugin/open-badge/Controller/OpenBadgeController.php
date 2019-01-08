@@ -12,6 +12,7 @@
 namespace Claroline\OpenBadgeBundle\Controller;
 
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Entity\Cryptography\CryptographicKey;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
@@ -118,5 +119,17 @@ class OpenBadgeController
     public function getEvidenceAction(Evidence $evidence)
     {
         return new JsonResponse($this->serializer->serialize($evidence, [Options::ENFORCE_OPEN_BADGE_JSON]));
+    }
+
+    /**
+     * @EXT\Route("/crypto/{key}", name="apiv2_open_badge__cryptographic_key")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("key", class="ClarolineCoreBundle:Cryptography\CryptographicKey", options={"mapping": {"key": "uuid"}})
+     *
+     * @return JsonResponse
+     */
+    public function getCryptographicKeyction(CryptographicKey $key)
+    {
+        return new JsonResponse($this->serializer->serialize($key, [Options::ENFORCE_OPEN_BADGE_JSON]));
     }
 }

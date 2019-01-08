@@ -18,20 +18,25 @@ class CryptographicKeySerializer
 
     /**
      * @DI\InjectParams({
-     *     "router" = @DI\Inject("router")
+     *     "router"             = @DI\Inject("router"),
+     *     "profileSerializer"  = @DI\Inject("claroline.serializer.open_badge.profile")
      * })
      *
      * @param Router $router
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, ProfileSerializer $profileSerializer)
     {
         $this->router = $router;
+        $this->profileSerializer = $profileSerializer;
     }
 
     public function serialize(CryptographicKey $crypto)
     {
         return  [
-            'id' => $this->router->generate('apiv2_open_badge__crypto', ['crypto' => $crypto->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
+            'type' => 'CryptographicKey',
+            'owner' => $this->profileSerializer->serialize($crypto->getOrganization()),
+            'publicKeyParam' => $crypto->getPublicKeyParam(),
+            'id' => $this->router->generate('apiv2_open_badge__cryptographic_key', ['key' => $crypto->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
         ];
     }
 
