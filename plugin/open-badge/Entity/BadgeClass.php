@@ -294,6 +294,11 @@ class BadgeClass
 
     public function getDurationValidation()
     {
+        if (!$this->durationValidation) {
+            //100 years validation !
+            return 365 * 100;
+        }
+
         return $this->durationValidation;
     }
 
