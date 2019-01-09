@@ -99,7 +99,7 @@ class OpenBadgeController
     }
 
     /**
-     * @EXT\Route("/assertion/{assertion}", name="apiv2_open_badge__assertion")
+     * @EXT\Route("/assertion/{assertion}.json", name="apiv2_open_badge__assertion")
      * @EXT\Method("GET")
      * @EXT\ParamConverter("assertion", class="ClarolineOpenBadgeBundle:Assertion", options={"mapping": {"assertion": "uuid"}})
      *

@@ -48,7 +48,8 @@ class ProfileSerializer
 
         if ($profile instanceof Organization) {
             $data['name'] = $profile->getName();
-            $data['url'] = $this->router->generate(
+	    //for mozilla backpack
+            $data['url'] = $data['origin'] = $this->router->generate(
               'claro_index',
               [],
               UrlGeneratorInterface::ABSOLUTE_URL

@@ -91,11 +91,12 @@ class BadgeClassSerializer
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
             $data['id'] = $this->router->generate('apiv2_open_badge__badge_class', ['badge' => $badge->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL);
             $data['type'] = 'BadgeClass';
-            $data['criteria'] = $this->criteriaSerializer->serialize($badge);
+            $data['criteria'] = $this->criteriaSerializer->serialize($badge)['id'];
             $image = $this->om->getRepository(PublicFile::class)->findOneBy(['url' => $badge->getImage()]);
 
             if ($image) {
-                $data['image'] = $this->imageSerializer->serialize($image);
+		//wtf, this is for mozillabackpack
+                $data['image'] = $this->imageSerializer->serialize($image)['id'];
             }
 
             $data['issuer'] = $this->profileSerializer->serialize($badge->getIssuer());
