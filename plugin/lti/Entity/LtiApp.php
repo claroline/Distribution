@@ -2,6 +2,7 @@
 
 namespace UJM\LtiBundle\Entity;
 
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class LtiApp
 {
+    use Uuid;
+
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id

@@ -1,8 +1,11 @@
 {
     "add_lti_app": "Ajouter une application externe",
     "choice_app": "Choisissez une application",
+    "key": "Clé",
     "name_app": "Nom de l'application",
     "open_application": "Ouvrir l'application",
     "open_application_in_a_new_window": "Ouvrir l'application dans une nouvelle page",
-    "open_application_in_the_same_window": "Ouvrir l'application dans la même page"
+    "open_application_in_the_same_window": "Ouvrir l'application dans la même page",
+    "secret": "Secret",
+    "url": "URL"
 }

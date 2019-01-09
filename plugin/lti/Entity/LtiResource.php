@@ -2,6 +2,7 @@
 
 namespace UJM\LtiBundle\Entity;
 
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class LtiResource extends AbstractResource
 {
+    use Uuid;
+
     /**
      * @ORM\ManyToOne(targetEntity="LtiApp")
      * @ORM\JoinColumn(nullable=false)
