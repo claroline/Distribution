@@ -764,12 +764,13 @@ class DatabaseWriter
         if (isset($toolConfiguration['class'])) {
             $tool->setClass("{$toolConfiguration['class']}");
         } else {
-            $tool->setClass('wrench');
+            $tool->setClass('tools');
         }
         if (isset($toolConfiguration['desktop_category'])) {
             $tool->setDesktopCategory("{$toolConfiguration['desktop_category']}");
         }
 
+        $this->toolManager->setLogger($this->logger);
         $this->toolManager->create($tool);
         $this->persistCustomToolRights($toolConfiguration['tool_rights'], $tool);
     }

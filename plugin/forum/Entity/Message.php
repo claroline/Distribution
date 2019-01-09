@@ -12,6 +12,7 @@
 namespace Claroline\ForumBundle\Entity;
 
 use Claroline\CoreBundle\Entity\AbstractMessage;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -67,11 +68,24 @@ class Message extends AbstractMessage
     //required because we use a "property_exists" somewhere in the crud and it doesn't work otherwise.
     protected $uuid;
 
+    /**
+     * Message constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->children = new ArrayCollection();
+    }
+
     public function setSubject(Subject $subject)
     {
         $this->subject = $subject;
     }
 
+    /**
+     * @return Subject
+     */
     public function getSubject()
     {
         if ($parent = $this->getParent()) {
@@ -101,6 +115,9 @@ class Message extends AbstractMessage
         $this->parent = $parent;
     }
 
+    /**
+     * @return Message
+     */
     public function getParent()
     {
         return $this->parent;

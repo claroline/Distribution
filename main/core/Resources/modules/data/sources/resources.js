@@ -1,4 +1,3 @@
-
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 import {trans} from '#/main/app/intl/translation'
@@ -55,6 +54,16 @@ export default {
         type: 'date',
         alias: 'modificationDate',
         displayed: true
+      }, {
+        name: 'tags',
+        type: 'tag',
+        label: trans('tags'),
+        displayable: false,
+        filterable: true,
+        sortable: false,
+        options: {
+          objectClass: 'Claroline\\CoreBundle\\Entity\\Resource\\ResourceNode'
+        }
       }
     ],
     card: ResourceCard

@@ -30,11 +30,10 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-competency-my-objectives.js') }}"></script>
+    <script src="{{ hotAsset('claroline-distribution-plugin-competency-my-objectives') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-plugin-competency-my-objectives.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-plugin-competency-circle.css') }}" />
 {% endblock %}

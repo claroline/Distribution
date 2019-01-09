@@ -266,13 +266,8 @@ class ResourceNodeSerializer
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $meta = array_merge($meta, [
-                'type' => $resourceNode->getResourceType()->getName(),
-                'mimeType' => $resourceNode->getMimeType(),
-                'description' => $resourceNode->getDescription(),
                 'authors' => $resourceNode->getAuthor(),
                 'license' => $resourceNode->getLicense(),
-                'published' => $resourceNode->isPublished(),
-                'active' => $resourceNode->isActive(),
             ]);
         }
 
@@ -313,7 +308,8 @@ class ResourceNodeSerializer
         $this->sipe('name', 'setName', $data, $resourceNode);
 
         if (isset($data['meta']['workspace'])) {
-            $workspace = $this->om->getRepository(Workspace::class)->findOneByUuid($data['meta']['workspace']['uuid']);
+            /** @var Workspace $workspace */
+            $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['uuid' => $data['meta']['workspace']['uuid']]);
             $resourceNode->setWorkspace($workspace);
         }
 

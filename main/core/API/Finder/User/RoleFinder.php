@@ -54,7 +54,7 @@ class RoleFinder extends AbstractFinder
         return Role::class;
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
         if ($this->tokenStorage->getToken()) {
             $isAdmin = $this->authChecker->isGranted('ROLE_ADMIN');
@@ -96,6 +96,13 @@ class RoleFinder extends AbstractFinder
                     $qb->leftJoin('obj.workspace', 'w');
                     $qb->andWhere('w.uuid IN (:workspaceIds)');
                     $qb->setParameter('workspaceIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                case 'workspaceConfigurable':
+                    $qb->leftJoin('obj.workspace', 'w');
+                    $qb->andWhere('w.uuid IN (:workspaceIds)');
+                    $qb->setParameter('workspaceIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    $qb->orWhere("obj.name LIKE 'ROLE_ANONYMOUS'");
+                    $qb->orWhere("obj.name LIKE 'ROLE_USER'");
                     break;
                 case 'grantable':
                     if (!$isAdmin && $this->tokenStorage->getToken()) {

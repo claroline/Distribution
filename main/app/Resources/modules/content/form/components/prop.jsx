@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import merge from 'lodash/merge'
 
@@ -42,10 +42,13 @@ const FormInput = props => {
           // forward error to the caller
           validateProp(props, value).then(errors => {
             props.setErrors(errors)
-          })
-        }
 
-        if (props.onChange) {
+            if (props.onChange) {
+              // forward updated value to the caller
+              props.onChange(value)
+            }
+          })
+        } else if (props.onChange) {
           // forward updated value to the caller
           props.onChange(value)
         }
@@ -69,38 +72,19 @@ FormInput.propTypes = {
   options: T.object,
   required: T.bool,
   value: T.any,
-  error: T.oneOfType([T.string, T.object]), // object is for complex types like collection
+  error: T.oneOfType([T.string, T.arrayOf(T.string), T.object]), // object is for complex types like collection
   validating: T.bool,
   onChange: T.func,
   setErrors: T.func
 }
 
-class FormProp extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {definition: null}
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.type !== nextProps.type) {
-      this.setState({definition: null})
-    }
-  }
-
-  render() {
-    return (
-      <Await
-        for={getType(this.props.type)}
-        then={typeDef => this.setState({definition: typeDef})}
-      >
-        {this.state.definition &&
-          <FormInput {...this.props} definition={this.state.definition} />
-        }
-      </Await>
-    )
-  }
-}
+const FormProp = props =>
+  <Await
+    for={getType(props.type)}
+    then={definition => (
+      <FormInput {...props} definition={definition} />
+    )}
+  />
 
 // todo : use the one defined in prop-types
 FormProp.propTypes = {
@@ -115,7 +99,7 @@ FormProp.propTypes = {
   options: T.object,
   required: T.bool,
   value: T.any,
-  error: T.oneOfType([T.string, T.object]), // object is for complex types like collection
+  error: T.oneOfType([T.string, T.arrayOf(T.string), T.object]), // object is for complex types like collection
   validating: T.bool,
   onChange: T.func,
   setErrors: T.func

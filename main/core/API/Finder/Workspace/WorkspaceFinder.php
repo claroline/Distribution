@@ -78,10 +78,10 @@ class WorkspaceFinder extends AbstractFinder
 
                     if ($currentUser instanceof User) {
                         $qb->leftJoin('obj.organizations', 'uo');
-                        $qb->leftJoin('uo.users', 'ua');
+                        $qb->leftJoin('uo.userOrganizationReferences', 'ua');
 
                         $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->eq('ua.id', ':userOganizationId')
+                            $qb->expr()->eq('ua.user', ':userOganizationId')
                         ));
 
                         $qb->setParameter('userOganizationId', $currentUser->getId());
@@ -188,6 +188,15 @@ class WorkspaceFinder extends AbstractFinder
         }
 
         return $qb;
+    }
+
+    //required for the unions
+    public function getExtraFieldMapping()
+    {
+        return [
+          'meta.personal' => 'is_personal',
+          'meta.model' => 'isModel',
+        ];
     }
 
     public function getFilters()

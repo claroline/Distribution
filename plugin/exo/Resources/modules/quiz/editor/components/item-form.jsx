@@ -4,7 +4,7 @@ import get from 'lodash/get'
 
 import {trans, tex} from '#/main/app/intl/translation'
 import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
-import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
+import {FormGroup} from '#/main/app/content/form/components/group.jsx'
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
@@ -58,6 +58,7 @@ const Metadata = props =>
         item={props.item}
       />
     </FormGroup>
+
     <FormGroup
       id={`item-${props.item.id}-tags`}
       label={trans('tags')}

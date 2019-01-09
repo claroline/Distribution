@@ -14,7 +14,7 @@ A form group embed the following features :
 
 ### Components
   #### FormGroup
-  `import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'`
+  `import {FormGroup} from '#/main/app/content/form/components/group.jsx'`
 
   #### CheckGroup
   `import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'`
@@ -56,16 +56,4 @@ A form group embed the following features :
   
   #### IP
   `import {Ip} from '#/main/core/layout/form/components/field/ip.jsx'`
-
-  #### IP list
-  `import {IpList} from '#/main/core/layout/form/components/field/ip-list.jsx'`
-
-## Others
-
-### Components
-  #### HelpBlock
-  `import {HelpBlock} from '#/main/core/layout/form/components/help-block.jsx'`
-
-  #### ErrorBlock
-  `import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'`
   

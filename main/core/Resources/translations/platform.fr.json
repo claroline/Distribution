@@ -1617,7 +1617,9 @@
     "main_organization": "Organisation principale",
     "vat_number": "Numéro de TVA",
     "open_url": "Url d'ouverture",
-    "resource_allowed_ip": "IPs authorisées",
+    "allowed_ips": "IPs authorisées",
+    "add_ip": "Ajouter une adresse IP",
+    "no_allowed_ip": "Aucune IP n'est authorisée.",
     "summary": "Sommaire",
     "overview": "Page d'accueil",
     "poster": "Image de couverture",
@@ -1738,8 +1740,12 @@
     "enable_overview": "Afficher la page d'accueil",
     "playback": "Lecture",
     "video": "Vidéo",
+    "calendar": "Calendrier",
+    "requirements": "Pré-requis",
     "javascript": "Javascript",
     "javascripts": "Javascripts",
     "add_javascript": "Ajouter un javascript",
-    "no_javascript": "Aucun javascript"
+    "no_javascript": "Aucun javascript",
+    "new_category": "Nouvelle catégorie",
+    "notified_actions": "Actions notifiées"
 }

@@ -2,6 +2,7 @@
 
 namespace HeVinci\CompetencyBundle\Entity;
 
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,6 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Ability implements \JsonSerializable
 {
+    use Uuid;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -35,6 +38,13 @@ class Ability implements \JsonSerializable
      * @Assert\Range(min="0", max="1000")
      */
     private $minResourceCount = 1;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\Range(min="0", max="1000")
+     */
+    private $minEvaluatedResourceCount = 0;
 
     /**
      * @ORM\OneToMany(targetEntity="CompetencyAbility", mappedBy="ability")
@@ -66,6 +76,7 @@ class Ability implements \JsonSerializable
 
     public function __construct()
     {
+        $this->refreshUuid();
         $this->resources = new ArrayCollection();
         $this->competencyAbilities = new ArrayCollection();
     }
@@ -108,6 +119,22 @@ class Ability implements \JsonSerializable
     public function getMinResourceCount()
     {
         return $this->minResourceCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinEvaluatedResourceCount()
+    {
+        return $this->minEvaluatedResourceCount;
+    }
+
+    /**
+     * @param int $minEvaluatedResourceCount
+     */
+    public function setMinEvaluatedResourceCount($minEvaluatedResourceCount)
+    {
+        $this->minEvaluatedResourceCount = $minEvaluatedResourceCount;
     }
 
     /**

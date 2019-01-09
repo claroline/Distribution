@@ -3,7 +3,6 @@ import set from 'lodash/set'
 import moment from 'moment'
 
 import {trans, tval} from '#/main/app/intl/translation'
-import {IPv4} from '#/main/core/scaffolding/ip'
 
 // TODO : break me
 
@@ -119,20 +118,11 @@ function lengthInRange(value, options) {
   return chain(value, options, [lengthMin, lengthMax])
 }
 
-function url(value) {
-  if (match(value, {regex: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/ig})) {
+function url(/*value*/) {
+  // TODO : fix regex
+  /*if (match(value, {regex: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/ig})) {
     return tval('This value should be a valid url.')
-  }
-}
-
-function ip(value) {
-  if (string(value)) {
-    return string(value)
-  }
-
-  if (!IPv4.isValid(value)) {
-    return tval('This value should be a valid IPv4.')
-  }
+  }*/
 }
 
 function email(value) {
@@ -273,7 +263,6 @@ export {
   array,
   string,
   notBlank,
-  ip,
   match,
   number,
   inRange,

@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Resource\Types;
 
-use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Claroline\CoreBundle\Manager\TextManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -14,8 +13,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class TextSerializer
 {
-    use SerializerTrait;
-
     /** @var TextManager */
     private $manager;
 
@@ -73,7 +70,7 @@ class TextSerializer
         $user = $this->tokenStorage->getToken()->getUser();
 
         // TODO : replace `createRevision`. It calls om flush and persist and this is not allowed in serializer
-        $revision = $this->manager->createRevision($text, $data['content'], $user === 'anon.' ? null : $user);
+        $revision = $this->manager->createRevision($text, $data['content'], 'anon.' === $user ? null : $user);
 
         return $revision->getText();
     }
