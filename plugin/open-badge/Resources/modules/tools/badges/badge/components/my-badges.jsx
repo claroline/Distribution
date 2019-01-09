@@ -2,9 +2,7 @@ import React from 'react'
 
 import {ListData} from '#/main/app/content/list/containers/data'
 import {constants as listConstants} from '#/main/app/content/list/constants'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {trans} from '#/main/app/intl/translation'
-import {url} from '#/main/app/api/router'
+import issue from '#/plugin/open-badge/tools/badges/badge/actions/issue'
 
 import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-user-list'
 // todo : restore custom actions the same way resource actions are implemented
@@ -18,17 +16,7 @@ export const MyBadges = () => {
       }}
       primaryAction={AssertionList.open}
       definition={AssertionList.definition}
-      actions={(rows) => [{
-        type: CALLBACK_BUTTON,
-        icon: 'fa fa-fw fa-save',
-        label: trans('push-to-backpack'),
-        scope: ['object'],
-        displayed: true,
-        callback: () => {
-          console.log(url(['apiv2_open_badge__assertion', {assertion: rows[0].id}, true]))
-          OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}, true])], (errors, successes) => {})
-        }
-      }]}
+      actions={(rows) => [issue(rows)]}
       card={AssertionList.card}
     />
   )
