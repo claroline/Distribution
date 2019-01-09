@@ -1,11 +1,10 @@
 {
     "add_lti_app": "Ajouter une application externe",
     "choice_app": "Choisissez une application",
+    "display_ratio": "Proportion d'affichage",
+    "display_ratio_list": "Liste de proportions d'affichage",
     "key": "Clé",
-    "name_app": "Nom de l'application",
-    "open_application": "Ouvrir l'application",
-    "open_application_in_a_new_window": "Ouvrir l'application dans une nouvelle page",
-    "open_application_in_the_same_window": "Ouvrir l'application dans la même page",
+    "open_application_in_a_new_tab": "Ouvrir l'application dans un nouvel onglet",
     "secret": "Secret",
     "url": "URL"
 }

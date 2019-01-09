@@ -5,8 +5,3 @@ claro_lti_api:
     type: api
     options:
         expose: true
-
-ujm_lti_tool:
-    resource: "@UJMLtiBundle/Controller/LtiWsController.php"
-    type: annotation
-    prefix: /

@@ -11,6 +11,7 @@
 
 namespace UJM\LtiBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\LtiBundle\Entity\LtiApp;
@@ -33,19 +34,25 @@ class LtiAppSerializer
 
     /**
      * @param LtiApp $app
+     * @param array  $options
      *
      * @return array
      */
-    public function serialize(LtiApp $app)
+    public function serialize(LtiApp $app, array $options = [])
     {
         $serialized = [
             'id' => $app->getUuid(),
             'title' => $app->getTitle(),
             'url' => $app->getUrl(),
-            'appKey' => $app->getAppkey(),
-            'secret' => $app->getSecret(),
             'description' => $app->getDescription(),
         ];
+
+        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $serialized = array_merge($serialized, [
+                'appKey' => $app->getAppkey(),
+                'secret' => $app->getSecret(),
+            ]);
+        }
 
         return $serialized;
     }

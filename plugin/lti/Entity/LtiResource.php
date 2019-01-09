@@ -7,7 +7,7 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="UJM\LtiBundle\Repository\LtiResourceRepository")
+ * @ORM\Entity
  * @ORM\Table(name="ujm_lti_resource")
  */
 class LtiResource extends AbstractResource
@@ -16,19 +16,32 @@ class LtiResource extends AbstractResource
 
     /**
      * @ORM\ManyToOne(targetEntity="LtiApp")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $ltiApp;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $openInNewTab;
+    private $openInNewTab = false;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $ratio = 56.25;
+
+    /**
+     * LtiResource constructor.
+     */
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     /**
      * @param LtiApp $ltiApp
      */
-    public function setLtiApp($ltiApp)
+    public function setLtiApp(LtiApp $ltiApp = null)
     {
         $this->ltiApp = $ltiApp;
     }
@@ -55,5 +68,21 @@ class LtiResource extends AbstractResource
     public function setOpenInNewTab($openInNewTab)
     {
         $this->openInNewTab = $openInNewTab;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getRatio()
+    {
+        return $this->ratio;
+    }
+
+    /**
+     * @param float|null $ratio
+     */
+    public function setRatio($ratio)
+    {
+        $this->ratio = $ratio;
     }
 }

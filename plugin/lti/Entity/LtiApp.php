@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="UJM\LtiBundle\Repository\LtiAppRepository")
+ * @ORM\Entity
  * @ORM\Table(name="ujm_lti_app")
  */
 class LtiApp
