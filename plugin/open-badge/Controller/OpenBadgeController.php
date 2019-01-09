@@ -24,6 +24,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/openbadge2")
@@ -131,5 +132,16 @@ class OpenBadgeController
     public function getCryptographicKeyction(CryptographicKey $key)
     {
         return new JsonResponse($this->serializer->serialize($key, [Options::ENFORCE_OPEN_BADGE_JSON]));
+    }
+
+    /**
+     * @EXT\Route("/connect", name="apiv2_open_badge__connect")
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function connectBackPackAction(Request $request)
+    {
+        return new JsonResponse($request->query->all());
     }
 }
