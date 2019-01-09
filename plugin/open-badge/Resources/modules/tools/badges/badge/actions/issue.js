@@ -14,16 +14,13 @@ export default (rows) => ({
   scope: ['object'],
   displayed: true,
   callback: () => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const myParam = urlParams.get('access_token')
-
-    if (!myParam) {
-      connect()
-    }
-    issue(rows[0]['data'])
+    OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}, true])], (errors, successes) => {
+      console.log(errors)
+      console.log(successes)
+    })
   }
 })
-
+/*
 const connect = () => {
   OpenBadges.connect({
     callback: window.location.href,
@@ -41,17 +38,18 @@ const issue = (assertion) => {
   })
 
   const url = apiRoot + '/issue'
+  console.log('Bearer ' + btoa(myParam))
 
   const requestOptions = {
     method : 'POST',
-    headers: {
+    headers: new Headers({
       'Authorization': 'Bearer ' + btoa(myParam),
       'Content-Type': 'application/json'
-    },
+    }),
     body: assertionData
   }
 
   fetch(url, requestOptions).then(response => {
     console.log(response)
   })
-}
+}*/
