@@ -74,6 +74,7 @@ class AssertionSerializer
                 'id' => $assertion->getUuid(),
                 'user' => $this->userSerializer->serialize($assertion->getRecipient()),
                 'badge' => $this->badgeSerializer->serialize($assertion->getBadge()),
+                'data' => $this->serialize($assertion, [Options::ENFORCE_OPEN_BADGE_JSON]),
             ];
         }
 
