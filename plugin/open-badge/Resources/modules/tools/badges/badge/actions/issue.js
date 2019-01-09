@@ -14,14 +14,19 @@ export default (rows) => ({
   scope: ['object'],
   displayed: true,
   callback: () => {
-    connect()
+    const urlParams = new URLSearchParams(window.location.search)
+    const myParam = urlParams.get('access_token')
+
+    if (!myParam) {
+      connect()
+    }
     issue(rows[0]['data'])
   }
 })
 
 const connect = () => {
   OpenBadges.connect({
-    callback: url(['apiv2_open_badge__connect', {}, true]),
+    callback: window.location.href,
     scope: ['issue']
   })
 }
