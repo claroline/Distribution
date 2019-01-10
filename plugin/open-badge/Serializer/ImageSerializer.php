@@ -4,7 +4,6 @@ namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -26,8 +25,8 @@ class ImageSerializer
 
     public function serialize(PublicFile $file)
     {
-	$context = $this->router->getContext();
-	$schemeAndHttpHost = $context->getScheme().'://'.$context->getHost().'/';
+        $context = $this->router->getContext();
+        $schemeAndHttpHost = $context->getScheme().'://'.$context->getHost().'/';
 
         return  [
             'type' => 'Image',

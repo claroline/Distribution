@@ -12,8 +12,11 @@
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Cryptography\CryptographicKey;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\InstallationBundle\Updater\Updater;
+use Claroline\MigrationBundle\Migrator\Migrator;
+use Claroline\OpenBadgeBundle\Installation\Updater\Updater120300 as BadgeUpdater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -39,14 +42,23 @@ class Updater120300 extends Updater
     public function __construct(ContainerInterface $container, $logger = null)
     {
         $this->logger = $logger;
-
+        $this->container = $container;
         $this->om = $container->get('claroline.persistence.object_manager');
         $this->cryptoManager = $container->get('claroline.manager.cryptography_manager');
+        $this->migrationManager = $container->get('claroline.migration.manager');
     }
 
     public function postUpdate()
     {
         $this->generateOrganizationKeys();
+        //migrate badge tables
+        $this->log('Executing migrations...');
+        $bundle = $this->container->get('claroline.manager.plugin_manager')->getBundle('ClarolineOpenBadgeBundle');
+        $this->migrationManager->upgradeBundle($bundle, Migrator::VERSION_FARTHEST);
+
+        $badgeUpdater = new BadgeUpdater($this->container, $this->logger);
+        $badgeUpdater->setLogger($this->logger);
+        $badgeUpdater->postUpdate();
     }
 
     private function generateOrganizationKeys()
@@ -54,10 +66,14 @@ class Updater120300 extends Updater
         $organizations = $this->om->getRepository(Organization::class)->findAll();
 
         foreach ($organizations as $orga) {
-            $this->log('Generate crypto for '.$orga->getName());
-            $key = $this->cryptoManager->generatePair();
-            $key->setOrganization($orga);
-            $this->om->persist($key);
+            $key = $this->om->getRepository(CryptographicKey::class)->findOneBy(['organization' => $orga]);
+
+            if (!$key) {
+                $this->log('Generate crypto for '.$orga->getName());
+                $key = $this->cryptoManager->generatePair();
+                $key->setOrganization($orga);
+                $this->om->persist($key);
+            }
         }
 
         $this->log('Flushing');
