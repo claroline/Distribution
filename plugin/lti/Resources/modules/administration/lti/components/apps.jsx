@@ -1,8 +1,10 @@
 import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
+import {getPlainText} from '#/main/app/data/html/utils'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
+import {DataCard} from '#/main/app/content/card/components/data'
 
 const Apps = () =>
   <ListData
@@ -38,7 +40,14 @@ const Apps = () =>
       }
     ]}
 
-    // card={ScheduledTaskCard}
+    card={(row) =>
+      <DataCard
+        icon='fa fa-plug'
+        title={row.data.title}
+        subtitle={row.data.url}
+        contentText={getPlainText(row.data.description)}
+      />
+    }
   />
 
 export {
