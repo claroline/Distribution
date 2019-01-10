@@ -9,6 +9,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 
 import {constants} from '#/plugin/lti/resources/lti/constants'
 import {selectors} from '#/plugin/lti/resources/lti/store'
+import {LtiApp as LtiAppType} from '#/plugin/lti/resources/lti/prop-types'
 
 const EditorComponent = props =>
   <FormData
@@ -77,10 +78,7 @@ const EditorComponent = props =>
   />
 
 EditorComponent.propTypes = {
-  ltiApps: T.arrayOf(T.shape({
-    id: T.string.isRequired,
-    title: T.string.isRequired
-  })).isRequired,
+  ltiApps: T.arrayOf(T.shape(LtiAppType.propTypes)).isRequired,
   updateProp: T.func.isRequired
 }
 

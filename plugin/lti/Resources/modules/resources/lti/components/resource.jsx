@@ -7,30 +7,13 @@ import {Routes} from '#/main/app/router'
 
 import {ResourcePage} from '#/main/core/resource/containers/page'
 
-// import {Scorm as ScormType} from '#/plugin/scorm/resources/scorm/prop-types'
+import {LtiResource as LtiResourceType} from '#/plugin/lti/resources/lti/prop-types'
 import {Player} from '#/plugin/lti/resources/lti/player/components/player'
 import {Editor} from '#/plugin/lti/resources/lti/editor/components/editor'
 
 const LtiResource = props =>
   <ResourcePage
-    // styles={['claroline-distribution-plugin-scorm-resource']}
-    // customActions={[
-    //   {
-    //     type: LINK_BUTTON,
-    //     icon: 'fa fa-fw fa-play',
-    //     label: trans('play_scorm', {}, 'scorm'),
-    //     target: '/play',
-    //     exact: true
-    //   }, {
-    //     type: LINK_BUTTON,
-    //     icon: 'fa fa-fw fa-list',
-    //     label: trans('results_list', {}, 'scorm'),
-    //     disabled: !props.editable,
-    //     displayed: props.editable,
-    //     target: '/results',
-    //     exact: true
-    //   }
-    // ]}
+    styles={['claroline-distribution-main-core-iframe']}
   >
     <Routes
       key="resource-content"
@@ -53,7 +36,7 @@ const LtiResource = props =>
   </ResourcePage>
 
 LtiResource.propTypes = {
-  // ltiResource: T.shape(ScormType.propTypes),
+  ltiResource: T.shape(LtiResourceType.propTypes),
   editable: T.bool.isRequired,
   resetForm: T.func.isRequired
 }
