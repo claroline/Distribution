@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
+import {trans} from '#/main/app/intl/translation'
+
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Section} from '#/main/core/layout/components/sections'
 
@@ -19,6 +21,11 @@ class PlayerComponent extends Component {
   render() {
     return (
       <div>
+        {this.props.ltiResource && !this.props.ltiResource.ltiApp &&
+          <div className="alert alert-warning">
+            {trans('unconfigured_resource', {}, 'lti')}
+          </div>
+        }
         {this.props.ltiResource && this.props.ltiResource.ltiApp &&
           <Section
             className="form-section embedded-list-section"

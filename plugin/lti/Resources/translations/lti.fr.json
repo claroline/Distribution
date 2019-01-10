@@ -6,5 +6,6 @@
     "key": "Clé",
     "open_application_in_a_new_tab": "Ouvrir l'application dans un nouvel onglet",
     "secret": "Secret",
+    "unconfigured_resource": "La ressource n'est pas encore configurée.",
     "url": "URL"
 }
