@@ -4,7 +4,7 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-const App = props =>
+const App = () =>
   <FormData
     level={2}
     name="app"

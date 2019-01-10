@@ -13,8 +13,8 @@ import {LtiResource as LtiResourceType} from '#/plugin/lti/resources/lti/prop-ty
 
 class PlayerComponent extends Component {
   componentDidMount() {
-    if (this.props.ltiResource && this.props.ltiResource.ltiApp) {
-      ReactDOM.findDOMNode(this.refs[`lti_form_${this.props.ltiResource.id}`]).submit()
+    if (this.props.ltiResource && this.props.ltiResource.ltiApp && this.ltiFormRef) {
+      this.ltiFormRef.submit()
     }
   }
 
@@ -37,7 +37,7 @@ class PlayerComponent extends Component {
         {this.props.ltiResource && this.props.ltiResource.ltiApp &&
           <form
             id={`form_app_${this.props.ltiResource.ltiApp.id}`}
-            ref={`lti_form_${this.props.ltiResource.id}`}
+            ref={el => this.ltiFormRef = el}
             method="POST"
             target={this.props.ltiResource.openInNewTab ? '_blank' : 'lti'}
             action={this.props.ltiResource.ltiApp.url}
@@ -64,11 +64,11 @@ class PlayerComponent extends Component {
             {}
           }
         >
-            <iframe
-              className="claro-iframe"
-              name="lti"
-            >
-            </iframe>
+          <iframe
+            className="claro-iframe"
+            name="lti"
+          >
+          </iframe>
         </div>
       </div>
     )

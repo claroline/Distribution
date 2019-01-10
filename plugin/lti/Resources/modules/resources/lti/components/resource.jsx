@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {LINK_BUTTON} from '#/main/app/buttons'
 import {Routes} from '#/main/app/router'
 
 import {ResourcePage} from '#/main/core/resource/containers/page'
