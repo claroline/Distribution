@@ -57,7 +57,7 @@ class CurrentUserConverter implements ParamConverterInterface
         // Check whether we need to let pass anonymous
         $allowAnonymous = false;
         $options = $configuration->getOptions();
-        if ($options && isset($options['$allowAnonymous']) && true === $options['allowAnonymous']) {
+        if ($options && isset($options['allowAnonymous']) && true === $options['allowAnonymous']) {
             $allowAnonymous = true;
         }
 
