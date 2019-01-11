@@ -19,6 +19,7 @@ use Claroline\InstallationBundle\Updater\Updater;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Icap\BadgeBundle\Entity\Badge;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -76,6 +77,11 @@ class Updater120300 extends Updater
 
     private function makePublicBadgeImagePublicFiles()
     {
+        $this->log('Deleting previous migrated images...');
+        $sql = "DELETE FROM `claro_public_file` WHERE directory_name = 'uploads/badges'";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
         $this->log('Building image public files...');
         $badges = $this->om->getRepository(Badge::class)->findAll();
         $i = 0;
@@ -97,8 +103,8 @@ class Updater120300 extends Updater
                     $size = filesize($file);
                 } catch (\Exception $e) {
                     $mimeType = $size = null;
+                    $this->log('File '.$file.' '.' not found', LogLevel::ERROR);
                 }
-
                 $publicFile = new PublicFile();
                 $publicFile->setDirectoryName('uploads/badges');
                 $publicFile->setFilename($badge->getImagePath());
@@ -138,9 +144,9 @@ class Updater120300 extends Updater
             $this->log('BadgeClass migration.');
             $sql = '
               INSERT INTO claro__open_badge_badge_class (
-                id, uuid, image, issuer_id, name
+                id, uuid, image, description, criteria, name, issuer_id
               )
-              SELECT temp.id, temp.uuid, CONCAT("data/uploads/badges/", temp.image, trans.name), '.$mainOrganization->getId().' FROM claro_badge temp
+              SELECT temp.id, temp.uuid, CONCAT("data/uploads/badges/", temp.image), trans.description, trans.criteria, trans.name, '.$mainOrganization->getId().' FROM claro_badge temp
               JOIN claro_badge_translation trans ON trans.badge_id = temp.id
               WHERE trans.locale = "fr"';
 
