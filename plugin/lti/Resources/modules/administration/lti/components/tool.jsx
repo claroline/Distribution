@@ -4,40 +4,29 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {Routes} from '#/main/app/router'
 
 import {makeId} from '#/main/core/scaffolding/id'
-import {
-  PageContainer,
-  PageActions,
-  PageAction,
-  PageHeader
-} from '#/main/core/layout/page'
-import {
-  RoutedPageContent
-} from '#/main/core/layout/router'
+import {ToolPage} from '#/main/core/tool/containers/page'
 
 import {actions} from '#/plugin/lti/administration/lti/store'
 import {Apps} from '#/plugin/lti/administration/lti/components/apps'
 import {App}  from '#/plugin/lti/administration/lti/components/app'
 
 const Tool = props =>
-  <PageContainer>
-    <PageHeader
-      title={trans('ujm_lti_resource', {}, 'resource')}
-    >
-      <PageActions>
-        <PageAction
-          type={LINK_BUTTON}
-          icon="fa fa-plus"
-          label={trans('add_lti_app', {}, 'lti')}
-          target="/form"
-          exact={true}
-          primary={true}
-        />
-      </PageActions>
-    </PageHeader>
-
-    <RoutedPageContent
+  <ToolPage
+    actions={[
+      {
+        name: 'add',
+        type: LINK_BUTTON,
+        icon: 'fa fa-fw fa-plus',
+        label: trans('add_lti_app', {}, 'lti'),
+        target: '/form',
+        primary: true
+      }
+    ]}
+  >
+    <Routes
       routes={[
         {
           path: '/',
@@ -51,7 +40,7 @@ const Tool = props =>
         }
       ]}
     />
-  </PageContainer>
+  </ToolPage>
 
 Tool.propTypes = {
   openForm: T.func.isRequired,
@@ -62,10 +51,9 @@ const LtiTool = connect(
   null,
   dispatch => ({
     openForm(id = null) {
-      const defaultValue = {
+      dispatch(actions.open('app', id, {
         id: makeId()
-      }
-      dispatch(actions.open('app', id, defaultValue))
+      }))
     },
     resetForm() {
       dispatch(actions.open('app', null, {}))

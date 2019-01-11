@@ -4,5 +4,10 @@ import {LtiTool} from '#/plugin/lti/administration/lti/components/tool'
 export const App = () => ({
   component: LtiTool,
   store: reducer,
-  initialData: (initialData) => Object.assign({}, initialData)
+  initialData: (initialData) => Object.assign({
+    tool: {
+      name: 'lti_tool',
+      context: {}
+    }
+  }, initialData)
 })
