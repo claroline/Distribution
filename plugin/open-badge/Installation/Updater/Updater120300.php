@@ -20,6 +20,7 @@ use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Icap\BadgeBundle\Entity\Badge;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\File;
 
 class Updater120300 extends Updater
 {
@@ -89,11 +90,20 @@ class Updater120300 extends Updater
             $author = $this->om->getRepository(User::class)->findOneByUsername('claroline-connect');
 
             if (!$publicFile) {
+                $file = $this->container->getParameter('claroline.param.files_directory').'/data/uploads/badges/'.$badge->getImagePath();
+                try {
+                    $sfFile = new File($file);
+                    $mimeType = $sfFile->getMimeType();
+                    $size = filesize($file);
+                } catch (\Exception $e) {
+                    $mimeType = $size = null;
+                }
+
                 $publicFile = new PublicFile();
                 $publicFile->setDirectoryName('uploads/badges');
                 $publicFile->setFilename($badge->getImagePath());
-                $publicFile->setSize(null);
-                $publicFile->setMimeType(null);
+                $publicFile->setSize($size);
+                $publicFile->setMimeType($mimeType);
                 $publicFile->setCreationDate(new \DateTime());
                 $publicFile->setUrl('data/uploads/badges/'.$badge->getImagePath());
                 $publicFile->setSourceType(null);
@@ -128,9 +138,11 @@ class Updater120300 extends Updater
             $this->log('BadgeClass migration.');
             $sql = '
               INSERT INTO claro__open_badge_badge_class (
-                id, uuid, image, issuer_id
+                id, uuid, image, issuer_id, name
               )
-              SELECT temp.id, temp.uuid, CONCAT("data/uploads/badges/", temp.image), '.$mainOrganization->getId().' FROM claro_badge temp';
+              SELECT temp.id, temp.uuid, CONCAT("data/uploads/badges/", temp.image, trans.name), '.$mainOrganization->getId().' FROM claro_badge temp
+              JOIN claro_badge_translation trans ON trans.badge_id = temp.id
+              WHERE trans.locale = "fr"';
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
