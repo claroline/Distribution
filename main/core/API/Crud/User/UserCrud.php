@@ -142,7 +142,6 @@ class UserCrud
         $this->dispatcher->dispatch('user_created_event', UserCreatedEvent::class, ['user' => $user]);
         $this->dispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
         $this->om->endFlushSuite();
-	
     }
 
     /**
