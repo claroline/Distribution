@@ -16,8 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Updater120201 extends Updater
 {
-    const BATCH_SIZE = 500;
-
     protected $logger;
 
     public function __construct(ContainerInterface $container, $logger = null)
