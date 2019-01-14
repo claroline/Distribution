@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
@@ -45,7 +46,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * @ORM\EntityListeners({"Claroline\CoreBundle\Listener\Entity\UserListener"})
  * @ORM\HasLifecycleCallbacks
- *
  * @DoctrineAssert\UniqueEntity("username")
  * @DoctrineAssert\UniqueEntity("email")
  * @ClaroAssert\Username()
@@ -1241,7 +1241,41 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     }
 
     public function setMainOrganization(Organization $organization)
+    {/*
+        $found = false;
+
+        foreach ($this->userOrganizationReferences as $ref) {
+            if ($ref->isMain()) {
+                $ref->setIsMain(false);
+            }
+
+            if ($ref->getOrganization()->getUuid() === $organization->getUuid()) {
+                $found = true;
+                $ref->setIsMain(true);
+            }
+        }
+
+        //if it's not in the organization list, we add it
+        if (!$found) {
+            $ref = new UserOrganizationReference();
+            $ref->setOrganization($organization);
+            $ref->setUser($this);
+            $ref->setIsMain(true);
+            $this->userOrganizationReferences->add($ref);
+	}*/
+        $this->mainOrganization = $organization;
+    }
+
+    /**
+     * @ORM\PreFlush
+     */
+    public function preFlush(PreFlushEventArgs $args)
     {
+	$organization = $this->mainOrganization;
+	if (!$organization) {
+            return;
+        }
+
         $found = false;
 
         foreach ($this->userOrganizationReferences as $ref) {
@@ -1263,6 +1297,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
             $ref->setIsMain(true);
             $this->userOrganizationReferences->add($ref);
         }
+
     }
 
     public function setIsRemoved($isRemoved)
