@@ -88,6 +88,7 @@ class AssertionController extends AbstractCrudController
     /**
      * @EXT\Route("/user/{user}", name="apiv2_assertion_user_list")
      * @EXT\Method("GET")
+     * @EXT\ParamConverter("user", class="ClarolineCoreBundle:User", options={"mapping": {"user": "uuid"}})
      *
      * @return JsonResponse
      */
