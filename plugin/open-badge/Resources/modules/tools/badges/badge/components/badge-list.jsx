@@ -19,6 +19,7 @@ const BadgeList = {
     {
       name: 'meta.enabled',
       label: trans('enabled'),
+      type: 'boolean',
       displayed: true
     }
   ],

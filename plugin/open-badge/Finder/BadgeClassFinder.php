@@ -42,6 +42,10 @@ class BadgeClassFinder extends AbstractFinder
                   $qb->andWhere('w.uuid like :workspace');
                   $qb->setParameter('workspace', $filterValue);
                   break;
+              case 'meta.enabled':
+                  $qb->andWhere('obj.enabled = :enabled');
+                  $qb->setParameter('enabled', $filterValue);
+                  // no break
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
             }

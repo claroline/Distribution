@@ -14,6 +14,8 @@ namespace Claroline\OpenBadgeBundle\Installation\Updater;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\File\PublicFileUse;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\Tool\AdminTool;
+use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\InstallationBundle\Updater\Updater;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
@@ -44,6 +46,30 @@ class Updater120300 extends Updater
         $this->log('Migrating badges...');
         $this->migrateBadges();
         $this->migrateAssertions();
+        $this->removeOldBadgeTools();
+    }
+
+    public function removeOldBadgeTools()
+    {
+        $this->log('Removing old badge tools');
+
+        $tool = $this->om->getRepository(Tool::class)->findOneByName('badges');
+        if ($tool) {
+            $this->om->remove($tool);
+        }
+        $tool = $this->om->getRepository(Tool::class)->findOneByName('my_badges');
+        if ($tool) {
+            $this->om->remove($tool);
+        }
+        $tool = $this->om->getRepository(Tool::class)->findOneByName('all_my_badges');
+        if ($tool) {
+            $this->om->remove($tool);
+        }
+        $tool = $this->om->getRepository(AdminTool::class)->findOneByName('badges_management');
+        if ($tool) {
+            $this->om->remove($tool);
+        }
+        $this->om->flush();
     }
 
     public function truncateTables()
@@ -144,9 +170,9 @@ class Updater120300 extends Updater
             $this->log('BadgeClass migration.');
             $sql = '
               INSERT INTO claro__open_badge_badge_class (
-                id, uuid, image, description, criteria, name, issuer_id
+                id, uuid, image, enabled, description, criteria, name, issuer_id
               )
-              SELECT temp.id, temp.uuid, CONCAT("data/uploads/badges/", temp.image), trans.description, trans.criteria, trans.name, '.$mainOrganization->getId().' FROM claro_badge temp
+              SELECT temp.id, temp.uuid, CONCAT("data/uploads/badges/", temp.image), true, trans.description, trans.criteria, trans.name, '.$mainOrganization->getId().' FROM claro_badge temp
               JOIN claro_badge_translation trans ON trans.badge_id = temp.id
               WHERE trans.locale = "fr"';
 

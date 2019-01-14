@@ -46,19 +46,22 @@ const BadgeViewerComponent = (props) => {
           }]
         }]}
       >
-        <ListData
-          name="badges.current.assertions"
-          fetch={{
-            url: ['apiv2_badge-class_assertion', {badge: props.badge.id}],
-            autoload: props.badge.id && !props.new
-          }}
-          primaryAction={AssertionList.open}
-          delete={{
-            url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
-          }}
-          definition={AssertionList.definition}
-          card={AssertionList.card}
-        />
+        {props.badge.meta.enabled ?
+          <ListData
+            name="badges.current.assertions"
+            fetch={{
+              url: ['apiv2_badge-class_assertion', {badge: props.badge.id}],
+              autoload: props.badge.id && !props.new
+            }}
+            primaryAction={AssertionList.open}
+            delete={{
+              url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
+            }}
+            definition={AssertionList.definition}
+            card={AssertionList.card}
+          />:
+          <div>{trans('badge_must_be_enabled')}</div>
+        }
       </FormSection>
     </div>
   )

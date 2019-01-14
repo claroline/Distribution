@@ -35,14 +35,14 @@ const BadgesList = props =>
         icon: 'fa fa-fw fa-check-circle',
         label: trans('enable'),
         scope: ['object', 'collection'],
-        displayed: 0 < rows.filter(b => !b.meta.enabled).length,
+        displayed: 0 < (rows.filter(b => !b.meta.enabled).length) && props.context === 'administration',
         callback: () => props.enable(rows)
       }, {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-times-circle',
         label: trans('disable'),
         scope: ['object', 'collection'],
-        displayed: 0 < rows.filter(b => b.meta.enabled).length,
+        displayed: 0 < (rows.filter(b => b.meta.enabled).length) && props.context === 'administration',
         callback: () => props.disable(rows),
         dangerous: true
       }
