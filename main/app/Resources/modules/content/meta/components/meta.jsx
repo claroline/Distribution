@@ -6,39 +6,36 @@ import {trans} from '#/main/app/intl/translation'
 import {UserMicro} from '#/main/core/user/components/micro'
 import {displayDate} from '#/main/app/intl/date'
 
-// todo : move in content base components
-
 // todo use in announces
 // todo use in claco-form
 
-const ContentMeta = props =>
-  <div className={classes('content-meta', props.className)}>
-    <UserMicro
-      className="content-creator"
-      link={true}
-      {...props.meta.creator}
-    />
+const ContentMeta = props => {
+  console.log('CONTENT META')
+  console.log(props)
+  return (
+    <div className={classes('content-meta', props.className)}>
+      <UserMicro
+        className="content-creator"
+        link={true}
+        {...props.creator}
+      />
 
-    <div className="content-dates">
-      <span>{trans('created_at', {date: props.meta.created ? displayDate(props.meta.created, false, true) : '-'})}</span>
+      <div className="content-dates">
+        <span>{trans('created_at', {date: props.created ? displayDate(props.created, false, true) : '-'})}</span>
 
-      <span>{trans('updated_at', {date: props.meta.updated ? displayDate(props.meta.updated, false, true) : '-'})}</span>
+        <span>{trans('updated_at', {date: props.updated ? displayDate(props.updated, false, true) : '-'})}</span>
+      </div>
     </div>
-  </div>
+  )
+}
 
 ContentMeta.propTypes = {
   className: T.string,
-  meta: T.shape({
-    creator: T.shape({
-
-    }),
-    created: T.string,
-    updated : T.string
-  })
-}
-
-ContentMeta.defaultProps = {
-  meta: {}
+  creator: T.shape({
+    // TODO : use User propTypes
+  }),
+  created: T.string,
+  updated : T.string
 }
 
 export {

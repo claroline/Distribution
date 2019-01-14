@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
@@ -66,7 +65,7 @@ class Form extends Component {
     return (
       <FormWrapper id={this.props.id} embedded={this.props.embedded} className={this.props.className}>
         {this.props.title &&
-          <Heading level={this.props.level} displayLevel={this.props.displayLevel}>
+          <Heading key="form-heading" level={this.props.level} displayLevel={this.props.displayLevel}>
             {this.props.title}
           </Heading>
         }
@@ -75,8 +74,9 @@ class Form extends Component {
 
         {(this.props.save || this.props.cancel) &&
           <FormActions
+            key="form-actions"
             save={this.props.save ? merge({}, this.props.save, {
-              disabled: this.props.disabled || this.props.save.disabled || !(this.props.pendingChanges && (!this.props.validating || isEmpty(this.props.errors)))
+              disabled: this.props.disabled || this.props.save.disabled || !(this.props.pendingChanges && (!this.props.validating || this.props.errors))
             }) : undefined}
             cancel={this.props.cancel}
           />
@@ -99,7 +99,7 @@ Form.propTypes = {
   level: T.number,
   displayLevel: T.number,
   title: T.string,
-  errors: T.object,
+  errors: T.bool,
   validating: T.bool,
   pendingChanges: T.bool,
   children: T.node.isRequired,
@@ -126,7 +126,7 @@ Form.propTypes = {
 Form.defaultProps = {
   disabled: false,
   level: 2,
-  errors: {},
+  errors: false,
   validating: false,
   pendingChanges: false
 }
