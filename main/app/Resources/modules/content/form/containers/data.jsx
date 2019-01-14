@@ -2,6 +2,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import invariant from 'invariant'
 import get from 'lodash/get'
+import isEqualWith from 'lodash/isEqualWith'
+import isNil from 'lodash/isNil'
 import set from 'lodash/set'
 
 import {url} from '#/main/app/api'
@@ -100,6 +102,16 @@ const FormData = connect(
     }
 
     return finalProps
+  }, {
+    // the default behavior is to use shallow comparison
+    // but as I create new objects in `mergeProps`, the comparison always returns false
+    // and cause recomputing
+    areMergedPropsEqual: (next, prev) => isEqualWith(next, prev, (value, othValue) => {
+      if ((isNil(value) || typeof value === 'function')
+        && (isNil(othValue) || typeof othValue === 'function')) {
+        return true
+      }
+    })
   }
 )(FormDataComponent)
 
