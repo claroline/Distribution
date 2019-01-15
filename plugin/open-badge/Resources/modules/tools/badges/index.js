@@ -19,7 +19,7 @@ bootstrap(
   (initialData) => {
     return {
       workspace: initialData.workspace || null,
-      context: initialData.context,
+      currentContext: initialData.currentContext,
       parameters: {
         data: initialData.parameters || {},
         originalData: initialData.parameters || {}

@@ -46,7 +46,7 @@ const BadgeViewerComponent = (props) => {
           }]
         }]}
       >
-        {props.badge.meta.enabled ?
+        {props.badge.meta && props.badge.meta.enabled ?
           <ListData
             name="badges.current.assertions"
             fetch={{
@@ -69,7 +69,7 @@ const BadgeViewerComponent = (props) => {
 
 const BadgeViewer = connect(
   (state) => ({
-    context: state.context,
+    currentContext: state.currentContext,
     badge: formSelect.data(formSelect.form(state, 'badges.current'))
   }),
   (dispatch) =>({

@@ -20,36 +20,3 @@ export default (rows) => ({
     })
   }
 })
-/*
-const connect = () => {
-  OpenBadges.connect({
-    callback: window.location.href,
-    scope: ['issue']
-  })
-}
-
-const issue = (assertion) => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const myParam = urlParams.get('access_token')
-  const apiRoot = urlParams.get('api_root')
-
-  const assertionData = JSON.stringify({
-    badge: assertion
-  })
-
-  const url = apiRoot + '/issue'
-  console.log('Bearer ' + btoa(myParam))
-
-  const requestOptions = {
-    method : 'POST',
-    headers: new Headers({
-      'Authorization': 'Bearer ' + btoa(myParam),
-      'Content-Type': 'application/json'
-    }),
-    body: assertionData
-  }
-
-  fetch(url, requestOptions).then(response => {
-    console.log(response)
-  })
-}*/

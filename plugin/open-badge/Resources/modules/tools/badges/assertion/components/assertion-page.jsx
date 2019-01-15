@@ -97,7 +97,7 @@ const AssertionPageComponent = (props) => {
 
 const AssertionPage = connect(
   (state) => ({
-    context: state.context,
+    currentContext: state.currentContext,
     new: formSelect.isNew(formSelect.form(state, 'badges.assertion')),
     assertion: formSelect.data(formSelect.form(state, 'badges.assertion'))
   }),

@@ -4,7 +4,7 @@ import {OpenBadgeAdminTool as OpenBadgeAdminToolComponent} from '#/plugin/open-b
 
 const ConnectedOpenBadgeAdminTool = connect(
   state => ({
-    context: state.context
+    currentContext: state.currentContext
   }),
   null
 )(OpenBadgeAdminToolComponent)

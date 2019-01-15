@@ -55,7 +55,7 @@ BadgeTabComponent.propTypes = {
 
 const BadgeTab = connect(
   (state) => ({
-    context: state.context
+    currentContext: state.currentContext
   }),
   dispatch => ({
     openBadge(id = null) {

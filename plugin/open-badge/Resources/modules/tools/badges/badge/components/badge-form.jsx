@@ -146,7 +146,7 @@ const BadgeFormComponent = (props) => {
 
 const BadgeForm = connect(
   (state) => ({
-    context: state.context,
+    currentContext: state.currentContext,
     new: formSelect.isNew(formSelect.form(state, 'badges.current')),
     badge: formSelect.data(formSelect.form(state, 'badges.current')),
     workspace: state.workspace

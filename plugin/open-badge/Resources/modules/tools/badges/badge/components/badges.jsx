@@ -15,7 +15,7 @@ const BadgesList = props =>
   <ListData
     name="badges.list"
     fetch={{
-      url: props.context === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}]: ['apiv2_badge-class_list'],
+      url: props.currentContext === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}]: ['apiv2_badge-class_list'],
       autoload: true
     }}
     definition={BadgeList.definition}
@@ -35,14 +35,14 @@ const BadgesList = props =>
         icon: 'fa fa-fw fa-check-circle',
         label: trans('enable'),
         scope: ['object', 'collection'],
-        displayed: 0 < (rows.filter(b => !b.meta.enabled).length) && props.context === 'administration',
+        displayed: 0 < (rows.filter(b => !b.meta.enabled).length) && props.currentContext === 'administration',
         callback: () => props.enable(rows)
       }, {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-times-circle',
         label: trans('disable'),
         scope: ['object', 'collection'],
-        displayed: 0 < (rows.filter(b => b.meta.enabled).length) && props.context === 'administration',
+        displayed: 0 < (rows.filter(b => b.meta.enabled).length) && props.currentContext === 'administration',
         callback: () => props.disable(rows),
         dangerous: true
       }
@@ -53,7 +53,7 @@ const BadgesList = props =>
 
 const Badges = connect(
   (state) => ({
-    context: state.context,
+    currentContext: state.currentContext,
     workspace: state.workspace
   }),
   dispatch => ({
