@@ -15,20 +15,21 @@ use JVal\Exception\Constraint\EmptyArrayException;
 use JVal\Exception\Constraint\InvalidTypeException;
 use JVal\Exception\Constraint\NotUniqueException;
 use JVal\Types;
+use JVal\Utils;
 use JVal\Walker;
 use stdClass;
 
 /**
- * Constraint for the "required" keyword.
+ * Constraint for the "enum" keyword.
  */
-class RequiredConstraint implements Constraint
+class EnumConstraint implements Constraint
 {
     /**
      * {@inheritdoc}
      */
     public function keywords()
     {
-        return ['required'];
+        return ['enum'];
     }
 
     /**
@@ -36,7 +37,7 @@ class RequiredConstraint implements Constraint
      */
     public function supports($type)
     {
-        return Types::TYPE_OBJECT === $type;
+        return true;
     }
 
     /**
@@ -44,26 +45,22 @@ class RequiredConstraint implements Constraint
      */
     public function normalize(stdClass $schema, Context $context, Walker $walker)
     {
-        $context->enterNode('required');
+        $context->enterNode('enum');
 
-        if (!is_array($schema->required)) {
+        if (!is_array($schema->enum)) {
             throw new InvalidTypeException($context, Types::TYPE_ARRAY);
         }
 
-        if (0 === $requiredCount = count($schema->required)) {
+        if (count($schema->enum) === 0) {
             throw new EmptyArrayException($context);
         }
 
-        foreach ($schema->required as $index => $property) {
-            if (!is_string($property)) {
-                $context->enterNode($index);
-
-                throw new InvalidTypeException($context, Types::TYPE_STRING);
+        foreach ($schema->enum as $i => $aItem) {
+            foreach ($schema->enum as $j => $bItem) {
+                if ($i !== $j && Utils::areEqual($aItem, $bItem)) {
+                    throw new NotUniqueException($context);
+                }
             }
-        }
-
-        if ($requiredCount !== count(array_unique($schema->required))) {
-            throw new NotUniqueException($context);
         }
 
         $context->leaveNode();
@@ -74,10 +71,17 @@ class RequiredConstraint implements Constraint
      */
     public function apply($instance, stdClass $schema, Context $context, Walker $walker)
     {
-        foreach ($schema->required as $property) {
-            if (!property_exists($instance, $property)) {
-                $context->addViolation('property "%s" is missing', [$property], $property);
+        $hasMatch = false;
+
+        foreach ($schema->enum as $value) {
+            if (Utils::areEqual($instance, $value)) {
+                $hasMatch = true;
+                break;
             }
+        }
+
+        if (!$hasMatch) {
+            $context->addViolation('should match one element in enum');
         }
     }
 }
