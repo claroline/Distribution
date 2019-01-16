@@ -69,6 +69,7 @@ const BadgeFormComponent = (props) => {
     {
       name: 'tags',
       type: 'string',
+      required: false,
       label: trans('tags'),
       help: trans('tag_form_help', {}, 'forum')
     }
@@ -84,12 +85,10 @@ const BadgeFormComponent = (props) => {
       name="badges.current"
       meta={true}
       buttons={true}
-      save={{
-        type: CALLBACK_BUTTON,
-        icon: 'fa fa-fw fa-save',
-        label: trans('save', {}, 'actions'),
-        callback: () => props.save(props.badge, props.workspace, props.new)
-      }}
+      target={(badge, isNew) => isNew ?
+        ['apiv2_badge-class_create'] :
+        ['apiv2_badge-class_update', {id: badge.id}]
+      }
       sections={[
         {
           title: trans('badge'),
@@ -152,9 +151,6 @@ const BadgeForm = connect(
     workspace: state.workspace
   }),
   (dispatch, ownProps) =>({
-    save(badge, workspace, isNew) {
-      dispatch(actions.save('badges.current', badge, workspace, isNew))
-    },
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(ownProps.name, propName, propValue))
     }

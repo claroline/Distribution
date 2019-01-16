@@ -35,7 +35,7 @@ const BadgeTabComponent = props =>
       }, {
         path: '/badges/form/:id?',
         component: Badge,
-        onEnter: (params) => props.openBadge(params.id)
+        onEnter: (params) => props.openBadge(params.id, props.workspace)
       }, {
         path: '/badges/assertion/:id',
         component: Assertion,
@@ -43,23 +43,25 @@ const BadgeTabComponent = props =>
       }, {
         path: '/badges/view/:id',
         component: BadgeViewer,
-        onEnter: (params) => props.openBadge(params.id)
+        onEnter: (params) => props.openBadge(params.id, props.workspace)
       }
     ]}
   />
 
 BadgeTabComponent.propTypes = {
   openBadge: T.func.isRequired,
-  openAssertion: T.func.isRequired
+  openAssertion: T.func.isRequired,
+  workspace: T.object
 }
 
 const BadgeTab = connect(
   (state) => ({
-    currentContext: state.currentContext
+    currentContext: state.currentContext,
+    workspace: state.workspace
   }),
   dispatch => ({
-    openBadge(id = null) {
-      dispatch(actions.openBadge('badges.current', id))
+    openBadge(id = null, workspace = null) {
+      dispatch(actions.openBadge('badges.current', id, workspace))
     },
     openAssertion(id) {
       dispatch(actions.openAssertion('badges.assertion', id))

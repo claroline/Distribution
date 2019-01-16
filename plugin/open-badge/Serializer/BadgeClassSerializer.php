@@ -18,6 +18,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.serializer.open_badge.badge")
@@ -35,8 +36,9 @@ class BadgeClassSerializer
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "criteriaSerializer" = @DI\Inject("claroline.serializer.open_badge.criteria"),
      *     "imageSerializer"    = @DI\Inject("claroline.serializer.open_badge.image"),
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "profileSerializer"  = @DI\Inject("claroline.serializer.open_badge.profile")
+     *     "eventDispatcher"    = @DI\Inject("event_dispatcher"),
+     *     "profileSerializer"  = @DI\Inject("claroline.serializer.open_badge.profile"),
+     *     "tokenStorage"       = @DI\Inject("security.token_storage"),
      * })
      *
      * @param Router $router
@@ -49,7 +51,8 @@ class BadgeClassSerializer
         CriteriaSerializer $criteriaSerializer,
         ProfileSerializer $profileSerializer,
         EventDispatcherInterface $eventDispatcher,
-        ImageSerializer $imageSerializer
+        ImageSerializer $imageSerializer,
+        TokenStorageInterface $tokenStorage
     ) {
         $this->router = $router;
         $this->fileUt = $fileUt;
@@ -59,6 +62,7 @@ class BadgeClassSerializer
         $this->profileSerializer = $profileSerializer;
         $this->imageSerializer = $imageSerializer;
         $this->eventDispatcher = $eventDispatcher;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -84,7 +88,7 @@ class BadgeClassSerializer
               ])
             ) : null,
             'issuer' => $this->serializer->serialize($badge->getIssuer()),
-
+            'isAssignable' => $this->isAssignable($badge),
             'tags' => $this->serializeTags($badge),
         ];
 
@@ -156,8 +160,8 @@ class BadgeClassSerializer
             );
         }
 
-        if (isset($data['workspace'])) {
-            $workspace = $this->serializer->deserialize(Workspace::class, ['id' => $data['workspace']['id']]);
+        if (isset($data['workspace']) && isset($data['workspace']['id'])) {
+            $workspace = $this->om->getRepository(Workspace::class)->find($data['workspace']['id']);
             $badge->setWorkspace($workspace);
             //main orga maybe instead ? this is fishy
             $badge->setIssuer($workspace->getOrganizations()[0]);
@@ -205,6 +209,23 @@ class BadgeClassSerializer
         ]);
 
         $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+    }
+
+    private function isAssignable(BadgeClass $badge)
+    {
+        $issuingModes = $badge->getIssuingMode();
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+
+        if (!$currentUser instanceof User) {
+            return false;
+        }
+
+        foreach ($issuingModes as $mode) {
+            switch ($mode) {
+            }
+        }
+
+        return true;
     }
 
     private function serializeTags(BadgeClass $badge)

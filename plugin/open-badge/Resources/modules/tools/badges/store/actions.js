@@ -6,7 +6,7 @@ import {actions as listActions} from '#/main/app/content/list/store'
 
 export const actions = {}
 
-actions.openBadge = (formName, id = null) => {
+actions.openBadge = (formName, id = null, workspace = null) => {
   if (id) {
     return {
       [API_REQUEST]: {
@@ -20,7 +20,7 @@ actions.openBadge = (formName, id = null) => {
       }
     }
   } else {
-    return formActions.resetForm(formName, {}, true)
+    return formActions.resetForm(formName, {workspace}, true)
   }
 }
 
