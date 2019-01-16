@@ -95,7 +95,7 @@ class BadgeClassSerializer
             $image = $this->om->getRepository(PublicFile::class)->findOneBy(['url' => $badge->getImage()]);
 
             if ($image) {
-		//wtf, this is for mozillabackpack
+                //wtf, this is for mozillabackpack
                 $data['image'] = $this->imageSerializer->serialize($image)['id'];
             }
 
@@ -221,5 +221,13 @@ class BadgeClassSerializer
     public function getClass()
     {
         return BadgeClass::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/open-badge/badge.json';
     }
 }

@@ -40,7 +40,7 @@ const BadgeFormComponent = (props) => {
       name: 'description',
       type: 'html',
       label: trans('description'),
-      required: false
+      required: true
     },
     {
       name: 'criteria',

@@ -11,7 +11,6 @@ namespace Claroline\AppBundle\JVal;
 
 use Claroline\AppBundle\JVal\Constraint\ClarolineConstraint;
 use Closure;
-use JVal\Context;
 use JVal\Resolver;
 use JVal\Uri;
 
