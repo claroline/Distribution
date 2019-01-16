@@ -1,3 +1,6 @@
+import {tval} from '#/main/app/intl/translation'
+import set from 'lodash/set'
+
 import {url} from '#/main/app/api'
 
 import {API_REQUEST} from '#/main/app/api'
@@ -40,6 +43,26 @@ actions.save = (formName, badge, workspace, isNew) => ({
     success: (response, dispatch) => {
       dispatch(formActions.resetForm(formName, response, false))
       dispatch(listActions.invalidateData('badges.list'))
+    },
+    error: (errors, dispatch) => {
+      // try to build form errors object from response
+      const formErrors = {}
+      if (errors && Array.isArray(errors)) {
+        // read server errors and create a comprehensive object for the form
+        errors.map(error => {
+          const errorPath = error.path
+            .replace(/^\/|\/$/g, '') // removes trailing and leading slashes
+            .replace(/\//g, '.') // replaces / by . (for lodash)
+
+          set(formErrors, errorPath, tval(error.message))
+        })
+
+        // dispatch an error action if the caller want to do something particular
+        dispatch(formActions.submitFormError(formName, formErrors))
+
+        // inject errors in form
+        dispatch(formActions.setErrors(formName, formErrors))
+      }
     }
   }
 })

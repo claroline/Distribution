@@ -178,7 +178,6 @@ class Walker extends JValWalker
         }
 
         foreach ($constraints as $constraint) {
-            var_dump($context);
             $constraint->apply($instance, $schema, $context, $this, $options);
         }
     }

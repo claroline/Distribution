@@ -18,31 +18,31 @@ use JVal\Registry as JValRegistry;
 class Registry extends JValRegistry
 {
     private static $commonConstraints = [
-        'Maximum',
-        'Minimum',
-        'MaxLength',
-        'MinLength',
-        'Pattern',
-        'Items',
-        'MaxItems',
-        'MinItems',
-        'UniqueItems',
-        'Required',
-        'Properties',
-        'Dependencies',
-        'Enum',
-        'Type',
-        'Format',
+        'JVal\\Constraint\\Maximum',
+        'JVal\\Constraint\\Minimum',
+        'JVal\\Constraint\\MaxLength',
+        'JVal\\Constraint\\MinLength',
+        'JVal\\Constraint\\Pattern',
+        'JVal\\Constraint\\Items',
+        'JVal\\Constraint\\MaxItems',
+        'JVal\\Constraint\\MinItems',
+        'JVal\\Constraint\\UniqueItems',
+        'JVal\\Constraint\\Required',
+        'JVal\\Constraint\\Properties',
+        'JVal\\Constraint\\Dependencies',
+        'JVal\\Constraint\\Enum',
+        'JVal\\Constraint\\Type',
+        'JVal\\Constraint\\Format',
     ];
 
     private static $draft4Constraints = [
-        'MultipleOf',
-        'MinProperties',
-        'MaxProperties',
-        'AllOf',
-        'AnyOf',
-        'OneOf',
-        'Not',
+        'JVal\\Constraint\\MultipleOf',
+        'JVal\\Constraint\\MinProperties',
+        'JVal\\Constraint\\MaxProperties',
+        'JVal\\Constraint\\AllOf',
+        'JVal\\Constraint\\AnyOf',
+        'JVal\\Constraint\\OneOf',
+        'JVal\\Constraint\\Not',
     ];
 
     private $customConstraints;
@@ -82,7 +82,7 @@ class Registry extends JValRegistry
     private function createBuiltInConstraints(array $constraintNames)
     {
         return array_map(function ($name) {
-            $class = "JVal\\Constraint\\{$name}Constraint";
+            $class = "{$name}Constraint";
 
             return new $class();
         }, $constraintNames);

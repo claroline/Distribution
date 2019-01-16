@@ -47,7 +47,7 @@ class Context extends JValContext
      * Leaves the current node and enters another node located at the same
      * depth in the hierarchy.
      *
-     * @param string $pathSegment
+     * @param string $pathSegmentextends JValContext
      */
     public function enterSibling($pathSegment)
     {
@@ -85,10 +85,16 @@ class Context extends JValContext
      * @param string $message
      * @param array  $parameters
      */
-    public function addViolation($message, array $parameters = [])
+    public function addViolation($message, array $parameters = [], $property = null)
     {
+        if ($property) {
+            $path = '' !== $this->getCurrentPath() ? $this->getCurrentPath().'/'.$property : '/'.$property;
+        } else {
+            $path = $this->getCurrentPath();
+        }
+
         $this->violations[] = [
-            'path' => $this->getCurrentPath(),
+            'path' => $path,
             'message' => vsprintf($message, $parameters),
         ];
     }
