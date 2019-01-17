@@ -43,6 +43,29 @@ function handleResponse(dispatch, response, originalRequest) {
 }
 
 /**
+ * A callback executed when a response is received.
+ *
+ * @param {function} dispatch
+ * @param {object}   response
+ * @param {object}   originalRequest
+ *
+ * @return {object}
+ */
+function handleDownload(dispatch, response) {
+  // The actual download
+  response.blob().then(blob => {
+    var link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = 'myfilename.zip'
+
+    document.body.appendChild(link)
+
+    link.click()
+    link.remove()
+  })
+}
+
+/**
  * A callback executed when a success response is received.
  *
  * @param {function} dispatch
@@ -142,7 +165,13 @@ function apiFetch(apiRequest, dispatch) {
 
   return fetch(url(requestParameters.url), requestParameters.request)
     .then(
-      response => handleResponse(dispatch, response, requestParameters)
+      response => {
+        if (requestParameters.forceDownload) {
+          return handleDownload(dispatch, response, requestParameters)
+        } else {
+          return handleResponse(dispatch, response, requestParameters)
+        }
+      }
     )
     .then(
       responseData  => handleResponseSuccess(dispatch, responseData, requestParameters.success),
