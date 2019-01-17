@@ -20,17 +20,10 @@ const Main = props =>
 
         {props.children}
 
-
-
-        <OverlayStack
-          overlays={[
-
-          ]}
-          blockingOverlays={[
-            <ModalOverlay key="modal" />,
-            <WalkthroughOverlay key="walkthrough" />
-          ]}
-        />
+        <OverlayStack>
+          <ModalOverlay key="modal" />,
+          <WalkthroughOverlay key="walkthrough" />
+        </OverlayStack>
       </Fragment>
     </Router>
   </Provider>

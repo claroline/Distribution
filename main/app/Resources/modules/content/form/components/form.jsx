@@ -65,7 +65,7 @@ class Form extends Component {
     return (
       <FormWrapper id={this.props.id} embedded={this.props.embedded} className={this.props.className}>
         {this.props.title &&
-          <Heading key="form-heading" level={this.props.level} displayLevel={this.props.displayLevel}>
+          <Heading level={this.props.level} displayLevel={this.props.displayLevel}>
             {this.props.title}
           </Heading>
         }
@@ -74,7 +74,6 @@ class Form extends Component {
 
         {(this.props.save || this.props.cancel) &&
           <FormActions
-            key="form-actions"
             save={this.props.save ? merge({}, this.props.save, {
               disabled: this.props.disabled || this.props.save.disabled || !(this.props.pendingChanges && (!this.props.validating || this.props.errors))
             }) : undefined}

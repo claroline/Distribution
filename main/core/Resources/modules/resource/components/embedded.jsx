@@ -72,7 +72,8 @@ ResourceEmbedded.propTypes = {
 }
 
 ResourceEmbedded.defaultProps = {
-  lifecycle: {}
+  lifecycle: {},
+  onResourceClose: () => true
 }
 
 export {

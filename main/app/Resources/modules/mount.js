@@ -1,5 +1,5 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import {createElement} from 'react'
+import {render, unmountComponentAtNode} from 'react-dom'
 
 // TODO : move in dom module
 
@@ -35,17 +35,17 @@ function mount(container, rootComponent, reducers = {}, initialData = {}, embedd
   // if they don't find a store to use.
   const store = createStore(rootComponent.displayName, reducers, initialData)
 
-  const appRoot = React.createElement(
+  const appRoot = createElement(
     Main, {
       store: store,
       embedded: embedded
     },
-    React.createElement(rootComponent)
+    createElement(rootComponent)
   )
 
   // Render app
   try {
-    ReactDOM.render(appRoot, container)
+    render(appRoot, container)
   } catch (error) {
     // rethrow errors (in some case they are swallowed)
     throw error
@@ -53,7 +53,7 @@ function mount(container, rootComponent, reducers = {}, initialData = {}, embedd
 }
 
 function unmount(container) {
-  ReactDOM.unmountComponentAtNode(container)
+  unmountComponentAtNode(container)
 }
 
 export {
