@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
+import {withRouter} from '#/main/app/router'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {PageHeader, PageContent, PageActions, PageAction} from '#/main/core/layout/page'
 import {LINK_BUTTON} from '#/main/app/buttons'
@@ -70,7 +71,7 @@ PlayerComponent.propTypes = {
   )).isRequired
 }
 
-const Player = connect(
+const Player = withRouter(connect(
   (state) => ({
     currentContext: selectors.context(state),
     editable: selectors.editable(state),
@@ -78,7 +79,7 @@ const Player = connect(
     currentTab: selectors.currentTab(state),
     widgets: selectors.widgets(state)
   })
-)(PlayerComponent)
+)(PlayerComponent))
 
 export {
   Player

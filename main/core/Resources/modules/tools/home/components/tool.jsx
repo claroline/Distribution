@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {Router, Routes} from '#/main/app/router'
+import {Router, Routes, withRouter} from '#/main/app/router'
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {Player} from '#/main/core/tools/home/player/components/player'
@@ -45,7 +45,7 @@ Tool.propTypes = {
   setCurrentTab: T.func.isRequired
 }
 
-const HomeTool = connect(
+const HomeTool = withRouter(connect(
   (state) => ({
     editable: selectors.editable(state),
     sortedTabs: selectors.sortedTabs(state),
@@ -57,7 +57,7 @@ const HomeTool = connect(
       dispatch(actions.setCurrentTab(tab))
     }
   })
-)(Tool)
+)(Tool))
 
 export {
   HomeTool

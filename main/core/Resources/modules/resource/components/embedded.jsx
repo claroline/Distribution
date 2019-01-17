@@ -44,7 +44,7 @@ class ResourceEmbedded extends Component {
       embedded: true,
       showHeader: showHeader,
       lifecycle: lifecycleActions
-    })
+    }, true)
   }
 
   render() {

@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
 
 // TODO : move in dom module
 
@@ -23,18 +22,13 @@ import {Main} from '#/main/app/components/main'
 /**
  * Mounts a new React/Redux app into the DOM.
  *
- * @todo :
- *   We should append Alert & Modal overlays here when we will upgrade to React 16.
- *   We can't for now because it will require additional html containers which will break styles
- *   For now, it's added by :
- *     - WidgetContent
- *
  * @param {HTMLElement} container     - the HTML element which will hold the JS app.
  * @param {*}           rootComponent - the React root component of the app.
  * @param {object}      reducers      - an object containing the reducers of the app.
  * @param {object}      initialData   - the data to preload in store on app mount.
+ * @param {boolean}     embedded      - is the mounted app is mounted into another ?
  */
-function mount(container, rootComponent, reducers = {}, initialData = {}) {
+function mount(container, rootComponent, reducers = {}, initialData = {}, embedded = false) {
   // create store
   // we initialize a new store even if the mounted app does not declare reducers
   // we have dynamic reducers which can be added during runtime and they will be fucked up
@@ -43,7 +37,8 @@ function mount(container, rootComponent, reducers = {}, initialData = {}) {
 
   const appRoot = React.createElement(
     Main, {
-      store: store
+      store: store,
+      embedded: embedded
     },
     React.createElement(rootComponent)
   )

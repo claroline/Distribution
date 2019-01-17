@@ -23,7 +23,7 @@ actions.addAlert = (id, status, action = actionConstants.ACTION_GENERIC, title =
 
   if (0 === selectors.alerts(getState()).length) {
     // display overlay when first alert is displayed
-    dispatch(overlayActions.showOverlay('alert'))
+    //dispatch(overlayActions.showOverlay('alert'))
   }
 
   return dispatch({
@@ -42,7 +42,7 @@ actions.removeAlert = (id) => (dispatch, getState) => {
 
   if (1 === selectors.alerts(getState()).length) {
     // hide overlay when last alert is removed
-    dispatch(overlayActions.hideOverlay('alert'))
+    //dispatch(overlayActions.hideOverlay('alert'))
   }
 
   return dispatch({

@@ -38,7 +38,7 @@ class WidgetContent extends Component {
       mount(this.mountNode, WidgetAppComponent, reducer, {
         instance: instance,
         currentContext: context
-      })
+      }, true)
     })
   }
 

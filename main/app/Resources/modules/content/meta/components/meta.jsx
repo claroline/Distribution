@@ -9,25 +9,20 @@ import {displayDate} from '#/main/app/intl/date'
 // todo use in announces
 // todo use in claco-form
 
-const ContentMeta = props => {
-  console.log('CONTENT META')
-  console.log(props)
-  return (
-    <div className={classes('content-meta', props.className)}>
-      <UserMicro
-        className="content-creator"
-        link={true}
-        {...props.creator}
-      />
+const ContentMeta = props =>
+  <div className={classes('content-meta', props.className)}>
+    <UserMicro
+      className="content-creator"
+      link={true}
+      {...props.creator}
+    />
 
-      <div className="content-dates">
-        <span>{trans('created_at', {date: props.created ? displayDate(props.created, false, true) : '-'})}</span>
+    <div className="content-dates">
+      <span>{trans('created_at', {date: props.created ? displayDate(props.created, false, true) : '-'})}</span>
 
-        <span>{trans('updated_at', {date: props.updated ? displayDate(props.updated, false, true) : '-'})}</span>
-      </div>
+      <span>{trans('updated_at', {date: props.updated ? displayDate(props.updated, false, true) : '-'})}</span>
     </div>
-  )
-}
+  </div>
 
 ContentMeta.propTypes = {
   className: T.string,
