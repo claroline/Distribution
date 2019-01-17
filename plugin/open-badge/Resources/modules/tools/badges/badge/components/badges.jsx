@@ -21,10 +21,13 @@ const BadgesList = props =>
     definition={BadgeList.definition}
     primaryAction={BadgeList.open}
     delete={{
-      url: ['apiv2_badge-class_delete_bulk']
+      url: ['apiv2_badge-class_delete_bulk'],
+      displayed: () => props.currentContext !== 'desktop',
+      disabled: () => props.currentContext === 'desktop'
     }}
     actions={(rows) => [
       {
+        displayed: props.currentContext !== 'desktop',
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-pen',
         label: trans('edit'),

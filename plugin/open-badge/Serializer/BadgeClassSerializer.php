@@ -88,9 +88,13 @@ class BadgeClassSerializer
               ])
             ) : null,
             'issuer' => $this->serializer->serialize($badge->getIssuer()),
-            'isAssignable' => $this->isAssignable($badge),
+            //only in non list mode I guess
             'tags' => $this->serializeTags($badge),
         ];
+
+        if (!in_array(APIOptions::SERIALIZE_LIST, $options)) {
+            $data['assignable'] = $this->isAssignable($badge);
+        }
 
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
             $data['id'] = $this->router->generate('apiv2_open_badge__badge_class', ['badge' => $badge->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -220,12 +224,59 @@ class BadgeClassSerializer
             return false;
         }
 
+        $roles = array_map(function ($role) {
+            return $role->getRole();
+        }, $this->tokenStorage->getToken()->getRoles());
+
+        if (in_array('ROLE_ADMIN', $roles)) {
+            return true;
+        }
+
         foreach ($issuingModes as $mode) {
             switch ($mode) {
+                case BadgeClass::ISSUING_MODE_ORGANIZATION:
+                    $organization = $badge->getIssuer();
+                    $userOrganizations = $currentUser->getAdministratedOrganizations();
+                    foreach ($userOrganizations as $userOrga) {
+                        if ($userOrga->getId() === $organization->getId()) {
+                            return true;
+                        }
+                    }
+                    break;
+                case BadgeClass::ISSUING_MODE_USER:
+                    $allowedIssuers = $badge->getAllowedIssuers();
+                    foreach ($allowedIssuers as $allowed) {
+                        if ($allowed->getId() === $currentUser->getId()) {
+                            return true;
+                        }
+                    }
+                    break;
+                case BadgeClass::ISSUING_MODE_GROUP:
+                    $allowedIssuers = $badge->getAllowedIssuersGroups();
+                    foreach ($allowedIssuers as $allowed) {
+                        foreach ($user->getGroups() as $group) {
+                            if ($group->getId() === $allowed->getId()) {
+                                return true;
+                            }
+                        }
+                    }
+                    break;
+                case BadgeClass::ISSaUING_MODE_PEER:
+                    break;
+                case BadgeClass::ISSUING_MODE_WORKSPACE:
+                    $workspace = $badge->getWorkspace();
+                    $managerRole = $workspace->getManagerRole();
+
+                    if (in_array($managerRole, $roles)) {
+                        return true;
+                    }
+                    break;
+                case BadgeClass::ISSUING_MODE_AUTO:
+                  break;
             }
         }
 
-        return true;
+        return false;
     }
 
     private function serializeTags(BadgeClass $badge)

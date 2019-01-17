@@ -11,6 +11,7 @@
 
 namespace Claroline\OpenBadgeBundle\Controller\API;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -171,5 +172,12 @@ class BadgeClassController extends AbstractCrudController
                 ['hiddenFilters' => ['badge' => $badge->getUuid(), 'revoked' => false]]
             ))
         );
+    }
+
+    public function getOptions()
+    {
+        return [
+            'list' => [Options::SERIALIZE_LIST],
+        ];
     }
 }

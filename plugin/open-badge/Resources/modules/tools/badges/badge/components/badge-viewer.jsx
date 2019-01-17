@@ -27,42 +27,46 @@ const BadgeViewerComponent = (props) => {
         orientation="col"
       />
 
-      <FormSection
-        className="embedded-list-section"
-        icon="fa fa-fw fa-user"
-        title={trans('users')}
-        actions={[{
-          type: MODAL_BUTTON,
-          icon: 'fa fa-fw fa-plus',
-          label: trans('add_users'),
-          modal: [MODAL_USERS_PICKER, {
-            url: ['apiv2_user_list_registerable'], // maybe not the correct URL
-            title: props.title,
-            selectAction: (selected) => ({
-              type: CALLBACK_BUTTON,
-              label: trans('select', {}, 'actions'),
-              callback: () => props.addUsers(props.badge.id, selected)
-            })
-          }]
-        }]}
-      >
-        {props.badge.meta && props.badge.meta.enabled ?
-          <ListData
-            name="badges.current.assertions"
-            fetch={{
-              url: ['apiv2_badge-class_assertion', {badge: props.badge.id}],
-              autoload: props.badge.id && !props.new
-            }}
-            primaryAction={AssertionList.open}
-            delete={{
-              url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
-            }}
-            definition={AssertionList.definition}
-            card={AssertionList.card}
-          />:
-          <div>{trans('badge_must_be_enabled')}</div>
-        }
-      </FormSection>
+      {props.badge.assignable &&
+        <FormSection
+          className="embedded-list-section"
+          icon="fa fa-fw fa-user"
+          title={trans('users')}
+          actions={[{
+            displayed: props.badge.assignable,
+            type: MODAL_BUTTON,
+            icon: 'fa fa-fw fa-plus',
+            label: trans('add_users'),
+            modal: [MODAL_USERS_PICKER, {
+              url: ['apiv2_user_list_registerable'], // maybe not the correct URL
+              title: props.title,
+              selectAction: (selected) => ({
+                type: CALLBACK_BUTTON,
+                label: trans('select', {}, 'actions'),
+                callback: () => props.addUsers(props.badge.id, selected)
+              })
+            }]
+          }]}
+        >
+        
+          {props.badge.meta && props.badge.meta.enabled ?
+            <ListData
+              name="badges.current.assertions"
+              fetch={{
+                url: ['apiv2_badge-class_assertion', {badge: props.badge.id}],
+                autoload: props.badge.id && !props.new
+              }}
+              primaryAction={AssertionList.open}
+              delete={{
+                url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
+              }}
+              definition={AssertionList.definition}
+              card={AssertionList.card}
+            />:
+            <div>{trans('badge_must_be_enabled or assignable')}</div>
+          }
+        </FormSection>
+      }
     </div>
   )
 }

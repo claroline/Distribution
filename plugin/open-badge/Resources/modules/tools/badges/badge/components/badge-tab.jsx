@@ -14,15 +14,17 @@ import {Assertion} from '#/plugin/open-badge/tools/badges/assertion/components/a
 
 import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
 
-const BadgeTabActions = () =>
+const BadgeTabActionsComponent = props =>
   <PageActions>
-    <PageAction
-      type={LINK_BUTTON}
-      icon="fa fa-plus"
-      label={trans('add_badge')}
-      target="/badges/form"
-      primary={true}
-    />
+    {props.currentContext !== 'desktop' &&
+      <PageAction
+        type={LINK_BUTTON}
+        icon="fa fa-plus"
+        label={trans('add_badge')}
+        target="/badges/form"
+        primary={true}
+      />
+    }
   </PageActions>
 
 const BadgeTabComponent = props =>
@@ -68,6 +70,12 @@ const BadgeTab = connect(
     }
   })
 )(BadgeTabComponent)
+
+const BadgeTabActions = connect(
+  (state) => ({
+    currentContext: state.currentContext
+  })
+)(BadgeTabActionsComponent)
 
 export {
   BadgeTab,
