@@ -37,7 +37,7 @@ const Correctors = props =>
             displayed: props.dropzone.parameters.dropType === constants.DROP_TYPE_USER,
             displayable: props.dropzone.parameters.dropType === constants.DROP_TYPE_USER,
             primary: true,
-            render: (rowData) => rowData.user ? `${rowData.user.firstName} ${rowData.user.lastName}` : trans('unknown')
+            render: (rowData) => rowData.user ? `${rowData.user.lastName} ${rowData.user.firstName}` : trans('unknown')
           }, {
             name: 'teamName',
             label: trans('team', {}, 'team'),

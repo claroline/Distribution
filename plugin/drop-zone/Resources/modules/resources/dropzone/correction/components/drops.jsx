@@ -35,7 +35,7 @@ const DropsList = props =>
           type: 'string',
           displayed: constants.DROP_TYPE_USER === props.dropzone.parameters.dropType,
           displayable: constants.DROP_TYPE_USER === props.dropzone.parameters.dropType,
-          render: (rowData) => rowData.user ? `${rowData.user.firstName} ${rowData.user.lastName}` : trans('unknown')
+          render: (rowData) => rowData.user ? `${rowData.user.lastName} ${rowData.user.firstName}` : trans('unknown')
         }, {
           name: 'teamName',
           label: trans('team', {}, 'team'),

@@ -176,7 +176,7 @@ export default (clacoForm, canViewMetadata = false, canEdit = false, canAdminist
           filterable: canViewMetadata,
           displayed: canViewMetadata,
           displayable: canViewMetadata,
-          calculated: (rowData) => canViewEntryMetadata(rowData, clacoForm, canEdit) && rowData.user ? `${rowData.user.firstName} ${rowData.user.lastName}` : null
+          calculated: (rowData) => canViewEntryMetadata(rowData, clacoForm, canEdit) && rowData.user ? `${rowData.user.lastName} ${rowData.user.firstName}` : null
         },
         // Categories
         {
