@@ -1,7 +1,6 @@
-import React, {Component, createElement} from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import {Provider, ReactReduxContext} from 'react-redux'
-import invariant from 'invariant'
+import {ReactReduxContext} from 'react-redux'
 
 class ReducerLoader extends Component {
   constructor(props) {
@@ -21,6 +20,7 @@ class ReducerLoader extends Component {
 
 ReducerLoader.propTypes = {
   store: T.object.isRequired,
+  storeState: T.object,
   keyName: T.string.isRequired,
   reducer: T.func.isRequired,
   children: T.any

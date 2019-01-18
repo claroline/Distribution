@@ -107,7 +107,6 @@ const FormStepper = props => {
       <Routes
         routes={props.steps}
         redirect={props.redirect}
-        blockingSteps={props.blockingSteps}
       />
 
       <FormStepperFooter
@@ -121,6 +120,9 @@ const FormStepper = props => {
 
 FormStepper.propTypes = {
   className: T.string,
+  location: T.shape({
+    pathname: T.string
+  }),
   steps: T.arrayOf(T.shape({
     title: T.string.isRequired,
     // route part
@@ -139,10 +141,6 @@ FormStepper.propTypes = {
     label: T.string,
     action: T.oneOfType([T.string, T.func]).isRequired
   }).isRequired
-}
-
-FormStepper.defaultProps = {
-  blockingSteps: false
 }
 
 export {

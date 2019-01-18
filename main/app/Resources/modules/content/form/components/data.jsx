@@ -207,6 +207,23 @@ FormData.propTypes = {
   sections: T.arrayOf(T.shape(
     DataFormSectionTypes.propTypes
   )).isRequired,
+  /**
+   * The save action of the form.
+   */
+  save: T.shape({
+    type: T.string.isRequired,
+    disabled: T.bool
+    // todo find a way to document custom action type props
+  }),
+
+  /**
+   * The cancel action of the form (if provided.
+   */
+  cancel: T.shape({
+    type: T.string.isRequired,
+    disabled: T.bool
+    // todo find a way to document custom action type props
+  }),
   setErrors: T.func.isRequired,
   updateProp: T.func.isRequired,
   children: T.node

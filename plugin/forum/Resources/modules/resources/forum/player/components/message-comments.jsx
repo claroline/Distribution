@@ -97,7 +97,7 @@ class MessageCommentsComponent extends Component {
                         icon: 'fa fa-fw fa-trash-o',
                         label: trans('delete', {}, 'actions'),
                         displayed: authenticatedUser && (comment.meta.creator.id === authenticatedUser.id || this.props.moderator),
-                        callback: () => this.props.deleteComment(commentId),
+                        callback: () => this.props.deleteComment(comment.id),
                         dangerous: true,
                         confirm: {
                           title: trans('delete_comment', {}, 'forum'),

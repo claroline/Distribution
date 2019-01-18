@@ -61,7 +61,6 @@ class AgendaTool extends Component {
       eventDrop: props.onEventDrop,
       dayClick: props.onDayClick,
       eventClick:  props.onEventClick,
-      eventDestroy: props.onEventDestroy,
       eventRender: props.onEventRender,
       eventResize: props.onEventResize,
       workspace: props.workspace

@@ -1,7 +1,5 @@
 import {connect} from 'react-redux'
 
-import {withRouter} from '#/main/app/router'
-
 // the component to connect
 import {ResourcePage as ResourcePageComponent} from '#/main/core/resource/components/page'
 // the store to use
