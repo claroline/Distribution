@@ -324,9 +324,26 @@ class WorkspaceController
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
+        //check the expiration date first
+        $now = new \DateTime();
+        $dateValidity = true;
+
+        if ($workspace->getEndDate()) {
+            if ($now->getTimeStamp() > $workspace->getEndDate()->getTimeStamp()) {
+                $dateValidity = false;
+            }
+        }
+
+        if ($workspace->getStartDate()) {
+            if ($now->getTimeStamp() < $workspace->getStartDate()->getTimeStamp()) {
+                $dateValidity = false;
+            }
+        }
+
         return [
           'workspace' => $workspace,
           'action' => $action,
+          'dateValidity' => $dateValidity,
           'isInQueue' => $this->workspaceManager->isUserInValidationQueue($workspace, $user),
         ];
     }
