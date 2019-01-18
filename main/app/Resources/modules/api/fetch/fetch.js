@@ -58,7 +58,7 @@ function handleDownload(response) {
   const n = disposition.lastIndexOf('=')
   const name = disposition.substring(n + 1)
   // The actual download
-  response.blob().then(blob => {
+  return response.blob().then(blob => {
     var link = document.createElement('a')
     link.href = window.URL.createObjectURL(blob)
     link.download = name
@@ -141,7 +141,7 @@ function getResponseData(response) {
         if (contentType.indexOf('text') !== -1) {
           return response.text()
         } else {
-          handleDownload(response)
+          return handleDownload(response)
         }
       }
     }
