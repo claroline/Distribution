@@ -707,9 +707,16 @@ class ForumController extends Controller
     {
         $this->forumManager->unsubscribe($forum, $user);
 
-        return new RedirectResponse(
-            $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
-        );
+        if($this->checkAccess($forum)){
+            return new RedirectResponse(
+              $this->generateUrl('claro_forum_categories', array('forum' => $forum->getId()))
+            );
+        } else{
+            $this->get('session')->getFlashBag()->set('success', 'Désinscription réussie');
+            return new RedirectResponse(
+              $this->generateUrl('claro_desktop_open')
+            );
+        }
     }
 
     /**

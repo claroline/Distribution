@@ -102,15 +102,27 @@ class RssReaderListener
 
     private function getRssContent($rssConfig, $widgetId)
     {
-        // TODO : handle feed format exception...
-        $data = file_get_contents($rssConfig->getUrl());
-        $content = strstr($data, '<?xml');
+        $proxy = 'tcp://proxy.univ-lyon1.fr:3128';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $rssConfig->getUrl());
+        curl_setopt($ch, CURLOPT_PROXY, $proxy);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 6);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+        $data = curl_exec($ch);
+        curl_close($ch);
 
-        if (!$content && strpos($data, '<rss') === 0) {
-            $content = $data;
+        $content = null;
+        if($data !== false){
+            $content = strstr($data, '<?xml');
+            if (!$content && strpos($data, '<rss') === 0) {
+                $content = $data;
+            }
         }
 
-        if ($content === false) {
+        if ($content === null) {
             return $this->templating->render('ClarolineRssReaderBundle::invalid.html.twig');
         }
 

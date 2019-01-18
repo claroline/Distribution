@@ -31,6 +31,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ResourcePropertiesController extends Controller
 {
@@ -41,6 +43,7 @@ class ResourcePropertiesController extends Controller
     private $request;
     private $dispatcher;
     private $translator;
+    private $router;
 
     /**
      * @DI\InjectParams({
@@ -50,7 +53,8 @@ class ResourcePropertiesController extends Controller
      *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
      *     "request"         = @DI\Inject("request"),
      *     "dispatcher"      = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "translator"      = @DI\Inject("translator")
+     *     "translator"      = @DI\Inject("translator"),
+     *     "router"          = @DI\Inject("router")
      * })
      */
     public function __construct(
@@ -60,7 +64,8 @@ class ResourcePropertiesController extends Controller
         ResourceManager $resourceManager,
         Request $request,
         StrictDispatcher $dispatcher,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        Router $router
     ) {
         $this->formFactory = $formFactory;
         $this->tokenStorage = $tokenStorage;
@@ -69,6 +74,7 @@ class ResourcePropertiesController extends Controller
         $this->request = $request;
         $this->dispatcher = $dispatcher;
         $this->translator = $translator;
+        $this->router = $router;
     }
 
     /**
@@ -155,10 +161,21 @@ class ResourcePropertiesController extends Controller
             $node
         );
 
+        //'permalink' => $this->router->generate('claro_resource_open_short', array('node' => $node->getId()), true)
+        $permalink = $this->router->generate(
+          'claro_resource_open',
+          [
+            'resourceType' => $node->getResourceType()->getName(),
+            'node' => $node->getId()
+          ],
+          UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         return [
             'form' => $form->createView(),
             'nodeId' => $node->getId(),
             'isDir' => $isDir,
+            'permalink' => $permalink
         ];
     }
 

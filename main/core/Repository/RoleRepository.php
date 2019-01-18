@@ -474,6 +474,20 @@ class RoleRepository extends EntityRepository
         return $executeQuery ? $query->getOneOrNullResult() : $query;
     }
 
+    public function findPlatformRoleByName($name){
+        $query = $this->_em
+          ->createQuery('
+                SELECT r
+                FROM Claroline\CoreBundle\Entity\Role r
+                WHERE r.type = :type
+                AND r.name = :name
+            ')
+          ->setParameter('type', Role::PLATFORM_ROLE)
+          ->setParameter('name', 'ROLE_'.strtoupper($name));
+
+        return $query->getOneOrNullResult();
+    }
+
     public function findUserRolesByTranslationKeys(array $keys, $executeQuery = true)
     {
         $dql = '
@@ -597,12 +611,13 @@ class RoleRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
-    public function findRolesByIds(array $ids, $executeQuery = true)
+    public function findRolesByIds(array $ids, $executeQuery = true, $isUuid = false)
     {
+        $idField = $isUuid ? 'uuid' : 'id';
         $dql = '
             SELECT r
             FROM Claroline\CoreBundle\Entity\Role r
-            WHERE r.id IN (:ids)
+            WHERE r.'.$idField.' IN (:ids)
         ';
 
         $query = $this->_em->createQuery($dql);

@@ -18,7 +18,7 @@ const WorkspaceTabActionsComponent = props =>
       formName="workspaces.current"
       target={(workspace, isNew) => isNew ?
         ['apiv2_workspace_create'] :
-        ['apiv2_workspace_update', {id: workspace.id}]
+        ['apiv2_workspace_update', {id: workspace.realId}]
       }
       opened={!!matchPath(props.location.pathname, {path: '/workspaces/form'})}
       open={{

@@ -12,5 +12,11 @@ bootstrap(
   WorkspaceTool,
 
   // app store configuration
-  reducer
+  reducer,
+
+  (initialData) => {
+    return {
+        admin: initialData.admin
+    }
+  }
 )

@@ -402,7 +402,7 @@
     "email_sent": "Validatie e-mail gestuurd naar %email%. Gelieve uw spams te raadplegen indien u niets ontvangen hebt.",
     "email_validated": "E-mail gevalideerd",
     "email_validation": "Validatie van de e-mail",
-    "email_validation_url_display": "Gelieve naar de volgende URL te gaan om uw e-mail te bevestigen:  %url%.",
+    "email_validation_url_display": "Gelieve naar de volgende URL te gaan om uw e-mail te bevestigen:  <a href=\"%url%\">%url%</a>",
     "empty_file": "Leeg bestand",
     "enable": "Activeren",
     "encryption": "Versleuteling",
@@ -1404,5 +1404,6 @@
     "copy_model_workspace": "Als model dupliceren",
     "copy_model_workspaces": "{1} Dupliceer werkruimte als model|[2,Inf[ Dupliceer %count% werkruimten als modellen",
     "copy_model_workspaces_confirm": "Bent u er zeker van dat u de volgende werkruimten [ %workspace_list% ] wenst te dupliceren ?",
-    "copy_workspace": "Dupliceren"
+    "copy_workspace": "Dupliceren",
+    "confirmation_checkbox": ""
 }

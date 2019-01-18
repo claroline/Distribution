@@ -91,6 +91,10 @@ class WorkspaceOptionsType extends AbstractType
             'resourcePicker',
             [
                 'required' => false,
+                'attr' => array(
+                  'data-type-black-list' => 'file',
+                  'data-is-directory-selection-allowed' => '0',
+                ),
                 'mapped' => false,
                 'data' => $defaultResourceId,
                 'label' => 'resource_to_open',

@@ -123,6 +123,7 @@
     "Instructions for examiners": "Specific instructions for the examiners",
     "Invalidate": "Invalidate",
     "Invalidate all corrections": "Invalidate all the corrections",
+    "invalidate_help": "An invalidated correction no longer counts for the corrected paper, but still counts for the corrector",
     "Invalidate this correction": "Invalidate this correction.",
     "Invalidated": "Invalidated",
     "Just save": "Save without recalculating.",

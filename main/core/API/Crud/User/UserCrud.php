@@ -63,6 +63,12 @@ class UserCrud
     public function create(User $user, $options = [], $extra = [])
     {
         $this->om->startFlushSuite();
+        //space trimming
+        $user->setFirstName(trim($user->getFirstName()));
+        $user->setLastName(trim($user->getLastName()));
+        $user->setUsername(trim($user->getUsername()));
+        $user->setMail(trim($user->getMail()));
+
         $user->setPublicUrl($this->userManager->generatePublicUrl($user));
         $this->toolManager->addRequiredToolsToUser($user, 0);
         $this->toolManager->addRequiredToolsToUser($user, 1);

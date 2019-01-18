@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\Theme\ThemeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bridge\Twig\Extension\AssetExtension;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * @DI\Service
@@ -32,6 +33,8 @@ class ThemeExtension extends \Twig_Extension
     private $rootDir;
     /** @var array */
     private $assetCache;
+    /** @var  */
+    private $tokenStorage;
 
     /**
      * ThemeExtension constructor.
@@ -40,24 +43,28 @@ class ThemeExtension extends \Twig_Extension
      *     "extension" = @DI\Inject("twig.extension.assets"),
      *     "themeManager" = @DI\Inject("claroline.manager.theme_manager"),
      *     "config"    = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "rootDir"   = @DI\Inject("%kernel.root_dir%")
+     *     "rootDir"   = @DI\Inject("%kernel.root_dir%"),
+     *      "tokenStorage"    = @DI\Inject("security.token_storage")
      * })
      *
      * @param AssetExtension               $extension
      * @param ThemeManager                 $themeManager
      * @param PlatformConfigurationHandler $config
      * @param string                       $rootDir
+     * @param TokenStorage                  $tokenStorage
      */
     public function __construct(
         AssetExtension               $extension,
         ThemeManager                 $themeManager,
         PlatformConfigurationHandler $config,
-        $rootDir)
+        $rootDir,
+        TokenStorage $tokenStorage)
     {
         $this->assetExtension = $extension;
         $this->themeManager = $themeManager;
         $this->config = $config;
         $this->rootDir = $rootDir;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function getName()
@@ -69,6 +76,7 @@ class ThemeExtension extends \Twig_Extension
     {
         return [
             'themeAsset' => new \Twig_Function_Method($this, 'themeAsset'),
+            'getPersonalTheme' => new \Twig_Function_Method($this, 'getPersonalTheme'),
         ];
     }
 
@@ -115,5 +123,15 @@ class ThemeExtension extends \Twig_Extension
         }
 
         return $this->assetCache;
+    }
+
+    public function getPersonalTheme()
+    {
+        $token = $this->tokenStorage->getToken();
+
+        if ('anon.' === $token->getUser() || $token->getUser()->getTheme() === null) {
+            return $this->config->getParameter('theme');
+        }
+        return $token->getUser()->getTheme()->getNormalizedName();
     }
 }

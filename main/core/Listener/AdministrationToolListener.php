@@ -116,6 +116,7 @@ class AdministrationToolListener
         $this->redirect([
             '_controller' => 'ClarolineCoreBundle:Administration\Logs:logList',
             'page' => 1,
+            'forceEmpty' => 1,
         ], $event);
     }
 

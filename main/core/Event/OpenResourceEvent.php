@@ -23,11 +23,13 @@ class OpenResourceEvent extends Event implements MandatoryEventInterface, DataCo
     private $response;
     private $isPopulated = false;
     private $isIframe;
+    private $format;
 
-    public function __construct(AbstractResource $resource, $isIframe = false)
+    public function __construct(AbstractResource $resource, $isIframe = false, $format = 'html')
     {
         $this->resource = $resource;
         $this->isIframe = $isIframe;
+        $this->format   = $format;
     }
 
     public function getResource()
@@ -59,5 +61,10 @@ class OpenResourceEvent extends Event implements MandatoryEventInterface, DataCo
     public function isIframe()
     {
         return $this->isIframe;
+    }
+
+    public function getFormat()
+    {
+        return $this->format;
     }
 }

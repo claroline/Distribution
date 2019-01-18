@@ -30,7 +30,11 @@ class ImportResourcesType extends AbstractType
                 'mapped' => false,
                 'constraints' => array(
                     new NotBlank(),
-                    new File(),
+                    new File([
+                      'mimeTypes' => [
+                        'application/zip',
+                      ]
+                    ]),
                 ),
            )
         );

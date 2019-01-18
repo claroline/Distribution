@@ -150,14 +150,16 @@ class PaperController extends AbstractController
     public function deleteAction(Paper $paper)
     {
         $this->assertHasPermission('MANAGE_PAPERS', $paper->getExercise());
-
+        $paperId = $paper->getUuid();
         try {
             $this->paperManager->delete($paper);
         } catch (ValidationException $e) {
             return new JsonResponse($e->getErrors(), 422);
         }
 
-        return new JsonResponse(null, 204);
+        return new JsonResponse([
+            'paperId' => $paperId,
+        ]);
     }
 
     /**
@@ -233,7 +235,7 @@ class PaperController extends AbstractController
             $this->exerciseManager->exportResultsToCsv($exercise);
         }, 200, [
             'Content-Type' => 'application/force-download',
-            'Content-Disposition' => 'attachment; filename="export.csv"',
+            'Content-Disposition' => 'attachment; filename="'.preg_replace('/[^A-Za-z0-9_\-]/', '_', $exercise->getResourceNode()->getName()).'.csv"',
         ]);
     }
 

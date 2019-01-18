@@ -31,6 +31,14 @@
       "description": "The plain login password",
       "minLength": 1
     },
+    "role": {
+      "type": "string",
+      "description": "The user role"
+    },
+    "organizationCode": {
+      "type": "string",
+      "description": "The organisation code"
+    },
     "groups": {
       "type": "array",
       "uniqueItems": true,

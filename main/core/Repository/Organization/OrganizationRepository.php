@@ -28,4 +28,17 @@ class OrganizationRepository extends EntityRepository
 
         return $query->getResult();
     }
+
+    public function findOrganizationByCode($code)
+    {
+        $dql = '
+            SELECT o
+            FROM Claroline\CoreBundle\Entity\Organization\Organization o
+            WHERE o.code = :code
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('code', $code);
+
+        return $query->getOneOrNullResult();
+    }
 }

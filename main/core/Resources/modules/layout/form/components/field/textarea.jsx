@@ -154,7 +154,10 @@ export class Tinymce extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.editor.setContent(nextProps.content)
+    if ((nextProps.content !== this.editor.getContent()
+        && nextProps.content !== this.props.content)) {
+      this.editor.setContent(nextProps.content)
+    }
   }
 
   componentWillUnmount() {

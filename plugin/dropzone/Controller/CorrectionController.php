@@ -1032,9 +1032,9 @@ class CorrectionController extends DropzoneBaseController
         $this->get('icap.manager.dropzone_voter')->isAllowToOpen($dropzone);
         $this->get('icap.manager.dropzone_voter')->isAllowToEdit($dropzone);
 
-        if ($correction->getEditable() === false) {
+        /*if ($correction->getEditable() === false) {
             throw new AccessDeniedException();
-        }
+        }*/
 
         $dropId = $correction->getDrop()->getId();
 

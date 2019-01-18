@@ -317,27 +317,33 @@ class RolesController extends Controller
     public function unregisteredUserListAction($page, $search, Workspace $workspace, $max, $order, $direction)
     {
         $this->checkEditionAccess($workspace);
-        $isWsManager = $this->isWorkspaceManager($workspace);
-        if ($isWsManager) {
-            $wsRoles = $this->roleManager->getRolesByWorkspace($workspace);
-        } else {
-            $wsRoles = $this->roleManager->getWorkspaceNonAdministrateRoles($workspace);
-        }
-        $preferences = $this->facetManager->getVisiblePublicPreference();
+        $pager = null;
+        $wsRoles = [];
+        $showMail = false;
+        if($search){
+            $isWsManager = $this->isWorkspaceManager($workspace);
+            if ($isWsManager) {
+                $wsRoles = $this->roleManager->getRolesByWorkspace($workspace);
+            } else {
+                $wsRoles = $this->roleManager->getWorkspaceNonAdministrateRoles($workspace);
+            }
+            $preferences = $this->facetManager->getVisiblePublicPreference();
+            $showMail = $preferences['mail'];
+            $pager = $search === '' ?
+              $this->userManager->getAllUsers($page, $max, $order, $direction) :
+              $this->userManager->getUsersByName($search, $page, $max, $order, $direction);
 
-        $pager = $search === '' ?
-            $this->userManager->getAllUsers($page, $max, $order, $direction) :
-            $this->userManager->getUsersByName($search, $page, $max, $order, $direction);
+        }
 
         return [
-            'workspace' => $workspace,
-            'pager' => $pager,
-            'search' => $search,
-            'wsRoles' => $wsRoles,
-            'max' => $max,
-            'order' => $order,
-            'direction' => $direction,
-            'showMail' => $preferences['mail'],
+          'workspace' => $workspace,
+          'pager' => $pager,
+          'search' => $search,
+          'wsRoles' => $wsRoles,
+          'max' => $max,
+          'order' => $order,
+          'direction' => $direction,
+          'showMail' => $showMail,
         ];
     }
 

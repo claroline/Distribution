@@ -146,7 +146,7 @@ class AnnouncementManager
         $this->serializer->deserialize($data, $announcement);
         $this->om->persist($announcement);
 
-        $roles = isset($data['roles']) && count($data['roles']) > 0 ? $this->roleRepo->findRolesByIds($data['roles']) : [];
+        $roles = isset($data['roles']) && count($data['roles']) > 0 ? $this->roleRepo->findRolesByIds($data['roles'], true, true) : [];
 
         // send message if needed
         switch ($data['meta']['notifyUsers']) {
@@ -364,13 +364,16 @@ class AnnouncementManager
     private function getVisibleBy(Announcement $announce, array $roles = [])
     {
         $node = $announce->getAggregate()->getResourceNode();
+        $workspaceId = $node->getWorkspace()->getId();
 
         $rights = $node->getRights();
 
         if (count($roles) === 0) {
             foreach ($rights as $right) {
                 //1 is the default "open" mask
-                if ($right->getMask() & 1) {
+                if ($right->getMask() & 1 &&
+                  $right->getRole()->getWorkspace() &&
+                  $right->getRole()->getWorkspace()->getId() === $workspaceId) {
                     $roles[] = $right->getRole();
                 }
             }

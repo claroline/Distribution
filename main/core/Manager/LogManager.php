@@ -27,6 +27,7 @@ use Pagerfanta\Exception\NotValidCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Pagerfanta\Adapter\ArrayAdapter;
 
 /**
  * @DI\Service("claroline.log.manager")
@@ -246,18 +247,21 @@ class LogManager
         ];
     }
 
-    public function getAdminList($page, $maxResult = -1)
+    public function getAdminList($page, $maxResult = -1, $forceEmpty = false)
     {
         return $this->getList(
             $page,
             'admin',
             $this->container->get('claroline.form.adminLogFilter'),
             null,
-            $maxResult
+            $maxResult,
+            null,
+            null,
+            $forceEmpty
         );
     }
 
-    public function getWorkspaceList($workspace, $page = null, $maxResult = -1)
+    public function getWorkspaceList($workspace, $page = null, $maxResult = -1, $forceEmpty = false)
     {
         if ($workspace === null) {
             $workspaceIds = $this->getAdminOrCollaboratorWorkspaceIds();
@@ -272,7 +276,8 @@ class LogManager
             $workspaceIds,
             $maxResult,
             null,
-            null
+            null,
+            $forceEmpty
         );
         if ($page !== null) {
             $params['workspace'] = $workspace;
@@ -308,7 +313,8 @@ class LogManager
         $workspaceIds = null,
         $maxResult = -1,
         $resourceNodeIds = null,
-        $resourceClass = null
+        $resourceClass = null,
+        $forceEmpty = false
     ) {
         $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->container->get('translator'));
         $data = $this->processFormData(
@@ -350,16 +356,19 @@ class LogManager
             ];
         } else {
             // Return paged results
-
-            // Return paged object for on-screen display
-            $adapter = new DoctrineORMAdapter($query);
-            $pager = new PagerFanta($adapter);
-            $pager->setMaxPerPage(self::LOG_PER_PAGE);
-
-            try {
-                $pager->setCurrentPage($page);
-            } catch (NotValidCurrentPageException $e) {
-                throw new NotFoundHttpException();
+            if(!$forceEmpty){
+                // Return paged object for on-screen display
+                $adapter = new DoctrineORMAdapter($query);
+                $pager = new PagerFanta($adapter);
+                $pager->setMaxPerPage(self::LOG_PER_PAGE);
+                try {
+                    $pager->setCurrentPage($page);
+                } catch (NotValidCurrentPageException $e) {
+                    throw new NotFoundHttpException();
+                }
+            } else {
+                $adapter = new ArrayAdapter([]);
+                $pager = new Pagerfanta($adapter);
             }
 
             $chartData = $this->logRepository->countByDayFilteredLogs(

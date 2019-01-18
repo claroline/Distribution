@@ -256,4 +256,49 @@ class ClaroUtilities
 
         return $string;
     }
+
+    public function html2Csv($htmlStr, $preserveMedia = false)
+    {
+        $csvStr = $this->formatCsvOutput($htmlStr);
+        if ($preserveMedia) {
+            $csvStr = strip_tags($csvStr, '<img><embed><video><audio><source>');
+            // On Image and Embed objects, keep src
+            $csvStr = preg_replace(
+              '/<(img|embed)([^>]+src=[\'"]([^\'"]+)[\'"])*[^\/>]*\/?>/i',
+              '[$1 src="$3"]',
+              $csvStr
+            );
+            // On Video and Audio keep sources
+            $csvStr = preg_replace_callback(
+              '/<(video|audio)([^>]+src=[\'"]([^\'"]+)[\'"])*[^\/>]*\/?>([\s\S]*)<\/\1>/i',
+              function ($matches) {
+                  return $this->mediaSrcExtractor($matches);
+              },
+              $csvStr
+            );
+        }
+        // Strip any remaining tags
+        $csvStr = strip_tags($csvStr);
+        // Trim spaces
+        $csvStr = trim(preg_replace('/\s+/', ' ', $csvStr));
+        //convert html entities
+        $csvStr = html_entity_decode($csvStr);
+        //force encoding to Windows-1252, ables Excel to open special char properly by default
+        $csvStr = iconv('UTF-8', 'Windows-1252', $csvStr);
+
+        return $csvStr;
+    }
+
+    private function mediaSrcExtractor($matches)
+    {
+        $ret = '['.$matches[1].(empty($matches[3]) ? '' : ' src="'.$matches[3].'"');
+        if (!empty($matches[4])) {
+            preg_match_all('/src=[\'"]([^\'"]+)[\'"]/', $matches[4], $srcs);
+            foreach ($srcs[1] as $src) {
+                $ret .= ' src="'.$src.'"';
+            }
+        }
+        $ret .= ']';
+        return $ret;
+    }
 }

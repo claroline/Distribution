@@ -29,11 +29,12 @@ class ResourcePropertiesType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $dateFormat = $this->translator->trans('date_form_format', [], 'platform');
+        $dateFormat = $this->translator->trans('date_form_format_with_hour', [], 'platform');
         $attrParams = [
                 'class' => 'datepicker input-small',
                 'data-date-format' => $this->translator->trans('date_form_datepicker_format', [], 'platform'),
                 'autocomplete' => 'off',
+                'placeholder' => 'jj/mm/aaaa HH:mm',
             ];
 
         $dateParams = [
@@ -97,11 +98,12 @@ class ResourcePropertiesType extends AbstractType
             ]
         );
         $accessibleFromParams = $dateParams;
+        $builder->add('accessibleFrom', 'date', $accessibleFromParams);
         $accessibleFromParams['label'] = 'accessible_from';
-        $builder->add('accessibleFrom', 'datepicker', $accessibleFromParams);
+        $builder->add('accessibleFrom', 'date', $accessibleFromParams);
         $accessibleUntilParams = $dateParams;
         $accessibleUntilParams['label'] = 'accessible_until';
-        $builder->add('accessibleUntil', 'datepicker', $accessibleUntilParams);
+        $builder->add('accessibleUntil', 'date', $accessibleUntilParams);
         $builder->add(
             'resourceType',
             'entity',

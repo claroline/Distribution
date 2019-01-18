@@ -10,6 +10,7 @@ import {normalize} from './normalizer'
 import {API_REQUEST} from '#/main/core/api/actions'
 
 export const PAPER_ADD = 'PAPER_ADD'
+export const PAPER_REMOVE = 'PAPER_REMOVE'
 export const PAPERS_LIST = 'PAPERS_LIST'
 export const PAPERS_INIT = 'PAPERS_INIT'
 export const PAPER_DISPLAY = 'PAPER_DISPLAY'
@@ -22,6 +23,7 @@ const initPapers = makeActionCreator(PAPERS_INIT, 'papers')
 const setPaperFetched = makeActionCreator(PAPER_FETCHED)
 actions.setCurrentPaper = makeActionCreator(PAPER_CURRENT, 'id')
 actions.addPaper = makeActionCreator(PAPER_ADD, 'paper')
+actions.removePaper = makeActionCreator(PAPER_REMOVE, 'paper')
 
 actions.fetchPapers = quizId => ({
   [API_REQUEST]: {
@@ -61,3 +63,15 @@ actions.listPapers = () => {
     }
   }
 }
+
+actions.deletePaper = (exerciseId, paperId) => ({
+  [API_REQUEST]: {
+    url: ['ujm_exercise_delete_paper', {exerciseId: exerciseId, id: paperId}],
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.removePaper(data))
+    }
+  }
+})

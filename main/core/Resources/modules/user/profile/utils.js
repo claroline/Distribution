@@ -1,4 +1,5 @@
 import {t} from '#/main/core/translation'
+import {CUSTOM_ROLE, PLATFORM_ROLE, USER_ROLE, WS_ROLE} from "../role/constants";
 
 function getMainFacet(facets) {
   return facets.find(facet => facet.meta.main)
@@ -37,7 +38,7 @@ function getDetailsDefaultSection() {
   }
 }
 
-function getFormDefaultSection(userData, isNew = false) {
+function getFormDefaultSection(userData, isNew = false, themes = {}) {
   return {
     id: 'default-props',
     title: t('general'),
@@ -78,7 +79,14 @@ function getFormDefaultSection(userData, isNew = false) {
         name: 'picture',
         type: 'image',
         label: t('picture')
-      }
+      }, {
+        name: 'theme.normalizedName',
+        type: 'enum',
+        label: t('theme'),
+        options: {
+          choices: themes,
+        }}
+
     ]
   }
 }

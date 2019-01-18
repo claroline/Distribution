@@ -19,16 +19,24 @@
     {% set tool %}
         {% include 'ClarolineCoreBundle:Log:view_list_item_tool.html.twig' %}
     {% endset %}
+    {% set tab %}
+        {% include 'ClarolineCoreBundle:Log:view_list_item_tab.html.twig' %}
+    {% endset %}
+    {% set widget %}
+        {% include 'ClarolineCoreBundle:Log:view_list_item_widget.html.twig' %}
+    {% endset %}
 
     {{ ('log_' ~ log.getAction() ~ '_sentence')|trans(
-    {
-        '%resource%': resource,
-        '%receiver_user%': receiver_user,
-        '%receiver_group%': receiver_group,
-        '%role%': role,
-        '%workspace%': workspace,
-        '%tool%': tool
-    },
-    'log'
+        {
+            '%resource%': resource,
+            '%receiver_user%': receiver_user,
+            '%receiver_group%': receiver_group,
+            '%role%': role,
+            '%workspace%': workspace,
+            '%tool%': tool,
+            '%tabName%': tab,
+            '%widgetName%': widget
+        },
+        'log'
     )|raw }}
 {% endif %}

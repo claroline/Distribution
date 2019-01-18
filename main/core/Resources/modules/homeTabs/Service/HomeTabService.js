@@ -378,7 +378,8 @@ export default class HomeTabService {
         {url, method: 'PUT'},
         this._removeAdminHomeTabCallback,
         Translator.trans('home_tab_delete_confirm_title', {}, 'platform'),
-        Translator.trans('home_tab_delete_confirm_message', {}, 'platform')
+        Translator.trans('home_tab_user_delete_confirm_message', {}, 'platform'),
+        true
       )
     }
   }
@@ -391,7 +392,8 @@ export default class HomeTabService {
         {url, method: 'DELETE'},
         this._removeUserHomeTabCallback,
         Translator.trans('home_tab_delete_confirm_title', {}, 'platform'),
-        Translator.trans('home_tab_delete_confirm_message', {}, 'platform')
+        Translator.trans('home_tab_user_delete_confirm_message', {}, 'platform'),
+        true
       )
     }
   }
@@ -456,7 +458,8 @@ export default class HomeTabService {
       {url, method: 'DELETE'},
       this._removeAdminHomeTabCallback,
       Translator.trans('home_tab_delete_confirm_title', {}, 'platform'),
-      Translator.trans('home_tab_delete_confirm_message', {}, 'platform')
+      Translator.trans('home_tab_delete_confirm_message', {}, 'platform'),
+      true
     )
   }
 
@@ -511,7 +514,8 @@ export default class HomeTabService {
       {url, method: 'DELETE'},
       this._removeWorkspaceHomeTabCallback,
       Translator.trans('home_tab_delete_confirm_title', {}, 'platform'),
-      Translator.trans('home_tab_delete_confirm_message', {}, 'platform')
+      Translator.trans('home_tab_workspace_delete_confirm_message', {}, 'platform'),
+      true
     )
   }
 

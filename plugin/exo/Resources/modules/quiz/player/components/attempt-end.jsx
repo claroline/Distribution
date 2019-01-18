@@ -40,10 +40,16 @@ const AttemptEnd = props => {
           }
 
           {props.endNavigation &&
-            <a href="#play" className="btn btn-start btn-lg btn-block btn-primary">
-              {tex('exercise_restart')}
-            </a>
-          }
+            (props.maxAttempts === 0 ||
+                (
+                    props.userPaperCount < props.maxAttempts &&
+                    ((props.userPaperDayCount < props.maxAttemptsPerDay) || props.maxAttemptsPerDay === 0)
+                )
+            ) && ((props.paperCount < props.maxPapers) || props.maxPapers === 0) &&
+                <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
+                    {tex('exercise_restart')}
+                </a>
+           }
         </div>
       </div>
     </div>
@@ -64,6 +70,12 @@ AttemptEnd.propTypes = {
 
 const ConnectedAttemptEnd = connect(
   (state) => ({
+    userPaperCount: state.quiz.meta.userPaperCount,
+    userPaperDayCount: state.quiz.meta.userPaperDayCount,
+    paperCount: state.quiz.meta.paperCount,
+    maxAttempts: state.quiz.parameters.maxAttempts,
+    maxAttemptsPerDay: state.quiz.parameters.maxAttemptsPerDay,
+    maxPapers: state.quiz.parameters.maxPapers,
     admin: resourceSelect.editable(state) || quizSelectors.papersAdmin(state),
     paper: playerSelectors.paper(state),
     endMessage: playerSelectors.quizEndMessage(state),

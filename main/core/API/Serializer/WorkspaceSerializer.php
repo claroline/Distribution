@@ -54,7 +54,8 @@ class WorkspaceSerializer
     public function serialize(Workspace $workspace, array $options = [])
     {
         $serialized = [
-            'id' => $workspace->getId(),
+            'id' => $workspace->getGuid(),
+            'realId' => $workspace->getId(),
             'uuid' => $workspace->getGuid(), // todo: should be merged with `id`
             'name' => $workspace->getName(),
             'code' => $workspace->getCode(),

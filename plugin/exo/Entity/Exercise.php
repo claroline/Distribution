@@ -64,7 +64,7 @@ class Exercise extends AbstractResource
      *
      * @ORM\Column(type="boolean")
      */
-    private $interruptible = false;
+    private $interruptible = true;
 
     /**
      * Show overview to users or directly start the quiz.

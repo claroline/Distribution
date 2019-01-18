@@ -146,16 +146,16 @@ class ThumbnailManager
 
         if ($baseMime === 'video') {
             try {
-                $thumbnailPath = $this->creator->fromVideo($filePath, $newPath, 400, 250);
+                $thumbnailPath = $this->creator->fromVideo($filePath, $newPath, 400, 400);
             } catch (\Exception $e) {
-                //ffmpege extension might be missing
+                //ffmpeg extension might be missing
                 $thumbnailPath = null;
             }
         }
 
         if ($baseMime === 'image') {
             try {
-                $thumbnailPath = $this->creator->fromImage($filePath, $newPath, 400, 250);
+                $thumbnailPath = $this->creator->fromImage($filePath, $newPath, 400, 400);
             } catch (\Exception $e) {
                 $thumbnailPath = null;
                 //error handling ? $thumbnailPath = null

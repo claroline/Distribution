@@ -454,11 +454,14 @@ class GridDefinition extends AbstractDefinition
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
-        $data = json_decode($answer->getData());
-        $values = array_map(function ($el) {
-            return "[grid-{$el->cellId}: $el->text]";
-        }, $data);
+        $values = [];
         $compressor = new ArrayCompressor();
+        if ($answer->getData() !== null) {
+            $data = json_decode($answer->getData());
+            $values = array_map(function ($el) {
+                return "[grid-{$el->cellId}: $el->text]";
+            }, $data);
+        }
 
         return [$compressor->compress($values)];
     }

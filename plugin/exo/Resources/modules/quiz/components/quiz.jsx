@@ -81,6 +81,13 @@ function customActions(props) {
       disabled: !props.hasPapers,
       action: generateUrl('exercise_papers_export', {exerciseId: props.quiz.id})
     })
+
+    actions.push({
+      icon: 'fa fa-fw fa-table',
+      label: tex('csv_export'),
+      disabled: !props.hasPapers,
+      action: generateUrl('exercise_papers_export_csv', {exerciseId: props.quiz.id})
+    })
   }
 
   // Docimology

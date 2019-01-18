@@ -18,6 +18,7 @@
 {% block content %}
     <div
         class="page-container workspaces-container"
+        data-admin="{{ isAdmin | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

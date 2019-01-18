@@ -96,7 +96,10 @@ const ForwardButton = props =>
         step={props.step}
       />
     :
-  <span/>
+    <button disabled="disabled" className="btn btn-next btn-default">
+        {props.next ? t('next') : tex('finish')}
+        <span className="fa fa-fw fa-angle-double-right" />
+    </button>
 
 ForwardButton.propTypes = {
   next: T.object,

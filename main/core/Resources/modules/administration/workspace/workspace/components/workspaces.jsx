@@ -23,7 +23,7 @@ const WorkspacesList = props =>
     delete={{
       url: ['apiv2_workspace_delete_bulk'],
       displayed: (workspaces) =>
-        0 < workspaces.filter(workspace => workspace.code !== 'default_personal' && workspace.code !== 'default_workspace' ).length
+        0 < workspaces.filter(workspace => workspace.code !== 'default_personal' && workspace.code !== 'default_workspace' ).length && props.isAdmin
     }}
     definition={WorkspaceList.definition}
 
@@ -65,7 +65,9 @@ WorkspacesList.propTypes = {
 }
 
 const Workspaces = connect(
-  null,
+  state => ({
+      isAdmin: state.admin
+  }),
   dispatch => ({
     copyWorkspaces(workspaces, asModel = false) {
       dispatch(

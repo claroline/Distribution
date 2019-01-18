@@ -230,13 +230,13 @@ class PaperManager
      */
     public function delete(Paper $paper)
     {
-        if ($paper->getExercise()->wasPublishedOnce()) {
+        /*if ($paper->getExercise()->wasPublishedOnce()) {
             // Question is used, we can't delete it
             throw new ValidationException('Paper can not be deleted', [[
                 'path' => '',
                 'message' => 'exercise has been published once.',
             ]]);
-        }
+        }*/
 
         $this->om->remove($paper);
         $this->om->flush();

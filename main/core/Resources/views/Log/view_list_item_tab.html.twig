@@ -1,0 +1,7 @@
+<strong>
+    {% if log.details.tabName is defined %}
+    {{ log.details.tabName }}
+    {% elseif log.details.hometab is defined %}
+    {{ log.details.hometab.name }}
+    {% endif %}
+</strong>

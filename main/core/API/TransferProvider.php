@@ -9,6 +9,8 @@ use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
+use Symfony\Component\Debug\Exception\ContextErrorException;
 
 /**
  * @DI\Service("claroline.api.transfer")
@@ -95,6 +97,8 @@ class TransferProvider
         $executor->setLogger($this->logger);
         $adapter = $this->getAdapter($mimeType);
 
+        $data = $this->formatCsvOutput($data);
+
         $schema = $executor->getSchema();
         //use the translator here
         $this->log('Building objects from data...');
@@ -124,7 +128,11 @@ class TransferProvider
         foreach ($data as $data) {
             ++$i;
             $this->log("{$i}/{$total}: ".$this->getActionName($executor));
-            $executor->execute($data);
+            try {
+                $executor->execute($data);
+            } catch (InvalidDataException $e) {
+                // skip data
+            }
 
             if ($i % $executor->getBatchSize() === 0) {
                 $this->om->forceFlush();
@@ -132,6 +140,54 @@ class TransferProvider
         }
 
         $this->om->endFlushSuite();
+    }
+
+    private function formatCsvOutput($data)
+    {
+        // If encoding not UTF-8 then convert it to UTF-8
+        $data = $this->stringToUtf8($data);
+        $data = str_replace("\r\n", PHP_EOL, $data);
+        $data = str_replace("\r", PHP_EOL, $data);
+        $data = str_replace("\n", PHP_EOL, $data);
+        return $data;
+    }
+
+    private function stringToUtf8($string)
+    {
+        // If encoding not UTF-8 then convert it to UTF-8
+        $encoding = $this->detectEncoding($string);
+        if ($encoding && $encoding !== 'UTF-8') {
+            $string = iconv($encoding, 'UTF-8', $string);
+        }
+        return $string;
+    }
+
+    /**
+     * Detect if encoding is UTF-8, ASCII, ISO-8859-1 or Windows-1252.
+     *
+     * @param $string
+     *
+     * @return bool|string
+     */
+    private function detectEncoding($string)
+    {
+        static $enclist = ['UTF-8', 'ASCII', 'ISO-8859-1', 'Windows-1252'];
+        if (function_exists('mb_detect_encoding')) {
+            return mb_detect_encoding($string, $enclist, true);
+        }
+        $result = false;
+        foreach ($enclist as $item) {
+            try {
+                $sample = iconv($item, $item, $string);
+                if (md5($sample) === md5($string)) {
+                    $result = $item;
+                    break;
+                }
+            } catch (ContextErrorException $e) {
+                unset($e);
+            }
+        }
+        return $result;
     }
 
     /**

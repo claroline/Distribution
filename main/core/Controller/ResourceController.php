@@ -242,16 +242,18 @@ class ResourceController extends Controller
      * Opens a resource.
      *
      * @EXT\Route(
-     *     "/open/{resourceType}/{node}",
+     *     "/open/{resourceType}/{node}.{_display}",
+     *     defaults={"_display":"html"},
+     *     requirements={"node" = "\d+", "_display":"html|pdf"},
      *     name="claro_resource_open",
      *     options={"expose"=true}
      * )
      *
      * @EXT\Route(
-     *     "/open/{node}",
+     *     "/open/{node}.{_display}",
      *     name="claro_resource_open_short",
-     *     requirements={"node" = "\d+"},
-     *     defaults={"resourceType" = null},
+     *     requirements={"node" = "\d+", "_display":"html|pdf"},
+     *     defaults={"resourceType" = null, "_display":"html"},
      *     options={"expose"=true}
      * )
      *
@@ -263,7 +265,7 @@ class ResourceController extends Controller
      * @throws AccessDeniedException
      * @throws \Exception
      */
-    public function openAction(ResourceNode $node, $resourceType = null)
+    public function openAction(ResourceNode $node, $resourceType = null, Request $request)
     {
         //in order to remember for later. To keep links breadcrumb working we'll need to do something like this
         //if we don't want to change to much code
@@ -285,14 +287,21 @@ class ResourceController extends Controller
         $this->checkAccess('OPEN', $collection);
         //If it's a link, the resource will be its target.
         $node = $this->getRealTarget($node);
-        $this->checkAccess('OPEN', $collection);
+        $format = $request->get('_display');
+        if ($format === 'pdf') {
+            $this->checkAccess('EXPORT', $collection);
+        } else {
+            $this->checkAccess('OPEN', $collection);
+        }
+
         if ($resourceType === null) {
             $resourceType = $node->getResourceType()->getName();
         }
+
         $event = $this->dispatcher->dispatch(
             'open_'.$resourceType,
             'OpenResource',
-            [$this->resourceManager->getResourceFromNode($node), $isIframe]
+            [$this->resourceManager->getResourceFromNode($node), $isIframe, $format]
         );
         $this->dispatcher->dispatch('log', 'Log\LogResourceRead', [$node]);
 

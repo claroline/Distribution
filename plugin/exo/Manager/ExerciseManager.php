@@ -15,6 +15,8 @@ use UJM\ExoBundle\Repository\ExerciseRepository;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
 use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
+use Symfony\Component\Debug\Exception\ContextErrorException;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 
 /**
  * @DI\Service("ujm_exo.manager.exercise")
@@ -56,6 +58,8 @@ class ExerciseManager
      */
     private $definitions;
 
+    private $utils;
+
     /**
      * ExerciseManager constructor.
      *
@@ -65,14 +69,17 @@ class ExerciseManager
      *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
      *     "itemManager"  = @DI\Inject("ujm_exo.manager.item"),
      *     "paperManager" = @DI\Inject("ujm_exo.manager.paper"),
-     *     "definitions"  = @DI\Inject("ujm_exo.collection.item_definitions")
+     *     "definitions"  = @DI\Inject("ujm_exo.collection.item_definitions"),
+     *     "utils"        = @DI\Inject("claroline.utilities.misc"),
      * })
      *
-     * @param ObjectManager      $om
-     * @param ExerciseValidator  $validator
-     * @param ExerciseSerializer $serializer
-     * @param ItemManager        $itemManager
-     * @param PaperManager       $paperManager
+     * @param ObjectManager              $om
+     * @param ExerciseValidator          $validator
+     * @param ExerciseSerializer         $serializer
+     * @param ItemManager                $itemManager
+     * @param PaperManager               $paperManager
+     * @param ItemDefinitionsCollection  $definitions
+     * @param ClaroUtilities             $utils
      */
     public function __construct(
         ObjectManager $om,
@@ -80,7 +87,8 @@ class ExerciseManager
         ExerciseSerializer $serializer,
         ItemManager $itemManager,
         PaperManager $paperManager,
-        ItemDefinitionsCollection $definitions
+        ItemDefinitionsCollection $definitions,
+        ClaroUtilities $utils
     ) {
         $this->om = $om;
         $this->repository = $this->om->getRepository('UJMExoBundle:Exercise');
@@ -89,6 +97,7 @@ class ExerciseManager
         $this->itemManager = $itemManager;
         $this->paperManager = $paperManager;
         $this->definitions = $definitions;
+        $this->utils = $utils;
     }
 
     /**
@@ -185,7 +194,7 @@ class ExerciseManager
     public function isDeletable(Exercise $exercise)
     {
         return !$exercise->getResourceNode()->isPublished()
-            || 0 === $this->paperManager->countExercisePapers($exercise);
+        || 0 === $this->paperManager->countExercisePapers($exercise);
     }
 
     /**
@@ -197,10 +206,10 @@ class ExerciseManager
      */
     public function publish(Exercise $exercise)
     {
-        if (!$exercise->wasPublishedOnce()) {
+        /*if (!$exercise->wasPublishedOnce()) {
             $this->paperManager->deleteAll($exercise);
             $exercise->setPublishedOnce(true);
-        }
+        }*/
 
         $exercise->getResourceNode()->setPublished(true);
         $this->om->persist($exercise);
@@ -308,7 +317,7 @@ class ExerciseManager
         return $handle;
     }
 
-    public function exportResultsToCsv(Exercise $exercise)
+    public function exportResultsToCsv(Exercise $exercise, $output = null)
     {
         /** @var PaperRepository $repo */
         $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
@@ -329,7 +338,18 @@ class ExerciseManager
 
                 if ($this->definitions->has($item->getMimeType())) {
                     $definition = $this->definitions->get($item->getMimeType());
-                    $titles[$item->getUuid()] = $definition->getCsvTitles($itemType);
+                    $subtitles = $definition->getCsvTitles($itemType);
+                    //cas particulier texte à trous
+                    if($item->getMimeType() === 'application/x.cloze+json'){
+                        $qText = $item->getTitle();
+                        if(empty($qText)){
+                            $qText = $item->getContent();
+                        };
+                        foreach ($subtitles as &$holeTitle){
+                            $holeTitle = $qText . ': ' . $holeTitle;
+                        }
+                    }
+                    $titles[$item->getUuid()] = $subtitles;
                 }
             }
         }
@@ -338,11 +358,15 @@ class ExerciseManager
 
         foreach ($titles as $title) {
             foreach ($title as $subTitle) {
-                $flattenedTitles[] = $subTitle;
+                $flattenedTitles[] = $this->utils->html2Csv($subTitle);
             }
         }
 
-        $fp = fopen('php://output', 'w+');
+        if($output === null){
+            $output = 'php://output';
+        }
+        $fp = fopen($output, 'w+');
+        fputcsv($fp, [$exercise->getResourceNode()->getName()], ';');
         fputcsv($fp, $flattenedTitles, ';');
 
         //this is the same reason why we use an array of array here
@@ -426,7 +450,7 @@ class ExerciseManager
                 foreach ($paper as $paperItem) {
                     if (is_array($paperItem)) {
                         foreach ($paperItem as $paperEl) {
-                            $flattenedAnswers[] = $paperEl;
+                            $flattenedAnswers[] = $this->utils->html2Csv($paperEl, true);
                         }
                     }
                 }
@@ -444,4 +468,5 @@ class ExerciseManager
 
         return $fp;
     }
+
 }

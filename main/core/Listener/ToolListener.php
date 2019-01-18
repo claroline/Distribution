@@ -185,7 +185,7 @@ class ToolListener
 
         return $this->templating->render(
             'ClarolineCoreBundle:Tool/workspace/logs:logList.html.twig',
-            $this->container->get('claroline.log.manager')->getWorkspaceList($workspace, 1)
+            $this->container->get('claroline.log.manager')->getWorkspaceList($workspace, 1, null, true)
         );
     }
 

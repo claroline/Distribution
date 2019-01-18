@@ -24,6 +24,16 @@ class GraphService
 
     public function get($url)
     {
+
+	stream_context_set_default(
+	 array(
+	  'http' => array(
+          'proxy' => "tcp://proxy.univ-lyon1.fr:3128",
+	  'request_fulluri' => true
+	  )
+	 )
+	);
+
         $this->graph['url'] = $url;
         $headers = get_headers($url, 1);
 

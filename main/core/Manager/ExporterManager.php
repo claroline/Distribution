@@ -59,18 +59,29 @@ class ExporterManager
      */
     private function exportUsers($exporter, array $extra)
     {
-        $dontExport = ['password', 'description', 'salt', 'plainPassword'];
+        $dontExport = ['password', 'description', 'salt', 'plainPassword', 'locale', 'phone', 'administrativeCode', 'created', 'lastLogin', 'initDate', 'publicUrl', 'expirationDate', 'authentication', 'uuid'];
 
         if (isset($extra['workspace'])) {
             $users = $this->om->getRepository('ClarolineCoreBundle:User')
-                ->findAllWithFacetsByWorkspace($extra['workspace']);
+                ->findByWorkspaceWithUsersFromGroup($extra['workspace']);
         } else {
             $users = $this->om->getRepository('ClarolineCoreBundle:User')
                 ->findAllWithFacets();
         }
 
-        $fieldsFacets = $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacet')->findAll();
+        $collaboratorRole = $this->om->getRepository('ClarolineCoreBundle:Role')->findCollaboratorRole($extra['workspace']);
+
+        //$fieldsFacets = $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacet')->findAll();
         $fields = $this->getExportableFields('Claroline\CoreBundle\Entity\User');
+        //ugly fix to reorder column names according to expected import order
+        $usernameCell = $fields[2];
+        $firstNameCell = $fields[0];
+        $lastNameCell = $fields[1];
+        $fields[0] = $usernameCell;
+        $fields[1] = 'role';
+        $fields[2] = $firstNameCell;
+        $fields[3] = $lastNameCell;
+
 
         foreach ($fields as $field) {
             if (in_array($field, $dontExport)) {
@@ -79,19 +90,26 @@ class ExporterManager
         }
 
         $data = [];
-        $fieldFacetsName = [];
+        /*$fieldFacetsName = [];
 
         foreach ($fieldsFacets as $fieldsFacet) {
             $fieldFacetsName[] = $fieldsFacet->getName();
-        }
+        }*/
 
         foreach ($users as $user) {
             $data[$user->getId()] = [];
+            $i = 0;
             foreach ($fields as $field) {
-                $data[$user->getId()][$field] = $this->formatValue($this->getValueFromObject($user, $field));
+                if($field === 'role'){
+                    //hardcoded role to 'collaborator' (student)
+                    $data[$user->getId()]['role'] = $this->formatValue($collaboratorRole->getTranslationKey());
+                } else{
+                    $data[$user->getId()][$field] = $this->formatValue($this->getValueFromObject($user, $field));
+                }
+                $i++;
             }
 
-            foreach ($fieldFacetsName as $fieldFacetName) {
+            /*foreach ($fieldFacetsName as $fieldFacetName) {
                 $found = false;
                 foreach ($user->getFieldsFacetValue() as $fieldFacetValue) {
                     if ($fieldFacetValue->getFieldFacet()->getName() === $fieldFacetName) {
@@ -103,14 +121,14 @@ class ExporterManager
                 if (!$found) {
                     $data[$user->getId()][$fieldFacetName] = null;
                 }
-            }
+            }*/
         }
 
-        foreach ($fieldFacetsName as $fieldFacetName) {
+        /*foreach ($fieldFacetsName as $fieldFacetName) {
             $fields[] = $fieldFacetName;
-        }
+        }*/
 
-        return $exporter->export($fields, $data);
+        return $exporter->export([], $data);
     }
 
     private function getExportableFields($class)

@@ -496,7 +496,8 @@ export default class WidgetService {
         {url, method: 'DELETE'},
         this._removeWidgetCallback,
         Translator.trans('widget_home_tab_delete_confirm_title', {}, 'platform'),
-        Translator.trans('widget_home_tab_delete_confirm_message', {}, 'platform')
+        Translator.trans('widget_user_home_tab_delete_confirm_message', {}, 'platform'),
+        true
       )
     }
   }
@@ -565,7 +566,8 @@ export default class WidgetService {
       {url, method: 'DELETE'},
       this._removeWidgetCallback,
       Translator.trans('widget_home_tab_delete_confirm_title', {}, 'platform'),
-      Translator.trans('widget_home_tab_delete_confirm_message', {}, 'platform')
+      Translator.trans('widget_admin_home_tab_delete_confirm_message', {}, 'platform'),
+      true
     )
   }
 
@@ -617,7 +619,8 @@ export default class WidgetService {
       {url, method: 'DELETE'},
       this._removeWidgetCallback,
       Translator.trans('widget_home_tab_delete_confirm_title', {}, 'platform'),
-      Translator.trans('widget_home_tab_delete_confirm_message', {}, 'platform')
+      Translator.trans('widget_home_tab_delete_confirm_message', {}, 'platform'),
+      true
     )
   }
 }

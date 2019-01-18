@@ -10,9 +10,9 @@
         >
             <div class="widget-header">
                 <h3
-                    class="widget-title"
-                    data-ng-bind-html="widget['instanceName']"
-                    data-ng-style="{
+                        class="widget-title"
+                        data-ng-bind-html="widget['instanceName']"
+                        data-ng-style="{
                         'color': '{{ widget['textTitleColor'] }}'
                     }"
                 >
@@ -21,24 +21,24 @@
                 <div class="widget-header-buttons" data-ng-if="dhmc.widgetsOptions['canEdit'] && !widget['locked']">
                     <!-- Edit widget button -->
                     <button
-                        type="button"
-                        class="btn btn-link"
-                        data-ng-if="widget['type'] === 'desktop'"
-                        data-ng-click="dhmc.editUserWidget($event, widget['instanceId'], widget['displayId'], widget['configurable'])"
+                            type="button"
+                            class="btn btn-link"
+                            data-ng-if="widget['type'] === 'desktop'"
+                            data-ng-click="dhmc.editUserWidget($event, widget['instanceId'], widget['displayId'], widget['configurable'])"
                     >
                         <span class="fa fa-fw fa-pencil"></span>
                     </button>
 
                     <!-- Remove widget button -->
                     <button
-                        type="button"
-                        class="btn btn-link"
-                        data-ng-click="widget['type'] === 'desktop' ?
+                            type="button"
+                            class="btn btn-link"
+                            data-ng-click="widget['type'] === 'desktop' ?
                             dhmc.deleteUserWidget($event, widget['configId']) :
                             dhmc.hideAdminWidget($event, widget['configId'])
                         "
                     >
-                        <span class="fa fa-fw fa-times"></span>
+                        <span class="fa fa-fw fa-trash"></span>
                     </button>
                 </div>
             </div>

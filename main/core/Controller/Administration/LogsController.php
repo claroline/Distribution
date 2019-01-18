@@ -44,8 +44,8 @@ class LogsController extends Controller
      *
      * @throws \Exception
      */
-    public function logListAction($page)
+    public function logListAction($page, $forceEmpty = false)
     {
-        return $this->get('claroline.log.manager')->getAdminList($page);
+        return $this->get('claroline.log.manager')->getAdminList($page, null, $forceEmpty);
     }
 }

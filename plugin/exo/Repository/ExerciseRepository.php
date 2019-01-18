@@ -70,4 +70,37 @@ class ExerciseRepository extends EntityRepository
             ->setParameter('exercise', $exercise)
             ->getSingleScalarResult();
     }
+
+    /**
+     * Retrieves all exercises of a workspace
+     *
+     * @param Item $question
+     *
+     * @return array
+     */
+    public function findByWorkspace($workspaceId)
+    {
+        /*return $this->getEntityManager()
+          ->createQuery('
+                SELECT e
+                FROM UJM\ExoBundle\Entity\Exercise AS e
+                JOIN Claroline\CoreBundle\Entity\Resource\ResourceNode AS node WITH e.resourceNode = node
+                JOIN Claroline\CoreBundle\Entity\Workspace\Workspace AS w WITH node.workspace = w
+                WHERE w.id = :workspaceId AND node.active = true
+            ')
+          ->setParameter('workspaceId', $workspaceId)
+          ->getResult();*/
+
+        return $this
+          ->createQueryBuilder('exercice')
+          ->select('exercice')
+          ->join('exercice.resourceNode', 'node')
+          ->join('node.workspace', 'workspace')
+          ->andWhere('workspace.id = :workspaceId')
+          ->andWhere('node.active = true')
+          ->setParameter('workspaceId', $workspaceId)
+          ->orderBy('node.id', 'ASC')
+          ->getQuery()
+          ->getResult();
+    }
 }

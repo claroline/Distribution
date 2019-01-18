@@ -15,9 +15,9 @@
         {% endif %}
     </p>
 
-    <div class="container">
+    <div>
         {% if dropzone.hasCriteria() %}
-            <div class="row">
+            <div>
                 <form id="correct-form" method="POST" action="{% if edit == false %}#{% elseif admin == true %}{{ path('icap_dropzone_drops_detail_correction_paginated', {'resourceId': dropzone.id, 'state' : state, 'correctionId': correction.id, 'page': pager.currentPage}) }}{% else %}{{ path('icap_dropzone_correct_paginated', {'resourceId': dropzone.id, 'page': pager.currentPage}) }}{% endif %}" class="form-horizontal">
                     <hr/>
                     {% for criterion in pager.currentPageResults %}
@@ -39,11 +39,9 @@
                                 </strong>
                                 <div>
                                     {% set criterionGrade = 0 %}
-                                    {%  for value in form[criterion.id].vars.value %}
-                                        {% if value == true %}
-                                            {% set criterionGrade = loop.index-1 %}
-                                        {% endif %}
-                                    {% endfor %}
+                                    {% if form[criterion.id].vars.value is defined and form[criterion.id].vars.value != '' %}
+                                        {%  set criterionGrade = form[criterion.id].vars.value %}
+                                    {% endif %}
                                     <span class="criterion-grade" data-criterion="icap_dropzone_correct_criteria_page_form[{{ criterion.id }}]">{{ criterionGrade }}</span>/{{ dropzone.totalCriteriaColumn-1 }}
                                 </div>
                             </div>
@@ -105,7 +103,7 @@
                 </form>
             </div>
 
-            <div class="row">
+            <div>
                 <strong>
                     {{ pager.currentPage }} / {% if edit == false and not dropzone.allowCommentInCorrection %}{{ pager.nbPages}}{% else %}{{ pager.nbPages+1 }}{% endif %}
                 </strong>

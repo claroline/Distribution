@@ -20,25 +20,29 @@ class ResizeDragLayer extends Component {
 
     const area = this.props.areas.find(area => area.id === this.props.item.item.areaId)
     return (
-      <AnswerArea
-        id="area-drag-preview"
-        color={area.color}
-        shape={area.shape}
-        geometry={resizeArea(
-          area,
-          this.props.item.item.position,
-          this.props.currentOffset.x,
-          this.props.currentOffset.y
-        )}
-        selected={true}
-        resizable={false}
-        canDrag={false}
-        isDragging={false}
-        onSelect={() => {}}
-        onDelete={() => {}}
-        togglePopover={() => {}}
-        connectDragSource={el => el}
-      />
+    <div>
+      { area &&
+        <AnswerArea
+            id="area-drag-preview"
+            color={area.color}
+            shape={area.shape}
+            geometry={resizeArea(
+              area,
+              this.props.item.item.position,
+              this.props.currentOffset.x,
+              this.props.currentOffset.y
+            )}
+            selected={true}
+            resizable={false}
+            canDrag={false}
+            isDragging={false}
+            onSelect={() => {}}
+            onDelete={() => {}}
+            togglePopover={() => {}}
+            connectDragSource={el => el}
+        />
+      }
+    </div>
     )
   }
 }

@@ -1,6 +1,7 @@
-import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
+import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_REMOVE, PAPER_FETCHED} from './actions'
 import {update} from '../../utils/utils'
 import {utils} from './utils'
+import cloneDeep from 'lodash/cloneDeep'
 
 export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}) => {
 
@@ -20,6 +21,13 @@ export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}
         action.paper
       return Object.assign({}, state, {
         papers: update(state.papers, {[paper.id]:{$set: paper}})
+      })
+    }
+    case PAPER_REMOVE: {
+      const data = cloneDeep(state.papers)
+      delete data[action.paper.paperId]
+      return Object.assign({}, state, {
+        papers: data
       })
     }
     case PAPER_FETCHED:

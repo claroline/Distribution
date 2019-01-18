@@ -963,6 +963,11 @@ class RoleManager
         return $this->roleRepo->findAllUserRoles($executeQuery);
     }
 
+    public function getPlatformRoleByName($roleName)
+    {
+        return $this->roleRepo->findPlatformRoleByName($roleName);
+    }
+
     public function getUserRolesByTranslationKeys(array $keys, $executeQuery = true)
     {
         return count($keys) === 0 ?

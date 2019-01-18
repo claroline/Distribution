@@ -155,18 +155,44 @@ class TextListener implements ContainerAwareInterface
     {
         $text = $event->getResource();
         $collection = new ResourceCollection([$text->getResourceNode()]);
-        $isGranted = $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection);
+        $isEditGranted = $this->container->get('security.authorization_checker')->isGranted('EDIT', $collection);
+        $isExportGranted = $this->container->get('security.authorization_checker')->isGranted('EXPORT', $collection);
         $revisionRepo = $this->container->get('doctrine.orm.entity_manager')
             ->getRepository('ClarolineCoreBundle:Resource\Revision');
+
         $content = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:Text:index.html.twig',
+            sprintf('ClarolineCoreBundle:Text:index.%s.twig', $event->getFormat()),
             [
+                'title' => $text->getResourceNode()->getName(),
                 'text' => $revisionRepo->getLastRevision($text)->getContent(),
                 '_resource' => $text,
-                'isEditGranted' => $isGranted,
+                'isEditGranted' => $isEditGranted,
+                'isExportGranted' => $isExportGranted,
             ]
         );
+
         $response = new Response($content);
+
+        if ('pdf' === $event->getFormat()) {
+            $response = new Response(
+                $this->container->get('knp_snappy.pdf')->getOutputFromHtml(
+                    $response->getContent(),
+                    [
+                        'outline' => true,
+                        'footer-right' => '[page]/[toPage]',
+                        'footer-spacing' => 3,
+                        'footer-font-size' => 8,
+                    ],
+                    true
+                ),
+                200,
+                [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="'.$text->getResourceNode()->getName().'.pdf"',
+                ]
+            );
+        }
+
         $event->setResponse($response);
         $event->stopPropagation();
     }

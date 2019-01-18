@@ -17,6 +17,7 @@ use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -435,6 +436,15 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * )
      */
     protected $locations;
+
+    /**
+     * @var  Theme
+     *
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\Theme\Theme"
+     * )
+     */
+    protected $theme;
 
     public function __construct()
     {
@@ -1264,5 +1274,15 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     public function getLocations()
     {
         return $this->locations;
+    }
+
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(Theme $theme)
+    {
+        $this->theme = $theme;
     }
 }

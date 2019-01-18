@@ -36,7 +36,8 @@ const managersReducer = combineReducers({
 const reducer = makePageReducer({}, {
   workspaces: workspacesReducer,
   organizations: organizationReducer,
-  managers: managersReducer
+  managers: managersReducer,
+  admin: makeReducer({}, {})
 })
 
 export {

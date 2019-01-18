@@ -21,6 +21,8 @@ use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -32,6 +34,7 @@ class WorkspaceController extends Controller
     private $eventDispatcher;
     private $finder;
     private $workspaceManager;
+    private $authChecker;
 
     /**
      * WorkspaceController constructor.
@@ -40,24 +43,31 @@ class WorkspaceController extends Controller
      *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"  = @DI\Inject("claroline.event.event_dispatcher"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "finder"           = @DI\Inject("claroline.api.finder")
+     *     "finder"           = @DI\Inject("claroline.api.finder"),
+     *     "tokenStorage"     = @DI\Inject("security.token_storage"),
+     *     "authChecker"       = @DI\Inject("security.authorization_checker"),
      * })
      *
      * @param WorkspaceManager $workspaceManager
      * @param ObjectManager    $om
      * @param StrictDispatcher $eventDispatcher
-     * @param FinderProvider   $finder
+     * @param FinderProvider   $finder,
+     * @param AuthorizationCheckerInterface $authChecker
      */
     public function __construct(
         WorkspaceManager $workspaceManager,
         ObjectManager $om,
         StrictDispatcher $eventDispatcher,
-        FinderProvider $finder
+        FinderProvider $finder,
+        TokenStorageInterface $tokenStorage,
+        AuthorizationCheckerInterface $authChecker
     ) {
         $this->workspaceManager = $workspaceManager;
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
         $this->finder = $finder;
+        $this->tokenStorage = $tokenStorage;
+        $this->authChecker = $authChecker;
     }
 
     /**
@@ -73,15 +83,19 @@ class WorkspaceController extends Controller
             $filters = ['model' => false, 'personal' => false];
         }
 
+        $workspaces = $this->finder->search(
+          'Claroline\CoreBundle\Entity\Workspace\Workspace',
+          [
+            'limit' => 20,
+            'filters' => $filters,
+            'sortBy' => 'name',
+          ]
+        );
+        //$userLogged = $this->tokenStorage->getToken()->getUser();
+        $isAdmin = $this->authChecker->isGranted('ROLE_ADMIN');
         return [
-            'workspaces' => $this->finder->search(
-                'Claroline\CoreBundle\Entity\Workspace\Workspace',
-                [
-                    'limit' => 20,
-                    'filters' => $filters,
-                    'sortBy' => 'name',
-                ]
-            ),
+            'workspaces' => $workspaces,
+            'isAdmin' => $isAdmin,
         ];
     }
 

@@ -15,7 +15,7 @@ import {getFormDefaultSection} from '#/main/core/user/profile/utils'
 const ProfileFacetComponent = props => {
   const sections = cloneDeep(props.facet.sections)
   if (props.facet.meta.main) {
-    sections.unshift(getFormDefaultSection(props.user))
+    sections.unshift(getFormDefaultSection(props.user, false, props.themes))
   }
 
   return (
@@ -34,13 +34,15 @@ ProfileFacetComponent.propTypes = {
   user: T.object.isRequired,
   facet: T.shape(
     ProfileFacetTypes.propTypes
-  ).isRequired
+  ).isRequired,
+  themes: T.object.isRequired
 }
 
 const ProfileFacet = connect(
   state => ({
     user: formSelect.data(formSelect.form(state, 'user')),
-    facet: select.currentFacet(state)
+    facet: select.currentFacet(state),
+    themes: state.themes
   })
 )(ProfileFacetComponent)
 

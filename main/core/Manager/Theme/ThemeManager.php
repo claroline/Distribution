@@ -284,7 +284,8 @@ class ThemeManager
      */
     public function getDefaultTheme()
     {
-        return $this->repository->findOneBy(['default' => true]);
+        $theme = $this->repository->findOneBy(['default' => true]);
+        return $theme ? $theme : $this->getCurrentTheme();
     }
 
     /**

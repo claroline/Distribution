@@ -7,6 +7,9 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\CoreBundle\Library\Resource\ResourceCollection;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Provides common CRUD operations.
@@ -41,7 +44,8 @@ class Crud
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "dispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "validator" = @DI\Inject("claroline.api.validator")
+     *     "validator" = @DI\Inject("claroline.api.validator"),
+     *     "authorization_checker" = @DI\Inject("security.authorization_checker")
      * })
      *
      * @param ObjectManager      $om
@@ -53,12 +57,14 @@ class Crud
       ObjectManager $om,
       StrictDispatcher $dispatcher,
       SerializerProvider $serializer,
-      ValidatorProvider $validator
+      ValidatorProvider $validator,
+      AuthorizationCheckerInterface $authorization_checker
     ) {
         $this->om = $om;
         $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
         $this->validator = $validator;
+        $this->authorization_checker = $authorization_checker;
     }
 
     /**
@@ -106,11 +112,15 @@ class Crud
     {
         // validates submitted data.
         $this->validate($class, $data, ValidatorProvider::UPDATE);
+
         // gets entity from raw data.
         $object = $this->serializer->deserialize($class, $data, $options);
 
         // updates the entity if allowed
-        $this->checkPermission('EDIT', $object, [], true);
+        //$this->checkPermission('EDIT', $object, [], true);
+        if (!$this->authorization_checker->isGranted('EDIT', $object)) {
+            throw new AccessDeniedException($object->getErrorsForDisplay());
+        }
 
         if ($this->dispatch('update', 'pre', [$object, $options])) {
             $this->om->save($object);
@@ -166,7 +176,10 @@ class Crud
      */
     public function copy($object, $class, array $options = [])
     {
-        $this->checkPermission('COPY', $object, [], true);
+        //$this->checkPermission('EDIT', $object, [], true);
+        if (!$this->authorization_checker->isGranted('EDIT', $object)) {
+            throw new AccessDeniedException($object->getErrorsForDisplay());
+        }
         $new = new $class();
 
         //first event is the pre one

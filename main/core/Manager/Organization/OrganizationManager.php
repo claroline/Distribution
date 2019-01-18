@@ -72,4 +72,9 @@ class OrganizationManager
     {
         return $this->repo->findAll();
     }
+
+    public function getOrganizationByCode($code)
+    {
+        return $this->repo->findOrganizationByCode($code);
+    }
 }

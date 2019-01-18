@@ -115,14 +115,14 @@ export class Cloze extends Component {
     return(
       <fieldset className="cloze-editor">
         <FormGroup
-          id="cloze-text"
+          id={`cloze-text-group-${this.props.item.id}`}
           className="cloze-text"
           label={t('text')}
           warnOnly={!this.props.validating}
           error={get(this.props.item, '_errors.text')}
         >
           <Textarea
-            id="cloze-text"
+            id={`cloze-text-${this.props.item.id}`}
             value={this.props.item._text}
             onChange={(value) => this.props.onChange(actions.updateText(value))}
             onSelect={this.onSelect.bind(this)}

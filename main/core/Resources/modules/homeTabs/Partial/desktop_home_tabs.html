@@ -13,10 +13,10 @@
                     <span ng-if="dhmc.homeTabsOptions['canEdit']">
                         &nbsp;
                         <i class="fa fa-lock" ng-if="tab['locked']"></i>
-                        <i class="fa fa-times pointer-hand text-muted"
+                        <i class="fa fa-trash pointer-hand text-muted"
                            ng-if="!tab['locked']"
                            ng-click="dhmc.hideAmdinHomeTab($event, tab['configId'])"
-                        >    
+                        >
                         </i>
                     </span>
                 </span>
@@ -37,10 +37,10 @@
                         &nbsp;
                         <i class="fa fa-pencil pointer-hand text-muted"
                            ng-click="dhmc.editUserHomeTab($event, tab['tabId'])"
-                        >    
+                        >
                         </i>
                         &nbsp;
-                        <i class="fa fa-times pointer-hand text-muted"
+                        <i class="fa fa-trash pointer-hand text-muted"
                            ng-click="dhmc.deleteUserHomeTab($event, tab['configId'])"
                         >    
                         </i>

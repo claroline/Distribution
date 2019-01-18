@@ -16,6 +16,7 @@ use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Manager\Theme\ThemeManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Doctrine\ORM\NoResultException;
@@ -41,6 +42,8 @@ class ProfileController extends Controller
     private $userSerializer;
     /** @var ProfileSerializer */
     private $profileSerializer;
+    /** @var ThemeManager */
+    private $themeManager;
 
     /**
      * ProfileController constructor.
@@ -50,7 +53,8 @@ class ProfileController extends Controller
      *     "configHandler"     = @DI\Inject("claroline.config.platform_config_handler"),
      *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
      *     "userSerializer"    = @DI\Inject("claroline.serializer.user"),
-     *     "profileSerializer" = @DI\Inject("claroline.serializer.profile")
+     *     "profileSerializer" = @DI\Inject("claroline.serializer.profile"),
+     *     "themeManager"      = @DI\Inject("claroline.manager.theme_manager")
      * })
      *
      * @param TokenStorageInterface        $tokenStorage
@@ -58,19 +62,22 @@ class ProfileController extends Controller
      * @param ObjectManager                $om
      * @param UserSerializer               $userSerializer
      * @param ProfileSerializer            $profileSerializer
+     * @param ThemeManager                 $themeManager
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         PlatformConfigurationHandler $configHandler,
         ObjectManager $om,
         UserSerializer $userSerializer,
-        ProfileSerializer $profileSerializer
+        ProfileSerializer $profileSerializer,
+        ThemeManager $themeManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->configHandler = $configHandler;
         $this->repository = $om->getRepository('ClarolineCoreBundle:User');
         $this->userSerializer = $userSerializer;
         $this->profileSerializer = $profileSerializer;
+        $this->themeManager = $themeManager;
     }
 
     /**
@@ -108,6 +115,7 @@ class ProfileController extends Controller
             return [
                 'user' => $this->userSerializer->serialize($user, [Options::SERIALIZE_FACET]),
                 'facets' => $this->profileSerializer->serialize(),
+                'themes' => $this->themeManager->listThemeNames(true),
             ];
         } catch (NoResultException $e) {
             throw new NotFoundHttpException('Page not found');

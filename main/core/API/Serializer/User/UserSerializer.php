@@ -10,12 +10,15 @@ use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\UserOptions;
 use Claroline\CoreBundle\Manager\FacetManager;
+use Claroline\CoreBundle\Manager\Theme\ThemeManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Claroline\CoreBundle\Security\PlatformRoles;
 
 /**
  * @DI\Service("claroline.serializer.user")
@@ -40,6 +43,9 @@ class UserSerializer
     /** @var FinderProvider */
     private $finder;
 
+    /** @var ThemeManager */
+    private $themeManager;
+
     /**
      * UserManager constructor.
      *
@@ -48,7 +54,8 @@ class UserSerializer
      *     "authChecker"  = @DI\Inject("security.authorization_checker"),
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "facetManager" = @DI\Inject("claroline.manager.facet_manager"),
-     *     "container"    = @DI\Inject("service_container")
+     *     "container"    = @DI\Inject("service_container"),
+     *     "themeManager" = @DI\Inject("claroline.manager.theme_manager")
      * })
      *
      * @param TokenStorageInterface         $tokenStorage
@@ -56,19 +63,25 @@ class UserSerializer
      * @param ObjectManager                 $om
      * @param FacetManager                  $facetManager
      * @param ContainerInterface            $container
+     * @param ThemeManager                  $themeManager
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authChecker,
         ObjectManager $om,
         FacetManager $facetManager,
-        ContainerInterface $container
+        ContainerInterface $container,
+        ThemeManager $themeManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authChecker = $authChecker;
         $this->om = $om;
         $this->facetManager = $facetManager;
         $this->container = $container;
+        $this->roleManager = $container->get('claroline.manager.role_manager');
+        $this->organizationManager = $container->get('claroline.manager.organization.organization_manager');
+        $this->themeManager = $themeManager;
+        $this->groupManager = $container->get('claroline.manager.group_manager');
     }
 
     /**
@@ -142,6 +155,9 @@ class UserSerializer
                         'name' => $group->getName(),
                     ];
                 }, $user->getGroups()->toArray()),
+                'theme' => [
+                    'normalizedName' => $user->getTheme() ? $user->getTheme()->getNormalizedName() : $this->themeManager->getDefaultTheme()->getNormalizedName(),
+                ],
             ]);
         }
 
@@ -289,6 +305,19 @@ class UserSerializer
         return $publicUser;
     }
 
+    private function serializeOptions(User $user)
+    {
+        $options = [];
+        $userOptions = $user->getOptions();
+
+        $options['desktopBackgroundColor'] = $userOptions->getDesktopBackgroundColor();
+        $options['desktopMode'] = $userOptions->getdesktopMode();
+        $options['details'] = $userOptions->getDetails();
+
+        return $options;
+    }
+
+
     /**
      * Deserialize method.
      * TODO This is only a partial implementation.
@@ -323,6 +352,37 @@ class UserSerializer
                 ->encodePassword($object->getPlainPassword(), $user->getSalt());
 
             $object->setPassword($password);
+        }
+        
+        if (isset($data['role'])) {
+            $roleUser = $this->roleManager->getPlatformRoleByName($data['role']);
+            if($roleUser !== null){
+                $object->addRole($roleUser);
+            }
+        }
+
+        if (isset($data['organizationCode'])) {
+            $organization = $this->organizationManager->getOrganizationByCode($data['organizationCode']);
+            if($organization !== null){
+                $object->addOrganization($organization);
+            }
+        }
+        
+        if (isset($data['groups'][0])) {
+            $grp = $data['groups'][0];
+            if(isset($grp['name']) && $grp['name'] !== null){
+                $group = $this->groupManager->getGroupByName($grp['name']);
+                if($group !== null){
+                    $object->getGroups()->add($group);
+                }
+            }
+        }
+
+        if (isset($data['theme']['normalizedName'])) {
+            $theme = $this->themeManager->getThemeByNormalizedName($data['theme']['normalizedName']);
+            if (!is_null($theme)) {
+                $object->setTheme($theme);
+            }
         }
 
         //avoid recursive dependencies

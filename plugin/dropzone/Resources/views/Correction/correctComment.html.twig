@@ -4,8 +4,8 @@
 
 {% block dropzone_correct_content %}
 
-    <div class="container">
-        <div class="row">
+    <div>
+        <div>
             <form id="correct-form" method="POST"
                   action="{% if edit == false %}#{% elseif admin == true %}{{ path('icap_dropzone_drops_detail_correction_comment', {'resourceId': dropzone.id, 'state' : edit ? 'edit' : 'show', 'correctionId': correction.id}) }}{% else %}{{ path('icap_dropzone_correct_comment', {'resourceId': dropzone.id}) }}{% endif %}"
                   class="form-horizontal">
@@ -85,7 +85,7 @@
             </form>
         </div>
 
-        <div class="row">
+        <div>
             <strong>
                 {{ nbPages+1 }} / {{ nbPages+1 }}
             </strong>
@@ -99,12 +99,12 @@
     <script>
         tinymce.claroline.configuration.toolbar1 = 'bold italic strikethrough | alignleft aligncenter alignright alignjustify | ';
         $(document).on('ready', function () {
-            $('#icap_dropzone_correct_comment_form_goBack').val(0);
+            /*$('#icap_dropzone_correct_comment_form_goBack').val(0);
             $('.back-button').on('click', function (event) {
                 event.preventDefault();
                 $('#icap_dropzone_correct_comment_form_goBack').val(1);
                 $('#correct-form button[type="submit"]').trigger('click');
-            });
+            });*/
 
             {% if dropzone.forceCommentInCorrection  == true and not admin %}
             $('#correct-form').submit(function (e) {

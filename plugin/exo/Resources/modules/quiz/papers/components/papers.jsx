@@ -11,10 +11,24 @@ import {ScoreBox} from './../../../items/components/score-box.jsx'
 import {utils} from './../utils'
 import {generateUrl} from '#/main/core/api/router'
 
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_CONFIRM} from '#/main/core/layout/modal'
+import {actions} from './../actions'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
+import {MenuItemAction} from '#/main/core/layout/components/dropdown.jsx'
+
+const trashStyle = {
+    color: 'red'
+};
+
 export const PaperRow = props =>
   <tr>
     {props.admin &&
-      <td>{props.user ? props.user.name:t('anonymous')}</td>
+      <td>
+          <a href={`#papers/${props.id}`} className="btn btn-link">
+              {props.user ? props.user.name:t('anonymous')}
+          </a>
+      </td>
     }
     <td>{props.number}</td>
     <td>
@@ -27,17 +41,39 @@ export const PaperRow = props =>
       <span className="sr-only">{tex(props.finished ? 'yes' : 'no')}</span>
       {props.finished && <span className="fa fa-fw fa-check" />}
     </td>
-    <td className="text-right">
+    <td className="text-left">
       {props.showScore ?
         props.score || 0 === props.score ? <ScoreBox size="sm" score={props.score} scoreMax={props.scoreMax} /> : '-'
         :
         tex('paper_score_not_available')
       }
     </td>
+
     <td className="text-right table-actions">
+      {props.showCorrection &&
       <a href={`#papers/${props.id}`} disabled={!props.showCorrection} className="btn btn-link">
         <span className="fa fa-fw fa-eye" />
       </a>
+      }
+    </td>
+    <td className="text-right table-actions">
+      {props.admin &&
+          <DropdownButton
+              id="page-more"
+              title={<span className="action-icon fa fa-ellipsis-v" />}
+              className="data-actions-btn btn-link-default dropdown-toggle btn btn-link"
+              noCaret={true}
+              pullRight={true}
+          >
+              <MenuItemAction
+                  key={`page-more`}
+                  action={() => props.deletePaper(props.exerciceId, props.id, props.user ? props.user.name : t('anonymous', {}, 'platform'))}
+                  icon="fa fa-fw fa-trash"
+                  label={tex('paper_delete_label')}
+                  dangerous={true}
+              />
+          </DropdownButton>
+      }
     </td>
   </tr>
 
@@ -54,7 +90,8 @@ PaperRow.propTypes = {
   score: T.number,
   scoreMax: T.number,
   showScore: T.bool.isRequired,
-  showCorrection: T.bool.isRequired
+  showCorrection: T.bool.isRequired,
+  deletePaper: T.func.isRequired
 }
 
 let Papers = props =>
@@ -76,6 +113,7 @@ let Papers = props =>
           <th>{tex('paper_finished')}</th>
           <th>{tex('paper_list_table_score')}</th>
           <th><span className="sr-only">{tex('actions')}</span></th>
+          <th><span className="sr-only">Remove</span></th>
         </tr>
       </thead>
       <tbody>
@@ -90,6 +128,8 @@ let Papers = props =>
                 showScore={utils.showScore(props.admin, paper.finished, paperSelect.showScoreAt(paper), paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
                 showCorrection={utils.showCorrection(props.admin, paper.finished, paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
                 scoreMax={paperSelect.paperScoreMax(paper)}
+                exerciceId={props.quiz.id}
+                deletePaper={props.deletePaper}
               />
             )
         })}
@@ -100,7 +140,8 @@ let Papers = props =>
 Papers.propTypes = {
   admin: T.bool.isRequired,
   papers: T.object.isRequired,
-  quiz: T.object.isRequired
+  quiz: T.object.isRequired,
+  deletePaper: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -110,6 +151,19 @@ function mapStateToProps(state) {
   }
 }
 
-const ConnectedPapers = connect(mapStateToProps)(Papers)
+function mapDispatchToProps (dispatch) {
+    return {
+        deletePaper: (exerciseId, paper, author) => {
+            dispatch(modalActions.showModal(MODAL_CONFIRM, {
+                title: tex('paper_delete_title') + author,
+                isHtml: true,
+                question: tex('paper_delete_warning'),
+                handleConfirm: () => dispatch(actions.deletePaper(exerciseId, paper))
+            }))
+        }
+    }
+}
+
+const ConnectedPapers = connect(mapStateToProps, mapDispatchToProps)(Papers)
 
 export {ConnectedPapers as Papers}

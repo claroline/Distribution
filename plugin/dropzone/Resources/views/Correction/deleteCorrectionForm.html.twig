@@ -1,14 +1,8 @@
 <form class="form-horizontal" method="POST"
       action="{{ path('icap_dropzone_drops_detail_delete_correction', {'resourceId': dropzone.id, 'correctionId':correction.id,'backPage':backPage}) }}">
-
     <p>{{ 'You are about to delete a correction. This action is not without consequence.'|trans({}, 'icap_dropzone') }}</p>
-
-    <p>{{ 'Are you sure you want to do this?'|trans({}, 'icap_dropzone') }}</p>
-
-
-    <br/>
-
-    <div class="container form-group form-buttons">
+    <br />
+    <div class="form-group form-buttons">
         <div class="btn-group pull-right">
             {% if Modal is defined %} {# CASE MODAL #}
             <button type="button" class="btn btn-default" data-dismiss="modal">

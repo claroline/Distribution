@@ -20,19 +20,15 @@ class ThemeSerializer
      * ThemeSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "config"         = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "userSerializer" = @DI\Inject("claroline.serializer.user")
+     *     "config"         = @DI\Inject("claroline.config.platform_config_handler")
      * })
      *
      * @param PlatformConfigurationHandler $config
-     * @param UserSerializer               $userSerializer
      */
     public function __construct(
-        PlatformConfigurationHandler $config,
-        UserSerializer $userSerializer
+        PlatformConfigurationHandler $config
     ) {
         $this->config = $config;
-        $this->userSerializer = $userSerializer;
     }
 
     /**
@@ -54,7 +50,8 @@ class ThemeSerializer
                 'enabled' => $theme->isEnabled(),
                 'custom' => $theme->isCustom(),
                 'plugin' => $theme->getPlugin() ? $theme->getPlugin()->getDisplayName() : null,
-                'creator' => $theme->getUser() ? $this->userSerializer->serialize($theme->getUser()) : null,
+                //TODO: Rétablir la clé creator sans provoquer de référence circulaire
+                //TODO: 'creator' => $theme->getUser() ? $this->userSerializer->serialize($theme->getUser()) : null,
             ],
             'parameters' => [
                 'extendDefault' => $theme->isExtendingDefault(),

@@ -327,7 +327,11 @@ class Manager
             'claro_forum_subjects', ['category' => $message->getSubject()->getCategory()->getId()], true
         );
 
-        $body = "<a href='{$url}'>{$title}</a><hr>{$message->getContent()}";
+        $unsubscribeUrl = $this->router->generate(
+          'claro_forum_unsubscribe', ['forum' => $forum->getId()], true
+        );
+
+        $body = "<a href='{$url}'>{$title}</a><hr>{$message->getContent()}<hr><a href='{$unsubscribeUrl}'>Se désinscrire des notifications du forum</a>";
         $this->mailManager->send($title, $body, $users);
     }
 
