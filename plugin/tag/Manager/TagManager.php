@@ -288,17 +288,6 @@ class TagManager
         }
     }
 
-    public function removeTaggedObjectByTagNameAndObjectIdAndClass($tagName, $objectId, $objectClass)
-    {
-        $taggedObjects = $this->getOneTaggedObjectByTagNameAndObject($tagName, $objectId, $objectClass);
-        $this->om->startFlushSuite();
-
-        foreach ($taggedObjects as $to) {
-            $this->deleteTaggedObject($to);
-        }
-        $this->om->endFlushSuite();
-    }
-
     public function removeTagFromObjects(Tag $tag, array $objects = [])
     {
         foreach ($objects as $object) {
@@ -337,10 +326,5 @@ class TagManager
     public function getOneTaggedObjectByTagAndObject(Tag $tag, $objectId, $objectClass)
     {
         return $this->taggedObjectRepo->findOneTaggedObjectByTagAndObject($tag, $objectId, $objectClass);
-    }
-
-    public function getOneTaggedObjectByTagNameAndObject($tagName, $objectId, $objectClass)
-    {
-        return $this->taggedObjectRepo->findOneTaggedObjectByTagNameAndObject($tagName, $objectId, $objectClass);
     }
 }
