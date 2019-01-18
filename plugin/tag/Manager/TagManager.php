@@ -331,7 +331,7 @@ class TagManager
 
     public function getTaggedObjects($class, array $ids = [])
     {
-        return $this->taggedObjectRepo->findAllTaggedObjects($class, $ids);
+        return $this->taggedObjectRepo->findTaggedObjectsByClassAndIds($class, $ids);
     }
 
     public function getOneTaggedObjectByTagAndObject(Tag $tag, $objectId, $objectClass)
