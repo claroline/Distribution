@@ -12,7 +12,6 @@
 namespace Claroline\TagBundle\Repository;
 
 use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\TagBundle\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
@@ -31,136 +30,20 @@ class TaggedObjectRepository extends EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findAllTaggedObjects(
-        User $user = null,
-        $withPlatform = false,
-        $class = null,
-        $orderedBy = 'name',
-        $order = 'ASC',
-        array $ids = []
-    ) {
-        $classTest = is_null($class) ? '' : 'AND to.objectClass = :class';
-        $idsTest = count($ids) > 0 ? 'AND to.objectId IN (:ids)' : '';
+    public function findAllTaggedObjects($class, array $ids)
+    {
+        $dql = "
+            SELECT to
+            FROM Claroline\TagBundle\Entity\TaggedObject to
+            JOIN to.tag t
+            WHERE to.objectClass = :class
+            AND to.objectId IN (:ids)
+            ORDER BY t.name ASC
+        ";
 
-        if (is_null($user)) {
-            $dql = "
-                SELECT to
-                FROM Claroline\TagBundle\Entity\TaggedObject to
-                JOIN to.tag t
-                WHERE t.user IS NULL
-                $classTest
-                $idsTest
-                ORDER BY t.{$orderedBy} {$order}
-            ";
-            $query = $this->_em->createQuery($dql);
-        } else {
-            if ($withPlatform) {
-                $dql = "
-                    SELECT to
-                    FROM Claroline\TagBundle\Entity\TaggedObject to
-                    JOIN to.tag t
-                    WHERE (
-                        t.user IS NULL
-                        OR t.user = :user
-                    )
-                    $classTest
-                    $idsTest
-                    ORDER BY t.{$orderedBy} {$order}
-                ";
-            } else {
-                $dql = "
-                    SELECT to
-                    FROM Claroline\TagBundle\Entity\TaggedObject to
-                    JOIN to.tag t
-                    WHERE t.user = :user
-                    $classTest
-                    $idsTest
-                    ORDER BY t.{$orderedBy} {$order}
-                ";
-            }
-            $query = $this->_em->createQuery($dql);
-            $query->setParameter('user', $user);
-        }
-
-        if (!is_null($class)) {
-            $query->setParameter('class', $class);
-        }
-        if (count($ids) > 0) {
-            $query->setParameter('ids', $ids);
-        }
-
-        return $query->getResult();
-    }
-
-    public function findSearchedTaggedObjects(
-        $search,
-        User $user = null,
-        $withPlatform = false,
-        $class = null,
-        $orderedBy = 'name',
-        $order = 'ASC',
-        $strictSearch = false,
-        array $ids = []
-    ) {
-        $classTest = is_null($class) ? '' : 'AND to.objectClass = :class';
-        $searchTest = $strictSearch ? '= :search' : 'LIKE :search';
-        $idsTest = count($ids) > 0 ? 'AND to.objectId IN (:ids)' : '';
-
-        if (is_null($user)) {
-            $dql = "
-                SELECT to
-                FROM Claroline\TagBundle\Entity\TaggedObject to
-                JOIN to.tag t
-                WHERE t.user IS NULL
-                AND UPPER(t.name) $searchTest
-                $classTest
-                $idsTest
-                ORDER BY t.{$orderedBy} {$order}
-            ";
-            $query = $this->_em->createQuery($dql);
-        } else {
-            if ($withPlatform) {
-                $dql = "
-                    SELECT to
-                    FROM Claroline\TagBundle\Entity\TaggedObject to
-                    JOIN to.tag t
-                    WHERE (
-                        t.user IS NULL
-                        OR t.user = :user
-                    )
-                    $classTest
-                    $idsTest
-                    AND UPPER(t.name) $searchTest
-                    ORDER BY t.{$orderedBy} {$order}
-                ";
-            } else {
-                $dql = "
-                    SELECT to
-                    FROM Claroline\TagBundle\Entity\TaggedObject to
-                    JOIN to.tag t
-                    WHERE t.user = :user
-                    $classTest
-                    $idsTest
-                    AND UPPER(t.name) $searchTest
-                    ORDER BY t.{$orderedBy} {$order}
-                ";
-            }
-            $query = $this->_em->createQuery($dql);
-            $query->setParameter('user', $user);
-        }
-        $upperSearch = strtoupper($search);
-
-        if ($strictSearch) {
-            $query->setParameter('search', $upperSearch);
-        } else {
-            $query->setParameter('search', "%{$upperSearch}%");
-        }
-        if (!is_null($class)) {
-            $query->setParameter('class', $class);
-        }
-        if (count($ids) > 0) {
-            $query->setParameter('ids', $ids);
-        }
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('class', $class);
+        $query->setParameter('ids', $ids);
 
         return $query->getResult();
     }

@@ -140,7 +140,6 @@ class TagManager
         }
 
         if (method_exists($object, 'getId')) {
-            $this->om->startFlushSuite();
             $objectId = $object->getId();
             $objectClass = str_replace('Proxies\\__CG__\\', '', get_class($object));
             $tagsList = [];
@@ -168,11 +167,11 @@ class TagManager
                         $taggedObject->setObjectName((string) $object);
                     }
 
-                    $this->persistTaggedObject($taggedObject);
+                    $this->om->persist($taggedObject);
                     $taggedObjects[] = $taggedObject;
                 }
             }
-            $this->om->endFlushSuite();
+            $this->om->flush();
         }
 
         return $taggedObjects;
@@ -203,7 +202,6 @@ class TagManager
         foreach ($uniqueTags as $tagName) {
             $tagsList[$tagName] = $this->getOrCreateTag($tagName, $user);
         }
-        $this->om->startFlushSuite();
 
         foreach ($data as $objectData) {
             $objectId = $objectData['id'];
@@ -211,33 +209,49 @@ class TagManager
             $objectName = isset($objectData['name']) ? $objectData['name'] : null;
 
             if ($replace) {
-                $this->removeTaggedObjectsByClassAndIds($objectClass, [$objectId]);
-                $this->om->forceFlush();
+                $this->removeUnusedTags($objectClass, $objectId, $tags);
             }
 
             foreach ($uniqueTags as $tagName) {
                 $tag = $tagsList[$tagName];
-                $taggedObject = $replace ?
-                    null :
-                    $this->getOneTaggedObjectByTagAndObject($tag, $objectId, $objectClass);
+                $taggedObject = null;
+
+                if ($tag->getId()) {
+                    $taggedObject = $this->getOneTaggedObjectByTagAndObject($tag, $objectId, $objectClass);
+                }
 
                 if (is_null($taggedObject)) {
                     $taggedObject = new TaggedObject();
-                    $taggedObject->setTag($tag);
-                    $taggedObject->setObjectId($objectId);
-                    $taggedObject->setObjectClass($objectClass);
-
-                    if ($objectName) {
-                        $taggedObject->setObjectName($objectName);
-                    }
-                    $this->persistTaggedObject($taggedObject);
-                    $taggedObjects[] = $taggedObject;
                 }
+
+                $taggedObject->setTag($tag);
+                $taggedObject->setObjectId($objectId);
+                $taggedObject->setObjectClass($objectClass);
+                $tag->addTaggedObject($taggedObject);
+
+                if ($objectName) {
+                    $taggedObject->setObjectName($objectName);
+                }
+
+                $this->om->persist($taggedObject);
+                $taggedObjects[] = $taggedObject;
             }
         }
-        $this->om->endFlushSuite();
+
+        $this->om->flush();
 
         return $taggedObjects;
+    }
+
+    public function removeUnusedTags($objectClass, $objectId, array $tags)
+    {
+        $objects = $this->taggedObjectRepo->findTaggedObjectsByClassAndIds($objectClass, [$objectId]);
+
+        foreach ($objects as $object) {
+            if (!in_array($object->getTag()->getName(), $tags)) {
+                $this->om->remove($object);
+            }
+        }
     }
 
     public function getObjectsByClassAndIds($class, array $ids, $orderedBy = 'id', $order = 'ASC')
@@ -315,37 +329,9 @@ class TagManager
      * Access to TaggedObjectRepository methods *
      ******************************************/
 
-    public function getTaggedObjects(
-        User $user = null,
-        $withPlatform = false,
-        $class = null,
-        $search = '',
-        $strictSearch = false,
-        $orderedBy = 'name',
-        $order = 'ASC',
-        array $ids = []
-    ) {
-        if (empty($search)) {
-            return $this->taggedObjectRepo->findAllTaggedObjects(
-                $user,
-                $withPlatform,
-                $class,
-                $orderedBy,
-                $order,
-                $ids
-            );
-        }
-
-        return $this->taggedObjectRepo->findSearchedTaggedObjects(
-            $search,
-            $user,
-            $withPlatform,
-            $class,
-            $orderedBy,
-            $order,
-            $strictSearch,
-            $ids
-        );
+    public function getTaggedObjects($class, array $ids = [])
+    {
+        return $this->taggedObjectRepo->findAllTaggedObjects($class, $ids);
     }
 
     public function getOneTaggedObjectByTagAndObject(Tag $tag, $objectId, $objectClass)
