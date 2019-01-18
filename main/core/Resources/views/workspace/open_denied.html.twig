@@ -1,8 +1,9 @@
 {% extends 'ClarolineCoreBundle:workspace:layout.html.twig' %}
 
 {% block content %}
+  <div class="container">
     <div class="container">
-      {{ 'workspace_denied' | trans({'%workspace%': workspace.getName()}, 'platform') }}
+      {{ 'workspace_denied' | trans({'%workspace%': workspace.getName(), '%action%': action}, 'platform') }}
     </div>
       {% if isInQueue %}
       <div class="container">
@@ -19,5 +20,6 @@
         </div>
 
       {% endif %}
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}

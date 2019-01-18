@@ -313,19 +313,20 @@ class WorkspaceController
     }
 
     /**
-     * @EXT\Route("/{workspace}/denied", name="claro_workspace_denied")
+     * @EXT\Route("/{workspace}/denied/{action}", name="claro_workspace_denied")
      * @EXT\Template
      *
      * @param Workspace $workspace
      *
      * @return Response
      */
-    public function openDeniedAction(Workspace $workspace)
+    public function openDeniedAction(Workspace $workspace, $action)
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
         return [
           'workspace' => $workspace,
+          'action' => $action,
           'isInQueue' => $this->workspaceManager->isUserInValidationQueue($workspace, $user),
         ];
     }
@@ -373,6 +374,7 @@ class WorkspaceController
         if (!$this->authorization->isGranted($attributes, $workspace)) {
             $exception = new WorkspaceAccessException();
             $exception->setWorkspace($workspace);
+            $exception->setAction($attributes);
 
             throw $exception;
         }

@@ -1734,7 +1734,7 @@
     "header_locale": "Changer la langue dans le header",
     "search_and_filters": "Recherche & filters",
     "disabled_admin_tools": "Outils admins désactivés",
-    "workspace_denied": "L'espace d'activité %workspace% vous est inaccessible.",
+    "workspace_denied": "L'espace d'activité %workspace% vous est inaccessible pour l'action %action%.",
     "workspace_private_registration": "Cet espace d'activté requiert une inscription par un gestionnaire.",
     "overview_message": "Message d'accueil",
     "enable_overview": "Afficher la page d'accueil",
