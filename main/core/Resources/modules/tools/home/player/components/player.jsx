@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
-import {withRouter} from '#/main/app/router'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {PageHeader, PageContent, PageActions, PageAction} from '#/main/core/layout/page'
 import {LINK_BUTTON} from '#/main/app/buttons'
@@ -26,9 +25,9 @@ const PlayerComponent = props =>
     }] : [])}
   >
     <PageHeader
-      className={props.currentTab.centerTitle ? 'text-center' : ''}
+      className={props.currentTab && props.currentTab.centerTitle ? 'text-center' : ''}
       title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.currentContext.type ? trans('desktop') : props.currentContext.data.name)}
-      poster={props.currentTab.poster ? props.currentTab.poster.url: undefined}
+      poster={props.currentTab && props.currentTab.poster ? props.currentTab.poster.url: undefined}
     >
       {1 < props.tabs.length &&
         <Tabs
@@ -38,7 +37,7 @@ const PlayerComponent = props =>
         />
       }
 
-      {props.editable &&
+      {(props.currentTab && props.editable) &&
         <PageActions>
           <PageAction
             type={LINK_BUTTON}
@@ -71,7 +70,7 @@ PlayerComponent.propTypes = {
   )).isRequired
 }
 
-const Player = withRouter(connect(
+const Player = connect(
   (state) => ({
     currentContext: selectors.context(state),
     editable: selectors.editable(state),
@@ -79,7 +78,7 @@ const Player = withRouter(connect(
     currentTab: selectors.currentTab(state),
     widgets: selectors.widgets(state)
   })
-)(PlayerComponent))
+)(PlayerComponent)
 
 export {
   Player

@@ -10,7 +10,7 @@ import {constants as listConst} from '#/main/app/content/list/constants'
 
 import {trans} from '#/main/app/intl/translation'
 import {UserCard} from '#/main/core/user/data/components/user-card'
-import {OptionsType} from '#/main/core/user/contact/prop-types'
+import {OptionsType} from '#/main/core/tools/contact/prop-types'
 
 const ContactCard = props =>
   <UserCard

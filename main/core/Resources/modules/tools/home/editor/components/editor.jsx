@@ -5,7 +5,6 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
-import {withRouter} from '#/main/app/router'
 import {currentUser} from '#/main/app/security'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {
@@ -137,7 +136,7 @@ EditorComponent.propTypes = {
   moveTab: T.func.isRequired
 }
 
-const Editor = withRouter(connect(
+const Editor = connect(
   (state) => ({
     currentContext: selectors.context(state),
     administration: selectors.administration(state),
@@ -185,7 +184,7 @@ const Editor = withRouter(connect(
       navigate('/edit/tab/' + redirected.id)
     }
   })
-)(EditorComponent))
+)(EditorComponent)
 
 export {
   Editor

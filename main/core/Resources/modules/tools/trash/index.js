@@ -1,4 +1,4 @@
-import {TrashTool} from '#/main/core/tools/trash/components/tool'
+import {TrashTool} from '#/main/core/tools/trash/containers/tool'
 import {reducer} from '#/main/core/tools/trash/store'
 
 /**

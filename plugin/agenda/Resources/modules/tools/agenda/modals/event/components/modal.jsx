@@ -5,7 +5,7 @@ import omit from 'lodash/omit'
 import {trans} from '#/main/app/intl/translation'
 
 import {Modal} from '#/main/app/overlay/modal/components/modal'
-import {Event} from '#/plugin/agenda/components/event.jsx'
+import {Event} from '#/plugin/agenda/tools/agenda/components/event'
 
 const EventModal = props =>
   <Modal

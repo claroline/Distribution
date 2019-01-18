@@ -213,6 +213,7 @@ FormData.propTypes = {
 }
 
 FormData.defaultProps = {
+  level: 2,
   data: {}
 }
 

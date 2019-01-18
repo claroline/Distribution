@@ -61,10 +61,8 @@ Calendar.propTypes = {
   eventDrop: T.func.isRequired,
   dayClick: T.func.isRequired,
   eventClick: T.func.isRequired,
-  eventDestroy: T.func.isRequired,
   eventRender: T.func.isRequired,
   eventResize: T.func.isRequired,
-  eventResizeStart: T.func.isRequired,
   workspace: T.object
 }
 

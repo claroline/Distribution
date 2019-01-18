@@ -48,8 +48,7 @@ FilterBar.propTypes = {
   onChangeFiltersWorkspace: T.func.isRequired,
   workspace: T.object.isRequired,
   workspaces: T.object,
-  filters: T.object.isRequired,
-  reload: T.object.isRequired
+  filters: T.object.isRequired
 }
 
 export {

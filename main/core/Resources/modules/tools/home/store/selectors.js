@@ -14,7 +14,7 @@ const currentTab = createSelector(
 
 const widgets = createSelector(
   [currentTab],
-  (currentTab) => currentTab.widgets
+  (currentTab) => currentTab ? (currentTab.widgets || []) : []
 )
 
 const sortedTabs = createSelector(
