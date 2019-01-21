@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
+import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
 
 const TableCell = props =>
   <td className={classes(`text-${props.align}`, props.className)}>
@@ -22,7 +22,7 @@ TableCell.defaultProps = {
 
 const TableTooltipCell = props =>
   <TableCell {...props}>
-    <TooltipElement
+    <TooltipOverlay
       id={props.id}
       tip={props.tip}
       position={props.placement}
@@ -30,7 +30,7 @@ const TableTooltipCell = props =>
       <span>
         {props.children}
       </span>
-    </TooltipElement>
+    </TooltipOverlay>
   </TableCell>
 
 TableTooltipCell.propTypes = {

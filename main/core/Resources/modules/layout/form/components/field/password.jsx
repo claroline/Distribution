@@ -5,7 +5,7 @@ import {trans} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
+import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
 
 class Password extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class Password extends Component {
         />
 
         <span className="input-group-btn">
-          <TooltipElement
+          <TooltipOverlay
             id={`${this.props.id}-show`}
             tip={trans('show_password')}
           >
@@ -54,7 +54,7 @@ class Password extends Component {
             >
               <span className="fa fa-fw fa-eye" />
             </button>
-          </TooltipElement>
+          </TooltipOverlay>
         </span>
       </div>
     )

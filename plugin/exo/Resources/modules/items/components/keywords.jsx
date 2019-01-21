@@ -9,7 +9,7 @@ import {trans, tex} from '#/main/app/intl/translation'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group'
 import {ContentError} from '#/main/app/content/components/error'
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
+import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
@@ -39,7 +39,7 @@ class KeywordItem extends Component {
       }>
         {!this.props.showScore &&
           <div className="keyword-expected">
-            <TooltipElement
+            <TooltipOverlay
               id={`tooltip-${this.props.keyword._id}-keyword-expected`}
               tip={tex('grid_expected_keyword')}
             >
@@ -49,7 +49,7 @@ class KeywordItem extends Component {
                 checked={this.props.keyword.expected}
                 onChange={e => this.props.updateKeyword('expected', e.target.checked)}
               />
-            </TooltipElement>
+            </TooltipOverlay>
           </div>
         }
 
@@ -76,7 +76,7 @@ class KeywordItem extends Component {
         </div>
 
         <div className="keyword-case-sensitive">
-          <TooltipElement
+          <TooltipOverlay
             id={`tooltip-${this.props.keyword._id}-keyword-case-sensitive`}
             tip={tex('words_case_sensitive')}
           >
@@ -88,7 +88,7 @@ class KeywordItem extends Component {
               checked={this.props.keyword.caseSensitive}
               onChange={e => this.props.updateKeyword('caseSensitive', e.target.checked)}
             />
-          </TooltipElement>
+          </TooltipOverlay>
         </div>
 
         <div className="right-controls">

@@ -4,7 +4,7 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {getSource} from '#/main/app/data'
+import {getSource} from '#/main/app/data/sources'
 import {ListSource} from '#/main/app/content/list/containers/source'
 import {ListParameters as ListParametersTypes} from '#/main/app/content/list/parameters/prop-types'
 
