@@ -7,7 +7,7 @@ const Checkbox = props =>
     'checkbox'       : !props.inline,
     'checkbox-inline': props.inline
   }, props.className)}>
-    <label htmlFor={props.id}>
+    <label>
       <input
         id={props.id}
         type="checkbox"

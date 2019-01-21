@@ -2,8 +2,9 @@ import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
+import {Button} from '#/main/app/action/components/button'
+import {MENU_BUTTON, CALLBACK_BUTTON} from '#/main/app/buttons'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
-import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
 
 import {Numeric} from '#/main/core/layout/form/components/field/numeric'
 
@@ -26,31 +27,23 @@ const Storage = props =>
     />
 
     <span className="input-group-btn">
-      <DropdownButton
+      <Button
         id={`units-${props.id}`}
-        title="KB"
-        bsStyle="default"
-        noCaret={true}
-        pullRight={true}
-      >
-        <MenuItem header>{trans('units')}</MenuItem>
-
-        {Object.keys(STORAGE_UNITS).map(unit =>
-          <MenuItem
-            key={unit}
-            eventKey={unit}
-            active={false}
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              e.target.blur()
+        className="btn"
+        type={CALLBACK_BUTTON}
+        label="KB"
+        menu={{
+          label: trans('units'),
+          align: 'right',
+          items: Object.keys(STORAGE_UNITS).map(unit => ({
+            type: CALLBACK_BUTTON,
+            label: STORAGE_UNITS[unit],
+            callback: () => {
               //props.onChange(format)
-            }}
-          >
-            {STORAGE_UNITS[unit]}
-          </MenuItem>
-        )}
-      </DropdownButton>
+            }
+          }))
+        }}
+      />
     </span>
   </div>
 
