@@ -72,7 +72,11 @@ const EvidenceModal = props =>
   </Modal>
 
 EvidenceModal.propTypes = {
-  fadeModal: T.func.isRequired
+  fadeModal: T.func.isRequired,
+  saveEvidence: T.func.isRequired,
+  initForm: T.func.isRequired,
+  assertion: T.object,
+  evidence: T.object
 }
 
 export {

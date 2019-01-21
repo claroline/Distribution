@@ -2,6 +2,8 @@ import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {url} from '#/main/app/api/router'
 
+/* global OpenBadges */
+
 /**
  * Displays a general information about a resource node.
  *
@@ -14,9 +16,7 @@ export default (rows) => ({
   scope: ['object'],
   displayed: true,
   callback: () => {
-    OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}, true])], (errors, successes) => {
-      console.log(errors)
-      console.log(successes)
+    OpenBadges.issue([url(['apiv2_open_badge__assertion', {assertion: rows[0].id}, true])], () => {
     })
   }
 })
