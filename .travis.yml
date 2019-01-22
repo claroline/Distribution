@@ -42,7 +42,7 @@ before_install:
   # leave build/repo dir
   - cd ../..
   # increase php memory size (required for composer)
-  - echo "memory_limit=6144M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo "memory_limit=4096M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # disable xdebug
   - phpenv config-rm xdebug.ini
   # get node >=5.6 (manual upgrade of nvm is currently required, pre-installed version is buggy)
@@ -62,6 +62,7 @@ before_script:
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
   #- bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - composer clear-cache
+  - composer diagnose
   - composer update --prefer-dist -o -vvv
   - composer build
   - php app/console claroline:install --env=test -vvv
