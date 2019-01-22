@@ -18,7 +18,7 @@
         "ext-intl": "*",
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
-
+        "besimple/sso-auth-bundle": "dev-master",
         "cocur/slugify": "3.1",
         "composer/composer": "1.6.5",
         "ddeboer/data-import": "0.20.0",
