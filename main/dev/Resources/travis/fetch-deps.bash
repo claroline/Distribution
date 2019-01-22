@@ -83,7 +83,7 @@ fetch() {
 }
 
 echo "Fetching..."
-fetch composer $COMPOSER_SUM "composer install --prefer-dist" vendor
+fetch composer $COMPOSER_SUM "composer update --prefer-dist" vendor
 
 # we don't want the sources present in the cache
 echo "Overriding distribution package with local build/repo..."
