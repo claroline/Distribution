@@ -82,7 +82,6 @@ fetch() {
     rm -f $ARCHIVE
 }
 
-mv vendor/claroline/distribution/composer.lock .
 fetch composer $COMPOSER_SUM "composer install --prefer-dist" vendor
 
 # we don't want the sources present in the cache
