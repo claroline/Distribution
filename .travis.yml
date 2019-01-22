@@ -60,10 +60,7 @@ before_script:
   - php $TRAVIS_BUILD_DIR/main/dev/Resources/travis/pre-composer.php claroline/distribution $TRAVIS_BUILD_DIR "*"
   # fetch dependencies and build (currently this is done in prod mode)
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
-  #- bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
-  - composer diagnose -vvv
-  - composer config github-oauth.github.com 0c912ab98ad9fa3d7139a210a60ec6695130c5cd
-  - composer update --prefer-dist -o -vvv
+  - bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - composer build
   - php app/console claroline:install --env=test -vvv
   # move to distribution directory
