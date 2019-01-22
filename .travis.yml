@@ -45,6 +45,7 @@ before_install:
   - echo "memory_limit=6144M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # disable xdebug
   - phpenv config-rm xdebug.ini
+  - php -r 'var_dump(ini_get("memory_limit"));'
   # get node >=5.6 (manual upgrade of nvm is currently required, pre-installed version is buggy)
   - git clone https://github.com/creationix/nvm.git /tmp/.nvm
   - source /tmp/.nvm/nvm.sh
@@ -60,7 +61,6 @@ before_script:
   - php $TRAVIS_BUILD_DIR/main/dev/Resources/travis/pre-composer.php claroline/distribution $TRAVIS_BUILD_DIR "*"
   # fetch dependencies and build (currently this is done in prod mode)
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
-  - php -r 'echo ini_get("memory_limit");'
   - bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - composer build
   - php app/console claroline:install --env=test -vvv
