@@ -62,7 +62,6 @@ before_script:
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
   #- bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - composer config github-oauth.github.com 0c912ab98ad9fa3d7139a210a60ec6695130c5cd
-  - composer diagnose
   - composer update --prefer-dist -o -vvv
   - composer build
   - php app/console claroline:install --env=test -vvv
