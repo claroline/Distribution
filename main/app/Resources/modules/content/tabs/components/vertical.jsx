@@ -4,6 +4,7 @@ import classes from 'classnames'
 import omit from 'lodash/omit'
 
 import {NavLink} from '#/main/app/router'
+import {toKey} from '#/main/core/scaffolding/text/utils'
 
 const Vertical = (props) =>
   <nav
@@ -13,7 +14,7 @@ const Vertical = (props) =>
     {props.tabs.map((tab, tabIndex) =>
       <NavLink
         to={tab.path}
-        key={`tab-link-${tabIndex}`}
+        key={toKey(tab.title)}
         className="lateral-link"
         exact={tab.exact}
       >

@@ -70,7 +70,13 @@ const DataType = {
       details: T.any, // todo : rename into `display`
       form: T.any, // todo : rename into `input` + `group`
       search: T.any, // todo : rename into `filter`
-      table: T.any // todo : rename into `cell`
+      table: T.any, // todo : rename into `cell`
+
+      group: T.any,
+      input: T.any,
+      display: T.any,
+      filter: T.any,
+      cell: T.any
     })
   },
   defaultProps: {

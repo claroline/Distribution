@@ -49,24 +49,13 @@ const DataFormSection = {
           DataFormProperty.propTypes
         ))
       })
-    )).isRequired,
-    advanced: T.shape({
-      showText: T.string,
-      hideText: T.string,
-      fields: T.arrayOf(T.shape(
-        merge({}, DataFormProperty.propTypes, {
-          // children
-          linked: T.arrayOf(T.shape(
-            DataFormProperty.propTypes
-          ))
-        })
-      )).isRequired
-    })
+    )).isRequired
   },
   defaultProps: {
     primary: false,
     displayed: true,
-    defaultOpened: false
+    defaultOpened: false,
+    fields: []
   }
 }
 

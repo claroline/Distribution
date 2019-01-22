@@ -8,7 +8,7 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 const FormField = {
   propTypes: {
     id: T.string.isRequired,
-    className: T.string,
+    //className: T.string,
     value: T.any, // depends on type
     placeholder: T.any, // depends on type
     disabled: T.bool,

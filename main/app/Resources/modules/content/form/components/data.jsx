@@ -21,25 +21,6 @@ import {FormGroup} from '#/main/app/content/form/components/group'
 
 // todo : add auto focus
 
-const AdvancedSection = props =>
-  <ToggleableSet
-    showText={props.showText}
-    hideText={props.hideText}
-  >
-    {props.fields.map(field =>
-      <FormProp
-        key={field.name}
-        {...field}
-      />
-    )}
-  </ToggleableSet>
-
-AdvancedSection.propTypes = {
-  showText: T.string,
-  hideText: T.string,
-  fields: T.array.isRequired
-}
-
 class FormData extends Component {
   renderFields(fields) {
     let rendered = []
@@ -53,6 +34,9 @@ class FormData extends Component {
             label={field.label}
             hideLabel={field.hideLabel}
             help={field.help}
+            optional={!this.props.required}
+            error={get(this.props.errors, field.name)}
+            warnOnly={!this.props.validating}
           >
             {field.render(this.props.data)}
           </FormGroup>
@@ -67,7 +51,6 @@ class FormData extends Component {
             disabled={this.props.disabled || (typeof field.disabled === 'function' ? field.disabled(this.props.data) : field.disabled)}
             validating={this.props.validating}
             error={get(this.props.errors, field.name)}
-            updateProp={this.props.updateProp}
 
             onChange={(value) => {
               this.props.updateProp(field.name, value)
@@ -145,10 +128,6 @@ class FormData extends Component {
               </Heading>
 
               {this.renderFields(primarySection.fields)}
-
-              {primarySection.advanced &&
-                <AdvancedSection {...primarySection.advanced} />
-              }
             </fieldset>
           </div>
         )}
@@ -170,10 +149,6 @@ class FormData extends Component {
                 validating={this.props.validating}
               >
                 {this.renderFields(section.fields)}
-
-                {section.advanced &&
-                  <AdvancedSection {...section.advanced} />
-                }
               </FormSection>
             )}
           </FormSections>

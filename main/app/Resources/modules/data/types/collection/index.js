@@ -9,8 +9,8 @@ const dataType = {
   name: 'collection',
   meta: {
     icon: 'fa fa-fw fa-th',
-    label: trans('collection'),
-    description: trans('collection_desc')
+    label: trans('collection', {}, 'data'),
+    description: trans('collection_desc', {}, 'data')
   },
 
   validate(value, options = {}) {
