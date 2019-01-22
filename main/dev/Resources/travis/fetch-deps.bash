@@ -82,7 +82,8 @@ fetch() {
     rm -f $ARCHIVE
 }
 
-fetch composer $COMPOSER_SUM "composer update --prefer-dist" vendor
+mv vendor/claroline/distribution/composer.lock .
+fetch composer $COMPOSER_SUM "composer install --prefer-dist" vendor
 
 # we don't want the sources present in the cache
 echo "Overriding distribution package with local build/repo..."
