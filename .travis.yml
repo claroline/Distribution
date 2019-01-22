@@ -42,7 +42,8 @@ before_install:
   # leave build/repo dir
   - cd ../..
   # increase php memory size (required for composer)
-  - echo "memory_limit=6144M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  #- echo "memory_limit=6144M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
   # disable xdebug
   - phpenv config-rm xdebug.ini
   # get node >=5.6 (manual upgrade of nvm is currently required, pre-installed version is buggy)
@@ -55,7 +56,6 @@ before_script:
   - curl -L https://github.com/claroline/Claroline/archive/${TRAVIS_BRANCH}.tar.gz | tar xzv
   - cd Claroline-${TRAVIS_BRANCH}
   - php scripts/configure.php --default
-  - php -r 'var_dump(ini_get("memory_limit"));'
   # override platform composer.json with build/repo local reference
   - mv $TRAVIS_BUILD_DIR/main/dev/Resources/travis/composer.lock .
   - php $TRAVIS_BUILD_DIR/main/dev/Resources/travis/pre-composer.php claroline/distribution $TRAVIS_BUILD_DIR "*"
