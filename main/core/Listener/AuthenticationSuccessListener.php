@@ -228,7 +228,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
      */
     public function checkTermOfServices(GetResponseEvent $event)
     {
-        if (/*'prod' === $this->kernel->getEnvironment() && */$event->isMasterRequest()) {
+        if ('prod' === $this->kernel->getEnvironment() && $event->isMasterRequest()) {
             $user = !empty($this->tokenStorage->getToken()) ? $this->tokenStorage->getToken()->getUser() : null;
             if ($user instanceof User && $this->configurationHandler->getParameter('terms_of_service')) {
                 $this->showTermOfServices($event);

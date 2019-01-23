@@ -34,7 +34,21 @@ const TrashTool = props =>
           dangerous: false
         }
       ]}
-      definition={ResourceList.definition}
+      definition={[
+        {
+          name: 'name',
+          type: 'string',
+          label: trans('name'),
+          displayed: true,
+          primary: true
+        },
+        {
+          type: 'date',
+          name: 'meta.updated',
+          label: trans('last_modification'),
+          displayed: true
+        }
+      ]}
       card={ResourceList.card}
     />
   </ToolPage>
