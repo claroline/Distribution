@@ -71,12 +71,9 @@ class DataInput extends Component {
   onChange(value) {
     // validate new value
     if (this.props.onError) {
-      return validateProp(this.props, value).then(errors => {
+      validateProp(this.props, value).then(errors => {
         // forward error to the caller
         this.props.onError(errors)
-
-        // forward updated value to the caller
-        this.props.onChange(value)
       })
     }
 
@@ -112,10 +109,6 @@ class DataInput extends Component {
   }
 
   render() {
-    if (!this.state.loaded) {
-      return 'loading'
-    }
-
     // the group component to create
     return createElement(this.state.group || FormGroup,
       // the props to pass to the group
