@@ -82,6 +82,10 @@ fetch() {
     rm -f $ARCHIVE
 }
 
+<<<<<<< HEAD
+=======
+echo "Fetching..."
+>>>>>>> b62097582eac6e95d82524df8a21d1ac4c61e06d
 fetch composer $COMPOSER_SUM "composer install --prefer-dist" vendor
 
 # we don't want the sources present in the cache
