@@ -8,18 +8,19 @@ import {DataProperty} from '#/main/app/data/types/prop-types'
 const DataFormProperty = {
   propTypes: merge({}, DataProperty.propTypes, {
     // form configuration
+    placeholder: T.any,
     help: T.oneOfType([T.string, T.arrayOf(T.string)]),
     hideLabel: T.bool,
     displayed: T.oneOfType([
       T.bool,
       T.func // a function that receives the whole form data and returns the new state
     ]),
+    required: T.bool,
     disabled: T.oneOfType([
       T.bool,
       T.func // a function that receives the whole form data and returns the new state
     ]),
     readOnly: T.bool,
-    required: T.bool,
 
     // field methods
     onChange: T.func,

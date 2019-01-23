@@ -16,8 +16,9 @@ import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/togglea
 import {createFormDefinition} from '#/main/app/content/form/utils'
 import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/prop-types'
 import {Form} from '#/main/app/content/form/components/form'
-import {FormProp} from '#/main/app/content/form/components/prop'
 import {FormGroup} from '#/main/app/content/form/components/group'
+
+import {DataInput} from '#/main/app/data/components/input'
 
 // todo : add auto focus
 
@@ -29,8 +30,8 @@ class FormData extends Component {
       if (field.render) {
         rendered.push(
           <FormGroup
-            id={field.name}
             key={field.name}
+            id={field.name.replace(/\./g, '-')}
             label={field.label}
             hideLabel={field.hideLabel}
             help={field.help}
@@ -43,13 +44,21 @@ class FormData extends Component {
         )
       } else {
         rendered.push(
-          <FormProp
-            {...field}
+          <DataInput
             key={field.name}
             id={field.name.replace(/\./g, '-')}
-            value={field.calculated ? field.calculated(this.props.data) : get(this.props.data, field.name)}
+            type={field.type}
+            label={field.label}
+            hideLabel={field.hideLabel}
+            options={field.options}
+            help={field.help}
+            placeholder={field.placeholder}
+
+            required={field.required}
             disabled={this.props.disabled || (typeof field.disabled === 'function' ? field.disabled(this.props.data) : field.disabled)}
             validating={this.props.validating}
+
+            value={field.calculated ? field.calculated(this.props.data) : get(this.props.data, field.name)}
             error={get(this.props.errors, field.name)}
 
             onChange={(value) => {
@@ -58,7 +67,7 @@ class FormData extends Component {
                 field.onChange(value)
               }
             }}
-            setErrors={(errors) => {
+            onError={(errors) => {
               const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
               set(newErrors, field.name, errors)
 
@@ -182,6 +191,7 @@ FormData.propTypes = {
   sections: T.arrayOf(T.shape(
     DataFormSectionTypes.propTypes
   )).isRequired,
+
   /**
    * The save action of the form.
    */

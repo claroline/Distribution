@@ -91,18 +91,21 @@ FormProp.propTypes = {
   id: T.string.isRequired,
   type: T.string,
   label: T.string.isRequired,
-  size: T.oneOf(['sm', 'lg']),
-  help: T.oneOfType([T.string, T.arrayOf(T.string)]),
-  hideLabel: T.bool,
-  disabled: T.bool,
-  readOnly: T.bool,
   options: T.object,
+  help: T.oneOfType([T.string, T.arrayOf(T.string)]),
   required: T.bool,
+  disabled: T.bool,
+
   value: T.any,
   error: T.oneOfType([T.string, T.arrayOf(T.string), T.object]), // object is for complex types like collection
-  validating: T.bool,
+
   onChange: T.func,
-  setErrors: T.func
+  setErrors: T.func,
+
+  readOnly: T.bool,
+  size: T.oneOf(['sm', 'lg']),
+  hideLabel: T.bool,
+  validating: T.bool
 }
 
 export {

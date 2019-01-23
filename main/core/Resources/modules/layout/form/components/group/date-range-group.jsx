@@ -3,7 +3,7 @@ import React from 'react'
 import {trans} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 
-import {FormGroup as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
+import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
 import {FormGroup} from '#/main/app/content/form/components/group.jsx'
 import {DateGroup} from '#/main/core/layout/form/components/group/date-group.jsx'
 

@@ -126,7 +126,7 @@ ChoiceItem.propTypes = {
 const ChoiceItems = props =>
   <div className="choice-items">
     {get(props.item, '_errors.choices') &&
-      <ContentError text={props.item._errors.choices} warnOnly={!props.validating}/>
+      <ContentError error={props.item._errors.choices} warnOnly={!props.validating}/>
     }
 
     <ul>

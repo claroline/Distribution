@@ -159,19 +159,19 @@ KeywordItem.defaultProps = {
 const KeywordItems = props =>
   <div className="keyword-items">
     {get(props, '_errors.count') &&
-      <ContentError text={props._errors.count} warnOnly={!props.validating} />
+      <ContentError error={props._errors.count} warnOnly={!props.validating} />
     }
     {get(props, '_errors.noValidKeyword') &&
-      <ContentError text={props._errors.noValidKeyword} warnOnly={!props.validating} />
+      <ContentError error={props._errors.noValidKeyword} warnOnly={!props.validating} />
     }
     {get(props, '_errors.duplicate') &&
-      <ContentError text={props._errors.duplicate} warnOnly={!props.validating} />
+      <ContentError error={props._errors.duplicate} warnOnly={!props.validating} />
     }
     {get(props, '_errors.text') &&
-      <ContentError text={props._errors.text} warnOnly={!props.validating} />
+      <ContentError error={props._errors.text} warnOnly={!props.validating} />
     }
     {get(props, '_errors.score') &&
-      <ContentError text={props._errors.score} warnOnly={!props.validating} />
+      <ContentError error={props._errors.score} warnOnly={!props.validating} />
     }
 
     <ul>

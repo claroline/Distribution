@@ -19,8 +19,7 @@ const DataType = {
       creatable: T.bool,
       icon: T.string,
       label: T.string,
-      description: T.string,
-      noLabel: T.bool
+      description: T.string
     }),
 
     /**
@@ -28,6 +27,8 @@ const DataType = {
      * It gets the current options values as param.
      *
      * NB. It's only used to generated configuration form for `creatable` data types.
+     *
+     * This may be better to be a real component for more control.
      *
      * @return {array}
      */
@@ -81,8 +82,7 @@ const DataType = {
   },
   defaultProps: {
     meta: {
-      creatable: false,
-      noLabel: false
+      creatable: false
     },
     configure: () => [],
     parse: (value) => value,

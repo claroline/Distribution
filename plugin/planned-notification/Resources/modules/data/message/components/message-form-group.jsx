@@ -5,7 +5,7 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {trans} from '#/main/app/intl/translation'
-import {FormGroup as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
+import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
 import {FormGroup} from '#/main/app/content/form/components/group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 

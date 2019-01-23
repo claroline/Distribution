@@ -5,7 +5,7 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {trans} from '#/main/app/intl/translation'
-import {FormGroup as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
+import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
 import {FormGroup} from '#/main/app/content/form/components/group'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
@@ -21,7 +21,7 @@ const Role = props =>
         id={`role-${props.role.id}-delete`}
         className="btn-link"
         icon="fa fa-fw fa-trash-o"
-        label={trans('delete')}
+        label={trans('delete', {}, 'actions')}
         tooltip="left"
         callback={props.onDelete}
         dangerous={true}

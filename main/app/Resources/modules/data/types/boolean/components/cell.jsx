@@ -1,11 +1,11 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import classes from 'classnames'
 
 import {DataCell as DataCellTypes} from '#/main/app/data/types/prop-types'
 import {translateBool} from '#/main/app/data/types/boolean/utils'
 
 const BooleanCell = props =>
-  <span>
+  <Fragment>
     <span
       aria-hidden={true}
       className={classes('fa fa-fw', {
@@ -14,7 +14,7 @@ const BooleanCell = props =>
       })}
     />
     <span className="sr-only">{translateBool(props.data)}</span>
-  </span>
+  </Fragment>
 
 BooleanCell.propTypes = DataCellTypes.propTypes
 

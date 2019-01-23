@@ -5,7 +5,7 @@ import merge from 'lodash/merge'
 
 import {getLocale} from '#/main/app/intl/locale'
 
-import {FormGroup as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
+import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
 import {FormGroup} from '#/main/app/content/form/components/group.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 

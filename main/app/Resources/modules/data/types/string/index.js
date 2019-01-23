@@ -1,10 +1,8 @@
 import {trans} from '#/main/app/intl/translation'
 import {chain, lengthInRange, match, string} from '#/main/core/validation'
 
-import {TextGroup} from '#/main/core/layout/form/components/group/text-group'
 import {StringDisplay} from '#/main/app/data/types/string/components/display'
-
-//import {StringInput} from '#/main/app/data/types/string/components/input'
+import {StringInput} from '#/main/app/data/types/string/components/input'
 
 const dataType = {
   name: 'string',
@@ -52,7 +50,10 @@ const dataType = {
   validate: (value, options) => chain(value, options, [string, match, lengthInRange]),
   components: {
     details: StringDisplay,
-    form: TextGroup
+
+    // new api
+    input: StringInput,
+    display: StringDisplay
   }
 }
 
