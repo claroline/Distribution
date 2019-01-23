@@ -62,7 +62,6 @@ before_script:
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
   - bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - composer build
-  - php app/console doctrine:database:create --env=test
   - php app/console claroline:install --env=test -vvv
   # move to distribution directory
   - export ROOT=`pwd`
