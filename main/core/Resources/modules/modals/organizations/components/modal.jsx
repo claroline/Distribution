@@ -64,6 +64,7 @@ const OrganizationsModal = props => {
 OrganizationsModal.propTypes = {
   url: T.oneOfType([T.string, T.array]),
   title: T.string,
+  display: T.object,
   selectAction: T.func.isRequired,
   fadeModal: T.func.isRequired,
   selected: T.arrayOf(T.shape(OrganizationType.propTypes)).isRequired,
