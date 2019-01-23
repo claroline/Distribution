@@ -11,14 +11,12 @@ import {getActions, getToolbar} from '#/main/core/resource/utils'
 
 import {selectors} from '#/main/core/tools/resources/store'
 
-const ResourcesTool = props => 
+const ResourcesTool = props =>
   <ToolPage
     subtitle={props.current && props.current.name}
     path={props.current ? props.current.path.map(ancestorNode => ({
       label: ancestorNode.name,
-      target: props.context.type === 'workspace' ? 
-        '#/' + ancestorNode.id :
-        ['claro_resource_show_short', {id: ancestorNode.id}]
+      target: ['claro_resource_show_short', {id: ancestorNode.id}]
     })) : []}
     disabled={props.loading}
     toolbar={getToolbar('add')}
@@ -50,7 +48,6 @@ ResourcesTool.propTypes = {
   current: T.shape(
     ResourceNodeTypes.propTypes
   ),
-  context: T.object.isRequired,
   loading: T.bool.isRequired,
   addNodes: T.func.isRequired,
   updateNodes: T.func.isRequired,
