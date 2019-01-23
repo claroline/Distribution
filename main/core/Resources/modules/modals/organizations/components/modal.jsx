@@ -36,18 +36,6 @@ const OrganizationsModal = props => {
             displayed: true,
             primary: true
           }, {
-            name: 'meta.default',
-            type: 'boolean',
-            label: trans('default')
-          }, {
-            name: 'meta.parent',
-            type: 'organization',
-            label: trans('parent')
-          }, {
-            name: 'email',
-            type: 'email',
-            label: trans('email')
-          }, {
             name: 'code',
             type: 'string',
             label: trans('code')
