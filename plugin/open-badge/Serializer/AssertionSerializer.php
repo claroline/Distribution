@@ -57,15 +57,15 @@ class AssertionSerializer
     {
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
             $data = [
-		'uid' => $assertion->getUuid(),
+                  'uid' => $assertion->getUuid(),
                 'id' => $this->router->generate('apiv2_open_badge__assertion', ['assertion' => $assertion->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
                 'type' => 'Assertion',
                 'verify' => $this->verificationObjectSerializer->serialize($assertion),
                 //doc is uncomplete ? verify works but not verification. For mozilla backpack.
                 //'verification' => $this->verificationObjectSerializer->serialize($assertion),
                 //'recipient' => $this->identityObjectSerializer->serialize($assertion->getRecipient(), [Options::ENFORCE_OPEN_BADGE_JSON]),
-		//they don't follow their owndock ? it's for mozilla backpack
-		'recipient' => $assertion->getRecipient()->getEmail(),
+                    //they don't follow their owndock ? it's for mozilla backpack
+                    'recipient' => $assertion->getRecipient()->getEmail(),
                 'badge' => $this->badgeSerializer->serialize($assertion->getBadge(), [Options::ENFORCE_OPEN_BADGE_JSON]),
                 'issuedOn' => $assertion->getIssuedOn()->format('Y-m-d'),
                 'expires' => $this->getExpireDate($assertion),

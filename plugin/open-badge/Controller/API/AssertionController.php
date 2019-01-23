@@ -58,8 +58,6 @@ class AssertionController extends AbstractCrudController
      */
     public function getEvidencesAction(Request $request, Assertion $assertion)
     {
-        $params = $request->query->all();
-
         return new JsonResponse(
             $this->finder->search(Evidence::class, array_merge(
                 $request->query->all(),

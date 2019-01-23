@@ -164,8 +164,6 @@ class BadgeClassController extends AbstractCrudController
      */
     public function getAssertionsAction(Request $request, BadgeClass $badge)
     {
-        $params = $request->query->all();
-
         return new JsonResponse(
             $this->finder->search(Assertion::class, array_merge(
                 $request->query->all(),

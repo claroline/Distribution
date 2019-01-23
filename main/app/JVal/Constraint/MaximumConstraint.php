@@ -31,7 +31,7 @@ class MaximumConstraint extends AbstractRangeConstraint
      */
     public function apply($instance, stdClass $schema, Context $context, Walker $walker)
     {
-        if ($schema->exclusiveMaximum === false) {
+        if (false === $schema->exclusiveMaximum) {
             if ($instance > $schema->maximum) {
                 $context->addViolation('should be lesser than or equal to %s', [$schema->maximum]);
             }

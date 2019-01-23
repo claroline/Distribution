@@ -51,7 +51,7 @@ class EnumConstraint implements Constraint
             throw new InvalidTypeException($context, Types::TYPE_ARRAY);
         }
 
-        if (count($schema->enum) === 0) {
+        if (0 === count($schema->enum)) {
             throw new EmptyArrayException($context);
         }
 

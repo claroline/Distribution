@@ -32,7 +32,7 @@ class MinLengthConstraint extends AbstractCountConstraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_STRING;
+        return Types::TYPE_STRING === $type;
     }
 
     /**

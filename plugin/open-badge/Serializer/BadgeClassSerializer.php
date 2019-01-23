@@ -254,7 +254,7 @@ class BadgeClassSerializer
                 case BadgeClass::ISSUING_MODE_GROUP:
                     $allowedIssuers = $badge->getAllowedIssuersGroups();
                     foreach ($allowedIssuers as $allowed) {
-                        foreach ($user->getGroups() as $group) {
+                        foreach ($currentUser->getGroups() as $group) {
                             if ($group->getId() === $allowed->getId()) {
                                 return true;
                             }

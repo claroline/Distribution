@@ -32,7 +32,7 @@ class MinItemsConstraint extends AbstractCountConstraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_ARRAY;
+        return Types::TYPE_ARRAY === $type;
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace Claroline\AppBundle\API;
 
 use Claroline\AppBundle\JVal\Validator;
-//use JVal\Validator;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;

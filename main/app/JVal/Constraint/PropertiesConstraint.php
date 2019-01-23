@@ -37,7 +37,7 @@ class PropertiesConstraint implements Constraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_OBJECT;
+        return Types::TYPE_OBJECT === $type;
     }
 
     /**
@@ -80,7 +80,7 @@ class PropertiesConstraint implements Constraint
             if (empty($schemas)) {
                 if (is_object($schema->additionalProperties)) {
                     $schemas[] = $schema->additionalProperties;
-                } elseif ($schema->additionalProperties === false) {
+                } elseif (false === $schema->additionalProperties) {
                     $context->addViolation('additional property "%s" is not allowed', [$property]);
                 }
             }
@@ -102,7 +102,7 @@ class PropertiesConstraint implements Constraint
         }
 
         if (!property_exists($schema, 'additionalProperties')
-            || $schema->additionalProperties === true) {
+            || true === $schema->additionalProperties) {
             $schema->additionalProperties = new stdClass();
         }
 

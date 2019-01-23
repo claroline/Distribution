@@ -42,7 +42,7 @@ abstract class AbstractOfConstraint implements Constraint
             throw new InvalidTypeException($context, Types::TYPE_ARRAY);
         }
 
-        if (count($schema->{$keyword}) === 0) {
+        if (0 === count($schema->{$keyword})) {
             throw new EmptyArrayException($context);
         }
 

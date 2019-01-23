@@ -35,7 +35,7 @@ class UniqueItemsConstraint implements Constraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_ARRAY;
+        return Types::TYPE_ARRAY === $type;
     }
 
     /**
@@ -55,7 +55,7 @@ class UniqueItemsConstraint implements Constraint
      */
     public function apply($instance, stdClass $schema, Context $context, Walker $walker)
     {
-        if ($schema->uniqueItems === true) {
+        if (true === $schema->uniqueItems) {
             foreach ($instance as $i => $aItem) {
                 foreach ($instance as $j => $bItem) {
                     if ($i !== $j && Utils::areEqual($aItem, $bItem)) {

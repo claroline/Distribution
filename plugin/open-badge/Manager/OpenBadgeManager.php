@@ -61,7 +61,7 @@ class OpenBadgeManager
         $user = $token->getUser();
 
         foreach ($issuingMode as $mode) {
-            switch ($issuingMode) {
+            switch ($mode) {
               case BadgeClass::ISSUING_MODE_ORGANIZATION:
                 $organization = $badge->getIssuer();
 

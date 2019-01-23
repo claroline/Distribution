@@ -9,12 +9,12 @@
 
 namespace Claroline\AppBundle\JVal\Constraint;
 
+use DateTime;
 use JVal\Constraint;
 use JVal\Context;
 use JVal\Exception\Constraint\InvalidTypeException;
 use JVal\Types;
 use JVal\Walker;
-use DateTime;
 use stdClass;
 
 /**
@@ -55,7 +55,7 @@ class FormatConstraint implements Constraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_STRING;
+        return Types::TYPE_STRING === $type;
     }
 
     /**
@@ -79,30 +79,30 @@ class FormatConstraint implements Constraint
     {
         if (!is_string($instance)) {
             $context->addViolation('should be a string');
-        } elseif ($schema->format === 'date-time') {
+        } elseif ('date-time' === $schema->format) {
             // PHP support for RFC3339 doesn't include fractional time
             // (milliseconds) so we must add another check if needed
             if (!$this->isDateTimeValid($instance, DATE_RFC3339)
                 && !$this->isDateTimeValid($instance, 'Y-m-d\TH:i:s.uP')) {
                 $context->addViolation('should be a valid date-time (RFC3339)');
             }
-        } elseif ($schema->format === 'email') {
+        } elseif ('email' === $schema->format) {
             if (!filter_var($instance, FILTER_VALIDATE_EMAIL)) {
                 $context->addViolation('should be a valid email');
             }
-        } elseif ($schema->format === 'hostname') {
+        } elseif ('hostname' === $schema->format) {
             if (!preg_match(self::HOSTNAME_REGEX, $instance)) {
                 $context->addViolation('should be a valid hostname');
             }
-        } elseif ($schema->format === 'ipv4') {
+        } elseif ('ipv4' === $schema->format) {
             if (!filter_var($instance, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                 $context->addViolation('should be a valid IPv4 address');
             }
-        } elseif ($schema->format === 'ipv6') {
+        } elseif ('ipv6' === $schema->format) {
             if (!filter_var($instance, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                 $context->addViolation('should be a valid IPv6 address');
             }
-        } elseif ($schema->format === 'uri') {
+        } elseif ('uri' === $schema->format) {
             if (!preg_match(self::URI_REGEX, $instance)) {
                 $context->addViolation('should be a valid URI (RFC3986)');
             }
@@ -122,6 +122,6 @@ class FormatConstraint implements Constraint
 
         $errors = DateTime::getLastErrors();
 
-        return $errors['warning_count'] === 0 && $errors['error_count'] === 0;
+        return 0 === $errors['warning_count'] && 0 === $errors['error_count'];
     }
 }

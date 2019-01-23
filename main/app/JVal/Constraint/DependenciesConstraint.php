@@ -36,7 +36,7 @@ class DependenciesConstraint implements Constraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_OBJECT;
+        return Types::TYPE_OBJECT === $type;
     }
 
     /**

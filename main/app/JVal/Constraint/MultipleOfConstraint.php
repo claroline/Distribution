@@ -35,7 +35,7 @@ class MultipleOfConstraint implements Constraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_INTEGER || $type === Types::TYPE_NUMBER;
+        return Types::TYPE_INTEGER === $type || Types::TYPE_NUMBER === $type;
     }
 
     /**
@@ -78,7 +78,7 @@ class MultipleOfConstraint implements Constraint
             $fMod = (float) round($modulus, max($decimals1, $decimals2));
         }
 
-        if ($fMod != 0) {
+        if (!$fMod) {
             $context->addViolation('should be a multiple of %s', [$divider]);
         }
     }

@@ -27,8 +27,8 @@ abstract class AbstractRangeConstraint implements Constraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_INTEGER
-            || $type === Types::TYPE_NUMBER;
+        return Types::TYPE_INTEGER === $type
+            || Types::TYPE_NUMBER === $type;
     }
 
     /**

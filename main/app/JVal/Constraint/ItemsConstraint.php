@@ -34,7 +34,7 @@ class ItemsConstraint implements Constraint
      */
     public function supports($type)
     {
-        return $type === Types::TYPE_ARRAY;
+        return Types::TYPE_ARRAY === $type;
     }
 
     /**
@@ -80,7 +80,7 @@ class ItemsConstraint implements Constraint
                 // NOTE: this is adapted for 0-based indexation.
                 if ($index < $itemSize) {
                     $walker->applyConstraints($item, $schema->items[$index], $context);
-                } elseif ($schema->additionalItems === false) {
+                } elseif (false === $schema->additionalItems) {
                     $context->addViolation('additional items are not allowed');
                 } else {
                     $walker->applyConstraints($item, $schema->additionalItems, $context);
@@ -97,7 +97,7 @@ class ItemsConstraint implements Constraint
             $schema->items = new stdClass();
         }
 
-        if (!property_exists($schema, 'additionalItems') || $schema->additionalItems === true) {
+        if (!property_exists($schema, 'additionalItems') || true === $schema->additionalItems) {
             $schema->additionalItems = new stdClass();
         }
     }
