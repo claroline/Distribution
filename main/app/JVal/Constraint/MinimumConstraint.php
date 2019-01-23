@@ -31,7 +31,7 @@ class MinimumConstraint extends AbstractRangeConstraint
      */
     public function apply($instance, stdClass $schema, Context $context, Walker $walker)
     {
-        if ($schema->exclusiveMinimum === false) {
+        if (false === $schema->exclusiveMinimum) {
             if ($instance < $schema->minimum) {
                 $context->addViolation('should be greater than or equal to %s', [$schema->minimum]);
             }
