@@ -47,6 +47,13 @@ const TrashTool = props =>
           name: 'meta.updated',
           label: trans('last_modification'),
           displayed: true
+        },
+        {
+          type: 'string',
+          filterable: false,
+          displayed: true,
+          label: trans('type'),
+          name: trans('meta.type', {}, 'resource')
         }
       ]}
       card={ResourceList.card}
