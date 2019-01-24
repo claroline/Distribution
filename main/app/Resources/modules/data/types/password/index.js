@@ -1,14 +1,21 @@
+import {trans} from '#/main/app/intl/translation'
 import {string} from '#/main/core/validation'
 
-import {PasswordGroup} from '#/main/core/layout/form/components/group/password-group'
+import {PasswordInput} from '#/main/app/data/types/password/components/input'
 
 // todo handle password complexity options
 
 const dataType = {
   name: 'password',
+  meta: {
+    icon: 'fa fa-fw fa-lock',
+    label: trans('password', {}, 'data'),
+    description: trans('password_desc', {}, 'data')
+  },
   validate: (value) => string(value),
+  render: () => '******',
   components: {
-    form: PasswordGroup
+    input: PasswordInput
   }
 }
 

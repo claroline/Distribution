@@ -1540,6 +1540,7 @@
     "registration_confirm": "Valider mon inscription",
     "form_next_step": "Suivant",
     "show_password": "Afficher le mot de passe",
+    "hide_password": "Masquer le mot de passe",
     "accept_term_of_service": "Accepter les conditions d'utilisation",
     "registered_at": "inscrit le",
     "last_logged_at": "dernière connexion le",
