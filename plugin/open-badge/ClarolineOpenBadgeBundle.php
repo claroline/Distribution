@@ -25,4 +25,9 @@ class ClarolineOpenBadgeBundle extends DistributionPluginBundle
     {
         return new AdditionalInstaller();
     }
+
+    public function getRequiredPlugins()
+    {
+        return ['Claroline\\CoreBundle\\ClarolineCoreBundle'];
+    }
 }
