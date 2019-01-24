@@ -37,14 +37,17 @@ const BadgeTabComponent = props =>
       }, {
         path: '/badges/form/:id?',
         component: Badge,
+        exact: true,
         onEnter: (params) => props.openBadge(params.id, props.workspace)
       }, {
         path: '/badges/assertion/:id',
         component: Assertion,
+        exact: true,
         onEnter: (params) => props.openAssertion(params.id)
       }, {
         path: '/badges/view/:id',
         component: BadgeViewer,
+        exact: true,
         onEnter: (params) => props.openBadge(params.id, props.workspace)
       }
     ]}
