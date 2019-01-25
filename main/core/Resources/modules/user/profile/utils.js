@@ -21,7 +21,22 @@ function getDefaultFacet() {
   }
 }
 
-function getDetailsDefaultSection() {
+function getDetailsDefaultSection(parameters) {
+  const user = currentUser()
+  console.log(user, parameters)
+
+  let displayEmail = false
+  parameters.show_email.forEach(role => {
+    user.roles.forEach(userRole => {
+      if (userRole.name === role) {
+        displayEmail = true
+      }
+    })
+  })
+
+  console.log(displayEmail)
+
+
   return {
     id: 'default-props',
     title: trans('general'),
@@ -30,7 +45,8 @@ function getDetailsDefaultSection() {
       {
         name: 'email',
         type: 'email',
-        label: trans('email')
+        label: trans('email'),
+        displayed: displayEmail
       }, {
         name: 'meta.description',
         type: 'html',
