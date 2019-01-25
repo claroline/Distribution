@@ -1,7 +1,7 @@
 import {trans} from '#/main/app/intl/translation'
 import {chain, number, inRange} from '#/main/core/validation'
 
-import {NumberGroup} from '#/main/core/layout/form/components/group/number-group'
+import {NumberInput} from '#/main/app/data/types/number/components/input'
 
 /**
  * Number definition.
@@ -12,8 +12,8 @@ const dataType = {
   meta: {
     creatable: true,
     icon: 'fa fa-fw fa fa-calculator',
-    label: trans('number'),
-    description: trans('number_desc')
+    label: trans('number', {}, 'data'),
+    description: trans('number_desc', {}, 'data')
   },
 
   /**
@@ -68,7 +68,7 @@ const dataType = {
    * Custom components for numbers rendering.
    */
   components: {
-    form: NumberGroup
+    input: NumberInput
   }
 }
 

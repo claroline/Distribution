@@ -9,7 +9,7 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
-import {FormProp} from '#/main/app/content/form/components/prop'
+import {DataInput} from '#/main/app/data/components/input'
 
 const CollectionInput = props =>
   <div id={props.id} className="collection-control">
@@ -33,7 +33,7 @@ const CollectionInput = props =>
       <ul>
         {props.value.map((value, index) =>
           <li key={index} className="collection-item">
-            <FormProp
+            <DataInput
               id={`${props.id}-${index}`}
               type={props.type}
               options={props.options}

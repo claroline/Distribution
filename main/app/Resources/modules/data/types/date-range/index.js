@@ -1,6 +1,6 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {DateRangeGroup} from '#/main/core/layout/form/components/group/date-range-group.jsx'
+import {DateRangeInput} from '#/main/app/data/types/date-range/components/input'
 
 // todo implements Search
 // todo implements render()
@@ -10,10 +10,9 @@ import {DateRangeGroup} from '#/main/core/layout/form/components/group/date-rang
 const dataType = {
   name: 'date-range',
   meta: {
-    creatable: false,
     icon: 'fa fa-fw fa-calendar',
-    label: trans('date_range'),
-    description: trans('date_range_desc')
+    label: trans('date_range', {}, 'actions'),
+    description: trans('date_range_desc', {}, 'actions')
   },
 
   /**
@@ -30,7 +29,7 @@ const dataType = {
   },
 
   components: {
-    form: DateRangeGroup
+    input: DateRangeInput
   }
 }
 

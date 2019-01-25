@@ -6,7 +6,6 @@ import {HtmlText} from '#/main/core/layout/components/html-text'
 import {getPlainText} from '#/main/app/data/types/html/utils'
 
 // react components require a DOM wrapper, that's why there is an extra span.
-// TODO: Change it to only return plain text once intra-plugin communication available
 const HtmlCell = props => {
   if (props.data) {
     if (props.trust) {

@@ -1,7 +1,8 @@
 import {trans} from '#/main/app/intl/translation'
-import {isValidDate, displayDate, apiDate} from '#/main/app/intl/date'
+import {chain, date, string} from '#/main/core/validation'
+import {displayDate, apiDate} from '#/main/app/intl/date'
 
-import {DateGroup} from '#/main/core/layout/form/components/group/date-group'
+import {DateInput} from '#/main/app/data/types/date/components/input'
 import {DateSearch} from '#/main/app/data/types/date/components/search'
 
 const dataType = {
@@ -9,8 +10,8 @@ const dataType = {
   meta: {
     creatable: true,
     icon: 'fa fa-fw fa-calendar-o',
-    label: trans('date'),
-    description: trans('date_desc')
+    label: trans('date', {}, 'data'),
+    description: trans('date_desc', {}, 'data')
   },
 
   /**
@@ -37,14 +38,17 @@ const dataType = {
    * Validates input value for a date.
    *
    * @param {string} value
+   * @param {object} options
    *
    * @return {boolean}
    */
-  validate: (value) => typeof value === 'string' && isValidDate(value),
+  validate: (value, options = {}) => chain(value, options, [string, date]),
 
   components: {
-    form: DateGroup,
-    search: DateSearch
+    search: DateSearch,
+
+    // new api
+    input: DateInput
   }
 }
 

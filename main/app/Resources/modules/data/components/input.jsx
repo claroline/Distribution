@@ -99,6 +99,7 @@ class DataInput extends Component {
           id: this.props.id,
           label: this.props.label,
           value: this.props.value,
+          error: this.props.error,
           placeholder: this.props.placeholder,
           disabled: this.props.disabled,
           size: this.props.size,

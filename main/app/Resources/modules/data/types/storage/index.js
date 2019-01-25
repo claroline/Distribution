@@ -1,6 +1,6 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {StorageGroup} from '#/main/core/layout/form/components/group/storage-group'
+import {StorageInput} from '#/main/app/data/types/storage/components/input'
 
 // TODO finish implementation
 
@@ -12,15 +12,15 @@ const dataType = {
   name: 'storage',
   meta: {
     icon: 'fa fa-fw fa fa-database',
-    label: trans('storage'),
-    description: trans('storage_desc')
+    label: trans('storage', {}, 'data'),
+    description: trans('storage_desc', {}, 'data')
   },
 
   /**
    * Custom components for storage size rendering.
    */
   components: {
-    form: StorageGroup
+    input: StorageInput
   }
 }
 

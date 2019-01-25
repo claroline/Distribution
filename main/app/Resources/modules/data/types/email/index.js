@@ -2,19 +2,19 @@ import {trans} from '#/main/app/intl/translation'
 import {chain, string, email} from '#/main/core/validation'
 
 import {EmailDisplay} from '#/main/app/data/types/email/components/display'
-import {EmailGroup} from '#/main/core/layout/form/components/group/email-group'
+import {EmailInput} from '#/main/app/data/types/email/components/input'
 
 const dataType = {
   name: 'email',
   meta: {
-    creatable: true,
     icon: 'fa fa-fw fa-at',
     label: trans('email', {}, 'data'),
-    description: trans('email_desc', {}, 'data')
+    description: trans('email_desc', {}, 'data'),
+    creatable: true
   },
   validate: (value) => chain(value, {}, [string, email]),
   components: {
-    form: EmailGroup,
+    input: EmailInput,
     details: EmailDisplay,
     table: EmailDisplay
   }

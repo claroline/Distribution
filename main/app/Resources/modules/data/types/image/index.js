@@ -1,17 +1,16 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {ImageGroup} from '#/main/core/layout/form/components/group/image-group'
+import {ImageInput} from '#/main/app/data/types/image/components/input'
 
 const dataType = {
   name: 'image',
   meta: {
-    creatable: false,
     icon: 'fa fa-fw fa-picture-o',
-    label: trans('image'),
-    description: trans('image_desc')
+    label: trans('image', {}, 'data'),
+    description: trans('image_desc', {}, 'data')
   },
   components: {
-    form: ImageGroup
+    input: ImageInput
   }
 }
 

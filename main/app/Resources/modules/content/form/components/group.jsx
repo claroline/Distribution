@@ -11,6 +11,8 @@ import {ContentError} from '#/main/app/content/components/error'
 
 import {FormGroup as FormGroupTypes} from '#/main/core/layout/form/prop-types'
 
+// TODO : move in Data module and rename (this is not only used in form)
+
 /**
  * Renders an agnostic form group.
  * It is used to wrap inputs in order to render the associated meta (label, errors, etc.).
@@ -25,12 +27,16 @@ const FormGroup = props =>
   })}>
     {props.label &&
       <label
-        className={classes('control-label', {'sr-only': props.hideLabel})}
+        className={classes('control-label', {
+          'sr-only': props.hideLabel
+        })}
         htmlFor={props.id}
       >
         {props.label}
 
-        {props.optional && <small>({trans('optional')})</small>}
+        {props.optional &&
+          <small>({trans('optional')})</small>
+        }
       </label>
     }
 

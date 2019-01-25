@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import classes from 'classnames'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
@@ -8,7 +8,7 @@ import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-class PasswordInput extends Component {
+class PasswordInput extends PureComponent {
   constructor(props) {
     super(props)
 

@@ -1,8 +1,9 @@
 import {trans} from '#/main/app/intl/translation'
-//import {chain, string, url} from '#/main/core/validation'
 
-import {UrlGroup} from '#/main/core/layout/form/components/group/url-group'
 import {UrlDisplay} from '#/main/app/data/types/url/components/display'
+import {UrlInput} from '#/main/app/data/types/url/components/input'
+
+// TODO : add validation
 
 const dataType = {
   name: 'url',
@@ -11,10 +12,12 @@ const dataType = {
     label: trans('url', {}, 'data'),
     description: trans('url_desc', {}, 'data')
   },
-  //validate: (value, options) => chain(value, options, [string, url]),
   components: {
     details: UrlDisplay,
-    form: UrlGroup
+
+    // new api
+    input: UrlInput,
+    display: UrlDisplay
   }
 }
 

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
 import has from 'lodash/has'
 
@@ -12,9 +12,26 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 // todo : merge with file type
 
-class Image extends Component {
+class ImageInputComponent extends PureComponent {
   constructor(props) {
     super(props)
+
+    this.onChange = this.onChange.bind(this)
+    this.onDelete = this.onDelete.bind(this)
+  }
+
+  onChange() {
+    if (this.input.files[0]) {
+      const file = this.input.files[0]
+
+      if (this.props.autoUpload) {
+        this.props.uploadFile(file, this.props.uploadUrl, this.props.onChange)
+      }
+    }
+  }
+
+  onDelete() {
+    this.props.deleteFile(this.props.value.id, this.props.onChange)
   }
 
   render() {
@@ -27,15 +44,7 @@ class Image extends Component {
             className="form-control"
             accept="image"
             ref={input => this.input = input}
-            onChange={() => {
-              if (this.input.files[0]) {
-                const file = this.input.files[0]
-
-                if (this.props.autoUpload) {
-                  this.props.uploadFile(file, this.props.uploadUrl, this.props.onChange)
-                }
-              }
-            }}
+            onChange={this.onChange}
           />
         }
 
@@ -55,9 +64,9 @@ class Image extends Component {
               type={CALLBACK_BUTTON}
               className="btn"
               icon="fa fa-fw fa-trash-o"
-              label={trans('delete')}
+              label={trans('delete', {}, 'actions')}
               tooltip="left"
-              callback={() => this.props.deleteFile(this.props.value.id, this.props.onChange)}
+              callback={this.onDelete}
               dangerous={true}
             />
           </div>
@@ -68,7 +77,7 @@ class Image extends Component {
   }
 }
 
-implementPropTypes(Image, FormFieldTypes, {
+implementPropTypes(ImageInputComponent, FormFieldTypes, {
   value: T.object,
   size: T.arrayOf(T.number),
   autoUpload: T.bool.isRequired,
@@ -81,9 +90,9 @@ implementPropTypes(Image, FormFieldTypes, {
   uploadUrl: ['apiv2_file_upload']
 })
 
-//this is not pretty
-const ConnectedImage = connect(
-  () => ({}),
+// this is not pretty
+const ImageInput = connect(
+  null,
   dispatch => ({
     uploadFile(file, url, callback) {
       dispatch(actions.uploadFile(file, url, callback))
@@ -92,8 +101,8 @@ const ConnectedImage = connect(
       dispatch(actions.deleteFile(file, callback))
     }
   })
-)(Image)
+)(ImageInputComponent)
 
 export {
-  ConnectedImage as Image
+  ImageInput
 }

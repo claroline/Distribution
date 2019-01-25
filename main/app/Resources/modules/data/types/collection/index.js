@@ -29,8 +29,7 @@ const dataType = {
   },
 
   components: {
-    form: CollectionGroup, // old version. to remove
-
+    group: CollectionGroup,
     input: CollectionInput
   }
 }

@@ -123,7 +123,7 @@ class FieldList extends Component {
                     type={MODAL_BUTTON}
                     className="btn-link"
                     icon="fa fa-fw fa-pencil"
-                    label={trans('edit')}
+                    label={trans('edit', {}, 'actions')}
                     tooltip="top"
                     modal={[MODAL_FIELD_PARAMETERS, {
                       data: field,
@@ -136,7 +136,7 @@ class FieldList extends Component {
                     type={CALLBACK_BUTTON}
                     className="btn-link"
                     icon="fa fa-fw fa-trash-o"
-                    label={trans('delete')}
+                    label={trans('delete', {}, 'actions')}
                     tooltip="top"
                     confirm={{
                       title: trans('delete_field'),

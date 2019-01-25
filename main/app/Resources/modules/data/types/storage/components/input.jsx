@@ -19,7 +19,7 @@ const STORAGE_UNITS = {
   TB: 'TB'
 }
 
-const Storage = props =>
+const StorageInput = props =>
   <div className="input-group">
     <Numeric
       {...props}
@@ -47,11 +47,11 @@ const Storage = props =>
     </span>
   </div>
 
-implementPropTypes(Storage, FormFieldTypes, {
+implementPropTypes(StorageInput, FormFieldTypes, {
   // more precise value type
   value: T.number
 })
 
 export {
-  Storage
+  StorageInput
 }

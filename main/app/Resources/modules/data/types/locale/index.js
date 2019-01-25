@@ -1,16 +1,17 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {LocaleGroup} from '#/main/core/layout/form/components/group/locale-group'
+import {LocaleInput} from '#/main/app/data/types/locale/components/input'
 
 const dataType = {
   name: 'locale',
   meta: {
-    label: trans('locale'),
-    description: trans('locale_desc')
+    icon: 'fa fa-fw fa-globe',
+    label: trans('locale', {}, 'data'),
+    description: trans('locale_desc', {}, 'data')
   },
   render: (raw) => trans(raw),
   components: {
-    form: LocaleGroup
+    input: LocaleInput
   }
 }
 
