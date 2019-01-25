@@ -23,7 +23,6 @@ function getDefaultFacet() {
 
 function getDetailsDefaultSection(parameters) {
   const user = currentUser()
-  console.log(user, parameters)
 
   let displayEmail = false
   parameters.show_email.forEach(role => {
@@ -33,9 +32,6 @@ function getDetailsDefaultSection(parameters) {
       }
     })
   })
-
-  console.log(displayEmail)
-
 
   return {
     id: 'default-props',
