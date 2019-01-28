@@ -1,7 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
 import {chain, array, string, notBlank, lengthInRange} from '#/main/core/validation'
 
-import {ScoreRulesGroup} from '#/plugin/exo/data/score-rules/components/group'
 import {ScoreRulesInput} from '#/plugin/exo/data/score-rules/components/input'
 
 // TODO : create score-rule and use `collection`

@@ -48,7 +48,6 @@ implementPropTypes(BooleanInput, FormFieldTypes, {
   inline: false
 })
 
-
 export {
   BooleanInput
 }
