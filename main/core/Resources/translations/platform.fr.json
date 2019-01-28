@@ -1753,5 +1753,7 @@
     "new_category": "Nouvelle catégorie",
     "notified_actions": "Actions notifiées",
     "add_rights": "Ajouter des droits",
-    "show_email": "Montrer l'e-mail"
+    "show_email": "Montrer l'e-mail",
+    "same_window": "Dans la même fenêtre (défaut)",
+    "new_window": "Dans une nouvelle fenêtre/onglet"
 }

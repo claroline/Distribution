@@ -71,6 +71,7 @@ const PlayerComponent = props => {
                     enableNavigation={props.enableNavigation}
                     disableNavigation={props.disableNavigation}
                     onEmbeddedResourceClose={props.computeResourceDuration}
+                    secondaryResourcesTarget={props.path.opening.secondaryResources}
                   />
                 </PathCurrent>
 

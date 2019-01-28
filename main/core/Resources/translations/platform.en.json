@@ -1720,5 +1720,7 @@
     "new_category": "New category",
     "notified_actions": "Notified actions",
     "add_rights": "Add rights",
-    "show_email": "Show email"
+    "show_email": "Show email",
+    "same_window": "In the same window (default)",
+    "new_window": "In a new window/tab"
 }

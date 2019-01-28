@@ -7,7 +7,7 @@ import {currentUser} from '#/main/app/security'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {Button} from '#/main/app/action/components/button'
-import {MENU_BUTTON, CALLBACK_BUTTON} from '#/main/app/buttons'
+import {MENU_BUTTON, CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 import {ResourceEmbedded} from '#/main/core/resource/components/embedded'
@@ -50,9 +50,10 @@ const SecondaryResources = props =>
         size="sm"
         orientation="row"
         primaryAction={{
-          type: 'url',
+          type: URL_BUTTON,
           label: trans('open', {}, 'actions'),
-          target: ['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}]
+          target: ['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}],
+          open: props.target
         }}
         data={resource.resource}
       />
@@ -61,6 +62,7 @@ const SecondaryResources = props =>
 
 SecondaryResources.propTypes = {
   className: T.string,
+  target: T.oneOf(['_self', '_blank']),
   resources: T.arrayOf(T.shape({
     resource: T.shape({
       autoId: T.number.isRequired,
@@ -130,6 +132,7 @@ const Step = props =>
             'col-md-12': !props.fullWidth
           })}
           resources={[].concat(props.inheritedResources, props.secondaryResources)}
+          target={props.secondaryResourcesTarget}
         />
       }
     </div>
@@ -140,6 +143,7 @@ implementPropTypes(Step, StepTypes, {
   numbering: T.string,
   showResourceHeader: T.bool.isRequired,
   manualProgressionAllowed: T.bool.isRequired,
+  secondaryResourcesTarget: T.oneOf(['_self', '_blank']),
   updateProgression: T.func.isRequired,
   enableNavigation: T.func.isRequired,
   disableNavigation: T.func.isRequired,

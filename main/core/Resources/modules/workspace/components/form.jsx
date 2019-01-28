@@ -103,6 +103,24 @@ const WorkspaceFormComponent = (props) => {
           }
         ]
       }, {
+        icon: 'fa fa-fw fa-desktop',
+        title: trans('display_parameters'),
+        fields: [
+          {
+            name: 'thumbnail',
+            type: 'image',
+            label: trans('thumbnail')
+          }, {
+            name: 'poster',
+            type: 'image',
+            label: trans('poster')
+          }, {
+            name: 'display.showTools',
+            type: 'boolean',
+            label: trans('showTools')
+          }
+        ]
+      }, {
         icon: 'fa fa-fw fa-sign-in',
         title: trans('opening_parameters'),
         fields: [
@@ -132,8 +150,8 @@ const WorkspaceFormComponent = (props) => {
                   multiple: false,
                   condensed: true,
                   choices: props.tools ? props.tools.reduce((acc, tool) => Object.assign(acc, {
-                    [tool.name]: trans(tool.name, {}, 'tools')
-                  }), {}) : {}
+                      [tool.name]: trans(tool.name, {}, 'tools')
+                    }), {}) : {}
                 }
               }, {
                 name: 'opening.target',
@@ -147,24 +165,6 @@ const WorkspaceFormComponent = (props) => {
                 }
               }
             ]
-          }
-        ]
-      }, {
-        icon: 'fa fa-fw fa-desktop',
-        title: trans('display_parameters'),
-        fields: [
-          {
-            name: 'thumbnail',
-            type: 'image',
-            label: trans('thumbnail')
-          }, {
-            name: 'poster',
-            type: 'image',
-            label: trans('poster')
-          }, {
-            name: 'display.showTools',
-            type: 'boolean',
-            label: trans('showTools')
           }
         ]
       }, {
