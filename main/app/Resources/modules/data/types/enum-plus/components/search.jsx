@@ -2,7 +2,10 @@ import React from 'react'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {DataSearch as DataSearchTypes} from '#/main/app/data/types/prop-types'
-import {Select} from '#/main/core/layout/select-plus/components/select.jsx'
+
+import {Select} from '#/main/app/data/types/enum-plus/components/select'
+
+// TODO : merge with Select component
 
 const EnumPlusSearch = (props) =>
   <Select

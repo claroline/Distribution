@@ -11,7 +11,7 @@ const Vertical = (props) =>
     {...omit(props, 'tabs')}
     className={classes('lateral-nav', props.className)}
   >
-    {props.tabs.map((tab, tabIndex) =>
+    {props.tabs.map((tab) =>
       <NavLink
         to={tab.path}
         key={toKey(tab.title)}

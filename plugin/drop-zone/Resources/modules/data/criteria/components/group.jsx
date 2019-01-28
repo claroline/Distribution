@@ -6,7 +6,7 @@ import {FormGroup} from '#/main/app/content/form/components/group'
  * Overrides default form group to let each item in the
  * collection display its own errors.
  */
-const EnumGroup = props =>
+const CriteriaGroup = props =>
   <FormGroup
     {...props}
     error={typeof props.error === 'string' ? props.error : undefined}
@@ -14,8 +14,8 @@ const EnumGroup = props =>
     {props.children}
   </FormGroup>
 
-EnumGroup.propTypes = FormGroup.propTypes
+CriteriaGroup.propTypes = FormGroup.propTypes
 
 export {
-  EnumGroup
+  CriteriaGroup
 }

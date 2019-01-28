@@ -1,4 +1,4 @@
-import React, {createElement, Component} from 'react'
+import {createElement, Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 import merge from 'lodash/merge'
@@ -58,7 +58,7 @@ class DataInput extends Component {
           group: get(definition, 'components.group'),
           input: get(definition, 'components.input')
         }),
-        (error) => {
+        () => {
           // todo : do something
         }
       )

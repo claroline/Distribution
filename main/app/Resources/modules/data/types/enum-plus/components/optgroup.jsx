@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/app/intl/translation'
-import {Option} from '#/main/core/layout/select-plus/components/option.jsx'
+
+import {Option} from '#/main/app/data/types/enum-plus/components/option'
 
 class Optgroup extends Component {
   constructor(props) {

@@ -4,7 +4,6 @@ import get from 'lodash/get'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
-import {selectors} from '#/main/core/administration/parameters/appearance/store/selectors'
 
 const Theme = () =>
   <FormData

@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty'
 import {chain, array, string, notBlank} from '#/main/core/validation'
 
-import {RolesFormGroup} from '#/plugin/planned-notification/data/roles/components/roles-form-group'
+import {RolesInput} from '#/plugin/planned-notification/data/types/roles/components/input'
 
 // todo : should be in core
 
@@ -27,7 +27,7 @@ const dataType = {
   }]),
 
   components: {
-    form: RolesFormGroup
+    input: RolesInput
   }
 }
 

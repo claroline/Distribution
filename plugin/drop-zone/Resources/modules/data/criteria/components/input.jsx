@@ -4,8 +4,7 @@ import {trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 
-import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
-import {FormGroup} from '#/main/app/content/form/components/group'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group'
@@ -50,12 +49,8 @@ Criterion.propTypes = {
   onDelete: T.func.isRequired
 }
 
-const CriteriaGroup = props =>
-  <FormGroup
-    {...props}
-    error={props.error && typeof props.error === 'string' ? props.error : undefined}
-    className="criteria-group"
-  >
+const CriteriaInput = props =>
+  <div className="criteria-group">
     {0!== props.value.length &&
       <ul>
         {props.value.map((criterion, index) =>
@@ -90,31 +85,28 @@ const CriteriaGroup = props =>
       <div className="no-criterion-info">{props.placeholder}</div>
     }
 
-    <button
-      className="btn btn-block btn-default"
-      type="button"
-      onClick={() => props.onChange([].concat(props.value, [{
+    <Button
+      className="btn btn-block"
+      type={CALLBACK_BUTTON}
+      icon="fa fa-fw fa-plus"
+      label={trans('add_criterion', {}, 'dropzone')}
+      callback={() => props.onChange([].concat(props.value, [{
         id: makeId(),
         instruction: ''
       }]))}
-    >
-      <span className="fa fa-fw fa-plus icon-with-text-right" />
-      {trans('add_criterion', {}, 'dropzone')}
-    </button>
-  </FormGroup>
+    />
+  </div>
 
-implementPropTypes(CriteriaGroup, FormGroupWithFieldTypes, {
+implementPropTypes(CriteriaInput, FormFieldTypes, {
   // more precise value type
   value: T.arrayOf(
     T.shape(CriterionTypes.propTypes)
-  ),
-  // override error types to handles individual criterion errors
-  error: T.oneOfType([T.string, T.object])
+  )
 }, {
   value: [],
   placeholder: trans('no_criterion', {}, 'dropzone')
 })
 
 export {
-  CriteriaGroup
+  CriteriaInput
 }

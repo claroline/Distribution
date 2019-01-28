@@ -4,7 +4,6 @@ import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
-import {toKey} from '#/main/core/scaffolding/text/utils'
 
 import {ContentHelp} from '#/main/app/content/components/help'
 import {ContentError} from '#/main/app/content/components/error'

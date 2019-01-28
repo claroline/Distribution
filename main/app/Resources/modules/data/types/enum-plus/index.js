@@ -8,8 +8,8 @@ const dataType = {
   meta: {
     creatable: true,
     icon: 'fa fa-fw fa fa-list',
-    label: trans('enum_plus'),
-    description: trans('enum_plus_desc')
+    label: trans('enum_plus', {}, 'data'),
+    description: trans('enum_plus_desc', {}, 'data')
   },
   parse: (display, options) => parseChoice(options.choices, display, options.transDomain),
   render: (raw, options) => renderChoice(options.choices, raw, options.transDomain),

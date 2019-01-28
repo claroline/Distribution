@@ -1,10 +1,7 @@
 import React, {Component} from 'react'
 
-import {trans} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
-import {DateGroup} from '#/main/core/layout/form/components/group/date-group.jsx'
 
 import {DateInput} from '#/main/app/data/types/date/components/input'
 

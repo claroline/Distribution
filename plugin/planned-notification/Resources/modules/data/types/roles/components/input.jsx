@@ -5,13 +5,12 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {trans} from '#/main/app/intl/translation'
-import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
-import {FormGroup} from '#/main/app/content/form/components/group'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
-import {Role as RoleType} from '#/plugin/planned-notification/data/roles/prop-types'
+import {Role as RoleType} from '#/plugin/planned-notification/data/types/roles/prop-types'
 
 const Role = props =>
   <span className="role-item">
@@ -40,12 +39,8 @@ Role.defaultProps = {
   onDelete: () => {}
 }
 
-const RolesFormGroupComponent = props =>
-  <FormGroup
-    {...props}
-    error={props.error && typeof props.error === 'string' ? props.error : undefined}
-    className="roles-form-group"
-  >
+const RolesInputComponent = props =>
+  <div className="roles-form-group">
     {props.value.length > 0 ?
       <div className="roles-form-list">
         {props.value.map((role, index) =>
@@ -76,9 +71,9 @@ const RolesFormGroupComponent = props =>
         callback={() => props.pickRoles(props.workspace.uuid, props)}
       />
     }
-  </FormGroup>
+  </div>
 
-implementPropTypes(RolesFormGroupComponent, FormGroupWithFieldTypes, {
+implementPropTypes(RolesInputComponent, FormFieldTypes, {
   value: T.arrayOf(
     T.shape(RoleType.propTypes)
   ),
@@ -91,12 +86,12 @@ implementPropTypes(RolesFormGroupComponent, FormGroupWithFieldTypes, {
   value: []
 })
 
-const RolesFormGroup = connect(
+const RolesInput = connect(
   state => ({
     workspace: select.workspace(state)
   }),
   dispatch => ({
-    pickRoles(worskpaceUuid, props) {
+    pickRoles(workspaceUuid, props) {
       dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-id-badge',
         title: trans('select_roles', {}, 'planned_notification'),
@@ -113,7 +108,7 @@ const RolesFormGroup = connect(
           }
         ],
         fetch: {
-          url: ['apiv2_plannednotification_workspace_roles_list', {workspace: worskpaceUuid}],
+          url: ['apiv2_plannednotification_workspace_roles_list', {workspace: workspaceUuid}],
           autoload: true
         },
         handleSelect: (selected) => {
@@ -130,8 +125,8 @@ const RolesFormGroup = connect(
       }))
     }
   })
-)(RolesFormGroupComponent)
+)(RolesInputComponent)
 
 export {
-  RolesFormGroup
+  RolesInput
 }

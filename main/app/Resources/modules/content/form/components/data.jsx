@@ -11,7 +11,6 @@ import {Heading} from '#/main/core/layout/components/heading'
 import {ContentMeta} from '#/main/app/content/meta/components/meta'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {SubSet} from '#/main/core/layout/form/components/fieldset/sub-set'
-import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set'
 
 import {createFormDefinition} from '#/main/app/content/form/utils'
 import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/prop-types'
@@ -113,7 +112,7 @@ class FormData extends Component {
             label={field.label}
             hideLabel={field.hideLabel}
             help={field.help}
-            optional={!this.props.required}
+            optional={!field.required}
             error={get(this.props.errors, field.name)}
             warnOnly={!this.props.validating}
           >

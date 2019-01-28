@@ -4,7 +4,7 @@ import classes from 'classnames'
 import {tex, trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {FormGroup} from '#/main/app/content/form/components/group'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
@@ -162,12 +162,8 @@ ScoreRule.propTypes = {
   onDelete: T.func.isRequired
 }
 
-const ScoreRulesGroup = props =>
-  <FormGroup
-    {...props}
-    error={props.error && typeof props.error === 'string' ? props.error : undefined}
-    className="score-rules-group"
-  >
+const ScoreRulesInput = props =>
+  <div className="score-rules-group">
     <div className="well well-sm">
       <div>{tex('score_rule_considered')} <b>{tex('score_rule_correct_answers')}</b> :</div>
       <ul className="score-rules-info-list">
@@ -235,9 +231,9 @@ const ScoreRulesGroup = props =>
       <span className="fa fa-fw fa-plus icon-with-text-right" />
       {tex('add_rule')}
     </button>
-  </FormGroup>
+  </div>
 
-implementPropTypes(ScoreRulesGroup, FormGroupWithFieldTypes, {
+implementPropTypes(ScoreRulesInput, FormFieldTypes, {
   // more precise value type
   value: T.arrayOf(
     T.shape(RuleType.propTypes)
@@ -250,5 +246,5 @@ implementPropTypes(ScoreRulesGroup, FormGroupWithFieldTypes, {
 })
 
 export {
-  ScoreRulesGroup
+  ScoreRulesInput
 }

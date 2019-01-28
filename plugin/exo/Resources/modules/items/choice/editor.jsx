@@ -21,7 +21,8 @@ import {
   NUMBERING_NUMERIC
 } from '#/plugin/exo/quiz/enums'
 import {QCM_MULTIPLE, QCM_SINGLE, actions} from '#/plugin/exo/items/choice/editor'
-import {ScoreRulesGroup} from '#/plugin/exo/data/score-rules/components/form-group'
+import {ScoreRulesGroup} from '#/plugin/exo/data/score-rules/components/group'
+import {ScoreRulesInput} from '#/plugin/exo/data/score-rules/components/input'
 
 class ChoiceItem extends Component {
   constructor(props) {
@@ -254,13 +255,19 @@ const Choice = props =>
           label={tex('no_wrong_checked_choice_info')}
           onChange={checked => props.onChange(actions.updateProperty('score.noWrongChoice', checked))}
         />
+
         <ScoreRulesGroup
           id={`item-${props.item.id}-rules`}
           label={tex('rules')}
-          value={props.item.score.rules || []}
-          onChange={value => props.onChange(actions.updateProperty('score.rules', value))}
           error={get(props.item, '_errors.rules')}
-        />
+        >
+          <ScoreRulesInput
+            id={`item-${props.item.id}-rules`}
+            value={props.item.score.rules || []}
+            onChange={value => props.onChange(actions.updateProperty('score.rules', value))}
+            error={get(props.item, '_errors.rules')}
+          />
+        </ScoreRulesGroup>
       </div>
     }
 

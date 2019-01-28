@@ -16,7 +16,6 @@ const CollectionGroup = props =>
 
 CollectionGroup.propTypes = FormGroup.propTypes
 
-
 export {
   CollectionGroup
 }

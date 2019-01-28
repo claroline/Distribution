@@ -5,19 +5,16 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {trans} from '#/main/app/intl/translation'
-import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
-import {FormGroup} from '#/main/app/content/form/components/group.jsx'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
+import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
 import {Message as MessageType} from '#/plugin/planned-notification/tools/planned-notification/prop-types'
 
 // todo : maybe move it in core
 
-const MessageFormGroupComponent = props =>
-  <FormGroup
-    {...props}
-    error={props.error && typeof props.error === 'string' ? props.error : undefined}
+const MessageInputComponent = props =>
+  <div
     className="message-form-group"
   >
     {props.disabled ?
@@ -45,9 +42,9 @@ const MessageFormGroupComponent = props =>
         </span>
       </div>
     }
-  </FormGroup>
+  </div>
 
-implementPropTypes(MessageFormGroupComponent, FormGroupWithFieldTypes, {
+implementPropTypes(MessageInputComponent, FormFieldTypes, {
   value: T.shape(MessageType.propTypes),
   workspace: T.shape({
     uuid: T.string.isRequired
@@ -56,7 +53,7 @@ implementPropTypes(MessageFormGroupComponent, FormGroupWithFieldTypes, {
   pickMessage: T.func.isRequired
 }, {})
 
-const MessageFormGroup = connect(
+const MessageInput = connect(
   state => ({
     workspace: select.workspace(state)
   }),
@@ -100,8 +97,8 @@ const MessageFormGroup = connect(
       }))
     }
   })
-)(MessageFormGroupComponent)
+)(MessageInputComponent)
 
 export {
-  MessageFormGroup
+  MessageInput
 }

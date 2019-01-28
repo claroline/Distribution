@@ -4,7 +4,7 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
-class EmailInput extends EmailInput {
+class EmailInput extends PureComponent {
   constructor(props) {
     super(props)
 

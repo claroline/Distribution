@@ -57,7 +57,7 @@ class UrlInput extends PureComponent {
   }
 }
 
-implementPropTypes(Url, FormFieldTypes, {
+implementPropTypes(UrlInput, FormFieldTypes, {
   value: T.string
 }, {
   value: ''

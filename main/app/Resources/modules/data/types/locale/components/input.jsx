@@ -23,11 +23,6 @@ class LocaleButton extends PureComponent {
   }
 
   render() {
-    let available = this.props.available
-    if (!available) {
-      available = param('locale.available')
-    }
-
     return (
       <Button
         type={CALLBACK_BUTTON}

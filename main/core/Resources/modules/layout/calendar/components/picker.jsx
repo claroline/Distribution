@@ -1,4 +1,4 @@
-/* eslint-ignore react/no-string-refs, react/no-find-dom-node, react/no-string-refs */
+/* eslint-ignore react/no-string-refs, react/no-find-dom-node */
 
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'

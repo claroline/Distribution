@@ -1,18 +1,22 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+
 import {trans} from '#/main/app/intl/translation'
-import {Option} from '#/main/core/layout/select-plus/components/option.jsx'
-import {Optgroup}  from '#/main/core/layout/select-plus/components/optgroup.jsx'
-import {searchChoice, filterChoices} from '#/main/core/layout/select-plus/utils'
+
+import {Option} from '#/main/app/data/types/enum-plus/components/option.jsx'
+import {Optgroup}  from '#/main/app/data/types/enum-plus/components/optgroup'
+import {searchChoice, filterChoices} from '#/main/app/data/types/enum-plus/utils'
 
 class Select extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       collapsed: true,
       selected: null
     }
+    
     this.handleOnChange = this.handleOnChange.bind(this)
     this.handleOnClick  = this.handleOnClick.bind(this)
     this.collapse = this.collapse.bind(this)
@@ -77,6 +81,7 @@ class Select extends Component {
       filterChoices(props.choices, props.value, props.transDomain) :
       props.choices
     const selectedChoice = this.selectedChoice()
+
     return (
       <div
         value={props.value}

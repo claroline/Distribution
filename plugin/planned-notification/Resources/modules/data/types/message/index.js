@@ -1,6 +1,6 @@
 import {chain, string, notBlank} from '#/main/core/validation'
 
-import {MessageFormGroup} from '#/plugin/planned-notification/data/message/components/message-form-group'
+import {MessageInput} from '#/plugin/planned-notification/data/types/message/components/input'
 
 const dataType = {
   name: 'message',
@@ -15,7 +15,7 @@ const dataType = {
   }]),
 
   components: {
-    form: MessageFormGroup
+    input: MessageInput
   }
 }
 
