@@ -4,6 +4,8 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
+// TODO : use main/app/input/components/checkbox
+
 class BooleanInput extends PureComponent {
   constructor(props) {
     super(props)

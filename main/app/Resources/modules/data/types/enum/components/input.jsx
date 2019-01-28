@@ -3,8 +3,7 @@ import React from 'react'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/app/intl/translation'
-import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
-import {FormGroup} from '#/main/app/content/form/components/group'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {TextGroup}  from '#/main/core/layout/form/components/group/text-group'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
@@ -53,12 +52,8 @@ EnumItem.defaultTypes = {
   deleteButtonLabel: trans('delete')
 }
 
-const EnumGroup = (props) =>
-  <FormGroup
-    {...props}
-    error={props.error && typeof props.error === 'string' ? props.error : undefined}
-    className="enum-group"
-  >
+const EnumInput = (props) =>
+  <div className="enum-group">
     {props.value.length > 0 &&
       <ul>
         {props.value.map((item, index) =>
@@ -96,20 +91,19 @@ const EnumGroup = (props) =>
       </div>
     }
 
-    <button
-      className="btn btn-block btn-default"
-      type="button"
-      onClick={() => props.onChange([].concat(props.value, [{
+    <Button
+      className="btn btn-block"
+      type={CALLBACK_BUTTON}
+      icon="fa fa-fw fa-plus"
+      label={props.addButtonLabel}
+      callback={() => props.onChange([].concat(props.value, [{
         id: makeId(),
         value: ''
       }]))}
-    >
-      <span className="fa fa-fw fa-plus icon-with-text-right" />
-      {props.addButtonLabel}
-    </button>
-  </FormGroup>
+    />
+  </div>
 
-implementPropTypes(EnumGroup, FormGroupWithFieldTypes, {
+implementPropTypes(EnumInput, FormFieldTypes, {
   value: T.arrayOf(T.shape({
     id: T.string,
     value: T.string
@@ -125,5 +119,5 @@ implementPropTypes(EnumGroup, FormGroupWithFieldTypes, {
 })
 
 export {
-  EnumGroup
+  EnumInput
 }

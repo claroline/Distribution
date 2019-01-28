@@ -1,6 +1,5 @@
 import {tval} from '#/main/app/intl/translation'
 
-import {FilterGroup} from '#/main/app/data/types/filter/components/group'
 import {FilterInput} from '#/main/app/data/types/filter/components/input'
 
 const dataType = {
@@ -24,8 +23,6 @@ const dataType = {
   },
 
   components: {
-    form: FilterGroup,  // old version. to remove
-
     input: FilterInput
   }
 }

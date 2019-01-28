@@ -1,11 +1,11 @@
 import {trans} from '#/main/app/intl/translation'
 import {chain, number, inRange} from '#/main/core/validation'
 
-import {ScoreForm} from '#/main/app/data/types/score/components/form'
+import {ScoreInput} from '#/main/app/data/types/score/components/input'
 import {ScoreTable} from '#/main/app/data/types/score/components/table'
 
 /**
- * Score data type.
+ * Score data type (maybe not a type).
  *
  * Manages score values.
  */
@@ -14,8 +14,8 @@ const dataType = {
   meta: {
     creatable: false,
     icon: 'fa fa-fw fa fa-check-square-o',
-    label: trans('score'),
-    description: trans('score_desc')
+    label: trans('score', {}, 'data'),
+    description: trans('score_desc', {}, 'data')
   },
 
   parse: (display) => parseFloat(display),
@@ -44,7 +44,7 @@ const dataType = {
    * Custom components for scores rendering.
    */
   components: {
-    form: ScoreForm,
+    input: ScoreInput,
     table: ScoreTable
   }
 }

@@ -1,7 +1,9 @@
 import isEmpty from 'lodash/isEmpty'
 
 import {chain, array, string, notBlank, unique} from '#/main/core/validation'
-import {CascadeEnumGroup} from '#/main/app/data/types/cascade-enum/components/cascade-enum-group'
+
+import {CascadeEnumInput} from '#/main/app/data/types/cascade-enum/components/input'
+import {CascadeEnumGroup} from '#/main/app/data/types/cascade-enum/components/group'
 
 const validateChildren = (children, errors, options) => {
   let allErrors = errors
@@ -70,7 +72,8 @@ const dataType = {
     }
   }]),
   components: {
-    form: CascadeEnumGroup
+    group: CascadeEnumGroup,
+    input: CascadeEnumInput
   }
 }
 

@@ -1,14 +1,14 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {CascadeGroup} from '#/main/core/layout/form/components/group/cascade-group'
+import {CascadeInput} from '#/main/app/data/types/cascade/components/input'
 
 const dataType = {
   name: 'cascade',
   meta: {
     creatable: true,
     icon: 'fa fa-fw fa fa-indent',
-    label: trans('cascade'),
-    description: trans('cascade_desc')
+    label: trans('cascade', {}, 'data'),
+    description: trans('cascade_desc', {}, 'data')
   },
 
   /**
@@ -37,7 +37,7 @@ const dataType = {
   },
   validate: (value, options) => !!options.choices[value],
   components: {
-    form: CascadeGroup
+    input: CascadeInput
   }
 }
 

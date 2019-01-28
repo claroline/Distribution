@@ -2,7 +2,7 @@ import differenceBy from 'lodash/differenceBy'
 
 import {trans, tval} from '#/main/app/intl/translation'
 
-import {ChoiceGroup} from '#/main/core/layout/form/components/group/choice-group'
+import {ChoiceInput} from '#/main/app/data/types/choice/components/input'
 import {ChoiceSearch} from '#/main/app/data/types/choice/components/search'
 
 const dataType = {
@@ -10,8 +10,8 @@ const dataType = {
   meta: {
     creatable: true,
     icon: 'fa fa-fw fa fa-list',
-    label: trans('choice'),
-    description: trans('choice_desc')
+    label: trans('choice', {}, 'data'),
+    description: trans('choice_desc', {}, 'data')
   },
 
   /**
@@ -60,7 +60,7 @@ const dataType = {
   },
   components: {
     search: ChoiceSearch,
-    form: ChoiceGroup
+    input: ChoiceInput
   }
 }
 

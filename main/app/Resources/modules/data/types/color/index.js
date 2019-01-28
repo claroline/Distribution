@@ -1,11 +1,11 @@
 
 import {ColorCell} from '#/main/app/data/types/color/components/cell'
-import {ColorGroup} from '#/main/core/layout/form/components/group/color-group'
+import {ColorInput} from '#/main/app/data/types/color/components/input'
 
 const dataType = {
   name: 'color',
   components: {
-    form: ColorGroup,
+    input: ColorInput,
     table: ColorCell
   }
 }

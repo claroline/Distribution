@@ -48,7 +48,7 @@ const updateValue =  (props, level, value) => {
   return newValue
 }
 
-const Cascade = props =>
+const CascadeInput = props =>
   <fieldset className="cascade-select">
     {props.choices && props.choices.length > 0 &&
       <Select
@@ -84,7 +84,7 @@ const Cascade = props =>
     )}
   </fieldset>
 
-implementPropTypes(Cascade, FormFieldType, {
+implementPropTypes(CascadeInput, FormFieldType, {
   choices: T.array.isRequired,
   value: T.array
 }, {
@@ -92,5 +92,5 @@ implementPropTypes(Cascade, FormFieldType, {
 })
 
 export {
-  Cascade
+  CascadeInput
 }

@@ -4,8 +4,7 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/app/intl/translation'
-import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
-import {FormGroup} from '#/main/app/content/form/components/group'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {TextGroup}  from '#/main/core/layout/form/components/group/text-group'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
@@ -45,7 +44,10 @@ EnumChildren.propTypes = {
 }
 
 const EnumItem = props =>
-  <li className={classes('cascade-enum-item', {'item-root': props.level === 1, 'item-child': props.level > 1})}>
+  <li className={classes('cascade-enum-item', {
+    'item-root': props.level === 1,
+    'item-child': props.level > 1
+  })}>
     <div className="item-container">
       <TextGroup
         id={`item-${props.item.id}-value`}
@@ -131,12 +133,8 @@ EnumItem.defaultTypes = {
   deleteButtonLabel: trans('delete')
 }
 
-const CascadeEnumGroup = (props) =>
-  <FormGroup
-    {...props}
-    error={props.error && typeof props.error === 'string' ? props.error : undefined}
-    className="cascade-enum-group"
-  >
+const CascadeEnumInput = (props) =>
+  <div className="cascade-enum-group">
     {props.value.length > 0 &&
       <ul>
         {props.value.map((item, index) =>
@@ -192,26 +190,24 @@ const CascadeEnumGroup = (props) =>
       </div>
     }
 
-    <button
-      className="btn btn-block btn-default"
-      type="button"
-      onClick={() => props.onChange([].concat(props.value, [{
+    <Button
+      className="btn btn-block"
+      type={CALLBACK_BUTTON}
+      icon="fa fa-fw fa-plus"
+      label={props.addButtonLabel}
+      callback={() => props.onChange([].concat(props.value, [{
         id: makeId(),
         value: '',
         children: []
       }]))}
-    >
-      <span className="fa fa-fw fa-plus icon-with-text-right" />
-      {props.addButtonLabel}
-    </button>
-  </FormGroup>
+    />
+  </div>
 
-implementPropTypes(CascadeEnumGroup, FormGroupWithFieldTypes, {
+implementPropTypes(CascadeEnumInput, FormFieldTypes, {
   value: T.arrayOf(T.shape({
     id: T.string,
     value: T.string
   })),
-  error: T.oneOfType([T.string, T.object]),
   addButtonLabel: T.string.isRequired,
   addChildButtonLabel: T.string.isRequired,
   deleteButtonLabel: T.string.isRequired
@@ -224,5 +220,5 @@ implementPropTypes(CascadeEnumGroup, FormGroupWithFieldTypes, {
 })
 
 export {
-  CascadeEnumGroup
+  CascadeEnumInput
 }

@@ -1,7 +1,7 @@
 import {trans} from '#/main/app/intl/translation'
 
 import {FileDisplay} from '#/main/app/data/types/file/components/display'
-import {FileGroup} from '#/main/core/layout/form/components/group/file-group'
+import {FileInput} from '#/main/app/data/types/file/components/input'
 
 const dataType = {
   name: 'file',
@@ -14,7 +14,7 @@ const dataType = {
   components: {
     table: FileDisplay,
     details: FileDisplay,
-    form: FileGroup
+    input: FileInput
   }
 }
 

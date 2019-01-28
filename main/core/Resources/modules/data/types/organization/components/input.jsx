@@ -5,12 +5,11 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {trans} from '#/main/app/intl/translation'
 import {url, makeCancelable} from '#/main/app/api'
 
-import {FormGroupWithField as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
-import {FormGroup} from '#/main/app/content/form/components/group'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
 import {Select} from '#/main/core/layout/form/components/field/select'
 
-class OrganizationGroup extends Component {
+class OrganizationInput extends Component {
   constructor(props) {
     super(props)
 
@@ -53,35 +52,33 @@ class OrganizationGroup extends Component {
   }
 
   render() {
+    if (!this.state.fetched) {
+      return (
+        <div>
+          {trans('Please wait while we load organizations...')}
+          </div>
+      )
+    }
+
     return (
-      <FormGroup
-        {...this.props}
-      >
-        {!this.state.fetched &&
-          <div>{trans('Please wait while we load organizations...')}</div>
-        }
+      <Select
+        id={this.props.id}
+        choices={pickBy(this.state.organizations.reduce((choices, organization) => {
+          choices[organization.id] = organization.name
 
-        {this.state.fetched &&
-          <Select
-            id={this.props.id}
-            choices={pickBy(this.state.organizations.reduce((choices, organization) => {
-              choices[organization.id] = organization.name
-
-              return choices
-            }, {}), this.props.filterChoices)}
-            value={this.props.value ? this.props.value.id : ''}
-            onChange={(value) => this.props.onChange({
-              id: value,
-              name: this.state.organizations.find(organization => value === organization.id).name
-            })}
-          />
-        }
-      </FormGroup>
+          return choices
+        }, {}), this.props.filterChoices)}
+        value={this.props.value ? this.props.value.id : ''}
+        onChange={(value) => this.props.onChange({
+          id: value,
+          name: this.state.organizations.find(organization => value === organization.id).name
+        })}
+      />
     )
   }
 }
 
-implementPropTypes(OrganizationGroup, FormGroupWithFieldTypes, {
+implementPropTypes(OrganizationInput, FormFieldTypes, {
   // more precise value type
   value: T.shape({
     id: T.string.isRequired,
@@ -94,5 +91,5 @@ implementPropTypes(OrganizationGroup, FormGroupWithFieldTypes, {
 })
 
 export {
-  OrganizationGroup
+  OrganizationInput
 }

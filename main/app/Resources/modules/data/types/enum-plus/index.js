@@ -1,7 +1,6 @@
 import {trans} from '#/main/app/intl/translation'
 
-//import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
-import {EnumPlusSearch} from '#/main/app/data/types/enum-plus/components/search.jsx'
+import {EnumPlusSearch} from '#/main/app/data/types/enum-plus/components/search'
 import {isChoiceValid, parseChoice, renderChoice} from '#/main/app/data/types/enum-plus/utils'
 
 const dataType = {

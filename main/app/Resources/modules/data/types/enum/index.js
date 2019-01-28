@@ -1,7 +1,9 @@
 import isEmpty from 'lodash/isEmpty'
 
 import {chain, array, string, notBlank, unique} from '#/main/core/validation'
-import {EnumGroup} from '#/main/app/data/types/enum/components/enum-group.jsx'
+
+import {EnumGroup} from '#/main/app/data/types/enum/components/group'
+import {EnumInput} from '#/main/app/data/types/enum/components/input'
 
 const dataType = {
   name: 'enum',
@@ -34,7 +36,8 @@ const dataType = {
     }
   }]),
   components: {
-    form: EnumGroup
+    group: EnumGroup,
+    input: EnumInput
   }
 }
 
