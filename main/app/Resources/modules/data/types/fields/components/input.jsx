@@ -12,7 +12,7 @@ import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 
 import {getCreatableTypes} from '#/main/app/data/types'
-import {FormProp} from '#/main/app/content/form/components/prop'
+import {DataInput} from '#/main/app/data/components/input'
 
 // todo try to avoid connexion to the store
 // todo create working preview
@@ -20,8 +20,9 @@ import {FormProp} from '#/main/app/content/form/components/prop'
 // todo find a way to use collections
 
 const FieldPreview = props =>
-  <FormProp
+  <DataInput
     {...props}
+    onChange={() => true}
   />
 
 FieldPreview.propTypes = {

@@ -339,7 +339,6 @@ class Path extends AbstractResource
         return $this->secondaryResourcesTarget;
     }
 
-
     /**
      * Set the opening target for secondary resources.
      *

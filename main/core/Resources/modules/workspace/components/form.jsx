@@ -150,8 +150,8 @@ const WorkspaceFormComponent = (props) => {
                   multiple: false,
                   condensed: true,
                   choices: props.tools ? props.tools.reduce((acc, tool) => Object.assign(acc, {
-                      [tool.name]: trans(tool.name, {}, 'tools')
-                    }), {}) : {}
+                    [tool.name]: trans(tool.name, {}, 'tools')
+                  }), {}) : {}
                 }
               }, {
                 name: 'opening.target',
