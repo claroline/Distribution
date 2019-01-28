@@ -72,7 +72,8 @@ class ResourceSource
         $options['hiddenFilters']['active'] = true;
         $options['hiddenFilters']['resourceTypeEnabled'] = true;
 
-        $roles = DataSource::CONTEXT_HOME === $event->getContext() ?
+        // FIXME
+        /*$roles = DataSource::CONTEXT_HOME === $event->getContext() ?
             ['ROLE_ANONYMOUS'] :
             array_map(
                 function ($role) { return $role->getRole(); },
@@ -81,7 +82,7 @@ class ResourceSource
 
         if (!in_array('ROLE_ADMIN', $roles)) {
             $options['hiddenFilters']['roles'] = $roles;
-        }
+        }*/
 
         $event->setData($this->finder->search(ResourceNode::class, $options));
 
