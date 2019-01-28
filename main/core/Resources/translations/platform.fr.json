@@ -1755,5 +1755,6 @@
     "add_rights": "Ajouter des droits",
     "show_email": "Montrer l'e-mail",
     "same_window": "Dans la même fenêtre (défaut)",
-    "new_window": "Dans une nouvelle fenêtre/onglet"
+    "new_window": "Dans une nouvelle fenêtre/onglet",
+    "hidden": "Caché"
 }

@@ -1722,5 +1722,6 @@
     "add_rights": "Add rights",
     "show_email": "Show email",
     "same_window": "In the same window (default)",
-    "new_window": "In a new window/tab"
+    "new_window": "In a new window/tab",
+    "hidden": "Hidden"
 }

@@ -12,7 +12,7 @@ class StringInput extends PureComponent {
   }
 
   onChange(e) {
-    this.props.onChange(e.target.value.trim())
+    this.props.onChange(e.target.value)
   }
 
   render() {
