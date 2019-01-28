@@ -90,9 +90,8 @@ class ParametersModal extends Component {
                 name: 'type',
                 type: 'string',
                 label: trans('type'),
-                readOnly: true,
                 hideLabel: true,
-                calculated: () => this.state.typeDef ? this.state.typeDef.meta.label : ''
+                render: () => this.state.typeDef ? this.state.typeDef.meta.label : ''
               }, {
                 name: 'label',
                 type: 'string',
