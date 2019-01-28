@@ -8,7 +8,7 @@ import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
 import {Layout} from '#/main/core/administration/parameters/appearance/components/layout'
 import {Icons} from '#/main/core/administration/parameters/appearance/components/icons'
-import {Theme} from '#/main/core/administration/parameters/appearance/components/theme'
+//import {Theme} from '#/main/core/administration/parameters/appearance/components/theme'
 
 const Tool = () =>
   <ToolPage>
@@ -24,11 +24,11 @@ const Tool = () =>
               icon: 'fa fa-fw fa-edit',
               title: trans('icons'),
               path: '/icons'
-            }, {
+            }/*, {
               icon: 'fa fa-fw fa-swatchbook',
               title: trans('theme'),
               path: '/theme'
-            }
+            }*/
           ]}
         />
       </div>
@@ -45,10 +45,10 @@ const Tool = () =>
             }, {
               path: '/icons',
               component: Icons
-            }, {
+            }/*, {
                path: '/theme',
                component: Theme
-             }
+             }*/
           ]}
         />
       </div>
