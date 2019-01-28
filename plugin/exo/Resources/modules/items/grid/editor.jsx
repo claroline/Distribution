@@ -273,6 +273,7 @@ const GridRow = props =>
         label={trans('delete', {}, 'actions')}
         disabled={!props.deletable}
         callback={props.removeRow}
+        tooltip="top"
       />
     </td>
   </tr>

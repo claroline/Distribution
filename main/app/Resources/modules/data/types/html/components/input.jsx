@@ -182,7 +182,7 @@ class HtmlInput extends Component {
       })}>
         <Button
           id={`${this.props.id}-editor-toggle`}
-          className="btn toolbar-toggle"
+          className="btn-link toolbar-toggle"
           type={CALLBACK_BUTTON}
           icon={classes('fa', {
             'fa-plus-circle': this.state.minimal,

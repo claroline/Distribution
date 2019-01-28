@@ -3,7 +3,7 @@ import React from 'react'
 import {trans} from '#/main/app/intl/translation'
 import {chain, string} from '#/main/core/validation'
 
-import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group'
+import {HtmlInput} from '#/main/app/data/types/html/components/input'
 import {HtmlCell} from '#/main/app/data/types/html/components/table'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
@@ -25,7 +25,7 @@ const dataType = {
   validate: (value, options) => chain(value, options, [string]),
   components: {
     table: HtmlCell,
-    form: HtmlGroup
+    input: HtmlInput
   }
 }
 

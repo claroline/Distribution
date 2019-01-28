@@ -6,13 +6,13 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {Select} from '#/main/core/layout/form/components/field/select'
 
-const Country = props =>
+const CountryInput = props =>
   <Select
     {...props}
     choices={intlConstants.REGIONS}
   />
 
-implementPropTypes(Country, FormFieldTypes, {
+implementPropTypes(CountryInput, FormFieldTypes, {
   value: T.oneOfType([T.string, T.array]),
   multiple: T.bool,
   noEmpty: T.bool
@@ -23,5 +23,5 @@ implementPropTypes(Country, FormFieldTypes, {
 })
 
 export {
-  Country
+  CountryInput
 }

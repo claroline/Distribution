@@ -2,20 +2,17 @@ import {trans, tval} from '#/main/app/intl/translation'
 import {chain, string} from '#/main/core/validation'
 
 import {constants as intlConstants} from '#/main/app/intl/constants'
-import {CountryGroup} from '#/main/core/layout/form/components/group/country-group'
+import {CountryInput} from '#/main/app/data/types/country/components/input'
 import {CountryFilter} from '#/main/app/data/types/country/components/filter'
-
 
 const dataType = {
   name: 'country',
   meta: {
-    creatable: true,
     icon: 'fa fa-fw fa-globe',
-    label: trans('country'),
-    description: trans('country_desc')
+    label: trans('country', {}, 'data'),
+    description: trans('country_desc', {}, 'data'),
+    creatable: true
   },
-
-  parse: (display) => display,
 
   /**
    * Translates country code for display.
@@ -44,8 +41,9 @@ const dataType = {
       return tval('This value should be a valid country code.')
     }
   }]),
+
   components: {
-    form: CountryGroup,
+    input: CountryInput,
     search: CountryFilter
   }
 }
