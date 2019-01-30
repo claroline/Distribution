@@ -27,6 +27,8 @@ class WorkspaceToolIntegrityCheckerCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln('Workspace tool restoration...');
+
         if ($input->getOption('all')) {
             $workspaces = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('ClarolineCoreBundle:Workspace\Workspace')
               ->findBy(['personal' => false]);
@@ -51,5 +53,28 @@ class WorkspaceToolIntegrityCheckerCommand extends ContainerAwareCommand
             $output->writeln('Restoring tools for '.$workspace->getName().'...');
             $this->getContainer()->get('claroline.manager.tool_manager')->addMissingWorkspaceTools($workspace);
         }
+
+        $output->writeln('Workspace organization restoration...');
+
+        $query = $this->getContainer()->get('doctrine.orm.entity_manager')->createQuery(
+          '
+            SELECT w from Claroline\CoreBundle\Entity\Workspace\Workspace w
+            LEFT JOIN w.organizations o
+            WHERE o IS null
+          '
+        );
+
+        $workspaces = $query->getResult();
+
+        $defaultOrganization = $this->getContainer()->get('claroline.manager.organization.organization_manager')->getDefault();
+        $om = $this->getContainer()->get('claroline.persistence.object_manager');
+
+        foreach ($workspaces as $workspace) {
+            $output->writeln('Restoring organization for '.$workspace->getName().'...');
+            $workspace->addOrganization($defaultOrganization);
+            $om->persist($workspace);
+        }
+
+        $om->flush();
     }
 }
