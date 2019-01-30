@@ -1246,7 +1246,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
             }
 
             if ($ref->getOrganization()->getUuid() === $organization->getUuid()) {
-                $found = true;
                 $ref->setIsMain(true);
             }
         }
