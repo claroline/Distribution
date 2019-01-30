@@ -20,7 +20,7 @@ class WorkspaceToolIntegrityCheckerCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName('claroline:workspace_tool:check')
+        $this->setName('claroline:workspace:check')
             ->setDescription('Checks the workspace tools integrity of the platform.')
             ->addOption('all', 'a', InputOption::VALUE_NONE, 'All tools and workspace');
     }
