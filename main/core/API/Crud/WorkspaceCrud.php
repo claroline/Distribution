@@ -85,7 +85,7 @@ class WorkspaceCrud
             $workspace->setCreator($user);
 
             $organization = $user->getMainOrganization() ?
-                $user->getOrganization() :
+                $user->getMainOrganization() :
                 $this->organizationManager->getDefault();
             $workspace->addOrganization($organization);
         }
