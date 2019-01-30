@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class WorkspaceToolIntegrityCheckerCommand extends ContainerAwareCommand
+class WorkspaceCheckerCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
