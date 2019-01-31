@@ -57,18 +57,6 @@ class ResourceSource
     {
         $options = $event->getOptions();
         $options['hiddenFilters']['hidden'] = false;
-
-        if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
-            // only grab workspace root directory content
-            /** @var ResourceNode $workspaceRoot */
-            $workspaceRoot = $this->repository->findOneBy([
-                'parent' => null,
-                'workspace' => $event->getWorkspace(),
-            ]);
-
-            $options['hiddenFilters']['path.after'] = $workspaceRoot->getPath();
-        }
-
         $options['hiddenFilters']['active'] = true;
         $options['hiddenFilters']['resourceTypeEnabled'] = true;
 
