@@ -75,18 +75,13 @@ class TagListener
 
             // append sub query to the original one
             $queryBuilder = $event->getQueryBuilder();
-            $queryBuilder
-                ->andWhere(
-                    $queryBuilder->expr()->exists($tagQueryBuilder->getDql())
-                )
-                ->setParameters([
-                    'expectedCount' => count($tags),
-                    'objectClass' => $event->getObjectClass(),
-                    'tags' => $tags,
-                ]);
+            $queryBuilder->andWhere($queryBuilder->expr()->exists($tagQueryBuilder->getDql()))
+              //->setParameter('expectedCount', count($tags))
+              //->setParameter('objectClass', $event->getObjectClass())
+              ->setParameter('tags', $tags);
 
             // remove tags from filters list
-            unset($filters['tags']);
+            //unset($filters['tags']);
             $event->setFilters($filters);
         }
     }

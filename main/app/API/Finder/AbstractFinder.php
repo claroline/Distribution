@@ -25,9 +25,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 
 abstract class AbstractFinder implements FinderInterface
 {
-    // TODO : move in finders using it
-    use FinderTrait;
-
     /** @var ObjectManager */
     protected $om;
     /** @var EntityManager */
@@ -178,7 +175,15 @@ abstract class AbstractFinder implements FinderInterface
         $firstQb = $this->om->createQueryBuilder();
         $extraSelect = $options['count'] ? [] : $this->getExtraSelect();
         $firstQb->select('DISTINCT obj', ...$extraSelect)->from($this->getClass(), 'obj');
+        /** @var SearchObjectsEvent $event */
         $build = $this->configureQueryBuilder($firstQb, $firstSearch);
+        $event = $this->eventDispatcher->dispatch('objects.search', SearchObjectsEvent::class, [
+            'queryBuilder' => $firstQb,
+            'objectClass' => $this->getClass(),
+            'filters' => $firstSearch,
+            'sortBy' => $sortBy,
+        ]);
+
         $firstQb = $build ? $build : $firstQb;
         //this is our first part of the union
 
@@ -190,13 +195,20 @@ abstract class AbstractFinder implements FinderInterface
         $secQb->select('DISTINCT obj', ...$extraSelect)->from($this->getClass(), 'obj');
 
         $build = $this->configureQueryBuilder($secQb, $secondSearch);
+
+        $event = $this->eventDispatcher->dispatch('objects.search', SearchObjectsEvent::class, [
+            'queryBuilder' => $secQb,
+            'objectClass' => $this->getClass(),
+            'filters' => $secondSearch,
+            'sortBy' => $sortBy,
+        ]);
+
         $secQb = $build ? $build : $secQb;
         //this is the second part of the union
         $secQ = $secQb->getQuery();
 
         $secSql = $this->getSql($secQ);
         $sql = $firstSql.' UNION '.$secSql;
-
         $query = $this->buildQueryFromSql($sql, $options, $sortBy);
 
         $parameters = new ArrayCollection(array_merge(
@@ -205,7 +217,14 @@ abstract class AbstractFinder implements FinderInterface
         ));
 
         foreach ($parameters as $k => $p) {
-            $query->setParameter($k, $p->getValue(), $p->getType());
+            $value = $p->getValue();
+
+            if (is_string($value)) {
+                //c'est pas ça pour échapper, enfin si mais y a autre chose
+                $value = addslashes($p->getValue());
+            }
+
+            $query->setParameter($k, $value, $p->getType());
         }
 
         return $query;
@@ -271,6 +290,26 @@ abstract class AbstractFinder implements FinderInterface
         }
 
         return '';
+    }
+
+    public function setDefaults(QueryBuilder $qb, $filterName, $filterValue)
+    {
+        if (!property_exists($this->getClass(), $filterName)) {
+            return;
+        }
+
+        if (is_bool($filterValue)) {
+            $qb->andWhere("obj.{$filterName} = :{$filterName}");
+            $qb->setParameter($filterName, $filterValue);
+        } else {
+            if (is_int($filterValue)) {
+                $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                $qb->setParameter($filterName, $filterValue);
+            } else {
+                $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+            }
+        }
     }
 
     private function getSqlPropertyFromMapping($property)
