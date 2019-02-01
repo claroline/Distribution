@@ -221,7 +221,7 @@ abstract class AbstractFinder implements FinderInterface
 
             if (is_string($value)) {
                 //c'est pas ça pour échapper, enfin si mais y a autre chose
-                $value = addslashes($p->getValue());
+                $value = $p->getValue();
             }
 
             $query->setParameter($k, $value, $p->getType());
