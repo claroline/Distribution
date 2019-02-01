@@ -80,7 +80,6 @@ class TagListener
               ->setParameter('tags', $tags)
               ->setParameter('expectedCount', count($tags));
 
-            // remove tags from filters list
             $event->setFilters($filters);
         }
     }
