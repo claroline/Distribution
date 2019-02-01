@@ -45,7 +45,7 @@ class BadgeClassFinder extends AbstractFinder
               case 'meta.enabled':
                   $qb->andWhere('obj.enabled = :enabled');
                   $qb->setParameter('enabled', $filterValue);
-                  // no break
+                  break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
             }
