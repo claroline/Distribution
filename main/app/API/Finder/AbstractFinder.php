@@ -217,14 +217,7 @@ abstract class AbstractFinder implements FinderInterface
         ));
 
         foreach ($parameters as $k => $p) {
-            $value = $p->getValue();
-
-            if (is_string($value)) {
-                //c'est pas ça pour échapper, enfin si mais y a autre chose
-                $value = $p->getValue();
-            }
-
-            $query->setParameter($k, $value, $p->getType());
+            $query->setParameter($k, $p->getValue(), $p->getType());
         }
 
         return $query;
