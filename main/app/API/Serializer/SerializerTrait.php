@@ -25,11 +25,14 @@ trait SerializerTrait
      * @param $data   - the data array
      * @param $object - the object to use the setter on
      */
-    public function sipe($prop, $setter, $data = [], $object)
+    public function sipe($prop, $setter, $data = [], $object, $trim = true)
     {
         if ($data && is_array($data)) {
             try {
                 $value = ArrayUtils::get($data, $prop);
+                if (is_string($value) && $trim) {
+                    $value = trim($data);
+                }
 
                 $object->{$setter}($value);
             } catch (\Exception $e) {

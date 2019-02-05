@@ -179,9 +179,10 @@ class Crud
     public function copy($object, array $options = [])
     {
         $this->checkPermission('COPY', $object, [], true);
+        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($args[0]))->getName();
 
         $new = $this->serializer->deserialize(
-          get_class($object),
+          $className,
           $this->serializer->serialize($object),
           [Options::NO_FETCH]
         );
