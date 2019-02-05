@@ -2,9 +2,9 @@
 
 namespace Claroline\CoreBundle\API\Validator;
 
-use Claroline\CoreBundle\API\ValidatorInterface;
+use Claroline\AppBundle\API\ValidatorInterface;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -35,7 +35,7 @@ class WorkspaceValidator implements ValidatorInterface
         $this->repo = $this->om->getRepository(Workspace::class);
     }
 
-    public function validate($data)
+    public function validate($data, $mode)
     {
         $errors = [];
         //one day this should be removed and id should be used instead
