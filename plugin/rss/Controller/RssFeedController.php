@@ -11,16 +11,20 @@
 
 namespace Claroline\RssBundle\Controller;
 
-use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\RssBundle\Entity\Resource\RssFeed;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
- * @ApiMeta(class="Claroline\RssBundle\Entity\Resource\RssFeed")
  * @EXT\Route("/rss_feed")
  */
 class RssFeedController extends AbstractCrudController
 {
+    public function getClass()
+    {
+        return RssFeed::class;
+    }
+
     public function getName()
     {
         return 'rss_feed';
