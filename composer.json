@@ -171,11 +171,11 @@
             "Claroline\\RemoteUserSynchronizationBundle\\": "plugin/remote-user-synchronization",
             "UJM\\LtiBundle\\": "plugin/lti",
             "Icap\\BibliographyBundle\\": "plugin/bibliography",
-            "Claroline\\BigBlueButtonBundle\\": "plugin/big-blue-button",
             "Icap\\InwicastBundle\\": "plugin/inwicast",
             "Claroline\\DropZoneBundle\\": "plugin/drop-zone",
             "Claroline\\PlannedNotificationBundle\\": "plugin/planned-notification",
             "Claroline\\LinkBundle\\": "plugin/link",
+            "Claroline\\OpenBadgeBundle\\": "plugin/open-badge",
             "Claroline\\SlideshowBundle\\": "plugin/slideshow"
         }
     },
@@ -229,12 +229,12 @@
             "Claroline\\RemoteUserSynchronizationBundle\\ClarolineRemoteUserSynchronizationBundle",
             "UJM\\LtiBundle\\UJMLtiBundle",
             "Icap\\BibliographyBundle\\IcapBibliographyBundle",
-            "Claroline\\BigBlueButtonBundle\\ClarolineBigBlueButtonBundle",
             "Icap\\InwicastBundle\\IcapInwicastBundle",
             "Claroline\\DropZoneBundle\\ClarolineDropZoneBundle",
             "Claroline\\PlannedNotificationBundle\\ClarolinePlannedNotificationBundle",
             "Claroline\\LinkBundle\\ClarolineLinkBundle",
-            "Claroline\\SlideshowBundle\\ClarolineSlideshowBundle"
+            "Claroline\\SlideshowBundle\\ClarolineSlideshowBundle",
+            "Claroline\\OpenBadgeBundle\\ClarolineOpenBadgeBundle"
         ]
     }
 }

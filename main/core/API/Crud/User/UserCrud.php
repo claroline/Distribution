@@ -37,6 +37,7 @@ class UserCrud
         $this->userManager = $container->get('claroline.manager.user_manager');
         $this->dispatcher = $container->get('claroline.event.event_dispatcher');
         $this->config = $container->get('claroline.config.platform_config_handler');
+        $this->cryptoManager = $container->get('claroline.manager.cryptography_manager');
     }
 
     /**
@@ -121,19 +122,19 @@ class UserCrud
             }
         }
 
-        if ($createWs) {
-            $this->userManager->setPersonalWorkspace($user);
-        }
-
         $token = $this->container->get('security.token_storage')->getToken();
 
         if (null === $user->getMainOrganization()) {
             //we want a min organization
             if ($token && $token->getUser() instanceof User && $token->getUser()->getMainOrganization()) {
-                $user->setMainOrganization($token->getUser()->getMainOrganization());
+                $user->addOrganization($token->getUser()->getMainOrganization(), true);
             } else {
-                $user->setMainOrganization($this->container->get('claroline.manager.organization.organization_manager')->getDefault());
+                $user->addOrganization($this->container->get('claroline.manager.organization.organization_manager')->getDefault(), true);
             }
+        }
+
+        if ($createWs) {
+            $this->userManager->setPersonalWorkspace($user);
         }
 
         //we need this line for the log system

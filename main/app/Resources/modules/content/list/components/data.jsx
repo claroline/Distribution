@@ -38,9 +38,12 @@ class ListData extends Component {
     this.state = Object.assign({}, currentDisplay, {
       definition: definition
     })
+
+    this.toggleDisplay = this.toggleDisplay.bind(this)
+    this.changeColumns = this.changeColumns.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // display config or definition have changed
     if (!isEqual(this.props.definition, nextProps.definition)
       || !isEqual(this.props.display, nextProps.display)
@@ -113,12 +116,16 @@ class ListData extends Component {
     )
   }
 
+  changeColumns(newColumns) {
+    this.setState({currentColumns: newColumns})
+  }
+
   render() {
     // enables and configures list tools
     let displayTool
     if (1 < this.state.display.available.length) {
       displayTool = Object.assign({}, this.state.display, {
-        change: this.toggleDisplay.bind(this)
+        change: this.toggleDisplay
       })
     }
 
@@ -130,7 +137,7 @@ class ListData extends Component {
         columnsTool = {
           current: this.state.currentColumns,
           available: getDisplayableProps(this.state.definition),
-          change: (newColumns) => this.setState({currentColumns: newColumns})
+          change: this.changeColumns
         }
       }
     }

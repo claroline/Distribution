@@ -33,7 +33,7 @@ class ResourcePage extends Component {
     this.props.loadResource(this.props.resourceNode, this.props.embedded)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // the resource has changed
     if (this.props.resourceNode.id !== nextProps.resourceNode.id) {
       // load the new one
@@ -87,6 +87,7 @@ class ResourcePage extends Component {
             if (currentNode) {
               // grabs updated data
               this.props.updateNode(currentNode)
+              this.props.loadResource(this.props.resourceNode, this.props.embedded)
             }
           },
           delete: (resourceNodes) => {

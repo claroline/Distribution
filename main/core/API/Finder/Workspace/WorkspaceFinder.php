@@ -68,6 +68,13 @@ class WorkspaceFinder extends AbstractFinder
             }
 
             switch ($filterName) {
+                case 'orphan':
+                    if ($filterValue) {
+                        $qb->andWhere('obj.personal = true');
+                        $qb->leftJoin('obj.personalUser', 'ps');
+                        $qb->andWhere('ps.isRemoved = true');
+                    }
+                    break;
                 case 'hidden':
                     $qb->andWhere("obj.displayable = :{$filterName}");
                     $qb->setParameter($filterName, !$filterValue);
@@ -166,13 +173,7 @@ class WorkspaceFinder extends AbstractFinder
                     }
                     break;
                 default:
-                    if (is_string($filterValue)) {
-                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    } else {
-                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                        $qb->setParameter($filterName, $filterValue);
-                    }
+                    $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 

@@ -9,6 +9,7 @@ import {config} from '#/main/core/tinymce/config'
 
 import {getOffsets} from '#/main/core/scaffolding/text/selection'
 
+// todo : move in app
 // todo : correct management of container
 // todo : allow to add custom CSS
 class Editor extends Component {
@@ -53,7 +54,7 @@ class Editor extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if ((nextProps.content !== this.editor.getContent()
       && nextProps.content !== this.props.content)) {
       this.editor.setContent(nextProps.content)

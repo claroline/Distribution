@@ -75,18 +75,11 @@ class TagListener
 
             // append sub query to the original one
             $queryBuilder = $event->getQueryBuilder();
-            $queryBuilder
-                ->andWhere(
-                    $queryBuilder->expr()->exists($tagQueryBuilder->getDql())
-                )
-                ->setParameters([
-                    'expectedCount' => count($tags),
-                    'objectClass' => $event->getObjectClass(),
-                    'tags' => $tags,
-                ]);
+            $queryBuilder->andWhere($queryBuilder->expr()->exists($tagQueryBuilder->getDql()))
+              ->setParameter('objectClass', $event->getObjectClass())
+              ->setParameter('tags', $tags)
+              ->setParameter('expectedCount', count($tags));
 
-            // remove tags from filters list
-            unset($filters['tags']);
             $event->setFilters($filters);
         }
     }
@@ -105,6 +98,7 @@ class TagListener
             $user = isset($data['user']) ? $data['user'] : null;
             $taggedObject = $this->manager->tagObject($data['tag'], $data['object'], $user);
         }
+
         $event->setResponse($taggedObject);
     }
 
@@ -165,16 +159,8 @@ class TagListener
 
         if (is_array($data) && isset($data['class']) && !empty($data['ids'])) {
             /** @var TaggedObject[] $taggedObjects */
-            $taggedObjects = $this->manager->getTaggedObjects(
-                null,
-                false,
-                $data['class'],
-                '',
-                false,
-                'name',
-                'ASC',
-                $data['ids']
-            );
+            $taggedObjects = $this->manager->getTaggedObjects($data['class'], $data['ids']);
+
             if (isset($data['frequency']) && $data['frequency']) {
                 //array [tagName => frequency]
                 foreach ($taggedObjects as $taggedObject) {
@@ -193,7 +179,6 @@ class TagListener
                 $tags = array_values($tags);
             }
         }
-
         $event->setResponse($tags);
     }
 }

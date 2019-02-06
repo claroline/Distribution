@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'
 
 import {toKey} from '#/main/core/scaffolding/text/utils'
@@ -10,36 +11,95 @@ import {Heading} from '#/main/core/layout/components/heading'
 import {ContentMeta} from '#/main/app/content/meta/components/meta'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {SubSet} from '#/main/core/layout/form/components/fieldset/sub-set'
-import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set'
 
 import {createFormDefinition} from '#/main/app/content/form/utils'
 import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/prop-types'
 import {Form} from '#/main/app/content/form/components/form'
-import {FormProp} from '#/main/app/content/form/components/prop'
 import {FormGroup} from '#/main/app/content/form/components/group'
 
+import {DataInput} from '#/main/app/data/components/input'
+
+// todo : restore readOnly
 // todo : add auto focus
 
-const AdvancedSection = props =>
-  <ToggleableSet
-    showText={props.showText}
-    hideText={props.hideText}
-  >
-    {props.fields.map(field =>
-      <FormProp
-        key={field.name}
-        {...field}
-      />
-    )}
-  </ToggleableSet>
+class FormField extends Component {
+  constructor(props) {
+    super(props)
 
-AdvancedSection.propTypes = {
-  showText: T.string,
-  hideText: T.string,
-  fields: T.array.isRequired
+    this.onChange = this.onChange.bind(this)
+    this.onError = this.onError.bind(this)
+  }
+
+  onChange(value) {
+    this.props.update(this.props.name, value, this.props.onChange)
+  }
+
+  onError(error) {
+    this.props.setErrors(this.props.name, error)
+  }
+
+  render() {
+    return (
+      <DataInput
+        id={this.props.name.replace(/\./g, '-')}
+        type={this.props.type}
+        label={this.props.label}
+        hideLabel={this.props.hideLabel}
+        options={this.props.options}
+        help={this.props.help}
+        placeholder={this.props.placeholder}
+
+        required={this.props.required}
+        disabled={this.props.disabled}
+        validating={this.props.validating}
+
+        value={this.props.value}
+        error={this.props.error}
+
+        onChange={this.onChange}
+        onError={this.onError}
+      />
+    )
+  }
+}
+
+FormField.propTypes = {
+  name: T.string.isRequired,
+  type: T.string.isRequired,
+  label: T.string.isRequired,
+  hideLabel: T.bool,
+  options: T.object, // depends on the data type
+  help: T.oneOfType([T.string, T.arrayOf(T.string)]),
+  placeholder: T.any, // depends on the data type
+  size: T.oneOf(['sm', 'lg']),
+  onChange: T.func,
+
+  // field state
+  required: T.bool,
+  disabled: T.bool,
+  validating: T.bool,
+
+  // field data
+  value: T.any, // depends on the data type
+  error: T.oneOfType([
+    T.string,
+    T.arrayOf(T.string),
+    T.object
+  ]),
+
+  // form methods
+  update: T.func.isRequired,
+  setErrors: T.func.isRequired
 }
 
 class FormData extends Component {
+  constructor(props) {
+    super(props)
+
+    this.update = this.update.bind(this)
+    this.setErrors = this.setErrors.bind(this)
+  }
+
   renderFields(fields) {
     let rendered = []
 
@@ -47,39 +107,39 @@ class FormData extends Component {
       if (field.render) {
         rendered.push(
           <FormGroup
-            id={field.name}
             key={field.name}
+            id={field.name.replace(/\./g, '-')}
             label={field.label}
             hideLabel={field.hideLabel}
             help={field.help}
+            optional={!field.required}
+            error={get(this.props.errors, field.name)}
+            warnOnly={!this.props.validating}
           >
             {field.render(this.props.data)}
           </FormGroup>
         )
       } else {
         rendered.push(
-          <FormProp
-            {...field}
+          <FormField
             key={field.name}
-            id={field.name.replace(/\./g, '-')}
-            value={field.calculated ? field.calculated(this.props.data) : get(this.props.data, field.name)}
+            name={field.name}
+            type={field.type}
+            label={field.label}
+            hideLabel={field.hideLabel}
+            options={field.options}
+            help={field.help}
+            placeholder={field.placeholder}
+
+            required={field.required}
             disabled={this.props.disabled || (typeof field.disabled === 'function' ? field.disabled(this.props.data) : field.disabled)}
             validating={this.props.validating}
+
+            value={field.calculated ? field.calculated(this.props.data) : get(this.props.data, field.name)}
             error={get(this.props.errors, field.name)}
-            updateProp={this.props.updateProp}
-
-            onChange={(value) => {
-              this.props.updateProp(field.name, value)
-              if (field.onChange) {
-                field.onChange(value)
-              }
-            }}
-            setErrors={(errors) => {
-              const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
-              set(newErrors, field.name, errors)
-
-              this.props.setErrors(newErrors)
-            }}
+            onChange={field.onChange}
+            update={this.update}
+            setErrors={this.setErrors}
           />
         )
       }
@@ -94,6 +154,20 @@ class FormData extends Component {
     })
 
     return rendered
+  }
+
+  update(name, value, onChange) {
+    this.props.updateProp(name, value)
+    if (onChange) {
+      onChange(value)
+    }
+  }
+
+  setErrors(name, error) {
+    const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
+    set(newErrors, name, error)
+
+    this.props.setErrors(newErrors)
   }
 
   render() {
@@ -118,28 +192,32 @@ class FormData extends Component {
         level={this.props.level}
         displayLevel={this.props.displayLevel}
         title={this.props.title}
-        errors={this.props.errors}
+        errors={!isEmpty(this.props.errors)}
         validating={this.props.validating}
         pendingChanges={this.props.pendingChanges}
         save={this.props.save}
         cancel={this.props.cancel}
       >
         {this.props.meta &&
-          <ContentMeta meta={get(this.props.data, 'meta')} />
+          <ContentMeta
+            creator={get(this.props.data, 'meta.creator')}
+            created={get(this.props.data, 'meta.created')}
+            updated={get(this.props.data, 'meta.updated')}
+          />
         }
 
         {primarySections.map(primarySection =>
-          <div id={primarySection.id} key={toKey(primarySection.title)} className="form-primary-section panel panel-default">
+          <div
+            id={primarySection.id || toKey(primarySection.title)}
+            key={primarySection.id || toKey(primarySection.title)}
+            className="form-primary-section panel panel-default"
+          >
             <fieldset className="panel-body">
               <Heading level={hLevel} displayed={false}>
                 {primarySection.title}
               </Heading>
 
               {this.renderFields(primarySection.fields)}
-
-              {primarySection.advanced &&
-                <AdvancedSection {...primarySection.advanced} />
-              }
             </fieldset>
           </div>
         )}
@@ -148,11 +226,11 @@ class FormData extends Component {
           <FormSections
             level={hLevel}
             displayLevel={hDisplay}
-            defaultOpened={openedSection ? openedSection.id : undefined}
+            defaultOpened={openedSection ? (openedSection.id || toKey(openedSection.title)) : undefined}
           >
             {otherSections.map(section =>
               <FormSection
-                id={section.id}
+                id={section.id || toKey(section.title)}
                 key={section.id || toKey(section.title)}
                 icon={section.icon}
                 title={section.title}
@@ -161,10 +239,6 @@ class FormData extends Component {
                 validating={this.props.validating}
               >
                 {this.renderFields(section.fields)}
-
-                {section.advanced &&
-                  <AdvancedSection {...section.advanced} />
-                }
               </FormSection>
             )}
           </FormSections>
@@ -198,12 +272,31 @@ FormData.propTypes = {
   sections: T.arrayOf(T.shape(
     DataFormSectionTypes.propTypes
   )).isRequired,
+
+  /**
+   * The save action of the form.
+   */
+  save: T.shape({
+    type: T.string.isRequired,
+    disabled: T.bool
+    // todo find a way to document custom action type props
+  }),
+
+  /**
+   * The cancel action of the form (if provided.
+   */
+  cancel: T.shape({
+    type: T.string.isRequired,
+    disabled: T.bool
+    // todo find a way to document custom action type props
+  }),
   setErrors: T.func.isRequired,
   updateProp: T.func.isRequired,
   children: T.node
 }
 
 FormData.defaultProps = {
+  level: 2,
   data: {}
 }
 

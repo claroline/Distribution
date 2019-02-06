@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep'
+
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
@@ -71,7 +73,7 @@ const UserList = {
 }
 
 const getUserListDefinition = (searchData) => {
-  const def = UserList.definition
+  const def = cloneDeep(UserList.definition)
 
   if (searchData.platformRoles) {
     const platformChoices = {}
@@ -89,8 +91,6 @@ const getUserListDefinition = (searchData) => {
       }
     })
   }
-
-  //  console.log(def)
 
   return def
 }

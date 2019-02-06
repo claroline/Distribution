@@ -7,15 +7,12 @@ export const App = () => ({
   initialData: (initialData) => ({
     tool: {
       name: 'appearance_settings',
-      context: initialData.context
+      currentContext: initialData.currentContext
     },
 
     parameters: {
       data: initialData.parameters,
       originalData: initialData.parameters
-    },
-    themes: {
-      data: initialData.themes.data
     },
     iconSetChoices: initialData.iconSetChoices
   })

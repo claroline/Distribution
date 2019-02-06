@@ -5,6 +5,7 @@ namespace Icap\BlogBundle\Finder;
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Doctrine\ORM\QueryBuilder;
+use Icap\BlogBundle\Entity\Post;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -15,7 +16,7 @@ class PostFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return 'Icap\BlogBundle\Entity\Post';
+        return Post::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
@@ -101,13 +102,7 @@ class PostFinder extends AbstractFinder
                     $qb->andWhere('BIT_AND(rights.mask, 1) = 1');
                     break;
                 default:
-                    if (is_string($filterValue)) {
-                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    } else {
-                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                        $qb->setParameter($filterName, $filterValue);
-                    }
+                    $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 

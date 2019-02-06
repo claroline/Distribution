@@ -73,6 +73,7 @@ class ParametersSerializer
         }
 
         $data['javascripts'] = $this->serializeJavascripts($data);
+        $data['display']['logo'] = $this->serializeAppearanceLogo($data);
 
         return $data;
     }
@@ -164,11 +165,21 @@ class ParametersSerializer
         return $uploadedFiles;
     }
 
+    public function serializeAppearanceLogo(array $data)
+    {
+        $url = $data['display']['logo'];
+        $file = $this->om->getRepository(PublicFile::class)->findOneBy(['url' => $url]);
+
+        return $this->serializer->serialize($file);
+    }
+
     public function getLogoData(array $data)
     {
         if (isset($data['display']) && isset($data['display']['logo'])) {
             $logo = $data['display']['logo'];
-            $data['display']['logo'] = $logo['url'];
+            if (isset($logo['url'])) {
+                $data['display']['logo'] = $logo['url'];
+            }
         }
 
         return $data;

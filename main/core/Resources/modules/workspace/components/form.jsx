@@ -16,10 +16,11 @@ import {
 import {actions} from '#/main/core/workspace/creation/store/actions'
 
 // easy selection for restrictions
-const restrictByDates   = (workspace) => workspace.restrictions.enableDates        || (workspace.restrictions.dates && 0 !== workspace.restrictions.dates.length)
-const restrictUsers     = (workspace) => workspace.restrictions.enableMaxUsers     || 0 === workspace.restrictions.maxUsers || !!workspace.restrictions.maxUsers
-const restrictResources = (workspace) => workspace.restrictions.enableMaxResources || 0 === workspace.restrictions.maxResources || !!workspace.restrictions.maxResources
-const restrictStorage   = (workspace) => workspace.restrictions.enableMaxStorage   || !!workspace.restrictions.maxStorage
+// TODO : create selectors
+const restrictByDates   = (workspace) => workspace.restrictions && (workspace.restrictions.enableDates        || (workspace.restrictions.dates && 0 !== workspace.restrictions.dates.length))
+const restrictUsers     = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxUsers     || 0 === workspace.restrictions.maxUsers || !!workspace.restrictions.maxUsers)
+const restrictResources = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxResources || 0 === workspace.restrictions.maxResources || !!workspace.restrictions.maxResources)
+const restrictStorage   = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxStorage   || !!workspace.restrictions.maxStorage)
 
 // TODO : add tools
 
@@ -62,30 +63,7 @@ const WorkspaceFormComponent = (props) => {
             displayed: props.new
           }
         ]
-      }, /*{
-        title: trans('archive'),
-        displayed: props.new,
-        fields: [
-          {
-            name: 'extra.archive.file',
-            type: 'file',
-            label: trans('file'),
-            onChange: (data) => {
-              props.loadArchive(data)
-            },
-            options: {
-              uploadUrl: ['apiv2_workspace_upload_archive']
-            }
-          }, {
-            name: 'extra.archive.url',
-            type: 'url',
-            label: trans('url'),
-            onChange: (data) => {
-              props.fetchArchive(data)
-            }
-          }
-        ]
-      }, */{
+      }, {
         icon: 'fa fa-fw fa-info',
         title: trans('information'),
         fields: [
@@ -120,8 +98,26 @@ const WorkspaceFormComponent = (props) => {
               name: 'meta.lang',
               label: trans('lang'),
               type: 'locale',
-              displayed: (workspace) => workspace.meta.forceLang
+              displayed: (workspace) => workspace.meta && workspace.meta.forceLang
             }]
+          }
+        ]
+      }, {
+        icon: 'fa fa-fw fa-desktop',
+        title: trans('display_parameters'),
+        fields: [
+          {
+            name: 'thumbnail',
+            type: 'image',
+            label: trans('thumbnail')
+          }, {
+            name: 'poster',
+            type: 'image',
+            label: trans('poster')
+          }, {
+            name: 'display.showTools',
+            type: 'boolean',
+            label: trans('showTools')
           }
         ]
       }, {
@@ -169,24 +165,6 @@ const WorkspaceFormComponent = (props) => {
                 }
               }
             ]
-          }
-        ]
-      }, {
-        icon: 'fa fa-fw fa-desktop',
-        title: trans('display_parameters'),
-        fields: [
-          {
-            name: 'thumbnail',
-            type: 'image',
-            label: trans('thumbnail')
-          }, {
-            name: 'poster',
-            type: 'image',
-            label: trans('poster')
-          }, {
-            name: 'display.showTools',
-            type: 'boolean',
-            label: trans('showTools')
           }
         ]
       }, {

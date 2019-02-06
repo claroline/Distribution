@@ -6,7 +6,7 @@ import omit from 'lodash/omit'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {registry as buttonRegistry} from '#/main/app/buttons/registry'
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
+import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
 
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
@@ -32,6 +32,7 @@ const ButtonComponent = props => {
     props.icon &&
       <span key="button-icon" className={classes('action-icon', props.icon, !props.hideLabel && 'icon-with-text-right')} aria-hidden={true} />,
     props.hideLabel ? <span key="button-label" className="sr-only">{props.label}</span> : props.label,
+    props.children,
     props.subscript &&
       <span key="button-subscript" className={classes('action-subscript', `${props.subscript.type} ${props.subscript.type}-${props.subscript.status || 'primary'}`)}>{props.subscript.value}</span>
   ])
@@ -48,7 +49,7 @@ implementPropTypes(ButtonComponent, ActionTypes, {
  * @constructor
  */
 const Button = props => props.tooltip ?
-  <TooltipElement
+  <TooltipOverlay
     id={`${props.id || toKey(props.label)}-tip`}
     position={props.tooltip}
     tip={props.label}
@@ -57,11 +58,15 @@ const Button = props => props.tooltip ?
     <ButtonComponent
       {...omit(props, 'tooltip', 'group', 'context', 'scope', 'default')}
       hideLabel={true}
-    />
-  </TooltipElement> :
+    >
+      {props.children}
+    </ButtonComponent>
+  </TooltipOverlay> :
   <ButtonComponent
     {...omit(props, 'tooltip', 'group', 'context', 'scope', 'default')}
-  />
+  >
+    {props.children}
+  </ButtonComponent>
 
 implementPropTypes(Button, ActionTypes, {
   /**
@@ -77,7 +82,8 @@ implementPropTypes(Button, ActionTypes, {
    *
    * @type {string}
    */
-  size: T.oneOf(['sm', 'lg'])
+  size: T.oneOf(['sm', 'lg']),
+  children: T.any
 })
 
 export {

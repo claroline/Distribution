@@ -9,8 +9,9 @@ import {trans, tex} from '#/main/app/intl/translation'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group'
 import {ContentError} from '#/main/app/content/components/error'
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
-import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button'
+import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
+import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
 /**
  * Edits a Keyword.
@@ -38,7 +39,7 @@ class KeywordItem extends Component {
       }>
         {!this.props.showScore &&
           <div className="keyword-expected">
-            <TooltipElement
+            <TooltipOverlay
               id={`tooltip-${this.props.keyword._id}-keyword-expected`}
               tip={tex('grid_expected_keyword')}
             >
@@ -48,7 +49,7 @@ class KeywordItem extends Component {
                 checked={this.props.keyword.expected}
                 onChange={e => this.props.updateKeyword('expected', e.target.checked)}
               />
-            </TooltipElement>
+            </TooltipOverlay>
           </div>
         }
 
@@ -75,7 +76,7 @@ class KeywordItem extends Component {
         </div>
 
         <div className="keyword-case-sensitive">
-          <TooltipElement
+          <TooltipOverlay
             id={`tooltip-${this.props.keyword._id}-keyword-case-sensitive`}
             tip={tex('words_case_sensitive')}
           >
@@ -87,7 +88,7 @@ class KeywordItem extends Component {
               checked={this.props.keyword.caseSensitive}
               onChange={e => this.props.updateKeyword('caseSensitive', e.target.checked)}
             />
-          </TooltipElement>
+          </TooltipOverlay>
         </div>
 
         <div className="right-controls">
@@ -102,24 +103,26 @@ class KeywordItem extends Component {
             />
           }
 
-          <TooltipButton
+          <Button
             id={`keyword-${this.props.keyword._id}-feedback-toggle`}
-            className="btn-link-default"
-            title={tex('words_feedback_info')}
-            onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
-          >
-            <span className="fa fa-fw fa-comments-o" />
-          </TooltipButton>
+            className="btn-link"
+            type={CALLBACK_BUTTON}
+            icon="fa fa-fw fa-comments-o"
+            label={tex('words_feedback_info')}
+            callback={() => this.setState({showFeedback: !this.state.showFeedback})}
+            tooltip="top"
+          />
 
-          <TooltipButton
+          <Button
             id={`keyword-${this.props.keyword._id}-delete`}
-            className="btn-link-default"
+            className="btn-link"
+            type={CALLBACK_BUTTON}
+            icon="fa fa-fw fa-trash-o"
+            label={trans('delete', {}, 'actions')}
+            callback={() => this.props.keyword._deletable && this.props.removeKeyword()}
             disabled={!this.props.keyword._deletable}
-            title={trans('delete')}
-            onClick={() => this.props.keyword._deletable && this.props.removeKeyword()}
-          >
-            <span className="fa fa-fw fa-trash-o" />
-          </TooltipButton>
+            tooltip="top"
+          />
         </div>
       </li>
     )
@@ -156,19 +159,19 @@ KeywordItem.defaultProps = {
 const KeywordItems = props =>
   <div className="keyword-items">
     {get(props, '_errors.count') &&
-      <ContentError text={props._errors.count} warnOnly={!props.validating} />
+      <ContentError error={props._errors.count} warnOnly={!props.validating} />
     }
     {get(props, '_errors.noValidKeyword') &&
-      <ContentError text={props._errors.noValidKeyword} warnOnly={!props.validating} />
+      <ContentError error={props._errors.noValidKeyword} warnOnly={!props.validating} />
     }
     {get(props, '_errors.duplicate') &&
-      <ContentError text={props._errors.duplicate} warnOnly={!props.validating} />
+      <ContentError error={props._errors.duplicate} warnOnly={!props.validating} />
     }
     {get(props, '_errors.text') &&
-      <ContentError text={props._errors.text} warnOnly={!props.validating} />
+      <ContentError error={props._errors.text} warnOnly={!props.validating} />
     }
     {get(props, '_errors.score') &&
-      <ContentError text={props._errors.score} warnOnly={!props.validating} />
+      <ContentError error={props._errors.score} warnOnly={!props.validating} />
     }
 
     <ul>
@@ -276,25 +279,27 @@ const KeywordsPopover = props =>
 
         <div className="popover-actions">
           {props.remove &&
-            <TooltipButton
+            <Button
               id={`keywords-popover-${props.id}-remove`}
-              title={tex('delete')}
-              className="btn-link-default"
-              onClick={props.remove}
-            >
-              <span className="fa fa-fw fa-trash-o" />
-            </TooltipButton>
+              className="btn-link"
+              type={CALLBACK_BUTTON}
+              icon="fa fa-fw fa-trash-o"
+              label={trans('delete', {}, 'actions')}
+              callback={props.remove}
+              tooltip="top"
+            />
           }
 
-          <TooltipButton
+          <Button
             id={`keywords-popover-${props.id}-close`}
-            title={tex('close')}
-            className="btn-link-default"
+            className="btn-link"
+            type={CALLBACK_BUTTON}
+            icon="fa fa-fw fa-times"
+            label={trans('close', {}, 'actions')}
             disabled={!isEmpty(props._errors)}
-            onClick={props.close}
-          >
-            <span className="fa fa-fw fa-times" />
-          </TooltipButton>
+            callback={props.close}
+            tooltip="top"
+          />
         </div>
       </div>
     }

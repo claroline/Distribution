@@ -5,7 +5,6 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
-import {withRouter} from '#/main/app/router'
 import {currentUser} from '#/main/app/security'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {
@@ -33,22 +32,22 @@ import {TabEditor} from '#/main/core/tools/home/editor/components/tab'
 const EditorComponent = props =>
   <PageSimple
     className="home-tool"
-    showBreadCrumb={showToolBreadcrumb(props.context.type, props.context.data)}
-    path={[].concat(getToolPath('home', props.context.type, props.context.data), props.currentTab ? [{
+    showBreadCrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
+    path={[].concat(getToolPath('home', props.currentContext.type, props.currentContext.data), props.currentTab ? [{
       label: props.currentTab.longTitle,
       target: '/' // this don't work but it's never used as current tab is always last for now
     }] : [])}
   >
     <PageHeader
-      alignTitle={true === props.currentTab.centerTitle ? 'center' : 'left'}
-      title={props.currentTab ? props.currentTab.longTitle : ('desktop' === props.context.type ? trans('desktop') : props.context.data.name)}
-      poster={props.currentTab.poster ? props.currentTab.poster.url: undefined}
+      alignTitle={props.currentTab && props.currentTab.centerTitle ? 'center' : 'left'}
+      title={props.currentTabTitle}
+      poster={props.currentTab && props.currentTab.poster ? props.currentTab.poster.url: undefined}
     >
       <Tabs
         prefix="/edit"
         tabs={props.tabs}
-        create={() => props.createTab(props.context, props.administration, props.tabs.length, props.history.push)}
-        context={props.context}
+        create={() => props.createTab(props.currentContext, props.administration, props.tabs.length, props.history.push)}
+        currentContext={props.currentContext}
         editing={true}
       />
 
@@ -83,7 +82,7 @@ const EditorComponent = props =>
                 confirm: {
                   title: trans('home_tab_delete_confirm_title'),
                   message: trans('home_tab_delete_confirm_message'),
-                  subtitle: props.currentTab.title
+                  subtitle: props.currentTab && props.currentTab.title
                 },
                 disabled: props.readOnly || 1 >= props.tabs.length,
                 callback: () => props.deleteTab(props.tabs, props.currentTab, props.history.push)
@@ -96,13 +95,13 @@ const EditorComponent = props =>
 
     <PageContent>
       <TabEditor
-        context={props.context}
+        currentContext={props.currentContext}
         currentTabIndex={props.currentTabIndex}
         currentTab={props.currentTab}
         widgets={props.widgets}
         administration={props.administration}
         readOnly={props.readOnly}
-        created={0 !== props.playerTabs.filter(tab => props.currentTab.id === tab.id).length}
+        created={props.currentTab && 0 !== props.playerTabs.filter(tab => props.currentTab.id === tab.id).length}
         tabs={props.tabs}
 
         update={props.updateTab}
@@ -113,7 +112,7 @@ const EditorComponent = props =>
   </PageSimple>
 
 EditorComponent.propTypes = {
-  context: T.object.isRequired,
+  currentContext: T.object.isRequired,
   administration: T.bool.isRequired,
   readOnly: T.bool.isRequired,
   tabs: T.arrayOf(T.shape(
@@ -122,6 +121,7 @@ EditorComponent.propTypes = {
   playerTabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
+  currentTabTitle: T.string,
   currentTab: T.shape(TabTypes.propTypes),
   currentTabIndex: T.number.isRequired,
   widgets: T.arrayOf(T.shape(
@@ -137,15 +137,16 @@ EditorComponent.propTypes = {
   moveTab: T.func.isRequired
 }
 
-const Editor = withRouter(connect(
+const Editor = connect(
   (state) => ({
-    context: selectors.context(state),
+    currentContext: selectors.context(state),
     administration: selectors.administration(state),
     readOnly: editorSelectors.readOnly(state),
     tabs: editorSelectors.editorTabs(state),
     playerTabs: selectors.tabs(state),
     widgets: editorSelectors.widgets(state),
     currentTabIndex: editorSelectors.currentTabIndex(state),
+    currentTabTitle: editorSelectors.currentTabTitle(state),
     currentTab: editorSelectors.currentTab(state)
   }),
   (dispatch) => ({
@@ -185,7 +186,7 @@ const Editor = withRouter(connect(
       navigate('/edit/tab/' + redirected.id)
     }
   })
-)(EditorComponent))
+)(EditorComponent)
 
 export {
   Editor

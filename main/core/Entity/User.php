@@ -45,7 +45,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * @ORM\EntityListeners({"Claroline\CoreBundle\Listener\Entity\UserListener"})
  * @ORM\HasLifecycleCallbacks
- *
  * @DoctrineAssert\UniqueEntity("username")
  * @DoctrineAssert\UniqueEntity("email")
  * @ClaroAssert\Username()
@@ -408,9 +407,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Organization\UserOrganizationReference",
      *     mappedBy="user",
-     *     cascade={"persist"},
-     *
-     *     orphanRemoval=true
+     *     cascade={"all"}
      *  )
      * @ORM\JoinColumn(name="user_id", nullable=false)
      */
@@ -670,6 +667,11 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         }
 
         return $roles;
+    }
+
+    public function getGroups()
+    {
+        return $this->groups;
     }
 
     /**
@@ -1188,11 +1190,12 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         return array_merge($organizations, $userOrgas);
     }
 
-    public function addOrganization(Organization $organization)
+    public function addOrganization(Organization $organization, $main = false)
     {
         $ref = new UserOrganizationReference();
         $ref->setOrganization($organization);
         $ref->setUser($this);
+        $ref->setIsMain($main);
         $this->userOrganizationReferences->add($ref);
     }
 
@@ -1242,26 +1245,14 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
 
     public function setMainOrganization(Organization $organization)
     {
-        $found = false;
-
         foreach ($this->userOrganizationReferences as $ref) {
             if ($ref->isMain()) {
                 $ref->setIsMain(false);
             }
 
             if ($ref->getOrganization()->getUuid() === $organization->getUuid()) {
-                $found = true;
                 $ref->setIsMain(true);
             }
-        }
-
-        //if it's not in the organization list, we add it
-        if (!$found) {
-            $ref = new UserOrganizationReference();
-            $ref->setOrganization($organization);
-            $ref->setUser($this);
-            $ref->setIsMain(true);
-            $this->userOrganizationReferences->add($ref);
         }
     }
 

@@ -1,4 +1,4 @@
-import {TrashTool} from '#/main/core/tools/trash/components/tool'
+import {TrashTool} from '#/main/core/tools/trash/containers/tool'
 import {reducer} from '#/main/core/tools/trash/store'
 
 /**
@@ -11,8 +11,8 @@ export const App = () => ({
   store: reducer,
   initialData: initialData => ({
     tool: {
-      name: 'resources'
-    },
-    workspace: initialData.workspace
+      name: 'resources',
+      currentContext: initialData.currentContext
+    }
   })
 })
