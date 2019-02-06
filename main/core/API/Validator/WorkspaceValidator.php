@@ -38,6 +38,12 @@ class WorkspaceValidator implements ValidatorInterface
     public function validate($data, $mode)
     {
         $errors = [];
+
+        // implements something cleaner later
+        if (ValidatorProvider::UPDATE === $mode && !isset($data['id'])) {
+            return $errors;
+        }
+
         //one day this should be removed and id should be used instead
         if ($this->exists('code', $data['code'], isset($data['uuid']) ? $data['uuid'] : null)) {
             $errors[] = [

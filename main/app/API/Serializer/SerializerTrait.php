@@ -30,8 +30,9 @@ trait SerializerTrait
         if ($data && is_array($data)) {
             try {
                 $value = ArrayUtils::get($data, $prop);
+
                 if (is_string($value) && $trim) {
-                    $value = trim($data);
+                    $value = trim($value);
                 }
 
                 $object->{$setter}($value);
