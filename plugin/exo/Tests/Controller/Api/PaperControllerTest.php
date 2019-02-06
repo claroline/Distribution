@@ -261,7 +261,6 @@ class PaperControllerTest extends TransactionalTestCase
 
         $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->john);
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue(empty($this->client->getResponse()->getContent()));
 
         // Checks the papers have really been deleted
         $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
