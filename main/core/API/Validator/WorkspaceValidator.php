@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\API\Validator;
 
 use Claroline\AppBundle\API\ValidatorInterface;
+use Claroline\AppBundle\API\ValidatorProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
