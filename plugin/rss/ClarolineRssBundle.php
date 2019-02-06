@@ -17,6 +17,6 @@ class ClarolineRssBundle extends DistributionPluginBundle
 {
     public function hasMigrations()
     {
-        return false;
+        return true;
     }
 }
