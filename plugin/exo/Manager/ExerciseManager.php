@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
@@ -67,6 +68,7 @@ class ExerciseManager
      *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
      *     "itemManager"  = @DI\Inject("ujm_exo.manager.item"),
      *     "paperManager" = @DI\Inject("ujm_exo.manager.paper"),
+     *     "utils"        = @DI\Inject("claroline.utilities.misc"),
      *     "definitions"  = @DI\Inject("ujm_exo.collection.item_definitions")
      * })
      *
@@ -76,6 +78,7 @@ class ExerciseManager
      * @param ItemManager               $itemManager
      * @param PaperManager              $paperManager
      * @param ItemDefinitionsCollection $definitions
+     * @param ClaroUtilities            $utils
      */
     public function __construct(
         ObjectManager $om,
@@ -83,6 +86,7 @@ class ExerciseManager
         ExerciseSerializer $serializer,
         ItemManager $itemManager,
         PaperManager $paperManager,
+        ClaroUtilities $utils,
         ItemDefinitionsCollection $definitions
     ) {
         $this->om = $om;
@@ -92,6 +96,7 @@ class ExerciseManager
         $this->itemManager = $itemManager;
         $this->paperManager = $paperManager;
         $this->definitions = $definitions;
+        $this->utils = $utils;
     }
 
     /**
