@@ -146,7 +146,6 @@ class PaperController extends AbstractController
     public function deleteAllAction(Exercise $exercise)
     {
         $this->assertHasPermission('MANAGE_PAPERS', $exercise);
-        $paperId = $paper->getUuid();
 
         try {
             $this->paperManager->deleteAll($exercise);
@@ -154,9 +153,7 @@ class PaperController extends AbstractController
             return new JsonResponse($e->getErrors(), 422);
         }
 
-        return new JsonResponse([
-             'paperId' => $paperId,
-         ]);
+        return new JsonResponse(null, 204);
     }
 
     /**
@@ -173,6 +170,7 @@ class PaperController extends AbstractController
     public function deleteAction(Paper $paper)
     {
         $this->assertHasPermission('MANAGE_PAPERS', $paper->getExercise());
+        $paperId = $paper->getUuid();
 
         try {
             $this->paperManager->delete($paper);
@@ -180,7 +178,9 @@ class PaperController extends AbstractController
             return new JsonResponse($e->getErrors(), 422);
         }
 
-        return new JsonResponse(null, 204);
+        return new JsonResponse([
+            'paperId' => $paperId,
+        ]);
     }
 
     /**
