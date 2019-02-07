@@ -13,7 +13,7 @@ const dataType = {
   },
   components: {
     details: OrganizationDisplay,
-    form: OrganizationGroup
+    input: OrganizationGroup
   }
 }
 
