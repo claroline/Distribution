@@ -17,10 +17,10 @@ const TemplateTypesPickerModal = props => {
   return (
     <Modal
       {...omit(props, 'confirmText', 'selected', 'selectAction', 'resetSelect')}
-      className="template-types-picker-modal data-picker-modal"
+      className="data-picker-modal"
       icon="fa fa-fw fa-file-alt"
       bsSize="lg"
-      onExiting={() => props.resetSelect()}
+      onExiting={props.resetSelect}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -30,7 +30,6 @@ const TemplateTypesPickerModal = props => {
         }}
         definition={TemplateTypeList.definition}
         card={TemplateTypeList.card}
-        display={props.display}
       />
 
       <Button

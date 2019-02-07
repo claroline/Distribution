@@ -20,7 +20,7 @@ const RolesPickerModal = props => {
       icon="fa fa-fw fa-id-card"
       className="data-picker-modal"
       bsSize="lg"
-      onExiting={() => props.resetSelect()}
+      onExiting={props.resetSelect}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -30,7 +30,6 @@ const RolesPickerModal = props => {
         }}
         definition={RoleList.definition}
         card={RoleList.card}
-        display={props.display}
       />
 
       <Button

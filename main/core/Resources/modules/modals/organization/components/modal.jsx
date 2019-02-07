@@ -19,7 +19,7 @@ const OrganizationPickerModal = props => {
       {...omit(props, 'selected', 'selectAction', 'resetSelect')}
       icon="fa fa-fw fa-users"
       bsSize="lg"
-      onExiting={() => props.resetSelect()}
+      onExiting={props.resetSelect}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -29,7 +29,6 @@ const OrganizationPickerModal = props => {
         }}
         definition={OrganizationList.definition}
         card={OrganizationList.card}
-        display={props.display}
       />
 
       <Button
