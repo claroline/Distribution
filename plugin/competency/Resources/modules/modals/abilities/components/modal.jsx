@@ -21,7 +21,7 @@ const AbilitiesPickerModal = props => {
       icon="fa fa-fw fa-graduation-cap"
       className="data-picker-modal"
       bsSize="lg"
-      onExiting={() => props.resetSelect()}
+      onExiting={props.resetSelect}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -31,7 +31,6 @@ const AbilitiesPickerModal = props => {
         }}
         definition={AbilityList.definition}
         card={AbilityList.card}
-        display={props.display}
       />
 
       <Button
