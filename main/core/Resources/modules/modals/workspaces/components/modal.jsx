@@ -20,7 +20,7 @@ const WorkspacesModal = props => {
       icon="fa fa-fw fa-books"
       className="data-picker-modal"
       bsSize="lg"
-      onExiting={() => props.resetSelect()}
+      onExiting={props.resetSelect}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -30,7 +30,6 @@ const WorkspacesModal = props => {
         }}
         definition={WorkspaceList.definition}
         card={WorkspaceList.card}
-        display={props.display}
       />
 
       <Button
