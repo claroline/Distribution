@@ -189,9 +189,7 @@ class Summary extends Component {
 
         {0 !== this.props.links.length &&
           <ul className="summary">
-            {this.props.links.filter(link => {
-              return link.hasOwnProperty('displayed') ? link.displayed: true
-            }).map((link, index) =>
+            {this.props.links.map((link, index) =>
               <SummaryLink
                 {...link}
                 key={toKey(link.label) + index}

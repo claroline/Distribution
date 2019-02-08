@@ -12,13 +12,15 @@ export const normalizeTree = (tree, lessonId, canEdit) => {
   const copy = cloneDeep(tree)
 
   let elems = normalizeTreeNode(copy.children, lessonId, canEdit)
-  elems.push({
-    label: trans('chapter_creation', {}, 'icap_lesson'),
-    target: '/new',
-    icon: 'fa fa-fw fa-plus',
-    type: LINK_BUTTON,
-    displayed: canEdit
-  })
+
+  if (canEdit) {
+    elems.push({
+      label: trans('chapter_creation', {}, 'icap_lesson'),
+      target: '/new',
+      icon: 'fa fa-fw fa-plus',
+      type: LINK_BUTTON
+    })
+  }
 
   return {
     id: tree.id,
