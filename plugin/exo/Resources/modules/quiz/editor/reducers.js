@@ -523,7 +523,10 @@ function reduceValidatingState(validating = false, action = {}) {
       return true
     case QUIZ_SAVED:
       return false
+    case ITEM_DETAIL_UPDATE:
+      return false
   }
+
   return validating
 }
 
