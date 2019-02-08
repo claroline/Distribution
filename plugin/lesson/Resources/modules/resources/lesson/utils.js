@@ -9,7 +9,6 @@ import {LINK_BUTTON} from '#/main/app/buttons'
  * @param tree
  */
 export const normalizeTree = (tree, lessonId, canEdit) => {
-
   const copy = cloneDeep(tree)
 
   let elems = normalizeTreeNode(copy.children, lessonId, canEdit)
@@ -17,7 +16,8 @@ export const normalizeTree = (tree, lessonId, canEdit) => {
     label: trans('chapter_creation', {}, 'icap_lesson'),
     target: '/new',
     icon: 'fa fa-fw fa-plus',
-    type: LINK_BUTTON
+    type: LINK_BUTTON,
+    displayed: canEdit
   })
 
   return {

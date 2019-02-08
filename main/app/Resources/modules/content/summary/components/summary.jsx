@@ -80,7 +80,6 @@ class SummaryLink extends Component {
 
   render() {
     const collapsible = this.props.collapsible || (this.props.children && 0 !== this.props.children.length)
-
     return (
       <li className="summary-link-container">
         <div className="summary-link">
@@ -190,7 +189,9 @@ class Summary extends Component {
 
         {0 !== this.props.links.length &&
           <ul className="summary">
-            {this.props.links.map((link, index) =>
+            {this.props.links.filter(link => {
+              return link.hasOwnProperty('displayed') ? link.displayed: true
+            }).map((link, index) =>
               <SummaryLink
                 {...link}
                 key={toKey(link.label) + index}
