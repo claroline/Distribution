@@ -16,7 +16,7 @@ export default (resourceNodes, nodesRefresher) => ({
   type: ASYNC_BUTTON,
   icon: 'fa fa-fw fa-trash-restore-alt',
   label: trans('restore', {}, 'actions'),
-  displayed: -1 !== resourceNodes.findIndex(node => !get(node, 'meta.active')) && param('resources.softDelete'),
+  displayed: -1 !== resourceNodes.findIndex(node => !get(node, 'meta.active')),
   confirm: {
     title: transChoice('resources_restore_confirm', resourceNodes.length),
     subtitle: 1 === resourceNodes.length ? resourceNodes[0].name : transChoice('count_elements', resourceNodes.length, {count: resourceNodes.length}),

@@ -218,7 +218,13 @@ class ResourceListener
     {
         $options = $event->getOptions();
 
-        $this->manager->delete($event->getResourceNode(), false, (bool) $options['hard']);
+        if (isset($options['hard']) && is_string($options['hard'])) {
+            $hard = 'true' === $options['hard'] ? true : false;
+        } else {
+            $hard = $options['hard'];
+        }
+
+        $this->manager->delete($event->getResourceNode(), false, !$hard);
 
         $event->setResponse(
             new JsonResponse(null, 204)
