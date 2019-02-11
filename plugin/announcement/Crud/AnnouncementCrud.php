@@ -83,7 +83,6 @@ class AnnouncementCrud
     public function preDelete(DeleteEvent $event)
     {
         $announcement = $event->getObject();
-        $options = $event->getOptions();
         $send = $this->om->getRepository(AnnouncementSend::class)->findBy(['announcement' => $announcement]);
 
         foreach ($send as $el) {
