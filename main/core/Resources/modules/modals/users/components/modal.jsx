@@ -20,7 +20,7 @@ const UsersPickerModal = props => {
       icon="fa fa-fw fa-user"
       className="data-picker-modal"
       bsSize="lg"
-      onExiting={() => props.resetSelect()}
+      onExiting={props.resetSelect}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -59,7 +59,6 @@ const UsersPickerModal = props => {
           }
         ]}
         card={UserList.card}
-        display={props.display}
       />
 
       <Button
