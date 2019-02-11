@@ -5,9 +5,11 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
-import {selectors} from '#/plugin/rss/resources/rss-feed/player/store'
+import {selectors} from '#/plugin/rss/resources/rss-feed/player/store/selectors'
 
 const PlayerComponent = props => {
+
+  console.log(props)
   if (0 === props.items.length) {
     return (
       <EmptyPlaceholder

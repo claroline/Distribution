@@ -19,4 +19,11 @@ class ClarolineRssBundle extends DistributionPluginBundle
     {
         return true;
     }
+
+    public function getRequiredPlugins()
+    {
+        return [
+            'Claroline\\RssReaderBundle\\ClarolineRssReaderBundle',
+        ];
+    }
 }
