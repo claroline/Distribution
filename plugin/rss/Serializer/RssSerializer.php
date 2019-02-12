@@ -62,7 +62,7 @@ class RssSerializer
               ->getReaderFor($content)
               ->getFeedItems(10);
         } catch (\Exception $e) {
-            $item = [];
+            $items = [];
         }
 
         return $items;

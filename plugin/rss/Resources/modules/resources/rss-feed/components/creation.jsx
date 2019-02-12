@@ -6,7 +6,7 @@ import {selectors} from '#/main/core/resource/modals/creation/store'
 
 // TODO : try to use <channel> title and description to feed resourceNode props
 
-const RssFeedCreation = props =>
+const RssFeedCreation = () =>
   <FormData
     level={5}
     name={selectors.STORE_NAME}

@@ -8,7 +8,7 @@ import {selectors} from '#/plugin/rss/resources/rss-feed/editor/store'
 
 // TODO : should be merged with creation form
 
-const Editor = props =>
+const Editor = () =>
   <FormData
     level={3}
     displayLevel={2}
