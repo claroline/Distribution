@@ -1,12 +1,11 @@
-//import {createElement} from 'react'
+import {createElement} from 'react'
 import get from 'lodash/get'
 
 import {url} from '#/main/app/api'
-//import {param} from '#/main/app/config'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {ASYNC_BUTTON} from '#/main/app/buttons'
 
-//import {ResourceCard} from '#/main/core/resource/components/card'
+import {ResourceCard} from '#/main/core/resource/components/card'
 
 /**
  * Deletes some resource nodes.
@@ -19,15 +18,13 @@ export default (resourceNodes, nodesRefresher) => ({
   type: ASYNC_BUTTON,
   icon: 'fa fa-fw fa-trash-o',
   label: trans('delete', {}, 'actions'),
-  //we can always delete unless the permissions doesn't allow us to do so
-  displayed: true,
   dangerous: true,
   confirm: {
     title: transChoice('resources_delete_confirm', resourceNodes.length),
     subtitle: 1 === resourceNodes.length ? resourceNodes[0].name : transChoice('count_elements', resourceNodes.length, {count: resourceNodes.length}),
     message: transChoice('resources_delete_message', resourceNodes.length, {count: resourceNodes.length})
-    //The following block is commented because it crashes the trash tool for unknwown reason when we close the moel (react freeze error)
-    /*,
+    //The following block should be commented because it crashes the trash tool for unknwown reason when we close the moel (react freeze error)
+    ,
     additional: [
       createElement('div', {
         key: 'additional',
@@ -37,7 +34,7 @@ export default (resourceNodes, nodesRefresher) => ({
         className: 'component-container',
         data: node
       })))
-    ]*/
+    ]
   },
   request: {
     url: url(

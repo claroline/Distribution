@@ -221,7 +221,11 @@ class ResourceListener
         if (isset($options['hard']) && is_string($options['hard'])) {
             $hard = 'true' === $options['hard'] ? true : false;
         } else {
-            $hard = $options['hard'];
+            if (isset($options['hard'])) {
+                $hard = $options['hard'];
+            } else {
+                $hard = false;
+            }
         }
 
         $this->manager->delete($event->getResourceNode(), false, !$hard);
