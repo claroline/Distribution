@@ -9,7 +9,6 @@ import {selectors} from '#/plugin/rss/resources/rss-feed/player/store/selectors'
 
 const PlayerComponent = props => {
 
-  console.log(props)
   if (0 === props.items.length) {
     return (
       <EmptyPlaceholder
@@ -21,11 +20,19 @@ const PlayerComponent = props => {
   }
 
   return (
-    <ul>
+    <div className="feed-rss">
       {props.items.map((item, index) =>
-        <li key={index}></li>
+        <div className="feed-item" key={index}>
+          <h4 className="feed-item-title">
+            <a href={item.link} rel="noopener noreferrer" target="_blank">{item.title}</a>
+            {/* {item.date} */}
+          </h4>
+          <p className="feed-item-desc">
+            {item.description}
+          </p>
+        </div>
       )}
-    </ul>
+    </div>
   )
 }
 
