@@ -1,12 +1,12 @@
-import {createElement} from 'react'
+//import {createElement} from 'react'
 import get from 'lodash/get'
 
 import {url} from '#/main/app/api'
-import {param} from '#/main/app/config'
+//import {param} from '#/main/app/config'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {ASYNC_BUTTON} from '#/main/app/buttons'
 
-import {ResourceCard} from '#/main/core/resource/components/card'
+//import {ResourceCard} from '#/main/core/resource/components/card'
 
 /**
  * Deletes some resource nodes.

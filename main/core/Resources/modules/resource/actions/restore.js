@@ -1,7 +1,6 @@
 import get from 'lodash/get'
 
 import {url} from '#/main/app/api/router'
-import {param} from '#/main/app/config'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {ASYNC_BUTTON} from '#/main/app/buttons'
 
