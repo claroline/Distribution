@@ -1,6 +1,12 @@
 import {makeActionCreator} from '#/main/app/store/actions'
 import {API_REQUEST, url} from '#/main/app/api'
 
+import {
+  actions as formActions,
+  selectors as formSelect
+} from '#/main/app/content/form/store'
+
+
 export const LOAD_MODEL = 'LOAD_MODEL'
 export const LOAD_CURRENT = 'LOAD_CURRENT'
 export const LOG_REFRESH = 'LOG_REFRESH'
@@ -50,7 +56,9 @@ actions.save = (workspace) => ({
     success: (response) => {
       const route = url(['claro_workspace_open', {workspaceId: response.id}])
       window.location.href =  route
-    }
+    },
+    //todo use selector instead ?
+    error: (errors, dispatch) => dispatch(formActions.errors('workspaces.current', errors))
   }
 })
 
