@@ -2,8 +2,7 @@ import {makeActionCreator} from '#/main/app/store/actions'
 import {API_REQUEST, url} from '#/main/app/api'
 
 import {
-  actions as formActions,
-  selectors as formSelect
+  actions as formActions
 } from '#/main/app/content/form/store'
 
 
