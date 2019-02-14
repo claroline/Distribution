@@ -1,5 +1,6 @@
 import merge from 'lodash/merge'
 
+import {url} from '#/main/app/api'
 import {now} from '#/main/app/intl/date'
 import {currentUser} from '#/main/app/security'
 import {makeId} from '#/main/core/scaffolding/id'
@@ -164,50 +165,66 @@ actions.unFlagSubject = (subject) => ({
   }
 })
 
-actions.createMessage = (subjectId, content, moderation) => ({
-  [API_REQUEST]: {
-    url: ['claroline_forum_api_subject_createmessage', {id: subjectId}],
-    request: {
-      method: 'POST',
-      body: JSON.stringify({
-        id: makeId(),
-        content: content,
-        meta: {
-          creator: currentUser(),
-          created: now(),
-          updated: now(),
-          moderation: moderation
+actions.createMessage = (subjectId, content, moderation) => {
+  const authenticatedUser = currentUser()
+  //this is a hack while we don't have the proper login redirection
+  if (!authenticatedUser) {
+    window.location.replace(url(['claro_security_login', {}, true]))
+  } else {
+    return {
+      [API_REQUEST]: {
+        url: ['claroline_forum_api_subject_createmessage', {id: subjectId}],
+        request: {
+          method: 'POST',
+          body: JSON.stringify({
+            id: makeId(),
+            content: content,
+            meta: {
+              creator: currentUser(),
+              created: now(),
+              updated: now(),
+              moderation: moderation
+            },
+            comments: []
+          })
         },
-        comments: []
-      })
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData(select.STORE_NAME+'.subjects.messages'))
-    }
-  }
-})
-
-actions.createComment = (messageId, comment, moderation) => ({
-  [API_REQUEST]: {
-    url: ['claroline_forum_api_message_createcomment', {id: messageId}],
-    request: {
-      method: 'POST',
-      body: JSON.stringify({
-        id: makeId(),
-        content: comment,
-        meta: {
-          creator: currentUser(),
-          created: now(),
-          updated: now(),
-          moderation: moderation
+        success: (data, dispatch) => {
+          dispatch(listActions.invalidateData(select.STORE_NAME+'.subjects.messages'))
         }
-      })
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData(select.STORE_NAME+'.subjects.messages'))
+      }
     }
   }
-})
+}
+
+actions.createComment = (messageId, comment, moderation) => {
+  const authenticatedUser = currentUser()
+  //this is a hack while we don't have the proper login redirection
+  if (!authenticatedUser) {
+    window.location.replace(url(['claro_security_login', {}, true]))
+  } else {
+    return {
+      [API_REQUEST]: {
+        url: ['claroline_forum_api_message_createcomment', {id: messageId}],
+        request: {
+          method: 'POST',
+          body: JSON.stringify({
+            id: makeId(),
+            content: comment,
+            meta: {
+              creator: currentUser(),
+              created: now(),
+              updated: now(),
+              moderation: moderation
+            }
+          })
+        },
+        success: (data, dispatch) => {
+          dispatch(listActions.invalidateData(select.STORE_NAME+'.subjects.messages'))
+        }
+      }
+    }
+  }
+}
 
 actions.editContent = (message, subjectId, content) => ({
   [API_REQUEST]: {
