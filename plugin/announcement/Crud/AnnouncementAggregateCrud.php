@@ -2,12 +2,8 @@
 
 namespace Claroline\AnnouncementBundle\Crud;
 
-use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
 use Claroline\AppBundle\API\Crud;
-use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
-use Claroline\AppBundle\Event\StrictDispatcher;
-use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -17,24 +13,13 @@ use JMS\DiExtraBundle\Annotation as DI;
 class AnnouncementAggregateCrud
 {
     /**
-     * AnnouncementManager constructor.
-     *
      * @DI\InjectParams({
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "crud"            = @DI\Inject("claroline.api.crud")
+     *     "crud"  = @DI\Inject("claroline.api.crud")
      * })
-     *
-     * @param StrictDispatcher $eventDispatcher
      */
-    public function __construct(
-        ObjectManager $om,
-        StrictDispatcher $eventDispatcher,
-        Crud $crud
-    ) {
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(Crud $crud)
+    {
         $this->crud = $crud;
-        $this->om = $om;
     }
 
     /**
