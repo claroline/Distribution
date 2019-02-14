@@ -5,10 +5,6 @@ import {selectors} from '#/plugin/blog/resources/blog/store'
 import isEmpty from 'lodash/isEmpty'
 import find from 'lodash/find'
 
-function getCommentsNumber(canEdit, publisedNumber, unpublishedNumber) {
-  return canEdit ? publisedNumber + unpublishedNumber : publisedNumber
-}
-
 function splitArray(array){
   return array.split(',').map(item => item.trim())
 }
@@ -35,8 +31,8 @@ function initDatalistFilters(dispatch, query){
   let obj = parseQuery(query)
   if(!isEmpty(obj))
   {
-    if(!isEmpty(obj['tags'])){
-      dispatch(listActions.addFilter(selectors.STORE_NAME+'.posts', 'tags', obj['tags']))
+    if(!isEmpty(obj['tag'])){
+      dispatch(listActions.addFilter(selectors.STORE_NAME+'.posts', 'tag', obj['tag']))
       dispatch(postActions.initDataList())
     }
     if(!isEmpty(obj['author'])){
@@ -74,7 +70,6 @@ function updateQueryParameters(uri, key, value) {
 }
 
 export {
-  getCommentsNumber,
   splitArray,
   cleanTag,
   parseQuery,
