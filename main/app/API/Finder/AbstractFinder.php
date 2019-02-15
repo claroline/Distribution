@@ -258,9 +258,13 @@ abstract class AbstractFinder implements FinderInterface
                 $sql .= ' OFFSET  '.$offset;
             }
 
-            $rsm = new ResultSetMappingBuilder($this->_em);
-            $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
-            $query = $this->_em->createNativeQuery($sql, $rsm);
+            if (!in_array(Options::SQL_ARRAY_MAP, $options)) {
+                $rsm = new ResultSetMappingBuilder($this->_em);
+                $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
+                $query = $this->_em->createNativeQuery($sql, $rsm);
+            } else {
+                $query = $this->_em->createQuery($sql);
+            }
         }
 
         return $query;
