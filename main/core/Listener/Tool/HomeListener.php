@@ -16,6 +16,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
+use Claroline\CoreBundle\Manager\LockManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -62,6 +63,7 @@ class HomeListener
         TwigEngine $templating,
         FinderProvider $finder,
         SerializerProvider $serializer,
+        LockManager $lockManager,
         AuthorizationCheckerInterface $authorization
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -69,6 +71,7 @@ class HomeListener
         $this->finder = $finder;
         $this->serializer = $serializer;
         $this->authorization = $authorization;
+        $this->lockManager = $lockManager;
     }
 
     /**
