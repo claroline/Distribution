@@ -126,6 +126,16 @@ class ObjectLock
     }
 
     /**
+     * Get the value of Locked.
+     *
+     * @return string
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
      * Set the value of Locked.
      *
      * @param string locked
@@ -168,7 +178,7 @@ class ObjectLock
      *
      * @return User
      */
-    public function getLastUser()
+    public function getUser()
     {
         return $this->lastUser;
     }
@@ -180,7 +190,7 @@ class ObjectLock
      *
      * @return self
      */
-    public function setLastUser(User $lastUser)
+    public function setUser(User $lastUser)
     {
         $this->lastUser = $lastUser;
 

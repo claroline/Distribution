@@ -22,7 +22,10 @@ const HomeTool = props =>
       }, {
         path: '/edit/tab/:id?',
         component: Editor,
-        onEnter: (params) => props.setCurrentTab(params.id),
+        onEnter: (params) => {
+          props.setCurrentTab(params.id)
+          props.lockTabs(props.editorTabs)
+        },
         disabled: !props.editable
       }
     ]}
@@ -37,7 +40,8 @@ HomeTool.propTypes = {
   )),
   currentTab: T.shape(TabTypes.propTypes),
   editable: T.bool.isRequired,
-  setCurrentTab: T.func.isRequired
+  setCurrentTab: T.func.isRequired,
+  lockTabs: T.func.isRequired
 }
 
 export {

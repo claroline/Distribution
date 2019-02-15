@@ -1,7 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
+import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {url} from '#/main/app/api'
 
 // action creators
 export const actions = {}
@@ -25,6 +27,16 @@ actions.deleteTab = (tabs, tabToDelete) => (dispatch) => {
   ))
 }
 
+actions.lockTabs = (tabs) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_home_lock', {ids: tabs.map(tab => tab.id)}]),
+    request: {
+      method: 'PUT'
+    },
+    success: (data) => {
+    }
+  }
+})
 actions.moveTab = (tabs, tabToMove, newPosition) => (dispatch) => {
   let newTabs = cloneDeep(tabs)
 

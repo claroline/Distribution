@@ -37,7 +37,7 @@ class HomeTabSerializer
      *
      * @DI\InjectParams({
      *     "serializer"            = @DI\Inject("claroline.api.serializer"),
-     *     "lockManager"           = @DI\Inject("laroline.manager.lock_manager")
+     *     "lockManager"           = @DI\Inject("claroline.manager.lock_manager"),
      *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
      *     "widgetContainerFinder" = @DI\Inject("claroline.api.finder.widget_container")
      * })
@@ -103,6 +103,8 @@ class HomeTabSerializer
             }
         }
 
+        $lock = $this->lockManager->getLock(HomeTab::class, $this->getUuid($homeTab, $options));
+
         $data = [
             'id' => $this->getUuid($homeTab, $options),
             'title' => $homeTabConfig->getName(),
@@ -126,7 +128,10 @@ class HomeTabSerializer
                 return $this->serializer->serialize($container, $options);
             }, $containers),
             'meta' => [
-              'locked' => $this->lockManager->isLocked(HomeTab::class, $this->getUuid($homeTab, $options)),
+              'lock' => [
+                'user' => $this->serializer->serialize($lock->getUser(), [Options::SERIALIZE_MINIMAL]),
+                'value' => $lock->isLocked(),
+              ],
             ],
         ];
 

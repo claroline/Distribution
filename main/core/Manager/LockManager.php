@@ -79,5 +79,7 @@ class LockManager
         $lock->setUser($this->tokenStorage->getToken()->getUser());
         $this->om->persist($lock);
         $this->om->flush();
+
+        return $lock;
     }
 }

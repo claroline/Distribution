@@ -46,7 +46,7 @@ class HomeController extends AbstractApiController
      *
      * @DI\InjectParams({
      *     "finder"      = @DI\Inject("claroline.api.finder"),
-     *     "lockManager" = @DI\Inject("laroline.manager.lock_manager")
+     *     "lockManager" = @DI\Inject("claroline.manager.lock_manager"),
      *     "crud"        = @DI\Inject("claroline.api.crud"),
      *     "serializer"  = @DI\Inject("claroline.api.serializer"),
      *     "om"          = @DI\Inject("claroline.persistence.object_manager")
@@ -72,7 +72,7 @@ class HomeController extends AbstractApiController
     }
 
     /**
-     * @EXT\Route("/lock/", name="apiv2_home_lock", options={"method_prefix"=false})
+     * @EXT\Route("/lock", name="apiv2_home_lock", options={"method_prefix"=false})
      * @EXT\Method("PUT")
      *
      * @param Request $request
@@ -84,15 +84,18 @@ class HomeController extends AbstractApiController
     public function lockTabAction(Request $request)
     {
         // grab tabs data
-        $tabs = $this->decodeRequest($request);
+        $tabs = $this->decodeIdsString($request, HomeTab::class);
 
         $this->om->startFlushSuite();
 
         foreach ($tabs as $tab) {
-            $this->lockManager->lock(HomeTab::class, $tab['id']);
+            var_dump('lock '.$tab->getUuid());
+            $this->lockManager->lock(HomeTab::class, $tab->getUuid());
         }
 
         $this->om->endFlushSuite();
+
+        return new JsonResponse();
     }
 
     /**
@@ -108,15 +111,17 @@ class HomeController extends AbstractApiController
     public function unlockTabAction(Request $request)
     {
         // grab tabs data
-        $tabs = $this->decodeRequest($request);
+        $tabs = $this->decodeIdsString($request, HomeTab::class);
 
         $this->om->startFlushSuite();
 
         foreach ($tabs as $tab) {
-            $this->lockManager->unlock(HomeTab::class, $tab['id']);
+            $this->lockManager->unlock(HomeTab::class, $tab->getUuid());
         }
 
         $this->om->endFlushSuite();
+
+        return new JsonResponse();
     }
 
     /**
@@ -249,10 +254,28 @@ class HomeController extends AbstractApiController
         }
 
         foreach ($installedTabs as $installedTab) {
+            $this->lockManager->unlock(HomeTab::class, $tab->getUuid());
+
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
                 $this->crud->delete($installedTab);
             }
         }
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
+     */
+    protected function decodeIdsString(Request $request, $class)
+    {
+        $ids = $request->query->get('ids');
+        if (!$ids) {
+            return [];
+        }
+
+        $property = is_numeric($ids[0]) ? 'id' : 'uuid';
+
+        return $this->om->findList($class, $property, $ids);
     }
 }
