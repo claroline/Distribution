@@ -48,7 +48,7 @@ class LockManager
 
     public function unlock($class, $uuid)
     {
-        $lock = $this->getLock($object);
+        $lock = $this->getLock($class, $uuid);
         $lock->setLocked(false);
         $this->om->persist($lock);
         $this->om->flush();
@@ -92,7 +92,7 @@ class LockManager
     {
         $object = $this->om->getRepository($class)->findOneByUuid($uuid);
 
-        if (!$this->isGranted('EDIT', $object)) {
+        if (!$this->authChecker->isGranted('EDIT', $object)) {
             throw new \Exception('You cannot (un)lock this resource');
         }
     }

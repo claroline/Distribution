@@ -128,10 +128,7 @@ class HomeTabSerializer
                 return $this->serializer->serialize($container, $options);
             }, $containers),
             'meta' => [
-              'lock' => [
-                'user' => $this->serializer->serialize($lock->getUser(), [Options::SERIALIZE_MINIMAL]),
-                'value' => $lock->isLocked(),
-              ],
+              'lock' => $this->serializer->serialize($lock),
             ],
         ];
 

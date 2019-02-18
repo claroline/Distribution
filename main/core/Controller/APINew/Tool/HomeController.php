@@ -89,7 +89,6 @@ class HomeController extends AbstractApiController
         $this->om->startFlushSuite();
 
         foreach ($tabs as $tab) {
-            var_dump('lock '.$tab->getUuid());
             $this->lockManager->lock(HomeTab::class, $tab->getUuid());
         }
 
@@ -254,7 +253,7 @@ class HomeController extends AbstractApiController
         }
 
         foreach ($installedTabs as $installedTab) {
-            $this->lockManager->unlock(HomeTab::class, $tab->getUuid());
+            $this->lockManager->unlock(HomeTab::class, $installedTab->getUuid());
 
             if (!in_array($installedTab->getUuid(), $ids)) {
                 // the tab no longer exist we can remove it
