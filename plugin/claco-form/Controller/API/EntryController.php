@@ -174,10 +174,6 @@ class EntryController extends AbstractCrudController
             }
         }
 
-        if (!$next) {
-            throw new JsonResponse(null, 204);
-        }
-
         $nextEntry = array_key_exists($next, $data) ? $data[$next] : $reset($data);
 
         return new JsonResponse($this->serializer->serialize($nextEntry), 200);
@@ -217,10 +213,6 @@ class EntryController extends AbstractCrudController
             if ($value->getId() === $entry->getId()) {
                 $prev = $position - 1;
             }
-        }
-
-        if (!$prev) {
-            throw new JsonResponse(null, 204);
         }
 
         $previousEntry = array_key_exists($prev, $data) ? $data[$prev] : end($data);
