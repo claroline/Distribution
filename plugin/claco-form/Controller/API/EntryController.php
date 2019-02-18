@@ -175,7 +175,7 @@ class EntryController extends AbstractCrudController
         }
 
         if (!$next) {
-            throw new \Exception("Couldn't find next calco form entry");
+            throw new JsonResponse(null, 204);
         }
 
         $nextEntry = array_key_exists($next, $data) ? $data[$next] : $reset($data);
@@ -220,7 +220,7 @@ class EntryController extends AbstractCrudController
         }
 
         if (!$prev) {
-            throw new \Exception("Couldn't find previous calco form entry");
+            throw new JsonResponse(null, 204);
         }
 
         $previousEntry = array_key_exists($prev, $data) ? $data[$prev] : end($data);
