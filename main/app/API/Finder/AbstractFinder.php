@@ -266,7 +266,6 @@ abstract class AbstractFinder implements FinderInterface
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
             $query = $this->_em->createNativeQuery($sql, $rsm);
-            $query = $this->_em->createQuery($sql);
         }
 
         return $query;
