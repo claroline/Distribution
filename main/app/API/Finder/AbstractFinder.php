@@ -11,6 +11,7 @@
 
 namespace Claroline\AppBundle\API\Finder;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Event\SearchObjectsEvent;
@@ -19,7 +20,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -65,7 +65,7 @@ abstract class AbstractFinder implements FinderInterface
      */
     abstract public function configureQueryBuilder(QueryBuilder $qb, array $searches, array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1]);
 
-    public function find(array $filters = [], array $sortBy = null, $page = 0, $limit = -1, $count = false)
+    public function find(array $filters = [], array $sortBy = null, $page = 0, $limit = -1, $count = false, $options = [])
     {
         //sorting is not required when we count stuff
         $sortBy = $count ? null : $sortBy;
@@ -74,7 +74,7 @@ abstract class AbstractFinder implements FinderInterface
         $qb = $this->om->createQueryBuilder();
         $qb->select($count ? 'COUNT(DISTINCT obj)' : 'DISTINCT obj')->from($this->getClass(), 'obj');
         //make an option parameters for query builder ?
-        $options = [
+        $queryOptions = [
             'page' => $page,
             'limit' => $limit,
             'count' => $count,
@@ -95,7 +95,7 @@ abstract class AbstractFinder implements FinderInterface
         ]);
 
         // filter query - let's the finder implementation process the filters to configure query
-        $query = $this->configureQueryBuilder($qb, $event->getFilters(), $sortBy, $options);
+        $query = $this->configureQueryBuilder($qb, $event->getFilters(), $sortBy, $queryOptions);
 
         if ($query instanceof QueryBuilder) {
             $qb = $query;
@@ -110,6 +110,10 @@ abstract class AbstractFinder implements FinderInterface
             }
 
             $query = $qb->getQuery();
+        }
+
+        if (in_array(Options::SQL_ARRAY_MAP, $options)) {
+            return $query->getArrayResult();
         }
 
         return $count ? (int) $query->getSingleScalarResult() : $query->getResult();
@@ -258,13 +262,7 @@ abstract class AbstractFinder implements FinderInterface
                 $sql .= ' OFFSET  '.$offset;
             }
 
-            if (!in_array(Options::SQL_ARRAY_MAP, $options)) {
-                $rsm = new ResultSetMappingBuilder($this->_em);
-                $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
-                $query = $this->_em->createNativeQuery($sql, $rsm);
-            } else {
-                $query = $this->_em->createQuery($sql);
-            }
+            $query = $this->_em->createQuery($sql);
         }
 
         return $query;
