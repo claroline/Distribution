@@ -43,7 +43,7 @@ class RssListener
         $rss = $event->getResource();
 
         $event->setData([
-            'rss' => $this->serializer->serialize($rss),
+            'rssFeed' => $this->serializer->serialize($rss),
         ]);
 
         $event->stopPropagation();
