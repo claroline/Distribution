@@ -15,6 +15,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\ObjectLock;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.manager.lock_manager")
@@ -24,17 +25,20 @@ class LockManager
     /**
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "tokenStorage" = @DI\Inject("security.token_storage")
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "authChecker"  = @DI\Inject("security.authorization_checker"),
      * })
      */
-    public function __construct(ObjectManager $om, TokenStorageInterface $tokenStorage)
+    public function __construct(ObjectManager $om, AuthorizationCheckerInterface $authChecker, TokenStorageInterface $tokenStorage)
     {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
+        $this->authChecker = $authChecker;
     }
 
     public function lock($class, $uuid)
     {
+        $this->check($class, $uuid);
         $lock = $this->getLock($class, $uuid);
         $lock->setLocked(true);
         $lock->setUser($this->tokenStorage->getToken()->getUser());
@@ -73,6 +77,7 @@ class LockManager
 
     public function create($class, $uuid)
     {
+        $this->check($class, $uuid);
         $lock = new ObjectLock();
         $lock->setObjectUuid($uuid);
         $lock->setObjectClass($class);
@@ -81,5 +86,14 @@ class LockManager
         $this->om->flush();
 
         return $lock;
+    }
+
+    public function check($class, $uuid)
+    {
+        $object = $this->om->getRepository($class)->findOneByUuid($uuid);
+
+        if (!$this->isGranted('EDIT', $object)) {
+            throw new \Exception('You cannot (un)lock this resource');
+        }
     }
 }
