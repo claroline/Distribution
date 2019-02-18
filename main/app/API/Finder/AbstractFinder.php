@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -262,6 +263,9 @@ abstract class AbstractFinder implements FinderInterface
                 $sql .= ' OFFSET  '.$offset;
             }
 
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata($this->getClass(), 'c0_');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
             $query = $this->_em->createQuery($sql);
         }
 
