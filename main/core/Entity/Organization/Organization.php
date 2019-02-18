@@ -401,7 +401,7 @@ class Organization
         $found = false;
 
         foreach ($this->userOrganizationReferences as $userOrgaRef) {
-            if ($userOrgaRef->getOrganization() === $organization && $userOrgaRef->getUser() === $this) {
+            if ($userOrgaRef->getOrganization() === $this && $userOrgaRef->getUser() === $user) {
                 $found = true;
             }
         }
