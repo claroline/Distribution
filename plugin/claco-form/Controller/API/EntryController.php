@@ -13,7 +13,6 @@ namespace Claroline\ClacoFormBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
-use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Entry;
@@ -25,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiMeta(
+ *     class="Claroline\ClacoFormBundle\Entity\Entry",
  *     ignore={"exist", "copyBulk", "schema", "find", "list"}
  * )
  * @EXT\Route("/clacoformentry")
@@ -155,6 +155,7 @@ class EntryController extends AbstractCrudController
      * )
      *
      * @param ClacoForm $clacoForm
+     * @param Entry     $entry
      * @param Request   $request
      *
      * @return JsonResponse
@@ -164,8 +165,11 @@ class EntryController extends AbstractCrudController
         $params = $request->query->all();
         $filters = array_key_exists('filters', $params) ? $params['filters'] : [];
         $filters['clacoForm'] = $clacoForm->getId();
+        $sortBy = array_key_exists('sortBy', $params) ? $params['sortBy'] : null;
+
         //array map is not even needed; objects are fine here
-        $data = $this->finder->get(Entry::class)->find($filters, null, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        /** @var Entry[] $data */
+        $data = $this->finder->get(Entry::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
         $next = null;
 
         foreach ($data as $position => $value) {
@@ -174,7 +178,7 @@ class EntryController extends AbstractCrudController
             }
         }
 
-        $nextEntry = array_key_exists($next, $data) ? $data[$next] : $reset($data);
+        $nextEntry = array_key_exists($next, $data) ? $data[$next] : reset($data);
 
         return new JsonResponse($this->serializer->serialize($nextEntry), 200);
     }
@@ -196,6 +200,7 @@ class EntryController extends AbstractCrudController
      * )
      *
      * @param ClacoForm $clacoForm
+     * @param Entry     $entry
      * @param Request   $request
      *
      * @return JsonResponse
@@ -205,8 +210,11 @@ class EntryController extends AbstractCrudController
         $params = $request->query->all();
         $filters = array_key_exists('filters', $params) ? $params['filters'] : [];
         $filters['clacoForm'] = $clacoForm->getId();
+        $sortBy = array_key_exists('sortBy', $params) ? $params['sortBy'] : null;
+
         //array map is not even needed; objects are fine here
-        $data = $this->finder->get(Entry::class)->find($filters, null, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        /** @var Entry[] $data */
+        $data = $this->finder->get(Entry::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
         $prev = null;
 
         foreach ($data as $position => $value) {
