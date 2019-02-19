@@ -26,7 +26,6 @@ import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {selectors} from '#/main/core/tools/home/store'
 import {actions as editorActions, selectors as editorSelectors} from '#/main/core/tools/home/editor/store'
 import {Tabs} from '#/main/core/tools/home/components/tabs'
-import {Warning as LockWarning} from '#/main/core/lock/components/warning.jsx'
 
 import {TabEditor} from '#/main/core/tools/home/editor/components/tab'
 
@@ -44,10 +43,6 @@ const EditorComponent = props =>
       title={props.currentTabTitle}
       poster={props.currentTab && props.currentTab.poster ? props.currentTab.poster.url: undefined}
     >
-      {props.currentTab &&
-        <LockWarning lock={props.currentTab.meta.lock}/>
-      }
-      
       <Tabs
         prefix="/edit"
         tabs={props.tabs}
