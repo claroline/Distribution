@@ -138,7 +138,7 @@ ResourcePage.propTypes = {
     label: T.string.isRequired,
     target: T.string.isRequired
   })),
-  
+
   /**
    * The current resource node.
    */

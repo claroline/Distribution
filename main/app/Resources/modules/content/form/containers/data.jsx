@@ -16,7 +16,6 @@ const FormData = connect(
   (state, ownProps) => {
     // get the root of the form in the store
     const formState = selectors.form(state, ownProps.name)
-
     invariant(undefined !== formState, `Try to connect form on undefined store '${ownProps.name}'.`)
 
     let data = selectors.data(formState)
@@ -57,6 +56,16 @@ const FormData = connect(
     },
     cancelForm() {
       dispatch(actions.cancelChanges(ownProps.name))
+    },
+    getLock(className, id) {
+      console.log('getlock', className, id)
+      dispatch(actions.getItemLock(className, id))
+    },
+    setLock() {
+      alert('lock')
+    },
+    unlock() {
+      alert('unlock')
     }
   }),
   (stateProps, dispatchProps, ownProps) => {

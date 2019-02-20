@@ -1,15 +1,12 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import {withRouter} from '#/main/app/router'
 
-import {currentUser} from '#/main/app/security'
 import {trans} from '#/main/app/intl/translation'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {PageHeader, PageContent, PageActions, PageAction} from '#/main/core/layout/page'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {getToolPath, showToolBreadcrumb} from '#/main/core/tool/utils'
-import {displayDate} from '#/main/app/intl/date'
 
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {WidgetGrid} from '#/main/core/widget/player/components/grid'
@@ -43,14 +40,11 @@ const PlayerComponent = props =>
       {(props.currentTab && props.editable) &&
         <PageActions>
           <PageAction
-            type={CALLBACK_BUTTON}
+            type={LINK_BUTTON}
             label={trans('configure', {}, 'actions')}
             icon="fa fa-fw fa-cog"
             primary={true}
-            callback={() => props.history.push(`/edit/tab/${props.currentTab.id}`)}
-            confirm={(currentUser().username !== props.currentTab.meta.lock.user.username) && props.currentTab.meta.lock.value ? {
-              message: trans('warning_lock', {username: props.currentTab.meta.lock.user.username, date: displayDate(props.currentTab.meta.lock.updated, true, true)})
-            }: null}
+            target={`/edit/tab/${props.currentTab.id}`}
           />
         </PageActions>
       }
@@ -78,7 +72,7 @@ PlayerComponent.propTypes = {
   )).isRequired
 }
 
-const Player = withRouter(connect(
+const Player = connect(
   (state) => ({
     currentContext: selectors.context(state),
     editable: selectors.editable(state),
@@ -87,7 +81,7 @@ const Player = withRouter(connect(
     currentTabTitle: selectors.currentTabTitle(state),
     widgets: selectors.widgets(state)
   })
-)(PlayerComponent))
+)(PlayerComponent)
 
 export {
   Player

@@ -8,6 +8,8 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as alertActions} from '#/main/app/overlay/alert/store'
 import {constants as alertConstants} from '#/main/app/overlay/alert/constants'
 import {constants as actionConstants} from '#/main/app/action/constants'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
@@ -31,6 +33,38 @@ actions.reset = (formName, data = {}, isNew = false) => ({
   type: makeInstanceAction(FORM_RESET, formName),
   data: data,
   isNew: isNew
+})
+
+actions.getItemLock = (className, id) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_object_lock_get', {class: className, id}],
+    request: {
+      method: 'GET'
+    },
+    success: (response, dispatch) => {
+      dispatch(actions.validateLock(response))
+    }
+  }
+})
+
+actions.validateLock = (lock) => (dispatch) => {
+  dispatch(
+    modalActions.showModal(MODAL_CONFIRM, {
+      title: 'validate',
+      dangerous: true,
+      icon: 'fa fa-fw fa-check',
+      question: 'validateform',
+      handleConfirm: () => {
+        alert('redirect')
+      }
+    })
+  )
+}
+
+actions.lockItem = (className, id) => ({
+})
+
+actions.unlockItem = (className, id) => ({
 })
 
 actions.errors = (formName, errors) => (dispatch) => {

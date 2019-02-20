@@ -5,7 +5,6 @@ import {withRouter} from '#/main/app/router'
 import {HomeTool as HomeToolComponent} from '#/main/core/tools/home/components/tool'
 import {actions, selectors} from '#/main/core/tools/home/store'
 import {selectors as editorSelectors} from '#/main/core/tools/home/editor/store'
-import {actions as editorActions} from '#/main/core/tools/home/editor/store/actions'
 
 const HomeTool = withRouter(
   connect(
@@ -18,9 +17,6 @@ const HomeTool = withRouter(
     (dispatch) => ({
       setCurrentTab(tab){
         dispatch(actions.setCurrentTab(tab))
-      },
-      lockTabs(tabs = []) {
-        dispatch(editorActions.lockTabs(tabs))
       }
     })
   )(HomeToolComponent)

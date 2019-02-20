@@ -27,16 +27,6 @@ actions.deleteTab = (tabs, tabToDelete) => (dispatch) => {
   ))
 }
 
-actions.lockTabs = (tabs) => ({
-  [API_REQUEST]: {
-    url: url(['apiv2_home_lock', {ids: tabs.map(tab => tab.id)}]),
-    request: {
-      method: 'PUT'
-    },
-    success: (data) => {
-    }
-  }
-})
 actions.moveTab = (tabs, tabToMove, newPosition) => (dispatch) => {
   let newTabs = cloneDeep(tabs)
 
