@@ -12,15 +12,17 @@
 namespace Claroline\CoreBundle\Security\Voter;
 
 use Claroline\CoreBundle\Entity\User;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 /**
- * @DI\Service
- * @DI\Tag("security.voter")
+ * Will be functional at the sf4 upgrade.
  */
+
+ // use theses annotations later
+ // @DI\Service
+ // @DI\Tag("security.voter")
 class UserSwitchVoter extends Voter
 {
     protected function supports($attribute, $subject)
@@ -38,8 +40,6 @@ class UserSwitchVoter extends Voter
      */
     public function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
-
         return $this->isOrganizationManager($token, $subject) ? VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
     }
 
