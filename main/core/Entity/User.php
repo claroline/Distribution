@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Organization\UserOrganizationReference;
 use Claroline\CoreBundle\Entity\Task\ScheduledTask;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
+use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
 use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -424,11 +425,17 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      */
     private $scheduledTasks;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue", mappedBy="user")
+     */
+    protected $wkUserQueues;
+
     public function __construct()
     {
         parent::__construct();
         $this->roles = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->wkUserQueues = new ArrayCollection();
         $this->locations = new ArrayCollection();
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->orderedTools = new ArrayCollection();
@@ -1192,11 +1199,22 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
 
     public function addOrganization(Organization $organization, $main = false)
     {
-        $ref = new UserOrganizationReference();
-        $ref->setOrganization($organization);
-        $ref->setUser($this);
-        $ref->setIsMain($main);
-        $this->userOrganizationReferences->add($ref);
+        $found = false;
+
+        foreach ($this->userOrganizationReferences as $userOrgaRef) {
+            if ($userOrgaRef->getOrganization() === $organization && $userOrgaRef->getUser() === $this) {
+                $found = true;
+            }
+        }
+
+        if (!$found) {
+            $ref = new UserOrganizationReference();
+            $ref->setOrganization($organization);
+            $ref->setUser($this);
+            $ref->setIsMain($main);
+
+            $this->userOrganizationReferences->add($ref);
+        }
     }
 
     public function removeOrganization(Organization $organization)
@@ -1221,7 +1239,11 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
 
     public function addAdministratedOrganization(Organization $organization)
     {
-        $this->administratedOrganizations->add($organization);
+        $this->addOrganization($organization);
+
+        if (!$this->administratedOrganizations->contains($organization)) {
+            $this->administratedOrganizations->add($organization);
+        }
     }
 
     public function removeAdministratedOrganization(Organization $organization)
@@ -1319,5 +1341,10 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     public function removeScheduledTask(ScheduledTask $task)
     {
         $this->scheduledTasks->removeElement($task);
+    }
+
+    public function addWorkspaceUserQueue(WorkspaceRegistrationQueue $wkUserQueue)
+    {
+        $this->wkUserQueues->add($wkUserQueue);
     }
 }

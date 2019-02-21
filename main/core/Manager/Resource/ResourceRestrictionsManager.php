@@ -36,8 +36,9 @@ class ResourceRestrictionsManager
      *     "security"      = @DI\Inject("security.authorization_checker")
      * })
      *
-     * @param SessionInterface $session
-     * @param RightsManager    $rightsManager
+     * @param SessionInterface              $session
+     * @param RightsManager                 $rightsManager
+     * @param AuthorizationCheckerInterface $security
      */
     public function __construct(
         SessionInterface $session,
@@ -93,6 +94,9 @@ class ResourceRestrictionsManager
 
             if (!empty($resourceNode->getAccessibleFrom()) || !empty($resourceNode->getAccessibleUntil())) {
                 $errors['notStarted'] = !$this->isStarted($resourceNode);
+                $errors['startDate'] = $resourceNode->getAccessibleFrom() ?
+                    $resourceNode->getAccessibleFrom()->format('d/m/Y') :
+                    null;
                 $errors['ended'] = $this->isEnded($resourceNode);
             }
 
