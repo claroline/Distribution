@@ -1,7 +1,6 @@
 import {connect} from 'react-redux'
 
 import {withRouter} from '#/main/app/router'
-import {trans} from '#/main/app/intl/translation'
 
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
@@ -22,38 +21,23 @@ const EditorMain = withRouter(
       workspace: resourceSelect.workspace(state)
     }),
     (dispatch) => ({
-      // step management
-      addStep(parentStep = null) {
-        dispatch(actions.addStep(parentStep ? parentStep.id : null))
+      addStep(parentId = null) {
+        dispatch(actions.addStep(parentId))
       },
-      removeStep(step, history) {
-        dispatch(actions.removeStep(step.id))
+      removeStep(stepId, history) {
+        dispatch(actions.removeStep(stepId))
 
-        if (`/edit/${step.id}` === history.location.pathname) {
+        if (`/edit/${stepId}` === history.location.pathname) {
           history.push('/edit')
         }
       },
-      copyStep(step, position) {
-        dispatch(actions.copyStep(step))
-        dispatch(actions.paste(parentStep ? parentStep.id : null))
+      copyStep(stepId, position) {
+        dispatch(actions.copyStep(stepId, position))
       },
-      moveStep(step, position) {
+      moveStep(stepId, position) {
+        dispatch(actions.moveStep(stepId, position))
+      },
 
-      },
-
-      // embedded resources management
-      pickSecondaryResources(stepId, selected) {
-        dispatch(actions.addSecondaryResources(stepId, selected))
-      },
-      removeSecondaryResource(stepId, id) {
-        dispatch(actions.removeSecondaryResources(stepId, [id]))
-      },
-      updateSecondaryResourceInheritance(stepId, id, value) {
-        dispatch(actions.updateSecondaryResourceInheritance(stepId, id, value))
-      },
-      removeInheritedResource(stepId, id) {
-        dispatch(actions.removeInheritedResources(stepId, [id]))
-      },
       computeResourceDuration(resourceId) {
         dispatch(pathActions.computeResourceDuration(resourceId))
       }

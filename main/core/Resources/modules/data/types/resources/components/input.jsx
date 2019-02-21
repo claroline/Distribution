@@ -1,49 +1,54 @@
 import React, {Fragment} from 'react'
 import isEmpty from 'lodash/isEmpty'
 
-import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
-import {Button} from '#/main/app/action/components/button'
-
 import {trans} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
-import {GroupCard} from '#/main/core/user/data/components/group-card'
-import {Group as GroupType} from '#/main/core/user/prop-types'
-import {MODAL_GROUPS_PICKER} from '#/main/core/modals/groups'
+import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 
-const GroupsButton = props =>
+import {ResourceCard} from '#/main/core/resource/components/card'
+import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
+import {MODAL_RESOURCE_EXPLORER} from '#/main/core/modals/resources'
+
+const ResourcesButton = props =>
   <Button
-    className="btn"
-    style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-users"
-    label={trans('add_groups')}
+    className="btn"
+    icon="fa fa-fw fa-folder"
+    label={trans('add_resources')}
     primary={true}
-    modal={[MODAL_GROUPS_PICKER, {
-      url: ['apiv2_group_list_registerable'],
+    modal={[MODAL_RESOURCE_EXPLORER, {
       title: props.title,
+      current: props.current,
+      root: props.root,
       selectAction: (selected) => ({
         type: CALLBACK_BUTTON,
         label: trans('select', {}, 'actions'),
         callback: () => props.onChange(selected)
       })
     }]}
+    style={{
+      marginTop: '10px' // todo
+    }}
   />
 
-GroupsButton.propTypes = {
+ResourcesButton.propTypes = {
   title: T.string,
+  current: T.shape(ResourceNodeTypes.propTypes),
+  root: T.shape(ResourceNodeTypes.propTypes),
   onChange: T.func.isRequired
 }
 
-const GroupsInput = props => {
+const ResourcesInput = props => {
   if (!isEmpty(props.value)) {
     return(
       <Fragment>
-        {props.value.map(group =>
-          <GroupCard
-            key={`group-card-${group.id}`}
-            data={group}
+        {props.value.map(resource =>
+          <ResourceCard
+            key={`resource-card-${resource.id}`}
+            data={resource}
             actions={[
               {
                 name: 'delete',
@@ -53,7 +58,7 @@ const GroupsInput = props => {
                 dangerous: true,
                 callback: () => {
                   const newValue = props.value
-                  const index = newValue.findIndex(g => g.id === group.id)
+                  const index = newValue.findIndex(r => r.id === resource.id)
 
                   if (-1 < index) {
                     newValue.splice(index, 1)
@@ -65,15 +70,15 @@ const GroupsInput = props => {
           />
         )}
 
-        <GroupsButton
+        <ResourcesButton
           {...props.picker}
           onChange={(selected) => {
             const newValue = props.value
-            selected.forEach(group => {
-              const index = newValue.findIndex(g => g.id === group.id)
+            selected.forEach(resource => {
+              const index = newValue.findIndex(r => r.id === resource.id)
 
               if (-1 === index) {
-                newValue.push(group)
+                newValue.push(resource)
               }
             })
             props.onChange(newValue)
@@ -83,13 +88,14 @@ const GroupsInput = props => {
     )
   }
 
-  return (
+  return(
     <EmptyPlaceholder
+      id={props.id}
       size="lg"
-      icon="fa fa-users"
-      title={trans('no_group')}
+      icon="fa fa-folder"
+      title={trans('no_resource')}
     >
-      <GroupsButton
+      <ResourcesButton
         {...props.picker}
         onChange={props.onChange}
       />
@@ -97,20 +103,25 @@ const GroupsInput = props => {
   )
 }
 
-implementPropTypes(GroupsInput, FormFieldTypes, {
+
+implementPropTypes(ResourcesInput, FormFieldTypes, {
   value: T.arrayOf(T.shape(
-    GroupType.propTypes
+    ResourceNodeTypes.propTypes
   )),
   picker: T.shape({
-    title: T.string
+    title: T.string,
+    current: T.shape(ResourceNodeTypes.propTypes),
+    root: T.shape(ResourceNodeTypes.propTypes)
   })
 }, {
   value: null,
   picker: {
-    title: trans('groups_picker')
+    title: trans('resource_picker'),
+    current: null,
+    root: null
   }
 })
 
 export {
-  GroupsInput
+  ResourcesInput
 }

@@ -3,14 +3,14 @@ import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
 import {constants} from '#/plugin/path/resources/path/constants'
 import {selectors} from '#/plugin/path/resources/path/editor/store'
 
 const EditorParameters = props =>
-  <div className="content-container">
+  <Fragment>
     <h3 className="h2 parameters-title">
       {constants.NUMBERING_NONE !== get(props.path, 'display.numbering') &&
         <span className="h-numbering">
@@ -107,16 +107,15 @@ const EditorParameters = props =>
         }
       ]}
     />
-  </div>
+  </Fragment>
 
 EditorParameters.propTypes = {
   workspace: T.object,
   path: T.shape({
+    id: T.string,
     display: T.shape({
-      description: T.string,
       showOverview: T.bool.isRequired,
-      showSummary: T.bool.isRequired,
-      manualProgressionAllowed: T.bool.isRequired
+      showSummary: T.bool.isRequired
     })
   }).isRequired
 }

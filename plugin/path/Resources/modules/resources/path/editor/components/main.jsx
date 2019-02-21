@@ -34,7 +34,7 @@ class EditorMain extends Component {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-plus',
         label: trans('step_add_child', {}, 'path'),
-        callback: () => this.props.addStep(step),
+        callback: () => this.props.addStep(step.id),
         group: trans('management')
       }, {
         name: 'copy',
@@ -49,7 +49,7 @@ class EditorMain extends Component {
           selectAction: (position) => ({
             type: CALLBACK_BUTTON,
             label: trans('copy', {}, 'actions'),
-            callback: () => this.props.copyStep(step, position)
+            callback: () => this.props.copyStep(step.id, position)
           })
         }],
         group: trans('management')
@@ -66,7 +66,7 @@ class EditorMain extends Component {
           selectAction: (position) => ({
             type: CALLBACK_BUTTON,
             label: trans('move', {}, 'actions'),
-            callback: () => this.props.moveStep(step, position)
+            callback: () => this.props.moveStep(step.id, position)
           })
         }],
         group: trans('management')
@@ -75,7 +75,7 @@ class EditorMain extends Component {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete', {}, 'actions'),
-        callback: () => this.props.removeStep(step, this.props.history),
+        callback: () => this.props.removeStep(step.id, this.props.history),
         confirm: {
           title: trans('deletion'),
           subtitle: step.title,
@@ -111,7 +111,7 @@ class EditorMain extends Component {
               type: LINK_BUTTON,
               icon: 'fa fa-fw fa-cog',
               label: trans('parameters'),
-              target: '/edit/parameters',
+              target: '/edit/parameters'
             }].concat(this.props.path.steps.map(this.getStepSummary), [{
               type: CALLBACK_BUTTON,
               icon: 'fa fa-fw fa-plus',
@@ -159,10 +159,6 @@ class EditorMain extends Component {
                         numbering={getNumbering(this.props.path.display.numbering, this.props.path.steps, step)}
                         customNumbering={constants.NUMBERING_CUSTOM === this.props.path.display.numbering}
                         stepPath={getFormDataPart(step.id, this.props.path.steps)}
-                        pickSecondaryResources={this.props.pickSecondaryResources}
-                        removeSecondaryResource={this.props.removeSecondaryResource}
-                        updateSecondaryResourceInheritance={this.props.updateSecondaryResourceInheritance}
-                        removeInheritedResource={this.props.removeInheritedResource}
                         onEmbeddedResourceClose={this.props.computeResourceDuration}
                       />
                     </PathCurrent>
@@ -202,10 +198,6 @@ EditorMain.propTypes = {
   removeStep: T.func.isRequired,
 
   // resource management
-  pickSecondaryResources: T.func.isRequired,
-  removeSecondaryResource: T.func.isRequired,
-  updateSecondaryResourceInheritance: T.func.isRequired,
-  removeInheritedResource: T.func.isRequired,
   computeResourceDuration: T.func.isRequired,
   history: T.shape({
     location: T.shape({

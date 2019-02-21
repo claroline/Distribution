@@ -1,4 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
+import merge from 'lodash/merge'
+import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
@@ -7,97 +9,90 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
 import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
 
-import {
-  getStepPath,
-  manageInheritedResources,
-  generateCopy,
-  updateCopyBeforeAdding
-} from '#/plugin/path/resources/path/editor/utils'
+import {Step} from '#/plugin/path/resources/path/prop-types'
+import {getStepPath, getStepParent, getFormDataPart} from '#/plugin/path/resources/path/editor/utils'
 
 import {
   STEP_ADD,
-  STEP_REMOVE,
-  STEP_ADD_SECONDARY_RESOURCES,
-  STEP_REMOVE_SECONDARY_RESOURCES,
-  STEP_UPDATE_SECONDARY_RESOURCE_INHERITANCE,
-  STEP_REMOVE_INHERITED_RESOURCES,
   STEP_COPY,
-  STEP_PASTE,
-  STEP_COPY_RESET
+  STEP_MOVE,
+  STEP_REMOVE
 } from '#/plugin/path/resources/path/editor/store/actions'
-
 import {selectors} from '#/plugin/path/resources/path/editor/store/selectors'
 
-const defaultState = {
-  data: {},
-  copy: null
+function replaceStepIds(step) {
+  step.id = makeId()
+
+  if (step.children) {
+    step.children = step.children.map(replaceStepIds)
+  }
+
+  return step
 }
 
-const reducer = makeFormReducer(selectors.FORM_NAME, defaultState, {
+function pushStep(step, steps, position) {
+  const newSteps = cloneDeep(steps)
+
+  switch (position.order) {
+    case 'first':
+      newSteps.unshift(step)
+      break
+
+    case 'before':
+    case 'after':
+      if ('before' === position.order) {
+        newSteps.splice(steps.findIndex(step => step.id === position.step), 0, step)
+      } else {
+        newSteps.splice(steps.findIndex(step => step.id === position.step) + 1, 0, step)
+      }
+      break
+
+    case 'last':
+      newSteps.push(step)
+      break
+  }
+
+  return newSteps
+}
+
+const reducer = makeFormReducer(selectors.FORM_NAME, {}, {
   pendingChanges: makeReducer(false, {
     [STEP_ADD]: () => true,
-    [STEP_REMOVE]: () => true,
-    [STEP_ADD_SECONDARY_RESOURCES]: () => true,
-    [STEP_REMOVE_SECONDARY_RESOURCES]: () => true,
-    [STEP_UPDATE_SECONDARY_RESOURCE_INHERITANCE]: () => true,
-    [STEP_COPY]: () => true
+    [STEP_COPY]: () => true,
+    [STEP_MOVE]: () => true,
+    [STEP_REMOVE]: () => true
   }),
-  originalData: makeReducer(defaultState.originalData, {
+  originalData: makeReducer({}, {
     [RESOURCE_LOAD]: (state, action) => action.resourceData.path || state
   }),
-  data: makeReducer(defaultState.data, {
+  data: makeReducer({}, {
     [RESOURCE_LOAD]: (state, action) => action.resourceData.path || state,
     [STEP_ADD]: (state, action) => {
       const newState = cloneDeep(state)
 
       if (!action.parentId) {
-        newState.steps.push({
+        newState.steps.push(merge({}, Step.defaultProps, {
           id: makeId(),
-          title: `${trans('step', {}, 'path')} ${newState.steps.length + 1}`,
-          description: null,
-          display: {},
-          secondaryResources: [],
-          inheritedResources: [],
-          children: []
-        })
-      } else {
-        const stepPath = getStepPath(action.parentId, newState.steps, 0, [])
-        const inheritedResources = []
-        let step = newState.steps[stepPath[0]]
-        let name = `${trans('step', {}, 'path')} ${stepPath[0] + 1}`
-        step.secondaryResources.filter(sr => sr.inheritanceEnabled).forEach(sr => inheritedResources.push({
-          id: makeId(),
-          lvl: 0,
-          resource: sr.resource,
-          sourceUuid: sr.id
+          title: `${trans('step', {}, 'path')} ${newState.steps.length + 1}`
         }))
-
-        for (let i = 1; i < stepPath.length; ++i) {
-          step = step.children[stepPath[i]]
-          step.secondaryResources.filter(sr => sr.inheritanceEnabled).forEach(sr => inheritedResources.push({
-            id: makeId(),
-            lvl: i,
-            resource: sr.resource,
-            sourceUuid: sr.id
-          }))
-          name += `.${stepPath[i] + 1}`
+      } else {
+        const parentPath = getStepPath(action.parentId, newState.steps)
+        const parent = get(newState, getFormDataPart(action.parentId, newState.steps))
+        if (!parent.children) {
+          parent.children = []
         }
-        step.children.push({
+
+        parent.children.push(merge({}, Step.defaultProps, {
           id: makeId(),
-          title: `${name}.${step.children.length + 1}`,
-          description: null,
-          display: {},
-          secondaryResources: [],
-          inheritedResources: inheritedResources,
-          children: []
-        })
+          title: `${trans('step', {}, 'path')} ${parentPath.map(i => i+1).join('.')}.${parent.children.length + 1}`
+        }))
       }
 
       return newState
     },
     [STEP_REMOVE]: (state, action) => {
       const newState = cloneDeep(state)
-      const stepPath = getStepPath(action.id, newState.steps, 0, [])
+      const stepPath = getStepPath(action.id, newState.steps)
 
       if (stepPath.length === 1) {
         newState.steps.splice(stepPath[0], 1)
@@ -112,111 +107,47 @@ const reducer = makeFormReducer(selectors.FORM_NAME, defaultState, {
 
       return newState
     },
-    [STEP_ADD_SECONDARY_RESOURCES]: (state, action) => {
-      const newState = cloneDeep(state)
-      const stepPath = getStepPath(action.stepId, newState.steps, 0, [])
-
-      let step = newState.steps[stepPath[0]]
-
-      for (let i = 1; i < stepPath.length; ++i) {
-        step = step.children[stepPath[i]]
-      }
-      action.resources.forEach(r => step.secondaryResources.push({
-        id: makeId(),
-        inheritanceEnabled: false,
-        resource: r
-      }))
-
-      return newState
-    },
-    [STEP_REMOVE_SECONDARY_RESOURCES]: (state, action) => {
-      const newState = cloneDeep(state)
-      const stepPath = getStepPath(action.stepId, newState.steps, 0, [])
-
-      let step = newState.steps[stepPath[0]]
-
-      for (let i = 1; i < stepPath.length; ++i) {
-        step = step.children[stepPath[i]]
-      }
-      action.resources.forEach(r => {
-        const index = step.secondaryResources.findIndex(sr => sr.id === r)
-
-        if (index > -1) {
-          step.children.forEach(s => manageInheritedResources(s, step.secondaryResources[index].id, null, 0))
-          step.secondaryResources.splice(index, 1)
-        }
-      })
-
-      return newState
-    },
-    [STEP_UPDATE_SECONDARY_RESOURCE_INHERITANCE]: (state, action) => {
-      const newState = cloneDeep(state)
-      const stepPath = getStepPath(action.stepId, newState.steps, 0, [])
-
-      let step = newState.steps[stepPath[0]]
-
-      for (let i = 1; i < stepPath.length; ++i) {
-        step = step.children[stepPath[i]]
-      }
-      const lvl = stepPath.length - 1
-      const secondaryResource = step.secondaryResources.find(sr => sr.id === action.id)
-
-      if (secondaryResource) {
-        secondaryResource.inheritanceEnabled = action.value
-        const resource = action.value ? secondaryResource.resource : null
-        step.children.forEach(s => manageInheritedResources(s, action.id, resource, lvl))
-      }
-
-      return newState
-    },
-    [STEP_REMOVE_INHERITED_RESOURCES]: (state, action) => {
-      const newState = cloneDeep(state)
-      const stepPath = getStepPath(action.stepId, newState.steps, 0, [])
-
-      let step = newState.steps[stepPath[0]]
-
-      for (let i = 1; i < stepPath.length; ++i) {
-        step = step.children[stepPath[i]]
-      }
-      action.resources.forEach(r => {
-        const index = step.inheritedResources.findIndex(sr => sr.id === r)
-
-        if (index > -1) {
-          step.inheritedResources.splice(index, 1)
-        }
-      })
-
-      return newState
-    },
     [STEP_COPY]: (state, action) => {
       const newState = cloneDeep(state)
 
-      // generateCopy(copy, 0, {})
+      // generate a copy of the step and its subtree
+      const original = get(newState, getFormDataPart(action.id, newState.steps))
+      const copy = replaceStepIds(cloneDeep(original))
 
-      if (!action.parentId) {
-        newState.steps.push(action.step)
+      // put the copy at the correct position
+      if (action.position.parent) {
+        const parent = get(newState, getFormDataPart(action.position.parent, newState.steps))
+
+        parent.children = pushStep(copy, parent.children, action.position)
       } else {
-        const stepPath = getStepPath(action.parentId, newState.steps, 0, [])
-        const inheritedResources = []
-        let step = newState.steps[stepPath[0]]
-        step.secondaryResources.filter(sr => sr.inheritanceEnabled).forEach(sr => inheritedResources.push({
-          id: makeId(),
-          lvl: 0,
-          resource: sr.resource,
-          sourceUuid: sr.id
-        }))
+        newState.steps = pushStep(copy, newState.steps, action.position)
+      }
 
-        for (let i = 1; i < stepPath.length; ++i) {
-          step = step.children[stepPath[i]]
-          step.secondaryResources.filter(sr => sr.inheritanceEnabled).forEach(sr => inheritedResources.push({
-            lvl: i,
-            resource: sr.resource,
-            sourceUuid: sr.id
-          }))
-        }
-        const copy = cloneDeep(action.step)
-        updateCopyBeforeAdding(copy, stepPath.length, inheritedResources)
-        step.children.push(copy)
+      return newState
+    },
+    [STEP_MOVE]: (state, action) => {
+      const newState = cloneDeep(state)
+
+      // get the step to move
+      const original = get(newState, getFormDataPart(action.id, newState.steps))
+
+      // remove the step from its current position
+      const parent = getStepParent(action.id, newState.steps)
+      if (parent) {
+        const currentPos = parent.children.findIndex(child => child.id === action.id)
+        parent.children.splice(currentPos, 1)
+      } else {
+        const currentPos = newState.steps.findIndex(child => child.id === action.id)
+        newState.steps.splice(currentPos, 1)
+      }
+
+      // move the step at the new position
+      if (action.position.parent) {
+        const parent = get(newState, getFormDataPart(action.position.parent, newState.steps))
+
+        parent.children = pushStep(original, parent.children, action.position)
+      } else {
+        newState.steps = pushStep(original, newState.steps, action.position)
       }
 
       return newState

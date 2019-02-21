@@ -1731,5 +1731,7 @@
     "movement": "Déplacement",
     "before": "Avant",
     "after": "Après",
-    "deletion": "Suppression"
+    "deletion": "Suppression",
+    "first": "Premier",
+    "last": "Dernier"
 }

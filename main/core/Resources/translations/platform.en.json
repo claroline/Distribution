@@ -1698,5 +1698,7 @@
     "movement": "Move",
     "before": "Before",
     "after": "After",
-    "deletion": "Deletion"
+    "deletion": "Deletion",
+    "first": "First",
+    "last": "Last"
 }
