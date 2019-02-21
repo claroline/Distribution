@@ -133,9 +133,6 @@ class MessageSerializer
     {
         $message = $this->messageSerializer->deserialize($data, $message, $options);
 
-        $this->sipe('meta.flagged', 'setFlagged', $data, $message);
-        $this->sipe('meta.moderation', 'setModerated', $data, $message);
-
         if (isset($data['subject'])) {
             $subject = $this->serializer->deserialize(
                 'Claroline\ForumBundle\Entity\Subject',
@@ -144,7 +141,6 @@ class MessageSerializer
 
             if (!empty($subject)) {
                 $message->setSubject($subject);
-                $message->setModerated($subject->getModerated());
             }
         }
 
@@ -155,6 +151,8 @@ class MessageSerializer
                 $message->setParent($parent);
             }
         }
+        $this->sipe('meta.flagged', 'setFlagged', $data, $message);
+        $this->sipe('meta.moderation', 'setModerated', $data, $message);
 
         return $message;
     }
