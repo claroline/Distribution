@@ -125,7 +125,7 @@ class ResourcePage extends Component {
           <ServerErrors errors={this.props.serverErrors}/>
         }
 
-        {this.props.loaded && isEmpty(this.props.accessErrors) &&
+        {this.props.loaded && isEmpty(this.props.accessErrors) && isEmpty(this.props.serverErrors) &&
           this.props.children
         }
       </ToolPage>
