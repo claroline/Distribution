@@ -46,8 +46,11 @@ actions.fetchResource = (resourceNode, embedded = false) => ({
       dispatch(actions.setResourceLoaded())
     },
     error: (response, status, dispatch) => {
-      console.log(response)
-      dispatch(actions.setRestrictionsError(response))
+      switch(status) {
+        case 500: dispatch(actions.setServerErrors(response)); break
+        case 403: dispatch(actions.setRestrictionsError(response)); break;
+
+      }
     }
   }
 })

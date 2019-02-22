@@ -41,7 +41,7 @@ const reducer = {
   }),
 
   serverErrors: makeReducer([], {
-    [RESOURCE_SERVER_ERRORS]: (state, actions) => action.errors
+    [RESOURCE_SERVER_ERRORS]: (state, action) => action.errors
   }),
 
   embedded: makeReducer(false), // this can not be changed at runtime
