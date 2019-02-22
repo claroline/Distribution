@@ -347,9 +347,9 @@ class ResourceController
 
         if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
             try {
-              $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
-            } catch(ResourceNotFoundException $e) {
-              return new JsonResponse(['resource_not_found'], 500);
+                $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
+            } catch (ResourceNotFoundException $e) {
+                return new JsonResponse(['resource_not_found'], 500);
             }
 
             return new JsonResponse(

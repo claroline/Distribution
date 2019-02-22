@@ -23,7 +23,7 @@ class PdfPlayer extends Component {
         pdf: pdf,
         context: document.getElementById('pdf-canvas-' + this.props.file.id).getContext('2d')
       }, () => this.renderPage())
-    }).catch(e => this.props.setErrors())
+    }).catch(() => this.props.setErrors())
   }
 
   renderPage() {

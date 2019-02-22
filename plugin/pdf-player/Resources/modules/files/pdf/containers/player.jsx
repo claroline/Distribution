@@ -12,7 +12,7 @@ import {PdfPlayer as PdfPlayerComponent} from '#/plugin/pdf-player/files/pdf/com
  * If you don't use redux in your implementation @see Resource functional component.
  */
 const PdfPlayer = connect(
-  (state) => ({}),
+  () => ({}),
   (dispatch) => ({
     setErrors() {
       dispatch(resourceActions.setServerErrors(['file_not_found']))

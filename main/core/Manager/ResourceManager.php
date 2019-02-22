@@ -1820,14 +1820,14 @@ class ResourceManager
         $resource = $this->getResourceFromNode($resourceNode);
 
         if ($resource) {
-          /** @var LoadResourceEvent $event */
-          $event = $this->dispatcher->dispatch(
+            /** @var LoadResourceEvent $event */
+            $event = $this->dispatcher->dispatch(
               'resource.load',
               LoadResourceEvent::class,
               [$resource]
           );
 
-          return $event->getData();
+            return $event->getData();
         }
 
         throw new ResourceNotFoundException();

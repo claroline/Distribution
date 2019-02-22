@@ -48,8 +48,7 @@ actions.fetchResource = (resourceNode, embedded = false) => ({
     error: (response, status, dispatch) => {
       switch(status) {
         case 500: dispatch(actions.setServerErrors(response)); break
-        case 403: dispatch(actions.setRestrictionsError(response)); break;
-
+        case 403: dispatch(actions.setRestrictionsError(response)); break
       }
     }
   }

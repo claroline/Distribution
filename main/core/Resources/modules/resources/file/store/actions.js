@@ -13,7 +13,6 @@ actions.download = (resourceNode) => ({
       method: 'GET'
     },
     error: (response, status, dispatch) => {
-      console.log('errore ', status)
       switch(status) {
         case 500: dispatch(resourceActions.setServerErrors(response)); break
       }
