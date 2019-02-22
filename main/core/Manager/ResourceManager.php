@@ -1830,11 +1830,7 @@ class ResourceManager
           return $event->getData();
         }
 
-        return [
-          'serverErrors' => [
-            'nodeNotFound'
-          ]
-        ];
+        throw new ResourceNotFoundException();
     }
 
     public function isManager(ResourceNode $resourceNode)

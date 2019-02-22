@@ -343,12 +343,13 @@ class ResourceController
 
         // gets the current user roles to check access restrictions
         $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
-
         $accessErrors = $this->restrictionsManager->getErrors($resourceNode, $userRoles);
+
         if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
-            $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
-            if (isset($loaded['serverErrors']) && !empty($loaded['serverErrors'])) {
-              return new JsonResponse($loaded['serverErrors'], 500);
+            try {
+              $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
+            } catch(ResourceNotFoundException $e) {
+              return new JsonResponse(['Resource not found'], 500);
             }
 
             return new JsonResponse(
