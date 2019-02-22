@@ -1831,9 +1831,8 @@ class ResourceManager
         }
 
         return [
-          'accessErrors' => [
-            'details' => 'resource not found',
-            'found' => false
+          'serverErrors' => [
+            'nodeNotFound'
           ]
         ];
     }

@@ -342,8 +342,8 @@ class ResourceController
         $accessErrors = $this->restrictionsManager->getErrors($resourceNode, $userRoles);
         if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
             $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
-            if (isset($loaded['accessErrors']) && !empty($loaded['accessErrors'])) {
-              return new JsonResponse($loaded['accessErrors'], 403);
+            if (isset($loaded['serverErrors']) && !empty($loaded['serverErrors'])) {
+              return new JsonResponse($loaded['serverErrors'], 500);
             }
 
             return new JsonResponse(

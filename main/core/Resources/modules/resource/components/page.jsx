@@ -55,8 +55,6 @@ class ResourcePage extends Component {
       ancestors = this.props.resourceNode.path.slice(0)
     }
 
-    console.log(this.props)
-
     return (
       <ToolPage
         className={classes('resource-page', `${this.props.resourceNode.meta.type}-page`)}
