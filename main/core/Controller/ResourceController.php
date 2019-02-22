@@ -226,6 +226,11 @@ class ResourceController
 
         $file = $data['file'] ?: tempnam('tmp', 'tmp');
         $fileName = $data['name'];
+
+        if (!file_exists($file)) {
+            return new JsonResponse(['File not found'], 500);
+        }
+
         $response = new BinaryFileResponse($file);
 
         $fileName = null === $fileName ? $response->getFile()->getFilename() : $fileName;
