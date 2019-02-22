@@ -228,7 +228,7 @@ class ResourceController
         $fileName = $data['name'];
 
         if (!file_exists($file)) {
-            return new JsonResponse(['File not found'], 500);
+            return new JsonResponse(['file_not_found'], 500);
         }
 
         $response = new BinaryFileResponse($file);
@@ -349,7 +349,7 @@ class ResourceController
             try {
               $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
             } catch(ResourceNotFoundException $e) {
-              return new JsonResponse(['Resource not found'], 500);
+              return new JsonResponse(['resource_not_found'], 500);
             }
 
             return new JsonResponse(

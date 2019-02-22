@@ -27,7 +27,7 @@ const ServerErrors = props =>
       help={trans('server_error_message')}
     >
       {props.errors.map(error =>
-        <Error error={error}/>
+        <Error error={trans(error)}/>
       )}
     </EmptyPlaceholder>
   </div>

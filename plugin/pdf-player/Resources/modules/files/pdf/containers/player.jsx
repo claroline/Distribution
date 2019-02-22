@@ -15,7 +15,7 @@ const PdfPlayer = connect(
   (state) => ({}),
   (dispatch) => ({
     setErrors() {
-      dispatch(resourceActions.setServerErrors([trans('File not found')]))
+      dispatch(resourceActions.setServerErrors(['file_not_found']))
     }
   })
 )(PdfPlayerComponent)
