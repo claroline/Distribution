@@ -1,6 +1,5 @@
 import merge from 'lodash/merge'
 
-import {url} from '#/main/app/api'
 import {now} from '#/main/app/intl/date'
 import {currentUser} from '#/main/app/security'
 import {makeId} from '#/main/core/scaffolding/id'
