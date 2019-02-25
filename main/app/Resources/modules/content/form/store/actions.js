@@ -35,15 +35,17 @@ actions.reset = (formName, data = {}, isNew = false) => ({
   isNew: isNew
 })
 
-actions.getItemLock = (className, id) => ({
+//the dispatch retuned in the success function isn't the same as the first one
+//async request doesn't work with the usual way otherwise
+actions.getItemLock = (className, id) => (dispatch) => dispatch({
   [API_REQUEST]: {
     url: ['apiv2_object_lock_get', {class: className, id}],
     request: {
       method: 'GET'
     },
-    success: (response, dispatch) => {
+    success: (response) => {
       if (response.value) {
-        dispatch(actions.validateLock(response))
+        return dispatch(actions.validateLock(response, className, id))
       }
 
       dispatch(actions.lockItem(className, id))
@@ -51,7 +53,7 @@ actions.getItemLock = (className, id) => ({
   }
 })
 
-actions.validateLock = (lock) => (dispatch) => {
+actions.validateLock = (lock) => (dispatch, className, id) => {
   dispatch(
     modalActions.showModal(MODAL_CONFIRM, {
       title: 'validate',
@@ -59,7 +61,7 @@ actions.validateLock = (lock) => (dispatch) => {
       icon: 'fa fa-fw fa-check',
       question: 'validateform' + lock.user.username + lock.updated,
       handleConfirm: () => {
-        alert('redirect')
+        dispatch(actions.lockItem(className, id))
       }
     })
   )
