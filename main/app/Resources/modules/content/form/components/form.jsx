@@ -37,6 +37,7 @@ class Form extends Component {
     super(props)
 
     this.warnPendingChanges = this.warnPendingChanges.bind(this)
+
   }
 
   warnPendingChanges(e) {
@@ -52,12 +53,12 @@ class Form extends Component {
   }
 
   componentDidMount() {
+    if (this.props.lock.id !== undefined && this.props.lock.id && this.props.lock.className) {
+      this.props.getLock(this.props.lock.className, this.props.lock.id)
+      this.setState({logChecked: true})
+    }
     //check lock
     window.addEventListener('beforeunload', this.warnPendingChanges)
-
-    if (this.props.lock && this.props.lock.id && this.props.lock.className) {
-      this.props.getLock(this.props.lock.className, this.props.lock.id)
-    }
   }
 
   componentWillUnmount() {
@@ -67,8 +68,15 @@ class Form extends Component {
     //check unlock
   }
 
-  componentDidUpdate() {
-    //check lock
+  componentDidUpdate(previousProps, previousState) {
+    if (this.props.lock.id !== undefined && previousProps.lock && this.props.lock && this.props.lock.id !== previousProps.lock.id) {
+      console.log(this.props)
+      this.props.getLock(this.props.lock.className, this.props.lock.id)
+      this.setState({logChecked: true})
+    }
+    /*if (this.state && !this.state.checked && this.props.lock && this.props.lock.id && this.props.lock.className) {
+
+    }*/
   }
 
   render() {

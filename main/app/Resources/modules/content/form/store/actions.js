@@ -53,7 +53,7 @@ actions.getItemLock = (className, id) => (dispatch) => dispatch({
   }
 })
 
-actions.validateLock = (lock) => (dispatch, className, id) => {
+actions.validateLock = (lock) => (dispatch) => {
   dispatch(
     modalActions.showModal(MODAL_CONFIRM, {
       title: 'validate',
@@ -61,26 +61,23 @@ actions.validateLock = (lock) => (dispatch, className, id) => {
       icon: 'fa fa-fw fa-check',
       question: 'validateform' + lock.user.username + lock.updated,
       handleConfirm: () => {
-        dispatch(actions.lockItem(className, id))
+        dispatch(actions.lockItem(lock.className, lock.id))
       }
     })
   )
 }
 
-actions.lockItem = (className, id) => {
-  console.log(API_REQUEST)
-  return {
-    [API_REQUEST]: {
-      url: ['apiv2_object_lock', {class: className, id}],
-      request: {
-        method: 'PUT'
-      },
-      success: (response, dispatch) => {
-        console.log(response)
-      }
+actions.lockItem = (className, id) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_object_lock', {class: className, id}],
+    request: {
+      method: 'PUT'
+    },
+    success: (response, dispatch) => {
+      console.log(response)
     }
   }
-}
+})
 
 actions.unlockItem = (className, id) => ({
   [API_REQUEST]: {

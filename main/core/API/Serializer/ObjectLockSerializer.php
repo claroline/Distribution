@@ -36,6 +36,8 @@ class ObjectLockSerializer
           'user' => $this->userSerializer->serialize($lock->getUser(), [Options::SERIALIZE_MINIMAL]),
           'value' => $lock->isLocked(),
           'updated' => DateNormalizer::normalize($lock->getLastModification()),
+          'className' => $lock->getObjectClass(),
+          'id' => $lock->getObjectUuid(),
         ];
     }
 }
