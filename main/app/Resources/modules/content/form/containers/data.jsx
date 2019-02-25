@@ -58,14 +58,7 @@ const FormData = connect(
       dispatch(actions.cancelChanges(ownProps.name))
     },
     getLock(className, id) {
-      console.log('getlock', className, id)
       dispatch(actions.getItemLock(className, id))
-    },
-    setLock() {
-      alert('lock')
-    },
-    unlock() {
-      alert('unlock')
     }
   }),
   (stateProps, dispatchProps, ownProps) => {

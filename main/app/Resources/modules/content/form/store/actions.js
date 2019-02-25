@@ -42,7 +42,11 @@ actions.getItemLock = (className, id) => ({
       method: 'GET'
     },
     success: (response, dispatch) => {
-      dispatch(actions.validateLock(response))
+      if (response.value) {
+        dispatch(actions.validateLock(response))
+      }
+
+      dispatch(actions.lockItem(className, id))
     }
   }
 })
@@ -53,7 +57,7 @@ actions.validateLock = (lock) => (dispatch) => {
       title: 'validate',
       dangerous: true,
       icon: 'fa fa-fw fa-check',
-      question: 'validateform',
+      question: 'validateform' + lock.user.username + lock.updated,
       handleConfirm: () => {
         alert('redirect')
       }
@@ -61,10 +65,31 @@ actions.validateLock = (lock) => (dispatch) => {
   )
 }
 
-actions.lockItem = (className, id) => ({
-})
+actions.lockItem = (className, id) => {
+  console.log(API_REQUEST)
+  return {
+    [API_REQUEST]: {
+      url: ['apiv2_object_lock', {class: className, id}],
+      request: {
+        method: 'PUT'
+      },
+      success: (response, dispatch) => {
+        console.log(response)
+      }
+    }
+  }
+}
 
 actions.unlockItem = (className, id) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_object_unlock', {class: className, id}],
+    request: {
+      method: 'PUT'
+    },
+    success: (response, dispatch) => {
+      console.log(response)
+    }
+  }
 })
 
 actions.errors = (formName, errors) => (dispatch) => {

@@ -46,6 +46,9 @@ class ObjectLockController
      */
     public function lockAction($class, $id)
     {
+        $this->manager->lock($class, $id);
+
+        return new JsonResponse($this->serializer->serialize($this->manager->getLock($class, $id)));
     }
 
     /**
@@ -54,6 +57,9 @@ class ObjectLockController
      */
     public function unlockAction($class, $id)
     {
+        $this->manager->unlock($class, $id);
+
+        return new JsonResponse($this->serializer->serialize($this->manager->getLock($class, $id)));
     }
 
     /**

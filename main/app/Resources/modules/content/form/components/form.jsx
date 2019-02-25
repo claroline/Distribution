@@ -54,7 +54,6 @@ class Form extends Component {
   componentDidMount() {
     //check lock
     window.addEventListener('beforeunload', this.warnPendingChanges)
-    console.log(this.props.lock)
 
     if (this.props.lock && this.props.lock.id && this.props.lock.className) {
       this.props.getLock(this.props.lock.className, this.props.lock.id)
@@ -70,7 +69,6 @@ class Form extends Component {
 
   componentDidUpdate() {
     //check lock
-    console.log('update')
   }
 
   render() {
