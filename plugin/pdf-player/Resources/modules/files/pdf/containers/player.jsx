@@ -1,5 +1,4 @@
 import {connect} from 'react-redux'
-import {trans} from '#/main/app/intl/translation'
 import {actions as resourceActions} from '#/main/core/resource/store/actions'
 
 // the component to connect
