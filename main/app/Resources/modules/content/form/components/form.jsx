@@ -57,7 +57,7 @@ class Form extends Component {
       this.props.getLock(this.props.lock.className, this.props.lock.id)
       this.setState({logChecked: true})
     }
-    //check lock
+
     window.addEventListener('beforeunload', this.warnPendingChanges)
   }
 
@@ -65,7 +65,6 @@ class Form extends Component {
     // todo warn also here
     // if client route has changed, it will not trigger before unload
     window.removeEventListener('beforeunload', this.warnPendingChanges)
-    //check unlock
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -74,9 +73,6 @@ class Form extends Component {
       this.props.getLock(this.props.lock.className, this.props.lock.id)
       this.setState({logChecked: true})
     }
-    /*if (this.state && !this.state.checked && this.props.lock && this.props.lock.id && this.props.lock.className) {
-
-    }*/
   }
 
   render() {
@@ -153,7 +149,8 @@ Form.defaultProps = {
   level: 2,
   errors: false,
   validating: false,
-  pendingChanges: false
+  pendingChanges: false,
+  lock: {}
 }
 
 export {

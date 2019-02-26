@@ -10,7 +10,7 @@ import {constants as alertConstants} from '#/main/app/overlay/alert/constants'
 import {constants as actionConstants} from '#/main/app/action/constants'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-
+import {currentUser} from '#/main/app/security'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 export const FORM_RESET          = 'FORM_RESET'
@@ -54,17 +54,19 @@ actions.getItemLock = (className, id) => (dispatch) => dispatch({
 })
 
 actions.validateLock = (lock) => (dispatch) => {
-  dispatch(
-    modalActions.showModal(MODAL_CONFIRM, {
-      title: 'validate',
-      dangerous: true,
-      icon: 'fa fa-fw fa-check',
-      question: 'validateform' + lock.user.username + lock.updated,
-      handleConfirm: () => {
-        dispatch(actions.lockItem(lock.className, lock.id))
-      }
-    })
-  )
+  if (lock.user.username !== currentUser().username) {
+    dispatch(
+      modalActions.showModal(MODAL_CONFIRM, {
+        title: 'validate',
+        dangerous: true,
+        icon: 'fa fa-fw fa-check',
+        question: 'validateform' + lock.user.username + lock.updated,
+        handleConfirm: () => {
+          dispatch(actions.lockItem(lock.className, lock.id))
+        }
+      })
+    )
+  }
 }
 
 actions.lockItem = (className, id) => ({

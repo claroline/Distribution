@@ -52,7 +52,7 @@ class ObjectLockController
     }
 
     /**
-     * @EXT\Route("/lock/class/{class}/id/{id}", name="apiv2_object_unlock")
+     * @EXT\Route("/unlock/class/{class}/id/{id}", name="apiv2_object_unlock")
      * @EXT\Method("PUT")
      */
     public function unlockAction($class, $id)

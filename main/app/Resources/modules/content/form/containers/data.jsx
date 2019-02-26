@@ -59,6 +59,9 @@ const FormData = connect(
     },
     getLock(className, id) {
       dispatch(actions.getItemLock(className, id))
+    },
+    unlock(className, id) {
+      dispatch(actions.unlockItem(className, id))
     }
   }),
   (stateProps, dispatchProps, ownProps) => {
@@ -83,6 +86,9 @@ const FormData = connect(
               dispatchProps.saveForm(url(
                 typeof ownProps.target === 'function' ? ownProps.target(stateProps.data, stateProps.new) : ownProps.target
               ))
+              if (ownProps.lock.autoUnlock) {
+                dispatchProps.unlock(ownProps.lock.className, ownProps.lock.id)
+              }
             }
           }
         },
