@@ -74,9 +74,6 @@ actions.lockItem = (className, id) => ({
     url: ['apiv2_object_lock', {class: className, id}],
     request: {
       method: 'PUT'
-    },
-    success: (response, dispatch) => {
-      console.log(response)
     }
   }
 })
@@ -86,9 +83,6 @@ actions.unlockItem = (className, id) => ({
     url: ['apiv2_object_unlock', {class: className, id}],
     request: {
       method: 'PUT'
-    },
-    success: (response, dispatch) => {
-      console.log(response)
     }
   }
 })

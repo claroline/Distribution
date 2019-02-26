@@ -1,9 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
-import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
-import {url} from '#/main/app/api'
 
 // action creators
 export const actions = {}

@@ -67,9 +67,8 @@ class Form extends Component {
     window.removeEventListener('beforeunload', this.warnPendingChanges)
   }
 
-  componentDidUpdate(previousProps, previousState) {
+  componentDidUpdate(previousProps) {
     if (this.props.lock.id !== undefined && previousProps.lock && this.props.lock && this.props.lock.id !== previousProps.lock.id) {
-      console.log(this.props)
       this.props.getLock(this.props.lock.className, this.props.lock.id)
       this.setState({logChecked: true})
     }
