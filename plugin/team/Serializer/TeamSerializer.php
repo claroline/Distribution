@@ -94,13 +94,15 @@ class TeamSerializer
      */
     public function serialize(Team $team)
     {
+        $users = $team->getRole() ? $team->getRole()->getUsers()->toArray() : $team->getUsers()->toArray();
+
         return [
             'id' => $team->getUuid(),
             'name' => $team->getName(),
             'description' => $team->getDescription(),
             'workspace' => $this->workspaceSerializer->serialize($team->getWorkspace(), [Options::SERIALIZE_MINIMAL]),
             'maxUsers' => $team->getMaxUsers(),
-            'countUsers' => count($team->getUsers()),
+            'countUsers' => count($users),
             'selfRegistration' => $team->isSelfRegistration(),
             'selfUnregistration' => $team->isSelfUnregistration(),
             'directory' => $team->getDirectory() ?
@@ -167,7 +169,7 @@ class TeamSerializer
         $user = $this->tokenStorage->getToken()->getUser();
 
         if (empty($directory) && 'anon.' !== $user) {
-            if ($data['createPublicDirectory']) {
+            if (isset($data['createPublicDirectory']) && $data['createPublicDirectory']) {
                 $defaultResource = isset($data['defaultResource']['id']) ?
                   $this->resourceNodeRepo->findOneBy(['uuid' => $data['defaultResource']['id']]) :
                   null;

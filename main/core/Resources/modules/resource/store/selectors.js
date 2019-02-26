@@ -26,6 +26,11 @@ const workspace = createSelector(
   (resourceNode) => resourceNode.workspace
 )
 
+const workspaceId = createSelector(
+  [workspace],
+  (workspace) => workspace.autoId
+)
+
 const meta = createSelector(
   [resourceNode],
   (resourceNode) => resourceNode.meta
@@ -48,6 +53,8 @@ const mimeType = createSelector(
 
 // access restrictions selectors
 const accessErrors = (state) => !state.accessErrors.dismissed && !isEmpty(state.accessErrors.details) ? state.accessErrors.details : {}
+
+const serverErrors = (state) => !isEmpty(state.serverErrors) ? state.serverErrors : []
 
 // evaluation selectors
 const resourceEvaluation = (state) => state.userEvaluation
@@ -88,9 +95,11 @@ export const selectors = {
   resourceLifecycle,
   // access restrictions
   accessErrors,
+  serverErrors,
   // node
   resourceNode,
   workspace,
+  workspaceId,
   parent,
   meta,
   published,

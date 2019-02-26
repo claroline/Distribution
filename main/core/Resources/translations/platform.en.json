@@ -374,6 +374,8 @@
     "display_captcha": "Enable captcha",
     "display_mode": "Display mode",
     "display_options": "Display options",
+    "display_ratio": "Display ratio",
+    "display_ratio_list": "List of display ratio",
     "display_views": "{0,1} %count% view|[2,Inf[ %count% views",
     "displayable_in_desktop": "Displayable in desktop",
     "displayable_in_workspace": "Displayable in workspace",
@@ -733,7 +735,6 @@
     "month.September": "September",
     "months": "months",
     "more_actions": "Available actions",
-    "move": "Move",
     "my_account": "My account",
     "my_agenda": "My agenda",
     "my_applications": "My applications",
@@ -1694,5 +1695,15 @@
     "publication_by_date": "Access period",
     "confirmation_checkbox": "By checking this box, I confirm that I have read and understood the warning.",
     "publication_by_date_help": "Resource must be published beforehand, then define dates in format dd/mm/yyyy HH:mm. <br/>Ex: 25/12/2018 14:00",
-    "warning_lock": "The ressource is being updated by %username% since %date%"
+    "warning_lock": "The ressource is being updated by %username% since %date%",
+    "server_error": "Server error",
+    "sever_error_message": "The server returned an error when the resource was fetched",
+    "resource_not_found": "Resource not found",
+    "file_not_found": "File not found",
+    "movement": "Move",
+    "before": "Before",
+    "after": "After",
+    "deletion": "Deletion",
+    "first": "First",
+    "last": "Last"
 }
