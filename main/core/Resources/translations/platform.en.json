@@ -1705,5 +1705,8 @@
     "after": "After",
     "deletion": "Deletion",
     "first": "First",
-    "last": "Last"
+    "last": "Last",
+    "update_object": "The object is currently being updated",
+    "object_currently_modified": "The object is being modified by %username% since %date%",
+    "update_anyway": "update anyway"
 }
