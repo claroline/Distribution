@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Listener\Resource\Types;
 
+use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
@@ -33,7 +35,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Integrates the "Directory" resource.
@@ -42,9 +43,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class DirectoryListener
 {
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-
     /** @var TwigEngine */
     private $templating;
 
@@ -61,16 +59,15 @@ class DirectoryListener
      * DirectoryListener constructor.
      *
      * @DI\InjectParams({
-     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "templating"      = @DI\Inject("templating"),
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "serializer"      = @DI\Inject("claroline.api.serializer"),
+     *     "crud"            = @DI\Inject("claroline.api.crud"),
      *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
      *     "actionManager"   = @DI\Inject("claroline.manager.resource_action"),
      *     "rightsManager"   = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
-     * @param TokenStorageInterface $tokenStorage
      * @param TwigEngine            $templating
      * @param ObjectManager         $om
      * @param SerializerProvider    $serializer
@@ -80,17 +77,17 @@ class DirectoryListener
      */
     public function __construct(
         ResourceActionManager $actionManager,
-        TokenStorageInterface $tokenStorage,
         TwigEngine $templating,
+        Crud $crud,
         ObjectManager $om,
         SerializerProvider $serializer,
         ResourceManager $resourceManager,
         RightsManager $rightsManager
     ) {
-        $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
         $this->om = $om;
         $this->serializer = $serializer;
+        $this->crud = $crud;
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->actionManager = $actionManager;
@@ -117,27 +114,14 @@ class DirectoryListener
         }
 
         $options = $event->getOptions();
+        $options[] = Options::IGNORE_CRUD_POST_EVENT;
 
         // create the resource node
 
         /** @var ResourceNode $resourceNode */
-        $resourceNode = $this->serializer->deserialize(ResourceNode::class, $data['resourceNode'], $options);
+        $resourceNode = $this->crud->create(ResourceNode::class, $data['resourceNode'], $options);
         $resourceNode->setParent($parent);
         $resourceNode->setWorkspace($parent->getWorkspace());
-        if ($this->tokenStorage->getToken()->getUser() instanceof User) {
-            $resourceNode->setCreator($this->tokenStorage->getToken()->getUser());
-        }
-
-        // initialize custom resource Entity
-        $resourceClass = $resourceNode->getResourceType()->getClass();
-
-        /** @var AbstractResource $resource */
-        $resource = new $resourceClass();
-        if (!empty($data['resource'])) {
-            $resource = $this->serializer->deserialize($resourceClass, $data['resource'], $options);
-        }
-
-        $resource->setResourceNode($resourceNode);
 
         // maybe do it in the serializer (if it can be done without intermediate flush)
         if (!empty($data['resourceNode']['rights'])) {
@@ -150,6 +134,13 @@ class DirectoryListener
             // todo : initialize default rights
         }
 
+        // initialize custom resource Entity
+        $resourceClass = $resourceNode->getResourceType()->getClass();
+
+        /** @var AbstractResource $resource */
+        $resource = $this->crud->create($resourceClass, !empty($data['resource']) ? $data['resource'] : [], $options);
+        $resource->setResourceNode($resourceNode);
+        $this->crud->dispatch('create', 'post', [$resource, $options]);
         $this->om->persist($resource);
         $this->om->persist($resourceNode);
 
