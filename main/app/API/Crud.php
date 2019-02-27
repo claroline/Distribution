@@ -122,6 +122,11 @@ class Crud
         $oldObject = $this->om->getObject($data, $class);
         $this->checkPermission('EDIT', $oldObject, [], true);
         $oldData = $this->serializer->serialize($oldObject);
+
+        if (!$oldData) {
+            $oldData = [];
+        }
+
         $object = $this->serializer->deserialize($class, $data, $options);
 
         if ($this->dispatch('update', 'pre', [$object, $options, $oldData])) {
