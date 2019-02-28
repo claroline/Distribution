@@ -31,12 +31,6 @@ class ForumCrud
      */
     public function postCreate(CreateEvent $event)
     {
-        $forum = $event->getObject();
-        $node = $forum->getResourceNode();
-        $rights = $node->getRights();
-
-        foreach ($rights as $right) {
-            var_dump($right->getRole()->getName());
-        }
+        //here we can customize rights
     }
 }
