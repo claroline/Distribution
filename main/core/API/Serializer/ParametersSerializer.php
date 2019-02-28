@@ -93,7 +93,6 @@ class ParametersSerializer
     {
         $original = $data;
         $this->deserializeTos($data);
-        //$this->deserializeIconSet($data);
         $data = $this->getJavascriptsData($data);
         $data = $this->getLogoData($data);
         unset($data['tos']['text']);
@@ -188,12 +187,5 @@ class ParametersSerializer
         }
 
         return $data;
-    }
-
-    public function deserializeIconSet(array $data)
-    {
-        if (isset($data['display']) && isset($data['display']['icon_set'])) {
-            $this->ism->setActiveResourceIconSetByCname($data['display']['icon_set']);
-        }
     }
 }
