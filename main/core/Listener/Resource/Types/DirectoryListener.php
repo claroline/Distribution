@@ -18,7 +18,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\CreateResourceEvent;
@@ -123,6 +122,13 @@ class DirectoryListener
         $resourceNode->setParent($parent);
         $resourceNode->setWorkspace($parent->getWorkspace());
 
+        // initialize custom resource Entity
+        $resourceClass = $resourceNode->getResourceType()->getClass();
+
+        /** @var AbstractResource $resource */
+        $resource = $this->crud->create($resourceClass, !empty($data['resource']) ? $data['resource'] : [], $options);
+        $resource->setResourceNode($resourceNode);
+
         // maybe do it in the serializer (if it can be done without intermediate flush)
         if (!empty($data['resourceNode']['rights'])) {
             foreach ($data['resourceNode']['rights'] as $rights) {
@@ -134,12 +140,6 @@ class DirectoryListener
             // todo : initialize default rights
         }
 
-        // initialize custom resource Entity
-        $resourceClass = $resourceNode->getResourceType()->getClass();
-
-        /** @var AbstractResource $resource */
-        $resource = $this->crud->create($resourceClass, !empty($data['resource']) ? $data['resource'] : [], $options);
-        $resource->setResourceNode($resourceNode);
         $this->crud->dispatch('create', 'post', [$resource, $options]);
         $this->om->persist($resource);
         $this->om->persist($resourceNode);

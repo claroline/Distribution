@@ -129,7 +129,7 @@ class ForumListener
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $event->stopPropagation();
+        //$event->stopPropagation();
     }
 
     /**
