@@ -561,10 +561,6 @@ class DatabaseWriter
                 ->findOneBy(['name' => $action['resource_type']]);
         }
 
-        $resourceActions = $this->em
-            ->getRepository('ClarolineCoreBundle:Resource\MenuAction')
-            ->findBy(['name' => $action['name'], 'resourceType' => $resourceType]);
-
         $this->log('Updating resource action '.$action['name']);
 
         // initializes the mask decoder if needed
