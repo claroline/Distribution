@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Manager\Workspace;
 
-use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Event\NotPopulatedEventException;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -1018,6 +1017,13 @@ class WorkspaceManager
 
         $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
         $baseRoot = $this->resourceManager->getWorkspaceRoot($source);
+
+        /** @var CopyResourceEvent $event */
+        $event = $this->dispatcher->dispatch(
+            'copy_directory',
+            'Resource\\CopyResource',
+            [$this->resourceManager->getResourceFromNode($baseRoot), $rootCopy->getResourceNode()]
+        );
 
         /*** Copies rights ***/
 
