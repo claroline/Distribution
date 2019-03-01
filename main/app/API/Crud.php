@@ -187,7 +187,7 @@ class Crud
         $new = $this->serializer->deserialize(
           get_class($object),
           $this->serializer->serialize($object),
-          [Options::NO_FETCH]
+          array_unique(array_merge([Options::NO_FETCH], $options))
         );
 
         $this->om->persist($new);
