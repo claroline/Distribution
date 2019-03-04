@@ -231,16 +231,11 @@ class ResourceController
             return new JsonResponse(['file_not_found'], 500);
         }
 
-        $response = new BinaryFileResponse($file);
-
         $fileName = null === $fileName ? $response->getFile()->getFilename() : $fileName;
         $fileName = str_replace('/', '_', $fileName);
         $fileName = str_replace('\\', '_', $fileName);
-
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $fileName
-        );
+        
+        $response = new BinaryFileResponse($file, 200, ['Content-Disposition' => "attachment; filename={$fileName}"]);
 
         return $response;
     }
