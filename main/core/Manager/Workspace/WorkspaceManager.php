@@ -33,6 +33,7 @@ use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
 use Claroline\CoreBundle\Library\Security\Token\ViewAsToken;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Manager\Parameters\ListParametersManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Repository\UserRepository;
@@ -91,6 +92,7 @@ class WorkspaceManager
      *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
      *     "ut"                    = @DI\Inject("claroline.utilities.misc"),
      *     "sut"                   = @DI\Inject("claroline.security.utilities"),
+     *     "listManager"           = @DI\Inject("claroline.manager.list_parameters_manager"),
      *     "container"             = @DI\Inject("service_container")
      * })
      *
@@ -109,6 +111,7 @@ class WorkspaceManager
         ObjectManager $om,
         ClaroUtilities $ut,
         Utilities $sut,
+        ListParametersManager $listManager,
         ContainerInterface $container
     ) {
         $this->roleManager = $roleManager;
@@ -123,6 +126,7 @@ class WorkspaceManager
         $this->workspaceFavouriteRepo = $om->getRepository('ClarolineCoreBundle:Workspace\WorkspaceFavourite');
         $this->container = $container;
         $this->importData = [];
+        $this->listManager = $listManager;
         $this->templateDirectory = $container->getParameter('claroline.param.templates_directory');
     }
 
@@ -1018,6 +1022,8 @@ class WorkspaceManager
 
         $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
         $baseRoot = $this->resourceManager->getWorkspaceRoot($source);
+
+        $this->listManager->copy($this->resourceManager->getResourceFromNode($baseRoot), $rootDirectory);
 
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(

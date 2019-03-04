@@ -32,6 +32,7 @@ use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\RightsException;
 use Claroline\CoreBundle\Manager\Exception\WrongClassException;
+use Claroline\CoreBundle\Manager\Parameters\ListParametersManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceTypeRepository;
@@ -97,7 +98,8 @@ class ResourceManager
      *     "ut"                    = @DI\Inject("claroline.utilities.misc"),
      *     "secut"                 = @DI\Inject("claroline.security.utilities"),
      *     "translator"            = @DI\Inject("translator"),
-     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler")
+     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "listManager"           = @DI\Inject("claroline.manager.list_parameters_manager")
      * })
      *
      * @param RoleManager                  $roleManager
@@ -119,6 +121,7 @@ class ResourceManager
         ClaroUtilities $ut,
         Utilities $secut,
         TranslatorInterface $translator,
+        ListParametersManager $listManager,
         PlatformConfigurationHandler $platformConfigHandler
     ) {
         $this->om = $om;
@@ -132,6 +135,7 @@ class ResourceManager
         $this->translator = $translator;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->filesDirectory = $container->getParameter('claroline.param.files_directory');
+        $this->listManager = $listManager;
 
         $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
         $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');

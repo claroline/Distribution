@@ -26,6 +26,7 @@ use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\CoreBundle\Manager\Parameters\ListParametersManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
@@ -67,7 +68,8 @@ class DirectoryListener
      *     "serializer"      = @DI\Inject("claroline.api.serializer"),
      *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
      *     "actionManager"   = @DI\Inject("claroline.manager.resource_action"),
-     *     "rightsManager"   = @DI\Inject("claroline.manager.rights_manager")
+     *     "rightsManager"   = @DI\Inject("claroline.manager.rights_manager"),
+     *     "listManager"     = @DI\Inject("claroline.manager.list_parameters_manager")
      * })
      *
      * @param TokenStorageInterface $tokenStorage
@@ -85,6 +87,7 @@ class DirectoryListener
         ObjectManager $om,
         SerializerProvider $serializer,
         ResourceManager $resourceManager,
+        ListParametersManager $listManager,
         RightsManager $rightsManager
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -94,6 +97,7 @@ class DirectoryListener
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->actionManager = $actionManager;
+        $this->listManager = $listManager;
     }
 
     /**
@@ -244,35 +248,8 @@ class DirectoryListener
     {
         /** @var Directory $original */
         $original = $event->getResource();
-
         $copy = new Directory();
-
-        $copy->setUploadDestination($original->isUploadDestination());
-
-        // summary
-        $copy->setShowSummary($original->getShowSummary());
-        $copy->setOpenSummary($original->getOpenSummary());
-
-        // list
-        $copy->setFilterable($original->isFilterable());
-        $copy->setSortable($original->isSortable());
-        $copy->setPaginated($original->isPaginated());
-        $copy->setColumnsFilterable($original->isColumnsFilterable());
-        $copy->setCount($original->hasCount());
-        $copy->setActions($original->hasActions());
-        $copy->setSortBy($original->getSortBy());
-        $copy->setAvailableSort($original->getAvailableSort());
-        $copy->setPageSize($original->getPageSize());
-        $copy->setAvailablePageSizes($original->getAvailablePageSizes());
-        $copy->setDisplay($original->getDisplay());
-        $copy->setAvailableDisplays($original->getAvailableDisplays());
-        $copy->setSearchMode($original->getSearchMode());
-        $copy->setFilters($original->getFilters());
-        $copy->setAvailableFilters($original->getAvailableFilters());
-        $copy->setAvailableColumns($original->getAvailableColumns());
-        $copy->setDisplayedColumns($original->getDisplayedColumns());
-        $copy->setCard($original->getCard());
-
+        $this->listManager->copy($original, $copy);
         $this->om->persist($copy);
 
         $event->setCopy($copy);
