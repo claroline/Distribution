@@ -947,6 +947,7 @@ class WorkspaceManager
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
+        $resourceInfo['copies'][] = ['original' => $this->resourceManager->getWorkspaceRoot($workspace), 'copy' => $baseRoot];
 
         /** @var ResourceNode[] $resourceNodes */
         $resourceNodes = $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray();
