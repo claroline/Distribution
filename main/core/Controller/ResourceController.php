@@ -31,7 +31,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -234,7 +233,7 @@ class ResourceController
         $fileName = null === $fileName ? $response->getFile()->getFilename() : $fileName;
         $fileName = str_replace('/', '_', $fileName);
         $fileName = str_replace('\\', '_', $fileName);
-        
+
         $response = new BinaryFileResponse($file, 200, ['Content-Disposition' => "attachment; filename={$fileName}"]);
 
         return $response;
