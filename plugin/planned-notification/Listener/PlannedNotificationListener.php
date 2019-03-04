@@ -140,19 +140,36 @@ class PlannedNotificationListener
 
         $planned = $this->finder->fetch(PlannedNotification::class, ['workspace' => $oldWs->getUuid()]);
         $oldMessages = $this->finder->fetch(Message::class, ['workspace' => $oldWs->getUuid()]);
+        $newNotifs = [];
 
         foreach ($planned as $old) {
             $new = $this->crud->copy($old, [Options::GENERATE_UUID]);
             $new->setWorkspace($workspace);
+            $new->emptyRoles();
+
+            foreach ($old->getRoles() as $role) {
+                foreach ($workspace->getRoles() as $wsRole) {
+                    if ($wsRole->getTranslationKey() === $role->getTranslationKey()) {
+                        $new->addRole($wsRole);
+                    }
+                }
+            }
+            $newNotifs[$old->getId()] = $new;
             $this->om->persist($new);
-            //fixme: role
         }
 
         foreach ($oldMessages as $old) {
             $new = $this->crud->copy($old, [Options::GENERATE_UUID]);
             $new->setWorkspace($workspace);
+            $new->emptyNotifications();
+
+            foreach ($old->getNotifications() as $oldNotification) {
+                if (isset($newNotifs[$oldNotification->getId()])) {
+                    $new->addNotification($newNotifs[$oldNotification->getId()]);
+                }
+            }
+
             $this->om->persist($new);
-            //fixme: setPlannedNotif
         }
 
         $this->om->flush();
