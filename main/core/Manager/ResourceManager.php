@@ -164,6 +164,8 @@ class ResourceManager
      * @param bool             $isPublished
      * @param bool             $createRights
      *
+     * @deprecated: use directory listener: onAdd instead ? I don't know. This is weird.
+     *
      * @return AbstractResource
      */
     public function create(
