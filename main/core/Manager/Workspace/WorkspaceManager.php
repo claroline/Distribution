@@ -966,7 +966,7 @@ class WorkspaceManager
         // This must be managed through eventing
         foreach ($resourceNodes as $resourceNode) {
             if ('innova_path' === $resourceNode->getResourceType()->getName()) {
-                /** @var Path $path */
+                /* @var Path $path */
                 $path = $this->resourceManager->getResourceFromNode($resourceNode);
                 if ($path) {
                     foreach ($path->getSteps() as $step) {
@@ -1032,8 +1032,8 @@ class WorkspaceManager
         $rootDirectory->setShowSummary($original->getShowSummary());
         $rootDirectory->setOpenSummary($original->getOpenSummary());
 
-        /** @var CopyResourceEvent $event */
-        $event = $this->dispatcher->dispatch(
+        /* @var CopyResourceEvent $event */
+        $this->dispatcher->dispatch(
             'copy_directory',
             'Resource\\CopyResource',
             [$this->resourceManager->getResourceFromNode($baseRoot), $rootCopy->getResourceNode()]
