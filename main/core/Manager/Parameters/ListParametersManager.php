@@ -20,12 +20,6 @@ class ListParametersManager
 {
     public function copy($original, $copy)
     {
-        $copy->setUploadDestination($original->isUploadDestination());
-
-        // summary
-        $copy->setShowSummary($original->getShowSummary());
-        $copy->setOpenSummary($original->getOpenSummary());
-
         // list
         $copy->setFilterable($original->isFilterable());
         $copy->setSortable($original->isSortable());

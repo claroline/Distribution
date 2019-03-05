@@ -1022,8 +1022,15 @@ class WorkspaceManager
 
         $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
         $baseRoot = $this->resourceManager->getWorkspaceRoot($source);
+        $original = $this->resourceManager->getResourceFromNode($baseRoot);
 
-        $this->listManager->copy($this->resourceManager->getResourceFromNode($baseRoot), $rootDirectory);
+        $this->listManager->copy($original, $rootDirectory);
+
+        $rootDirectory->setUploadDestination($original->isUploadDestination());
+
+        // summary
+        $rootDirectory->setShowSummary($original->getShowSummary());
+        $rootDirectory->setOpenSummary($original->getOpenSummary());
 
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(

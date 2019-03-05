@@ -250,6 +250,12 @@ class DirectoryListener
         $original = $event->getResource();
         $copy = new Directory();
         $this->listManager->copy($original, $copy);
+
+        $copy->setUploadDestination($original->isUploadDestination());
+
+        // summary
+        $copy->setShowSummary($original->getShowSummary());
+        $copy->setOpenSummary($original->getOpenSummary());
         $this->om->persist($copy);
 
         $event->setCopy($copy);

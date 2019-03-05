@@ -39,6 +39,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
+use Claroline\CoreBundle\Manager\Parameters\ListParametersManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\MessageBundle\Manager\MessageManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -98,7 +99,8 @@ class ClacoFormManager
      *     "router"          = @DI\Inject("router"),
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "translator"      = @DI\Inject("translator"),
-     *     "userManager"     = @DI\Inject("claroline.manager.user_manager")
+     *     "userManager"     = @DI\Inject("claroline.manager.user_manager"),
+     *     "listManager"     = @DI\Inject("claroline.manager.list_parameters_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
@@ -124,6 +126,7 @@ class ClacoFormManager
         RouterInterface $router,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
+        ListParametersManager $listManager,
         UserManager $userManager
     ) {
         $this->authorization = $authorization;
@@ -137,6 +140,7 @@ class ClacoFormManager
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->userManager = $userManager;
+        $this->listManager = $listManager;
 
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
         $this->clacoFormRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoForm');
@@ -1038,6 +1042,8 @@ class ClacoFormManager
         $entries = $this->getAllEntries($clacoForm);
 
         $newClacoForm = $this->copyResource($clacoForm);
+        $this->listManager->copy($clacoForm, $newClacoForm);
+        $this->om->persist($clacoForm);
 
         foreach ($categories as $category) {
             $newCategory = $this->copyCategory($newClacoForm, $category);

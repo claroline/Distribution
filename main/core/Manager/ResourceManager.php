@@ -1400,6 +1400,7 @@ class ResourceManager
         $newNode->setDeletable($node->isDeletable());
         $newNode->setLicense($node->getLicense());
         $newNode->setAuthor($node->getAuthor());
+        $newNode->setDescription($node->getDescription());
         $newNode->setIndex($index);
 
         if ($withRights) {
