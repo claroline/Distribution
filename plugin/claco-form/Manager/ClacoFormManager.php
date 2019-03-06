@@ -1042,7 +1042,6 @@ class ClacoFormManager
         $entries = $this->getAllEntries($clacoForm);
 
         $newClacoForm = $this->copyResource($clacoForm);
-        $this->listManager->copy($clacoForm, $newClacoForm);
         $this->om->persist($clacoForm);
 
         foreach ($categories as $category) {
@@ -1066,6 +1065,9 @@ class ClacoFormManager
         foreach ($entries as $entry) {
             $this->copyEntry($newClacoForm, $entry, $categoryLinks, $keywordLinks, $fieldLinks, $fieldFacetLinks);
         }
+
+        $this->listManager->copy($clacoForm, $newClacoForm);
+        $this->om->persist($newClacoForm);
 
         return $newClacoForm;
     }
@@ -1123,6 +1125,8 @@ class ClacoFormManager
         $newField->setLocked($field->isLocked());
         $newField->setLockedEditionOnly($field->getLockedEditionOnly());
         $newField->setHidden($field->isHidden());
+        $newField->setDetails($field->getDetails());
+        $newField->setHelp($field->getHelp());
 
         $fieldFacet = $field->getFieldFacet();
         $newFieldFacet = new FieldFacet();

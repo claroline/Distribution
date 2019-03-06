@@ -749,17 +749,14 @@ class ResourceManager
         if ('innova_path' === $node->getResourceType()->getName()) {
             /* @var Path $path */
             $path = $this->getResourceFromNode($node);
-            var_dump('res type path');
             if ($path) {
-                var_dump('trouvé');
                 foreach ($path->getSteps() as $step) {
-                    var_dump('step');
                     if ($step->getResource()) {
-                        var_dump('1');
+                        $optionals['toRemove'][] = $step->getResource();
                     }
 
                     foreach ($step->getSecondaryResources() as $secondaryResource) {
-                        var_dump('2');
+                        $optionals['toRemove'][] = $secondaryResource;
                     }
                 }
             }
@@ -821,7 +818,7 @@ class ResourceManager
      *
      * @throws \LogicException
      */
-    public function delete(ResourceNode $resourceNode, $force = false, $softDelete = false)
+    public function delete(ResourceNode $resourceNode, $force = false, $softDelete = false, $log = true)
     {
         $this->log('Removing '.$resourceNode->getName().'['.$resourceNode->getResourceType()->getName().':id:'.$resourceNode->getId().']');
 
@@ -926,11 +923,13 @@ class ResourceManager
                     $this->om->remove($node);
                 }
 
-                $this->dispatcher->dispatch(
-                    'log',
-                    'Log\LogResourceDelete',
-                    [$node]
-                );
+                if ($log) {
+                    $this->dispatcher->dispatch(
+                      'log',
+                      'Log\LogResourceDelete',
+                      [$node]
+                  );
+                }
             } else {
                 if ($softDelete || $eventSoftDelete) {
                     $node->setActive(false);
@@ -948,11 +947,13 @@ class ResourceManager
                     $this->om->remove($node);
                 }
 
-                $this->dispatcher->dispatch(
-                    'log',
-                    'Log\LogResourceDelete',
-                    [$node]
-                );
+                if ($log) {
+                    $this->dispatcher->dispatch(
+                      'log',
+                      'Log\LogResourceDelete',
+                      [$node]
+                  );
+                }
             }
         }
 

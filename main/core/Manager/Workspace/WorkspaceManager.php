@@ -1079,6 +1079,11 @@ class WorkspaceManager
         $copies = [];
         $resourcesErrors = [];
         $this->log('Duplicating '.count($resourceNodes).' children...');
+        $totalOptionals = [
+          'children' => [],
+          'toRemove' => [],
+        ];
+
         foreach ($resourceNodes as $resourceNode) {
             try {
                 $this->log('Duplicating '.$resourceNode->getName().' - '.$resourceNode->getId().' - from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
@@ -1095,6 +1100,14 @@ class WorkspaceManager
                     $optionals
                 );
 
+                if (isset($optionals['children'])) {
+                    $totalOptionals['children'] = array_merge($totalOptionals['children'], $optionals['children']);
+                }
+
+                if (isset($optionals['toRemove'])) {
+                    $totalOptionals['toRemove'] = array_merge($totalOptionals['toRemove'], $optionals['toRemove']);
+                }
+
                 if ($copy) {
                     $copy->getResourceNode()->setIndex($resourceNode->getIndex());
                     $this->om->persist($copy->getResourceNode());
@@ -1108,7 +1121,6 @@ class WorkspaceManager
 
                     if (isset($optionals['children'])) {
                         foreach ($optionals['children'] as $child) {
-                            var_dump('duplicate');
                             $this->duplicateRights(
                             $child['original'],
                             $child['copy']->getResourceNode(),
@@ -1131,6 +1143,49 @@ class WorkspaceManager
         /*** Sets previous and next for each copied resource ***/
         $this->linkResourcesArray($copies);
         $this->om->endFlushSuite();
+
+        $this->log('Removing some duplicatas');
+
+        if (isset($totalOptionals['children']) && isset($totalOptionals['toRemove'])) {
+            foreach ($totalOptionals['toRemove'] as $toRemove) {
+                foreach ($totalOptionals['children'] as $key => $child) {
+                    if ($child['original']->getId() === $toRemove->getId()) {
+                        $this->resourceManager->delete($child['copy']->getResourceNode());
+                    }
+                }
+            }
+        }
+
+        $this->log('Cleaning directories...');
+
+        $this->om->forceFlush();
+        /*
+                foreach($totalOptionals['children'] as $key => $child) {
+                  if ($child['copy']->getResourceNode()->getResourceType()->getName() === 'directory') {
+                    $data = $this->om->getRepository(ResourceNode::class)->findBy([
+                        'resourceType' => $child['copy']->getResourceNode()->getResourceType(),
+                        'parent' => $child['copy']->getResourceNode()->getParent(),
+                        'name' => $child['copy']->getResourceNode()->getName()
+                    ]);
+        
+        
+                    //duplicate because of paths. Probably
+                    if (count($data) === 2) {
+                      $smallest = $data[0];
+                      $minChild = count($data[0]->getChildren());
+        
+                      foreach ($data as $dir) {
+                        if (count($dir->getChildren()) < $minChild) {
+                          $smallest = $dir;
+                          $minChild = count($dir->getChildren());
+                        }
+                      }
+                        $this->resourceManager->delete($smallest, false, false ,false);
+                    }
+                  }
+                }
+        
+                $this->om->forceFlush();*/
 
         return $resourcesErrors;
     }
