@@ -1082,13 +1082,17 @@ class WorkspaceManager
         foreach ($resourceNodes as $resourceNode) {
             try {
                 $this->log('Duplicating '.$resourceNode->getName().' - '.$resourceNode->getId().' - from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
+                $optionals = [];
 
                 $copy = $this->resourceManager->copy(
                     $resourceNode,
                     $rootNode,
                     $user,
                     false,
-                    false
+                    false,
+                    true,
+                    [],
+                    $optionals
                 );
 
                 if ($copy) {
@@ -1101,6 +1105,17 @@ class WorkspaceManager
                         $copy->getResourceNode(),
                         $workspaceRoles
                     );
+
+                    if (isset($optionals['children'])) {
+                        foreach ($optionals['children'] as $child) {
+                            var_dump('duplicate');
+                            $this->duplicateRights(
+                            $child['original'],
+                            $child['copy']->getResourceNode(),
+                            $workspaceRoles
+                        );
+                        }
+                    }
                 }
             } catch (NotPopulatedEventException $e) {
                 $resourcesErrors[] = [

@@ -688,7 +688,8 @@ class ResourceManager
         $index = null,
         $withRights = true,
         $withDirectoryContent = true,
-        array $rights = []
+        array $rights = [],
+        &$optionals = []
     ) {
         $check = ['activity', 'claroline_scorm_12', 'claroline_scorm_2004'];
 
@@ -738,9 +739,29 @@ class ResourceManager
                 $this->log('Loop for  '.$child->getName().':'.$child->getResourceType()->getName());
 
                 //              if ($child->isActive()) {
-                $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
+                $newChild = $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights, $optionals);
                 ++$i;
+                $optionals['children'][] = ['original' => $child, 'copy' => $newChild];
                 //             }
+            }
+        }
+
+        if ('innova_path' === $node->getResourceType()->getName()) {
+            /* @var Path $path */
+            $path = $this->getResourceFromNode($node);
+            var_dump('res type path');
+            if ($path) {
+                var_dump('trouvé');
+                foreach ($path->getSteps() as $step) {
+                    var_dump('step');
+                    if ($step->getResource()) {
+                        var_dump('1');
+                    }
+
+                    foreach ($step->getSecondaryResources() as $secondaryResource) {
+                        var_dump('2');
+                    }
+                }
             }
         }
 
