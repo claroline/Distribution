@@ -224,8 +224,33 @@ class FileListener
     {
         /** @var File $file */
         $file = $event->getResource();
+        $destParent = $event->getParent();
+        $workspace = $destParent->getWorkspace();
+        $newFile = new File();
+        $newFile->setSize($resource->getSize());
+        $newFile->setName($resource->getName());
+        $newFile->setMimeType($resource->getMimeType());
+        $hashName = join('.', [
+            'WORKSPACE_'.$workspace->getId(),
+            Uuid::uuid4()->toString(),
+            pathinfo($resource->getHashName(), PATHINFO_EXTENSION),
+        ]);
+        $newFile->setHashName($hashName);
+        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$resource->getHashName();
+        $newPath = $this->filesDir.DIRECTORY_SEPARATOR.$hashName;
+        $workspaceDir = $this->filesDir.DIRECTORY_SEPARATOR.'WORKSPACE_'.$workspace->getId();
 
-        $newFile = $this->copy($file, $event->getParent());
+        if (!is_dir($workspaceDir)) {
+            mkdir($workspaceDir);
+        }
+
+        try {
+            copy($filePath, $newPath);
+        } catch (\Exception $e) {
+            //do nothing yet
+            //maybe log an error
+        }
+
         $event->setCopy($newFile);
 
         $event->stopPropagation();
@@ -275,32 +300,6 @@ class FileListener
      */
     private function copy(File $resource, ResourceNode $destParent)
     {
-        $workspace = $destParent->getWorkspace();
-        $newFile = new File();
-        $newFile->setSize($resource->getSize());
-        $newFile->setName($resource->getName());
-        $newFile->setMimeType($resource->getMimeType());
-        $hashName = join('.', [
-            'WORKSPACE_'.$workspace->getId(),
-            Uuid::uuid4()->toString(),
-            pathinfo($resource->getHashName(), PATHINFO_EXTENSION),
-        ]);
-        $newFile->setHashName($hashName);
-        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$resource->getHashName();
-        $newPath = $this->filesDir.DIRECTORY_SEPARATOR.$hashName;
-        $workspaceDir = $this->filesDir.DIRECTORY_SEPARATOR.'WORKSPACE_'.$workspace->getId();
-
-        if (!is_dir($workspaceDir)) {
-            mkdir($workspaceDir);
-        }
-
-        try {
-            copy($filePath, $newPath);
-        } catch (\Exception $e) {
-            //do nothing yet
-            //maybe log an error
-        }
-
         return $newFile;
     }
 
