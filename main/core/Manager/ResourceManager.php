@@ -41,12 +41,9 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -1191,48 +1188,6 @@ class ResourceManager
     }
 
     /**
-     * Returns true of the token owns the workspace of the resource node.
-     *
-     * @param ResourceNode   $node
-     * @param TokenInterface $token
-     *
-     * @return bool
-     */
-    public function isWorkspaceOwnerOf(ResourceNode $node, TokenInterface $token)
-    {
-        $workspace = $node->getWorkspace();
-        $managerRoleName = 'ROLE_WS_MANAGER_'.$workspace->getGuid();
-
-        return in_array($managerRoleName, $this->secut->getRoles($token)) ? true : false;
-    }
-
-    /**
-     * Retrieves all descendants of given ResourceNode and updates their
-     * accessibility dates.
-     *
-     * @param ResourceNode $node            A directory
-     * @param \DateTime    $accessibleFrom
-     * @param \DateTime    $accessibleUntil
-     */
-    public function changeAccessibilityDate(
-        ResourceNode $node,
-        $accessibleFrom,
-        $accessibleUntil
-    ) {
-        if ('directory' === $node->getResourceType()->getName()) {
-            $descendants = $this->resourceNodeRepo->findDescendants($node);
-
-            /** @var ResourceNode $descendant */
-            foreach ($descendants as $descendant) {
-                $descendant->setAccessibleFrom($accessibleFrom);
-                $descendant->setAccessibleUntil($accessibleUntil);
-                $this->om->persist($descendant);
-            }
-            $this->om->flush();
-        }
-    }
-
-    /**
      * @param string $dirName
      *
      * @return bool
@@ -1275,26 +1230,6 @@ class ResourceManager
     }
 
     /**
-     * Check if a file can be added in the workspace storage dir (disk usage limit).
-     *
-     * @todo move into workspace manager
-     *
-     * @param Workspace    $workspace
-     * @param \SplFileInfo $file
-     *
-     * @return bool
-     */
-    public function checkEnoughStorageSpaceLeft(Workspace $workspace, \SplFileInfo $file)
-    {
-        $workspaceManager = $this->container->get('claroline.manager.workspace_manager');
-        $fileSize = filesize($file);
-        $allowedMaxSize = $this->ut->getRealFileSize($workspace->getMaxStorageSize());
-        $currentStorage = $this->ut->getRealFileSize($workspaceManager->getUsedStorage($workspace));
-
-        return ($currentStorage + $fileSize > $allowedMaxSize) ? false : true;
-    }
-
-    /**
      * Check if a ResourceNode can be added in a Workspace (resource amount limit).
      *
      * @todo move into workspace manager
@@ -1309,35 +1244,6 @@ class ResourceManager
         $maxFileStorage = $workspace->getMaxUploadResources();
 
         return ($maxFileStorage < $workspaceManager->countResources($workspace)) ? true : false;
-    }
-
-    /**
-     * Adds the storage exceeded error in a form.
-     *
-     * @todo move into workspace manager
-     *
-     * @param Form      $form
-     * @param int       $fileSize
-     * @param Workspace $workspace
-     */
-    public function addStorageExceededFormError(Form $form, $fileSize, Workspace $workspace)
-    {
-        $maxSize = $this->ut->getRealFileSize($workspace->getMaxStorageSize());
-        $usedSize = $this->ut->getRealFileSize(
-            $this->container->get('claroline.manager.workspace_manager')->getUsedStorage($workspace)
-        );
-
-        $storageLeft = $maxSize - $usedSize;
-        $fileSize = $this->ut->formatFileSize($this->ut->getRealFileSize($fileSize));
-        $storageLeft = $this->ut->formatFileSize($storageLeft);
-
-        $translator = $this->container->get('translator');
-        $msg = $translator->trans(
-            'storage_limit_exceeded',
-            ['%storageLeft%' => $storageLeft, '%fileSize%' => $fileSize],
-            'platform'
-        );
-        $form->addError(new FormError($msg));
     }
 
     /**
@@ -1478,56 +1384,6 @@ class ResourceManager
         }
 
         $this->om->flush();
-    }
-
-    /**
-     * @param $file
-     *
-     * @deprecated use new import/export system
-     */
-    public function importDirectoriesFromCsv($file)
-    {
-        $data = file_get_contents($file);
-        $data = $this->container->get('claroline.utilities.misc')->formatCsvOutput($data);
-        $lines = str_getcsv($data, PHP_EOL);
-        $this->om->startFlushSuite();
-        $i = 0;
-
-        /** @var ResourceType $resourceType */
-        $resourceType = $this->resourceTypeRepo->findOneBy(['name' => 'directory']);
-
-        foreach ($lines as $line) {
-            $values = str_getcsv($line, ';');
-            $code = $values[0];
-
-            /** @var Workspace $workspace */
-            $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['code' => $code]);
-
-            $name = $values[1];
-            $directory = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->findOneBy([
-                'workspace' => $workspace,
-                'name' => $name,
-                'resourceType' => $resourceType,
-            ]);
-            if (!$directory) {
-                $directory = new Directory();
-                $directory->setName($name);
-                $this->log("Create directory {$name} for workspace {$code}");
-                $this->create($directory, $resourceType, $workspace->getCreator(), $workspace, $this->getWorkspaceRoot($workspace));
-                ++$i;
-            } else {
-                $this->log("Directory {$name} already exists for workspace {$code}");
-            }
-
-            if (0 === $i % 100) {
-                $this->om->forceFlush();
-                $this->om->clear();
-                $resourceType = $this->resourceTypeRepo->findOneBy(['name' => 'directory']);
-                $this->om->merge($resourceType);
-            }
-        }
-
-        $this->om->endFlushSuite();
     }
 
     /**
