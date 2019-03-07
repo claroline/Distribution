@@ -1150,21 +1150,16 @@ class ResourceManager
     ) {
         /** @var ResourceNode $newNode */
         $newNode = new ResourceNode();
+
+        $serialized = $this->serializer->serialize($node);
+        $newNode = $this->serialilizer->deserialize($serialized::$class, $newNode);
+
         $newNode->setResourceType($node->getResourceType());
         $newNode->setCreator($user);
         $newNode->setWorkspace($newParent->getWorkspace());
         $newNode->setParent($newParent);
         $newParent->addChild($newNode);
         $newNode->setName($this->getUniqueName($node, $newParent, true));
-        $newNode->setIcon($node->getIcon());
-        $newNode->setMimeType($node->getMimeType());
-        $newNode->setAccessibleFrom($node->getAccessibleFrom());
-        $newNode->setAccessibleUntil($node->getAccessibleUntil());
-        $newNode->setPublished($node->isPublished());
-        $newNode->setDeletable($node->isDeletable());
-        $newNode->setLicense($node->getLicense());
-        $newNode->setAuthor($node->getAuthor());
-        $newNode->setIndex($index);
 
         if ($withRights) {
             //if everything happens inside the same workspace and no specific rights have been given,
