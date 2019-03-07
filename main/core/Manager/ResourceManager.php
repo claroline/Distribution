@@ -302,27 +302,6 @@ class ResourceManager
     }
 
     /**
-     * Checks if an array of serialized resources share the same parent.
-     *
-     * @param array $nodes
-     *
-     * @return bool
-     */
-    public function haveSameParents(array $nodes)
-    {
-        $firstRes = array_pop($nodes);
-        $tmp = $firstRes['parent_id'];
-
-        foreach ($nodes as $node) {
-            if ($tmp !== $node['parent_id']) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Set the right of a resource.
      * If $rights = array(), the $parent node rights will be copied.
      *
@@ -387,26 +366,6 @@ class ResourceManager
                 );
             }
         }
-    }
-
-    public function openResourceForPortal(ResourceNode $node)
-    {
-        $this->rightsManager->editPerms(
-            1,
-            $this->roleManager->getRoleByName('ROLE_USER'),
-            $node,
-            false,
-            [],
-            true
-        );
-        $this->rightsManager->editPerms(
-            1,
-            $this->roleManager->getRoleByName('ROLE_ANONYMOUS'),
-            $node,
-            false,
-            [],
-            true
-        );
     }
 
     /**
@@ -529,79 +488,6 @@ class ResourceManager
         if ($autoFlush) {
             $this->om->flush();
         }
-    }
-
-    /**
-     * Checks if a resource in a node has a link to the target with a shortcut.
-     *
-     * @param ResourceNode $parent
-     * @param ResourceNode $target
-     *
-     * @return bool
-     *
-     * @deprecated
-     */
-    public function hasLinkTo(ResourceNode $parent, ResourceNode $target)
-    {
-        $nodes = $this->resourceNodeRepo
-            ->findBy(['parent' => $parent, 'class' => 'Claroline\LinkBundle\Entity\Resource\Shortcut']);
-
-        foreach ($nodes as $node) {
-            $shortcut = $this->getResourceFromNode($node);
-            if ($shortcut->getTarget() === $target) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if a path is valid.
-     *
-     * @param array $ancestors
-     *
-     * @return bool
-     */
-    public function isPathValid(array $ancestors)
-    {
-        $continue = true;
-
-        for ($i = 0, $size = count($ancestors); $i < $size; ++$i) {
-            if (isset($ancestors[$i + 1])) {
-                if ($ancestors[$i + 1]->getParent() === $ancestors[$i]) {
-                    $continue = true;
-                } else {
-                    $continue = $this->hasLinkTo($ancestors[$i], $ancestors[$i + 1]);
-                }
-            }
-
-            if (!$continue) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if all the resource in the array are directories.
-     *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode[] $ancestors
-     *
-     * @return bool
-     */
-    public function areAncestorsDirectory(array $ancestors)
-    {
-        array_pop($ancestors);
-
-        foreach ($ancestors as $ancestor) {
-            if ('directory' !== $ancestor->getResourceType()->getName()) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -1165,18 +1051,6 @@ class ResourceManager
     }
 
     /**
-     * @param string          $mimeType
-     * @param ResourceNode    $parent
-     * @param string[]|Role[] $roles
-     *
-     * @return array
-     */
-    public function getByMimeTypeAndParent($mimeType, ResourceNode $parent, array $roles)
-    {
-        return $this->resourceNodeRepo->findByMimeTypeAndParent($mimeType, $parent, $roles);
-    }
-
-    /**
      * @param string $name
      *
      * @return \Claroline\CoreBundle\Entity\Resource\ResourceType
@@ -1204,26 +1078,6 @@ class ResourceManager
     public function getByWorkspace(Workspace $workspace)
     {
         return $this->resourceNodeRepo->findBy(['workspace' => $workspace]);
-    }
-
-    /**
-     * @param Workspace    $workspace
-     * @param ResourceType $resourceType
-     * @param bool         $filterDeleted
-     *
-     * @return ResourceNode[]
-     */
-    public function getByWorkspaceAndResourceType(
-        Workspace $workspace,
-        ResourceType $resourceType,
-        $filterDeleted = false
-    ) {
-        $findBy = ['workspace' => $workspace, 'resourceType' => $resourceType];
-        if ($filterDeleted) {
-            $findBy['active'] = true;
-        }
-
-        return $this->resourceNodeRepo->findBy($findBy, ['name' => 'ASC']);
     }
 
     /**
