@@ -1152,7 +1152,8 @@ class ResourceManager
         $newNode = new ResourceNode();
 
         $serialized = $this->serializer->serialize($node);
-        $newNode = $this->serialilizer->deserialize($serialized::$class, $newNode);
+        unset($serialized['rights']);
+        $this->serializer->get(ResourceNode::class)->deserialize($serialized, $newNode);
 
         $newNode->setResourceType($node->getResourceType());
         $newNode->setCreator($user);
