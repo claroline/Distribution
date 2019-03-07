@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
@@ -97,6 +98,7 @@ class ResourceManager
      *     "ut"                    = @DI\Inject("claroline.utilities.misc"),
      *     "secut"                 = @DI\Inject("claroline.security.utilities"),
      *     "translator"            = @DI\Inject("translator"),
+     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
      *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler")
      * })
      *
@@ -119,7 +121,8 @@ class ResourceManager
         ClaroUtilities $ut,
         Utilities $secut,
         TranslatorInterface $translator,
-        PlatformConfigurationHandler $platformConfigHandler
+        PlatformConfigurationHandler $platformConfigHandler,
+        SerializerProvider $serializer
     ) {
         $this->om = $om;
 
@@ -132,6 +135,7 @@ class ResourceManager
         $this->translator = $translator;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->filesDirectory = $container->getParameter('claroline.param.files_directory');
+        $this->serializer = $serializer;
 
         $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
         $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
@@ -441,68 +445,6 @@ class ResourceManager
         }
 
         return $validTypes;
-    }
-
-    /**
-     * Insert the resource $resource at the 'index' position.
-     *
-     * @param ResourceNode $node
-     * @param int          $index
-     *
-     * @return ResourceNode
-     */
-    public function insertAtIndex(ResourceNode $node, $index)
-    {
-        $this->om->startFlushSuite();
-
-        if ($index > $node->getIndex()) {
-            $this->shiftLeftAt($node->getParent(), $index);
-            $node->setIndex($index);
-        } else {
-            $this->shiftRightAt($node->getParent(), $index);
-            $node->setIndex($index);
-        }
-
-        $this->om->persist($node);
-        $this->om->forceFlush();
-        $this->reorder($node->getParent());
-        $this->om->endFlushSuite();
-    }
-
-    /**
-     * @param ResourceNode $parent
-     * @param int          $index
-     */
-    public function shiftRightAt(ResourceNode $parent, $index)
-    {
-        $nodes = $parent->getChildren();
-
-        foreach ($nodes as $node) {
-            if ($node->getIndex() >= $index) {
-                $node->setIndex($node->getIndex() + 1);
-            }
-            $this->om->persist($node);
-        }
-
-        $this->om->flush();
-    }
-
-    /**
-     * @param ResourceNode $parent
-     * @param int          $index
-     */
-    public function shiftLeftAt(ResourceNode $parent, $index)
-    {
-        $nodes = $parent->getChildren();
-
-        foreach ($nodes as $node) {
-            if ($node->getIndex() <= $index) {
-                $node->setIndex($node->getIndex() - 1);
-            }
-            $this->om->persist($node);
-        }
-
-        $this->om->flush();
     }
 
     /**
@@ -932,33 +874,6 @@ class ResourceManager
         }
 
         $this->om->endFlushSuite();
-
-        if (!$softDelete && $resourceNode->getParent()) {
-            $this->reorder($resourceNode->getParent());
-        }
-    }
-
-    /**
-     * Restores a soft deleted resource node.
-     *
-     * @param ResourceNode $resourceNode
-     */
-    public function restore(ResourceNode $resourceNode)
-    {
-        $this->setActive($resourceNode);
-        $workspace = $resourceNode->getWorkspace();
-
-        if ($workspace) {
-            $root = $this->getWorkspaceRoot($workspace);
-            $resourceNode->setParent($root);
-        }
-
-        $name = substr($resourceNode->getName(), 0, strrpos($resourceNode->getName(), '_'));
-        $resourceNode->setName($name);
-        $resourceNode->setName($this->getUniqueName($resourceNode));
-
-        $this->om->persist($resourceNode);
-        $this->om->flush();
     }
 
     public function setActive(ResourceNode $node)

@@ -15,7 +15,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\Revision;
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\Log\LogEditResourceTextEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -74,29 +73,5 @@ class TextManager
         $revisionRepo = $this->om->getRepository('ClarolineCoreBundle:Resource\Revision');
 
         return $revisionRepo->getLastRevision($text)->getContent();
-    }
-
-    public function createRevision(Text $text, $content, User $user = null)
-    {
-        $version = $text->getVersion() + 1;
-
-        $revision = new Revision();
-        $revision->setContent($content);
-        $revision->setUser($user);
-        $revision->setText($text);
-        $revision->setVersion($version);
-        $text->setVersion($version);
-        $this->om->persist($revision);
-        $this->om->persist($text);
-        $this->om->flush();
-
-        $workspace = $text->getResourceNode()->getWorkspace();
-        $usersToNotify = $workspace ?
-            $this->userManager->getUsersByWorkspaces([$workspace], null, null, false) :
-            [];
-        $event = new LogEditResourceTextEvent($text->getResourceNode(), $usersToNotify);
-        $this->eventDispatcher->dispatch('log', $event);
-
-        return $revision;
     }
 }
