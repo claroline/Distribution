@@ -220,7 +220,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         }
 
         if (version_compare($currentVersion, '99.99.99', '<')) {
-            $updater = new Updater\RemovingSurveysUpdater($this->container, $this->logger);
+            $updater = new Updater\RemovingRescourceTypesUpdater($this->container, $this->logger);
 
             $updater->setLogger($this->logger);
             $updater->postUpdate();

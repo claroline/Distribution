@@ -16,7 +16,7 @@ use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 //todo to execute in a future release
-class RemovingSurveysUpdater extends Updater
+class RemovingRescourceTypesUpdater extends Updater
 {
     private $container;
     private $om;
@@ -32,40 +32,48 @@ class RemovingSurveysUpdater extends Updater
 
     public function postUpdate()
     {
-        $this->removeSurveysResources();
-        $this->removeSurveyType();
-        $this->removeSurveysTables();
+        $types = [
+          'claroline_survey',
+          'activity',
+        ];
+        $this->removeResources($types);
+        $this->removeTypes($types);
+        $this->removeTables();
     }
 
-    public function removeSurveysResources()
+    public function removeResources(array $types)
     {
-        $type = $this->om->getRepository(ResourceType::class)->findOneByName('claroline_survey');
-        $nodes = $this->om->getRepository(ResourceNode::class)->findBy(['resourceType' => $type]);
-        $manager = $this->container->get('claroline.manager.resource_manager');
-        $total = count($nodes);
-        $this->log('Ready to remove '.$total.' surveys');
-        $i = 0;
+        foreach ($types as $type) {
+            $typeEntity = $this->om->getRepository(ResourceType::class)->findOneByName($type);
+            $nodes = $this->om->getRepository(ResourceNode::class)->findBy(['resourceType' => $typeEntity]);
+            $manager = $this->container->get('claroline.manager.resource_manager');
+            $total = count($nodes);
+            $this->log('Ready to remove '.$total.' '.$type);
+            $i = 0;
 
-        foreach ($nodes as $node) {
-            ++$i;
-            $this->log('Removing survey '.$i.'/'.$total);
-            $manager->delete($node);
-        }
+            foreach ($nodes as $node) {
+                ++$i;
+                $this->log('Removing '.$type.' '.$i.'/'.$total);
+                $manager->delete($node, true);
+            }
 
-        $this->om->flush();
-    }
-
-    public function removeSurveyType()
-    {
-        $type = $this->om->getRepository(ResourceType::class)->findOneByName('claroline_survey');
-        if ($type) {
-            $this->log('Removing type claroline_survey');
-            $this->om->remove($type);
             $this->om->flush();
         }
     }
 
-    public function removeSurveysTables()
+    public function removeTypes($types)
+    {
+        foreach ($types as $type) {
+            $entity = $this->om->getRepository(ResourceType::class)->findOneByName($type);
+            if ($entity) {
+                $this->log('Removing type '.$type);
+                $this->om->remove($entity);
+                $this->om->flush();
+            }
+        }
+    }
+
+    public function removeTables()
     {
         $tables = [
           'claro_survey_multiple_choice_question_answer',
@@ -79,6 +87,11 @@ class RemovingSurveysUpdater extends Updater
           'claro_survey_question_model',
           'claro_survey_resource',
           'claro_survey_question_relation',
+          'claro_activity_parameters',
+          'claro_activity_rule',
+          'claro_activity_rule_action',
+          'claro_activity_evaluation',
+          'claro_activity_past_evaluation',
       ];
 
         foreach ($tables as $table) {
