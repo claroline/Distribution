@@ -222,7 +222,7 @@ class FileListener
     public function onCopy(CopyResourceEvent $event)
     {
         /** @var File $file */
-        $file = $event->getResource();
+        $resource = $event->getResource();
         $destParent = $event->getParent();
         $workspace = $destParent->getWorkspace();
         $newFile = new File();
@@ -287,19 +287,6 @@ class FileListener
         $eventName = str_replace('"', '', $eventName);
 
         return 'file.'.$eventName.'.'.$event;
-    }
-
-    /**
-     * Copies a file (no persistence).
-     *
-     * @param File         $resource
-     * @param ResourceNode $destParent
-     *
-     * @return File
-     */
-    private function copy(File $resource, ResourceNode $destParent)
-    {
-        return $newFile;
     }
 
     /**
