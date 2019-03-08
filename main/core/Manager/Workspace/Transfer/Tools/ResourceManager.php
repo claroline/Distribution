@@ -101,7 +101,13 @@ class ResourceManager
         $class = $resourceType->getClass();
         $this->om->flush();
         $resource = new $class();
-        $resource = $this->serializer->deserialize($class, $data['resource']);
+
+        if ($data['resource']) {
+            $resource = $this->serializer->deserialize($class, $data['resource']);
+        } else {
+            var_dump($class.' had no serializer probably');
+        }
+
         $resource->setResourceNode($node);
         $this->om->persist($resource);
         $this->om->flush();
