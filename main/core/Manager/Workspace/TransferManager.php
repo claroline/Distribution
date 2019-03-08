@@ -11,6 +11,7 @@ use Claroline\AppBundle\API\ValidatorProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\API\Serializer\Workspace\FullSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Role;
@@ -29,6 +30,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 class TransferManager
 {
     use PermissionCheckerTrait;
+    use LoggableTrait;
 
     /** @var ObjectManager */
     private $om;
@@ -148,6 +150,21 @@ class TransferManager
     {
         $serialized = $this->serializer->serialize($workspace, [Options::REFRESH_UUID]);
 
+        //if roles duplicatas, remove them
+        $roles = $serialized['roles'];
+
+        foreach ($roles as $role) {
+            $uniques[$role['translationKey']] = ['type' => $role['type']];
+        }
+
+        $roles = [];
+        foreach ($uniques as $key => $val) {
+            $val['translationKey'] = $key;
+            $roles[] = $val;
+        }
+
+        $serialized['roles'] = $roles;
+
         $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
             $data = $this->ots->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
 
@@ -167,10 +184,15 @@ class TransferManager
      */
     public function deserialize(array $data, array $options = [])
     {
-        $defaultRole = $data['registration']['defaultRole'];
-        unset($data['registration']['defaultRole']);
+        if (isset($data['registration'])) {
+            $defaultRole = $data['registration']['defaultRole'];
+            unset($data['registration']['defaultRole']);
+        }
+
+        $this->log('Deserializing the workspace...');
         $workspace = $this->serializer->deserialize(Workspace::class, $data, $options);
 
+        $this->log('Deserializing the roles...');
         foreach ($data['roles'] as $roleData) {
             $roleData['workspace']['uuid'] = $workspace->getUuid();
             $role = $this->serializer->deserialize(Role::class, $roleData);
@@ -189,6 +211,7 @@ class TransferManager
 
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
 
+        $this->log('Deserializing the tools...');
         foreach ($data['orderedTools'] as $orderedToolData) {
             $orderedTool = new OrderedTool();
             $this->ots->deserialize($orderedToolData, $orderedTool, [], $workspace);

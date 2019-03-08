@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager\Workspace;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -886,8 +887,6 @@ class WorkspaceManager
         }
 
         $newWorkspace = new Workspace();
-        $newWorkspace->setCode($code);
-        $newWorkspace->setName($code);
         $newWorkspace = $this->copy($workspace, $newWorkspace);
         //override code & name
         $newWorkspace->setCode($code);
@@ -913,11 +912,13 @@ class WorkspaceManager
         //these are the new workspace datas
         $data = $transferManager->serialize($workspace);
         $data = $transferManager->exportFiles($data, $fileBag);
-        var_dump($data);
+        $transferManager->setLogger($this->logger);
+        $data['code'] = $workspace->getCode().'~'.uniqid();
 
+        $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
-        $workspace = $this->transferManager->deserialize($data, $options);
-        $this->transferManager->importFiles($data, $workspace);
+        $workspace = $transferManager->deserialize($data, $options);
+        $transferManager->importFiles($data, $workspace);
 
         //yologo
         $this->om->persist($workspace);

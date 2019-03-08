@@ -169,7 +169,14 @@ class SerializerProvider
             return $object;
         }
 
-        return $this->get($object)->serialize($object, $options);
+        $data = $this->get($object)->serialize($object, $options);
+
+        //if a serializer wants to return a stdClass, we want an array
+        if (is_object($data)) {
+            $data = json_decode(json_encode($data), true);
+        }
+
+        return $data;
     }
 
     /**
