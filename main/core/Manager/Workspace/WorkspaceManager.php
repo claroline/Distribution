@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager\Workspace;
 
+use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
@@ -906,6 +907,21 @@ class WorkspaceManager
      */
     public function copy(Workspace $workspace, Workspace $newWorkspace, $model = false)
     {
+        $transferManager = $this->container->get('claroline.manager.workspace.transfer');
+
+        $fileBag = new FileBag();
+        //these are the new workspace datas
+        $data = $transferManager->serialize($workspace);
+        $data = $transferManager->exportFiles($data, $fileBag);
+        var_dump($data);
+
+        // gets entity from raw data.
+        $workspace = $this->transferManager->deserialize($data, $options);
+        $this->transferManager->importFiles($data, $workspace);
+
+        //yologo
+        $this->om->persist($workspace);
+        $this->om->flush();
     }
 
     /**
