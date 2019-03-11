@@ -40,7 +40,7 @@ class DatabaseManager
 
         try {
             $this->log("backing up $class in $name...");
-            $this->createBackupFromQuery($name, $this->finder->get($class)->getSqlWithParameters($query));
+            $this->createBackupFromQuery($name, $this->finder->get($class)->getSqlWithParameters($query), DatabaseBackup::TYPE_PARTIAL);
         } catch (\Exception $e) {
             $this->log("Couldn't backup $class".$e->getMessage(), LogLevel::ERROR);
         }
@@ -60,13 +60,14 @@ class DatabaseManager
         }
     }
 
-    private function createBackupFromQuery($name, $query)
+    private function createBackupFromQuery($name, $query, $type = DatabaseBackup::TYPE_FULL)
     {
         $this->conn->query("
             CREATE TABLE $name AS ($query)
         ");
         $dbBackup = new DatabaseBackup();
         $dbBackup->setName($name);
+        $dbBackup->setType($type);
         $this->om->persist($dbBackup);
         $this->om->flush();
     }
