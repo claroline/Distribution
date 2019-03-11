@@ -4,6 +4,9 @@ namespace Claroline\AppBundle\Manager;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\DatabaseBackup;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -11,6 +14,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class DatabaseManager
 {
+    use LoggableTrait;
+
     private $kernel;
 
     /**
@@ -47,7 +52,7 @@ class DatabaseManager
             $name = $table.'_'.time();
 
             try {
-                $this->log("backing up $table...");
+                $this->log("backing up $table as $name...");
                 $this->createBackupFromQuery($name, "SELECT * FROM $table");
             } catch (\Exception $e) {
                 $this->log("Couldn't backup $table");
@@ -69,23 +74,23 @@ class DatabaseManager
     public function dropTables($tables, $backup = false)
     {
         if ($backup) {
-            $this->backupTables($backup);
+            $this->backupTables($tables);
         }
+        /*
+                foreach ($tables as $table) {
+                    try {
+                        $this->log('DROP '.$table);
+                        $sql = '
+                        SET FOREIGN_KEY_CHECKS=0;
+                        DROP TABLE '.$table.';
+                        SET FOREIGN_KEY_CHECKS=1;
+                    ';
 
-        foreach ($tables as $table) {
-            try {
-                $this->log('DROP '.$table);
-                $sql = '
-                SET FOREIGN_KEY_CHECKS=0;
-                DROP TABLE '.$table.';
-                SET FOREIGN_KEY_CHECKS=1;
-            ';
-
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute();
-            } catch (\Exception $e) {
-                $this->log('Couldnt drop '.$table.' '.$e->getMessage());
-            }
-        }
+                        $stmt = $this->conn->prepare($sql);
+                        $stmt->execute();
+                    } catch (\Exception $e) {
+                        $this->log('Couldnt drop '.$table.' '.$e->getMessage());
+                    }
+                }*/
     }
 }

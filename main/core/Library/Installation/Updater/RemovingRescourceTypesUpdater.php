@@ -28,6 +28,8 @@ class RemovingRescourceTypesUpdater extends Updater
         $this->container = $container;
         $this->om = $container->get('claroline.persistence.object_manager');
         $this->conn = $container->get('doctrine.dbal.default_connection');
+        $this->databaseManager = $this->container->get('claroline.manager.database_manager');
+        $this->databaseManager->setLogger($logger);
     }
 
     public function postUpdate()
@@ -36,8 +38,8 @@ class RemovingRescourceTypesUpdater extends Updater
           'claroline_survey',
           'activity',
         ];
-        $this->removeResources($types);
-        $this->removeTypes($types);
+        //$this->removeResources($types);
+        //$this->removeTypes($types);
         $this->removeTables();
     }
 
@@ -94,25 +96,6 @@ class RemovingRescourceTypesUpdater extends Updater
           'claro_activity_past_evaluation',
       ];
 
-        foreach ($tables as $table) {
-            $this->deleteTable($table);
-        }
-    }
-
-    public function deleteTable($table)
-    {
-        try {
-            $this->log('DROP '.$table);
-            $sql = '
-              SET FOREIGN_KEY_CHECKS=0;
-              DROP TABLE '.$table.';
-              SET FOREIGN_KEY_CHECKS=1;
-          ';
-
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-        } catch (\Exception $e) {
-            $this->log('Couldnt drop '.$table.' '.$e->getMessage());
-        }
+        $this->databaseManager->dropTables($tables, true);
     }
 }
