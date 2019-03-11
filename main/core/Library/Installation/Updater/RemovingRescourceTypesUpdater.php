@@ -38,6 +38,7 @@ class RemovingRescourceTypesUpdater extends Updater
           'claroline_survey',
           'activity',
           'innova_audio_recorder',
+          'innova_video_recorder',
         ];
         $this->removeResources($types);
         //$this->removeTypes($types);
@@ -102,6 +103,8 @@ class RemovingRescourceTypesUpdater extends Updater
           'claro_activity_past_evaluation',
           //audio recorder
           'innova_audio_recorder_configuration',
+          //video_recorder
+          'innova_video_recorder_configuration',
       ];
 
         //  $this->databaseManager->dropTables($tables, true);
