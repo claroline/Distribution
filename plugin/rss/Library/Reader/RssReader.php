@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\RssReaderBundle\Library\Reader;
+namespace Claroline\RssBundle\Library\Reader;
 
-use Claroline\RssReaderBundle\Library\FeedInfo;
-use Claroline\RssReaderBundle\Library\FeedItem;
-use Claroline\RssReaderBundle\Library\FeedReaderInterface;
+use Claroline\RssBundle\Library\FeedInfo;
+use Claroline\RssBundle\Library\FeedItem;
+use Claroline\RssBundle\Library\FeedReaderInterface;
 use SimpleXMLElement;
 
 /**

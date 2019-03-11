@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\RssReaderBundle\Library;
+namespace Claroline\RssBundle\Library;
 
 class UnknownFormatException extends \Exception
 {
