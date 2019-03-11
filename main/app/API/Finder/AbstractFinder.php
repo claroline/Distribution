@@ -256,7 +256,7 @@ abstract class AbstractFinder implements FinderInterface
         $params = $query->getParameters();
 
         if (!empty($params)) {
-            foreach ($params as $key => $param) {
+            foreach ($params as $param) {
                 $sql = join(var_export($param->getValue(), true), explode('?', $sql, 2));
             }
         }
@@ -269,10 +269,6 @@ abstract class AbstractFinder implements FinderInterface
         }
 
         return $sql;
-    }
-
-    private function getTypeList()
-    {
     }
 
     private function buildQueryFromSql($sql, array $options, array $sortBy = null)
