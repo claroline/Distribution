@@ -113,6 +113,10 @@ abstract class AbstractFinder implements FinderInterface
             $query = $qb->getQuery();
         }
 
+        if (in_array(Options::SQL_QUERY, $options)) {
+            return $query;
+        }
+
         if (in_array(Options::SQL_ARRAY_MAP, $options)) {
             return $query->getArrayResult();
         }
