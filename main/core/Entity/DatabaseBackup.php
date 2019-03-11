@@ -39,6 +39,18 @@ class DatabaseBackup
     private $name;
 
     /**
+     * @var string
+     * @ORM\Column(length=255, nullable=true, name="table_name")
+     */
+    private $tableName;
+
+    /**
+     * @var string
+     * @ORM\Column(length=255, nullable=true)
+     */
+    private $reason = '';
+
+    /**
      * @ORM\Column(name="creation_date", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      *
@@ -70,5 +82,25 @@ class DatabaseBackup
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setTable($table)
+    {
+        $this->tableName = $table;
+    }
+
+    public function getTable()
+    {
+        return $this->tableName;
+    }
+
+    public function setReason($reason)
+    {
+        $this->reason = $reason;
+    }
+
+    public function getReason()
+    {
+        return $this->reason;
     }
 }

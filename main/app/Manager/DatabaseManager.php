@@ -37,10 +37,11 @@ class DatabaseManager
     {
         $query = $this->finder->get($class)->find($searches, null, 0, -1, false, [Options::SQL_QUERY]);
         $name = '_bkp_'.$tableName.'_'.time();
+        $table = $this->om->getMetadataFactory()->getMetadataFor($class)->getTableName();
 
         try {
             $this->log("backing up $class in $name...");
-            $this->createBackupFromQuery($name, $this->finder->get($class)->getSqlWithParameters($query), DatabaseBackup::TYPE_PARTIAL);
+            $this->createBackupFromQuery($name, $this->finder->get($class)->getSqlWithParameters($query), $table, DatabaseBackup::TYPE_PARTIAL);
         } catch (\Exception $e) {
             $this->log("Couldn't backup $class".$e->getMessage(), LogLevel::ERROR);
         }
@@ -53,20 +54,21 @@ class DatabaseManager
 
             try {
                 $this->log("backing up $table as $name...");
-                $this->createBackupFromQuery($name, "SELECT * FROM $table");
+                $this->createBackupFromQuery($name, "SELECT * FROM $table", $table);
             } catch (\Exception $e) {
                 $this->log("Couldn't backup $table ".$e->getMessage(), LogLevel::ERROR);
             }
         }
     }
 
-    private function createBackupFromQuery($name, $query, $type = DatabaseBackup::TYPE_FULL)
+    private function createBackupFromQuery($name, $query, $table, $type = DatabaseBackup::TYPE_FULL)
     {
         $this->conn->query("
             CREATE TABLE $name AS ($query)
         ");
         $dbBackup = new DatabaseBackup();
         $dbBackup->setName($name);
+        $dbBackup->setTable($table);
         $dbBackup->setType($type);
         $this->om->persist($dbBackup);
         $this->om->flush();
@@ -77,21 +79,21 @@ class DatabaseManager
         if ($backup) {
             $this->backupTables($tables);
         }
-        /*
-                foreach ($tables as $table) {
-                    try {
-                        $this->log('DROP '.$table);
-                        $sql = '
+
+        foreach ($tables as $table) {
+            try {
+                $this->log('DROP '.$table);
+                $sql = '
                         SET FOREIGN_KEY_CHECKS=0;
                         DROP TABLE '.$table.';
                         SET FOREIGN_KEY_CHECKS=1;
                     ';
 
-                        $stmt = $this->conn->prepare($sql);
-                        $stmt->execute();
-                    } catch (\Exception $e) {
-                        $this->log('Couldnt drop '.$table.' '.$e->getMessage());
-                    }
-                }*/
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute();
+            } catch (\Exception $e) {
+                $this->log('Couldnt drop '.$table.' '.$e->getMessage());
+            }
+        }
     }
 }
