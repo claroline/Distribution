@@ -37,6 +37,7 @@ class RemovingRescourceTypesUpdater extends Updater
         $types = [
           'claroline_survey',
           'activity',
+          'innova_audio_recorder',
         ];
         $this->removeResources($types);
         //$this->removeTypes($types);
@@ -81,6 +82,7 @@ class RemovingRescourceTypesUpdater extends Updater
     public function removeTables()
     {
         $tables = [
+          //surveys
           'claro_survey_multiple_choice_question_answer',
           'claro_survey_open_ended_question_answer',
           'claro_survey_question_answer',
@@ -92,11 +94,14 @@ class RemovingRescourceTypesUpdater extends Updater
           'claro_survey_question_model',
           'claro_survey_resource',
           'claro_survey_question_relation',
+          //activities
           'claro_activity_parameters',
           'claro_activity_rule',
           'claro_activity_rule_action',
           'claro_activity_evaluation',
           'claro_activity_past_evaluation',
+          //audio recorder
+          'innova_audio_recorder_configuration',
       ];
 
         //  $this->databaseManager->dropTables($tables, true);
