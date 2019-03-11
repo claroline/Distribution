@@ -33,7 +33,7 @@ class DatabaseManager
         $this->finder = $finder;
     }
 
-    public function backupRows($class, $searches, $tableName)
+    public function backupRows($class, $searches, $tableName, $batch = null)
     {
         $query = $this->finder->get($class)->find($searches, null, 0, -1, false, [Options::SQL_QUERY]);
         $name = '_bkp_'.$tableName.'_'.time();
@@ -41,7 +41,7 @@ class DatabaseManager
 
         try {
             $this->log("backing up $class in $name...");
-            $this->createBackupFromQuery($name, $this->finder->get($class)->getSqlWithParameters($query), $table, DatabaseBackup::TYPE_PARTIAL);
+            $this->createBackupFromQuery($name, $this->finder->get($class)->getSqlWithParameters($query), $table, DatabaseBackup::TYPE_PARTIAL, $batch);
         } catch (\Exception $e) {
             $this->log("Couldn't backup $class".$e->getMessage(), LogLevel::ERROR);
         }
@@ -61,7 +61,7 @@ class DatabaseManager
         }
     }
 
-    private function createBackupFromQuery($name, $query, $table, $type = DatabaseBackup::TYPE_FULL)
+    private function createBackupFromQuery($name, $query, $table, $type = DatabaseBackup::TYPE_FULL, $batch = null)
     {
         $this->conn->query("
             CREATE TABLE $name AS ($query)
@@ -70,6 +70,7 @@ class DatabaseManager
         $dbBackup->setName($name);
         $dbBackup->setTable($table);
         $dbBackup->setType($type);
+        $dbBackup->setBatch($batch);
         $this->om->persist($dbBackup);
         $this->om->flush();
     }

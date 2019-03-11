@@ -11,6 +11,7 @@
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -42,42 +43,40 @@ class RemovingRescourceTypesUpdater extends Updater
           'innova_media_resource',
         ];
         $this->removeResources($types);
-        //$this->removeTypes($types);
-        //$this->removeTables();
+        $this->removeTables();
     }
 
     public function removeResources(array $types)
     {
         foreach ($types as $type) {
+            $batch = uniqid();
             $this->log('Backup old nodes for type '.$type);
-            $this->databaseManager->backupRows(ResourceNode::class, ['resourceType' => $type], 'claro_node_'.$type);
-            /*
-              $typeEntity = $this->om->getRepository(ResourceType::class)->findOneByName($type);
-              $nodes = $this->om->getRepository(ResourceNode::class)->findBy(['resourceType' => $typeEntity]);
-              $manager = $this->container->get('claroline.manager.resource_manager');
-              $total = count($nodes);
-              $this->log('Ready to remove '.$total.' '.$type);
-              $i = 0;
+            $this->databaseManager->backupRows(ResourceNode::class, ['resourceType' => $type], 'claro_node_'.$type, $batch);
+            $this->databaseManager->backupRows(ResourceRights::class, ['resourceType' => $type], 'claro_rights_'.$type, $batch);
+            $typeEntity = $this->om->getRepository(ResourceType::class)->findOneByName($type);
+            $nodes = $this->om->getRepository(ResourceNode::class)->findBy(['resourceType' => $typeEntity]);
+            $manager = $this->container->get('claroline.manager.resource_manager');
+            $total = count($nodes);
+            $this->log('Ready to remove '.$total.' '.$type);
+            $i = 0;
 
-              foreach ($nodes as $node) {
-                  ++$i;
-                  $this->log('Removing '.$type.' '.$i.'/'.$total);
-                  $manager->delete($node, true);
-              }
+            foreach ($nodes as $node) {
+                ++$i;
+                $this->log('Removing '.$type.' '.$i.'/'.$total);
+                $manager->delete($node, true);
+            }
 
-              $this->om->flush();*/
-        }
-    }
-
-    public function removeTypes($types)
-    {
-        foreach ($types as $type) {
             $entity = $this->om->getRepository(ResourceType::class)->findOneByName($type);
+
             if ($entity) {
+                $this->log('Backup old resourcreType '.$type);
+                $this->databaseManager->backupRows(ResourceType::class, ['name' => $type], 'claro_resource_type_'.$type, $batch);
                 $this->log('Removing type '.$type);
                 $this->om->remove($entity);
                 $this->om->flush();
             }
+
+            $this->om->flush();
         }
     }
 
@@ -116,6 +115,6 @@ class RemovingRescourceTypesUpdater extends Updater
           'media_resource_help_link',
       ];
 
-        //  $this->databaseManager->dropTables($tables, true);
+        $this->databaseManager->dropTables($tables, true);
     }
 }

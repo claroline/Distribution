@@ -60,6 +60,12 @@ class DatabaseBackup
 
     /**
      * @var string
+     * @ORM\Column(length=255, nullable=true)
+     */
+    private $batch = null;
+
+    /**
+     * @var string
      * @ORM\Column
      */
     private $type = self::TYPE_FULL;
@@ -100,6 +106,11 @@ class DatabaseBackup
     }
 
     public function getReason()
+    {
+        return $this->reason;
+    }
+
+    public function setBatch()
     {
         return $this->reason;
     }

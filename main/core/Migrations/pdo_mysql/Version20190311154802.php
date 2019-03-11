@@ -19,6 +19,7 @@ class Version20190311154802 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL,
                 name VARCHAR(255) DEFAULT NULL,
                 table_name VARCHAR(255) DEFAULT NULL,
+                batch VARCHAR(255) DEFAULT NULL,
                 reason VARCHAR(255) DEFAULT NULL,
                 creation_date DATETIME DEFAULT NULL,
                 type VARCHAR(255) NOT NULL,
