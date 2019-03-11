@@ -38,28 +38,31 @@ class RemovingRescourceTypesUpdater extends Updater
           'claroline_survey',
           'activity',
         ];
-        //$this->removeResources($types);
+        $this->removeResources($types);
         //$this->removeTypes($types);
-        $this->removeTables();
+        //$this->removeTables();
     }
 
     public function removeResources(array $types)
     {
         foreach ($types as $type) {
-            $typeEntity = $this->om->getRepository(ResourceType::class)->findOneByName($type);
-            $nodes = $this->om->getRepository(ResourceNode::class)->findBy(['resourceType' => $typeEntity]);
-            $manager = $this->container->get('claroline.manager.resource_manager');
-            $total = count($nodes);
-            $this->log('Ready to remove '.$total.' '.$type);
-            $i = 0;
+            $this->log('Backup old nodes for type '.$type);
+            $this->databaseManager->backupRows(ResourceNode::class, ['resourceType' => $type], 'claro_node_'.$type);
+            /*
+              $typeEntity = $this->om->getRepository(ResourceType::class)->findOneByName($type);
+              $nodes = $this->om->getRepository(ResourceNode::class)->findBy(['resourceType' => $typeEntity]);
+              $manager = $this->container->get('claroline.manager.resource_manager');
+              $total = count($nodes);
+              $this->log('Ready to remove '.$total.' '.$type);
+              $i = 0;
 
-            foreach ($nodes as $node) {
-                ++$i;
-                $this->log('Removing '.$type.' '.$i.'/'.$total);
-                $manager->delete($node, true);
-            }
+              foreach ($nodes as $node) {
+                  ++$i;
+                  $this->log('Removing '.$type.' '.$i.'/'.$total);
+                  $manager->delete($node, true);
+              }
 
-            $this->om->flush();
+              $this->om->flush();*/
         }
     }
 
@@ -96,6 +99,6 @@ class RemovingRescourceTypesUpdater extends Updater
           'claro_activity_past_evaluation',
       ];
 
-        $this->databaseManager->dropTables($tables, true);
+        //  $this->databaseManager->dropTables($tables, true);
     }
 }

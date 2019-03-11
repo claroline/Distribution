@@ -106,5 +106,5 @@ final class Options
 
     //finder options
     const SQL_ARRAY_MAP = 'sql_array_map';
-    const SQL_ARRAY_MAP = 'sql_query';
+    const SQL_QUERY = 'sql_query';
 }

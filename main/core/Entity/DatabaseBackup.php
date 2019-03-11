@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity()
@@ -36,6 +37,14 @@ class DatabaseBackup
      * @ORM\Column(length=255, nullable=true)
      */
     private $name;
+
+    /**
+     * @ORM\Column(name="creation_date", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="create")
+     *
+     * @var \DateTime
+     */
+    protected $created;
 
     /**
      * @var string

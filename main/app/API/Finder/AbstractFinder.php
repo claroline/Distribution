@@ -247,6 +247,34 @@ abstract class AbstractFinder implements FinderInterface
         return $sql;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getSqlWithParameters(Query $query)
+    {
+        $sql = $query->getSql();
+        $params = $query->getParameters();
+
+        if (!empty($params)) {
+            foreach ($params as $key => $param) {
+                $sql = join(var_export($param->getValue(), true), explode('?', $sql, 2));
+            }
+        }
+
+        $sql = preg_replace('/ AS \S+/', ',', $sql);
+        $sql = str_replace(', FROM', ' FROM', $sql);
+
+        foreach ($this->getAliases() as $property => $alias) {
+            $sql = str_replace(', '.$property, ', '.$property.' AS '.$alias, $sql);
+        }
+
+        return $sql;
+    }
+
+    private function getTypeList()
+    {
+    }
+
     private function buildQueryFromSql($sql, array $options, array $sortBy = null)
     {
         if ($options['count']) {

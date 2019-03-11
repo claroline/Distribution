@@ -8,6 +8,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\DatabaseBackup;
 use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LogLevel;
 
 /**
  * @DI\Service("claroline.manager.database_manager")
@@ -32,30 +33,29 @@ class DatabaseManager
         $this->finder = $finder;
     }
 
-    public function backupRows($class, $searches)
+    public function backupRows($class, $searches, $tableName)
     {
         $query = $this->finder->get($class)->find($searches, null, 0, -1, false, [Options::SQL_QUERY]);
-        $table = strtolower(str_replace('\\', '_', $class));
-        $name = $table.'_'.time();
+        $name = '_bkp_'.$tableName.'_'.time();
 
         try {
-            $this->log("backing up $table...");
-            $this->createBackupFromQuery($name, $query->getSql());
+            $this->log("backing up $class in $name...");
+            $this->createBackupFromQuery($name, $this->finder->get($class)->getSqlWithParameters($query));
         } catch (\Exception $e) {
-            $this->log("Couldn't backup $table");
+            $this->log("Couldn't backup $class".$e->getMessage(), LogLevel::ERROR);
         }
     }
 
     public function backupTables($tables)
     {
         foreach ($tables as $table) {
-            $name = $table.'_'.time();
+            $name = '_bkp_'.$table.'_'.time();
 
             try {
                 $this->log("backing up $table as $name...");
                 $this->createBackupFromQuery($name, "SELECT * FROM $table");
             } catch (\Exception $e) {
-                $this->log("Couldn't backup $table");
+                $this->log("Couldn't backup $table ".$e->getMessage(), LogLevel::ERROR);
             }
         }
     }
