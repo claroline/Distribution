@@ -39,6 +39,7 @@ class RemovingRescourceTypesUpdater extends Updater
           'activity',
           'innova_audio_recorder',
           'innova_video_recorder',
+          'innova_media_resource',
         ];
         $this->removeResources($types);
         //$this->removeTypes($types);
@@ -105,6 +106,14 @@ class RemovingRescourceTypesUpdater extends Updater
           'innova_audio_recorder_configuration',
           //video_recorder
           'innova_video_recorder_configuration',
+          //media ressources
+          'media_resource_region_config',
+          'media_resource_region',
+          'media_resource_options',
+          'media_resource',
+          'media_resource_media',
+          'media_resource_help_text',
+          'media_resource_help_link',
       ];
 
         //  $this->databaseManager->dropTables($tables, true);
