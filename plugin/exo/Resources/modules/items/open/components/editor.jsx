@@ -1,10 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import get from 'lodash/get'
-import {actions} from './editor'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {tex} from '#/main/app/intl/translation'
-import {FormGroup} from '#/main/app/content/form/components/group.jsx'
 import {FormData} from '#/main/app/content/form/containers/data'
+import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 
 export const OpenEditor = (props) => {
   <FormData
@@ -34,3 +32,10 @@ export const OpenEditor = (props) => {
     ]}
   />
 }
+
+implementPropTypes(OpenEditor, ItemEditorTypes, {
+  item: T.shape({
+    // TODO : choice item type
+    multiple: T.bool
+  }).isRequired
+})

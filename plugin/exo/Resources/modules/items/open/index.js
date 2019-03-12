@@ -32,10 +32,6 @@ export default {
   validate: () => {
 
   },
-
-  create: () => {
-
-  },
   
   editor,
   getCorrectedAnswer,
