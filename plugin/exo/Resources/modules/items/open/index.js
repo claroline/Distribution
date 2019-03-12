@@ -4,6 +4,7 @@ import editor from './editor'
 import {OpenPaper} from './paper.jsx'
 import {OpenPlayer} from './player.jsx'
 import {OpenFeedback} from './feedback.jsx'
+import {OpenEditor} from '#/plugin/exo/items/open/components/editor'
 
 import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
@@ -24,6 +25,18 @@ export default {
   paper: OpenPaper,
   player: OpenPlayer,
   feedback: OpenFeedback,
+  components: {
+    editor: OpenEditor
+  },
+
+  validate: () => {
+
+  },
+
+  create: () => {
+
+  },
+  
   editor,
   getCorrectedAnswer,
   generateStats
