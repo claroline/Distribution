@@ -1,12 +1,13 @@
 import React from 'react'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {tex, trans} from '#/main/app/intl/translation'
-import {keywords as keywordUtils} from './../../../utils/keywords'
+import {trans} from '#/main/app/intl/translation'
+import {keywords as keywordUtils} from '#/plugin/exo/utils/keywords'
 import cloneDeep from 'lodash/cloneDeep'
 
+import {WordsItem as WordsItemTypes} from '#/plugin/exo/items/words/prop-types'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
-import {KeywordItems} from './../../components/keywords.jsx'
+import {KeywordItems} from '#/plugin/exo/items/components/keywords.jsx'
 
 export const WordsEditor = (props) => 
   <FormData
@@ -22,7 +23,7 @@ export const WordsEditor = (props) =>
           {
             name: '_wordsCaseSensitive',
             type: 'boolean',
-            label: tex('words_show_case_sensitive_option'),
+            label: trans('words_show_case_sensitive_option', {}, 'quiz'),
             required: true
           },
           {
@@ -75,6 +76,5 @@ export const WordsEditor = (props) =>
   />
 
 implementPropTypes(WordsEditor, ItemEditorTypes, {
-  item: T.shape({
-  }).isRequired
+  item: T.shape(WordsItemTypes.propTypes).isRequired
 })
