@@ -19,7 +19,7 @@ import {File as FileTypes} from '#/main/core/files/prop-types'
 import {selectors} from '#/main/core/resources/file/store'
 import {actions} from '#/main/core/resources/file/store'
 import {selectors as nodeSelectors} from '#/main/core/resource/store/selectors'
-import {Comments} from '#/main/core/resources/file/player/components/comments'
+import {Comments} from '#/main/core/layout/comment/components/comments'
 
 // TODO : display a standard player with file info if no custom one
 
