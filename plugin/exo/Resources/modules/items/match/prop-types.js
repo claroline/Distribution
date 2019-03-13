@@ -1,10 +1,10 @@
 import {PropTypes as T} from 'prop-types'
 
 
-const ChoiceItem = {
+const MatchItem = {
   propTypes: {
-    firstSet: T.arrayOf(T.shape()),
-    secondSet: T.array(T.shape())
+    firstSet: T.arrayOf(T.shape({})),
+    secondSet: T.arrayOf(T.shape({}))
   },
   defaultProps: {
     firstSet: [],
@@ -13,5 +13,5 @@ const ChoiceItem = {
 }
 
 export {
-  ChoiceItem
+  MatchItem
 }

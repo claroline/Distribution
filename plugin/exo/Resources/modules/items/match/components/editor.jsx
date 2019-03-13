@@ -1,18 +1,42 @@
 import React, {Component} from 'react'
-import {tex, trans} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 
 import {PropTypes as T} from 'prop-types'
 import Popover from 'react-bootstrap/lib/Popover'
 import classes from 'classnames'
 import get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
 
 import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {utils} from './../utils/utils'
-
+import {utils} from '#/plugin/exo/items/match/utils/utils'
+import {makeId} from '#/plugin/exo/utils/utils'
 import {FormData} from '#/main/app/content/form/containers/data'
 
+const getRightItemDeletable = (item) =>
+  (item.secondSet.length > 1 && item.firstSet.length > 1) || (item.secondSet.length > 2 && item.firstSet.length === 1)
+
+const getLeftItemDeletable = (item) => 
+  (item.secondSet.length > 1 && item.firstSet.length > 1) || (item.secondSet.length === 1 && item.firstSet.length > 2)
+
+const addItem = (item, isLeftSet) => {
+  const toAdd = {
+    id: makeId(),
+    type: 'text/html',
+    data: ''
+  }
+
+  const newItem = cloneDeep(item)
+  isLeftSet === true ? newItem.firstSet.push(toAdd) : newItem.secondSet.push(toAdd)
+
+  const leftItemDeletable = getLeftItemDeletable(newItem)
+  newItem.firstSet.forEach(set => set._deletable = leftItemDeletable)
+  const rightItemDeletable = getRightItemDeletable(newItem)
+  newItem.secondSet.forEach(set => set._deletable = rightItemDeletable)
+  
+  return newItem
+}
 
 function getPopoverPosition(connectionClass, id) {
   const containerRect =  document.getElementById('popover-place-holder-' + id).getBoundingClientRect()
@@ -54,7 +78,7 @@ class MatchLinkPopover extends Component {
         placement="bottom"
         title={
           <div>
-            {tex('match_edit_connection')}
+            {trans('match_edit_connection', {}, 'quiz')}
 
             <div className="popover-actions">
               <Button
@@ -99,7 +123,7 @@ class MatchLinkPopover extends Component {
             className="btn-link"
             type={CALLBACK_BUTTON}
             icon="fa fa-fw fa-comments-o"
-            label={tex('feedback_association_created')}
+            label={trans('feedback_association_created', {}, 'quiz')}
             callback={() => this.setState({showFeedback: !this.state.showFeedback})}
             tooltip="top"
           />
@@ -417,13 +441,13 @@ class MatchEditor extends Component {
             {
               name: 'penalty',
               type: 'number',
-              label: tex('editor_penalty_label'),
+              label: trans('editor_penalty_label', {}, 'quiz'),
               required: true
             },
             {
               name: 'random',
               type: 'boolean',
-              label: tex('editor_penalty_label'),
+              label: trans('editor_penalty_label', {}, 'quiz'),
               required: true
             },
             {
@@ -453,10 +477,13 @@ class MatchEditor extends Component {
                       <button
                         type="button"
                         className="btn btn-default"
-                        onClick={() => this.props.onChange(actions.addItem(true))}
+                        onClick={() => {
+                          const newItem = addItem(item, true)
+                          this.props.update('firstSet', newItem.firstSet)
+                        }}
                       >
                         <span className="fa fa-fw fa-plus"/>
-                        {tex('match_add_item')}
+                        {trans('match_add_item', {}, 'quiz')}
                       </button>
                     </div>
                   </div>
@@ -492,10 +519,13 @@ class MatchEditor extends Component {
                       <button
                         type="button"
                         className="btn btn-default"
-                        onClick={() => this.props.onChange(actions.addItem(false))}
+                        onClick={() => {
+                          const newItem = addItem(item, false)
+                          this.props.update('secondSet', newItem.secondSet)
+                        }}
                       >
                         <span className="fa fa-fw fa-plus"/>
-                        {tex('match_add_item')}
+                        {trans('match_add_item', {}, 'quiz')}
                       </button>
                     </div>
                   </div>
