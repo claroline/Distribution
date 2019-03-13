@@ -4,6 +4,7 @@ import editor from './editor'
 import {WordsPaper} from './paper.jsx'
 import {WordsPlayer} from './player.jsx'
 import {WordsFeedback} from './feedback.jsx'
+import {WordsEditor} from '#/plugin/exo/items/words/components/editor'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 import {utils} from './utils/utils'
 
@@ -79,5 +80,16 @@ export default {
   feedback: WordsFeedback,
   editor,
   getCorrectedAnswer,
-  generateStats
+  generateStats,
+  components: {
+    editor: WordsEditor
+  },
+
+  validate: () => {
+  },
+
+  create: item => {
+    item.solutions = []
+    return item
+  }
 }
