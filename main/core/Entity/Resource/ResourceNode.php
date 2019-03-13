@@ -284,6 +284,15 @@ class ResourceNode
      */
     protected $deletable = true;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Resource\Comment",
+     *     mappedBy="resourceNode"
+     * )
+     * @ORM\OrderBy({"creationDate" = "DESC"})
+     */
+    protected $comments;
+
     public function __construct()
     {
         $this->refreshUuid();
@@ -291,6 +300,7 @@ class ResourceNode
         $this->rights = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->logs = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function isHidden()
@@ -918,9 +928,9 @@ class ResourceNode
     private function makePath(self $node, $path = '')
     {
         if ($node->getParent()) {
-            $path = $this->makePath($node->getParent(), $node->getName().'%'.$node->getUuid().SELF::PATH_SEPARATOR.$path);
+            $path = $this->makePath($node->getParent(), $node->getName().'%'.$node->getUuid().self::PATH_SEPARATOR.$path);
         } else {
-            $path = $node->getName().'%'.$node->getUuid().SELF::PATH_SEPARATOR.$path;
+            $path = $node->getName().'%'.$node->getUuid().self::PATH_SEPARATOR.$path;
         }
 
         return $path;
@@ -947,5 +957,47 @@ class ResourceNode
         }
 
         return $ancestors;
+    }
+
+    /**
+     * Get comments.
+     *
+     * @return Comment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Add comment.
+     *
+     * @param Comment $comment
+     */
+    public function addComment(Comment $comment)
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+        }
+    }
+
+    /**
+     * Remove comment.
+     *
+     * @param Comment $comment
+     */
+    public function removeComment(Comment $comment)
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+        }
+    }
+
+    /**
+     * Remove all comments.
+     */
+    public function emptyComments()
+    {
+        $this->comments->clear();
     }
 }
