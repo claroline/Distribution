@@ -47,6 +47,7 @@ const Player = (props) => {
                   <link rel="stylesheet" type="text/css" href={theme(get(module, 'fileType.styles'))} />
                 }
               </div>
+
               {props.resourceNode &&
               props.resourceNode.meta &&
               props.resourceNode.meta.mimeType &&

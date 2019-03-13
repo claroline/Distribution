@@ -27,7 +27,7 @@ actions.createComment = (comment) => ({
       method: 'POST',
       body: JSON.stringify(comment)
     },
-    // success: (data, dispatch) => isPublic ? dispatch(actions.addComment(data)) : dispatch(actions.addInternalNote(data))
+    success: (data, dispatch) => dispatch(resourceActions.addResourceComment(data))
   }
 })
 
@@ -38,7 +38,7 @@ actions.editComment = (comment) => ({
       method: 'PUT',
       body: JSON.stringify(comment)
     },
-    // success: (data, dispatch) => isPublic ? dispatch(actions.updateComment(data)) : dispatch(actions.updateInternalNote(data))
+    success: (data, dispatch) => dispatch(resourceActions.updateResourceComment(data))
   }
 })
 
@@ -48,6 +48,6 @@ actions.deleteComment = (commentId) => ({
     request: {
       method: 'DELETE'
     },
-    // success: (data, dispatch) => isPublic ? dispatch(actions.removeComment(commentId)) : dispatch(actions.removeInternalNote(commentId))
+    success: (data, dispatch) => dispatch(resourceActions.removeResourceComment(commentId))
   }
 })

@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_resource_node_comment")
+ * @ORM\Table(name="claro_resource_comment")
  */
 class ResourceComment
 {
@@ -41,7 +41,7 @@ class ResourceComment
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
      *     inversedBy="comments"
      * )
-     * @ORM\JoinColumn(name="resource_node_id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="resource_node_id", onDelete="CASCADE", nullable=false)
      */
     protected $resourceNode;
 
