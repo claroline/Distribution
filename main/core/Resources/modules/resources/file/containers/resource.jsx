@@ -5,7 +5,7 @@ import {withReducer} from '#/main/app/store/components/withReducer'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
 import {FileResource as FileResourceComponent} from '#/main/core/resources/file/components/resource'
-import {actions, reducer, selectors} from '#/main/core/resources/file/store'
+import {reducer, selectors} from '#/main/core/resources/file/store'
 
 const FileResource = withRouter(
   withReducer(selectors.STORE_NAME, reducer)(
