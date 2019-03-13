@@ -44,6 +44,11 @@ class Editor extends Component {
                 label: trans('auto_download'),
                 type: 'boolean',
                 required: true
+              }, {
+                name: 'commentsActivated',
+                label: trans('activate_comments'),
+                type: 'boolean',
+                displayed: -1 < this.props.mimeType.indexOf('video')
               }
             ]
           }

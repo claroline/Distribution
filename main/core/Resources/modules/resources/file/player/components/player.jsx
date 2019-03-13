@@ -48,10 +48,7 @@ const Player = (props) => {
                 }
               </div>
 
-              {props.resourceNode &&
-              props.resourceNode.meta &&
-              props.resourceNode.meta.mimeType &&
-              -1 < props.resourceNode.meta.mimeType.indexOf('video') &&
+              {props.file && props.file.commentsActivated &&
                 <Comments
                   comments={props.resourceNode.comments}
                   canComment={!!authenticatedUser}

@@ -271,6 +271,7 @@ class ResourceNodeSerializer
             'published' => $resourceNode->isPublished(),
             'active' => $resourceNode->isActive(),
             'views' => $resourceNode->getViewsCount(),
+            'commentsActivated' => $resourceNode->isCommentsActivated(),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
@@ -358,6 +359,7 @@ class ResourceNodeSerializer
         $this->sipe('meta.description', 'setDescription', $data, $resourceNode);
         $this->sipe('meta.license', 'setLicense', $data, $resourceNode);
         $this->sipe('meta.authors', 'setAuthor', $data, $resourceNode);
+        $this->sipe('meta.commentsActivated', 'setCommentsActivated', $data, $resourceNode);
 
         // display
         $this->sipe('display.fullscreen', 'setFullscreen', $data, $resourceNode);

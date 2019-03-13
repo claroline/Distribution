@@ -285,6 +285,13 @@ class ResourceNode
     protected $deletable = true;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="comments_activated", type="boolean")
+     */
+    protected $commentsActivated = false;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceComment",
      *     mappedBy="resourceNode"
@@ -957,6 +964,22 @@ class ResourceNode
         }
 
         return $ancestors;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCommentsActivated()
+    {
+        return $this->commentsActivated;
+    }
+
+    /**
+     * @param bool $commentsActivated
+     */
+    public function setCommentsActivated($commentsActivated)
+    {
+        $this->commentsActivated = $commentsActivated;
     }
 
     /**

@@ -54,7 +54,8 @@ const ResourceNode = {
       views: T.number,
       creator: T.shape({
 
-      })
+      }),
+      commentsActivated: T.bool.isRequired
     }).isRequired,
 
     /**

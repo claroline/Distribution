@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2019/03/13 02:28:59
+ * Generation date: 2019/03/13 03:15:36
  */
-class Version20190313142853 extends AbstractMigration
+class Version20190313151535 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -41,12 +41,20 @@ class Version20190313142853 extends AbstractMigration
             REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
         ');
+        $this->addSql('
+            ALTER TABLE claro_resource_node 
+            ADD comments_activated TINYINT(1) NOT NULL
+        ');
     }
 
     public function down(Schema $schema)
     {
         $this->addSql('
             DROP TABLE claro_resource_comment
+        ');
+        $this->addSql('
+            ALTER TABLE claro_resource_node 
+            DROP comments_activated
         ');
     }
 }
