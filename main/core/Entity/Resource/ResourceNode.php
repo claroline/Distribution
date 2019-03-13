@@ -286,7 +286,7 @@ class ResourceNode
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\Comment",
+     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceComment",
      *     mappedBy="resourceNode"
      * )
      * @ORM\OrderBy({"creationDate" = "DESC"})
@@ -962,7 +962,7 @@ class ResourceNode
     /**
      * Get comments.
      *
-     * @return Comment[]
+     * @return ResourceComment[]
      */
     public function getComments()
     {
@@ -972,9 +972,9 @@ class ResourceNode
     /**
      * Add comment.
      *
-     * @param Comment $comment
+     * @param ResourceComment $comment
      */
-    public function addComment(Comment $comment)
+    public function addComment(ResourceComment $comment)
     {
         if (!$this->comments->contains($comment)) {
             $this->comments->add($comment);
@@ -984,9 +984,9 @@ class ResourceNode
     /**
      * Remove comment.
      *
-     * @param Comment $comment
+     * @param ResourceComment $comment
      */
-    public function removeComment(Comment $comment)
+    public function removeComment(ResourceComment $comment)
     {
         if ($this->comments->contains($comment)) {
             $this->comments->removeElement($comment);

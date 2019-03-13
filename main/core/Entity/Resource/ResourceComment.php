@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="claro_resource_node_comment")
  */
-class Comment
+class ResourceComment
 {
     use Id;
     use Uuid;

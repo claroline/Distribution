@@ -10,6 +10,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
+use Claroline\CoreBundle\Entity\Resource\ResourceComment;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
@@ -161,6 +162,12 @@ class ResourceNodeSerializer
             $serializedNode['children'] = array_map(function (ResourceNode $node) use ($options) {
                 return $this->serialize($node, $options);
             }, $resourceNode->getChildren()->toArray());
+        }
+
+        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $serializedNode['comments'] = array_map(function (ResourceComment $comment) {
+                return $this->serializer->serialize($comment);
+            }, $resourceNode->getComments()->toArray());
         }
 
         $serializedNode = $this->decorate($resourceNode, $serializedNode, $options);
