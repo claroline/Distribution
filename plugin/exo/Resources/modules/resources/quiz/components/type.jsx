@@ -6,7 +6,6 @@ import {trans} from '#/main/app/intl/translation'
 import {QUIZ_TYPES} from '#/plugin/exo/resources/quiz/types'
 
 const QuizType = props => {
-  return null
   const current = QUIZ_TYPES[props.type]
 
   return (
