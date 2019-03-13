@@ -1,5 +1,6 @@
 import {trans} from '#/main/app/intl/translation'
 
+import editor from './plugin/exo/items/open/editor'
 import {OpenPaper} from '#/plugin/exo/items/open/paper.jsx'
 import {OpenPlayer} from '#/plugin/exo/items/open/player.jsx'
 import {OpenFeedback} from '#/plugin/exo/items/open/feedback.jsx'
@@ -35,6 +36,7 @@ export default {
     return item
   },
 
+  editor,
   getCorrectedAnswer,
   generateStats
 }
