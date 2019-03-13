@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors} from '#/main/core/resources/file/editor/store/selectors'
 
@@ -28,6 +29,11 @@ class Editor extends Component {
         name={selectors.FORM_NAME}
         buttons={true}
         target={['apiv2_resource_file_update', {id: this.props.file.id}]}
+        cancel={{
+          type: LINK_BUTTON,
+          target: '/',
+          exact: true
+        }}
         sections={[
           {
             title: trans('general'),
