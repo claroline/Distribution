@@ -7,7 +7,7 @@ import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 
 export const OpenEditor = (props) => 
   <FormData
-    className="choice-item choice-editor"
+    className="open-editor"
     embedded={true}
     name={props.formName}
     dataPart={props.path}
