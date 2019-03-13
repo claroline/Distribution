@@ -4,6 +4,7 @@ import {tex, trans} from '#/main/app/intl/translation'
 
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
+import {OpenItem} from '#/plugin/exo/items/open/prop-types'
 
 export const OpenEditor = (props) => 
   <FormData
@@ -34,8 +35,5 @@ export const OpenEditor = (props) =>
   />
 
 implementPropTypes(OpenEditor, ItemEditorTypes, {
-  item: T.shape({
-    // TODO : choice item type
-    multiple: T.bool
-  }).isRequired
+  item: T.shape(OpenItem.propTypes).isRequired
 })

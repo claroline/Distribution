@@ -5,6 +5,8 @@ import {OpenPaper} from './paper.jsx'
 import {OpenPlayer} from './player.jsx'
 import {OpenFeedback} from './feedback.jsx'
 import {OpenEditor} from '#/plugin/exo/items/open/components/editor'
+import {SCORE_MANUAL} from './../../quiz/enums'
+import {OpenItem} from '#/plugin/exo/items/open/prop-types'
 
 import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
@@ -29,10 +31,12 @@ export default {
     editor: OpenEditor
   },
 
-  validate: () => {
+  create: item => {
+    item.score = OpenItem.propTypes.score
 
+    return item
   },
-  
+
   editor,
   getCorrectedAnswer,
   generateStats
