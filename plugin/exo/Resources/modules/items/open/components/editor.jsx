@@ -1,10 +1,11 @@
 import React from 'react'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {tex} from '#/main/app/intl/translation'
+import {tex, trans} from '#/main/app/intl/translation'
+
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 
-export const OpenEditor = (props) => {
+export const OpenEditor = (props) => 
   <FormData
     className="choice-item choice-editor"
     embedded={true}
@@ -22,16 +23,15 @@ export const OpenEditor = (props) => {
             required: true
           },
           {
-            name: 'maxScore',
+            name: 'maxLength',
             type: 'number',
-            label: tex('maxLength'),
+            label: tex('max_length'),
             required: true
           }
         ]
       }
     ]}
   />
-}
 
 implementPropTypes(OpenEditor, ItemEditorTypes, {
   item: T.shape({
