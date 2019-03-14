@@ -73,6 +73,7 @@ class MatchLinkPopover extends Component {
   }
 
   render() {
+    console.log('render popover')
     return (
       <Popover
         id={`popover-${this.props.solution.firstId}-${this.props.solution.secondId}`}
@@ -265,7 +266,6 @@ class MatchEditor extends Component {
   }
 
   componentDidMount() {
-    console.log('didmount')
     this.jsPlumbInstance.setContainer(this.container)
     // events that need to call jsPlumb repaint method...
     this.container.addEventListener('click', this.handleTextEditorSwitch)
@@ -306,8 +306,6 @@ class MatchEditor extends Component {
       this.props.update('solutions', newItem.solutions)
 
       const solutionIndex = newItem.solutions.findIndex(solution => solution.firstId === firstId && solution.secondId === secondId)
-      console.log(newItem.solutions)
-      console.log(solutionIndex)
 
       this.setState({
         popover: {
@@ -466,6 +464,7 @@ class MatchEditor extends Component {
 
   // todo : make onClick={(event) => this.handlePopoverFocusOut(event)} work
   render() {
+    console.log('render called', this.state)
     return (<FormData
       className="match-editor"
       embedded={true}
@@ -492,6 +491,7 @@ class MatchEditor extends Component {
               name: 'solutions',
               required: true,
               render: (item, errors) => {
+                console.log('render matchelement', this.state)
                 const MatchElements = <div
                   id={`match-question-editor-id-${item.id}`}
                   className="match-items row"
