@@ -27,7 +27,9 @@ const reducer = {
         return action.resourceData.resourceNode.permissions.open &&
           !action.resourceData.accessErrors.notPublished &&
           !action.resourceData.accessErrors.deleted &&
-          !action.resourceData.accessErrors.locked
+          !action.resourceData.accessErrors.locked &&
+          !action.resourceData.accessErrors.notStarted &&
+          !action.resourceData.accessErrors.ended
       }
     }),
     details: makeReducer({}, {

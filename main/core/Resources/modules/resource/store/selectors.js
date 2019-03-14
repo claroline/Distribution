@@ -53,7 +53,6 @@ const mimeType = createSelector(
 
 // access restrictions selectors
 const accessErrors = (state) => {
-  console.log(state.accessErrors)
   return !state.accessErrors.dismissed && !isEmpty(state.accessErrors.details) ? state.accessErrors.details : {}
 }
 
