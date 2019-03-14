@@ -52,9 +52,7 @@ const mimeType = createSelector(
 )
 
 // access restrictions selectors
-const accessErrors = (state) => {
-  return !state.accessErrors.dismissed && !isEmpty(state.accessErrors.details) ? state.accessErrors.details : {}
-}
+const accessErrors = (state) => !state.accessErrors.dismissed && !isEmpty(state.accessErrors.details) ? state.accessErrors.details : {}
 
 const serverErrors = (state) => !isEmpty(state.serverErrors) ? state.serverErrors : []
 
