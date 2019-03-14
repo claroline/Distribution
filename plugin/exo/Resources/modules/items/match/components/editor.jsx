@@ -113,9 +113,11 @@ class MatchLinkPopover extends Component {
           <input
             className="form-control association-score"
             onChange={
-              e => this.props.onChange(
-                actions.updateSolution(this.props.solution.firstId, this.props.solution.secondId, 'score', e.target.value)
-              )
+              e => {
+                const newSolution = cloneDeep(this.props.solution)
+                newSolution.score = parseFloat(e.target.value)
+                this.props.update(this.props.path, newSolution)
+              }
             }
             type="number"
             value={this.props.solution.score}
@@ -135,9 +137,13 @@ class MatchLinkPopover extends Component {
               <Textarea
                 id={`solution-${this.props.solution.firstId}-${this.props.solution.secondId}-feedback`}
                 value={this.props.solution.feedback}
-                onChange={feedback => this.props.onChange(
-                  actions.updateSolution(this.props.solution.firstId, this.props.solution.secondId, 'feedback', feedback)
-                )}
+                onChange={
+                  feedback => {
+                    const newSolution = cloneDeep(this.props.solution)
+                    newSolution.feedback = feedback
+                    this.props.update(this.props.path, newSolution)
+                  }
+                }
               />
             </div>
         }
@@ -221,7 +227,6 @@ MatchItem.propTypes = {
   item: T.object.isRequired,
   onMount: T.func.isRequired,
   onUnmount: T.func.isRequired,
-  onChange: T.func.isRequired,
   update: T.func.isRequired
 }
 
@@ -260,6 +265,7 @@ class MatchEditor extends Component {
   }
 
   componentDidMount() {
+    console.log('didmount')
     this.jsPlumbInstance.setContainer(this.container)
     // events that need to call jsPlumb repaint method...
     this.container.addEventListener('click', this.handleTextEditorSwitch)
@@ -294,14 +300,14 @@ class MatchEditor extends Component {
         score: 1
       }
       // add solution to store
-      this.props.onChange((solution) => {
-        const newItem = cloneDeep(this.props.item)
-        newItem.solutions.push(action.solution)
-        newItem.solutions.forEach(solution => solution._deletable = newItem.solutions.length > 1)
-        this.props.update('solutions', newItem.solutions)
-      })
+      const newItem = cloneDeep(this.props.item)
+      newItem.solutions.push(solution)
+      newItem.solutions.forEach(solution => solution._deletable = newItem.solutions.length > 1)
+      this.props.update('solutions', newItem.solutions)
 
-      const solutionIndex = this.props.item.solutions.findIndex(solution => solution.firstId === firstId && solution.secondId === secondId)
+      const solutionIndex = newItem.solutions.findIndex(solution => solution.firstId === firstId && solution.secondId === secondId)
+      console.log(newItem.solutions)
+      console.log(solutionIndex)
 
       this.setState({
         popover: {
@@ -528,7 +534,8 @@ class MatchEditor extends Component {
                           handlePopoverClose={() => this.closePopover()}
                           popover={this.state.popover}
                           solution={item.solutions[this.state.current]}
-                          onChange={this.props.onChange}
+                          path={`solutions[${this.state.current}]`}
+                          update={this.props.update}
                         />
                     }
                   </div>
@@ -541,6 +548,7 @@ class MatchEditor extends Component {
                             onChange={this.props.onChange}
                             onMount={(type, id) => this.itemDidMount(type, id)}
                             onUnmount={(isLeftSet, id, elemId) => this.itemWillUnmount(isLeftSet, id, elemId)}
+                            update={this.props.update}
                             item={item}
                             path={`secondSet[${key}]`}
                             type="target"
