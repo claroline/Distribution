@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import {trans} from '#/main/app/intl/translation'
 
+import merge from 'lodash/merge'
+import set from 'lodash/set'
 import {PropTypes as T} from 'prop-types'
 import Popover from 'react-bootstrap/lib/Popover'
 import classes from 'classnames'
@@ -17,7 +19,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 const getRightItemDeletable = (item) =>
   (item.secondSet.length > 1 && item.firstSet.length > 1) || (item.secondSet.length > 2 && item.firstSet.length === 1)
 
-const getLeftItemDeletable = (item) => 
+const getLeftItemDeletable = (item) =>
   (item.secondSet.length > 1 && item.firstSet.length > 1) || (item.secondSet.length === 1 && item.firstSet.length > 2)
 
 const addItem = (item, isLeftSet) => {
@@ -34,7 +36,7 @@ const addItem = (item, isLeftSet) => {
   newItem.firstSet.forEach(set => set._deletable = leftItemDeletable)
   const rightItemDeletable = getRightItemDeletable(newItem)
   newItem.secondSet.forEach(set => set._deletable = rightItemDeletable)
-  
+
   return newItem
 }
 
@@ -185,9 +187,11 @@ class MatchItem extends Component{
           <Textarea
             id={`${this.props.type}-${this.props.item.id}-data`}
             value={this.props.item.data}
-            onChange={data => this.props.onChange(
-              actions.updateItem(this.props.type === 'source', this.props.item.id, data)
-            )}
+            onChange={data => {
+              const newItem = cloneDeep(this.props.item)
+              newItem.data = data
+              this.props.update(this.props.path, newItem)
+            }}
           />
         </div>
 
@@ -217,14 +221,15 @@ MatchItem.propTypes = {
   item: T.object.isRequired,
   onMount: T.func.isRequired,
   onUnmount: T.func.isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  update: T.func.isRequired
 }
 
 class MatchEditor extends Component {
 
   constructor(props) {
     super(props)
-    
+
     this.jsPlumbInstance = utils.getJsPlumbInstance()
     this.container = null
 
@@ -289,7 +294,13 @@ class MatchEditor extends Component {
         score: 1
       }
       // add solution to store
-      this.props.onChange(actions.addSolution(solution))
+      this.props.onChange((solution) => {
+        const newItem = cloneDeep(this.props.item)
+        newItem.solutions.push(action.solution)
+        newItem.solutions.forEach(solution => solution._deletable = newItem.solutions.length > 1)
+        this.props.update('solutions', newItem.solutions)
+      })
+
       const solutionIndex = this.props.item.solutions.findIndex(solution => solution.firstId === firstId && solution.secondId === secondId)
 
       this.setState({
@@ -332,9 +343,30 @@ class MatchEditor extends Component {
     // Remove all Endpoints for the element, deleting their Connections.
     // not sure about this one especially concerning events
     this.jsPlumbInstance.removeAllEndpoints(elemId)
-    this.props.onChange(
-      actions.removeItem(isLeftSet, id)
-    )
+
+
+    //  actions.removeItem(isLeftSet, id)
+
+    const newItem = cloneDeep(this.props.item)
+    if (isLeftSet) {
+      const setIndex = newItem.firstSet.findIndex(set => set.id === id)
+      newItem.firstSet.splice(setIndex, 1)
+    } else {
+      const setIndex = newItem.secondSet.findIndex(set => set.id === id)
+      newItem.secondSet.splice(setIndex, 1)
+    }
+    const solutionsToRemove = newItem.solutions.filter(solution => isLeftSet ? solution.firstId === id : solution.secondId === id)
+    for(const solution of solutionsToRemove){
+      const index = newItem.solutions.indexOf(solution)
+      newItem.solutions.splice(index, 1)
+    }
+    const rightItemDeletable = getRightItemDeletable(newItem)
+    newItem.firstSet.forEach(set => set._deletable = rightItemDeletable)
+    const leftItemDeletable = getLeftItemDeletable(newItem)
+    newItem.secondSet.forEach(set => set._deletable = leftItemDeletable)
+
+    this.props.update('firstSet', newItem.firstSet)
+    this.props.update('secondSet', newItem.secondSet)
   }
 
   /**
@@ -461,13 +493,14 @@ class MatchEditor extends Component {
                 >
                   <div className="item-col col-md-5 col-sm-5 col-xs-5">
                     <ul>
-                      {item.firstSet.map((item) =>
+                      {item.firstSet.map((item, key) =>
                         <li key={'source_' + item.id}>
                           <MatchItem
-                            onChange={this.props.onChange}
                             onMount={(type, id) => this.itemDidMount(type, id)}
                             onUnmount={(isLeftSet, id, elemId) => this.itemWillUnmount(isLeftSet, id, elemId)}
+                            update={this.props.update}
                             item={item}
+                            path={`firstSet[${key}]`}
                             type="source"
                           />
                         </li>
@@ -502,13 +535,14 @@ class MatchEditor extends Component {
 
                   <div className="item-col col-md-5 col-sm-5 col-xs-5">
                     <ul>
-                      {item.secondSet.map((item) =>
+                      {item.secondSet.map((item, key) =>
                         <li key={'target_' + item.id}>
                           <MatchItem
                             onChange={this.props.onChange}
                             onMount={(type, id) => this.itemDidMount(type, id)}
                             onUnmount={(isLeftSet, id, elemId) => this.itemWillUnmount(isLeftSet, id, elemId)}
                             item={item}
+                            path={`secondSet[${key}]`}
                             type="target"
                           />
                         </li>
@@ -530,7 +564,7 @@ class MatchEditor extends Component {
                     </div>
                   </div>
                 </div>
-                
+
                 return MatchElements
               }
             }
@@ -541,5 +575,5 @@ class MatchEditor extends Component {
   }
 }
 
-  
+
 export {MatchEditor}
