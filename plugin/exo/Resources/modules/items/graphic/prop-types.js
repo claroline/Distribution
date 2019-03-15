@@ -1,7 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 
 import {constants as quizConstants} from '#/plugin/exo/resources/quiz/constants'
-import {makeId} from './../../utils/utils'
+import {makeId} from '#/plugin/exo/utils/utils'
 
 const GraphicItem = {
   propTypes: {
