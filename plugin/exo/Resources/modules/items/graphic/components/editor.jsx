@@ -1,36 +1,31 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import get from 'lodash/get'
 
+
+import {FormData} from '#/main/app/content/form/containers/data'
+import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
+
 import {asset} from '#/main/app/config/asset'
-import {tex} from '#/main/app/intl/translation'
-import {makeDroppable} from './../../utils/dragAndDrop'
+import {trans} from '#/main/app/intl/translation'
+import {makeDroppable} from '#/plugin/exo//utils/dragAndDrop'
 import {ContentError} from '#/main/app/content/components/error'
-import {ImageInput} from './components/image-input.jsx'
-import {ModeSelector} from './components/mode-selector.jsx'
-import {AreaPopover} from './components/area-popover.jsx'
-import {ResizeDragLayer} from './components/resize-drag-layer.jsx'
-import {AnswerAreaDraggable} from './components/answer-area.jsx'
-import {actions} from './actions'
+import {ImageInput} from '#/plugin/exo/items/graphic/components/image-input.jsx'
+import {ModeSelector} from '#/plugin/exo/items/graphic/components/mode-selector.jsx'
+import {AreaPopover} from '#/plugin/exo/items/graphic/components/area-popover.jsx'
+import {ResizeDragLayer} from '#/plugin/exo/items/graphic/components/resize-drag-layer.jsx'
+import {AnswerAreaDraggable} from '#/plugin/exo/items/graphic/components/answer-area.jsx'
+import {GraphicItem as GraphicItemTypes} from '#/plugin/exo/items/graphic/prop-types'
+
 import {
   MODE_SELECT,
   MAX_IMG_SIZE,
   SHAPE_RECT,
   TYPE_ANSWER_AREA,
   TYPE_AREA_RESIZER
-} from './enums'
+} from '#/plugin/exo/items/graphic/enums'
 
 let AnswerDropZone = props => props.connectDropTarget(props.children)
-
-function blankImage() {
-  return {
-    id: makeId(),
-    type: '',
-    data: '',
-    width: 0,
-    height: 0
-  }
-}
 
 AnswerDropZone.propTypes = {
   connectDropTarget: T.func.isRequired,
@@ -42,9 +37,10 @@ AnswerDropZone = makeDroppable(AnswerDropZone, [
   TYPE_AREA_RESIZER
 ])
 
-export class Graphic extends Component {
+class GraphicElement extends Component {
   constructor(props) {
     super(props)
+
     this.onSelectImage = this.onSelectImage.bind(this)
     this.onClickImage = this.onClickImage.bind(this)
     this.onResize = this.onResize.bind(this)
@@ -60,7 +56,7 @@ export class Graphic extends Component {
       const img = this.createImage(this.props.item.image.data, this.props.item.image.url)
       img.onload = () => this.props.onChange(actions.resizeImage(img.width, img.height))
     } else {
-      this.imgContainer.innerHTML = tex('graphic_pick')
+      this.imgContainer.innerHTML = trans('graphic_pick', {}, 'quiz')
     }
 
     window.addEventListener('resize', this.onResize)
@@ -78,7 +74,7 @@ export class Graphic extends Component {
 
       if (prevProps.item.image.data !== this.props.item.image.data) {
         if (!this.props.item.image.data) {
-          this.imgContainer.innerHTML = tex('graphic_pick')
+          this.imgContainer.innerHTML = tex('graphic_pick', {}, 'quiz')
         } else {
           img.src = this.props.item.image.data
         }
@@ -181,21 +177,10 @@ export class Graphic extends Component {
   }
 
   render() {
-    return (
-      <div className="graphic-editor">
-        {get(this.props.item, '_errors.image') &&
-          <ContentError
-            error={this.props.item._errors.image}
-            warnOnly={!this.props.validating}
-          />
-        }
-
+    return(
+      <div>
         <div className="top-controls">
           <ImageInput onSelect={file => this.onSelectImage(file)}/>
-          <ModeSelector
-            currentMode={this.props.item._mode}
-            onChange={mode => this.props.onChange(actions.selectMode(mode))}
-          />
         </div>
 
         {this.props.item._popover.open &&
@@ -272,35 +257,32 @@ export class Graphic extends Component {
   }
 }
 
-Graphic.propTypes = {
-  item: T.shape({
-    image: T.oneOfType([
-      T.shape({
-        data: T.string.isRequired,
-        _clientWidth: T.integer,
-        _clientHeigth: T.integer
-      }),
-      T.shape({
-        url: T.string.isRequired
-      })
-    ]).isRequired,
-    solutions: T.arrayOf(T.shape({
-      area: T.shape({
-        id: T.string.isRequired,
-        shape: T.string.isRequired,
-        color: T.string.isRequired
-      }).isRequired
-    })).isRequired,
-    _mode: T.string.isRequired,
-    _errors: T.object,
-    _currentColor: T.string.isRequired,
-    _popover: T.shape({
-      areaId: T.string.isRequired,
-      open: T.bool.isRequired,
-      top: T.number.isRequired,
-      left: T.number.isRequired
-    }).isRequired
-  }).isRequired,
-  validating: T.bool.isRequired,
-  onChange: T.func.isRequired
-}
+export const GraphicEditor = (props) =>
+  <FormData
+    className="graphic-editor"
+    embedded={true}
+    name={props.formName}
+    dataPart={props.path}
+    sections={[
+      {
+        title: trans('general'),
+        primary: true,
+        fields: [
+          {
+            name: '_mode',
+            required: true,
+            render: (item, errors) => <ModeSelector currentMode={props.item._mode} onChange={mode => props.update('_mode', mode)}/>
+          },
+          {
+            name: 'data',
+            required: true,
+            render: (item, errors) => <GraphicElement {...props} item={item}/>
+          }
+        ]
+      }
+    ]}
+  />
+
+implementPropTypes(GraphicEditor, ItemEditorTypes, {
+  item: T.shape(GraphicItemTypes.propTypes).isRequired
+})
