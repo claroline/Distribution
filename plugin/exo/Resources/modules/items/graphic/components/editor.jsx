@@ -58,7 +58,47 @@ const toAbs = (length, imgProps) => {
 }
 
 const deleteArea = (item, areaId) => {
+  return Object.assign({}, item, {
+    solutions: item.solutions.filter(
+      solution => solution.area.id !== areaId
+    ),
+    _popover: Object.assign({}, item._popover, {open: false})
+  })
+}
 
+const resizeImage = (item, w, h) => {
+  const sizeRatio = item.image.width / w
+  const toClient = length => Math.round(length / sizeRatio)
+
+  return Object.assign({}, item, {
+    image: Object.assign({}, item.image, {
+      _clientWidth: w,
+      _clientHeight: h
+    }),
+    solutions: item.solutions.map(solution => {
+      if (solution.area.shape === SHAPE_RECT) {
+        return Object.assign({}, solution, {
+          area: Object.assign({}, solution.area, {
+            coords: solution.area.coords.map(coords => Object.assign({}, coords, {
+              _clientX: toClient(coords.x),
+              _clientY: toClient(coords.y)
+            }))
+          })
+        })
+      } else {
+        return Object.assign({}, solution, {
+          area: Object.assign({}, solution.area, {
+            center: Object.assign({}, solution.area.center, {
+              _clientX: toClient(solution.area.center.x),
+              _clientY: toClient(solution.area.center.y)
+            }),
+            _clientRadius: toClient(solution.area.radius)
+          })
+        })
+      }
+    }),
+    _popover: Object.assign({}, item._popover, {open: false})
+  })
 }
 
 const selectImage = (item, image) => {
@@ -91,7 +131,12 @@ class GraphicElement extends Component {
     // of the component.
     if (this.props.item.image.data || this.props.item.image.url) {
       const img = this.createImage(this.props.item.image.data, this.props.item.image.url)
-      img.onload = () => this.props.onChange(actions.resizeImage(img.width, img.height))
+      img.onload = () => {
+        const newItem = resizeImage(this.props.item, img.width, img.height)
+        this.props.update('solutions', newItem.solutions)
+        this.props.update('_popover', newItem._popover)
+        this.props.update('image', newItem.image)
+      }
     } else {
       this.imgContainer.innerHTML = trans('graphic_pick', {}, 'quiz')
     }
@@ -99,7 +144,15 @@ class GraphicElement extends Component {
     window.addEventListener('resize', this.onResize)
 
     this.imgContainer.addEventListener('click', () => {
-      this.props.onChange(actions.blurAreas())
+      const newItem = Object.assign({}, this.props.item, {
+        solutions: this.props.item.solutions.map(
+          solution => Object.assign({}, solution, {_selected: false})
+        ),
+        _popover: Object.assign({}, item._popover, {open: false})
+      })
+
+      this.props.update('solutions', newItem.solutions)
+      this.props.update('_popover', newItem._popover)
     })
   }
 
@@ -250,7 +303,10 @@ class GraphicElement extends Component {
     const img = this.imgContainer.querySelector('img')
 
     if (img) {
-      this.props.onChange(actions.resizeImage(img.width, img.height))
+      const newItem = resizeImage(this.props.item, img.width, img.height)
+      this.props.update('solutions', newItem.solutions)
+      this.props.update('_popover', newItem._popover)
+      this.props.update('image', newItem.image)
     }
   }
 
@@ -344,9 +400,11 @@ class GraphicElement extends Component {
                 top: 0
               })
             }}
-            onDelete={() => this.props.onChange(
-              actions.deleteArea(this.props.item._popover.areaId)
-            )}
+            onDelete={() => {
+              const newItem = deleteArea(this.props.item, this.props.item._popover.areaId)
+              this.props.update('solutions', newItem.solutions)
+              this.props.update('_popover', newItem._popover)
+            }}
           />
         }
 
@@ -460,7 +518,11 @@ class GraphicElement extends Component {
                       this.props.update('_mode', newItem._mode)
                       this.props.update('_popover', newItem._popover)
                     }}
-                    onDelete={id => this.props.onChange(actions.deleteArea(id))}
+                    onDelete={id => {
+                      const newItem = deleteArea(this.props.item, id)
+                      this.props.update('solutions', newItem.solutions)
+                      this.props.update('_popover', newItem._popover)
+                    }}
                     canDrag={!this.props.item._popover.open
                       || this.props.item._popover.areaId !== solution.area.id}
                     togglePopover={(areaId, left, top) => {
