@@ -3,12 +3,14 @@ import {trans} from '#/main/app/intl/translation'
 
 import merge from 'lodash/merge'
 import set from 'lodash/set'
-import {PropTypes as T} from 'prop-types'
+import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
+import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 import Popover from 'react-bootstrap/lib/Popover'
 import classes from 'classnames'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 
+import {MatchItem as MatchItemTypes} from '#/plugin/exo/items/match/prop-types'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
@@ -234,7 +236,6 @@ class MatchElements extends Component {
    * In order to achieve that we need to wait for the new item to be mounted
   */
   itemDidMount(type, id) {
-    console.log(type, id)
     const isLeftItem = type === 'source'
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
@@ -576,7 +577,6 @@ class MatchEditor extends Component {
 
   // todo : make onClick={(event) => this.handlePopoverFocusOut(event)} work
   render() {
-    console.log('render called')
     return (<FormData
       className="match-editor"
       embedded={true}
@@ -613,5 +613,8 @@ class MatchEditor extends Component {
   }
 }
 
+implementPropTypes(MatchEditor, ItemEditorTypes, {
+  item: T.shape(MatchItemTypes.propTypes).isRequired
+})
 
 export {MatchEditor}
