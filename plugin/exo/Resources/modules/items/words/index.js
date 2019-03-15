@@ -90,8 +90,6 @@ export default {
   },
 
   create: item => {
-    item.solutions = WordsItemTypes.defaultProps.solutions
-
-    return item
+    return Object.assign(item, WordsItemTypes.defaultProps)
   }
 }
