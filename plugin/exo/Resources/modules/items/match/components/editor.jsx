@@ -129,6 +129,28 @@ class MatchElements extends Component {
       }
       const positions = getPopoverPosition(connectionClass, this.props.item.id)
 
+      const solution = {
+        firstId: firstId,
+        secondId: secondId,
+        feedback: '',
+        score: 1
+      }
+      // add solution to store
+      const newItem = cloneDeep(this.props.item)
+      newItem.solutions.push(solution)
+      newItem.solutions.forEach(solution => solution._deletable = newItem.solutions.length > 1)
+      this.props.update('solutions', newItem.solutions)
+
+      const solutionIndex = newItem.solutions.findIndex(solution => solution.firstId === firstId && solution.secondId === secondId)
+
+      this.setState({
+        popover: {
+          visible: true,
+          top: positions.top
+        },
+        jsPlumbConnection: connection,
+        current: solutionIndex
+      })
 
       return true
 
@@ -211,7 +233,8 @@ class MatchElements extends Component {
    * When adding a firstSet or secondSet item we need to add an jsPlumb endpoint to it
    * In order to achieve that we need to wait for the new item to be mounted
   */
-  itemDidMount(type, id){
+  itemDidMount(type, id) {
+    console.log(type, id)
     const isLeftItem = type === 'source'
     const selector = '#' +  id
     const anchor = isLeftItem ? 'RightMiddle' : 'LeftMiddle'
@@ -297,7 +320,6 @@ class MatchElements extends Component {
   }
 
   render() {
-    console.log('render field full')
     return <div
       id={`match-question-editor-id-${this.props.item.id}`}
       className="match-items row"
@@ -311,7 +333,7 @@ class MatchElements extends Component {
                 onMount={(type, id) => this.itemDidMount(type, id)}
                 onUnmount={(isLeftSet, id, elemId) => this.itemWillUnmount(isLeftSet, id, elemId)}
                 update={this.props.update}
-                item={this.props.item}
+                item={item}
                 path={`firstSet[${key}]`}
                 type="source"
               />
@@ -323,7 +345,6 @@ class MatchElements extends Component {
             type="button"
             className="btn btn-default"
             onClick={() => {
-              alert('additem1st')
               const newItem = addItem(this.props.item, true)
               this.props.update('firstSet', newItem.firstSet)
             }}
@@ -355,7 +376,7 @@ class MatchElements extends Component {
                 onMount={(type, id) => this.itemDidMount(type, id)}
                 onUnmount={(isLeftSet, id, elemId) => this.itemWillUnmount(isLeftSet, id, elemId)}
                 update={this.props.update}
-                item={this.props.item}
+                item={item}
                 path={`secondSet[${key}]`}
                 type="target"
               />
@@ -368,7 +389,6 @@ class MatchElements extends Component {
             type="button"
             className="btn btn-default"
             onClick={() => {
-              alert('additem2nd')
               const newItem = addItem(this.props.item, false)
               this.props.update('secondSet', newItem.secondSet)
             }}
@@ -391,7 +411,6 @@ class MatchLinkPopover extends Component {
   }
 
   render() {
-    console.log('render popover')
     return (
       <Popover
         id={`popover-${this.props.solution.firstId}-${this.props.solution.secondId}`}
@@ -584,8 +603,7 @@ class MatchEditor extends Component {
               name: 'solutions',
               required: true,
               render: (item, errors) => {
-                console.log('render matchelement', this.state)
-                return <MatchElements item={item} {...this.props}/>
+                return <MatchElements {...this.props} item={item} />
               }
             }
           ]
