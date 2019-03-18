@@ -39,7 +39,7 @@ function createFormDefinition(sections, data) {
     .map(section => {
       // adds defaults to the section configuration
       const defaultedSection = merge({}, DataFormSection.defaultProps, section)
-      if (isDisplayed(defaultedSection, data) && 0 !== defaultedSection.fields.length) {
+      if (isDisplayed(defaultedSection, data) && (0 !== defaultedSection.fields.length || defaultedSection.render)) {
         // section has fields and is displayed keep it
         defaultedSection.fields = defaultedSection.fields
         // adds default to fields
@@ -66,9 +66,17 @@ function cleanErrors(errors, newErrors) {
   // manually manage arrays (omitBy works great, but it converts it into objects, which fuck up the react components)
   if (errors instanceof Array || newErrors instanceof Array) {
     if (newErrors) {
-      return newErrors
+      const updatedErrors = newErrors
         .map(error => (isObject(error) ? cleanErrors(error instanceof Array ? [] : {}, error) : error) || null)
-        .filter(error => !isEmpty(error))
+
+      const filtered = updatedErrors.filter(error => !isEmpty(error))
+      if (0 !== filtered.length) {
+        // it remains some errors in the array
+        // we don't filter null values to keep correct indexes
+        return updatedErrors
+      } else {
+        return []
+      }
     }
 
     return errors
