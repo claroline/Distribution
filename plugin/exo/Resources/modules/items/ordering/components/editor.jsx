@@ -308,22 +308,24 @@ const OrderingItems = (props) =>
       </div>
     </div>
 
-    <div className="odd-row">
-      <ItemList
-        {...props}
-        isOdd={true}
-      />
-      <div className="item-footer">
-        <button
-          type="button"
-          className="btn btn-default"
-          onClick={() => addItem(props.item.items, props.item.solutions, true, props.onChange)}
-        >
-          <span className="fa fa-plus"/>
-          {trans('ordering_add_odd', {}, 'quiz')}
-        </button>
+    {props.item.mode === constants.MODE_BESIDE &&
+      <div className="odd-row">
+        <ItemList
+          {...props}
+          isOdd={true}
+        />
+        <div className="item-footer">
+          <button
+            type="button"
+            className="btn btn-default"
+            onClick={() => addItem(props.item.items, props.item.solutions, true, props.onChange)}
+          >
+            <span className="fa fa-plus"/>
+            {trans('ordering_add_odd', {}, 'quiz')}
+          </button>
+        </div>
       </div>
-    </div>
+    }
   </div>
 
 OrderingItems.propTypes = {
@@ -386,7 +388,13 @@ const OrderingEditor = props =>
             required: true,
             options: {
               choices: constants.MODE_CHOICES
-            }
+            },
+            onChange: (value) => {
+              if (constants.MODE_INSIDE === value) {
+                props.update('items', props.item.items.filter(i => undefined !== i._position))
+                props.update('solutions', props.item.solutions.filter(s => undefined !== s.position))
+              }
+            },
           }, {
             name: 'orderings',
             label: trans('orderings', {}, 'quiz'),
