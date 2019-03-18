@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import get from 'lodash/get'
 import classes from 'classnames'
+import cloneDeep from 'lodash/cloneDeep'
+import isEmpty from 'lodash/isEmpty'
 
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
@@ -10,6 +12,8 @@ import {SCORE_SUM, SCORE_FIXED} from '#/plugin/exo/quiz/enums'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker'
+import Overlay from 'react-bootstrap/lib/Overlay'
+import {KeywordsPopover} from '#/plugin/exo/items/components/keywords.jsx'
 
 import {utils} from '#/plugin/exo/items/grid/utils/utils'
 import {resizeArea} from '#/plugin/exo/items/graphic/resize'
@@ -17,6 +21,112 @@ import {makeId} from '#/plugin/exo/utils/utils'
 import {asset} from '#/main/app/config/asset'
 import {trans} from '#/main/app/intl/translation'
 import {GridItem as GridItemTypes} from '#/plugin/exo/items/grid/prop-types'
+
+function makeDefaultCell(x, y) {
+  return {
+    id: makeId(),
+    data: '',
+    coordinates: [x, y],
+    background: '#fff',
+    color: '#333',
+    _multiple: false,
+    choices: [],
+    input: false
+  }
+}
+
+function deleteRow(rowIndex, grid, updateCoords){
+  const cellsToDelete = utils.getCellsByRow(rowIndex, grid.cells)
+  cellsToDelete.forEach(cell => {
+    const cellIndex = grid.cells.findIndex(toRemove => toRemove.id === cell.id)
+    grid.cells.splice(cellIndex, 1)
+    // also remove associated solution if any
+    const solutionIndex = grid.solutions.findIndex(solution => solution.cellId === cell.id)
+    if (-1 !== solutionIndex) {
+      grid.solutions.splice(solutionIndex, 1)
+    }
+  })
+  // update y coordinates if we are deleting a specific row
+  if (updateCoords) {
+    // get cells that have a row index greater than the one we are deleting
+    let cellsToUpdate = utils.getCellsByRowGreaterThan(rowIndex, grid.cells)
+    cellsToUpdate.forEach(cell => --cell.coordinates[1])
+  }
+
+  --grid.rows
+  return grid
+}
+
+function deleteCol(colIndex, grid, updateCoords){
+  const cellsToDelete = utils.getCellsByCol(colIndex, grid.cells)
+  cellsToDelete.forEach(cell => {
+    const cellIndex = grid.cells.findIndex(toRemove => toRemove.id === cell.id)
+    grid.cells.splice(cellIndex, 1)
+    // also remove associated solution if any
+    const solutionIndex = grid.solutions.findIndex(solution => solution.cellId === cell.id)
+    if (-1 !== solutionIndex) {
+      grid.solutions.splice(solutionIndex, 1)
+    }
+  })
+  // update x coordinates if we are deleting a specific col
+  if (updateCoords) {
+    // get cells that have a col index greater than the one we are deleting
+    let cellsToUpdate = utils.getCellsByColGreaterThan(colIndex, grid.cells)
+    cellsToUpdate.forEach(cell => --cell.coordinates[0])
+  }
+  --grid.cols
+  return grid
+}
+
+function updateCell(grid, property, value, cellId)
+{
+  const newItem = cloneDeep(grid)
+  const cellToUpdate = newItem.cells.find(cell => cell.id === cellId)
+  cellToUpdate[property] = value
+
+  if ('_multiple' === property) {
+    if (value) {
+      const solution = newItem.solutions.find(solution => solution.cellId === cellToUpdate.id)
+
+      cellToUpdate.choices = solution.answers.map(answer => answer.text)
+    } else {
+      cellToUpdate.choices = []
+    }
+  }
+
+  return newItem
+}
+
+function createSolution(grid, cellId)
+{
+  const newItem = cloneDeep(grid)
+  const cell = newItem.cells.find(cell => cell.id === cellId)
+
+  newItem.solutions.push({
+    cellId: cellId,
+    answers: [
+      {
+        _id: makeId(),
+        text: cell.data ? cell.data : '',
+        score: 1,
+        caseSensitive: false,
+        feedback: '',
+        expected: true,
+        _deletable: false
+      }
+    ]
+  })
+
+  // ensure cell data is empty
+  cell.data = ''
+  cell.choices = []
+  cell.input = true
+
+  // automatically open popover for the new solution
+  newItem._popover = cell.id
+
+  return newItem
+}
 
 const GridCellPopover = props =>
   <KeywordsPopover
@@ -326,27 +436,103 @@ const GridTable = props =>
           _errors={props.item._errors}
           _popover={props.item._popover}
           removeRow={() => props.removeRow(rowIndex)}
-          updateScore={(newScore) => props.onChange(
-            actions.updateRowScore(rowIndex, newScore)
-          )}
-          updateCell={(cellId, property, newValue) => props.onChange(
-            actions.updateCell(cellId, property, newValue)
-          )}
-          createCellSolution={(cellId) => props.onChange(
-            actions.createCellSolution(cellId)
-          )}
-          removeCellSolution={(cellId) => props.onChange(
-            actions.deleteCellSolution(cellId)
-          )}
-          addSolutionAnswer={(cellId) => props.onChange(
-            actions.addSolutionAnswer(cellId)
-          )}
-          updateSolutionAnswer={(cellId, keyword, parameter, value) => props.onChange(
-            actions.updateSolutionAnswer(cellId, keyword, parameter, value)
-          )}
-          removeSolutionAnswer={(cellId, keyword) => props.onChange(
-            actions.removeSolutionAnswer(cellId, keyword)
-          )}
+          updateScore={(newScore) => {
+            const newItem = cloneDeep(grid)
+            const cellsInRow = utils.getCellsByRow(rowIndex, newItem.cells)
+            cellsInRow.forEach(cell => {
+              const solutionToUpdate = newItem.solutions.find(solution => solution.cellId === cell.id)
+              if (undefined !== solutionToUpdate && undefined !== solutionToUpdate.answers && solutionToUpdate.answers.length > 0) {
+                solutionToUpdate.answers.forEach(answer => answer.score = parseFloat(newScore))
+              }
+            })
+
+            props.update('solutions', newItem.solutions)
+          }}
+          updateCell={(cellId, property, newValue) => {
+            const newItem = updateCell(props.item, property, newValue, cellId)
+            props.update('cells', newItem.cells)
+          }}
+          createCellSolution={(cellId) => {
+            const newItem = createSolution(props.item, cellId)
+            props.update('solutions', newItem.solutions)
+          }}
+          removeCellSolution={(cellId) => {
+            const newItem = cloneDeep(props.item)
+            const cell = newItem.cells.find(cell => cell.id === cellId)
+            cell.choices = []
+            cell.input = false
+            const solutionIndex = newItem.solutions.findIndex(solution => solution.cellId === cellId)
+            newItem.solutions.splice(solutionIndex, 1)
+
+            // Close popover on solution delete if needed
+            if (newItem._popover === cell.id) {
+              newItem._popover = null
+            }
+
+            props.update('solutions', newItem.solutions)
+            props.update('_popover', null)
+          }}
+          addSolutionAnswer={(cellId) => {
+            const newItem = cloneDeep(props.item)
+            const cellToUpdate = newItem.cells.find(cell => cell.id === cellId)
+            const solution = newItem.solutions.find(solution => solution.cellId === cellToUpdate.id)
+
+            solution.answers.push({
+              _id: makeId(),
+              text: '',
+              caseSensitive: false,
+              feedback: '',
+              score: 1,
+              expected: true,
+              _deletable: solution.answers.length > 0
+            })
+
+            if (cellToUpdate._multiple) {
+              cellToUpdate.choices = solution.answers.map(answer => answer.text)
+            }
+
+            props.update('solutions', newItem.solutions)
+            props.update('cells', newItem.cells)
+          }}
+
+          updateSolutionAnswer={(cellId, keyword, parameter, value) => {
+            const newItem = cloneDeep(props.item)
+            const cellToUpdate = newItem.cells.find(cell => cell.id === cellId)
+            const solution = newItem.solutions.find(solution => cellId === cellToUpdate.id)
+            const answer = solution.answers.find(answer => answer._id === keyword)
+
+            answer[parameter] = value
+
+            if ('score' === parameter && SCORE_SUM === newItem.score.type && SUM_CELL === newItem.sumMode) {
+              answer.expected = value > 0
+            } else if ('expected' === parameter) {
+              answer.score = value ? 1 : 0
+            }
+
+            if (cellToUpdate._multiple) {
+              cellToUpdate.choices = solution.answers.map(answer => answer.text)
+            }
+
+            props.update('solutions', newItem.solutions)
+            props.update('cells', newItem.cells)
+          }}
+
+
+          removeSolutionAnswer={(cellId, keyword) => {
+            const newItem = cloneDeep(props.item)
+            const cellToUpdate = newItem.cells.find(cell => cell.id === cellId)
+            const solution = newItem.solutions.find(solution => solution.cellId === cellToUpdate.id)
+            const answers = solution.answers
+
+            answers.splice(answers.findIndex(answer => answer._id === keyword), 1)
+
+            answers.forEach(keyword => keyword._deletable = answers.length > 1)
+            if (cellToUpdate._multiple) {
+              cellToUpdate.choices = solution.answers.map(answer => answer.text)
+            }
+
+            props.update('solutions', newItem.solutions)
+          }}
           openPopover={props.openPopover}
           closePopover={props.closePopover}
         />
@@ -363,9 +549,18 @@ const GridTable = props =>
                 disabled={!utils.atLeastOneSolutionInCol(colIndex, props.item.cells, props.item.solutions)}
                 value={utils.getColScore(colIndex, props.item.cells, props.item.solutions)}
                 className="form-control grid-score"
-                onChange={e => props.onChange(
-                  actions.updateColumnScore(colIndex, e.target.value)
-                )}
+                onChange={e => {
+                  const newItem = cloneDeep(grid)
+                  const cellsInRow = utils.getCellsByCol(colIndex, newItem.cells)
+                  cellsInRow.forEach(cell => {
+                    const solutionToUpdate = newItem.solutions.find(solution => solution.cellId === cell.id)
+                    if (undefined !== solutionToUpdate && undefined !== solutionToUpdate.answers && solutionToUpdate.answers.length > 0) {
+                      solutionToUpdate.answers.forEach(answer => answer.score = parseFloat(e.target.value))
+                    }
+                  })
+
+                  props.update('solutions', newItem.solutions)
+                }}
               />
             }
 
@@ -408,8 +603,8 @@ GridTable.propTypes = {
   onChange: T.func.isRequired
 }
 
-export const GridEditor = (props) =>
-  <FormData
+export const GridEditor = (props) => {
+  return(<FormData
     className="grid-editor"
     embedded={true}
     name={props.formName}
@@ -434,73 +629,113 @@ export const GridEditor = (props) =>
                 [SCORE_FIXED]: trans('fixed_score', {}, 'quiz')
               }
             }
-          },
-          {
+          }, {
             type: 'number',
             name: 'penalty',
-            label: trans('grid_editor_penalty_label', {}, 'quiz')
-            //,displayed: (data) => props.score.type === SCORE_SUM
-          },
-          {
+            label: trans('grid_editor_penalty_label', {}, 'quiz'),
+            displayed: (data) => props.item.score.type === SCORE_SUM
+          }, {
             type: 'number',
             name: 'score.success',
-            label: trans('fixed_score_on_success', {}, 'quiz')
-            //,displayed: (data) => props.score.type === SCORE_FIXED
-          },
-          {
+            label: trans('fixed_score_on_success', {}, 'quiz'),
+            displayed: (data) => props.item.score.type === SCORE_FIXED
+          }, {
             type: 'number',
             name: 'score.success',
-            label: trans('fixed_score_on_failure', {}, 'quiz')
-            //,displayed: (data) => props.score.type === SCORE_FIXED
-          },
-          {
+            label: trans('fixed_score_on_failure', {}, 'quiz'),
+            displayed: (data) => props.item.score.type === SCORE_FIXED
+          }, {
             type: 'number',
             name: 'rows',
-            label: trans('grid_table_rows', {}, 'quiz')
-          },
-          {
+            label: trans('grid_table_rows', {}, 'quiz'),
+            options: {
+              min: '1',
+              max: '12'
+            },
+            onChange: (value) => {
+              const newItem = cloneDeep(props.item)
+
+              if (value < props.item.rows) {
+                deleteRow(value, newItem, false)
+                props.update('cells', newItem.cells)
+              } else {
+                const newRowIndex = value - 1
+                newItem.rows = parseFloat(value)
+                // add default cell content to each created cell
+                for (let i = 0; i < props.item.cols; i++) {
+                  newItem.cells.push(makeDefaultCell(i, newRowIndex))
+                }
+              }
+
+              props.update('cells', newItem.cells)
+            }
+          }, {
             type: 'number',
             name: 'cols',
-            label: trans('grid_table_cols', {}, 'quiz')
-          },
-          {
+            label: trans('grid_table_cols', {}, 'quiz'),
+            options: {
+              min: '1',
+              max: '12'
+            },
+            onChange: (value) => {
+              const newItem = cloneDeep(props.item)
+
+              if (value < props.item.cols) {
+                deleteCol(value, newItem, false)
+                props.update('cells', newItem.cells)
+              } else {
+                newItem.cols = parseFloat(value)
+                const colIndex = value - 1
+                // add default cell content to each created cell
+                for (let i = 0; i < props.item.rows; i++) {
+                  newItem.cells.push(makeDefaultCell(colIndex, i))
+                }
+              }
+
+              props.update('cells', newItem.cells)
+            }
+          }, {
             name: 'border.color',
             type: 'color',
             label: trans('grid_table_border', {}, 'quiz')
-          },
-          {
+          }, {
             name: 'border.width',
             type: 'number',
-            label: trans('grid_table_border', {}, 'quiz')
-          },
-          {
+            label: trans('grid_table_border', {}, 'quiz'),
+            options: {
+              min: '0',
+              max: '6'
+            }
+          }, {
             name: 'grid',
             required: true,
             render: (item, errors) =>
               <div className="grid-body">
                 <GridTable
-                  item={props.item}
+                  item={item}
                   validating={props.validating}
                   onChange={props.onChange}
-                  removeRow={(row) => props.onChange(
-                    actions.deleteRow(row)
-                  )}
-                  removeColumn={(col) => props.onChange(
-                    actions.deleteColumn(col)
-                  )}
-                  openPopover={(cellId) => props.onChange(
-                    actions.openCellPopover(cellId)
-                  )}
-                  closePopover={() => props.onChange(
-                    actions.closeCellPopover()
-                  )}
+                  update={props.update}
+                  removeRow={(row) => {
+                    const newItem = cloneDeep(item)
+                    deleteRow(row, newItem, true)
+                    props.update('cells', newItem.cells)
+                  }}
+                  removeColumn={(col) => {
+                    const newItem = cloneDeep(item)
+                    deleteCol(row, newItem, true)
+                    props.update('cells', newItem.cells)
+                  }}
+                  openPopover={(cellId) => props.update('_popover', cellId)}
+                  closePopover={() =>rops.update('_popover', null) }
                 />
               </div>
           }
         ]
       }
     ]}
-  />
+  />)
+}
 
 implementPropTypes(GridEditor, ItemEditorTypes, {
   item: T.shape(GridItemTypes.propTypes).isRequired

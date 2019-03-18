@@ -10,6 +10,10 @@ import {GridFeedback} from '#/plugin/exo/items/grid/feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 import {utils} from '#/plugin/exo/items/grid/utils/utils'
 
+// scores
+import ScoreFixed from '#/plugin/exo/scores/fixed'
+import ScoreSum from '#/plugin/exo/scores/sum'
+
 import {GridItem as GridItemTypes} from '#/plugin/exo/items/grid/prop-types'
 
 function getCorrectedAnswer(item, answer = {data: []}) {
@@ -223,5 +227,14 @@ export default {
 
   create: (item) => {
     return Object.assign(item, GridItemTypes.defaultProps)
+  },
+
+  supportScores: (item) => {
+    const supportedScores = [
+      ScoreFixed,
+      ScoreSum
+    ]
+
+    return supportedScores
   }
 }
