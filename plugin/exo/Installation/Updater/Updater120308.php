@@ -6,6 +6,7 @@ use Claroline\InstallationBundle\Updater\Updater;
 use UJM\ExoBundle\Entity\ItemType\BooleanQuestion;
 use UJM\ExoBundle\Entity\ItemType\ChoiceQuestion;
 use UJM\ExoBundle\Entity\Misc\Choice;
+use UJM\ExoBundle\Library\Options\Direction;
 
 class Updater120308 extends Updater
 {
@@ -30,6 +31,7 @@ class Updater120308 extends Updater
             $choiceQ = new ChoiceQuestion();
             $choiceQ->setQuestion($boolQ->getQuestion());
             $choiceQ->setMultiple(false);
+            $choiceQ->setDirection(Direction::HORIZONTAL);
             $choices = $boolQ->getChoices()->toArray();
 
             foreach ($choices as $choice) {
