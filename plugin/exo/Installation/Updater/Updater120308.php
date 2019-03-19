@@ -42,8 +42,13 @@ class Updater120308 extends Updater
                 $om->persist($newChoice);
             }
 
-            $choiceQ->setQuestion($boolQ->getQuestion());
+            //$choiceQ->setQuestion($boolQ->getQuestion());
+            $item = $boolQ->getQuestion();
+            $item->setInteraction($choiceQ);
+            $item->setMimeType('application/x.choice+json');
             $om->persist($choiceQ);
+            $om->persist($item);
+
             $om->remove($boolQ);
 
             if (0 === $i % 100) {
