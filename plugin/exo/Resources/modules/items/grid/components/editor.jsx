@@ -636,16 +636,6 @@ export const GridEditor = (props) => {
             displayed: (data) => props.item.score.type === SCORE_SUM
           }, {
             type: 'number',
-            name: 'score.success',
-            label: trans('fixed_score_on_success', {}, 'quiz'),
-            displayed: (data) => props.item.score.type === SCORE_FIXED
-          }, {
-            type: 'number',
-            name: 'score.success',
-            label: trans('fixed_score_on_failure', {}, 'quiz'),
-            displayed: (data) => props.item.score.type === SCORE_FIXED
-          }, {
-            type: 'number',
             name: 'rows',
             label: trans('grid_table_rows', {}, 'quiz'),
             options: {
