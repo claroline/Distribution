@@ -81,6 +81,11 @@ class ChoiceQuestion extends AbstractItem
         return $this->choices;
     }
 
+    public function setChoices(ArrayCollection $choices)
+    {
+        $this->choices = $choices;
+    }
+
     /**
      * @param Choice $choice
      */
