@@ -7,11 +7,29 @@ import {makeId} from '#/main/core/scaffolding/id'
 import {keywords as keywordsUtils} from '#/plugin/exo/utils/keywords'
 import {utils} from '#/plugin/exo/items/cloze/utils/utils'
 import {trans, tex} from '#/main/app/intl/translation'
+import {select} from '#/plugin/exo/items/cloze/selectors'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 import {FormGroup} from '#/main/app/content/form/components/group'
 import {ClozeItem as ClozeItemTypes} from '#/plugin/exo/items/grid/prop-types'
 import {KeywordsPopover} from '#/plugin/exo/items/components/keywords.jsx'
 import {FormData} from '#/main/app/content/form/containers/data'
+
+function getHoleFromId(item, holeId) {
+  return item.holes.find(hole => hole.id === holeId)
+}
+
+function updateHoleChoices(hole, holeSolution) {
+  if (hole._multiple) {
+    hole.choices = holeSolution.answers.map(answer => answer.text)
+  } else {
+    delete hole.choices
+  }
+}
+
+function getSolutionFromHole(item, hole)
+{
+  return item.solutions.find(solution => solution.holeId === hole.id)
+}
 
 const HolePopover = props => {
   // Let's calculate the popover position
@@ -84,7 +102,7 @@ HolePopover.propTypes = {
   updateKeyword: T.func.isRequired
 }
 
-export class ClozeEditor extends Component {
+class MainField extends Component {
   constructor(props) {
     super(props)
     this.selection = null
@@ -99,18 +117,46 @@ export class ClozeEditor extends Component {
     this.fnTextUpdate = cb
   }
 
-  onHoleClick(el, item) {
+  onHoleClick(el) {
+    const newItem = cloneDeep(this.props.item)
+
     if (el.classList.contains('edit-hole-btn') || el.classList.contains('edit-hole-btn-icon')) {
-      const newItem = cloneDeep(item)
       const hole = getHoleFromId(newItem, el.dataset.holeId)
       hole._multiple = !!hole.choices
       newItem._popover = true
-      newItem._holeId = action.holeId
-
-      
+      newItem._holeId = el.dataset.holeId
     } else if (el.classList.contains('delete-hole-btn') || el.classList.contains('delete-hole-btn-icon')) {
-      this.props.onChange(actions.removeHole(el.dataset.holeId))
+      const holes = newItem.holes
+      const solutions = newItem.solutions
+
+      // Remove from holes list
+      holes.splice(holes.findIndex(hole => hole.id === this.props.item._holeId), 1)
+
+      // Remove from solutions
+      const solution = solutions.splice(solutions.findIndex(solution => solution.holeId === el.dataset.holeId), 1)
+
+      let bestAnswer
+      if (solution && 0 !== solution.length) {
+        // Retrieve the best answer
+        bestAnswer = select.getBestAnswer(solution[0].answers)
+      }
+
+      // Replace hole with the best answer text
+      const regex = new RegExp(`(\\[\\[${this.props.item._holeId}\\]\\])`, 'gi')
+      newItem.text = newItem.text.replace(regex, bestAnswer ? bestAnswer.text : '')
+      newItem._text = utils.setEditorHtml(newItem.text, newItem.holes, newItem.solutions)
+
+      if (newItem._holeId && newItem._holeId === this.props.item._holeId) {
+        newItem._popover = false
+      }
+
     }
+
+    this.props.update('holes', newItem.holes)
+    this.props.update('_popover', newItem._popover)
+    this.props.update('_holeId', newItem._holeId)
+    this.props.update('text', newItem.text)
+    this.props.update('_text', newItem._text)
   }
 
   changeEditorMode(editorState) {
@@ -154,6 +200,164 @@ export class ClozeEditor extends Component {
   }
 
   render() {
+    return (<fieldset className="cloze-field">
+      <FormGroup
+        id="cloze-text"
+        className="cloze-text"
+        label={trans('text')}
+        warnOnly={!this.props.validating}
+        error={get(this.props.item, '_errors.text')}
+      >
+        <Textarea
+          id="cloze-text"
+          value={this.props.item._text}
+          onChange={(value) => {
+            //TODO: optimize this
+            let item = Object.assign({}, this.props.item, {
+              text: utils.getTextWithPlacerHoldersFromHtml(value),
+              _text: value
+            })
+
+            const holesToRemove = []
+            // we need to check if every hole is mapped to a placeholder
+            // if there is not placeholder, then remove the hole
+            this.props.item.holes.forEach(hole => {
+              if (item.text.indexOf(`[[${hole.id}]]`) < 0) {
+                holesToRemove.push(hole.id)
+              }
+            })
+
+            if (holesToRemove) {
+              const holes = cloneDeep(this.props.item.holes)
+              const solutions = cloneDeep(this.props.item.solutions)
+              holesToRemove.forEach(toRemove => {
+                holes.splice(holes.findIndex(hole => hole.id === toRemove), 1)
+                solutions.splice(solutions.findIndex(solution => solution.holeId === toRemove), 1)
+              })
+              item = Object.assign({}, this.props.item, {holes, solutions})
+            }
+
+            this.props.update('text', item.text)
+            this.props.update('_text', item._text)
+            this.props.update('holes', item.holes)
+            this.props.update('solutions', item.solutions)
+          }}
+          onSelect={this.onSelect.bind(this)}
+          onClick={this.onHoleClick.bind(this)}
+          onChangeMode={this.changeEditorMode}
+        />
+      </FormGroup>
+
+      <button
+        type="button"
+        className="btn btn-block btn-default"
+        disabled={!this.state.allowCloze}
+        onClick={() => this.addHole(this.props.item)}
+      >
+        <span className="fa fa-fw fa-plus" />
+        {tex('create_cloze')}
+      </button>
+
+      {(this.props.item._popover && this.props.item._holeId) &&
+        <HolePopover
+          hole={this.props.item.holes.find(hole => hole.id === this.props.item._holeId)}
+          solution={this.props.item.solutions.find(solution => solution.holeId === this.props.item._holeId)}
+          close={() => this.props.update('_popover', false)}
+          remove={() => {
+            const newItem = cloneDeep(this.props.item)
+            const holes = newItem.holes
+            const solutions = newItem.solutions
+
+            // Remove from holes list
+            holes.splice(holes.findIndex(hole => hole.id === this.props.item._holeId), 1)
+
+            // Remove from solutions
+            const solution = solutions.splice(solutions.findIndex(solution => solution.holeId === this.props.item._holeId), 1)
+
+            let bestAnswer
+            if (solution && 0 !== solution.length) {
+              // Retrieve the best answer
+              bestAnswer = select.getBestAnswer(solution[0].answers)
+            }
+
+            // Replace hole with the best answer text
+            const regex = new RegExp(`(\\[\\[${this.props.item._holeId}\\]\\])`, 'gi')
+            newItem.text = newItem.text.replace(regex, bestAnswer ? bestAnswer.text : '')
+            newItem._text = utils.setEditorHtml(newItem.text, newItem.holes, newItem.solutions)
+
+            if (newItem._holeId && newItem._holeId === this.props.item._holeId) {
+              this.props.update('_popover', false)
+            }
+
+            this.props.update('text', newItem.text)
+            this.props.update('_text', newItem._text)
+            this.props.update('holes', newItem.holes)
+          }}
+          onChange={(property, value) => {
+            const newItem = cloneDeep(this.props.item)
+            const hole = getHoleFromId(newItem, newItem._holeId)
+
+            if (['size', '_multiple'].indexOf(property) > -1) {
+              hole[property] = value
+            } else {
+              throw `${property} is not a valid hole attribute`
+            }
+
+            updateHoleChoices(hole, getSolutionFromHole(newItem, hole))
+            this.props.update('holes', newItem.holes)
+          }}
+
+
+          addKeyword={() => {
+            const newItem = cloneDeep(this.props.item)
+            const hole = getHoleFromId(newItem, this.props.item._holeId)
+            console.log(hole)
+            const solution = getSolutionFromHole(newItem, hole)
+            console.log(solution)
+            const keyword = keywordsUtils.createNew()
+            keyword._deletable = solution.answers.length > 0
+
+            solution.answers.push(keyword)
+
+            updateHoleChoices(hole, solution)
+            this.props.update('holes', newItem.holes)
+          }}
+          removeKeyword={(keywordId) => {
+            const newItem = cloneDeep(this.props.item)
+            const hole = getHoleFromId(newItem, this.props.item._holeId)
+            const solution = getSolutionFromHole(newItem, hole)
+            const answers = solution.answers
+            answers.splice(answers.findIndex(answer => answer._id === keywordId), 1)
+
+            updateHoleChoices(hole, solution)
+
+            answers.forEach(keyword => keyword._deletable = answers.length > 1)
+            this.props.update('holes', newItem.holes)
+          }}
+          updateKeyword={(keywordId, property, newValue) => {
+            const newItem = cloneDeep(this.props.item)
+            const hole = getHoleFromId(newItem, this.props.item._holeId)
+            const solution = getSolutionFromHole(newItem, hole)
+            const answer = solution.answers.find(answer => answer._id === keywordId)
+
+            answer[property] = newValue
+
+            updateHoleChoices(hole, solution)
+
+            this.props.update('holes', newItem.holes)
+          }}
+          validating={this.props.validating}
+          _errors={get(this.props.item, '_errors.'+this.props.item._holeId)}
+        />
+      }
+    </fieldset>)
+  }
+}
+
+export class ClozeEditor extends Component {
+
+
+  render() {
     return (<FormData
       className="cloze-editor"
       embedded={true}
@@ -165,95 +369,8 @@ export class ClozeEditor extends Component {
           primary: true,
           fields: [
             {
-              label: trans('grid_score_mode_label', {}, 'quiz'),
-              name: 'score.type',
-              render: (item, errors) => {
-                return (<fieldset className="cloze-editor">
-                  <FormGroup
-                    id="cloze-text"
-                    className="cloze-text"
-                    label={trans('text')}
-                    warnOnly={!this.props.validating}
-                    error={get(item, '_errors.text')}
-                  >
-                    <Textarea
-                      id="cloze-text"
-                      value={item._text}
-                      onChange={(value) => {
-                        //TODO: optimize this
-                        item = Object.assign({}, item, {
-                          text: utils.getTextWithPlacerHoldersFromHtml(value),
-                          _text: value
-                        })
-
-                        const holesToRemove = []
-                        // we need to check if every hole is mapped to a placeholder
-                        // if there is not placeholder, then remove the hole
-                        item.holes.forEach(hole => {
-                          if (item.text.indexOf(`[[${hole.id}]]`) < 0) {
-                            holesToRemove.push(hole.id)
-                          }
-                        })
-
-                        if (holesToRemove) {
-                          const holes = cloneDeep(item.holes)
-                          const solutions = cloneDeep(item.solutions)
-                          holesToRemove.forEach(toRemove => {
-                            holes.splice(holes.findIndex(hole => hole.id === toRemove), 1)
-                            solutions.splice(solutions.findIndex(solution => solution.holeId === toRemove), 1)
-                          })
-                          item = Object.assign({}, item, {holes, solutions})
-                        }
-
-                        this.props.update('text', item.text)
-                        this.props.update('_text', item._text)
-                        this.props.update('holes', item.holes)
-                        this.props.update('solutions', item.solutions)
-                      }}
-                      onSelect={this.onSelect.bind(this)}
-                      onClick={this.onHoleClick.bind(this)}
-                      onChangeMode={this.changeEditorMode}
-                    />
-                  </FormGroup>
-
-                  <button
-                    type="button"
-                    className="btn btn-block btn-default"
-                    disabled={!this.state.allowCloze}
-                    onClick={() => this.addHole(item)}
-                  >
-                    <span className="fa fa-fw fa-plus" />
-                    {tex('create_cloze')}
-                  </button>
-
-                  {(this.props.item._popover && this.props.item._holeId) &&
-                    <HolePopover
-                      hole={this.props.item.holes.find(hole => hole.id === this.props.item._holeId)}
-                      solution={this.props.item.solutions.find(solution => solution.holeId === this.props.item._holeId)}
-                      close={() => this.props.onChange(
-                        actions.closePopover()
-                      )}
-                      remove={() => this.props.onChange(
-                        actions.removeHole(this.props.item._holeId)
-                      )}
-                      onChange={(property, value) => this.props.onChange(
-                        actions.updateHole(this.props.item._holeId, property, value)
-                      )}
-                      addKeyword={() => this.props.onChange(
-                        actions.addAnswer(this.props.item._holeId)
-                      )}
-                      removeKeyword={(keywordId) => this.props.onChange(
-                        actions.removeAnswer(this.props.item._holeId, keywordId)
-                      )}
-                      updateKeyword={(keywordId, property, newValue) => this.props.onChange(
-                        actions.updateAnswer(this.props.item._holeId, keywordId, property, newValue)
-                      )}
-                      validating={this.props.validating}
-                      _errors={get(this.props.item, '_errors.'+this.props.item._holeId)}
-                    />
-                  }
-                </fieldset>
-                )}
+              name: 'clozeText',
+              render: (item, errors) => <MainField {...this.props} item={item} errors={errors}/>
             }]
         }
       ]}
