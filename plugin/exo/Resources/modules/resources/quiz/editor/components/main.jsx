@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 import {Routes} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
@@ -84,7 +86,7 @@ class EditorMain extends Component {
         className="quiz-editor"
         validating={this.props.validating}
         pendingChanges={this.props.pendingChanges}
-        errors={this.props.errors}
+        errors={!isEmpty(this.props.errors)}
         save={{
           type: CALLBACK_BUTTON,
           callback: () => this.props.save(this.props.quizId)
@@ -112,7 +114,7 @@ class EditorMain extends Component {
                 render: () => (
                   <EditorParameters
                     formName={this.props.formName}
-                    numbering={this.props.numberingType}
+                    numberingType={this.props.numberingType}
                     workspace={this.props.workspace}
                     update={this.props.update}
                   />
@@ -128,10 +130,12 @@ class EditorMain extends Component {
                       <EditorStep
                         formName={this.props.formName}
                         path={`steps[${stepIndex}]`}
+                        numberingType={this.props.numberingType}
+
                         index={stepIndex}
-                        numbering={this.props.numberingType}
                         title={currentStep.title}
                         items={currentStep.items}
+                        errors={get(this.props.errors, `steps[${stepIndex}]`)}
                         actions={this.getStepActions(currentStep, stepIndex)}
                         update={(prop, value) => this.props.update(`steps[${stepIndex}].${prop}`, value)}
                       />
@@ -159,7 +163,7 @@ EditorMain.propTypes = {
   formName: T.string.isRequired,
   validating: T.bool.isRequired,
   pendingChanges: T.bool.isRequired,
-  errors: T.bool.isRequired,
+  errors: T.object,
 
   quizId: T.string.isRequired,
   workspace: T.object,
@@ -169,6 +173,7 @@ EditorMain.propTypes = {
   )),
 
   update: T.func.isRequired,
+  save: T.func.isRequired,
   addStep: T.func.isRequired,
   copyStep: T.func.isRequired,
   moveStep: T.func.isRequired,

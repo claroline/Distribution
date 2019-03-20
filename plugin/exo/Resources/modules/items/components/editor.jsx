@@ -9,18 +9,22 @@ import {Item as ItemTypes, ItemType as ItemTypeTypes} from '#/plugin/exo/items/p
 import {ItemType} from '#/plugin/exo/items/components/type'
 
 const ItemEditor = props => {
-  const supportedScores = props.definition.supportScores(props.item)
+  let supportedScores, currentScore, availableScores
+  if (props.definition.answerable) {
+    supportedScores = props.definition.supportScores(props.item)
 
-  const currentScore = supportedScores.find(score => score.name === get(props.item, 'score.type'))
-  const availableScores = supportedScores.reduce((scoreChoices, current) => Object.assign(scoreChoices, {
-    [current.name]: current.meta.label
-  }), {})
+    currentScore = supportedScores.find(score => score.name === get(props.item, 'score.type'))
+    availableScores = supportedScores.reduce((scoreChoices, current) => Object.assign(scoreChoices, {
+      [current.name]: current.meta.label
+    }), {})
+  }
 
   return (
     <FormData
+      className="quiz-item item-editor"
       embedded={props.embedded}
       name={props.formName}
-      meta={true}
+      meta={props.meta}
       dataPart={props.path}
       disabled={props.disabled}
       sections={[
@@ -33,15 +37,20 @@ const ItemEditor = props => {
               label: trans('type'),
               type: 'string',
               hideLabel: true,
-              render: () => <ItemType name={props.definition.name} size="lg" />
+              displayed: props.meta,
+              render: () => {
+                const CurrentType = <ItemType name={props.definition.name} size="lg" />
+
+                return CurrentType
+              }
             }, {
               name: 'content',
               label: trans('question', {}, 'quiz'),
               type: 'html',
-              required: true
+              required: true,
+              displayed: props.definition.answerable
             }
-          ],
-
+          ]
         }, {
           title: trans('custom'),
           primary: true,
@@ -136,6 +145,7 @@ const ItemEditor = props => {
 
 ItemEditor.propTypes = {
   embedded: T.bool,
+  meta: T.bool,
   formName: T.string.isRequired,
   path: T.string,
   disabled: T.bool,
@@ -159,6 +169,7 @@ ItemEditor.propTypes = {
 
 ItemEditor.defaultProps = {
   embedded: false,
+  meta: false,
   disabled: false
 }
 

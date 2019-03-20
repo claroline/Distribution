@@ -9,7 +9,6 @@ use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Claroline\CoreBundle\Event\Resource\PublicationChangeEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -206,25 +205,6 @@ class ExerciseListener
         $newExercise = $this->exerciseManager->copy($resource);
 
         $event->setCopy($newExercise);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("publication_change_ujm_exercise")
-     *
-     * @param PublicationChangeEvent $event
-     */
-    public function onPublicationChange(PublicationChangeEvent $event)
-    {
-        /** @var Exercise $exercise */
-        $exercise = $event->getResource();
-
-        if ($exercise->getResourceNode()->isPublished()) {
-            $this->exerciseManager->publish($exercise);
-        } else {
-            $this->exerciseManager->unpublish($exercise);
-        }
-
         $event->stopPropagation();
     }
 }

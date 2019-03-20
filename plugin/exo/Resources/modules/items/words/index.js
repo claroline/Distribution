@@ -1,11 +1,16 @@
 import {trans} from '#/main/app/intl/translation'
 
-import editor from './editor'
-import {WordsPaper} from './paper.jsx'
-import {WordsPlayer} from './player.jsx'
-import {WordsFeedback} from './feedback.jsx'
+import editor from '#/plugin/exo/items/words/editor'
+import {WordsPaper} from '#/plugin/exo/items/words/paper.jsx'
+import {WordsPlayer} from '#/plugin/exo/items/words/player.jsx'
+import {WordsFeedback} from '#/plugin/exo/items/words/feedback.jsx'
+import {WordsEditor} from '#/plugin/exo/items/words/components/editor'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {WordsItem as WordsItemTypes} from '#/plugin/exo/items/words/prop-types'
 import {utils} from './utils/utils'
+
+// scores
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answer = {data: ''}) {
   const corrected = new CorrectedAnswer()
@@ -79,5 +84,16 @@ export default {
   feedback: WordsFeedback,
   editor,
   getCorrectedAnswer,
-  generateStats
+  generateStats,
+  components: {
+    editor: WordsEditor
+  },
+
+  supportScores: () => [
+    ScoreSum
+  ],
+
+  create: item => {
+    return Object.assign(item, WordsItemTypes.defaultProps)
+  }
 }

@@ -1,11 +1,18 @@
+import merge from 'lodash/merge'
+import times from 'lodash/times'
+
 import {trans} from '#/main/app/intl/translation'
 
-import editor from './editor'
-import {SetPaper} from './paper.jsx'
-import {SetPlayer} from './player.jsx'
-import {SetFeedback} from './feedback.jsx'
+import {SetItem as SetItemType} from '#/plugin/exo/items/set/prop-types'
+import {SetEditor} from "#/plugin/exo/items/set/components/editor"
+// old
+import {SetPaper} from '#/plugin/exo/items/set/paper.jsx'
+import {SetPlayer} from '#/plugin/exo/items/set/player.jsx'
+import {SetFeedback} from '#/plugin/exo/items/set/feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
-import times from 'lodash/times'
+
+// scores
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
@@ -89,10 +96,20 @@ export default {
   tags: [trans('question', {}, 'quiz')],
   answerable: true,
 
+  components: {
+    editor: SetEditor
+  },
+
+  supportScores: () => [
+    ScoreSum
+  ],
+
+  create: (setItem) => merge({}, SetItemType.defaultProps, setItem),
+
+  // old
   paper: SetPaper,
   player: SetPlayer,
   feedback: SetFeedback,
-  editor,
   getCorrectedAnswer,
   generateStats
 }

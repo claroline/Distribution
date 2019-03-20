@@ -9,6 +9,7 @@ import {SelectionPlayer} from '#/plugin/exo/items/selection/components/player'
 import {SelectionPaper} from '#/plugin/exo/items/selection/components/paper'
 import {SelectionFeedback} from '#/plugin/exo/items/selection/components/feedback'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+
 // scores
 import ScoreFixed from '#/plugin/exo/scores/fixed'
 import ScoreSum from '#/plugin/exo/scores/sum'

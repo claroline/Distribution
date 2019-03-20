@@ -30,7 +30,7 @@ class Choice extends Component {
   render() {
     return (
       <li
-        className={classes('answer-item choice-item', {
+        className={classes('answer-item choice-answer-item', {
           'unexpected-answer' : !this.props.checked,
           'expected-answer' : this.props.checked
         })}
@@ -121,11 +121,12 @@ Choice.propTypes = {
 
 const Choices = props =>
   <Fragment>
-    <ul className="choice-items">
+    <ul className={classes('choice-answer-items', props.direction)}>
       {props.choices.map(choice =>
         <Choice
           key={choice.id}
           id={choice.id}
+          type={choice.type}
           data={choice.data}
           score={choice.score}
           feedback={choice.feedback}
@@ -151,6 +152,7 @@ const Choices = props =>
   </Fragment>
 
 Choices.propTypes = {
+  direction: T.oneOf(['horizontal', 'vertical']).isRequired,
   multiple: T.bool.isRequired,
   fixedScore: T.bool.isRequired,
 
@@ -207,11 +209,13 @@ const ChoiceEditor = props =>
             render: (choiceItem, choiceErrors) => {
               return (
                 <Choices
+                  direction={choiceItem.direction}
                   multiple={choiceItem.multiple}
                   fixedScore={-1 < [ScoreFixed.name, ScoreRules.name].indexOf(get(choiceItem, 'score.type'))}
 
                   choices={choiceItem.choices.map(choice => ({
                     id: choice.id,
+                    type: choice.type,
                     data: choice.data
                   }))}
 
