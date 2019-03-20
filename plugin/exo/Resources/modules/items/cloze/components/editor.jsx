@@ -305,22 +305,24 @@ class MainField extends Component {
 
             updateHoleChoices(hole, getSolutionFromHole(newItem, hole))
             this.props.update('holes', newItem.holes)
+            this.props.update('solutions', newItem.solutions)
           }}
 
 
           addKeyword={() => {
+            alert('add')
             const newItem = cloneDeep(this.props.item)
             const hole = getHoleFromId(newItem, this.props.item._holeId)
-            console.log(hole)
             const solution = getSolutionFromHole(newItem, hole)
-            console.log(solution)
             const keyword = keywordsUtils.createNew()
             keyword._deletable = solution.answers.length > 0
 
             solution.answers.push(keyword)
 
             updateHoleChoices(hole, solution)
+            console.log(newItem.holes)
             this.props.update('holes', newItem.holes)
+            this.props.update('solutions', newItem.solutions)
           }}
           removeKeyword={(keywordId) => {
             const newItem = cloneDeep(this.props.item)
@@ -332,7 +334,9 @@ class MainField extends Component {
             updateHoleChoices(hole, solution)
 
             answers.forEach(keyword => keyword._deletable = answers.length > 1)
+            console.log(newItem.holes)
             this.props.update('holes', newItem.holes)
+            this.props.update('solutions', newItem.solutions)
           }}
           updateKeyword={(keywordId, property, newValue) => {
             const newItem = cloneDeep(this.props.item)
@@ -341,10 +345,12 @@ class MainField extends Component {
             const answer = solution.answers.find(answer => answer._id === keywordId)
 
             answer[property] = newValue
-
+            console.log(hole)
+            console.log(solution)
             updateHoleChoices(hole, solution)
 
             this.props.update('holes', newItem.holes)
+            this.props.update('solutions', newItem.solutions)
           }}
           validating={this.props.validating}
           _errors={get(this.props.item, '_errors.'+this.props.item._holeId)}
