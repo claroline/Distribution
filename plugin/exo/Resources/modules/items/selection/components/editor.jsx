@@ -894,7 +894,7 @@ class SelectionEditor extends Component {
                         label=""
                       >
                         <Textarea
-                          id={selectionItem.id}
+                          id={`selection-text-${selectionItem.id}`}
                           onSelect={this.onSelect}
                           onChange={(text, offsets) => {
                             // we need to update the positions here because if we add text BEFORE our marks, then everything is screwed up
