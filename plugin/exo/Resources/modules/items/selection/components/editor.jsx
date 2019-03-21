@@ -63,8 +63,8 @@ const addSelection = (begin, end, item, saveCallback) => {
       saveCallback('selections', cleanItem.selections)
       saveCallback('text', cleanItem.text)
       saveCallback('_text', cleanItem._text)
-      saveCallback('_selectionPopover', cleanItem._selectionPopover)
       saveCallback('_selectionId', cleanItem._selectionId)
+      saveCallback('_selectionPopover', cleanItem._selectionPopover)
       break
     case constants.MODE_FIND:
       sum = utils.getRealOffsetFromBegin(newSolutions, begin)
@@ -94,8 +94,8 @@ const addSelection = (begin, end, item, saveCallback) => {
       saveCallback('tries', cleanItem.tries)
       saveCallback('text', cleanItem.text)
       saveCallback('_text', cleanItem._text)
-      saveCallback('_selectionPopover', cleanItem._selectionPopover)
       saveCallback('_selectionId', cleanItem._selectionId)
+      saveCallback('_selectionPopover', cleanItem._selectionPopover)
       break
     case constants.MODE_HIGHLIGHT:
       sum = utils.getRealOffsetFromBegin(newSelections, begin)
@@ -133,8 +133,8 @@ const addSelection = (begin, end, item, saveCallback) => {
       saveCallback('selections', cleanItem.selections)
       saveCallback('text', cleanItem.text)
       saveCallback('_text', cleanItem._text)
-      saveCallback('_selectionPopover', cleanItem._selectionPopover)
       saveCallback('_selectionId', cleanItem._selectionId)
+      saveCallback('_selectionPopover', cleanItem._selectionPopover)
       break
   }
 }
@@ -640,7 +640,7 @@ HighlightAnswer.propTypes = {
   })
 }
 
-class SelectionEditor extends Component {
+class SelectionText extends Component {
   constructor(props) {
     super(props)
     this.onSelect = this.onSelect.bind(this)
@@ -655,7 +655,6 @@ class SelectionEditor extends Component {
     }
     this.changeEditorMode = this.changeEditorMode.bind(this)
     this.isSelectionCreationAllowed = this.isSelectionCreationAllowed.bind(this)
-    this.onSelect = this.onSelect.bind(this)
     this.onSelectionClick = this.onSelectionClick.bind(this)
   }
 
@@ -718,234 +717,245 @@ class SelectionEditor extends Component {
   }
 
   render() {
-    return(
-      <FormData
-        className="selection-item selection-editor"
-        embedded={true}
-        name={this.props.formName}
-        dataPart={this.props.path}
-        sections={[
-          {
-            title: trans('general'),
-            primary: true,
-            fields: [
-              {
-                name: 'fixedScore',
-                label: trans('score_fixed', {}, 'quiz'),
-                type: 'boolean',
-                onChange: (checked) => this.props.update('score', Object.assign({}, this.props.item.score, {type: checked ? SCORE_FIXED : SCORE_SUM})),
-                linked: [
-                  {
-                    name: 'score.success',
-                    type: 'number',
-                    label: trans('score_fixed_success', {}, 'quiz'),
-                    required: SCORE_FIXED === this.props.item.score.type,
-                    options: {
-                      min: 0
-                    },
-                    displayed: (item) => SCORE_FIXED === item.score.type
-                  }, {
-                    name: 'score.failure',
-                    type: 'number',
-                    label: trans('score_fixed_failure', {}, 'quiz'),
-                    required: SCORE_FIXED === this.props.item.score.type,
-                    displayed: (item) => SCORE_FIXED === item.score.type
-                  }
-                ]
-              }, {
-                name: 'mode',
-                label: trans('mode'),
-                type: 'choice',
-                required: true,
-                hideLabel: true,
-                options: {
-                  choices: constants.MODE_CHOICES
-                },
-                onChange: (value) => {
-                  const newSolutions = this.props.item.solutions ? cloneDeep(this.props.item.solutions) : []
-                  const selections = []
+    return (
+      <div>
+        <FormGroup
+          id="selection-text-box"
+          label=""
+        >
+          <Textarea
+            id={`selection-text-${this.props.item.id}`}
+            onSelect={this.onSelect}
+            onChange={(text, offsets) => {
+              // we need to update the positions here because if we add text BEFORE our marks, then everything is screwed up
+              const newItem = Object.assign({}, this.props.item, {
+                text: utils.getTextFromDecorated(text),
+                _text: text
+              })
+              const positionItem = recomputePositions(newItem, offsets, this.props.item._text)
+              const cleanItem = utils.cleanItem(positionItem)
+              this.props.update('solutions', cleanItem.solutions ? cleanItem.solutions : [])
+              this.props.update('selections', cleanItem.selections ? cleanItem.selections : [])
+              this.props.update('text', cleanItem.text)
+              this.props.update('_text', cleanItem._text)
+            }}
+            onClick={this.onSelectionClick}
+            value={this.props.item._text}
+            updateText={this.updateText}
+            onChangeMode={this.changeEditorMode}
+          />
+        </FormGroup>
 
-                  switch (value) {
-                    case constants.MODE_SELECT:
-                      if (!this.props.item.selections) {
-                        this.props.item.solutions.forEach(s => selections.push({
-                          id: s.selectionId,
-                          begin: s.begin,
-                          end: s.end,
-                          _displayedBegin: s._displayedBegin,
-                          _displayedEnd: s._displayedEnd
-                        }))
+        <Button
+          id="add-selection-btn"
+          className="btn"
+          type={CALLBACK_BUTTON}
+          icon="fa fa-fw fa-plus"
+          label={trans('create_selection_zone', {}, 'quiz')}
+          disabled={!this.isSelectionCreationAllowed()}
+          callback={() => this.addSelection(this.props.item)}
+        />
 
-                        this.props.update('selections', selections)
-                      }
-                      //remove colors
-                      this.props.update('colors', [])
-                      break
-                    case constants.MODE_FIND:
-                      //add beging and end to solutions
-                      newSolutions.forEach(solution => {
-                        let selection = this.props.item.selections.find(s => s.id === solution.selectionId)
-
-                        if (selection) {
-                          solution.begin = selection.begin
-                          solution.end = selection.end
-                          solution._displayedBegin = selection._displayedBegin,
-                          solution._displayedEnd = selection._displayedEnd
-                          solution.score = solution.score || 0
-                        }
-                      })
-
-                      this.props.update('solutions', newSolutions)
-                      this.props.update('tries', newSolutions.filter(s => 0 < s.score).length)
-                      this.props.update('selections', [])
-                      this.props.update('colors', [])
-                      break
-                    case constants.MODE_HIGHLIGHT:
-                      if (!this.props.item.selections) {
-                        newSolutions.forEach(s => selections.push({
-                          id: s.selectionId,
-                          begin: s.begin,
-                          end: s.end,
-                          _displayedBegin: s._displayedBegin,
-                          _displayedEnd: s._displayedEnd
-                        }))
-
-                        this.props.update('selections', selections)
-                      }
-                      newSolutions.forEach(s => s.answers = [])
-
-                      this.props.update('solutions', newSolutions)
-                      this.props.update('colors', [{
-                        id: makeId(),
-                        _autoOpen: false,
-                        code: '#'+(Math.random()*0xFFFFFF<<0).toString(16)
-                      }])
-                      break
-                  }
-                },
-                linked: [
-                  {
-                    name: 'tries',
-                    type: 'number',
-                    label: trans('tries_number', {}, 'quiz'),
-                    options: {
-                      min: this.props.item.solutions ? this.props.item.solutions.filter(s => 0 < s.score).length : 1
-                    },
-                    displayed: (item) => constants.MODE_FIND === item.mode
-                  }, {
-                    name: 'penalty',
-                    type: 'number',
-                    label: trans('global_penalty', {}, 'quiz'),
-                    options: {
-                      min: 0
-                    },
-                    displayed: (item) => SCORE_SUM === item.score.type &&
-                      -1 < [constants.MODE_FIND, constants.MODE_HIGHLIGHT].indexOf(item.mode)
-                  }, {
-                    name: 'selectionColors',
-                    label: trans('selection_colors', {}, 'quiz'),
-                    hideLabel: true,
-                    displayed: (item) => constants.MODE_HIGHLIGHT === item.mode,
-                    render: (selectionItem, selectionErrors) => {
-                      return (
-                        <div>
-                          <div>{trans('possible_color_choices', {}, 'quiz')}</div>
-                          {selectionItem.colors && selectionItem.colors.map((color, index) =>
-                            <ColorElement
-                              key={'color' + index}
-                              item={selectionItem}
-                              index={index}
-                              color={color}
-                              update={this.props.update}
-                              autoOpen={color._autoOpen}
-                            />
-                          )}
-                          <Button
-                            id="add-color-btn"
-                            className="btn btn-default"
-                            type={CALLBACK_BUTTON}
-                            icon="fa fa-fw fa-plus"
-                            label={trans('add_color', {}, 'quiz')}
-                            callback={() => {
-                              const newColors = cloneDeep(selectionItem.colors)
-                              newColors.push({
-                                id: makeId(),
-                                code: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-                                _autoOpen: true
-                              })
-                              this.props.update('colors', newColors)
-                            }}
-                          />
-                        </div>
-                      )
-                    }
-                  }
-                ]
-              }, {
-                name: 'selections',
-                label: trans('selections', {}, 'quiz'),
-                hideLabel: true,
-                required: true,
-                render: (selectionItem, selectionErrors) => {
-                  return (
-                    <div>
-                      <FormGroup
-                        id="selection-text-box"
-                        label=""
-                      >
-                        <Textarea
-                          id={`selection-text-${selectionItem.id}`}
-                          onSelect={this.onSelect}
-                          onChange={(text, offsets) => {
-                            // we need to update the positions here because if we add text BEFORE our marks, then everything is screwed up
-                            const newItem = Object.assign({}, selectionItem, {
-                              text: utils.getTextFromDecorated(text),
-                              _text: text
-                            })
-                            const positionItem = recomputePositions(newItem, offsets, selectionItem._text)
-                            const cleanItem = utils.cleanItem(positionItem)
-                            this.props.update('solutions', cleanItem.solutions ? cleanItem.solutions : [])
-                            this.props.update('selections', cleanItem.selections ? cleanItem.selections : [])
-                            this.props.update('text', cleanItem.text)
-                            this.props.update('_text', cleanItem._text)
-                          }}
-                          onClick={this.onSelectionClick}
-                          value={selectionItem._text}
-                          updateText={this.updateText}
-                          onChangeMode={this.changeEditorMode}
-                        />
-                      </FormGroup>
-
-                      <Button
-                        id="add-selection-btn"
-                        className="btn"
-                        type={CALLBACK_BUTTON}
-                        icon="fa fa-fw fa-plus"
-                        label={trans('create_selection_zone', {}, 'quiz')}
-                        disabled={!this.isSelectionCreationAllowed()}
-                        callback={() => this.addSelection(selectionItem)}
-                      />
-
-                      {selectionItem._selectionPopover &&
-                        <SelectionForm
-                          item={selectionItem}
-                          update={this.props.update}
-                        />
-                      }
-                    </div>
-                  )
-                },
-                validate: (selectionItem) => {
-                  return undefined
-                }
-              }
-            ]
-          }
-        ]}
-      />
+        {this.props.item._selectionPopover &&
+          <SelectionForm
+            item={this.props.item}
+            update={this.props.update}
+          />
+        }
+      </div>
     )
   }
 }
+
+SelectionText.propTypes = {
+  item: T.shape(SelectionItemType.propTypes).isRequired,
+  update: T.func.isRequired
+}
+
+const SelectionEditor = (props) =>
+  <FormData
+    className="selection-item selection-editor"
+    embedded={true}
+    name={props.formName}
+    dataPart={props.path}
+    sections={[
+      {
+        title: trans('general'),
+        primary: true,
+        fields: [
+          {
+            name: 'fixedScore',
+            label: trans('score_fixed', {}, 'quiz'),
+            type: 'boolean',
+            onChange: (checked) => props.update('score', Object.assign({}, props.item.score, {type: checked ? SCORE_FIXED : SCORE_SUM})),
+            linked: [
+              {
+                name: 'score.success',
+                type: 'number',
+                label: trans('score_fixed_success', {}, 'quiz'),
+                required: SCORE_FIXED === props.item.score.type,
+                options: {
+                  min: 0
+                },
+                displayed: (item) => SCORE_FIXED === item.score.type
+              }, {
+                name: 'score.failure',
+                type: 'number',
+                label: trans('score_fixed_failure', {}, 'quiz'),
+                required: SCORE_FIXED === props.item.score.type,
+                displayed: (item) => SCORE_FIXED === item.score.type
+              }
+            ]
+          }, {
+            name: 'mode',
+            label: trans('mode'),
+            type: 'choice',
+            required: true,
+            hideLabel: true,
+            options: {
+              choices: constants.MODE_CHOICES
+            },
+            onChange: (value) => {
+              const newSolutions = props.item.solutions ? cloneDeep(props.item.solutions) : []
+              const selections = []
+
+              switch (value) {
+                case constants.MODE_SELECT:
+                  if (!props.item.selections) {
+                    props.item.solutions.forEach(s => selections.push({
+                      id: s.selectionId,
+                      begin: s.begin,
+                      end: s.end,
+                      _displayedBegin: s._displayedBegin,
+                      _displayedEnd: s._displayedEnd
+                    }))
+
+                    props.update('selections', selections)
+                  }
+                  //remove colors
+                  props.update('colors', [])
+                  break
+                case constants.MODE_FIND:
+                  //add beging and end to solutions
+                  newSolutions.forEach(solution => {
+                    let selection = props.item.selections.find(s => s.id === solution.selectionId)
+
+                    if (selection) {
+                      solution.begin = selection.begin
+                      solution.end = selection.end
+                      solution._displayedBegin = selection._displayedBegin,
+                      solution._displayedEnd = selection._displayedEnd
+                      solution.score = solution.score || 0
+                    }
+                  })
+
+                  props.update('solutions', newSolutions)
+                  props.update('tries', newSolutions.filter(s => 0 < s.score).length)
+                  props.update('selections', [])
+                  props.update('colors', [])
+                  break
+                case constants.MODE_HIGHLIGHT:
+                  if (!props.item.selections) {
+                    newSolutions.forEach(s => selections.push({
+                      id: s.selectionId,
+                      begin: s.begin,
+                      end: s.end,
+                      _displayedBegin: s._displayedBegin,
+                      _displayedEnd: s._displayedEnd
+                    }))
+
+                    props.update('selections', selections)
+                  }
+                  newSolutions.forEach(s => s.answers = [])
+
+                  props.update('solutions', newSolutions)
+                  props.update('colors', [{
+                    id: makeId(),
+                    _autoOpen: false,
+                    code: '#'+(Math.random()*0xFFFFFF<<0).toString(16)
+                  }])
+                  break
+              }
+            },
+            linked: [
+              {
+                name: 'tries',
+                type: 'number',
+                label: trans('tries_number', {}, 'quiz'),
+                options: {
+                  min: props.item.solutions ? props.item.solutions.filter(s => 0 < s.score).length : 1
+                },
+                displayed: (item) => constants.MODE_FIND === item.mode
+              }, {
+                name: 'penalty',
+                type: 'number',
+                label: trans('global_penalty', {}, 'quiz'),
+                options: {
+                  min: 0
+                },
+                displayed: (item) => SCORE_SUM === item.score.type &&
+                  -1 < [constants.MODE_FIND, constants.MODE_HIGHLIGHT].indexOf(item.mode)
+              }, {
+                name: 'selectionColors',
+                label: trans('selection_colors', {}, 'quiz'),
+                hideLabel: true,
+                displayed: (item) => constants.MODE_HIGHLIGHT === item.mode,
+                render: (selectionItem, selectionErrors) => {
+                  return (
+                    <div>
+                      <div>{trans('possible_color_choices', {}, 'quiz')}</div>
+                      {selectionItem.colors && selectionItem.colors.map((color, index) =>
+                        <ColorElement
+                          key={'color' + index}
+                          item={selectionItem}
+                          index={index}
+                          color={color}
+                          update={props.update}
+                          autoOpen={color._autoOpen}
+                        />
+                      )}
+                      <Button
+                        id="add-color-btn"
+                        className="btn btn-default"
+                        type={CALLBACK_BUTTON}
+                        icon="fa fa-fw fa-plus"
+                        label={trans('add_color', {}, 'quiz')}
+                        callback={() => {
+                          const newColors = cloneDeep(selectionItem.colors)
+                          newColors.push({
+                            id: makeId(),
+                            code: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
+                            _autoOpen: true
+                          })
+                          props.update('colors', newColors)
+                        }}
+                      />
+                    </div>
+                  )
+                }
+              }
+            ]
+          }, {
+            name: 'selections',
+            label: trans('selections', {}, 'quiz'),
+            hideLabel: true,
+            required: true,
+            render: (selectionItem, selectionErrors) => {
+              return (
+                <SelectionText
+                  item={selectionItem}
+                  update={props.update}
+                />
+              )
+            },
+            validate: (selectionItem) => {
+              return undefined
+            }
+          }
+        ]
+      }
+    ]}
+  />
 
 implementPropTypes(SelectionEditor, ItemEditorType, {
   item: T.shape(SelectionItemType.propTypes).isRequired
