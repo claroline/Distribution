@@ -2,12 +2,14 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import has from 'lodash/has'
+
 import {tex} from '#/main/app/intl/translation'
-import {Feedback} from './../components/feedback-btn.jsx'
-import {SolutionScore} from './../components/score.jsx'
-import {AnswerStats} from '../components/stats.jsx'
-import {PaperTabs} from './../components/paper-tabs.jsx'
-import {utils} from './utils/utils'
+
+import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {SolutionScore} from '#/plugin/exo/items/components/score'
+import {AnswerStats} from '#/plugin/exo/items/components/stats'
+import {PaperTabs} from '#/plugin/exo/items/components/paper-tabs'
+import {utils} from '#/plugin/exo/items/pair/utils/utils'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
 
 export const PairPaper = props => {
