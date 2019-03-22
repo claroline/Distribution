@@ -71,7 +71,7 @@ export const PairPaper = props => {
           <div className="col-md-5 items-col">
             <ul>
               {expectedAnswers.odd.map((o) =>
-                <li key={`your-answer-orphean-${o.id}`}>
+                <li key={`your-answer-orphean-${o.item.id}`}>
                   <div className={classes(
                     'item',
                     {'selected-answer': o.score}
@@ -113,11 +113,11 @@ export const PairPaper = props => {
           <div className="col-md-5 items-col">
             <ul>
               {expectedAnswers.odd.map((o) =>
-                <li key={`your-answer-orphean-${o.id}`}>
+                <li key={`your-answer-orphean-${o.item.id}`}>
                   <div className="item selected-answer">
                     <div className="item-data" dangerouslySetInnerHTML={{__html: o.item.data}} />
                     <AnswerStats stats={{
-                      value: props.stats.unpaired[o.item.id] ? props.stats.unpaired[o.item.id] : 0,
+                      value: props.stats.unpaired && props.stats.unpaired[o.item.id] ? props.stats.unpaired[o.item.id] : 0,
                       total: props.stats.total
                     }} />
                   </div>
