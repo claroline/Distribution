@@ -90,15 +90,17 @@ utils.generateAnswerPairItems = (items, rows, answer = []) => {
     const itemX = items.find(i => i.id === a[0])
     const itemY = items.find(i => i.id === a[1])
     // search first if one of the answer pair is in the pinned items
-    const pinnedRow = data.find(d => (-1 !== d[0] && d[0].id === a[0]) || (-1 !== d[1] && d[1].id === a[1]))
+    const row = data.find(d => (-1 !== d[0] && d[0].id === a[0]) || (-1 !== d[1] && d[1].id === a[1]))
 
-    if (pinnedRow) {
-      if (-1 === pinnedRow[0] && itemX) {
-        pinnedRow[0] = Object.assign({}, itemX, {removable: true})
-      } else if (-1 === pinnedRow[1] && itemY) {
-        pinnedRow[1] = Object.assign({}, itemY, {removable: true})
+    if (row) {
+      // if existing pair answer is associated to a pinned item, set the second pair value with the given answer
+      if (-1 === row[0] && itemX) {
+        row[0] = Object.assign({}, itemX, {removable: true})
+      } else if (-1 === row[1] && itemY) {
+        row[1] = Object.assign({}, itemY, {removable: true})
       }
     } else {
+      // initialize existing pair answer into the first empty pair answer found
       const emptyRow = data.find(d => -1 === d[0] && -1 === d[1])
 
       if (emptyRow) {
