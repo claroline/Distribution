@@ -131,8 +131,6 @@ class ConfigurationChecker implements CheckerInterface
 
             return [$error];
         }
-
-        return [];
     }
 
     public function getProcessedConfiguration()
