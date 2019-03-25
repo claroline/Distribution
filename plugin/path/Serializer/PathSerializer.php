@@ -194,7 +194,6 @@ class PathSerializer
      */
     private function deserializeSteps($stepsData, Path $path)
     {
-        $toRemove = [];
         $currentSteps = $path->getSteps();
 
         foreach ($stepsData as $stepIndex => $stepData) {
