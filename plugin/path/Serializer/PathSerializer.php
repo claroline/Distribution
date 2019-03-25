@@ -208,11 +208,10 @@ class PathSerializer
 
         foreach ($currentSteps as $currentStep) {
             if (!in_array($currentStep->getUuid(), $ids)) {
-                $this->om->remove($currentStep);
+                $currentStep->setPath(null);
+                $this->om->persist($currentStep);
             }
         }
-
-        $this->om->flush();
     }
 
     /**
