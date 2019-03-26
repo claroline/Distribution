@@ -13,6 +13,8 @@ namespace Claroline\AppBundle\API\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Utils\ArrayUtils;
+use Claroline\AppBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 trait SerializerTrait
 {
@@ -51,7 +53,7 @@ trait SerializerTrait
     /**
      * Search if the object whose id is $id exists in a collection.
      */
-    public function findByIdInCollection($object, $method, $id, $default = null)
+    public function findByIdInCollection($object, $method, $id, $search = false, $class = null)
     {
         foreach ($object->$method() as $el) {
             if ($el->getId() === $id || $el->getUuid() === $id) {
@@ -59,14 +61,35 @@ trait SerializerTrait
             }
         }
 
-        return $default;
+        if ($search) {
+            $found = $this->_om->getObject(['id' => $id], $class);
+            if ($found) {
+                return $found;
+            }
+        }
+
+        if ($default) {
+            return new $class();
+        }
+    }
+
+    /**
+     * @DI\InjectParams({
+     *      "om" = @DI\Inject("claroline.persistence.object_manager")
+     * })
+     *
+     * @param ObjectManager $om
+     */
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->_om = $om;
     }
 
     /**
      * alias method.
      */
-    public function fbiic($object, $method, $id, $default = null)
+    public function fbiic($object, $method, $id, $search = false, $class = null)
     {
-        return $this->findByIdInCollection($object, $method, $id, $default);
+        return $this->findByIdInCollection($object, $method, $id, $search, $class);
     }
 }

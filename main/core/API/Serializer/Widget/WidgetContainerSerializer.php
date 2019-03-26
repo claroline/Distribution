@@ -149,11 +149,11 @@ class WidgetContainerSerializer
             foreach ($data['contents'] as $index => $content) {
                 if ($content) {
                     /** @var WidgetInstance $widgetInstance */
-                    $widgetInstance = $this->fbiic($widgetContainer, 'getInstances', $content['id'], new WidgetInstance());
+                    $widgetInstance = $this->fbiic($widgetContainer, 'getInstances', $content['id'], true, WidgetInstance::class);
                     $this->widgetInstanceSerializer->deserialize($content, $widgetInstance, $options);
                     $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
                     $widgetInstanceConfig->setPosition($index);
-                    $widgetContainer->addInstance($widgetInstance);
+                    $widgetInstance->setContainer($widgetContainer);
 
                     // We either do this or cascade persist ¯\_(ツ)_/¯
                     $this->om->persist($widgetInstance);
