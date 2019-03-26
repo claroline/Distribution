@@ -204,7 +204,7 @@ class MainField extends Component {
   }
 
   render() {
-    if (undefined === this.state.text) {
+    if (this.props.item.text && undefined === this.state.text) {
       this.setState({text: utils.setEditorHtml(this.props.item.text, this.props.item.holes, this.props.item.solutions)})
     }
 
