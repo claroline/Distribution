@@ -50,9 +50,11 @@ const addSelection = (begin, end, item, _text, saveCallback) => {
       saveCallback('solutions', newSolutions)
       saveCallback('selections', newSelections)
       saveCallback('text', text)
-      saveCallback('_selectionId', id)
 
-      return utils.makeTextHtml(text, newSelections)
+      return {
+        selectionId: id,
+        text: utils.makeTextHtml(text, newSelections)
+      }
     case constants.MODE_FIND:
       sum = utils.getRealOffsetFromBegin(newSolutions, begin)
 
@@ -70,9 +72,11 @@ const addSelection = (begin, end, item, _text, saveCallback) => {
       saveCallback('solutions', newSolutions)
       saveCallback('tries', item.tries + 1)
       saveCallback('text', text)
-      saveCallback('_selectionId', id)
 
-      return utils.makeTextHtml(text, newSolutions)
+      return {
+        selectionId: id,
+        text: utils.makeTextHtml(text, newSolutions)
+      }
     case constants.MODE_HIGHLIGHT:
       sum = utils.getRealOffsetFromBegin(newSelections, begin)
 
@@ -98,9 +102,11 @@ const addSelection = (begin, end, item, _text, saveCallback) => {
       saveCallback('solutions', newSolutions)
       saveCallback('selections', newSelections)
       saveCallback('text', text)
-      saveCallback('_selectionId', id)
 
-      return utils.makeTextHtml(text, newSelections)
+      return {
+        selectionId: id,
+        text: utils.makeTextHtml(text, newSelections)
+      }
   }
 }
 
@@ -155,7 +161,9 @@ const removeSelection = (selectionId, item, _text, saveCallback) => {
       saveCallback('solutions', cleanItem.solutions)
       saveCallback('selections', cleanItem.selections)
 
-      return utils.makeTextHtml(item.text, newSelections)
+      return {
+        text: utils.makeTextHtml(item.text, newSelections)
+      }
     case constants.MODE_FIND:
       //this is only valid for the default 'visible' one
       newSolutions.splice(newSolutions.findIndex(s => s.selectionId === selectionId), 1)
@@ -168,7 +176,9 @@ const removeSelection = (selectionId, item, _text, saveCallback) => {
       saveCallback('solutions', cleanItem.solutions)
       saveCallback('tries', cleanItem.tries)
 
-      return utils.makeTextHtml(item.text, newSolutions)
+      return {
+        text: utils.makeTextHtml(item.text, newSolutions)
+      }
   }
 }
 
@@ -308,18 +318,18 @@ class SelectionForm extends Component {
 
   getSelection() {
     return this.props.item.selections ?
-      this.props.item.selections.find(selection => selection.id === this.props.item._selectionId) :
-      {id: this.props.item._selectionId}
+      this.props.item.selections.find(selection => selection.id === this.props.selectionId) :
+      {id: this.props.selectionId}
   }
 
   getSolution() {
-    return this.props.item.solutions.find(solution => solution.selectionId === this.props.item._selectionId)
+    return this.props.item.solutions.find(solution => solution.selectionId === this.props.selectionId)
   }
 
   render() {
     // Let's calculate the popover position
     // It will be positioned just under the edit button
-    const btnElement = document.querySelector(`.edit-selection-btn[data-selection-id="${this.props.item._selectionId}"]`)
+    const btnElement = document.querySelector(`.edit-selection-btn[data-selection-id="${this.props.selectionId}"]`)
 
     let left = btnElement ? btnElement.offsetLeft : 0
     let top  = btnElement ? btnElement.offsetTop : 0
@@ -353,17 +363,17 @@ class SelectionForm extends Component {
 
     return (
       <Popover
-        id={this.props.item._selectionId}
+        id={this.props.selectionId}
         positionLeft={left}
         positionTop={top}
         placement="bottom"
         title={
           <div>
-            {utils.getSelectionText(this.props.item)}
+            {utils.getSelectionText(this.props.item, this.props.selectionId)}
 
             <div className="popover-actions">
               <Button
-                id={`selection-${this.props.item._selectionId}-delete`}
+                id={`selection-${this.props.selectionId}-delete`}
                 className="btn-link"
                 type={CALLBACK_BUTTON}
                 icon="fa fa-fw fa-trash-o"
@@ -373,7 +383,7 @@ class SelectionForm extends Component {
               />
 
               <Button
-                id={`selection-${this.props.item._selectionId}-close`}
+                id={`selection-${this.props.selectionId}-close`}
                 className="btn-link"
                 type={CALLBACK_BUTTON}
                 icon="fa fa-fw fa-times"
@@ -399,6 +409,7 @@ class SelectionForm extends Component {
               key={key}
               answer={answer}
               item={this.props.item}
+              selectionId={this.props.selectionId}
               update={this.props.update}
             />
           )
@@ -413,7 +424,7 @@ class SelectionForm extends Component {
             disabled={this.getSolution().answers.length >= this.props.item.colors.length}
             callback={() => {
               const newSolutions = cloneDeep(this.props.item.solutions)
-              const solution = newSolutions.find(s => s.selectionId === this.props.item._selectionId)
+              const solution = newSolutions.find(s => s.selectionId === this.props.selectionId)
 
               if (solution) {
                 solution.answers.push({score: 0, colorId: this.props.item.colors[0].id, _answerId: makeId()})
@@ -426,9 +437,9 @@ class SelectionForm extends Component {
         {this.state.showFeedback &&
           <div className="feedback-container selection-form-row">
             <Textarea
-              id={`choice-${this.props.item._selectionId}-feedback`}
+              id={`choice-${this.props.selectionId}-feedback`}
               value={this.props.item.feedback}
-              onChange={(text) => updateAnswer('feedback', text, this.props.item._selectionId, this.props.item, this.props.update)}
+              onChange={(text) => updateAnswer('feedback', text, this.props.selectionId, this.props.item, this.props.update)}
             />
           </div>
         }
@@ -439,6 +450,7 @@ class SelectionForm extends Component {
 
 SelectionForm.propTypes = {
   item: T.shape(SelectionItemType.propTypes).isRequired,
+  selectionId: T.string.isRequired,
   update: T.func.isRequired,
   onClose: T.func.isRequired,
   onRemove: T.func.isRequired
@@ -561,7 +573,7 @@ class HighlightAnswer extends Component {
               className="fa fa-trash-o pointer checkbox"
               onClick={() => {
                 const newSolutions = cloneDeep(this.props.item.solutions)
-                const solution = newSolutions.find(s => s.selectionId === this.props.item._selectionId)
+                const solution = newSolutions.find(s => s.selectionId === this.props.selectionId)
 
                 if (solution) {
                   solution.answers.splice(solution.answers.findIndex(a => a._answerId === this.props.answer._answerId), 1)
@@ -587,6 +599,7 @@ class HighlightAnswer extends Component {
 
 HighlightAnswer.propTypes = {
   item: T.shape(SelectionItemType.propTypes).isRequired,
+  selectionId: T.string.isRequired,
   update: T.func.isRequired,
   answer: T.shape({
     colorId: T.string.isRequired,
@@ -609,6 +622,7 @@ class SelectionText extends Component {
       end: null,
       allowSelection: true,
       text: undefined,
+      selectionId: null,
       selectionPopover : false
     }
     this.changeEditorMode = this.changeEditorMode.bind(this)
@@ -636,18 +650,17 @@ class SelectionText extends Component {
   }
 
   addSelection(item) {
-    const newText = addSelection(this.state.trueStart, this.state.trueEnd, item, this.state.text, this.props.update)
-    this.setState({text: newText}, () => this.setState({selectionPopover: true}))
+    const data = addSelection(this.state.trueStart, this.state.trueEnd, item, this.state.text, this.props.update)
+    this.setState({text: data.text, selectionId: data.selectionId}, () => this.setState({selectionPopover: true}))
   }
 
   onSelectionClick(el) {
     if (el.classList.contains('edit-selection-btn')) {
-      this.setState({selectionPopover: true})
-      this.props.update('_selectionId', el.dataset.selectionId)
+      this.setState({selectionId: el.dataset.selectionId, selectionPopover: true})
     } else {
       if (el.classList.contains('delete-selection-btn')) {
-        const newText = removeSelection(el.dataset.selectionId, this.props.item, this.state.text, this.props.update)
-        this.setState({text: newText})
+        const data = removeSelection(el.dataset.selectionId, this.props.item, this.state.text, this.props.update)
+        this.setState({text: data.text})
       }
     }
   }
@@ -773,11 +786,12 @@ class SelectionText extends Component {
         {this.state.selectionPopover &&
           <SelectionForm
             item={this.props.item}
+            selectionId={this.state.selectionId}
             update={this.props.update}
             onClose={() => this.setState({selectionPopover: false})}
             onRemove={() => {
-              const newText = removeSelection(this.props.item._selectionId, this.props.item, this.state.text, this.props.update)
-              this.setState({text: newText, selectionPopover: false})
+              const data = removeSelection(this.state.selectionId, this.props.item, this.state.text, this.props.update)
+              this.setState({text: data.text, selectionPopover: false})
             }}
           />
         }

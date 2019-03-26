@@ -24,8 +24,7 @@ const SelectionItem = {
     globalScore: T.bool.isRequired,
     mode: T.string.isRequired,
     penalty: T.number.isRequired,
-    tries: T.number,
-    _selectionId: T.string
+    tries: T.number
   },
   defaultProps: {
     text: '',
