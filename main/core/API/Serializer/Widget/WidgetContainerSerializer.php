@@ -149,7 +149,12 @@ class WidgetContainerSerializer
             foreach ($data['contents'] as $index => $content) {
                 if ($content) {
                     /** @var WidgetInstance $widgetInstance */
-                    $widgetInstance = $this->findInCollection($widgetContainer, 'getInstances', $content['id'], WidgetInstance::class) ?? new WidgetInstance();
+                    $widgetInstance = $this->findInCollection(
+                      $widgetContainer,
+                      'getInstances',
+                       $content['id'],
+                       in_array(Options::NO_FETCH, $options) ? null : WidgetInstance::class
+                    ) ?? new WidgetInstance();
                     $this->widgetInstanceSerializer->deserialize($content, $widgetInstance, $options);
                     $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
                     $widgetInstanceConfig->setPosition($index);
