@@ -120,7 +120,7 @@ class MessageSerializer
             if (isset($data['meta']['creator'])) {
                 $message->setAuthor($data['meta']['creator']['name']);
                 //_om is set by the trait
-                $user = $this->_om->getObject($data['meta']['creator'], User::class);
+                $creator = $this->_om->getObject($data['meta']['creator'], User::class);
 
                 if ($creator) {
                     $message->setCreator($creator);
