@@ -25,8 +25,6 @@ const SelectionItem = {
     mode: T.string.isRequired,
     penalty: T.number.isRequired,
     tries: T.number,
-    _selectionPopover: T.bool,
-    _text: T.string,
     _selectionId: T.string
   },
   defaultProps: {
@@ -34,8 +32,6 @@ const SelectionItem = {
     mode: constants.MODE_SELECT,
     globalScore: false,
     solutions: [],
-    _selectionPopover: false,
-    _text: '',
     penalty: 0
   }
 }
