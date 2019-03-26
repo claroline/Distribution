@@ -53,7 +53,7 @@ trait SerializerTrait
     /**
      * Search if the object whose id is $id exists in a collection.
      */
-    public function findByIdInCollection($object, $method, $id, $search = false, $class = null)
+    public function findByIdInCollection($object, $method, $id, $class = null)
     {
         foreach ($object->$method() as $el) {
             if ($el->getId() === $id || $el->getUuid() === $id) {
@@ -61,15 +61,8 @@ trait SerializerTrait
             }
         }
 
-        if ($search) {
-            $found = $this->_om->getObject(['id' => $id], $class);
-            if ($found) {
-                return $found;
-            }
-        }
-
-        if ($default) {
-            return new $class();
+        if ($class) {
+            return $this->_om->getObject(['id' => $id], $class);
         }
     }
 
@@ -88,8 +81,8 @@ trait SerializerTrait
     /**
      * alias method.
      */
-    public function fbiic($object, $method, $id, $search = false, $class = null)
+    public function fbiic($object, $method, $id, $class = null)
     {
-        return $this->findByIdInCollection($object, $method, $id, $search, $class);
+        return $this->findByIdInCollection($object, $method, $id, $class);
     }
 }
