@@ -149,7 +149,7 @@ class WidgetContainerSerializer
             foreach ($data['contents'] as $index => $content) {
                 if ($content) {
                     /** @var WidgetInstance $widgetInstance */
-                    $widgetInstance = $this->fbiic($widgetContainer, 'getInstances', $content['id'], WidgetInstance::class) ?? new WidgetInstance();
+                    $widgetInstance = $this->findInCollection($widgetContainer, 'getInstances', $content['id'], WidgetInstance::class) ?? new WidgetInstance();
                     $this->widgetInstanceSerializer->deserialize($content, $widgetInstance, $options);
                     $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
                     $widgetInstanceConfig->setPosition($index);

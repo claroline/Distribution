@@ -211,7 +211,7 @@ class HomeTabSerializer
         if (isset($data['widgets'])) {
             foreach ($data['widgets'] as $position => $widgetContainerData) {
                 /** @var WidgetContainer $widgetContainer */
-                $widgetContainer = $this->fbiic($homeTab, 'getWidgetContainers', $widgetContainerData['id']) ?? new WidgetContainer();
+                $widgetContainer = $this->findInCollection($homeTab, 'getWidgetContainers', $widgetContainerData['id']) ?? new WidgetContainer();
                 $this->widgetContainerSerializer->deserialize($widgetContainerData, $widgetContainer, $options);
                 $widgetContainer->setHomeTab($homeTab);
                 $widgetContainerConfig = $widgetContainer->getWidgetContainerConfigs()[0];

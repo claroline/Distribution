@@ -51,22 +51,6 @@ trait SerializerTrait
     }
 
     /**
-     * Search if the object whose id is $id exists in a collection.
-     */
-    public function findByIdInCollection($object, $method, $id, $class = null)
-    {
-        foreach ($object->$method() as $el) {
-            if ($el->getId() === $id || $el->getUuid() === $id) {
-                return $el;
-            }
-        }
-
-        if ($class) {
-            return $this->_om->getObject(['id' => $id], $class);
-        }
-    }
-
-    /**
      * @DI\InjectParams({
      *      "om" = @DI\Inject("claroline.persistence.object_manager")
      * })
@@ -81,8 +65,16 @@ trait SerializerTrait
     /**
      * alias method.
      */
-    public function fbiic($object, $method, $id, $class = null)
+    public function findInCollection($object, $method, $id, $class = null)
     {
-        return $this->findByIdInCollection($object, $method, $id, $class);
+        foreach ($object->$method() as $el) {
+            if ($el->getId() === $id || $el->getUuid() === $id) {
+                return $el;
+            }
+        }
+
+        if ($class) {
+            return $this->_om->getObject(['id' => $id], $class);
+        }
     }
 }
