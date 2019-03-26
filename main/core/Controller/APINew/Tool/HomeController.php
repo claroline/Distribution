@@ -72,58 +72,6 @@ class HomeController extends AbstractApiController
     }
 
     /**
-     * @EXT\Route("/lock", name="apiv2_home_lock", options={"method_prefix"=false})
-     * @EXT\Method("PUT")
-     *
-     * @param Request $request
-     * @param string  $context
-     * @param string  $contextId
-     *
-     * @return JsonResponse
-     */
-    public function lockTabAction(Request $request)
-    {
-        // grab tabs data
-        $tabs = $this->decodeIdsString($request, HomeTab::class);
-
-        $this->om->startFlushSuite();
-
-        foreach ($tabs as $tab) {
-            $this->lockManager->lock(HomeTab::class, $tab->getUuid());
-        }
-
-        $this->om->endFlushSuite();
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @EXT\Route("/unlock", name="apiv2_home_unlock", options={"method_prefix"=false})
-     * @EXT\Method("PUT")
-     *
-     * @param Request $request
-     * @param string  $context
-     * @param string  $contextId
-     *
-     * @return JsonResponse
-     */
-    public function unlockTabAction(Request $request)
-    {
-        // grab tabs data
-        $tabs = $this->decodeIdsString($request, HomeTab::class);
-
-        $this->om->startFlushSuite();
-
-        foreach ($tabs as $tab) {
-            $this->lockManager->unlock(HomeTab::class, $tab->getUuid());
-        }
-
-        $this->om->endFlushSuite();
-
-        return new JsonResponse();
-    }
-
-    /**
      * @EXT\Route("/{context}/{contextId}", name="apiv2_home_update", options={"method_prefix"=false})
      * @EXT\Method("PUT")
      *
@@ -238,17 +186,23 @@ class HomeController extends AbstractApiController
             $installedContainers = array_merge($installedContainers, $this->finder->fetch(
               WidgetContainer::class, ['homeTab' => $installedTab->getUuid()]
           ));
+
+            $this->om->refresh($installedTab);
         }
 
         foreach ($installedContainers as $container) {
             if (!in_array($container->getUuid(), $containerIds)) {
                 $this->crud->delete($container);
+            } else {
+                $this->om->refresh($container);
             }
         }
 
         foreach ($installedInstances as $instance) {
             if (!in_array($instance->getUuid(), $instanceIds)) {
                 $this->crud->delete($instance);
+            } else {
+                $this->om->refresh($instance);
             }
         }
 
