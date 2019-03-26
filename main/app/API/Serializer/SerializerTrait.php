@@ -47,4 +47,26 @@ trait SerializerTrait
             $object->generateUuid() :
             $object->getUuid();
     }
+
+    /**
+     * Search if the object whose id is $id exists in a collection.
+     */
+    public function findByIdInCollection($object, $method, $id, $default = null)
+    {
+        foreach ($object->$method() as $el) {
+            if ($el->getId() === $id || $el->getUuid() === $id) {
+                return $el;
+            }
+        }
+
+        return $default;
+    }
+
+    /**
+     * alias method.
+     */
+    public function fbiic($object, $method, $id, $default = null)
+    {
+        return $this->findByIdInCollection($object, $method, $id, $default);
+    }
 }

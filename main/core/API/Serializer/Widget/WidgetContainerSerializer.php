@@ -3,9 +3,10 @@
 namespace Claroline\CoreBundle\API\Serializer\Widget;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Finder\Home\WidgetInstanceFinder;
+use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainerConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
@@ -19,36 +20,39 @@ class WidgetContainerSerializer
 {
     use SerializerTrait;
 
-    /** @var SerializerProvider */
-    private $serializer;
-
     /** @var ObjectManager */
     private $om;
 
     /** @var WidgetInstanceFinder */
     private $widgetInstanceFinder;
 
+    /** @var WidgetInstanceSerializer */
+    private $widgetInstanceSerializer;
+
     /**
      * WidgetContainerSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "serializer"           = @DI\Inject("claroline.api.serializer"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
-     *     "widgetInstanceFinder" = @DI\Inject("claroline.api.finder.widget_instance")
+     *     "om"                       = @DI\Inject("claroline.persistence.object_manager"),
+     *     "widgetInstanceFinder"     = @DI\Inject("claroline.api.finder.widget_instance"),
+     *     "widgetInstanceSerializer" = @DI\Inject("claroline.serializer.widget_instance"),
+     *     "publicFileSerializer"     = @DI\Inject("claroline.serializer.public_file")
      * })
      *
-     * @param ObjectManager        $om
-     * @param SerializerProvider   $serializer
-     * @param WidgetInstanceFinder $widgetInstanceFinder
+     * @param ObjectManager            $om
+     * @param WidgetInstanceSerializer $widgetInstanceSerializer
+     * @param WidgetInstanceFinder     $widgetInstanceFinder
      */
     public function __construct(
         ObjectManager $om,
-        SerializerProvider $serializer,
-        WidgetInstanceFinder $widgetInstanceFinder
+        WidgetInstanceFinder $widgetInstanceFinder,
+        WidgetInstanceSerializer $widgetInstanceSerializer,
+        PublicFileSerializer $publicFileSerializer
     ) {
         $this->om = $om;
         $this->widgetInstanceFinder = $widgetInstanceFinder;
-        $this->serializer = $serializer;
+        $this->widgetInstanceSerializer = $widgetInstanceSerializer;
+        $this->publicFileSerializer = $publicFileSerializer;
     }
 
     public function getClass()
@@ -71,7 +75,7 @@ class WidgetContainerSerializer
             $config = $widgetInstance->getWidgetInstanceConfigs()[0];
 
             if ($config) {
-                $contents[$config->getPosition()] = $this->serializer->serialize($widgetInstance, $options);
+                $contents[$config->getPosition()] = $this->widgetInstanceSerializer->serialize($widgetInstance, $options);
             }
         }
 
@@ -97,11 +101,11 @@ class WidgetContainerSerializer
 
         if ('image' === $widgetContainerConfig->getBackgroundType() && $widgetContainerConfig->getBackground()) {
             $file = $this->om
-              ->getRepository('Claroline\CoreBundle\Entity\File\PublicFile')
+              ->getRepository(PublicFile::class)
               ->findOneBy(['url' => $widgetContainerConfig->getBackground()]);
 
             if ($file) {
-                $display['background'] = $this->serializer->serialize($file);
+                $display['background'] = $this->publicFileSerializer->serialize($file);
             }
         } else {
             $display['background'] = $widgetContainerConfig->getBackground();
@@ -145,7 +149,8 @@ class WidgetContainerSerializer
             foreach ($data['contents'] as $index => $content) {
                 if ($content) {
                     /** @var WidgetInstance $widgetInstance */
-                    $widgetInstance = $this->serializer->deserialize(WidgetInstance::class, $content, $options);
+                    $widgetInstance = $this->fbiic($widgetContainer, 'getInstances', $content['id'], new WidgetInstance());
+                    $this->widgetInstanceSerializer->deserialize($content, $widgetInstance, $options);
                     $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
                     $widgetInstanceConfig->setPosition($index);
                     $widgetContainer->addInstance($widgetInstance);
