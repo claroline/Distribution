@@ -162,7 +162,7 @@ class ChoiceDefinition extends AbstractDefinition
             }
         }
 
-        return $choices;
+        return ['choices' => $choices];
     }
 
     /**

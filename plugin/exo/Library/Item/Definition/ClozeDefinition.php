@@ -201,7 +201,7 @@ class ClozeDefinition extends AbstractDefinition
             }
         }
 
-        return array_values($holes);
+        return ['holes' => $holes];
     }
 
     /**

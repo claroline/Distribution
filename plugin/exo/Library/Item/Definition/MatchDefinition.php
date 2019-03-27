@@ -190,7 +190,7 @@ class MatchDefinition extends AbstractDefinition
             }
         }
 
-        return $matches;
+        return ['matches' => $matches];
     }
 
     /**

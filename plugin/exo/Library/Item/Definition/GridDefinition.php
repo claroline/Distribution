@@ -425,7 +425,7 @@ class GridDefinition extends AbstractDefinition
             }
         }
 
-        return $cells;
+        return ['cells' => $cells];
     }
 
     /**

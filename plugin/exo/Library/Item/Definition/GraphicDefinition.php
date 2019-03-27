@@ -176,7 +176,7 @@ class GraphicDefinition extends AbstractDefinition
             }
         }
 
-        return $areas;
+        return ['areas' => $areas];
     }
 
     /**
