@@ -181,31 +181,21 @@ class ClozeDefinition extends AbstractDefinition
             foreach ($answerData as $holeAnswer) {
                 if (!empty($holeAnswer->answerText)) {
                     if (!isset($holes[$holeAnswer->holeId])) {
-                        $holes[$holeAnswer->holeId] = new \stdClass();
-                        $holes[$holeAnswer->holeId]->id = $holeAnswer->holeId;
-                        $holes[$holeAnswer->holeId]->answered = 0;
-
-                        // Answers counters for each keyword of the hole
-                        $holes[$holeAnswer->holeId]->keywords = [];
+                        $holes[$holeAnswer->holeId] = [];
                     }
 
-                    // Increment the hole answers count
-                    ++$holes[$holeAnswer->holeId]->answered;
+                    $keyword = isset($holesMap[$holeAnswer->holeId]) ?
+                        $holesMap[$holeAnswer->holeId]->getKeyword($holeAnswer->answerText) :
+                        null;
 
-                    $keyword = isset($holesMap[$holeAnswer->holeId]) ? $holesMap[$holeAnswer->holeId]->getKeyword($holeAnswer->answerText) : null;
                     if ($keyword) {
-                        if (!isset($holes[$holeAnswer->holeId]->keywords[$keyword->getId()])) {
-                            // Initialize the Hole keyword counter if it's the first time we find it
-                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()] = new \stdClass();
-                            // caseSensitive & text is the primary key for api transfers
-                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->caseSensitive = $keyword->isCaseSensitive();
-                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->text = $keyword->getText();
-                            $holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count = 0;
-                        }
-
-                        ++$holes[$holeAnswer->holeId]->keywords[$keyword->getId()]->count;
-
-                        break;
+                        $holes[$holeAnswer->holeId][$keyword->getText()] = isset($holes[$holeAnswer->holeId][$keyword->getText()]) ?
+                            $holes[$holeAnswer->holeId][$keyword->getText()] + 1 :
+                            1;
+                    } else {
+                        $holes[$holeAnswer->holeId]['_others'] = isset($holes[$holeAnswer->holeId]['_others']) ?
+                            $holes[$holeAnswer->holeId]['_others'] + 1 :
+                            1;
                     }
                 }
             }

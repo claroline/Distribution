@@ -176,7 +176,7 @@ class GraphicDefinition extends AbstractDefinition
             }
         }
 
-        return array_values($areas);
+        return $areas;
     }
 
     /**
