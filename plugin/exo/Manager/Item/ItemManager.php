@@ -308,15 +308,16 @@ class ItemManager
      *
      * @param Item     $question
      * @param Exercise $exercise
+     * @param bool     $finishedPapersOnly
      *
      * @return \stdClass
      */
-    public function getStatistics(Item $question, Exercise $exercise = null)
+    public function getStatistics(Item $question, Exercise $exercise = null, $finishedPapersOnly = false)
     {
         $questionStats = new \stdClass();
 
         // We load all the answers for the question (we need to get the entities as the response in DB are not processable as is)
-        $answers = $this->answerRepository->findByQuestion($question, $exercise);
+        $answers = $this->answerRepository->findByQuestion($question, $exercise, $finishedPapersOnly);
 
         // Number of Users that have seen the question
         $questionStats->seen = count($answers);
