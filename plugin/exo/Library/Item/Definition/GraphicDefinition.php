@@ -151,9 +151,32 @@ class GraphicDefinition extends AbstractDefinition
 
     public function getStatistics(AbstractItem $graphicQuestion, array $answers)
     {
-        // TODO : implement
+        $areas = [];
 
-        return [];
+        foreach ($answers as $answerData) {
+            $areasToInc = [];
+
+            foreach ($answerData as $areaAnswer) {
+                if (isset($areaAnswer->x) && isset($areaAnswer->y)) {
+                    $isInArea = false;
+
+                    foreach ($graphicQuestion->getAreas() as $area) {
+                        if ($this->isPointInArea($area, $areaAnswer->x, $areaAnswer->y)) {
+                            $areasToInc[$area->getUuid()] = true;
+                            $isInArea = true;
+                        }
+                    }
+                    if (!$isInArea) {
+                        $areas['_others'] = isset($areas['_others']) ? $areas['_others'] + 1 : 1;
+                    }
+                }
+            }
+            foreach (array_keys($areasToInc) as $areaId) {
+                $areas[$areaId] = isset($areas[$areaId]) ? $areas[$areaId] + 1 : 1;
+            }
+        }
+
+        return array_values($areas);
     }
 
     /**
