@@ -173,11 +173,24 @@ class MatchDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $matchQuestion, array $answersData)
+    public function getStatistics(AbstractItem $matchQuestion, array $answers)
     {
-        // TODO: Implement getStatistics() method.
+        $matches = [];
 
-        return [];
+        foreach ($answers as $answerData) {
+            foreach ($answerData as $matchAnswer) {
+                if (!empty($matchAnswer->firstId) && !empty($matchAnswer->secondId)) {
+                    if (!isset($matches[$matchAnswer->firstId])) {
+                        $matches[$matchAnswer->firstId] = [];
+                    }
+                    $matches[$matchAnswer->firstId][$matchAnswer->secondId] = isset($matches[$matchAnswer->firstId][$matchAnswer->secondId]) ?
+                        $matches[$matchAnswer->firstId][$matchAnswer->secondId] + 1 :
+                        1;
+                }
+            }
+        }
+
+        return $matches;
     }
 
     /**
