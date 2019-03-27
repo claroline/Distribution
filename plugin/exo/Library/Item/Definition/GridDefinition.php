@@ -390,11 +390,59 @@ class GridDefinition extends AbstractDefinition
         return $expected;
     }
 
-    public function getStatistics(AbstractItem $pairQuestion, array $answers)
+    public function getStatistics(AbstractItem $gridQuestion, array $answers)
     {
-        // TODO: Implement getStatistics() method.
+        // Create an array with cellId => cellObject for easy search
+        $cellsMap = [];
+        /** @var Cell $cell */
+        foreach ($gridQuestion->getCells() as $cell) {
+            $cellsMap[$cell->getUuid()] = $cell;
+        }
 
-        return [];
+        $cells = [];
+
+        foreach ($answers as $answerData) {
+            foreach ($answerData as $cellAnswer) {
+                if (!empty($cellAnswer->text)) {
+                    if (!isset($cells[$cellAnswer->cellId])) {
+                        $cells[$cellAnswer->cellId] = new \stdClass();
+                        $cells[$cellAnswer->cellId]->id = $cellAnswer->cellId;
+                        $cells[$cellAnswer->cellId]->answered = 0;
+
+                        // Answers counters for each choices of the cell
+                        $cells[$cellAnswer->holeId]->choices = [];
+                    }
+
+                    // Increment the cell answers count
+                    ++$cells[$cellAnswer->cellId]->answered;
+
+                    $choice = isset($cellsMap[$cellAnswer->cellId]) ?
+                      $cellsMap[$cellAnswer->cellId]->getChoice($cellAnswer->text) :
+                      null;
+
+                    if ($choice) {
+                        if (!isset($cells[$cellAnswer->cellId]->choices[$choice->getUuid()])) {
+                            // Initialize the Cell choice counter if it's the first time we find it
+                            $cells[$cellAnswer->cellId]->choices[$choice->getUuid()] = new \stdClass();
+                            // caseSensitive & text is the primary key for api transfers
+                            $cells[$cellAnswer->cellId]->choices[$choice->getUuid()]->caseSensitive = $choice->isCaseSensitive();
+                            $cells[$cellAnswer->cellId]->choices[$choice->getUuid()]->text = $choice->getText();
+                            $cells[$cellAnswer->cellId]->choices[$choice->getUuid()]->count = 0;
+                        }
+
+                        ++$cells[$cellAnswer->cellId]->choices[$choice->getUuid()]->count;
+
+                        break;
+                    } else {
+                        $cells[$cellAnswer->holeId]->choices['_others'] = isset($cells[$cellAnswer->holeId]->choices['_others']) ?
+                            $cells[$cellAnswer->holeId]->choices['_others'] + 1 :
+                            1;
+                    }
+                }
+            }
+        }
+
+        return array_values($cells);
     }
 
     /**
