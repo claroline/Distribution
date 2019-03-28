@@ -19,6 +19,10 @@ actions.fetchUserStepsProgression = (resourceId, userId) => ({
   }
 })
 
+actions.resetUserStepsProgression = () => (dispatch) => {
+  dispatch(actions.loadUserStepsProgression({}))
+}
+
 export {
   actions,
   USER_STEPS_PROGRESSION_LOAD

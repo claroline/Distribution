@@ -2,11 +2,12 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {MODAL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {selectors} from '#/plugin/path/resources/path/dashboard/store'
 import {Path as PathType} from '#/plugin/path/resources/path/prop-types'
+import {MODAL_USER_PROGRESSION} from '#/plugin/path/resources/path/modals/user-progression'
 
 const DashboardMain = (props) =>
   <ListData
@@ -16,11 +17,11 @@ const DashboardMain = (props) =>
       autoload: true
     }}
     primaryAction={(row) => ({
-      type: CALLBACK_BUTTON,
-      callback: () => {
-        props.fetchUserStepsProgression(props.path.id, row.user.id)
-        props.showStepsProgressionModal(row, props.path.steps)
-      }
+      type: MODAL_BUTTON,
+      modal: [MODAL_USER_PROGRESSION, {
+        evaluation: row,
+        path: props.path
+      }]
     })}
     definition={[
       {
@@ -45,9 +46,7 @@ const DashboardMain = (props) =>
   />
 
 DashboardMain.propTypes = {
-  path: T.shape(PathType.propTypes).isRequired,
-  fetchUserStepsProgression: T.func.isRequired,
-  showStepsProgressionModal: T.func.isRequired
+  path: T.shape(PathType.propTypes).isRequired
 }
 
 export {

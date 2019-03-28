@@ -9,7 +9,10 @@ import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {UserEvaluation as UserEvaluationType} from '#/main/core/resource/prop-types'
 
 import {constants} from '#/plugin/path/resources/path/constants'
-import {Step as StepType} from '#/plugin/path/resources/path/prop-types'
+import {
+  Path as PathType,
+  Step as StepType
+} from '#/plugin/path/resources/path/prop-types'
 
 const ProgressionStep = props =>
   <li>
@@ -37,13 +40,19 @@ ProgressionStep.propTypes = {
 
 const UserProgressionModal = props =>
   <Modal
-    {...omit(props, 'evaluation', 'steps', 'stepsProgression')}
+    {...omit(props, 'evaluation', 'path', 'stepsProgression', 'fetchUserStepsProgression', 'resetUserStepsProgression')}
     icon="fa fa-fw fa-line-chart"
     title={props.evaluation.userName}
+    onEntering={() => {
+      props.fetchUserStepsProgression(props.path.id, props.evaluation.user.id)
+    }}
+    onExiting={() => {
+      props.resetUserStepsProgression()
+    }}
   >
     <div className="modal-body">
       <ul className="summary-overview">
-        {props.steps.map(step =>
+        {props.path.steps.map(step =>
           <ProgressionStep key={step.id} step={step} stepsProgression={props.stepsProgression} />
         )}
       </ul>
@@ -52,8 +61,10 @@ const UserProgressionModal = props =>
 
 UserProgressionModal.propTypes = {
   evaluation: T.shape(UserEvaluationType.propTypes).isRequired,
-  steps: T.arrayOf(T.shape(StepType.propTypes)).isRequired,
-  stepsProgression: T.object
+  path: T.shape(PathType.propTypes).isRequired,
+  stepsProgression: T.object,
+  fetchUserStepsProgression: T.func.isRequired,
+  resetUserStepsProgression: T.func.isRequired
 }
 
 export {
