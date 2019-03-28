@@ -13,9 +13,9 @@ namespace Claroline\CoreBundle\Controller\APINew\Tool;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Controller\AbstractApiController;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\Widget\HomeTabSerializer;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
@@ -34,7 +34,7 @@ class HomeController extends AbstractApiController
     private $finder;
     /** @var Crud */
     private $crud;
-    /** @var SerializerProvider */
+    /** @var HomeTabSerializer */
     private $serializer;
     /** @var ObjectManager */
     private $om;
@@ -48,20 +48,20 @@ class HomeController extends AbstractApiController
      *     "finder"      = @DI\Inject("claroline.api.finder"),
      *     "lockManager" = @DI\Inject("claroline.manager.lock_manager"),
      *     "crud"        = @DI\Inject("claroline.api.crud"),
-     *     "serializer"  = @DI\Inject("claroline.api.serializer"),
+     *     "serializer"  = @DI\Inject("claroline.serializer.home_tab"),
      *     "om"          = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
-     * @param FinderProvider     $finder
-     * @param Crud               $crud
-     * @param SerializerProvider $serializer
-     * @param ObjectManager      $om
+     * @param FinderProvider    $finder
+     * @param Crud              $crud
+     * @param HomeTabSerializer $serializer
+     * @param ObjectManager     $om
      */
     public function __construct(
         FinderProvider $finder,
         Crud $crud,
         LockManager $lockManager,
-        SerializerProvider $serializer,
+        HomeTabSerializer $serializer,
         ObjectManager $om
     ) {
         $this->finder = $finder;
