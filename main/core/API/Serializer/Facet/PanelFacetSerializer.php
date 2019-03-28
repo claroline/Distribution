@@ -4,7 +4,6 @@ namespace Claroline\CoreBundle\API\Serializer\Facet;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Facet\PanelFacet;
@@ -19,16 +18,11 @@ class PanelFacetSerializer
 {
     use SerializerTrait;
 
-    /** @var SerializerProvider */
-    private $serializer;
-
     /**
      * @DI\InjectParams({
      *     "roleSerializer" = @DI\Inject("claroline.serializer.role"),
      *     "ffSerializer"   = @DI\Inject("claroline.serializer.field_facet")
      * })
-     *
-     * @param SerializerProvider $serializer
      */
     public function __construct(RoleSerializer $roleSerializer, FieldFacetSerializer $ffSerializer)
     {
