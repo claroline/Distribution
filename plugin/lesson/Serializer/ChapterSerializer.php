@@ -45,7 +45,7 @@ class ChapterSerializer
      */
     public function getClass()
     {
-        return 'Icap\LessonBundle\Entity\Chapter';
+        return Chapter::class;
     }
 
     /**
