@@ -213,8 +213,7 @@ class ExerciseController extends AbstractController
             }
         }
 
-
-        return new JsonResponse();
+        return new JsonResponse($statistics);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)

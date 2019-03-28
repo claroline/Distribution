@@ -35,7 +35,7 @@ const QuizResource = DragNDropContext(
             dispatch(playerActions.setTestMode(testMode))
           },
           statistics() {
-            dispatch(statisticsActions.displayStatistics())
+            dispatch(statisticsActions.fetchStatistics())
           },
           correction(questionId = null) {
             if (!questionId) {
