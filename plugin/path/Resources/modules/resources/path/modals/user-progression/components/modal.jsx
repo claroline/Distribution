@@ -1,17 +1,14 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 
 import {UserEvaluation as UserEvaluationType} from '#/main/core/resource/prop-types'
 
 import {constants} from '#/plugin/path/resources/path/constants'
-import {selectors as dashboardSelectors} from '#/plugin/path/resources/path/dashboard/store'
 import {Step as StepType} from '#/plugin/path/resources/path/prop-types'
 
 const ProgressionStep = props =>
@@ -38,7 +35,7 @@ ProgressionStep.propTypes = {
   stepsProgression: T.object
 }
 
-const UserProgressionModalComponent = props =>
+const UserProgressionModal = props =>
   <Modal
     {...omit(props, 'evaluation', 'steps', 'stepsProgression')}
     icon="fa fa-fw fa-line-chart"
@@ -51,28 +48,13 @@ const UserProgressionModalComponent = props =>
         )}
       </ul>
     </div>
-
-    <Button
-      className="modal-btn btn btn-primary"
-      type={CALLBACK_BUTTON}
-      primary={false}
-      label={trans('close', {}, 'actions')}
-      callback={() => props.fadeModal()}
-    />
   </Modal>
 
-UserProgressionModalComponent.propTypes = {
+UserProgressionModal.propTypes = {
   evaluation: T.shape(UserEvaluationType.propTypes).isRequired,
   steps: T.arrayOf(T.shape(StepType.propTypes)).isRequired,
-  stepsProgression: T.object,
-  fadeModal: T.func.isRequired
+  stepsProgression: T.object
 }
-
-const UserProgressionModal = connect(
-  (state) => ({
-    stepsProgression: dashboardSelectors.stepsProgression(state)
-  })
-)(UserProgressionModalComponent)
 
 export {
   UserProgressionModal

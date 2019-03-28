@@ -4,7 +4,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {selectors as pathSelectors} from '#/plugin/path/resources/path/store'
 import {actions} from '#/plugin/path/resources/path/dashboard/store'
-import {MODAL_USER_PROGRESSION} from '#/plugin/path/resources/path/modals/user-progression'
+import {MODAL_PATH_USER_PROGRESSION} from '#/plugin/path/resources/path/modals/user-progression'
 import {DashboardMain as DashboardMainComponent} from '#/plugin/path/resources/path/dashboard/components/main'
 
 const DashboardMain = connect(
@@ -17,7 +17,7 @@ const DashboardMain = connect(
     },
     showStepsProgressionModal(evaluation, steps) {
       dispatch(
-        modalActions.showModal(MODAL_USER_PROGRESSION, {
+        modalActions.showModal(MODAL_PATH_USER_PROGRESSION, {
           evaluation: evaluation,
           steps: steps
         })
