@@ -152,7 +152,7 @@ class ChoiceDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $choiceQuestion, array $answersData)
+    public function getStatistics(AbstractItem $choiceQuestion, array $answersData, $total)
     {
         $choices = [];
 
@@ -162,7 +162,11 @@ class ChoiceDefinition extends AbstractDefinition
             }
         }
 
-        return ['choices' => $choices];
+        return [
+            'choices' => $choices,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
+        ];
     }
 
     /**

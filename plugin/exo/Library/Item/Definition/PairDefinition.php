@@ -180,7 +180,7 @@ class PairDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $pairQuestion, array $answers)
+    public function getStatistics(AbstractItem $pairQuestion, array $answersData, $total)
     {
         $paired = [];
         $unpaired = [];
@@ -224,7 +224,7 @@ class PairDefinition extends AbstractDefinition
                 }
             }
         }
-        foreach ($answers as $answerData) {
+        foreach ($answersData as $answerData) {
             $unusedTemp = array_merge($unusedItems);
 
             foreach ($answerData as $pair) {
@@ -248,6 +248,8 @@ class PairDefinition extends AbstractDefinition
         return [
             'paired' => $paired,
             'unpaired' => $unpaired,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
         ];
     }
 

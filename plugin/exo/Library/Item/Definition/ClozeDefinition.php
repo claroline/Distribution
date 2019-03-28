@@ -166,20 +166,27 @@ class ClozeDefinition extends AbstractDefinition
      *
      * @return array
      */
-    public function getStatistics(AbstractItem $clozeQuestion, array $answersData)
+    public function getStatistics(AbstractItem $clozeQuestion, array $answersData, $total)
     {
+        $holes = [];
+        $answered = [];
+        $nbUnanswered = $total - count($answersData);
+
         // Create an array with holeId => holeObject for easy search
         $holesMap = [];
         /** @var Hole $hole */
         foreach ($clozeQuestion->getHoles() as $hole) {
             $holesMap[$hole->getUuid()] = $hole;
+            $answered[$hole->getUuid()] = 0;
         }
-
-        $holes = [];
 
         foreach ($answersData as $answerData) {
             foreach ($answerData as $holeAnswer) {
                 if (!empty($holeAnswer->answerText)) {
+                    $answered[$holeAnswer->holeId] = isset($answered[$holeAnswer->holeId]) ?
+                        $answered[$holeAnswer->holeId] + 1 :
+                        1;
+
                     if (!isset($holes[$holeAnswer->holeId])) {
                         $holes[$holeAnswer->holeId] = [];
                     }
@@ -200,8 +207,22 @@ class ClozeDefinition extends AbstractDefinition
                 }
             }
         }
+        foreach ($clozeQuestion->getHoles() as $hole) {
+            $holeId = $hole->getUuid();
 
-        return ['holes' => $holes];
+            if (0 < count($answersData) - $answered[$holeId]) {
+                if (!isset($holes[$holeId])) {
+                    $holes[$holeId] = [];
+                }
+                $holes[$holeId]['_unanswered'] = count($answersData) - $answered[$holeId];
+            }
+        }
+
+        return [
+            'holes' => $holes,
+            'total' => $total,
+            'unanswered' => $nbUnanswered,
+        ];
     }
 
     /**

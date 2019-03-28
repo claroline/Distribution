@@ -390,20 +390,27 @@ class GridDefinition extends AbstractDefinition
         return $expected;
     }
 
-    public function getStatistics(AbstractItem $gridQuestion, array $answers)
+    public function getStatistics(AbstractItem $gridQuestion, array $answersData, $total)
     {
+        $cells = [];
+        $answered = [];
+        $nbUnanswered = $total - count($answersData);
+
         // Create an array with cellId => cellObject for easy search
         $cellsMap = [];
         /** @var Cell $cell */
         foreach ($gridQuestion->getCells() as $cell) {
             $cellsMap[$cell->getUuid()] = $cell;
+            $answered[$cell->getUuid()] = 0;
         }
 
-        $cells = [];
-
-        foreach ($answers as $answerData) {
+        foreach ($answersData as $answerData) {
             foreach ($answerData as $cellAnswer) {
                 if (!empty($cellAnswer->text)) {
+                    $answered[$cellAnswer->cellId] = isset($answered[$cellAnswer->cellId]) ?
+                        $answered[$cellAnswer->cellId] + 1 :
+                        1;
+
                     if (!isset($cells[$cellAnswer->cellId])) {
                         $cells[$cellAnswer->cellId] = [];
                     }
@@ -424,8 +431,22 @@ class GridDefinition extends AbstractDefinition
                 }
             }
         }
+        foreach ($gridQuestion->getCells() as $cell) {
+            $cellId = $cell->getUuid();
 
-        return ['cells' => $cells];
+            if (0 < count($answersData) - $answered[$cellId]) {
+                if (!isset($cells[$cellId])) {
+                    $cells[$cellId] = [];
+                }
+                $cells[$cellId]['_unanswered'] = count($answersData) - $answered[$cellId];
+            }
+        }
+
+        return [
+            'cells' => $cells,
+            'total' => $total,
+            'unanswered' => $nbUnanswered,
+        ];
     }
 
     /**

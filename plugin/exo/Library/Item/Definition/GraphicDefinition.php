@@ -149,11 +149,11 @@ class GraphicDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $graphicQuestion, array $answers)
+    public function getStatistics(AbstractItem $graphicQuestion, array $answersData, $total)
     {
         $areas = [];
 
-        foreach ($answers as $answerData) {
+        foreach ($answersData as $answerData) {
             $areasToInc = [];
 
             foreach ($answerData as $areaAnswer) {
@@ -176,7 +176,11 @@ class GraphicDefinition extends AbstractDefinition
             }
         }
 
-        return ['areas' => $areas];
+        return [
+            'areas' => $areas,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
+        ];
     }
 
     /**

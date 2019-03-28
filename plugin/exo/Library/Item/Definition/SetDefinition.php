@@ -170,7 +170,7 @@ class SetDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $setQuestion, array $answers)
+    public function getStatistics(AbstractItem $setQuestion, array $answersData, $total)
     {
         $sets = [];
         $unused = [];;
@@ -179,7 +179,7 @@ class SetDefinition extends AbstractDefinition
         foreach ($setQuestion->getProposals()->toArray() as $item) {
             $unusedItems[$item->getUuid()] = true;
         }
-        foreach ($answers as $answerData) {
+        foreach ($answersData as $answerData) {
             $unusedTemp = array_merge($unusedItems);
 
             foreach ($answerData as $setAnswer) {
@@ -201,6 +201,8 @@ class SetDefinition extends AbstractDefinition
         return [
             'sets' => $sets,
             'unused' => $unused,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
         ];
     }
 

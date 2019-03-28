@@ -148,14 +148,15 @@ class WordsDefinition extends AbstractDefinition
     /**
      * @param OpenQuestion $wordsQuestion
      * @param array        $answersData
+     * @param int          $total
      *
      * @return array
      */
-    public function getStatistics(AbstractItem $wordsQuestion, array $answers)
+    public function getStatistics(AbstractItem $wordsQuestion, array $answersData, $total)
     {
         $words = [];
 
-        foreach ($answers as $answerData) {
+        foreach ($answersData as $answerData) {
             /** @var Keyword $keyword */
             foreach ($wordsQuestion->getKeywords() as $keyword) {
                 if ($this->containKeyword($answerData, $keyword)) {
@@ -164,7 +165,11 @@ class WordsDefinition extends AbstractDefinition
             }
         }
 
-        return ['words' => $words];
+        return [
+            'words' => $words,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
+        ];
     }
 
     /**
