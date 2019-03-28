@@ -209,7 +209,7 @@ class SubjectSerializer
         }
 
         if (!empty($data['forum'])) {
-            $forum = $this->om->getObject($data['forum'], Forum::class);
+            $forum = $this->om->getObject($data['forum'], Forum::class) ?? new Forum();
 
             if ($forum) {
                 $subject->setForum($forum);
