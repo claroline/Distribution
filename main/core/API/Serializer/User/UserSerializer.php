@@ -529,9 +529,7 @@ class UserSerializer extends GenericSerializer
         //it's useful if we want to create a user with a list of roles
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $group) {
-                /** @var Group $group */
-                $group = $this->container->get('claroline.api.serializer')
-                    ->deserialize('Claroline\CoreBundle\Entity\Group', $group);
+                $group = $this->om->getObject($group, Group::class);
 
                 if ($group && $group->getId()) {
                     $user->addGroup($group);

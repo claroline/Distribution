@@ -84,6 +84,7 @@ class PlannedNotificationListener
      */
     public function onWorkspaceToolOpen(DisplayToolEvent $event)
     {
+        var_dump('gotcha');
         $workspace = $event->getWorkspace();
 
         if (!$this->authorization->isGranted(['claroline_planned_notification_tool', 'OPEN'], $workspace)) {
@@ -96,7 +97,7 @@ class PlannedNotificationListener
             ]
         );
         $event->setContent($content);
-        $event->stopPropagation();
+        // /    $event->stopPropagation();
     }
 
     /**
