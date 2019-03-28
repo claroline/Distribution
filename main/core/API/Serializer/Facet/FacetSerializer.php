@@ -73,7 +73,7 @@ class FacetSerializer
      * @param Facet $facet
      * @param array $options
      */
-    public function deserialize(array $data, Facet $facet = null, array $options = [])
+    public function deserialize(array $data, Facet $facet, array $options = [])
     {
         $this->sipe('id', 'setUuid', $data, $facet);
         $this->sipe('title', 'setName', $data, $facet);
@@ -87,7 +87,7 @@ class FacetSerializer
             foreach ($data['sections'] as $section) {
                 //check if section exists first
                 $panelFacet = $this->_om->getObject($section, PanelFacet::class) ?? new PanelFacet();
-                $this->pfSerializer->deserialize($section, $panelFacet);
+                $this->pfSerializer->deserialize($section, $panelFacet, $options);
                 $panelFacet->setFacet($facet);
             }
         }

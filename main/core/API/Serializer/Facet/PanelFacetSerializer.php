@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\API\Serializer\Facet;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Facet\PanelFacet;
 use Claroline\CoreBundle\Entity\Facet\PanelFacetRole;
@@ -23,14 +24,16 @@ class PanelFacetSerializer
 
     /**
      * @DI\InjectParams({
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "roleSerializer" = @DI\Inject("claroline.serializer.role"),
+     *     "ffSerializer"   = @DI\Inject("claroline.serializer.field_facet")
      * })
      *
      * @param SerializerProvider $serializer
      */
-    public function __construct(SerializerProvider $serializer)
+    public function __construct(RoleSerializer $roleSerializer, FieldFacetSerializer $ffSerializer)
     {
-        $this->serializer = $serializer; // bad
+        $this->roleSerializer = $roleSerializer;
+        $this->ffSerializer = $ffSerializer;
     }
 
     /**
@@ -54,7 +57,7 @@ class PanelFacetSerializer
             ],
             'defaultOpened' => true,
             'fields' => array_map(function (FieldFacet $fieldFacet) use ($options) { // todo check user rights
-                return $this->serializer->serialize($fieldFacet, $options);
+                return $this->ffSerializer->serialize($fieldFacet, $options);
             }, $panel->getFieldsFacet()->toArray()),
         ];
     }
@@ -65,7 +68,7 @@ class PanelFacetSerializer
             return [
                 'edit' => $panelRole->canEdit(),
                 'open' => $panelRole->canOpen(),
-                'role' => $this->serializer->serialize($panelRole->getRole(), [Options::SERIALIZE_MINIMAL]),
+                'role' => $this->roleSerializer->serialize($panelRole->getRole(), [Options::SERIALIZE_MINIMAL]),
             ];
         }, $panelRoles);
     }
@@ -77,7 +80,7 @@ class PanelFacetSerializer
      *
      * @return array - the serialized representation of the field facet
      */
-    public function deserialize(array $data, PanelFacet $panel = null, array $options = [])
+    public function deserialize(array $data, PanelFacet $panel, array $options = [])
     {
         $this->sipe('id', 'setUuid', $data, $panel);
         $this->sipe('title', 'setName', $data, $panel);
@@ -96,8 +99,9 @@ class PanelFacetSerializer
                     $field['restrictions']['order'] = $i;
                 }
                 ++$i;
-                $field = $this->serializer->deserialize(FieldFacet::class, $field, $options);
-                $field->setPanelFacet($panel);
+                $fieldFacet = $this->_om->getObject($field, FieldFacet::class) ?? new FieldFacet();
+                $fieldFacet = $this->ffSerializer->deserialize($field, $fieldFacet, $options);
+                $fieldFacet->setPanelFacet($panel);
             }
         }
     }
