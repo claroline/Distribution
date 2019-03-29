@@ -199,17 +199,16 @@ class ExerciseController extends AbstractController
      */
     public function statisticsAction(Exercise $exercise)
     {
-        $this->assertHasPermission('OPEN', $exercise);
-
         if (!$exercise->hasStatistics()) {
-            throw new AccessDeniedException();
+            $this->assertHasPermission('EDIT', $exercise);
         }
         $statistics = [];
         $finishedOnly = !$exercise->isAllPapersStatistics();
 
         foreach ($exercise->getSteps() as $step) {
             foreach ($step->getQuestions() as $question) {
-                $statistics[$question->getUuid()] = $this->itemManager->getStatistics($question, $exercise, $finishedOnly);
+                $itemStats = $this->itemManager->getStatistics($question, $exercise, $finishedOnly);
+                $statistics[$question->getUuid()] = !empty($itemStats->solutions) ? $itemStats->solutions : new \stdClass();
             }
         }
 

@@ -350,7 +350,7 @@ class ItemManager
 
             // Let the handler of the question type parse and compile the data
             if ($definition instanceof AnswerableItemDefinitionInterface) {
-                $questionStats->solutions = $definition->getStatistics($question->getInteraction(), $answersData);
+                $questionStats->solutions = $definition->getStatistics($question->getInteraction(), $answersData, $questionStats->seen);
             }
         }
 
