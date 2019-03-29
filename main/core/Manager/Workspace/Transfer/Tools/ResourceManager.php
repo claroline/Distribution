@@ -87,7 +87,8 @@ class ResourceManager
     {
         $rights = $data['rights'];
         unset($data['rights']);
-        $node = $this->serializer->deserialize(ResourceNode::class, $data);
+        $node = $this->om->getObject($data, ResourceNode::class);
+        $node = $this->serializer->deserialize($data, $node);
         $node->setWorkspace($workspace);
         $this->serializer->get(ResourceNode::class)->deserialize(['rights' => $rights], $node);
         if ($this->tokenStorage->getToken()) {
@@ -101,7 +102,7 @@ class ResourceManager
         $class = $resourceType->getClass();
         $this->om->flush();
         $resource = new $class();
-        $resource = $this->serializer->deserialize($class, $data['resource']);
+        $resource = $this->serializer->deserialize($data['resource'], $resource);
         $resource->setResourceNode($node);
         $this->om->persist($resource);
         $this->om->flush();
