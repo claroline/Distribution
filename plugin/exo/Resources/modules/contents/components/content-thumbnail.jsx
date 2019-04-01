@@ -5,7 +5,7 @@ import classes from 'classnames'
 
 import {makeSortable} from './../../utils/sortable'
 import {trans, tex} from '#/main/app/intl/translation'
-import {ValidationStatus} from './../../quiz/editor/components/validation-status.jsx'
+//import {ValidationStatus} from './../../quiz/editor/components/validation-status.jsx'
 import {getContentDefinition} from './../content-types'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONTENT} from './content-modal.jsx'
@@ -73,13 +73,6 @@ let ContentThumbnail = props => props.connectDropTarget(
     }}
   >
     <span className="content-thumbnail-topbar">
-      {props.hasErrors &&
-        <ValidationStatus
-          id={`${props.id}-thumb-tip`}
-          validating={props.validating}
-        />
-      }
-
       <Actions
         hasDeleteBtn={props.canDelete}
         hasEditBtn={props.canEdit}

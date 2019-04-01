@@ -1,9 +1,19 @@
-import editor from './editor'
-import {SetPaper} from './paper.jsx'
-import {SetPlayer} from './player.jsx'
-import {SetFeedback} from './feedback.jsx'
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import merge from 'lodash/merge'
 import times from 'lodash/times'
+
+import {trans} from '#/main/app/intl/translation'
+
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {SetItem as SetItemType} from '#/plugin/exo/items/set/prop-types'
+
+// components
+import {SetEditor} from '#/plugin/exo/items/set/components/editor'
+import {SetPaper} from '#/plugin/exo/items/set/paper'
+import {SetPlayer} from '#/plugin/exo/items/set/player'
+import {SetFeedback} from '#/plugin/exo/items/set/feedback'
+
+// scores
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
@@ -84,10 +94,23 @@ function generateStats(item, papers, withAllParpers) {
 export default {
   type: 'application/x.set+json',
   name: 'set',
+  tags: [trans('question', {}, 'quiz')],
+  answerable: true,
+
+  components: {
+    editor: SetEditor
+  },
+
+  supportScores: () => [
+    ScoreSum
+  ],
+
+  create: (setItem) => merge({}, SetItemType.defaultProps, setItem),
+
+  // old
   paper: SetPaper,
   player: SetPlayer,
   feedback: SetFeedback,
-  editor,
   getCorrectedAnswer,
   generateStats
 }

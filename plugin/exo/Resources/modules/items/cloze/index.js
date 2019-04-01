@@ -1,9 +1,18 @@
-import editor from './editor'
-import {ClozePaper} from './paper.jsx'
-import {ClozePlayer} from './player.jsx'
-import {ClozeFeedback} from './feedback.jsx'
+import {trans} from '#/main/app/intl/translation'
+
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
-import {utils} from './utils/utils'
+
+import {ClozeItem as ClozeItemTypes} from '#/plugin/exo/items/cloze/prop-types'
+import {utils} from '#/plugin/exo/items/cloze/utils'
+
+// components
+import {ClozeEditor} from '#/plugin/exo/items/cloze/components/editor'
+import {ClozePaper} from '#/plugin/exo/items/cloze/components/paper'
+import {ClozePlayer} from '#/plugin/exo/items/cloze/components/player'
+import {ClozeFeedback} from '#/plugin/exo/items/cloze/components/feedback'
+
+// scores
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answers = null) {
   const corrected = new CorrectedAnswer()
@@ -107,10 +116,24 @@ function generateStats(item, papers, withAllParpers) {
 export default {
   type: 'application/x.cloze+json',
   name: 'cloze',
+  tags: [trans('question', {}, 'quiz')],
+  answerable: true,
+
+  supportScores: () => [
+    ScoreSum
+  ],
+
   paper: ClozePaper,
   player: ClozePlayer,
   feedback: ClozeFeedback,
-  editor,
   getCorrectedAnswer,
-  generateStats
+  generateStats,
+
+  components: {
+    editor: ClozeEditor
+  },
+
+  create: (item) => {
+    return Object.assign(item, ClozeItemTypes.defaultProps)
+  }
 }

@@ -61,7 +61,7 @@ class ExerciseManagerTest extends JsonDataTestCase
     }
 
     /**
-     * @expectedException \UJM\ExoBundle\Library\Validator\ValidationException
+     * @expectedException \Claroline\CoreBundle\Validator\Exception\InvalidDataException
      */
     public function testUpdateWithInvalidData()
     {
@@ -159,57 +159,6 @@ class ExerciseManagerTest extends JsonDataTestCase
         $this->om->flush();
 
         $this->assertFalse($this->manager->isDeletable($this->exercise));
-    }
-
-    public function testPublishOncePublishedExercise()
-    {
-        $this->exercise->getResourceNode()->setPublished(false);
-        $this->exercise->setPublishedOnce(true);
-        $this->om->flush();
-
-        $this->manager->publish($this->exercise);
-
-        $this->assertTrue($this->exercise->getResourceNode()->isPublished());
-
-        // Checks papers have been untouched
-        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
-            'exercise' => $this->exercise,
-        ]);
-
-        $this->assertCount(0, $papers);
-    }
-
-    public function testPublishNeverPublishedExerciseDeleteItsPapers()
-    {
-        $this->addPapersToExercise();
-        $this->exercise->getResourceNode()->setPublished(false);
-        $this->exercise->setPublishedOnce(false);
-        $this->om->flush();
-
-        $this->manager->publish($this->exercise);
-
-        // Checks published flags
-        $this->assertTrue($this->exercise->getResourceNode()->isPublished());
-        $this->assertTrue($this->exercise->wasPublishedOnce());
-
-        // Checks papers have been deleted
-        $papers = $this->om->getRepository('UJMExoBundle:Attempt\Paper')->findBy([
-            'exercise' => $this->exercise,
-        ]);
-
-        $this->assertCount(0, $papers);
-    }
-
-    public function testUnpublish()
-    {
-        $this->exercise->getResourceNode()->setPublished(true);
-        $this->exercise->setPublishedOnce(true);
-        $this->om->flush();
-
-        $this->manager->unpublish($this->exercise);
-
-        $this->assertFalse($this->exercise->getResourceNode()->isPublished());
-        $this->assertTrue($this->exercise->wasPublishedOnce());
     }
 
     /**

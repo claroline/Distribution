@@ -1,8 +1,16 @@
-import editor from './editor'
-import {GraphicPaper} from './paper.jsx'
-import {GraphicPlayer} from './player.jsx'
-import {GraphicFeedback} from './feedback.jsx'
+import {trans} from '#/main/app/intl/translation'
+
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {GraphicItem as GraphicItemTypes} from '#/plugin/exo/items/graphic/prop-types'
+
+// components
+import {GraphicPaper} from '#/plugin/exo/items/graphic/paper'
+import {GraphicEditor} from '#/plugin/exo/items/graphic/components/editor'
+import {GraphicPlayer} from '#/plugin/exo/items/graphic/player'
+import {GraphicFeedback} from '#/plugin/exo/items/graphic/feedback'
+
+// scores
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answers) {
   const corrected = new CorrectedAnswer()
@@ -102,10 +110,22 @@ function generateStats(item, papers, withAllParpers) {
 export default {
   type: 'application/x.graphic+json',
   name: 'graphic',
+  tags: [trans('question', {}, 'quiz')],
+  answerable: true,
+
   paper: GraphicPaper,
   player: GraphicPlayer,
   feedback: GraphicFeedback,
-  editor,
   getCorrectedAnswer,
-  generateStats
+  generateStats,
+
+  components: {
+    editor: GraphicEditor
+  },
+
+  supportScores: () => [
+    ScoreSum
+  ],
+
+  create: (item) => Object.assign(item, GraphicItemTypes.defaultProps)
 }

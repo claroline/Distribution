@@ -1,4 +1,5 @@
 import React from 'react'
+import classes from 'classnames'
 import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'
 
@@ -12,7 +13,7 @@ import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {DataInput} from '#/main/app/data/components/input'
 
 const CollectionInput = props =>
-  <div id={props.id} className="collection-control">
+  <div id={props.id} className={classes('collection-control', props.className)}>
     {isEmpty(props.value) &&
       <div className="no-item-info">{props.placeholder}</div>
     }
@@ -33,30 +34,34 @@ const CollectionInput = props =>
       <ul>
         {props.value.map((value, index) =>
           <li key={index} className="collection-item">
-            <DataInput
-              id={`${props.id}-${index}`}
-              type={props.type}
-              options={props.options}
+            {props.render ?
+              props.render(value, props.error instanceof Object ? props.error[index] : undefined, index)
+              :
+              <DataInput
+                id={`${props.id}-${index}`}
+                type={props.type}
+                options={props.options}
 
-              label={`${props.label} #${index + 1}`}
-              size="sm"
-              hideLabel={true}
-              required={true}
-              disabled={props.disabled}
-              validating={props.validating}
+                label={`${props.label} #${index + 1}`}
+                size="sm"
+                hideLabel={true}
+                required={true}
+                disabled={props.disabled}
+                validating={props.validating}
 
-              error={props.error instanceof Object ? props.error[index] : undefined}
-              value={value}
+                error={props.error instanceof Object ? props.error[index] : undefined}
+                value={value}
 
-              onChange={(newValue) => {
-                const newCollection = cloneDeep(props.value)
+                onChange={(newValue) => {
+                  const newCollection = cloneDeep(props.value)
 
-                // replace current item by updated one
-                newCollection[index] = newValue
+                  // replace current item by updated one
+                  newCollection[index] = newValue
 
-                props.onChange(newCollection)
-              }}
-            />
+                  props.onChange(newCollection)
+                }}
+              />
+            }
 
             <Button
               className="btn-link btn-delete"
@@ -83,6 +88,7 @@ const CollectionInput = props =>
     <Button
       className="btn btn-block btn-add"
       type={CALLBACK_BUTTON}
+      icon="fa fa-fw fa-plus"
       label={props.button}
       disabled={props.disabled || (props.max && props.value && props.max <= props.value.length)}
       callback={() => props.onChange([].concat(props.value || [], [undefined]))}
@@ -97,7 +103,8 @@ implementPropTypes(CollectionInput, FormFieldTypes, {
   button: T.string,
 
   // items def
-  type: T.string.isRequired,
+  type: T.string,
+  render: T.func,
   options: T.object // depends on the type of items
 }, {
   value: [],

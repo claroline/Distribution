@@ -1,10 +1,18 @@
-import editor from './editor'
-import {PairPaper} from './paper.jsx'
-import {PairPlayer} from './player.jsx'
-import {PairFeedback} from './feedback.jsx'
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 import cloneDeep from 'lodash/cloneDeep'
+import merge from 'lodash/merge'
 import times from 'lodash/times'
+
+import {trans} from '#/main/app/intl/translation'
+
+import {PairItem as PairItemType} from '#/plugin/exo/items/pair/prop-types'
+import {PairEditor} from '#/plugin/exo/items/pair/components/editor'
+import {PairPaper} from '#/plugin/exo/items/pair/components/paper'
+import {PairPlayer} from '#/plugin/exo/items/pair/components/player'
+import {PairFeedback} from '#/plugin/exo/items/pair/components/feedback'
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+
+// scores
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
@@ -134,10 +142,23 @@ function generateStats(item, papers, withAllParpers) {
 export default {
   type: 'application/x.pair+json',
   name: 'pair',
+  tags: [trans('question', {}, 'quiz')],
+  answerable: true,
+
+  components: {
+    editor: PairEditor
+  },
+
+  supportScores: () => [
+    ScoreSum
+  ],
+
+  create: (pairItem) => merge({}, PairItemType.defaultProps, pairItem),
+
+  // old
   paper: PairPaper,
   player: PairPlayer,
   feedback: PairFeedback,
-  editor,
   getCorrectedAnswer,
   generateStats
 }

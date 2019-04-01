@@ -12,7 +12,6 @@ use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\OrderingQuestionSerializer;
-use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\OrderingAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\OrderingQuestionValidator;
 
@@ -149,11 +148,48 @@ class OrderingDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $question, array $answersData)
+    public function getStatistics(AbstractItem $question, array $answersData, $total)
     {
-        // TODO: Implement getStatistics() method.
+        $orders = [];
+        $unused = [];
+        $unusedItems = [];
 
-        return [];
+        foreach ($question->getItems()->toArray() as $item) {
+            $unusedItems[$item->getUuid()] = true;
+        }
+        foreach ($answersData as $answerData) {
+            $unusedTemp = array_merge($unusedItems);
+            $orderingKey = '';
+
+            usort($answerData, function ($a, $b) {
+                return $a['position'] - $b['position'];
+            });
+
+            foreach ($answerData as $orderingAnswer) {
+                $orderingKey .= $orderingAnswer->itemId;
+                $unusedTemp[$orderingAnswer->itemId] = false;
+            }
+            if (!isset($orders[$orderingKey])) {
+                $orders[$orderingKey] = [
+                    'data' => $answerData,
+                    'count' => 0,
+                ];
+            }
+            ++$orders[$orderingKey]['count'];
+
+            foreach ($unusedTemp as $itemId => $value) {
+                if ($value) {
+                    $unused[$itemId] = isset($unused[$itemId]) ? $unused[$itemId] + 1 : 1;
+                }
+            }
+        }
+
+        return [
+            'orders' => $orders,
+            'unused' => $unused,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
+        ];
     }
 
     /**
@@ -167,19 +203,6 @@ class OrderingDefinition extends AbstractDefinition
         foreach ($item->getItems() as $orderingItem) {
             $orderingItem->refreshUuid();
         }
-    }
-
-    /**
-     * Parses items contents.
-     *
-     * @param ContentParserInterface $contentParser
-     * @param \stdClass              $item
-     */
-    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
-    {
-        array_walk($item->items, function (\stdClass $item) use ($contentParser) {
-            $item->data = $contentParser->parse($item->data);
-        });
     }
 
     public function getCsvTitles(AbstractItem $item)
