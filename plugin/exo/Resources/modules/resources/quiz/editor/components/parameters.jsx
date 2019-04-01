@@ -266,6 +266,7 @@ const EditorParameters = props =>
               name: 'parameters.showFeedback',
               label: trans('show_feedback', {}, 'quiz'),
               type: 'boolean',
+              displayed: (quiz) => get(quiz, 'parameters.hasExpectedAnswers'),
               onChange: (value) => {
                 if (value) {
                   props.update('parameters.answersEditable', false)
@@ -276,7 +277,7 @@ const EditorParameters = props =>
               name: 'parameters.answersEditable',
               label: trans('allow_to_edit_answers', {}, 'quiz'),
               type: 'boolean',
-              disabled: (quiz) => quiz.parameters.showFeedback
+              disabled: (quiz) => get(quiz, 'parameters.hasExpectedAnswers') && get(quiz, 'parameters.showFeedback')
               // TODO : add help text
             }, {
               name: 'parameters.interruptible',
