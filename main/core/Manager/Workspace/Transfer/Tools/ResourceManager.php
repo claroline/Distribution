@@ -61,9 +61,13 @@ class ResourceManager
      */
     public function serialize(Workspace $workspace, array $options): array
     {
-        $root = $this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
+        $root = $this->om->getRepository(ResourceNode::class)
+          ->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
 
-        return ['root' => $this->serializer->serialize($root, array_merge($options, [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE, Options::SERIALIZE_MINIMAL]))];
+        return ['root' => $this->serializer->serialize($root, array_merge(
+          $options,
+          [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE, Options::SERIALIZE_MINIMAL])),
+        ];
     }
 
     public function deserialize(array $data, Workspace $workspace)
@@ -87,23 +91,26 @@ class ResourceManager
     {
         $rights = $data['rights'];
         unset($data['rights']);
-        $node = $this->om->getObject($data, ResourceNode::class);
+        $node = $this->om->getObject($data, ResourceNode::class) ?? new ResourceNode();
         $node = $this->serializer->deserialize($data, $node);
         $node->setWorkspace($workspace);
         $this->serializer->get(ResourceNode::class)->deserialize(['rights' => $rights], $node);
+
         if ($this->tokenStorage->getToken()) {
             $node->setCreator($this->tokenStorage->getToken()->getUser());
         } else {
             $creator = $this->userManager->getDefaultClarolineAdmin();
             $node->setCreator($creator);
         }
+
         $this->om->persist($node);
         $resourceType = $this->om->getRepository(ResourceType::class)->findOneByName($data['meta']['type']);
         $class = $resourceType->getClass();
         $this->om->flush();
         $resource = new $class();
-        $resource = $this->serializer->deserialize($data['resource'], $resource);
         $resource->setResourceNode($node);
+        $resource = $this->serializer->deserialize($data['resource'], $resource, [Options::REFRESH_UUID]);
+
         $this->om->persist($resource);
         $this->om->flush();
 

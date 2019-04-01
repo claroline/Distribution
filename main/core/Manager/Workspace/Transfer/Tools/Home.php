@@ -60,7 +60,7 @@ class Home
     {
         foreach ($data['tabs'] as $tab) {
             // do not update tabs set by the administration tool
-            $new = $this->crud->update(HomeTab::class, $tab);
+            $new = $this->crud->create(HomeTab::class, $tab);
             $new->setWorkspace($workspace);
         }
     }

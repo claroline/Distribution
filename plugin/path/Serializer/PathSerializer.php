@@ -111,9 +111,12 @@ class PathSerializer
      *
      * @return Path
      */
-    public function deserialize($data, Path $path)
+    public function deserialize($data, Path $path, array $options = [])
     {
-        $this->sipe('id', 'setUuid', $data, $path);
+        if (!in_array(Options::REFRESH_UUID, $options)) {
+            $this->sipe('id', 'setUuid', $data, $path);
+        }
+
         $this->sipe('display.description', 'setDescription', $data, $path);
         $this->sipe('display.showOverview', 'setShowOverview', $data, $path);
         $this->sipe('display.showSummary', 'setShowSummary', $data, $path);

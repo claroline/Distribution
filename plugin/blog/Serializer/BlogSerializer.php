@@ -2,6 +2,7 @@
 
 namespace Icap\BlogBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Icap\BlogBundle\Entity\Blog;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -72,10 +73,14 @@ class BlogSerializer
         if (empty($blog)) {
             $blog = new Blog();
         }
-        $this->sipe('id', 'setUuid', $data, $blog);
+
+        if (!in_array(Options::REFRESH_UUID, $options)) {
+            $this->sipe('id', 'setUuid', $data, $blog);
+        }
+
         $this->sipe('name', 'setName', $data, $blog);
         $this->sipe('infos', 'setInfos', $data, $blog);
-        $blog->setOptions($this->blogOptionsSerializer->deserialize($data));
+        $blog->setOptions($this->blogOptionsSerializer->deserialize($data, null, $options));
 
         return $blog;
     }

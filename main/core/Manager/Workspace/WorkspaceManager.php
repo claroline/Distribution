@@ -887,7 +887,7 @@ class WorkspaceManager
         }
 
         $newWorkspace = new Workspace();
-        $newWorkspace = $this->copy($workspace, $newWorkspace);
+        $this->copy($workspace, $newWorkspace);
         //override code & name
         $newWorkspace->setCode($code);
         $newWorkspace->setName($code);
