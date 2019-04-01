@@ -87,7 +87,7 @@ class ResourceManager
     {
         $rights = $data['rights'];
         unset($data['rights']);
-        $node = $this->om->getObject($data, ResourceNode::class);
+        $node = $this->om->getObject($data, ResourceNode::class) ?? new ResourceNode();
         $node = $this->serializer->deserialize($data, $node);
         $node->setWorkspace($workspace);
         $this->serializer->get(ResourceNode::class)->deserialize(['rights' => $rights], $node);
