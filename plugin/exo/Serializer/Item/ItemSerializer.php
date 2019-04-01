@@ -6,6 +6,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -43,9 +44,6 @@ class ItemSerializer extends AbstractSerializer
     /** @var UserSerializer */
     private $userSerializer;
 
-    /** @var CategorySerializer */
-    private $categorySerializer;
-
     /** @var HintSerializer */
     private $hintSerializer;
 
@@ -69,7 +67,6 @@ class ItemSerializer extends AbstractSerializer
      * @param TokenStorageInterface     $tokenStorage
      * @param ItemDefinitionsCollection $itemDefinitions
      * @param UserSerializer            $userSerializer
-     * @param CategorySerializer        $categorySerializer
      * @param HintSerializer            $hintSerializer
      * @param ResourceContentSerializer $resourceContentSerializer
      * @param ItemObjectSerializer      $itemObjectSerializer
@@ -81,7 +78,6 @@ class ItemSerializer extends AbstractSerializer
      *     "tokenStorage"              = @DI\Inject("security.token_storage"),
      *     "itemDefinitions"           = @DI\Inject("ujm_exo.collection.item_definitions"),
      *     "userSerializer"            = @DI\Inject("ujm_exo.serializer.user"),
-     *     "categorySerializer"        = @DI\Inject("ujm_exo.serializer.category"),
      *     "hintSerializer"            = @DI\Inject("ujm_exo.serializer.hint"),
      *     "resourceContentSerializer" = @DI\Inject("ujm_exo.serializer.resource_content"),
      *     "itemObjectSerializer"      = @DI\Inject("ujm_exo.serializer.item_object"),
@@ -94,7 +90,6 @@ class ItemSerializer extends AbstractSerializer
         TokenStorageInterface $tokenStorage,
         ItemDefinitionsCollection $itemDefinitions,
         UserSerializer $userSerializer,
-        CategorySerializer $categorySerializer,
         HintSerializer $hintSerializer,
         ResourceContentSerializer $resourceContentSerializer,
         ItemObjectSerializer $itemObjectSerializer,
@@ -105,7 +100,6 @@ class ItemSerializer extends AbstractSerializer
         $this->tokenStorage = $tokenStorage;
         $this->itemDefinitions = $itemDefinitions;
         $this->userSerializer = $userSerializer;
-        $this->categorySerializer = $categorySerializer;
         $this->hintSerializer = $hintSerializer;
         $this->resourceContentSerializer = $resourceContentSerializer;
         $this->itemObjectSerializer = $itemObjectSerializer;
@@ -195,6 +189,9 @@ class ItemSerializer extends AbstractSerializer
             if (!$this->hasOption(Transfer::MINIMAL, $options)) {
                 $this->mapEntityToObject([
                     'description' => 'description',
+                    'tags' => function (Item $question) {
+                        return $this->serializeTags($question);
+                    },
                 ], $question, $questionData);
             }
         }
@@ -335,22 +332,22 @@ class ItemSerializer extends AbstractSerializer
         $metadata->protectQuestion = $question->getProtectUpdate();
 
         if (!empty($creator)) {
+            $metadata->creator = $this->userSerializer->serialize($creator, $options);
+            // TODO : remove me. for retro compatibility with old schema
             $metadata->authors = [
                 $this->userSerializer->serialize($creator, $options),
             ];
         }
 
         if ($question->getDateCreate()) {
-            $metadata->created = $question->getDateCreate()->format('Y-m-d\TH:i:s');
+            $metadata->created = DateNormalizer::normalize($question->getDateCreate());
         }
 
         if ($question->getDateModify()) {
-            $metadata->updated = $question->getDateModify()->format('Y-m-d\TH:i:s');
+            $metadata->updated = DateNormalizer::normalize($question->getDateModify());
         }
 
         if ($this->hasOption(Transfer::INCLUDE_ADMIN_META, $options)) {
-            $metadata->model = $question->isModel();
-
             /** @var ExerciseRepository $exerciseRepo */
             $exerciseRepo = $this->om->getRepository('UJMExoBundle:Exercise');
 
@@ -369,11 +366,6 @@ class ItemSerializer extends AbstractSerializer
 
                 return $shared;
             }, $users);
-
-            // Adds category
-            if (!empty($question->getCategory())) {
-                $metadata->category = $this->categorySerializer->serialize($question->getCategory(), $options);
-            }
         }
 
         return $metadata;
@@ -387,15 +379,6 @@ class ItemSerializer extends AbstractSerializer
      */
     public function deserializeMetadata(Item $question, \stdClass $metadata)
     {
-        if (isset($metadata->model)) {
-            $question->setModel($metadata->model);
-        }
-
-        if (isset($metadata->category)) {
-            $category = $this->categorySerializer->deserialize($metadata->category);
-            $question->setCategory($category);
-        }
-
         if (isset($metadata->protectQuestion)) {
             $question->setProtectUpdate($metadata->protectQuestion);
         }

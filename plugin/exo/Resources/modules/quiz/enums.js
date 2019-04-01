@@ -2,19 +2,6 @@ import {tex} from '#/main/app/intl/translation'
 
 // TODO : migrate select options formats
 
-export const TYPE_QUIZ = 'quiz'
-export const TYPE_STEP = 'step'
-
-export const QUIZ_SUMMATIVE = 'summative'
-export const QUIZ_EVALUATIVE = 'evaluative'
-export const QUIZ_FORMATIVE = 'formative'
-
-export const quizTypes = [
-  [QUIZ_SUMMATIVE, 'summative'],
-  [QUIZ_EVALUATIVE, 'evaluative'],
-  [QUIZ_FORMATIVE, 'formative']
-]
-
 export const QUIZ_PICKING_DEFAULT = 'standard'
 export const QUIZ_PICKING_TAGS = 'tags'
 
@@ -22,16 +9,6 @@ export const quizPicking = {
   [QUIZ_PICKING_DEFAULT]: tex('quiz_picking_steps'),
   [QUIZ_PICKING_TAGS]: tex('quiz_picking_tags')
 }
-
-export const NUMBERING_NONE = 'none'
-export const NUMBERING_LITTERAL = 'litteral'
-export const NUMBERING_NUMERIC = 'numeric'
-
-export const quizNumbering = [
-  [NUMBERING_NONE, 'none'],
-  [NUMBERING_LITTERAL, 'litteral'],
-  [NUMBERING_NUMERIC, 'numeric']
-]
 
 export const SHUFFLE_NEVER = 'never'
 export const SHUFFLE_ALWAYS = 'always'
@@ -71,11 +48,3 @@ export const SCORE_RULES = 'rules'
 
 export const TOTAL_SCORE_ON_DEFAULT = 'default'
 export const TOTAL_SCORE_ON_CUSTOM = 'custom'
-
-export const STATISTICS_ALL_PAPERS = 'default'
-export const STATISTICS_FINISHED_PAPERS_ONLY = 'custom'
-
-export const statisticsModes = [
-  [STATISTICS_ALL_PAPERS, 'compute_from_all_papers'],
-  [STATISTICS_FINISHED_PAPERS_ONLY, 'compute_from_finished_papers_only']
-]

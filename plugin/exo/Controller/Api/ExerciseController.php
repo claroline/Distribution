@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Controller\Api;
 
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,10 +14,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\DocimologyManager;
 use UJM\ExoBundle\Manager\ExerciseManager;
-use UJM\ExoBundle\Manager\JsonQuizManager;
+use UJM\ExoBundle\Manager\Item\ItemManager;
 
 /**
  * Exercise API Controller exposes REST API.
@@ -31,11 +31,11 @@ class ExerciseController extends AbstractController
     /** @var ExerciseManager */
     private $exerciseManager;
 
-    /** @var JsonQuizManager */
-    private $jsonQuizManager;
-
     /** @var DocimologyManager */
     private $docimologyManager;
+
+    /** @var ItemManager */
+    private $itemManager;
 
     /**
      * ExerciseController constructor.
@@ -43,25 +43,25 @@ class ExerciseController extends AbstractController
      * @DI\InjectParams({
      *     "authorization"     = @DI\Inject("security.authorization_checker"),
      *     "exerciseManager"   = @DI\Inject("ujm_exo.manager.exercise"),
-     *     "jsonQuizManager"   = @DI\Inject("ujm_exo.manager.json_quiz"),
-     *     "docimologyManager" = @DI\Inject("ujm_exo.manager.docimology")
+     *     "docimologyManager" = @DI\Inject("ujm_exo.manager.docimology"),
+     *     "itemManager"       = @DI\Inject("ujm_exo.manager.item")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param ExerciseManager               $exerciseManager
-     * @param JsonQuizManager               $jsonQuizManager
      * @param DocimologyManager             $docimologyManager
+     * @param ItemManager                   $itemManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         ExerciseManager $exerciseManager,
-        JsonQuizManager $jsonQuizManager,
-        DocimologyManager $docimologyManager
+        DocimologyManager $docimologyManager,
+        ItemManager $itemManager
     ) {
         $this->authorization = $authorization;
         $this->exerciseManager = $exerciseManager;
-        $this->jsonQuizManager = $jsonQuizManager;
         $this->docimologyManager = $docimologyManager;
+        $this->itemManager = $itemManager;
     }
 
     /**
@@ -113,7 +113,7 @@ class ExerciseController extends AbstractController
             // Try to update exercise
             try {
                 $this->exerciseManager->update($exercise, $data);
-            } catch (ValidationException $e) {
+            } catch (InvalidDataException $e) {
                 $errors = $e->getErrors();
             }
         }
@@ -124,47 +124,9 @@ class ExerciseController extends AbstractController
         }
 
         // Exercise updated
-        return new JsonResponse(null, 204);
-    }
-
-    /**
-     * Publishes an exercise.
-     *
-     * @EXT\Route("/{id}/publish", name="exercise_publish")
-     * @EXT\Method("POST")
-     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Exercise $exercise
-     *
-     * @return JsonResponse
-     */
-    public function publishAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        $this->exerciseManager->publish($exercise);
-
-        return new JsonResponse(null, 204);
-    }
-
-    /**
-     * Unpublishes an exercise.
-     *
-     * @EXT\Route("/{id}/unpublish", name="exercise_unpublish")
-     * @EXT\Method("POST")
-     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Exercise $exercise
-     *
-     * @return JsonResponse
-     */
-    public function unpublishAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        $this->exerciseManager->unpublish($exercise);
-
-        return new JsonResponse(null, 204);
+        return new JsonResponse(
+            $this->exerciseManager->serialize($exercise, [Transfer::INCLUDE_SOLUTIONS])
+        );
     }
 
     /**
@@ -182,7 +144,7 @@ class ExerciseController extends AbstractController
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
-        $file = $this->jsonQuizManager->export($exercise);
+        $file = $this->exerciseManager->export($exercise);
 
         $response = new StreamedResponse();
         $response->setCallBack(
@@ -222,6 +184,35 @@ class ExerciseController extends AbstractController
             'exercise' => $this->exerciseManager->serialize($exercise, [Transfer::MINIMAL]),
             'statistics' => $this->docimologyManager->getStatistics($exercise, 100),
         ];
+    }
+
+    /**
+     * Gets statistics of an Exercise.
+     *
+     * @EXT\Route("/{id}/statistics", name="exercise_statistics")
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
+     * @EXT\Method("GET")
+     *
+     * @param Exercise $exercise
+     *
+     * @return JsonResponse
+     */
+    public function statisticsAction(Exercise $exercise)
+    {
+        if (!$exercise->hasStatistics()) {
+            $this->assertHasPermission('EDIT', $exercise);
+        }
+        $statistics = [];
+        $finishedOnly = !$exercise->isAllPapersStatistics();
+
+        foreach ($exercise->getSteps() as $step) {
+            foreach ($step->getQuestions() as $question) {
+                $itemStats = $this->itemManager->getStatistics($question, $exercise, $finishedOnly);
+                $statistics[$question->getUuid()] = !empty($itemStats->solutions) ? $itemStats->solutions : new \stdClass();
+            }
+        }
+
+        return new JsonResponse($statistics);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)

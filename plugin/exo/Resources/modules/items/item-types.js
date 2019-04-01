@@ -1,5 +1,4 @@
 import invariant from 'invariant'
-import difference from 'lodash/difference'
 import mapValues from 'lodash/mapValues'
 
 import choice from './choice'
@@ -13,21 +12,7 @@ import words from './words'
 import set from './set'
 import grid from './grid'
 import ordering from './ordering'
-import boolean from './boolean'
 
-const typeProperties = [
-  'name',
-  'type',
-  'question',
-  'editor',
-  'player',
-  'feedback',
-  'decorate',
-  'validate',
-  'paper',
-  'getCorrectedAnswer',
-  'generateStats'
-]
 
 let registeredTypes = {}
 let defaultRegistered = false
@@ -43,15 +28,15 @@ export function registerItemType(definition) {
     definition.question :
     true
 
-  definition.editor.decorate = getOptionalFunction(definition.editor, 'decorate', item => item)
-  definition.editor.validate = getOptionalFunction(definition.editor, 'validate', () => ({}))
+  //definition.editor.decorate = getOptionalFunction(definition.editor, 'decorate', item => item)
+  //definition.editor.validate = getOptionalFunction(definition.editor, 'validate', () => ({}))
 
   registeredTypes[definition.type] = definition
 }
 
 export function registerDefaultItemTypes() {
   if (!defaultRegistered) {
-    [choice, match, cloze, graphic, open, pair, words, set, grid, ordering, boolean, selection].forEach(registerItemType)
+    [choice, match, cloze, graphic, open, pair, words, set, grid, ordering, selection].forEach(registerItemType)
     defaultRegistered = true
   }
 }
@@ -111,22 +96,7 @@ function assertValidItemType(definition) {
     typeof definition.type === 'string',
     makeError('mime type must be a string', definition)
   )
-  invariant(
-    definition.editor,
-    makeError('editor is mandatory', definition)
-  )
-  invariant(
-    definition.editor.component,
-    makeError('editor component is mandatory', definition)
-  )
-  invariant(
-    definition.editor.reduce,
-    makeError('editor reduce is mandatory', definition)
-  )
-  invariant(
-    typeof definition.editor.reduce === 'function',
-    makeError('editor reduce must be a function', definition)
-  )
+
   invariant(
     definition.player,
     makeError('player component is mandatory', definition)
@@ -135,37 +105,10 @@ function assertValidItemType(definition) {
     definition.paper,
     makeError('paper component is mandatory', definition)
   )
-
-  const extraProperties = difference(Object.keys(definition), typeProperties)
-
-  if (extraProperties.length > 0) {
-    invariant(
-      false,
-      makeError(`unknown property '${extraProperties[0]}'`, definition)
-    )
-  }
-}
-
-function getOptionalFunction(definition, name, defaultFunc) {
-  if (typeof definition[name] !== 'undefined') {
-    invariant(
-      typeof definition[name] === 'function',
-      makeError(`${name} must be a function`, definition)
-    )
-    return definition[name]
-  }
-  return defaultFunc
 }
 
 function makeError(message, definition) {
   const name = definition.name ? definition.name.toString() : '[unnamed]'
 
   return `${message} in '${name}' definition`
-}
-
-export const BasePaperDefaultProps = {
-  answer: '',
-  showExpected: false,
-  showStats: true,
-  showYours: true
 }

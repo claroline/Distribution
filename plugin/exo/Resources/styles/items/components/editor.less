@@ -1,0 +1,39 @@
+
+.item-editor {
+    .left-controls,
+    .right-controls {
+        display: flex;
+        align-items: flex-start;
+
+        .btn-link,
+        .btn {
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+    }
+
+    .feedback-control {
+        margin-top: @form-group-margin-bottom;
+        margin-left: @grid-gutter-width;
+    }
+
+    // deprecated
+    .feedback-container {
+        margin-top: @form-group-margin-bottom;
+        padding-left: @grid-gutter-width;
+    }
+
+    .hint-control {
+        flex: 1;
+        display: flex;
+
+        .hint-value {
+            flex-grow: 1;
+        }
+
+        .hint-penalty {
+            width: 60px;
+            margin-left: floor(@grid-gutter-width / 2);
+        }
+    }
+}

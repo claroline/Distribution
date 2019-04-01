@@ -4,13 +4,13 @@ namespace UJM\ExoBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Attempt\PaperGenerator;
-use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Manager\Item\ItemManager;
@@ -221,7 +221,7 @@ class AttemptManager
      * @param \stdClass[] $answers
      * @param string      $clientIp
      *
-     * @throws ValidationException - if there is any invalid answer
+     * @throws InvalidDataException - if there is any invalid answer
      *
      * @return Answer[]
      */
@@ -234,7 +234,7 @@ class AttemptManager
         foreach ($answers as $answerData) {
             $question = $paper->getQuestion($answerData->questionId);
             if (empty($question)) {
-                throw new ValidationException('Submitted answers are invalid', [[
+                throw new InvalidDataException('Submitted answers are invalid', [[
                     'path' => '/questionId',
                     'message' => 'question is not part of the attempt',
                 ]]);
@@ -249,8 +249,8 @@ class AttemptManager
                 } else {
                     $answer = $this->answerManager->update($decodedQuestion, $existingAnswer, $answerData);
                 }
-            } catch (ValidationException $e) {
-                throw new ValidationException('Submitted answers are invalid', $e->getErrors());
+            } catch (InvalidDataException $e) {
+                throw new InvalidDataException('Submitted answers are invalid', $e->getErrors());
             }
 
             $answer->setIp($clientIp);
@@ -276,8 +276,9 @@ class AttemptManager
      *
      * @param Paper $paper
      * @param bool  $finished
+     * @param bool  $generateEvaluation
      */
-    public function end(Paper $paper, $finished = true)
+    public function end(Paper $paper, $finished = true, $generateEvaluation = true)
     {
         $this->om->startFlushSuite();
 
@@ -289,7 +290,10 @@ class AttemptManager
         $totalScoreOn = $paper->getExercise()->getTotalScoreOn();
         $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
         $paper->setScore($score);
-        $this->paperManager->generateResourceEvaluation($paper, $finished);
+
+        if ($generateEvaluation) {
+            $this->paperManager->generateResourceEvaluation($paper, $finished);
+        }
         $this->om->persist($paper);
         $this->om->endFlushSuite();
 

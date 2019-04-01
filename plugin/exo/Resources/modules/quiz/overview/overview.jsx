@@ -16,7 +16,7 @@ const Parameters = props =>
   <ul className="exercise-parameters">
     <li className="exercise-parameter">
       <span className="fa fa-fw fa-check-square-o icon-with-text-right" />
-      {tex('availability_of_correction')} :
+      {trans('results_availability', {}, 'quiz')} :
       &nbsp;
       <b>
         {props.showCorrectionAt === SHOW_CORRECTION_AT_DATE ?
@@ -25,24 +25,28 @@ const Parameters = props =>
         }
       </b>
     </li>
+
     <li className="exercise-parameter">
       <span className="fa fa-fw fa-percent icon-with-text-right" />
-      {tex('availability_of_score')} :
+      {trans('score_availability', {}, 'quiz')} :
       &nbsp;
       <b>{tex(markModes.find(mode => mode[0] === props.showScoreAt)[1])}</b>
     </li>
+
     <li className="exercise-parameter">
       <span className="fa fa-fw fa-sign-out icon-with-text-right" />
       {tex('test_exit')} :
       &nbsp;
       <b>{props.interruptible ? trans('yes') : trans('no')}</b>
     </li>
+
     <li className="exercise-parameter">
       <span className="fa fa-fw fa-files-o icon-with-text-right" />
-      {tex('maximum_tries')} :
+      {tex('maximum_attempts')} :
       &nbsp;
       <b>{props.maxAttempts ? props.maxAttempts : '-'}</b>
     </li>
+
     {props.timeLimited &&
       <li className="exercise-parameter">
         <span className="fa fa-fw fa-clock-o icon-with-text-right" />
@@ -86,8 +90,8 @@ const OverviewComponent = props =>
       },
       score: {
         displayed: props.quiz.parameters.showScoreAt !== SHOW_SCORE_AT_NEVER,
-        current: props.userEvaluation.score,
-        total: props.userEvaluation.scoreMax
+        current: props.userEvaluation ? props.userEvaluation.score : undefined,
+        total: props.userEvaluation ? props.userEvaluation.scoreMax : undefined
       }
     }}
     actions={[
@@ -121,7 +125,6 @@ OverviewComponent.propTypes = {
   editable: T.bool.isRequired,
   quiz: T.shape({
     description: T.string,
-    meta: T.object.isRequired,
     parameters: T.object.isRequired,
     picking: T.object.isRequired
   }).isRequired,

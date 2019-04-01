@@ -1,6 +1,8 @@
 import $ from 'jquery'
 import cloneDeep from 'lodash/cloneDeep'
 
+import {constants} from '#/plugin/exo/items/selection/constants'
+
 export const utils = {}
 
 utils.makeTextHtml = (text, elements) => {
@@ -92,10 +94,9 @@ utils.getRealOffsetFromBegin = (toSort, begin) => {
   return toSort.reduce((acc, val) => { return acc + utils.getHtmlLength(val)}, 0)
 }
 
-utils.cleanItem = (item) => {
+utils.cleanItem = (item, _text) => {
   //here we remove the unused selections
-  const _text = item._text
-  const elements = item.mode === 'find' ? item.solutions: item.selections
+  const elements = item.mode === constants.MODE_FIND ? item.solutions: item.selections
   const tmp = document.createElement('div')
   const ids = []
   let toRemove = []
@@ -135,20 +136,18 @@ utils.cleanItem = (item) => {
   })
 
   //also we just check the text is correct
-  let text = utils.getTextFromDecorated(item._text)
+  let text = utils.getTextFromDecorated(_text)
 
   //that'all for now folks !
   return Object.assign({}, item, {selections, solutions, text})
 }
 
-utils.getSelectionText = (item, selectionId = null) => {
-  if (!selectionId) selectionId = item._selectionId
-
-  const selection = item.mode === 'find' ?
-    item.solutions.find(solution => solution.selectionId === selectionId):
+utils.getSelectionText = (item, selectionId) => {
+  const selection = item.mode === constants.MODE_FIND ?
+    item.solutions.find(solution => solution.selectionId === selectionId) :
     item.selections.find(selection => selection.id === selectionId)
 
-  const string = item.text.substring(selection.begin, selection.end)
+  const string = selection ? item.text.substring(selection.begin, selection.end) : ''
 
   const tmp = document.createElement('div')
   tmp.innerHTML = string

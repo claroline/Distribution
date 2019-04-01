@@ -62,6 +62,7 @@ class AutoloadedListData extends Component {
     return (
       <ListDataComponent
         {...this.props}
+        loading={!this.props.loaded || this.props.invalidated}
       />
     )
   }
@@ -77,6 +78,10 @@ AutoloadedListData.propTypes = {
   sorting: T.object,
   pagination: T.object,
   selection: T.object,
+  fetch: T.shape({
+    url: T.oneOfType([T.string, T.array]).isRequired,
+    autoload: T.bool
+  }),
   fetchData: T.func
 }
 

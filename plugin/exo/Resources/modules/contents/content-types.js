@@ -1,25 +1,9 @@
 import invariant from 'invariant'
-import difference from 'lodash/difference'
 
-import textContent from './text-content'
-import imageContent from './image-content'
-import audioContent from './audio-content'
-import videoContent from './video-content'
-
-const typeProperties = [
-  'type',
-  'mimeType',
-  'content',
-  'editable',
-  'editor',
-  'player',
-  'validate',
-  'icon',
-  'altIcon',
-  'browseFiles',
-  'thumbnail',
-  'modal'
-]
+import textContent from './text'
+import imageContent from './image'
+import audioContent from './audio'
+import videoContent from './video'
 
 let registeredContentTypes = {}
 let defaultRegistered = false
@@ -71,38 +55,9 @@ function assertValidItemType(definition) {
     makeError('mime type must be a string', definition)
   )
   invariant(
-    definition.editor,
-    makeError('editor is mandatory', definition)
-  )
-  invariant(
-    definition.editor.component,
-    makeError('editor component is mandatory', definition)
-  )
-  invariant(
-    definition.editor.reduce,
-    makeError('editor reduce is mandatory', definition)
-  )
-  invariant(
-    typeof definition.editor.reduce === 'function',
-    makeError('editor reduce must be a function', definition)
-  )
-  invariant(
     definition.player,
     makeError('player component is mandatory', definition)
   )
-  invariant(
-    definition.icon,
-    makeError('icon component is mandatory', definition)
-  )
-
-  const extraProperties = difference(Object.keys(definition), typeProperties)
-
-  if (extraProperties.length > 0) {
-    invariant(
-      false,
-      makeError(`unknown property '${extraProperties[0]}'`, definition)
-    )
-  }
 }
 
 function makeError(message, definition) {

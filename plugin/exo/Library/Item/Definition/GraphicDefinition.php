@@ -11,7 +11,6 @@ use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\GraphicQuestionSerializer;
-use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GraphicAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\GraphicQuestionValidator;
 
@@ -150,11 +149,38 @@ class GraphicDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $graphicQuestion, array $answers)
+    public function getStatistics(AbstractItem $graphicQuestion, array $answersData, $total)
     {
-        // TODO : implement
+        $areas = [];
 
-        return [];
+        foreach ($answersData as $answerData) {
+            $areasToInc = [];
+
+            foreach ($answerData as $areaAnswer) {
+                if (isset($areaAnswer->x) && isset($areaAnswer->y)) {
+                    $isInArea = false;
+
+                    foreach ($graphicQuestion->getAreas() as $area) {
+                        if ($this->isPointInArea($area, $areaAnswer->x, $areaAnswer->y)) {
+                            $areasToInc[$area->getUuid()] = true;
+                            $isInArea = true;
+                        }
+                    }
+                    if (!$isInArea) {
+                        $areas['_others'] = isset($areas['_others']) ? $areas['_others'] + 1 : 1;
+                    }
+                }
+            }
+            foreach (array_keys($areasToInc) as $areaId) {
+                $areas[$areaId] = isset($areas[$areaId]) ? $areas[$areaId] + 1 : 1;
+            }
+        }
+
+        return [
+            'areas' => $areas,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
+        ];
     }
 
     /**
@@ -171,17 +197,6 @@ class GraphicDefinition extends AbstractDefinition
         foreach ($item->getAreas() as $area) {
             $area->refreshUuid();
         }
-    }
-
-    /**
-     * No additional content fields to process.
-     *
-     * @param ContentParserInterface $contentParser
-     * @param \stdClass              $item
-     */
-    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
-    {
-        return;
     }
 
     private function isPointInArea(Area $area, $x, $y)

@@ -1,8 +1,19 @@
-import editor from './editor'
-import {OrderingPaper} from './paper.jsx'
-import {OrderingPlayer} from './player.jsx'
-import {OrderingFeedback} from './feedback.jsx'
+import merge from 'lodash/merge'
+
+import {trans} from '#/main/app/intl/translation'
+
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {OrderingItem as OrderingItemType} from '#/plugin/exo/items/ordering/prop-types'
+
+// components
+import {OrderingEditor} from '#/plugin/exo/items/ordering/components/editor'
+import {OrderingPaper} from '#/plugin/exo/items/ordering/paper'
+import {OrderingPlayer} from '#/plugin/exo/items/ordering/player'
+import {OrderingFeedback} from '#/plugin/exo/items/ordering/feedback'
+
+// scores
+import ScoreFixed from '#/plugin/exo/scores/fixed'
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
@@ -84,10 +95,24 @@ function generateStats(item, papers, withAllParpers) {
 export default {
   type: 'application/x.ordering+json',
   name: 'ordering',
+  tags: [trans('question', {}, 'quiz')],
+  answerable: true,
+
+  components: {
+    editor: OrderingEditor
+  },
+
+  supportScores: () => [
+    ScoreFixed,
+    ScoreSum
+  ],
+
+  create: (orderingItem) => merge({}, OrderingItemType.defaultProps, orderingItem),
+
+  // old
   paper: OrderingPaper,
   player: OrderingPlayer,
   feedback: OrderingFeedback,
-  editor,
   getCorrectedAnswer,
   generateStats
 }

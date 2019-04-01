@@ -7,7 +7,6 @@ use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\OpenQuestionSerializer;
-use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\OpenAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\OpenQuestionValidator;
 
@@ -136,11 +135,12 @@ class OpenDefinition extends AbstractDefinition
      * Not implemented because not relevant.
      *
      * @param AbstractItem $openQuestion
-     * @param array        $answers
+     * @param array        $answersData
+     * @param int          $total
      *
      * @return array
      */
-    public function getStatistics(AbstractItem $openQuestion, array $answers)
+    public function getStatistics(AbstractItem $openQuestion, array $answersData, $total)
     {
         return [];
     }
@@ -151,17 +151,6 @@ class OpenDefinition extends AbstractDefinition
      * @param AbstractItem $item
      */
     public function refreshIdentifiers(AbstractItem $item)
-    {
-        return;
-    }
-
-    /**
-     * No additional content fields to process.
-     *
-     * @param ContentParserInterface $contentParser
-     * @param \stdClass              $item
-     */
-    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
     {
         return;
     }

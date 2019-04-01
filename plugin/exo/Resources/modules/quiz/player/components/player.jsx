@@ -27,15 +27,15 @@ import {ContentItemPlayer} from '#/plugin/exo/contents/components/content-item-p
 import {PlayerNav} from '#/plugin/exo/quiz/player/components/nav-bar'
 import {PlayerRestrictions} from '#/plugin/exo/quiz/player/components/restrictions'
 import {getNumbering} from '#/plugin/exo/utils/numbering'
-import {NUMBERING_NONE} from '#/plugin/exo/quiz/enums'
+import {constants} from '#/plugin/exo/resources/quiz/constants'
 
 // TODO : rethink the loading paper process (it's a little hacky to make it quickly compatible with Router)
 
 const CurrentStep = props =>
   <section className="current-step">
-    <h2 className="h4 h-first">
+    <h3 className="h2 h-first">
       {props.step.title ? props.step.title : trans('step', {}, 'quiz') + ' ' + props.number}
-    </h2>
+    </h3>
 
     {props.step.description &&
       <HtmlText className="step-description">{props.step.description}</HtmlText>
@@ -54,7 +54,7 @@ const CurrentStep = props =>
               item={item}
               showHint={props.showHint}
               usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
-              numbering={props.numbering !== NUMBERING_NONE ? props.number + '.' + getNumbering(props.numbering, index): null}
+              numbering={props.numbering !== constants.NUMBERING_NONE ? props.number + '.' + getNumbering(props.numbering, index): null}
             >
               {React.createElement(getDefinition(item.type).player, {
                 item: item,
@@ -66,7 +66,7 @@ const CurrentStep = props =>
             <ItemFeedback
               item={item}
               usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
-              numbering={props.numbering !== NUMBERING_NONE ? props.number + '.' + getNumbering(props.numbering, index): null}
+              numbering={props.numbering !== constants.NUMBERING_NONE ? props.number + '.' + getNumbering(props.numbering, index): null}
             >
               {React.createElement(getDefinition(item.type).feedback, {
                 item: item,
