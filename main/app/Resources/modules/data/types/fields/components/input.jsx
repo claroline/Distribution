@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import classes from 'classnames'
 
 import {trans} from '#/main/app/intl/translation'
 
@@ -101,7 +102,7 @@ class FieldList extends Component {
 
   render() {
     return (
-      <div className="field-list-control">
+      <div className={classes('field-list-control', this.props.className)}>
         {0 !== this.props.value.length &&
           <button
             type="button"
@@ -183,6 +184,7 @@ class FieldList extends Component {
 FieldList.propTypes = {
   id: T.string.isRequired,
   placeholder: T.string,
+  className: T.string,
   value: T.arrayOf(T.shape({
 
   })),

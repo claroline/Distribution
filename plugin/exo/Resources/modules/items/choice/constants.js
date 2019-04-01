@@ -1,34 +1,16 @@
-import {tex} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 
-export const RULE_TYPE_ALL = 'all'
-export const RULE_TYPE_MORE = 'more'
-export const RULE_TYPE_LESS = 'less'
-export const RULE_TYPE_BETWEEN = 'between'
+const CHOICE_TYPE_MULTIPLE = 'multiple'
+const CHOICE_TYPE_SINGLE   = 'single'
 
-export const ruleTypes = {
-  [RULE_TYPE_ALL]: tex('score_rule_all'),
-  [RULE_TYPE_MORE]: tex('score_rule_more_than'),
-  [RULE_TYPE_LESS]: tex('score_rule_less_than'),
-  [RULE_TYPE_BETWEEN]: tex('score_rule_between')
+const CHOICE_TYPES = {
+  [CHOICE_TYPE_SINGLE]: trans('choice_single_answer', {}, 'quiz'),
+  [CHOICE_TYPE_MULTIPLE]: trans('choice_multiple_answers', {}, 'quiz')
 }
 
-export const RULE_SOURCE_CORRECT = 'correct'
-export const RULE_SOURCE_INCORRECT = 'incorrect'
+export const constants = {
+  CHOICE_TYPES,
 
-export const ruleSources = {
-  [RULE_SOURCE_CORRECT]: tex('score_rule_correct_answers'),
-  [RULE_SOURCE_INCORRECT]: tex('score_rule_incorrect_answers')
-}
-
-export const RULE_TARGET_GLOBAL = 'global'
-export const RULE_TARGET_ANSWER = 'answer'
-
-export const ruleTargetsCorrect = {
-  [RULE_TARGET_GLOBAL]: tex('score_rule_global_score'),
-  [RULE_TARGET_ANSWER]: tex('score_rule_by_correct_answer')
-}
-
-export const ruleTargetsIncorrect = {
-  [RULE_TARGET_GLOBAL]: tex('score_rule_global_score'),
-  [RULE_TARGET_ANSWER]: tex('score_rule_by_incorrect_answer')
+  CHOICE_TYPE_MULTIPLE,
+  CHOICE_TYPE_SINGLE
 }

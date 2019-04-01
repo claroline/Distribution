@@ -135,9 +135,9 @@ class PaperControllerTest extends TransactionalTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals(1, count($content));
+        $this->assertEquals(1, $content->totalResults);
 
-        $this->assertEquals($pa1->getUuid(), $content[0]->id);
+        $this->assertEquals($pa1->getUuid(), $content->data[0]->id);
     }
 
     /**
@@ -160,11 +160,12 @@ class PaperControllerTest extends TransactionalTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals(4, count($content));
-        $this->assertEquals($pa1->getUuid(), $content[0]->id);
-        $this->assertEquals($pa2->getUuid(), $content[1]->id);
-        $this->assertEquals($pa3->getUuid(), $content[2]->id);
-        $this->assertEquals($pa4->getUuid(), $content[3]->id);
+
+        $this->assertEquals(4, $content->totalResults);
+        $this->assertEquals($pa1->getUuid(), $content->data[0]->id);
+        $this->assertEquals($pa2->getUuid(), $content->data[1]->id);
+        $this->assertEquals($pa3->getUuid(), $content->data[2]->id);
+        $this->assertEquals($pa4->getUuid(), $content->data[3]->id);
     }
 
     /**
@@ -271,22 +272,6 @@ class PaperControllerTest extends TransactionalTestCase
     }
 
     /**
-     * The api MUST NOT allow to delete a paper from a published exercise.
-     */
-    public function testDeletePaperThrowErrorIfExercisePublished()
-    {
-        $paper = $this->paperGenerator->create($this->exercise, $this->john);
-        $this->om->persist($paper);
-
-        $this->exercise->setPublishedOnce(true);
-        $this->om->flush();
-
-        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers/{$paper->getUuid()}", $this->john);
-
-        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
-    }
-
-    /**
      * A "normal" user MUST NOT be able to delete the papers of an exercise.
      */
     public function testUserDeleteAllPapers()
@@ -317,18 +302,6 @@ class PaperControllerTest extends TransactionalTestCase
         ]);
 
         $this->assertCount(0, $papers);
-    }
-
-    /**
-     * The api MUST NOT allow to delete papers from a published exercise.
-     */
-    public function testDeleteAllPapersThrowErrorIfExercisePublished()
-    {
-        $this->exercise->setPublishedOnce(true);
-        $this->om->flush();
-
-        $this->request('DELETE', "/api/exercises/{$this->exercise->getUuid()}/papers", $this->john);
-        $this->assertEquals(422, $this->client->getResponse()->getStatusCode());
     }
 
     /**

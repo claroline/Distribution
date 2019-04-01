@@ -4,19 +4,22 @@ namespace UJM\ExoBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Event\Log\LogExerciseUpdateEvent;
+use UJM\ExoBundle\Library\Item\Definition\AnswerableItemDefinitionInterface;
 use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
-use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Manager\Item\ItemManager;
 use UJM\ExoBundle\Repository\ExerciseRepository;
 use UJM\ExoBundle\Repository\PaperRepository;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
-use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
 
 /**
@@ -24,79 +27,82 @@ use UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator;
  */
 class ExerciseManager
 {
-    /**
-     * @var ObjectManager
-     */
+    /** @var ObjectManager */
     private $om;
 
-    /**
-     * @var ExerciseRepository
-     */
+    /** @var ExerciseRepository */
     private $repository;
 
-    /**
-     * @var ExerciseValidator
-     */
+    /** @var ExerciseValidator */
     private $validator;
 
-    /**
-     * @var ExerciseSerializer
-     */
+    /** @var ExerciseSerializer */
     private $serializer;
 
-    /**
-     * @var ItemManager
-     */
+    /** @var ResourceManager $resourceManager */
+    private $resourceManager;
+
+    /** @var ItemManager */
     private $itemManager;
 
-    /**
-     * @var PaperManager
-     */
+    /** @var PaperManager */
     private $paperManager;
 
-    /**
-     * @var ItemDefinitionsCollection
-     */
+    /** @var ClaroUtilities */
+    private $utils;
+
+    /** @var ItemDefinitionsCollection */
     private $definitions;
+
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
 
     /**
      * ExerciseManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "validator"    = @DI\Inject("ujm_exo.validator.exercise"),
-     *     "serializer"   = @DI\Inject("ujm_exo.serializer.exercise"),
-     *     "itemManager"  = @DI\Inject("ujm_exo.manager.item"),
-     *     "paperManager" = @DI\Inject("ujm_exo.manager.paper"),
-     *     "utils"        = @DI\Inject("claroline.utilities.misc"),
-     *     "definitions"  = @DI\Inject("ujm_exo.collection.item_definitions")
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "validator"       = @DI\Inject("ujm_exo.validator.exercise"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.exercise"),
+     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
+     *     "itemManager"     = @DI\Inject("ujm_exo.manager.item"),
+     *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
+     *     "utils"           = @DI\Inject("claroline.utilities.misc"),
+     *     "definitions"     = @DI\Inject("ujm_exo.collection.item_definitions"),
+     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
      * })
      *
      * @param ObjectManager             $om
      * @param ExerciseValidator         $validator
      * @param ExerciseSerializer        $serializer
+     * @param ResourceManager           $resourceManager
      * @param ItemManager               $itemManager
      * @param PaperManager              $paperManager
      * @param ItemDefinitionsCollection $definitions
      * @param ClaroUtilities            $utils
+     * @param EventDispatcherInterface  $eventDispatcher
      */
     public function __construct(
         ObjectManager $om,
         ExerciseValidator $validator,
         ExerciseSerializer $serializer,
+        ResourceManager $resourceManager,
         ItemManager $itemManager,
         PaperManager $paperManager,
         ClaroUtilities $utils,
-        ItemDefinitionsCollection $definitions
+        ItemDefinitionsCollection $definitions,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->om = $om;
         $this->repository = $this->om->getRepository('UJMExoBundle:Exercise');
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->resourceManager = $resourceManager;
         $this->itemManager = $itemManager;
         $this->paperManager = $paperManager;
         $this->definitions = $definitions;
         $this->utils = $utils;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -106,7 +112,7 @@ class ExerciseManager
      *
      * @return Exercise
      *
-     * @throws ValidationException
+     * @throws InvalidDataException
      */
     public function create(\stdClass $data)
     {
@@ -121,14 +127,14 @@ class ExerciseManager
      *
      * @return Exercise
      *
-     * @throws ValidationException
+     * @throws InvalidDataException
      */
     public function update(Exercise $exercise, \stdClass $data)
     {
         // Validate received data
         $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
         if (count($errors) > 0) {
-            throw new ValidationException('Exercise is not valid', $errors);
+            throw new InvalidDataException('Exercise is not valid', $errors);
         }
         // Start flush suite to avoid persisting and flushing tags before quiz
         $this->om->startFlushSuite();
@@ -141,6 +147,10 @@ class ExerciseManager
 
         // Invalidate unfinished papers
         $this->repository->invalidatePapers($exercise);
+
+        // Log exercise update
+        $event = new LogExerciseUpdateEvent($exercise, (array) $this->serializer->serialize($exercise));
+        $this->eventDispatcher->dispatch('log', $event);
 
         return $exercise;
     }
@@ -173,9 +183,6 @@ class ExerciseManager
         // Populate new entities with original data
         $newExercise = $this->createCopy($exerciseData, null);
 
-        // need to init publishedOnce according to current publication state
-        $newExercise->setPublishedOnce($exercise->getResourceNode()->isPublished());
-
         // Save copy to db
         $this->om->flush();
 
@@ -194,60 +201,6 @@ class ExerciseManager
     {
         return !$exercise->getResourceNode()->isPublished()
             || 0 === $this->paperManager->countExercisePapers($exercise);
-    }
-
-    /**
-     * Publishes an exercise.
-     *
-     * @param Exercise $exercise
-     *
-     * @throws \LogicException if the exercise is already published
-     */
-    public function publish(Exercise $exercise)
-    {
-        if (!$exercise->wasPublishedOnce()) {
-            $this->paperManager->deleteAll($exercise);
-            $exercise->setPublishedOnce(true);
-        }
-
-        $exercise->getResourceNode()->setPublished(true);
-        $this->om->persist($exercise);
-
-        $this->om->flush();
-    }
-
-    /**
-     * Unpublishes an exercise.
-     *
-     * @param Exercise $exercise
-     */
-    public function unpublish(Exercise $exercise)
-    {
-        $exercise->getResourceNode()->setPublished(false);
-        $this->om->flush();
-    }
-
-    /**
-     * Applies an arbitrary parser on all HTML contents in the quiz definition.
-     *
-     * @param ContentParserInterface $contentParser
-     * @param \stdClass              $quizData
-     */
-    public function parseContents(ContentParserInterface $contentParser, \stdClass $quizData)
-    {
-        if (isset($quizData->description)) {
-            $quizData->description = $contentParser->parse($quizData->description);
-        }
-
-        array_walk($quizData->steps, function (\stdClass $step) use ($contentParser) {
-            if (isset($step->description)) {
-                $step->description = $contentParser->parse($step->description);
-            }
-
-            array_walk($step->items, function (\stdClass $item) use ($contentParser) {
-                $this->itemManager->parseContents($contentParser, $item);
-            });
-        });
     }
 
     /**
@@ -271,6 +224,37 @@ class ExerciseManager
         $this->om->persist($copyDestination);
 
         return $copyDestination;
+    }
+
+    public function export(Exercise $exercise)
+    {
+        $data = $this->serializer->serialize(
+            $exercise,
+            [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META]
+        );
+        $filename = tempnam($exercise->getResourceNode()->getName(), '');
+        file_put_contents($filename, json_encode($data), FILE_APPEND);
+
+        return $filename;
+    }
+
+    public function import(\stdClass $data, $workspace, $owner)
+    {
+        $exercise = new Exercise();
+        $exercise->setName($data->title);
+        // Create entities from import data
+        $exercise = $this->createCopy($data, $exercise);
+        $parent = $this->resourceManager->getWorkspaceRoot($workspace);
+
+        $node = $this->resourceManager->create(
+            $exercise,
+            $this->resourceManager->getResourceTypeByName('ujm_exercise'),
+            $owner,
+            $workspace,
+            $parent
+        );
+
+        return $node;
     }
 
     public function exportPapersToCsv(Exercise $exercise)
@@ -324,7 +308,7 @@ class ExerciseManager
 
         //get the list of titles for the csv (the headers)
         //this is an array of array because some question types will return...
-        //more than 1 title (ie clozes)
+        //more than 1 title (ie cloze)
         foreach ($exercise->getSteps() as $step) {
             foreach ($step->getStepQuestions() as $stepQ) {
                 $item = $stepQ->getQuestion();
@@ -333,9 +317,11 @@ class ExerciseManager
                 $itemType = $item->getInteraction();
 
                 if ($this->definitions->has($item->getMimeType())) {
+                    /** @var AnswerableItemDefinitionInterface $definition */
                     $definition = $this->definitions->get($item->getMimeType());
                     $subtitles = $definition->getCsvTitles($itemType);
-                    //cas particulier texte à trous
+
+                    // FIXME
                     if ('application/x.cloze+json' === $item->getMimeType()) {
                         $qText = $item->getTitle();
                         if (empty($qText)) {
@@ -366,7 +352,6 @@ class ExerciseManager
         fputcsv($fp, $flattenedTitles, ';');
 
         //this is the same reason why we use an array of array here
-        $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
         $limit = 250;
         $iteration = 0;
         $papers = [];
@@ -376,6 +361,7 @@ class ExerciseManager
             ++$iteration;
             $dataPapers = [];
 
+            /** @var Paper $paper */
             foreach ($papers as $paper) {
                 $structure = json_decode($paper->getStructure());
                 $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ? floatval($structure->parameters->totalScoreOn) : $this->paperManager->calculateTotal($paper);
@@ -410,6 +396,8 @@ class ExerciseManager
                         if ($answer->getQuestionId() === $question->getUuid()) {
                             if ($this->definitions->has($item->getMimeType())) {
                                 $found = true;
+
+                                /** @var AnswerableItemDefinitionInterface $definition */
                                 $definition = $this->definitions->get($item->getMimeType());
                                 $csv[$answer->getQuestionId()] = $definition->getCsvAnswers($item->getInteraction(), $answer);
                             }

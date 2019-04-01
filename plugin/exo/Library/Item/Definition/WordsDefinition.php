@@ -10,7 +10,6 @@ use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\WordsQuestionSerializer;
-use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\WordsAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\WordsQuestionValidator;
 
@@ -149,30 +148,28 @@ class WordsDefinition extends AbstractDefinition
     /**
      * @param OpenQuestion $wordsQuestion
      * @param array        $answersData
+     * @param int          $total
      *
      * @return array
      */
-    public function getStatistics(AbstractItem $wordsQuestion, array $answersData)
+    public function getStatistics(AbstractItem $wordsQuestion, array $answersData, $total)
     {
-        $keywords = [];
+        $words = [];
 
         foreach ($answersData as $answerData) {
             /** @var Keyword $keyword */
             foreach ($wordsQuestion->getKeywords() as $keyword) {
                 if ($this->containKeyword($answerData, $keyword)) {
-                    if (!isset($keywords[$keyword->getId()])) {
-                        // First answer to contain the keyword
-                        $keywords[$keyword->getId()] = new \stdClass();
-                        $keywords[$keyword->getId()]->id = $keyword->getId();
-                        $keywords[$keyword->getId()]->count = 0;
-                    }
-
-                    ++$keywords[$keyword->getId()]->count;
+                    $words[$keyword->getText()] = isset($words[$keyword->getText()]) ? $words[$keyword->getText()] + 1 : 1;
                 }
             }
         }
 
-        return array_values($keywords);
+        return [
+            'words' => $words,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
+        ];
     }
 
     /**
@@ -181,17 +178,6 @@ class WordsDefinition extends AbstractDefinition
      * @param AbstractItem $item
      */
     public function refreshIdentifiers(AbstractItem $item)
-    {
-        return;
-    }
-
-    /**
-     * No additional content fields to process.
-     *
-     * @param ContentParserInterface $contentParser
-     * @param \stdClass              $item
-     */
-    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
     {
         return;
     }

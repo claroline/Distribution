@@ -1,9 +1,18 @@
-import editor from './editor'
-import {MatchPaper} from './paper.jsx'
-import {MatchPlayer} from './player.jsx'
-import {MatchFeedback} from './feedback.jsx'
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 import times from 'lodash/times'
+
+import {trans} from '#/main/app/intl/translation'
+
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {MatchItem as MatchItemTypes} from '#/plugin/exo/items/match/prop-types'
+
+// components
+import {MatchPaper} from '#/plugin/exo/items/match/paper'
+import {MatchPlayer} from '#/plugin/exo/items/match/player'
+import {MatchFeedback} from '#/plugin/exo/items/match/feedback'
+import {MatchEditor} from '#/plugin/exo/items/match/components/editor'
+
+// scores
+import ScoreSum from '#/plugin/exo/scores/sum'
 
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
@@ -13,8 +22,8 @@ function getCorrectedAnswer(item, answer = {data: []}) {
 
     if (userAnswer) {
       solution.score > 0 ?
-          corrected.addExpected(new Answerable(solution.score)):
-          corrected.addUnexpected(new Answerable(solution.score))
+        corrected.addExpected(new Answerable(solution.score)):
+        corrected.addUnexpected(new Answerable(solution.score))
     } else {
       if (solution.score > 0)
         corrected.addMissing(new Answerable(solution.score))
@@ -76,10 +85,26 @@ function generateStats(item, papers, withAllParpers) {
 export default {
   type: 'application/x.match+json',
   name: 'match',
+  tags: [trans('question', {}, 'quiz')],
+  answerable: true,
+
+  components: {
+    editor: MatchEditor
+  },
+
+  supportScores: () => [
+    ScoreSum
+  ],
+
+  validate: () => {
+
+  },
+
+  create: (item) => Object.assign(item, MatchItemTypes.defaultProps),
+
   paper: MatchPaper,
   player: MatchPlayer,
   feedback: MatchFeedback,
-  editor,
   getCorrectedAnswer,
   generateStats
 }
