@@ -265,7 +265,18 @@ const EditorParameters = props =>
             }, {
               name: 'parameters.showFeedback',
               label: trans('show_feedback', {}, 'quiz'),
-              type: 'boolean'
+              type: 'boolean',
+              onChange: (value) => {
+                if (value) {
+                  props.update('parameters.answersEditable', false)
+                }
+              }
+              // TODO : add help text
+            }, {
+              name: 'parameters.answersEditable',
+              label: trans('allow_to_edit_answers', {}, 'quiz'),
+              type: 'boolean',
+              disabled: (quiz) => quiz.parameters.showFeedback
               // TODO : add help text
             }, {
               name: 'parameters.interruptible',

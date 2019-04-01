@@ -14,6 +14,7 @@
     "after_the_last_attempt": "After the last attempt",
     "allow_test_exit": "Allow test exit",
     "allow_to_edit": "Allow to edit",
+    "allow_to_edit_answers": "Allow to edit answers from validated steps",
     "already": "This question is already shared with this user.",
     "already_answered": "You have already answered this quiz.",
     "anonymize_results": "Anonymize user results",
