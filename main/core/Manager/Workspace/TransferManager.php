@@ -184,18 +184,14 @@ class TransferManager
      */
     public function deserialize(array $data, array $options = [])
     {
-        if (isset($data['registration'])) {
-            $defaultRole = $data['registration']['defaultRole'];
-            unset($data['registration']['defaultRole']);
-        }
-
-        $this->log('Deserializing the workspace...');
-        $workspace = $this->serializer->deserialize(Workspace::class, $data, $options);
+        $defaultRole = $data['registration']['defaultRole'];
+        unset($data['registration']['defaultRole']);
+        $workspace = $this->serializer->deserialize($data, new Workspace(), $options);
 
         $this->log('Deserializing the roles...');
         foreach ($data['roles'] as $roleData) {
             $roleData['workspace']['uuid'] = $workspace->getUuid();
-            $role = $this->serializer->deserialize(Role::class, $roleData);
+            $role = $this->serializer->deserialize($roleData, new Role());
             $role->setWorkspace($workspace);
             $this->om->persist($role);
         }
@@ -242,7 +238,7 @@ class TransferManager
     public function importFiles($data, Workspace $workspace)
     {
         if (isset($data['archive'])) {
-            $object = $this->serializer->deserialize(PublicFile::class, $data['archive']);
+            $object = $this->om->getObject($data['archive'], PublicFile::class);
             $filebag = new FileBag();
             $archive = new \ZipArchive();
             if ($archive->open($this->fileUts->getPath($object))) {
