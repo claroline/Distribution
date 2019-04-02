@@ -67,7 +67,7 @@ class GraphicPlayer extends Component {
           src={this.props.item.image.data || asset(this.props.item.image.url)}
           absWidth={this.props.item.image.width}
           onRef={el => this.img = el}
-          onClick={this.onClickImage}
+          onClick={this.props.disabled ? undefined :this.onClickImage}
           pointers={this.state.pointers.map(pointer => ({
             type: POINTER_PLACED,
             absX: pointer.x,
@@ -93,6 +93,7 @@ GraphicPlayer.propTypes = {
     ]).isRequired,
     pointers: T.number.isRequired
   }).isRequired,
+  disabled: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 
