@@ -601,8 +601,8 @@ GridTable.propTypes = {
   update: T.func.isRequired
 }
 
-export const GridEditor = (props) => {
-  return(<FormData
+export const GridEditor = (props) =>
+  <FormData
     className="grid-editor"
     embedded={true}
     name={props.formName}
@@ -726,8 +726,7 @@ export const GridEditor = (props) => {
         ]
       }
     ]}
-  />)
-}
+  />
 
 implementPropTypes(GridEditor, ItemEditorTypes, {
   item: T.shape(GridItemTypes.propTypes).isRequired
