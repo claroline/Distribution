@@ -22,6 +22,7 @@ use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
@@ -165,11 +166,26 @@ class TransferManager
 
         $serialized['roles'] = $roles;
 
+        //we want to load  the ressources first
+        $ot = $workspace->getOrderedTools()->toArray();
+
+        $idx = 0;
+
+        foreach ($ot as $key => $tool) {
+            if ('resource_manager' === $tool->getName()) {
+                $idx = $key;
+            }
+        }
+
+        $first = $ot[$idx];
+        unset($ot[$idx]);
+        array_unshift($ot, $first);
+
         $serialized['orderedTools'] = array_map(function (OrderedTool $tool) {
             $data = $this->ots->serialize($tool, [Options::SERIALIZE_TOOL, Options::REFRESH_UUID]);
 
             return $data;
-        }, $workspace->getOrderedTools()->toArray());
+        }, $ot);
 
         return $serialized;
     }
@@ -184,8 +200,12 @@ class TransferManager
      */
     public function deserialize(array $data, array $options = [])
     {
+        $data = $this->replaceResourceIds($data);
+
+        //throw new \Exception('bnoom');
         $defaultRole = $data['registration']['defaultRole'];
         unset($data['registration']['defaultRole']);
+
         $workspace = $this->serializer->deserialize($data, new Workspace(), $options);
 
         $this->log('Deserializing the roles...');
@@ -277,5 +297,34 @@ class TransferManager
         }
 
         return $data;
+    }
+
+    public function replaceResourceIds($serialized)
+    {
+        $replaced = json_encode($serialized);
+
+        foreach ($serialized['orderedTools'] as $tool) {
+            if ('resource_manager' === $tool['name']) {
+                $root = $tool['data']['root'];
+                $replaced = $this->recursiveReplace($replaced, $root);
+            }
+        }
+
+        return json_decode($replaced, true);
+    }
+
+    public function recursiveReplace($replaced, $data)
+    {
+        $uuid = Uuid::uuid4()->toString();
+        $replaced = str_replace($data['id'], $uuid, $replaced);
+        $this->log('Replacing id '.$data['id'].' by '.$uuid);
+
+        if (isset($data['children'])) {
+            foreach ($data['children'] as $child) {
+                $replaced = $this->recursiveReplace($replaced, $child);
+            }
+        }
+
+        return $replaced;
     }
 }
