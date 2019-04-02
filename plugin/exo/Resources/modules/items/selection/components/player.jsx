@@ -92,7 +92,7 @@ class SelectionPlayer extends Component {
             id={'selection-text-box-' + this.props.item.id}
             anchorPrefix="selection-element-yours"
             text={this.props.item.text}
-            selections={getReactAnswerInputs(this.props.item, this.getOnAnswer(), this.answers)}
+            selections={getReactAnswerInputs(this.props.item, this.getOnAnswer(), this.props.answer, this.props.disabled)}
           />
         }
         {this.props.item.mode === 'find' &&
