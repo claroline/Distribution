@@ -8,9 +8,9 @@ import {SUM_CELL, SUM_COL, SUM_ROW} from '#/plugin/exo/items/grid/constants'
 
 // components
 import {GridEditor} from '#/plugin/exo/items/grid/components/editor'
-import {GridPaper} from '#/plugin/exo/items/grid/paper'
-import {GridPlayer} from '#/plugin/exo/items/grid/player'
-import {GridFeedback} from '#/plugin/exo/items/grid/feedback'
+import {GridPaper} from '#/plugin/exo/items/grid/components/paper'
+import {GridPlayer} from '#/plugin/exo/items/grid/components/player'
+import {GridFeedback} from '#/plugin/exo/items/grid/components/feedback'
 
 // scores
 import ScoreFixed from '#/plugin/exo/scores/fixed'

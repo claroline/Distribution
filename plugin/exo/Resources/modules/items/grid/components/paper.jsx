@@ -2,15 +2,17 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import has from 'lodash/has'
-import {tex} from '#/main/app/intl/translation'
-import {Feedback} from './../components/feedback-btn.jsx'
+
+import {trans} from '#/main/app/intl/translation'
+
+import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
 import {SolutionScore} from '#/plugin/exo/components/score'
-import {AnswerStats} from '../components/stats.jsx'
-import {PaperTabs} from './../components/paper-tabs.jsx'
-import {utils} from './utils/utils'
+import {AnswerStats} from '#/plugin/exo/items/components/stats'
+import {PaperTabs} from '#/plugin/exo/items/components/paper-tabs'
+import {utils} from '#/plugin/exo/items/grid/utils/utils'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
 import {SUM_CELL, SUM_COL, SUM_ROW} from '#/plugin/exo/items/grid/constants'
-import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
+import {SCORE_SUM, SCORE_FIXED} from '#/plugin/exo/quiz/enums'
 
 
 class ExpectedGridCell extends Component {
@@ -656,7 +658,7 @@ class GridPaper extends Component {
                                   key={`others-answer-${cell.id}-${i}`}
                                   className='answer-item stats-answer'
                                 >
-                                  <div>{tex('other_answers')}</div>
+                                  <div>{trans('other_answers', {}, 'quiz')}</div>
 
                                   <AnswerStats stats={{
                                     value: this.props.stats.cells[cell.id]['_others'],
@@ -669,7 +671,7 @@ class GridPaper extends Component {
                                   key={`unanswered-answer-${cell.id}-${i}`}
                                   className='answer-item unanswered-item'
                                 >
-                                  <div>{tex('unanswered')}</div>
+                                  <div>{trans('unanswered', {}, 'quiz')}</div>
 
                                   <AnswerStats stats={{
                                     value: this.props.stats.cells[cell.id]['_unanswered'],
@@ -688,7 +690,7 @@ class GridPaper extends Component {
               </table>
             </div>
             <div className='answer-item unanswered-item'>
-              <div>{tex('unanswered')}</div>
+              <div>{trans('unanswered', {}, 'quiz')}</div>
 
               <AnswerStats stats={{
                 value: this.props.stats.unanswered ? this.props.stats.unanswered : 0,
