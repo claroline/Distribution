@@ -5,9 +5,9 @@ import {WordsItem as WordsItemTypes} from '#/plugin/exo/items/words/prop-types'
 import {utils} from '#/plugin/exo/items/words/utils/utils'
 
 // components
-import {WordsPaper} from '#/plugin/exo/items/words/paper'
-import {WordsPlayer} from '#/plugin/exo/items/words/player'
-import {WordsFeedback} from '#/plugin/exo/items/words/feedback'
+import {WordsPaper} from '#/plugin/exo/items/words/components/paper'
+import {WordsPlayer} from '#/plugin/exo/items/words/components/player'
+import {WordsFeedback} from '#/plugin/exo/items/words/components/feedback'
 import {WordsEditor} from '#/plugin/exo/items/words/components/editor'
 
 // scores

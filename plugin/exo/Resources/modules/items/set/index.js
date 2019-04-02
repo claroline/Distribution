@@ -8,9 +8,9 @@ import {SetItem as SetItemType} from '#/plugin/exo/items/set/prop-types'
 
 // components
 import {SetEditor} from '#/plugin/exo/items/set/components/editor'
-import {SetPaper} from '#/plugin/exo/items/set/paper'
-import {SetPlayer} from '#/plugin/exo/items/set/player'
-import {SetFeedback} from '#/plugin/exo/items/set/feedback'
+import {SetPaper} from '#/plugin/exo/items/set/components/paper'
+import {SetPlayer} from '#/plugin/exo/items/set/components/player'
+import {SetFeedback} from '#/plugin/exo/items/set/components/feedback'
 
 // scores
 import ScoreSum from '#/plugin/exo/scores/sum'

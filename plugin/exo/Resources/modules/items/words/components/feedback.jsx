@@ -1,8 +1,8 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {tex} from '#/main/app/intl/translation'
-import {Highlight} from './utils/highlight.jsx'
+import {trans} from '#/main/app/intl/translation'
+import {Highlight} from '#/plugin/exo/items/words/utils/highlight'
 
 export const WordsFeedback = props =>
   props.answer && 0 !== props.answer.length ?
@@ -12,7 +12,7 @@ export const WordsFeedback = props =>
       solutions={props.item.solutions}
       showScore={false}
     /> :
-    <div className="no-answer">{tex('no_answer')}</div>
+    <div className="no-answer">{trans('no_answer', {}, 'quiz')}</div>
 
 WordsFeedback.propTypes = {
   item: T.shape({

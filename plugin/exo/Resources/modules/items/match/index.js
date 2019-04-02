@@ -6,9 +6,9 @@ import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/componen
 import {MatchItem as MatchItemTypes} from '#/plugin/exo/items/match/prop-types'
 
 // components
-import {MatchPaper} from '#/plugin/exo/items/match/paper'
-import {MatchPlayer} from '#/plugin/exo/items/match/player'
-import {MatchFeedback} from '#/plugin/exo/items/match/feedback'
+import {MatchPaper} from '#/plugin/exo/items/match/components/paper'
+import {MatchPlayer} from '#/plugin/exo/items/match/components/player'
+import {MatchFeedback} from '#/plugin/exo/items/match/components/feedback'
 import {MatchEditor} from '#/plugin/exo/items/match/components/editor'
 
 // scores

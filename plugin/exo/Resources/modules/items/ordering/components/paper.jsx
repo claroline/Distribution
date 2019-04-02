@@ -3,15 +3,15 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import has from 'lodash/has'
 
-import {tex} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 
-import {Feedback} from '../components/feedback-btn.jsx'
+import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
 import {SolutionScore} from '#/plugin/exo/components/score'
-import {AnswerStats} from '../components/stats.jsx'
+import {AnswerStats} from '#/plugin/exo/items/components/stats'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
-import {utils} from './utils/utils'
-import {PaperTabs} from '../components/paper-tabs.jsx'
-import {SCORE_SUM} from './../../quiz/enums'
+import {utils} from '#/plugin/exo/items/ordering/utils/utils'
+import {PaperTabs} from '#/plugin/exo/items/components/paper-tabs'
+import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 import {constants} from '#/plugin/exo/items/ordering/constants'
 
 const OrderingPaper = props => {
@@ -371,7 +371,7 @@ const OrderingPaper = props => {
             })
           }
           <div className='answer-item unanswered-item'>
-            <div>{tex('unanswered')}</div>
+            <div>{trans('unanswered', {}, 'quiz')}</div>
 
             <AnswerStats stats={{
               value: props.stats.unanswered ? props.stats.unanswered : 0,

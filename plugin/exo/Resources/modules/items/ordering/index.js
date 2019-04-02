@@ -7,9 +7,9 @@ import {OrderingItem as OrderingItemType} from '#/plugin/exo/items/ordering/prop
 
 // components
 import {OrderingEditor} from '#/plugin/exo/items/ordering/components/editor'
-import {OrderingPaper} from '#/plugin/exo/items/ordering/paper'
-import {OrderingPlayer} from '#/plugin/exo/items/ordering/player'
-import {OrderingFeedback} from '#/plugin/exo/items/ordering/feedback'
+import {OrderingPaper} from '#/plugin/exo/items/ordering/components/paper'
+import {OrderingPlayer} from '#/plugin/exo/items/ordering/components/player'
+import {OrderingFeedback} from '#/plugin/exo/items/ordering/components/feedback'
 
 // scores
 import ScoreFixed from '#/plugin/exo/scores/fixed'
