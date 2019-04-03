@@ -114,16 +114,17 @@ let Item = props => {
             placement="top"
             overlay={
               <Tooltip id={`item-${props.item.id}-drag`}>{trans('move')}</Tooltip>
-            }>
-              <span
-                title={trans('move')}
-                draggable="true"
-                className="tooltiped-button btn"
-              >
-                {props.draggable &&
-                  <span className="fa fa-arrows drag-handle"/>
-                }
-              </span>
+            }
+          >
+            <span
+              title={trans('move')}
+              draggable="true"
+              className="tooltiped-button btn"
+            >
+              {props.draggable &&
+                <span className="fa fa-arrows drag-handle"/>
+              }
+            </span>
           </OverlayTrigger>
         </div>
       )}

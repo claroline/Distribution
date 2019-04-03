@@ -108,9 +108,9 @@ export class DisplayHighlightInput extends Component {
             {this.props.colors.map(color => {
               return (
                 <option key={this.props.id + color.id} value={color.id} style={{backgroundColor: color.code}}>
-                 {'\u00a0'}{'\u00a0'}{'\u00a0'}
+                  {'\u00a0'}{'\u00a0'}{'\u00a0'}
                 </option>
-               )
+              )
             })}
           </select>
         </span>
@@ -155,7 +155,8 @@ SelectionInput.propTypes = {
     code: T.string.isRequired
   })),
   isAnswered: T.bool,
-  answerColorId: T.string
+  answerColorId: T.string,
+  disabled: T.bool
 }
 
 DisplaySelectInput.propTypes = {

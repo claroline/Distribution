@@ -1,6 +1,6 @@
 import React from 'react'
 import {mount} from 'enzyme'
-import {spyConsole, renew, ensure, mockGlobals} from '#/main/core/scaffolding/tests'
+import {spyConsole, renew, ensure} from '#/main/core/scaffolding/tests'
 import {MatchPlayer} from '#/plugin/exo/items/match/components/player'
 
 describe('<MatchPlayer/>', () => {
