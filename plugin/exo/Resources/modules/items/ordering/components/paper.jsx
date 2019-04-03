@@ -234,7 +234,7 @@ const OrderingPaper = props => {
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === solution.itemId).data}}/>
 
                     <AnswerStats stats={{
-                      value: props.stats.unused[solution.itemId] ? props.stats.unused[solution.itemId] : 0,
+                      value: props.stats.unused && props.stats.unused[solution.itemId] ? props.stats.unused[solution.itemId] : 0,
                       total: props.stats.total
                     }}/>
                   </div>
