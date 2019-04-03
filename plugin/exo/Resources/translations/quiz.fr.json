@@ -431,6 +431,8 @@
     "unselected_correct_choices": "les choix justes non cochés",
     "unselected_incorrect_choices": "les choix faux non cochés",
     "user_shared": "Nom de l'utilisateur avec qui partager la question",
+    "validate_step_title": "Valider l'étape",
+    "validate_step_question": "Êtes-vous sûr de vouloir valider l'étape ? Vous ne pourrez plus modifier les réponses de cette étape.",
     "view_paper": "Voir mes réponses",
     "warning": "Êtes-vous sûr de vouloir supprimer cette image ?",
     "warning_change_type_q": "Attention: vous risquez de perdre vos données saisies. Continuer ?",

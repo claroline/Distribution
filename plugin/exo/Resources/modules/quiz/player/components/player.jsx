@@ -191,8 +191,14 @@ class PlayerComponent extends Component {
             showFeedback={this.props.showFeedback}
             feedbackEnabled={this.props.feedbackEnabled}
             navigateTo={(step) => this.props.navigateTo(this.props.quizId, this.props.paper.id, step, this.props.answers, false, false)}
-            navigateToAndValidate={(step) => this.props.navigateTo(this.props.quizId, this.props.paper.id, step, this.props.answers, this.props.currentStepSend, false)}
-            openFeedbackAndValidate={(step) => this.props.navigateTo(this.props.quizId, this.props.paper.id, step, this.props.answers, this.props.currentStepSend, true)}
+            navigateToAndValidate={(step) => {
+              const confirm = !this.props.answersEditable && 0 < Object.values(this.props.answers).filter(a => 0 === a.tries).length
+              this.props.navigateTo(this.props.quizId, this.props.paper.id, step, this.props.answers, this.props.currentStepSend, false, confirm)}
+            }
+            openFeedbackAndValidate={(step) => {
+              const confirm = !this.props.answersEditable && 0 < Object.values(this.props.answers).filter(a => 0 === a.tries).length
+              this.props.navigateTo(this.props.quizId, this.props.paper.id, step, this.props.answers, this.props.currentStepSend, true, confirm)
+            }}
             submit={() => this.props.submit(this.props.quizId, this.props.paper.id, this.props.answers)}
             finish={() => this.props.finish(this.props.quizId, this.props.paper, this.props.answers, this.props.showFeedback, this.props.showEndConfirm, this.props.history.push)}
             currentStepSend={this.props.currentStepSend}
@@ -279,8 +285,16 @@ const Player = withRouter(connect(
     updateAnswer(questionId, answerData) {
       dispatch(actions.updateAnswer(questionId, answerData))
     },
-    navigateTo(quizId, paperId, nextStep, pendingAnswers, currentStepSend, openFeedback) {
-      dispatch(actions.navigateTo(quizId, paperId, nextStep, pendingAnswers, currentStepSend, openFeedback))
+    navigateTo(quizId, paperId, nextStep, pendingAnswers, currentStepSend, openFeedback, confirm = false) {
+      if (confirm) {
+        dispatch(modalActions.showModal(MODAL_CONFIRM, {
+          title: trans('validate_step_title', {}, 'quiz'),
+          question: trans('validate_step_question', {}, 'quiz'),
+          handleConfirm: () => dispatch(actions.navigateTo(quizId, paperId, nextStep, pendingAnswers, currentStepSend, openFeedback))
+        }))
+      } else {
+        dispatch(actions.navigateTo(quizId, paperId, nextStep, pendingAnswers, currentStepSend, openFeedback))
+      }
     },
     submit(quizId, paperId, answers) {
       dispatch(actions.submit(quizId, paperId, answers))
