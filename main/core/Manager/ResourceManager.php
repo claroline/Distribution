@@ -22,7 +22,6 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Utilities;
@@ -33,6 +32,7 @@ use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\RightsException;
 use Claroline\CoreBundle\Manager\Exception\WrongClassException;
+use Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceTypeRepository;
@@ -96,7 +96,8 @@ class ResourceManager
      *     "secut"                 = @DI\Inject("claroline.security.utilities"),
      *     "translator"            = @DI\Inject("translator"),
      *     "serializer"            = @DI\Inject("claroline.api.serializer"),
-     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler")
+     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "lifeCycleManager"      = @DI\Inject("claroline.manager.resource_lifecycle")
      * })
      *
      * @param RoleManager                  $roleManager
@@ -108,6 +109,7 @@ class ResourceManager
      * @param Utilities                    $secut
      * @param TranslatorInterface          $translator
      * @param PlatformConfigurationHandler $platformConfigHandler
+     * @param ResourceLifecycleManager     $lifeCycleManager
      */
     public function __construct(
         RoleManager $roleManager,
@@ -119,7 +121,8 @@ class ResourceManager
         Utilities $secut,
         TranslatorInterface $translator,
         PlatformConfigurationHandler $platformConfigHandler,
-        SerializerProvider $serializer
+        SerializerProvider $serializer,
+        ResourceLifecycleManager $lifeCycleManager
     ) {
         $this->om = $om;
 
@@ -133,6 +136,7 @@ class ResourceManager
         $this->platformConfigHandler = $platformConfigHandler;
         $this->filesDirectory = $container->getParameter('claroline.param.files_directory');
         $this->serializer = $serializer;
+        $this->lifeCycleManager = $lifeCycleManager;
 
         $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
         $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
@@ -534,21 +538,17 @@ class ResourceManager
             }
         }
         $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
+        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($resource))->getName();
 
-        // todo : reuse lifecycle
-        /** @var CopyResourceEvent $event */
-        $event = $this->dispatcher->dispatch(
-            'copy_'.$node->getResourceType()->getName(),
-            'Resource\\CopyResource',
-            [$resource, $newNode]
-        );
+        $serialized = $this->serializer->serialize($resource);
+        $copy = new $className();
+        $copy = $this->serializer->get($copyClass)->deserialize($serialized, $copy);
+        $copy->setResourceNode($newNode);
 
-        $copy = $event->getCopy();
+        $event = $this->ResourceLifecycleManager->copy($newNode, $node);
 
         // Set the published state
         $newNode->setPublished($event->getPublish());
-
-        $copy->setResourceNode($newNode);
 
         if ('directory' === $node->getResourceType()->getName() &&
             $withDirectoryContent) {
