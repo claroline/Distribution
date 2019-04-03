@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
-import {Highlight} from '#/plugin/exo/items/words/utils/highlight'
+import {Highlight} from '#/plugin/exo/items/words/components/highlight'
 
 export const WordsFeedback = props =>
   props.answer && 0 !== props.answer.length ?

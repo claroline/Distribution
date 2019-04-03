@@ -3,7 +3,6 @@ import {trans} from '#/main/app/intl/translation'
 import {stripDiacritics} from '#/main/core/scaffolding/text/strip-diacritics'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
-import {utils} from '#/plugin/exo/items/grid/utils/utils'
 import {constants} from '#/plugin/exo/items/grid/constants'
 
 // components
@@ -147,72 +146,9 @@ function findSolutionExpectedAnswer(solution) {
   return best
 }
 
-function generateStats(item, papers, withAllParpers) {
-  const stats = {
-    cells: {},
-    unanswered: 0,
-    total: 0
-  }
-  Object.values(papers).forEach(p => {
-    if (withAllParpers || p.finished) {
-      let total = 0
-      let nbAnswered = 0
-      const answered = {}
-      // compute the number of times the item is present in the structure of the paper and initialize acceptable pairs
-      p.structure.steps.forEach(structure => {
-        structure.items.forEach(i => {
-          if (i.id === item.id) {
-            ++total
-            ++stats.total
-
-            if (i.solutions) {
-              i.solutions.forEach(s => {
-                answered[s.cellId] = answered[s.cellId] ? answered[s.cellId] + 1 : 1
-              })
-            }
-          }
-        })
-      })
-      // compute the number of times the item has been answered
-      p.answers.forEach(a => {
-        if (a.questionId === item.id && a.data) {
-          ++nbAnswered
-          a.data.forEach(d => {
-            const key = utils.getKey(d.cellId, d.text, item.solutions)
-
-            if (!stats.cells[d.cellId]) {
-              stats.cells[d.cellId] = {}
-            }
-            stats.cells[d.cellId][key] = stats.cells[d.cellId][key] ? stats.cells[d.cellId][key] + 1 : 1
-
-            if (answered[d.cellId]) {
-              --answered[d.cellId]
-            }
-          })
-        }
-      })
-      const nbUnanswered = total - nbAnswered
-
-      for (let cellId in answered) {
-        if (answered[cellId] - nbUnanswered > 0) {
-          if (!stats.cells[cellId]) {
-            stats.cells[cellId] = {}
-          }
-          stats.cells[cellId]['_unanswered'] = stats.cells[cellId]['_unanswered'] ?
-            stats.cells[cellId]['_unanswered'] + (answered[cellId] - nbUnanswered) :
-            answered[cellId] - nbUnanswered
-        }
-      }
-      stats.unanswered += nbUnanswered
-    }
-  })
-
-  return stats
-}
-
 export default {
-  type: 'application/x.grid+json',
   name: 'grid',
+  type: 'application/x.grid+json',
   tags: [trans('question', {}, 'quiz')],
   answerable: true,
 
@@ -220,7 +156,6 @@ export default {
   player: GridPlayer,
   feedback: GridFeedback,
   getCorrectedAnswer,
-  generateStats,
 
   components: {
     editor: GridEditor

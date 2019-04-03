@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
+
 import {tex, trans} from '#/main/app/intl/translation'
 import {makeDraggable, makeDroppable} from '#/plugin/exo/utils/dragAndDrop'
 import {Button} from '#/main/app/action/components/button'

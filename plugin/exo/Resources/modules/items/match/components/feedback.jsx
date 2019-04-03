@@ -6,7 +6,8 @@ import Popover from 'react-bootstrap/lib/Popover'
 import {trans} from '#/main/app/intl/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
-import {utils} from '#/plugin/exo/items/match/utils/utils'
+import {utils} from './utils/utils'
+import {utils} from '#/plugin/exo/items/match/utils'
 
 function getPopoverPosition(connectionClass, id){
   const containerRect =  document.getElementById('popover-container-' + id).getBoundingClientRect()

@@ -4,12 +4,14 @@ import get from 'lodash/get'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ChoiceInput} from '#/main/app/data/types/choice/components/input'
 import {NumberInput} from '#/main/app/data/types/number/components/input'
 
 import {QuizType} from '#/plugin/exo/resources/quiz/components/type'
 import {constants} from '#/plugin/exo/resources/quiz/constants'
+import {QUIZ_TYPES, configureTypeEditor, setTypePresets} from '#/plugin/exo/resources/quiz/types'
 
 const hasOverview = (quiz) => get(quiz, 'parameters.showOverview')
 const hasEnd = (quiz) => get(quiz, 'parameters.showEndPage')
@@ -31,7 +33,7 @@ const EditorParameters = props =>
       displayLevel={2}
       embedded={true}
       name={props.formName}
-      sections={[
+      sections={configureTypeEditor(props.quizType, [
         {
           title: trans('general'),
           primary: true,
@@ -45,7 +47,17 @@ const EditorParameters = props =>
                 const CurrentType = (
                   <QuizType
                     type={get(quiz, 'parameters.type')}
-                    onChange={(type) => props.update('parameters.type', type.name)}
+                    selectAction={(type) => ({
+                      type: CALLBACK_BUTTON,
+                      callback: () => props.update(null, setTypePresets(type, quiz)),
+                      confirm: {
+                        icon: 'fa fa-fw fa-warning',
+                        title: trans('change_quiz_type_confirm', {}, 'quiz'),
+                        subtitle: get(QUIZ_TYPES[get(quiz, 'parameters.type')], 'meta.label') + ' > ' + get(QUIZ_TYPES[type], 'meta.label'),
+                        message: trans('change_quiz_type_message', {}, 'quiz'),
+                        button: trans('change', {}, 'actions')
+                      }
+                    })}
                   />
                 )
 
@@ -98,12 +110,16 @@ const EditorParameters = props =>
           ]
         }, {
           icon: 'fa fa-fw fa-dice',
-          title: trans('picking', {}, 'quiz'),
+          title: trans('attempts_pick', {}, 'quiz'),
           fields: [
             {
               name: 'parameters.hasExpectedAnswers',
               label: trans('has_expected_answers', {}, 'quiz'),
-              type: 'boolean'
+              type: 'boolean',
+              help: [
+                trans('has_expected_answers_help', {}, 'quiz'),
+                trans('has_expected_answers_help_score', {}, 'quiz')
+              ]
             }, {
               name: 'parameters.mandatoryQuestions',
               label: trans('make_questions_mandatory', {}, 'quiz'),
@@ -235,7 +251,7 @@ const EditorParameters = props =>
           ]
         }, {
           icon: ' fa fa-fw fa-play',
-          title: trans('attempts', {}, 'quiz'),
+          title: trans('attempts_play', {}, 'quiz'),
           fields: [
             {
               name: 'parameters.progressionDisplayed',
@@ -404,6 +420,39 @@ const EditorParameters = props =>
                 noEmpty: true,
                 choices: constants.QUIZ_SCORE_AVAILABILITY
               }
+            }, {
+              name: '_scoreMode',
+              label: trans('quiz_total_score_on', {}, 'quiz'),
+              type: 'choice',
+              required: true,
+              calculated: (quiz) => constants.TOTAL_SCORE_ON_CUSTOM === get(quiz, '_scoreMode') || 0 < get(quiz, 'parameters.totalScoreOn') ? constants.TOTAL_SCORE_ON_CUSTOM:constants.TOTAL_SCORE_ON_DEFAULT,
+              onChange: (value) => {
+                if (constants.TOTAL_SCORE_ON_DEFAULT === value) {
+                  props.update('parameters.totalScoreOn', 0)
+                } else {
+                  props.update('parameters.totalScoreOn', null)
+                }
+              },
+              options: {
+                condensed: true,
+                noEmpty: true,
+                choices: {
+                  [constants.TOTAL_SCORE_ON_DEFAULT]: trans('quiz_total_score_on_mode_default', {}, 'quiz'),
+                  [constants.TOTAL_SCORE_ON_CUSTOM]: trans('quiz_total_score_on_mode_custom', {}, 'quiz')
+                }
+              },
+              linked: [
+                {
+                  name: 'parameters.totalScoreOn',
+                  label: trans('quiz_total_score', {}, 'quiz'),
+                  type: 'number',
+                  displayed: (quiz) => constants.TOTAL_SCORE_ON_CUSTOM === get(quiz, '_scoreMode') || 0 < get(quiz, 'parameters.totalScoreOn'),
+                  required: true,
+                  options: {
+                    min: 1
+                  }
+                }
+              ]
             }/*{
               name: 'score.type',
               label: trans('calculation_mode', {}, 'quiz'),
@@ -429,11 +478,14 @@ const EditorParameters = props =>
           displayed: (quiz) => get(quiz, 'parameters.hasExpectedAnswers'),
           fields: [
             {
-              name: 'parameters',
-              label: trans('', {}, 'quiz'),
-              type: 'choice',
+              name: 'parameters.successScore',
+              label: trans('quiz_success_score', {}, 'quiz'),
+              type: 'number',
+              required: true,
               options: {
-
+                min: 0,
+                max: 100,
+                unit: '%'
               }
             }
           ]
@@ -519,12 +571,13 @@ const EditorParameters = props =>
             }
           ]
         }
-      ]}
+      ])}
     />
   </Fragment>
 
 EditorParameters.propTypes = {
   formName: T.string.isRequired,
+  quizType: T.string.isRequired,
   numberingType: T.string.isRequired,
   randomPick: T.string,
   tags: T.array.isRequired,
