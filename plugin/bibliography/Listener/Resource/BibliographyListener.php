@@ -63,27 +63,10 @@ class BibliographyListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        /** @var BookReference $old */
-        $old = $event->getResource();
-        $new = new BookReference();
-
-        $new->setAuthor($old->getAuthor());
-        $new->setDescription($old->getDescription());
-        $new->setAbstract($old->getAbstract());
-        $new->setIsbn($old->getIsbn());
-        $new->setPublisher($old->getPublisher());
-        $new->setPrinter($old->getPrinter());
-        $new->setPublicationYear($old->getPublicationYear());
-        $new->setLanguage($old->getLanguage());
-        $new->setPageCount($old->getPageCount());
-        $new->setUrl($old->getUrl());
-        $new->setCoverUrl($old->getCoverUrl());
-
-        $this->om->persist($new);
-        $this->om->flush();
-
-        $event->setCopy($new);
-        $event->stopPropagation();
+        $copy = new BookReference();
+        $serialized = $this->serializer->serialize($event->getResource());
+        $copy = $this->serializer->get(BookReference::class)->deserialize($serialized, $copy);
+        $event->setCopy($copy);
     }
 
     /**

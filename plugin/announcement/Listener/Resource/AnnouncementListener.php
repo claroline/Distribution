@@ -132,8 +132,9 @@ class AnnouncementListener
 
         $this->om->startFlushSuite();
         $copy = new AnnouncementAggregate();
-        $this->om->persist($copy);
 
+        $serialized = $this->serializer->serialize($aggregate);
+        $copy = $this->serializer->get(AnnouncementAggregate::class)->deserialize($serialized, $copy);
         $announcements = $aggregate->getAnnouncements();
 
         foreach ($announcements as $announcement) {

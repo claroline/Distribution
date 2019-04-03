@@ -106,8 +106,8 @@ class FileListener
         SerializerProvider $serializer,
         ResourceManager $resourceManager,
         ResourceEvaluationManager $resourceEvalManager,
-        FileUtilities $fileUtils)
-    {
+        FileUtilities $fileUtils
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
@@ -226,8 +226,8 @@ class FileListener
         $destParent = $event->getParent();
         $workspace = $destParent->getWorkspace();
         $newFile = new File();
-        $newFile->setSize($resource->getSize());
-        $newFile->setName($resource->getName());
+        $serialized = $this->serializer->serialize($original);
+        $newFile = $this->serializer->get(Directory::class)->deserialize($serialized, $newFile);
         $newFile->setMimeType($resource->getMimeType());
         $hashName = join('.', [
             'WORKSPACE_'.$workspace->getId(),
