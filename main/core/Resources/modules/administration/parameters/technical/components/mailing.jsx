@@ -101,38 +101,39 @@ const mailers = [
   }
 ]
 
-const MailingForm = (props) => <FormData
-  name="parameters"
-  target={['apiv2_parameters_update']}
-  buttons={true}
-  cancel={{
-    type: LINK_BUTTON,
-    target: '/main',
-    exact: true
-  }}
-  sections={[
-    {
-      icon: 'fa fa-fw fa-user-plus',
-      title: trans('main'),
-      defaultOpened: true,
-      fields: [
-        {
-          name: 'mailer.transport',
-          type: 'choice',
-          label: trans('transport'),
-          required: true,
-          options: {
-            condensed: true,
-            choices: mailers.reduce((choices, mailer) => Object.assign(choices, {
-              [mailer.name]: mailer.label
-            }), {})
-          },
-          linked: props.mailer ? mailers.find(mailer => mailer.name === props.mailer.transport).fields: []
-        }
-      ]
-    }
-  ]}
-/>
+const MailingForm = (props) =>
+  <FormData
+    name="parameters"
+    target={['apiv2_parameters_update']}
+    buttons={true}
+    cancel={{
+      type: LINK_BUTTON,
+      target: '/main',
+      exact: true
+    }}
+    sections={[
+      {
+        icon: 'fa fa-fw fa-user-plus',
+        title: trans('main'),
+        defaultOpened: true,
+        fields: [
+          {
+            name: 'mailer.transport',
+            type: 'choice',
+            label: trans('transport'),
+            required: true,
+            options: {
+              condensed: true,
+              choices: mailers.reduce((choices, mailer) => Object.assign(choices, {
+                [mailer.name]: mailer.label
+              }), {})
+            },
+            linked: props.mailer ? mailers.find(mailer => mailer.name === props.mailer.transport).fields: []
+          }
+        ]
+      }
+    ]}
+  />
 
 MailingForm.propTypes = {
   mailer: T.shape({
