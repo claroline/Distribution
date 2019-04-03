@@ -316,8 +316,11 @@ class TransferManager
     public function recursiveReplace($replaced, $data)
     {
         $uuid = Uuid::uuid4()->toString();
-        $replaced = str_replace($data['id'], $uuid, $replaced);
-        $this->log('Replacing id '.$data['id'].' by '.$uuid);
+
+        if (isset($data['id'])) {
+            $replaced = str_replace($data['id'], $uuid, $replaced);
+            $this->log('Replacing id '.$data['id'].' by '.$uuid);
+        }
 
         if (isset($data['children'])) {
             foreach ($data['children'] as $child) {
