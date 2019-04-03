@@ -4,7 +4,7 @@ import {stripDiacritics} from '#/main/core/scaffolding/text/strip-diacritics'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 import {utils} from '#/plugin/exo/items/grid/utils/utils'
-import {SUM_CELL, SUM_COL, SUM_ROW} from '#/plugin/exo/items/grid/constants'
+import {constants} from '#/plugin/exo/items/grid/constants'
 
 // components
 import {GridEditor} from '#/plugin/exo/items/grid/components/editor'
@@ -24,13 +24,13 @@ function getCorrectedAnswer(item, answer = {data: []}) {
   }
 
   switch(item.sumMode) {
-    case SUM_CELL: {
+    case constants.SUM_CELL: {
       return getCorrectAnswerForSumCellsMode(item, answer)
     }
-    case SUM_ROW: {
+    case constants.SUM_ROW: {
       return getCorrectAnswerForRowSumMode(item, answer)
     }
-    case SUM_COL: {
+    case constants.SUM_COL: {
       return getCorrectAnswerForColSumMode(item, answer)
     }
   }
