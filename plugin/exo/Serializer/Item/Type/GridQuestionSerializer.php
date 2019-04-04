@@ -199,9 +199,6 @@ class GridQuestionSerializer implements SerializerInterface
             if (!empty($cellData->data)) {
                 $cell->setData($cellData->data);
             }
-
-            $cell->setInput($cellData->input);
-
             if (!empty($cellData->choices)) {
                 $cell->setSelector(true);
             } else {
@@ -219,6 +216,7 @@ class GridQuestionSerializer implements SerializerInterface
             if (!$hasSolution) {
                 $this->deserializeCellChoices($cell, [], $options);
             }
+            $cell->setInput($hasSolution);
 
             $gridQuestion->addCell($cell);
         }
