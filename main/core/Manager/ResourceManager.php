@@ -540,12 +540,15 @@ class ResourceManager
         $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
         $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($resource))->getName();
 
-        $serialized = $this->serializer->serialize($resource);
+        $serializer = $this->serializer->get($className);
+        $options = method_exists($serializer, 'getCopyOptions') ? $serializer->getCopyOptions() : ['serialize' => [], 'deserialize' => []];
+        $serialized = $serializer->serialize($resource, $options['serialize']);
         $copy = new $className();
-        $copy = $this->serializer->get($copyClass)->deserialize($serialized, $copy);
+        $copy = $serializer->deserialize($serialized, $copy, $options['deserialize']);
         $copy->setResourceNode($newNode);
+        $original = $this->getResourceFromNode($node);
 
-        $event = $this->ResourceLifecycleManager->copy($newNode, $node);
+        $event = $this->lifeCycleManager->copy($original, $copy);
 
         // Set the published state
         $newNode->setPublished($event->getPublish());

@@ -215,7 +215,7 @@ class FileListener
     }
 
     /**
-     * @DI\Observe("copy_file")
+     * @DI\Observe("resource.file.copy")
      *
      * @param CopyResourceEvent $event
      */
@@ -225,9 +225,7 @@ class FileListener
         $resource = $event->getResource();
         $destParent = $event->getParent();
         $workspace = $destParent->getWorkspace();
-        $newFile = new File();
-        $serialized = $this->serializer->serialize($original);
-        $newFile = $this->serializer->get(Directory::class)->deserialize($serialized, $newFile);
+        $newFile = $event->getCopy();
         $newFile->setMimeType($resource->getMimeType());
         $hashName = join('.', [
             'WORKSPACE_'.$workspace->getId(),

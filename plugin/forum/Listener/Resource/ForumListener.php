@@ -16,7 +16,6 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Event\GenericDataEvent;
-use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
@@ -117,33 +116,6 @@ class ForumListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $event->stopPropagation();
-    }
-
-    /**
-     * Create a forum resource.
-     *
-     * @DI\Observe("resource.claroline_forum.create")
-     *
-     * @param DeleteResourceEvent $event
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-    }
-
-    /**
-     * Copies a forum resource.
-     *
-     * @DI\Observe("copy_claroline_forum")
-     *
-     * @param CopyResourceEvent $event
-     */
-    public function onCopy(CopyResourceEvent $event)
-    {
-        $resource = $event->getResource();
-        $new = $this->crud->copy($resource);
-
-        $event->setCopy($new);
         $event->stopPropagation();
     }
 

@@ -4,10 +4,8 @@ namespace Icap\BibliographyBundle\Listener\Resource;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Icap\BibliographyBundle\Entity\BookReference;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -54,19 +52,6 @@ class BibliographyListener
         ]);
 
         $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("copy_icap_bibliography")
-     *
-     * @param CopyResourceEvent $event
-     */
-    public function onCopy(CopyResourceEvent $event)
-    {
-        $copy = new BookReference();
-        $serialized = $this->serializer->serialize($event->getResource());
-        $copy = $this->serializer->get(BookReference::class)->deserialize($serialized, $copy);
-        $event->setCopy($copy);
     }
 
     /**

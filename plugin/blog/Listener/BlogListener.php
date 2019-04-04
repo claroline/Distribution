@@ -113,7 +113,7 @@ class BlogListener
     }
 
     /**
-     * @DI\Observe("copy_icap_blog")
+     * @DI\Observe("resource.icap_blog.copy")
      *
      * @param CopyResourceEvent $event
      */
@@ -124,9 +124,7 @@ class BlogListener
         /** @var \Icap\BlogBundle\Entity\Blog $blog */
         $blog = $event->getResource();
 
-        $newBlog = new Blog();
-        $serialized = $this->container->get('claroline.api.serializer')->serialize($event->getResource());
-        $newBlog = $this->serializer->get('claroline.api.serializer')->get(BookReference::class)->deserialize($serialized, $newBlog);
+        $newBlog = $event->getCopy();
 
         $this->container->get('icap_blog.manager.blog')->updateOptions($newBlog, $blog->getOptions(), $blog->getInfos());
 

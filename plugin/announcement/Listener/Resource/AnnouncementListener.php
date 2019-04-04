@@ -121,7 +121,7 @@ class AnnouncementListener
     }
 
     /**
-     * @DI\Observe("copy_claroline_announcement_aggregate")
+     * @DI\Observe("resource.claroline_announcement_aggregate.copy")
      *
      * @param CopyResourceEvent $event
      */
@@ -131,10 +131,7 @@ class AnnouncementListener
         $aggregate = $event->getResource();
 
         $this->om->startFlushSuite();
-        $copy = new AnnouncementAggregate();
-
-        $serialized = $this->serializer->serialize($aggregate);
-        $copy = $this->serializer->get(AnnouncementAggregate::class)->deserialize($serialized, $copy);
+        $copy = $event->getCopy();
         $announcements = $aggregate->getAnnouncements();
 
         foreach ($announcements as $announcement) {
