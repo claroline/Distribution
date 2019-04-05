@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import {trans} from '#/main/app/intl/translation'
 
-import merge from 'lodash/merge'
-import set from 'lodash/set'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 import Popover from 'react-bootstrap/lib/Popover'
@@ -14,7 +12,7 @@ import {MatchItem as MatchItemTypes} from '#/plugin/exo/items/match/prop-types'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {utils} from '#/plugin/exo/items/match/utils/utils'
+import {utils} from '#/plugin/exo/items/match/utils'
 import {makeId} from '#/plugin/exo/utils/utils'
 import {FormData} from '#/main/app/content/form/containers/data'
 
@@ -260,7 +258,7 @@ class MatchElements extends Component {
     }, 100)
   }
 
-  removeConnection(firstId, secondId){
+  removeConnection(/*firstId, secondId*/){
     this.jsPlumbInstance.deleteConnection(this.state.jsPlumbConnection)
     this.setState({
       popover: {
@@ -270,9 +268,9 @@ class MatchElements extends Component {
       current: null
     })
     // also delete the corresponding solution in props
-    this.props.onChange(
+    /*this.props.onChange(
       actions.removeSolution(firstId, secondId)
-    )
+    )*/
   }
 
   closePopover(){
@@ -493,11 +491,12 @@ class MatchLinkPopover extends Component {
 }
 
 MatchLinkPopover.propTypes = {
+  path: T.string.isRequired,
   popover: T.object.isRequired,
   solution: T.object.isRequired,
   handlePopoverClose: T.func.isRequired,
   handleConnectionDelete: T.func.isRequired,
-  onChange: T.func.isRequired
+  update: T.func.isRequired
 }
 
 class MatchItem extends Component{
@@ -563,6 +562,7 @@ class MatchItem extends Component{
 }
 
 MatchItem.propTypes = {
+  path: T.string.isRequired,
   type: T.string.isRequired,
   item: T.object.isRequired,
   onMount: T.func.isRequired,
@@ -603,7 +603,7 @@ class MatchEditor extends Component {
             {
               name: 'solutions',
               required: true,
-              render: (item, errors) => {
+              render: (item) => {
                 return <MatchElements {...this.props} item={item} />
               }
             }

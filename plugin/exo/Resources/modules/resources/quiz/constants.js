@@ -1,10 +1,5 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {QUIZ_CUSTOM} from '#/plugin/exo/resources/quiz/types'
-
-const QUIZ_TYPE_DEFAULT = QUIZ_CUSTOM
-
-
 // Shuffle
 const SHUFFLE_NEVER  = 'never'
 const SHUFFLE_ALWAYS = 'always'
@@ -65,10 +60,11 @@ const QUIZ_NUMBERINGS = {
   [NUMBERING_LITERAL]: trans('quiz_numbering_literal', {}, 'quiz')
 }
 
+// deprecated
+const TOTAL_SCORE_ON_DEFAULT = 'default'
+const TOTAL_SCORE_ON_CUSTOM = 'custom'
 
 export const constants = {
-  QUIZ_TYPE_DEFAULT,
-
   // shuffle
   SHUFFLE_NEVER,
   SHUFFLE_ALWAYS,
@@ -97,5 +93,8 @@ export const constants = {
   NUMBERING_NONE,
   NUMBERING_LITERAL,
   NUMBERING_NUMERIC,
-  QUIZ_NUMBERINGS
+  QUIZ_NUMBERINGS,
+
+  TOTAL_SCORE_ON_DEFAULT,
+  TOTAL_SCORE_ON_CUSTOM
 }

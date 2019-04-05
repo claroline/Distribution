@@ -9,7 +9,7 @@ import {LinkButton} from '#/main/app/buttons/link/components/button'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 const StepLink = props =>
-  <div className="quiz-navlink">
+  <li className="quiz-navlink">
     {props.actions &&
       <Toolbar
         id={props.id}
@@ -24,9 +24,9 @@ const StepLink = props =>
     <LinkButton
       target={`/edit/${props.id}`}
     >
-      {props.title ? props.title : trans('step', {number: props.number}, 'quiz')}
+      {props.title ? props.title.substr(0, 30) : trans('step', {number: props.number}, 'quiz')}
     </LinkButton>
-  </div>
+  </li>
 
 StepLink.propTypes = {
   id: T.string.isRequired,
@@ -54,14 +54,13 @@ class EditorSummary extends Component {
 
   render() {
     return (
-      <div className="quiz-navbar scroller">
-        <LinkButton
-          className="quiz-navlink"
-          target="/edit/parameters"
-        >
-          <span className="fa fa-cog" />
-          <span className="hidden-xs">{trans('parameters')}</span>
-        </LinkButton>
+      <ul className="quiz-navbar scroller">
+        <li className="quiz-navlink">
+          <LinkButton target="/edit/parameters">
+            <span className="fa fa-cog" />
+            <span className="hidden-xs">{trans('parameters')}</span>
+          </LinkButton>
+        </li>
 
         {this.props.steps.map((step, index) =>
           <StepLink
@@ -73,14 +72,13 @@ class EditorSummary extends Component {
           />
         )}
 
-        <CallbackButton
-          className="quiz-navlink"
-          callback={() => this.props.add()}
-        >
-          <span className="fa fa-plus" />
-          <span className="hidden-xs">{trans('add_step', {}, 'quiz')}</span>
-        </CallbackButton>
-      </div>
+        <li className="quiz-navlink">
+          <CallbackButton callback={() => this.props.add()}>
+            <span className="fa fa-plus" />
+            <span className="hidden-xs">{trans('add_step', {}, 'quiz')}</span>
+          </CallbackButton>
+        </li>
+      </ul>
     )
   }
 }
