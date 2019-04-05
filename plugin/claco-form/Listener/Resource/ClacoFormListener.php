@@ -113,15 +113,15 @@ class ClacoFormListener
     }
 
     /**
-     * @DI\Observe("copy_claroline_claco_form")
+     * @DI\Observe("resource.claroline_claco_form.copy")
      *
      * @param CopyResourceEvent $event
      */
     public function onCopy(CopyResourceEvent $event)
     {
         $clacoForm = $event->getResource();
-        $newNode = $event->getCopiedNode();
-        $copy = $this->clacoFormManager->copyClacoForm($clacoForm, $newNode);
+        $copy = $event->getCopy()->getResourceNode();
+        $copy = $this->clacoFormManager->copyClacoForm($clacoForm, $copy);
 
         $event->setCopy($copy);
         $event->stopPropagation();

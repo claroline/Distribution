@@ -108,8 +108,8 @@ class FileListener
         SerializerProvider $serializer,
         ResourceManager $resourceManager,
         ResourceEvaluationManager $resourceEvalManager,
-        FileUtilities $fileUtils)
-    {
+        FileUtilities $fileUtils
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
@@ -246,7 +246,7 @@ class FileListener
     }
 
     /**
-     * @DI\Observe("copy_file")
+     * @DI\Observe("resource.file.copy")
      *
      * @param CopyResourceEvent $event
      */
@@ -256,9 +256,7 @@ class FileListener
         $resource = $event->getResource();
         $destParent = $event->getParent();
         $workspace = $destParent->getWorkspace();
-        $newFile = new File();
-        $newFile->setSize($resource->getSize());
-        $newFile->setName($resource->getName());
+        $newFile = $event->getCopy();
         $newFile->setMimeType($resource->getMimeType());
         $hashName = join('.', [
             'WORKSPACE_'.$workspace->getId(),

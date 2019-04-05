@@ -9,7 +9,6 @@ use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Icap\BlogBundle\Entity\Blog;
-use Icap\BlogBundle\Entity\BlogOptions;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Manager\PostManager;
@@ -114,7 +113,7 @@ class BlogListener
     }
 
     /**
-     * @DI\Observe("copy_icap_blog")
+     * @DI\Observe("resource.icap_blog.copy")
      *
      * @param CopyResourceEvent $event
      */
@@ -125,9 +124,7 @@ class BlogListener
         /** @var \Icap\BlogBundle\Entity\Blog $blog */
         $blog = $event->getResource();
 
-        $newBlog = new Blog();
-        $newOptions = new BlogOptions();
-        $newBlog->setOptions($newOptions);
+        $newBlog = $event->getCopy();
 
         $this->container->get('icap_blog.manager.blog')->updateOptions($newBlog, $blog->getOptions(), $blog->getInfos());
 
