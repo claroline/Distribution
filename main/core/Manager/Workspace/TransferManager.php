@@ -305,29 +305,19 @@ class TransferManager
 
         foreach ($serialized['orderedTools'] as $tool) {
             if ('resource_manager' === $tool['name']) {
-                $root = $tool['data']['root'];
-                $replaced = $this->recursiveReplace($replaced, $root);
+                $nodes = $tool['data']['nodes'];
+
+                foreach ($nodes as $data) {
+                    $uuid = Uuid::uuid4()->toString();
+
+                    if (isset($data['id'])) {
+                        $replaced = str_replace($data['id'], $uuid, $replaced);
+                        $this->log('Replacing id '.$data['id'].' by '.$uuid);
+                    }
+                }
             }
         }
 
         return json_decode($replaced, true);
-    }
-
-    public function recursiveReplace($replaced, $data)
-    {
-        $uuid = Uuid::uuid4()->toString();
-
-        if (isset($data['id'])) {
-            $replaced = str_replace($data['id'], $uuid, $replaced);
-            $this->log('Replacing id '.$data['id'].' by '.$uuid);
-        }
-
-        if (isset($data['children'])) {
-            foreach ($data['children'] as $child) {
-                $replaced = $this->recursiveReplace($replaced, $child);
-            }
-        }
-
-        return $replaced;
     }
 }

@@ -31,6 +31,7 @@ use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -227,6 +228,21 @@ class FileListener
         //get the filePath
         $exportEvent->addFile($newPath, $path);
         $exportEvent->overwrite('_path', $newPath);
+    }
+
+    /**
+     * @DI\Observe("transfer_import_claroline_corebundle_entity_resource_file")
+     */
+    public function onImportFile(ImportObjectEvent $event)
+    {
+        $data = $event->getData();
+        $bag = $event->getFileBag();
+        $fileSystem = new Filesystem();
+        try {
+            $fileSystem->rename($bag->get($data['_path']), $this->filesDir.DIRECTORY_SEPARATOR.$data['hashName']);
+        } catch (\Exception $e) {
+        }
+        //move filebags elements here
     }
 
     /**
