@@ -64,19 +64,43 @@ class ResourceManager
         $root = $this->om->getRepository(ResourceNode::class)
           ->findOneBy(['parent' => null, 'workspace' => $workspace->getId()]);
 
-        return ['root' => $this->serializer->serialize($root, array_merge(
-          $options,
-          [Options::IS_RECURSIVE, Options::SERIALIZE_RESOURCE, Options::SERIALIZE_MINIMAL])),
-        ];
+        return $this->recursiveSerialize($root, $options);
+    }
+
+    private function recursiveSerialize(ResourceNode $root, array $options, array $data = ['nodes' => [], 'resources' => []])
+    {
+        $node = $this->serializer->serialize($root, array_merge($options, [Options::SERIALIZE_MINIMAL]));
+        $resource = array_merge(
+            $this->serializer->serialize($this->om->getRepository($root->getClass())->findOneBy(['resourceNode' => $root])),
+            ['_nodeId' => $root->getUuid(), '_class' => $node['meta']['className']]
+        );
+
+        $data['nodes'][] = $node;
+        $data['resources'][] = $resource;
+
+        foreach ($root->getChildren() as $child) {
+            $data = $this->recursiveSerialize($child, $options, $data);
+        }
+
+        return $data;
     }
 
     public function deserialize(array $data, Workspace $workspace)
     {
+        //step one: deserialize resource nodes
         return $this->deserializeResources($data['root'], $workspace);
+
+        //step 2: reorder resources by priorities
+
+        //step 3: import resources
     }
 
     private function deserializeResources(array $data, Workspace $workspace)
     {
+        //we need to handle the priority/dependencies here
+
+        //step one,
+
         $node = $this->deserializeResource($data, $workspace);
 
         foreach ($data['children'] as $child) {
@@ -124,15 +148,24 @@ class ResourceManager
     {
         $data = $event->getData();
 
-        if (isset($data['root'])) {
+        foreach ($data['resources'] as $key => $serialized) {
+            $node = $this->om->getRepository(ResourceNode::class)->findOneByUuid($serialized['_nodeId']);
+            $resource = $this->om->getRepository($serialized['_class'])->findOneBy(['resourceNode' => $node]);
+
+            /** @var ExportObjectEvent $new */
             $new = $this->dispatcher->dispatch(
-                'transfer_export_claroline_corebundle_entity_resource_resourcenode',
+                'transfer_export_'.$this->getUnderscoreClassName(get_class($resource)),
                 ExportObjectEvent::class,
-                [new \StdClass(), $event->getFileBag(), $data['root']]
+                [$resource, $event->getFileBag(), $serialized]
             );
 
-            $event->overwrite('root', $new->getData());
+            $event->overwrite('resources.'.$key, $new->getData());
         }
+    }
+
+    private function getUnderscoreClassName($className)
+    {
+        return strtolower(str_replace('\\', '_', $className));
     }
 
     /**
@@ -141,13 +174,13 @@ class ResourceManager
     public function onImport(ImportObjectEvent $event)
     {
         $data = $event->getData();
-
-        if (isset($data['root'])) {
-            $this->dispatcher->dispatch(
-              'transfer_import_claroline_corebundle_entity_resource_resourcenode',
-              'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
-              [$event->getFileBag(), $data['root']]
-            );
-        }
+        /*
+                if (isset($data['root'])) {
+                    $this->dispatcher->dispatch(
+                      'transfer_import_claroline_corebundle_entity_resource_resourcenode',
+                      'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                      [$event->getFileBag(), $data['root']]
+                    );
+                }*/
     }
 }

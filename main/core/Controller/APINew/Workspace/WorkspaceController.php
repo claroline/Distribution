@@ -250,7 +250,7 @@ class WorkspaceController extends AbstractCrudController
      *    name="apiv2_workspace_export"
      * )
      * @Method("GET")
-     * @ParamConverter("workspace", options={"mapping": {"id": "uuid"}})
+     * @ParamConverter("workspace", options={"mapping": {"id": "id"}})
      *
      * @param Request   $request
      * @param Workspace $workspace

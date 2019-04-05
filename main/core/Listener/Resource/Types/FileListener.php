@@ -17,6 +17,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
@@ -212,6 +213,20 @@ class FileListener
         }
 
         $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("transfer_export_claroline_corebundle_entity_resource_file")
+     */
+    public function onExportFile(ExportObjectEvent $exportEvent)
+    {
+        $file = $exportEvent->getObject();
+        $path = $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName();
+        $file = $exportEvent->getObject();
+        $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);
+        //get the filePath
+        $exportEvent->addFile($newPath, $path);
+        $exportEvent->overwrite('_path', $newPath);
     }
 
     /**

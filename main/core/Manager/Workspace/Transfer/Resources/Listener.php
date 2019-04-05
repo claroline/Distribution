@@ -17,7 +17,6 @@ use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
-use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\ImportObjectEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
@@ -59,49 +58,18 @@ class Listener
     }
 
     /**
-     * @DI\Observe("transfer_export_claroline_corebundle_entity_resource_resourcenode")
+     * @DI\Observe("transfer_import_claroline_corebundle_entity_resource_file")
      */
-    public function onExportResourceNode(ExportObjectEvent $event)
+    public function onImportFile(ImportObjectEvent $event)
     {
         $data = $event->getData();
-
-        $resourceNode = $this->om->getRepository(ResourceNode::class)->find($data['autoId']);
-        $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
-
-        if (isset($data['resource'])) {
-            /** @var ExportObjectEvent $new */
-            $new = $this->dispatcher->dispatch(
-                'transfer_export_'.$this->getUnderscoreClassName(get_class($resource)),
-                ExportObjectEvent::class,
-                [$resource, $event->getFileBag(), $data['resource']]
-            );
-
-            $event->overwrite('resource', $new->getData());
+        $bag = $event->getFileBag();
+        $fileSystem = new Filesystem();
+        try {
+            $fileSystem->rename($bag->get($data['_path']), $this->filesDir.DIRECTORY_SEPARATOR.$data['hashName']);
+        } catch (\Exception $e) {
         }
-
-        if (isset($data['children'])) {
-            foreach ($data['children'] as $key => $child) {
-                $resourceNode = $this->om->getRepository(ResourceNode::class)->find($child['autoId']);
-                $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
-                $recursive = new ExportObjectEvent($resource, $event->getFileBag(), $child);
-                $this->onExportResourceNode($recursive);
-                $event->overwrite('children.'.$key, $recursive->getData());
-            }
-        }
-    }
-
-    /**
-     * @DI\Observe("transfer_export_claroline_corebundle_entity_resource_file")
-     */
-    public function onExportFile(ExportObjectEvent $exportEvent)
-    {
-        $file = $exportEvent->getObject();
-        $path = $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName();
-        $file = $exportEvent->getObject();
-        $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);
-        //get the filePath
-        $exportEvent->addFile($newPath, $path);
-        $exportEvent->overwrite('_path', $newPath);
+        //move filebags elements here
     }
 
     /**
@@ -127,21 +95,6 @@ class Listener
                 $this->onImportResourceNode($recursive);
             }
         }
-    }
-
-    /**
-     * @DI\Observe("transfer_import_claroline_corebundle_entity_resource_file")
-     */
-    public function onImportFile(ImportObjectEvent $event)
-    {
-        $data = $event->getData();
-        $bag = $event->getFileBag();
-        $fileSystem = new Filesystem();
-        try {
-            $fileSystem->rename($bag->get($data['_path']), $this->filesDir.DIRECTORY_SEPARATOR.$data['hashName']);
-        } catch (\Exception $e) {
-        }
-        //move filebags elements here
     }
 
     private function getUnderscoreClassName($className)
