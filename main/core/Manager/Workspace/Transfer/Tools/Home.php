@@ -56,11 +56,11 @@ class Home
         return ['tabs' => $tabs];
     }
 
-    public function deserialize(array $data, Workspace $workspace)
+    public function deserialize(array $data, Workspace $workspace, array $options)
     {
         foreach ($data['tabs'] as $tab) {
             // do not update tabs set by the administration tool
-            $new = $this->crud->create(HomeTab::class, $tab);
+            $new = $this->crud->create(HomeTab::class, $tab, $options);
             $new->setWorkspace($workspace);
         }
     }

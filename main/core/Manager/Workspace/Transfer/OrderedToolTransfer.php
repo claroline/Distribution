@@ -113,7 +113,7 @@ class OrderedToolTransfer
             $serviceName = 'claroline.transfer.'.$orderedTool->getTool()->getName();
 
             if ($this->container->has($serviceName)) {
-                $this->container->get($serviceName)->deserialize($data['data'], $orderedTool->getWorkspace());
+                $this->container->get($serviceName)->deserialize($data['data'], $orderedTool->getWorkspace(), [Options::REFRESH_UUID]);
             }
         }
     }

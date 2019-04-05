@@ -81,7 +81,7 @@ class WidgetContainerSerializer
         }
 
         return [
-            'id' => $this->getUuid($widgetContainer, $options),
+            'id' => $widgetContainer->getUuid(),
             'name' => $widgetContainerConfig->getName(),
             'visible' => $widgetContainerConfig->isVisible(),
             'display' => $this->serializeDisplay($widgetContainerConfig),
@@ -127,7 +127,10 @@ class WidgetContainerSerializer
             $this->om->persist($widgetContainer);
         }
 
-        $this->sipe('id', 'setUuid', $data, $widgetContainer);
+        if (!in_array(Options::REFRESH_UUID, $options)) {
+            $this->sipe('id', 'setUuid', $data, $widgetContainer);
+        }
+
         $this->sipe('name', 'setName', $data, $widgetContainerConfig);
         $this->sipe('visible', 'setVisible', $data, $widgetContainerConfig);
         $this->sipe('display.layout', 'setLayout', $data, $widgetContainerConfig);

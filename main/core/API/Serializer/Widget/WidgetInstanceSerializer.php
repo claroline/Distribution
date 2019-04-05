@@ -71,7 +71,7 @@ class WidgetInstanceSerializer
         }
 
         return [
-            'id' => $this->getUuid($widgetInstance, $options),
+            'id' => $widgetInstance->getUuid(),
             'type' => $widget->getName(),
             'source' => $dataSource ? $dataSource->getName() : null,
             'parameters' => $parameters,
@@ -87,7 +87,10 @@ class WidgetInstanceSerializer
             $widgetInstanceConfig->setWidgetInstance($widgetInstance);
         }
 
-        $this->sipe('id', 'setUuid', $data, $widgetInstance);
+        if (!in_array(Options::REFRESH_UUID, $options)) {
+            $this->sipe('id', 'setUuid', $data, $widgetInstance);
+        }
+
         $this->sipe('type', 'setType', $data, $widgetInstanceConfig);
 
         $this->om->persist($widgetInstanceConfig);

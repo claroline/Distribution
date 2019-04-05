@@ -84,7 +84,7 @@ class ResourceManager
         return $data;
     }
 
-    public function deserialize(array $data, Workspace $workspace)
+    public function deserialize(array $data, Workspace $workspace, array $options)
     {
         $created = $this->deserializeNodes($data['nodes'], $workspace);
         $this->deserializeResources($data['resources'], $workspace, $created);

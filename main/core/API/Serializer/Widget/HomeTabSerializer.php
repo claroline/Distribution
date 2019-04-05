@@ -117,7 +117,7 @@ class HomeTabSerializer
         }
 
         $data = [
-            'id' => $this->getUuid($homeTab, $options),
+            'id' => $homeTab->getUuid(),
             'title' => $homeTabConfig->getName(),
             'longTitle' => $homeTabConfig->getLongTitle(),
             'centerTitle' => $homeTabConfig->isCenterTitle(),
@@ -161,7 +161,10 @@ class HomeTabSerializer
             $homeTabConfig->setPosition($data['position']);
         }
 
-        $this->sipe('id', 'setUuid', $data, $homeTab);
+        if (!in_array(Options::REFRESH_UUID, $options)) {
+            $this->sipe('id', 'setUuid', $data, $homeTab);
+        }
+
         $this->sipe('title', 'setName', $data, $homeTabConfig);
         $this->sipe('longTitle', 'setLongTitle', $data, $homeTabConfig);
         $this->sipe('centerTitle', 'setCenterTitle', $data, $homeTabConfig);
