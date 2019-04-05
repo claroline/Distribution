@@ -76,7 +76,7 @@ class WebsiteManager
      *
      * @return Website
      */
-    public function copyWebsite(Website $orgWebsite, Website $newWebiste)
+    public function copyWebsite(Website $orgWebsite, Website $newWebsite)
     {
         $orgRoot = $orgWebsite->getRoot();
         $orgOptions = $orgWebsite->getOptions();
