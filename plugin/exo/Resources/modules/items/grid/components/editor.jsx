@@ -1,18 +1,18 @@
 import React, {Component} from 'react'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import get from 'lodash/get'
 import classes from 'classnames'
+import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'
+import Overlay from 'react-bootstrap/lib/Overlay'
 
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
-import {SUM_CELL, SUM_COL, SUM_ROW} from '#/plugin/exo/items/grid/constants'
-import {SCORE_SUM, SCORE_FIXED} from '#/plugin/exo/quiz/enums'
+import {constants} from '#/plugin/exo/items/grid/constants'
+import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker'
-import Overlay from 'react-bootstrap/lib/Overlay'
 import {KeywordsPopover} from '#/plugin/exo/components/keywords'
 
 import {utils} from '#/plugin/exo/items/grid/utils/utils'
@@ -346,7 +346,7 @@ const GridRow = props =>
         cell={cell}
         border={props.border}
         solution={utils.getSolutionByCellId(cell.id, props.solutions)}
-        hasScore={props.score.type === SCORE_SUM && props.sumMode === SUM_CELL}
+        hasScore={props.score.type === SCORE_SUM && props.sumMode === constants.SUM_CELL}
         _errors={get(props, '_errors.'+cell.id)}
         validating={props.validating}
         solutionOpened={props._popover === cell.id}
@@ -362,7 +362,7 @@ const GridRow = props =>
     )}
 
     <td className="row-controls">
-      {props.score.type === SCORE_SUM && props.sumMode === SUM_ROW &&
+      {props.score.type === SCORE_SUM && props.sumMode === constants.SUM_ROW &&
         <input
           type="number"
           min="0"
@@ -496,12 +496,12 @@ const GridTable = props =>
           updateSolutionAnswer={(cellId, keyword, parameter, value) => {
             const newItem = cloneDeep(props.item)
             const cellToUpdate = newItem.cells.find(cell => cell.id === cellId)
-            const solution = newItem.solutions.find(solution => cellId === solution.id)
+            const solution = newItem.solutions.find(solution => cellId === solution.cellId)
             const answer = solution.answers.find(answer => answer._id === keyword)
 
             answer[parameter] = value
 
-            if ('score' === parameter && SCORE_SUM === newItem.score.type && SUM_CELL === newItem.sumMode) {
+            if ('score' === parameter && SCORE_SUM === newItem.score.type && constants.SUM_CELL === newItem.sumMode) {
               answer.expected = value > 0
             } else if ('expected' === parameter) {
               answer.score = value ? 1 : 0
@@ -539,7 +539,7 @@ const GridTable = props =>
       <tr>
         {[...Array(props.item.cols)].map((it, colIndex) =>
           <td key={`grid-col-${colIndex}-controls`} className="col-controls">
-            {props.item.score.type === SCORE_SUM && props.item.sumMode === SUM_COL &&
+            {props.item.score.type === SCORE_SUM && props.item.sumMode === constants.SUM_COL &&
               <input
                 type="number"
                 min="0"
@@ -601,8 +601,8 @@ GridTable.propTypes = {
   update: T.func.isRequired
 }
 
-export const GridEditor = (props) => {
-  return(<FormData
+export const GridEditor = (props) =>
+  <FormData
     className="grid-editor"
     embedded={true}
     name={props.formName}
@@ -613,28 +613,23 @@ export const GridEditor = (props) => {
         primary: true,
         fields: [
           {
-            //y a un truc avec sumMode ici
+            name: 'sumMode',
             type: 'choice',
             label: trans('grid_score_mode_label', {}, 'quiz'),
-            name: 'score.type',
+            displayed: (item) => item.score.type === SCORE_SUM,
             options: {
               multiple: false,
               condensed: false,
-              choices: {
-                [SUM_CELL]: trans('grid_score_sum_cell', {}, 'quiz'),
-                [SUM_COL]: trans('grid_score_sum_col', {}, 'quiz'),
-                [SUM_ROW]: trans('grid_score_sum_row', {}, 'quiz'),
-                [SCORE_FIXED]: trans('fixed_score', {}, 'quiz')
-              }
+              choices: constants.SUM_MODES
             }
           }, {
-            type: 'number',
             name: 'penalty',
+            type: 'number',
             label: trans('grid_editor_penalty_label', {}, 'quiz'),
             displayed: (item) => item.score.type === SCORE_SUM
           }, {
-            type: 'number',
             name: 'rows',
+            type: 'number',
             label: trans('grid_table_rows', {}, 'quiz'),
             options: {
               min: '1',
@@ -658,8 +653,8 @@ export const GridEditor = (props) => {
               props.update('cells', newItem.cells)
             }
           }, {
-            type: 'number',
             name: 'cols',
+            type: 'number',
             label: trans('grid_table_cols', {}, 'quiz'),
             options: {
               min: '1',
@@ -698,19 +693,31 @@ export const GridEditor = (props) => {
             name: 'grid',
             required: true,
             render: (item) => {
+              const decoratedItem = cloneDeep(item)
+              decoratedItem.solutions.forEach(s => {
+                if (s.answers) {
+                  s.answers.forEach(a => {
+                    if (a['_id'] === undefined) {
+                      a['_id'] = makeId()
+                    }
+                    a['_deletable'] = 1 < s.answers.length
+                  })
+                }
+              })
+
               const Grid = (
                 <div className="grid-body">
                   <GridTable
-                    item={item}
+                    item={decoratedItem}
                     validating={props.validating}
                     update={props.update}
                     removeRow={(row) => {
-                      const newItem = cloneDeep(item)
+                      const newItem = cloneDeep(decoratedItem)
                       deleteRow(row, newItem, true)
                       props.update('cells', newItem.cells)
                     }}
                     removeColumn={(col) => {
-                      const newItem = cloneDeep(item)
+                      const newItem = cloneDeep(decoratedItem)
                       deleteCol(col, newItem, true)
                       props.update('cells', newItem.cells)
                     }}
@@ -726,8 +733,7 @@ export const GridEditor = (props) => {
         ]
       }
     ]}
-  />)
-}
+  />
 
 implementPropTypes(GridEditor, ItemEditorTypes, {
   item: T.shape(GridItemTypes.propTypes).isRequired
