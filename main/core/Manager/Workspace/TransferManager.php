@@ -90,11 +90,11 @@ class TransferManager
      *
      * @return object
      */
-    public function create(array $data)
+    public function create(array $data, Workspace $workspace)
     {
         $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
-        $workspace = $this->deserialize($data, $options);
+        $workspace = $this->deserialize($data, $workspace, $options);
         $this->importFiles($data, $workspace);
 
         // creates the entity if allowed
@@ -198,7 +198,7 @@ class TransferManager
      *
      * @return Workspace
      */
-    public function deserialize(array $data, array $options = [])
+    public function deserialize(array $data, Workspace $workspace, array $options = [])
     {
         $data = $this->replaceResourceIds($data);
 
@@ -206,7 +206,7 @@ class TransferManager
         $defaultRole = $data['registration']['defaultRole'];
         unset($data['registration']['defaultRole']);
 
-        $workspace = $this->serializer->deserialize($data, new Workspace(), $options);
+        $workspace = $this->serializer->deserialize($data, $workspace, $options);
 
         $this->log('Deserializing the roles...');
         foreach ($data['roles'] as $roleData) {

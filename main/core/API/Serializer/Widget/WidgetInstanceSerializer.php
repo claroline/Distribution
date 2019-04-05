@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Widget;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;

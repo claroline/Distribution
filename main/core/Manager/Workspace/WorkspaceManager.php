@@ -887,10 +887,10 @@ class WorkspaceManager
         }
 
         $newWorkspace = new Workspace();
-        $this->copy($workspace, $newWorkspace);
-        //override code & name
         $newWorkspace->setCode($code);
         $newWorkspace->setName($code);
+        $this->copy($workspace, $newWorkspace);
+        //override code & name
 
         return $newWorkspace;
     }
@@ -912,17 +912,28 @@ class WorkspaceManager
         //these are the new workspace datas
         $data = $transferManager->serialize($workspace);
         $data = $transferManager->exportFiles($data, $fileBag);
-        $transferManager->setLogger($this->logger);
-        $data['code'] = $workspace->getCode().'~'.uniqid();
+
+        if ($this->logger) {
+            $transferManager->setLogger($this->logger);
+        }
+
+        if ($newWorkspace->getCode()) {
+            unset($data['code']);
+        }
+
+        if ($newWorkspace->getName()) {
+            unset($data['name']);
+        }
 
         $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
-        $workspace = $transferManager->deserialize($data, $options);
+        $workspace = $transferManager->deserialize($data, $newWorkspace, $options);
         $transferManager->importFiles($data, $workspace);
 
-        //yologo
         $this->om->persist($workspace);
         $this->om->flush();
+
+        return $workspace;
     }
 
     /**
@@ -977,7 +988,7 @@ class WorkspaceManager
             $json = $zip->getFromName('workspace.json');
             $data = json_decode($json, true);
             $data['code'] = $data['name'] = $name;
-            $workspace = $this->container->get('claroline.manager.workspace.transfer')->create($data);
+            $workspace = $this->container->get('claroline.manager.workspace.transfer')->create($data, new Workspace());
             $workspace->setName($name);
             $workspace->setPersonal($isPersonal);
             $workspace->setCode($name);
