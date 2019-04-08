@@ -127,8 +127,8 @@ class DropController
      *
      * @EXT\Route("/{id}/drops/{teamId}", name="claro_dropzone_drop_create", defaults={"teamId"=null})
      * @EXT\ParamConverter("dropzone", class="ClarolineDropZoneBundle:Dropzone", options={"mapping": {"id": "uuid"}})
-     * @EXT\ParamConverter("team",     class="ClarolineTeamBundle:Team",         options={"mapping": {"teamId": "id"}})
-     * @EXT\ParamConverter("user",     converter="current_user",                 options={"allowAnonymous"=false})
+     * @EXT\ParamConverter("team", class="ClarolineTeamBundle:Team", options={"mapping": {"teamId": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      * @EXT\Method("POST")
      *
      * @param Dropzone $dropzone
@@ -140,10 +140,10 @@ class DropController
     public function createAction(Dropzone $dropzone, User $user, Team $team = null)
     {
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
         if (!empty($team)) {
             $this->checkTeamUser($team, $user);
         }
-
         try {
             if (empty($team)) {
                 // creates a User drop
@@ -449,7 +449,7 @@ class DropController
 
     private function checkTeamUser(Team $team, User $user)
     {
-        if (!in_array($user, $team->getUsers())) {
+        if (!in_array($user, $team->getUsers()->toArray())) {
             throw new AccessDeniedException();
         }
     }

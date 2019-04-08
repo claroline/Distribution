@@ -319,7 +319,7 @@ class DropzoneManager
      */
     public function getUserDrop(Dropzone $dropzone, User $user, $withCreation = false)
     {
-        $drops = $this->dropRepo->findBy(['dropzone' => $dropzone, 'user' => $user, 'teamId' => null]);
+        $drops = $this->dropRepo->findBy(['dropzone' => $dropzone, 'user' => $user, 'teamUuid' => null]);
         $drop = count($drops) > 0 ? $drops[0] : null;
 
         if (empty($drop) && $withCreation) {
@@ -349,7 +349,7 @@ class DropzoneManager
      */
     public function getTeamDrop(Dropzone $dropzone, Team $team, User $user, $withCreation = false)
     {
-        $drop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'teamId' => $team->getId()]);
+        $drop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'teamUuid' => $team->getUuid()]);
 
         if ($withCreation) {
             if (empty($drop)) {
@@ -358,6 +358,7 @@ class DropzoneManager
                 $drop->setUser($user);
                 $drop->setDropzone($dropzone);
                 $drop->setTeamId($team->getId());
+                $drop->setTeamUuid($team->getUuid());
                 $drop->setTeamName($team->getName());
 
                 foreach ($team->getUsers() as $teamUser) {
@@ -419,7 +420,7 @@ class DropzoneManager
      * @param Dropzone $dropzone
      * @param User     $user
      *
-     * @return int|null
+     * @return string|null
      */
     public function getUserTeamId(Dropzone $dropzone, User $user)
     {
@@ -429,7 +430,7 @@ class DropzoneManager
             $teamDrops = $this->getTeamDrops($dropzone, $user);
 
             if (1 === count($teamDrops)) {
-                $teamId = $teamDrops[0]->getTeamId();
+                $teamId = $teamDrops[0]->getTeamUuid();
             }
         }
 
@@ -547,10 +548,10 @@ class DropzoneManager
         $drop->setFinished(true);
         $drop->setDropDate(new \DateTime());
 
-        if ($drop->getTeamId()) {
+        if ($drop->getTeamUuid()) {
             $drop->setUser($user);
         }
-        $users = $drop->getTeamId() ? $drop->getUsers() : [$drop->getUser()];
+        $users = $drop->getTeamUuid() ? $drop->getUsers() : [$drop->getUser()];
         $this->om->persist($drop);
         $this->checkCompletion($drop->getDropzone(), $users, $drop);
 
@@ -915,7 +916,7 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
-     * @param int      $teamId
+     * @param string   $teamId
      *
      * @return array
      */
@@ -929,14 +930,14 @@ class DropzoneManager
                     $drop = $this->dropRepo->findOneBy([
                         'dropzone' => $dropzone,
                         'user' => $user,
-                        'teamId' => null,
+                        'teamUuid' => null,
                         'finished' => true,
                     ]);
                 }
                 break;
             case Dropzone::DROP_TYPE_TEAM:
                 if ($teamId) {
-                    $drop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'teamId' => $teamId, 'finished' => true]);
+                    $drop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'teamUuid' => $teamId, 'finished' => true]);
                 }
                 break;
         }
@@ -949,7 +950,7 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
-     * @param int      $teamId
+     * @param string   $teamId
      *
      * @return array
      */
@@ -978,7 +979,7 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
-     * @param int      $teamId
+     * @param string   $teamId
      *
      * @return array
      */
@@ -1007,7 +1008,7 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
-     * @param int      $teamId
+     * @param string   $teamId
      * @param string   $teamName
      * @param bool     $withCreation
      *
@@ -1048,7 +1049,7 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
-     * @param int      $teamId
+     * @param string   $teamId
      * @param string   $teamName
      *
      * @return Drop | null
@@ -1087,7 +1088,7 @@ class DropzoneManager
             $correction = new Correction();
             $correction->setDrop($peerDrop);
             $correction->setUser($user);
-            $correction->setTeamId($teamId);
+            $correction->setTeamUuid($teamId);
             $correction->setTeamName($teamName);
             $currentDate = new \DateTime();
             $correction->setStartDate($currentDate);
@@ -1173,7 +1174,7 @@ class DropzoneManager
             AbstractResourceEvaluation::STATUS_PASSED,
             AbstractResourceEvaluation::STATUS_FAILED,
         ];
-        $teamId = !empty($drop) ? $drop->getTeamId() : null;
+        $teamId = !empty($drop) ? $drop->getTeamUuid() : null;
 
         $this->om->startFlushSuite();
 
@@ -1320,7 +1321,7 @@ class DropzoneManager
         $corrections = $this->correctionRepo->findAllCorrectionsByDropzone($dropzone);
 
         foreach ($corrections as $correction) {
-            $teamId = $correction->getTeamId();
+            $teamId = $correction->getTeamUuid();
             $key = empty($teamId) ? 'user_'.$correction->getUser()->getUuid() : 'team_'.$teamId;
 
             if (!isset($data[$key])) {

@@ -71,7 +71,7 @@ class CorrectionSerializer
             'reportedComment' => $correction->getReportedComment(),
             'correctionDenied' => $correction->isCorrectionDenied(),
             'correctionDeniedComment' => $correction->getCorrectionDeniedComment(),
-            'teamId' => $correction->getTeamId(),
+            'teamId' => $correction->getTeamUuid(),
             'teamName' => $correction->getTeamName(),
             'grades' => $this->getGrades($correction),
         ];
@@ -140,7 +140,7 @@ class CorrectionSerializer
             $correction->setCorrectionDeniedComment($data['correctionDeniedComment']);
         }
         if (isset($data['teamId'])) {
-            $correction->setTeamId($data['teamId']);
+            $correction->setTeamUUid($data['teamId']);
         }
         if (isset($data['teamName'])) {
             $correction->setTeamName($data['teamName']);
