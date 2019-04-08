@@ -120,7 +120,7 @@ class WidgetContainerSerializer
         $widgetContainerConfig = $this->om->getRepository(WidgetContainerConfig::class)
           ->findOneBy(['widgetContainer' => $widgetContainer]);
 
-        if (!$widgetContainerConfig) {
+        if (!$widgetContainerConfig || in_array(Options::REFRESH_UUID, $options)) {
             $widgetContainerConfig = new WidgetContainerConfig();
             $widgetContainerConfig->setWidgetContainer($widgetContainer);
             $this->om->persist($widgetContainerConfig);
@@ -152,13 +152,18 @@ class WidgetContainerSerializer
         if (isset($data['contents'])) {
             foreach ($data['contents'] as $index => $content) {
                 if ($content) {
-                    /** @var WidgetInstance $widgetInstance */
-                    $widgetInstance = $this->findInCollection(
+                    /* @var WidgetInstance $widgetInstance */
+                    if (!in_array(Options::REFRESH_UUID, $options)) {
+                        $widgetInstance = $this->findInCollection(
                       $widgetContainer,
                       'getInstances',
                        $content['id'],
                        in_array(Options::NO_FETCH, $options) ? null : WidgetInstance::class
                     ) ?? new WidgetInstance();
+                    } else {
+                        $widgetInstance = new WidgetInstance();
+                    }
+
                     $this->widgetInstanceSerializer->deserialize($content, $widgetInstance, $options);
                     $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
                     $widgetInstanceConfig->setPosition($index);

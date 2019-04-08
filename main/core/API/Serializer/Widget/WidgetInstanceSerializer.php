@@ -83,7 +83,7 @@ class WidgetInstanceSerializer
     {
         $widgetInstanceConfig = $widgetInstance->getWidgetInstanceConfigs()[0];
 
-        if (!$widgetInstanceConfig) {
+        if (!$widgetInstanceConfig || in_array(Options::REFRESH_UUID, $options)) {
             $widgetInstanceConfig = new WidgetInstanceConfig();
             $widgetInstanceConfig->setWidgetInstance($widgetInstance);
         }
@@ -113,7 +113,7 @@ class WidgetInstanceSerializer
 
                 $parametersClass = $widget->getClass();
 
-                if (!$typeParameters) {
+                if (!$typeParameters || in_array(Options::REFRESH_UUID, $options)) {
                     // no existing parameters => initializes one
 
                     /** @var AbstractWidget $typeParameters */

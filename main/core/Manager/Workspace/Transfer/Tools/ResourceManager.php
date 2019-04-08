@@ -8,6 +8,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
@@ -21,6 +22,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
  */
 class ResourceManager
 {
+    use LoggableTrait;
+
     /**
      * WorkspaceSerializer constructor.
      *
@@ -127,6 +130,11 @@ class ResourceManager
             $resource = new $data['_class']();
             $resource->setResourceNode($nodes[$data['_nodeId']]);
             $resource = $this->serializer->deserialize($data, $resource, [Options::REFRESH_UUID]);
+            $this->dispatcher->dispatch(
+                'transfer.'.$nodes[$data['_nodeId']]->getResourceType()->getName().'.import',
+                'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                [null, $data, $resource]
+            );
             $this->om->persist($resource);
         }
     }
@@ -144,7 +152,7 @@ class ResourceManager
 
             /** @var ExportObjectEvent $new */
             $new = $this->dispatcher->dispatch(
-                'transfer_export_'.$this->getUnderscoreClassName(get_class($resource)),
+                'transfer.'.$node->getResourceType()->getName().'.export',
                 ExportObjectEvent::class,
                 [$resource, $event->getFileBag(), $serialized]
             );
@@ -163,11 +171,12 @@ class ResourceManager
      */
     public function onImport(ImportObjectEvent $event)
     {
+        $this->log('Importing resource files...');
         $data = $event->getData();
 
         foreach ($data['resources'] as $key => $serialized) {
             $this->dispatcher->dispatch(
-                'transfer_import_'.$this->getUnderscoreClassName($resourceType->getClass()),
+                'transfer.'.$resourceType->getName().'.import',
                 'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
                 [$event->getFileBag(), $serialized]
             );

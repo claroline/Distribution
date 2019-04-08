@@ -230,6 +230,7 @@ class TransferManager
         $this->log('Deserializing the tools...');
         foreach ($data['orderedTools'] as $orderedToolData) {
             $orderedTool = new OrderedTool();
+            $this->ots->setLogger($this->logger);
             $this->ots->deserialize($orderedToolData, $orderedTool, [], $workspace);
         }
 

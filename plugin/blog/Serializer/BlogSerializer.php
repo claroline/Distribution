@@ -34,7 +34,7 @@ class BlogSerializer
      */
     public function getClass()
     {
-        return 'Icap\BlogBundle\Entity\Blog';
+        return Blog::class;
     }
 
     /**
@@ -80,7 +80,8 @@ class BlogSerializer
 
         $this->sipe('name', 'setName', $data, $blog);
         $this->sipe('infos', 'setInfos', $data, $blog);
-        $blog->setOptions($this->blogOptionsSerializer->deserialize($data, null, $options));
+
+        $blog->setOptions($this->blogOptionsSerializer->deserialize($data['options'], $blog->getOptions(), $options));
 
         return $blog;
     }

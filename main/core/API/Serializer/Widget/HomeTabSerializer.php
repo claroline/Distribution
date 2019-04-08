@@ -213,8 +213,14 @@ class HomeTabSerializer
 
         if (isset($data['widgets'])) {
             foreach ($data['widgets'] as $position => $widgetContainerData) {
-                /** @var WidgetContainer $widgetContainer */
-                $widgetContainer = $this->findInCollection($homeTab, 'getWidgetContainers', $widgetContainerData['id']) ?? new WidgetContainer();
+                /* @var WidgetContainer $widgetContainer */
+
+                if (!in_array(Options::REFRESH_UUID, $options)) {
+                    $widgetContainer = $this->findInCollection($homeTab, 'getWidgetContainers', $widgetContainerData['id']) ?? new WidgetContainer();
+                } else {
+                    $widgetContainer = new WidgetContainer();
+                }
+
                 $this->widgetContainerSerializer->deserialize($widgetContainerData, $widgetContainer, $options);
                 $widgetContainer->setHomeTab($homeTab);
                 $widgetContainerConfig = $widgetContainer->getWidgetContainerConfigs()[0];

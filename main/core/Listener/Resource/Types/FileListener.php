@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
@@ -217,7 +218,7 @@ class FileListener
     }
 
     /**
-     * @DI\Observe("transfer_export_claroline_corebundle_entity_resource_file")
+     * @DI\Observe("transfer.export.import")
      */
     public function onExportFile(ExportObjectEvent $exportEvent)
     {
@@ -231,16 +232,19 @@ class FileListener
     }
 
     /**
-     * @DI\Observe("transfer_import_claroline_corebundle_entity_resource_file")
+     * @DI\Observe("transfer.file.import")
      */
     public function onImportFile(ImportObjectEvent $event)
     {
         $data = $event->getData();
         $bag = $event->getFileBag();
-        $fileSystem = new Filesystem();
-        try {
-            $fileSystem->rename($bag->get($data['_path']), $this->filesDir.DIRECTORY_SEPARATOR.$data['hashName']);
-        } catch (\Exception $e) {
+
+        if ($bag) {
+            $fileSystem = new Filesystem();
+            try {
+                $fileSystem->rename($bag->get($data['_path']), $this->filesDir.DIRECTORY_SEPARATOR.$data['hashName']);
+            } catch (\Exception $e) {
+            }
         }
         //move filebags elements here
     }

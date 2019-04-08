@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\Manager\Workspace\Transfer\Tools;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -15,6 +16,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class Home
 {
+    use LoggableTrait;
+
     /**
      * WorkspaceSerializer constructor.
      *
