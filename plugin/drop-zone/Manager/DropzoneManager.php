@@ -12,6 +12,7 @@
 namespace Claroline\DropZoneBundle\Manager;
 
 use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
@@ -36,17 +37,11 @@ use Claroline\DropZoneBundle\Event\Log\LogDocumentCreateEvent;
 use Claroline\DropZoneBundle\Event\Log\LogDocumentDeleteEvent;
 use Claroline\DropZoneBundle\Event\Log\LogDropEndEvent;
 use Claroline\DropZoneBundle\Event\Log\LogDropEvaluateEvent;
-use Claroline\DropZoneBundle\Event\Log\LogDropGradeAvailableEvent;
 use Claroline\DropZoneBundle\Event\Log\LogDropStartEvent;
 use Claroline\DropZoneBundle\Event\Log\LogDropzoneConfigureEvent;
 use Claroline\DropZoneBundle\Repository\CorrectionRepository;
 use Claroline\DropZoneBundle\Repository\DocumentRepository;
 use Claroline\DropZoneBundle\Repository\PlannedNotificationRepository;
-use Claroline\DropZoneBundle\Serializer\CorrectionSerializer;
-use Claroline\DropZoneBundle\Serializer\DocumentSerializer;
-use Claroline\DropZoneBundle\Serializer\DropSerializer;
-use Claroline\DropZoneBundle\Serializer\DropzoneSerializer;
-use Claroline\DropZoneBundle\Serializer\DropzoneToolSerializer;
 use Claroline\TeamBundle\Entity\Team;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
@@ -62,20 +57,8 @@ class DropzoneManager
     /** @var Crud */
     private $crud;
 
-    /** @var DropzoneSerializer */
-    private $dropzoneSerializer;
-
-    /** @var DropSerializer */
-    private $dropSerializer;
-
-    /** @var DocumentSerializer */
-    private $documentSerializer;
-
-    /** @var CorrectionSerializer */
-    private $correctionSerializer;
-
-    /** @var DropzoneToolSerializer */
-    private $dropzoneToolSerializer;
+    /** @var SerializerProvider */
+    private $serializer;
 
     /** @var Filesystem */
     private $fileSystem;
@@ -115,11 +98,7 @@ class DropzoneManager
      *
      * @DI\InjectParams({
      *     "crud"                   = @DI\Inject("claroline.api.crud"),
-     *     "dropzoneSerializer"     = @DI\Inject("claroline.serializer.dropzone"),
-     *     "dropSerializer"         = @DI\Inject("claroline.serializer.dropzone.drop"),
-     *     "documentSerializer"     = @DI\Inject("claroline.serializer.dropzone.document"),
-     *     "correctionSerializer"   = @DI\Inject("claroline.serializer.dropzone.correction"),
-     *     "dropzoneToolSerializer" = @DI\Inject("claroline.serializer.dropzone.tool"),
+     *     "serializer"             = @DI\Inject("claroline.api.serializer"),
      *     "fileSystem"             = @DI\Inject("filesystem"),
      *     "filesDir"               = @DI\Inject("%claroline.param.files_directory%"),
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
@@ -131,11 +110,7 @@ class DropzoneManager
      * })
      *
      * @param Crud                         $crud
-     * @param DropzoneSerializer           $dropzoneSerializer
-     * @param DropSerializer               $dropSerializer
-     * @param DocumentSerializer           $documentSerializer
-     * @param CorrectionSerializer         $correctionSerializer
-     * @param DropzoneToolSerializer       $dropzoneToolSerializer
+     * @param SerializerProvider           $serializer
      * @param Filesystem                   $fileSystem
      * @param string                       $filesDir
      * @param ObjectManager                $om
@@ -147,11 +122,7 @@ class DropzoneManager
      */
     public function __construct(
         Crud $crud,
-        DropzoneSerializer $dropzoneSerializer,
-        DropSerializer $dropSerializer,
-        DocumentSerializer $documentSerializer,
-        CorrectionSerializer $correctionSerializer,
-        DropzoneToolSerializer $dropzoneToolSerializer,
+        SerializerProvider $serializer,
         Filesystem $fileSystem,
         $filesDir,
         ObjectManager $om,
@@ -162,11 +133,7 @@ class DropzoneManager
         RoleManager $roleManager
     ) {
         $this->crud = $crud;
-        $this->dropzoneSerializer = $dropzoneSerializer;
-        $this->dropSerializer = $dropSerializer;
-        $this->documentSerializer = $documentSerializer;
-        $this->correctionSerializer = $correctionSerializer;
-        $this->dropzoneToolSerializer = $dropzoneToolSerializer;
+        $this->serializer = $serializer;
         $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
         $this->om = $om;
@@ -193,7 +160,7 @@ class DropzoneManager
      */
     public function serialize(Dropzone $dropzone)
     {
-        return $this->dropzoneSerializer->serialize($dropzone);
+        return $this->serializer->serialize($dropzone);
     }
 
     /**
@@ -205,7 +172,7 @@ class DropzoneManager
      */
     public function serializeDrop(Drop $drop)
     {
-        return $this->dropSerializer->serialize($drop);
+        return $this->serializer->serialize($drop);
     }
 
     /**
@@ -217,7 +184,7 @@ class DropzoneManager
      */
     public function serializeDocument(Document $document)
     {
-        return $this->documentSerializer->serialize($document);
+        return $this->serializer->serialize($document);
     }
 
     /**
@@ -229,7 +196,7 @@ class DropzoneManager
      */
     public function serializeCorrection(Correction $correction)
     {
-        return $this->correctionSerializer->serialize($correction);
+        return $this->serializer->serialize($correction);
     }
 
     /**
@@ -241,7 +208,7 @@ class DropzoneManager
      */
     public function serializeTool(DropzoneTool $tool)
     {
-        return $this->dropzoneToolSerializer->serialize($tool);
+        return $this->serializer->serialize($tool);
     }
 
     /**
@@ -694,7 +661,7 @@ class DropzoneManager
         $this->om->startFlushSuite();
         $existingCorrection = $this->correctionRepo->findOneBy(['uuid' => $data['id']]);
         $isNew = empty($existingCorrection);
-        $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $data);
+        $correction = $this->serializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $data);
         $correction->setUser($user);
         $dropzone = $correction->getDrop()->getDropzone();
 
@@ -865,7 +832,7 @@ class DropzoneManager
         $tools = $this->dropzoneToolRepo->findAll();
 
         foreach ($tools as $tool) {
-            $serializedTools[] = $this->dropzoneToolSerializer->serialize($tool);
+            $serializedTools[] = $this->serializer->serialize($tool);
         }
 
         return $serializedTools;
@@ -880,7 +847,7 @@ class DropzoneManager
      */
     public function saveTool(array $data)
     {
-        $tool = $this->dropzoneToolSerializer->deserialize('Claroline\DropZoneBundle\Entity\DropzoneTool', $data);
+        $tool = $this->serializer->deserialize('Claroline\DropZoneBundle\Entity\DropzoneTool', $data);
         $this->om->persist($tool);
         $this->om->flush();
 
@@ -1545,5 +1512,55 @@ class DropzoneManager
         }
 
         return count($documents);
+    }
+
+    /**
+     * Fetches all drops and corrections and updates their score depending on new score max.
+     *
+     * @param Dropzone $dropzone
+     * @param float    $oldScoreMax
+     * @param float    $newScoreMax
+     */
+    public function updateScoreByScoreMax(Dropzone $dropzone, $oldScoreMax, $newScoreMax)
+    {
+        $ratio = !empty($oldScoreMax) && !empty($newScoreMax) ? $newScoreMax / $oldScoreMax : 0;
+
+        if ($ratio) {
+            $drops = $this->dropRepo->findBy(['dropzone' => $dropzone]);
+            $corrections = $this->correctionRepo->findAllCorrectionsByDropzone($dropzone);
+            $i = 0;
+
+            $this->om->startFlushSuite();
+
+            foreach ($drops as $drop) {
+                $score = $drop->getScore();
+
+                if ($score) {
+                    $newScore = round($score * $ratio, 2);
+                    $drop->setScore($newScore);
+                    $this->om->persist($drop);
+                }
+                ++$i;
+
+                if (200 % $i === 0) {
+                    $this->om->forceFlush();
+                }
+            }
+            foreach ($corrections as $correction) {
+                $score = $correction->getScore();
+
+                if ($score) {
+                    $newScore = round($score * $ratio, 2);
+                    $correction->setScore($newScore);
+                    $this->om->persist($correction);
+                }
+                ++$i;
+
+                if (200 % $i === 0) {
+                    $this->om->forceFlush();
+                }
+            }
+            $this->om->endFlushSuite();
+        }
     }
 }
