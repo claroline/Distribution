@@ -123,7 +123,10 @@ class FieldSerializer
      */
     public function deserialize($data, Field $field, array $options = [])
     {
-        $this->sipe('id', 'setUuid', $data, $field);
+        if (!in_array(Options::REFRESH_UUID, $options)) {
+            $this->sipe('id', 'setUuid', $data, $field);
+        }
+
         $this->sipe('label', 'setName', $data, $field);
         $this->sipe('type', 'setType', $data, $field);
         $this->sipe('required', 'setRequired', $data, $field);

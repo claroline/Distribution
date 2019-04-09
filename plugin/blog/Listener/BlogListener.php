@@ -119,7 +119,7 @@ class BlogListener
     /**
      * @DI\Observe("transfer.icap_blog.export")
      */
-    public function onExportFile(ExportObjectEvent $exportEvent)
+    public function onExport(ExportObjectEvent $exportEvent)
     {
         $blog = $exportEvent->getObject();
         $data = [
@@ -135,7 +135,7 @@ class BlogListener
     /**
      * @DI\Observe("transfer.icap_blog.import")
      */
-    public function onImportFile(ImportObjectEvent $event)
+    public function onImport(ImportObjectEvent $event)
     {
         $data = $event->getData();
         $blog = $event->getObject();
