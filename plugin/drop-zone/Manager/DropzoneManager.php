@@ -361,7 +361,7 @@ class DropzoneManager
                 $drop->setTeamUuid($team->getUuid());
                 $drop->setTeamName($team->getName());
 
-                foreach ($team->getUsers() as $teamUser) {
+                foreach ($team->getRole()->getUsers() as $teamUser) {
                     $drop->addUser($teamUser);
                     /* TODO: checks that a valid status is not overwritten */
                     $this->generateResourceEvaluation($dropzone, $teamUser, AbstractResourceEvaluation::STATUS_INCOMPLETE);

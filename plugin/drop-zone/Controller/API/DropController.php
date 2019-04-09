@@ -449,7 +449,7 @@ class DropController
 
     private function checkTeamUser(Team $team, User $user)
     {
-        if (!in_array($user, $team->getUsers()->toArray())) {
+        if (!$user->hasRole($team->getRole()->getName())) {
             throw new AccessDeniedException();
         }
     }
