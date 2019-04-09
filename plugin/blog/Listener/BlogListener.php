@@ -133,7 +133,7 @@ class BlogListener
     }
 
     /**
-     * @DI\Observe("transfer.icap_blog.import")
+     * @DI\Observe("transfer.icap_blog.import.after")
      */
     public function onImport(ImportObjectEvent $event)
     {

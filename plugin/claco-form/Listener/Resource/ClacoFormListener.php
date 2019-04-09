@@ -149,7 +149,15 @@ class ClacoFormListener
         $params['hiddenFilters']['clacoForm'] = $clacoForm->getId();
         $data['_data']['entries'] = $this->finder->search(Entry::class, $params)['data'];
 
-        //todo: MOVE THIS IN THE IMPORT SECTION
+        $exportEvent->setData($data);
+    }
+
+    /**
+     * @DI\Observe("transfer.claroline_claco_form.import.before")
+     */
+    public function onImportBefore(ImportObjectEvent $event)
+    {
+        $data = $event->getData();
         $replaced = json_encode($data);
 
         foreach ($data['fields'] as $field) {
@@ -158,14 +166,13 @@ class ClacoFormListener
         }
 
         $data = json_decode($replaced, true);
-
-        $exportEvent->setData($data);
+        $event->setData($data);
     }
 
     /**
-     * @DI\Observe("transfer.claroline_claco_form.import")
+     * @DI\Observe("transfer.claroline_claco_form.import.after")
      */
-    public function onImport(ImportObjectEvent $event)
+    public function onImportAfter(ImportObjectEvent $event)
     {
         $data = $event->getData();
         $clacoForm = $event->getObject();
@@ -205,6 +212,7 @@ class ClacoFormListener
             foreach ($fields as $field) {
                 $uuid = $field->getUuid();
                 if (isset($dataEntry['values'][$uuid])) {
+                    var_dump('add data value');
                     $fieldValue = new FieldValue();
                     $fieldValue->setEntry($entry);
                     $fieldValue->setField($field);

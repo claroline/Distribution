@@ -129,9 +129,15 @@ class ResourceManager
         foreach ($resources as $data) {
             $resource = new $data['_class']();
             $resource->setResourceNode($nodes[$data['_nodeId']]);
+            $event = $this->dispatcher->dispatch(
+                'transfer.'.$nodes[$data['_nodeId']]->getResourceType()->getName().'.import.before',
+                'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                [null, $data, $resource]
+            );
+            $data = $event->getData();
             $resource = $this->serializer->deserialize($data, $resource, [Options::REFRESH_UUID]);
             $this->dispatcher->dispatch(
-                'transfer.'.$nodes[$data['_nodeId']]->getResourceType()->getName().'.import',
+                'transfer.'.$nodes[$data['_nodeId']]->getResourceType()->getName().'.import.after',
                 'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
                 [null, $data, $resource]
             );

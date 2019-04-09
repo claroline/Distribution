@@ -27,6 +27,11 @@ class ImportObjectEvent extends Event
         return $this->data;
     }
 
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
     public function getObject()
     {
         return $this->object;
