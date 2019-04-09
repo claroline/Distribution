@@ -186,7 +186,8 @@ class Crud
     public function copy($object, array $options = [])
     {
         $this->checkPermission('COPY', $object, [], true);
-        $new = new get_class($object);
+        $class = get_class($object);
+        $new = new $class();
 
         $this->serializer->deserialize(
           $this->serializer->serialize($object),

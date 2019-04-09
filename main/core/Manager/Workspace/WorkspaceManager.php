@@ -988,6 +988,7 @@ class WorkspaceManager
             $json = $zip->getFromName('workspace.json');
             $data = json_decode($json, true);
             $data['code'] = $data['name'] = $name;
+            $this->container->get('claroline.manager.workspace.transfer')->setLogger($this->logger);
             $workspace = $this->container->get('claroline.manager.workspace.transfer')->create($data, new Workspace());
             $workspace->setName($name);
             $workspace->setPersonal($isPersonal);

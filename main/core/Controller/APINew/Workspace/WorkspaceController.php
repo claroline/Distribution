@@ -142,7 +142,7 @@ class WorkspaceController extends AbstractCrudController
         $data = $this->decodeRequest($request);
 
         if (isset($data['archive'])) {
-            $workspace = $this->importer->create($data);
+            $workspace = $this->importer->create($data, new Workspace());
             $this->toolManager->addMissingWorkspaceTools($workspace);
 
             return new JsonResponse(

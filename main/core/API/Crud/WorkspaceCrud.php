@@ -77,7 +77,7 @@ class WorkspaceCrud
         $user = $this->tokenStorage->getToken() ?
             $this->tokenStorage->getToken()->getUser() :
             $this->userManager->getDefaultClarolineAdmin();
-
+        $model = $workspace->getWorkspaceModel() ? $workspace->getWorkspaceModel() : $this->manager->getDefaultModel();
         $workspace->setWorkspaceModel($model);
 
         if ($user instanceof User) {
@@ -98,7 +98,6 @@ class WorkspaceCrud
         }
 
         $workspace = $this->manager->copy($model, $workspace, false);
-        $model = $workspace->getWorkspaceModel() ? $workspace->getWorkspaceModel() : $this->manager->getDefaultModel();
 
         $this->om->flush();
         //$this->om->endFlushSuite();
