@@ -17,7 +17,7 @@ use Claroline\InstallationBundle\Updater\Updater;
 use Claroline\TeamBundle\Entity\Team;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater120500 extends Updater
+class Updater120402 extends Updater
 {
     private $om;
 

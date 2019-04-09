@@ -77,6 +77,7 @@ class DropzoneSerializer
         $this->sipe('display.showScore', 'setDisplayNotationToLearners', $data, $dropzone);
         $this->sipe('display.showFeedback', 'setDisplayNotationMessageToLearners', $data, $dropzone);
         $this->sipe('display.displayCorrectionsToLearners', 'setDisplayCorrectionsToLearners', $data, $dropzone);
+        $this->sipe('display.correctorDisplayed', 'setCorrectorDisplayed', $data, $dropzone);
 
         if (isset($data['planning'])) {
             $this->deserializePlanning($data['planning'], $dropzone);
@@ -189,6 +190,7 @@ class DropzoneSerializer
             'showScore' => $dropzone->getDisplayNotationToLearners(),
             'showFeedback' => $dropzone->getDisplayNotationMessageToLearners(),
             'displayCorrectionsToLearners' => $dropzone->getDisplayCorrectionsToLearners(),
+            'correctorDisplayed' => $dropzone->isCorrectorDisplayed(),
         ];
     }
 
