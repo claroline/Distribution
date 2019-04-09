@@ -19,7 +19,9 @@ use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
+use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
+use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
@@ -145,18 +147,19 @@ class ClacoFormListener
         $clacoForm = $exportEvent->getObject();
         $data = $exportEvent->getData();
         $params['hiddenFilters']['clacoForm'] = $clacoForm->getId();
-        $data['entries'] = $this->finder->search(Entry::class, $params)['data'];
+        $data['_data']['entries'] = $this->finder->search(Entry::class, $params)['data'];
+
+        //todo: MOVE THIS IN THE IMPORT SECTION
         $replaced = json_encode($data);
 
         foreach ($data['fields'] as $field) {
             $uuid = Uuid::uuid4()->toString();
-
             $replaced = str_replace($field['id'], $uuid, $replaced);
         }
 
         $data = json_decode($replaced, true);
 
-        $exportEvent->overwrite('_data', $data);
+        $exportEvent->setData($data);
     }
 
     /**
@@ -181,22 +184,41 @@ class ClacoFormListener
             $this->om->persist($keyword);
         }
 
-        //$this->om->flush();
+        $fields = [];
+
+        foreach ($data['fields'] as $fieldData) {
+            $newField = new Field();
+            $newField->setClacoForm($clacoForm);
+            $newField = $this->serializer->deserialize($fieldData, $newField);
+            $this->om->persist($newField);
+            $clacoForm->addField($newField);
+            $this->om->persist($clacoForm);
+            $fields[] = $newField;
+        }
 
         foreach ($data['_data']['entries'] as $dataEntry) {
             $entry = new Entry();
             $object = $this->serializer->deserialize($dataEntry, $entry, [Options::REFRESH_UUID]);
             $entry->setClacoForm($clacoForm);
             $this->om->persist($entry);
-        }
 
-        foreach ($data['fields'] as $fieldData) {
-            $field = new Field();
-            $field->setClacoForm($clacoForm);
-            $newField = $this->serializer->deserialize($fieldData, $field, [Options::REFRESH_UUID]);
-            $this->om->persist($newField);
-            $clacoForm->addField($newField);
-            $this->om->persist($clacoForm);
+            foreach ($fields as $field) {
+                $uuid = $field->getUuid();
+                if (isset($dataEntry['values'][$uuid])) {
+                    $fieldValue = new FieldValue();
+                    $fieldValue->setEntry($entry);
+                    $fieldValue->setField($field);
+
+                    $fielFacetValue = new FieldFacetValue();
+                    $fielFacetValue->setUser($entry->getUser());
+                    $fielFacetValue->setFieldFacet($field->getFieldFacet());
+                    $fielFacetValue->setValue($dataEntry['values'][$uuid]);
+                    $fieldValue->setFieldFacetValue($fielFacetValue);
+
+                    $this->om->persist($fielFacetValue);
+                    $this->om->persist($fieldValue);
+                }
+            }
         }
     }
 
