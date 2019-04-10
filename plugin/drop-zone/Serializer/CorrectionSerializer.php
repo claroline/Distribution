@@ -78,23 +78,22 @@ class CorrectionSerializer
     }
 
     /**
-     * @param string $class
-     * @param array  $data
+     * @param array      $data
+     * @param Correction $correction
      *
      * @return Correction
      */
-    public function deserialize($class, $data)
+    public function deserialize($data, Correction $correction = null)
     {
-        $correction = $this->correctionRepo->findOneBy(['uuid' => $data['id']]);
-
         if (empty($correction)) {
-            $correction = new Correction();
+            $correction = $this->correctionRepo->findOneBy(['uuid' => $data['id']]);
+        }
+        if (isset($data['id'])) {
             $correction->setUuid($data['id']);
+        }
+        if (isset($data['drop'])) {
             $drop = $this->dropRepo->findOneBy(['uuid' => $data['drop']]);
             $correction->setDrop($drop);
-            $currentDate = new \DateTime();
-            $correction->setStartDate($currentDate);
-            $correction->setLastEditionDate($currentDate);
         }
         if (isset($data['startDate'])) {
             $startDate = !empty($data['startDate']) ? new \DateTime($data['startDate']) : null;

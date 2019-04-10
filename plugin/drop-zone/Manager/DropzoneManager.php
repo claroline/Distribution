@@ -700,24 +700,28 @@ class DropzoneManager
         $this->om->forceFlush();
         $drop = $this->computeDropScore($correction->getDrop());
         $dropzone = $drop->getDropzone();
+        $userDrop = null;
         $users = [];
 
         switch ($dropzone->getDropType()) {
             case Dropzone::DROP_TYPE_USER:
                 $users = [$user];
+                $userDrop = $this->getUserDrop($dropzone, $user);
                 break;
             case Dropzone::DROP_TYPE_TEAM:
                 $teamDrops = $this->getTeamDrops($dropzone, $user);
 
                 if (1 === count($teamDrops)) {
                     $users = $teamDrops[0]->getUsers();
+                    $userDrop = $teamDrops[0];
                 }
                 break;
         }
         $this->eventDispatcher->dispatch('log', new LogCorrectionEndEvent($dropzone, $correction->getDrop(), $correction));
+        $this->om->forceFlush();
 
         $this->checkSuccess($drop);
-        $this->checkCompletion($drop->getDropzone(), $users, $drop);
+        $this->checkCompletion($dropzone, $users, $userDrop);
 
         $this->om->endFlushSuite();
 
@@ -1159,7 +1163,9 @@ class DropzoneManager
                 $userEval = $this->resourceEvalManager->getResourceUserEvaluation($dropzone->getResourceNode(), $user, false);
 
                 if (!empty($userEval) && !in_array($userEval->getStatus(), $fixedStatusList)) {
-                    $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_COMPLETED);
+                    $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_COMPLETED, null, 100);
+                } elseif (!empty($drop)) {
+                    $this->updateDropProgression($dropzone, $drop, 100);
                 }
                 //TODO user whose score is available must be notified by LogDropGradeAvailableEvent, when he has done his corrections AND his drop has been corrected
             }
@@ -1206,7 +1212,8 @@ class DropzoneManager
                 AbstractResourceEvaluation::STATUS_FAILED;
 
             foreach ($users as $user) {
-                $this->generateResourceEvaluation($dropzone, $user, $status, $score, $drop, true);
+                $userEval = $this->generateResourceUserEvaluation($dropzone, $user);
+                $this->generateResourceEvaluation($dropzone, $user, $status, $score, $userEval->getProgression(), $drop, true);
             }
 
             $this->eventDispatcher->dispatch('log', new LogDropEvaluateEvent($dropzone, $drop, $drop->getScore()));
@@ -1243,6 +1250,7 @@ class DropzoneManager
      * @param User     $user
      * @param string   $status
      * @param float    $score
+     * @param int      $progression
      * @param Drop     $drop
      * @param bool     $forceStatus
      *
@@ -1253,6 +1261,7 @@ class DropzoneManager
         User $user,
         $status,
         $score = null,
+        $progression = null,
         Drop $drop = null,
         $forceStatus = false
     ) {
@@ -1267,11 +1276,59 @@ class DropzoneManager
             null,
             $dropzone->getScoreMax(),
             null,
-            null,
+            $progression,
             null,
             null,
             $data,
             $forceStatus
+        );
+    }
+
+    /**
+     * Updates progression of ResourceEvaluation for drop.
+     *
+     * @param Dropzone $dropzone
+     * @param Drop     $drop
+     * @param int      $progression
+     *
+     * @return ResourceUserEvaluation
+     */
+    public function updateDropProgression(Dropzone $dropzone, Drop $drop, $progression)
+    {
+        $this->om->startFlushSuite();
+
+        if (Dropzone::DROP_TYPE_TEAM === $dropzone->getDropType()) {
+            foreach ($drop->getUsers() as $user) {
+                $this->updateProgression($dropzone, $user, $progression, $drop);
+            }
+        } else {
+            $this->updateProgression($dropzone, $drop->getUser(), $progression, $drop);
+        }
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * Updates progression of ResourceEvaluation for user.
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     * @param int      $progression
+     * @param Drop     $drop
+     *
+     * @return ResourceUserEvaluation
+     */
+    public function updateProgression(Dropzone $dropzone, User $user, $progression, Drop $drop = null)
+    {
+        $resourceEval = $this->generateResourceUserEvaluation($dropzone, $user);
+
+        return $this->generateResourceEvaluation(
+            $dropzone,
+            $user,
+            $resourceEval->getStatus(),
+            $resourceEval->getScore(),
+            $progression,
+            $drop,
+            true
         );
     }
 
@@ -1542,7 +1599,7 @@ class DropzoneManager
                 }
                 ++$i;
 
-                if (200 % $i === 0) {
+                if (0 === 200 % $i) {
                     $this->om->forceFlush();
                 }
             }
@@ -1556,7 +1613,7 @@ class DropzoneManager
                 }
                 ++$i;
 
-                if (200 % $i === 0) {
+                if (0 === 200 % $i) {
                     $this->om->forceFlush();
                 }
             }

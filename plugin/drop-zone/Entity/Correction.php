@@ -175,6 +175,9 @@ class Correction
     {
         $this->refreshUuid();
         $this->grades = new ArrayCollection();
+        $currentDate = new \DateTime();
+        $this->setStartDate($currentDate);
+        $this->setLastEditionDate($currentDate);
     }
 
     /**

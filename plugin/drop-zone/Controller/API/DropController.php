@@ -184,6 +184,8 @@ class DropController
 
         try {
             $this->manager->submitDrop($drop, $user);
+            $progression = $dropzone->isPeerReview() ? 50 : 100;
+            $this->manager->updateDropProgression($dropzone, $drop, $progression);
 
             return new JsonResponse($this->manager->serializeDrop($drop));
         } catch (\Exception $e) {
@@ -262,6 +264,8 @@ class DropController
                         $documents[] = $this->manager->serializeDocument($document);
                         break;
                 }
+                $progression = $dropzone->isPeerReview() ? 0 : 50;
+                $this->manager->updateDropProgression($dropzone, $drop, $progression);
             }
 
             return new JsonResponse($documents);
@@ -457,6 +461,8 @@ class DropController
     /**
      * @param Request $request
      * @param string  $class
+     *
+     * @return array
      */
     protected function decodeIdsString(Request $request, $class)
     {
