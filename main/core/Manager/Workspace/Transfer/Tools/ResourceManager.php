@@ -74,7 +74,7 @@ class ResourceManager
         $node = $this->serializer->serialize($root, array_merge($options, [Options::SERIALIZE_MINIMAL]));
         $resource = array_merge(
             $this->serializer->serialize($this->om->getRepository($root->getClass())->findOneBy(['resourceNode' => $root])),
-            ['_nodeId' => $root->getUuid(), '_class' => $node['meta']['className']]
+            ['_nodeId' => $root->getUuid(), '_class' => $node['meta']['className'], '_type' => $node['meta']['type']]
         );
 
         $data['nodes'][] = $node;
@@ -173,11 +173,6 @@ class ResourceManager
         }
     }
 
-    private function getUnderscoreClassName($className)
-    {
-        return strtolower(str_replace('\\', '_', $className));
-    }
-
     /**
      * @DI\Observe("import_tool_resource_manager")
      */
@@ -186,7 +181,7 @@ class ResourceManager
         $this->log('Importing resource files...');
         $data = $event->getData();
 
-        foreach ($data['resources'] as $key => $serialized) {
+        foreach ($data['resources'] as $serialized) {
             $this->dispatcher->dispatch(
                 'transfer.'.$resourceType->getName().'.import',
                 'Claroline\\CoreBundle\\Event\\ImportObjectEvent',

@@ -93,7 +93,7 @@ class WikiSerializer
         }
 
         if (!in_array(Options::REFRESH_UUID, $options)) {
-            $this->sipe('id', 'setUuid', $data, $path);
+            $this->sipe('id', 'setUuid', $data, $wiki);
         }
 
         if (isset($data['mode'])) {

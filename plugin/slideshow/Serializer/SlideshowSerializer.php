@@ -146,7 +146,7 @@ class SlideshowSerializer
                 $slide->setOrder($slideOrder);
 
                 if (!in_array(Options::REFRESH_UUID, $options)) {
-                    $this->sipe('id', 'setUuid', $data, $path);
+                    $this->sipe('id', 'setUuid', $data, $slideshow);
                 }
 
                 $this->sipe('meta.title', 'setTitle', $slideData, $slide);

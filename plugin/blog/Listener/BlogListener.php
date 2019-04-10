@@ -150,8 +150,7 @@ class BlogListener
                 $comment = $this->container->get('claroline.serializer.blog.comment')->deserialize($commentData, new Comment(), [Options::REFRESH_UUID]);
 
                 $this->container->get('icap.blog.manager.comment')
-                  ->createComment($blog, $post, $this->commentSerializer
-                  ->deserialize($data, null, $user), $comment['isPublished']);
+                  ->createComment($blog, $post, $this->commentSerializer->deserialize($data, null), $comment['isPublished']);
 
                 $om->persist($comment);
             }

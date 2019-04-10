@@ -154,18 +154,6 @@ class ResourceNodeSerializer
             ];
         }
 
-        /*
-                if (in_array(Options::SERIALIZE_RESOURCE, $options)) {
-                    $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
-                    $serializedNode['resource'] = $this->serializer->serialize($resource);
-                }
-
-                if (in_array(Options::IS_RECURSIVE, $options)) {
-                    $serializedNode['children'] = array_map(function (ResourceNode $node) use ($options) {
-                        return $this->serialize($node, $options);
-                    }, $resourceNode->getChildren()->toArray());
-                }
-        */
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serializedNode['comments'] = array_map(function (ResourceComment $comment) {
                 return $this->serializer->serialize($comment);
