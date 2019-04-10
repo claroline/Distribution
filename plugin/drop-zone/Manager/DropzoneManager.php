@@ -295,7 +295,13 @@ class DropzoneManager
             $drop->setUser($user);
             $drop->setDropzone($dropzone);
             $this->om->persist($drop);
-            $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_INCOMPLETE);
+
+            $this->resourceEvalManager->createResourceEvaluation(
+                $dropzone->getResourceNode(),
+                $user,
+                null,
+                ['status' => AbstractResourceEvaluation::STATUS_INCOMPLETE]
+            );
             $this->om->endFlushSuite();
 
             $this->eventDispatcher->dispatch('log', new LogDropStartEvent($dropzone, $drop));
@@ -331,7 +337,12 @@ class DropzoneManager
                 foreach ($team->getRole()->getUsers() as $teamUser) {
                     $drop->addUser($teamUser);
                     /* TODO: checks that a valid status is not overwritten */
-                    $this->generateResourceEvaluation($dropzone, $teamUser, AbstractResourceEvaluation::STATUS_INCOMPLETE);
+                    $this->resourceEvalManager->createResourceEvaluation(
+                        $dropzone->getResourceNode(),
+                        $teamUser,
+                        null,
+                        ['status' => AbstractResourceEvaluation::STATUS_INCOMPLETE]
+                    );
                 }
                 $this->om->persist($drop);
                 $this->om->endFlushSuite();
@@ -340,7 +351,12 @@ class DropzoneManager
             } elseif (!$drop->hasUser($user)) {
                 $this->om->startFlushSuite();
                 $drop->addUser($user);
-                $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_INCOMPLETE);
+                $this->resourceEvalManager->createResourceEvaluation(
+                    $dropzone->getResourceNode(),
+                    $user,
+                    null,
+                    ['status' => AbstractResourceEvaluation::STATUS_INCOMPLETE]
+                );
                 $this->om->persist($drop);
                 $this->om->endFlushSuite();
             }
@@ -1163,7 +1179,12 @@ class DropzoneManager
                 $userEval = $this->resourceEvalManager->getResourceUserEvaluation($dropzone->getResourceNode(), $user, false);
 
                 if (!empty($userEval) && !in_array($userEval->getStatus(), $fixedStatusList)) {
-                    $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_COMPLETED, null, 100);
+                    $this->resourceEvalManager->createResourceEvaluation(
+                        $dropzone->getResourceNode(),
+                        $user,
+                        null,
+                        ['status' => AbstractResourceEvaluation::STATUS_COMPLETED, 'progression' => 100]
+                    );
                 } elseif (!empty($drop)) {
                     $this->updateDropProgression($dropzone, $drop, 100);
                 }
@@ -1212,8 +1233,18 @@ class DropzoneManager
                 AbstractResourceEvaluation::STATUS_FAILED;
 
             foreach ($users as $user) {
-                $userEval = $this->generateResourceUserEvaluation($dropzone, $user);
-                $this->generateResourceEvaluation($dropzone, $user, $status, $score, $userEval->getProgression(), $drop, true);
+                $this->resourceEvalManager->createResourceEvaluation(
+                    $dropzone->getResourceNode(),
+                    $user,
+                    null,
+                    [
+                        'status' => $status,
+                        'score' => $score,
+                        'scoreMax' => $scoreMax,
+                        'data' => $this->serializeDrop($drop),
+                    ],
+                    ['status' => true, 'score' => true]
+                );
             }
 
             $this->eventDispatcher->dispatch('log', new LogDropEvaluateEvent($dropzone, $drop, $drop->getScore()));
@@ -1237,51 +1268,15 @@ class DropzoneManager
         $userEval = $this->resourceEvalManager->getResourceUserEvaluation($dropzone->getResourceNode(), $user, false);
 
         if (empty($userEval)) {
-            $userEval = $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_NOT_ATTEMPTED);
+            $userEval = $this->resourceEvalManager->createResourceEvaluation(
+                $dropzone->getResourceNode(),
+                $user,
+                null,
+                ['status' => AbstractResourceEvaluation::STATUS_NOT_ATTEMPTED]
+            );
         }
 
         return $userEval;
-    }
-
-    /**
-     * Creates a ResourceEvaluation for a Dropzone and an user.
-     *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param string   $status
-     * @param float    $score
-     * @param int      $progression
-     * @param Drop     $drop
-     * @param bool     $forceStatus
-     *
-     * @return ResourceUserEvaluation
-     */
-    public function generateResourceEvaluation(
-        Dropzone $dropzone,
-        User $user,
-        $status,
-        $score = null,
-        $progression = null,
-        Drop $drop = null,
-        $forceStatus = false
-    ) {
-        $data = !empty($drop) ? $this->serializeDrop($drop) : null;
-
-        return $this->resourceEvalManager->createResourceEvaluation(
-            $dropzone->getResourceNode(),
-            $user,
-            new \DateTime(),
-            $status,
-            $score,
-            null,
-            $dropzone->getScoreMax(),
-            null,
-            $progression,
-            null,
-            null,
-            $data,
-            $forceStatus
-        );
     }
 
     /**
@@ -1299,37 +1294,24 @@ class DropzoneManager
 
         if (Dropzone::DROP_TYPE_TEAM === $dropzone->getDropType()) {
             foreach ($drop->getUsers() as $user) {
-                $this->updateProgression($dropzone, $user, $progression, $drop);
+                $this->resourceEvalManager->createResourceEvaluation(
+                    $dropzone->getResourceNode(),
+                    $user,
+                    null,
+                    ['progression' => $progression, 'data' => $this->serializeDrop($drop)],
+                    ['progression' => true]
+                );
             }
         } else {
-            $this->updateProgression($dropzone, $drop->getUser(), $progression, $drop);
+            $this->resourceEvalManager->createResourceEvaluation(
+                $dropzone->getResourceNode(),
+                $drop->getUser(),
+                null,
+                ['progression' => $progression, 'data' => $this->serializeDrop($drop)],
+                ['progression' => true]
+            );
         }
         $this->om->endFlushSuite();
-    }
-
-    /**
-     * Updates progression of ResourceEvaluation for user.
-     *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param int      $progression
-     * @param Drop     $drop
-     *
-     * @return ResourceUserEvaluation
-     */
-    public function updateProgression(Dropzone $dropzone, User $user, $progression, Drop $drop = null)
-    {
-        $resourceEval = $this->generateResourceUserEvaluation($dropzone, $user);
-
-        return $this->generateResourceEvaluation(
-            $dropzone,
-            $user,
-            $resourceEval->getStatus(),
-            $resourceEval->getScore(),
-            $progression,
-            $drop,
-            true
-        );
     }
 
     /**
