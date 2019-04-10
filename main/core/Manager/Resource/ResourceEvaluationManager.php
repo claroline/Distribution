@@ -215,7 +215,6 @@ class ResourceEvaluationManager
             ) {
                 $rue->setStatus($data['status']);
             }
-
         }
 
         if ($incAttempts) {
@@ -242,7 +241,7 @@ class ResourceEvaluationManager
         $scoreMin = $evaluation->getScoreMin();
         $progression = $evaluation->getProgression();
         $status = $evaluation->getStatus();
-        $rueStatus  = $rue->getStatus();
+        $rueStatus = $rue->getStatus();
 
         $statusPriority = AbstractResourceEvaluation::STATUS_PRIORITY;
 

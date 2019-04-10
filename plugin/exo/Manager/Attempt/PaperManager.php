@@ -404,7 +404,7 @@ class PaperManager
                 'score' => $score,
                 'scoreMax' => $total,
                 'progression' => $nbQuestions > 0 ? floor(($nbAnswers / $nbQuestions) * 100) : null,
-                'data' => $data
+                'data' => $data,
             ]
         );
     }

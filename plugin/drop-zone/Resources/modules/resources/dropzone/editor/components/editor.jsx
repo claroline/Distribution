@@ -163,7 +163,7 @@ const EditorComponent = props =>
                 name: 'display.correctorDisplayed',
                 type: 'boolean',
                 label: trans('display_corrector', {}, 'dropzone'),
-                displayed: props.dropzone.display && props.dropzone.display.displayCorrectionsToLearners,
+                displayed: props.dropzone.display && props.dropzone.display.displayCorrectionsToLearners
               }
             ]
           }, {

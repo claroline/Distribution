@@ -229,7 +229,6 @@ class BlogTrackingManager
      */
     public function updateResourceTracking(ResourceNode $node, User $user, \DateTime $date)
     {
-
         $this->evalutionManager->updateResourceUserEvaluationData(
             $node,
             $user,
