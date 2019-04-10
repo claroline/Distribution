@@ -126,6 +126,8 @@ class ResourceManager
 
     private function deserializeResources(array $resources, Workspace $workspace, array $nodes)
     {
+        $this->om->startFlushSuite();
+
         foreach ($resources as $data) {
             $resource = new $data['_class']();
             $resource->setResourceNode($nodes[$data['_nodeId']]);
@@ -135,7 +137,9 @@ class ResourceManager
                 [null, $data, $resource]
             );
             $data = $event->getData();
-            $resource = $this->serializer->deserialize($data, $resource, [Options::REFRESH_UUID]);
+            $this->dispatchCrud('create', 'pre', [$resource, [Options::WORKSPACE_COPY]]);
+            $this->serializer->deserialize($data, $resource, [Options::REFRESH_UUID]);
+            $this->dispatchCrud('create', 'post', [$resource, [Options::WORKSPACE_COPY]]);
             $this->dispatcher->dispatch(
                 'transfer.'.$nodes[$data['_nodeId']]->getResourceType()->getName().'.import.after',
                 'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
@@ -143,6 +147,8 @@ class ResourceManager
             );
             $this->om->persist($resource);
         }
+
+        $this->om->endFlushSuite();
     }
 
     /**
@@ -187,5 +193,29 @@ class ResourceManager
                 [$event->getFileBag(), $serialized]
             );
         }
+    }
+
+    /**
+     * We dispatch 2 events: a generic one and an other with a custom name.
+     * Listen to what you want. Both have their uses.
+     *
+     * @param string $action (create, copy, delete, patch, update)
+     * @param string $when   (post, pre)
+     * @param array  $args
+     *
+     * @return bool
+     *
+     * Same dispatcher than the crud one
+     */
+    public function dispatchCrud($action, $when, array $args)
+    {
+        $name = 'crud_'.$when.'_'.$action.'_object';
+        $eventClass = ucfirst($action);
+        $generic = $this->dispatcher->dispatch($name, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
+        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($args[0]))->getName();
+        $serializedName = $name.'_'.strtolower(str_replace('\\', '_', $className));
+        $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
+
+        return $generic->isAllowed() && $specific->isAllowed();
     }
 }

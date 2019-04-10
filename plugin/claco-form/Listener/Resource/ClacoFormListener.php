@@ -212,7 +212,6 @@ class ClacoFormListener
             foreach ($fields as $field) {
                 $uuid = $field->getUuid();
                 if (isset($dataEntry['values'][$uuid])) {
-                    var_dump('add data value');
                     $fieldValue = new FieldValue();
                     $fieldValue->setEntry($entry);
                     $fieldValue->setField($field);
