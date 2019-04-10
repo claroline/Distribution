@@ -202,9 +202,10 @@ class TransferManager
     {
         $data = $this->replaceResourceIds($data);
 
-        //throw new \Exception('bnoom');
         $defaultRole = $data['registration']['defaultRole'];
         unset($data['registration']['defaultRole']);
+        //we don't want new workspaces to be considered as models
+        $data['meta']['model'] = false;
 
         $workspace = $this->serializer->deserialize($data, $workspace, $options);
 
