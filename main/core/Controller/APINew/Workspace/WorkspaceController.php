@@ -198,8 +198,6 @@ class WorkspaceController extends AbstractCrudController
         return new JsonResponse(array_map(function ($copy) use ($serializer) {
             return $serializer->serialize($copy, $this->options['get']);
         }, $copies), 200);
-
-        //  return parent::copyBulkAction($request, $class);
     }
 
     /**

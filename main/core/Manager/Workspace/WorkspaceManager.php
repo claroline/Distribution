@@ -1006,6 +1006,8 @@ class WorkspaceManager
             }
         }
 
+        $this->om->forceFlush();
+
         return $workspace;
     }
 
