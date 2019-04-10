@@ -159,6 +159,11 @@ const WorkspaceFormComponent = (props) => {
                 displayed: (workspace) => workspace.opening && 'resource' === workspace.opening.type,
                 onChange: (selected) => {
                   props.updateProp('opening.target', selected)
+                },
+                options: {
+                  picker: {
+                    root: props.workspace.root
+                  }
                 }
               }
             ]

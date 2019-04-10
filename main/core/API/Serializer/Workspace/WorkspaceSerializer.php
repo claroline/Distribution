@@ -213,6 +213,13 @@ class WorkspaceSerializer
                     return $this->orgaSerializer->serialize($organization);
                 }, $workspace->getOrganizations()->toArray());
             }
+
+            try {
+                $serialized['root'] = $this->resNodeSerializer->serialize($this->resourceManager->getWorkspaceRoot($workspace, [Options::SERIALIZE_MINIMAL]));
+            } catch (\Exception $e) {
+                //often multiple or no root found because failed creation or suppression
+                $serialized['root'] = null;
+            }
         }
 
         // maybe do the same for users one day
