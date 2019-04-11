@@ -969,13 +969,14 @@ class WorkspaceManager
     {
         $name = $isPersonal ? 'default_personal' : 'default_workspace';
         $this->log('Search old default workspace '.$name);
-        $workspace = $this->workspaceRepo->findOneBy(['code' => $name, 'model' => true]);
+        $workspace = $this->workspaceRepo->findOneBy(['code' => $name]);
 
         if (!$workspace || $restore) {
             $this->log('Rebuilding...');
             //don't log this or it'll crash everything during the platform installation
             //(some database tables aren't already created because they come from plugins)
             if ($workspace && $restore) {
+                $this->log('Removing workspace...');
                 $this->om->remove($workspace);
                 $this->om->flush();
             }
@@ -989,7 +990,12 @@ class WorkspaceManager
             $data = json_decode($json, true);
             $data['code'] = $data['name'] = $name;
             $this->container->get('claroline.manager.workspace.transfer')->setLogger($this->logger);
-            $workspace = $this->container->get('claroline.manager.workspace.transfer')->create($data, new Workspace());
+            $workspace = new Workspace();
+            $workspace->setName($name);
+            $workspace->setPersonal($isPersonal);
+            $workspace->setCode($name);
+            $workspace = $this->container->get('claroline.manager.workspace.transfer')->create($data, $workspace);
+            //just in case
             $workspace->setName($name);
             $workspace->setPersonal($isPersonal);
             $workspace->setCode($name);
