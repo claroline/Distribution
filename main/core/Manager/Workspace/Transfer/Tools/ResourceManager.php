@@ -183,7 +183,7 @@ class ResourceManager
 
         foreach ($data['resources'] as $serialized) {
             $this->dispatcher->dispatch(
-                'transfer.'.$resourceType->getName().'.import',
+                'transfer.'.$serialized['_type'].'.import',
                 'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
                 [$event->getFileBag(), $serialized]
             );
