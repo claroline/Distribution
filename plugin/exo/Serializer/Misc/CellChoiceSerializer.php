@@ -24,7 +24,7 @@ class CellChoiceSerializer
      *
      * @return array
      */
-    public function serialize($choice, array $options = [])
+    public function serialize(CellChoice $choice, array $options = [])
     {
         $serialized = [
             'text' => $choice->getText(),

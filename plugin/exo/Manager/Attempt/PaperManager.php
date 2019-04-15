@@ -87,7 +87,7 @@ class PaperManager
      * @param Paper $paper
      * @param array $options
      *
-     * @return \stdClass
+     * @return array
      */
     public function serialize(Paper $paper, array $options = [])
     {

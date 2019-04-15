@@ -9,7 +9,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  * Serializer for contents.
  *
  * @DI\Service("ujm_exo.serializer.content")
- * @DI\Tag("claroline.serializer")
  */
 class ContentSerializer
 {

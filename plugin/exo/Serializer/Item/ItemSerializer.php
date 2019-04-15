@@ -207,7 +207,7 @@ class ItemSerializer
             }
         }
 
-        if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $data->type)) {
+        if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $data['type'])) {
             // question item
             $this->sipe('type', 'setMimeType', $data, $item);
             $this->sipe('content', 'setContent', $data, $item);

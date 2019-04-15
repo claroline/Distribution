@@ -108,13 +108,13 @@ class ExerciseManager
     /**
      * Validates and creates a new Exercise from raw data.
      *
-     * @param \stdClass $data
+     * @param array $data
      *
      * @return Exercise
      *
      * @throws InvalidDataException
      */
-    public function create(\stdClass $data)
+    public function create(array $data)
     {
         return $this->update(new Exercise(), $data);
     }
@@ -122,17 +122,18 @@ class ExerciseManager
     /**
      * Validates and updates an Exercise entity with raw data.
      *
-     * @param Exercise  $exercise
-     * @param \stdClass $data
+     * @param Exercise $exercise
+     * @param array    $data
      *
      * @return Exercise
      *
      * @throws InvalidDataException
      */
-    public function update(Exercise $exercise, \stdClass $data)
+    public function update(Exercise $exercise, array $data)
     {
         // Validate received data
         $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
+
         if (count($errors) > 0) {
             throw new InvalidDataException('Exercise is not valid', $errors);
         }
@@ -161,7 +162,7 @@ class ExerciseManager
      * @param Exercise $exercise
      * @param array    $options
      *
-     * @return \stdClass
+     * @return array
      */
     public function serialize(Exercise $exercise, array $options = [])
     {
@@ -199,20 +200,19 @@ class ExerciseManager
      */
     public function isDeletable(Exercise $exercise)
     {
-        return !$exercise->getResourceNode()->isPublished()
-            || 0 === $this->paperManager->countExercisePapers($exercise);
+        return !$exercise->getResourceNode()->isPublished() || 0 === $this->paperManager->countExercisePapers($exercise);
     }
 
     /**
      * Creates a copy of a quiz definition.
      * (aka it creates a new entity if needed and generate new IDs for quiz data).
      *
-     * @param \stdClass     $srcData
+     * @param array         $srcData
      * @param Exercise|null $copyDestination - an existing Exercise entity to store the copy
      *
      * @return Exercise
      */
-    public function createCopy(\stdClass $srcData, Exercise $copyDestination = null)
+    public function createCopy(array $srcData, Exercise $copyDestination = null)
     {
         $copyDestination = $this->serializer->deserialize($srcData, $copyDestination, [
             Transfer::NO_FETCH,
@@ -238,10 +238,10 @@ class ExerciseManager
         return $filename;
     }
 
-    public function import(\stdClass $data, $workspace, $owner)
+    public function import(array $data, $workspace, $owner)
     {
         $exercise = new Exercise();
-        $exercise->setName($data->title);
+        $exercise->setName($data['title']);
         // Create entities from import data
         $exercise = $this->createCopy($data, $exercise);
         $parent = $this->resourceManager->getWorkspaceRoot($workspace);
@@ -274,7 +274,9 @@ class ExerciseManager
             /** @var Paper $paper */
             foreach ($papers as $paper) {
                 $structure = json_decode($paper->getStructure());
-                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ? floatval($structure->parameters->totalScoreOn) : $this->paperManager->calculateTotal($paper);
+                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ?
+                    floatval($structure->parameters->totalScoreOn) :
+                    $this->paperManager->calculateTotal($paper);
                 $user = $paper->getUser();
                 $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
                 fputcsv($handle, [
@@ -364,7 +366,9 @@ class ExerciseManager
             /** @var Paper $paper */
             foreach ($papers as $paper) {
                 $structure = json_decode($paper->getStructure());
-                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ? floatval($structure->parameters->totalScoreOn) : $this->paperManager->calculateTotal($paper);
+                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ?
+                    floatval($structure->parameters->totalScoreOn) :
+                    $this->paperManager->calculateTotal($paper);
                 $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
 
                 $answers = $paper->getAnswers();
@@ -388,6 +392,7 @@ class ExerciseManager
                 $csv['total_score_on'] = [$totalScoreOn];
 
                 $notFound = [];
+
                 foreach ($questions as $question) {
                     $item = $items[$question->getId()];
                     $found = false;

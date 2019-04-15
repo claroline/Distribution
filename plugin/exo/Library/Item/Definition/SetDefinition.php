@@ -126,10 +126,11 @@ class SetDefinition extends AbstractDefinition
         if (is_array($answer)) {
             foreach ($question->getAssociations() as $association) {
                 $found = false;
+
                 foreach ($answer as $index => $givenAnswer) {
                     if (null !== $association->getLabel()
-                        && $association->getLabel()->getUuid() === $givenAnswer->setId
-                        && $association->getProposal()->getUuid() === $givenAnswer->itemId
+                        && $association->getLabel()->getUuid() === $givenAnswer['setId']
+                        && $association->getProposal()->getUuid() === $givenAnswer['itemId']
                     ) {
                         $found = true;
                         if (0 < $association->getScore()) {
@@ -183,13 +184,13 @@ class SetDefinition extends AbstractDefinition
             $unusedTemp = array_merge($unusedItems);
 
             foreach ($answerData as $setAnswer) {
-                if (!isset($sets[$setAnswer->setId])) {
-                    $sets[$setAnswer->setId] = [];
+                if (!isset($sets[$setAnswer['setId']])) {
+                    $sets[$setAnswer['setId']] = [];
                 }
-                $sets[$setAnswer->setId][$setAnswer->itemId] = isset($sets[$setAnswer->setId][$setAnswer->itemId]) ?
-                    $sets[$setAnswer->setId][$setAnswer->itemId] + 1 :
+                $sets[$setAnswer['setId']][$setAnswer['itemId']] = isset($sets[$setAnswer['setId']][$setAnswer['itemId']]) ?
+                    $sets[$setAnswer['setId']][$setAnswer['itemId']] + 1 :
                     1;
-                $unusedTemp[$setAnswer->itemId] = false;
+                $unusedTemp[$setAnswer['itemId']] = false;
             }
             foreach ($unusedTemp as $itemId => $value) {
                 if ($value) {
@@ -235,7 +236,7 @@ class SetDefinition extends AbstractDefinition
         $answers = [];
 
         foreach ($data as $element) {
-            $answers[] = "{$element->itemId}: {$element->_itemData}";
+            $answers[] = "{$element['itemId']}: {$element['_itemData']}";
         }
 
         $compressor = new ArrayCompressor();
