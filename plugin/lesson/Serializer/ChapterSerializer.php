@@ -96,16 +96,25 @@ class ChapterSerializer
     private function serializeChapterTreeNode($node)
     {
         $children = [];
+
         if (!empty($node['__children'])) {
             foreach ($node['__children'] as $child) {
                 $children[] = $this->serializeChapterTreeNode($child);
             }
         }
 
+        /*
+                if (!empty($node->getChildren()->toArray())) {
+                    foreach ($node->getChildren()->toArray() as $child) {
+                        $children[] = $this->serializeChapterTreeNode($child);
+                    }
+                }
+        */
         return [
             'id' => $node['uuid'],
             'title' => $node['title'],
             'slug' => $node['slug'],
+            'text' => $node['text'],
             'children' => $children,
         ];
     }
