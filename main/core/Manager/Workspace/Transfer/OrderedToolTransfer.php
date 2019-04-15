@@ -81,6 +81,23 @@ class OrderedToolTransfer
         return $restrictions;
     }
 
+    public function dispatchPreEvent(array $data, array $orderedToolData)
+    {
+        //use event instead maybe ? or tagged service
+        $serviceName = 'claroline.transfer.'.$orderedToolData['name'];
+
+        if ($this->container->has($serviceName)) {
+            $importer = $this->container->get($serviceName);
+            $importer->setLogger($this->logger);
+
+            if (method_exists($importer, 'prepareImport')) {
+                $data = $importer->prepareImport($orderedToolData, $data);
+            }
+        }
+
+        return $data;
+    }
+
     //only work for creation... other not supported. It's not a true Serializer anyway atm
     public function deserialize(array $data, OrderedTool $orderedTool, array $options = [], Workspace $workspace = null)
     {

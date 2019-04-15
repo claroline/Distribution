@@ -228,6 +228,13 @@ class TransferManager
 
         $data['root']['meta']['workspace']['uuid'] = $workspace->getUuid();
 
+        $this->log('Pre import data update...');
+
+        foreach ($data['orderedTools'] as $orderedToolData) {
+            $this->ots->setLogger($this->logger);
+            $data = $this->ots->dispatchPreEvent($data, $orderedToolData);
+        }
+
         $this->log('Deserializing the tools...');
         foreach ($data['orderedTools'] as $orderedToolData) {
             $orderedTool = new OrderedTool();
