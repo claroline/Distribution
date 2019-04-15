@@ -138,6 +138,44 @@ class WikiListener
     }
 
     /**
+     * @DI\Observe("transfer.icap_wiki.export")
+     */
+    public function onExport(ExportObjectEvent $exportEvent)
+    {
+        $lesson = $exportEvent->getObject();
+
+        $data = [
+          'root' => $this->chapterManager->serializeChapterTree($lesson),
+        ];
+
+        $exportEvent->overwrite('_data', $data);
+    }
+
+    /**
+     * @DI\Observe("transfer.icap_wiki.import.after")
+     */
+    public function onImport(ImportObjectEvent $event)
+    {
+        $data = $event->getData();
+        $lesson = $event->getObject();
+
+        $rootChapter = $data['_data']['root'];
+        $lesson->buildRoot();
+        $root = $lesson->getRoot();
+
+        if (isset($rootChapter['children'])) {
+            $children = $rootChapter['children'];
+
+            foreach ($children as $child) {
+                $chapter = $this->importChapter($child, $lesson);
+                $chapter->setLesson($lesson);
+                $chapter->setParent($root);
+                $this->om->persist($chapter);
+            }
+        }
+    }
+
+    /**
      * @DI\Observe("generate_resource_user_evaluation_icap_wiki")
      *
      * @param GenericDataEvent $event
