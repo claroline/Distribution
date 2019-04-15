@@ -231,7 +231,7 @@ class ItemManager
         // Let the question correct the answer
         $definition = $this->itemDefinitions->get($question->getMimeType());
         /** @var AnswerableItemDefinitionInterface $definition */
-        $corrected = $definition->correctAnswer($question->getInteraction(), json_decode($answer->getData()));
+        $corrected = $definition->correctAnswer($question->getInteraction(), json_decode($answer->getData(), true));
         if (!$corrected instanceof CorrectedAnswer) {
             $corrected = new CorrectedAnswer();
         }
@@ -251,7 +251,7 @@ class ItemManager
             }
         }
 
-        return $this->scoreManager->calculate(json_decode($question->getScoreRule()), $corrected);
+        return $this->scoreManager->calculate(json_decode($question->getScoreRule(), true), $corrected);
     }
 
     /**
@@ -271,7 +271,7 @@ class ItemManager
                 $score = $this->calculateScore($question, $answer);
                 // get total available for the question
                 $expected = $definition->expectAnswer($question->getInteraction());
-                $total = $this->scoreManager->calculateTotal(json_decode($question->getScoreRule()), $expected, $question->getInteraction());
+                $total = $this->scoreManager->calculateTotal(json_decode($question->getScoreRule(), true), $expected, $question->getInteraction());
                 // report the score on 100
                 $score = $total > 0 ? (100 * $score) / $total : 0;
 
@@ -300,7 +300,7 @@ class ItemManager
         // Get the expected answer for the question
         $expected = $definition->expectAnswer($question->getInteraction());
 
-        return $this->scoreManager->calculateTotal(json_decode($question->getScoreRule()), $expected, $question->getInteraction());
+        return $this->scoreManager->calculateTotal(json_decode($question->getScoreRule(), true), $expected, $question->getInteraction());
     }
 
     /**
@@ -340,7 +340,7 @@ class ItemManager
                 $answer = $answers[$i];
                 if (!empty($answer->getData())) {
                     ++$questionStats['answered'];
-                    $answersData[] = json_decode($answer->getData());
+                    $answersData[] = json_decode($answer->getData(), true);
                 }
 
                 // for each answer get corresponding correction

@@ -123,7 +123,7 @@ class GridDefinition extends AbstractDefinition
      */
     public function correctAnswer(AbstractItem $question, $answer)
     {
-        $scoreRule = json_decode($question->getQuestion()->getScoreRule());
+        $scoreRule = json_decode($question->getQuestion()->getScoreRule(), true);
 
         if ('fixed' === $scoreRule->type) {
             return $this->getCorrectAnswerForFixMode($question, $answer);
@@ -501,7 +501,7 @@ class GridDefinition extends AbstractDefinition
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
-        $data = json_decode($answer->getData());
+        $data = json_decode($answer->getData(), true);
         $values = array_map(function ($el) {
             return "[grid-{$el['cellId']}: {$el['text']}]";
         }, $data);

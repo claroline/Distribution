@@ -204,7 +204,7 @@ class ExerciseSerializer
             '' !== $parameters['successScore'] &&
             0 <= $parameters['successScore'] &&
             100 >= $parameters['successScore'] ?
-            $parameters->successScore :
+            $parameters['successScore'] :
             null;
         $exercise->setSuccessScore($success);
 

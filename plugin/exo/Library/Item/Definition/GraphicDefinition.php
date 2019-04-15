@@ -245,7 +245,7 @@ class GraphicDefinition extends AbstractDefinition
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
-        $data = json_decode($answer->getData());
+        $data = json_decode($answer->getData(), true);
         $answers = [];
         foreach ($data as $point) {
             $answers[] = "[{$point['x']},{$point['y']}]";

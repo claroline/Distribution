@@ -134,7 +134,7 @@ class ItemSerializer
                 'content' => $question->getContent(),
                 'title' => $question->getTitle(),
                 'meta' => $this->serializeMetadata($question, $options),
-                'score' => json_decode($question->getScoreRule()),
+                'score' => json_decode($question->getScoreRule(), true),
                 'rights' => ['edit' => $canEdit],
             ]);
 

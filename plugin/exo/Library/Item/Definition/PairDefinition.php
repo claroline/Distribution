@@ -308,7 +308,7 @@ class PairDefinition extends AbstractDefinition
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
-        $data = json_decode($answer->getData());
+        $data = json_decode($answer->getData(), true);
         $items = $item->getItems();
         $answers = [];
 

@@ -38,12 +38,12 @@ abstract class AbstractDefinition implements ItemDefinitionInterface, Exportable
     /**
      * Validates a choice question.
      *
-     * @param array $question
-     * @param array $options
+     * @param \stdClass $question
+     * @param array     $options
      *
      * @return array
      */
-    public function validateQuestion(array $question, array $options = [])
+    public function validateQuestion(\stdClass $question, array $options = [])
     {
         return $this->getQuestionValidator()->validate($question, $options);
     }

@@ -37,7 +37,7 @@ class AnswerSerializer
         ];
 
         if (!empty($answer->getData())) {
-            $serialized['data'] = json_decode($answer->getData());
+            $serialized['data'] = json_decode($answer->getData(), true);
         }
         // Adds user score
         if (in_array(Transfer::INCLUDE_USER_SCORE, $options)) {

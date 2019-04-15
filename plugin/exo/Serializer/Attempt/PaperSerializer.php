@@ -64,7 +64,7 @@ class PaperSerializer
             'user' => $paper->getUser() && !$paper->isAnonymized() ? $this->userSerializer->serialize($paper->getUser(), $options) : null,
             'startDate' => $paper->getStart() ? DateNormalizer::normalize($paper->getStart()) : null,
             'endDate' => $paper->getEnd() ? DateNormalizer::normalize($paper->getEnd()) : null,
-            'structure' => json_decode($paper->getStructure()),
+            'structure' => json_decode($paper->getStructure(), true),
         ];
 
         // Adds detail information
@@ -130,13 +130,13 @@ class PaperSerializer
     {
         // We need to inject the hints available in the structure
         $options['hints'] = [];
-        $decoded = json_decode($paper->getStructure());
+        $decoded = json_decode($paper->getStructure(), true);
 
-        foreach ($decoded->steps as $step) {
-            foreach ($step->items as $item) {
-                if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item->type)) {
-                    foreach ($item->hints as $hint) {
-                        $options['hints'][$hint->id] = $hint;
+        foreach ($decoded['steps'] as $step) {
+            foreach ($step['items'] as $item) {
+                if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item['type'])) {
+                    foreach ($item['hints'] as $hint) {
+                        $options['hints'][$hint['id']] = $hint;
                     }
                 }
             }

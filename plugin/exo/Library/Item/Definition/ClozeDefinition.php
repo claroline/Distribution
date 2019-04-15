@@ -276,7 +276,7 @@ class ClozeDefinition extends AbstractDefinition
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
-        $data = json_decode($answer->getData());
+        $data = json_decode($answer->getData(), true);
         $answers = [];
         $answeredHoles = [];
 

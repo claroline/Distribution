@@ -273,9 +273,9 @@ class ExerciseManager
 
             /** @var Paper $paper */
             foreach ($papers as $paper) {
-                $structure = json_decode($paper->getStructure());
-                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ?
-                    floatval($structure->parameters->totalScoreOn) :
+                $structure = json_decode($paper->getStructure(), true);
+                $totalScoreOn = $structure['parameters']['totalScoreOn'] && floatval($structure['parameters']['totalScoreOn']) > 0 ?
+                    floatval($structure['parameters']['totalScoreOn']) :
                     $this->paperManager->calculateTotal($paper);
                 $user = $paper->getUser();
                 $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
@@ -326,6 +326,7 @@ class ExerciseManager
                     // FIXME
                     if ('application/x.cloze+json' === $item->getMimeType()) {
                         $qText = $item->getTitle();
+
                         if (empty($qText)) {
                             $qText = $item->getContent();
                         }
@@ -365,9 +366,9 @@ class ExerciseManager
 
             /** @var Paper $paper */
             foreach ($papers as $paper) {
-                $structure = json_decode($paper->getStructure());
-                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ?
-                    floatval($structure->parameters->totalScoreOn) :
+                $structure = json_decode($paper->getStructure(), true);
+                $totalScoreOn = $structure['parameters']['totalScoreOn'] && floatval($structure['parameters']['totalScoreOn']) > 0 ?
+                    floatval($structure['parameters']['totalScoreOn']) :
                     $this->paperManager->calculateTotal($paper);
                 $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
 
@@ -421,6 +422,7 @@ class ExerciseManager
                         }
 
                         $blankData = [];
+
                         for ($i = 0; $i < $countBlank; ++$i) {
                             $blankData[] = '';
                         }
@@ -436,6 +438,7 @@ class ExerciseManager
 
             foreach ($dataPapers as $paper) {
                 $flattenedAnswers = [];
+
                 foreach ($paper as $paperItem) {
                     if (is_array($paperItem)) {
                         foreach ($paperItem as $paperEl) {
