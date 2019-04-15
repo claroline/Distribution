@@ -103,13 +103,6 @@ class ChapterSerializer
             }
         }
 
-        /*
-                if (!empty($node->getChildren()->toArray())) {
-                    foreach ($node->getChildren()->toArray() as $child) {
-                        $children[] = $this->serializeChapterTreeNode($child);
-                    }
-                }
-        */
         return [
             'id' => $node['uuid'],
             'title' => $node['title'],
