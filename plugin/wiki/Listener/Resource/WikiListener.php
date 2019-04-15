@@ -4,12 +4,16 @@ namespace Icap\WikiBundle\Listener\Resource;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
+use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Icap\WikiBundle\Entity\Contribution;
+use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Manager\SectionManager;
 use Icap\WikiBundle\Manager\WikiManager;
@@ -142,10 +146,10 @@ class WikiListener
      */
     public function onExport(ExportObjectEvent $exportEvent)
     {
-        $lesson = $exportEvent->getObject();
+        $wiki = $exportEvent->getObject();
 
         $data = [
-          'root' => $this->chapterManager->serializeChapterTree($lesson),
+          'root' => $this->sectionManager->getSerializedSectionTree($wiki, null, true),
         ];
 
         $exportEvent->overwrite('_data', $data);
@@ -157,22 +161,46 @@ class WikiListener
     public function onImport(ImportObjectEvent $event)
     {
         $data = $event->getData();
-        $lesson = $event->getObject();
+        $wiki = $event->getObject();
 
-        $rootChapter = $data['_data']['root'];
-        $lesson->buildRoot();
-        $root = $lesson->getRoot();
+        $rootSection = $data['_data']['root'];
+        $wiki->buildRoot();
+        $root = $wiki->getRoot();
 
-        if (isset($rootChapter['children'])) {
-            $children = $rootChapter['children'];
+        if (isset($rootSection['children'])) {
+            $children = $rootSection['children'];
 
             foreach ($children as $child) {
-                $chapter = $this->importChapter($child, $lesson);
-                $chapter->setLesson($lesson);
-                $chapter->setParent($root);
-                $this->om->persist($chapter);
+                $section = $this->importSection($child, $wiki);
+                $section->setWiki($wiki);
+                $section->setParent($root);
+
+                $this->om->getRepository(Section::class)->persistAsLastChildOf($section, $root);
             }
         }
+    }
+
+    private function importSection(array $data = [], Wiki $wiki)
+    {
+        $section = new Section();
+        $contrib = new Contribution();
+        $contrib->setTitle($data['activeContribution']['title']);
+        $contrib->setText($data['activeContribution']['text']);
+        $contrib->setSection($section);
+        $section->setActiveContribution($contrib);
+        $this->om->persist($contrib);
+
+        if (isset($data['children'])) {
+            foreach ($data['children'] as $child) {
+                $childSec = $this->importSection($child, $wiki);
+                $childSec->setParent($section);
+                $this->om->getRepository(Section::class)->persistAsLastChildOf($childSec, $section);
+            }
+        }
+
+        $section->setWiki($wiki);
+
+        return $section;
     }
 
     /**
