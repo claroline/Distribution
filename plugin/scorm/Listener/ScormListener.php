@@ -26,6 +26,7 @@ use Claroline\ScormBundle\Manager\ScormManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -162,17 +163,30 @@ class ScormListener
         $data = $event->getData();
         $replaced = json_encode($event->getExtra());
 
-        $hashName = pathinfo($data['hashName'], PATHINFO_BASENAME);
+        $hashName = pathinfo($data['hashName'], PATHINFO_BASENAME).'.zip';
         $uuid = Uuid::uuid4()->toString();
         $replaced = str_replace($hashName, $uuid, $replaced);
 
         foreach ($data['scos'] as $sco) {
-            $uuid = Uuid::uuid4()->toString();
-            $replaced = str_replace($sco['id'], $uuid, $replaced);
+            $replaced = $this->replaceScosIds($sco, $replaced);
         }
 
         $data = json_decode($replaced, true);
         $event->setExtra($data);
+    }
+
+    private function replaceScosIds(array $sco, $string)
+    {
+        $uuid = Uuid::uuid4()->toString();
+        $string = str_replace($sco['id'], $uuid, $string);
+
+        if (isset($sco['children'])) {
+            foreach ($sco['children'] as $child) {
+                $this->replaceScosIds($child, $string);
+            }
+        }
+
+        return $string;
     }
 
     /**
@@ -181,7 +195,9 @@ class ScormListener
     public function onExportFile(ExportObjectEvent $exportEvent)
     {
         $file = $exportEvent->getObject();
-        $path = $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName();
+        $ds = DIRECTORY_SEPARATOR;
+        //  $path = $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName();
+        $path = $this->filesDir.$ds.'scorm'.$ds.$file->getResourceNode()->getWorkspace()->getUuid().$ds.$file->getHashName();
         $file = $exportEvent->getObject();
         $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);
         //get the filePath
@@ -198,16 +214,12 @@ class ScormListener
         $bag = $event->getFileBag();
         $workspace = $event->getWorkspace();
 
-        $ds = DIRECTORY_SEPARATOR;
-
         if ($bag) {
             $fileSystem = new Filesystem();
-            try {
-                $fileSystem->rename($bag->get($data['_path']), $this->filesDir.$ds.'scorm'.$workspace->getUuid().$ds.$data['hashName']);
-            } catch (\Exception $e) {
-            }
+            $file = new File($bag->get($data['_path']));
+            $scormData = $this->scormManager->parseScormArchive($file);
+            $this->scormManager->unzipScormArchive($workspace, $file, $data['hashName']);
         }
-        //move filebags elements here
     }
 
     /**
