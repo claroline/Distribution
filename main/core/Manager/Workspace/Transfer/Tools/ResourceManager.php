@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
@@ -92,7 +93,7 @@ class ResourceManager
         foreach ($orderedToolData['data']['resources'] as $serialized) {
             $event = $this->dispatcher->dispatch(
                 'transfer.'.$serialized['_type'].'.import.before',
-                'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                ImportObjectEvent::class,
                 [null, $serialized, null, $data]
             );
 
@@ -102,10 +103,10 @@ class ResourceManager
         return $data;
     }
 
-    public function deserialize(array $data, Workspace $workspace, array $options)
+    public function deserialize(array $data, Workspace $workspace, array $options, FileBag $bag)
     {
         $created = $this->deserializeNodes($data['nodes'], $workspace);
-        $this->deserializeResources($data['resources'], $workspace, $created);
+        $this->deserializeResources($data['resources'], $workspace, $created, $bag);
         $this->om->flush();
     }
 
@@ -139,26 +140,26 @@ class ResourceManager
         return $created;
     }
 
-    private function deserializeResources(array $resources, Workspace $workspace, array $nodes)
+    private function deserializeResources(array $resources, Workspace $workspace, array $nodes, FileBag $bag)
     {
         $this->om->startFlushSuite();
 
         foreach ($resources as $data) {
             $resource = new $data['_class']();
             $resource->setResourceNode($nodes[$data['_nodeId']]);
-            $event = $this->dispatcher->dispatch(
+            /*$event = $this->dispatcher->dispatch(
                 'transfer.'.$data['_type'].'.import.before',
-                'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                ImportObjectEvent::class,
                 [null, $data, $resource]
             );
-            $data = $event->getData();
+            $data = $event->getData();*/
             $this->dispatchCrud('create', 'pre', [$resource, [Options::WORKSPACE_COPY]]);
             $this->serializer->deserialize($data, $resource, [Options::REFRESH_UUID]);
             $this->dispatchCrud('create', 'post', [$resource, [Options::WORKSPACE_COPY]]);
             $this->dispatcher->dispatch(
                 'transfer.'.$data['_type'].'.import.after',
-                'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
-                [null, $data, $resource]
+                ImportObjectEvent::class,
+                [$bag, $data, $resource]
             );
             $this->om->persist($resource);
         }
@@ -199,7 +200,7 @@ class ResourceManager
         foreach ($data['resources'] as $serialized) {
             $this->dispatcher->dispatch(
                 'transfer.'.$serialized['_type'].'.import',
-                'Claroline\\CoreBundle\\Event\\ImportObjectEvent',
+                ImportObjectEvent::class,
                 [$event->getFileBag(), $serialized]
             );
         }

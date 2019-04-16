@@ -927,8 +927,7 @@ class WorkspaceManager
 
         $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
-        $workspace = $transferManager->deserialize($data, $newWorkspace, $options);
-        $transferManager->importFiles($data, $workspace);
+        $workspace = $transferManager->deserialize($data, $newWorkspace, $options, $fileBag);
 
         $this->om->persist($workspace);
         $this->om->flush();

@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\Manager\Workspace\Transfer;
 
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\API\Serializer\Tool\ToolSerializer;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
@@ -99,7 +100,7 @@ class OrderedToolTransfer
     }
 
     //only work for creation... other not supported. It's not a true Serializer anyway atm
-    public function deserialize(array $data, OrderedTool $orderedTool, array $options = [], Workspace $workspace = null)
+    public function deserialize(array $data, OrderedTool $orderedTool, array $options = [], Workspace $workspace = null, FileBag $bag = null)
     {
         $om = $this->container->get('claroline.persistence.object_manager');
         $tool = $om->getRepository(Tool::class)->findOneByName($data['tool']);
@@ -135,7 +136,7 @@ class OrderedToolTransfer
             if ($this->container->has($serviceName)) {
                 $importer = $this->container->get($serviceName);
                 $importer->setLogger($this->logger);
-                $importer->deserialize($data['data'], $orderedTool->getWorkspace(), [Options::REFRESH_UUID]);
+                $importer->deserialize($data['data'], $orderedTool->getWorkspace(), [Options::REFRESH_UUID], $bag);
             }
         }
     }
