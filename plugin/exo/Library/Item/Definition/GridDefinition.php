@@ -125,7 +125,7 @@ class GridDefinition extends AbstractDefinition
     {
         $scoreRule = json_decode($question->getQuestion()->getScoreRule(), true);
 
-        if ('fixed' === $scoreRule->type) {
+        if ('fixed' === $scoreRule['type']) {
             return $this->getCorrectAnswerForFixMode($question, $answer);
         } else {
             // 3 sum submode

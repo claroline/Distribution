@@ -131,7 +131,7 @@ class GraphicQuestionSerializer
         $objectUuid = $graphicQuestion->getQuestion() ? $graphicQuestion->getQuestion()->getUuid() : null;
         $title = $graphicQuestion->getQuestion() ? $graphicQuestion->getQuestion()->getTitle() : null;
 
-        $typeParts = explode('/', $imageData->type);
+        $typeParts = explode('/', $imageData['type']);
 
         if (isset($imageData['data'])) {
             $imageName = "{$imageData['id']}.{$typeParts[1]}";

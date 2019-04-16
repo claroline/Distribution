@@ -213,7 +213,7 @@ class DocimologyManager
                         $itemEntity = $itemRepository->findOneBy(['uuid' => $item['id']]);
                         $questionStats = $this->itemManager->getStatistics($itemEntity, $exercise);
                         $questionStatistics[$item['id']] = [
-                            'yData' => $questionStats->successPercent,
+                            'yData' => $questionStats['successPercent'],
                             'xData' => $itemEntity->getTitle() ? strip_tags($itemEntity->getTitle()) : strip_tags($itemEntity->getContent()),
                         ];
                     }
