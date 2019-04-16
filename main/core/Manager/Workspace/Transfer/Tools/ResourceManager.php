@@ -172,7 +172,6 @@ class ResourceManager
      */
     public function onExport(ExportObjectEvent $event)
     {
-        var_dump('expoport');
         $data = $event->getData();
 
         foreach ($data['resources'] as $key => $serialized) {

@@ -158,8 +158,6 @@ class WebResourceListener
         $ds = DIRECTORY_SEPARATOR;
         $hash = $data['hashName'];
         $filesPath = $this->uploadDir.$ds.'webresource'.$ds.$workspace->getUuid().$ds.$data['hashName'];
-        var_dump($bag->get($data['_path']));
-        var_dump($filesPath);
         $fileSystem->mirror($bag->get($data['_path']), $filesPath);
     }
 
