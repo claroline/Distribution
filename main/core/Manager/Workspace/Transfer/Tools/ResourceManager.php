@@ -159,7 +159,7 @@ class ResourceManager
             $this->dispatcher->dispatch(
                 'transfer.'.$data['_type'].'.import.after',
                 ImportObjectEvent::class,
-                [$bag, $data, $resource]
+                [$bag, $data, $resource, null, $workspace]
             );
             $this->om->persist($resource);
         }
