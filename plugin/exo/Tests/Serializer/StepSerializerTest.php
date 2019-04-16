@@ -49,7 +49,7 @@ class StepSerializerTest extends JsonDataTestCase
     {
         $data = $this->serializer->serialize($this->step);
 
-        $this->assertInstanceOf('array', $data);
+        $this->assertTrue(is_array($data));
         $this->assertTrue(!empty($data['id']));
         $this->assertTrue(!empty($data['title']));
         $this->assertTrue(!empty($data['parameters']));

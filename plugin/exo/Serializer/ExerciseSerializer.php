@@ -94,6 +94,8 @@ class ExerciseSerializer
      */
     public function deserialize($data, Exercise $exercise = null, array $options = [])
     {
+        $exercise = $exercise ?: new Exercise();
+
         $this->sipe('id', 'setUuid', $data, $exercise);
         $this->sipe('description', 'setDescription', $data, $exercise);
 

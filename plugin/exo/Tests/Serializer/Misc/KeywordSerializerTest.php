@@ -67,7 +67,7 @@ class KeywordSerializerTest extends JsonDataTestCase
     {
         $keywordData = $this->serializer->serialize($this->keyword);
 
-        $this->assertInstanceOf('array', $keywordData);
+        $this->assertTrue(is_array($keywordData));
         $this->compareKeywordAndData($this->keyword, $keywordData);
     }
 

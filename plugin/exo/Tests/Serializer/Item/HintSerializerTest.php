@@ -71,7 +71,7 @@ class HintSerializerTest extends JsonDataTestCase
     {
         $serialized = $this->serializer->serialize($this->hint);
 
-        $this->assertInstanceOf('array', $serialized);
+        $this->assertTrue(is_array($serialized));
         $this->assertEquals(2, $serialized['penalty']);
 
         // Checks solutions are not included

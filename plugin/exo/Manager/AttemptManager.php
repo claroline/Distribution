@@ -321,7 +321,7 @@ class AttemptManager
 
         $hint = null;
 
-        foreach ($question->hints as $questionHint) {
+        foreach ($question['hints'] as $questionHint) {
             if ($hintId === $questionHint['id']) {
                 $hint = $questionHint;
                 break;
