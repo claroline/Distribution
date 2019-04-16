@@ -147,12 +147,6 @@ class ResourceManager
         foreach ($resources as $data) {
             $resource = new $data['_class']();
             $resource->setResourceNode($nodes[$data['_nodeId']]);
-            /*$event = $this->dispatcher->dispatch(
-                'transfer.'.$data['_type'].'.import.before',
-                ImportObjectEvent::class,
-                [null, $data, $resource]
-            );
-            $data = $event->getData();*/
             $this->dispatchCrud('create', 'pre', [$resource, [Options::WORKSPACE_COPY]]);
             $this->serializer->deserialize($data, $resource, [Options::REFRESH_UUID]);
             $this->dispatchCrud('create', 'post', [$resource, [Options::WORKSPACE_COPY]]);

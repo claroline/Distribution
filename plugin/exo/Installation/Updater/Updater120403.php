@@ -16,10 +16,10 @@ class Updater120403 extends Updater
     }
 
     public function postUpdate()
-    {/*
+    {
         $this->convertDuration();
         $this->convertBooleanPapers();
-        $this->convertBooleanAnswers();*/
+        $this->convertBooleanAnswers();
     }
 
     private function convertDuration()
