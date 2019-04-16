@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Manager\Attempt;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 
 /**
@@ -117,13 +118,13 @@ class ScoreManager
      * Calculates the maximum score for a question based on a calculation rule
      * and the expected answer.
      *
-     * @param array        $scoreRule
-     * @param array        $expectedAnswers
-     * @param AbstractItem $question
+     * @param array                 $scoreRule
+     * @param AnswerPartInterface[] $expectedAnswers
+     * @param AnswerPartInterface[] $allAnswers
      *
      * @return float|null
      */
-    public function calculateTotal(array $scoreRule, array $expectedAnswers, AbstractItem $question = null)
+    public function calculateTotal(array $scoreRule, array $expectedAnswers, array $allAnswers = [])
     {
         $total = null;
         switch ($scoreRule['type']) {
@@ -148,7 +149,7 @@ class ScoreManager
                     'correct' => 0,
                     'incorrect' => 0,
                 ];
-                $nbChoices = !is_null($question) ? count($question->getChoices()->toArray()) : 0;
+                $nbChoices = count($allAnswers);
 
                 // compute best score by source
                 foreach ($scoreRule['rules'] as $rule) {

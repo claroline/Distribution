@@ -1,6 +1,6 @@
 import {PropTypes as T} from 'prop-types'
 
-import {makeId} from '#/plugin/exo/utils/utils'
+import {makeId} from '#/main/core/scaffolding/id'
 
 const GraphicItem = {
   propTypes: {

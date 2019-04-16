@@ -25,7 +25,8 @@ const ItemType = {
     }),
 
     create: T.func,
-    validate: T.func
+    validate: T.func,
+    refreshIdentifiers: T.func
   },
 
   defaultProps: {

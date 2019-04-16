@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {ContentThumbnail} from './../../contents/components/content-thumbnail.jsx'
+
+import {ContentThumbnail} from '#/plugin/exo/contents/components/content-thumbnail'
 
 export const ObjectsPlayer = props =>
   <div className="item-object-thumbnail-box">

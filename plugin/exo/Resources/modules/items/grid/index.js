@@ -1,8 +1,7 @@
 import {trans} from '#/main/app/intl/translation'
-
 import {stripDiacritics} from '#/main/core/scaffolding/text/strip-diacritics'
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {constants} from '#/plugin/exo/items/grid/constants'
 
 // components
@@ -16,24 +15,6 @@ import ScoreFixed from '#/plugin/exo/scores/fixed'
 import ScoreSum from '#/plugin/exo/scores/sum'
 
 import {GridItem as GridItemTypes} from '#/plugin/exo/items/grid/prop-types'
-
-function getCorrectedAnswer(item, answer = {data: []}) {
-  if (item.score.type === 'fixed') {
-    return getCorrectAnswerForFixMode(item, answer)
-  }
-
-  switch(item.sumMode) {
-    case constants.SUM_CELL: {
-      return getCorrectAnswerForSumCellsMode(item, answer)
-    }
-    case constants.SUM_ROW: {
-      return getCorrectAnswerForRowSumMode(item, answer)
-    }
-    case constants.SUM_COL: {
-      return getCorrectAnswerForColSumMode(item, answer)
-    }
-  }
-}
 
 function getCorrectAnswerForSumCellsMode(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
@@ -155,18 +136,36 @@ export default {
   paper: GridPaper,
   player: GridPlayer,
   feedback: GridFeedback,
-  getCorrectedAnswer,
 
   components: {
     editor: GridEditor
   },
 
+  supportScores: () => [
+    ScoreSum,
+    ScoreFixed
+  ],
+
   create: (item) => {
     return Object.assign(item, GridItemTypes.defaultProps)
   },
 
-  supportScores: () => [
-    ScoreSum,
-    ScoreFixed
-  ]
+  correctAnswer: (item, answer = {data: []}) => {
+    if (item.score.type === 'fixed') {
+      return getCorrectAnswerForFixMode(item, answer)
+    }
+
+    switch(item.sumMode) {
+      case constants.SUM_CELL: {
+        return getCorrectAnswerForSumCellsMode(item, answer)
+      }
+      case constants.SUM_ROW: {
+        return getCorrectAnswerForRowSumMode(item, answer)
+      }
+      case constants.SUM_COL: {
+        return getCorrectAnswerForColSumMode(item, answer)
+      }
+    }
+  }
+
 }

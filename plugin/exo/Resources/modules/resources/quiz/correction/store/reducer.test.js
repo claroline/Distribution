@@ -1,7 +1,8 @@
 import freeze from 'deep-freeze'
+
 import {ensure} from '#/main/core/scaffolding/tests'
-import {reduceCorrection} from './reducer'
-import {CORRECTION_INIT, QUESTION_CURRENT, SCORE_UPDATE, FEEDBACK_UPDATE, REMOVE_ANSWERS} from './actions'
+import {reduceCorrection} from '#/plugin/exo/resources/quiz/correction/store/reducer'
+import {CORRECTION_INIT, QUESTION_CURRENT, SCORE_UPDATE, FEEDBACK_UPDATE, REMOVE_ANSWERS} from '#/plugin/exo/resources/quiz/correction/store/actions'
 
 describe('Correction reducer', () => {
   it('returns an empty correction object by default', () => {

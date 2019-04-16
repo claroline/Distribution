@@ -3,12 +3,12 @@ import {mount} from 'enzyme'
 import configureMockStore from 'redux-mock-store'
 import merge from 'lodash/merge'
 
-import {spyConsole, renew, ensure, mockGlobals} from '#/main/core/scaffolding/tests'
+import {spyConsole, renew, ensure} from '#/main/core/scaffolding/tests'
 import {resourceNodeFixture} from '#/main/core/resource/tests'
 
-import {registerItemType} from './../../../items/item-types'
-import {Paper} from './paper.jsx'
-import {SHOW_SCORE_AT_CORRECTION} from './../../enums'
+import {registerItemType} from '#/plugin/exo/items/item-types'
+import {Paper} from '#/plugin/exo/quiz/paper/components/paper'
+import {SHOW_SCORE_AT_CORRECTION} from '#/plugin/exo/quiz/enums'
 
 describe('<Paper/>', () => {
   beforeEach(() => {

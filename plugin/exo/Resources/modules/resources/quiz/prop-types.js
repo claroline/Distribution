@@ -87,7 +87,23 @@ const Quiz = {
   }
 }
 
+const UserAnswer = {
+  propTypes: {
+    id: T.string.isRequired,
+    questionId: T.string.isRequired,
+    tries: T.number,
+    userHints: T.array,
+    data: T.any // depends on the answered item
+  },
+  defaultProps: {
+    tries: 0,
+    usedHints: [],
+    data: undefined
+  }
+}
+
 export {
   Quiz,
-  Step
+  Step,
+  UserAnswer
 }

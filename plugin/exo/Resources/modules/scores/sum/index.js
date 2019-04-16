@@ -12,7 +12,14 @@ export default {
   // no additional configuration
   configure: () => [],
 
-  calculate: () => {
+  calculate: (scoreRule, correctedAnswer) => {
+    let score = 0
 
+    correctedAnswer.getExpected().forEach(el => score += el.getScore())
+    correctedAnswer.getUnexpected().forEach(el => score += el.getScore())
+
+    correctedAnswer.getPenalties().forEach(el => score -= el.getScore())
+
+    return score
   }
 }

@@ -3,9 +3,7 @@ import times from 'lodash/times'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
-import {emptyAnswer} from '#/plugin/exo/items/utils'
-
+import {emptyAnswer, CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {SetItem as SetItemType} from '#/plugin/exo/items/set/prop-types'
 
 // components
@@ -61,7 +59,7 @@ export default {
    *
    * @return {CorrectedAnswer}
    */
-  getCorrectedAnswer: (item, answer = {data: []}) => {
+  correctAnswer: (item, answer = {data: []}) => {
     const corrected = new CorrectedAnswer()
 
     item.solutions.associations.forEach(association => {

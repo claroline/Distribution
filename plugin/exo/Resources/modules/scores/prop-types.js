@@ -38,7 +38,14 @@ const ScoreType = {
      *
      * @var {function}
      */
-    calculate: T.func.isRequired
+    calculate: T.func.isRequired,
+
+    /**
+     * A function to calculate the total score of a quiz item based on the score type.
+     *
+     * @var {function}
+     */
+    calculateTotal: T.func.isRequired
   },
 
   defaultProps: {

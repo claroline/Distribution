@@ -8,6 +8,7 @@ use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\PairQuestion;
 use UJM\ExoBundle\Entity\Misc\GridItem;
 use UJM\ExoBundle\Entity\Misc\GridRow;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Csv\ArrayCompressor;
@@ -179,6 +180,16 @@ class PairDefinition extends AbstractDefinition
         return array_filter($question->getRows()->toArray(), function (GridRow $row) {
             return 0 < $row->getScore();
         });
+    }
+
+    /**
+     * @param PairQuestion $question
+     *
+     * @return AnswerPartInterface[]
+     */
+    public function allAnswers(AbstractItem $question)
+    {
+        return array_merge($question->getRows()->toArray(), $question->getOddItems()->toArray());
     }
 
     public function getStatistics(AbstractItem $pairQuestion, array $answersData, $total)

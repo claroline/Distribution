@@ -16,7 +16,7 @@ import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker
 import {KeywordsPopover} from '#/plugin/exo/components/keywords'
 
 import {utils} from '#/plugin/exo/items/grid/utils/utils'
-import {makeId} from '#/plugin/exo/utils/utils'
+import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/app/intl/translation'
 import {GridItem as GridItemTypes} from '#/plugin/exo/items/grid/prop-types'
 

@@ -14,8 +14,8 @@ import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {select as playerSelect} from '#/plugin/exo/quiz/player/selectors'
 import {selectors as playerSelectors} from '#/plugin/exo/resources/quiz/player/store'
 import quizSelectors from '#/plugin/exo/quiz/selectors'
-import {selectors as paperSelectors} from '#/plugin/exo/quiz/papers/selectors'
-import {utils as paperUtils} from '#/plugin/exo/quiz/papers/utils'
+import {selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store/selectors'
+import {utils as paperUtils} from '#/plugin/exo/resources/quiz/papers/utils'
 
 // TODO : merge with PlayerRestrictions
 
@@ -114,7 +114,7 @@ AttemptEndComponent.propTypes = {
 const AttemptEnd = connect(
   (state) => ({
     workspaceId: resourceSelect.workspaceId(state),
-    admin: hasPermission('edit', resourceSelect.resourceNode(state)) || quizSelectors.papersAdmin(state),
+    admin: hasPermission('edit', resourceSelect.resourceNode(state)) || hasPermission('manage_papers', resourceSelect.resourceNode(state)),
     paper: playerSelect.paper(state),
     endMessage: playerSelect.quizEndMessage(state),
     endNavigation: playerSelect.quizEndNavigation(state),

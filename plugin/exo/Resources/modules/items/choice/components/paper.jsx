@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {tex} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {SCORE_FIXED, SCORE_RULES} from '#/plugin/exo/quiz/enums'
@@ -130,7 +130,7 @@ const ChoicePaper = props =>
 
           <label className='answer-item choice-answer-item unanswered-item'>
             <div className="choice-item-content">
-              {tex('unanswered')}
+              {trans('unanswered', {}, 'quiz')}
             </div>
 
             <AnswerStats stats={{

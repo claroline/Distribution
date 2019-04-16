@@ -26,7 +26,7 @@ import {
  *
  * @returns {{number: number, anonymized: boolean, structure}}
  */
-function generatePaper(quiz, steps, items, previousPaper = null) {
+function generateAttempt(quiz, steps, items, previousPaper = null) {
   return {
     id: makeId(),
     finished: false,
@@ -186,5 +186,5 @@ function pick(originalSet, count = 0) {
 }
 
 export {
-  generatePaper
+  generateAttempt
 }

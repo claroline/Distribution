@@ -191,6 +191,20 @@ class ItemManager
     }
 
     /**
+     * Deserializes a question.
+     *
+     * @param array     $questionData
+     * @param Item|null $question
+     * @param array     $options
+     *
+     * @return Item
+     */
+    public function deserialize(array $questionData, Item $question = null, array $options = [])
+    {
+        return $this->serializer->deserialize($questionData, $question ?? new Item(), $options);
+    }
+
+    /**
      * Deletes an Item.
      * It's only possible if the Item is not used in an Exercise.
      *
@@ -283,9 +297,8 @@ class ItemManager
         if ($definition instanceof AnswerableItemDefinitionInterface) {
             return array_map(function ($answer) use ($question, $definition) {
                 $score = $this->calculateScore($question, $answer);
-                // get total available for the question
-                $expected = $definition->expectAnswer($question->getInteraction());
-                $total = $this->scoreManager->calculateTotal(json_decode($question->getScoreRule(), true), $expected, $question->getInteraction());
+                $total = $this->calculateTotal($question);
+
                 // report the score on 100
                 $score = $total > 0 ? (100 * $score) / $total : 0;
 
@@ -299,22 +312,21 @@ class ItemManager
     /**
      * Calculates the total score of a question.
      *
-     * @param array $questionData
+     * @param Item $question
      *
      * @return float
      */
-    public function calculateTotal(array $questionData)
+    public function calculateTotal(Item $question)
     {
-        // Get entities for score calculation
-        $question = $this->serializer->deserialize($questionData, new Item());
-
         /** @var AnswerableItemDefinitionInterface $definition */
         $definition = $this->itemDefinitions->get($question->getMimeType());
 
         // Get the expected answer for the question
         $expected = $definition->expectAnswer($question->getInteraction());
+        // Get all the defined answers for the question
+        $all = $definition->allAnswers($question->getInteraction());
 
-        return $this->scoreManager->calculateTotal(json_decode($question->getScoreRule(), true), $expected, $question->getInteraction());
+        return $this->scoreManager->calculateTotal(json_decode($question->getScoreRule(), true), $expected, $all);
     }
 
     /**

@@ -4,15 +4,12 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {hasPermission} from '#/main/app/security'
 import {getTimeDiff} from '#/main/app/intl/date'
-import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
 
-import quizSelect from '#/plugin/exo/quiz/selectors'
-import {selectors as paperSelect} from '#/plugin/exo/quiz/papers/selectors'
-import {utils} from '#/plugin/exo/quiz/papers/utils'
+import {selectors as quizSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
+import {selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store/selectors'
 
 const Papers = props =>
   <Fragment>
@@ -21,14 +18,14 @@ const Papers = props =>
     </h3>
 
     <ListData
-      name={`${quizSelect.STORE_NAME}.papers.list`}
+      name={paperSelectors.LIST_NAME}
       primaryAction={(row) => ({
         type: LINK_BUTTON,
         label: trans('open'),
         target: `/papers/${row.id}`
       })}
       fetch={{
-        url: ['exercise_paper_list', {exerciseId: props.quiz.id}],
+        url: ['exercise_paper_list', {exerciseId: props.quizId}],
         autoload: true
       }}
       definition={[
@@ -41,7 +38,7 @@ const Papers = props =>
           name: 'user',
           label: trans('user'),
           displayed: true,
-          render: (rowData) => rowData.user ? rowData.user.name : trans('anonymous')
+          type: 'user'
         }, {
           name: 'startDate',
           alias: 'start',
@@ -65,18 +62,24 @@ const Papers = props =>
         }, {
           name: 'duration',
           label: trans('duration'),
+          type: 'time',
           displayed: true,
           filterable: false,
           sortable: false,
-          render: (rowData) => {
+          calculated: (rowData) => {
             if (rowData.startDate && rowData.endDate) {
-              const duration = getTimeDiff(rowData['startDate'], rowData['endDate'])
-
-              return `${Math.round(duration / 60)}`
-            } else {
-              return '-'
+              return `${Math.round(getTimeDiff(rowData.startDate, rowData.endDate))}`
             }
+
+            return undefined
           }
+          /*render: (rowData) => {
+            if (rowData.startDate && rowData.endDate) {
+              return `${Math.round(getTimeDiff(rowData.startDate, rowData.endDate) / 60)}`
+            }
+
+            return '-'
+          }*/
         }, {
           name: 'finished',
           label: trans('finished'),
@@ -87,27 +90,26 @@ const Papers = props =>
           label: trans('score'),
           displayed: true,
           filterable: false,
-          sortable: false,
-          render: (rowData) => utils.showScore(props.admin, rowData.finished, paperSelect.showScoreAt(rowData), paperSelect.showCorrectionAt(rowData), paperSelect.correctionDate(rowData)) ?
-            rowData.score || 0 === rowData.score ?
-              <ScoreBox size="sm" score={rowData.score} scoreMax={paperSelect.paperScoreMax(rowData)} /> :
-              '-'
-            :
-            trans('paper_score_not_available', {}, 'quiz')
+          sortable: true,
+          render: (rowData) => {
+            if (rowData.score || 0 === rowData.score) {
+              return <ScoreBox size="sm" score={rowData.score} scoreMax={paperSelectors.paperScoreMax(rowData)} />
+            }
+
+            return '-'
+          }
         }
       ]}
     />
   </Fragment>
 
 Papers.propTypes = {
-  admin: T.bool.isRequired,
-  quiz: T.object.isRequired
+  quizId: T.string.isRequired
 }
 
 const ConnectedPapers = connect(
   (state) => ({
-    quiz: quizSelect.quiz(state),
-    admin: hasPermission('edit', resourceSelect.resourceNode(state)) || quizSelect.papersAdmin(state)
+    quizId: quizSelectors.id(state)
   })
 )(Papers)
 

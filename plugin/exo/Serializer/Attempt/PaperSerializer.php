@@ -64,16 +64,16 @@ class PaperSerializer
             'user' => $paper->getUser() && !$paper->isAnonymized() ? $this->userSerializer->serialize($paper->getUser(), $options) : null,
             'startDate' => $paper->getStart() ? DateNormalizer::normalize($paper->getStart()) : null,
             'endDate' => $paper->getEnd() ? DateNormalizer::normalize($paper->getEnd()) : null,
-            'structure' => json_decode($paper->getStructure(), true),
         ];
 
         // Adds detail information
         if (!in_array(Transfer::MINIMAL, $options)) {
+            $serialized['structure'] = json_decode($paper->getStructure(), true);
             $serialized['answers'] = $this->serializeAnswers($paper, $options);
         }
 
         // Adds user score
-        if (!in_array(Transfer::INCLUDE_USER_SCORE, $options)) {
+        if (in_array(Transfer::INCLUDE_USER_SCORE, $options)) {
             $serialized['score'] = $paper->getScore();
         }
 
