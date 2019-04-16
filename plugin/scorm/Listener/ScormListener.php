@@ -214,9 +214,8 @@ class ScormListener
         $workspace = $event->getWorkspace();
 
         if ($bag) {
-            $fileSystem = new Filesystem();
             $file = new File($bag->get($data['_path']));
-            $scormData = $this->scormManager->parseScormArchive($file);
+            $this->scormManager->parseScormArchive($file);
             $this->scormManager->unzipScormArchive($workspace, $file, $data['hashName']);
         }
     }
