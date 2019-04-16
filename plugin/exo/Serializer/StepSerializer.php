@@ -77,6 +77,8 @@ class StepSerializer
      */
     public function deserialize($data, Step $step = null, array $options = [])
     {
+        $step = $step ?: new Step();
+
         $this->sipe('id', 'setUuid', $data, $step);
         $this->sipe('title', 'setTitle', $data, $step);
         $this->sipe('description', 'setDescription', $data, $step);
