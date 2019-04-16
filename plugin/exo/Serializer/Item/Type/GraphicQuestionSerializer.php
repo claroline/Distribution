@@ -94,7 +94,7 @@ class GraphicQuestionSerializer
         $image = [];
 
         if ($questionImg) { // to handle old questions which may have no image
-            $imagei['id'] = $questionImg->getUuid();
+            $image['id'] = $questionImg->getUuid();
             $image['type'] = $questionImg->getType();
 
             if (0 === strpos($questionImg->getUrl(), './')) {
