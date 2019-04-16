@@ -196,7 +196,6 @@ class ScormListener
     {
         $file = $exportEvent->getObject();
         $ds = DIRECTORY_SEPARATOR;
-        //  $path = $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName();
         $path = $this->filesDir.$ds.'scorm'.$ds.$file->getResourceNode()->getWorkspace()->getUuid().$ds.$file->getHashName();
         $file = $exportEvent->getObject();
         $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);

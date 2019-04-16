@@ -172,6 +172,7 @@ class ResourceManager
      */
     public function onExport(ExportObjectEvent $event)
     {
+        var_dump('expoport');
         $data = $event->getData();
 
         foreach ($data['resources'] as $key => $serialized) {
@@ -182,7 +183,7 @@ class ResourceManager
             $new = $this->dispatcher->dispatch(
                 'transfer.'.$node->getResourceType()->getName().'.export',
                 ExportObjectEvent::class,
-                [$resource, $event->getFileBag(), $serialized]
+                [$resource, $event->getFileBag(), $serialized, $event->getWorkspace()]
             );
 
             $event->overwrite('resources.'.$key, $new->getData());

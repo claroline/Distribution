@@ -911,7 +911,7 @@ class WorkspaceManager
         $fileBag = new FileBag();
         //these are the new workspace datas
         $data = $transferManager->serialize($workspace);
-        $data = $transferManager->exportFiles($data, $fileBag);
+        $data = $transferManager->exportFiles($data, $fileBag, $workspace);
 
         if ($this->logger) {
             $transferManager->setLogger($this->logger);

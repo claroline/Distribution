@@ -258,7 +258,7 @@ class FileListener
             $fileSystem = new Filesystem();
             try {
                 $ds = DIRECTORY_SEPARATOR;
-                $fileSystem->rename($bag->get($data['_path']), $this->filesDir.$ds.$data['hashName']);
+                $fileSystem->copy($bag->get($data['_path']), $this->filesDir.$ds.$data['hashName']);
             } catch (\Exception $e) {
             }
         }

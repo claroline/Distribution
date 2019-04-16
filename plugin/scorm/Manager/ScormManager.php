@@ -958,6 +958,7 @@ class ScormManager
         if (!file_exists($destinationDir)) {
             mkdir($destinationDir, 0777, true);
         }
+
         $zip->extractTo($destinationDir);
         $zip->close();
     }

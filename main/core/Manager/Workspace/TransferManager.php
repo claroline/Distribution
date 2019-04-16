@@ -124,7 +124,7 @@ class TransferManager
     {
         $fileBag = new FileBag();
         $data = $this->serialize($workspace);
-        $data = $this->exportFiles($data, $fileBag);
+        $data = $this->exportFiles($data, $fileBag, $workspace);
         $archive = new \ZipArchive();
         $pathArch = $this->tempFileManager->generate();
         $archive->open($pathArch, \ZipArchive::CREATE);
@@ -252,7 +252,7 @@ class TransferManager
     }
 
     //once everything is serialized, we add files to the archive.
-    public function exportFiles($data, FileBag $fileBag)
+    public function exportFiles($data, FileBag $fileBag, Workspace $workspace)
     {
         foreach ($data['orderedTools'] as $key => $orderedToolData) {
             //copied from crud
@@ -261,7 +261,7 @@ class TransferManager
             if (isset($orderedToolData['data'])) {
                 /** @var ExportObjectEvent $event */
                 $event = $this->dispatcher->dispatch($name, ExportObjectEvent::class, [
-                    new \StdClass(), $fileBag, $orderedToolData['data'],
+                    new \StdClass(), $fileBag, $orderedToolData['data'], $workspace,
                 ]);
                 $data['orderedTools'][$key]['data'] = $event->getData();
             }
