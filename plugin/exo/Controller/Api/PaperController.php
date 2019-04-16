@@ -90,19 +90,22 @@ class PaperController extends AbstractController
 
         $params['hiddenFilters'] = [];
         $params['hiddenFilters']['exercise'] = $exercise->getId();
-        $serializationOptions = [];
 
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
         if (!$this->authorization->isGranted('ADMINISTRATE', $collection) &&
             !$this->authorization->isGranted('MANAGE_PAPERS', $collection)
         ) {
             $params['hiddenFilters']['user'] = $user->getId();
-        } elseif (ShowScoreAt::NEVER !== $exercise->getMarkMode()) {
-            $serializationOptions[] = Transfer::INCLUDE_USER_SCORE;
         }
 
+        $results = $this->finder->searchEntities(Paper::class, $params);
+
         return new JsonResponse(
-            $this->finder->search(Paper::class, $params, $serializationOptions)
+            array_merge($results, [
+                'data' => array_map(function (Paper $paper) {
+                    return $this->paperManager->serialize($paper);
+                }, $results['data'])
+            ])
         );
     }
 

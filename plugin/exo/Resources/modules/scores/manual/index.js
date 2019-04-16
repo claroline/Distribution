@@ -22,5 +22,7 @@ export default {
   ],
 
   // type requires manual correction
-  calculate: () => null
+  calculate: () => null,
+
+  calculateTotal: (scoreRules) => scoreRules.max
 }

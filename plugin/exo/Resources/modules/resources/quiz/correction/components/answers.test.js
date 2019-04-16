@@ -1,17 +1,18 @@
 import React from 'react'
 import {mount} from 'enzyme'
 import configureMockStore from 'redux-mock-store'
-import {spyConsole, renew, ensure, mockGlobals} from '#/main/core/scaffolding/tests'
-import {Questions} from './questions.jsx'
 
-describe('<Questions/>', () => {
+import {spyConsole, renew, ensure} from '#/main/core/scaffolding/tests'
+import {Answers} from '#/plugin/exo/resources/quiz/correction/components/answers'
+
+describe('<Answers/>', () => {
   beforeEach(() => {
     spyConsole.watch()
-    renew(Questions, 'Questions')
+    renew(Answers, 'Answers')
   })
   afterEach(spyConsole.restore)
 
-  it('renders a list of questions to correct', () => {
+  it('renders a list of answers to correct', () => {
     const store = configureMockStore()({
       correction: {
         questions: [
@@ -51,14 +52,19 @@ describe('<Questions/>', () => {
             questionId: 'q123',
             data: 'Content of answer a345'
           }
-        ]
+        ],
+        currentQuestionId: 'q123'
       }
     })
 
-    const questions = mount(<Questions store={store}/>)
+    const answers = mount(
+      React.createElement(Answers, {
+        store: store
+      })
+    )
 
     ensure.propTypesOk()
-    ensure.equal(questions.find('table').length, 1)
-    ensure.equal(questions.find('tr').length, 3) // 2 questions + 1 header line
+    ensure.equal(answers.find('.answers-list').length, 1)
+    ensure.equal(answers.find('div.user-answer').length, 2)
   })
 })

@@ -103,8 +103,9 @@ const UserFeedback = props => {
       <AlertBlock
         type={alertType}
         title={alertTitle}
-        message={alertMessage}
-      />
+      >
+        {alertMessage}
+      </AlertBlock>
     )
   }
 

@@ -10,8 +10,8 @@ import {Button} from '#/main/app/action/components/button'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 
-import {actions} from '#/plugin/exo/quiz/correction/actions'
-import {selectors as correctionSelectors} from '#/plugin/exo/quiz/correction/selectors'
+import {actions} from '#/plugin/exo/resources/quiz/correction/store/actions'
+import {selectors as correctionSelectors} from '#/plugin/exo/resources/quiz/correction/store/selectors'
 
 class AnswerRow extends Component {
   constructor(props) {

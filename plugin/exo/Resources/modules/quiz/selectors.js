@@ -1,8 +1,6 @@
 import {createSelector} from 'reselect'
 
 import {currentUser} from '#/main/app/security'
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {hasPermission} from '#/main/app/security'
 
 // TODO : there is possible code refactoring with editor/selectors.js
 
@@ -110,16 +108,6 @@ const quizNumbering = createSelector(
   (parameters) => parameters.numbering
 )
 
-const papersAdmin = createSelector(
-  [resourceSelect.resourceNode],
-  (resourceNode) => hasPermission('manage_papers', resourceNode)
-)
-
-const docimologyAdmin = createSelector(
-  [resourceSelect.resourceNode],
-  (resourceNode) => hasPermission('view_docimology', resourceNode)
-)
-
 // TODO : remove default export and use named one
 export default {
   STORE_NAME,
@@ -131,8 +119,6 @@ export default {
   empty,
   papers,
   statistics,
-  papersAdmin,
-  docimologyAdmin,
   registered,
   description,
   meta,
@@ -159,8 +145,6 @@ export const select = {
   empty,
   papers,
   statistics,
-  papersAdmin,
-  docimologyAdmin,
   registered,
   description,
   meta,
@@ -187,8 +171,6 @@ export const selectors = {
   empty,
   papers,
   statistics,
-  papersAdmin,
-  docimologyAdmin,
   registered,
   description,
   meta,

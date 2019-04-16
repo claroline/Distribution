@@ -1,6 +1,6 @@
 import {PropTypes as T} from 'prop-types'
 
-import {makeId} from '#/plugin/exo/utils/utils'
+import {makeId} from '#/main/core/scaffolding/id'
 import {constants} from '#/plugin/exo/items/grid/constants'
 import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 

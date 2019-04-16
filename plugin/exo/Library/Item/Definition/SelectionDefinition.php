@@ -8,6 +8,7 @@ use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\SelectionQuestion;
 use UJM\ExoBundle\Entity\Misc\Color;
 use UJM\ExoBundle\Entity\Misc\Selection;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\SelectionQuestionSerializer;
@@ -226,7 +227,7 @@ class SelectionDefinition extends AbstractDefinition
     /**
      * @param SelectionQuestion $question
      *
-     * @return array
+     * @return AnswerPartInterface[]
      */
     public function expectAnswer(AbstractItem $question)
     {
@@ -258,6 +259,16 @@ class SelectionDefinition extends AbstractDefinition
                    return $best;
                }, $question->getSelections()->toArray());
         }
+    }
+
+    /**
+     * @param SelectionQuestion $question
+     *
+     * @return AnswerPartInterface[]
+     */
+    public function allAnswers(AbstractItem $question)
+    {
+        return $question->getSelections()->toArray();
     }
 
     public function getStatistics(AbstractItem $selectionQuestion, array $answersData, $total)

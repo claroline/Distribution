@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {tex} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
 import {utils} from '#/plugin/exo/items/cloze/utils'
@@ -17,7 +17,7 @@ const HoleInput = props =>
       value={props.value}
       onChange={e => props.onChange(e.target.value)}
     >
-      <option value=''>{tex('please_choose')}</option>
+      <option value=''>{trans('please_choose', {}, 'quiz')}</option>
       {props.choices.map((choice, idx) =>
         <option value={choice} key={idx}>{choice}</option>
       )}

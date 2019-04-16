@@ -10,9 +10,9 @@ import {actions as resourceActions} from '#/main/core/resource/store'
 import quizSelectors from '#/plugin/exo/quiz/selectors'
 import {select as playerSelectors} from '#/plugin/exo/quiz/player/selectors'
 import {normalize, denormalizeAnswers, denormalize} from '#/plugin/exo/quiz/player/normalizer'
-import {generatePaper} from '#/plugin/exo/quiz/papers/generator'
-import {actions as paperAction} from '#/plugin/exo/quiz/papers/actions'
-import {utils as paperUtils} from '#/plugin/exo/quiz/papers/utils'
+import {generateAttempt} from '#/plugin/exo/resources/quiz/player/attempt'
+import {actions as paperAction} from '#/plugin/exo/resources/quiz/papers/store/actions'
+import {utils as paperUtils} from '#/plugin/exo/resources/quiz/papers/utils'
 
 export const ATTEMPT_START  = 'ATTEMPT_START'
 export const ATTEMPT_FINISH = 'ATTEMPT_FINISH'
@@ -94,7 +94,7 @@ actions.play = (previousPaper = null) => {
       // Offline & Tests : create a new local paper and open the player
       // Promise is to expose the same interface than when there are async calls
       return Promise.resolve(dispatch(
-        actions.initPlayer(generatePaper(
+        actions.initPlayer(generateAttempt(
           quizSelectors.quiz(getState()),
           quizSelectors.steps(getState()),
           quizSelectors.items(getState()),

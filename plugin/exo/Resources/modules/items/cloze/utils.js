@@ -1,4 +1,4 @@
-import {tex} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 
 export const utils = {}
 
@@ -62,7 +62,7 @@ function getSelectInput(hole, solution) {
   let input = `<select class="form-control input-sm" data-hole-id="${solution.holeId}">`
 
   // create correct answers group
-  input += `<optgroup label="${tex('hole_correct_answers')}">`
+  input += `<optgroup label="${trans('hole_correct_answers', {}, 'quiz')}">`
   solution.answers.filter(answer => 0 < answer.score).map(correctAnswer => {
     input += '<option'
     if (bestAnswer && bestAnswer.text === correctAnswer.text) {
@@ -76,7 +76,7 @@ function getSelectInput(hole, solution) {
 
   const incorrectAnswers = solution.answers.filter(answer => 0 >= answer.score)
   if (0 !== incorrectAnswers.length) {
-    input += `<optgroup label="${tex('hole_incorrect_answers')}">`
+    input += `<optgroup label="${trans('hole_incorrect_answers', {}, 'quiz')}">`
     incorrectAnswers.map(incorrectAnswer => {
       input += '<option>'
       input += incorrectAnswer.text

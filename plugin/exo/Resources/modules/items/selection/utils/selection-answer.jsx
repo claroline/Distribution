@@ -3,11 +3,11 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import cloneDeep from 'lodash/cloneDeep'
 
-import {utils} from './utils'
+import {utils} from '#/plugin/exo/items/selection/utils/utils'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
-import {Feedback} from '../../components/feedback-btn.jsx'
+import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
 import {SolutionScore} from '#/plugin/exo/components/score'
-import {SCORE_SUM} from './../../../quiz/enums'
+import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 
 /**
  * utility method for building the selection array

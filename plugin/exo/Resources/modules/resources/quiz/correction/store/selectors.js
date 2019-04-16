@@ -2,13 +2,13 @@ import {createSelector} from 'reselect'
 
 import {select as quizSelectors} from '#/plugin/exo/quiz/selectors'
 
+const STORE_NAME = 'correction'
+
 const quizId = quizSelectors.id
 
 const correction = createSelector(
   [quizSelectors.resource],
-  (resource) => {
-    return resource.correction
-  }
+  (resourceState) => resourceState[STORE_NAME]
 )
 
 const questionsFetched = createSelector(
@@ -71,6 +71,8 @@ const hasCorrection = createSelector(
 )
 
 export const selectors = {
+  STORE_NAME,
+
   quizId,
   questions,
   answers,

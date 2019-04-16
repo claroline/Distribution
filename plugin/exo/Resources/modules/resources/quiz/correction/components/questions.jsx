@@ -7,7 +7,7 @@ import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
 
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
-import {selectors as correctionSelectors} from '#/plugin/exo/quiz/correction/selectors'
+import {selectors as correctionSelectors} from '#/plugin/exo/resources/quiz/correction/store/selectors'
 
 export const QuestionRow = props =>
   <tr>
@@ -20,7 +20,7 @@ export const QuestionRow = props =>
         id={props.question.id}
         tip={trans('correct', {}, 'actions')}
       >
-        <a className="btn btn-link-default" href={`#correction/questions/${props.question.id}`}>
+        <a className="btn btn-link-default" href={`#correction/${props.question.id}`}>
           <span className="fa fa-fw fa-check-square-o" />
           <span className="sr-only">{trans('correct', {}, 'actions')}</span>
         </a>

@@ -1,7 +1,6 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
-
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {ClozeItem as ClozeItemTypes} from '#/plugin/exo/items/cloze/prop-types'
 import {utils} from '#/plugin/exo/items/cloze/utils'
 
@@ -56,7 +55,7 @@ export default {
    *
    * @return {CorrectedAnswer}
    */
-  getCorrectedAnswer: (item, answers = null) => {
+  correctAnswer: (item, answers = null) => {
     const corrected = new CorrectedAnswer()
 
     item.solutions.map(solution => {

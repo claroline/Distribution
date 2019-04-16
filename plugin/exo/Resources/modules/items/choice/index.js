@@ -2,9 +2,7 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
-import {emptyAnswer} from '#/plugin/exo/items/utils'
-
+import {emptyAnswer, CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {ChoiceItem} from '#/plugin/exo/items/choice/prop-types'
 
 // components
@@ -89,7 +87,7 @@ export default {
    *
    * @return {CorrectedAnswer}
    */
-  getCorrectedAnswer: (item, answers = null) => {
+  correctAnswer: (item, answers = null) => {
     const corrected = new CorrectedAnswer()
 
     item.solutions.forEach(choice => {

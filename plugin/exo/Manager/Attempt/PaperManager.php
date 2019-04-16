@@ -6,9 +6,11 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceEvaluation;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Event\Log\LogExerciseEvaluatedEvent;
@@ -53,6 +55,7 @@ class PaperManager
      * PaperManager constructor.
      *
      * @DI\InjectParams({
+     *     "authorization"       = @DI\Inject("security.authorization_checker"),
      *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"     = @DI\Inject("event_dispatcher"),
      *     "serializer"          = @DI\Inject("ujm_exo.serializer.paper"),
@@ -60,19 +63,22 @@ class PaperManager
      *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
      * })
      *
-     * @param ObjectManager             $om
-     * @param EventDispatcherInterface  $eventDispatcher
-     * @param PaperSerializer           $serializer
-     * @param ItemManager               $itemManager
-     * @param ResourceEvaluationManager $resourceEvalManager
+     * @param AuthorizationCheckerInterface $authorization
+     * @param ObjectManager                 $om
+     * @param EventDispatcherInterface      $eventDispatcher
+     * @param PaperSerializer               $serializer
+     * @param ItemManager                   $itemManager
+     * @param ResourceEvaluationManager     $resourceEvalManager
      */
     public function __construct(
+        AuthorizationCheckerInterface $authorization,
         ObjectManager $om,
         EventDispatcherInterface $eventDispatcher,
         PaperSerializer $serializer,
         ItemManager $itemManager,
         ResourceEvaluationManager $resourceEvalManager
     ) {
+        $this->authorization = $authorization;
         $this->om = $om;
         $this->repository = $om->getRepository('UJMExoBundle:Attempt\Paper');
         $this->eventDispatcher = $eventDispatcher;
@@ -91,9 +97,12 @@ class PaperManager
      */
     public function serialize(Paper $paper, array $options = [])
     {
+        $collection = new ResourceCollection([$paper->getExercise()->getResourceNode()]);
+        $isAdmin = $this->authorization->isGranted('ADMINISTRATE', $collection) || $this->authorization->isGranted('MANAGE_PAPERS', $collection);
+
         // Adds user score if available and the method options do not already request it
         if (!in_array(Transfer::INCLUDE_USER_SCORE, $options)
-            && $this->isScoreAvailable($paper->getExercise(), $paper)) {
+            && ($isAdmin || $this->isScoreAvailable($paper->getExercise(), $paper))) {
             $options[] = Transfer::INCLUDE_USER_SCORE;
         }
 
@@ -155,10 +164,10 @@ class PaperManager
         $total = 0;
 
         $structure = json_decode($paper->getStructure(), true);
-
         foreach ($structure['steps'] as $step) {
-            foreach ($step['items'] as $item) {
-                if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item['type'])) {
+            foreach ($step['items'] as $itemData) {
+                if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $itemData['type'])) {
+                    $item = $this->itemManager->deserialize($itemData);
                     $total += $this->itemManager->calculateTotal($item);
                 }
             }

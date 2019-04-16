@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
-import {hasPermission} from '#/main/app/security'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {UserEvaluation as UserEvaluationType} from '#/main/core/resource/prop-types'
 import {ResourceOverview} from '#/main/core/resource/components/overview'
@@ -51,7 +50,7 @@ const Parameters = props =>
         &nbsp;
         <b>
           {props.duration ?
-            `${props.duration} ${props.duration > 1 ? trans('minutes') : trans('minute')}` :
+            `${props.duration / 60} ${trans('minutes')}` :
             '-'
           }
         </b>

@@ -1,6 +1,5 @@
-import {createSelector} from 'reselect'
-
 import {getDefinition} from '#/plugin/exo/items/item-types'
+
 import {
   RULE_TYPE_ALL,
   RULE_TYPE_MORE,
@@ -8,45 +7,48 @@ import {
   RULE_TYPE_BETWEEN,
   RULE_SOURCE_CORRECT,
   RULE_SOURCE_INCORRECT,
-  RULE_TARGET_GLOBAL
+  RULE_TARGET_GLOBAL,
+  RULE_TARGET_ANSWER
 } from '#/plugin/exo/data/types/score-rules/constants'
 
-import {select as quizSelectors} from '#/plugin/exo/quiz/selectors'
+// TODO : make dynamic registry
+import ScoreFixed from '#/plugin/exo/scores/fixed'
+import ScoreManual from '#/plugin/exo/scores/manual'
+import ScoreNone from '#/plugin/exo/scores/none'
+import ScoreRules from '#/plugin/exo/scores/rules'
+import ScoreSum from '#/plugin/exo/scores/sum'
 
-const quizId = quizSelectors.id
-const papersFetched = createSelector(
-  [quizSelectors.papers],
-  (papers) => papers.isFetched
-)
-const papers = createSelector(
-  [quizSelectors.papers],
-  (papers) => papers.papers
-)
-
-const currentPaper = createSelector(
-  [quizSelectors.papers],
-  (papers) => papers.current
-)
-
-const showScoreAt = paper => {
-  return paper.structure.parameters.showScoreAt
+const SCORE_TYPES = {
+  [ScoreFixed.name] : ScoreFixed,
+  [ScoreManual.name]: ScoreManual,
+  [ScoreNone.name]  : ScoreNone,
+  [ScoreRules.name] : ScoreRules,
+  [ScoreSum.name]   : ScoreSum
 }
 
-const showCorrectionAt = paper => {
-  return paper.structure.parameters.showCorrectionAt
+/**
+ *
+ * @param {object} scoreRule
+ * @param {object} correctedAnswer
+ *
+ * @return {number}
+ */
+function calculateScore(scoreRule, correctedAnswer) {
+  const currentScore = SCORE_TYPES[scoreRule.type]
+  if (currentScore) {
+    return currentScore.calculate(scoreRule, correctedAnswer)
+  }
+
+  return undefined
 }
 
-const correctionDate = paper => {
-  return paper.structure.parameters.correctionDate
-}
-
-const totalScoreOn = paper => {
-  return paper.structure.parameters.totalScoreOn && paper.structure.parameters.totalScoreOn > 0 ? paper.structure.parameters.totalScoreOn : null
-}
-
-// TODO : move in scores module
-const itemScoreMax = item => {
-  let scoreMax
+/**
+ *
+ * @param {object} item
+ *
+ * @return {number}
+ */
+function calculateTotal(item) {
   const rulesData = {
     nbChoices: 0,
     max: {
@@ -54,6 +56,7 @@ const itemScoreMax = item => {
       [RULE_SOURCE_INCORRECT]: 0
     }
   }
+  let scoreMax
   let score = 0
 
   if (item && item.score) {
@@ -61,12 +64,15 @@ const itemScoreMax = item => {
       case 'manual':
         scoreMax = item.score.max
         break
+
       case 'fixed':
         scoreMax = item.score.success
         break
+
       case 'sum':
-        scoreMax = getDefinition(item.type).getCorrectedAnswer(item).getMissing().reduce((sum, el) => sum += el.getScore(), 0)
+        scoreMax = getDefinition(item.type).correctAnswer(item).getMissing().reduce((sum, el) => sum += el.getScore(), 0)
         break
+
       case 'rules':
         rulesData.nbChoices = item.choices ? item.choices.length : 0
 
@@ -118,48 +124,18 @@ const itemScoreMax = item => {
           rulesData.max[RULE_SOURCE_CORRECT] :
           rulesData.max[RULE_SOURCE_INCORRECT]
         break
+
+      case 'none':
+      default:
+        scoreMax = undefined
+        break
     }
   }
-
-  return scoreMax || 0
-}
-
-const paperTotalAnswerScore = paper => {
-  let scoreMax = 0
-
-  paper.structure.steps.map(step =>
-    step.items.map(item => scoreMax += itemScoreMax(item))
-  )
 
   return scoreMax
 }
 
-const paperScoreMax = paper => {
-  if (totalScoreOn(paper)) {
-    return totalScoreOn(paper)
-  }
-
-  return paperTotalAnswerScore(paper)
-}
-
-const paperItemsCount = paper => {
-  let count = 0
-  paper.structure.steps.forEach(step => count += step.items.length)
-
-  return count
-}
-
-export const selectors = {
-  quizId,
-  papers,
-  papersFetched,
-  currentPaper,
-  itemScoreMax,
-  paperScoreMax,
-  showScoreAt,
-  showCorrectionAt,
-  correctionDate,
-  totalScoreOn,
-  paperTotalAnswerScore,
-  paperItemsCount
+export {
+  calculateScore,
+  calculateTotal
 }
