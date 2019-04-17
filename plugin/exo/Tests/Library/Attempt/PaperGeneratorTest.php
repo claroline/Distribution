@@ -322,7 +322,7 @@ class PaperGeneratorTest extends TransactionalTestCase
         $decodedStructure = json_decode($paper->getStructure(), true);
 
         // Just check the random option do not break the whole structure
-        $this->checkStepStructure($step, $decodedStructure->steps[0]);
+        $this->checkStepStructure($step, $decodedStructure['steps'][0]);
 
         // Checks the random part : the generator MUST always return the same order after the first attempt
         $this->assertTrue(!$this->checkFirstStepItemsChange($paper));
@@ -443,7 +443,7 @@ class PaperGeneratorTest extends TransactionalTestCase
             // Particularly if the whole questions set is small
             // This permits to avoid a false positive
             $newPaper = $this->generator->create($firstPaper->getExercise(), $firstPaper->getUser(), $firstPaper);
-            $newStructure = json_decode($newPaper->getStructure());
+            $newStructure = json_decode($newPaper->getStructure(), true);
             if (!$this->collectionsAreEquals($decodedStructure['steps'][0]['items'], $newStructure['steps'][0]['items'])) {
                 $changed = true;
                 break;
