@@ -90,10 +90,7 @@ class OrderedToolTransfer
         if ($this->container->has($serviceName)) {
             $importer = $this->container->get($serviceName);
             $importer->setLogger($this->logger);
-
-            if (method_exists($importer, 'prepareImport')) {
-                $data = $importer->prepareImport($orderedToolData, $data);
-            }
+            $data = $importer->prepareImport($orderedToolData, $data);
         }
 
         return $data;

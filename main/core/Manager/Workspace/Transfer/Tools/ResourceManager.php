@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 /**
  * @DI\Service("claroline.transfer.resource_manager")
  */
-class ResourceManager
+class ResourceManager implements ToolImporterInterface
 {
     use LoggableTrait;
 
