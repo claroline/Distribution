@@ -417,9 +417,9 @@ class ItemSerializer
      */
     private function serializeObjects(Item $question, array $options = [])
     {
-        return array_map(function (ItemObject $object) use ($options) {
+        return array_values(array_map(function (ItemObject $object) use ($options) {
             return $this->itemObjectSerializer->serialize($object, $options);
-        }, $question->getObjects()->toArray());
+        }, $question->getObjects()->toArray()));
     }
 
     /**
