@@ -16,16 +16,14 @@ use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\Tools\ToolImporterInterface;
-use Claroline\PlannedNotificationBundle\Entity\Message;
-use Claroline\PlannedNotificationBundle\Entity\PlannedNotification;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @DI\Service("claroline.transfer.claroline_planned_notification_tool")
+ * @DI\Service("claroline.transfer.claroline_team_tool")
  */
-class PlannedNotification implements ToolImporterInterface
+class Team implements ToolImporterInterface
 {
     /**
      * @DI\InjectParams({
@@ -49,43 +47,10 @@ class PlannedNotification implements ToolImporterInterface
 
     public function serialize(Workspace $workspace, array $options)
     {
-        return [
-            'planned' => $this->finder->search(PlannedNotification::class, ['workspace' => $workspace->getUuid()]),
-            'messages' => $this->finder->search(Message::class, ['workspace' => $workspace->getUuid()]),
-        ];
     }
 
     public function deserialize(array $data, Workspace $workspace, array $options, FileBag $bag)
     {
-        foreach ($data['planned'] as $planned) {
-            $new = $this->crud->copy($old, [Options::GENERATE_UUID]);
-            $new->setWorkspace($workspace);
-            $new->emptyRoles();
-
-            foreach ($old->getRoles() as $role) {
-                foreach ($workspace->getRoles() as $wsRole) {
-                    if ($wsRole->getTranslationKey() === $role->getTranslationKey()) {
-                        $new->addRole($wsRole);
-                    }
-                }
-            }
-            $newNotifs[$old->getId()] = $new;
-            $this->om->persist($new);
-        }
-
-        foreach ($data['messages'] as $message) {
-            $new = $this->crud->copy($old, [Options::GENERATE_UUID]);
-            $new->setWorkspace($workspace);
-            $new->emptyNotifications();
-
-            foreach ($old->getNotifications() as $oldNotification) {
-                if (isset($newNotifs[$oldNotification->getId()])) {
-                    $new->addNotification($newNotifs[$oldNotification->getId()]);
-                }
-            }
-
-            $this->om->persist($new);
-        }
     }
 
     public function prepareImport(array $orderedToolData, array $data)
