@@ -432,6 +432,7 @@ class ItemSerializer
     private function deserializeObjects(Item $question, array $objects = [], array $options = [])
     {
         $objectEntities = $question->getObjects()->toArray();
+        $question->emptyObjects();
 
         foreach ($objects as $index => $objectData) {
             $existingObject = null;
@@ -445,20 +446,14 @@ class ItemSerializer
                     break;
                 }
             }
-            $toAdd = empty($existingObject);
             $itemObject = $this->itemObjectSerializer->deserialize($objectData, $existingObject, $options);
             $itemObject->setOrder($index);
-
-            // Link object to item
-            if ($toAdd) {
-                $question->addObject($itemObject);
-            }
+            $question->addObject($itemObject);
         }
 
         // Remaining objects are no longer in the Item
         if (0 < count($objectEntities)) {
             foreach ($objectEntities as $objectToRemove) {
-                $question->removeObject($objectToRemove);
                 $this->om->remove($objectToRemove);
             }
         }

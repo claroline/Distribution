@@ -35,8 +35,19 @@ class MediasInput extends Component {
               active={this.state.currentObjectId === object.id}
               canDelete={true}
               canEdit={isEditableType(object.type)}
-              canSort={false}
-              onSort={(source, destination) => {}}
+              canSort={true}
+              onSort={(source, destination) => {
+                if (source !== destination) {
+                  const newValue = cloneDeep(this.props.value)
+                  const srcIndex = newValue.findIndex(o => o.id === source)
+                  const sourceObject = newValue[srcIndex]
+                  newValue.splice(srcIndex, 1)
+                  const destIndex = newValue.findIndex(o => o.id === destination)
+                  newValue.splice(destIndex, 0, sourceObject)
+                  this.props.onChange(newValue)
+                  this.setState({currentObjectId: null})
+                }
+              }}
               handleEdit={e => {
                 e.stopPropagation()
                 this.setState({currentObjectId: this.state.currentObjectId === object.id ? null : object.id})
