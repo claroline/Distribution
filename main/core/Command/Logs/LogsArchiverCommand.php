@@ -42,10 +42,10 @@ class LogsArchiverCommand extends ContainerAwareCommand
             ]
         );
         $this->addOption(
-            'delete',
-            'd',
+            'keep',
+            'k',
             InputOption::VALUE_NONE,
-            'When set to true, delete the archived logs (format: m-d-Y)'
+            'When set to true, keep the archived logs (format: m-d-Y)'
         );
     }
 
@@ -63,14 +63,17 @@ class LogsArchiverCommand extends ContainerAwareCommand
             'claro_log',
         ];
 
-        $delete = $input->getOption('delete') ? true : false;
+        $delete = $input->getOption('keep') ? false : true;
+        $archiveDir = $this->getContainer()->getParameter('claroline.param.archive_directory');
 
         foreach ($logTables as $table) {
+            $name = str_replace('-', '_', $input->getArgument('from')).'_'.uniqid();
+
             $databaseManager->backupRows(
                 Log::class,
                 ['dateLog' => $from->format('Y-m-d h:i:s'), 'dateTo' => $to->format('Y-m-d h:i:s')],
                 $table,
-                uniqid(),
+                $name,
                 $delete
             );
         }
