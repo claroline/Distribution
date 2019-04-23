@@ -75,7 +75,6 @@ class LogsArchiverCommand extends ContainerAwareCommand
         $searches = [];
 
         $delete = $input->getOption('keep') ? false : true;
-        $archiveDir = $this->getContainer()->getParameter('claroline.param.archive_directory');
 
         foreach ($logTables as $table) {
             $name = str_replace('-', '_', $from->format('Y')).'_'.uniqid();
