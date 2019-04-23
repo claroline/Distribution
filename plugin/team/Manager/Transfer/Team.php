@@ -12,6 +12,7 @@
 namespace Claroline\TeamBundle\Manager\Transfer;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -70,8 +71,8 @@ class Team implements ToolImporterInterface
     public function deserialize(array $data, Workspace $workspace, array $options, FileBag $bag)
     {
         foreach ($data['teams'] as $teamData) {
-            $team = new self();
-            $this->teamSerializer->deserialize($teamData, $team);
+            $team = new TeamEntity();
+            $this->teamSerializer->deserialize($teamData, $team, [Options::REFRESH_UUID]);
             $team->setWorkspace($workspace);
             $this->om->persist($team);
         }
@@ -81,42 +82,6 @@ class Team implements ToolImporterInterface
         $parameters->setWorkspace($workspace);
         $this->om->persist($parameters);
         $this->om->flush();
-
-        /*
-        $oldWs = $event->getOldWorkspace();
-        $workspace = $event->getNewWorkspace();
-        $oldTeams = $this->om->getRepository(Team::class)->findBy(['workspace' => $oldWs]);
-        $roles = $workspace->getRoles();
-
-        foreach ($oldTeams as $team) {
-            $new = new Team();
-            $new->setWorkspace($workspace);
-            $new->setName($team->getName());
-            $new->setDescription($team->getDescription());
-
-            foreach ($roles as $workspaceRole) {
-                if ($workspaceRole->getTranslationKey() === $team->getName()) {
-                    $new->setRole($workspaceRole);
-                }
-            }
-
-            foreach ($roles as $workspaceRole) {
-                if ($workspaceRole->getTranslationKey() === $team->getName().' manager') {
-                    $new->setTeamManagerRole($workspaceRole);
-                }
-            }
-
-            $new->setMaxUsers($team->getMaxUsers());
-            $new->setSelfRegistration($team->isSelfRegistration());
-            $new->setSelfUnregistration($team->isSelfUnregistration());
-            $new->setIsPublic($team->isPublic());
-            $new->setDirDeletable($team->isDirDeletable());
-            //currently, the default ressource will be lost
-            //we should discuss how to handle it later
-
-            $this->om->persist($new);
-        }
-        */
     }
 
     public function prepareImport(array $orderedToolData, array $data): array

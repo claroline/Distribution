@@ -30,7 +30,10 @@ class TeamFinder extends AbstractFinder
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
         $qb->join('obj.workspace', 'w');
-        $qb->andWhere('w.id = :workspaceId');
+        $qb->andWhere($qb->expr()->orX(
+            $qb->expr()->like('w.id', ':workspaceId'),
+            $qb->expr()->like('w.uuid', ':workspaceId')
+        ));
         $qb->setParameter('workspaceId', $searches['workspace']);
         $managerJoin = false;
 

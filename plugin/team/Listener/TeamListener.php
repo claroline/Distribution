@@ -14,7 +14,6 @@ namespace Claroline\TeamBundle\Listener;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Claroline\CoreBundle\Event\WorkspaceCopyToolEvent;
 use Claroline\CoreBundle\Repository\ResourceTypeRepository;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Manager\TeamManager;
@@ -106,44 +105,19 @@ class TeamListener
     }
 
     /**
-     * @DI\Observe("workspace_copy_tool_claroline_team_tool")
-     *
-     * @param WorkspaceCopyToolEvent $event
+     * @DI\Observe("transfer.claroline_team_tool.import.before")
      */
-    public function onWorkspaceToolCopy(WorkspaceCopyToolEvent $event)
+    public function onImportBefore(ImportObjectEvent $event)
     {
-        $oldWs = $event->getOldWorkspace();
-        $workspace = $event->getNewWorkspace();
-        $oldTeams = $this->om->getRepository(Team::class)->findBy(['workspace' => $oldWs]);
-        $roles = $workspace->getRoles();
+        $data = $event->getData();
+        $replaced = json_encode($event->getExtra());
 
-        foreach ($oldTeams as $team) {
-            $new = new Team();
-            $new->setWorkspace($workspace);
-            $new->setName($team->getName());
-            $new->setDescription($team->getDescription());
-
-            foreach ($roles as $workspaceRole) {
-                if ($workspaceRole->getTranslationKey() === $team->getName()) {
-                    $new->setRole($workspaceRole);
-                }
-            }
-
-            foreach ($roles as $workspaceRole) {
-                if ($workspaceRole->getTranslationKey() === $team->getName().' manager') {
-                    $new->setTeamManagerRole($workspaceRole);
-                }
-            }
-
-            $new->setMaxUsers($team->getMaxUsers());
-            $new->setSelfRegistration($team->isSelfRegistration());
-            $new->setSelfUnregistration($team->isSelfUnregistration());
-            $new->setIsPublic($team->isPublic());
-            $new->setDirDeletable($team->isDirDeletable());
-            //currently, the default ressource will be lost
-            //we should discuss how to handle it later
-
-            $this->om->persist($new);
+        foreach ($data['_data']['subjects'] as $subjectsData) {
+            $uuid = Uuid::uuid4()->toString();
+            $replaced = str_replace($subjectsData['id'], $uuid, $replaced);
         }
+
+        $data = json_decode($replaced, true);
+        $event->setExtra($data);
     }
 }
