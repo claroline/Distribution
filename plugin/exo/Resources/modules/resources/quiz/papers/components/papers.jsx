@@ -73,13 +73,6 @@ const Papers = props =>
 
             return undefined
           }
-          /*render: (rowData) => {
-            if (rowData.startDate && rowData.endDate) {
-              return `${Math.round(getTimeDiff(rowData.startDate, rowData.endDate) / 60)}`
-            }
-
-            return '-'
-          }*/
         }, {
           name: 'finished',
           label: trans('finished'),

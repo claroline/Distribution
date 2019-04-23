@@ -5,7 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import {utils} from '#/plugin/exo/items/selection/utils/utils'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {SolutionScore} from '#/plugin/exo/components/score'
 import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 

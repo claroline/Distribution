@@ -301,9 +301,9 @@ class DocimologyManager
     /**
      * Get standard deviation for the discrimination coefficient.
      *
-     * @param type $array
+     * @param array $array
      *
-     * @return type
+     * @return float
      */
     private function getStandardDeviation($array)
     {
@@ -339,19 +339,12 @@ class DocimologyManager
         $scores = [];
         /** @var Paper $paper */
         foreach ($papers as $paper) {
-            $structure = json_decode($paper->getStructure(), true);
-
-            if (!isset($structure['parameters']['totalScoreOn']) || floatval($structure['parameters']['totalScoreOn']) === floatval(0)) {
-                $totalScoreOn = $this->paperManager->calculateTotal($paper);
-            } else {
-                $totalScoreOn = floatval($structure['parameters']['totalScoreOn']);
-            }
-
-            $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
+            $score = $this->paperManager->calculateScore($paper);
             // since totalScoreOn might have change through papers report all scores on a define value
-            if ($scoreOn && $totalScoreOn > 0) {
-                $score = floatval(($scoreOn * $score) / $totalScoreOn);
+            if ($scoreOn) {
+                $score = floatval(($scoreOn * $score) / $paper->getTotal());
             }
+
             $scores[] = $score !== floor($score) ? floatval(number_format($score, 2)) : $score;
         }
 

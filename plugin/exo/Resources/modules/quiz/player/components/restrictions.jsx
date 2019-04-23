@@ -39,7 +39,7 @@ const PlayerRestrictions = props => {
           }
 
           <Toolbar
-            buttonName="btn btn-block btn-emphasis"
+            buttoname="btn btn-block btn-emphasis"
             toolbar="restart correction statistics home"
             actions={[
               {

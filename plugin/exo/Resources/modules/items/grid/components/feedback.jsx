@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {utils} from '#/plugin/exo/items/grid/utils/utils'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
 import {constants} from '#/plugin/exo/items/grid/constants'

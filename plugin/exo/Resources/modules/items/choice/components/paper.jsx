@@ -7,7 +7,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {SCORE_FIXED, SCORE_RULES} from '#/plugin/exo/quiz/enums'
 import {utils} from '#/plugin/exo/items/choice/utils'
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {SolutionScore} from '#/plugin/exo/components/score'
 import {AnswerStats} from '#/plugin/exo/items/components/stats'
 import {PaperTabs} from '#/plugin/exo/items/components/paper-tabs'

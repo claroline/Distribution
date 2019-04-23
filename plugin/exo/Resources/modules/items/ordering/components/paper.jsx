@@ -5,7 +5,7 @@ import has from 'lodash/has'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {SolutionScore} from '#/plugin/exo/components/score'
 import {AnswerStats} from '#/plugin/exo/items/components/stats'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
@@ -43,7 +43,7 @@ const OrderingPaper = props => {
                     <WarningIcon valid={utils.answerIsValid(a, props.item.solutions)}/>
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === a.itemId).data}}/>
                     <Feedback
-                      id={`oredering-answer-${a.itemId}-feedback`}
+                      id={`ordering-answer-${a.itemId}-feedback`}
                       feedback={props.item.solutions.find(solution => solution.itemId === a.itemId).feedback}
                     />
                     {props.showScore && props.item.score.type === SCORE_SUM && utils.showScore(a, props.item.solutions) &&
@@ -64,7 +64,7 @@ const OrderingPaper = props => {
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === solution.itemId).data}}/>
                     {solution.score > 0 &&
                       <Feedback
-                        id={`oredering-solution-${solution.itemId}-feedback`}
+                        id={`ordering-solution-${solution.itemId}-feedback`}
                         feedback={solution.feedback}
                       />
                     }
@@ -88,7 +88,7 @@ const OrderingPaper = props => {
                     <WarningIcon valid={utils.answerIsValid(a, props.item.solutions)}/>
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === a.itemId).data}}/>
                     <Feedback
-                      id={`oredering-answer-${a.itemId}-feedback`}
+                      id={`ordering-answer-${a.itemId}-feedback`}
                       feedback={props.item.solutions.find(solution => solution.itemId === a.itemId).feedback}
                     />
                     {props.showScore && props.item.score.type === SCORE_SUM && utils.showScore(a, props.item.solutions) &&
@@ -113,7 +113,7 @@ const OrderingPaper = props => {
                     <WarningIcon valid={utils.answerIsValid(a, props.item.solutions)}/>
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === a.itemId).data}}/>
                     <Feedback
-                      id={`oredering-answer-${a.itemId}-feedback`}
+                      id={`ordering-answer-${a.itemId}-feedback`}
                       feedback={props.item.solutions.find(solution => solution.itemId === a.itemId).feedback}
                     />
                     {props.showScore && props.item.score.type === SCORE_SUM && utils.showScore(a, props.item.solutions) &&
@@ -141,7 +141,7 @@ const OrderingPaper = props => {
                   <div key={solution.itemId} className="item answer-item text-info bg-info">
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === solution.itemId).data}}/>
                     <Feedback
-                      id={`oredering-answer-${solution.itemId}-feedback`}
+                      id={`ordering-answer-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
                     {props.showScore && props.item.score.type === SCORE_SUM &&
@@ -154,7 +154,7 @@ const OrderingPaper = props => {
                   <div key={solution.itemId} className="item answer-item">
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === solution.itemId).data}}/>
                     <Feedback
-                      id={`oredering-solution-${solution.itemId}-feedback`}
+                      id={`ordering-solution-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
                     {props.showScore && props.item.score.type === SCORE_SUM &&
@@ -170,7 +170,7 @@ const OrderingPaper = props => {
                   <div key={solution.itemId} className="item answer-item text-info bg-info">
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === solution.itemId).data}}/>
                     <Feedback
-                      id={`oredering-answer-${solution.itemId}-feedback`}
+                      id={`ordering-answer-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
                     {props.showScore && props.item.score.type === SCORE_SUM &&
@@ -188,7 +188,7 @@ const OrderingPaper = props => {
                   <div key={solution.itemId} className="item answer-item text-info bg-info">
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === solution.itemId).data}}/>
                     <Feedback
-                      id={`oredering-answer-${solution.itemId}-feedback`}
+                      id={`ordering-answer-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
                     {props.showScore && props.item.score.type === SCORE_SUM &&

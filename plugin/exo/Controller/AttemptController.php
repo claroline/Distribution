@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Controller\Api;
+namespace UJM\ExoBundle\Controller;
 
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceUserEvaluationSerializer;
 use Claroline\CoreBundle\Entity\User;

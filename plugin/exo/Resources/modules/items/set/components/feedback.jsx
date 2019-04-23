@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {utils} from '#/plugin/exo/items/set/utils'
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
 
 const SetFeedback = props =>

@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {isQuestionType} from '#/plugin/exo/items/item-types'
 
-import {trans, tex} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 
 // TODO : replace all button by #/main/app/action/components/button
 
