@@ -166,6 +166,10 @@ class ParametersSerializer
 
     public function serializeArchive()
     {
+        if (!is_dir($this->archivePath)) {
+            mkdir($this->archivePath);
+        }
+
         $iterator = new \DirectoryIterator($this->archivePath);
         $files = [];
 
