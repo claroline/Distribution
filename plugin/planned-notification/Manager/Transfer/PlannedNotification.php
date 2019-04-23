@@ -11,12 +11,15 @@
 
 namespace Claroline\PlannedNotificationBundle\Manager\Transfer;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\Tools\ToolImporterInterface;
 use Claroline\PlannedNotificationBundle\Entity\Message;
+use Claroline\PlannedNotificationBundle\Entity\PlannedNotification as Planned;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -31,31 +34,34 @@ class PlannedNotification implements ToolImporterInterface
      *     "authorization" = @DI\Inject("security.authorization_checker"),
      *     "tokenStorage"  = @DI\Inject("security.token_storage"),
      *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "finder"        = @DI\Inject("claroline.api.finder")
+     *     "finder"        = @DI\Inject("claroline.api.finder"),
+     *     "crud"          = @DI\Inject("claroline.api.crud")
      * })
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         TokenStorageInterface $tokenStorage,
         FinderProvider $finder,
-        ObjectManager $om
+        ObjectManager $om,
+        Crud $crud
     ) {
         $this->authorization = $authorization;
         $this->tokenStorage = $tokenStorage;
         $this->om = $om;
         $this->finder = $finder;
+        $this->crud = $crud;
     }
 
     public function serialize(Workspace $workspace, array $options): array
     {
         return [
-            'planned' => $this->finder->search(self::class, ['workspace' => $workspace->getUuid()]),
-            'messages' => $this->finder->search(Message::class, ['workspace' => $workspace->getUuid()]),
+            'planned' => $this->finder->search(Planned::class, ['filters' => ['workspace' => $workspace->getUuid()]])['data'],
+            'messages' => $this->finder->search(Message::class, ['filters' => ['workspace' => $workspace->getUuid()]])['data'],
         ];
     }
 
     public function deserialize(array $data, Workspace $workspace, array $options, FileBag $bag)
-    {
+    {/*
         foreach ($data['planned'] as $planned) {
             $new = $this->crud->copy($old, [Options::GENERATE_UUID]);
             $new->setWorkspace($workspace);
@@ -70,20 +76,23 @@ class PlannedNotification implements ToolImporterInterface
             }
             $newNotifs[$old->getId()] = $new;
             $this->om->persist($new);
-        }
+        }*/
 
         foreach ($data['messages'] as $message) {
-            $new = $this->crud->copy($old, [Options::GENERATE_UUID]);
+            $this->om->startFlushSuite();
+            $new = $this->crud->create(Message::class, $message, [Options::GENERATE_UUID]);
             $new->setWorkspace($workspace);
             $new->emptyNotifications();
 
-            foreach ($old->getNotifications() as $oldNotification) {
-                if (isset($newNotifs[$oldNotification->getId()])) {
-                    $new->addNotification($newNotifs[$oldNotification->getId()]);
-                }
-            }
+            /*
+                        foreach ($old->getNotifications() as $oldNotification) {
+                            if (isset($newNotifs[$oldNotification->getId()])) {
+                                $new->addNotification($newNotifs[$oldNotification->getId()]);
+                            }
+                        }*/
 
             $this->om->persist($new);
+            $this->om->endFlushSuite();
         }
     }
 
