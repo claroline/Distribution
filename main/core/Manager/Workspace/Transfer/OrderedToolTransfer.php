@@ -89,7 +89,9 @@ class OrderedToolTransfer
 
         if ($this->container->has($serviceName)) {
             $importer = $this->container->get($serviceName);
-            $importer->setLogger($this->logger);
+            if (method_exists($importer, 'setLogger')) {
+                $importer->setLogger($this->logger);
+            }
             $data = $importer->prepareImport($orderedToolData, $data);
         }
 
@@ -132,8 +134,12 @@ class OrderedToolTransfer
 
             if ($this->container->has($serviceName)) {
                 $importer = $this->container->get($serviceName);
-                $importer->setLogger($this->logger);
-                $importer->deserialize($data['data'], $orderedTool->getWorkspace(), [Options::REFRESH_UUID], $bag);
+                if (method_exists($importer, 'setLogger')) {
+                    $importer->setLogger($this->logger);
+                }
+                if (isset($data['data'])) {
+                    $importer->deserialize($data['data'], $orderedTool->getWorkspace(), [Options::REFRESH_UUID], $bag);
+                }
             }
         }
     }

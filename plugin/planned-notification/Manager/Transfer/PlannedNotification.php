@@ -17,7 +17,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\Tools\ToolImporterInterface;
 use Claroline\PlannedNotificationBundle\Entity\Message;
-use Claroline\PlannedNotificationBundle\Entity\PlannedNotification;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -47,10 +46,10 @@ class PlannedNotification implements ToolImporterInterface
         $this->finder = $finder;
     }
 
-    public function serialize(Workspace $workspace, array $options)
+    public function serialize(Workspace $workspace, array $options): array
     {
         return [
-            'planned' => $this->finder->search(PlannedNotification::class, ['workspace' => $workspace->getUuid()]),
+            'planned' => $this->finder->search(self::class, ['workspace' => $workspace->getUuid()]),
             'messages' => $this->finder->search(Message::class, ['workspace' => $workspace->getUuid()]),
         ];
     }
@@ -88,8 +87,8 @@ class PlannedNotification implements ToolImporterInterface
         }
     }
 
-    public function prepareImport(array $orderedToolData, array $data)
+    public function prepareImport(array $orderedToolData, array $data): array
     {
-        //maybe do something about ids.
+        return $data;
     }
 }

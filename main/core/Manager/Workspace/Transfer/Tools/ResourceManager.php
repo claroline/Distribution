@@ -88,7 +88,7 @@ class ResourceManager implements ToolImporterInterface
         return $data;
     }
 
-    public function prepareImport(array $orderedToolData, array $data)
+    public function prepareImport(array $orderedToolData, array $data): array
     {
         foreach ($orderedToolData['data']['resources'] as $serialized) {
             $event = $this->dispatcher->dispatch(

@@ -59,8 +59,9 @@ class Home implements ToolImporterInterface
         return ['tabs' => $tabs];
     }
 
-    public function prepareImport(array $orderedToolData, array $data)
+    public function prepareImport(array $orderedToolData, array $data): array
     {
+        return $data;
     }
 
     public function deserialize(array $data, Workspace $workspace, array $options, FileBag $bag)

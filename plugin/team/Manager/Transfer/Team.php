@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\PlannedNotificationBundle\Manager\Transfer;
+namespace Claroline\TeamBundle\Manager\Transfer;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Utils\FileBag;
@@ -45,16 +45,17 @@ class Team implements ToolImporterInterface
         $this->finder = $finder;
     }
 
-    public function serialize(Workspace $workspace, array $options)
+    public function serialize(Workspace $workspace, array $options): array
     {
+        return [];
     }
 
     public function deserialize(array $data, Workspace $workspace, array $options, FileBag $bag)
     {
     }
 
-    public function prepareImport(array $orderedToolData, array $data)
+    public function prepareImport(array $orderedToolData, array $data): array
     {
-        //maybe do something about ids.
+        return $data;
     }
 }
