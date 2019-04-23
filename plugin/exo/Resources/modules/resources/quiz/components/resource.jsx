@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {currentUser} from '#/main/app/security'
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 import {ResourcePage} from '#/main/core/resource/containers/page'

@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
 
 import {utils} from '#/plugin/exo/items/ordering/utils'

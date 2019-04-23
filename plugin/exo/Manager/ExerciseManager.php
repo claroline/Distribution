@@ -273,12 +273,11 @@ class ExerciseManager
 
             /** @var Paper $paper */
             foreach ($papers as $paper) {
-                $structure = json_decode($paper->getStructure(), true);
-                $totalScoreOn = $structure['parameters']['totalScoreOn'] && floatval($structure['parameters']['totalScoreOn']) > 0 ?
-                    floatval($structure['parameters']['totalScoreOn']) :
-                    $this->paperManager->calculateTotal($paper);
                 $user = $paper->getUser();
-                $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
+                // maybe use stored score to speed up things
+                // problem is we don't have it for non finished papers
+                $score = $this->paperManager->calculateScore($paper);
+
                 fputcsv($handle, [
                     $user && !$paper->isAnonymized() ? $user->getLastName() : '',
                     $user && !$paper->isAnonymized() ? $user->getFirstName() : '',
@@ -287,7 +286,7 @@ class ExerciseManager
                     $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
                     $paper->isInterrupted() ? 'not finished' : 'finished',
                     $score !== floor($score) ? number_format($score, 2) : $score,
-                    $totalScoreOn,
+                    $paper->getTotal(),
                 ], ';');
             }
 
@@ -354,11 +353,9 @@ class ExerciseManager
 
             /** @var Paper $paper */
             foreach ($papers as $paper) {
-                $structure = json_decode($paper->getStructure(), true);
-                $totalScoreOn = $structure['parameters']['totalScoreOn'] && floatval($structure['parameters']['totalScoreOn']) > 0 ?
-                    floatval($structure['parameters']['totalScoreOn']) :
-                    $this->paperManager->calculateTotal($paper);
-                $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
+                // maybe use stored score to speed up things
+                // problem is we don't have it for non finished papers
+                $score = $this->paperManager->calculateScore($paper);
 
                 $answers = $paper->getAnswers();
                 $csv = [];
@@ -378,7 +375,7 @@ class ExerciseManager
                 $csv['end'] = [$paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : ''];
                 $csv['status'] = [$paper->isInterrupted() ? 'not finished' : 'finished'];
                 $csv['score'] = [$score !== floor($score) ? number_format($score, 2) : $score];
-                $csv['total_score_on'] = [$totalScoreOn];
+                $csv['total_score_on'] = [$paper->getTotal()];
 
                 foreach ($items as $item) {
                     /** @var AnswerableItemDefinitionInterface $itemDefinition */

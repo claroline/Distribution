@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {utils} from '#/plugin/exo/items/words/utils'
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {SolutionScore} from '#/plugin/exo/components/score'
 
 const Highlight = props => {

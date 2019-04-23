@@ -5,7 +5,7 @@ import has from 'lodash/has'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {SolutionScore} from '#/plugin/exo/components/score'
 import {AnswerStats} from '#/plugin/exo/items/components/stats'
 import {PaperTabs} from '#/plugin/exo/items/components/paper-tabs'

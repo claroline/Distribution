@@ -3,7 +3,6 @@
 namespace UJM\ExoBundle\Manager\Attempt;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 

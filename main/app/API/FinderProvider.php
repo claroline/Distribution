@@ -107,7 +107,7 @@ class FinderProvider
         return array_merge($results, [
             'data' => array_map(function ($result) use ($serializerOptions) {
                 return $this->serializer->serialize($result, $serializerOptions);
-            }, $results['data'])
+            }, $results['data']),
         ]);
     }
 

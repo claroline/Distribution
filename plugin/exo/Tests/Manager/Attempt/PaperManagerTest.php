@@ -23,6 +23,7 @@ class PaperManagerTest extends \PHPUnit\Framework\TestCase
         $this->serializer = $this->mock('UJM\ExoBundle\Serializer\Attempt\PaperSerializer');
 
         $this->manager = new PaperManager(
+            $this->mock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface'),
             $this->om,
             $this->mock('Symfony\Component\EventDispatcher\EventDispatcherInterface'),
             $this->serializer,

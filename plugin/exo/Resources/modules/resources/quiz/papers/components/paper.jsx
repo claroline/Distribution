@@ -18,10 +18,11 @@ import {calculateTotal} from '#/plugin/exo/scores'
 import quizSelect from '#/plugin/exo/quiz/selectors'
 import {constants} from '#/plugin/exo/resources/quiz/constants'
 import {getDefinition, isQuestionType} from '#/plugin/exo/items/item-types'
-import {selectors as paperSelect} from '#/plugin/exo/resources/quiz/papers/store/selectors'
 import {utils} from '#/plugin/exo/resources/quiz/papers/utils'
 import {getNumbering} from '#/plugin/exo/utils/numbering'
 import {Metadata as ItemMetadata} from '#/plugin/exo/items/components/metadata'
+import {Paper as PaperTypes} from '#/plugin/exo/resources/quiz/papers/prop-types'
+import {selectors as paperSelect} from '#/plugin/exo/resources/quiz/papers/store/selectors'
 
 function getAnswer(itemId, answers) {
   const answer = answers.find(answer => answer.questionId === itemId)
@@ -58,7 +59,7 @@ const PaperComponent = props => {
         {trans('correction', {}, 'quiz')}&nbsp;{props.paper ? props.paper.number : ''}
 
         <Toolbar
-          id={props.id}
+          id={props.paper && props.paper.id}
           className="h-toolbar"
           buttonName="btn"
           tooltip="bottom"
@@ -66,7 +67,7 @@ const PaperComponent = props => {
           size="sm"
           actions={[
             {
-              name: 'copy',
+              name: 'about',
               type: MODAL_BUTTON,
               icon: 'fa fa-fw fa-info',
               label: trans('show-info', {}, 'actions'),
@@ -189,14 +190,9 @@ const PaperComponent = props => {
 
 PaperComponent.propTypes = {
   admin: T.bool.isRequired,
-  paper: T.shape({
-    id: T.string.isRequired,
-    number: T.number.isRequired,
-    score: T.number,
-    finished: T.bool.isRequired,
-    structure: T.object.isRequired,
-    answers: T.array
-  }),
+  paper: T.shape(
+    PaperTypes.propTypes
+  ),
   numbering: T.string,
   showExpectedAnswers: T.bool.isRequired,
   showStatistics: T.bool.isRequired,

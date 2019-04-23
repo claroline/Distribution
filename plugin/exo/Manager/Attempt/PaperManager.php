@@ -135,18 +135,17 @@ class PaperManager
      * Calculates the score of a Paper.
      *
      * @param Paper $paper
-     * @param float $base
      *
      * @return float
      */
-    public function calculateScore(Paper $paper, $base = null)
+    public function calculateScore(Paper $paper)
     {
         $score = $this->repository->findScore($paper);
-        if (!empty($base) && $base > 0) {
-            $scoreTotal = $this->calculateTotal($paper);
-            if ($scoreTotal && $scoreTotal !== $base) {
-                $score = ($score / $scoreTotal) * $base;
-            }
+        $scoreTotal = $this->calculateItemsTotal($paper);
+
+        $paperTotal = $this->calculateTotal($paper);
+        if ($scoreTotal !== $paperTotal) {
+            $score = ($score / $scoreTotal) * $paperTotal;
         }
 
         return $score;
@@ -161,9 +160,21 @@ class PaperManager
      */
     public function calculateTotal(Paper $paper)
     {
-        $total = 0;
+        $structure = $paper->getStructure(true);
 
-        $structure = json_decode($paper->getStructure(), true);
+        if ($structure['parameters']['totalScoreOn'] && floatval($structure['parameters']['totalScoreOn']) > 0) {
+            // paper total is a value fixed by a manager
+            return floatval($structure['parameters']['totalScoreOn']);
+        }
+
+        // paper total is the sum of all items scores
+        return $this->calculateItemsTotal($paper);
+    }
+
+    private function calculateItemsTotal(Paper $paper)
+    {
+        $total = 0;
+        $structure = $paper->getStructure(true);
         foreach ($structure['steps'] as $step) {
             foreach ($step['items'] as $itemData) {
                 if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $itemData['type'])) {
@@ -366,9 +377,7 @@ class PaperManager
      */
     public function generateResourceEvaluation(Paper $paper, $finished)
     {
-        $totalScoreOn = $paper->getExercise()->getTotalScoreOn();
-        $total = $totalScoreOn ? $totalScoreOn : $this->calculateTotal($paper);
-        $score = $this->calculateScore($paper, $total);
+        $score = $this->calculateScore($paper);
         $successScore = $paper->getExercise()->getSuccessScore();
         $data = [
             'paper' => [
@@ -381,7 +390,7 @@ class PaperManager
             if (is_null($successScore)) {
                 $status = AbstractResourceEvaluation::STATUS_COMPLETED;
             } else {
-                $percentScore = 100 === $totalScoreOn ? $score : $this->calculateScore($paper, 100);
+                $percentScore = ($score * 100) / $paper->getTotal();
                 $status = $percentScore >= $successScore ?
                     AbstractResourceEvaluation::STATUS_PASSED :
                     AbstractResourceEvaluation::STATUS_FAILED;
@@ -389,9 +398,9 @@ class PaperManager
         } else {
             $status = AbstractResourceEvaluation::STATUS_INCOMPLETE;
         }
-        $nbQuestions = 0;
-        $structure = json_decode($paper->getStructure(), true);
 
+        $nbQuestions = 0;
+        $structure = $paper->getStructure(true);
         if (isset($structure['steps'])) {
             foreach ($structure['steps'] as $step) {
                 $nbQuestions += count($step['items']); // TODO : remove content items
@@ -412,7 +421,7 @@ class PaperManager
             [
                 'status' => $status,
                 'score' => $score,
-                'scoreMax' => $total,
+                'scoreMax' => $paper->getTotal(),
                 'progression' => $nbQuestions > 0 ? floor(($nbAnswers / $nbQuestions) * 100) : null,
                 'data' => $data,
             ]

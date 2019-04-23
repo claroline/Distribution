@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Controller\Api;
+namespace UJM\ExoBundle\Controller;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\User;
@@ -15,8 +15,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Library\Options\ShowScoreAt;
-use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Manager\ExerciseManager;
 
@@ -104,7 +102,7 @@ class PaperController extends AbstractController
             array_merge($results, [
                 'data' => array_map(function (Paper $paper) {
                     return $this->paperManager->serialize($paper);
-                }, $results['data'])
+                }, $results['data']),
             ])
         );
     }

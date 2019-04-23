@@ -6,7 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 
 import {WarningIcon} from '#/plugin/exo/components/warning-icon'
 import {utils} from '#/plugin/exo/items/cloze/utils'
-import {Feedback} from '#/plugin/exo/items/components/feedback-btn'
+import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/components/button'
 import {SolutionScore} from '#/plugin/exo/components/score'
 
 const HoleInput = props =>

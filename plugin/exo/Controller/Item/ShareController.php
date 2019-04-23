@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Controller\Api\Item;
+namespace UJM\ExoBundle\Controller\Item;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use UJM\ExoBundle\Controller\Api\AbstractController;
+use UJM\ExoBundle\Controller\AbstractController;
 use UJM\ExoBundle\Manager\Item\ShareManager;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
