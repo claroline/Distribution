@@ -5,6 +5,7 @@ namespace Claroline\AudioPlayerBundle\Entity\Quiz\Misc;
 use Claroline\AudioPlayerBundle\Entity\Quiz\ItemType\WaveformQuestion;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
 
@@ -12,7 +13,7 @@ use UJM\ExoBundle\Library\Model\ScoreTrait;
  * @ORM\Entity
  * @ORM\Table(name="claro_audio_section")
  */
-class Section
+class Section implements AnswerPartInterface
 {
     /**
      * @var int

@@ -3,6 +3,7 @@
 namespace Claroline\AudioPlayerBundle\Library\Quiz\Item\Definition;
 
 use Claroline\AudioPlayerBundle\Entity\Quiz\ItemType\WaveformQuestion;
+use Claroline\AudioPlayerBundle\Entity\Quiz\Misc\Section;
 use Claroline\AudioPlayerBundle\Serializer\Quiz\WaveformQuestionSerializer;
 use Claroline\AudioPlayerBundle\Validator\Quiz\JsonSchema\Attempt\AnswerData\WaveformAnswerValidator;
 use Claroline\AudioPlayerBundle\Validator\Quiz\JsonSchema\Item\Type\WaveformQuestionValidator;
@@ -10,7 +11,9 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\Definition\AbstractDefinition;
+
 
 /**
  * Waveform question definition.
@@ -116,28 +119,32 @@ class WaveformDefinition extends AbstractDefinition
      */
     public function correctAnswer(AbstractItem $question, $answer)
     {
-//        $corrected = new CorrectedAnswer();
-//
-//        /** @var Area $area */
-//        foreach ($question->getAreas() as $area) {
-//            if (is_array($answer)) {
-//                foreach ($answer as $coords) {
-//                    if ($this->isPointInArea($area, $coords['x'], $coords['y'])) {
-//                        if ($area->getScore() > 0) {
-//                            $corrected->addExpected($area);
-//                        } else {
-//                            $corrected->addUnexpected($area);
-//                        }
-//                    } elseif ($area->getScore() > 0) {
-//                        $corrected->addMissing($area);
-//                    }
-//                }
-//            } elseif ($area->getScore() > 0) {
-//                $corrected->addMissing($area);
-//            }
-//        }
-//
-//        return $corrected;
+        $corrected = new CorrectedAnswer();
+
+        /** @var Section $section */
+        foreach ($question->getSections() as $section) {
+            if (is_array($answer)) {
+                foreach ($answer as $selection) {
+                    if ($selection['start'] >= $section->getStart() - $section->getStartTolerance() &&
+                        $selection['start'] <= $section->getStart() &&
+                        $selection['end'] >= $section->getEnd() &&
+                        $selection['end'] <= $section->getEnd() + $section->getEndTolerance()
+                    ) {
+                        if ($section->getScore() > 0) {
+                            $corrected->addExpected($section);
+                        } else {
+                            $corrected->addUnexpected($section);
+                        }
+                    } elseif ($section->getScore() > 0) {
+                        $corrected->addMissing($section);
+                    }
+                }
+            } elseif ($section->getScore() > 0) {
+                $corrected->addMissing($section);
+            }
+        }
+
+        return $corrected;
     }
 
     /**
@@ -147,52 +154,51 @@ class WaveformDefinition extends AbstractDefinition
      */
     public function expectAnswer(AbstractItem $question)
     {
-//        return array_filter($question->getAreas()->toArray(), function (Area $area) {
-//            return 0 < $area->getScore();
-//        });
-        return [];
+        return array_filter($question->getSections()->toArray(), function (Section $section) {
+            return 0 < $section->getScore();
+        });
     }
 
     /**
-     * @param AbstractItem $openQuestion
+     * @param AbstractItem $waveformQuestion
      * @param array        $answersData
      * @param int          $total
      *
      * @return array
      */
-    public function getStatistics(AbstractItem $openQuestion, array $answersData, $total)
+    public function getStatistics(AbstractItem $waveformQuestion, array $answersData, $total)
     {
-//        $areas = [];
-//
-//        foreach ($answersData as $answerData) {
-//            $areasToInc = [];
-//
-//            foreach ($answerData as $areaAnswer) {
-//                if (isset($areaAnswer['x']) && isset($areaAnswer['y'])) {
-//                    $isInArea = false;
-//
-//                    foreach ($graphicQuestion->getAreas() as $area) {
-//                        if ($this->isPointInArea($area, $areaAnswer['x'], $areaAnswer['y'])) {
-//                            $areasToInc[$area->getUuid()] = true;
-//                            $isInArea = true;
-//                        }
-//                    }
-//                    if (!$isInArea) {
-//                        $areas['_others'] = isset($areas['_others']) ? $areas['_others'] + 1 : 1;
-//                    }
-//                }
-//            }
-//            foreach (array_keys($areasToInc) as $areaId) {
-//                $areas[$areaId] = isset($areas[$areaId]) ? $areas[$areaId] + 1 : 1;
-//            }
-//        }
-//
-//        return [
-//            'areas' => $areas,
-//            'total' => $total,
-//            'unanswered' => $total - count($answersData),
-//        ];
-        return [];
+        $sections = [];
+
+        foreach ($answersData as $answerData) {
+            foreach ($answerData as $sectionAnswer) {
+                if (isset($sectionAnswer['start']) && isset($sectionAnswer['end'])) {
+                    $isInSection = false;
+
+                    foreach ($waveformQuestion->getSections() as $section) {
+                        if ($sectionAnswer['start'] >= $section->getStart() - $section->getStartTolerance() &&
+                            $sectionAnswer['start'] <= $section->getStart() &&
+                            $sectionAnswer['end'] >= $section->getEnd() &&
+                            $sectionAnswer['end'] <= $section->getEnd() + $section->getEndTolerance()
+                        ) {
+                            $sectionId = $section->getUuid();
+                            $sections[$sectionId] = isset($sections[$sectionId]) ? $sections[$sectionId] + 1 : 1;
+                            $isInSection = true;
+                            break;
+                        }
+                    }
+                    if (!$isInSection) {
+                        $sections['_others'] = isset($sections['_others']) ? $sections['_others'] + 1 : 1;
+                    }
+                }
+            }
+        }
+
+        return [
+            'section' => $sections,
+            'total' => $total,
+            'unanswered' => $total - count($answersData),
+        ];
     }
 
     /**
@@ -212,15 +218,15 @@ class WaveformDefinition extends AbstractDefinition
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
-//        $data = json_decode($answer->getData(), true);
-//        $answers = [];
-//
-//        foreach ($data as $point) {
-//            $answers[] = "[{$point['x']},{$point['y']}]";
-//        }
-//
-//        $compressor = new ArrayCompressor();
-//
-//        return [$compressor->compress($answers)];
+        $data = json_decode($answer->getData(), true);
+        $answers = [];
+
+        foreach ($data as $selection) {
+            $answers[] = "[{$selection['start']},{$selection['end']}]";
+        }
+
+        $compressor = new ArrayCompressor();
+
+        return [$compressor->compress($answers)];
     }
 }
