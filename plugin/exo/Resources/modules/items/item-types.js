@@ -12,6 +12,7 @@ import words from './words'
 import set from './set'
 import grid from './grid'
 import ordering from './ordering'
+import waveform from '#/plugin/audio-player/quiz/items/waveform'
 
 
 let registeredTypes = {}
@@ -36,7 +37,7 @@ export function registerItemType(definition) {
 
 export function registerDefaultItemTypes() {
   if (!defaultRegistered) {
-    [choice, match, cloze, graphic, open, pair, words, set, grid, ordering, selection].forEach(registerItemType)
+    [choice, match, cloze, graphic, open, pair, words, set, grid, ordering, selection, waveform].forEach(registerItemType)
     defaultRegistered = true
   }
 }
