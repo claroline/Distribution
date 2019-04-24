@@ -114,12 +114,10 @@ class OrderedToolTransfer
                 if (isset($restriction['role']['name'])) {
                     $role = $om->getRepository(Role::class)->findOneBy(['name' => $restriction['role']['name']]);
                 } else {
-                    $role = $om->getRepository(Role::class)->findOneBy(
-                [
-                  'translationKey' => $restriction['role']['translationKey'],
-                  'workspace' => $workspace->getId(),
-                ]
-              );
+                    $role = $om->getRepository(Role::class)->findOneBy([
+                        'translationKey' => $restriction['role']['translationKey'],
+                        'workspace' => $workspace->getId(),
+                    ]);
                 }
 
                 $rights = new ToolRights();

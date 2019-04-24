@@ -80,7 +80,7 @@ class PlannedNotification implements ToolImporterInterface
 
         foreach ($data['messages'] as $message) {
             $this->om->startFlushSuite();
-            $new = $this->crud->create(Message::class, $message, [Options::GENERATE_UUID]);
+            $new = $this->crud->create(Message::class, $message, [Options::REFRESH_UUID]);
             $new->setWorkspace($workspace);
             $new->emptyNotifications();
 

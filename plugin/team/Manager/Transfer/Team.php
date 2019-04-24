@@ -64,7 +64,9 @@ class Team implements ToolImporterInterface
     {
         return [
           'parameters' => $this->parametersSerializer->serialize($this->teamManager->getWorkspaceTeamParameters($workspace)),
-          'teams' => $this->finder->search(TeamEntity::class, ['filters' => ['workspace' => $workspace->getUuid()]])['data'],
+          'teams' => array_map(function (TeamEntity $team) {
+              return $this->teamSerializer->serialize($team);
+          }, $this->om->getRepository(TeamEntity::class)->findBy(['workspace' => $workspace])),
         ];
     }
 
@@ -78,7 +80,7 @@ class Team implements ToolImporterInterface
         }
 
         $parameters = new WorkspaceTeamParameters();
-        $this->parametersSerializer->deserialize($data['parameters'], $parameters);
+        $this->parametersSerializer->deserialize($data['parameters'], $parameters, [Options::REFRESH_UUID]);
         $parameters->setWorkspace($workspace);
         $this->om->persist($parameters);
         $this->om->flush();

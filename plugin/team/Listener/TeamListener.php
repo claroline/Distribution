@@ -103,21 +103,4 @@ class TeamListener
         $event->setContent($content);
         $event->stopPropagation();
     }
-
-    /**
-     * @DI\Observe("transfer.claroline_team_tool.import.before")
-     */
-    public function onImportBefore(ImportObjectEvent $event)
-    {
-        $data = $event->getData();
-        $replaced = json_encode($event->getExtra());
-
-        foreach ($data['_data']['subjects'] as $subjectsData) {
-            $uuid = Uuid::uuid4()->toString();
-            $replaced = str_replace($subjectsData['id'], $uuid, $replaced);
-        }
-
-        $data = json_decode($replaced, true);
-        $event->setExtra($data);
-    }
 }

@@ -130,7 +130,7 @@ class TeamSerializer
         // TODO : rewrite. persist/flush are not allowed in serializers
         $this->om->startFlushSuite();
 
-        if (!in_array(Options::GENERATE_UUID, $options)) {
+        if (!in_array(Options::REFRESH_UUID, $options)) {
             $team->setUuid($data['id']);
         }
 
