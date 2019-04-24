@@ -56,7 +56,7 @@ const PaperComponent = props => {
   return (
     <div className="paper">
       <h2 className="paper-title">
-        {trans('correction', {}, 'quiz')}&nbsp;{props.paper ? props.paper.number : ''}
+        {trans('attempt', {number: props.paper ? props.paper.number : 1}, 'quiz')}
 
         <Toolbar
           id={props.paper && props.paper.id}
@@ -109,7 +109,7 @@ const PaperComponent = props => {
               <div className="panel-body text-center">
                 <ScoreGauge
                   userScore={showScore ? props.paper.score : '?'}
-                  maxScore={paperSelect.paperScoreMax(props.paper)}
+                  maxScore={props.paper.total}
                   size="md"
                 />
               </div>

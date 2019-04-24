@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Manager\ExerciseManager;
 
@@ -101,7 +102,7 @@ class PaperController extends AbstractController
         return new JsonResponse(
             array_merge($results, [
                 'data' => array_map(function (Paper $paper) {
-                    return $this->paperManager->serialize($paper);
+                    return $this->paperManager->serialize($paper, [Transfer::MINIMAL]);
                 }, $results['data']),
             ])
         );

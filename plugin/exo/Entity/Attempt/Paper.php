@@ -60,9 +60,9 @@ class Paper
     private $score = null;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
-    private $total;
+    private $total = null;
 
     /**
      * Anonymize the user information when showing the paper.

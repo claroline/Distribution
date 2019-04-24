@@ -16,7 +16,7 @@ class Version20190423085702 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE ujm_paper 
-            ADD total DOUBLE PRECISION NOT NULL
+            ADD total DOUBLE PRECISION DEFAULT NULL
         ');
     }
 
