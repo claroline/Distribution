@@ -10,6 +10,7 @@ import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
 
 import {selectors as quizSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
 import {selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store/selectors'
+import {PaperCard} from '#/plugin/exo/resources/quiz/papers/components/card'
 
 const Papers = props =>
   <Fragment>
@@ -81,28 +82,33 @@ const Papers = props =>
         }, {
           name: 'score',
           label: trans('score'),
-          displayed: true,
+          displayed: props.hasScore,
+          displayable: props.hasScore,
           filterable: false,
           sortable: true,
           render: (rowData) => {
-            if (rowData.score || 0 === rowData.score) {
-              return <ScoreBox size="sm" score={rowData.score} scoreMax={paperSelectors.paperScoreMax(rowData)} />
+            if ((rowData.score || 0 === rowData.score) && rowData.total) {
+              return <ScoreBox size="sm" score={rowData.score} scoreMax={rowData.total} />
             }
 
             return '-'
           }
         }
       ]}
+
+      card={PaperCard}
     />
   </Fragment>
 
 Papers.propTypes = {
-  quizId: T.string.isRequired
+  quizId: T.string.isRequired,
+  hasScore: T.bool.isRequired
 }
 
 const ConnectedPapers = connect(
   (state) => ({
-    quizId: quizSelectors.id(state)
+    quizId: quizSelectors.id(state),
+    hasScore: true // TODO
   })
 )(Papers)
 

@@ -528,5 +528,6 @@
     "set": "Set %number%",
     "odds": "Odd",
     "odd": "Odd %number%",
-    "pairs": "Pairs"
+    "pairs": "Pairs",
+    "attempt": "Attempt #%number%"
 }

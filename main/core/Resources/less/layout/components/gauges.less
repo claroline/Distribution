@@ -179,13 +179,6 @@
         &:extend(.pie);
     }
 
-    // hide "0%" when gauge is empty
-    &.p0 {
-        > span {
-            visibility: hidden;
-        }
-    }
-
     // loop to create all needed elements automatically
     .generate-elements(@n, @i: 1) when (@i =< @n) {
         &.p@{i} {

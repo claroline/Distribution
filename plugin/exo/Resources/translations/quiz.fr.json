@@ -529,5 +529,6 @@
     "set": "Ensemble %number%",
     "odds": "Intrus",
     "odd": "Intrus %number%",
-    "pairs": "Paires"
+    "pairs": "Paires",
+    "attempt": "Tentative n°%number%"
 }

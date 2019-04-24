@@ -64,11 +64,12 @@ class PaperSerializer
             'user' => $paper->getUser() && !$paper->isAnonymized() ? $this->userSerializer->serialize($paper->getUser(), $options) : null,
             'startDate' => $paper->getStart() ? DateNormalizer::normalize($paper->getStart()) : null,
             'endDate' => $paper->getEnd() ? DateNormalizer::normalize($paper->getEnd()) : null,
+            'total' => $paper->getTotal(),
         ];
 
         // Adds detail information
         if (!in_array(Transfer::MINIMAL, $options)) {
-            $serialized['structure'] = json_decode($paper->getStructure(), true);
+            $serialized['structure'] = $paper->getStructure(true);
             $serialized['answers'] = $this->serializeAnswers($paper, $options);
         }
 
@@ -130,7 +131,7 @@ class PaperSerializer
     {
         // We need to inject the hints available in the structure
         $options['hints'] = [];
-        $decoded = json_decode($paper->getStructure(), true);
+        $decoded = $paper->getStructure(true);
 
         foreach ($decoded['steps'] as $step) {
             foreach ($step['items'] as $item) {

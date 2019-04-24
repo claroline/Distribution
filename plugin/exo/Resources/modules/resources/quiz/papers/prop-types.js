@@ -1,5 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 
+import {Quiz} from '#/plugin/exo/resources/quiz/prop-types'
+
 const Paper = {
   propTypes: {
     id: T.string.isRequired,
@@ -13,7 +15,9 @@ const Paper = {
     finished: T.bool.isRequired,
 
     // not available in minimal mode (aka in list)
-    structure: T.object,
+    structure: T.shape(
+      Quiz.propTypes
+    ),
     answers: T.array
   },
 

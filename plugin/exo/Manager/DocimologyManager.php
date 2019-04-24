@@ -6,6 +6,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Manager\Item\ItemManager;
@@ -203,13 +204,14 @@ class DocimologyManager
 
         /** @var Paper $paper */
         foreach ($papers as $paper) {
-            // base success compution on paper structure
-            $structure = json_decode($paper->getStructure(), true);
+            // base success computation on paper structure
+            $structure = $paper->getStructure(true);
 
             foreach ($structure['steps'] as $step) {
                 foreach ($step['items'] as $item) {
-                    // since the compution is based on the structure the same item can come several times
+                    // since the computation is based on the structure the same item can come several times
                     if (!array_key_exists($item['id'], $questionStatistics)) {
+                        /** @var Item $itemEntity */
                         $itemEntity = $itemRepository->findOneBy(['uuid' => $item['id']]);
                         $questionStats = $this->itemManager->getStatistics($itemEntity, $exercise);
                         $questionStatistics[$item['id']] = [
@@ -257,14 +259,14 @@ class DocimologyManager
 
         /** @var Paper $paper */
         foreach ($papers as $paper) {
-            // base success compution on paper structure
-            $structure = json_decode($paper->getStructure(), true);
+            // base success computation on paper structure
+            $structure = $paper->getStructure(true);
 
             foreach ($structure['steps'] as $step) {
                 foreach (array_filter($step['items'], function ($item) {
                     return ItemType::isSupported($item['type']);
                 }) as $item) {
-                    // since the compution is based on the structure the same item can come several times
+                    // since the computation is based on the structure the same item can come several times
                     if (!array_key_exists($item['id'], $discriminationCoef)) {
                         $itemEntity = $itemRepository->findOneBy(['uuid' => $item['id']]);
                         // set questions scores
