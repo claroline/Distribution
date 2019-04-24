@@ -49,7 +49,7 @@ const AttemptEndComponent = props => {
 
           {props.endNavigation &&
             <Toolbar
-              buttoname="btn btn-block btn-emphasis"
+              buttonName="btn btn-block btn-emphasis"
               toolbar="restart correction statistics home"
               actions={[
                 {

@@ -35,7 +35,7 @@ const EditorStep = props => {
           <Toolbar
             id={props.id}
             className="h-toolbar"
-            buttoname="btn"
+            buttonName="btn"
             tooltip="bottom"
             toolbar="more"
             size="sm"

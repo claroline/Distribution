@@ -10,46 +10,59 @@ import{CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 class Timer extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       remainingTime: props.totalTime,
       timer: null
     }
+
     this.updateTimer = this.updateTimer.bind(this)
+    this.formatTime = this.formatTime.bind(this)
   }
 
   componentDidMount() {
-    this.setState({timer: setInterval(this.updateTimer, 1000)})
+    this.timer = setInterval(this.updateTimer, 1000)
   }
 
   componentWillUnmount() {
-    if (this.state.timer) {
-      clearInterval(this.state.timer)
+    if (this.timer) {
+      clearInterval(this.timer)
     }
   }
 
   updateTimer() {
+    //console.log(this.props.startDate)
+
     const elapsedTime = computeElapsedTime(this.props.startDate)
     const diff = this.props.totalTime - elapsedTime
     const remainingTime = diff > 0 ? diff : 0
 
-    if (this.state.remainingTime > 0) {
+    /*console.log('elapsed')
+    console.log(elapsedTime)
+    console.log('diff')
+    console.log(diff)
+    console.log('remainingTime')
+    console.log(remainingTime)*/
+
+    if (remainingTime > 0) {
       this.setState({
         remainingTime: remainingTime
       })
     } else {
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
+
       if (this.props.onTimeOver) {
         this.props.onTimeOver()
-      }
-      if (this.state.timer) {
-        clearInterval(this.state.timer)
       }
     }
   }
 
-
-  formatTime(time) {
+  formatTime() {
     const endTime = moment().hours(0).minutes(0).seconds(0).milliseconds(0)
-    return endTime.add(time, 'seconds').format('HH:mm:ss')
+
+    return endTime.add(this.state.remainingTime, 'seconds').format('HH:mm:ss')
   }
 
   render() {
@@ -58,7 +71,7 @@ class Timer extends Component {
         className="timer-component"
         value={this.state.remainingTime}
         total={this.props.totalTime}
-        displayValue={() => this.formatTime(this.state.remainingTime)}
+        displayValue={this.formatTime}
         type={this.props.type}
         width={70}
         height={70}

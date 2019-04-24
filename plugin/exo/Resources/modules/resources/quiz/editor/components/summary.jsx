@@ -14,7 +14,7 @@ const StepLink = props =>
       <Toolbar
         id={props.id}
         className="step-toolbar"
-        buttoname="btn-link"
+        buttonName="btn-link"
         tooltip="bottom"
         toolbar="more"
         actions={props.actions}

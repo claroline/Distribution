@@ -3,8 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
 import {getTimeDiff} from '#/main/app/intl/date'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
 
@@ -69,7 +69,7 @@ const Papers = props =>
           sortable: false,
           calculated: (rowData) => {
             if (rowData.startDate && rowData.endDate) {
-              return `${Math.round(getTimeDiff(rowData.startDate, rowData.endDate))}`
+              return getTimeDiff(rowData.startDate, rowData.endDate)
             }
 
             return undefined
