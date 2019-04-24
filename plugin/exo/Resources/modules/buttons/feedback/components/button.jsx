@@ -25,6 +25,7 @@ const FeedbackButton = props => {
   return (
     <Button
       {...omit(props, 'feedback')}
+      id={`feedback-${props.id}`}
       className={classes('btn-link btn-feedback', props.className)}
       type={POPOVER_BUTTON}
       icon="fa fa-fw fa-comments-o"
@@ -40,7 +41,7 @@ const FeedbackButton = props => {
 }
 
 FeedbackButton.propTypes = {
-  id: T.string.isRequired,
+  id: T.oneOfType([T.string, T.number]).isRequired,
   feedback: T.string
 }
 

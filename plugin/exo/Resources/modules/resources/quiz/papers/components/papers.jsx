@@ -16,13 +16,14 @@ const Papers = props =>
   <Fragment>
     <h3 className="h2">
       {trans('results', {}, 'quiz')}
+      <small style={{display: 'block', marginTop: '5px'}}>{trans('all_attempts', {}, 'quiz')}</small>
     </h3>
 
     <ListData
       name={paperSelectors.LIST_NAME}
       primaryAction={(row) => ({
         type: LINK_BUTTON,
-        label: trans('open'),
+        label: trans('open', {}, 'actions'),
         target: `/papers/${row.id}`
       })}
       fetch={{
@@ -34,7 +35,8 @@ const Papers = props =>
           name: 'number',
           label: '#',
           displayed: true,
-          type: 'number'
+          type: 'string',
+          calculated: (rowData) => trans('attempt', {number: rowData.number}, 'quiz')
         }, {
           name: 'user',
           label: trans('user'),

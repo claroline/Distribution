@@ -31,18 +31,9 @@ class Timer extends Component {
   }
 
   updateTimer() {
-    //console.log(this.props.startDate)
-
     const elapsedTime = computeElapsedTime(this.props.startDate)
     const diff = this.props.totalTime - elapsedTime
     const remainingTime = diff > 0 ? diff : 0
-
-    /*console.log('elapsed')
-    console.log(elapsedTime)
-    console.log('diff')
-    console.log(diff)
-    console.log('remainingTime')
-    console.log(remainingTime)*/
 
     if (remainingTime > 0) {
       this.setState({

@@ -11,7 +11,7 @@ import {
   GaugeText
 } from '#/main/core/layout/gauge/components/gauge'
 
-const CountGauge = props => {
+const ScoreGauge = props => {
   const radius = Math.min(parseInt(props.width), parseInt(props.height)) / 2
   const fillPercent = props.total ? (props.value / props.total) * 100 : 100
 
@@ -21,7 +21,7 @@ const CountGauge = props => {
 
   return (
     <GaugeContainer
-      className={classes('count-gauge', props.className)}
+      className={classes('score-gauge', props.className)}
       type={props.type}
       width={parseInt(props.width)}
       height={parseInt(props.height)}
@@ -41,16 +41,25 @@ const CountGauge = props => {
         margin={fillCircleMargin}
         radius={radius}
         preFilled={props.preFilled}
-        unit={props.unit}
       />
+
+      <GaugeText
+        className="gauge-text"
+        value={props.total}
+        displayValue={props.displayValue}
+        margin={fillCircleMargin}
+        radius={radius}
+        preFilled={props.preFilled}
+      />
+
     </GaugeContainer>
   )
 }
 
-implementPropTypes(CountGauge, GaugeTypes, {
+implementPropTypes(ScoreGauge, GaugeTypes, {
   total: T.number.isRequired
 })
 
 export {
-  CountGauge
+  ScoreGauge
 }

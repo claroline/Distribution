@@ -10,6 +10,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Timer} from '#/main/core/layout/gauge/components/timer'
+import {ContentLoader} from '#/main/app/content/components/loader'
 import {ProgressBar} from '#/main/core/layout/components/progress-bar'
 import {ScoreGauge} from '#/main/core/layout/evaluation/components/score-gauge'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
@@ -156,7 +157,7 @@ class PlayerComponent extends Component {
         }
 
         {this.state.fetching &&
-          <span>{trans('attempt_loading', {}, 'quiz')}</span>
+          <ContentLoader />
         }
 
         {(!this.state.fetching && this.state.error) &&
