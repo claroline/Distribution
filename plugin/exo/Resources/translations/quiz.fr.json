@@ -468,7 +468,6 @@
     "show_end_navigation_help": "Si coché, les raccourcis 'Voir mes réponses' et 'Recommencer' seront affichés sur la page de fin.",
     "show_end_confirm": "Confirmer la soumission des tentatives",
     "show_end_confirm_help": "Si coché, une demande de confirmation sera proposée aux utilisateurs avant de terminer le questionnaire.",
-    "attempt_loading": "Veuillez patienter pendant le chargement du questionnaire...",
     "attempt_not_available": "Vous ne pouvez pas répondre à ce questionnaire.",
     "end_page": "Page de fin",
     "shuffle_answers": "Mélanger les choix de réponse",
@@ -530,5 +529,8 @@
     "odds": "Intrus",
     "odd": "Intrus %number%",
     "pairs": "Paires",
-    "attempt": "Tentative n°%number%"
+    "attempt": "Tentative n°%number%",
+    "user_attempt": "Tentative n°%number% de %userName%",
+    "all_attempts": "Toutes les tentatives",
+    "attempt_loading": "Chargement de la tentative en cours..."
 }

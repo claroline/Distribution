@@ -11,6 +11,7 @@ actions.addPaper = makeActionCreator(PAPER_ADD, 'paper')
 
 actions.loadCurrentPaper = (quizId, paperId) => ({
   [API_REQUEST]: {
+    silent: true,
     url: ['exercise_paper_get', {
       exerciseId: quizId,
       id: paperId

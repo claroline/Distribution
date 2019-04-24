@@ -144,6 +144,7 @@ const surveyType = {
   },
   requiredProps: {
     parameters: {
+      maxAttempts: 1,
       anonymizeAttempts: true,
       hasExpectedAnswers: false,
       showFeedback: false,

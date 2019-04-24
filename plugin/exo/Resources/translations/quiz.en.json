@@ -467,7 +467,6 @@
     "show_end_navigation_help": "If checked, the shortcuts 'Show my answers' and 'Restart' will be displayed.",
     "show_end_confirm": "Confirm attempts submissions",
     "show_end_confirm_help": "If checked, a confirmation will be displayed to users before completing the quiz.",
-    "attempt_loading": "Please wait while we load the quiz...",
     "attempt_not_available": "You can not pass the quiz.",
     "end_page": "End page",
     "shuffle_answers": "Shuffle the answer choices",
@@ -529,5 +528,8 @@
     "odds": "Odd",
     "odd": "Odd %number%",
     "pairs": "Pairs",
-    "attempt": "Attempt #%number%"
+    "attempt": "Attempt #%number%",
+    "user_attempt": "Attempt #%number% of %userName%",
+    "all_attempts": "All attempts",
+    "attempt_loading": "Loading the attempt ..."
 }
