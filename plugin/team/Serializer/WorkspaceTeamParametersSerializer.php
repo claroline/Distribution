@@ -68,7 +68,6 @@ class WorkspaceTeamParametersSerializer
     public function deserialize($data, WorkspaceTeamParameters $parameters, array $options = [])
     {
         if (!in_array(Options::REFRESH_UUID, $options)) {
-            var_dump('set uuid');
             $parameters->setUuid($data['id']);
         }
 

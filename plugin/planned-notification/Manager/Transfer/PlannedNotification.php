@@ -61,35 +61,12 @@ class PlannedNotification implements ToolImporterInterface
     }
 
     public function deserialize(array $data, Workspace $workspace, array $options, FileBag $bag)
-    {/*
-        foreach ($data['planned'] as $planned) {
-            $new = $this->crud->copy($old, [Options::GENERATE_UUID]);
-            $new->setWorkspace($workspace);
-            $new->emptyRoles();
-
-            foreach ($old->getRoles() as $role) {
-                foreach ($workspace->getRoles() as $wsRole) {
-                    if ($wsRole->getTranslationKey() === $role->getTranslationKey()) {
-                        $new->addRole($wsRole);
-                    }
-                }
-            }
-            $newNotifs[$old->getId()] = $new;
-            $this->om->persist($new);
-        }*/
-
+    {
         foreach ($data['messages'] as $message) {
             $this->om->startFlushSuite();
             $new = $this->crud->create(Message::class, $message, [Options::REFRESH_UUID]);
             $new->setWorkspace($workspace);
             $new->emptyNotifications();
-
-            /*
-                        foreach ($old->getNotifications() as $oldNotification) {
-                            if (isset($newNotifs[$oldNotification->getId()])) {
-                                $new->addNotification($newNotifs[$oldNotification->getId()]);
-                            }
-                        }*/
 
             $this->om->persist($new);
             $this->om->endFlushSuite();
