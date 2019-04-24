@@ -5,7 +5,7 @@ import classes from 'classnames'
 import Panel from 'react-bootstrap/lib/Panel'
 
 import {trans} from '#/main/app/intl/translation'
-import {displayDate, getTimeDiff} from '#/main/app/intl/date'
+import {displayDate, displayDuration, getTimeDiff} from '#/main/app/intl/date'
 import {hasPermission} from '#/main/app/security'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
@@ -127,7 +127,7 @@ const PaperComponent = props => {
 
                 <li className="list-group-item">
                   {trans('duration')}
-                  <span className="value">{props.paper.endDate ? Math.round(getTimeDiff(props.paper.startDate, props.paper.endDate)) : '-'}</span>
+                  <span className="value">{props.paper.endDate ? displayDuration(getTimeDiff(props.paper.startDate, props.paper.endDate)) : '-'}</span>
                 </li>
               </ul>
             </div>
