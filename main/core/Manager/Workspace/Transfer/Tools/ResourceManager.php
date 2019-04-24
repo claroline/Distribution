@@ -123,7 +123,7 @@ class ResourceManager
             $node->setWorkspace($workspace);
             $this->serializer->get(ResourceNode::class)->deserialize(['rights' => $rights], $node);
 
-            if ($this->tokenStorage->getToken()->getUser() instanceof User) {
+            if ($this->tokenStorage->getToken() && $this->tokenStorage->getToken()->getUser() instanceof User) {
                 $node->setCreator($this->tokenStorage->getToken()->getUser());
             } else {
                 $creator = $this->userManager->getDefaultClarolineAdmin();
