@@ -160,4 +160,11 @@ class HomeTabFinder extends AbstractFinder
 
         return $qb;
     }
+
+    public function getFilters()
+    {
+        return [
+            '$defaults' => [],
+        ];
+    }
 }
