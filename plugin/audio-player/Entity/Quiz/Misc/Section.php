@@ -31,31 +31,31 @@ class Section implements AnswerPartInterface
     use FeedbackTrait;
 
     /**
-     * @ORM\Column(name="section_start", type="integer", nullable=false)
+     * @ORM\Column(name="section_start", type="float", nullable=false)
      */
     private $start;
 
     /**
-     * @ORM\Column(name="section_end", type="integer", nullable=false)
+     * @ORM\Column(name="section_end", type="float", nullable=false)
      */
     private $end;
 
     /**
-     * @ORM\Column(name="start_tolerance", type="integer", nullable=false)
+     * @ORM\Column(name="start_tolerance", type="float", nullable=false)
      */
     private $startTolerance = 0;
 
     /**
-     * @ORM\Column(name="end_tolerance", type="integer", nullable=false)
+     * @ORM\Column(name="end_tolerance", type="float", nullable=false)
      */
     private $endTolerance = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\AudioPlayerBundle\Entity\Quiz\ItemType\WaveformQuestion", inversedBy="areas")
-     * @ORM\JoinColumn(name="interaction_graphic_id", referencedColumnName="id")
-     */
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\AudioPlayerBundle\Entity\Quiz\ItemType\WaveformQuestion")
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\AudioPlayerBundle\Entity\Quiz\ItemType\WaveformQuestion",
+     *     inversedBy="sections",
+     *     cascade={"persist"}
+     * )
      * @ORM\JoinColumn(name="waveform_id", onDelete="CASCADE")
      */
     private $waveform;
@@ -74,7 +74,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getStart()
     {
@@ -82,7 +82,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @param int $start
+     * @param float $start
      */
     public function setStart($start)
     {
@@ -90,7 +90,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getEnd()
     {
@@ -98,7 +98,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @param int $end
+     * @param float $end
      */
     public function setEnd($end)
     {
@@ -106,7 +106,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getStartTolerance()
     {
@@ -114,7 +114,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @param int $startTolerance
+     * @param float $startTolerance
      */
     public function setStartTolerance($startTolerance)
     {
@@ -122,7 +122,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getEndTolerance()
     {
@@ -130,7 +130,7 @@ class Section implements AnswerPartInterface
     }
 
     /**
-     * @param int $endTolerance
+     * @param float $endTolerance
      */
     public function setEndTolerance($endTolerance)
     {

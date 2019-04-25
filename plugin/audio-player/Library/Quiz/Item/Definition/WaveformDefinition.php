@@ -14,7 +14,6 @@ use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\Definition\AbstractDefinition;
 
-
 /**
  * Waveform question definition.
  *

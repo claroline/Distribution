@@ -1,11 +1,24 @@
 import {PropTypes as T} from 'prop-types'
 
-import {SCORE_MANUAL} from '#/plugin/exo/quiz/enums'
+const Section = {
+  propTypes: {
+    id: T.string.isRequired,
+    regionId: T.string,
+    start: T.number.isRequired,
+    end: T.number.isRequired,
+    startTolerance: T.number.isRequired,
+    endTolerance: T.number.isRequired
+  }
+}
 
 const WaveformItem = {
   propTypes: {
     url: T.string,
-    solutions: T.array
+    solutions: T.arrayOf(T.shape({
+      section: T.shape(Section.propTypes),
+      score: T.number,
+      feedback: T.string
+    }))
   },
   defaultProps: {
     url: null,
@@ -14,5 +27,6 @@ const WaveformItem = {
 }
 
 export {
+  Section,
   WaveformItem
 }

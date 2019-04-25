@@ -11,7 +11,7 @@ use UJM\ExoBundle\Entity\ItemType\AbstractItem;
  * A Waveform question.
  *
  * @ORM\Entity
- * @ORM\Table(name="claro_audio_player_interaction_waveform")
+ * @ORM\Table(name="claro_audio_interaction_waveform")
  */
 class WaveformQuestion extends AbstractItem
 {
@@ -23,7 +23,9 @@ class WaveformQuestion extends AbstractItem
     /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\AudioPlayerBundle\Entity\Quiz\Misc\Section",
-     *     mappedBy="waveform"
+     *     mappedBy="waveform",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      * )
      */
     protected $sections;
