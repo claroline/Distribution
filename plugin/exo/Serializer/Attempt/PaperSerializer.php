@@ -7,6 +7,7 @@ use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
+use UJM\ExoBundle\Library\Options\Score;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Serializer\UserSerializer;
 
@@ -75,7 +76,11 @@ class PaperSerializer
 
         // Adds user score
         if (in_array(Transfer::INCLUDE_USER_SCORE, $options)) {
-            $serialized['score'] = $paper->getScore();
+            $score = $paper->getScore();
+            if ($score) {
+                $score = round($score, Score::PRECISION);
+            }
+            $serialized['score'] = $score;
         }
 
         return $serialized;

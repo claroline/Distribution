@@ -64,14 +64,16 @@ class Timer extends Component {
         total={this.props.totalTime}
         displayValue={this.formatTime}
         type={this.props.type}
-        width={70}
-        height={70}
+        width={this.props.width}
+        height={this.props.height}
       />
     )
   }
 }
 
 Timer.propTypes = {
+  width: T.number,
+  height: T.number,
   totalTime: T.number.isRequired,
   startDate: T.string.isRequired,
   onTimeOver: T.func,

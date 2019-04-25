@@ -12,7 +12,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Timer} from '#/main/core/layout/gauge/components/timer'
 import {ContentLoader} from '#/main/app/content/components/loader'
 import {ProgressBar} from '#/main/core/layout/components/progress-bar'
-import {ScoreGauge} from '#/main/core/layout/evaluation/components/score-gauge'
+import {ScoreGauge} from '#/main/core/layout/gauge/components/score'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 import {trans} from '#/main/app/intl/translation'
@@ -134,22 +134,26 @@ class PlayerComponent extends Component {
             {this.props.isProgressionDisplayed && this.props.paper && this.props.paper.structure && this.props.allAnswers && papersSelect.paperItemsCount(this.props.paper) &&
               <div className="quiz-progression-container">
                 <ScoreGauge
-                  userScore={Object.values(this.props.allAnswers).filter(a => a.data && a.data.length > 0).length}
-                  maxScore={papersSelect.paperItemsCount(this.props.paper)}
-                  size="sm"
+                  type="user"
+                  value={Object.values(this.props.allAnswers).filter(a => a.data && a.data.length > 0).length}
+                  total={papersSelect.paperItemsCount(this.props.paper)}
+                  width={70}
+                  height={70}
                 />
               </div>
             }
             {this.props.isTimed && this.props.duration > 0 && this.props.paper.startDate &&
               <div className="timer-container">
                 <Timer
+                  type="user"
                   totalTime={this.props.duration}
                   startDate={this.props.paper.startDate}
-                  type="user"
                   onTimeOver={() => {
                     this.props.finish(this.props.quizId, this.props.paper, this.props.answers, this.props.showFeedback, false, this.props.history.push)
                     this.props.showTimeOverMessage()
                   }}
+                  width={70}
+                  height={70}
                 />
               </div>
             }

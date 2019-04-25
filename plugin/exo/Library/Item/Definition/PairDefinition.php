@@ -192,6 +192,13 @@ class PairDefinition extends AbstractDefinition
         return array_merge($question->getRows()->toArray(), $question->getOddItems()->toArray());
     }
 
+    /**
+     * @param PairQuestion $pairQuestion
+     * @param array        $answersData
+     * @param int          $total
+     *
+     * @return array
+     */
     public function getStatistics(AbstractItem $pairQuestion, array $answersData, $total)
     {
         $paired = [];

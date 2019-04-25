@@ -8,7 +8,7 @@ import {Toolbar} from '#/main/app/action/components/toolbar'
 import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {ScoreGauge} from '#/main/core/layout/evaluation/components/score-gauge'
+import {ScoreGauge} from '#/main/core/layout/gauge/components/score'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 import {select as playerSelect} from '#/plugin/exo/quiz/player/selectors'
@@ -32,8 +32,12 @@ const AttemptEndComponent = props => {
         {showScore &&
           <div className="col-md-3 text-center">
             <ScoreGauge
-              userScore={paperUtils.computeScore(props.paper, answers)}
-              maxScore={paperSelectors.paperScoreMax(props.paper)}
+              type="user"
+              value={paperUtils.computeScore(props.paper, answers)}
+              total={paperSelectors.paperScoreMax(props.paper)}
+              width={140}
+              height={140}
+              displayValue={value => undefined === value || null === value ? '?' : value+''}
             />
           </div>
         }
