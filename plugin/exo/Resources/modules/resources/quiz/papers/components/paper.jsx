@@ -15,7 +15,7 @@ import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {UserMicro} from '#/main/core/user/components/micro'
 import {displayUsername} from '#/main/core/user/utils'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
-import {ScoreGauge} from '#/main/core/layout/evaluation/components/score-gauge'
+import {ScoreGauge} from '#/main/core/layout/gauge/components/score'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 import {calculateTotal} from '#/plugin/exo/scores'
@@ -184,9 +184,12 @@ const PaperComponent = props =>
 
           <div className="panel-body text-center">
             <ScoreGauge
-              userScore={get(props.paper, 'score', '?')}
-              maxScore={get(props.paper, 'total', '?')}
-              size="md"
+              type="user"
+              value={get(props.paper, 'score')}
+              total={get(props.paper, 'total')}
+              width={140}
+              height={140}
+              displayValue={value => undefined === value || null === value ? '?' : value+''}
             />
           </div>
 

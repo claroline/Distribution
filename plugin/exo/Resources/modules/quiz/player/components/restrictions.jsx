@@ -5,7 +5,7 @@ import {trans} from '#/main/app/intl/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
-import {ScoreGauge} from '#/main/core/layout/evaluation/components/score-gauge'
+import {ScoreGauge} from '#/main/core/layout/gauge/components/score'
 
 import {utils as paperUtils} from '#/plugin/exo/resources/quiz/papers/utils'
 import {selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store/selectors'
@@ -23,8 +23,12 @@ const PlayerRestrictions = props => {
         {showScore &&
           <div className="col-md-3 text-center">
             <ScoreGauge
-              userScore={paperUtils.computeScore(props.lastAttempt, answers)}
-              maxScore={paperSelectors.paperScoreMax(props.lastAttempt)}
+              type="user"
+              value={paperUtils.computeScore(props.lastAttempt, answers)}
+              total={paperSelectors.paperScoreMax(props.lastAttempt)}
+              width={140}
+              height={140}
+              displayValue={value => undefined === value || null === value ? '?' : value+''}
             />
           </div>
         }

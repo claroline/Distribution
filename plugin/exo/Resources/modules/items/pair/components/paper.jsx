@@ -205,8 +205,8 @@ PairPaper.propTypes = {
   showYours: T.bool.isRequired,
   showStats: T.bool.isRequired,
   stats: T.shape({
-    unpaired: T.object,
-    paired: T.object,
+    unpaired: T.oneOfType([T.object, T.array]),
+    paired: T.oneOfType([T.object, T.array]),
     unanswered: T.number,
     total: T.number
   })
