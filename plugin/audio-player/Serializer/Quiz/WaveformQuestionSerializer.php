@@ -135,13 +135,19 @@ class WaveformQuestionSerializer
      */
     private function serializeSection(Section $section)
     {
-        return [
+        $data = [
             'id' => $section->getUuid(),
             'start' => $section->getStart(),
             'end' => $section->getEnd(),
             'startTolerance' => $section->getStartTolerance(),
             'endTolerance' => $section->getEndTolerance(),
         ];
+
+        if ($section->getColor()) {
+            $data['color'] = $section->getColor();
+        }
+
+        return $data;
     }
 
     /**
@@ -156,5 +162,6 @@ class WaveformQuestionSerializer
         $this->sipe('end', 'setEnd', $data, $section);
         $this->sipe('startTolerance', 'setStartTolerance', $data, $section);
         $this->sipe('endTolerance', 'setEndTolerance', $data, $section);
+        $this->sipe('color', 'setColor', $data, $section);
     }
 }

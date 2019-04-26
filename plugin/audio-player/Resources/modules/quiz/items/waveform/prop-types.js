@@ -7,7 +7,8 @@ const Section = {
     start: T.number.isRequired,
     end: T.number.isRequired,
     startTolerance: T.number.isRequired,
-    endTolerance: T.number.isRequired
+    endTolerance: T.number.isRequired,
+    color: T.string
   }
 }
 

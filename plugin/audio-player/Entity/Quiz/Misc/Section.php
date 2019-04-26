@@ -51,6 +51,11 @@ class Section implements AnswerPartInterface
     private $endTolerance = 0;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $color;
+
+    /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\AudioPlayerBundle\Entity\Quiz\ItemType\WaveformQuestion",
      *     inversedBy="sections",
@@ -135,6 +140,22 @@ class Section implements AnswerPartInterface
     public function setEndTolerance($endTolerance)
     {
         $this->endTolerance = $endTolerance;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
     }
 
     /**

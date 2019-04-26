@@ -253,7 +253,8 @@ Waveform.propTypes = {
     id: T.string.isRequired,
     regionId: T.string,
     start: T.number.isRequired,
-    end: T.number.isRequired
+    end: T.number.isRequired,
+    color: T.string
   })),
   maxRegions: T.number,
   eventsCallbacks: T.object
