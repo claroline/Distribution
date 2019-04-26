@@ -66,7 +66,7 @@ class WaveformQuestionSerializer
      */
     private function serializeSolutions(WaveformQuestion $waveformQuestion)
     {
-        return array_map(function (Section $section) {
+        return array_values(array_map(function (Section $section) {
             $solutionData = [
                 'section' => $this->serializeSection($section),
                 'score' => $section->getScore(),
@@ -77,7 +77,7 @@ class WaveformQuestionSerializer
             }
 
             return $solutionData;
-        }, $waveformQuestion->getSections()->toArray());
+        }, $waveformQuestion->getSections()->toArray()));
     }
 
     /**

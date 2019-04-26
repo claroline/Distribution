@@ -149,6 +149,7 @@ class WaveformComponent extends Component {
           <Waveform
             url={asset(this.props.item.url)}
             regions={this.props.item.solutions.map(s => s.section)}
+            selectedRegion={this.state.currentSection}
             eventsCallbacks={{
               // 'region-created': (region) => {
               //   console.log('created')
@@ -162,11 +163,9 @@ class WaveformComponent extends Component {
 
                 if (!this.isOverlayed(region.start, region.end, regionIdx)) {
                   if (-1 < regionIdx) {
-                    newSolutions.forEach(s => s.section.color = 'rgba(0, 0, 0, 0.1)')
                     newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
                       start: region.start,
-                      end: region.end,
-                      color: 'rgba(0, 0, 0, 0.3)'
+                      end: region.end
                     })
                     this.setState({currentSection: newSolutions[regionIdx]['section']['id']})
                   } else {
@@ -176,14 +175,13 @@ class WaveformComponent extends Component {
                         regionId: region.id,
                         start: region.start,
                         end: region.end,
-                        startTolerance: 0,
-                        endTolerance: 0
+                        startTolerance: 1,
+                        endTolerance: 1
                       },
                       score: 1
                     })
                   }
                 } else {
-                  newSolutions.forEach(s => s.section.color = 'rgba(0, 0, 0, 0.1)')
                   this.setState({currentSection: null})
                 }
                 this.props.update('solutions', newSolutions)
@@ -210,14 +208,12 @@ class WaveformComponent extends Component {
                 e.stopPropagation()
                 e.preventDefault()
                 const newSolutions = cloneDeep(this.props.item.solutions)
-                newSolutions.forEach(s => s.section.color = 'rgba(0, 0, 0, 0.1)')
                 const current = newSolutions.find(s => s.section.id === region.id || s.section.regionId === region.id)
 
                 if (current) {
                   if (current.section.id === this.state.currentSection) {
                     this.setState({currentSection: null})
                   } else {
-                    current.section.color = 'rgba(0, 0, 0, 0.3)'
                     this.setState({currentSection: current.section.id})
                   }
                 }
@@ -245,10 +241,9 @@ class WaveformComponent extends Component {
               const idx = newSolutions.findIndex(ns => ns.section.id === s.section.id)
 
               if (-1 < idx) {
-                newSolutions.splice(idx, 1)
-                newSolutions.forEach(s => s.section.color = 'rgba(0, 0, 0, 0.1)')
-                this.props.update('solutions', newSolutions)
                 this.setState({currentSection: null})
+                newSolutions.splice(idx, 1)
+                this.props.update('solutions', newSolutions)
               }
             }}
           />

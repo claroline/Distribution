@@ -113,7 +113,25 @@ class Waveform extends Component {
 
         if (canvas.getAttribute('width')) {
           // Initialize existing regions
-          this.props.regions.forEach(r => this.state.wavesurfer.addRegion(r))
+          this.props.regions.forEach(r => {
+            this.state.wavesurfer.addRegion(r)
+            // const startTolerance = {
+            //   id: `start-${r.id}`,
+            //   start: r.start - r.startTolerance,
+            //   end: r.start,
+            //   drag: false,
+            //   color: 'blue'
+            // }
+            // const endTolerance = {
+            //   id: `end-${r.id}`,
+            //   start: r.end,
+            //   end: r.end + r.endTolerance,
+            //   drag: false,
+            //   color: 'blue'
+            // }
+            // this.state.wavesurfer.addRegion(startTolerance)
+            // this.state.wavesurfer.addRegion(endTolerance)
+          })
           clearInterval(refreshInterval)
         } {
           this.state.wavesurfer.drawBuffer()
@@ -133,13 +151,25 @@ class Waveform extends Component {
         const propRegion = this.props.regions.find(r => r.id === region.id || r.regionId === region.id)
 
         if (propRegion) {
-          region.update(propRegion)
+          if (propRegion.id === region.id) {
+            region.update({
+              start: propRegion.start,
+              end: propRegion.end,
+              color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'
+            })
+          } else {
+            region.remove()
+            this.state.wavesurfer.addRegion(Object.assign(
+              {},
+              propRegion,
+              {color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'}
+            ))
+          }
         } else {
           // Remove deleted regions
           region.remove()
         }
       })
-
     }
   }
 
@@ -256,6 +286,7 @@ Waveform.propTypes = {
     end: T.number.isRequired,
     color: T.string
   })),
+  selectedRegion: T.string,
   maxRegions: T.number,
   eventsCallbacks: T.object
 }
