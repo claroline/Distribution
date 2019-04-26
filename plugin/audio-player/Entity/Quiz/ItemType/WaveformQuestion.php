@@ -21,6 +21,11 @@ class WaveformQuestion extends AbstractItem
     private $url;
 
     /**
+     * @ORM\Column(name="tolerance", type="float")
+     */
+    private $tolerance = 1;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\AudioPlayerBundle\Entity\Quiz\Misc\Section",
      *     mappedBy="waveform",
@@ -46,6 +51,16 @@ class WaveformQuestion extends AbstractItem
     public function setUrl($url)
     {
         $this->url = $url;
+    }
+
+    public function getTolerance()
+    {
+        return $this->tolerance;
+    }
+
+    public function setTolerance($tolerance)
+    {
+        $this->tolerance = $tolerance;
     }
 
     public function getSections()

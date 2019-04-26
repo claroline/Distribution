@@ -131,9 +131,9 @@ class WaveformComponent extends Component {
 
     this.props.item.solutions.forEach((s, idx) => {
       if (idx !== index && (
-        (start >= s.section.start && start <= s.section.end) ||
-        (end >= s.section.start && end <= s.section.end) ||
-        (start <= s.section.start && end >= s.section.end)
+        (start >= s.section.start - s.section.startTolerance && start <= s.section.end + s.section.endTolerance) ||
+        (end >= s.section.start - s.section.startTolerance && end <= s.section.end + s.section.endTolerance) ||
+        (start <= s.section.start - s.section.startTolerance && end >= s.section.end + s.section.endTolerance)
       )) {
         overlayed = true
       }
@@ -159,14 +159,49 @@ class WaveformComponent extends Component {
               // },
               'region-update-end': (region) => {
                 const newSolutions = cloneDeep(this.props.item.solutions)
-                const regionIdx = newSolutions.findIndex(r => r.section.id === region.id || r.section.regionId === region.id)
+                let regionId = region.id
+                let start = region.start
+                let end = region.end
+                const isStart = -1 < regionId.indexOf('start-')
+                const isEnd = -1 < regionId.indexOf('end-')
 
-                if (!this.isOverlayed(region.start, region.end, regionIdx)) {
+                if (isStart) {
+                  regionId = regionId.substring(6)
+                } else if (isEnd) {
+                  regionId = regionId.substring(4)
+                }
+                const regionIdx = newSolutions.findIndex(r => r.section.id === regionId || r.section.regionId === regionId)
+
+                if (!isStart && !isEnd) {
+                  const solution = newSolutions.find(s => s.section.id === regionId || s.section.regionId === regionId)
+
+                  if (solution) {
+                    // For a existing region, check if start & end with tolerance don't overlay with another region
+                    start -= solution.section.startTolerance
+                    end += solution.section.endTolerance
+                  } else {
+                    // For new region, check if start & end with default tolerance don't overlay with another region
+                    start -= this.props.item.tolerance
+                    end += this.props.item.tolerance
+                  }
+                }
+
+                if (!this.isOverlayed(start, end, regionIdx)) {
                   if (-1 < regionIdx) {
-                    newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
-                      start: region.start,
-                      end: region.end
-                    })
+                    if (isStart) {
+                      newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
+                        startTolerance: newSolutions[regionIdx]['section']['start'] - region.start
+                      })
+                    } else if (isEnd) {
+                      newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
+                        endTolerance: region.end - newSolutions[regionIdx]['section']['end']
+                      })
+                    } else {
+                      newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
+                        start: region.start,
+                        end: region.end
+                      })
+                    }
                     this.setState({currentSection: newSolutions[regionIdx]['section']['id']})
                   } else {
                     newSolutions.push({
@@ -175,8 +210,8 @@ class WaveformComponent extends Component {
                         regionId: region.id,
                         start: region.start,
                         end: region.end,
-                        startTolerance: 1,
-                        endTolerance: 1
+                        startTolerance: this.props.item.tolerance,
+                        endTolerance: this.props.item.tolerance
                       },
                       score: 1
                     })
@@ -270,6 +305,15 @@ const WaveformEditor = (props) =>
         primary: true,
         fields: [
           {
+            name: 'tolerance',
+            label: trans('default_tolerance', {}, 'quiz'),
+            type: 'number',
+            required: true,
+            options: {
+              min: 0,
+              unit: trans('seconds')
+            }
+          }, {
             name: '_file',
             label: trans('pick_audio_file', {}, 'quiz'),
             type: 'file',

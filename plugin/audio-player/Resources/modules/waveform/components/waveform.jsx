@@ -34,7 +34,7 @@ class Waveform extends Component {
     this.setState({
       wavesurfer: WaveSurfer.create({
         container: '#waveform',
-        // scrollParent: true,
+        scrollParent: true,
         waveColor: '#A8DBA8',
         progressColor: '#3B8686',
         plugins: plugins
@@ -115,22 +115,22 @@ class Waveform extends Component {
           // Initialize existing regions
           this.props.regions.forEach(r => {
             this.state.wavesurfer.addRegion(r)
-            // const startTolerance = {
-            //   id: `start-${r.id}`,
-            //   start: r.start - r.startTolerance,
-            //   end: r.start,
-            //   drag: false,
-            //   color: 'blue'
-            // }
-            // const endTolerance = {
-            //   id: `end-${r.id}`,
-            //   start: r.end,
-            //   end: r.end + r.endTolerance,
-            //   drag: false,
-            //   color: 'blue'
-            // }
-            // this.state.wavesurfer.addRegion(startTolerance)
-            // this.state.wavesurfer.addRegion(endTolerance)
+            const startTolerance = {
+              id: `start-${r.id}`,
+              start: r.start - r.startTolerance,
+              end: r.start,
+              drag: false,
+              color: 'rgba(29, 105, 153, 0.3)'
+            }
+            const endTolerance = {
+              id: `end-${r.id}`,
+              start: r.end,
+              end: r.end + r.endTolerance,
+              drag: false,
+              color: 'rgba(29, 105, 153, 0.3)'
+            }
+            this.state.wavesurfer.addRegion(startTolerance)
+            this.state.wavesurfer.addRegion(endTolerance)
           })
           clearInterval(refreshInterval)
         } {
@@ -147,6 +147,11 @@ class Waveform extends Component {
       this.state.wavesurfer.load(this.props.url)
     } else {
       Object.values(this.state.wavesurfer.regions.list).forEach(region => {
+        if (-1 < region.id.indexOf('start-') || -1 < region.id.indexOf('end-')) {
+          region.remove()
+        }
+      })
+      Object.values(this.state.wavesurfer.regions.list).forEach(region => {
         // Updates wavesurfer regions with given ones
         const propRegion = this.props.regions.find(r => r.id === region.id || r.regionId === region.id)
 
@@ -157,13 +162,42 @@ class Waveform extends Component {
               end: propRegion.end,
               color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'
             })
+            this.state.wavesurfer.addRegion({
+              id: `start-${propRegion.id}`,
+              start: propRegion.start - propRegion.startTolerance,
+              end: propRegion.start,
+              drag: false,
+              color: 'rgba(29, 105, 153, 0.3)'
+            })
+            this.state.wavesurfer.addRegion({
+              id: `end-${propRegion.id}`,
+              start: propRegion.end,
+              end: propRegion.end + propRegion.endTolerance,
+              drag: false,
+              color: 'rgba(29, 105, 153, 0.3)'
+            })
           } else {
             region.remove()
+
             this.state.wavesurfer.addRegion(Object.assign(
               {},
               propRegion,
               {color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'}
             ))
+            this.state.wavesurfer.addRegion({
+              id: `start-${propRegion.id}`,
+              start: propRegion.start - propRegion.startTolerance,
+              end: propRegion.start,
+              drag: false,
+              color: 'rgba(29, 105, 153, 0.3)'
+            })
+            this.state.wavesurfer.addRegion({
+              id: `end-${propRegion.id}`,
+              start: propRegion.end,
+              end: propRegion.end + propRegion.endTolerance,
+              drag: false,
+              color: 'rgba(29, 105, 153, 0.3)'
+            })
           }
         } else {
           // Remove deleted regions
@@ -223,6 +257,8 @@ class Waveform extends Component {
     return (
       <div>
         <div id="waveform">
+        </div>
+        <div id="waveform-timeline">
         </div>
         <div
           id="waveform-cmd"

@@ -15,6 +15,7 @@ const Section = {
 const WaveformItem = {
   propTypes: {
     url: T.string,
+    tolerance: T.number,
     solutions: T.arrayOf(T.shape({
       section: T.shape(Section.propTypes),
       score: T.number,
@@ -23,6 +24,7 @@ const WaveformItem = {
   },
   defaultProps: {
     url: null,
+    tolerance: 1,
     solutions: []
   }
 }

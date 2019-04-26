@@ -28,6 +28,7 @@ class WaveformQuestionSerializer
     {
         $serialized = [
             'url' => $waveformQuestion->getUrl(),
+            'tolerance' => $waveformQuestion->getTolerance(),
         ];
 
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
@@ -52,6 +53,7 @@ class WaveformQuestionSerializer
             $waveformQuestion = new WaveformQuestion();
         }
         $this->sipe('url', 'setUrl', $data, $waveformQuestion);
+        $this->sipe('tolerance', 'setTolerance', $data, $waveformQuestion);
         $this->deserializeSections($waveformQuestion, $data['solutions']);
 
         return $waveformQuestion;
