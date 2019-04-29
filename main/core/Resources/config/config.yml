@@ -181,6 +181,9 @@ plugin:
         - name: templates_management
           class: file-alt
 
+        - name: integration
+          class: wrench
+
     widgets:
         - name: simple
           class: Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget
