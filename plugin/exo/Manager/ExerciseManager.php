@@ -384,17 +384,18 @@ class ExerciseManager
                     /** @var AnswerableItemDefinitionInterface $itemDefinition */
                     $itemDefinition = $this->definitions->get($item->getMimeType());
 
+                    $found = false;
                     // get question parameters from paper
                     $itemData = $paper->getQuestion($item->getUuid());
+                    if (!empty($itemData)) {
+                        // get item entities
+                        $paperItem = $this->itemManager->deserialize($itemData, null, [Transfer::NO_FETCH]);
 
-                    // get item entities
-                    $paperItem = $this->itemManager->deserialize($itemData, null, [Transfer::NO_FETCH]);
-
-                    $found = false;
-                    foreach ($answers as $answer) {
-                        if ($answer->getQuestionId() === $item->getUuid()) {
-                            $found = true;
-                            $csv[$answer->getQuestionId()] = $itemDefinition->getCsvAnswers($paperItem->getInteraction(), $answer);
+                        foreach ($answers as $answer) {
+                            if ($answer->getQuestionId() === $item->getUuid()) {
+                                $found = true;
+                                $csv[$answer->getQuestionId()] = $itemDefinition->getCsvAnswers($paperItem->getInteraction(), $answer);
+                            }
                         }
                     }
 
