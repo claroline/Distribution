@@ -245,21 +245,30 @@ class Exercise extends AbstractResource
     /**
      * If true, the time to answer the exercise will be limited by the defined duration.
      *
-     * @var bool
-     *
      * @ORM\Column(name="time_limited", type="boolean", options={"default" = 0})
      */
     private $timeLimited = false;
 
     /**
      * @ORM\Column(name="progression_displayed", type="boolean", options={"default" = 1})
+     *
+     * @var bool
      */
     private $progressionDisplayed = true;
 
     /**
      * @ORM\Column(name="answers_editable", type="boolean", options={"default" = 1})
+     *
+     * @var bool
      */
     private $answersEditable = true;
+
+    /**
+     * @ORM\Column(name="expected_answers", type="boolean")
+     *
+     * @var bool
+     */
+    private $expectedAnswers = true;
 
     /**
      * @ORM\OneToMany(targetEntity="Step", mappedBy="exercise", cascade={"all"}, orphanRemoval=true)
@@ -833,5 +842,21 @@ class Exercise extends AbstractResource
     public function setAnswersEditable($answersEditable)
     {
         $this->answersEditable = $answersEditable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasExpectedAnswers()
+    {
+        return $this->expectedAnswers;
+    }
+
+    /**
+     * @param bool $expectedAnswers
+     */
+    public function setExpectedAnswers($expectedAnswers)
+    {
+        $this->expectedAnswers = $expectedAnswers;
     }
 }

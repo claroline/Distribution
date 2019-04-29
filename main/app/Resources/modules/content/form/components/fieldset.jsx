@@ -103,7 +103,7 @@ class FormFieldset extends Component {
     let rendered = []
 
     fields.map(field => {
-      if (field.render) {
+      if (field.component || field.render) {
         rendered.push(
           <FormGroup
             key={field.name}
@@ -115,7 +115,8 @@ class FormFieldset extends Component {
             error={get(this.props.errors, field.name)}
             warnOnly={!this.props.validating}
           >
-            {field.render(this.props.data, this.props.errors)}
+            {field.component}
+            {!field.component && field.render(this.props.data, this.props.errors)}
           </FormGroup>
         )
       } else {

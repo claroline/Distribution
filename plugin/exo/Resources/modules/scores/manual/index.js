@@ -9,6 +9,8 @@ export default {
     description: trans('score_manual_desc', {}, 'quiz')
   },
 
+  hasAnswerScores: true,
+
   configure: () => [
     {
       name: 'max',

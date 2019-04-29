@@ -27,12 +27,9 @@ const ChoicePaper = props =>
             <label
               key={utils.answerId(solution.id)}
               htmlFor={utils.answerId(solution.id)}
-              className={classes(
-                'answer-item choice-answer-item',
-                utils.getAnswerClassForSolution(solution, props.answer)
-              )}
+              className={classes('answer-item choice-answer-item', utils.getAnswerClassForSolution(solution, props.answer, props.item.hasExpectedAnswers))}
             >
-              {utils.isSolutionChecked(solution, props.answer) ?
+              {utils.isSolutionChecked(solution, props.answer) && props.item.hasExpectedAnswers ?
                 <WarningIcon className="choice-item-tick" solution={solution} answers={props.answer}/> :
 
                 <input
@@ -40,7 +37,8 @@ const ChoicePaper = props =>
                   className="choice-item-tick"
                   name={utils.answerId(props.item.id)}
                   type={props.item.multiple ? 'checkbox': 'radio'}
-                  disabled
+                  checked={utils.isSolutionChecked(solution, props.answer)}
+                  disabled={true}
                 />
               }
 
@@ -56,7 +54,7 @@ const ChoicePaper = props =>
               </div>
 
               {props.showScore && -1 === [SCORE_FIXED, SCORE_RULES].indexOf(props.item.score.type) &&
-              <SolutionScore score={solution.score} />
+                <SolutionScore score={solution.score} />
               }
             </label>
           )}
@@ -70,12 +68,9 @@ const ChoicePaper = props =>
             <label
               key={utils.expectedId(solution.id)}
               htmlFor={utils.expectedId(solution.id)}
-              className={classes(
-                'answer-item choice-answer-item',
-                {
-                  'selected-answer': solution.score > 0
-                }
-              )}
+              className={classes('answer-item choice-answer-item', {
+                'selected-answer': solution.score > 0
+              })}
             >
               <input
                 className="choice-item-tick"
@@ -98,7 +93,7 @@ const ChoicePaper = props =>
               </div>
 
               {props.showScore && -1 === [SCORE_FIXED, SCORE_RULES].indexOf(props.item.score.type) &&
-              <SolutionScore score={solution.score} />
+                <SolutionScore score={solution.score} />
               }
             </label>
           )}

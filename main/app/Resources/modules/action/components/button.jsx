@@ -4,7 +4,6 @@ import invariant from 'invariant'
 import omit from 'lodash/omit'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {toKey} from '#/main/core/scaffolding/text/utils'
 import {registry as buttonRegistry} from '#/main/app/buttons/registry'
 import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
 

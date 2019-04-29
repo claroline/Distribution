@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {ContentThumbnail} from '#/plugin/exo/contents/components/content-thumbnail'
 
-export const ObjectsPlayer = props =>
+const ObjectsPlayer = props =>
   <div className="item-object-thumbnail-box">
     {props.item.objects.map((object, index) =>
       <ContentThumbnail
@@ -26,4 +26,8 @@ ObjectsPlayer.propTypes = {
       data: T.string
     })).isRequired
   }).isRequired
+}
+
+export {
+  ObjectsPlayer
 }

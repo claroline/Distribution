@@ -10,7 +10,6 @@ import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 import {APIClass} from '#/plugin/scorm/resources/scorm/player/api'
 import {Scorm as ScormType, Sco as ScoType} from '#/plugin/scorm/resources/scorm/prop-types'
-import {actions} from '#/plugin/scorm/resources/scorm/player/actions'
 import {selectors} from '#/plugin/scorm/resources/scorm/store'
 import {flattenScos, getFirstOpenableSco, generateSummary} from '#/plugin/scorm/resources/scorm/utils'
 

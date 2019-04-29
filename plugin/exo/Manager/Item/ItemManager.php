@@ -179,29 +179,15 @@ class ItemManager
     /**
      * Deserializes a question.
      *
-     * @param array $data
-     * @param Item  $item
-     * @param array $options
-     *
-     * @return Item
-     */
-    public function deserialize(array $data, Item $item = null, array $options = [])
-    {
-        return $this->serializer->deserialize($data, $item, $options);
-    }
-
-    /**
-     * Deserializes a question.
-     *
-     * @param array     $questionData
-     * @param Item|null $question
+     * @param array     $itemData
+     * @param Item|null $item
      * @param array     $options
      *
      * @return Item
      */
-    public function deserialize(array $questionData, Item $question = null, array $options = [])
+    public function deserialize(array $itemData, Item $item = null, array $options = [])
     {
-        return $this->serializer->deserialize($questionData, $question ?? new Item(), $options);
+        return $this->serializer->deserialize($itemData, $item ?? new Item(), $options);
     }
 
     /**

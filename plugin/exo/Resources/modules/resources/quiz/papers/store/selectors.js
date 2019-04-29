@@ -40,7 +40,12 @@ const paperTotalAnswerScore = paper => {
   let scoreMax = 0
 
   paper.structure.steps.map(step =>
-    step.items.map(item => scoreMax += calculateTotal(item))
+    step.items.map(item => {
+      const itemTotal = calculateTotal(item)
+      if (itemTotal) {
+        scoreMax += itemTotal
+      }
+    })
   )
 
   return scoreMax

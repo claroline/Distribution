@@ -1,6 +1,9 @@
 import {API_REQUEST} from '#/main/app/api'
 import {makeActionCreator} from '#/main/app/store/actions'
 
+import {actions as listActions} from '#/main/app/content/list/store/actions'
+import {selectors} from '#/plugin/exo/resources/quiz/papers/store/selectors'
+
 export const PAPER_ADD     = 'PAPER_ADD'
 export const PAPER_CURRENT = 'PAPER_CURRENT'
 
@@ -17,5 +20,20 @@ actions.loadCurrentPaper = (quizId, paperId) => ({
       id: paperId
     }],
     success: (data, dispatch) => dispatch(actions.setCurrentPaper(data))
+  }
+})
+
+actions.deletePapers = (quizId, papers) => ({
+  [API_REQUEST]: {
+    url: ['ujm_exercise_delete_papers', {
+      exerciseId: quizId
+    }],
+    request: {
+      method: 'DELETE',
+      body: JSON.stringify({
+        ids: papers.map(paper => paper.id)
+      })
+    },
+    success: (data, dispatch) => dispatch(listActions.invalidateData(selectors.LIST_NAME))
   }
 })

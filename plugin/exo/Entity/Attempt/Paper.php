@@ -344,7 +344,6 @@ class Paper
     {
         $question = null;
 
-
         $decoded = $this->getDecodedStructure();
         foreach ($decoded['steps'] as $step) {
             foreach ($step['items'] as $item) {

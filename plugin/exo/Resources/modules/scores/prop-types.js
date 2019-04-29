@@ -26,6 +26,13 @@ const ScoreType = {
     }).isRequired,
 
     /**
+     * The score type allows the user to define a score by available answer.
+     *
+     * @var {bool}
+     */
+    hasAnswerScores: T.bool.isRequired,
+
+    /**
      * A function to return the list of configuration field of the score type.
      * NB. fields definition follows the FormData format.
      *

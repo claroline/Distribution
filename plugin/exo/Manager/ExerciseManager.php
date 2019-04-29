@@ -106,20 +106,6 @@ class ExerciseManager
     }
 
     /**
-     * Validates and creates a new Exercise from raw data.
-     *
-     * @param array $data
-     *
-     * @return Exercise
-     *
-     * @throws InvalidDataException
-     */
-    public function create(array $data)
-    {
-        return $this->update(new Exercise(), $data);
-    }
-
-    /**
      * Validates and updates an Exercise entity with raw data.
      *
      * @param Exercise $exercise
@@ -170,27 +156,6 @@ class ExerciseManager
     }
 
     /**
-     * Copies an Exercise resource.
-     *
-     * @param Exercise $exercise
-     *
-     * @return Exercise
-     */
-    public function copy(Exercise $exercise)
-    {
-        // Serialize quiz entities
-        $exerciseData = $this->serializer->serialize($exercise, [Transfer::INCLUDE_SOLUTIONS]);
-
-        // Populate new entities with original data
-        $newExercise = $this->createCopy($exerciseData, null);
-
-        // Save copy to db
-        $this->om->flush();
-
-        return $newExercise;
-    }
-
-    /**
      * Checks if an Exercise can be deleted.
      * The exercise needs to be unpublished or have no paper to be safely removed.
      *
@@ -201,60 +166,6 @@ class ExerciseManager
     public function isDeletable(Exercise $exercise)
     {
         return !$exercise->getResourceNode()->isPublished() || 0 === $this->paperManager->countExercisePapers($exercise);
-    }
-
-    /**
-     * Creates a copy of a quiz definition.
-     * (aka it creates a new entity if needed and generate new IDs for quiz data).
-     *
-     * @param array         $srcData
-     * @param Exercise|null $copyDestination - an existing Exercise entity to store the copy
-     *
-     * @return Exercise
-     */
-    public function createCopy(array $srcData, Exercise $copyDestination = null)
-    {
-        $copyDestination = $this->serializer->deserialize($srcData, $copyDestination, [
-            Transfer::NO_FETCH,
-            Transfer::PERSIST_TAG,
-            Transfer::REFRESH_UUID,
-        ]);
-
-        // Persist copy
-        $this->om->persist($copyDestination);
-
-        return $copyDestination;
-    }
-
-    public function export(Exercise $exercise)
-    {
-        $data = $this->serializer->serialize(
-            $exercise,
-            [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META]
-        );
-        $filename = tempnam($exercise->getResourceNode()->getName(), '');
-        file_put_contents($filename, json_encode($data), FILE_APPEND);
-
-        return $filename;
-    }
-
-    public function import(array $data, $workspace, $owner)
-    {
-        $exercise = new Exercise();
-        $exercise->setName($data['title']);
-        // Create entities from import data
-        $exercise = $this->createCopy($data, $exercise);
-        $parent = $this->resourceManager->getWorkspaceRoot($workspace);
-
-        $node = $this->resourceManager->create(
-            $exercise,
-            $this->resourceManager->getResourceTypeByName('ujm_exercise'),
-            $owner,
-            $workspace,
-            $parent
-        );
-
-        return $node;
     }
 
     public function exportPapersToCsv(Exercise $exercise)

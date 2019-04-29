@@ -9,6 +9,8 @@ export default {
     description: trans('score_sum_desc', {}, 'quiz')
   },
 
+  hasAnswerScores: true,
+
   // no additional configuration
   configure: () => [],
 

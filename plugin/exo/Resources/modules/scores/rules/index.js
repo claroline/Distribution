@@ -11,6 +11,8 @@ export default {
     description: trans('score_rules_desc', {}, 'quiz')
   },
 
+  hasAnswerScores: false,
+
   configure: () => [
     {
       name: 'noWrongChoice',

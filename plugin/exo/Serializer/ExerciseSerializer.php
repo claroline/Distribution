@@ -156,6 +156,7 @@ class ExerciseSerializer
             'totalScoreOn' => $exercise->getTotalScoreOn(),
             'successScore' => $exercise->getSuccessScore(),
             'correctionDate' => $exercise->getDateCorrection() ? DateNormalizer::normalize($exercise->getDateCorrection()) : null,
+            'hasExpectedAnswers' => $exercise->hasExpectedAnswers(),
         ];
 
         if (!empty($exercise->getEndMessage())) {
@@ -198,6 +199,7 @@ class ExerciseSerializer
         $this->sipe('showScoreAt', 'setMarkMode', $parameters, $exercise);
         $this->sipe('totalScoreOn', 'setTotalScoreOn', $parameters, $exercise);
         $this->sipe('answersEditable', 'setAnswersEditable', $parameters, $exercise);
+        $this->sipe('hasExpectedAnswers', 'setExpectedAnswers', $parameters, $exercise);
 
         if (isset($parameters['showFullCorrection'])) {
             $exercise->setMinimalCorrection(!$parameters['showFullCorrection']);
@@ -288,9 +290,9 @@ class ExerciseSerializer
      */
     private function serializeSteps(Exercise $exercise, array $options = [])
     {
-        return array_map(function (Step $step) use ($options) {
+        return array_values(array_map(function (Step $step) use ($options) {
             return $this->stepSerializer->serialize($step, $options);
-        }, $exercise->getSteps()->toArray());
+        }, $exercise->getSteps()->toArray()));
     }
 
     /**

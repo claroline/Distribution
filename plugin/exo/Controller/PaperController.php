@@ -3,6 +3,8 @@
 namespace UJM\ExoBundle\Controller;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\Controller\RequestDecoderTrait;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
@@ -26,10 +28,15 @@ use UJM\ExoBundle\Manager\ExerciseManager;
  * @EXT\Route("exercises/{exerciseId}/papers", options={"expose"=true})
  * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"exerciseId": "uuid"}})
  */
-class PaperController extends AbstractController
+class PaperController
 {
+    use RequestDecoderTrait;
+
     /** @var AuthorizationCheckerInterface */
     private $authorization;
+
+    /** @var ObjectManager */
+    private $om;
 
     /* @var FinderProvider */
     protected $finder;
@@ -45,23 +52,27 @@ class PaperController extends AbstractController
      *
      * @DI\InjectParams({
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "finder"          = @DI\Inject("claroline.api.finder"),
      *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
      *     "exerciseManager" = @DI\Inject("ujm_exo.manager.exercise")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
+     * @param ObjectManager                 $om
      * @param FinderProvider                $finder
      * @param PaperManager                  $paperManager
      * @param ExerciseManager               $exerciseManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
+        ObjectManager $om,
         FinderProvider $finder,
         PaperManager $paperManager,
         ExerciseManager $exerciseManager
     ) {
         $this->authorization = $authorization;
+        $this->om = $om;
         $this->finder = $finder;
         $this->paperManager = $paperManager;
         $this->exerciseManager = $exerciseManager;
@@ -137,45 +148,23 @@ class PaperController extends AbstractController
     }
 
     /**
-     * Deletes all the papers associated with an exercise.
+     * Deletes some papers associated with an exercise.
      *
      * @EXT\Route("", name="ujm_exercise_delete_papers")
      * @EXT\Method("DELETE")
      *
      * @param Exercise $exercise
+     * @param Request  $request
      *
      * @return JsonResponse
      */
-    public function deleteAllAction(Exercise $exercise)
+    public function deleteAction(Exercise $exercise, Request $request)
     {
         $this->assertHasPermission('MANAGE_PAPERS', $exercise);
 
         try {
-            $this->paperManager->deleteAll($exercise);
-        } catch (InvalidDataException $e) {
-            return new JsonResponse($e->getErrors(), 422);
-        }
-
-        return new JsonResponse(null, 204);
-    }
-
-    /**
-     * Deletes a paper from an exercise.
-     *
-     * @EXT\Route("/{id}", name="ujm_exercise_delete_paper")
-     * @EXT\Method("DELETE")
-     * @EXT\ParamConverter("paper", class="UJMExoBundle:Attempt\Paper", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Paper $paper
-     *
-     * @return JsonResponse
-     */
-    public function deleteAction(Paper $paper)
-    {
-        $this->assertHasPermission('MANAGE_PAPERS', $paper->getExercise());
-
-        try {
-            $this->paperManager->delete($paper);
+            $papers = $this->decodeIdsString($request, Paper::class);
+            $this->paperManager->delete($papers);
         } catch (InvalidDataException $e) {
             return new JsonResponse($e->getErrors(), 422);
         }
