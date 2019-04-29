@@ -2,10 +2,7 @@
 
 namespace UJM\ExoBundle\Installation\Updater;
 
-use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Updater\Updater;
-use UJM\ExoBundle\Entity\Attempt\Paper;
-use UJM\ExoBundle\Library\Options\Direction;
 
 class Updater120403 extends Updater
 {
