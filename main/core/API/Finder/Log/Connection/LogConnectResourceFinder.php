@@ -88,8 +88,6 @@ class LogConnectResourceFinder extends AbstractFinder
 
     public function getFilters()
     {
-        return [
-            '$defaults' => [],
-        ];
+        return [];
     }
 }

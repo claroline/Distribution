@@ -100,8 +100,6 @@ class LogConnectPlatformFinder extends AbstractFinder
 
     public function getFilters()
     {
-        return [
-            '$defaults' => [],
-        ];
+        return [];
     }
 }

@@ -158,11 +158,4 @@ class LogFinder extends AbstractFinder
             }
         }
     }
-
-    public function getFilters()
-    {
-        return [
-            '$defaults' => [],
-        ];
-    }
 }

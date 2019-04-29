@@ -87,8 +87,6 @@ class LogConnectAdminToolFinder extends AbstractFinder
 
     public function getFilters()
     {
-        return [
-            '$defaults' => [],
-        ];
+        return [];
     }
 }
