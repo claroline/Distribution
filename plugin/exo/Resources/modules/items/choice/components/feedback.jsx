@@ -7,19 +7,18 @@ import {FeedbackButton as Feedback} from '#/plugin/exo/buttons/feedback/componen
 import {utils} from '#/plugin/exo/items/choice/utils'
 import {WarningIcon} from '#/plugin/exo/items/choice/components/warning-icon'
 
+import {ChoiceItem as ChoiceItemTypes} from '#/plugin/exo/items/choice/prop-types'
+
 const ChoiceFeedback = props =>
   <div className="choice-feedback">
     <div className={classes('choice-answer-items', props.item.direction)}>
       {props.item.solutions.map(solution =>
         <label
           key={utils.answerId(solution.id)}
-          className={classes(
-            'answer-item choice-answer-item',
-            utils.getAnswerClassForSolution(solution, props.answer)
-          )}>
+          className={classes('answer-item choice-answer-item', utils.getAnswerClassForSolution(solution, props.answer, props.item.hasExpectedAnswers))}>
           {utils.isSolutionChecked(solution, props.answer) ?
-            <WarningIcon className="choice-item-tick" solution={solution} answers={props.answer} /> :
-
+            <WarningIcon className="choice-item-tick" solution={solution} answers={props.answer} />
+            :
             <input
               id={utils.answerId(solution.id)}
               className="choice-item-tick"
@@ -47,18 +46,9 @@ const ChoiceFeedback = props =>
   </div>
 
 ChoiceFeedback.propTypes = {
-  item: T.shape({
-    id: T.string.isRequired,
-    choices: T.arrayOf(T.shape({
-      id: T.string.isRequired,
-      data: T.string.isRequired
-    })).isRequired,
-    multiple: T.bool.isRequired,
-    solutions: T.arrayOf(T.object),
-    title: T.string,
-    description: T.string,
-    direction: T.string.isRequired
-  }).isRequired,
+  item: T.shape(
+    ChoiceItemTypes.propTypes
+  ).isRequired,
   answer: T.array
 }
 

@@ -19,12 +19,14 @@ import ScoreRules from '#/plugin/exo/scores/rules'
 import ScoreSum from '#/plugin/exo/scores/sum'
 
 const SCORE_TYPES = {
+  [ScoreNone.name]  : ScoreNone,
   [ScoreFixed.name] : ScoreFixed,
   [ScoreManual.name]: ScoreManual,
-  [ScoreNone.name]  : ScoreNone,
   [ScoreRules.name] : ScoreRules,
   [ScoreSum.name]   : ScoreSum
 }
+
+const DEFAULT_SCORE_TYPE = ScoreSum.name
 
 /**
  *
@@ -36,10 +38,15 @@ const SCORE_TYPES = {
 function calculateScore(scoreRule, correctedAnswer) {
   const currentScore = SCORE_TYPES[scoreRule.type]
   if (currentScore) {
-    return currentScore.calculate(scoreRule, correctedAnswer)
+    let score = currentScore.calculate(scoreRule, correctedAnswer)
+    if (null !== score) {
+      score = correctedAnswer.getPenalties().reduce((score, penalty) => score - penalty, score)
+    }
+
+    return score
   }
 
-  return undefined
+  return null
 }
 
 /**
@@ -136,6 +143,8 @@ function calculateTotal(item) {
 }
 
 export {
+  SCORE_TYPES,
+  DEFAULT_SCORE_TYPE,
   calculateScore,
   calculateTotal
 }

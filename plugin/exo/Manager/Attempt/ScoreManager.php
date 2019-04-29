@@ -195,6 +195,9 @@ class ScoreManager
                 $total = $max['correct'] >= $max['incorrect'] ? $max['correct'] : $max['incorrect'];
                 break;
 
+            case 'none':
+                break;
+
             default:
                 throw new \LogicException("Unknown score type '{$scoreRule['type']}'.");
                 break;

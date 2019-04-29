@@ -1,9 +1,10 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import omit from 'lodash/omit'
 
-import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {trans} from '#/main/app/intl/translation'
+import {isHtmlEmpty} from '#/main/app/data/types/html/validators'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Button} from '#/main/app/action/components/button'
 import {POPOVER_BUTTON} from '#/main/app/buttons/popover'
@@ -16,9 +17,9 @@ import {POPOVER_BUTTON} from '#/main/app/buttons/popover'
  * @constructor
  */
 const FeedbackButton = props => {
-  if (!props.feedback) {
+  if (!props.feedback || isHtmlEmpty(props.feedback)) {
     return (
-      <span className="btn-feedback" />
+      <span className="btn-link btn-feedback" />
     )
   }
 
@@ -42,6 +43,7 @@ const FeedbackButton = props => {
 
 FeedbackButton.propTypes = {
   id: T.oneOfType([T.string, T.number]).isRequired,
+  className: T.string,
   feedback: T.string
 }
 

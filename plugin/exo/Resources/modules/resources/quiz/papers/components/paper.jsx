@@ -6,6 +6,7 @@ import classes from 'classnames'
 
 import Panel from 'react-bootstrap/lib/Panel'
 
+import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
 import {displayDate, displayDuration, getTimeDiff} from '#/main/app/intl/date'
 import {hasPermission} from '#/main/app/security'
@@ -17,16 +18,19 @@ import {displayUsername} from '#/main/core/user/utils'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
 import {ScoreGauge} from '#/main/core/layout/gauge/components/score'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
+import {HtmlText} from '#/main/core/layout/components/html-text'
+import {isHtmlEmpty} from '#/main/app/data/types/html/validators'
 
 import {calculateTotal} from '#/plugin/exo/scores'
 import quizSelect from '#/plugin/exo/quiz/selectors'
-import {constants} from '#/plugin/exo/resources/quiz/constants'
+import {selectors as quizSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
 import {getDefinition, isQuestionType} from '#/plugin/exo/items/item-types'
 import {utils} from '#/plugin/exo/resources/quiz/papers/utils'
 import {getNumbering} from '#/plugin/exo/resources/quiz/utils'
 import {Metadata as ItemMetadata} from '#/plugin/exo/items/components/metadata'
 import {Paper as PaperTypes} from '#/plugin/exo/resources/quiz/papers/prop-types'
-import {selectors as paperSelect} from '#/plugin/exo/resources/quiz/papers/store/selectors'
+import {actions as papersActions, selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store'
+import ScoreNone from '#/plugin/exo/scores/none'
 
 function getAnswer(itemId, answers) {
   const answer = answers.find(answer => answer.questionId === itemId)
@@ -61,42 +65,37 @@ const PaperStep = props => {
 
       {props.items
         .filter((item) => isQuestionType(item.type))
-        .map((item, idxItem) => {
-          const tmp = document.createElement('div')
-          tmp.innerHTML = item.feedback
-          const displayFeedback = (/\S/.test(tmp.textContent)) && item.feedback
+        .map((item, idxItem) =>
+          <Panel key={item.id} className="quiz-item item-paper">
+            {props.showScore && item.hasExpectedAnswers && ScoreNone.name !== get(item, 'score.type') && getAnswerScore(item.id, props.answers) !== undefined && getAnswerScore(item.id, props.answers) !== null &&
+              <ScoreBox className="pull-right" score={getAnswerScore(item.id, props.answers)} scoreMax={calculateTotal(item)}/>
+            }
 
-          return (
-            <Panel key={item.id} className="quiz-item item-paper">
-              {props.showScore && getAnswerScore(item.id, props.answers) !== undefined && getAnswerScore(item.id, props.answers) !== null &&
-                <ScoreBox className="pull-right" score={getAnswerScore(item.id, props.answers)} scoreMax={calculateTotal(item)}/>
-              }
-              {item.title &&
-                <h4 className="item-title">{item.title}</h4>
-              }
+            {item.title &&
+              <h4 className="item-title">{item.title}</h4>
+            }
 
-              <ItemMetadata item={item} numbering={getNumbering(props.numberingType, props.index, idxItem)} />
+            <ItemMetadata item={item} numbering={getNumbering(props.numberingType, props.index, idxItem)} />
 
-              {React.createElement(getDefinition(item.type).paper, {
-                item: item,
-                answer: getAnswer(item.id, props.answers),
-                feedback: getAnswerFeedback(item.id, props.answers),
-                showScore: props.showScore,
-                showExpected: props.showExpectedAnswers,
-                showStats: !!(props.showStatistics && props.stats && props.stats[item.id]),
-                showYours: true,
-                stats: props.showStatistics && props.stats && props.stats[item.id] ? props.stats[item.id] : {}
-              })}
+            {React.createElement(getDefinition(item.type).paper, {
+              item: item,
+              answer: getAnswer(item.id, props.answers),
+              feedback: getAnswerFeedback(item.id, props.answers),
+              showScore: item.hasExpectedAnswers && ScoreNone.name !== get(item, 'score.type') && props.showScore,
+              showExpected: props.showExpectedAnswers && item.hasExpectedAnswers,
+              showStats: !!(props.showStatistics && props.stats && props.stats[item.id]),
+              showYours: true,
+              stats: props.showStatistics && props.stats && props.stats[item.id] ? props.stats[item.id] : {}
+            })}
 
-              {displayFeedback &&
-                <div className="item-feedback">
-                  <span className="fa fa-comment" />
-                  <div dangerouslySetInnerHTML={{__html: item.feedback}} />
-                </div>
-              }
-            </Panel>
-          )
-        })
+            {(item.feedback && !isHtmlEmpty(item.feedback)) &&
+              <div className="item-feedback">
+                <span className="fa fa-comment" />
+                <HtmlText>{item.feedback}</HtmlText>
+              </div>
+            }
+          </Panel>
+        )
       }
     </Fragment>
   )
@@ -153,9 +152,7 @@ const PaperComponent = props =>
             icon: 'fa fa-fw fa-trash-o',
             label: trans('delete', {}, 'actions'),
             displayed: props.admin,
-            callback: () => {
-
-            },
+            callback: () => props.delete(props.quizId, props.paper),
             confirm: {
               title: trans('deletion'),
               subtitle: trans('user_attempt', {
@@ -240,6 +237,10 @@ const PaperComponent = props =>
   </div>
 
 PaperComponent.propTypes = {
+  history: T.shape({
+    push: T.func.isRequired
+  }).isRequired,
+  quizId: T.string.isRequired,
   admin: T.bool.isRequired,
   paper: T.shape(
     PaperTypes.propTypes
@@ -248,34 +249,45 @@ PaperComponent.propTypes = {
   showScore: T.bool.isRequired,
   showExpectedAnswers: T.bool.isRequired,
   showStatistics: T.bool.isRequired,
-  stats: T.object
+  stats: T.object,
+  delete: T.func.isRequired
 }
 
-const Paper = connect(
-  (state) => {
-    const admin = hasPermission('edit', resourceSelect.resourceNode(state)) || hasPermission('manage_papers', resourceSelect.resourceNode(state))
-    const paper = paperSelect.currentPaper(state)
-    const showScore = paper ?
-      utils.showScore(
-        admin,
-        paper.finished,
-        get(paper, 'structure.parameters.showScoreAt'),
-        get(paper, 'structure.parameters.showCorrectionAt'),
-        get(paper, 'structure.parameters.correctionDate')
-      ) :
-      false
+const Paper = withRouter(
+  connect(
+    (state) => {
+      const admin = hasPermission('edit', resourceSelect.resourceNode(state)) || hasPermission('manage_papers', resourceSelect.resourceNode(state))
+      const paper = paperSelectors.currentPaper(state)
+      const showScore = paper ?
+        utils.showScore(
+          admin,
+          paper.finished,
+          get(paper, 'structure.parameters.showScoreAt'),
+          get(paper, 'structure.parameters.showCorrectionAt'),
+          get(paper, 'structure.parameters.correctionDate')
+        ) :
+        false
 
-    return ({
-      admin: admin,
-      numberingType: quizSelect.quizNumbering(state),
-      paper: paper,
-      showScore: showScore,
-      showExpectedAnswers: quizSelect.papersShowExpectedAnswers(state),
-      showStatistics: quizSelect.papersShowStatistics(state),
-      stats: quizSelect.statistics(state)
+      return ({
+        quizId: quizSelectors.id(state), // TODO : read from paper
+        admin: admin,
+        paper: paper,
+        showScore: showScore,
+        numberingType: quizSelect.quizNumbering(state), // TODO : read from paper
+        showExpectedAnswers: quizSelect.papersShowExpectedAnswers(state), // TODO : read from paper
+        showStatistics: quizSelect.papersShowStatistics(state), // TODO : read from paper
+        stats: quizSelect.statistics(state)
+      })
+    },
+    (dispatch, ownProps) => ({
+      delete(quizId, paper) {
+        dispatch(papersActions.deletePapers(quizId, [paper]))
+
+        ownProps.history.push('/papers')
+      }
     })
-  }
-)(PaperComponent)
+  )(PaperComponent)
+)
 
 export {
   Paper

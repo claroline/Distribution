@@ -9,8 +9,10 @@ export default {
     description: trans('score_none_desc', {}, 'quiz')
   },
 
+  hasAnswerScores: false,
+
   // there is nothing to do for this type
   configure: () => [],
-  calculate: () => undefined,
-  calculateTotal: () => undefined
+  calculate: () => null,
+  calculateTotal: () => null
 }

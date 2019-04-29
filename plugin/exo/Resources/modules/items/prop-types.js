@@ -1,8 +1,6 @@
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 
-import {
-  SCORE_SUM
-} from '#/plugin/exo/quiz/enums'
+import {DEFAULT_SCORE_TYPE} from '#/plugin/exo/scores'
 
 /**
  * Definition of Quiz items.
@@ -53,6 +51,7 @@ const Item = {
     meta: T.shape({
 
     }),
+    hasExpectedAnswers: T.bool,
     score: T.shape({
       type: T.string.isRequired
     })
@@ -72,8 +71,9 @@ const Item = {
     hints: [],
     feedback: '',
     objects: [],
+    hasExpectedAnswers: true,
     score: {
-      type: SCORE_SUM,
+      type: DEFAULT_SCORE_TYPE,
       success: 1,
       failure: 0
     },
@@ -89,6 +89,7 @@ const ItemEditor = {
     item: T.shape(
       Item.propTypes
     ).isRequired,
+    hasAnswerScores: T.bool.isRequired,
     update: T.func.isRequired
   },
 

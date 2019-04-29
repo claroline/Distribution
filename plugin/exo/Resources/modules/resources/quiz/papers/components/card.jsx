@@ -2,9 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 
-import {trans, transChoice} from '#/main/app/intl/translation'
+import {trans} from '#/main/app/intl/translation'
 import {displayDate} from '#/main/app/intl/date'
-
 import {DataCard} from '#/main/app/content/card/components/data'
 import {UserMicro} from '#/main/core/user/components/micro'
 import {UserAvatar} from '#/main/core/user/components/avatar'
@@ -19,6 +18,7 @@ const PaperCard = props => {
   } else if ('lg' === props.size) {
     size = 100
   }
+
   return (
     <DataCard
       {...props}
@@ -49,18 +49,18 @@ const PaperCard = props => {
             justifyContent: 'space-between'
           }}
         >
-        {props.data.total &&
-        <UserMicro {...props.data.user} />
-        }
+          {props.data.total &&
+            <UserMicro {...props.data.user} />
+          }
 
           {props.data.endDate &&
-          trans('finished_at', {date: displayDate(props.data.endDate, false, true)})
+            trans('finished_at', {date: displayDate(props.data.endDate, false, true)})
           }
 
           {!props.data.endDate &&
-          trans('started_at', {date: displayDate(props.data.startDate, false, true)})
+            trans('started_at', {date: displayDate(props.data.startDate, false, true)})
           }
-      </span>
+        </span>
       }
     />
   )

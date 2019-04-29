@@ -60,7 +60,7 @@ const Action = {
         message: T.string,
         button: T.string
       })
-    ]),
+    ])
   },
   defaultProps: {
     disabled: false,

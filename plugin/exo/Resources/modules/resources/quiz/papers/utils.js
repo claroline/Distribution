@@ -48,7 +48,10 @@ function computeScore(paper, answers) {
       try  {
         const def = getDefinition(item.type)
         const correctedAnswer = def.correctAnswer(item, answers.find(answer => answer.questionId === item.id))
-        total += calculateScore(item.score, correctedAnswer)
+        const itemScore = calculateScore(item.score, correctedAnswer)
+        if (itemScore) {
+          total += itemScore
+        }
       } catch (e) {
         //console.error(e.message)
       }

@@ -7,7 +7,6 @@ import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'
 
 import {trans, transChoice} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'

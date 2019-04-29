@@ -35,11 +35,18 @@ const showStatistics = createSelector(
   (quiz) => get(quiz, 'parameters.showStatistics') || false
 )
 
+// TODO
+const hasScore = createSelector(
+  [quiz],
+  (quiz) => true
+)
+
 export const selectors = {
   STORE_NAME,
 
   resource,
   quiz,
   id,
-  showStatistics
+  showStatistics,
+  hasScore
 }

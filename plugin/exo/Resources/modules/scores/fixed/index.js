@@ -16,6 +16,8 @@ export default {
     description: trans('score_fixed_desc', {}, 'quiz')
   },
 
+  hasAnswerScores: false,
+
   configure: (score) => [
     {
       name: 'success',

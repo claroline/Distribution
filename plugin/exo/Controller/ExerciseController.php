@@ -130,41 +130,6 @@ class ExerciseController extends AbstractController
     }
 
     /**
-     * download json quiz.
-     *
-     * @EXT\Route("/{id}/export", name="exercise_export")
-     * @EXT\Method("GET")
-     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
-     *
-     * @param Exercise $exercise
-     *
-     * @return Response
-     */
-    public function exportAction(Exercise $exercise)
-    {
-        $this->assertHasPermission('ADMINISTRATE', $exercise);
-
-        $file = $this->exerciseManager->export($exercise);
-
-        $response = new StreamedResponse();
-        $response->setCallBack(
-            function () use ($file) {
-                readfile($file);
-            }
-        );
-
-        $name = $exercise->getResourceNode()->getName().'.json';
-        $response->headers->set('Content-Transfer-Encoding', 'octet-stream');
-        $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename='.urlencode($name));
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Connection', 'close');
-        $response->send();
-
-        return new Response();
-    }
-
-    /**
      * Opens the docimology of a quiz.
      *
      * @EXT\Route("/{id}/docimology", name="exercise_docimology")

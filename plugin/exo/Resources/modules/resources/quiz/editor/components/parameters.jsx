@@ -298,7 +298,9 @@ const EditorParameters = props =>
             }, {
               name: 'parameters.interruptible',
               label: trans('allow_test_exit', {}, 'quiz'),
-              type: 'boolean'
+              type: 'boolean',
+              disabled: (quiz) => get(quiz, 'parameters.timeLimited') || 0 < get(quiz, 'parameters.duration'),
+              help: ''
               // TODO : add help text
             }, {
               name: 'parameters.showEndConfirm',
@@ -411,16 +413,6 @@ const EditorParameters = props =>
           displayed: (quiz) => get(quiz, 'parameters.hasExpectedAnswers'),
           fields: [
             {
-              name: 'parameters.showScoreAt',
-              label: trans('score_availability', {}, 'quiz'),
-              type: 'choice',
-              required: true,
-              options: {
-                condensed: true,
-                noEmpty: true,
-                choices: constants.QUIZ_SCORE_AVAILABILITY
-              }
-            }, {
               name: '_scoreMode',
               label: trans('quiz_total_score_on', {}, 'quiz'),
               type: 'choice',
@@ -453,7 +445,17 @@ const EditorParameters = props =>
                   }
                 }
               ]
-            }/*{
+            }, {
+              name: 'parameters.showScoreAt',
+              label: trans('score_availability', {}, 'quiz'),
+              type: 'choice',
+              required: true,
+              options: {
+                condensed: true,
+                noEmpty: true,
+                choices: constants.QUIZ_SCORE_AVAILABILITY
+              }
+            }/*, {
               name: 'score.type',
               label: trans('calculation_mode', {}, 'quiz'),
               type: 'choice',

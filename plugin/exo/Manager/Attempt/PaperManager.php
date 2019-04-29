@@ -179,7 +179,10 @@ class PaperManager
             foreach ($step['items'] as $itemData) {
                 if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $itemData['type'])) {
                     $item = $this->itemManager->deserialize($itemData);
-                    $total += $this->itemManager->calculateTotal($item);
+                    $itemTotal = $this->itemManager->calculateTotal($item);
+                    if ($itemTotal) {
+                        $total += $itemTotal;
+                    }
                 }
             }
         }
@@ -216,31 +219,16 @@ class PaperManager
     }
 
     /**
-     * Deletes all the papers associated with an exercise.
+     * Deletes some papers.
      *
-     * @param Exercise $exercise
+     * @param Paper[] $papers
      */
-    public function deleteAll(Exercise $exercise)
+    public function delete(array $papers)
     {
-        $papers = $this->repository->findBy([
-            'exercise' => $exercise,
-        ]);
-
         foreach ($papers as $paper) {
             $this->om->remove($paper);
         }
 
-        $this->om->flush();
-    }
-
-    /**
-     * Deletes a paper.
-     *
-     * @param Paper $paper
-     */
-    public function delete(Paper $paper)
-    {
-        $this->om->remove($paper);
         $this->om->flush();
     }
 
@@ -387,10 +375,10 @@ class PaperManager
         ];
 
         if ($finished) {
-            if (is_null($successScore)) {
+            if (is_null($successScore) || empty($paper->getTotal())) {
                 $status = AbstractResourceEvaluation::STATUS_COMPLETED;
             } else {
-                $percentScore = ($score * 100) / $paper->getTotal();
+                $percentScore = ($score * 100);
                 $status = $percentScore >= $successScore ?
                     AbstractResourceEvaluation::STATUS_PASSED :
                     AbstractResourceEvaluation::STATUS_FAILED;

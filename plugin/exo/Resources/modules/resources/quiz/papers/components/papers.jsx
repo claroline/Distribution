@@ -1,15 +1,19 @@
 import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import get from 'lodash/get'
 
-import {trans} from '#/main/app/intl/translation'
+import {trans, transChoice} from '#/main/app/intl/translation'
 import {getTimeDiff} from '#/main/app/intl/date'
-import {LINK_BUTTON} from '#/main/app/buttons'
+import {hasPermission} from '#/main/app/security'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
+import {displayUsername} from '#/main/core/user/utils'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
 
 import {selectors as quizSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
-import {selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store/selectors'
+import {actions as papersActions, selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store'
 import {PaperCard} from '#/plugin/exo/resources/quiz/papers/components/card'
 
 const Papers = props =>
@@ -89,12 +93,35 @@ const Papers = props =>
           filterable: false,
           sortable: true,
           render: (rowData) => {
-            if ((rowData.score || 0 === rowData.score) && rowData.total) {
-              return <ScoreBox size="sm" score={rowData.score} scoreMax={rowData.total} />
+            if (rowData.total) {
+              return <ScoreBox size="sm" className="pull-right" score={rowData.score} scoreMax={rowData.total} />
             }
 
             return '-'
           }
+        }
+      ]}
+
+      actions={(rows) => [
+        {
+          name: 'delete',
+          type: CALLBACK_BUTTON,
+          icon: 'fa fa-fw fa-trash',
+          label: trans('delete', {}, 'actions'),
+          displayed: props.admin,
+          dangerous: true,
+          confirm: {
+            title: trans('deletion'),
+            subtitle: 1 === rows.length ?
+              trans('user_attempt', {
+                number: get(rows[0], 'number', '?'),
+                userName: displayUsername(get(rows[0], 'user'))
+              }, 'quiz')
+              :
+              transChoice('count_elements', rows.length, {count: rows.length}),
+            message: transChoice('papers_delete_message', rows.length, {count: rows.length})
+          },
+          callback: () => props.delete(props.quizId, rows)
         }
       ]}
 
@@ -104,13 +131,21 @@ const Papers = props =>
 
 Papers.propTypes = {
   quizId: T.string.isRequired,
-  hasScore: T.bool.isRequired
+  admin: T.bool.isRequired,
+  hasScore: T.bool.isRequired,
+  delete: T.func.isRequired
 }
 
 const ConnectedPapers = connect(
   (state) => ({
+    admin: hasPermission('edit', resourceSelectors.resourceNode(state)) || hasPermission('manage_papers', resourceSelectors.resourceNode(state)),
     quizId: quizSelectors.id(state),
-    hasScore: true // TODO
+    hasScore: quizSelectors.hasScore(state)
+  }),
+  (dispatch) => ({
+    delete(quizId, papers) {
+      dispatch(papersActions.deletePapers(quizId, papers))
+    }
   })
 )(Papers)
 
