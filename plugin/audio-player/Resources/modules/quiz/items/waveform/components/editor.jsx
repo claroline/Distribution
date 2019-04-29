@@ -305,6 +305,22 @@ const WaveformEditor = (props) =>
         primary: true,
         fields: [
           {
+            name: 'penalty',
+            type: 'number',
+            label: trans('global_penalty', {}, 'quiz'),
+            required: true,
+            options: {
+              min: 0
+            }
+          }, {
+            name: 'answersLimit',
+            type: 'number',
+            label: trans('nb_authorized_selection', {}, 'quiz'),
+            required: true,
+            options: {
+              min: 0
+            }
+          }, {
             name: 'tolerance',
             label: trans('default_tolerance', {}, 'quiz'),
             type: 'number',

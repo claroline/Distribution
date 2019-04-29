@@ -6,6 +6,7 @@ use Claroline\AudioPlayerBundle\Entity\Quiz\Misc\Section;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Library\Model\PenaltyTrait;
 
 /**
  * A Waveform question.
@@ -15,6 +16,11 @@ use UJM\ExoBundle\Entity\ItemType\AbstractItem;
  */
 class WaveformQuestion extends AbstractItem
 {
+    /*
+     * The penalty to apply to each wrong association
+     */
+    use PenaltyTrait;
+
     /**
      * @ORM\Column(name="url", type="string")
      */
@@ -24,6 +30,11 @@ class WaveformQuestion extends AbstractItem
      * @ORM\Column(name="tolerance", type="float")
      */
     private $tolerance = 1;
+
+    /**
+     * @ORM\Column(name="answers_limit", type="integer")
+     */
+    private $answersLimit = 0;
 
     /**
      * @ORM\OneToMany(
@@ -61,6 +72,16 @@ class WaveformQuestion extends AbstractItem
     public function setTolerance($tolerance)
     {
         $this->tolerance = $tolerance;
+    }
+
+    public function getAnswersLimit()
+    {
+        return $this->answersLimit;
+    }
+
+    public function setAnswersLimit($answersLimit)
+    {
+        $this->answersLimit = $answersLimit;
     }
 
     public function getSections()

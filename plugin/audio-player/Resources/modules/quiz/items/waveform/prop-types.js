@@ -16,6 +16,8 @@ const WaveformItem = {
   propTypes: {
     url: T.string,
     tolerance: T.number,
+    penalty: T.number,
+    answersLimit: T.number,
     solutions: T.arrayOf(T.shape({
       section: T.shape(Section.propTypes),
       score: T.number,
@@ -25,6 +27,8 @@ const WaveformItem = {
   defaultProps: {
     url: null,
     tolerance: 1,
+    penalty: 0,
+    answersLimit: 0,
     solutions: []
   }
 }
