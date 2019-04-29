@@ -36,13 +36,13 @@ class WaveformAnswerValidator extends JsonSchemaValidator
         $done = [];
 
         foreach ($answerData as $i => $sectionA) {
-            $startA = $sectionA['start'] - $sectionA['startTolerance'];
-            $endA = $sectionA['end'] - $sectionA['endTolerance'];
+            $startA = isset($sectionA['startTolerance']) ? $sectionA['start'] - $sectionA['startTolerance'] : $sectionA['start'];
+            $endA = isset($sectionA['endTolerance']) ? $sectionA['end'] + $sectionA['endTolerance'] : $sectionA['end'];
 
             foreach ($answerData as $j => $sectionB) {
-                if (!isset($done[$j])) {
-                    $startB = $sectionB['start'] - $sectionB['startTolerance'];
-                    $endB = $sectionB['end'] - $sectionB['endTolerance'];
+                if ($i !== $j && !isset($done[$j])) {
+                    $startB = isset($sectionB['startTolerance']) ? $sectionB['start'] - $sectionB['startTolerance'] : $sectionB['start'];
+                    $endB = isset($sectionB['endTolerance']) ? $sectionB['end'] + $sectionB['endTolerance'] : $sectionB['end'];
 
                     if ($startA >= $startB && $startA <= $endB) {
                         $errors[] = [

@@ -25,7 +25,7 @@ class Waveform extends Component {
     if (this.props.editable) {
       plugins.push(
         RegionsPlugin.create({
-          dragSelection: !this.props.maxRegions || (this.props.regions && this.props.regions.length >= this.props.maxRegions),
+          dragSelection: !this.props.maxRegions || (this.props.regions && this.props.regions.length < this.props.maxRegions),
           slop: 5
         })
       )
@@ -43,68 +43,73 @@ class Waveform extends Component {
       // Load audio file
       this.state.wavesurfer.load(this.props.url)
 
-      this.state.wavesurfer.on('region-created', (region) => {
-        if (this.props.eventsCallbacks['region-created']) {
-          this.props.eventsCallbacks['region-created'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-updated', (region) => {
-        if (this.props.eventsCallbacks['region-updated']) {
-          this.props.eventsCallbacks['region-updated'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-update-end', (region) => {
-        if (this.props.maxRegions && this.props.maxRegions <= Object.keys(this.state.wavesurfer.regions.list).length) {
-          this.state.wavesurfer.disableDragSelection()
-        }
-        if (this.props.eventsCallbacks['region-update-end']) {
-          this.props.eventsCallbacks['region-update-end'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-removed', (region) => {
-        if (this.props.eventsCallbacks['region-removed']) {
-          this.props.eventsCallbacks['region-removed'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-play', (region) => {
-        if (this.props.eventsCallbacks['region-play']) {
-          this.props.eventsCallbacks['region-play'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-in', (region) => {
-        if (this.props.eventsCallbacks['region-in']) {
-          this.props.eventsCallbacks['region-in'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-out', (region) => {
-        if (this.props.eventsCallbacks['region-out']) {
-          this.props.eventsCallbacks['region-out'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-mouseenter', (region) => {
-        if (this.props.eventsCallbacks['region-mouseenter']) {
-          this.props.eventsCallbacks['region-mouseenter'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-mouseleave', (region) => {
-        if (this.props.eventsCallbacks['region-mouseleave']) {
-          this.props.eventsCallbacks['region-mouseleave'](region)
-        }
-      })
-      this.state.wavesurfer.on('region-click', (region, e) => {
-        if (this.props.eventsCallbacks['region-click']) {
-          this.props.eventsCallbacks['region-click'](region, e)
-        }
-      })
-      this.state.wavesurfer.on('region-dblclick', (region, e) => {
-        if (this.props.eventsCallbacks['region-dblclick']) {
-          this.props.eventsCallbacks['region-dblclick'](region, e)
-        } else {
-          e.stopPropagation()
-          e.preventDefault()
-          this.playRegion(region)
-        }
-      })
+      if (this.props.editable) {
+        this.state.wavesurfer.on('region-created', (region) => {
+          if (this.props.eventsCallbacks['region-created']) {
+            this.props.eventsCallbacks['region-created'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-updated', (region) => {
+          if (this.props.eventsCallbacks['region-updated']) {
+            this.props.eventsCallbacks['region-updated'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-update-end', (region) => {
+          if (this.props.maxRegions && this.props.maxRegions <= Object.keys(this.state.wavesurfer.regions.list).length) {
+            this.state.wavesurfer.disableDragSelection()
+          }
+          if (this.props.eventsCallbacks['region-update-end']) {
+            this.props.eventsCallbacks['region-update-end'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-removed', (region) => {
+          if (this.props.maxRegions && this.props.maxRegions > Object.keys(this.state.wavesurfer.regions.list).length) {
+            this.state.wavesurfer.enableDragSelection({dragSelection: true, slop: 5})
+          }
+          if (this.props.eventsCallbacks['region-removed']) {
+            this.props.eventsCallbacks['region-removed'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-play', (region) => {
+          if (this.props.eventsCallbacks['region-play']) {
+            this.props.eventsCallbacks['region-play'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-in', (region) => {
+          if (this.props.eventsCallbacks['region-in']) {
+            this.props.eventsCallbacks['region-in'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-out', (region) => {
+          if (this.props.eventsCallbacks['region-out']) {
+            this.props.eventsCallbacks['region-out'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-mouseenter', (region) => {
+          if (this.props.eventsCallbacks['region-mouseenter']) {
+            this.props.eventsCallbacks['region-mouseenter'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-mouseleave', (region) => {
+          if (this.props.eventsCallbacks['region-mouseleave']) {
+            this.props.eventsCallbacks['region-mouseleave'](region)
+          }
+        })
+        this.state.wavesurfer.on('region-click', (region, e) => {
+          if (this.props.eventsCallbacks['region-click']) {
+            this.props.eventsCallbacks['region-click'](region, e)
+          }
+        })
+        this.state.wavesurfer.on('region-dblclick', (region, e) => {
+          if (this.props.eventsCallbacks['region-dblclick']) {
+            this.props.eventsCallbacks['region-dblclick'](region, e)
+          } else {
+            e.stopPropagation()
+            e.preventDefault()
+            this.playRegion(region)
+          }
+        })
+      }
 
       // Necessary to display waveform correctly when the initialization occurs in an undisplayed component
       let refreshInterval = setInterval(() => {
@@ -114,23 +119,28 @@ class Waveform extends Component {
         if (canvas.getAttribute('width')) {
           // Initialize existing regions
           this.props.regions.forEach(r => {
-            this.state.wavesurfer.addRegion(r)
-            const startTolerance = {
-              id: `start-${r.id}`,
-              start: r.start - r.startTolerance,
-              end: r.start,
-              drag: false,
-              color: 'rgba(29, 105, 153, 0.3)'
+            this.state.wavesurfer.addRegion(Object.assign({}, r, {resize: this.props.editable, drag: this.props.editable}))
+
+            if (r.startTolerance) {
+              this.state.wavesurfer.addRegion({
+                id: `start-${r.id}`,
+                start: r.start - r.startTolerance,
+                end: r.start,
+                resize: this.props.editable,
+                drag: false,
+                color: 'rgba(29, 105, 153, 0.3)'
+              })
             }
-            const endTolerance = {
-              id: `end-${r.id}`,
-              start: r.end,
-              end: r.end + r.endTolerance,
-              drag: false,
-              color: 'rgba(29, 105, 153, 0.3)'
+            if (r.endTolerance) {
+              this.state.wavesurfer.addRegion({
+                id: `end-${r.id}`,
+                start: r.end,
+                end: r.end + r.endTolerance,
+                resize: this.props.editable,
+                drag: false,
+                color: 'rgba(29, 105, 153, 0.3)'
+              })
             }
-            this.state.wavesurfer.addRegion(startTolerance)
-            this.state.wavesurfer.addRegion(endTolerance)
           })
           clearInterval(refreshInterval)
         } {
@@ -160,44 +170,64 @@ class Waveform extends Component {
             region.update({
               start: propRegion.start,
               end: propRegion.end,
+              resize: this.props.editable,
+              drag: this.props.editable,
               color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'
             })
-            this.state.wavesurfer.addRegion({
-              id: `start-${propRegion.id}`,
-              start: propRegion.start - propRegion.startTolerance,
-              end: propRegion.start,
-              drag: false,
-              color: 'rgba(29, 105, 153, 0.3)'
-            })
-            this.state.wavesurfer.addRegion({
-              id: `end-${propRegion.id}`,
-              start: propRegion.end,
-              end: propRegion.end + propRegion.endTolerance,
-              drag: false,
-              color: 'rgba(29, 105, 153, 0.3)'
-            })
+
+            if (propRegion.startTolerance) {
+              this.state.wavesurfer.addRegion({
+                id: `start-${propRegion.id}`,
+                start: propRegion.start - propRegion.startTolerance,
+                end: propRegion.start,
+                resize: this.props.editable,
+                drag: false,
+                color: 'rgba(29, 105, 153, 0.3)'
+              })
+            }
+            if (propRegion.startTolerance) {
+              this.state.wavesurfer.addRegion({
+                id: `end-${propRegion.id}`,
+                start: propRegion.end,
+                end: propRegion.end + propRegion.endTolerance,
+                resize: this.props.editable,
+                drag: false,
+                color: 'rgba(29, 105, 153, 0.3)'
+              })
+            }
           } else {
             region.remove()
 
             this.state.wavesurfer.addRegion(Object.assign(
               {},
               propRegion,
-              {color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'}
+              {
+                resize: this.props.editable,
+                drag: this.props.editable,
+                color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'
+              }
             ))
-            this.state.wavesurfer.addRegion({
-              id: `start-${propRegion.id}`,
-              start: propRegion.start - propRegion.startTolerance,
-              end: propRegion.start,
-              drag: false,
-              color: 'rgba(29, 105, 153, 0.3)'
-            })
-            this.state.wavesurfer.addRegion({
-              id: `end-${propRegion.id}`,
-              start: propRegion.end,
-              end: propRegion.end + propRegion.endTolerance,
-              drag: false,
-              color: 'rgba(29, 105, 153, 0.3)'
-            })
+
+            if (propRegion.startTolerance) {
+              this.state.wavesurfer.addRegion({
+                id: `start-${propRegion.id}`,
+                start: propRegion.start - propRegion.startTolerance,
+                end: propRegion.start,
+                resize: this.props.editable,
+                drag: false,
+                color: 'rgba(29, 105, 153, 0.3)'
+              })
+            }
+            if (propRegion.endTolerance) {
+              this.state.wavesurfer.addRegion({
+                id: `end-${propRegion.id}`,
+                start: propRegion.end,
+                end: propRegion.end + propRegion.endTolerance,
+                resize: this.props.editable,
+                drag: false,
+                color: 'rgba(29, 105, 153, 0.3)'
+              })
+            }
           }
         } else {
           // Remove deleted regions

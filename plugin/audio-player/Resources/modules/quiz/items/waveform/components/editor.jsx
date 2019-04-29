@@ -13,6 +13,7 @@ import {makeId} from '#/main/core/scaffolding/id'
 
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 
+import {isOverlayed} from '#/plugin/audio-player/quiz/items/waveform/utils'
 import {
   Section as SectionType,
   WaveformItem as WaveformItemType
@@ -126,22 +127,6 @@ class WaveformComponent extends Component {
     }
   }
 
-  isOverlayed(start, end, index) {
-    let overlayed = false
-
-    this.props.item.solutions.forEach((s, idx) => {
-      if (idx !== index && (
-        (start >= s.section.start - s.section.startTolerance && start <= s.section.end + s.section.endTolerance) ||
-        (end >= s.section.start - s.section.startTolerance && end <= s.section.end + s.section.endTolerance) ||
-        (start <= s.section.start - s.section.startTolerance && end >= s.section.end + s.section.endTolerance)
-      )) {
-        overlayed = true
-      }
-    })
-
-    return overlayed
-  }
-
   render() {
     return (
       <div>
@@ -151,12 +136,6 @@ class WaveformComponent extends Component {
             regions={this.props.item.solutions.map(s => s.section)}
             selectedRegion={this.state.currentSection}
             eventsCallbacks={{
-              // 'region-created': (region) => {
-              //   console.log('created')
-              // },
-              // 'region-updated': (region) => {
-              //   console.log('updated')
-              // },
               'region-update-end': (region) => {
                 const newSolutions = cloneDeep(this.props.item.solutions)
                 let regionId = region.id
@@ -186,7 +165,7 @@ class WaveformComponent extends Component {
                   }
                 }
 
-                if (!this.isOverlayed(start, end, regionIdx)) {
+                if (!isOverlayed(this.props.item.solutions.map(s => s.section), start, end, regionIdx)) {
                   if (-1 < regionIdx) {
                     if (isStart) {
                       newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
@@ -221,24 +200,6 @@ class WaveformComponent extends Component {
                 }
                 this.props.update('solutions', newSolutions)
               },
-              // 'region-removed': (region) => {
-              //   console.log('removed')
-              // },
-              // 'region-play': (region) => {
-              //   console.log('play')
-              // },
-              // 'region-in': (region) => {
-              //   console.log('in')
-              // },
-              // 'region-out': (region) => {
-              //   console.log('out')
-              // },
-              // 'region-mouseenter': (region) => {
-              //   console.log('mouseenter')
-              // },
-              // 'region-mouseleave': (region) => {
-              //   console.log('mouseleave')
-              // },
               'region-click': (region, e) => {
                 e.stopPropagation()
                 e.preventDefault()
