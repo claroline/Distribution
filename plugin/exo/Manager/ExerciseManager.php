@@ -388,7 +388,7 @@ class ExerciseManager
                     $itemData = $paper->getQuestion($item->getUuid());
 
                     // get item entities
-                    $paperItem = $this->itemManager->deserialize($itemData);
+                    $paperItem = $this->itemManager->deserialize($itemData, null, [Transfer::NO_FETCH]);
 
                     $found = false;
                     foreach ($answers as $answer) {

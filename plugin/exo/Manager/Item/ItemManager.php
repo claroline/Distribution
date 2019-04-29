@@ -180,13 +180,14 @@ class ItemManager
      * Deserializes a question.
      *
      * @param array $data
+     * @param Item  $item
      * @param array $options
      *
      * @return Item
      */
-    public function deserialize(array $data, array $options = [])
+    public function deserialize(array $data, Item $item = null, array $options = [])
     {
-        return $this->serializer->deserialize($data, $options);
+        return $this->serializer->deserialize($data, $item, $options);
     }
 
     /**
