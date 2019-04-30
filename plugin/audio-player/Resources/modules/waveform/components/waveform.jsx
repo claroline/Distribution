@@ -251,6 +251,10 @@ class Waveform extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.state.wavesurfer.destroy()
+  }
+
   switchAudio() {
     if (this.state.playing) {
       this.state.wavesurfer.pause()
