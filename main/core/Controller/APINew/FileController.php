@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
-use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AppBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,10 +21,6 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Manages platform uploaded files... sort of.
  *
- * @ApiMeta(
- *     class="Claroline\CoreBundle\Entity\File\PublicFile",
- *     ignore={"update", "exist", "list", "copyBulk"}
- * )
  * @EXT\Route("/publicfile")
  */
 class FileController extends AbstractCrudController
@@ -63,7 +59,7 @@ class FileController extends AbstractCrudController
 
         foreach ($files as $file) {
             $object = $this->crud->create(
-              'Claroline\CoreBundle\Entity\File\PublicFile',
+              PublicFile::class,
               [],
               ['file' => $file]
           );
@@ -73,6 +69,16 @@ class FileController extends AbstractCrudController
         }
 
         return $objects;
+    }
+
+    public function getClass()
+    {
+        return PublicFile::class;
+    }
+
+    public function getIgnore()
+    {
+        return ['update', 'exist', 'list', 'copyBulk'];
     }
 
     /** @return string */
