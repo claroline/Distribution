@@ -12,7 +12,6 @@ use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Innova\PathBundle\Entity\Path\Path;
-use Innova\PathBundle\Entity\SecondaryResource;
 use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Manager\UserProgressionManager;
 use JMS\DiExtraBundle\Annotation as DI;
