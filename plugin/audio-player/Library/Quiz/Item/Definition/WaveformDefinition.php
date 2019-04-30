@@ -123,20 +123,22 @@ class WaveformDefinition extends AbstractDefinition
         /** @var Section $section */
         foreach ($question->getSections() as $section) {
             if (is_array($answer)) {
+                $found = false;
+
                 foreach ($answer as $selection) {
                     if ($selection['start'] >= $section->getStart() - $section->getStartTolerance() &&
                         $selection['start'] <= $section->getStart() &&
                         $selection['end'] >= $section->getEnd() &&
                         $selection['end'] <= $section->getEnd() + $section->getEndTolerance()
                     ) {
-                        if ($section->getScore() > 0) {
-                            $corrected->addExpected($section);
-                        } else {
-                            $corrected->addUnexpected($section);
-                        }
-                    } elseif ($section->getScore() > 0) {
-                        $corrected->addMissing($section);
+                        $found = true;
+                        break;
                     }
+                }
+                if ($found) {
+                    $section->getScore() > 0 ? $corrected->addExpected($section) : $corrected->addUnexpected($section);
+                } elseif ($section->getScore() > 0) {
+                    $corrected->addMissing($section);
                 }
             } elseif ($section->getScore() > 0) {
                 $corrected->addMissing($section);
@@ -194,7 +196,7 @@ class WaveformDefinition extends AbstractDefinition
         }
 
         return [
-            'section' => $sections,
+            'sections' => $sections,
             'total' => $total,
             'unanswered' => $total - count($answersData),
         ];

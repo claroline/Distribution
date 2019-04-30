@@ -132,6 +132,7 @@ class WaveformComponent extends Component {
       <div>
         {this.props.item.url &&
           <Waveform
+            id={`waveform-editor-${this.props.item.id}`}
             url={asset(this.props.item.url)}
             regions={this.props.item.solutions.map(s => s.section)}
             selectedRegion={this.state.currentSection}

@@ -63,6 +63,7 @@ Section.defaultProps = {
 const WaveformPlayer = (props) =>
   <div>
     <Waveform
+      id={`waveform-player-${props.item.id}`}
       url={asset(props.item.url)}
       editable={!props.disabled}
       maxRegions={props.item.answersLimit}

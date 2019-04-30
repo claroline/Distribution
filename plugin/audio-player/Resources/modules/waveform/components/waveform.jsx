@@ -20,20 +20,18 @@ class Waveform extends Component {
   }
 
   componentDidMount() {
-    const plugins = []
+    const plugins = [
+      RegionsPlugin.create({
+        dragSelection: this.props.editable &&
+          (!this.props.maxRegions || (this.props.regions && this.props.regions.length < this.props.maxRegions)),
+        slop: 5
+      })
+    ]
 
-    if (this.props.editable) {
-      plugins.push(
-        RegionsPlugin.create({
-          dragSelection: !this.props.maxRegions || (this.props.regions && this.props.regions.length < this.props.maxRegions),
-          slop: 5
-        })
-      )
-    }
     // Initilize Wavesurfer
     this.setState({
       wavesurfer: WaveSurfer.create({
-        container: '#waveform',
+        container: `#${this.props.id}`,
         scrollParent: true,
         waveColor: '#A8DBA8',
         progressColor: '#3B8686',
@@ -113,13 +111,21 @@ class Waveform extends Component {
 
       // Necessary to display waveform correctly when the initialization occurs in an undisplayed component
       let refreshInterval = setInterval(() => {
-        const waveformEl = document.getElementById('waveform')
+        const waveformEl = document.getElementById(this.props.id)
         const canvas = waveformEl.querySelector('canvas')
 
         if (canvas.getAttribute('width')) {
           // Initialize existing regions
           this.props.regions.forEach(r => {
-            this.state.wavesurfer.addRegion(Object.assign({}, r, {resize: this.props.editable, drag: this.props.editable}))
+            this.state.wavesurfer.addRegion(Object.assign({}, r, {
+              resize: this.props.editable,
+              drag: this.props.editable,
+              color: r.color ?
+                r.color :
+                r.id === this.props.selectedRegion ?
+                  'rgba(29, 105, 153, 0.5)' :
+                  'rgba(29, 105, 153, 0.3)'
+            }))
 
             if (r.startTolerance) {
               this.state.wavesurfer.addRegion({
@@ -128,7 +134,7 @@ class Waveform extends Component {
                 end: r.start,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(29, 105, 153, 0.3)'
+                color: 'rgba(231, 86, 119, 0.3)'
               })
             }
             if (r.endTolerance) {
@@ -138,7 +144,7 @@ class Waveform extends Component {
                 end: r.end + r.endTolerance,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(29, 105, 153, 0.3)'
+                color: 'rgba(231, 86, 119, 0.3)'
               })
             }
           })
@@ -172,7 +178,11 @@ class Waveform extends Component {
               end: propRegion.end,
               resize: this.props.editable,
               drag: this.props.editable,
-              color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'
+              color: propRegion.color ?
+                propRegion.color :
+                propRegion.id === this.props.selectedRegion ?
+                  'rgba(29, 105, 153, 0.5)' :
+                  'rgba(29, 105, 153, 0.3)'
             })
 
             if (propRegion.startTolerance) {
@@ -182,7 +192,7 @@ class Waveform extends Component {
                 end: propRegion.start,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(29, 105, 153, 0.3)'
+                color: 'rgba(231, 86, 119, 0.3)'
               })
             }
             if (propRegion.startTolerance) {
@@ -192,7 +202,7 @@ class Waveform extends Component {
                 end: propRegion.end + propRegion.endTolerance,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(29, 105, 153, 0.3)'
+                color: 'rgba(231, 86, 119, 0.3)'
               })
             }
           } else {
@@ -204,7 +214,11 @@ class Waveform extends Component {
               {
                 resize: this.props.editable,
                 drag: this.props.editable,
-                color: propRegion.id === this.props.selectedRegion ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'
+                color: propRegion.color ?
+                  propRegion.color :
+                  propRegion.id === this.props.selectedRegion ?
+                    'rgba(29, 105, 153, 0.5)' :
+                    'rgba(29, 105, 153, 0.3)'
               }
             ))
 
@@ -215,7 +229,7 @@ class Waveform extends Component {
                 end: propRegion.start,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(29, 105, 153, 0.3)'
+                color: 'rgba(231, 86, 119, 0.3)'
               })
             }
             if (propRegion.endTolerance) {
@@ -225,7 +239,7 @@ class Waveform extends Component {
                 end: propRegion.end + propRegion.endTolerance,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(29, 105, 153, 0.3)'
+                color: 'rgba(231, 86, 119, 0.3)'
               })
             }
           }
@@ -286,12 +300,12 @@ class Waveform extends Component {
   render() {
     return (
       <div>
-        <div id="waveform">
+        <div id={this.props.id}>
         </div>
-        <div id="waveform-timeline">
+        <div id={`${this.props.id}-timeline`}>
         </div>
         <div
-          id="waveform-cmd"
+          id={`${this.props.id}-cmd`}
           style={{
             marginTop: '10px',
             textAlign: 'center'
@@ -343,6 +357,7 @@ class Waveform extends Component {
 }
 
 Waveform.propTypes = {
+  id: T.string.isRequired,
   url: T.string.isRequired,
   editable: T.bool.isRequired,
   regions: T.arrayOf(T.shape({

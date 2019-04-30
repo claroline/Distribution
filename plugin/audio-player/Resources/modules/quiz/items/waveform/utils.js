@@ -17,6 +17,24 @@ function isOverlayed(sections, start, end, excludedIndex) {
   return overlayed
 }
 
+function isCorrectAnswer(solutions, start, end) {
+  let isCorrect = false
+
+  solutions.forEach(solution => {
+    if (0 < solution.score &&
+      start >= solution.section.start - solution.section.startTolerance &&
+      start <= solution.section.start &&
+      end >= solution.section.end &&
+      end <= solution.section.end + solution.section.endTolerance
+    ) {
+      isCorrect = true
+    }
+  })
+
+  return isCorrect
+}
+
 export {
-  isOverlayed
+  isOverlayed,
+  isCorrectAnswer
 }

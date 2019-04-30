@@ -1,8 +1,9 @@
 import merge from 'lodash/merge'
+import times from 'lodash/times'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 import {WaveformItem} from '#/plugin/audio-player/quiz/items/waveform/prop-types'
 
@@ -50,7 +51,60 @@ export default {
   /**
    * Correct an answer submitted to a waveform item.
    *
+   * @param {object} item
+   * @param {object} answers
+   *
    * @return {CorrectedAnswer}
    */
-  getCorrectedAnswer: () => new CorrectedAnswer()
+  getCorrectedAnswer: (item, answers = null) => {
+    const corrected = new CorrectedAnswer()
+
+    item.solutions.forEach(solution => {
+      let found = false
+
+      if (answers && answers.data) {
+        answers.data.forEach(selection => {
+          if (selection.start >= solution.section.start - solution.section.startTolerance &&
+            selection.start <= solution.section.start &&
+            selection.end >= solution.section.end &&
+            selection.end <= solution.section.end + solution.section.endTolerance
+          ) {
+            found = true
+          }
+        })
+      }
+      if (found) {
+        solution.score > 0 ?
+          corrected.addExpected(new Answerable(solution.score)) :
+          corrected.addUnexpected(new Answerable(solution.score))
+      } else if (solution.score > 0) {
+        corrected.addMissing(new Answerable(solution.score))
+      }
+    })
+
+    if (answers && answers.data) {
+      let nbPenalities = 0
+
+      answers.data.forEach(selection => {
+        let found = false
+
+        item.solutions.forEach(solution => {
+          if (selection.start >= solution.section.start - solution.section.startTolerance &&
+            selection.start <= solution.section.start &&
+            selection.end >= solution.section.end &&
+            selection.end <= solution.section.end + solution.section.endTolerance
+          ) {
+            found = true
+          }
+        })
+
+        if (!found) {
+          ++nbPenalities
+        }
+      })
+      times(nbPenalities, () => corrected.addPenalty(new Answerable(item.penalty)))
+    }
+
+    return corrected
+  }
 }
