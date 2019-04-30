@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import WaveSurfer from 'wavesurfer';
-import RegionsPlugin from 'wavesurfer.js/src/plugin/regions'
+import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions'
+import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline'
 
 import {trans} from '#/main/app/intl/translation'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
@@ -12,11 +13,13 @@ class Waveform extends Component {
 
     this.state = {
       wavesurfer: null,
-      playing: false
+      playing: false,
+      zoom: 20
     }
     this.switchAudio = this.switchAudio.bind(this)
     this.playRegion = this.playRegion.bind(this)
     this.switchRegion = this.switchRegion.bind(this)
+    this.zoom = this.zoom.bind(this)
   }
 
   componentDidMount() {
@@ -25,6 +28,9 @@ class Waveform extends Component {
         dragSelection: this.props.editable &&
           (!this.props.maxRegions || (this.props.regions && this.props.regions.length < this.props.maxRegions)),
         slop: 5
+      }),
+      TimelinePlugin.create({
+        container: `#${this.props.id}-timeline`
       })
     ]
 
@@ -301,6 +307,11 @@ class Waveform extends Component {
     }
   }
 
+  zoom(value) {
+    this.setState({zoom: value})
+    this.state.wavesurfer.zoom(Number(value))
+  }
+
   render() {
     return (
       <div>
@@ -311,49 +322,88 @@ class Waveform extends Component {
         <div
           id={`${this.props.id}-cmd`}
           style={{
-            marginTop: '10px',
-            textAlign: 'center'
+            marginTop: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-evenly'
           }}
         >
-          {0 < this.props.regions.length &&
+          <span className="waveform-control">
+            {0 < this.props.regions.length &&
+              <CallbackButton
+                className="btn"
+                callback={() => this.switchRegion(-1)}
+                primary={true}
+                size="sm"
+                style={{
+                  marginRight: '10px'
+                }}
+              >
+                <span className="fa fa-fast-backward" />
+              </CallbackButton>
+            }
+
             <CallbackButton
               className="btn"
-              callback={() => this.switchRegion(-1)}
+              callback={this.switchAudio}
               primary={true}
               size="sm"
-              style={{
-                marginRight: '10px'
-              }}
             >
-              <span className="fa fa-fast-backward" />
+              <span className={`fa fa-${this.state.playing ? 'pause' : 'play'}`} />
+              <span style={{marginLeft: '5px'}}>
+                {this.state.playing ? trans('pause', {}, 'audio') : trans('play', {}, 'audio')}
+              </span>
             </CallbackButton>
-          }
 
-          <CallbackButton
-            className="btn"
-            callback={this.switchAudio}
-            primary={true}
-            size="sm"
+            {0 < this.props.regions.length &&
+              <CallbackButton
+                className="btn"
+                callback={() => this.switchRegion()}
+                primary={true}
+                size="sm"
+                style={{
+                  marginLeft: '10px'
+                }}
+              >
+                <span className="fa fa-fast-forward" />
+              </CallbackButton>
+            }
+          </span>
+          <div
+            className="waveform-zoom"
+            style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
           >
-            <span className={`fa fa-${this.state.playing ? 'pause' : 'play'}`} />
-            <span style={{marginLeft: '5px'}}>
-              {this.state.playing ? trans('pause', {}, 'audio') : trans('play', {}, 'audio')}
-            </span>
-          </CallbackButton>
-
-          {0 < this.props.regions.length &&
             <CallbackButton
-              className="btn"
-              callback={() => this.switchRegion()}
-              primary={true}
-              size="sm"
+              callback={() => 0 < this.state.zoom - 1 ? this.zoom(this.state.zoom - 1) : false}
               style={{
-                marginLeft: '10px'
+                marginRight: '5px'
               }}
             >
-              <span className="fa fa-fast-forward" />
+              <span className="fa fa-search-minus" />
             </CallbackButton>
-          }
+            <input
+              type="range"
+              min="1"
+              max="100"
+              value={this.state.zoom}
+              style={{
+                display: 'inline',
+                minWidth: '200px'
+              }}
+              onChange={(e) => this.zoom(parseInt(e.target.value))}
+            />
+            <CallbackButton
+              callback={() => 100 > this.state.zoom + 1 ? this.zoom(this.state.zoom + 1) : false}
+              style={{
+                marginLeft: '5px'
+              }}
+            >
+              <span className="fa fa-search-plus" />
+            </CallbackButton>
+          </div>
         </div>
       </div>
     )
