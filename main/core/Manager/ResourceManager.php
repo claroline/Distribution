@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -83,6 +84,12 @@ class ResourceManager
     /* @var ContainerInterface */
     private $container;
 
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /** @var ResourceLifecycleManager */
+    private $lifeCycleManager;
+
     /**
      * ResourceManager constructor.
      *
@@ -109,6 +116,7 @@ class ResourceManager
      * @param Utilities                    $secut
      * @param TranslatorInterface          $translator
      * @param PlatformConfigurationHandler $platformConfigHandler
+     * @param SerializerProvider           $serializer
      * @param ResourceLifecycleManager     $lifeCycleManager
      */
     public function __construct(
@@ -541,10 +549,14 @@ class ResourceManager
         $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($resource))->getName();
 
         $serializer = $this->serializer->get($className);
-        $options = method_exists($serializer, 'getCopyOptions') ? $serializer->getCopyOptions() : ['serialize' => [], 'deserialize' => []];
+        $options = ['serialize' => [], 'deserialize' => [Options::REFRESH_UUID]];
+        if (method_exists($serializer, 'getCopyOptions')) {
+            $options = array_merge_recursive($options, $serializer->getCopyOptions());
+        }
+
         $serialized = $serializer->serialize($resource, $options['serialize']);
         $copy = new $className();
-        $copy = $serializer->deserialize($serialized, $copy, $options['deserialize']);
+        $serializer->deserialize($serialized, $copy, $options['deserialize']);
         $copy->setResourceNode($newNode);
         $original = $this->getResourceFromNode($node);
 
@@ -1156,7 +1168,7 @@ class ResourceManager
 
         $serialized = $this->serializer->serialize($node);
         unset($serialized['rights']);
-        $this->serializer->get(ResourceNode::class)->deserialize($serialized, $newNode);
+        $this->serializer->get(ResourceNode::class)->deserialize($serialized, $newNode, [Options::REFRESH_UUID]);
 
         $newNode->setResourceType($node->getResourceType());
         $newNode->setCreator($user);
