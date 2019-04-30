@@ -23,6 +23,7 @@ class ApiDumperCommand extends ContainerAwareCommand
     {
         $this->setName('claroline:api:dump')->setDescription('Dump the api doc as json');
         $this->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'The required format (json|yml)');
+        $this->addOption('debug', 'd', InputOption::VALUE_NONE, 'debug mode (no output)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -36,10 +37,12 @@ class ApiDumperCommand extends ContainerAwareCommand
         }
 
         switch ($format) {
-          case 'json': $string = json_encode($data); break;
+          case 'json': $string = json_encode($data, JSON_PRETTY_PRINT); break;
           case 'yml': $string = Yaml::dump($data); break;
         }
 
-        $output->writeln($string);
+        if (!$input->getOption('debug')) {
+            $output->writeln($string);
+        }
     }
 }

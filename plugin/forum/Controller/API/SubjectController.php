@@ -23,8 +23,10 @@ class SubjectController extends AbstractCrudController
 
     /**
      * @EXT\Route("/{id}/messages")
-     * @EXT\Route("/{id}/messages/forum/{forumId}", name="apiv2_forum_subject_get_message")
+     * @EXT\Route("/forum/{forumId}/subjects/{id}/messages", name="apiv2_forum_subject_get_message")
      * @EXT\Method("GET")
+     * @EXT\ParamConverter("subject", class = "ClarolineForumBundle:Subject",  options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("forum", class = "ClarolineForumBundle:Forum",  options={"mapping": {"forumId": "uuid"}})
 
      * @ApiDoc(
      *     description="Get the messages of a subject",
@@ -47,25 +49,16 @@ class SubjectController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function getMessagesAction($id, $forumId, Request $request)
+    public function getMessagesAction(Subject $subject, Forum $forum = null, Request $request)
     {
-        if ($forumId) {
-            $subject = $this->om->getRepository(Subject::class)->findOneByUuid($id);
-            $forum = $this->om->getRepository(Forum::class)->findOneByUuid($forumId);
-
-            if (!$forum || !$subject) {
-                throw new \Exception('Object not founds (wrong ids)');
-            }
-
-            if ($forum->getId() !== $subject->getForum()->getId()) {
-                throw new \Exception('This subject was not created in the forum.');
-            }
+        if ($forum && ($forum->getId() !== $subject->getForum()->getId())) {
+            throw new \Exception('This subject was not created in the forum.');
         }
 
         return new JsonResponse(
           $this->finder->search(Message::class, array_merge(
               $request->query->all(),
-              ['hiddenFilters' => ['subject' => $id, 'parent' => null, 'first' => false]]
+              ['hiddenFilters' => ['subject' => $subject->getId(), 'parent' => null, 'first' => false]]
             ))
         );
     }
