@@ -348,8 +348,7 @@ class ExerciseSerializer
           'serialize' => [Transfer::INCLUDE_SOLUTIONS],
           'deserialize' => [
               Transfer::NO_FETCH,
-              Transfer::PERSIST_TAG,
-              Transfer::REFRESH_UUID,
+              Transfer::PERSIST_TAG
           ],
         ];
     }
