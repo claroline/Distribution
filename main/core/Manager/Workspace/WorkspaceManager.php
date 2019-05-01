@@ -36,7 +36,6 @@ use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRecentRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
-use Claroline\CoreBundle\Security\PlatformRoles;
 use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
