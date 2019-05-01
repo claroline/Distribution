@@ -144,6 +144,7 @@ class WorkspaceManager
         $this->om->flush();
     }
 
+    //todo: REMOVE me.
     public function createWorkspace(Workspace $workspace)
     {
         if (0 === count($workspace->getOrganizations())) {
@@ -929,6 +930,14 @@ class WorkspaceManager
         // gets entity from raw data.
         $workspace = $transferManager->deserialize($data, $newWorkspace, $options, $fileBag);
         $workspace->setIsModel($model);
+
+        $managerRole = $this->roleManager->getManagerRole($workspace);
+
+        if ($managerRole && $workspace->getCreator()) {
+            $user = $workspace->getCreator();
+            $user->addRole($managerRole);
+            $this->om->persist($user);
+        }
 
         $this->om->persist($workspace);
         $this->om->flush();
