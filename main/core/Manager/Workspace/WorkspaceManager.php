@@ -941,12 +941,6 @@ class WorkspaceManager
             $this->om->persist($user);
         }
 
-        //add additional default roles to root
-        $roles = [
-            PlatformRoles::USER,
-            PlatformRoles::ANONYMOUS,
-        ];
-
         $root = $this->resourceManager->getWorkspaceRoot($workspace);
         $this->resourceManager->createRights($root);
 
