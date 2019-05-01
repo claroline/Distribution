@@ -948,11 +948,7 @@ class WorkspaceManager
         ];
 
         $root = $this->resourceManager->getWorkspaceRoot($workspace);
-
-        foreach ($roles as $roleName) {
-            $role = $this->om->getRepository(Role::class)->findOneByName($roleName);
-            $rights = $this->resourceManager->createRights($root);
-        }
+        $this->resourceManager->createRights($root);
 
         $this->om->persist($workspace);
         $this->om->flush();
