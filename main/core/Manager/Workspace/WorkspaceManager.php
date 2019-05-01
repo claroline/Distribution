@@ -36,6 +36,7 @@ use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRecentRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
@@ -931,12 +932,26 @@ class WorkspaceManager
         $workspace = $transferManager->deserialize($data, $newWorkspace, $options, $fileBag);
         $workspace->setIsModel($model);
 
+        //set the manager
         $managerRole = $this->roleManager->getManagerRole($workspace);
 
         if ($managerRole && $workspace->getCreator()) {
             $user = $workspace->getCreator();
             $user->addRole($managerRole);
             $this->om->persist($user);
+        }
+
+        //add additional default roles to root
+        $roles = [
+            PlatformRoles::USER,
+            PlatformRoles::ANONYMOUS,
+        ];
+
+        $root = $this->resourceManager->getWorkspaceRoot($workspace);
+
+        foreach ($roles as $roleName) {
+            $role = $this->om->getRepository(Role::class)->findOneByName($roleName);
+            $rights = $this->resourceManager->createRights($root);
         }
 
         $this->om->persist($workspace);
