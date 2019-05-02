@@ -1,14 +1,51 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {asset} from '#/main/app/config/asset'
 import {trans} from '#/main/app/intl/translation'
+
+import {isCorrectAnswer} from '#/plugin/audio-player/quiz/items/waveform/utils'
+import {WaveformItem as WaveformItemType} from '#/plugin/audio-player/quiz/items/waveform/prop-types'
+import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
+import {AnswerTable} from '#/plugin/audio-player/quiz/items/waveform/components/answer-table'
 
 const WaveformFeedback = props =>
   <div className="waveform-feedback">
-    Waveform feedback
+    <Waveform
+      id={`waveform-feedback-${props.item.id}`}
+      url={asset(props.item.url)}
+      editable={false}
+      regions={props.answer.map(a => Object.assign({}, a, {
+        color: isCorrectAnswer(props.item.solutions, a.start, a.end) ?
+          'rgba(29, 105, 153, 0.3)' :
+          'rgba(255, 0, 0, 0.3)'
+      }))}
+    />
+    {props.answer.length > 0 &&
+      <AnswerTable
+        title={trans('your_answers', {}, 'quiz')}
+        sections={props.answer.map(a => {
+          const solution = props.item.solutions.find(s => a.start >= s.section.start - s.section.startTolerance &&
+            a.start <= s.section.start &&
+            a.end >= s.section.end &&
+            a.end <= s.section.end + s.section.endTolerance
+          )
+
+          return Object.assign({}, a, {
+            start: a.start,
+            end: a.end,
+            score: solution ? solution.score : 0,
+            feedback: solution ? solution.feedback : null
+          })
+        })}
+        showScore={false}
+        highlightScore={true}
+      />
+    }
   </div>
 
 WaveformFeedback.propTypes = {
+  item: T.shape(WaveformItemType.propTypes).isRequired,
   answer: T.array
 }
 
