@@ -43,24 +43,47 @@ class Section extends Component {
       >
         <div
           className="form-group"
-          style={{display: 'flex'}}
+          style={{
+            display: 'flex',
+            alignItems: 'center'
+          }}
         >
-          <input
-            title={trans('start', {}, 'audio')}
-            type="number"
-            className="form-control section-start"
-            disabled={true}
-            value={this.props.solution.section.start}
-            style={{marginRight: '5px'}}
-          />
-          <input
-            title={trans('end', {}, 'audio')}
-            type="number"
-            className="form-control section-end"
-            disabled={true}
-            value={this.props.solution.section.end}
-            style={{marginRight: '5px'}}
-          />
+          <div
+            className="input-group"
+            style={{
+              marginRight: '5px',
+              width: '40%'
+            }}
+          >
+            <span className="input-group-addon">
+              <b>{`${trans('start', {}, 'audio')} (${trans('second')})`}</b>
+            </span>
+            <input
+              title={trans('start', {}, 'audio')}
+              type="number"
+              className="form-control section-start"
+              disabled={true}
+              value={this.props.solution.section.start}
+            />
+          </div>
+          <div
+            className="input-group"
+            style={{
+              marginRight: '5px',
+              width: '40%'
+            }}
+          >
+            <span className="input-group-addon">
+              <b>{`${trans('end', {}, 'audio')} (${trans('second')})`}</b>
+            </span>
+            <input
+              title={trans('end', {}, 'audio')}
+              type="number"
+              className="form-control section-end"
+              disabled={true}
+              value={this.props.solution.section.end}
+            />
+          </div>
 
           <div className="right-controls">
             <input
@@ -87,6 +110,51 @@ class Section extends Component {
             >
               <span className="fa fa-fw fa-trash-o" />
             </CallbackButton>
+          </div>
+        </div>
+
+        <div
+          className="form-group"
+          style={{
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <div
+            className="input-group"
+            style={{
+              marginRight: '5px',
+              width: '40%'
+            }}
+          >
+            <span className="input-group-addon">
+              <b>{trans('start_tolerance', {}, 'audio')}</b>
+            </span>
+            <input
+              title={trans('start_tolerance', {}, 'audio')}
+              type="number"
+              className="form-control section-start-tolerance"
+              disabled={true}
+              value={this.props.solution.section.startTolerance}
+            />
+          </div>
+          <div
+            className="input-group"
+            style={{
+              marginRight: '5px',
+              width: '40%'
+            }}
+          >
+            <span className="input-group-addon">
+              <b>{trans('end_tolerance', {}, 'audio')}</b>
+            </span>
+            <input
+              title={trans('end_tolerance', {}, 'audio')}
+              type="number"
+              className="form-control section-end-tolerance"
+              disabled={true}
+              value={this.props.solution.section.endTolerance}
+            />
           </div>
         </div>
 
@@ -166,8 +234,8 @@ class WaveformComponent extends Component {
                   if (-1 < regionIdx) {
                     if (isTolerance) {
                       newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
-                        startTolerance: newSolutions[regionIdx]['section']['start'] - parseFloat(region.start.toFixed(1)),
-                        endTolerance: parseFloat(region.end.toFixed(1)) - newSolutions[regionIdx]['section']['end']
+                        startTolerance: parseFloat((newSolutions[regionIdx]['section']['start'] - parseFloat(region.start.toFixed(1))).toFixed(1)),
+                        endTolerance: parseFloat((parseFloat(region.end.toFixed(1)) - newSolutions[regionIdx]['section']['end']).toFixed(1))
                       })
                     } else {
                       newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {

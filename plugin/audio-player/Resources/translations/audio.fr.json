@@ -1,4 +1,8 @@
 {
+    "end": "Fin",
+    "end_tolerance": "Tolérance de fin",
     "pause": "Pause",
-    "play": "Play"
+    "play": "Play",
+    "start": "Début",
+    "start_tolerance": "Tolérance de début"
 }

@@ -13,27 +13,47 @@ import {Section as SectionType} from '#/plugin/audio-player/quiz/items/waveform/
 import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
 
 const Section = props =>
-  <div style={{marginTop: '10px'}}>
+  <div style={{marginTop: '20px'}}>
     <div
       className="form-group"
       style={{display: 'flex'}}
     >
-      <input
-        title={trans('start', {}, 'audio')}
-        type="number"
-        className="form-control section-start"
-        disabled={true}
-        value={props.section.start}
-        style={{marginRight: '5px'}}
-      />
-      <input
-        title={trans('end', {}, 'audio')}
-        type="number"
-        className="form-control section-end"
-        disabled={true}
-        value={props.section.end}
-        style={{marginRight: '5px'}}
-      />
+      <div
+        className="input-group"
+        style={{
+          marginRight: '5px',
+          width: '100%'
+        }}
+      >
+        <span className="input-group-addon">
+          <b>{`${trans('start', {}, 'audio')} (${trans('second')})`}</b>
+        </span>
+        <input
+          title={trans('start', {}, 'audio')}
+          type="number"
+          className="form-control section-start"
+          disabled={true}
+          value={props.section.start}
+        />
+      </div>
+      <div
+        className="input-group"
+        style={{
+          marginRight: '5px',
+          width: '100%'
+        }}
+      >
+        <span className="input-group-addon">
+          <b>{`${trans('end', {}, 'audio')} (${trans('second')})`}</b>
+        </span>
+        <input
+          title={trans('end', {}, 'audio')}
+          type="number"
+          className="form-control section-end"
+          disabled={true}
+          value={props.section.end}
+        />
+      </div>
 
       {!props.readOnly &&
         <div className="right-controls">
