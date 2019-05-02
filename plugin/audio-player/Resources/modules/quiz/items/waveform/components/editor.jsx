@@ -48,6 +48,14 @@ class Section extends Component {
             alignItems: 'center'
           }}
         >
+          <CallbackButton
+            id={`section-${this.props.solution.section.id}-play`}
+            className="btn-link"
+            callback={() => this.props.onPlay(this.props.solution.section.start, this.props.solution.section.end)}
+          >
+            <span className="fa fa-fw fa-play-circle-o" />
+          </CallbackButton>
+
           <div
             className="input-group"
             style={{
@@ -120,6 +128,17 @@ class Section extends Component {
             alignItems: 'center'
           }}
         >
+          <CallbackButton
+            id={`section-${this.props.solution.section.id}-play`}
+            className="btn-link"
+            callback={() => this.props.onPlay(
+              this.props.solution.section.start - this.props.solution.section.startTolerance,
+              this.props.solution.section.end + this.props.solution.section.endTolerance
+            )}
+          >
+            <span className="fa fa-fw fa-play-circle-o" />
+          </CallbackButton>
+
           <div
             className="input-group"
             style={{
@@ -198,6 +217,7 @@ Section.propTypes = {
   selected: T.bool.isRequired,
   onUpdate: T.func.isRequired,
   onRemove: T.func.isRequired,
+  onPlay: T.func.isRequired,
   isOverlayed: T.func.isRequired
 }
 
@@ -210,7 +230,8 @@ class WaveformComponent extends Component {
     super(props)
 
     this.state = {
-      currentSection: null
+      currentSection: null,
+      toPlay: null
     }
   }
 
@@ -223,6 +244,7 @@ class WaveformComponent extends Component {
             url={asset(this.props.item.url)}
             regions={this.props.item.solutions.map(s => s.section)}
             selectedRegion={this.state.currentSection}
+            toPlay={this.state.toPlay}
             eventsCallbacks={{
               'region-update-end': (region) => {
                 const newSolutions = cloneDeep(this.props.item.solutions)
@@ -282,8 +304,6 @@ class WaveformComponent extends Component {
                 this.props.update('solutions', newSolutions)
               },
               'region-click': (region, e) => {
-                e.stopPropagation()
-                e.preventDefault()
                 const newSolutions = cloneDeep(this.props.item.solutions)
                 const current = newSolutions.find(s => s.section.id === region.id || s.section.regionId === region.id)
 
@@ -319,6 +339,7 @@ class WaveformComponent extends Component {
               newSolutions.splice(idx, 1)
               this.props.update('solutions', newSolutions)
             }}
+            onPlay={(start, end) => this.setState({toPlay: [start, end]})}
             isOverlayed={(start, end) => isOverlayed(this.props.item.solutions.map(s => s.section), start, end, idx)}
           />
         )}

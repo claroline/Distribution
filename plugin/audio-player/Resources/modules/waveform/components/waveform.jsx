@@ -20,6 +20,7 @@ class Waveform extends Component {
     }
     this.switchAudio = this.switchAudio.bind(this)
     this.playRegion = this.playRegion.bind(this)
+    this.play = this.play.bind(this)
     this.switchRegion = this.switchRegion.bind(this)
     this.zoom = this.zoom.bind(this)
   }
@@ -109,10 +110,6 @@ class Waveform extends Component {
         this.state.wavesurfer.on('region-dblclick', (region, e) => {
           if (this.props.eventsCallbacks['region-dblclick']) {
             this.props.eventsCallbacks['region-dblclick'](region, e)
-          } else {
-            e.stopPropagation()
-            e.preventDefault()
-            this.playRegion(region)
           }
         })
       }
@@ -225,6 +222,10 @@ class Waveform extends Component {
           region.remove()
         }
       })
+
+      if (this.props.toPlay && prevProps.toPlay !== this.props.toPlay) {
+        this.play(this.props.toPlay[0], this.props.toPlay[1])
+      }
     }
   }
 
@@ -243,6 +244,11 @@ class Waveform extends Component {
 
   playRegion(region) {
     this.state.wavesurfer.play(region.start, region.end)
+    this.setState({playing: true})
+  }
+
+  play(start, end) {
+    this.state.wavesurfer.play(start, end)
     this.setState({playing: true})
   }
 

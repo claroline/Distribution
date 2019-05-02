@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -18,6 +18,14 @@ const Section = props =>
       className="form-group"
       style={{display: 'flex'}}
     >
+      <CallbackButton
+        id={`section-${props.section.id}-play`}
+        className="btn-link"
+        callback={() => props.onPlay()}
+      >
+        <span className="fa fa-fw fa-play-circle-o" />
+      </CallbackButton>
+
       <div
         className="input-group"
         style={{
@@ -73,65 +81,77 @@ const Section = props =>
 Section.propTypes = {
   section: T.shape(SectionType.propTypes).isRequired,
   readOnly: T.bool.isRequired,
-  onRemove: T.func.isRequired
+  onRemove: T.func.isRequired,
+  onPlay: T.func.isRequired
 }
 
 Section.defaultProps = {
   readOnly: false
 }
 
-const WaveformPlayer = (props) =>
-  <div>
-    <Waveform
-      id={`waveform-player-${props.item.id}`}
-      url={asset(props.item.url)}
-      editable={!props.disabled}
-      maxRegions={props.item.answersLimit}
-      regions={props.answer.map(a => a.id ? a : Object.assign({}, a, {id: makeId()}))}
-      eventsCallbacks={{
-        'region-update-end': (region) => {
-          if (!props.disabled) {
-            const newAnswer = cloneDeep(props.answer)
-            const answerIdx = newAnswer.findIndex(a => a.id === region.id)
+class WaveformPlayer extends Component {
+  constructor(props) {
+    super(props)
 
-            if (!isOverlayed(props.answer, region.start, region.end, answerIdx)) {
-              if (-1 < answerIdx) {
-                newAnswer[answerIdx]['start'] = parseFloat(region.start.toFixed(1))
-                newAnswer[answerIdx]['end'] = parseFloat(region.end.toFixed(1))
-              } else if (!props.answersLimit || newAnswer.length < props.answersLimit) {
-                newAnswer.push({
-                  id: region.id,
-                  start: parseFloat(region.start.toFixed(1)),
-                  end: parseFloat(region.end.toFixed(1))
-                })
+    this.state = {
+      toPlay: null
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Waveform
+          id={`waveform-player-${this.props.item.id}`}
+          url={asset(this.props.item.url)}
+          editable={!this.props.disabled}
+          maxRegions={this.props.item.answersLimit}
+          regions={this.props.answer.map(a => a.id ? a : Object.assign({}, a, {id: makeId()}))}
+          toPlay={this.state.toPlay}
+          eventsCallbacks={{
+            'region-update-end': (region) => {
+              if (!this.props.disabled) {
+                const newAnswer = cloneDeep(this.props.answer)
+                const answerIdx = newAnswer.findIndex(a => a.id === region.id)
+
+                if (!isOverlayed(this.props.answer, region.start, region.end, answerIdx)) {
+                  if (-1 < answerIdx) {
+                    newAnswer[answerIdx]['start'] = parseFloat(region.start.toFixed(1))
+                    newAnswer[answerIdx]['end'] = parseFloat(region.end.toFixed(1))
+                  } else if (!this.props.answersLimit || newAnswer.length < this.props.answersLimit) {
+                    newAnswer.push({
+                      id: region.id,
+                      start: parseFloat(region.start.toFixed(1)),
+                      end: parseFloat(region.end.toFixed(1))
+                    })
+                  }
+                }
+                this.props.onChange(newAnswer)
               }
             }
-            props.onChange(newAnswer)
-          }
-        },
-        'region-click': (region, e) => {
-          e.stopPropagation()
-          e.preventDefault()
-        }
-      }}
-    />
-    {props.answer.map(a =>
-      <Section
-        key={`section-${a.start}`}
-        section={a}
-        readOnly={props.disabled}
-        onRemove={() => {
-          const newAnswer = cloneDeep(props.answer)
-          const answerIdx = newAnswer.findIndex(na => na.id === a.id)
+          }}
+        />
+        {this.props.answer.map(a =>
+          <Section
+            key={`section-${a.start}`}
+            section={a}
+            readOnly={this.props.disabled}
+            onRemove={() => {
+              const newAnswer = cloneDeep(this.props.answer)
+              const answerIdx = newAnswer.findIndex(na => na.id === a.id)
 
-          if (-1 < answerIdx) {
-            newAnswer.splice(answerIdx, 1)
-            props.onChange(newAnswer)
-          }
-        }}
-      />
-    )}
-  </div>
+              if (-1 < answerIdx) {
+                newAnswer.splice(answerIdx, 1)
+                this.props.onChange(newAnswer)
+              }
+            }}
+            onPlay={() => this.setState({toPlay: [a.start, a.end]})}
+          />
+        )}
+      </div>
+    )
+  }
+}
 
 WaveformPlayer.propTypes = {
   item: T.shape({
