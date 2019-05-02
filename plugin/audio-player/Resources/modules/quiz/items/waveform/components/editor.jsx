@@ -134,8 +134,17 @@ class Section extends Component {
               title={trans('start_tolerance', {}, 'audio')}
               type="number"
               className="form-control section-start-tolerance"
-              disabled={true}
               value={this.props.solution.section.startTolerance}
+              min={0}
+              step={0.1}
+              onChange={(e) => {
+                const start = parseFloat((this.props.solution.section.start - parseFloat(parseFloat(e.target.value).toFixed(1))).toFixed(1))
+                const end = parseFloat((this.props.solution.section.end + this.props.solution.section.endTolerance).toFixed(1))
+
+                if (!this.props.isOverlayed(start, end)) {
+                  this.props.onUpdate('section', Object.assign({}, this.props.solution.section, {startTolerance: parseFloat(parseFloat(e.target.value).toFixed(1))}))
+                }
+              }}
             />
           </div>
           <div
@@ -152,8 +161,17 @@ class Section extends Component {
               title={trans('end_tolerance', {}, 'audio')}
               type="number"
               className="form-control section-end-tolerance"
-              disabled={true}
               value={this.props.solution.section.endTolerance}
+              min={0}
+              step={0.1}
+              onChange={(e) => {
+                const start = parseFloat((this.props.solution.section.start - this.props.solution.section.startTolerance).toFixed(1))
+                const end = parseFloat((this.props.solution.section.end + parseFloat(parseFloat(e.target.value).toFixed(1))).toFixed(1))
+
+                if (!this.props.isOverlayed(start, end)) {
+                  this.props.onUpdate('section', Object.assign({}, this.props.solution.section, {endTolerance: parseFloat(parseFloat(e.target.value).toFixed(1))}))
+                }
+              }}
             />
           </div>
         </div>
@@ -179,7 +197,8 @@ Section.propTypes = {
   }).isRequired,
   selected: T.bool.isRequired,
   onUpdate: T.func.isRequired,
-  onRemove: T.func.isRequired
+  onRemove: T.func.isRequired,
+  isOverlayed: T.func.isRequired
 }
 
 Section.defaultProps = {
@@ -280,7 +299,7 @@ class WaveformComponent extends Component {
             }}
           />
         }
-        {this.props.item.solutions.map(s =>
+        {this.props.item.solutions.map((s, idx) =>
           <Section
             key={s.section.id}
             solution={s}
@@ -296,14 +315,11 @@ class WaveformComponent extends Component {
             }}
             onRemove={() => {
               const newSolutions = cloneDeep(this.props.item.solutions)
-              const idx = newSolutions.findIndex(ns => ns.section.id === s.section.id)
-
-              if (-1 < idx) {
-                this.setState({currentSection: null})
-                newSolutions.splice(idx, 1)
-                this.props.update('solutions', newSolutions)
-              }
+              this.setState({currentSection: null})
+              newSolutions.splice(idx, 1)
+              this.props.update('solutions', newSolutions)
             }}
+            isOverlayed={(start, end) => isOverlayed(this.props.item.solutions.map(s => s.section), start, end, idx)}
           />
         )}
       </div>
