@@ -80,17 +80,20 @@ class ResourceManager implements ToolImporterInterface
         $node = $this->serializer->serialize($root, array_merge($options, [Options::SERIALIZE_MINIMAL]));
         $resSerializer = $this->serializer->get($root->getClass());
         $resSerializeOptions = method_exists($resSerializer, 'getCopyOptions') ? $resSerializer->getCopyOptions()['serialize'] : [];
+        $res = $this->om->getRepository($root->getClass())->findOneBy(['resourceNode' => $root]);
 
-        $resource = array_merge(
-            $this->serializer->serialize($this->om->getRepository($root->getClass())->findOneBy(['resourceNode' => $root]), $resSerializeOptions),
-            ['_nodeId' => $root->getUuid(), '_class' => $node['meta']['className'], '_type' => $node['meta']['type']]
-        );
+        if ($res) {
+            $resource = array_merge(
+                $this->serializer->serialize($res, $resSerializeOptions),
+                ['_nodeId' => $root->getUuid(), '_class' => $node['meta']['className'], '_type' => $node['meta']['type']]
+            );
 
-        $data['nodes'][] = $node;
-        $data['resources'][] = $resource;
+            $data['nodes'][] = $node;
+            $data['resources'][] = $resource;
 
-        foreach ($root->getChildren() as $child) {
-            $data = $this->recursiveSerialize($child, $options, $data);
+            foreach ($root->getChildren() as $child) {
+                $data = $this->recursiveSerialize($child, $options, $data);
+            }
         }
 
         return $data;
