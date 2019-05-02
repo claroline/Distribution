@@ -7,6 +7,8 @@ import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline'
 import {trans} from '#/main/app/intl/translation'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
+import {constants} from '#/plugin/audio-player/waveform/constants'
+
 class Waveform extends Component {
   constructor(props) {
     super(props)
@@ -39,8 +41,8 @@ class Waveform extends Component {
       wavesurfer: WaveSurfer.create({
         container: `#${this.props.id}`,
         scrollParent: true,
-        waveColor: '#A8DBA8',
-        progressColor: '#3B8686',
+        waveColor: constants.COLORS.wave,
+        progressColor: constants.COLORS.progression,
         plugins: plugins
       })
     }, () => {
@@ -130,7 +132,7 @@ class Waveform extends Component {
                 end: r.end + r.endTolerance,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(231, 86, 119, 0.3)'
+                color: constants.COLORS.tolerance
               })
             }
             this.state.wavesurfer.addRegion(Object.assign({}, r, {
@@ -139,8 +141,8 @@ class Waveform extends Component {
               color: r.color ?
                 r.color :
                 r.id === this.props.selectedRegion ?
-                  'rgba(58, 178, 255, 0.65)' :
-                  'rgba(58, 178, 255, 0.5)'
+                  constants.COLORS.selected :
+                  constants.COLORS.section
             }))
           })
           clearInterval(refreshInterval)
@@ -175,7 +177,7 @@ class Waveform extends Component {
                 end: propRegion.end + propRegion.endTolerance,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(231, 86, 119, 0.3)'
+                color: constants.COLORS.tolerance
               })
             } else {
               region.update({
@@ -186,8 +188,8 @@ class Waveform extends Component {
                 color: propRegion.color ?
                   propRegion.color :
                   propRegion.id === this.props.selectedRegion ?
-                    'rgba(58, 178, 255, 0.65)' :
-                    'rgba(58, 178, 255, 0.5)'
+                    constants.COLORS.selected :
+                    constants.COLORS.section
               })
             }
           } else {
@@ -201,7 +203,7 @@ class Waveform extends Component {
                 end: propRegion.end + propRegion.endTolerance,
                 resize: this.props.editable,
                 drag: false,
-                color: 'rgba(231, 86, 119, 0.3)'
+                color: constants.COLORS.tolerance
               })
             }
             this.state.wavesurfer.addRegion(Object.assign(
@@ -213,8 +215,8 @@ class Waveform extends Component {
                 color: propRegion.color ?
                   propRegion.color :
                   propRegion.id === this.props.selectedRegion ?
-                    'rgba(58, 178, 255, 0.65)' :
-                    'rgba(58, 178, 255, 0.5)'
+                    constants.COLORS.selected :
+                    constants.COLORS.section
               }
             ))
           }

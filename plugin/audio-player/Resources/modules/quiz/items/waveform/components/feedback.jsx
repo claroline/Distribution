@@ -5,6 +5,8 @@ import {asset} from '#/main/app/config/asset'
 import {trans} from '#/main/app/intl/translation'
 
 import {isCorrectAnswer} from '#/plugin/audio-player/quiz/items/waveform/utils'
+import {constants} from '#/plugin/audio-player/quiz/items/waveform/constants'
+import {constants as waveformConstants} from '#/plugin/audio-player/waveform/constants'
 import {WaveformItem as WaveformItemType} from '#/plugin/audio-player/quiz/items/waveform/prop-types'
 import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
 import {AnswerTable} from '#/plugin/audio-player/quiz/items/waveform/components/answer-table'
@@ -17,8 +19,8 @@ const WaveformFeedback = props =>
       editable={false}
       regions={props.answer.map(a => Object.assign({}, a, {
         color: isCorrectAnswer(props.item.solutions, a.start, a.end) ?
-          'rgba(29, 105, 153, 0.3)' :
-          'rgba(255, 0, 0, 0.3)'
+          waveformConstants.COLORS.section :
+          constants.INCORRECT_COLOR
       }))}
     />
     {props.answer.length > 0 &&

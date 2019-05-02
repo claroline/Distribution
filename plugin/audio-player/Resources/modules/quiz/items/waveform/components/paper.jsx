@@ -7,6 +7,8 @@ import {trans} from '#/main/app/intl/translation'
 import {PaperTabs} from '#/plugin/exo/items/components/paper-tabs'
 
 import {isCorrectAnswer} from '#/plugin/audio-player/quiz/items/waveform/utils'
+import {constants} from '#/plugin/audio-player/quiz/items/waveform/constants'
+import {constants as waveformConstants} from '#/plugin/audio-player/waveform/constants'
 import {WaveformItem as WaveformItemType} from '#/plugin/audio-player/quiz/items/waveform/prop-types'
 import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
 import {AnswerTable} from '#/plugin/audio-player/quiz/items/waveform/components/answer-table'
@@ -26,8 +28,8 @@ const WaveformPaper = props =>
           editable={false}
           regions={props.answer.map(a => Object.assign({}, a, {
             color: isCorrectAnswer(props.item.solutions, a.start, a.end) ?
-              'rgba(29, 105, 153, 0.3)' :
-              'rgba(255, 0, 0, 0.3)'
+              waveformConstants.COLORS.section :
+              constants.INCORRECT_COLOR
           }))}
         />
         {props.answer.length > 0 &&
@@ -83,7 +85,9 @@ const WaveformPaper = props =>
           url={asset(props.item.url)}
           editable={false}
           regions={props.item.solutions.map(s => Object.assign({}, s.section, {
-            color: 0 < s.score ? 'rgba(58, 178, 255, 0.5)' : 'rgba(255, 0, 0, 0.4)'
+            color: 0 < s.score ?
+              waveformConstants.COLORS.section :
+              constants.INCORRECT_COLOR
           }))}
         />
         <AnswerStatsTable
