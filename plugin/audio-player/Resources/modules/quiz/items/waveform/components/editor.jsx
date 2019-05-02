@@ -274,10 +274,15 @@ class WaveformComponent extends Component {
                 if (!isOverlayed(this.props.item.solutions.map(s => s.section), start, end, regionIdx)) {
                   if (-1 < regionIdx) {
                     if (isTolerance) {
-                      newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
-                        startTolerance: parseFloat((newSolutions[regionIdx]['section']['start'] - parseFloat(region.start.toFixed(1))).toFixed(1)),
-                        endTolerance: parseFloat((parseFloat(region.end.toFixed(1)) - newSolutions[regionIdx]['section']['end']).toFixed(1))
-                      })
+                      const startTolerance = parseFloat((newSolutions[regionIdx]['section']['start'] - parseFloat(region.start.toFixed(1))).toFixed(1))
+                      const endTolerance = parseFloat((parseFloat(region.end.toFixed(1)) - newSolutions[regionIdx]['section']['end']).toFixed(1))
+
+                      if (0 <= startTolerance && 0 <= endTolerance) {
+                        newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
+                          startTolerance: startTolerance,
+                          endTolerance: endTolerance
+                        })
+                      }
                     } else {
                       newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
                         start: parseFloat(region.start.toFixed(1)),
