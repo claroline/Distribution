@@ -59,9 +59,7 @@ const WaveformPaper = props =>
           id={`waveform-paper-expected-${props.item.id}`}
           url={asset(props.item.url)}
           editable={false}
-          regions={props.item.solutions.filter(s => 0 < s.score).map(s => Object.assign({}, s.section, {
-            color: 'rgba(29, 105, 153, 0.3)'
-          }))}
+          regions={props.item.solutions.filter(s => 0 < s.score).map(s => s.section)}
         />
         {0 < props.item.solutions.filter(s => 0 < s.score).length &&
           <AnswerTable
@@ -85,7 +83,7 @@ const WaveformPaper = props =>
           url={asset(props.item.url)}
           editable={false}
           regions={props.item.solutions.map(s => Object.assign({}, s.section, {
-            color: 0 < s.score ? 'rgba(29, 105, 153, 0.3)' : 'rgba(255, 0, 0, 0.4)'
+            color: 0 < s.score ? 'rgba(58, 178, 255, 0.5)' : 'rgba(255, 0, 0, 0.4)'
           }))}
         />
         <AnswerStatsTable
