@@ -41,8 +41,8 @@ const WaveformPaper = props =>
               )
 
               return Object.assign({}, a, {
-                start: parseFloat(a.start).toFixed(2),
-                end: parseFloat(a.end).toFixed(2),
+                start: a.start,
+                end: a.end,
                 score: solution ? solution.score : -props.item.penalty,
                 feedback: solution ? solution.feedback : null
               })
@@ -67,8 +67,8 @@ const WaveformPaper = props =>
           <AnswerTable
             title={trans('expected_answers', {}, 'quiz')}
             sections={props.item.solutions.filter(s => 0 < s.score).map(s => Object.assign({}, s.section, {
-              start: parseFloat(s.section.start).toFixed(2),
-              end: parseFloat(s.section.end).toFixed(2),
+              start: s.section.start,
+              end: s.section.end,
               score: s.score,
               feedback: s.feedback
             }))}
@@ -91,8 +91,8 @@ const WaveformPaper = props =>
         <AnswerStatsTable
           title={trans('stats', {}, 'quiz')}
           sections={props.item.solutions.map(s => Object.assign({}, s.section, {
-            start: parseFloat(s.section.start).toFixed(2),
-            end: parseFloat(s.section.end).toFixed(2),
+            start: s.section.start,
+            end: s.section.end,
             score: s.score
           }))}
           stats={props.stats}

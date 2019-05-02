@@ -76,13 +76,13 @@ const WaveformPlayer = (props) =>
 
             if (!isOverlayed(props.answer, region.start, region.end, answerIdx)) {
               if (-1 < answerIdx) {
-                newAnswer[answerIdx]['start'] = region.start
-                newAnswer[answerIdx]['end'] = region.end
+                newAnswer[answerIdx]['start'] = parseFloat(region.start.toFixed(1))
+                newAnswer[answerIdx]['end'] = parseFloat(region.end.toFixed(1))
               } else if (!props.answersLimit || newAnswer.length < props.answersLimit) {
                 newAnswer.push({
                   id: region.id,
-                  start: region.start,
-                  end: region.end
+                  start: parseFloat(region.start.toFixed(1)),
+                  end: parseFloat(region.end.toFixed(1))
                 })
               }
             }

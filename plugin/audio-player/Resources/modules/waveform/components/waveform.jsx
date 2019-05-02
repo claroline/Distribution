@@ -123,36 +123,25 @@ class Waveform extends Component {
         if (canvas.getAttribute('width')) {
           // Initialize existing regions
           this.props.regions.forEach(r => {
-            this.state.wavesurfer.addRegion(Object.assign({}, r, {
-              resize: this.props.editable,
-              drag: this.props.editable,
-              color: r.color ?
-                r.color :
-                r.id === this.props.selectedRegion ?
-                  'rgba(29, 105, 153, 0.5)' :
-                  'rgba(29, 105, 153, 0.3)'
-            }))
-
-            if (r.startTolerance) {
+            if (r.startTolerance || r.endTolerance) {
               this.state.wavesurfer.addRegion({
-                id: `start-${r.id}`,
+                id: `tolerance-${r.id}`,
                 start: r.start - r.startTolerance,
-                end: r.start,
-                resize: this.props.editable,
-                drag: false,
-                color: 'rgba(231, 86, 119, 0.3)'
-              })
-            }
-            if (r.endTolerance) {
-              this.state.wavesurfer.addRegion({
-                id: `end-${r.id}`,
-                start: r.end,
                 end: r.end + r.endTolerance,
                 resize: this.props.editable,
                 drag: false,
                 color: 'rgba(231, 86, 119, 0.3)'
               })
             }
+            this.state.wavesurfer.addRegion(Object.assign({}, r, {
+              resize: this.props.editable,
+              drag: this.props.editable,
+              color: r.color ?
+                r.color :
+                r.id === this.props.selectedRegion ?
+                  'rgba(58, 178, 255, 0.65)' :
+                  'rgba(58, 178, 255, 0.5)'
+            }))
           })
           clearInterval(refreshInterval)
         } {
@@ -169,51 +158,52 @@ class Waveform extends Component {
       this.state.wavesurfer.load(this.props.url)
     } else {
       Object.values(this.state.wavesurfer.regions.list).forEach(region => {
-        if (-1 < region.id.indexOf('start-') || -1 < region.id.indexOf('end-')) {
-          region.remove()
-        }
-      })
-      Object.values(this.state.wavesurfer.regions.list).forEach(region => {
         // Updates wavesurfer regions with given ones
-        const propRegion = this.props.regions.find(r => r.id === region.id || r.regionId === region.id)
+        let regionId = region.id
+        const isTolerance = -1 < regionId.indexOf('tolerance-')
+
+        if (isTolerance) {
+          regionId = regionId.substring(10)
+        }
+        const propRegion = this.props.regions.find(r => r.id === regionId || r.regionId === regionId)
 
         if (propRegion) {
-          if (propRegion.id === region.id) {
-            region.update({
-              start: propRegion.start,
-              end: propRegion.end,
-              resize: this.props.editable,
-              drag: this.props.editable,
-              color: propRegion.color ?
-                propRegion.color :
-                propRegion.id === this.props.selectedRegion ?
-                  'rgba(29, 105, 153, 0.5)' :
-                  'rgba(29, 105, 153, 0.3)'
-            })
-
-            if (propRegion.startTolerance) {
-              this.state.wavesurfer.addRegion({
-                id: `start-${propRegion.id}`,
+          if (propRegion.id === regionId) {
+            if (isTolerance) {
+              region.update({
                 start: propRegion.start - propRegion.startTolerance,
-                end: propRegion.start,
+                end: propRegion.end + propRegion.endTolerance,
                 resize: this.props.editable,
                 drag: false,
                 color: 'rgba(231, 86, 119, 0.3)'
               })
+            } else {
+              region.update({
+                start: propRegion.start,
+                end: propRegion.end,
+                resize: this.props.editable,
+                drag: this.props.editable,
+                color: propRegion.color ?
+                  propRegion.color :
+                  propRegion.id === this.props.selectedRegion ?
+                    'rgba(58, 178, 255, 0.65)' :
+                    'rgba(58, 178, 255, 0.5)'
+              })
             }
-            if (propRegion.startTolerance) {
+          } else {
+            // In this case we can override default wavesurfer id
+            region.remove()
+
+            if (propRegion.startTolerance || propRegion.endTolerance) {
               this.state.wavesurfer.addRegion({
-                id: `end-${propRegion.id}`,
-                start: propRegion.end,
+                id: `tolerance-${propRegion.id}`,
+                start: propRegion.start - propRegion.startTolerance,
                 end: propRegion.end + propRegion.endTolerance,
                 resize: this.props.editable,
                 drag: false,
                 color: 'rgba(231, 86, 119, 0.3)'
               })
             }
-          } else {
-            region.remove()
-
             this.state.wavesurfer.addRegion(Object.assign(
               {},
               propRegion,
@@ -223,31 +213,10 @@ class Waveform extends Component {
                 color: propRegion.color ?
                   propRegion.color :
                   propRegion.id === this.props.selectedRegion ?
-                    'rgba(29, 105, 153, 0.5)' :
-                    'rgba(29, 105, 153, 0.3)'
+                    'rgba(58, 178, 255, 0.65)' :
+                    'rgba(58, 178, 255, 0.5)'
               }
             ))
-
-            if (propRegion.startTolerance) {
-              this.state.wavesurfer.addRegion({
-                id: `start-${propRegion.id}`,
-                start: propRegion.start - propRegion.startTolerance,
-                end: propRegion.start,
-                resize: this.props.editable,
-                drag: false,
-                color: 'rgba(231, 86, 119, 0.3)'
-              })
-            }
-            if (propRegion.endTolerance) {
-              this.state.wavesurfer.addRegion({
-                id: `end-${propRegion.id}`,
-                start: propRegion.end,
-                end: propRegion.end + propRegion.endTolerance,
-                resize: this.props.editable,
-                drag: false,
-                color: 'rgba(231, 86, 119, 0.3)'
-              })
-            }
           }
         } else {
           // Remove deleted regions

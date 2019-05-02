@@ -140,46 +140,39 @@ class WaveformComponent extends Component {
               'region-update-end': (region) => {
                 const newSolutions = cloneDeep(this.props.item.solutions)
                 let regionId = region.id
-                let start = region.start
-                let end = region.end
-                const isStart = -1 < regionId.indexOf('start-')
-                const isEnd = -1 < regionId.indexOf('end-')
+                let start = parseFloat(region.start.toFixed(1))
+                let end = parseFloat(region.end.toFixed(1))
+                const isTolerance = -1 < regionId.indexOf('tolerance-')
 
-                if (isStart) {
-                  regionId = regionId.substring(6)
-                } else if (isEnd) {
-                  regionId = regionId.substring(4)
+                if (isTolerance) {
+                  regionId = regionId.substring(10)
                 }
                 const regionIdx = newSolutions.findIndex(r => r.section.id === regionId || r.section.regionId === regionId)
 
-                if (!isStart && !isEnd) {
+                if (!isTolerance) {
                   const solution = newSolutions.find(s => s.section.id === regionId || s.section.regionId === regionId)
 
                   if (solution) {
                     // For a existing region, check if start & end with tolerance don't overlay with another region
-                    start -= solution.section.startTolerance
-                    end += solution.section.endTolerance
+                    start -= parseFloat(solution.section.startTolerance.toFixed(1))
+                    end += parseFloat(solution.section.endTolerance.toFixed(1))
                   } else {
                     // For new region, check if start & end with default tolerance don't overlay with another region
-                    start -= this.props.item.tolerance
-                    end += this.props.item.tolerance
+                    start -= parseFloat(this.props.item.tolerance.toFixed(1))
+                    end += parseFloat(this.props.item.tolerance.toFixed(1))
                   }
                 }
-
                 if (!isOverlayed(this.props.item.solutions.map(s => s.section), start, end, regionIdx)) {
                   if (-1 < regionIdx) {
-                    if (isStart) {
+                    if (isTolerance) {
                       newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
-                        startTolerance: newSolutions[regionIdx]['section']['start'] - region.start
-                      })
-                    } else if (isEnd) {
-                      newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
-                        endTolerance: region.end - newSolutions[regionIdx]['section']['end']
+                        startTolerance: newSolutions[regionIdx]['section']['start'] - parseFloat(region.start.toFixed(1)),
+                        endTolerance: parseFloat(region.end.toFixed(1)) - newSolutions[regionIdx]['section']['end']
                       })
                     } else {
                       newSolutions[regionIdx]['section'] = Object.assign({}, newSolutions[regionIdx]['section'], {
-                        start: region.start,
-                        end: region.end
+                        start: parseFloat(region.start.toFixed(1)),
+                        end: parseFloat(region.end.toFixed(1))
                       })
                     }
                     this.setState({currentSection: newSolutions[regionIdx]['section']['id']})
@@ -188,10 +181,10 @@ class WaveformComponent extends Component {
                       section: {
                         id: makeId(),
                         regionId: region.id,
-                        start: region.start,
-                        end: region.end,
-                        startTolerance: this.props.item.tolerance,
-                        endTolerance: this.props.item.tolerance
+                        start: parseFloat(region.start.toFixed(1)),
+                        end: parseFloat(region.end.toFixed(1)),
+                        startTolerance: parseFloat(this.props.item.tolerance.toFixed(1)),
+                        endTolerance: parseFloat(this.props.item.tolerance.toFixed(1))
                       },
                       score: 1
                     })
