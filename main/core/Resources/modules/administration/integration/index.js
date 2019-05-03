@@ -13,8 +13,5 @@ bootstrap(
   IntegrationTool,
 
   // app store configuration
-  reducer,
-  // initial data
-  () => ({
-  })
+  reducer
 )

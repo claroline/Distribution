@@ -24,21 +24,28 @@ const LtiTool = props =>
         }
       ]}
     >
-      <Routes
-        routes={[
-          {
-            path: '/lti',
-            component: Apps,
-            exact: true
-          }, {
-            path: '/lti/form/:id?',
-            component: App,
-            onEnter: (params) => props.openForm(params.id || null),
-            onLeave: () => props.resetForm()
-          }
-        ]}
-      />
     </Toolbar>
+    <Routes
+      routes={[
+        {
+          path: '/lti',
+          component: Apps,
+          exact: true,
+          onEnter: () => {}
+        }, {
+          path: '/lti/form/:id?',
+          component: App,
+          onEnter: (params) => {
+
+            alert('open form')
+            props.openForm(params.id || null)
+          },
+          onLeave: () => {
+            props.resetForm()
+          }
+        }
+      ]}
+    />
   </div>
 
 LtiTool.propTypes = {

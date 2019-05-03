@@ -9,17 +9,17 @@ import {actions} from '#/plugin/lti/administration/lti/store'
 import {reducer} from '#/plugin/lti/administration/lti/store'
 
 const LtiTool = withRouter(
-  withReducer('integration', reducer)(
+  withReducer('lti', reducer)(
     connect(
       null,
       dispatch => ({
         openForm(id = null) {
-          dispatch(actions.open('integration.app', id, {
+          dispatch(actions.open('lti.app', id, {
             id: makeId()
           }))
         },
         resetForm() {
-          dispatch(actions.open('integration.app', null, {}))
+          dispatch(actions.open('lti.app', null, {}))
         }
       })
     )(LtiToolComponent)
