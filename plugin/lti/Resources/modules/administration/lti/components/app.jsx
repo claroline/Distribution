@@ -7,7 +7,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 const App = () =>
   <FormData
     level={2}
-    name="app"
+    name="integration.app"
     target={(app, isNew) => isNew ?
       ['apiv2_lti_create'] :
       ['apiv2_lti_update', {id: app.id}]

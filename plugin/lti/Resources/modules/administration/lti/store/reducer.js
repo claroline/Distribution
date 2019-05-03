@@ -4,12 +4,12 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
 const reducer = {
-  apps: makeListReducer('apps', {}, {
+  apps: makeListReducer('integration.apps', {}, {
     invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/app']: () => true
+      //      [FORM_SUBMIT_SUCCESS+'/app']: () => true
     })
   }),
-  app: makeFormReducer('app', {}, {})
+  app: makeFormReducer('integration.app', {}, {})
 }
 
 export {

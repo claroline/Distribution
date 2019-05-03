@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 
+import {Await} from '#/main/app/components/await'
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
@@ -19,57 +20,51 @@ class Tool extends Component
   }
 
   render() {
-    let tabs = []
-    let routes = []
+    return(
+      <ToolPage>
+        <Await
+          for={getIntegrationApps()}
+          then={(apps) => {
 
-    getIntegrationApps().then(apps => apps.map(app => {
-      tabs.push({
-        icon: app.default.icon,
-        title: trans(app.default.name),
-        path: '/'+app.default.name,
-        exact: true
-      })
+            const tabs = []
+            const routes = []
 
-      routes.push({
-        path: '/'+app.default.name,
-        exact: true,
-        component: app.default.component
-      })
+            apps.map(app => {
+              tabs.push({
+                icon: app.default.icon,
+                title: trans(app.default.name),
+                path: '/'+app.default.name,
+                exact: true
+              })
 
-      //this.forceUpdate()
-    }))
+              routes.push({
+                path: '/'+app.default.name,
+                exact: true,
+                component: app.default.component
+              })
+            })
 
-    console.log(tabs)
-    /*
-    tabs = [
-      {
-        icon: 'fa fa-fw fa-info',
-        title: trans('information'),
-        path: '/',
-        exact: true
-      }
-    ]*/
+            return (
+              <div className="row">
+                <div className="col-md-3">
+                  <Vertical
+                    style={{
+                      marginTop: '20px' // FIXME
+                    }}
+                    tabs={tabs}
+                  />
+                </div>
 
-    console.log(tabs, routes)
-
-    return(<ToolPage>
-      <div className="row">
-        <div className="col-md-3">
-          <Vertical
-            style={{
-              marginTop: '20px' // FIXME
-            }}
-            tabs={tabs}
-          />
-        </div>
-
-        <div className="col-md-9">
-          <Routes
-            routes={routes}
-          />
-        </div>
-      </div>
-    </ToolPage>)
+                <div className="col-md-9">
+                  <Routes
+                    routes={routes}
+                  />
+                </div>
+              </div>
+            )}}
+        />
+      </ToolPage>
+    )
   }
 }
 

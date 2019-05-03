@@ -1,7 +1,7 @@
 import {bootstrap} from '#/main/app/dom/bootstrap'
 
 import {IntegrationTool} from '#/main/core/administration/integration/components/tool'
-import {reducer} from '#/main/core/administration/logs/reducer'
+import {reducer} from '#/main/core/administration/integration/store/reducer'
 
 
 // mount the react application
