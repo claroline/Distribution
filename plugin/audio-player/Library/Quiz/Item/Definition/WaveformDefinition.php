@@ -11,6 +11,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\Definition\AbstractDefinition;
 
@@ -142,6 +143,25 @@ class WaveformDefinition extends AbstractDefinition
                 }
             } elseif ($section->getScore() > 0) {
                 $corrected->addMissing($section);
+            }
+        }
+        if (is_array($answer) && $question->getPenalty()) {
+            foreach ($answer as $selection) {
+                $found = false;
+
+                foreach ($question->getSections() as $section) {
+                    if ($selection['start'] >= $section->getStart() - $section->getStartTolerance() &&
+                        $selection['start'] <= $section->getStart() &&
+                        $selection['end'] >= $section->getEnd() &&
+                        $selection['end'] <= $section->getEnd() + $section->getEndTolerance()
+                    ) {
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $corrected->addPenalty(new GenericPenalty($question->getPenalty()));
+                }
             }
         }
 
