@@ -76,7 +76,6 @@ class ImportWorkspaceModelCommand extends ContainerAwareCommand implements Admin
         $consoleLogger = ConsoleLogger::get($output);
         $manager = $this->getContainer()->get('claroline.manager.workspace.transfer');
         $manager->setLogger($consoleLogger);
-
-        $this->getContainer()->get('claroline.manager.workspace.transfer')->create($data, $workspace);
+        $manager->get('claroline.manager.workspace.transfer')->create($data, $workspace);
     }
 }

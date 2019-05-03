@@ -97,10 +97,6 @@ class ExerciseSerializer
     {
         $exercise = $exercise ?: new Exercise();
 
-        if (!in_array(Options::REFRESH_UUID, $options)) {
-            $this->sipe('id', 'setUuid', $data, $exercise);
-        }
-
         $this->sipe('description', 'setDescription', $data, $exercise);
 
         if (in_array(Transfer::REFRESH_UUID, $options)) {
