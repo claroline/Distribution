@@ -50,6 +50,9 @@ class Waveform extends Component {
       // Load audio file
       this.state.wavesurfer.load(this.props.url)
 
+      this.state.wavesurfer.on('play', () => this.setState({playing: true}))
+      this.state.wavesurfer.on('pause', () => this.setState({playing: false}))
+
       if (this.props.editable) {
         this.state.wavesurfer.on('region-created', (region) => {
           if (this.props.eventsCallbacks['region-created']) {
@@ -239,17 +242,14 @@ class Waveform extends Component {
     } else {
       this.state.wavesurfer.play()
     }
-    this.setState({playing: !this.state.playing})
   }
 
   playRegion(region) {
     this.state.wavesurfer.play(region.start, region.end)
-    this.setState({playing: true})
   }
 
   play(start, end) {
     this.state.wavesurfer.play(start, end)
-    this.setState({playing: true})
   }
 
   switchRegion(direction = 1) {
