@@ -129,11 +129,11 @@ class Section extends Component {
           }}
         >
           <CallbackButton
-            id={`section-${this.props.solution.section.id}-play`}
+            id={`section-${this.props.solution.section.id}-tolerance-play`}
             className="btn-link"
             callback={() => this.props.onPlay(
-              this.props.solution.section.start - this.props.solution.section.startTolerance,
-              this.props.solution.section.end + this.props.solution.section.endTolerance
+              parseFloat((this.props.solution.section.start - this.props.solution.section.startTolerance).toFixed(1)),
+              parseFloat((this.props.solution.section.end + this.props.solution.section.endTolerance).toFixed(1))
             )}
           >
             <span className="fa fa-fw fa-play-circle-o" />
