@@ -33,13 +33,11 @@ class Tool extends Component
               tabs.push({
                 icon: app.default.icon,
                 title: trans(app.default.name),
-                path: '/'+app.default.name,
-                exact: true
+                path: '/'+app.default.name
               })
 
               routes.push({
                 path: '/'+app.default.name,
-                exact: true,
                 component: app.default.component
               })
             })

@@ -15,7 +15,6 @@ const LtiTool = props =>
     <Toolbar
       actions={[
         {
-          name: 'add',
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-plus',
           label: trans('add_lti_app', {}, 'lti'),
@@ -36,8 +35,6 @@ const LtiTool = props =>
           path: '/lti/form/:id?',
           component: App,
           onEnter: (params) => {
-
-            alert('open form')
             props.openForm(params.id || null)
           },
           onLeave: () => {
