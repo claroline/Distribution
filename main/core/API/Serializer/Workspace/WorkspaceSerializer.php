@@ -211,7 +211,7 @@ class WorkspaceSerializer
                 if ($managerRole) {
                     $serialized['managers'] = array_map(function (User $manager) {
                         return $this->userSerializer->serialize($manager, [Options::SERIALIZE_MINIMAL]);
-                    }, $this->finder->fetch(User::class, ['filters' => ['unionRole' => $managerRole->getUuid()]]));
+                    }, $this->finder->fetch(User::class, ['unionRole' => $managerRole->getUuid()]));
                 }
 
                 $serialized['organizations'] = array_map(function ($organization) {
