@@ -2,7 +2,6 @@
 
 namespace UJM\ExoBundle\Serializer;
 
-use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -97,6 +96,7 @@ class ExerciseSerializer
     {
         $exercise = $exercise ?: new Exercise();
 
+        $this->sipe('id', 'setUuid', $data, $exercise);
         $this->sipe('description', 'setDescription', $data, $exercise);
 
         if (in_array(Transfer::REFRESH_UUID, $options)) {
