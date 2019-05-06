@@ -3,8 +3,8 @@
 namespace Claroline\CoreBundle\API\Transfer\Action\User;
 
 use Claroline\AppBundle\API\Transfer\Action\AbstractCreateOrUpdateAction;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\User;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
