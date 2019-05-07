@@ -9,12 +9,12 @@ import {SolutionScore} from '#/plugin/exo/components/score'
 const Highlight = props => {
   return(
     <div>
-      {utils.split(props.text, props.solutions).map((el, key) =>
+      {utils.split(props.text, props.solutions, true, props.hasExpectedAnswers).map((el, key) =>
         <span key={key}>
           <span dangerouslySetInnerHTML={{__html: el.text}}/>{'\u00a0'}
           <span className={classes({
-            'word-success': el.score > 0,
-            'word-danger': el.score <= 0
+            'word-success': props.hasExpectedAnswers && el.score > 0,
+            'word-danger': props.hasExpectedAnswers && el.score <= 0
           })}>
             <Feedback feedback={el.feedback} id={key}/>{'\u00a0'}
             {el.score !== null && props.showScore &&
@@ -31,6 +31,7 @@ Highlight.propTypes = {
   text: T.string.isRequired,
   solutions: T.array.isRequired,
   showScore: T.bool.isRequired,
+  hasExpectedAnswers: T.bool.isRequired,
   className: T.string
 }
 
