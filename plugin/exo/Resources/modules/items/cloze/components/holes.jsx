@@ -69,7 +69,9 @@ PlayerHole.propTypes = {
 
 const SolutionHole = props =>
   <span className={classes('cloze-hole answer-item', props.className)}>
-    <WarningIcon valid={props.solution && 0 < props.solution.score} />
+    {props.hasExpectedAnswers &&
+      <WarningIcon valid={props.solution && 0 < props.solution.score} />
+    }
 
     <HoleInput
       value={props.answer}
@@ -99,6 +101,7 @@ SolutionHole.propTypes = {
   disabled: T.bool,
   className: T.string,
   showScore: T.bool.isRequired,
+  hasExpectedAnswers: T.bool.isRequired,
   solution: T.shape({
     text: T.string.isRequired,
     score: T.number.isRequired,
@@ -117,12 +120,13 @@ const UserAnswerHole = props => {
     <SolutionHole
       id={props.id}
       className={classes({
-        'correct-answer': solution && 0 < solution.score,
-        'incorrect-answer': !solution || 0 >= solution.score
+        'correct-answer': props.hasExpectedAnswers && solution && 0 < solution.score,
+        'incorrect-answer': props.hasExpectedAnswers && (!solution || 0 >= solution.score)
       })}
       size={props.size}
       answer={props.answer}
       showScore={props.showScore}
+      hasExpectedAnswers={props.hasExpectedAnswers}
       choices={props.choices}
       solution={solution}
       disabled={true}
@@ -137,6 +141,7 @@ UserAnswerHole.propTypes = {
   size: T.number,
   choices: T.arrayOf(T.string),
   showScore: T.bool,
+  hasExpectedAnswers: T.bool,
   solutions: T.arrayOf(T.shape({
     text: T.string.isRequired,
     score: T.number.isRequired,

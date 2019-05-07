@@ -18,7 +18,7 @@ const AnswerStatsTable = props =>
       const key = utils.getKey(props.solution.holeId, answer.text, props.solutions)
 
       return (
-        <div key={idx} className={classes('answer-item', {'selected-answer': answer.score > 0})}>
+        <div key={idx} className={classes('answer-item', {'selected-answer': props.hasExpectedAnswers && answer.score > 0})}>
           <HtmlText>{answer.text}</HtmlText>
           <div>
             <AnswerStats stats={{
@@ -69,7 +69,8 @@ AnswerStatsTable.propTypes = {
     holes: T.object,
     unanswered: T.number,
     total: T.number
-  }).isRequired
+  }).isRequired,
+  hasExpectedAnswers: T.bool.isRequired
 }
 
 const AnswersStatsTable = props =>
@@ -82,6 +83,7 @@ const AnswersStatsTable = props =>
           solutions={props.solutions}
           solution={solution}
           stats={props.stats}
+          hasExpectedAnswers={props.hasExpectedAnswers}
         />
       )
     })}
@@ -105,7 +107,8 @@ AnswersStatsTable.propTypes = {
     holes: T.object,
     unanswered: T.number,
     total: T.number
-  }).isRequired
+  }).isRequired,
+  hasExpectedAnswers: T.bool.isRequired
 }
 
 export {
