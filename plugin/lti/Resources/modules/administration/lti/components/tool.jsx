@@ -1,7 +1,6 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {Routes} from '#/main/app/router'
 
@@ -11,19 +10,20 @@ import {Apps} from '#/plugin/lti/administration/lti/components/apps'
 import {App}  from '#/plugin/lti/administration/lti/components/app'
 
 const LtiTool = props =>
-  <div>
+  <Fragment>
     <Toolbar
+      className="page-actions"
       actions={[
         {
+          name: 'lti-add',
           type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-plus',
-          label: trans('add_lti_app', {}, 'lti'),
+          icon: 'fa fa-plus',
           target: '/lti/form',
-          primary: true
+          primary: true,
+          hideLabel: true
         }
       ]}
-    >
-    </Toolbar>
+    />
     <Routes
       routes={[
         {
@@ -43,7 +43,7 @@ const LtiTool = props =>
         }
       ]}
     />
-  </div>
+  </Fragment>
 
 LtiTool.propTypes = {
   openForm: T.func.isRequired,

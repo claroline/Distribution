@@ -182,7 +182,7 @@ plugin:
           class: file-alt
 
         - name: integration
-          class: wrench
+          class: plug
 
     widgets:
         - name: simple

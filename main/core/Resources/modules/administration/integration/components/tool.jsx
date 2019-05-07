@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 
 import {Await} from '#/main/app/components/await'
 import {trans} from '#/main/app/intl/translation'
@@ -13,59 +13,45 @@ function getIntegrationApps() {
   return Promise.all(Object.keys(apps).map(type => apps[type]()))
 }
 
-class Tool extends Component
-{
-  constructor(props) {
-    super(props)
-  }
+export const IntegrationTool = () =>
+  <ToolPage>
+    <Await
+      for={getIntegrationApps()}
+      then={(apps) => {
 
-  render() {
-    return(
-      <ToolPage>
-        <Await
-          for={getIntegrationApps()}
-          then={(apps) => {
+        const tabs = []
+        const routes = []
 
-            const tabs = []
-            const routes = []
+        apps.map(app => {
+          tabs.push({
+            icon: app.default.icon,
+            title: trans(app.default.name, {}, 'tools'),
+            path: '/'+app.default.name
+          })
 
-            apps.map(app => {
-              tabs.push({
-                icon: app.default.icon,
-                title: trans(app.default.name),
-                path: '/'+app.default.name
-              })
+          routes.push({
+            path: '/'+app.default.name,
+            component: app.default.component
+          })
+        })
 
-              routes.push({
-                path: '/'+app.default.name,
-                component: app.default.component
-              })
-            })
+        return (
+          <div className="row">
+            <div className="col-md-3">
+              <Vertical
+                style={{
+                  marginTop: '20px' // FIXME
+                }}
+                tabs={tabs}
+              />
+            </div>
 
-            return (
-              <div className="row">
-                <div className="col-md-3">
-                  <Vertical
-                    style={{
-                      marginTop: '20px' // FIXME
-                    }}
-                    tabs={tabs}
-                  />
-                </div>
-
-                <div className="col-md-9">
-                  <Routes
-                    routes={routes}
-                  />
-                </div>
-              </div>
-            )}}
-        />
-      </ToolPage>
-    )
-  }
-}
-
-export {
-  Tool as IntegrationTool
-}
+            <div className="col-md-9">
+              <Routes
+                routes={routes}
+              />
+            </div>
+          </div>
+        )}}
+    />
+  </ToolPage>
