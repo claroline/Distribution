@@ -33,6 +33,18 @@ function makeDefaultCell(x, y) {
   }
 }
 
+function hasCell(cells, x, y) {
+  let present = false
+
+  cells.forEach(c => {
+    if (c.coordinates[0] === x && c.coordinates[1] === y) {
+      present = true
+    }
+  })
+
+  return present
+}
+
 function deleteRow(rowIndex, grid, updateCoords){
   const cellsToDelete = utils.getCellsByRow(rowIndex, grid.cells)
   cellsToDelete.forEach(cell => {
@@ -426,7 +438,7 @@ GridRow.propTypes = {
 const GridTable = props =>
   <table className="grid-table">
     <tbody>
-      {[...Array(props.item.rows)].map((it, rowIndex) =>
+      {[...Array(utils.getNbRows(props.item.cells))].map((it, rowIndex) =>
         <GridRow
           key={`grid-row-${rowIndex}`}
           index={rowIndex}
@@ -436,7 +448,7 @@ const GridTable = props =>
           score={props.item.score}
           hasExpectedAnswers={props.item.hasExpectedAnswers}
           sumMode={props.item.sumMode}
-          deletable={props.item.rows > 1}
+          deletable={utils.getNbRows(props.item.cells) > 1}
           validating={props.validating}
           _errors={props.item._errors}
           _popover={props.item._popover}
@@ -544,7 +556,7 @@ const GridTable = props =>
       )}
 
       <tr>
-        {[...Array(props.item.cols)].map((it, colIndex) =>
+        {[...Array(utils.getNbCols(props.item.cells))].map((it, colIndex) =>
           <td key={`grid-col-${colIndex}-controls`} className="col-controls">
             {props.item.score.type === SCORE_SUM && props.item.sumMode === constants.SUM_COL &&
               <input
@@ -575,7 +587,7 @@ const GridTable = props =>
               type={CALLBACK_BUTTON}
               icon="fa fa-fw fa-trash-o"
               label={trans('delete', {}, 'actions')}
-              disabled={props.item.cols <= 1}
+              disabled={utils.getNbCols(props.item.cells) <= 1}
               callback={() => props.removeColumn(colIndex)}
               tooltip="top"
             />
@@ -681,21 +693,29 @@ const GridEditor = (props) => {
                 max: 12
               },
               onChange: (value) => {
-                const newItem = cloneDeep(props.item)
-
-                if (value < props.item.rows) {
-                  deleteRow(value, newItem, false)
-                  props.update('cells', newItem.cells)
-                } else {
-                  const newRowIndex = value - 1
+                if (value && 12 >= value) {
+                  const newItem = cloneDeep(props.item)
                   newItem.rows = parseFloat(value)
-                  // add default cell content to each created cell
-                  for (let i = 0; i < props.item.cols; i++) {
-                    newItem.cells.push(makeDefaultCell(i, newRowIndex))
-                  }
-                }
+                  const newCells = []
 
-                props.update('cells', newItem.cells)
+                  // remove all cells with row index greater than value
+                  newItem.cells.forEach(c => {
+                    if (c.coordinates[1] < value) {
+                      newCells.push(c)
+                    }
+                  })
+
+                  // add all missing cells with default cell content
+                  for (let i = 0; i < value; ++i) {
+                    for (let j = 0; j < newItem.cols; ++j) {
+                      if (!hasCell(newCells, j, i)) {
+                        newCells.push(makeDefaultCell(j, i))
+                      }
+                    }
+                  }
+                  newItem.cells = newCells
+                  props.update('cells', newItem.cells)
+                }
               }
             }, {
               name: 'cols',
@@ -706,21 +726,29 @@ const GridEditor = (props) => {
                 max: 12
               },
               onChange: (value) => {
-                const newItem = cloneDeep(props.item)
-
-                if (value < props.item.cols) {
-                  deleteCol(value, newItem, false)
-                  props.update('cells', newItem.cells)
-                } else {
+                if (value && 12 >= value) {
+                  const newItem = cloneDeep(props.item)
                   newItem.cols = parseFloat(value)
-                  const colIndex = value - 1
-                  // add default cell content to each created cell
-                  for (let i = 0; i < props.item.rows; i++) {
-                    newItem.cells.push(makeDefaultCell(colIndex, i))
-                  }
-                }
+                  const newCells = []
 
-                props.update('cells', newItem.cells)
+                  // remove all cells with col index greater than value
+                  newItem.cells.forEach(c => {
+                    if (c.coordinates[0] < value) {
+                      newCells.push(c)
+                    }
+                  })
+
+                  // add all missing cells with default cell content
+                  for (let i = 0; i < newItem.rows; ++i) {
+                    for (let j = 0; j < value; ++j) {
+                      if (!hasCell(newCells, j, i)) {
+                        newCells.push(makeDefaultCell(j, i))
+                      }
+                    }
+                  }
+                  newItem.cells = newCells
+                  props.update('cells', newItem.cells)
+                }
               }
             }, {
               name: 'border.color',
