@@ -125,6 +125,7 @@ export const WordsPaper = (props) => {
                 solutions={leftSide}
                 stats={props.stats}
                 isCorrect={true}
+                hasExpectedAnswers={props.item.hasExpectedAnswers}
               />
             </div>
             <div className="col-md-6">
