@@ -137,6 +137,7 @@ const GridCellPopover = props =>
     validating={props.validating}
     showCaseSensitive={true}
     showScore={props.hasScore}
+    hasExpectedAnswers={props.hasExpectedAnswers}
     _multiple={props._multiple}
     close={props.closeSolution}
     remove={props.removeSolution}
@@ -152,6 +153,7 @@ GridCellPopover.propTypes = {
     answers: T.array
   }),
   hasScore: T.bool.isRequired,
+  hasExpectedAnswers: T.bool.isRequired,
   _multiple: T.bool.isRequired,
   validating: T.bool.isRequired,
   _errors: T.shape({
@@ -213,6 +215,7 @@ class GridCell extends Component {
                   id={`cell-${this.props.cell.id}-popover`}
                   solution={this.props.solution}
                   hasScore={this.props.hasScore}
+                  hasExpectedAnswers={this.props.hasExpectedAnswers}
                   validating={this.props.validating}
                   _multiple={this.props.cell._multiple}
                   _errors={this.props._errors}
@@ -325,6 +328,7 @@ GridCell.propTypes = {
     answers: T.array.isRequired
   }),
   hasScore: T.bool.isRequired,
+  hasExpectedAnswers: T.bool.isRequired,
   validating: T.bool.isRequired,
   _errors: T.object,
   solutionOpened: T.bool.isRequired,
@@ -347,6 +351,7 @@ const GridRow = props =>
         border={props.border}
         solution={utils.getSolutionByCellId(cell.id, props.solutions)}
         hasScore={props.score.type === SCORE_SUM && props.sumMode === constants.SUM_CELL}
+        hasExpectedAnswers={props.hasExpectedAnswers}
         _errors={get(props, '_errors.'+cell.id)}
         validating={props.validating}
         solutionOpened={props._popover === cell.id}
@@ -397,6 +402,7 @@ GridRow.propTypes = {
   score: T.shape({
     type: T.string.isRequired
   }).isRequired,
+  hasExpectedAnswers: T.bool.isRequired,
   border: T.shape({
     width: T.number.isRequired,
     color: T.string.isRequired
@@ -428,6 +434,7 @@ const GridTable = props =>
           solutions={props.item.solutions}
           border={props.item.border}
           score={props.item.score}
+          hasExpectedAnswers={props.item.hasExpectedAnswers}
           sumMode={props.item.sumMode}
           deletable={props.item.rows > 1}
           validating={props.validating}
@@ -590,9 +597,11 @@ GridTable.propTypes = {
     cols: T.number.isRequired,
     border:  T.object.isRequired,
     solutions: T.arrayOf(T.object).isRequired,
+    hasExpectedAnswers: T.bool.isRequired,
     _errors: T.object,
     _popover: T.string
   }).isRequired,
+  hasScore: T.bool.isRequired,
   validating: T.bool.isRequired,
   removeRow: T.func.isRequired,
   removeColumn: T.func.isRequired,
@@ -601,139 +610,141 @@ GridTable.propTypes = {
   update: T.func.isRequired
 }
 
-const GridEditor = (props) =>
-  <FormData
-    className="grid-editor"
-    embedded={true}
-    name={props.formName}
-    dataPart={props.path}
-    sections={[
-      {
-        title: trans('general'),
-        primary: true,
-        fields: [
-          {
-            name: 'sumMode',
-            type: 'choice',
-            label: trans('grid_score_mode_label', {}, 'quiz'),
-            displayed: (item) => item.score.type === SCORE_SUM,
-            options: {
-              multiple: false,
-              condensed: false,
-              choices: constants.SUM_MODES
-            }
-          }, {
-            name: 'penalty',
-            type: 'number',
-            label: trans('editor_penalty_label', {}, 'quiz'),
-            displayed: (item) => item.score.type === SCORE_SUM
-          }, {
-            name: 'rows',
-            type: 'number',
-            label: trans('grid_table_rows', {}, 'quiz'),
-            options: {
-              min: 1,
-              max: 12
-            },
-            onChange: (value) => {
-              const newItem = cloneDeep(props.item)
+const GridEditor = (props) => {
+  const decoratedItem = cloneDeep(props.item)
+  decoratedItem.solutions.forEach(s => {
+    if (s.answers) {
+      s.answers.forEach(a => {
+        if (a['_id'] === undefined) {
+          a['_id'] = makeId()
+        }
+        a['_deletable'] = 1 < s.answers.length
+      })
+    }
+  })
 
-              if (value < props.item.rows) {
-                deleteRow(value, newItem, false)
-                props.update('cells', newItem.cells)
-              } else {
-                const newRowIndex = value - 1
-                newItem.rows = parseFloat(value)
-                // add default cell content to each created cell
-                for (let i = 0; i < props.item.cols; i++) {
-                  newItem.cells.push(makeDefaultCell(i, newRowIndex))
-                }
+  const grid = (
+    <div className="grid-body">
+      <GridTable
+        item={decoratedItem}
+        hasScore={props.hasAnswerScores}
+        validating={props.validating}
+        update={props.update}
+        removeRow={(row) => {
+          const newItem = cloneDeep(decoratedItem)
+          deleteRow(row, newItem, true)
+          props.update('cells', newItem.cells)
+        }}
+        removeColumn={(col) => {
+          const newItem = cloneDeep(decoratedItem)
+          deleteCol(col, newItem, true)
+          props.update('cells', newItem.cells)
+        }}
+        openPopover={(cellId) => props.update('_popover', cellId)}
+        closePopover={() => props.update('_popover', null) }
+      />
+    </div>
+  )
+
+  return (
+    <FormData
+      className="grid-editor"
+      embedded={true}
+      name={props.formName}
+      dataPart={props.path}
+      sections={[
+        {
+          title: trans('general'),
+          primary: true,
+          fields: [
+            {
+              name: 'sumMode',
+              type: 'choice',
+              label: trans('grid_score_mode_label', {}, 'quiz'),
+              displayed: (item) => item.hasExpectedAnswers && props.hasAnswerScores && item.score.type === SCORE_SUM,
+              options: {
+                multiple: false,
+                condensed: false,
+                choices: constants.SUM_MODES
               }
+            }, {
+              name: 'penalty',
+              type: 'number',
+              label: trans('editor_penalty_label', {}, 'quiz'),
+              displayed: (item) => item.hasExpectedAnswers && props.hasAnswerScores && item.score.type === SCORE_SUM
+            }, {
+              name: 'rows',
+              type: 'number',
+              label: trans('grid_table_rows', {}, 'quiz'),
+              options: {
+                min: 1,
+                max: 12
+              },
+              onChange: (value) => {
+                const newItem = cloneDeep(props.item)
 
-              props.update('cells', newItem.cells)
-            }
-          }, {
-            name: 'cols',
-            type: 'number',
-            label: trans('grid_table_cols', {}, 'quiz'),
-            options: {
-              min: 1,
-              max: 12
-            },
-            onChange: (value) => {
-              const newItem = cloneDeep(props.item)
+                if (value < props.item.rows) {
+                  deleteRow(value, newItem, false)
+                  props.update('cells', newItem.cells)
+                } else {
+                  const newRowIndex = value - 1
+                  newItem.rows = parseFloat(value)
+                  // add default cell content to each created cell
+                  for (let i = 0; i < props.item.cols; i++) {
+                    newItem.cells.push(makeDefaultCell(i, newRowIndex))
+                  }
+                }
 
-              if (value < props.item.cols) {
-                deleteCol(value, newItem, false)
                 props.update('cells', newItem.cells)
-              } else {
-                newItem.cols = parseFloat(value)
-                const colIndex = value - 1
-                // add default cell content to each created cell
-                for (let i = 0; i < props.item.rows; i++) {
-                  newItem.cells.push(makeDefaultCell(colIndex, i))
-                }
               }
+            }, {
+              name: 'cols',
+              type: 'number',
+              label: trans('grid_table_cols', {}, 'quiz'),
+              options: {
+                min: 1,
+                max: 12
+              },
+              onChange: (value) => {
+                const newItem = cloneDeep(props.item)
 
-              props.update('cells', newItem.cells)
-            }
-          }, {
-            name: 'border.color',
-            type: 'color',
-            label: trans('grid_table_border', {}, 'quiz')
-          }, {
-            name: 'border.width',
-            type: 'number',
-            label: trans('grid_table_border', {}, 'quiz'),
-            options: {
-              min: 0,
-              max: 6
-            }
-          }, {
-            name: 'grid',
-            required: true,
-            render: (item) => {
-              const decoratedItem = cloneDeep(item)
-              decoratedItem.solutions.forEach(s => {
-                if (s.answers) {
-                  s.answers.forEach(a => {
-                    if (a['_id'] === undefined) {
-                      a['_id'] = makeId()
-                    }
-                    a['_deletable'] = 1 < s.answers.length
-                  })
+                if (value < props.item.cols) {
+                  deleteCol(value, newItem, false)
+                  props.update('cells', newItem.cells)
+                } else {
+                  newItem.cols = parseFloat(value)
+                  const colIndex = value - 1
+                  // add default cell content to each created cell
+                  for (let i = 0; i < props.item.rows; i++) {
+                    newItem.cells.push(makeDefaultCell(colIndex, i))
+                  }
                 }
-              })
 
-              const Grid = (
-                <div className="grid-body">
-                  <GridTable
-                    item={decoratedItem}
-                    validating={props.validating}
-                    update={props.update}
-                    removeRow={(row) => {
-                      const newItem = cloneDeep(decoratedItem)
-                      deleteRow(row, newItem, true)
-                      props.update('cells', newItem.cells)
-                    }}
-                    removeColumn={(col) => {
-                      const newItem = cloneDeep(decoratedItem)
-                      deleteCol(col, newItem, true)
-                      props.update('cells', newItem.cells)
-                    }}
-                    openPopover={(cellId) => props.update('_popover', cellId)}
-                    closePopover={() => props.update('_popover', null) }
-                  />
-                </div>
-              )
-
-              return Grid
+                props.update('cells', newItem.cells)
+              }
+            }, {
+              name: 'border.color',
+              type: 'color',
+              label: trans('grid_table_border', {}, 'quiz')
+            }, {
+              name: 'border.width',
+              type: 'number',
+              label: trans('grid_table_border', {}, 'quiz'),
+              options: {
+                min: 0,
+                max: 6
+              }
+            }, {
+              name: 'grid',
+              required: true,
+              component: grid
             }
-          }
-        ]
-      }
-    ]}
-  />
+          ]
+        }
+      ]}
+    />
+  )
+}
 
 implementPropTypes(GridEditor, ItemEditorTypes, {
   item: T.shape(GridItemTypes.propTypes).isRequired
