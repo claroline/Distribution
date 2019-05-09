@@ -23,12 +23,14 @@ export const MatchLinkPopover = props =>
     positionTop={props.top}
     placement="bottom"
   >
-    <span className={classes(
-      'fa fa-fw',
-      {'fa-check text-success' : props.solution.score > 0},
-      {'fa-times text-danger' : props.solution.score <= 0 }
-    )}>
-    </span>
+    {props.hasExpectedAnswers &&
+      <span className={classes(
+        'fa fa-fw',
+        {'fa-check text-success' : props.solution.score > 0},
+        {'fa-times text-danger' : props.solution.score <= 0 }
+      )}>
+      </span>
+    }
     {props.solution.feedback &&
       <HtmlText className="match-association-feedback">
         {props.solution.feedback}
@@ -39,7 +41,8 @@ export const MatchLinkPopover = props =>
 
 MatchLinkPopover.propTypes = {
   top: T.number.isRequired,
-  solution: T.object.isRequired
+  solution: T.object.isRequired,
+  hasExpectedAnswers: T.bool.isRequired
 }
 
 const MatchItem = props =>
@@ -75,7 +78,9 @@ export class MatchFeedback extends Component
       const connection = this.jsPlumbInstance.connect({
         source: 'source_' + answer.firstId,
         target: 'target_' + answer.secondId,
-        type: solution && solution.score > 0 ? 'correct' : 'incorrect',
+        type: this.props.item.hasExpectedAnswers ?
+          solution && solution.score > 0 ? 'correct' : 'incorrect' :
+          'default',
         deleteEndpointsOnDetach: true
       })
 
@@ -161,6 +166,7 @@ export class MatchFeedback extends Component
               <MatchLinkPopover
                 top={this.state.top}
                 solution={this.state.current}
+                hasExpectedAnswers={this.props.item.hasExpectedAnswers}
               />
             }
           </div>

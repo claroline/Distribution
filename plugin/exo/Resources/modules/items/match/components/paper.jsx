@@ -29,14 +29,16 @@ export const MatchLinkPopover = props =>
     positionTop={props.top}
     placement="bottom"
   >
-    <div className={classes(
-      'fa fa-fw',
-      {'fa-check text-success' : props.solution.score > 0},
-      {'fa-times text-danger' : props.solution.score <= 0 }
-    )}>
-    </div>
+    {props.hasExpectedAnswers &&
+      <div className={classes(
+        'fa fa-fw',
+        {'fa-check text-success' : props.solution.score > 0},
+        {'fa-times text-danger' : props.solution.score <= 0 }
+      )}>
+      </div>
+    }
 
-    {props.showScore &&
+    {props.hasExpectedAnswers && props.showScore &&
       <SolutionScore score={props.solution.score} />
     }
 
@@ -50,7 +52,8 @@ export const MatchLinkPopover = props =>
 MatchLinkPopover.propTypes = {
   top: T.number.isRequired,
   solution: T.object.isRequired,
-  showScore: T.bool.isRequired
+  showScore: T.bool.isRequired,
+  hasExpectedAnswers: T.bool.isRequired
 }
 
 const MatchItem = props =>
@@ -89,7 +92,9 @@ export class MatchPaper extends Component
         const connection = this.jsPlumbInstance.connect({
           source: 'first_source_' + answer.firstId,
           target: 'first_target_' + answer.secondId,
-          type: solution && solution.score > 0 ? 'correct' : 'incorrect',
+          type: this.props.item.hasExpectedAnswers ?
+            solution && solution.score > 0 ? 'correct' : 'incorrect' :
+            'default',
           deleteEndpointsOnDetach: true
         })
 
@@ -220,6 +225,7 @@ export class MatchPaper extends Component
                           top={this.state.top}
                           solution={this.state.current}
                           showScore={this.props.showScore}
+                          hasExpectedAnswers={this.props.item.hasExpectedAnswers}
                         />
                     }
                   </div>
@@ -321,7 +327,7 @@ export class MatchPaper extends Component
                           key={`stats-${solution.firstId}-${solution.secondId}`}
                           className={classes(
                             'answer-item',
-                            {'selected-answer' : solution.score > 0}
+                            {'selected-answer' : this.props.item.hasExpectedAnswers && solution.score > 0}
                           )}
                         >
                           <div className="sets">

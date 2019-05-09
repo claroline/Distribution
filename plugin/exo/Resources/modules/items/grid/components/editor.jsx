@@ -635,7 +635,7 @@ const GridEditor = (props) => {
     }
   })
 
-  const grid = (
+  const GridComponent = (
     <div className="grid-body">
       <GridTable
         item={decoratedItem}
@@ -765,7 +765,7 @@ const GridEditor = (props) => {
             }, {
               name: 'grid',
               required: true,
-              component: grid
+              component: GridComponent
             }
           ]
         }
