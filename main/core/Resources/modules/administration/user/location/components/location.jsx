@@ -8,7 +8,7 @@ import {FormSections, FormSection} from '#/main/app/content/form/components/sect
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {actions} from '#/main/core/administration/user/location/actions'

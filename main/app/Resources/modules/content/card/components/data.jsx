@@ -10,7 +10,7 @@ import {number} from '#/main/app/intl'
 import {Await} from '#/main/app/components/await'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {Button} from '#/main/app/action/components/button'
-import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
+import {TooltipOverlay} from '#/main/app/overlays/tooltip/components/overlay'
 import {Heading} from '#/main/core/layout/components/heading'
 
 import {

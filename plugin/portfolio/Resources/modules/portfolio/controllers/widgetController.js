@@ -1,4 +1,4 @@
-import $ from 'jquery'
+//import $ from 'jquery'
 
 export default function ($scope, widgetsManager, $modal, $timeout) {
   $scope.edit = function () {

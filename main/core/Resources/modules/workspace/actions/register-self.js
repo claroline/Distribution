@@ -29,7 +29,7 @@ export default (workspaces, refresher) => {
     },
     confirm: {
       title: trans('register'),
-      message: trans('register_to_a_public_workspace')
+      message: trans('register_confirm_message')
     },
     group: trans('registration'),
     scope: ['object', 'collection']

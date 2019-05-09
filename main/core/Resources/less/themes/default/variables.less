@@ -79,7 +79,7 @@
 @top-bar-border-bottom-size:  0;
 @top-bar-border-bottom-color: @brand-primary;
 @top-bar-border-bottom:       @top-bar-border-bottom-size solid @top-bar-border-bottom-color;
-@top-bar-box-shadow:          none;
+@top-bar-box-shadow:          0 0 5px 1px rgba(0, 0, 0, 0.5);
 
 @top-bar-brand-color:         #FFFFFF;
 @top-bar-brand-font-size:     24px;
@@ -130,15 +130,15 @@
 // By default it reuses some of the styles from the app header.
 // ---
 
-@toolbar-size:         60px;
-@toolbar-font-size:    22px; // size for icons
-@toolbar-bg:           @top-bar-bg;
-@toolbar-color:        white;
+@toolbar-collapsed-size: 60px;
+@toolbar-size:           360px;
+@toolbar-font-size:      22px; // size for icons
+@toolbar-bg:             @top-bar-bg;
+@toolbar-color:          white;
 
 // links
 @toolbar-link-color:          @top-bar-link-color;
 @toolbar-link-bg:             @top-bar-link-bg;
-@toolbar-link-shadow:         0 0 3px rgba(0,0,0,0.75);
 @toolbar-link-hover-color:    @top-bar-link-hover-color;
 @toolbar-link-hover-bg:       @top-bar-link-hover-bg;
 @toolbar-link-active-color:   @top-bar-link-active-color;

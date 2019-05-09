@@ -1,0 +1,4 @@
+claro_app:
+    resource: "@ClarolineAppBundle/Controller/Platform/ClientController.php"
+    type: annotation
+    options: { expose: true }

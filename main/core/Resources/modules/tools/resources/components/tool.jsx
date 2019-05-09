@@ -30,7 +30,7 @@ const ResourcesTool = props => {
       path={ancestors.map(ancestorNode => ({
         type: LINK_BUTTON,
         label: ancestorNode.name,
-        target: `/${ancestorNode.id}`
+        target: `${props.basePath}/${ancestorNode.id}`
       }))}
       disabled={props.loading}
       toolbar={getToolbar('add')}
@@ -41,6 +41,7 @@ const ResourcesTool = props => {
       }, true)}
     >
       <ResourceExplorer
+        basePath={props.basePath}
         name={selectors.STORE_NAME}
         primaryAction={(resourceNode) => ({ // todo : use resource default action
           type: URL_BUTTON,
@@ -61,6 +62,7 @@ const ResourcesTool = props => {
 }
 
 ResourcesTool.propTypes = {
+  basePath: T.string.isRequired,
   contextType: T.string.isRequired,
   current: T.shape(
     ResourceNodeTypes.propTypes

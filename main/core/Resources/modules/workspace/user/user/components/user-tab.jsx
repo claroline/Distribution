@@ -6,7 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {matchPath, Routes, withRouter} from '#/main/app/router'
 
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {PageActions, PageAction} from '#/main/core/layout/page'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 

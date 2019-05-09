@@ -13,9 +13,6 @@ import {flattenSteps} from '#/plugin/path/resources/path/utils'
 const EditorMain = withRouter(
   connect(
     (state) => ({
-      summaryOpened: pathSelectors.summaryOpened(state),
-      summaryPinned: pathSelectors.summaryPinned(state),
-
       path: selectors.path(state),
       steps: flattenSteps(selectors.steps(state)),
       resourceParent: resourceSelectors.parent(state),

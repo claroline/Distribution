@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {withRouter} from '#/main/app/router'
 import {withReducer} from '#/main/app/store/components/withReducer'
 
-import {DragNDropContext} from '#/main/app/overlay/dnd'
+import {DragNDropContext} from '#/main/app/overlays/dnd'
 import {selectors as resourceSelectors} from '#/main/core/resource/store'
 import {hasPermission, isAuthenticated} from '#/main/app/security'
 

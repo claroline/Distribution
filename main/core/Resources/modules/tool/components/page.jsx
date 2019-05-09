@@ -30,7 +30,7 @@ ToolPage.propTypes = {
   }).isRequired,
 
   // page props
-  subtitle: T.string,
+  subtitle: T.node,
   toolbar: T.string,
   actions: T.any,
   path: T.arrayOf(T.object), // TODO : correct typing

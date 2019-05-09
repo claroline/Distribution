@@ -19,7 +19,7 @@ const WorkspacesList = (props) => {
     <ListData
       name="workspaces.list"
       fetch={{
-        url: ['apiv2_administrated_list'],
+        url: ['apiv2_workspace_list_managed'],
         autoload: true
       }}
       definition={WorkspaceList.definition}

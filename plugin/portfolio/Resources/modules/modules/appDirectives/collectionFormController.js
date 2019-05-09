@@ -1,5 +1,5 @@
-import angular from 'angular/index'
-import $ from 'jquery'
+//import angular from 'angular/index'
+//import $ from 'jquery'
 
 export default function ($scope, $attrs) {
   $scope.emptyChild = $.parseJSON($attrs.collectionForm.replace(/'/g, '"'))

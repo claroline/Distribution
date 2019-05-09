@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 
 import cloneDeep from 'lodash/cloneDeep'
-import $ from 'jquery'
+//import $ from 'jquery'
 import {PropTypes as T} from 'prop-types'
 //import 'moment/min/moment.min.js'
 
-import 'fullcalendar/dist/fullcalendar'
+//import 'fullcalendar/dist/fullcalendar'
 
 //fullcalendar wrapper
 class Calendar extends Component {

@@ -1,12 +1,13 @@
 import {connect} from 'react-redux'
-import $ from 'jquery'
+//import $ from 'jquery'
 import cloneDeep from 'lodash/cloneDeep'
 
 import {url} from '#/main/app/api/router'
 import {trans} from '#/main/app/intl/translation'
 import {getApiFormat} from '#/main/app/intl/date'
 
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {actions} from '#/plugin/agenda/tools/agenda/store'
 
 import {AgendaTool as AgendaToolComponent} from '#/plugin/agenda/tools/agenda/components/tool'
@@ -84,6 +85,7 @@ const form = [
 
 const AgendaTool = connect(
   (state) => ({
+    contextData: toolSelectors.contextData(state),
     //workspaces is for filter in desktop if the array is here
     workspaces: state.workspaces,
     workspace: state.workspace,

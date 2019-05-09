@@ -7,7 +7,7 @@ import get from 'lodash/get'
 
 import {currentUser, hasPermission} from '#/main/app/security'
 import {trans} from '#/main/app/intl/translation'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {theme} from '#/main/app/config'
 import {Await} from '#/main/app/components/await'
@@ -64,8 +64,7 @@ const Player = (props) => {
         }
         props.download(props.resourceNode)
       }}
-    >
-    </Await>
+    />
   )
 }
 

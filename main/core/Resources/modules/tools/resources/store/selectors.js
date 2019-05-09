@@ -1,5 +1,5 @@
 
-const STORE_NAME = 'resourceManager'
+const STORE_NAME = 'resource_manager'
 
 const store = (state) => state[STORE_NAME]
 

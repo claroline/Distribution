@@ -4,6 +4,11 @@ const STORE_NAME = 'tool'
 
 const store = (state) => state[STORE_NAME]
 
+const loaded = createSelector(
+  [store],
+  (store) => store.loaded
+)
+
 const name = createSelector(
   [store],
   (store) => store.name
@@ -32,6 +37,7 @@ const contextData = createSelector(
 export const selectors = {
   STORE_NAME,
   store,
+  loaded,
   name,
   icon,
   context,

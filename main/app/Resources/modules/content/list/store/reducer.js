@@ -39,7 +39,7 @@ const invalidatedReducer = makeInstanceReducer(defaultState.invalidated, {
   [LIST_DATA_LOAD]: () => false
 })
 
-const loadedReducer = makeInstanceReducer(defaultState.invalidated, {
+const loadedReducer = makeInstanceReducer(defaultState.loaded, {
   [LIST_DATA_LOAD]: () => true
 })
 

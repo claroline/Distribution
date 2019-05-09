@@ -10,11 +10,12 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {WidgetGridEditor} from '#/main/core/widget/editor/components/grid'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 
+import {selectors} from '#/main/core/tools/home/editor/store/selectors'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
 const TabEditor = props =>
   <FormData
-    name="editor"
+    name={selectors.FORM_NAME}
     dataPart={`[${props.currentTabIndex}]`}
     buttons={true}
     lock={{
@@ -34,7 +35,7 @@ const TabEditor = props =>
     }
     cancel={{
       type: LINK_BUTTON,
-      target: props.created ? `/tab/${props.currentTab.id}` : '/',
+      target: `/tab/${props.currentTab.id}`,
       exact: true
     }}
     sections={[

@@ -1,6 +1,6 @@
-import $ from 'jquery'
-import 'jquery-ui-dist/jquery-ui.min.js'
-import 'Select2'
+//import $ from 'jquery'
+//import 'jquery-ui-dist/jquery-ui.min.js'
+//import 'Select2'
 
 /* global ZenstruckFormHelper */
 

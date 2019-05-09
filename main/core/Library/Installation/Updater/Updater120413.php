@@ -17,42 +17,29 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Updater120413 extends Updater
 {
     protected $logger;
-    protected $conn;
+    private $container;
+    private $om;
 
     public function __construct(ContainerInterface $container, $logger = null)
     {
         $this->logger = $logger;
-        $this->conn = $container->get('doctrine.dbal.default_connection');
+        $this->container = $container;
+        $this->om = $container->get('claroline.persistence.object_manager');
     }
 
     public function postUpdate()
     {
-        $this->deleteToolFromDB('analytics');
-        $this->deleteToolFromDB('logs');
-        $this->deleteToolFromDB('progression');
-        $this->deleteAdminToolFromDB('platform_analytics');
-        $this->deleteAdminToolFromDB('platform_logs');
+        $this->removeTool('my_contacts');
     }
 
-    private function deleteToolFromDB($toolName)
+    private function removeTool($toolName)
     {
-        $this->log("Deleting $toolName tool...");
-        $toolSql = '
-            DELETE tool FROM claro_tools tool
-            WHERE tool.name = "'.$toolName.'"
-        ';
-        $this->conn->prepare($toolSql)->execute();
-        $this->log("$toolName tool deleted.");
-    }
+        $this->log(sprintf('Removing `%s` tool...', $toolName));
 
-    private function deleteAdminToolFromDB($toolName)
-    {
-        $this->log("Deleting $toolName admin tool...");
-        $adminToolSql = '
-            DELETE tool FROM claro_admin_tools tool
-            WHERE tool.name = "'.$toolName.'"
-        ';
-        $this->conn->prepare($adminToolSql)->execute();
-        $this->log("$toolName admin tool deleted.");
+        $tool = $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $toolName]);
+        if (!empty($tool)) {
+            $this->om->remove($tool);
+            $this->om->flush();
+        }
     }
 }

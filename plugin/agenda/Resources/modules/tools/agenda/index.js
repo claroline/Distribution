@@ -15,12 +15,10 @@ bootstrap(
   reducer,
 
   // remap data-attributes set on the app DOM container
-  // todo load remaining through ajax
   (initialData) => ({
-    workspace: initialData.workspace,
-    workspaces: initialData.workspaces,
-    filters: {
-      workspaces: initialData.workspace.uuid ? [initialData.workspace.uuid]: Object.keys(initialData.workspaces)
+    tool: {
+      name: 'agenda',
+      currentContext: initialData.currentContext
     }
   })
 )

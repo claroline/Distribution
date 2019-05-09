@@ -1,4 +1,4 @@
-import $ from 'jquery'
+//import $ from 'jquery'
 import moment from 'moment'
 
 export default function ($scope, portfolioManager, $filter, $http, urlInterpolator, translationService) {

@@ -101,8 +101,8 @@ const Step = props =>
     <div className="row">
       {(props.primaryResource || props.description) &&
         <div className={classes('col-sm-12', {
-          'col-md-9': (0 !== props.secondaryResources.length) && props.fullWidth,
-          'col-md-12': (0 !== props.secondaryResources.length) && !props.fullWidth
+          'col-md-9': 0 !== props.secondaryResources.length,
+          'col-md-12': 0 === props.secondaryResources.length
         })}>
           {props.description &&
             <div className="panel panel-default">
@@ -127,10 +127,7 @@ const Step = props =>
 
       {0 !== props.secondaryResources.length &&
         <SecondaryResources
-          className={classes('col-sm-12', {
-            'col-md-3': props.fullWidth,
-            'col-md-12': !props.fullWidth
-          })}
+          className="col-md-3 col-sm-12"
           resources={props.secondaryResources}
           target={props.secondaryResourcesTarget}
         />
@@ -139,7 +136,6 @@ const Step = props =>
   </section>
 
 implementPropTypes(Step, StepTypes, {
-  fullWidth: T.bool.isRequired,
   numbering: T.string,
   showResourceHeader: T.bool.isRequired,
   manualProgressionAllowed: T.bool.isRequired,

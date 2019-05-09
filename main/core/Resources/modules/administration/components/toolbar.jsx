@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {Toolbar} from '#/main/app/overlay/toolbar/components/toolbar'
+import {Toolbar} from '#/main/app/overlays/toolbar/components/toolbar'
 
 import {selectors} from '#/main/core/administration/selectors'
 

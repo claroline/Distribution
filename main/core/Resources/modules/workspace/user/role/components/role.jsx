@@ -9,8 +9,8 @@ import {FormSections, FormSection} from '#/main/app/content/form/components/sect
 import {ListData} from '#/main/app/content/list/containers/data'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {select as workspaceSelect} from '#/main/core/workspace/selectors'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {Checkbox} from '#/main/app/input/components/checkbox'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
@@ -191,7 +191,7 @@ const Role = connect(
   state => ({
     new: formSelect.isNew(formSelect.form(state, 'roles.current')),
     role: formSelect.data(formSelect.form(state, 'roles.current')),
-    workspaceId: workspaceSelect.workspace(state).uuid
+    workspaceId: toolSelectors.contextData(state) ? toolSelectors.contextData(state).uuid : null
   }),
   dispatch => ({
     updateProp(propName, propValue) {

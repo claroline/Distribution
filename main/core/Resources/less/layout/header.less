@@ -3,12 +3,20 @@
  */
 
 .app-header-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
     height: @top-bar-height;
     color: @top-bar-color;
     font-size: @top-bar-font-size;
     border-bottom: @top-bar-border-bottom;
     background: @top-bar-bg;
     .box-shadow(@top-bar-box-shadow);
+
+    // FIXME
+    z-index: 2;
 }
 
 .app-header {
@@ -97,8 +105,9 @@
 .app-header-btn {
     color: @top-bar-link-color;
     background: @top-bar-link-bg;
-    .action-icon,
-    .fa {
+
+    //.fa,
+    .action-icon {
         font-size: @font-size-large;
     }
 
@@ -170,21 +179,48 @@
     }
 }
 
-.app-header-user {
-    font-size: @font-size-small;
-    font-weight: bold;
+.app-header-dropdown {
+    width: 360px;
+    padding: 0; // reset default .dropdown-menu
 
+    .app-header-dropdown-header {
+        padding: floor(@grid-gutter-width / 2);
+        text-align: center;
+        background: @panel-default-heading-bg;
+    }
+
+    .alert {
+        font-weight: bold;
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .list-group {
+        margin: 0;
+
+        .list-group-item {
+            border-left-color: transparent;
+            border-right-color: transparent;
+        }
+        .list-group-item:first-child {
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+        }
+
+        .list-group-item:last-child {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    }
+}
+
+.app-header-user {
     .user-avatar {
         color: @top-bar-link-color;
         // for picture
         max-height: 30px;
-
         // for .fa when no picture
         font-size: 30px;
-    }
-
-    .user-username {
-        margin-left: 10px;
     }
 }
 
@@ -193,7 +229,7 @@
     padding: 0; // reset default .dropdown-menu
 
     .app-current-user-header {
-        padding: 15px;
+        padding: floor(@grid-gutter-width / 2);
         text-align: center;
         background: @panel-default-heading-bg;
 
@@ -233,8 +269,14 @@
         }
     }
 
+    .alert {
+        font-weight: bold;
+        border-radius: 0;
+        margin: 0;
+    }
+
     .app-current-user-body {
-        padding: 15px;
+        padding: floor(@grid-gutter-width / 2);
         border-top: 1px solid @list-group-border;
     }
 
@@ -257,75 +299,37 @@
     }
 
     .app-current-user-footer {
-        padding: 15px;
+        padding: 5px floor(@grid-gutter-width / 2);
         display: flex;
         flex-direction: row;
-        //justify-content: space-around;
         align-items: center;
         background: @panel-footer-bg;
     }
 
     .app-current-user-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-
-        // center icon inside the fiwed width button
         display: flex;
         align-items: center;
         justify-content: center;
-
-        color: white;
-        background: #777;
-
-        margin-left: 5px;
+        border-radius: 16px; // todo : calculate
+        background: white;
 
         .fa {
             margin-right: 0; // because there is a hack in styles to add margins on dropdown icons
         }
-    }
-}
 
-
-// OLD
-
-.impersonalitation {
-    &.spaced .spacer {
-        height: @navbar-height;
-    }
-
-    .navbar-fixed-top {
-        .box-shadow(0 2px 3px rgba(0,0,0,.25));
-
-        @media (max-width: @grid-float-breakpoint) {
-            .navbar-nav {
-                float: left;
-            }
-
-            .navbar-nav.navbar-right {
-                float: right;
-            }
-        }
-
-        z-index: (@zindex-navbar-fixed - 1);
-        background-color: darken(@brand-warning, 5%);
-        border: none;
-        .navbar-nav li a {
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .navbar-nav.navbar-right li a {
-            .font-size-modifier(20px);
+        + .app-current-user-btn {
+            margin-left: 5px;
         }
     }
 
-    &.spaced .navbar-fixed-top {
-        margin-top: @navbar-height;
-        z-index: (@zindex-navbar-fixed - 3);
-    }
-}
+    .app-current-locale {
+        .locale-icon {
+            margin: 0;
+            margin-right: @icon-text-spacer;
+        }
 
-.impersonalitation .navbar.navbar-default.navbar-fixed-top {
-    .box-shadow(0 2px 3px rgba(0,0,0,.25));
+        + .app-current-user-btn {
+            margin-left: auto;
+        }
+    }
 }

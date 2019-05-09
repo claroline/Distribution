@@ -71,7 +71,7 @@ const WorkspacesDropdown = props =>
       <Button
         type={URL_BUTTON}
         icon="fa fa-fw fa-book"
-        label={trans('my_workspaces')}
+        label={trans('my_workspaces', {}, 'workspace')}
         target={['claro_workspace_by_user']}
       />
     </li>
@@ -82,7 +82,7 @@ const WorkspacesDropdown = props =>
       <Button
         type={URL_BUTTON}
         icon="fa fa-fw fa-book"
-        label={trans('public_workspaces')}
+        label={trans('public_workspaces', {}, 'workspace')}
         target={['claro_workspace_list']}
       />
     </li>
@@ -97,7 +97,7 @@ const WorkspacesDropdown = props =>
         type={URL_BUTTON}
         primary={true}
         icon="fa fa-fw fa-plus"
-        label={trans('create_workspace')}
+        label={trans('create_workspace', {}, 'workspace')}
         target={url(['claro_admin_open_tool', {'toolName': 'workspace_management'}])+'#/workspaces/new'}
       />
     </li>

@@ -37,24 +37,6 @@ const DirectoryForm = (props) =>
             help: trans('rich_text_upload_directory_help')
           }
         ]
-      }, {
-        icon: 'fa fa-fw fa-desktop',
-        title: trans('display_parameters'),
-        fields: [
-          {
-            name: 'display.showSummary',
-            type: 'boolean',
-            label: trans('show_summary', {}, 'path'),
-            linked: [
-              {
-                name: 'display.openSummary',
-                type: 'boolean',
-                label: trans('show_opened_summary', {}, 'path'),
-                displayed: (directory) => directory.display.showSummary
-              }
-            ]
-          }
-        ]
       }
     ]}
   >

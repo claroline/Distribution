@@ -169,6 +169,7 @@ class ClientSerializer
             ],
             'plugins' => $this->pluginManager->getEnabled(true),
             'javascripts' => $this->config->getParameter('javascripts'),
+            'stylesheets' => $this->config->getParameter('stylesheets'),
         ];
 
         $event = new GenericDataEvent();

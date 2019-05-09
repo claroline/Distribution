@@ -5,6 +5,11 @@ import {withRouter} from 'react-router-dom'
 
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+
+import {actions} from '#/main/core/administration/parameters/appearance/components/theme/actions'
+
 import {
   PageContainer,
   PageHeader,

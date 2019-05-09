@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Controller;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
@@ -26,7 +27,7 @@ use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -133,86 +134,53 @@ class WorkspaceController
     }
 
     /**
-     * @EXT\Route("/list", name="claro_workspace_list")
-     * @EXT\Method("GET")
-     * @EXT\Template
+     * @EXT\Route("/{workspaceId}/open", name="claro_workspace_open")
+     *
+     * @param int     $workspaceId - the id or uuid of the WS to open
+     * @param Request $request
+     *
+     * @throws AccessDeniedException
      *
      * @return array
      */
-    public function listAction()
+    public function openAction($workspaceId, Request $request)
     {
-        return ['parameters' => $this->parametersSerializer->serialize()];
-    }
+        /** @var Workspace $workspace */
+        $workspace = $this->om->getObject(['id' => $workspaceId], Workspace::class);
 
-    /**
-     * @EXT\Route("/list/currentuser", name="claro_workspace_by_user")
-     * @EXT\Method("GET")
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     * @EXT\Template
-     *
-     * @return array
-     */
-    public function listByUserAction()
-    {
-        return ['parameters' => $this->parametersSerializer->serialize()];
-    }
+        $this->assertIsGranted('OPEN', $workspace);
+        $this->forceWorkspaceLang($workspace, $request);
 
-    /**
-     * Renders the left tool bar. Not routed.
-     *
-     * @EXT\Template("ClarolineCoreBundle:workspace:toolbar.html.twig")
-     *
-     * @param Workspace $workspace
-     * @param Request   $request
-     *
-     * @return array
-     */
-    public function renderToolbarAction(Workspace $workspace, Request $request)
-    {
-        $orderedTools = [];
+        // Log workspace opening
+        $this->eventDispatcher->dispatch('log', new LogWorkspaceEnterEvent($workspace));
 
-        $hasManagerAccess = $this->workspaceManager->isManager($workspace, $this->tokenStorage->getToken());
-        $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
+        // Add workspace to recent workspaces if user is not Usurped
+        if ('anon.' !== $this->tokenStorage->getToken()->getUser() && !$this->isUsurpator($this->tokenStorage->getToken())) {
+            $this->workspaceManager->addRecentWorkspaceForUser($this->tokenStorage->getToken()->getUser(), $workspace);
+        }
+
+        // Get the list of enabled workspace tool
         $this->toolManager->addMissingWorkspaceTools($workspace);
-
-        if ($hasManagerAccess || !$hideToolsMenu) {
-            // load tool list
-            if ($hasManagerAccess) {
-                // gets all available tools
-                $orderedTools = $this->toolManager->getOrderedToolsByWorkspace($workspace);
-                // always display tools to managers
-                $hideToolsMenu = false;
-            } else {
-                // gets accessible tools by user
-                $currentRoles = $this->utils->getRoles($this->tokenStorage->getToken());
-                $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
-            }
+        if ($this->workspaceManager->isManager($workspace, $this->tokenStorage->getToken())) {
+            // gets all available tools
+            $orderedTools = $this->toolManager->getOrderedToolsByWorkspace($workspace);
+        } else {
+            // gets accessible tools by user
+            $currentRoles = $this->utils->getRoles($this->tokenStorage->getToken());
+            $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
         }
 
-        $current = null;
-        if ('claro_workspace_open_tool' === $request->get('_route')) {
-            $params = $request->get('_route_params');
-            if (!empty($params['toolName'])) {
-                $current = $params['toolName'];
-            }
-        }
-
-        // mega hack to make the resource manager active when inside a resource
-        if (in_array($request->get('_route'), ['claro_resource_show', 'claro_resource_show_short'])) {
-            $current = 'resource_manager';
-        }
+        // TODO : access errors
 
         return [
-            'current' => $current,
-            'tools' => array_values(array_map(function (OrderedTool $orderedTool) use ($workspace) { // todo : create a serializer
+            'accessErrors' => [],
+            'workspace' => $workspace,
+            'tools' => array_values(array_map(function (OrderedTool $orderedTool) { // todo : create a serializer
                 return [
                     'icon' => $orderedTool->getTool()->getClass(),
                     'name' => $orderedTool->getTool()->getName(),
-                    'open' => ['claro_workspace_open_tool', ['workspaceId' => $workspace->getId(), 'toolName' => $orderedTool->getTool()->getName()]],
                 ];
             }, $orderedTools)),
-            'workspace' => $workspace,
-            'hideToolsMenu' => $hideToolsMenu,
         ];
     }
 
@@ -236,81 +204,16 @@ class WorkspaceController
     public function openToolAction($toolName, Workspace $workspace, Request $request)
     {
         $this->assertIsGranted($toolName, $workspace);
+
+        // I'm not sure this is still required. In real life, you need to open the workspace first (which do it)
         $this->forceWorkspaceLang($workspace, $request);
 
         /** @var DisplayToolEvent $event */
         $event = $this->eventDispatcher->dispatch('open_tool_workspace_'.$toolName, new DisplayToolEvent($workspace));
 
         $this->eventDispatcher->dispatch('log', new LogWorkspaceToolReadEvent($workspace, $toolName));
-        $this->eventDispatcher->dispatch('log', new LogWorkspaceEnterEvent($workspace));
 
-        // Add workspace to recent workspaces if user is not Usurped
-        if ('anon.' !== $this->tokenStorage->getToken()->getUser() && !$this->isUsurpator($this->tokenStorage->getToken())) {
-            $this->workspaceManager->addRecentWorkspaceForUser($this->tokenStorage->getToken()->getUser(), $workspace);
-        }
-
-        return new Response($event->getContent());
-    }
-
-    /**
-     * @EXT\Route("/{workspaceId}/open", name="claro_workspace_open")
-     *
-     * @param int     $workspaceId - the id or uuid of the WS to open
-     * @param Request $request
-     *
-     * @throws AccessDeniedException
-     *
-     * @return RedirectResponse
-     */
-    public function openAction($workspaceId, Request $request)
-    {
-        /** @var Workspace $workspace */
-        $workspace = $this->om->getObject(['id' => $workspaceId], Workspace::class);
-
-        $this->assertIsGranted('OPEN', $workspace);
-        $this->forceWorkspaceLang($workspace, $request);
-
-        $options = $workspace->getOptions();
-        if (!is_null($options)) {
-            $details = $options->getDetails();
-
-            if (isset($details['use_workspace_opening_resource']) &&
-                $details['use_workspace_opening_resource'] &&
-                isset($details['workspace_opening_resource']) &&
-                !empty($details['workspace_opening_resource'])
-            ) {
-                $resourceNode = $this->resourceManager->getById($details['workspace_opening_resource']);
-
-                if (!is_null($resourceNode)) {
-                    $this->session->set('isDesktop', false);
-
-                    return new RedirectResponse(
-                        $this->router->generate('claro_resource_show', [
-                            'id' => $resourceNode->getUuid(),
-                            'type' => $resourceNode->getResourceType()->getName(),
-                        ])
-                    );
-                }
-            } elseif (isset($details['opening_type']) && 'tool' === $details['opening_type'] && isset($details['opening_target'])) {
-                return new RedirectResponse(
-                    $this->router->generate('claro_workspace_open_tool', [
-                        'toolName' => $details['opening_target'],
-                        'workspaceId' => $workspaceId,
-                    ])
-                );
-            }
-        }
-
-        $tool = $this->workspaceManager->getFirstOpenableTool($workspace);
-        //small hack for administrators otherwise they can't open it
-        $toolName = $tool ? $tool->getName() : 'home';
-
-        return new RedirectResponse(
-            $this->router->generate('claro_workspace_open_tool', [
-                'workspaceId' => $workspace->getId(),
-                'toolName' => $toolName,
-            ])
-        );
+        return new JsonResponse($event->getData());
     }
 
     /**
@@ -318,8 +221,9 @@ class WorkspaceController
      * @EXT\Template
      *
      * @param Workspace $workspace
+     * @param string    $action
      *
-     * @return Response
+     * @return array
      */
     public function openDeniedAction(Workspace $workspace, $action)
     {
@@ -354,14 +258,17 @@ class WorkspaceController
      * @EXT\Template
      *
      * @param Workspace $workspace
+     * @param Request   $request
      *
-     * @return Response
+     * @return array
+     *
+     * @throws \Exception
      */
     public function registerAndRedirect(Workspace $workspace, Request $request)
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if ($workspace->getSelfRegistration()) {
+        if ($user instanceof User && $workspace->getSelfRegistration()) {
             if ($workspace->getRegistrationValidation()) {
                 $this->workspaceManager->addUserQueue($workspace, $user);
             } else {

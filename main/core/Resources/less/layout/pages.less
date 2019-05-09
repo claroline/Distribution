@@ -1,11 +1,7 @@
 .page-container {
-    display: flex; // this permits to have the .page component to fill the available height
-    //margin-top: @component-margin-bottom; // add spacing with header
+    //display: flex; // this permits to have the .page component to fill the available height
+    flex: 1;
 }
-
-/*.breadcrumb + .page-container {
-    margin-top: 0; // reset spacing (it's added by the breadcrumb)
-}*/
 
 .page {
     flex: 1;
@@ -23,14 +19,6 @@
         right: 0;
         background: @body-bg; // regular page container has no background. We need to hide what is under
         overflow-y: scroll; // get the scrollbar
-    }
-
-    &.sm {
-
-    }
-
-    &.lg {
-
     }
 }
 
@@ -165,8 +153,12 @@
     .button-base();
 
     position: relative; // for buttons with labels
-    border-radius: 50%;
+    text-align: center;
+    border-radius: (.65em * 2) + 1.25em;
     padding: .65em;
+    font-size: 1.25em;
+    line-height: 1.25em;
+
     border: 1px solid transparent !important; // not perfect, it's required to override default btns border
 
     &.default {
@@ -183,8 +175,6 @@
 
     // displays icon as a square
     .action-icon {
-        font-size: 1.25em;
-        line-height: 1.25em;
         width: 1.25em;
     }
 
@@ -194,6 +184,7 @@
         top: auto; // reset bootstrap default
         bottom: -5px;
         right: 0;
+        font-size: 14px;
         line-height: 1;
 
         &.label {
@@ -209,7 +200,6 @@
     flex-direction: column;
     flex: 1 0 auto; // only specifying flex property here make the item fill the remaining space in its parent
     padding: 0 floor(@grid-gutter-width / 2);
-    //margin-bottom: 20px;
 }
 
 .tabbed-page {

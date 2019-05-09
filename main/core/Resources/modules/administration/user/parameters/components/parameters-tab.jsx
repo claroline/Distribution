@@ -38,11 +38,6 @@ const Parameters = (props) => {
               required: true,
               disabled: true
             }, {
-              name: 'security.account_duration',
-              type: 'number',
-              label: trans('account_duration'),
-              required: false
-            }, {
               name: 'registration.self',
               type: 'boolean',
               label: trans('activate_self_registration'),

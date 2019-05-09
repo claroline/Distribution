@@ -7,12 +7,8 @@ import {flattenSteps} from '#/plugin/path/resources/path/utils'
 
 const PlayerMain = connect(
   state => ({
-    summaryOpened: selectors.summaryOpened(state),
-    summaryPinned: selectors.summaryPinned(state),
-
     path: selectors.path(state),
     navigationEnabled: selectors.navigationEnabled(state),
-    fullWidth: selectors.fullWidth(state),
     steps: flattenSteps(selectors.steps(state))
   }),
   dispatch => ({

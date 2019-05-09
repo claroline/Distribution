@@ -13,7 +13,6 @@ import {Await} from '#/main/app/components/await'
 import {getFile, getTypeName} from '#/main/core/files'
 import {selectors} from '#/main/core/resources/file/editor/store/selectors'
 
-// TODO : find a way to make this kind of component generic (duplicated for all apps coming from dynamic loading)
 // TODO : find a way to reuse file creation form component
 
 class Editor extends Component {

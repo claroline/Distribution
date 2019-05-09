@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {mount, unmount} from '#/main/app/mount'
+import {mount, unmount} from '#/main/app/dom/mount'
 
 import {constants} from '#/main/core/tool/constants'
 import {App} from '#/main/core/resource'

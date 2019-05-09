@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 
 import {url} from '#/main/app/api/router'
 import {trans} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
-import {PageContainer, PageHeader, PageActions, MoreAction} from '#/main/core/layout/page'
+import {CALLBACK_BUTTON, MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {ToolPage} from '#/main/core/tool/containers/page'
 
+import {MODAL_EVENT} from '#/plugin/agenda/tools/agenda/modals/event'
 import {Calendar} from '#/plugin/agenda/tools/agenda/components/calendar'
 import {FilterBar} from '#/plugin/agenda/tools/agenda/components/filter-bar'
 
@@ -74,29 +76,54 @@ class AgendaTool extends Component {
 
   render() {
     return (
-      <PageContainer>
-        <PageHeader
-          title={trans('agenda', {}, 'tools')}
-        >
-          <PageActions>
-            <MoreAction
-              actions={[
-                {
-                  type: CALLBACK_BUTTON,
-                  icon: 'fa fa-fw fa-upload',
-                  label: trans('import'),
-                  callback: this.props.openImportForm
-                }, {
-                  type: URL_BUTTON,
-                  icon: 'fa fa-fw fa-download',
-                  label: trans('export'),
-                  target: url(['apiv2_download_agenda', {workspace: this.props.workspace.id}])
-                }
-              ]}
-            />
-          </PageActions>
-        </PageHeader>
+      <ToolPage
+        subtitle="Mai 2019"
+        toolbar="add | previous range next | more"
+        actions={[
+          {
+            name: 'previous',
+            type: CALLBACK_BUTTON,
+            icon: 'fa fa-fw fa-chevron-left',
+            label: trans('previous'),
+            callback: () => true
+          }, {
+            name: 'next',
+            type: CALLBACK_BUTTON,
+            icon: 'fa fa-fw fa-chevron-right',
+            label: trans('next'),
+            callback: () => true
+          }, {
+            name: 'range',
+            type: CALLBACK_BUTTON,
+            icon: <span>{trans('month')}</span>,
+            label: trans('next'),
+            callback: () => true
+          }, {
+            name: 'add',
+            type: MODAL_BUTTON,
+            icon: 'fa fa-fw fa-plus',
+            label: trans('add-event', {}, 'actions'),
+            modal: [MODAL_EVENT, {
 
+            }],
+            primary: true
+          }, {
+            name: 'import',
+            type: CALLBACK_BUTTON,
+            icon: 'fa fa-fw fa-upload',
+            label: trans('import', {}, 'actions'),
+            callback: this.props.openImportForm,
+            group: trans('transfer')
+          }, {
+            name: 'export',
+            type: URL_BUTTON,
+            icon: 'fa fa-fw fa-download',
+            label: trans('export', {}, 'actions'),
+            target: url(['apiv2_download_agenda', {workspace: get(this.props.contextData, 'id')}]),
+            group: trans('transfer')
+          }
+        ]}
+      >
         <div className="row">
           <div className="col-md-9">
             <Calendar {...this.calendar} />
@@ -110,12 +137,15 @@ class AgendaTool extends Component {
             filters={this.props.filters}
           />
         </div>
-      </PageContainer>
+      </ToolPage>
     )
   }
 }
 
 AgendaTool.propTypes = {
+  contextData: T.shape({
+    id: T.number.isRequired
+  }),
   onEventDrop: T.func.isRequired,
   onDayClick: T.func.isRequired,
   onEventClick: T.func.isRequired,

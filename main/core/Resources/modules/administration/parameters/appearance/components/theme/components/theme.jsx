@@ -9,7 +9,7 @@ import set from 'lodash/set'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {actions} from '#/main/core/administration/parameters/appearance/components/theme/actions'
 
 import {select} from '#/main/core/administration/parameters/appearance/components/theme/selectors'

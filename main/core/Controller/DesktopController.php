@@ -11,16 +11,17 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
+use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * User desktop.
@@ -35,49 +36,52 @@ class DesktopController
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var UrlGeneratorInterface */
-    private $router;
-
-    /** @var SessionInterface */
-    private $session;
+    /** @var ToolManager */
+    private $toolManager;
 
     /**
      * DesktopController constructor.
      *
      * @DI\InjectParams({
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "router"          = @DI\Inject("router"),
-     *     "session"         = @DI\Inject("session")
+     *     "toolManager"     = @DI\Inject("claroline.manager.tool_manager")
      * })
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param UrlGeneratorInterface    $router
-     * @param SessionInterface         $session
+     * @param ToolManager              $toolManager
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        UrlGeneratorInterface $router,
-        SessionInterface $session)
-    {
+        ToolManager $toolManager
+    ) {
         $this->eventDispatcher = $eventDispatcher;
-        $this->router = $router;
-        $this->session = $session;
+        $this->toolManager = $toolManager;
     }
 
     /**
      * Opens the desktop.
      *
      * @EXT\Route("/open", name="claro_desktop_open")
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
      *
-     * @return Response
+     * @param User $currentUser
+     *
+     * @return JsonResponse
      */
-    public function openAction()
+    public function openAction(User $currentUser = null)
     {
-        return new RedirectResponse(
-            $this->router->generate('claro_desktop_open_tool', [
-                'toolName' => 'home',
-            ])
-        );
+        // TODO : log desktop open
+        // TODO : manage anonymous. This will break like this imo but they need to have access to tools opened to them.
+        $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
+
+        return new JsonResponse([
+            'tools' => array_values(array_map(function (Tool $orderedTool) {
+                return [
+                    'icon' => $orderedTool->getClass(),
+                    'name' => $orderedTool->getName(),
+                ];
+            }, $tools)),
+        ]);
     }
 
     /**
@@ -91,15 +95,13 @@ class DesktopController
      */
     public function openToolAction($toolName)
     {
+        // TODO : check user rights.
+
         /** @var DisplayToolEvent $event */
         $event = $this->eventDispatcher->dispatch('open_tool_desktop_'.$toolName, new DisplayToolEvent());
 
         $this->eventDispatcher->dispatch('log', new LogDesktopToolReadEvent($toolName));
 
-        if ('resource_manager' === $toolName) {
-            $this->session->set('isDesktop', true);
-        }
-
-        return new Response($event->getContent());
+        return new JsonResponse($event->getData());
     }
 }

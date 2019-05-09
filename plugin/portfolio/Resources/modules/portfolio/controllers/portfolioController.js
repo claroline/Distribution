@@ -1,4 +1,4 @@
-import $ from 'jquery'
+//import $ from 'jquery'
 
 export default function ($scope, portfolioManager, widgetsManager, commentsManager, $attrs, widgetsConfig, assetPath, $modal, $timeout) {
   $scope.portfolio = portfolioManager.getPortfolio($attrs['portfolioContainer'])
