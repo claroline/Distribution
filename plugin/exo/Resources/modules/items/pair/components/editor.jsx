@@ -13,6 +13,7 @@ import {FormGroup} from '#/main/app/content/form/components/group'
 import {makeId} from '#/main/core/scaffolding/id'
 import {HtmlInput} from '#/main/app/data/types/html/components/input'
 
+import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 import {makeDraggable, makeDroppable} from '#/plugin/exo/utils/dragAndDrop'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 import {utils} from '#/plugin/exo/items/pair/utils'
@@ -745,6 +746,7 @@ const PairEditor = props => {
               label: trans('editor_penalty_label', {}, 'quiz'),
               type: 'number',
               required: true,
+              displayed: (item) => item.hasExpectedAnswers && props.hasAnswerScores && item.score.type === SCORE_SUM,
               options: {
                 min: 0
               }
