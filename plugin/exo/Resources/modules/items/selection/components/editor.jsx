@@ -240,45 +240,47 @@ class ChoiceItem extends Component {
   render() {
     return (
       <div className={classes(
-        'answer-item keyword-item', this.props.item.hasExpectedAnswers && {
+        'answer-item', this.props.item.hasExpectedAnswers && {
           'expected-answer': this.props.score > 0,
           'unexpected-answer': this.props.score <= 0
         }
       )}>
-        {this.props.item.hasExpectedAnswers && this.props.hasScore &&
-          <input
-            className="selection-score form-control"
-            type="number"
-            value={this.props.score}
-            step="0.5"
-            onChange={(e) => updateAnswer('score', Number(e.target.value), this.getSelectionId(), this.props.item, this.props.update)}
-          />
-        }
-
-        {this.props.item.hasExpectedAnswers && !this.props.hasScore &&
-          <span>
+        <div className="keyword-item">
+          {this.props.item.hasExpectedAnswers && this.props.hasScore &&
             <input
-              type="checkbox"
-              id={'selection-chk-' + this.getSelectionId()}
-              checked={this.props.score > 0}
-              onChange={(e) => updateAnswer('score', e.target.checked ? 1 : 0, this.getSelectionId(), this.props.item, this.props.update)}
+              className="selection-score form-control"
+              type="number"
+              value={this.props.score}
+              step="0.5"
+              onChange={(e) => updateAnswer('score', Number(e.target.value), this.getSelectionId(), this.props.item, this.props.update)}
             />
-            {'\u00a0'}
-            <span>
-              {trans('correct_answer', {}, 'quiz')}
-            </span>
-          </span>
-        }
+          }
 
-        <Button
-          id={`choice-${this.getSelectionId()}-feedback-toggle`}
-          className="btn pull-right"
-          type={CALLBACK_BUTTON}
-          icon="fa fa-fw fa-comments-o"
-          label={trans('choice_feedback_info', {}, 'quiz')}
-          callback={() => this.setState({showFeedback: !this.state.showFeedback})}
-          tooltip="top"
-        />
+          {this.props.item.hasExpectedAnswers && !this.props.hasScore &&
+            <span>
+              <input
+                type="checkbox"
+                id={'selection-chk-' + this.getSelectionId()}
+                checked={this.props.score > 0}
+                onChange={(e) => updateAnswer('score', e.target.checked ? 1 : 0, this.getSelectionId(), this.props.item, this.props.update)}
+              />
+              {'\u00a0'}
+              <span>
+                {trans('correct_answer', {}, 'quiz')}
+              </span>
+            </span>
+          }
+
+          <Button
+            id={`choice-${this.getSelectionId()}-feedback-toggle`}
+            className="btn pull-right"
+            type={CALLBACK_BUTTON}
+            icon="fa fa-fw fa-comments-o"
+            label={trans('choice_feedback_info', {}, 'quiz')}
+            callback={() => this.setState({showFeedback: !this.state.showFeedback})}
+            tooltip="top"
+          />
+        </div>
 
         {this.state.showFeedback &&
           <div className="feedback-container selection-form-row">
@@ -523,13 +525,13 @@ class HighlightAnswer extends Component {
 
     return (
       <div className={classes(
-        'answer-item keyword-item', this.props.item.hasExpectedAnswers && {
+        'answer-item', this.props.item.hasExpectedAnswers && {
           'expected-answer': this.props.answer.score > 0,
           'unexpected-answer': this.props.answer.score <= 0
         }
       )}>
-        <div className='row'>
-          <div className="col-xs-3">
+        <div className='keyword-item'>
+          <div className={this.props.item.hasExpectedAnswers ? 'col-xs-3' : 'col-xs-4'}>
             <select className="color-select checkbox"
               style={{ backgroundColor: color.code, verticalAlign: 'center', display: 'inline-block' }}
               onChange={(e) => updateAnswer('colorId', e.target.value, this.props.answer._answerId, this.props.item, this.props.update)}
@@ -547,26 +549,28 @@ class HighlightAnswer extends Component {
               })}
             </select>
           </div>
-          <div className="col-xs-4">
-            {this.props.item.hasExpectedAnswers && this.props.hasScore &&
-              <input
-                type="number"
-                step="0.5"
-                onChange={(e) => updateAnswer('score', Number(e.target.value), this.props.answer._answerId, this.props.item, this.props.update)}
-                value={this.props.answer.score}
-                className="form-control keyword-score"
-              />
-            }
-            {this.props.item.hasExpectedAnswers && !this.props.hasScore &&
-              <CheckGroup
-                id={this.props.answer._answerId}
-                label=""
-                value={this.props.answer.score > 0}
-                onChange={(checked) => updateAnswer('score', checked ? 1 : 0, this.props.answer._answerId, this.props.item, this.props.update)}
-              />
-            }
-          </div>
-          <div className="col-xs-2">
+          {this.props.item.hasExpectedAnswers &&
+            <div className="col-xs-4">
+              {this.props.hasScore &&
+                <input
+                  type="number"
+                  step="0.5"
+                  onChange={(e) => updateAnswer('score', Number(e.target.value), this.props.answer._answerId, this.props.item, this.props.update)}
+                  value={this.props.answer.score}
+                  className="form-control keyword-score"
+                />
+              }
+              {!this.props.hasScore &&
+                <CheckGroup
+                  id={this.props.answer._answerId}
+                  label=""
+                  value={this.props.answer.score > 0}
+                  onChange={(checked) => updateAnswer('score', checked ? 1 : 0, this.props.answer._answerId, this.props.item, this.props.update)}
+                />
+              }
+            </div>
+          }
+          <div className={this.props.item.hasExpectedAnswers ? 'col-xs-2' : 'col-xs-4'}>
             <Button
               id={`choice-${this.props.answer._answerId}-feedback-toggle`}
               className="btn"
@@ -577,7 +581,7 @@ class HighlightAnswer extends Component {
               tooltip="top"
             />
           </div>
-          <div className="col-xs-3">
+          <div className={this.props.item.hasExpectedAnswers ? 'col-xs-3' : 'col-xs-4'}>
             <i
               className="fa fa-trash-o pointer checkbox"
               onClick={() => {
