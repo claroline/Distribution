@@ -148,7 +148,15 @@ class ItemManager
     public function update(Item $question, array $data)
     {
         // Validate received data
-        $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
+        $validationOptions = [];
+        $dataToValidate = $data;
+
+        if ($question->hasExpectedAnswers()) {
+            $validationOptions[] = Validation::REQUIRE_SOLUTIONS;
+        } elseif (isset($dataToValidate['solutions'])) {
+            unset($dataToValidate['solutions']);
+        }
+        $errors = $this->validator->validate($dataToValidate, $validationOptions);
         if (count($errors) > 0) {
             throw new InvalidDataException('Question is not valid', $errors);
         }

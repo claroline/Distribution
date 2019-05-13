@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Validator\JsonSchema;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Recurrence;
+use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Content\ContentValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\ItemValidator;
@@ -70,8 +71,17 @@ class StepValidator extends JsonSchemaValidator
             // Apply custom validation to step items
             array_map(function (array $item) use (&$errors, $options) {
                 if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item['type'])) {
+                    $validatationOptions = $options;
+
                     // Item is a Question
-                    $itemErrors = $this->itemValidator->validateAfterSchema($item, $options);
+                    if (!$item['hasExpectedAnswers']) {
+                        $solutionsKey = array_search(Validation::REQUIRE_SOLUTIONS, $validatationOptions);
+
+                        if (false !== $solutionsKey) {
+                            unset($validatationOptions[$solutionsKey]);
+                        }
+                    }
+                    $itemErrors = $this->itemValidator->validateAfterSchema($item, $validatationOptions);
                 } else {
                     // Item is a Content
                     $itemErrors = $this->contentValidator->validateAfterSchema($item, $options);
