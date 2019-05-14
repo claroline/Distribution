@@ -929,6 +929,7 @@ class WorkspaceManager
         $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
         $workspace = $transferManager->deserialize($data, $newWorkspace, $options, $fileBag);
+
         $workspace->setIsModel($model);
 
         //set the manager
@@ -1031,20 +1032,6 @@ class WorkspaceManager
         $this->om->forceFlush();
 
         return $workspace;
-    }
-
-    /**
-     * Retrieves the managers list for a workspace.
-     *
-     * @param Workspace $workspace
-     *
-     * @return User[]
-     */
-    public function getManagers(Workspace $workspace)
-    {
-        $roleManager = $this->roleManager->getManagerRole($workspace);
-
-        return $this->userRepo->findUsersByRolesIncludingGroups([$roleManager]);
     }
 
     public function getRecentWorkspaceForUser(User $user, array $roles)
