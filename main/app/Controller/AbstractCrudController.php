@@ -187,8 +187,8 @@ abstract class AbstractCrudController extends AbstractApiController
         if (isset($query['options'])) {
             $options = $query['options'];
         }
-        $hiddenFilters = isset($query['hiddenFilters']) ? $query['hiddenFilters'] : [];
-        $query['hiddenFilters'] = array_merge($hiddenFilters, $this->getDefaultHiddenFilters());
+
+        $query['hiddenFilters'] = $this->getDefaultHiddenFilters();
 
         return new JsonResponse($this->finder->search(
             $class,
