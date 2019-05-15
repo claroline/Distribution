@@ -1,4 +1,6 @@
 {
+    "activate_rate_control": "Activer le contrôle de la vitesse de lecture",
+    "activate_section_comments": "Activer les commentaires sur les sections",
     "end": "Fin",
     "end_tolerance": "Tolérance de fin",
     "pause": "Pause",

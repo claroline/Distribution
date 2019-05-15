@@ -1,4 +1,6 @@
 {
+    "activate_rate_control": "Activate rate control",
+    "activate_section_comments": "Activate comments on section",
     "end": "End",
     "end_tolerance": "End tolerance",
     "pause": "Pause",

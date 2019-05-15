@@ -49,6 +49,16 @@ class Editor extends Component {
                 label: trans('activate_comments'),
                 type: 'boolean',
                 displayed: -1 < this.props.mimeType.indexOf('video')
+              }, {
+                name: 'sectionCommentsAllowed',
+                label: trans('activate_section_comments', {}, 'audio'),
+                type: 'boolean',
+                displayed: -1 < this.props.mimeType.indexOf('audio')
+              }, {
+                name: 'rateControl',
+                label: trans('activate_rate_control', {}, 'audio'),
+                type: 'boolean',
+                displayed: -1 < this.props.mimeType.indexOf('audio')
               }
             ]
           }
