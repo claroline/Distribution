@@ -19,4 +19,12 @@ class Version20190514145921 extends AbstractMigration
             ADD slug VARCHAR(128),
         ');
     }
+
+    public function down(Schema $schema)
+    {
+        $this->addSql('
+            ALTER TABLE claro_resource_node
+            DROP slug
+        ');
+    }
 }
