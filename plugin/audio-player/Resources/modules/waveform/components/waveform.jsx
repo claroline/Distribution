@@ -237,6 +237,8 @@ class Waveform extends Component {
   }
 
   switchAudio() {
+    this.state.wavesurfer.setPlaybackRate(1)
+
     if (this.state.playing) {
       this.state.wavesurfer.pause()
     } else {
@@ -320,6 +322,20 @@ class Waveform extends Component {
               </CallbackButton>
             }
 
+            {this.props.rateControl &&
+              <CallbackButton
+                className="btn"
+                callback={() => this.state.wavesurfer.setPlaybackRate(this.state.wavesurfer.getPlaybackRate() - 0.1)}
+                primary={true}
+                size="sm"
+                style={{
+                  marginRight: '10px'
+                }}
+              >
+                <span className="fa fa-backward" />
+              </CallbackButton>
+            }
+
             <CallbackButton
               className="btn"
               callback={this.switchAudio}
@@ -331,6 +347,21 @@ class Waveform extends Component {
                 {this.state.playing ? trans('pause', {}, 'audio') : trans('play', {}, 'audio')}
               </span>
             </CallbackButton>
+
+
+            {this.props.rateControl &&
+              <CallbackButton
+                className="btn"
+                callback={() => this.state.wavesurfer.setPlaybackRate(this.state.wavesurfer.getPlaybackRate() + 0.1)}
+                primary={true}
+                size="sm"
+                style={{
+                  marginLeft: '10px'
+                }}
+              >
+                <span className="fa fa-forward" />
+              </CallbackButton>
+            }
 
             {0 < this.props.regions.length &&
               <CallbackButton
@@ -391,6 +422,7 @@ Waveform.propTypes = {
   id: T.string.isRequired,
   url: T.string.isRequired,
   editable: T.bool.isRequired,
+  rateControl: T.bool.isRequired,
   regions: T.arrayOf(T.shape({
     id: T.string.isRequired,
     regionId: T.string,
@@ -405,6 +437,7 @@ Waveform.propTypes = {
 
 Waveform.defaultProps = {
   editable: true,
+  rateControl: false,
   regions: [],
   eventsCallbacks: {}
 }

@@ -35,7 +35,7 @@ class AudioParams
     /**
      * @ORM\Column(name="rate_control", type="boolean")
      */
-    private $rateControl = true;
+    private $rateControl = false;
 
     public function __construct()
     {

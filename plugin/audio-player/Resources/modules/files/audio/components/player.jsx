@@ -14,6 +14,7 @@ const Audio = props =>
     <Waveform
       id={`resource-audio-${props.file.id}`}
       url={asset(props.file.hashName)}
+      rateControl={props.file.rateControl}
       eventsCallbacks={{}}
     />
   </div>
