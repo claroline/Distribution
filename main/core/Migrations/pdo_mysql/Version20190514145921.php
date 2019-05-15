@@ -16,7 +16,7 @@ class Version20190514145921 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE claro_resource_node
-            ADD slug VARCHAR(128),
+            ADD slug VARCHAR(128)
         ');
     }
 
