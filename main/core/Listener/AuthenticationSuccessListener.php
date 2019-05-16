@@ -182,11 +182,6 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
         ) {
             return new RedirectResponse($uri);
         } elseif (
-            $this->configurationHandler->isRedirectOption(PlatformDefaults::$REDIRECT_OPTIONS['URL'])
-            && null !== $url = $this->configurationHandler->getParameter('redirect_after_login_url')
-        ) {
-            return new RedirectResponse($url);
-        } elseif (
             $this->configurationHandler->isRedirectOption(PlatformDefaults::$REDIRECT_OPTIONS['WORKSPACE_TAG'])
             && null !== $defaultWorkspaceTag = $this->configurationHandler->getParameter('default_workspace_tag')
         ) {
@@ -214,6 +209,11 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
 
                 return new RedirectResponse($route);
             }
+        } elseif (
+            $this->configurationHandler->isRedirectOption(PlatformDefaults::$REDIRECT_OPTIONS['URL'])
+            && null !== $url = $this->configurationHandler->getParameter('redirect_after_login_url')
+        ) {
+            return new RedirectResponse($url);
         }
 
         return new RedirectResponse($this->router->generate('claro_desktop_open'));
