@@ -183,7 +183,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
             return new RedirectResponse($uri);
         } elseif (
             $this->configurationHandler->isRedirectOption(PlatformDefaults::$REDIRECT_OPTIONS['WORKSPACE_TAG'])
-            && null !== $defaultWorkspaceTag = $this->configurationHandler->getParameter('default_workspace_tag')
+            && null !== $defaultWorkspaceTag = $this->configurationHandler->getParameter('workspace.default_tag')
         ) {
             /** @var GenericDataEvent $event */
             $event = $this->eventDispatcher->dispatch(
@@ -195,6 +195,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
                         'user' => $user,
                         'ordered_by' => 'id',
                         'order' => 'ASC',
+                        'type' => Role::WS_ROLE,
                     ],
                 ]
             );
