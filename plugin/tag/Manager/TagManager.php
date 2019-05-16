@@ -269,7 +269,7 @@ class TagManager
     {
         $roles = $user->getEntityRoles();
 
-        return count($roles) > 0 ? $this->taggedObjectRepo->findTaggedWorkspacesByRoles($tag, $roles, $orderedBy, $order, $type = 0) : [];
+        return count($roles) > 0 ? $this->taggedObjectRepo->findTaggedWorkspacesByRoles($tag, $roles, $orderedBy, $order, $type) : [];
     }
 
     public function removeTaggedObjectsByClassAndIds($class, array $ids)
