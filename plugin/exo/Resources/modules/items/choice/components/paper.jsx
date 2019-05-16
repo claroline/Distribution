@@ -106,7 +106,7 @@ const ChoicePaper = props =>
           {props.item.solutions.map(solution =>
             <label
               key={solution.id}
-              className={classes('answer-item choice-answer-item', {
+              className={classes('answer-item choice-answer-item', props.item.hasExpectedAnswers && {
                 'selected-answer': solution.score > 0
               })}
             >

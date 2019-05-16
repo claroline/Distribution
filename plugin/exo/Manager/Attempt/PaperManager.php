@@ -144,7 +144,7 @@ class PaperManager
         $scoreTotal = $this->calculateItemsTotal($paper);
 
         $paperTotal = $this->calculateTotal($paper);
-        if ($scoreTotal !== $paperTotal) {
+        if ($scoreTotal !== 0 && $scoreTotal !== $paperTotal) {
             $score = ($score / $scoreTotal) * $paperTotal;
         }
 

@@ -26,11 +26,13 @@ const SetFeedback = props =>
                 {props.answer && props.answer.length > 0 && utils.getSetItems(set.id, props.answer).map(answer =>
                   <li key={`your-answer-assocation-${answer.itemId}-${answer.setId}`}>
                     {utils.answerInSolutions(answer, props.item.solutions.associations) ?
-                      <div className={classes('association answer-item set-answer-item', {
+                      <div className={classes('association answer-item set-answer-item', props.item.hasExpectedAnswers && {
                         'correct-answer': utils.isValidAnswer(answer, props.item.solutions.associations),
                         'incorrect-answer': !utils.isValidAnswer(answer, props.item.solutions.associations)
                       })}>
-                        <WarningIcon valid={utils.isValidAnswer(answer, props.item.solutions.associations)}/>
+                        {props.item.hasExpectedAnswers &&
+                          <WarningIcon valid={utils.isValidAnswer(answer, props.item.solutions.associations)}/>
+                        }
                         <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionItemData(answer.itemId, props.item.items)}} />
                         <Feedback
                           id={`ass-${answer.itemId}-${answer.setId}-feedback`}
@@ -38,8 +40,10 @@ const SetFeedback = props =>
                         />
                       </div>
                       :
-                      <div className="association answer-item set-answer-item incorrect-answer">
-                        <WarningIcon valid={false}/>
+                      <div className={classes('association answer-item set-answer-item', {'incorrect-answer': props.item.hasExpectedAnswers})}>
+                        {props.item.hasExpectedAnswers &&
+                          <WarningIcon valid={false}/>
+                        }
                         <div className="item-content" dangerouslySetInnerHTML={{__html: utils.getSolutionItemData(answer.itemId, props.item.items)}} />
                         {utils.getAnswerOddFeedback(answer, props.item.solutions.odd) !== '' &&
                         <Feedback
@@ -67,7 +71,8 @@ SetFeedback.propTypes = {
     description: T.string,
     sets: T.arrayOf(T.object).isRequired,
     items: T.array.isRequired,
-    solutions: T.object
+    solutions: T.object,
+    hasExpectedAnswers: T.bool.isRequired
   }).isRequired,
   answer: T.array
 }

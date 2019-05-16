@@ -21,6 +21,7 @@ export const ClozeFeedback = props =>
             answer={answer ? answer.answerText : null}
             choices={hole.choices}
             showScore={false}
+            hasExpectedAnswers={props.item.hasExpectedAnswers}
             solutions={solution.answers}
           />
         )

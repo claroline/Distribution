@@ -126,7 +126,7 @@ class SelectionDefinition extends AbstractDefinition
                case $question::MODE_FIND:
                   $foundUuids = [];
 
-                  foreach ($answers->positions as $position) {
+                  foreach ($answers['positions'] as $position) {
                       foreach ($question->getSelections()->toArray() as $selection) {
                           if ($position >= $selection->getBegin() && $position <= $selection->getEnd()) {
                               if ($selection->getScore() > 0) {

@@ -16,7 +16,7 @@ const ChoiceFeedback = props =>
         <label
           key={utils.answerId(solution.id)}
           className={classes('answer-item choice-answer-item', utils.getAnswerClassForSolution(solution, props.answer, props.item.hasExpectedAnswers))}>
-          {utils.isSolutionChecked(solution, props.answer) ?
+          {props.item.hasExpectedAnswers && utils.isSolutionChecked(solution, props.answer) ?
             <WarningIcon className="choice-item-tick" solution={solution} answers={props.answer} />
             :
             <input
@@ -24,6 +24,7 @@ const ChoiceFeedback = props =>
               className="choice-item-tick"
               name={utils.answerId(props.item.id)}
               type={props.item.multiple ? 'checkbox': 'radio'}
+              checked={utils.isSolutionChecked(solution, props.answer)}
               disabled
             />
           }

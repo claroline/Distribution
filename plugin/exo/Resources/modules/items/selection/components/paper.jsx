@@ -17,7 +17,7 @@ export const SelectionPaper = (props) => {
       id={props.item.id}
       yours={
         (<div>
-          {props.item.mode === 'find' &&
+          {props.item.hasExpectedAnswers && props.item.mode === 'find' &&
             <div className="panel-body">
               <span className="btn btn-danger" style={{ cursor: 'default'}}>
                 {trans('selection_missing_click', {}, 'quiz')} <span className="badge">{props.item.penalty}</span>
@@ -31,7 +31,7 @@ export const SelectionPaper = (props) => {
           <SelectionText
             anchorPrefix="selection-element-yours"
             text={props.item.text}
-            selections={getReactAnswerSelections(props.item, props.answer, true, false)}
+            selections={getReactAnswerSelections(props.item, props.answer, props.showScore)}
           />
         </div>)
       }
@@ -84,6 +84,7 @@ SelectionPaper.propTypes = {
       mode: T.string.isRequired
     })
   ]).isRequired,
+  showScore: T.bool.isRequired,
   showExpected: T.bool.isRequired,
   showYours: T.bool.isRequired,
   showStats: T.bool.isRequired

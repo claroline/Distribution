@@ -118,7 +118,13 @@ class ExerciseManager
     public function update(Exercise $exercise, array $data)
     {
         // Validate received data
-        $errors = $this->validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
+        $validationOptions = [];
+        $dataToValidate = $this->removeUnexpectedSolutions($data);
+
+        if ($exercise->hasExpectedAnswers()) {
+            $validationOptions[] = Validation::REQUIRE_SOLUTIONS;
+        }
+        $errors = $this->validator->validate($dataToValidate, $validationOptions);
 
         if (count($errors) > 0) {
             throw new InvalidDataException('Exercise is not valid', $errors);
@@ -342,5 +348,24 @@ class ExerciseManager
         fclose($fp);
 
         return $fp;
+    }
+
+    private function removeUnexpectedSolutions($data)
+    {
+        $newData = $data;
+
+        if (isset($newData['steps'])) {
+            foreach ($newData['steps'] as $stepIdx => $step) {
+                if (isset($step['items'])) {
+                    foreach ($step['items'] as $itemIdx => $item) {
+                        if (isset($item['solutions']) && isset($item['hasExpectedAnswers']) && !$item['hasExpectedAnswers']) {
+                            unset($newData['steps'][$stepIdx]['items'][$itemIdx]['solutions']);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $newData;
     }
 }

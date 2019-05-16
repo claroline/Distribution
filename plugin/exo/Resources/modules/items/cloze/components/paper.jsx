@@ -31,6 +31,7 @@ export const ClozePaper = (props) => {
                   choices={hole.choices}
                   size={hole.size}
                   showScore={props.showScore}
+                  hasExpectedAnswers={props.item.hasExpectedAnswers}
                   solutions={solution.answers}
                 />
               )
@@ -79,7 +80,11 @@ export const ClozePaper = (props) => {
             })}
           />
           <hr/>
-          <AnswersStatsTable solutions={props.item.solutions} stats={props.stats}/>
+          <AnswersStatsTable
+            solutions={props.item.solutions}
+            stats={props.stats}
+            hasExpectedAnswers={props.item.hasExpectedAnswers}
+          />
         </div>
       }
     />
