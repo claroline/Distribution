@@ -133,7 +133,6 @@ class WikiListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        //throw new \Exception('cocoppypy');
         /** @var Wiki $wiki */
         $wiki = $event->getResource();
         $newWiki = $this->wikiManager->copyWiki($wiki, $event->getCopy(), $this->tokenStorage->getToken()->getUser());
