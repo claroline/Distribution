@@ -14,7 +14,6 @@ namespace Claroline\AudioPlayerBundle\Listener;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AudioPlayerBundle\Entity\Resource\AudioParams;
 use Claroline\AudioPlayerBundle\Entity\Resource\Section;
-use Claroline\AudioPlayerBundle\Entity\Resource\SectionComment;
 use Claroline\AudioPlayerBundle\Manager\AudioPlayerManager;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\File\LoadFileEvent;

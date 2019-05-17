@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2019/05/16 01:48:25
  */
@@ -14,7 +14,7 @@ class Version20190516134823 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_audio_resource_section (
                 id INT AUTO_INCREMENT NOT NULL, 
                 node_id INT NOT NULL, 
@@ -32,8 +32,8 @@ class Version20190516134823 extends AbstractMigration
                 INDEX IDX_67587B08460D9FD7 (node_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE TABLE claro_audio_resource_section_comment (
                 id INT AUTO_INCREMENT NOT NULL, 
                 section_id INT DEFAULT NULL, 
@@ -47,8 +47,8 @@ class Version20190516134823 extends AbstractMigration
                 INDEX IDX_16790DB2A76ED395 (user_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE TABLE claro_audio_params (
                 id INT AUTO_INCREMENT NOT NULL, 
                 node_id INT NOT NULL, 
@@ -59,47 +59,47 @@ class Version20190516134823 extends AbstractMigration
                 INDEX IDX_B7FF82AA460D9FD7 (node_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_audio_resource_section 
             ADD CONSTRAINT FK_67587B08460D9FD7 FOREIGN KEY (node_id) 
             REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_audio_resource_section_comment 
             ADD CONSTRAINT FK_16790DB2D823E37A FOREIGN KEY (section_id) 
             REFERENCES claro_audio_resource_section (id) 
             ON DELETE CASCADE
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_audio_resource_section_comment 
             ADD CONSTRAINT FK_16790DB2A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
             ON DELETE SET NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_audio_params 
             ADD CONSTRAINT FK_B7FF82AA460D9FD7 FOREIGN KEY (node_id) 
             REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE claro_audio_resource_section_comment 
             DROP FOREIGN KEY FK_16790DB2D823E37A
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_audio_resource_section
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_audio_resource_section_comment
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_audio_params
-        ");
+        ');
     }
 }

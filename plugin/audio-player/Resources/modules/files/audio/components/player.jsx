@@ -13,7 +13,7 @@ import {Audio as AudioType} from '#/plugin/audio-player/files/audio/prop-types'
 import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
 
 const Transcripts = props =>
-  <div>
+  <div className="transcripts">
     {props.transcripts.map((transcript, idx) =>
       <HtmlText key={`transcript-${idx}`}>
         {transcript}
@@ -36,8 +36,9 @@ class Audio extends Component {
 
   render() {
     return (
-      <div>
+      <div className="audio-resource-player">
         {0 < this.state.ongoingSections.length &&
+        0 < this.props.file.sections.filter(s => -1 < this.state.ongoingSections.indexOf(s.id) && s.showTranscript && s.transcript).length &&
           <Transcripts
             transcripts={this.props.file.sections
               .filter(s => -1 < this.state.ongoingSections.indexOf(s.id) && s.showTranscript && s.transcript)

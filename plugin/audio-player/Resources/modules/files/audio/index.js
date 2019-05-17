@@ -5,7 +5,8 @@ const fileType = {
   components: {
     player: AudioPlayer,
     editor: AudioEditor
-  }
+  },
+  styles: 'claroline-distribution-plugin-audio-player-resource'
 }
 
 export {
