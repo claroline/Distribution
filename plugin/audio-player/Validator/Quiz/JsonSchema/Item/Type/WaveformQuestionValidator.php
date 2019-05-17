@@ -7,7 +7,7 @@ use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("claroline_audio.validator.question_waveform")
+ * @DI\Service("claroline.validator.audio.question_waveform")
  */
 class WaveformQuestionValidator extends JsonSchemaValidator
 {

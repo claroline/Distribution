@@ -7,7 +7,7 @@ use Claroline\AudioPlayerBundle\Entity\Resource\AudioParams;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline_audio.serializer.audio_params")
+ * @DI\Service("claroline.serializer.audio.params")
  * @DI\Tag("claroline.serializer")
  */
 class AudioParamsSerializer
@@ -24,7 +24,7 @@ class AudioParamsSerializer
     {
         return [
             'id' => $audioParams->getUuid(),
-            'sectionCommentsAllowed' => $audioParams->isCommentsAllowed(),
+            'sectionsType' => $audioParams->getSectionsType(),
             'rateControl' => $audioParams->getRateControl(),
         ];
     }
@@ -38,7 +38,7 @@ class AudioParamsSerializer
      */
     public function deserialize($data, AudioParams $audioParams, array $options = [])
     {
-        $this->sipe('sectionCommentsAllowed', 'setCommentsAllowed', $data, $audioParams);
+        $this->sipe('sectionsType', 'setSectionsType', $data, $audioParams);
         $this->sipe('rateControl', 'setRateControl', $data, $audioParams);
 
         return $audioParams;

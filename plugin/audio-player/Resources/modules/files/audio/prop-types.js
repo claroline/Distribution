@@ -3,13 +3,35 @@ import merge from 'lodash/merge'
 
 import {File} from '#/main/core/files/prop-types'
 
+const Section = {
+  propTypes: {
+    id: T.string.isRequired,
+    regionId: T.string,
+    start: T.number.isRequired,
+    end: T.number.isRequired,
+    color: T.string,
+    showTranscript: T.bool,
+    transcript: T.string,
+    commentsAllowed: T.bool,
+    showHelp: T.bool,
+    help: T.string
+  },
+  defaultProps: {
+    showTranscript: true,
+    commentsAllowed: false,
+    showHelp: false
+  }
+}
+
 const Audio = merge({}, File, {
   propTypes: {
-    sectionCommentsAllowed: T.bool,
-    rateControl: T.bool
+    sectionsType: T.string.isRequired,
+    rateControl: T.bool.isRequired,
+    sections: T.arrayOf(T.shape(Section.propTypes))
   }
 })
 
 export {
-  Audio
+  Audio,
+  Section
 }

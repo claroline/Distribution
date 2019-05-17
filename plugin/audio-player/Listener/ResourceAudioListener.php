@@ -13,10 +13,13 @@ namespace Claroline\AudioPlayerBundle\Listener;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AudioPlayerBundle\Entity\Resource\AudioParams;
+use Claroline\AudioPlayerBundle\Entity\Resource\Section;
+use Claroline\AudioPlayerBundle\Entity\Resource\SectionComment;
 use Claroline\AudioPlayerBundle\Manager\AudioPlayerManager;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\File\LoadFileEvent;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service
@@ -29,19 +32,28 @@ class ResourceAudioListener
     /** @var SerializerProvider */
     private $serializer;
 
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /**
      * @DI\InjectParams({
-     *     "manager"    = @DI\Inject("claroline.manager.audio_player"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "manager"      = @DI\Inject("claroline.manager.audio_player"),
+     *     "serializer"   = @DI\Inject("claroline.api.serializer"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage")
      * })
      *
-     * @param AudioPlayerManager $manager
-     * @param SerializerProvider $serializer
+     * @param AudioPlayerManager    $manager
+     * @param SerializerProvider    $serializer
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(AudioPlayerManager $manager, SerializerProvider $serializer)
-    {
+    public function __construct(
+        AudioPlayerManager $manager,
+        SerializerProvider $serializer,
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->manager = $manager;
         $this->serializer = $serializer;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -53,10 +65,19 @@ class ResourceAudioListener
      */
     public function onResourceAudioLoad(LoadFileEvent $event)
     {
-        $node = $event->getResource()->getResourceNode();
-        $audioParams = $this->manager->getAudioParams($node);
+//        $user = $this->tokenStorage->getToken()->getUser();
 
-        $event->setData(array_merge($this->serializer->serialize($audioParams), $event->getData()));
+        $resourceNode = $event->getResource()->getResourceNode();
+        $audioParams = $this->manager->getAudioParams($resourceNode);
+        $audioData = $this->serializer->serialize($audioParams);
+
+        if ($audioParams->getSectionsType()) {
+            $audioData['sections'] = array_values(array_map(function (Section $section) {
+                return $this->serializer->serialize($section);
+            }, $this->manager->getManagerSections($resourceNode)));
+        }
+
+        $event->setData(array_merge($audioData, $event->getData()));
     }
 
     /**
@@ -73,6 +94,7 @@ class ResourceAudioListener
         if ($resourceNode) {
             $audioParams = $this->manager->getAudioParams($resourceNode);
             $this->serializer->get(AudioParams::class)->deserialize($data, $audioParams);
+            $this->manager->deserializeSections($resourceNode, $data);
         }
     }
 }

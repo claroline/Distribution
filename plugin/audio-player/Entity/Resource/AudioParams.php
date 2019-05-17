@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AudioParams
 {
+    const MANAGER_TYPE = 'manager';
+    const USER_TYPE = 'user';
+    const NO_TYPE = 'none';
+
     use Uuid;
 
     /**
@@ -25,17 +29,17 @@ class AudioParams
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode")
      * @ORM\JoinColumn(name="node_id", nullable=false, onDelete="CASCADE")
      */
-    protected $node;
+    protected $resourceNode;
 
     /**
-     * @ORM\Column(name="comments_allowed", type="boolean")
+     * @ORM\Column(name="sections_type")
      */
-    private $commentsAllowed = false;
+    private $sectionsType = self::MANAGER_TYPE;
 
     /**
      * @ORM\Column(name="rate_control", type="boolean")
      */
-    private $rateControl = false;
+    private $rateControl = true;
 
     public function __construct()
     {
@@ -47,24 +51,24 @@ class AudioParams
         return $this->id;
     }
 
-    public function getNode()
+    public function getResourceNode()
     {
-        return $this->node;
+        return $this->resourceNode;
     }
 
-    public function setNode(ResourceNode $node)
+    public function setResourceNode(ResourceNode $resourceNode)
     {
-        $this->node = $node;
+        $this->resourceNode = $resourceNode;
     }
 
-    public function isCommentsAllowed()
+    public function getSectionsType()
     {
-        return $this->commentsAllowed;
+        return $this->sectionsType;
     }
 
-    public function setCommentsAllowed($commentsAllowed)
+    public function setSectionsType($sectionsType)
     {
-        $this->commentsAllowed = $commentsAllowed;
+        $this->sectionsType = $sectionsType;
     }
 
     public function getRateControl()

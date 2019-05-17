@@ -9,7 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Transfer;
 
 /**
- * @DI\Service("claroline_audio.serializer.question_waveform")
+ * @DI\Service("claroline.serializer.audio.question_waveform")
  * @DI\Tag("claroline.serializer")
  */
 class WaveformQuestionSerializer

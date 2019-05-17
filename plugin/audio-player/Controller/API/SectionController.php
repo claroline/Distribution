@@ -12,22 +12,22 @@
 namespace Claroline\AudioPlayerBundle\Controller\API;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\AudioPlayerBundle\Entity\Resource\SectionComment;
+use Claroline\AudioPlayerBundle\Entity\Resource\Section;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
- * @EXT\Route("/audioresourcesectioncomment")
+ * @EXT\Route("/audioresourcesection")
  */
-class SectionCommentController extends AbstractCrudController
+class SectionController extends AbstractCrudController
 {
     public function getName()
     {
-        return 'audioresourcesectioncomment';
+        return 'audioresourcesection';
     }
 
     public function getClass()
     {
-        return SectionComment::class;
+        return Section::class;
     }
 
     public function getIgnore()

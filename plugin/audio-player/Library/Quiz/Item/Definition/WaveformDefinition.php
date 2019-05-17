@@ -18,7 +18,7 @@ use UJM\ExoBundle\Library\Item\Definition\AbstractDefinition;
 /**
  * Waveform question definition.
  *
- * @DI\Service("claroline_audio.definition.question_waveform")
+ * @DI\Service("claroline.definition.audio.question_waveform")
  * @DI\Tag("ujm_exo.definition.item")
  */
 class WaveformDefinition extends AbstractDefinition
@@ -46,9 +46,9 @@ class WaveformDefinition extends AbstractDefinition
      * @param WaveformQuestionSerializer $serializer
      *
      * @DI\InjectParams({
-     *     "validator"       = @DI\Inject("claroline_audio.validator.question_waveform"),
-     *     "answerValidator" = @DI\Inject("claroline_audio.validator.answer_waveform"),
-     *     "serializer"      = @DI\Inject("claroline_audio.serializer.question_waveform")
+     *     "validator"       = @DI\Inject("claroline.validator.audio.question_waveform"),
+     *     "answerValidator" = @DI\Inject("claroline.validator.audio.answer_waveform"),
+     *     "serializer"      = @DI\Inject("claroline.serializer.audio.question_waveform")
      * })
      */
     public function __construct(

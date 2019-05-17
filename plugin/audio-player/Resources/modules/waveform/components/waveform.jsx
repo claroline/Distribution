@@ -80,42 +80,42 @@ class Waveform extends Component {
             this.props.eventsCallbacks['region-removed'](region)
           }
         })
-        this.state.wavesurfer.on('region-play', (region) => {
-          if (this.props.eventsCallbacks['region-play']) {
-            this.props.eventsCallbacks['region-play'](region)
-          }
-        })
-        this.state.wavesurfer.on('region-in', (region) => {
-          if (this.props.eventsCallbacks['region-in']) {
-            this.props.eventsCallbacks['region-in'](region)
-          }
-        })
-        this.state.wavesurfer.on('region-out', (region) => {
-          if (this.props.eventsCallbacks['region-out']) {
-            this.props.eventsCallbacks['region-out'](region)
-          }
-        })
-        this.state.wavesurfer.on('region-mouseenter', (region) => {
-          if (this.props.eventsCallbacks['region-mouseenter']) {
-            this.props.eventsCallbacks['region-mouseenter'](region)
-          }
-        })
-        this.state.wavesurfer.on('region-mouseleave', (region) => {
-          if (this.props.eventsCallbacks['region-mouseleave']) {
-            this.props.eventsCallbacks['region-mouseleave'](region)
-          }
-        })
-        this.state.wavesurfer.on('region-click', (region, e) => {
-          if (this.props.eventsCallbacks['region-click']) {
-            this.props.eventsCallbacks['region-click'](region, e)
-          }
-        })
-        this.state.wavesurfer.on('region-dblclick', (region, e) => {
-          if (this.props.eventsCallbacks['region-dblclick']) {
-            this.props.eventsCallbacks['region-dblclick'](region, e)
-          }
-        })
       }
+      this.state.wavesurfer.on('region-play', (region) => {
+        if (this.props.eventsCallbacks['region-play']) {
+          this.props.eventsCallbacks['region-play'](region)
+        }
+      })
+      this.state.wavesurfer.on('region-in', (region) => {
+        if (this.props.eventsCallbacks['region-in']) {
+          this.props.eventsCallbacks['region-in'](region)
+        }
+      })
+      this.state.wavesurfer.on('region-out', (region) => {
+        if (this.props.eventsCallbacks['region-out']) {
+          this.props.eventsCallbacks['region-out'](region)
+        }
+      })
+      this.state.wavesurfer.on('region-mouseenter', (region) => {
+        if (this.props.eventsCallbacks['region-mouseenter']) {
+          this.props.eventsCallbacks['region-mouseenter'](region)
+        }
+      })
+      this.state.wavesurfer.on('region-mouseleave', (region) => {
+        if (this.props.eventsCallbacks['region-mouseleave']) {
+          this.props.eventsCallbacks['region-mouseleave'](region)
+        }
+      })
+      this.state.wavesurfer.on('region-click', (region, e) => {
+        if (this.props.eventsCallbacks['region-click']) {
+          this.props.eventsCallbacks['region-click'](region, e)
+        }
+      })
+      this.state.wavesurfer.on('region-dblclick', (region, e) => {
+        if (this.props.eventsCallbacks['region-dblclick']) {
+          this.props.eventsCallbacks['region-dblclick'](region, e)
+        }
+      })
 
       // Necessary to display waveform correctly when the initialization occurs in an undisplayed component
       let refreshInterval = setInterval(() => {
@@ -437,7 +437,7 @@ Waveform.propTypes = {
 
 Waveform.defaultProps = {
   editable: true,
-  rateControl: false,
+  rateControl: true,
   regions: [],
   eventsCallbacks: {}
 }

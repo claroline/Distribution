@@ -1,10 +1,15 @@
 {
     "activate_rate_control": "Activate rate control",
-    "activate_section_comments": "Activate comments on section",
+    "allows_comments": "Allow comments",
     "end": "End",
     "end_tolerance": "End tolerance",
     "pause": "Pause",
     "play": "Play",
+    "section_type_manager": "Predefined sections",
+    "section_type_user": "Sections to define",
+    "sections_type": "Sections type",
+    "show_help": "Show help",
     "start": "Start",
-    "start_tolerance": "Start tolerance"
+    "start_tolerance": "Start tolerance",
+    "transcript": "Transcript"
 }

@@ -17,7 +17,7 @@ use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.api.finder.audio.section_comment")
+ * @DI\Service("claroline.api.finder.audio.resource_section_comment")
  * @DI\Tag("claroline.finder")
  */
 class SectionCommentFinder extends AbstractFinder
@@ -37,9 +37,9 @@ class SectionCommentFinder extends AbstractFinder
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-                case 'resourceNode':
-                    $qb->join('obj.node', 'n');
-                    $qb->andWhere("n.uuid = :{$filterName}");
+                case 'section':
+                    $qb->join('obj.section', 's');
+                    $qb->andWhere("s.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'user':

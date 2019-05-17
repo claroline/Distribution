@@ -3,13 +3,12 @@
 namespace Claroline\AudioPlayerBundle\Entity\Resource;
 
 use Claroline\AppBundle\Entity\Identifier\Uuid;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_audio_section_comment")
+ * @ORM\Table(name="claro_audio_resource_section_comment")
  */
 class SectionComment
 {
@@ -28,10 +27,13 @@ class SectionComment
     protected $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode")
-     * @ORM\JoinColumn(name="node_id", nullable=false, onDelete="CASCADE")
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\AudioPlayerBundle\Entity\Resource\Section",
+     *     inversedBy="comments"
+     * )
+     * @ORM\JoinColumn(name="section_id", onDelete="CASCADE")
      */
-    protected $node;
+    protected $section;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
@@ -48,21 +50,6 @@ class SectionComment
      * @ORM\Column(name="edition_date", type="datetime", nullable=true)
      */
     protected $editionDate;
-
-    /**
-     * @ORM\Column(name="section_start", type="float", nullable=false)
-     */
-    private $start;
-
-    /**
-     * @ORM\Column(name="section_end", type="float", nullable=false)
-     */
-    private $end;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $color;
 
     public function __construct()
     {
@@ -85,14 +72,14 @@ class SectionComment
         $this->content = $content;
     }
 
-    public function getNode()
+    public function getSection()
     {
-        return $this->node;
+        return $this->section;
     }
 
-    public function setNode(ResourceNode $node)
+    public function setSection(Section $section)
     {
-        $this->node = $node;
+        $this->section = $section;
     }
 
     public function getUser()
@@ -123,35 +110,5 @@ class SectionComment
     public function setEditionDate(\DateTime $editionDate = null)
     {
         $this->editionDate = $editionDate;
-    }
-
-    public function getStart()
-    {
-        return $this->start;
-    }
-
-    public function setStart($start)
-    {
-        $this->start = $start;
-    }
-
-    public function getEnd()
-    {
-        return $this->end;
-    }
-
-    public function setEnd($end)
-    {
-        $this->end = $end;
-    }
-
-    public function getColor()
-    {
-        return $this->color;
-    }
-
-    public function setColor($color)
-    {
-        $this->color = $color;
     }
 }

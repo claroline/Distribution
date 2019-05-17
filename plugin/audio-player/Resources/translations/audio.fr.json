@@ -1,10 +1,15 @@
 {
     "activate_rate_control": "Activer le contrôle de la vitesse de lecture",
-    "activate_section_comments": "Activer les commentaires sur les sections",
+    "allows_comments": "Autoriser les commentaires",
     "end": "Fin",
     "end_tolerance": "Tolérance de fin",
     "pause": "Pause",
     "play": "Play",
+    "section_type_manager": "Zones prédécoupées",
+    "section_type_user": "Zones à borner",
+    "sections_type": "Type de zones",
+    "show_help": "Afficher l'aide",
     "start": "Début",
-    "start_tolerance": "Tolérance de début"
+    "start_tolerance": "Tolérance de début",
+    "transcript": "Transcription"
 }

@@ -5,15 +5,15 @@ namespace Claroline\AudioPlayerBundle\Serializer\Resource;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\AudioPlayerBundle\Entity\Resource\Section;
 use Claroline\AudioPlayerBundle\Entity\Resource\SectionComment;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline_audio.serializer.section_comment")
+ * @DI\Service("claroline.serializer.audio.resource_section_comment")
  * @DI\Tag("claroline.serializer")
  */
 class SectionCommentSerializer
@@ -26,7 +26,7 @@ class SectionCommentSerializer
     /** @var UserSerializer */
     private $userSerializer;
 
-    private $resourceNodeRepo;
+    private $sectionRepo;
     private $userRepo;
 
     /**
@@ -43,7 +43,7 @@ class SectionCommentSerializer
         $this->om = $om;
         $this->userSerializer = $userSerializer;
 
-        $this->resourceNodeRepo = $om->getRepository(ResourceNode::class);
+        $this->sectionRepo = $om->getRepository(Section::class);
         $this->userRepo = $om->getRepository(User::class);
     }
 
@@ -58,9 +58,6 @@ class SectionCommentSerializer
         $serialized = [
             'id' => $sectionComment->getUuid(),
             'content' => $sectionComment->getContent(),
-            'start' => $sectionComment->getStart(),
-            'end' => $sectionComment->getEnd(),
-            'color' => $sectionComment->getContent(),
             'meta' => [
                 'creationDate' => DateNormalizer::normalize($sectionComment->getCreationDate()),
                 'editionDate' => $sectionComment->getEditionDate() ?
@@ -80,14 +77,11 @@ class SectionCommentSerializer
      * @param SectionComment $sectionComment
      * @param array          $options
      *
-     * @return SectionComment $sectionComment
+     * @return SectionComment
      */
     public function deserialize($data, SectionComment $sectionComment, array $options = [])
     {
         $this->sipe('content', 'setContent', $data, $sectionComment);
-        $this->sipe('start', 'setStart', $data, $sectionComment);
-        $this->sipe('end', 'setEnd', $data, $sectionComment);
-        $this->sipe('color', 'setColor', $data, $sectionComment);
 
         if (isset($data['meta']['user']['id']) && !$sectionComment->getUser()) {
             $user = $this->userRepo->findOneBy(['uuid' => $data['meta']['user']['id']]);
@@ -96,11 +90,11 @@ class SectionCommentSerializer
                 $sectionComment->setUser($user);
             }
         }
-        if (isset($data['meta']['resourceNode']['id']) && !$sectionComment->getNode()) {
-            $node = $this->resourceNodeRepo->findOneBy(['uuid' => $data['meta']['resourceNode']['id']]);
+        if (isset($data['meta']['section']['id']) && !$sectionComment->getSection()) {
+            $section = $this->sectionRepo->findOneBy(['uuid' => $data['meta']['section']['id']]);
 
-            if ($node) {
-                $sectionComment->setNode($node);
+            if ($section) {
+                $sectionComment->setSection($section);
             }
         }
 
