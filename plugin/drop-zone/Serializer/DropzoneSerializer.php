@@ -16,6 +16,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class DropzoneSerializer
 {
+    const NO_UPDATE_SCORE = 'no_update_score';
+
     use SerializerTrait;
 
     /** @var CriterionSerializer */
@@ -73,12 +75,12 @@ class DropzoneSerializer
      *
      * @return Dropzone
      */
-    public function deserialize($data, Dropzone $dropzone)
+    public function deserialize($data, Dropzone $dropzone, array $options = [])
     {
         $this->sipe('instruction', 'setInstruction', $data, $dropzone);
 
         if (isset($data['parameters'])) {
-            $this->deserializeParameters($data, $dropzone);
+            $this->deserializeParameters($data, $dropzone, $options);
         }
 
         $this->sipe('display.correctionInstruction', 'setCorrectionInstruction', $data, $dropzone);
@@ -124,7 +126,7 @@ class DropzoneSerializer
         ];
     }
 
-    private function deserializeParameters(array $data, Dropzone $dropzone)
+    private function deserializeParameters(array $data, Dropzone $dropzone, array $options = [])
     {
         if (isset($data['parameters']['reviewType'])) {
             $dropzone->setPeerReview('peer' === $data['parameters']['reviewType']);
@@ -141,7 +143,9 @@ class DropzoneSerializer
         $this->sipe('parameters.autoCloseDropsAtDropEndDate', 'setAutoCloseDropsAtDropEndDate', $data, $dropzone);
 
         if (!empty($data['parameters']['scoreMax']) && $data['parameters']['scoreMax'] !== $dropzone->getScoreMax()) {
-            $this->dropzoneManager->updateScoreByScoreMax($dropzone, $dropzone->getScoreMax(), $data['parameters']['scoreMax']);
+            if (!in_array(self::NO_UPDATE_SCORE, $options)) {
+                $this->dropzoneManager->updateScoreByScoreMax($dropzone, $dropzone->getScoreMax(), $data['parameters']['scoreMax']);
+            }
             $dropzone->setScoreMax($data['parameters']['scoreMax']);
         }
 
@@ -240,5 +244,15 @@ class DropzoneSerializer
                 $this->om->remove($criterion);
             }
         }
+    }
+
+    public function getCopyOptions()
+    {
+        return [
+          'serialize' => [],
+          'deserialize' => [
+              self::NO_UPDATE_SCORE,
+          ],
+        ];
     }
 }
