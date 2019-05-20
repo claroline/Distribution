@@ -17,7 +17,7 @@ function getPopoverPosition(connectionClass, id){
   }
 }
 
-export const MatchLinkPopover = props =>
+const MatchLinkPopover = props =>
   <Popover
     id={`popover-${props.solution.firstId}-${props.solution.secondId}`}
     positionTop={props.top}
@@ -58,8 +58,7 @@ MatchItem.propTypes = {
   item: T.object.isRequired
 }
 
-export class MatchFeedback extends Component
-{
+class MatchFeedback extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -144,7 +143,7 @@ export class MatchFeedback extends Component
     return (
       <div className="match-feedback">
         <span className="help-block">
-          <span className="fa fa-info-circle"></span> {trans('match_player_click_link_help', {}, 'quiz')}
+          <span className="fa fa-info-circle" /> {trans('match_player_click_link_help', {}, 'quiz')}
         </span>
 
         <div className="match-items row" ref={(el) => { this.container = el }} id={`match-question-paper-${this.props.item.id}-first`}>
@@ -204,11 +203,16 @@ MatchFeedback.propTypes = {
     })).isRequired,
     solutions: T.arrayOf(T.object),
     title: T.string,
-    description: T.string
+    description: T.string,
+    hasExpectedAnswers: T.bool.isRequired
   }).isRequired,
   answer: T.array
 }
 
 MatchFeedback.defaultProps = {
   answer: []
+}
+
+export {
+  MatchFeedback
 }

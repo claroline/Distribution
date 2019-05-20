@@ -23,7 +23,7 @@ function getPopoverPosition(connectionClass, id){
   }
 }
 
-export const MatchLinkPopover = props =>
+const MatchLinkPopover = props =>
   <Popover
     id={`popover-${props.solution.firstId}-${props.solution.secondId}`}
     positionTop={props.top}
@@ -70,8 +70,7 @@ MatchItem.propTypes = {
   selectedTab: T.string.isRequired
 }
 
-export class MatchPaper extends Component
-{
+class MatchPaper extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -420,7 +419,8 @@ MatchPaper.propTypes = {
     })).isRequired,
     solutions: T.arrayOf(T.object),
     title: T.string,
-    description: T.string
+    description: T.string,
+    hasExpectedAnswers: T.bool.isRequired
   }).isRequired,
   answer: T.array,
   showScore: T.bool.isRequired,
@@ -436,4 +436,8 @@ MatchPaper.propTypes = {
 
 MatchPaper.defaultProps = {
   answer: []
+}
+
+export {
+  MatchPaper
 }

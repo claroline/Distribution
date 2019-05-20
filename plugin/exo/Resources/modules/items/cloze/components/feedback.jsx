@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {ClozeText} from '#/plugin/exo/items/cloze/components/text'
 import {UserAnswerHole} from '#/plugin/exo/items/cloze/components/holes'
 
-export const ClozeFeedback = props =>
+const ClozeFeedback = props =>
   <ClozeText
     anchorPrefix="cloze-hole-feedback"
     className="cloze-feedback"
@@ -37,11 +37,16 @@ ClozeFeedback.propTypes = {
       id: T.string.isRequired,
       choices: T.arrayOf(T.string)
     })).isRequired,
-    solutions: T.arrayOf(T.object)
+    solutions: T.arrayOf(T.object),
+    hasExpectedAnswers: T.bool.isRequired
   }).isRequired,
   answer: T.array.isRequired
 }
 
 ClozeFeedback.defaultProps = {
   answer: []
+}
+
+export {
+  ClozeFeedback
 }

@@ -7,7 +7,7 @@ use Claroline\InstallationBundle\Updater\Updater;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 
-class Updater120407 extends Updater
+class Updater120410 extends Updater
 {
     private $container;
 

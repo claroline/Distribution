@@ -15,7 +15,7 @@ import {Textarea} from '#/main/core/layout/form/components/field/textarea'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group'
 
-import {SCORE_SUM, SCORE_FIXED} from '#/plugin/exo/quiz/enums'
+import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 import {utils} from '#/plugin/exo/items/selection/utils/utils'
 import {constants} from '#/plugin/exo/items/selection/constants'
 import {ItemEditor as ItemEditorType} from '#/plugin/exo/items/prop-types'
@@ -361,11 +361,7 @@ class SelectionForm extends Component {
     }
 
     if (this.props.item.score.type !== SCORE_SUM && this.props.item.mode !== constants.MODE_SELECT) {
-      // top += 147
-
-      // if (this.props.item.mode !== constants.MODE_SELECT)  {
-        top -= 75
-      // }
+      top -= 75
     }
 
     return (
