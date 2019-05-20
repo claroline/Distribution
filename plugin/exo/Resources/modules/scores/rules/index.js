@@ -83,5 +83,69 @@ export default {
     })
 
     return score
+  },
+
+  calculateTotal: (scoreRule, expectedAnswer, allAnswers) => {
+    const rulesData = {
+      nbChoices: 0,
+      max: {
+        [constants.RULE_SOURCE_CORRECT]: 0,
+        [constants.RULE_SOURCE_INCORRECT]: 0
+      }
+    }
+
+    rulesData.nbChoices = allAnswers ? allAnswers.length : 0
+
+    // compute best score by source
+    scoreRule.rules.forEach(rule => {
+      let score = 0
+
+      switch (rule.type) {
+        case constants.RULE_TYPE_ALL:
+          score = rule.target === constants.RULE_TARGET_GLOBAL ?
+            rule.points :
+            rule.points * rulesData.nbChoices
+          break
+
+        case constants.RULE_TYPE_MORE:
+          if (rule.target === constants.RULE_TARGET_GLOBAL) {
+            score = rule.count <= rulesData.nbChoices ? rule.points : 0
+          } else {
+            score = rule.count <= rulesData.nbChoices ? rule.points * rulesData.nbChoices : 0
+          }
+          break
+
+        case constants.RULE_TYPE_LESS:
+          if (rule.target === constants.RULE_TARGET_GLOBAL) {
+            score = rule.count > 0 ? rule.points : 0
+          } else {
+            if (rule.count <= rulesData.nbChoices && rule.count > 0) {
+              score = rule.points * (rule.count - 1)
+            } else if (rule.count > rulesData.nbChoices) {
+              score = rule.points * rulesData.nbChoices
+            }
+          }
+          break
+
+        case constants.RULE_TYPE_BETWEEN:
+          if (rule.target === constants.RULE_TARGET_GLOBAL) {
+            score = rule.countMin <= rulesData.nbChoices ? rule.points : 0
+          } else {
+            if (rule.countMax <= rulesData.nbChoices) {
+              score = rule.points * rule.countMax
+            } else if (rule.countMin <= rulesData.nbChoices && rule.countMax >= rulesData.nbChoices) {
+              score = rule.points * rulesData.nbChoices
+            }
+          }
+          break
+      }
+      if (score > rulesData.max[rule.source]) {
+        rulesData.max[rule.source] = score
+      }
+    })
+
+    return rulesData.max[constants.RULE_SOURCE_CORRECT] >= rulesData.max[constants.RULE_SOURCE_INCORRECT] ?
+      rulesData.max[constants.RULE_SOURCE_CORRECT] :
+      rulesData.max[constants.RULE_SOURCE_INCORRECT]
   }
 }

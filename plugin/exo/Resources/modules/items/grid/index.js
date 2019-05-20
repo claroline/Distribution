@@ -155,7 +155,7 @@ export default {
       return getCorrectAnswerForFixMode(item, answer)
     }
 
-    switch(item.sumMode) {
+    switch (item.sumMode) {
       case constants.SUM_CELL: {
         return getCorrectAnswerForSumCellsMode(item, answer)
       }
@@ -166,6 +166,73 @@ export default {
         return getCorrectAnswerForColSumMode(item, answer)
       }
     }
-  }
+  },
 
+  expectAnswer: (item) => {
+    const answers = []
+    let expected, solution
+
+    if (item.solutions) {
+      switch (item.sumMode) {
+        case constants.SUM_CELL: {
+          item.solutions.map(solution => {
+            let expected
+            solution.answers.map(answer => {
+              if (!expected || answer.score > expected.score) {
+                expected = answer
+              }
+            })
+
+            if (expected) {
+              answers.push(new Answerable(expected.score))
+            }
+          })
+
+          break
+        }
+
+        case constants.SUM_COL: {
+          for (let i = 0; i < item.cols; i++) {
+            expected = item.cells.find(cell => cell.coordinates[0] === i && cell.choices && 0 !== cell.choices.length)
+            if (expected) {
+              solution = item.solutions.find(solution => solution.cellId === expected.id)
+              if (solution) {
+                answers.push(new Answerable(solution.score))
+              }
+
+            }
+          }
+
+          break
+        }
+
+        case constants.SUM_ROW: {
+          for (let i = 0; i < item.rows; i++) {
+            expected = item.cells.find(cell => cell.coordinates[1] === i && cell.choices && 0 !== cell.choices.length)
+            if (expected) {
+              solution = item.solutions.find(solution => solution.cellId === expected.id)
+              if (solution) {
+                answers.push(new Answerable(solution.score))
+              }
+
+            }
+          }
+
+          break
+        }
+      }
+    }
+
+    return answers
+  },
+
+  allAnswers: (item) => {
+    const answers = []
+
+    if (item.solutions) {
+      item.solutions.map(solution => solution.answers.map(answer => new Answerable(answer.score)))
+    }
+
+    return answers
+  }
 }

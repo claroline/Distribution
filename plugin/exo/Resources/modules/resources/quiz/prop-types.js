@@ -41,6 +41,9 @@ const Quiz = {
     meta: T.shape({
 
     }),
+    score: T.shape({ // TODO : score propTypes
+      type: T.string.isRequired
+    }),
     parameters: T.shape({
       type: T.string.isRequired
     }),
@@ -55,6 +58,9 @@ const Quiz = {
     description: '',
     meta: {
 
+    },
+    score: {
+      type: 'sum' // TODO : use constants
     },
     parameters: {
       type: QUIZ_TYPE_DEFAULT,

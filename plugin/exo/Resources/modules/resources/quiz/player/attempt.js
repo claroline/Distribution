@@ -7,12 +7,8 @@ import {now} from '#/main/app/intl/date'
 import {makeId} from '#/main/core/scaffolding/id'
 
 import {Step} from '#/plugin/exo/resources/quiz/prop-types'
-import {
-  SHUFFLE_ONCE,
-  SHUFFLE_ALWAYS,
-  QUIZ_PICKING_DEFAULT,
-  QUIZ_PICKING_TAGS
-} from '#/plugin/exo/quiz/enums'
+import {constants} from '#/plugin/exo/resources/quiz/constants'
+import {calculateTotal} from '#/plugin/exo/resources/quiz/papers/score'
 
 // TODO : apply shuffle on answer items
 
@@ -27,7 +23,7 @@ import {
  * @returns {{number: number, anonymized: boolean, structure}}
  */
 function generateAttempt(quiz, steps, items, previousPaper = null) {
-  return {
+  const newPaper = {
     id: makeId(),
     finished: false,
     startDate: now(),
@@ -37,13 +33,18 @@ function generateAttempt(quiz, steps, items, previousPaper = null) {
     anonymized: quiz.parameters.anonymizeAttempts,
     structure: generateStructure(quiz, steps, items, previousPaper)
   }
+
+  // dump paper total score
+  newPaper.total = calculateTotal(newPaper)
+
+  return newPaper
 }
 
 function generateStructure(quiz, steps, items, previousPaper = null) {
   switch (quiz.picking.type) {
-    case QUIZ_PICKING_TAGS:
+    case constants.QUIZ_PICKING_TAGS:
       return generateStructureByTags(quiz, steps, items, previousPaper)
-    case QUIZ_PICKING_DEFAULT:
+    case constants.QUIZ_PICKING_DEFAULT:
     default:
       return generateStructureBySteps(quiz, steps, items, previousPaper)
   }
@@ -55,7 +56,7 @@ function generateStructureBySteps(quiz, steps, items, previousPaper = null) {
 
   // Generate the list of step ids for the paper
   let pickedSteps
-  if (previousPaper && SHUFFLE_ONCE === picking.randomPick) {
+  if (previousPaper && constants.SHUFFLE_ONCE === picking.randomPick) {
     // Get picked steps from the last user paper
     pickedSteps = previousStructure.steps.slice(0)
   } else {
@@ -64,8 +65,8 @@ function generateStructureBySteps(quiz, steps, items, previousPaper = null) {
   }
 
   // Shuffles steps if needed
-  if ( (!previousPaper && SHUFFLE_ONCE === picking.randomOrder)
-    || SHUFFLE_ALWAYS === picking.randomOrder) {
+  if ( (!previousPaper && constants.SHUFFLE_ONCE === picking.randomOrder)
+    || constants.SHUFFLE_ALWAYS === picking.randomOrder) {
     pickedSteps = shuffle(pickedSteps)
   }
 
@@ -75,7 +76,7 @@ function generateStructureBySteps(quiz, steps, items, previousPaper = null) {
       let pickedItems = []
 
       const stepStructure = previousPaper ? previousStructure.find((step) => step.id === pickedStep.id) : null
-      if (stepStructure && SHUFFLE_ONCE === pickedStep.picking.randomPick) {
+      if (stepStructure && constants.SHUFFLE_ONCE === pickedStep.picking.randomPick) {
         // Get picked items from the last user paper
         // Retrieves the list of items of the current step
         pickedItems = stepStructure.items.slice(0)
@@ -85,8 +86,8 @@ function generateStructureBySteps(quiz, steps, items, previousPaper = null) {
       }
 
       // Shuffles items if needed
-      if ( (!previousPaper && SHUFFLE_ONCE === pickedStep.picking.randomOrder)
-        || SHUFFLE_ALWAYS === pickedStep.picking.randomOrder) {
+      if ( (!previousPaper && constants.SHUFFLE_ONCE === pickedStep.picking.randomOrder)
+        || constants.SHUFFLE_ALWAYS === pickedStep.picking.randomOrder) {
         pickedItems = shuffle(pickedItems)
       }
 
@@ -103,7 +104,7 @@ function generateStructureByTags(quiz, steps, items, previousPaper = null) {
 
   // Generate the list of step ids for the paper
   let pickedItems = []
-  if (previousPaper && SHUFFLE_ONCE === picking.randomPick) {
+  if (previousPaper && constants.SHUFFLE_ONCE === picking.randomPick) {
     // Get picked steps from the last user paper
     previousStructure.steps.map(step => {
       step.items.map(itemId => {
@@ -123,8 +124,8 @@ function generateStructureByTags(quiz, steps, items, previousPaper = null) {
   }
 
   // Shuffle items according to config
-  if ( (!previousPaper && SHUFFLE_ONCE === picking.randomOrder)
-    || SHUFFLE_ALWAYS === picking.randomOrder) {
+  if ( (!previousPaper && constants.SHUFFLE_ONCE === picking.randomOrder)
+    || constants.SHUFFLE_ALWAYS === picking.randomOrder) {
     pickedItems = shuffle(pickedItems)
   }
 

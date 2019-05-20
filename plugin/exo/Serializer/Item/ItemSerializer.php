@@ -532,6 +532,12 @@ class ItemSerializer
         $sanitized = ['type' => $score['type']];
 
         switch ($score['type']) {
+            case 'sum':
+                if (isset($score['total'])) {
+                    $sanitized['total'] = $score['total'];
+                }
+                break;
+
             case 'fixed':
                 $sanitized['success'] = $score['success'];
                 $sanitized['failure'] = $score['failure'];

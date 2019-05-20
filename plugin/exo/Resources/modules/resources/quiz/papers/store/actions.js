@@ -1,4 +1,4 @@
-import {API_REQUEST} from '#/main/app/api'
+import {API_REQUEST, url} from '#/main/app/api'
 import {makeActionCreator} from '#/main/app/store/actions'
 
 import {actions as listActions} from '#/main/app/content/list/store/actions'
@@ -25,14 +25,13 @@ actions.loadCurrentPaper = (quizId, paperId) => ({
 
 actions.deletePapers = (quizId, papers) => ({
   [API_REQUEST]: {
-    url: ['ujm_exercise_delete_papers', {
+    url: url(['ujm_exercise_delete_papers', {
       exerciseId: quizId
-    }],
+    }], {
+      ids: papers.map(paper => paper.id)
+    }),
     request: {
-      method: 'DELETE',
-      body: JSON.stringify({
-        ids: papers.map(paper => paper.id)
-      })
+      method: 'DELETE'
     },
     success: (data, dispatch) => dispatch(listActions.invalidateData(selectors.LIST_NAME))
   }

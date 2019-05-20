@@ -29,6 +29,7 @@ class PaperManagerTest extends TestCase
             $this->mock('Symfony\Component\EventDispatcher\EventDispatcherInterface'),
             $this->serializer,
             $this->mock('UJM\ExoBundle\Manager\Item\ItemManager'),
+            $this->mock('UJM\ExoBundle\Manager\Attempt\ScoreManager'),
             $this->mock('Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager')
         );
     }

@@ -93,7 +93,7 @@ class PaperGenerator
      * @param Exercise $exercise
      * @param Paper    $previousPaper
      *
-     * @return \stdClass
+     * @return array
      */
     private function generateStructure(Exercise $exercise, Paper $previousPaper = null)
     {

@@ -23,11 +23,6 @@ const papers = createSelector(
   (resource) => resource.papers
 )
 
-const viewMode = createSelector(
-  resource,
-  (resource) => resource.viewMode
-)
-
 const quiz = createSelector(
   resource,
   (resource) => resource.quiz
@@ -44,8 +39,8 @@ const id = createSelector(
 )
 
 const testMode = createSelector(
-  quiz,
-  (quiz) => quiz.testMode || false
+  resource,
+  (resource) => resource.testMode || false
 )
 
 const quizSteps = createSelector(
@@ -76,15 +71,6 @@ const title = createSelector(
 const meta = createSelector(
   quiz,
   (quiz) => quiz.meta || {}
-)
-
-const noItems = createSelector(
-  [steps, items],
-  (steps, items) => Object.keys(steps).length === 1 && Object.keys(items).length === 0
-)
-const firstStepId = createSelector(
-  quizSteps,
-  (quizSteps) => quizSteps[0]
 )
 
 const hasOverview = createSelector(
@@ -124,9 +110,6 @@ export default {
   meta,
   parameters,
   title,
-  viewMode,
-  noItems,
-  firstStepId,
   hasOverview,
   testMode,
   quizNumbering,
@@ -150,9 +133,6 @@ export const select = {
   meta,
   parameters,
   title,
-  viewMode,
-  noItems,
-  firstStepId,
   hasOverview,
   testMode,
   quizNumbering,
@@ -176,9 +156,6 @@ export const selectors = {
   meta,
   parameters,
   title,
-  viewMode,
-  noItems,
-  firstStepId,
   hasOverview,
   testMode,
   quizNumbering,

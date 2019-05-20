@@ -19,7 +19,9 @@ const GraphicItem = {
         id: T.string.isRequired,
         shape: T.string.isRequired,
         color: T.string.isRequired
-      }).isRequired
+      }).isRequired,
+      score: T.number,
+      feedback: T.string
     })).isRequired,
     _currentColor: T.string,
     _popover: T.shape({

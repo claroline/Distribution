@@ -8,7 +8,7 @@ import {FormSection} from '#/main/app/content/form/components/sections'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 import {getItem} from '#/plugin/exo/items'
-import {calculateTotal} from '#/plugin/exo/scores'
+import {calculateTotal} from '#/plugin/exo/items/score'
 import {Item as ItemTypes} from '#/plugin/exo/items/prop-types'
 import {ItemIcon} from '#/plugin/exo/items/components/icon'
 import {ItemEditor} from '#/plugin/exo/items/components/editor'
@@ -43,7 +43,7 @@ const EditorItem = props =>
               <ItemIcon name={itemDefinition.name} className="panel-title-icon" />
             </Fragment>
           }
-          subtitle={undefined !== itemScore && `(${transChoice('solution_score', itemScore, {score: itemScore}, 'quiz')})`}
+          subtitle={(itemScore || 0 === itemScore) ? `(${transChoice('solution_score', itemScore, {score: itemScore}, 'quiz')})` : undefined}
           title={itemTitle}
 
           actions={props.actions}

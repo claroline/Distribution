@@ -72,8 +72,8 @@ const ClozePaper = (props) =>
               id: solution.holeId,
               component: (
                 <span className="badge">
-                    {idx + 1}
-                  </span>
+                  {idx + 1}
+                </span>
               )
             }
           })}

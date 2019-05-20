@@ -32,12 +32,14 @@ const QuizResource = props =>
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-play',
         label: trans('start', {}, 'actions'),
+        disabled: props.empty,
         target: '/play'
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-play',
         label: trans('test', {}, 'actions'),
         displayed: props.editable,
+        disabled: props.empty,
         target: '/test',
         group: trans('management')
       }, {
@@ -117,8 +119,7 @@ const QuizResource = props =>
           component: AttemptEnd
         }, {
           path: '/papers',
-          component: PapersMain,
-          disabled: !props.registeredUser
+          component: PapersMain
         }, {
           path: '/correction',
           component: CorrectionMain,
@@ -150,6 +151,7 @@ const QuizResource = props =>
 
 QuizResource.propTypes = {
   quizId: T.string,
+  empty: T.bool.isRequired,
   editable: T.bool.isRequired,
   papersAdmin: T.bool.isRequired,
   docimologyAdmin: T.bool.isRequired,

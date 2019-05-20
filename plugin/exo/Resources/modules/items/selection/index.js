@@ -111,5 +111,49 @@ export default {
       case 'highlight':
         return getCorrectedAnswerForHighlightMode(item, corrected, answer)
     }
+  },
+
+  expectAnswer: (item) => {
+    const answers = []
+
+    if (item.solutions) {
+      switch (item.mode) {
+        case 'select':
+        case 'find':
+          item.solutions
+            .filter(solution => 0 < solution.score)
+            .map(solution => answers.push(new Answerable(solution.score)))
+
+          break
+
+        case 'highlight':
+          item.solutions.map(solution => {
+            let expected
+            solution.answers.map(answer => {
+              if (!expected || answer.score > expected.score) {
+                expected = answer
+              }
+            })
+
+            if (expected) {
+              answers.push(new Answerable(expected.score))
+            }
+          })
+
+          break
+      }
+    }
+
+    return answers
+  },
+
+  allAnswers: (item) => {
+    if (item.solutions) {
+      return item.solutions
+        .filter(solution => 0 < solution.score)
+        .map(solution => new Answerable(solution.score))
+    }
+
+    return []
   }
 }

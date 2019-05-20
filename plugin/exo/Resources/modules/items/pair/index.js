@@ -88,5 +88,31 @@ export default {
     }
 
     return corrected
+  },
+
+  expectAnswer: (item) => {
+    if (item.solutions && item.solutions.associations) {
+      return item.solutions.associations
+        .filter(solution => 0 < solution.score)
+        .map(solution => new Answerable(solution.score, solution.id))
+    }
+
+    return []
+  },
+
+  allAnswers: (item) => {
+    const answers = []
+
+    if (item.solutions) {
+      if (item.solutions.associations) {
+        item.solutions.associations.map(solution => answers.push(new Answerable(solution.score)))
+      }
+
+      if (item.solutions.odd) {
+        item.solutions.odd.map(odd => answers.push(new Answerable(odd.score)))
+      }
+    }
+
+    return answers
   }
 }

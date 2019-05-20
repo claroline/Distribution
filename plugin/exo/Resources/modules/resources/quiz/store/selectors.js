@@ -1,5 +1,4 @@
 import {createSelector} from 'reselect'
-import get from 'lodash/get'
 
 const STORE_NAME = 'resource'
 
@@ -30,15 +29,39 @@ const id = createSelector(
   (quiz) => quiz.id
 )
 
-const showStatistics = createSelector(
+const steps = createSelector(
   [quiz],
-  (quiz) => get(quiz, 'parameters.showStatistics') || false
+  (quiz) => quiz.steps || []
 )
 
-// TODO
-const hasScore = createSelector(
+/**
+ * Checks if there are items in the quiz.
+ *
+ * @return {bool}
+ */
+const empty = createSelector(
+  [steps],
+  (steps) => -1 === steps.findIndex(step => step.items && 0 < step.items.length)
+)
+
+const parameters = createSelector(
   [quiz],
-  (quiz) => true
+  (quiz) => quiz.parameters || {}
+)
+
+const numbering = createSelector(
+  [parameters],
+  (parameters) => parameters.numbering
+)
+
+const showStatistics = createSelector(
+  [parameters],
+  (parameters) => parameters.showStatistics || false
+)
+
+const hasOverview = createSelector(
+  [parameters],
+  (parameters) => parameters.showOverview || false
 )
 
 export const selectors = {
@@ -47,6 +70,8 @@ export const selectors = {
   resource,
   quiz,
   id,
+  empty,
+  numbering,
   showStatistics,
-  hasScore
+  hasOverview
 }

@@ -107,5 +107,23 @@ export default {
     })
 
     return corrected
+  },
+
+  expectAnswer: (item) => {
+    if (item.solutions) {
+      return item.solutions
+        .filter(solution => 0 < solution.score)
+        .map(solution => new Answerable(solution.score, solution.id))
+    }
+
+    return []
+  },
+
+  allAnswers: (item) => {
+    if (item.solutions) {
+      return item.solutions.map(solution => new Answerable(solution.score, solution.id))
+    }
+
+    return []
   }
 }

@@ -51,5 +51,8 @@ export default {
    *
    * @return {CorrectedAnswer}
    */
-  correctAnswer: () => new CorrectedAnswer()
+  correctAnswer: () => new CorrectedAnswer(),
+
+  expectAnswer: () => [],
+  allAnswers: () => []
 }

@@ -12,7 +12,6 @@ import {displayUsername} from '#/main/core/user/utils'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
 import {selectors as resourceSelectors} from '#/main/core/resource/store'
 
-import {selectors as quizSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
 import {actions as papersActions, selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store'
 import {PaperCard} from '#/plugin/exo/resources/quiz/papers/components/card'
 
@@ -139,8 +138,8 @@ Papers.propTypes = {
 const ConnectedPapers = connect(
   (state) => ({
     admin: hasPermission('edit', resourceSelectors.resourceNode(state)) || hasPermission('manage_papers', resourceSelectors.resourceNode(state)),
-    quizId: quizSelectors.id(state),
-    hasScore: quizSelectors.hasScore(state)
+    quizId: paperSelectors.quizId(state),
+    hasScore: paperSelectors.quizHasScore(state)
   }),
   (dispatch) => ({
     delete(quizId, papers) {

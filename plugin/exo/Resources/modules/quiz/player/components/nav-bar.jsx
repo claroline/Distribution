@@ -49,7 +49,7 @@ SubmitButton.propTypes = {
 const FinishButton = props =>
   <button className="btn btn-finish btn-primary" onClick={props.onClick}>
     <span className="fa fa-fw fa-sign-out" />
-    {trans('finish', {}, 'quiz')}
+    {trans('finish', {}, 'actions')}
   </button>
 
 FinishButton.propTypes = {

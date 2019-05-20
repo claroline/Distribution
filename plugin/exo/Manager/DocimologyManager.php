@@ -83,7 +83,7 @@ class DocimologyManager
             'nbSteps' => $exercise->getSteps()->count(),
             'nbQuestions' => $this->exerciseRepository->countExerciseQuestion($exercise),
             'nbPapers' => $this->paperManager->countExercisePapers($exercise),
-            'nbRegisteredUsers' => $this->paperManager->countPapersUsers($exercise),
+            'nbRegisteredUsers' => $this->paperManager->countUsersPapers($exercise),
             'nbAnonymousUsers' => $this->paperManager->countAnonymousPapers($exercise),
             'minMaxAndAvgScores' => $this->getMinMaxAverageScores($exercise, $maxScore),
             'paperSuccessDistribution' => $this->getPapersSuccessDistribution($exercise, $maxScore),

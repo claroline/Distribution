@@ -233,11 +233,6 @@ class SelectionDefinition extends AbstractDefinition
     {
         switch ($question->getMode()) {
            case $question::MODE_FIND:
-               $selections = $question->getSelections()->toArray();
-
-               return array_filter($selections, function ($selection) {
-                   return $selection->getScore() > 0;
-               });
            case $question::MODE_SELECT:
               $selections = $question->getSelections()->toArray();
 

@@ -10,7 +10,6 @@ import {hasPermission, isAuthenticated} from '#/main/app/security'
 import {QuizResource as QuizResourceComponent} from '#/plugin/exo/resources/quiz/components/resource'
 
 import {reducer, selectors} from '#/plugin/exo/resources/quiz/store'
-import {select} from '#/plugin/exo/quiz/selectors'
 
 import {actions as playerActions} from '#/plugin/exo/quiz/player/actions'
 import {actions as statisticsActions} from '#/plugin/exo/quiz/statistics/store'
@@ -21,10 +20,11 @@ const QuizResource = DragNDropContext(
       connect(
         (state) => ({
           quizId: selectors.id(state),
+          empty: selectors.empty(state),
           editable: hasPermission('edit', resourceSelectors.resourceNode(state)),
           papersAdmin: hasPermission('manage_papers', resourceSelectors.resourceNode(state)),
           docimologyAdmin: hasPermission('view_docimology', resourceSelectors.resourceNode(state)),
-          hasOverview: select.hasOverview(state),
+          hasOverview: selectors.hasOverview(state),
           showStatistics: selectors.showStatistics(state),
           registeredUser: isAuthenticated()
         }),

@@ -60,6 +60,21 @@ const ScoreType = {
   }
 }
 
+const ScoreRule = {
+  propTypes: {
+    type: T.string.isRequired
+    // others props depends on the type
+  },
+  defaultProps: {
+    type: 'sum',
+
+    // not really aesthetic (this is the default for "fixed" type)
+    success: 1,
+    failure: 0
+  }
+}
+
 export {
-  ScoreType
+  ScoreType,
+  ScoreRule
 }

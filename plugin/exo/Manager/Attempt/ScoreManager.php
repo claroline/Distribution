@@ -44,6 +44,20 @@ class ScoreManager
                 foreach ($correctedAnswer->getUnexpected() as $el) {
                     $score += $el->getScore();
                 }
+
+                if (isset($scoreRule['total']) && 0 < $scoreRule['total']) {
+                    // round score according to config
+                    $answersTotal = array_reduce(
+                        array_merge($correctedAnswer->getExpected(), $correctedAnswer->getMissing()),
+                        function ($totalScore, AnswerPartInterface $answerPart) {
+                            return $totalScore + $answerPart->getScore();
+                        },
+                        0
+                    );
+
+                    $score = ($score / $answersTotal) * $scoreRule['total'];
+                }
+
                 break;
 
             case 'rules':
@@ -103,7 +117,6 @@ class ScoreManager
 
             default:
                 throw new \LogicException("Unknown score type '{$scoreRule['type']}'.");
-                break;
         }
 
         if (null !== $score) {
@@ -133,8 +146,12 @@ class ScoreManager
 
             case 'sum':
                 $total = 0;
-                foreach ($expectedAnswers as $answer) {
-                    $total += $answer->getScore();
+                if (isset($scoreRule['total']) && 0 < $scoreRule['total']) {
+                    $total = $scoreRule['total'];
+                } else {
+                    foreach ($expectedAnswers as $answer) {
+                        $total += $answer->getScore();
+                    }
                 }
 
                 break;

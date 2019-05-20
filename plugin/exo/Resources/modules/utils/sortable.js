@@ -60,7 +60,7 @@ function sortHover(props, monitor, component) {
     return
   }
 
-  const node = findDOMNode(component)
+  const node = findDOMNode(component) // eslint-disable-line react/no-find-dom-node
   const hoverBoundingRect = node.getBoundingClientRect()
 
   let isVerticalSort = false

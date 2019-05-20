@@ -1,6 +1,6 @@
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 
-import {DEFAULT_SCORE_TYPE} from '#/plugin/exo/scores'
+import {ScoreRule} from '#/plugin/exo/scores/prop-types'
 
 /**
  * Definition of Quiz items.
@@ -38,9 +38,8 @@ const AnswerableItemType = implementPropTypes({}, ItemType, {
   validateAnswer: T.func,
   correctAnswer: T.func,
   expectAnswer: T.func,
+  allAnswers: T.func,
   getStatistics: T.func
-}, {
-
 })
 
 const Item = {
@@ -52,9 +51,9 @@ const Item = {
 
     }),
     hasExpectedAnswers: T.bool,
-    score: T.shape({
-      type: T.string.isRequired
-    })
+    score: T.shape(
+      ScoreRule.propTypes
+    )
   },
 
   defaultProps: {
@@ -72,11 +71,7 @@ const Item = {
     feedback: '',
     objects: [],
     hasExpectedAnswers: true,
-    score: {
-      type: DEFAULT_SCORE_TYPE,
-      success: 1,
-      failure: 0
-    },
+    score: ScoreRule.defaultProps,
     tags: []
   }
 }

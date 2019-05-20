@@ -18,7 +18,9 @@ const Paper = {
     structure: T.shape(
       Quiz.propTypes
     ),
-    answers: T.array
+    answers: T.arrayOf(T.shape({
+      // TODO : answer propTypes
+    }))
   },
 
   defaultProps: {

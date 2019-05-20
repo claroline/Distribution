@@ -75,6 +75,8 @@ class ExerciseSerializer
             if (!empty($exercise->getDescription())) {
                 $serialized['description'] = $exercise->getDescription();
             }
+
+            $serialized['score'] = json_decode($exercise->getScoreRule(), true);
             $serialized['parameters'] = $this->serializeParameters($exercise);
             $serialized['picking'] = $this->serializePicking($exercise);
             $serialized['steps'] = $this->serializeSteps($exercise, $options);
@@ -101,6 +103,11 @@ class ExerciseSerializer
 
         if (in_array(Transfer::REFRESH_UUID, $options)) {
             $exercise->refreshUuid();
+        }
+
+        if (isset($data['score'])) {
+            $score = $this->sanitizeScore($data['score']);
+            $exercise->setScoreRule(json_encode($score));
         }
 
         if (!empty($data['parameters'])) {
@@ -153,7 +160,6 @@ class ExerciseSerializer
             'showCorrectionAt' => $exercise->getCorrectionMode(),
             'successMessage' => $exercise->getSuccessMessage(),
             'failureMessage' => $exercise->getFailureMessage(),
-            'totalScoreOn' => $exercise->getTotalScoreOn(),
             'successScore' => $exercise->getSuccessScore(),
             'correctionDate' => $exercise->getDateCorrection() ? DateNormalizer::normalize($exercise->getDateCorrection()) : null,
             'hasExpectedAnswers' => $exercise->hasExpectedAnswers(),
@@ -197,7 +203,6 @@ class ExerciseSerializer
         $this->sipe('successMessage', 'setSuccessMessage', $parameters, $exercise);
         $this->sipe('failureMessage', 'setFailureMessage', $parameters, $exercise);
         $this->sipe('showScoreAt', 'setMarkMode', $parameters, $exercise);
-        $this->sipe('totalScoreOn', 'setTotalScoreOn', $parameters, $exercise);
         $this->sipe('answersEditable', 'setAnswersEditable', $parameters, $exercise);
         $this->sipe('hasExpectedAnswers', 'setExpectedAnswers', $parameters, $exercise);
 
@@ -353,5 +358,41 @@ class ExerciseSerializer
               Transfer::PERSIST_TAG,
           ],
         ];
+    }
+
+    /**
+     * The client may send dirty data, we need to clean them before storing it in DB.
+     * (duplicated from ItemSerializer).
+     *
+     * @param $score
+     *
+     * @return array
+     */
+    private function sanitizeScore($score)
+    {
+        $sanitized = ['type' => $score['type']];
+
+        switch ($score['type']) {
+            case 'sum':
+                if (isset($score['total'])) {
+                    $sanitized['total'] = $score['total'];
+                }
+                break;
+            case 'fixed':
+                $sanitized['success'] = $score['success'];
+                $sanitized['failure'] = $score['failure'];
+                break;
+
+            case 'manual':
+                $sanitized['max'] = $score['max'];
+                break;
+
+            case 'rules':
+                $sanitized['noWrongChoice'] = isset($score['noWrongChoice']) ? $score['noWrongChoice'] : false;
+                $sanitized['rules'] = $score['rules'];
+                break;
+        }
+
+        return $sanitized;
     }
 }

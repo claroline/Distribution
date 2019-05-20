@@ -12,7 +12,7 @@ import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 const ConfirmModal = props =>
   <Modal
-    {...omit(props, 'dangerous', 'question', 'additional', 'confirmAction')}
+    {...omit(props, 'dangerous', 'question', 'additional', 'confirmAction', 'handleConfirm')}
   >
     <HtmlText className="modal-body">{props.question}</HtmlText>
 

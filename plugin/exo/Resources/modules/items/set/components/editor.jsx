@@ -47,11 +47,12 @@ const addOdd = (items, solutions, saveCallback) => {
 }
 
 const updateItem = (property, value, itemId, items, solutions, isOdd, saveCallback) => {
-  const newItems = cloneDeep(items)
   const formattedValue = 'score' === property ? parseFloat(value) : value
-  const itemToUpdate = newItems.find(i => i.id === itemId)
 
-  if (itemToUpdate) {
+  const itemIndex = items.findIndex(i => i.id === itemId)
+  if (-1 !== itemIndex) {
+    const itemToUpdate = cloneDeep(items[itemIndex])
+
     if (isOdd) {
       if ('data' === property) {
         itemToUpdate[property] = formattedValue
@@ -74,7 +75,7 @@ const updateItem = (property, value, itemId, items, solutions, isOdd, saveCallba
       saveCallback('solutions', newSolutions)
     }
 
-    saveCallback('items', newItems)
+    saveCallback(`items[${itemIndex}]`, itemToUpdate)
   }
 }
 
@@ -457,17 +458,20 @@ const ItemList = (props) =>
     label={trans('items', {}, 'quiz')}
   >
     <ul>
-      {props.items.map((item, itemIndex) =>
-        <li key={item.id}>
-          <Item
-            index={itemIndex}
-            item={item}
-            deletable={1 < props.items.length}
-            onUpdate={(property, value) => updateItem(property, value, item.id, props.items, props.solutions, false, props.onChange)}
-            onDelete={() => props.delete(item.id)}
-          />
-        </li>
-      )}
+      {props.items
+        .filter(item => !utils.isOdd(item.id, props.solutions))
+        .map((item, itemIndex) =>
+          <li key={item.id}>
+            <Item
+              index={itemIndex}
+              item={item}
+              deletable={1 < props.items.length}
+              onUpdate={(property, value) => updateItem(property, value, item.id, props.items, props.solutions, false, props.onChange)}
+              onDelete={() => props.delete(item.id)}
+            />
+          </li>
+        )
+      }
     </ul>
 
     <Button
@@ -618,14 +622,11 @@ OddList.propTypes = {
 }
 
 const SetEditor = (props) => {
-  const items = props.item.items
-    .filter(item => !utils.isOdd(item.id, props.item.solutions))
-
   const Set = (
     <div className="row">
-      <div className="items-col col-md-5 col-sm-5 col-xs-5">
+      <div key="items" className="items-col col-md-5 col-sm-5 col-xs-5">
         <ItemList
-          items={items}
+          items={props.item.items}
           solutions={props.item.solutions}
           onChange={props.update}
 
@@ -645,15 +646,15 @@ const SetEditor = (props) => {
         />
       </div>
 
-      <div className="sets-col col-md-7 col-sm-7 col-xs-7">
+      <div key="sets" className="sets-col col-md-7 col-sm-7 col-xs-7">
         <SetList
           sets={props.item.sets}
           associations={props.item.solutions.associations.map(association => {
-            const itemIndex = items.findIndex(item => association.itemId === item.id)
+            const itemIndex = props.item.items.findIndex(item => association.itemId === item.id)
 
             return Object.assign({
               _itemIndex: itemIndex,
-              _itemData: items[itemIndex].data
+              _itemData: props.item.items[itemIndex].data
             }, association)
           })}
           onChange={props.update}

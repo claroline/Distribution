@@ -77,5 +77,36 @@ export default {
     })
 
     return corrected
+  },
+
+  expectAnswer: (item) => {
+    const answers = []
+
+    if (item.solutions) {
+      item.solutions.map(solution => {
+        // search for the best answer for each hole
+        let expected
+        solution.answers.map(answer => {
+          if (!expected || answer.score > expected.score) {
+            expected = answer
+          }
+        })
+
+        if (expected) {
+          answers.push(new Answerable(expected.score))
+        }
+      })
+    }
+
+    return answers
+  },
+
+  allAnswers: (item) => {
+    const answers = []
+    if (item.solutions) {
+      item.solutions.map(solution => solution.answers.map(answer => answers.push(new Answerable(answer.score))))
+    }
+
+    return answers
   }
 }

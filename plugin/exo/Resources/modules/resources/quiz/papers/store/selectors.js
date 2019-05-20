@@ -1,10 +1,17 @@
 import {createSelector} from 'reselect'
+import get from 'lodash/get'
 
-import {calculateTotal} from '#/plugin/exo/scores'
 import {selectors as baseSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
 
 const STORE_NAME = 'papers'
 const LIST_NAME = `${baseSelectors.STORE_NAME}.${STORE_NAME}.list`
+
+const quizId = baseSelectors.id
+
+const quizHasScore = createSelector(
+  [baseSelectors.quiz],
+  (quiz) => quiz.score && 'none' !== quiz.score.type
+)
 
 const papers = createSelector(
   [baseSelectors.resource],
@@ -16,66 +23,34 @@ const currentPaper = createSelector(
   (papersState) => papersState.current
 )
 
-const showScoreAt = paper => {
-  return paper.structure.parameters.showScoreAt
-}
+const currentParameters = createSelector(
+  [currentPaper],
+  (currentPaper) => get(currentPaper, 'structure.parameters') || {}
+)
 
-const showCorrectionAt = paper => {
-  return paper.structure.parameters.showCorrectionAt
-}
+const currentNumbering = createSelector(
+  [currentParameters],
+  (currentParameters) => currentParameters.numbering
+)
 
-const correctionDate = paper => {
-  return paper.structure.parameters.correctionDate
-}
+const showExpectedAnswers = createSelector(
+  [currentParameters],
+  (parameters) => parameters.showFullCorrection || false
+)
 
-const totalScoreOn = paper => {
-  if (paper.structure.parameters.totalScoreOn && paper.structure.parameters.totalScoreOn > 0) {
-    return paper.structure.parameters.totalScoreOn
-  }
-
-  return null
-}
-
-const paperTotalAnswerScore = paper => {
-  let scoreMax = 0
-
-  paper.structure.steps.map(step =>
-    step.items.map(item => {
-      const itemTotal = calculateTotal(item)
-      if (itemTotal) {
-        scoreMax += itemTotal
-      }
-    })
-  )
-
-  return scoreMax
-}
-
-const paperScoreMax = paper => {
-  if (totalScoreOn(paper)) {
-    return totalScoreOn(paper)
-  }
-
-  return paperTotalAnswerScore(paper)
-}
-
-const paperItemsCount = paper => {
-  let count = 0
-  paper.structure.steps.forEach(step => count += step.items.length)
-
-  return count
-}
+const showStatistics = createSelector(
+  [currentParameters],
+  (parameters) => parameters.showStatistics || false
+)
 
 export const selectors = {
   STORE_NAME,
   LIST_NAME,
 
+  quizId,
+  quizHasScore,
   currentPaper,
-  paperScoreMax,
-  showScoreAt,
-  showCorrectionAt,
-  correctionDate,
-  totalScoreOn,
-  paperTotalAnswerScore,
-  paperItemsCount
+  currentNumbering,
+  showExpectedAnswers,
+  showStatistics
 }

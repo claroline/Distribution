@@ -98,7 +98,7 @@ utils.getKey = (word, solutions) => {
 }
 
 utils.escapeRegExp = (str) => {
-  return str.replace(/[\-\[\]\/{}()*+?.\\\^$|]/g, '\\$&')
+  return str.replace(/[\-\[\]\/{}()*+?.\\\^$|]/g, '\\$&') // eslint-disable-line no-useless-escape
 }
 
 utils.containsKeyword = (keyword, caseSensitive, text = '') => {

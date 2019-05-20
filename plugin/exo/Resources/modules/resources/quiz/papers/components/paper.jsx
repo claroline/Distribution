@@ -12,7 +12,7 @@ import {displayDate, displayDuration, getTimeDiff} from '#/main/app/intl/date'
 import {hasPermission} from '#/main/app/security'
 import {ContentLoader} from '#/main/app/content/components/loader'
 import {Toolbar} from '#/main/app/action/components/toolbar'
-import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {UserMicro} from '#/main/core/user/components/micro'
 import {displayUsername} from '#/main/core/user/utils'
 import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box'
@@ -21,15 +21,14 @@ import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {isHtmlEmpty} from '#/main/app/data/types/html/validators'
 
-import {calculateTotal} from '#/plugin/exo/scores'
+import {calculateTotal} from '#/plugin/exo/items/score'
 import quizSelect from '#/plugin/exo/quiz/selectors'
-import {selectors as quizSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
 import {getDefinition, isQuestionType} from '#/plugin/exo/items/item-types'
-import {utils} from '#/plugin/exo/resources/quiz/papers/utils'
+import {showScore} from '#/plugin/exo/resources/quiz/papers/restrictions'
 import {getNumbering} from '#/plugin/exo/resources/quiz/utils'
 import {Metadata as ItemMetadata} from '#/plugin/exo/items/components/metadata'
 import {Paper as PaperTypes} from '#/plugin/exo/resources/quiz/papers/prop-types'
-import {actions as papersActions, selectors as paperSelectors} from '#/plugin/exo/resources/quiz/papers/store'
+import {actions, selectors} from '#/plugin/exo/resources/quiz/papers/store'
 import ScoreNone from '#/plugin/exo/scores/none'
 
 function getAnswer(itemId, answers) {
@@ -140,13 +139,13 @@ const PaperComponent = props =>
         toolbar="more"
         size="sm"
         actions={[
-          {
+          /*{
             name: 'about',
             type: MODAL_BUTTON,
             icon: 'fa fa-fw fa-info',
             label: trans('show-info', {}, 'actions'),
             modal: []
-          }, {
+          },*/ {
             name: 'delete',
             type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-trash-o',
@@ -257,31 +256,22 @@ const Paper = withRouter(
   connect(
     (state) => {
       const admin = hasPermission('edit', resourceSelect.resourceNode(state)) || hasPermission('manage_papers', resourceSelect.resourceNode(state))
-      const paper = paperSelectors.currentPaper(state)
-      const showScore = paper ?
-        utils.showScore(
-          admin,
-          paper.finished,
-          get(paper, 'structure.parameters.showScoreAt'),
-          get(paper, 'structure.parameters.showCorrectionAt'),
-          get(paper, 'structure.parameters.correctionDate')
-        ) :
-        false
+      const paper = selectors.currentPaper(state)
 
       return ({
-        quizId: quizSelectors.id(state), // TODO : read from paper
+        quizId: selectors.quizId(state),
         admin: admin,
         paper: paper,
-        showScore: showScore,
-        numberingType: quizSelect.quizNumbering(state), // TODO : read from paper
-        showExpectedAnswers: quizSelect.papersShowExpectedAnswers(state), // TODO : read from paper
-        showStatistics: quizSelect.papersShowStatistics(state), // TODO : read from paper
+        showScore: paper ? showScore(paper, admin) : false,
+        numberingType: selectors.currentNumbering(state),
+        showExpectedAnswers: selectors.showExpectedAnswers(state),
+        showStatistics: selectors.showStatistics(state),
         stats: quizSelect.statistics(state)
       })
     },
     (dispatch, ownProps) => ({
       delete(quizId, paper) {
-        dispatch(papersActions.deletePapers(quizId, [paper]))
+        dispatch(actions.deletePapers(quizId, [paper]))
 
         ownProps.history.push('/papers')
       }

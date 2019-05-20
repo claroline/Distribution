@@ -71,17 +71,17 @@ class StepValidator extends JsonSchemaValidator
             // Apply custom validation to step items
             array_map(function (array $item) use (&$errors, $options) {
                 if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item['type'])) {
-                    $validatationOptions = $options;
+                    $validationOptions = $options;
 
                     // Item is a Question
-                    if (!$item['hasExpectedAnswers']) {
-                        $solutionsKey = array_search(Validation::REQUIRE_SOLUTIONS, $validatationOptions);
+                    if (!isset($item['hasExpectedAnswers']) || !$item['hasExpectedAnswers']) {
+                        $solutionsKey = array_search(Validation::REQUIRE_SOLUTIONS, $validationOptions);
 
                         if (false !== $solutionsKey) {
-                            unset($validatationOptions[$solutionsKey]);
+                            unset($validationOptions[$solutionsKey]);
                         }
                     }
-                    $itemErrors = $this->itemValidator->validateAfterSchema($item, $validatationOptions);
+                    $itemErrors = $this->itemValidator->validateAfterSchema($item, $validationOptions);
                 } else {
                     // Item is a Content
                     $itemErrors = $this->contentValidator->validateAfterSchema($item, $options);

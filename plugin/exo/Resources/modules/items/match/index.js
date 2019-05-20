@@ -78,5 +78,23 @@ export default {
     times(item.solutions.filter(solution => solution.score > 0).length - answersCount, () => corrected.addPenalty(new Answerable(item.penalty)))
 
     return corrected
+  },
+
+  expectAnswer: (item) => {
+    if (item.solutions && item.solutions.associations) {
+      return item.solutions.associations
+        .filter(solution => 0 < solution.score)
+        .map(solution => new Answerable(solution.score, solution.id))
+    }
+
+    return []
+  },
+
+  allAnswers: (item) => {
+    if (item.solutions && item.solutions.associations) {
+      return item.solutions.associations.map(solution => new Answerable(solution.score))
+    }
+
+    return []
   }
 }

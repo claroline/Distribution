@@ -120,6 +120,13 @@ class FormFieldset extends Component {
           </FormGroup>
         )
       } else {
+        let value
+        if (undefined !== field.calculated) {
+          value = typeof field.calculated === 'function' ? field.calculated(this.props.data) : field.calculated
+        } else {
+          value = get(this.props.data, field.name)
+        }
+
         rendered.push(
           <FormField
             key={field.name}
@@ -136,7 +143,7 @@ class FormFieldset extends Component {
             disabled={this.props.disabled || (typeof field.disabled === 'function' ? field.disabled(this.props.data) : field.disabled)}
             validating={this.props.validating}
 
-            value={field.calculated ? field.calculated(this.props.data) : get(this.props.data, field.name)}
+            value={value}
             error={get(this.props.errors, field.name)}
             onChange={field.onChange}
             update={this.update}

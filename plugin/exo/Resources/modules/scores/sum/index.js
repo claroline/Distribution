@@ -10,9 +10,26 @@ export default {
   },
 
   hasAnswerScores: true,
-
-  // no additional configuration
-  configure: () => [],
+  configure: (score) => [
+    {
+      name: '_roundScore',
+      label: trans('round_total_score', {}, 'quiz'),
+      type: 'boolean',
+      calculated: score.total || score._roundScore,
+      linked: [
+        {
+          name: 'total',
+          label: trans('total_score', {}, 'quiz'),
+          type: 'number',
+          required: true,
+          displayed: score.total || score._roundScore,
+          options: {
+            min: 0
+          }
+        }
+      ]
+    }
+  ],
 
   calculate: (scoreRule, correctedAnswer) => {
     let score = 0
@@ -22,6 +39,25 @@ export default {
 
     correctedAnswer.getPenalties().forEach(el => score -= el.getScore())
 
+    if (scoreRule.total) {
+      const total = []
+        .concat(
+          correctedAnswer.getExpected(),
+          correctedAnswer.getMissing()
+        )
+        .reduce((totalScore, answerPart) => totalScore + answerPart.getScore(), 0)
+
+      score = (score / total) * scoreRule.total
+    }
+
     return score
+  },
+
+  calculateTotal: (scoreRule, expectedAnswer) => {
+    if (scoreRule.total) {
+      return scoreRule.total
+    }
+
+    return expectedAnswer.reduce((total, expected) => total + expected.getScore(), 0)
   }
 }

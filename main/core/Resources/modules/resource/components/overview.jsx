@@ -58,7 +58,7 @@ UserProgression.propTypes = {
   score: T.shape({
     displayed: T.bool,
     current: T.number,
-    total: T.number.isRequired
+    total: T.number
   }),
   details: T.arrayOf(
     T.arrayOf(T.string)
@@ -208,7 +208,7 @@ ResourceOverview.propTypes = {
     score: T.shape({
       displayed: T.bool.isRequired,
       current: T.number,
-      total: T.number.isRequired
+      total: T.number
     }),
     details: T.arrayOf(
       T.arrayOf(T.string)
