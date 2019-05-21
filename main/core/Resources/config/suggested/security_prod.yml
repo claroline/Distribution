@@ -28,14 +28,6 @@ security:
                 default_target_path: /oauth/v2/auth/form
             anonymous: true
 
-        # api is currently only used via ip white listing
-        # api:
-        #    pattern:    /(api|apiv2)/
-        #    claro_api: true #do something about me
-        #    #fos_oauth: true
-        #    #stateless:  true
-        #    security: true
-
         main:
             pattern: ^/
             simple_preauth:
