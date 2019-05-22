@@ -1,0 +1,21 @@
+{% set layout = 'ClarolineCoreBundle:workspace:layout.html.twig' %}
+
+{% extends layout %}
+
+{# Title of the Page #}
+{% block title %}
+    {{ parent() ~ ' - ' ~ "data-transfer" | trans({}, "tools") | striptags | raw }}
+{% endblock %}
+
+{# Content of the Page #}
+{% block content %}
+    <div
+        class="page-container data-transfer-container"
+    ></div>
+{% endblock %}
+
+{% block javascripts %}
+    {# Claroline JS #}
+    {{ parent() }}
+
+{% endblock %}
