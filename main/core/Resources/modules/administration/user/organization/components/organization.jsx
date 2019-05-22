@@ -61,6 +61,16 @@ const OrganizationForm = props =>
           }
         ]
       }, {
+        title: trans('limit'),
+        fields: [
+          {
+            name: 'users',
+            type: 'number',
+            label: trans('users'),
+            required: true
+          }
+        ]
+      }, {
         title: trans('information'),
         fields: [
           {
