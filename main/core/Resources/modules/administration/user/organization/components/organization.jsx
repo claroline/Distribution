@@ -64,10 +64,22 @@ const OrganizationForm = props =>
         title: trans('limit'),
         fields: [
           {
-            name: 'users',
-            type: 'number',
-            label: trans('users'),
-            required: true
+            name: 'limit.enable',
+            type: 'boolean',
+            label: trans('enable'),
+            required: true,
+            onChange: (enabled) => {
+              props.updateLimit(enabled)
+            },
+            linked: [
+              {
+                name: 'limit.users',
+                type: 'number',
+                label: trans('users'),
+                required: true,
+                displayed: () =>  props.organization.limit ? props.organization.limit.users > -1: false
+              }
+            ]
           }
         ]
       }, {
@@ -218,12 +230,17 @@ const OrganizationForm = props =>
 OrganizationForm.propTypes = {
   new: T.bool.isRequired,
   organization: T.shape({
-    id: T.string
+    id: T.string,
+    limit: T.shape({
+      enable: T.boolean,
+      users: T.integer
+    })
   }).isRequired,
   pickUsers: T.func.isRequired,
   pickGroups: T.func.isRequired,
   pickWorkspaces: T.func.isRequired,
-  pickManagers: T.func.isRequired
+  pickManagers: T.func.isRequired,
+  updateLimit: T.func.isRequired
 }
 
 const Organization = connect(
@@ -232,6 +249,9 @@ const Organization = connect(
     organization: formSelect.data(formSelect.form(state, 'organizations.current'))
   }),
   dispatch => ({
+    updateLimit(enabled) {
+      dispatch(actions.updateLimit(enabled))
+    },
     pickUsers(organizationId) {
       dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-user',
