@@ -16,8 +16,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class DropzoneSerializer
 {
-    const NO_UPDATE_SCORE = 'no_update_score';
-
     use SerializerTrait;
 
     /** @var CriterionSerializer */
@@ -241,15 +239,5 @@ class DropzoneSerializer
                 $this->om->remove($criterion);
             }
         }
-    }
-
-    public function getCopyOptions()
-    {
-        return [
-          'serialize' => [],
-          'deserialize' => [
-              self::NO_UPDATE_SCORE,
-          ],
-        ];
     }
 }

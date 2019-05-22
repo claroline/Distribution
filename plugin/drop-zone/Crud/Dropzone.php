@@ -5,7 +5,6 @@ namespace Claroline\DropZoneBundle\Crud;
 use Claroline\AppBundle\Event\Crud\UpdateEvent;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
-use Claroline\DropZoneBundle\Serializer\DropzoneSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -39,7 +38,7 @@ class Dropzone
         $dropzone = $event->getObject();
         $oldDatas = $event->getOldData();
 
-        if (!in_array(DropzoneSerializer::NO_UPDATE_SCORE, $options) && $oldDatas['parameters']['scoreMax'] !== $dropzone->getScoreMax()) {
+        if ($oldDatas['parameters']['scoreMax'] !== $dropzone->getScoreMax()) {
             $this->dropzoneManager->updateScoreByScoreMax($dropzone, $oldDatas['parameters']['scoreMax'], $dropzone->getScoreMax());
         }
     }
