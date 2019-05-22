@@ -143,9 +143,6 @@ class DropzoneSerializer
         $this->sipe('parameters.autoCloseDropsAtDropEndDate', 'setAutoCloseDropsAtDropEndDate', $data, $dropzone);
 
         if (!empty($data['parameters']['scoreMax']) && $data['parameters']['scoreMax'] !== $dropzone->getScoreMax()) {
-            if (!in_array(self::NO_UPDATE_SCORE, $options)) {
-                $this->dropzoneManager->updateScoreByScoreMax($dropzone, $dropzone->getScoreMax(), $data['parameters']['scoreMax']);
-            }
             $dropzone->setScoreMax($data['parameters']['scoreMax']);
         }
 
