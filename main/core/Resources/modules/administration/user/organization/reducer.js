@@ -7,9 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 import {UPDATE_LIMIT} from '#/main/core/administration/user/organization/actions'
-import {
-  FORM_RESET
-} from '#/main/app/content/form/store/actions'
+import {FORM_RESET} from '#/main/app/content/form/store/actions'
 
 const reducer = combineReducers({
   picker: makeListReducer('organizations.picker'),
@@ -26,7 +24,6 @@ const reducer = combineReducers({
       }
     }, {
       [FORM_RESET + '/organizations.current']: (state) => {
-      
         const data = cloneDeep(state)
         data.limit.enable = data.limit.users > -1
 

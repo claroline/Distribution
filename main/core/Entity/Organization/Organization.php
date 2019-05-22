@@ -419,8 +419,20 @@ class Organization
         return $this->type;
     }
 
+    public function getUserOrganizationReferecnes()
+    {
+        return $this->userOrganizationReferences;
+    }
+
     public function addUser(User $user)
     {
+        if ($this->getMaxUsers() > -1) {
+            $totalUsers = count($this->getUserOrganizationReferecnes());
+            if ($totalUsers >= $this->getMaxUsers()) {
+                throw new \Exception('The organization user limit has been reached');
+            }
+        }
+
         $found = false;
 
         foreach ($this->userOrganizationReferences as $userOrgaRef) {
