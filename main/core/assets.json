@@ -19,6 +19,7 @@
       "contacts-tool": "tools/contact",
       "resources-tool": "tools/resources/bootstrap",
       "trash-tool": "tools/trash/bootstrap",
+      "transfer-tool": "tools/transfer/bootstrap",
       "workspace-user-management": "workspace/user",
       "administration-toolbar": "administration/toolbar",
       "workspace-toolbar": "workspace/toolbar",

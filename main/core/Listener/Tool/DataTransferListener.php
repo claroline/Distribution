@@ -50,10 +50,7 @@ class DataTransferListener
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
         $content = $this->templating->render(
-            'ClarolineCoreBundle:tool:home.html.twig', ['context' => [
-                'editable' => true,
-                'type' => Widget::CONTEXT_DESKTOP,
-            ]]
+            'ClarolineCoreBundle:tool:data-transfer.html.twig', ['context' => ['type' => Widget::CONTEXT_DESKTOP], 'workspace' => $event->getWorkspace()]
         );
 
         $event->setContent($content);
