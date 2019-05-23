@@ -1,8 +1,8 @@
 import {bootstrap} from '#/main/app/dom/bootstrap'
 
 // reducers
-import {reducer} from '#/main/core/administration/transfer/reducer'
-import {TransferTool} from '#/main/core/administration/transfer/components/tool'
+import {reducer} from '#/main/core/transfer/reducer'
+import {TransferTool} from '#/main/core/transfer/components/tool'
 
 // mount the react application
 bootstrap(

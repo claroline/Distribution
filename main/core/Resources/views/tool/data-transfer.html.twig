@@ -10,12 +10,19 @@
 {# Content of the Page #}
 {% block content %}
     <div
-        class="page-container data-transfer-container"
+      class="page-container transfer-container"
+      data-current-context="{{ context | json_encode | raw | escape }}"
+      data-explanation="{{ explanation | json_encode | raw | escape }}"
     ></div>
 {% endblock %}
 
 {% block javascripts %}
     {# Claroline JS #}
     {{ parent() }}
+
+    {# Translations #}
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'resource' }) }}"></script>
+
+    <script src="{{ hotAsset('claroline-distribution-main-core-transfer-tool') }}"></script>
 
 {% endblock %}

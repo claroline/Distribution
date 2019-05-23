@@ -6,8 +6,8 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 import {Routes} from '#/main/app/router'
 import {ListData} from '#/main/app/content/list/containers/data'
 
-import {Logs} from '#/main/core/administration/transfer/log/components/logs'
-import {actions} from '#/main/core/administration/transfer/log/actions'
+import {Logs} from '#/main/core/transfer/log/components/logs'
+import {actions} from '#/main/core/transfer/log/actions'
 
 const Tab = (props) =>
   <Routes

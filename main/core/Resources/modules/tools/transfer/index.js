@@ -1,5 +1,6 @@
-import {TrashTool} from '#/main/core/tools/trash/containers/tool'
-import {reducer} from '#/main/core/tools/trash/store'
+import {TransferTool} from '#/main/core/transfer/components/tool'
+//import {reducer} from '#/main/core/tools/transfer/store'
+import {reducer} from '#/main/core/transfer/reducer'
 
 /**
  * Resources tool application.
@@ -7,12 +8,14 @@ import {reducer} from '#/main/core/tools/trash/store'
  * @constructor
  */
 export const App = () => ({
-  component: TrashTool,
+  component: TransferTool,
   store: reducer,
-  initialData: initialData => ({
-    tool: {
-      name: 'transfer',
-      currentContext: initialData.currentContext
-    }
-  })
+  initialData: initialData => {
+    return {
+      tool: {
+        name: 'transfer',
+        currentContext: initialData.currentContext
+      },
+      explanation: initialData.explanation
+    }}
 })

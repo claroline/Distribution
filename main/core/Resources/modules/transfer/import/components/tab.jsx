@@ -9,10 +9,10 @@ import {Routes, withRouter} from '#/main/app/router'
 import {Heading} from '#/main/core/layout/components/heading'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {Logs} from '#/main/core/administration/transfer/log/components/logs'
-import {select} from '#/main/core/administration/transfer/selectors'
-import {actions} from '#/main/core/administration/transfer/actions'
-import {actions as logActions} from '#/main/core/administration/transfer/log/actions'
+import {Logs} from '#/main/core/transfer/log/components/logs'
+import {select} from '#/main/core/transfer/selectors'
+import {actions} from '#/main/core/transfer/actions'
+import {actions as logActions} from '#/main/core/transfer/log/actions'
 
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">
@@ -188,7 +188,10 @@ const Import = props =>
   </div>
 
 const ConnectedImport = connect(
-  state => ({explanation: select.explanation(state)}),
+  state => ({
+    explanation: select.explanation(state),
+    workspace: state.workspace
+  }),
   dispatch =>({
     openForm(params) {
       dispatch(actions.open('import', params))

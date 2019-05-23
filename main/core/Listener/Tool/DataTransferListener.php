@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
+use Claroline\AppBundle\API\TransferProvider;
 use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -30,14 +31,16 @@ class DataTransferListener
      * HomeListener constructor.
      *
      * @DI\InjectParams({
-     *     "templating" = @DI\Inject("templating")
+     *     "templating" = @DI\Inject("templating"),
+     *     "transfer"   = @DI\Inject("claroline.api.transfer")
      * })
      *
      * @param TwigEngine $templating
      */
-    public function __construct(TwigEngine $templating)
+    public function __construct(TwigEngine $templating, TransferProvider $transfer)
     {
         $this->templating = $templating;
+        $this->transfer = $transfer;
     }
 
     /**
@@ -49,8 +52,14 @@ class DataTransferListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
+        $explanations = $this->transfer->getAvailableActions('csv');
+
         $content = $this->templating->render(
-            'ClarolineCoreBundle:tool:data-transfer.html.twig', ['context' => ['type' => Widget::CONTEXT_DESKTOP], 'workspace' => $event->getWorkspace()]
+            'ClarolineCoreBundle:tool:data-transfer.html.twig', ['context' => ['type' => Widget::CONTEXT_DESKTOP], 'workspace' => $event->getWorkspace(),
+              'explanation' => [
+                'workspace' => $explanations['workspace'],
+              ],
+            ]
         );
 
         $event->setContent($content);
