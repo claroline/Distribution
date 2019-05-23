@@ -34,7 +34,6 @@ class Dropzone
      */
     public function postUpdate(UpdateEvent $event)
     {
-        $options = $event->getOptions();
         $dropzone = $event->getObject();
         $oldDatas = $event->getOldData();
 
