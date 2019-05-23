@@ -1,7 +1,20 @@
 import {PropTypes as T} from 'prop-types'
 import merge from 'lodash/merge'
 
-import {File} from '#/main/core/files/prop-types'
+import {File as FileType} from '#/main/core/files/prop-types'
+import {User as UserType} from '#/main/core/user/prop-types'
+
+const Comment = {
+  propTypes: {
+    id: T.string,
+    content: T.string,
+    meta: T.shape({
+      creationDate: T.string,
+      editionDate: T.string,
+      user: T.shape(UserType.propTypes)
+    })
+  }
+}
 
 const Section = {
   propTypes: {
@@ -14,7 +27,8 @@ const Section = {
     transcript: T.string,
     commentsAllowed: T.bool,
     showHelp: T.bool,
-    help: T.string
+    help: T.string,
+    comment: T.shape(Comment.propTypes)
   },
   defaultProps: {
     showTranscript: true,
@@ -23,7 +37,7 @@ const Section = {
   }
 }
 
-const Audio = merge({}, File, {
+const Audio = merge({}, FileType, {
   propTypes: {
     sectionsType: T.string.isRequired,
     rateControl: T.bool.isRequired,
@@ -33,5 +47,6 @@ const Audio = merge({}, File, {
 
 export {
   Audio,
-  Section
+  Section,
+  Comment
 }

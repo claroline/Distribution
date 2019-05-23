@@ -14,8 +14,10 @@ namespace Claroline\AudioPlayerBundle\Manager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AudioPlayerBundle\Entity\Resource\AudioParams;
 use Claroline\AudioPlayerBundle\Entity\Resource\Section;
+use Claroline\AudioPlayerBundle\Entity\Resource\SectionComment;
 use Claroline\AudioPlayerBundle\Serializer\Resource\SectionSerializer;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -31,6 +33,7 @@ class AudioPlayerManager
 
     private $audioParamsRepo;
     private $sectionRepo;
+    private $sectionCommentRepo;
 
     /**
      * @DI\InjectParams({
@@ -48,6 +51,7 @@ class AudioPlayerManager
 
         $this->audioParamsRepo = $om->getRepository(AudioParams::class);
         $this->sectionRepo = $om->getRepository(Section::class);
+        $this->sectionCommentRepo = $om->getRepository(SectionComment::class);
     }
 
     public function getAudioParams(ResourceNode $resourceNode)
@@ -98,5 +102,10 @@ class AudioPlayerManager
                 $this->om->remove($section);
             }
         }
+    }
+
+    public function getSectionUserComment(Section $section, User $user)
+    {
+        return $this->sectionCommentRepo->findOneBy(['section' => $section, 'user' => $user]);
     }
 }

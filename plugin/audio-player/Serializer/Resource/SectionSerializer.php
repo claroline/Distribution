@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AudioPlayerBundle\Entity\Resource\Section;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -20,6 +21,7 @@ class SectionSerializer
     private $om;
 
     private $resourceNodeRepo;
+    private $userRepo;
 
     /**
      * @DI\InjectParams({
@@ -33,6 +35,7 @@ class SectionSerializer
         $this->om = $om;
 
         $this->resourceNodeRepo = $om->getRepository(ResourceNode::class);
+        $this->userRepo = $om->getRepository(User::class);
     }
 
     /**
@@ -84,6 +87,13 @@ class SectionSerializer
 
             if ($resourceNode) {
                 $section->setResourceNode($resourceNode);
+            }
+        }
+        if (isset($data['meta']['user']['id']) && !$section->getUser()) {
+            $user = $this->userRepo->findOneBy(['uuid' => $data['meta']['user']['id']]);
+
+            if ($user) {
+                $section->setUser($user);
             }
         }
 

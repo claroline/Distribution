@@ -1,6 +1,6 @@
 {
     "activate_rate_control": "Activate rate control",
-    "allows_comments": "Allow comments",
+    "allow_comments": "Allow comments",
     "end": "End",
     "end_tolerance": "End tolerance",
     "pause": "Pause",

@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2019/05/16 01:48:25
+ * Generation date: 2019/05/21 09:49:25
  */
-class Version20190516134823 extends AbstractMigration
+class Version20190521094923 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -18,6 +18,7 @@ class Version20190516134823 extends AbstractMigration
             CREATE TABLE claro_audio_resource_section (
                 id INT AUTO_INCREMENT NOT NULL, 
                 node_id INT NOT NULL, 
+                user_id INT DEFAULT NULL, 
                 section_start DOUBLE PRECISION NOT NULL, 
                 section_end DOUBLE PRECISION NOT NULL, 
                 color VARCHAR(255) DEFAULT NULL, 
@@ -30,6 +31,7 @@ class Version20190516134823 extends AbstractMigration
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_67587B08D17F50A6 (uuid), 
                 INDEX IDX_67587B08460D9FD7 (node_id), 
+                INDEX IDX_67587B08A76ED395 (user_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
         ');
@@ -65,6 +67,12 @@ class Version20190516134823 extends AbstractMigration
             ADD CONSTRAINT FK_67587B08460D9FD7 FOREIGN KEY (node_id) 
             REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
+        ');
+        $this->addSql('
+            ALTER TABLE claro_audio_resource_section 
+            ADD CONSTRAINT FK_67587B08A76ED395 FOREIGN KEY (user_id) 
+            REFERENCES claro_user (id) 
+            ON DELETE SET NULL
         ');
         $this->addSql('
             ALTER TABLE claro_audio_resource_section_comment 

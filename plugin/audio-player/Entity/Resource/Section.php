@@ -13,6 +13,7 @@ namespace Claroline\AudioPlayerBundle\Entity\Resource;
 
 use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,6 +37,12 @@ class Section
      * @ORM\JoinColumn(name="node_id", nullable=false, onDelete="CASCADE")
      */
     protected $resourceNode;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", nullable=true, onDelete="SET NULL")
+     */
+    protected $user;
 
     /**
      * @ORM\Column(name="section_start", type="float", nullable=false)
@@ -119,6 +126,22 @@ class Section
     public function setResourceNode(ResourceNode $resourceNode)
     {
         $this->resourceNode = $resourceNode;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user = null)
+    {
+        $this->user = $user;
     }
 
     /**

@@ -9,22 +9,22 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\AudioPlayerBundle\Finder;
+namespace Claroline\AudioPlayerBundle\Finder\Resource;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\AudioPlayerBundle\Entity\Resource\SectionComment;
+use Claroline\AudioPlayerBundle\Entity\Resource\Section;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.api.finder.audio.resource_section_comment")
+ * @DI\Service("claroline.api.finder.audio.resource_section")
  * @DI\Tag("claroline.finder")
  */
-class SectionCommentFinder extends AbstractFinder
+class SectionFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return SectionComment::class;
+        return Section::class;
     }
 
     public function configureQueryBuilder(
@@ -37,9 +37,9 @@ class SectionCommentFinder extends AbstractFinder
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-                case 'section':
-                    $qb->join('obj.section', 's');
-                    $qb->andWhere("s.uuid = :{$filterName}");
+                case 'resourceNode':
+                    $qb->join('obj.resourceNode', 'r');
+                    $qb->andWhere("r.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'user':

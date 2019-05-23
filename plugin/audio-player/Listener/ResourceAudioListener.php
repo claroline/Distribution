@@ -64,15 +64,25 @@ class ResourceAudioListener
      */
     public function onResourceAudioLoad(LoadFileEvent $event)
     {
-//        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
 
         $resourceNode = $event->getResource()->getResourceNode();
         $audioParams = $this->manager->getAudioParams($resourceNode);
         $audioData = $this->serializer->serialize($audioParams);
 
         if ($audioParams->getSectionsType()) {
-            $audioData['sections'] = array_values(array_map(function (Section $section) {
-                return $this->serializer->serialize($section);
+            $audioData['sections'] = array_values(array_map(function (Section $section) use ($user) {
+                $serializedSection = $this->serializer->serialize($section);
+
+                if ($user !== 'anon.') {
+                    $userComment = $this->manager->getSectionUserComment($section, $user);
+
+                    if ($userComment) {
+                        $serializedSection['comment'] = $this->serializer->serialize($userComment);
+                    }
+                }
+
+                return $serializedSection;
             }, $this->manager->getManagerSections($resourceNode)));
         }
 

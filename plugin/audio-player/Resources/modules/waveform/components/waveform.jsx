@@ -16,7 +16,8 @@ class Waveform extends Component {
     this.state = {
       wavesurfer: null,
       playing: false,
-      zoom: 20
+      zoom: 20,
+      playbackRate: 1
     }
     this.switchAudio = this.switchAudio.bind(this)
     this.playRegion = this.playRegion.bind(this)
@@ -52,6 +53,11 @@ class Waveform extends Component {
 
       this.state.wavesurfer.on('play', () => this.setState({playing: true}))
       this.state.wavesurfer.on('pause', () => this.setState({playing: false}))
+      this.state.wavesurfer.on('seek', () => {
+        if (this.props.eventsCallbacks['seek-time']) {
+          this.props.eventsCallbacks['seek-time'](this.state.wavesurfer.getCurrentTime())
+        }
+      })
 
       if (this.props.editable) {
         this.state.wavesurfer.on('region-created', (region) => {
@@ -238,6 +244,7 @@ class Waveform extends Component {
 
   switchAudio() {
     this.state.wavesurfer.setPlaybackRate(1)
+    this.setState({playbackRate: 1})
 
     if (this.state.playing) {
       this.state.wavesurfer.pause()
@@ -325,13 +332,25 @@ class Waveform extends Component {
             {this.props.rateControl &&
               <CallbackButton
                 className="btn"
-                callback={() => this.state.wavesurfer.setPlaybackRate(this.state.wavesurfer.getPlaybackRate() - 0.1)}
+                callback={() => {
+                  const newRate = parseFloat((this.state.wavesurfer.getPlaybackRate() - 0.1).toFixed(1))
+
+                  if (newRate > 0) {
+                    this.state.wavesurfer.setPlaybackRate(newRate)
+                    this.setState({playbackRate: newRate})
+                  }
+                }}
                 primary={true}
                 size="sm"
                 style={{
                   marginRight: '10px'
                 }}
               >
+                {1 > this.state.playbackRate &&
+                  <span style={{marginRight: '5px'}}>
+                    {`(x${this.state.playbackRate})`}
+                  </span>
+                }
                 <span className="fa fa-backward" />
               </CallbackButton>
             }
@@ -352,7 +371,11 @@ class Waveform extends Component {
             {this.props.rateControl &&
               <CallbackButton
                 className="btn"
-                callback={() => this.state.wavesurfer.setPlaybackRate(this.state.wavesurfer.getPlaybackRate() + 0.1)}
+                callback={() => {
+                  const newRate = parseFloat((this.state.wavesurfer.getPlaybackRate() + 0.1).toFixed(1))
+                  this.state.wavesurfer.setPlaybackRate(newRate)
+                  this.setState({playbackRate: newRate})
+                }}
                 primary={true}
                 size="sm"
                 style={{
@@ -360,6 +383,11 @@ class Waveform extends Component {
                 }}
               >
                 <span className="fa fa-forward" />
+                {1 < this.state.playbackRate &&
+                  <span style={{marginLeft: '5px'}}>
+                    {`(x${this.state.playbackRate})`}
+                  </span>
+                }
               </CallbackButton>
             }
 
