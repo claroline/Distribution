@@ -27,7 +27,7 @@ const WaveformPaper = props =>
           url={asset(props.item.url)}
           editable={false}
           regions={props.answer.map(a => Object.assign({}, a, {
-            color: isCorrectAnswer(props.item.solutions, a.start, a.end) ?
+            color: !props.item.hasExpectedAnswers || isCorrectAnswer(props.item.solutions, a.start, a.end) ?
               waveformConstants.COLORS.section :
               constants.INCORRECT_COLOR
           }))}
@@ -98,6 +98,7 @@ const WaveformPaper = props =>
             score: s.score
           }))}
           stats={props.stats}
+          hasExpectedAnswers={props.item.hasExpectedAnswers}
         />
       </div>
     }

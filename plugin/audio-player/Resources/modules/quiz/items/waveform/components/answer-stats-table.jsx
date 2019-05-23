@@ -19,7 +19,7 @@ export const AnswerStatsTable = props =>
     {props.sections.map((section, idx) =>
       <div
         key={section.id}
-        className={classes('answer-row', {
+        className={classes('answer-row', props.hasExpectedAnswers && {
           'selected-answer': section.score > 0,
           'stats-answer': section.score <= 0
         })}
@@ -127,5 +127,6 @@ AnswerStatsTable.propTypes = {
     sections: T.object,
     unanswered: T.number,
     total: T.number
-  })
+  }),
+  hasExpectedAnswers: T.bool.isRequired
 }
