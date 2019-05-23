@@ -1,10 +1,12 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Action\Facet;
+namespace Claroline\CoreBundle\API\Transfer\Action\Directory;
 
 use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Resource\Directory;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -35,7 +37,7 @@ class Create extends AbstractAction
      */
     public function execute(array $data, &$successData = [])
     {
-        return $this->crud->create('Claroline\CoreBundle\Entity\Facet\Facet', $data);
+        //return $this->crud->create('Claroline\CoreBundle\Entity\Facet\Facet', $data);
     }
 
     /**
@@ -44,8 +46,17 @@ class Create extends AbstractAction
     public function getSchema()
     {
         return [
-          '$root' => 'Claroline\CoreBundle\Entity\Facet\Facet',
+          '$root' => Directory::class,
         ];
+    }
+
+    public function supports($format, $options = null)
+    {
+        if (Options::WORKSPACE_IMPORT !== $options) {
+            return false;
+        }
+
+        return in_array($format, ['json', 'csv']);
     }
 
     /**
@@ -53,7 +64,7 @@ class Create extends AbstractAction
      */
     public function getAction()
     {
-        return ['facet', 'create'];
+        return ['directory', 'create'];
     }
 
     public function getBatchSize()

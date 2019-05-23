@@ -232,8 +232,11 @@ class SerializerProvider
         if (method_exists($serializer, 'getSchema')) {
             $url = $serializer->getSchema();
             $path = explode('/', $url);
+            array_shift($path); //that one is for the #, we have no implementation for plugins yet
+            $first = array_shift($path);
+            $sec = array_shift($path);
             $absolutePath = $this->rootDir.'/vendor/claroline/distribution/'
-            .$path[1].'/'.$path[2].'/Resources/schemas/'.$path[3];
+            .$first.'/'.$sec.'/Resources/schemas/'.implode('/', $path);
 
             return $this->loadSchema($absolutePath);
         }

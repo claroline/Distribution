@@ -2,6 +2,7 @@
 
 namespace Claroline\AppBundle\API\Transfer\Action;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 
@@ -27,9 +28,13 @@ abstract class AbstractAction
      */
     abstract public function getAction();
 
-    public function supports($format)
+    public function supports($format, $options = null)
     {
-        return in_array($format, ['csv', 'json']);
+        if (Options::WORKSPACE_IMPORT === $options) {
+            return false;
+        }
+
+        return in_array($format, ['json', 'csv']);
     }
 
     public function getBatchSize()

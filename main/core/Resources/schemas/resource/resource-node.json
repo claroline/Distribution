@@ -13,7 +13,6 @@
 
   },
   "claroline": {
-    "requiredAtCreation": ["translationKey"],
     "ids":  ["id", "name"]
   }
 }

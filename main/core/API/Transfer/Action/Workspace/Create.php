@@ -20,4 +20,9 @@ class Create extends AbstractCreateAction
     {
         return ['workspace', self::MODE_CREATE];
     }
+
+    public function supports($format, $options = null)
+    {
+        return in_array($format, ['json', 'csv']);
+    }
 }

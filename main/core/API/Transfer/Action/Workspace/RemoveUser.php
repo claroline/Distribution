@@ -101,4 +101,9 @@ class RemoveUser extends AbstractAction
     {
         return ['workspace', 'remove_user'];
     }
+
+    public function supports($format, $options = null)
+    {
+        return in_array($format, ['json', 'csv']);
+    }
 }

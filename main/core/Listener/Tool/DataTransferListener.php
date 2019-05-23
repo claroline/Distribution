@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\TransferProvider;
-use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -52,13 +52,13 @@ class DataTransferListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        $explanations = $this->transfer->getAvailableActions('csv');
+        $explanation = $this->transfer->getAvailableActions('csv', Options::WORKSPACE_IMPORT);
+        $workspace = $event->getWorkspace();
 
         $content = $this->templating->render(
-            'ClarolineCoreBundle:tool:data-transfer.html.twig', ['context' => ['type' => Widget::CONTEXT_DESKTOP], 'workspace' => $event->getWorkspace(),
-              'explanation' => [
-                'workspace' => $explanations['workspace'],
-              ],
+            'ClarolineCoreBundle:tool:data-transfer.html.twig', [
+              'workspace' => $workspace,
+              'explanation' => $explanation,
             ]
         );
 
