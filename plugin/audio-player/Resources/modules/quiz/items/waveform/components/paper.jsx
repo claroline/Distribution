@@ -49,8 +49,8 @@ const WaveformPaper = props =>
                 feedback: solution ? solution.feedback : null
               })
             })}
-            showScore={props.showScore}
-            highlightScore={true}
+            showScore={props.item.hasExpectedAnswers && props.showScore}
+            highlightScore={props.item.hasExpectedAnswers}
           />
         }
       </div>

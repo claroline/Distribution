@@ -41,7 +41,7 @@ const WaveformFeedback = props =>
           })
         })}
         showScore={false}
-        highlightScore={true}
+        highlightScore={props.item.hasExpectedAnswers}
       />
     }
   </div>

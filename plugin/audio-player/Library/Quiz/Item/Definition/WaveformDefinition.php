@@ -10,6 +10,7 @@ use Claroline\AudioPlayerBundle\Validator\Quiz\JsonSchema\Item\Type\WaveformQues
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Csv\ArrayCompressor;
@@ -178,6 +179,16 @@ class WaveformDefinition extends AbstractDefinition
         return array_filter($question->getSections()->toArray(), function (Section $section) {
             return 0 < $section->getScore();
         });
+    }
+
+    /**
+     * @param WaveformQuestion $question
+     *
+     * @return AnswerPartInterface[]
+     */
+    public function allAnswers(AbstractItem $question)
+    {
+        return $question->getSections()->toArray();
     }
 
     /**

@@ -11,6 +11,7 @@ import {HtmlInput} from '#/main/app/data/types/html/components/input'
 
 import {makeId} from '#/main/core/scaffolding/id'
 
+import {SCORE_SUM} from '#/plugin/exo/quiz/enums'
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 
 import {isOverlayed} from '#/plugin/audio-player/quiz/items/waveform/utils'
@@ -32,7 +33,7 @@ class Section extends Component {
   render() {
     return (
       <div
-        className={classes('waveform-answer answer-item', {
+        className={classes('waveform-answer answer-item', this.props.hasExpectedAnswers && {
           'unexpected-answer' : this.props.solution.score <= 0,
           'expected-answer' : this.props.solution.score > 0
         })}
@@ -94,13 +95,24 @@ class Section extends Component {
           </div>
 
           <div className="right-controls">
-            <input
-              title={trans('score', {}, 'quiz')}
-              type="number"
-              className="form-control score"
-              value={this.props.solution.score}
-              onChange={(e) => this.props.onUpdate('score', e.target.value)}
-            />
+            {this.props.hasExpectedAnswers && this.props.hasScore &&
+              <input
+                title={trans('score', {}, 'quiz')}
+                type="number"
+                className="form-control score"
+                value={this.props.solution.score}
+                onChange={(e) => this.props.onUpdate('score', e.target.value)}
+              />
+            }
+
+            {this.props.hasExpectedAnswers && !this.props.hasScore &&
+              <input
+                title={trans('score', {}, 'quiz')}
+                type="checkbox"
+                checked={0 < this.props.solution.score}
+                onChange={(e) => this.props.onUpdate('score', e.target.checked ? 1 : 0)}
+              />
+            }
 
             <CallbackButton
               id={`section-${this.props.solution.section.id}-feedback-toggle`}
@@ -215,6 +227,8 @@ Section.propTypes = {
     feedback: T.string
   }).isRequired,
   selected: T.bool.isRequired,
+  hasScore: T.bool.isRequired,
+  hasExpectedAnswers: T.bool.isRequired,
   onUpdate: T.func.isRequired,
   onRemove: T.func.isRequired,
   onPlay: T.func.isRequired,
@@ -329,6 +343,8 @@ class WaveformComponent extends Component {
             key={s.section.id}
             solution={s}
             selected={s.section.id === this.state.currentSection}
+            hasScore={this.props.hasScore}
+            hasExpectedAnswers={this.props.item.hasExpectedAnswers}
             onUpdate={(property, value) => {
               const newSolutions = cloneDeep(this.props.item.solutions)
               const solution = newSolutions.find(ns => ns.section.id === s.section.id)
@@ -355,78 +371,82 @@ class WaveformComponent extends Component {
 
 WaveformComponent.propTypes = {
   item: T.shape(WaveformItemType.propTypes).isRequired,
+  hasScore: T.bool.isRequired,
   update: T.func.isRequired
 }
 
-const WaveformEditor = (props) =>
-  <FormData
-    className="waveform-editor"
-    embedded={true}
-    name={props.formName}
-    dataPart={props.path}
-    sections={[
-      {
-        title: trans('general'),
-        primary: true,
-        fields: [
-          {
-            name: 'penalty',
-            type: 'number',
-            label: trans('global_penalty', {}, 'quiz'),
-            required: true,
-            options: {
-              min: 0
-            }
-          }, {
-            name: 'answersLimit',
-            type: 'number',
-            label: trans('nb_authorized_selection', {}, 'quiz'),
-            required: true,
-            options: {
-              min: 0
-            }
-          }, {
-            name: 'tolerance',
-            label: trans('default_tolerance', {}, 'quiz'),
-            type: 'number',
-            required: true,
-            options: {
-              min: 0,
-              unit: trans('seconds')
-            }
-          }, {
-            name: '_file',
-            label: trans('pick_audio_file', {}, 'quiz'),
-            type: 'file',
-            required: true,
-            calculated: () => null,
-            onChange: (file) => {
-              props.update('url', file.url)
-              props.update('solutions', [])
-            },
-            options: {
-              types: ['audio/*']
-            }
-          }, {
-            name: 'data',
-            label: trans('waveform'),
-            hideLabel: true,
-            required: true,
-            render: (waveformItem) => {
-              const Waveform = (
-                <WaveformComponent
-                  item={waveformItem}
-                  update={props.update}
-                />
-              )
+const WaveformEditor = (props) => {
+  const Waveform = (
+    <WaveformComponent
+      item={props.item}
+      hasScore={props.hasAnswerScores}
+      update={props.update}
+    />
+  )
 
-              return Waveform
+  return (
+    <FormData
+      className="waveform-editor"
+      embedded={true}
+      name={props.formName}
+      dataPart={props.path}
+      sections={[
+        {
+          title: trans('general'),
+          primary: true,
+          fields: [
+            {
+              name: 'penalty',
+              type: 'number',
+              label: trans('global_penalty', {}, 'quiz'),
+              required: true,
+              displayed: (item) => item.hasExpectedAnswers && props.hasAnswerScores && item.score.type === SCORE_SUM,
+              options: {
+                min: 0
+              }
+            }, {
+              name: 'answersLimit',
+              type: 'number',
+              label: trans('nb_authorized_selection', {}, 'quiz'),
+              required: true,
+              options: {
+                min: 0
+              }
+            }, {
+              name: 'tolerance',
+              label: trans('default_tolerance', {}, 'quiz'),
+              type: 'number',
+              required: true,
+              options: {
+                min: 0,
+                unit: trans('seconds')
+              }
+            }, {
+              name: '_file',
+              label: trans('pick_audio_file', {}, 'quiz'),
+              type: 'file',
+              required: true,
+              calculated: () => null,
+              onChange: (file) => {
+                props.update('url', file.url)
+                props.update('solutions', [])
+              },
+              options: {
+                types: ['audio/*']
+              }
+            }, {
+              name: 'data',
+              label: trans('waveform'),
+              hideLabel: true,
+              required: true,
+              component: Waveform
             }
-          }
-        ]
-      }
-    ]}
-  />
+          ]
+        }
+      ]}
+    />
+  )
+}
 
 implementPropTypes(WaveformEditor, ItemEditorTypes, {
   item: T.shape(WaveformItemType.propTypes).isRequired

@@ -3,7 +3,7 @@ import times from 'lodash/times'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 
 import {WaveformItem} from '#/plugin/audio-player/quiz/items/waveform/prop-types'
 
@@ -56,7 +56,7 @@ export default {
    *
    * @return {CorrectedAnswer}
    */
-  getCorrectedAnswer: (item, answers = null) => {
+  correctAnswer: (item, answers = null) => {
     const corrected = new CorrectedAnswer()
 
     item.solutions.forEach(solution => {
@@ -106,5 +106,23 @@ export default {
     }
 
     return corrected
+  },
+
+  expectAnswer: (item) => {
+    if (item.solutions) {
+      return item.solutions.filter(s => 0 < s.score).map(s => new Answerable(s.score, s.section.id))
+    }
+
+    return []
+  },
+
+  allAnswers: (item) => {
+    const answers = []
+
+    if (item.solutions) {
+      item.solutions.map(s => answers.push(new Answerable(s.score)))
+    }
+
+    return answers
   }
 }
