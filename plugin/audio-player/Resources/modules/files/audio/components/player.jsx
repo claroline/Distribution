@@ -43,7 +43,8 @@ class Section extends Component {
     this.state = {
       showHelp: false,
       showComment: false,
-      showCommentForm: false
+      showCommentForm: false,
+      showAudioUrl: false
     }
   }
 
@@ -65,6 +66,14 @@ class Section extends Component {
               callback={() => this.setState({showComment: !this.state.showComment})}
             >
               <span className="fa fa-comment-alt"/>
+            </CallbackButton>
+          }
+          {this.props.section.showAudio && this.props.section.audioUrl &&
+            <CallbackButton
+              className={classes('btn section-btn', {'activated': this.state.showAudioUrl})}
+              callback={() => this.setState({showAudioUrl: !this.state.showAudioUrl})}
+            >
+              <span className="fa fa-volume-up"/>
             </CallbackButton>
           }
         </div>
@@ -123,6 +132,17 @@ class Section extends Component {
               ]}
             />
           )}
+          {this.state.showAudioUrl && this.props.section.audioUrl &&
+            <div>
+              <audio
+                controls
+              >
+                <source
+                  src={asset(this.props.section.audioUrl)}
+                />
+              </audio>
+            </div>
+          }
         </div>
       </div>
     )
