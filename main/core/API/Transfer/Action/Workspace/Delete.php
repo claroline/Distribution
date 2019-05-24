@@ -25,9 +25,4 @@ class Delete extends AbstractDeleteAction
     {
         return 500;
     }
-
-    public function supports($format, $options = null)
-    {
-        return in_array($format, ['json', 'csv']);
-    }
 }

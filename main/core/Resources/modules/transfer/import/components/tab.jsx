@@ -10,8 +10,8 @@ import {Heading} from '#/main/core/layout/components/heading'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {Logs} from '#/main/core/transfer/log/components/logs'
-import {select} from '#/main/core/transfer/selectors'
-import {actions} from '#/main/core/transfer/actions'
+import {select} from '#/main/core/transfer/store/selectors'
+import {actions} from '#/main/core/transfer/store/actions'
 import {actions as logActions} from '#/main/core/transfer/log/actions'
 
 const Tabs = props =>
@@ -158,6 +158,7 @@ class RoutedExplain extends Component {
 const ConnectedExplain = withRouter(connect(
   state => ({
     explanation: select.explanation(state),
+    context: select.context(state),
     logs: state.log
   }),
   dispatch =>({
@@ -174,7 +175,7 @@ const Import = props =>
     <div className="col-md-3">
       <Tabs {...props} />
     </div>
-
+    {console.log(props.currentContext)}
     <div className="col-md-9">
       <Routes
         routes={[{
@@ -189,8 +190,7 @@ const Import = props =>
 
 const ConnectedImport = connect(
   state => ({
-    explanation: select.explanation(state),
-    workspace: state.workspace
+    explanation: select.explanation(state)
   }),
   dispatch =>({
     openForm(params) {
