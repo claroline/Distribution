@@ -1,5 +1,0 @@
-const reducer = {}
-
-export {
-  reducer
-}

@@ -158,7 +158,6 @@ class RoutedExplain extends Component {
 const ConnectedExplain = withRouter(connect(
   state => ({
     explanation: select.explanation(state),
-    context: select.context(state),
     logs: state.log
   }),
   dispatch =>({
@@ -175,7 +174,6 @@ const Import = props =>
     <div className="col-md-3">
       <Tabs {...props} />
     </div>
-    {console.log(props.currentContext)}
     <div className="col-md-9">
       <Routes
         routes={[{
