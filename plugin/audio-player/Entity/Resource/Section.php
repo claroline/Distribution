@@ -90,6 +90,11 @@ class Section
     private $help;
 
     /**
+     * @ORM\Column(name="show_audio", type="boolean")
+     */
+    private $showAudio = false;
+
+    /**
      * @ORM\Column(name="audio_url", type="string", nullable=true)
      */
     private $audioUrl;
@@ -291,6 +296,22 @@ class Section
     public function setHelp($help)
     {
         $this->help = $help;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShowAudio()
+    {
+        return $this->showAudio;
+    }
+
+    /**
+     * @param bool $showAudio
+     */
+    public function setShowAudio($showAudio)
+    {
+        $this->showAudio = $showAudio;
     }
 
     /**

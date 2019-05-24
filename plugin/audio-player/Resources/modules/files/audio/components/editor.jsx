@@ -8,6 +8,8 @@ import {trans} from '#/main/app/intl/translation'
 import {actions as formActions, selectors as formSelectors} from '#/main/app/content/form/store'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {HtmlInput} from '#/main/app/data/types/html/components/input'
+import {FileInput} from '#/main/app/data/types/file/components/input'
+import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 import {makeId} from '#/main/core/scaffolding/id'
 import {selectors} from '#/main/core/resources/file/store'
@@ -18,6 +20,41 @@ import {Checkbox} from '#/main/core/layout/form/components/field/checkbox'
 import {constants} from '#/plugin/audio-player/files/audio/constants'
 import {Audio as AudioType, Section as SectionType} from '#/plugin/audio-player/files/audio/prop-types'
 import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
+
+class SectionAudio extends Component {
+  componentDidUpdate() {
+    this.refs.audio.load()
+  }
+
+  render() {
+    return (
+      <div className="section-audio-group">
+        <audio
+          id={`section-${this.props.section.id}-audio`}
+          controls
+          ref="audio"
+        >
+          <source
+            id={`section-${this.props.section.id}-audio-source`}
+            src={asset(this.props.section.audioUrl)}
+          />
+        </audio>
+        <CallbackButton
+          className="btn-link"
+          callback={() => this.props.onDelete()}
+          dangerous={true}
+        >
+          <span className="fa fa-trash-o"/>
+        </CallbackButton>
+      </div>
+    )
+  }
+}
+
+SectionAudio.propTypes = {
+  section: T.shape(SectionType.propTypes).isRequired,
+  onDelete: T.func.isRequired
+}
 
 const SectionConfiguration = (props) =>
   <div>
@@ -55,6 +92,44 @@ const SectionConfiguration = (props) =>
         value={props.section.help}
         onChange={value => props.onUpdate('help', value)}
       />
+    }
+    <Checkbox
+      key={`section-${props.section.id}-show-audio`}
+      id={`section-${props.section.id}-show-audio`}
+      label={trans('show_section_audio', {}, 'audio')}
+      checked={props.section.showAudio}
+      onChange={checked => props.onUpdate('showAudio', checked)}
+    />
+    {props.section.showAudio &&
+      <FileInput
+        id={`section-${props.section.id}-audio-url`}
+        types={['audio/*']}
+        onChange={file => props.onUpdate('audioUrl', file.url)}
+      />
+    }
+    {props.section.showAudio && props.section.audioUrl &&
+      <SectionAudio
+        section={props.section}
+        onDelete={() => props.onUpdate('audioUrl', null)}
+      />
+      // <div className="section-audio-group">
+      //   <audio
+      //     id={`section-${props.section.id}-audio`}
+      //     controls
+      //   >
+      //     <source
+      //       id={`section-${props.section.id}-audio-source`}
+      //       src={asset(props.section.audioUrl)}
+      //     />
+      //   </audio>
+      //   <CallbackButton
+      //     className="btn-link"
+      //     callback={() => props.onUpdate('audioUrl', null)}
+      //     dangerous={true}
+      //   >
+      //     <span className="fa fa-trash-o"/>
+      //   </CallbackButton>
+      // </div>
     }
   </div>
 
@@ -151,6 +226,38 @@ class AudioConfiguration extends Component {
               }
             }}
           />
+          // <FormData
+          //   className="audio-section-form"
+          //   embedded={true}
+          //   name={editorSelect.FORM_NAME}
+          //   dataPart={'sections[0]'}
+          //   updateProp={this.props.updateProp}
+          //   sections={[
+          //     {
+          //       title: trans('general'),
+          //       primary: true,
+          //       fields: [
+          //         {
+          //           name: 'commentsAllowed',
+          //           type: 'boolean',
+          //           label: trans('allow_comments', {}, 'audio')
+          //         }, {
+          //           name: '_file',
+          //           label: trans('pick_audio_file', {}, 'quiz'),
+          //           type: 'file',
+          //           required: true,
+          //           // calculated: () => null,
+          //           onChange: (file) => {
+          //           console.log(file.url)
+          //         },
+          //           options: {
+          //             types: ['audio/*']
+          //           }
+          //         }
+          //       ]
+          //     }
+          //   ]}
+          // />
         }
       </div>
     )

@@ -52,76 +52,76 @@ class Section extends Component {
       <div className="audio-player-section">
         <div className="section-controls">
           {this.props.section.showHelp &&
-          <CallbackButton
-            className={classes('btn section-btn', {'activated': this.state.showHelp})}
-            callback={() => this.setState({showHelp: !this.state.showHelp})}
-          >
-            <span className="fa fa-file-text-o"/>
-          </CallbackButton>
+            <CallbackButton
+              className={classes('btn section-btn', {'activated': this.state.showHelp})}
+              callback={() => this.setState({showHelp: !this.state.showHelp})}
+            >
+              <span className="fa fa-file-text-o"/>
+            </CallbackButton>
           }
           {this.props.section.commentsAllowed &&
-          <CallbackButton
-            className={classes('btn section-btn', {'activated': this.state.showComment})}
-            callback={() => this.setState({showComment: !this.state.showComment})}
-          >
-            <span className="fa fa-comment-alt"/>
-          </CallbackButton>
+            <CallbackButton
+              className={classes('btn section-btn', {'activated': this.state.showComment})}
+              callback={() => this.setState({showComment: !this.state.showComment})}
+            >
+              <span className="fa fa-comment-alt"/>
+            </CallbackButton>
           }
         </div>
         <div className="section-display">
           {this.state.showHelp &&
-          <HtmlText className="section-help">
-            {this.props.section.help}
-          </HtmlText>
+            <HtmlText className="section-help">
+              {this.props.section.help}
+            </HtmlText>
           }
           {this.state.showComment && (!this.props.section.comment || this.state.showCommentForm ?
-              <UserMessageForm
-                user={authenticatedUser}
-                content={this.props.section.comment ? this.props.section.comment.content : ''}
-                allowHtml={true}
-                submitLabel={trans('add_comment')}
-                submit={(content) => {
-                  const comment = {
-                    content: content,
-                    meta: {
-                      user: authenticatedUser,
-                      section: this.props.section
-                    }
+            <UserMessageForm
+              user={authenticatedUser}
+              content={this.props.section.comment ? this.props.section.comment.content : ''}
+              allowHtml={true}
+              submitLabel={trans('add_comment')}
+              submit={(content) => {
+                const comment = {
+                  content: content,
+                  meta: {
+                    user: authenticatedUser,
+                    section: this.props.section
                   }
-
-                  if (this.props.section.comment) {
-                    comment['id'] = this.props.section.comment.id
-                  }
-                  this.props.saveComment(comment)
-                  this.setState({showCommentForm: false})
-                }}
-                cancel={() => this.setState({showCommentForm: false})}
-              /> :
-              <UserMessage
-                user={this.props.section.comment && this.props.section.comment.meta && this.props.section.comment.meta.user ?
-                  this.props.section.comment.meta.user :
-                  undefined
                 }
-                date={this.props.section.comment && this.props.section.comment.meta ? this.props.section.comment.meta.creationDate : ''}
-                content={this.props.section.comment ? this.props.section.comment.content : ''}
-                allowHtml={true}
-                actions={[
-                  {
-                    icon: 'fa fa-fw fa-pencil',
-                    type: CALLBACK_BUTTON,
-                    label: trans('edit'),
-                    displayed: true,
-                    callback: () => this.setState({showCommentForm: true})
-                  }, {
-                    icon: 'fa fa-fw fa-trash-o',
-                    type: CALLBACK_BUTTON,
-                    label: trans('delete'),
-                    displayed: true,
-                    callback: () => console.log('delete comment'),
-                    dangerous: true
-                  }
-                ]}
-              />
+
+                if (this.props.section.comment) {
+                  comment['id'] = this.props.section.comment.id
+                }
+                this.props.saveComment(comment)
+                this.setState({showCommentForm: false})
+              }}
+              cancel={() => this.setState({showCommentForm: false})}
+            /> :
+            <UserMessage
+              user={this.props.section.comment && this.props.section.comment.meta && this.props.section.comment.meta.user ?
+                this.props.section.comment.meta.user :
+                undefined
+              }
+              date={this.props.section.comment && this.props.section.comment.meta ? this.props.section.comment.meta.creationDate : ''}
+              content={this.props.section.comment ? this.props.section.comment.content : ''}
+              allowHtml={true}
+              actions={[
+                {
+                  icon: 'fa fa-fw fa-pencil',
+                  type: CALLBACK_BUTTON,
+                  label: trans('edit'),
+                  displayed: true,
+                  callback: () => this.setState({showCommentForm: true})
+                }, {
+                  icon: 'fa fa-fw fa-trash-o',
+                  type: CALLBACK_BUTTON,
+                  label: trans('delete'),
+                  displayed: true,
+                  callback: () => console.log('delete comment'),
+                  dangerous: true
+                }
+              ]}
+            />
           )}
         </div>
       </div>

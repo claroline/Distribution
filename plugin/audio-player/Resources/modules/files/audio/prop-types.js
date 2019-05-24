@@ -28,6 +28,8 @@ const Section = {
     commentsAllowed: T.bool,
     showHelp: T.bool,
     help: T.string,
+    showAudio: T.bool,
+    audioUrl: T.string,
     comment: T.shape(Comment.propTypes)
   },
   defaultProps: {

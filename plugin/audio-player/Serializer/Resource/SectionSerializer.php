@@ -57,6 +57,7 @@ class SectionSerializer
             'commentsAllowed' => $section->isCommentsAllowed(),
             'showHelp' => $section->getShowHelp(),
             'help' => $section->getHelp(),
+            'showAudio' => $section->getShowAudio(),
             'audioUrl' => $section->getAudioUrl(),
         ];
 
@@ -82,6 +83,7 @@ class SectionSerializer
         $this->sipe('commentsAllowed', 'setCommentsAllowed', $data, $section);
         $this->sipe('showHelp', 'setShowHelp', $data, $section);
         $this->sipe('help', 'setHelp', $data, $section);
+        $this->sipe('showAudio', 'setShowAudio', $data, $section);
         $this->sipe('audioUrl', 'setAudioUrl', $data, $section);
 
         if (isset($data['meta']['resourceNode']['id']) && !$section->getResourceNode()) {
