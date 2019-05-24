@@ -17,7 +17,8 @@ class Waveform extends Component {
       wavesurfer: null,
       playing: false,
       zoom: 20,
-      playbackRate: 1
+      playbackRate: 1,
+      regionLoop: false
     }
     this.switchAudio = this.switchAudio.bind(this)
     this.playRegion = this.playRegion.bind(this)
@@ -254,7 +255,14 @@ class Waveform extends Component {
   }
 
   playRegion(region) {
-    this.state.wavesurfer.play(region.start, region.end)
+    if (this.state.regionLoop) {
+      if (this.state.wavesurfer.regions.list[region.id]) {
+        console.log('loop')
+        this.state.wavesurfer.regions.list[region.id].playLoop()
+      }
+    } else {
+      this.state.wavesurfer.play(region.start, region.end)
+    }
   }
 
   play(start, end) {
@@ -402,6 +410,20 @@ class Waveform extends Component {
                 }}
               >
                 <span className="fa fa-fast-forward" />
+              </CallbackButton>
+            }
+
+            {0 < this.props.regions.length &&
+              <CallbackButton
+                className="btn"
+                callback={() => this.setState({regionLoop: !this.state.regionLoop})}
+                size="sm"
+                style={{
+                  marginLeft: '10px',
+                  backgroundColor: this.state.regionLoop ? 'rgba(29, 105, 153, 0.7)' : '#FFFFFF'
+                }}
+              >
+                <span className="fa fa-repeat" />
               </CallbackButton>
             }
           </span>
