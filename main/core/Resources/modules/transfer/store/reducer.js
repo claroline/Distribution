@@ -10,6 +10,7 @@ const reducer = {
   history: makeListReducer('history', {
     sortBy: {property: 'uploadDate', direction: -1}
   }),
+  currentContext: makeReducer({}),
   log: logReducer
 }
 

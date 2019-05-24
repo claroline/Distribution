@@ -12,6 +12,7 @@
     <div
       class="page-container transfer-container"
       data-explanation="{{ explanation | json_encode | raw | escape }}"
+      data-current-context="{{ context | json_encode | raw | escape }}"
     ></div>
 {% endblock %}
 

@@ -5,14 +5,9 @@
     "id": {
       "type": "string",
       "description": "The ID of the directory node."
-    },
-    "name": {
-      "type": "string",
-      "description": "The resource directory name"
     }
-
   },
   "claroline": {
-    "ids":  ["id", "name"]
+    "ids":  ["id"]
   }
 }

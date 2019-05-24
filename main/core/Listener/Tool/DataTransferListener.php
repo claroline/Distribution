@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Listener\Tool;
 
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -32,15 +33,17 @@ class DataTransferListener
      *
      * @DI\InjectParams({
      *     "templating" = @DI\Inject("templating"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
      *     "transfer"   = @DI\Inject("claroline.api.transfer")
      * })
      *
      * @param TwigEngine $templating
      */
-    public function __construct(TwigEngine $templating, TransferProvider $transfer)
+    public function __construct(TwigEngine $templating, TransferProvider $transfer, SerializerProvider $serializer)
     {
         $this->templating = $templating;
         $this->transfer = $transfer;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -52,13 +55,17 @@ class DataTransferListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        $explanation = $this->transfer->getAvailableActions('csv', Options::WORKSPACE_IMPORT);
+        $explanations = $this->transfer->getAvailableActions('csv', Options::WORKSPACE_IMPORT);
         $workspace = $event->getWorkspace();
 
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:data-transfer.html.twig', [
+              'context' => [
+                  'type' => 'workspace',
+                  'data' => $this->serializer->serialize($workspace),
+              ],
               'workspace' => $workspace,
-              'explanation' => $explanation,
+              'explanation' => $explanations,
             ]
         );
 

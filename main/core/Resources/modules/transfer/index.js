@@ -15,6 +15,7 @@ export const App = () => ({
       tool: {
         name: 'transfer'
       },
-      explanation: initialData.explanation
+      explanation: initialData.explanation,
+      currentContext: initialData.currentContext
     }}
 })

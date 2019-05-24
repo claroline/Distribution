@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\API\Transfer\Action\Workspace;
 
 use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -70,7 +71,7 @@ class RemoveUser extends AbstractAction
         return $string;
     }
 
-    public function getSchema()
+    public function getSchema($options = null)
     {
         $roleSchema = [
           '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',
@@ -90,11 +91,16 @@ class RemoveUser extends AbstractAction
 
         $schema = json_decode(json_encode($roleSchema));
 
-        return [
-          'workspace' => Workspace::class,
+        $schema = [
           'user' => User::class,
           'role' => $schema,
         ];
+
+        if (Options::WORKSPACE_IMPORT !== $options) {
+            $schema['workspace'] = Workspace::class;
+        }
+
+        return $schema;
     }
 
     public function getAction()

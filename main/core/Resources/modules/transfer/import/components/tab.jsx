@@ -87,7 +87,7 @@ class RoutedExplain extends Component {
           level={2}
           name="import"
           title={trans(entity)}
-          target={['apiv2_transfer_start', {log: this.getLogId()}]}
+          target={['apiv2_transfer_start', {log: this.getLogId(), workspace: props.workspace ? props.workspace.uuid: null }]}
           buttons={true}
           save={{
             type: CALLBACK_BUTTON,
@@ -158,7 +158,8 @@ class RoutedExplain extends Component {
 const ConnectedExplain = withRouter(connect(
   state => ({
     explanation: select.explanation(state),
-    logs: state.log
+    logs: state.log,
+    workspace: state.currentContext.data
   }),
   dispatch =>({
     updateProp: (prop, value, form, entity) => dispatch(actions.updateProp(prop, value, form, entity)),

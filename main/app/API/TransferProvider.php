@@ -251,11 +251,11 @@ class TransferProvider
      *
      * @return mixed|array
      */
-    public function explainAction($actionName, $format)
+    public function explainAction($actionName, $format, $mode = null)
     {
         $adapter = $this->getAdapter($format);
         $action = $this->getExecutor($actionName);
-        $schema = $action->getSchema();
+        $schema = $action->getSchema($mode);
 
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->serializer->getSchema($schema['$root']);
@@ -293,7 +293,7 @@ class TransferProvider
             return $action->supports($format, $mode);
         }) as $action) {
             $schema = $action->getAction();
-            $availables[$schema[0]][$schema[1]] = $this->explainAction($this->getActionName($action), $format);
+            $availables[$schema[0]][$schema[1]] = $this->explainAction($this->getActionName($action), $format, $mode);
         }
 
         return $availables;

@@ -4,13 +4,12 @@
   "properties": {
     "id": {
       "type": "string",
-      "description": "The ID of the Resource node."
+      "description": "The ID of the resource node."
     },
     "name": {
       "type": "string",
-      "description": "The resource node name"
-    },
-
+      "description": "The ID of the resource node."
+    }
   },
   "claroline": {
     "ids":  ["id", "name"]

@@ -127,6 +127,8 @@ class TransferController extends AbstractCrudController
         $data = json_decode($request->getContent(), true);
 
         $publicFile = $this->om->getObject($data['file'], PublicFile::class) ?? new PublicFile();
+        $workspaceId = $request->get('workspace');
+        //do things here
 
         $this->container->get('claroline.manager.api_manager')->import(
             $publicFile,

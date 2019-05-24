@@ -7,6 +7,8 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\Directory;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -43,11 +45,18 @@ class Create extends AbstractAction
     /**
      * @return array
      */
-    public function getSchema()
+    public function getSchema($options = null)
     {
-        return [
-          '$root' => Directory::class,
+        $schema = [
+          'directory' => Directory::class,
+          'node' => ResourceNode::class,
         ];
+
+        if (Options::WORKSPACE_IMPORT !== $options) {
+            $schema['workspace'] = Workspace::class;
+        }
+
+        return $schema;
     }
 
     public function supports($format, $options = null)
