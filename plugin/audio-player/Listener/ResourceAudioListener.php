@@ -74,7 +74,7 @@ class ResourceAudioListener
             $audioData['sections'] = array_values(array_map(function (Section $section) use ($user) {
                 $serializedSection = $this->serializer->serialize($section);
 
-                if ($user !== 'anon.') {
+                if ('anon.' !== $user) {
                     $userComment = $this->manager->getSectionUserComment($section, $user);
 
                     if ($userComment) {

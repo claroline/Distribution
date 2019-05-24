@@ -31,6 +31,7 @@ class SectionCommentVoter extends AbstractVoter
             case self::DELETE:
                 return $this->checkEdit($token, $object);
         }
+
         return $this->isGranted($attributes, $object->getSection()->getResourceNode());
     }
 

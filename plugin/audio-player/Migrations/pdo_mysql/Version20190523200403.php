@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2019/05/21 09:49:25
+ * Generation date: 2019/05/23 08:04:04
  */
-class Version20190521094923 extends AbstractMigration
+class Version20190523200403 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -28,6 +28,7 @@ class Version20190521094923 extends AbstractMigration
                 comments_allowed TINYINT(1) NOT NULL, 
                 show_help TINYINT(1) NOT NULL, 
                 help LONGTEXT DEFAULT NULL, 
+                audio_url VARCHAR(255) DEFAULT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_67587B08D17F50A6 (uuid), 
                 INDEX IDX_67587B08460D9FD7 (node_id), 
@@ -92,6 +93,9 @@ class Version20190521094923 extends AbstractMigration
             REFERENCES claro_resource_node (id) 
             ON DELETE CASCADE
         ');
+        $this->addSql('
+            ALTER TABLE claro_audio_section CHANGE score score DOUBLE PRECISION DEFAULT NULL
+        ');
     }
 
     public function down(Schema $schema)
@@ -108,6 +112,9 @@ class Version20190521094923 extends AbstractMigration
         ');
         $this->addSql('
             DROP TABLE claro_audio_params
+        ');
+        $this->addSql('
+            ALTER TABLE claro_audio_section CHANGE score score DOUBLE PRECISION NOT NULL
         ');
     }
 }
