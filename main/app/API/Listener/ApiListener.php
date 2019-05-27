@@ -37,7 +37,7 @@ class ApiListener
                 ], $exception->getCode() < 200 ? 500 : $exception->getCode());
             }
 
-            $event->setResponse($response);
+            //  $event->setResponse($response);
         }
     }
 

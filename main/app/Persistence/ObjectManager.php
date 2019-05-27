@@ -401,6 +401,7 @@ class ObjectManager extends ObjectManagerDecorator
     public function getObject(array $data, $class, array $identifiers = [])
     {
         $object = null;
+
         if (isset($data['id']) || isset($data['uuid'])) {
             if (isset($data['uuid'])) {
                 $object = $this->getRepository($class)->findOneByUuid($data['uuid']);

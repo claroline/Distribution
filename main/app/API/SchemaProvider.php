@@ -131,8 +131,6 @@ class SchemaProvider
         if (isset($schema->claroline)) {
             return $schema->claroline->ids;
         }
-
-        return [];
     }
 
     /**

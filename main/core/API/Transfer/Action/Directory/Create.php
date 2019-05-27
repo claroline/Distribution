@@ -24,14 +24,16 @@ class Create extends AbstractAction
      * Action constructor.
      *
      * @DI\InjectParams({
-     *     "crud"       = @DI\Inject("claroline.api.crud")
+     *     "crud" = @DI\Inject("claroline.api.crud"),
+     *     "om"   = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud)
+    public function __construct(Crud $crud, ObjectManager $om)
     {
         $this->crud = $crud;
+        $this->om = $om;
     }
 
     /**
@@ -39,7 +41,51 @@ class Create extends AbstractAction
      */
     public function execute(array $data, &$successData = [])
     {
-        //return $this->crud->create('Claroline\CoreBundle\Entity\Facet\Facet', $data);
+        //todo find a generic way to find the identifiers
+        $workspace = $this->om->getObject($data['workspace'], Workspace::class, ['code']);
+        $parent = $this->om->getRepository(ResourceNode::class)->findOneBy(['workspace' => $workspace, 'parent' => null]);
+
+        if (!$workspace) {
+            throw new \Exception('Workspace '.$this->printError($data['workspace'])." doesn't exists.");
+        }
+
+        $options = [Options::IGNORE_CRUD_POST_EVENT];
+
+        $permissions = [
+          'open' => isset($data['open']) ? $data['open'] : false,
+          'edit' => isset($data['edit']) ? $data['edit'] : false,
+          'delete' => isset($data['delete']) ? $data['delete'] : false,
+          'administrate' => isset($data['administrate']) ? $data['administrate'] : false,
+          'export' => isset($data['export']) ? $data['export'] : false,
+          'copy' => isset($data['copy']) ? $data['copy'] : false,
+        ];
+
+        $collabRole = $workspace->getDefaultRole();
+        $rights[] = [
+            'permissions' => $permissions,
+            'name' => $collabRole->getName(),
+            'translationKey' => $collabRole->getTranslationKey(),
+        ];
+
+        $dataResourceNode = [
+          'name' => $data['name'],
+          'meta' => [
+            'published' => true,
+            'type' => 'directory',
+          ],
+          'rights' => $rights,
+        ];
+
+        /** @var ResourceNode $resourceNode */
+        $resourceNode = $this->crud->create(ResourceNode::class, $dataResourceNode, $options);
+        $resourceNode->setParent($parent);
+        $resourceNode->setWorkspace($parent->getWorkspace());
+
+        // initialize custom resource Entity
+        $resourceClass = $resourceNode->getResourceType()->getClass();
+
+        /** @var AbstractResource $resource */
+        $resource = $this->crud->create(Directory::class, [], $options);
     }
 
     /**
@@ -47,14 +93,59 @@ class Create extends AbstractAction
      */
     public function getSchema($options = null)
     {
-        $schema = [
-          'directory' => Directory::class,
-          'node' => ResourceNode::class,
+        $directory = [
+          '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',
+          'type' => 'object',
+          'properties' => [
+            'name' => [
+              'type' => 'string',
+              'description' => 'The directory name',
+            ],
+            'open' => [
+              'type' => 'boolean',
+              'description' => 'Openable for collaborators',
+            ],
+            'delete' => [
+              'type' => 'boolean',
+              'description' => 'Deletable for collaborators',
+            ],
+            'edit' => [
+              'type' => 'boolean',
+              'description' => 'Editable for collaborators',
+            ],
+            'copy' => [
+              'type' => 'boolean',
+              'description' => 'Copyable for collaborators',
+            ],
+            'export' => [
+              'type' => 'boolean',
+              'description' => 'Exportable for collaborators',
+            ],
+            'administrate' => [
+              'type' => 'boolean',
+              'description' => 'Administrable for collaborators',
+            ],
+          ],
+
+          //this kind of hacky because this is not the true permissions description to begin with
+          //if you remove this section it will not show because it'll go through the explainIdentifiers method (not $root in schema)
+          'claroline' => [
+            'requiredAtCreation' => ['name'],
+            'class' => Directory::class,
+          ],
         ];
 
         if (Options::WORKSPACE_IMPORT !== $options) {
-            $schema['workspace'] = Workspace::class;
+            $directory['properties']['workspace'] = [
+              'type' => 'string',
+              'description' => 'The workspace code',
+            ];
+            $directory['claroline']['requiredAtCreation'][] = 'workspace';
         }
+
+        $schema = [
+          '$root' => json_decode(json_encode($directory)),
+        ];
 
         return $schema;
     }

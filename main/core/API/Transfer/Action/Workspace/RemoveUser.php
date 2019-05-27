@@ -38,22 +38,23 @@ class RemoveUser extends AbstractAction
 
     public function execute(array $data, &$successData = [])
     {
-        $user = $this->om->getObject($data['user'], User::class);
+        $user = $this->om->getObject($data['user'], User::class, array_keys($data['user']));
 
-        if (!$user->getId()) {
+        if (!$user) {
             throw new \Exception('User '.$this->printError($data['user'])." doesn't exists.");
         }
 
-        $workspace = $this->om->getObject($data['workspace'], Workspace::class);
+        //todo find a generic way to find the identifiers
+        $workspace = $this->om->getObject($data['workspace'], Workspace::class, ['code']);
 
-        if (!$workspace->getId()) {
+        if (!$workspace) {
             throw new \Exception('Workspace '.$this->printError($data['workspace'])." doesn't exists.");
         }
 
         $role = $this->om->getRepository('ClarolineCoreBundle:Role')
           ->findOneBy(['workspace' => $workspace, 'translationKey' => $data['role']['translationKey']]);
 
-        if (!$role->getId()) {
+        if (!$role) {
             throw new \Exception('Role '.$this->printError($data['role'])." doesn't exists.");
         }
 

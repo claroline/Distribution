@@ -44,6 +44,7 @@ class AddUser extends AbstractAction
             throw new \Exception('User '.$this->printError($data['user'])." doesn't exists.");
         }
 
+        //todo find a generic way to find the identifiers
         $workspace = $this->om->getObject($data['workspace'], Workspace::class, ['code']);
 
         if (!$workspace) {

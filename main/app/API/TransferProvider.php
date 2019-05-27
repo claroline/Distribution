@@ -113,9 +113,38 @@ class TransferProvider
 
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->schema->getSchema($schema['$root']);
-            //doesn't matter imo
-            $explanation = $adapter->explainSchema($jsonSchema, 'create');
-            $data = $adapter->decodeSchema($data, $explanation);
+
+            //if we didn't find any but root it's set, it means that is is custom and already defined
+            if ($jsonSchema) {
+                $explanation = $adapter->explainSchema($jsonSchema, 'create');
+                $data = $adapter->decodeSchema($data, $explanation);
+            } else {
+                $content = $data;
+                $data = [];
+                $lines = str_getcsv($content, PHP_EOL);
+                $header = array_shift($lines);
+                $headers = array_filter(
+                  str_getcsv($header, ';'),
+                    function ($header) {
+                        return '' !== trim($header);
+                    }
+                );
+
+                foreach ($lines as $line) {
+                    $properties = array_filter(
+                      str_getcsv($line, ';'),
+                        function ($property) {
+                            return '' !== trim($property);
+                        }
+                    );
+                    $row = [];
+
+                    foreach ($properties as $index => $property) {
+                        $row[$headers[$index]] = $property;
+                    }
+                    $data[] = $row;
+                }
+            }
         } else {
             foreach ($schema as $prop => $value) {
                 //this is for the custom schema defined in the transfer stuff (atm add user to roles for workspace)
@@ -135,15 +164,15 @@ class TransferProvider
 
             $explanation = $adapter->explainIdentifiers($identifiersSchema);
             $data = $adapter->decodeSchema($data, $explanation);
+        }
 
-            //this probably should be moved somewhere else but I don't know where. Core bundle dependencies shouldn't be allowed.
-            if (Workspace::class === $this->om->getClassMetaData(get_class($options))->name) {
-                $data = array_map(function ($el) use ($options) {
-                    $el['workspace'] = $this->serializer->serialize($options, [Options::SERIALIZE_MINIMAL]);
+        //this probably should be moved somewhere else but I don't know where. Core bundle dependencies shouldn't be allowed.
+        if (Workspace::class === $this->om->getClassMetaData(get_class($options))->name) {
+            $data = array_map(function ($el) use ($options) {
+                $el['workspace'] = $this->serializer->serialize($options, [Options::SERIALIZE_MINIMAL]);
 
-                    return $el;
-                }, $data);
-            }
+                return $el;
+            }, $data);
         }
 
         $i = 0;
@@ -280,6 +309,8 @@ class TransferProvider
 
             if ($jsonSchema) {
                 return $adapter->explainSchema($jsonSchema, $action->getMode());
+            } else {
+                return $adapter->explainSchema($schema['$root'], $action->getMode());
             }
         }
 

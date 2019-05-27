@@ -128,8 +128,10 @@ class ValidatorProvider
             $uniqueFields = [];
             $identifiers = $this->schema->getIdentifiers($class);
 
-            foreach ($identifiers as $identifier) {
-                $uniqueFields[$identifier] = $identifier;
+            if (is_array($identifiers)) {
+                foreach ($identifiers as $identifier) {
+                    $uniqueFields[$identifier] = $identifier;
+                }
             }
 
             return $this->validateUnique($uniqueFields, $data, $mode, $class);
