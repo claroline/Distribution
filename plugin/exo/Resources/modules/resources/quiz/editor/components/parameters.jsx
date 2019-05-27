@@ -299,6 +299,7 @@ const EditorParameters = props => {
                     props.update('parameters.duration', 0)
                   } else {
                     props.update('parameters.duration', null) // to force user to fill the field
+                    props.update('parameters.interruptible', false)
                   }
                 },
                 linked: [

@@ -25,7 +25,7 @@ FormSection.propTypes = {
   children: T.node.isRequired,
   disabled: T.bool,
   validating: T.bool,
-  errors: T.object
+  errors: T.array
 }
 
 FormSection.defaultProps = {

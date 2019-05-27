@@ -1,6 +1,7 @@
 import {createElement, Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
 import {makeCancelable} from '#/main/app/api'
@@ -35,12 +36,12 @@ class DataInput extends Component {
   }
 
   componentDidMount() {
-    this.loadDefinition()
+    this.load()
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.type !== this.props.type) {
-      this.loadDefinition()
+      this.load()
     }
   }
 
@@ -51,18 +52,32 @@ class DataInput extends Component {
     }
   }
 
-  loadDefinition() {
-    this.pending = makeCancelable(getType(this.props.type))
+  load() {
+    if (this.pending) {
+      this.pending.cancel()
+      this.pending = null
+    }
+
+    this.pending = makeCancelable(
+      Promise.all([
+        this.props.type ? getType(this.props.type) : Promise.resolve({}),
+        validateProp(this.props, this.props.value)
+      ])
+    )
 
     this.pending.promise
       .then(
-        (definition) => this.setState({
-          loaded: true,
-          group: get(definition, 'components.group'),
-          input: get(definition, 'components.input')
-        }),
-        () => {
-          // todo : do something
+        (result = []) => {
+          if (this.props.onError && !isEmpty(result[1])) {
+            // forward error to the caller
+            this.props.onError(result[1])
+          }
+
+          this.setState({
+            loaded: true,
+            group: get(result[0], 'components.group'),
+            input: get(result[0], 'components.input')
+          })
         }
       )
       .then(
@@ -93,6 +108,14 @@ class DataInput extends Component {
     if (this.state.error) {
       // todo : better
       return 'error'
+    }
+
+    if (this.props.children) {
+      return this.props.children
+    }
+
+    if (this.props.render) {
+      return this.props.render(this.props.value, this.props.error)
     }
 
     if (this.state.input) {
@@ -132,7 +155,7 @@ class DataInput extends Component {
 
 DataInput.propTypes = {
   id: T.string.isRequired,
-  type: T.string.isRequired,
+  type: T.string,
   label: T.string.isRequired,
   hideLabel: T.bool,
   options: T.object, // depends on the data type
@@ -155,7 +178,12 @@ DataInput.propTypes = {
 
   // field callbacks
   onChange: T.func.isRequired,
-  onError: T.func
+  onError: T.func,
+  validate: T.func,
+
+  // customization
+  // It will replace the render of the input.
+  children: T.node
 }
 
 DataInput.defaultProps = {

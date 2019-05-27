@@ -99,71 +99,6 @@ class FormFieldset extends Component {
     return id
   }
 
-  renderFields(fields) {
-    let rendered = []
-
-    fields.map(field => {
-      if (field.component || field.render) {
-        rendered.push(
-          <FormGroup
-            key={field.name}
-            id={this.getFieldId(field)}
-            label={field.label}
-            hideLabel={field.hideLabel}
-            help={field.help}
-            optional={!field.required}
-            error={get(this.props.errors, field.name)}
-            warnOnly={!this.props.validating}
-          >
-            {field.component}
-            {!field.component && field.render(this.props.data, this.props.errors)}
-          </FormGroup>
-        )
-      } else {
-        let value
-        if (undefined !== field.calculated) {
-          value = typeof field.calculated === 'function' ? field.calculated(this.props.data) : field.calculated
-        } else {
-          value = get(this.props.data, field.name)
-        }
-
-        rendered.push(
-          <FormField
-            key={field.name}
-            id={this.getFieldId(field)}
-            name={field.name}
-            type={field.type}
-            label={field.label}
-            hideLabel={field.hideLabel}
-            options={field.options}
-            help={field.help}
-            placeholder={field.placeholder}
-            size={this.props.size}
-            required={field.required}
-            disabled={this.props.disabled || (typeof field.disabled === 'function' ? field.disabled(this.props.data) : field.disabled)}
-            validating={this.props.validating}
-
-            value={value}
-            error={get(this.props.errors, field.name)}
-            onChange={field.onChange}
-            update={this.update}
-            setErrors={this.setErrors}
-          />
-        )
-      }
-
-      if (field.linked && 0 !== field.linked.length) {
-        rendered.push(
-          <div className="sub-fields" key={`${field.name}-subset`}>
-            {this.renderFields(field.linked)}
-          </div>
-        )
-      }
-    })
-
-    return rendered
-  }
-
   update(name, value, onChange) {
     this.props.updateProp(name, value)
     if (onChange) {
@@ -176,6 +111,64 @@ class FormFieldset extends Component {
     set(newErrors, name, error)
 
     this.props.setErrors(newErrors)
+  }
+
+  renderFields(fields) {
+    let rendered = []
+
+    fields.map(field => {
+      let value
+      if (undefined !== field.calculated) {
+        value = typeof field.calculated === 'function' ? field.calculated(this.props.data) : field.calculated
+      } else {
+        value = get(this.props.data, field.name)
+      }
+
+      let customInput
+      if (field.component) {
+        customInput = field.component
+      } else if (field.render) {
+        customInput = field.render(this.props.data, this.props.errors)
+      }
+
+      rendered.push(
+        <DataInput
+          key={field.name}
+          id={this.getFieldId(field)}
+          name={field.name}
+          type={field.type}
+          label={field.label}
+          hideLabel={field.hideLabel}
+          options={field.options}
+          help={field.help}
+          placeholder={field.placeholder}
+          size={this.props.size}
+          required={field.required}
+          disabled={this.props.disabled || (typeof field.disabled === 'function' ? field.disabled(this.props.data) : field.disabled)}
+          validating={this.props.validating}
+
+          value={value}
+          error={get(this.props.errors, field.name)}
+          onChange={(value) => this.update(field.name, value, field.onChange)}
+          onError={(error) => this.setErrors(field.name, error)}
+
+          component={field.component}
+          render={field.render}
+        >
+          {customInput}
+        </DataInput>
+      )
+
+      if (field.linked && 0 !== field.linked.length) {
+        rendered.push(
+          <div className="sub-fields" key={`${field.name}-subset`}>
+            {this.renderFields(field.linked)}
+          </div>
+        )
+      }
+    })
+
+    return rendered
   }
 
   render() {
