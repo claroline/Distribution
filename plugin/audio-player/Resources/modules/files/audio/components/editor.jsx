@@ -193,7 +193,7 @@ class AudioConfiguration extends Component {
             {}
           }
         />
-        {this.state.currentSection &&
+        {this.state.currentSection && this.props.file.sections.find(section => section.id === this.state.currentSection) &&
           <SectionConfiguration
             section={this.props.file.sections.find(section => section.id === this.state.currentSection)}
             onUpdate={(prop, value) => {
