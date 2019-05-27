@@ -7,9 +7,11 @@ use Claroline\AppBundle\API\Transfer\Adapter\AdapterInterface;
 use Claroline\AppBundle\Logger\JsonLogger;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
+//should not be here because it's a corebundle dependency
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -38,6 +40,7 @@ class TransferProvider
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "schema"     = @DI\Inject("claroline.api.schema"),
      *     "logDir"     = @DI\Inject("%claroline.param.import_log_dir%"),
      *     "translator" = @DI\Inject("translator")
      * })
@@ -50,6 +53,7 @@ class TransferProvider
     public function __construct(
         ObjectManager $om,
         SerializerProvider $serializer,
+        SchemaProvider $schema,
         $logDir,
         TranslatorInterface $translator
       ) {
@@ -58,6 +62,7 @@ class TransferProvider
         $this->om = $om;
         $this->serializer = $serializer;
         $this->logDir = $logDir;
+        $this->schema = $schema;
         $this->translator = $translator;
     }
 
@@ -82,8 +87,9 @@ class TransferProvider
      * @param string      $action
      * @param string      $mimeType
      * @param string|null $logFile
+     * @param mixed       $options  (currently used to pass the workspace so it' an entity but we might improve it later with an array of parameters)
      */
-    public function execute($data, $action, $mimeType, $logFile = null)
+    public function execute($data, $action, $mimeType, $logFile = null, $options = null)
     {
         if (!$logFile) {
             $logFile = uniqid();
@@ -106,7 +112,7 @@ class TransferProvider
         $jsonLogger->info('Building objects from data...');
 
         if (array_key_exists('$root', $schema)) {
-            $jsonSchema = $this->serializer->getSchema($schema['$root']);
+            $jsonSchema = $this->schema->getSchema($schema['$root']);
             //doesn't matter imo
             $explanation = $adapter->explainSchema($jsonSchema, 'create');
             $data = $adapter->decodeSchema($data, $explanation);
@@ -115,7 +121,10 @@ class TransferProvider
                 //this is for the custom schema defined in the transfer stuff (atm add user to roles for workspace)
                 //there is probably a better way to handle this
                 if (!$value instanceof \stdClass) {
-                    $jsonSchema = $this->serializer->getSchema($value);
+                    $schemaOptions = $options instanceof Workspace ? Options::WORKSPACE_IMPORT : null;
+                    $schemaOptions = null;
+                    $jsonSchema = $this->schema->getSchema($value, $schemaOptions);
+
                     if ($jsonSchema) {
                         $identifiersSchema[$prop] = $jsonSchema;
                     }
@@ -126,6 +135,15 @@ class TransferProvider
 
             $explanation = $adapter->explainIdentifiers($identifiersSchema);
             $data = $adapter->decodeSchema($data, $explanation);
+
+            //this probably should be moved somewhere else but I don't know where. Core bundle dependencies shouldn't be allowed.
+            if (Workspace::class === $this->om->getClassMetaData(get_class($options))->name) {
+                $data = array_map(function ($el) use ($options) {
+                    $el['workspace'] = $this->serializer->serialize($options, [Options::SERIALIZE_MINIMAL]);
+
+                    return $el;
+                }, $data);
+            }
         }
 
         $i = 0;
@@ -142,13 +160,13 @@ class TransferProvider
         $loaded = [];
         $loggedSuccess = [];
 
-        foreach ($data as $data) {
+        foreach ($data as $el) {
             ++$i;
             $this->log("{$i}/{$total}: ".$this->getActionName($executor));
 
             try {
                 $successData = [];
-                $loaded[] = $executor->execute($data, $successData);
+                $loaded[] = $executor->execute($el, $successData);
                 $jsonLogger->info("Operation {$i}/{$total} is a success");
                 $jsonLogger->increment('success');
                 $loggedSuccess = array_merge_recursive($loggedSuccess, $successData);
@@ -258,7 +276,7 @@ class TransferProvider
         $schema = $action->getSchema($mode);
 
         if (array_key_exists('$root', $schema)) {
-            $jsonSchema = $this->serializer->getSchema($schema['$root']);
+            $jsonSchema = $this->schema->getSchema($schema['$root']);
 
             if ($jsonSchema) {
                 return $adapter->explainSchema($jsonSchema, $action->getMode());
@@ -269,7 +287,7 @@ class TransferProvider
 
         foreach ($schema as $prop => $value) {
             if ($this->serializer->has($value)) {
-                $identifiersSchema[$prop] = $this->serializer->getSchema($value);
+                $identifiersSchema[$prop] = $this->schema->getSchema($value);
             } else {
                 $identifiersSchema[$prop] = $value;
             }

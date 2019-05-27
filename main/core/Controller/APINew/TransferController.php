@@ -16,7 +16,10 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
+use Claroline\CoreBundle\Entity\Import\File;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -54,6 +57,7 @@ class TransferController extends AbstractCrudController
      *    "fileUt"     = @DI\Inject("claroline.utilities.file"),
      *    "crud"       = @DI\Inject("claroline.api.crud"),
      *    "manager"    = @DI\Inject("claroline.manager.api_manager"),
+     *    "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *    "async"      = @DI\Inject("claroline.async.command")
      * })
      *
@@ -65,6 +69,7 @@ class TransferController extends AbstractCrudController
         TransferProvider $provider,
         FileUtilities $fileUt,
         RouterInterface $router,
+        ObjectManager $om,
         Crud $crud,
         $schemaDir,
         $async
@@ -75,11 +80,12 @@ class TransferController extends AbstractCrudController
         $this->router = $router;
         $this->crud = $crud;
         $this->async = $async;
+        $this->om = $om;
     }
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Import\File';
+        return File::class;
     }
 
     public function getIgnore()
@@ -101,7 +107,7 @@ class TransferController extends AbstractCrudController
         $file = $this->uploadFile($request);
 
         $this->crud->create(
-            'Claroline\CoreBundle\Entity\Import\File',
+            File::class,
             ['uploadedFile' => $file]
         );
 
@@ -127,13 +133,15 @@ class TransferController extends AbstractCrudController
         $data = json_decode($request->getContent(), true);
 
         $publicFile = $this->om->getObject($data['file'], PublicFile::class) ?? new PublicFile();
-        $workspaceId = $request->get('workspace');
+        $uuid = $request->get('workspace');
+        $workspace = $this->om->getRepository(Workspace::class)->findOneByUuid($uuid);
         //do things here
 
         $this->container->get('claroline.manager.api_manager')->import(
             $publicFile,
             $data['action'],
-            $this->getLogFile($request)
+            $this->getLogFile($request),
+            $workspace
         );
 
         //the following line doesn't work on our live server but it's supposed to be the proper way to do it
@@ -214,7 +222,7 @@ class TransferController extends AbstractCrudController
         $dispatcher = $this->container->get('claroline.event.event_dispatcher');
 
         $object = $this->crud->create(
-              'Claroline\CoreBundle\Entity\File\PublicFile',
+              PublicFile::class,
               [],
               ['file' => $file]
           );
