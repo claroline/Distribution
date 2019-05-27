@@ -57,7 +57,14 @@ SectionAudio.propTypes = {
 }
 
 const SectionConfiguration = (props) =>
-  <div>
+  <div className="section-configuration">
+    <CallbackButton
+      className="btn pull-right"
+      callback={() => props.onRemove()}
+      dangerous={true}
+    >
+      {trans('delete')}
+    </CallbackButton>
     <Checkbox
       key={`section-${props.section.id}-comments`}
       id={`section-${props.section.id}-comments`}
@@ -204,7 +211,7 @@ class AudioConfiguration extends Component {
 
               if (-1 < idx) {
                 newSections.splice(idx, 1)
-                this.props.update('sections', newSections)
+                this.setState({currentSection: null}, () => this.props.update('sections', newSections))
               }
             }}
           />
