@@ -67,7 +67,7 @@ class Section
     /**
      * @ORM\Column(name="show_transcript", type="boolean")
      */
-    private $showTranscript = true;
+    private $showTranscript = false;
 
     /**
      * @ORM\Column(type="text", nullable=true)

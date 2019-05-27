@@ -25,6 +25,24 @@ actions.saveSectionComment = (sections, sectionId, comment) => ({
   }
 })
 
+actions.deleteSectionComment = (sections, sectionId, commentId) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_audioresourcesectioncomment_delete_bulk', {ids: [commentId]}],
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      const newSections = cloneDeep(sections)
+      const index = newSections.findIndex(s => s.id === sectionId)
+
+      if (-1 < index) {
+        newSections[index]['comment'] = null
+      }
+      dispatch(fileActions.updateFileProp('sections', newSections))
+    }
+  }
+})
+
 export {
   actions
 }

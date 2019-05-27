@@ -7,6 +7,8 @@ import classes from 'classnames'
 import {currentUser} from '#/main/app/security'
 import {asset} from '#/main/app/config/asset'
 import {trans} from '#/main/app/intl/translation'
+import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 import {HtmlInput} from '#/main/app/data/types/html/components/input'
@@ -126,7 +128,9 @@ class Section extends Component {
                   type: CALLBACK_BUTTON,
                   label: trans('delete'),
                   displayed: true,
-                  callback: () => console.log('delete comment'),
+                  callback: () => this.props.section.comment && this.props.section.comment.id ?
+                    this.props.deleteComment(this.props.section.comment.id) :
+                    false,
                   dangerous: true
                 }
               ]}
@@ -151,7 +155,8 @@ class Section extends Component {
 
 Section.propTypes = {
   section: T.shape(SectionType.propTypes),
-  saveComment: T.func.isRequired
+  saveComment: T.func.isRequired,
+  deleteComment: T.func.isRequired
 }
 
 const Sections = props =>
@@ -161,13 +166,15 @@ const Sections = props =>
         key={`section-${section.id}`}
         section={section}
         saveComment={(comment) => props.saveComment(section.id, comment)}
+        deleteComment={(commentId) => props.deleteComment(section.id, commentId)}
       />
     )}
   </div>
 
 Sections.propTypes = {
   sections: T.arrayOf(T.shape(SectionType.propTypes)),
-  saveComment: T.func.isRequired
+  saveComment: T.func.isRequired,
+  deleteComment: T.func.isRequired
 }
 
 class Audio extends Component {
@@ -227,6 +234,7 @@ class Audio extends Component {
           <Sections
             sections={this.props.file.sections.filter(s => -1 < this.state.ongoingSections.indexOf(s.id))}
             saveComment={(sectionId, comment) => this.props.saveComment(this.props.file.sections, sectionId, comment)}
+            deleteComment={(sectionId, commentId) => this.props.deleteComment(this.props.file.sections, sectionId, commentId)}
           />
         }
       </div>
@@ -237,7 +245,8 @@ class Audio extends Component {
 Audio.propTypes = {
   mimeType: T.string.isRequired,
   file: T.shape(AudioType.propTypes).isRequired,
-  saveComment: T.func.isRequired
+  saveComment: T.func.isRequired,
+  deleteComment: T.func.isRequired
 }
 
 const AudioPlayer = connect(
@@ -247,6 +256,15 @@ const AudioPlayer = connect(
   (dispatch) => ({
     saveComment(sections, sectionId, comment) {
       dispatch(actions.saveSectionComment(sections, sectionId, comment))
+    },
+    deleteComment(sections, sectionId, commentId) {
+      dispatch(modalActions.showModal(MODAL_CONFIRM, {
+        icon: 'fa fa-fw fa-trash-o',
+        title: trans('comment_deletion'),
+        question: trans('comment_deletion_confirm_message'),
+        dangerous: true,
+        handleConfirm: () => dispatch(actions.deleteSectionComment(sections, sectionId, commentId))
+      }))
     }
   })
 )(Audio)

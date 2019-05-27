@@ -112,24 +112,6 @@ const SectionConfiguration = (props) =>
         section={props.section}
         onDelete={() => props.onUpdate('audioUrl', null)}
       />
-      // <div className="section-audio-group">
-      //   <audio
-      //     id={`section-${props.section.id}-audio`}
-      //     controls
-      //   >
-      //     <source
-      //       id={`section-${props.section.id}-audio-source`}
-      //       src={asset(props.section.audioUrl)}
-      //     />
-      //   </audio>
-      //   <CallbackButton
-      //     className="btn-link"
-      //     callback={() => props.onUpdate('audioUrl', null)}
-      //     dangerous={true}
-      //   >
-      //     <span className="fa fa-trash-o"/>
-      //   </CallbackButton>
-      // </div>
     }
   </div>
 
@@ -226,38 +208,6 @@ class AudioConfiguration extends Component {
               }
             }}
           />
-          // <FormData
-          //   className="audio-section-form"
-          //   embedded={true}
-          //   name={editorSelect.FORM_NAME}
-          //   dataPart={'sections[0]'}
-          //   updateProp={this.props.updateProp}
-          //   sections={[
-          //     {
-          //       title: trans('general'),
-          //       primary: true,
-          //       fields: [
-          //         {
-          //           name: 'commentsAllowed',
-          //           type: 'boolean',
-          //           label: trans('allow_comments', {}, 'audio')
-          //         }, {
-          //           name: '_file',
-          //           label: trans('pick_audio_file', {}, 'quiz'),
-          //           type: 'file',
-          //           required: true,
-          //           // calculated: () => null,
-          //           onChange: (file) => {
-          //           console.log(file.url)
-          //         },
-          //           options: {
-          //             types: ['audio/*']
-          //           }
-          //         }
-          //       ]
-          //     }
-          //   ]}
-          // />
         }
       </div>
     )

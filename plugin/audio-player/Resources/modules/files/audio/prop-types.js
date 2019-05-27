@@ -33,7 +33,7 @@ const Section = {
     comment: T.shape(Comment.propTypes)
   },
   defaultProps: {
-    showTranscript: true,
+    showTranscript: false,
     commentsAllowed: false,
     showHelp: false
   }
