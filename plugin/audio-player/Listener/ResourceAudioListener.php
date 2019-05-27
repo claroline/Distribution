@@ -70,20 +70,36 @@ class ResourceAudioListener
         $audioParams = $this->manager->getAudioParams($resourceNode);
         $audioData = $this->serializer->serialize($audioParams);
 
-        if ($audioParams->getSectionsType()) {
-            $audioData['sections'] = array_values(array_map(function (Section $section) use ($user) {
-                $serializedSection = $this->serializer->serialize($section);
+        switch ($audioParams->getSectionsType()) {
+            case AudioParams::MANAGER_TYPE:
+                $audioData['sections'] = array_values(array_map(function (Section $section) use ($user) {
+                    $serializedSection = $this->serializer->serialize($section);
 
-                if ('anon.' !== $user) {
-                    $userComment = $this->manager->getSectionUserComment($section, $user);
+                    if ('anon.' !== $user) {
+                        $userComment = $this->manager->getSectionUserComment($section, $user);
 
-                    if ($userComment) {
-                        $serializedSection['comment'] = $this->serializer->serialize($userComment);
+                        if ($userComment) {
+                            $serializedSection['comment'] = $this->serializer->serialize($userComment);
+                        }
                     }
-                }
 
-                return $serializedSection;
-            }, $this->manager->getManagerSections($resourceNode)));
+                    return $serializedSection;
+                }, $this->manager->getManagerSections($resourceNode)));
+                break;
+            case AudioParams::USER_TYPE:
+                if ('anon.' !== $user) {
+                    $audioData['sections'] = array_values(array_map(function (Section $section) use ($user) {
+                        $serializedSection = $this->serializer->serialize($section);
+                        $userComment = $this->manager->getSectionUserComment($section, $user);
+
+                        if ($userComment) {
+                            $serializedSection['comment'] = $this->serializer->serialize($userComment);
+                        }
+
+                        return $serializedSection;
+                    }, $this->manager->getUserSections($resourceNode, $user)));
+                }
+                break;
         }
 
         $event->setData(array_merge($audioData, $event->getData()));

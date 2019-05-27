@@ -5,6 +5,8 @@
     "end_tolerance": "Tolérance de fin",
     "pause": "Pause",
     "play": "Play",
+    "section_deletion": "Suppression de la section",
+    "section_deletion_confirm_message": "Êtes-vous sûr de vouloir supprimer cette section ?",
     "section_type_manager": "Zones prédécoupées",
     "section_type_user": "Zones à borner",
     "sections_type": "Type de zones",

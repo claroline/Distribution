@@ -68,11 +68,6 @@ class AudioPlayerManager
         return $audioParams;
     }
 
-    public function getManagerSections(ResourceNode $resourceNode)
-    {
-        return $this->sectionRepo->findBy(['resourceNode' => $resourceNode, 'type' => AudioParams::MANAGER_TYPE]);
-    }
-
     public function deserializeSections(ResourceNode $resourceNode, $data)
     {
         $sections = $this->getManagerSections($resourceNode);
@@ -102,6 +97,20 @@ class AudioPlayerManager
                 $this->om->remove($section);
             }
         }
+    }
+
+    public function getManagerSections(ResourceNode $resourceNode)
+    {
+        return $this->sectionRepo->findBy(['resourceNode' => $resourceNode, 'type' => AudioParams::MANAGER_TYPE]);
+    }
+
+    public function getUserSections(ResourceNode $resourceNode, User $user)
+    {
+        return $this->sectionRepo->findBy([
+            'resourceNode' => $resourceNode,
+            'type' => AudioParams::USER_TYPE,
+            'user' => $user,
+        ]);
     }
 
     public function getSectionUserComment(Section $section, User $user)

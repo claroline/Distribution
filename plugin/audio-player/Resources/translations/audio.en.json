@@ -5,6 +5,8 @@
     "end_tolerance": "End tolerance",
     "pause": "Pause",
     "play": "Play",
+    "section_deletion": "Delete section",
+    "section_deletion_confirm_message": "Are you sure you want to delete this section?",
     "section_type_manager": "Predefined sections",
     "section_type_user": "Sections to define",
     "sections_type": "Sections type",

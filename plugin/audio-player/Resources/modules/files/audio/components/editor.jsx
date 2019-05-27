@@ -12,7 +12,7 @@ import {FileInput} from '#/main/app/data/types/file/components/input'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 import {makeId} from '#/main/core/scaffolding/id'
-import {selectors} from '#/main/core/resources/file/store'
+import {selectors as fileSelect} from '#/main/core/resources/file/store'
 import {selectors as editorSelect} from '#/main/core/resources/file/editor/store/selectors'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox'
@@ -150,9 +150,9 @@ class AudioConfiguration extends Component {
             {
               'region-update-end': (region) => {
                 const newSections = this.props.file.sections ? cloneDeep(this.props.file.sections) : []
-                let regionId = region.id
-                let start = parseFloat(region.start.toFixed(1))
-                let end = parseFloat(region.end.toFixed(1))
+                const regionId = region.id
+                const start = parseFloat(region.start.toFixed(1))
+                const end = parseFloat(region.end.toFixed(1))
 
                 const regionIdx = newSections.findIndex(section => section.id === regionId || section.regionId === regionId)
 
@@ -285,7 +285,7 @@ Audio.propTypes = {
 
 const AudioEditor = connect(
   (state) => ({
-    mimeType: selectors.mimeType(state),
+    mimeType: fileSelect.mimeType(state),
     fileForm: formSelectors.data(formSelectors.form(state, editorSelect.FORM_NAME)),
     resourceNodeId: resourceSelect.resourceNode(state).id
   }),

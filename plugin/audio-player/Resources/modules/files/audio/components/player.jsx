@@ -13,7 +13,9 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 import {HtmlInput} from '#/main/app/data/types/html/components/input'
 
-import {selectors} from '#/main/core/resources/file/store'
+import {makeId} from '#/main/core/scaffolding/id'
+import {selectors as fileSelect} from '#/main/core/resources/file/store'
+import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
@@ -76,6 +78,15 @@ class Section extends Component {
               callback={() => this.setState({showAudioUrl: !this.state.showAudioUrl})}
             >
               <span className="fa fa-volume-up"/>
+            </CallbackButton>
+          }
+          {constants.USER_TYPE === this.props.section.type && authenticatedUser &&
+            <CallbackButton
+              className="btn section-btn"
+              callback={() => this.props.deleteSection()}
+              dangerous={true}
+            >
+              <span className="fa fa-trash-o"/>
             </CallbackButton>
           }
         </div>
@@ -155,6 +166,7 @@ class Section extends Component {
 
 Section.propTypes = {
   section: T.shape(SectionType.propTypes),
+  deleteSection: T.func.isRequired,
   saveComment: T.func.isRequired,
   deleteComment: T.func.isRequired
 }
@@ -165,6 +177,7 @@ const Sections = props =>
       <Section
         key={`section-${section.id}`}
         section={section}
+        deleteSection={() => props.deleteSection(section.id)}
         saveComment={(comment) => props.saveComment(section.id, comment)}
         deleteComment={(commentId) => props.deleteComment(section.id, commentId)}
       />
@@ -173,6 +186,7 @@ const Sections = props =>
 
 Sections.propTypes = {
   sections: T.arrayOf(T.shape(SectionType.propTypes)),
+  deleteSection: T.func.isRequired,
   saveComment: T.func.isRequired,
   deleteComment: T.func.isRequired
 }
@@ -203,10 +217,13 @@ class Audio extends Component {
           url={asset(this.props.file.hashName)}
           editable={constants.USER_TYPE === this.props.file.sectionsType}
           rateControl={this.props.file.rateControl}
-          regions={constants.MANAGER_TYPE === this.props.file.sectionsType && this.props.file.sections ? this.props.file.sections : []}
+          regions={-1 < [constants.MANAGER_TYPE, constants.USER_TYPE].indexOf(this.props.file.sectionsType) && this.props.file.sections ?
+            this.props.file.sections :
+            []
+          }
           eventsCallbacks={{
             'seek-time': (time) => {
-              if (constants.MANAGER_TYPE === this.props.file.sectionsType && this.props.file.sections) {
+              if (this.props.file.sections) {
                 const newOngoingSections = this.props.file.sections.filter(s => s.start <= time && s.end >= time).map(s => s.id)
                 this.setState({ongoingSections: newOngoingSections})
               }
@@ -227,12 +244,61 @@ class Audio extends Component {
                 newOngoingSections.splice(idx, 1)
                 this.setState({ongoingSections: newOngoingSections})
               }
+            },
+            'region-update-end': (region) => {
+              if (constants.USER_TYPE === this.props.file.sectionsType && authenticatedUser) {
+                const regionId = region.id
+                const start = parseFloat(region.start.toFixed(1))
+                const end = parseFloat(region.end.toFixed(1))
+
+                const section = this.props.file.sections.find(s => s.id === regionId || s.regionId === regionId)
+                let newSection = null
+                let isNew = false
+
+                if (section) {
+                  newSection = Object.assign({}, section, {
+                    start: start,
+                    end: end
+                  })
+                } else {
+                  newSection = Object.assign({}, SectionType.defaultProps, {
+                    id: makeId(),
+                    regionId: region.id,
+                    start: start,
+                    end: end,
+                    type: constants.USER_TYPE,
+                    commentsAllowed: true,
+                    meta: {
+                      resourceNode: {id: this.props.resourceNodeId},
+                      user: authenticatedUser
+                    }
+                  })
+                  isNew = true
+                }
+                this.props.saveSection(this.props.file.sections, newSection, isNew)
+              }
+            },
+            'region-click': (region) => {
+              if (constants.USER_TYPE === this.props.file.sectionsType) {
+                // const current = this.props.file.sections ?
+                //   this.props.file.sections.find(section => section.id === region.id || section.regionId === region.id) :
+                //   null
+                //
+                // if (current) {
+                //   if (current.id === this.state.currentSection) {
+                //     this.setState({currentSection: null})
+                //   } else {
+                //     this.setState({currentSection: current.id})
+                //   }
+                // }
+              }
             }
           }}
         />
         {0 < this.state.ongoingSections.length &&
           <Sections
             sections={this.props.file.sections.filter(s => -1 < this.state.ongoingSections.indexOf(s.id))}
+            deleteSection={(sectionId) => this.props.deleteSection(this.props.file.sections, sectionId)}
             saveComment={(sectionId, comment) => this.props.saveComment(this.props.file.sections, sectionId, comment)}
             deleteComment={(sectionId, commentId) => this.props.deleteComment(this.props.file.sections, sectionId, commentId)}
           />
@@ -245,15 +311,31 @@ class Audio extends Component {
 Audio.propTypes = {
   mimeType: T.string.isRequired,
   file: T.shape(AudioType.propTypes).isRequired,
+  resourceNodeId: T.string.isRequired,
+  saveSection: T.func.isRequired,
+  deleteSection: T.func.isRequired,
   saveComment: T.func.isRequired,
   deleteComment: T.func.isRequired
 }
 
 const AudioPlayer = connect(
   (state) => ({
-    mimeType: selectors.mimeType(state)
+    mimeType: fileSelect.mimeType(state),
+    resourceNodeId: resourceSelect.resourceNode(state).id
   }),
   (dispatch) => ({
+    saveSection(sections, section, isNew) {
+      dispatch(actions.saveSection(sections, section, isNew))
+    },
+    deleteSection(sections, sectionId) {
+      dispatch(modalActions.showModal(MODAL_CONFIRM, {
+        icon: 'fa fa-fw fa-trash-o',
+        title: trans('section_deletion', {}, 'audio'),
+        question: trans('section_deletion_confirm_message', {}, 'audio'),
+        dangerous: true,
+        handleConfirm: () => dispatch(actions.deleteSection(sections, sectionId))
+      }))
+    },
     saveComment(sections, sectionId, comment) {
       dispatch(actions.saveSectionComment(sections, sectionId, comment))
     },
