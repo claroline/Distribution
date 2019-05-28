@@ -18,7 +18,8 @@ actions.saveSection = (sections, section, isNew) => ({
       const index = newSections.findIndex(s => s.id === section.id)
 
       if (-1 < index) {
-        newSections[index] = data
+        const newData = Object.assign({}, data, {comment: section.comment})
+        newSections[index] = newData
       } else {
         const newData = Object.assign({}, data, {regionId: section.regionId})
         newSections.push(newData)
