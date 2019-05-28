@@ -81,11 +81,7 @@ class Create extends AbstractAction
         $resourceNode->setParent($parent);
         $resourceNode->setWorkspace($parent->getWorkspace());
 
-        // initialize custom resource Entity
-        $resourceClass = $resourceNode->getResourceType()->getClass();
-
-        /** @var AbstractResource $resource */
-        $resource = $this->crud->create(Directory::class, [], $options);
+        $this->crud->create(Directory::class, [], $options);
     }
 
     /**
