@@ -363,7 +363,7 @@ class WaveformComponent extends Component {
               newSolutions.splice(idx, 1)
               this.props.update('solutions', newSolutions)
             }}
-            onPlay={(start, end) => this.setState({toPlay: [start, end]})}
+            onPlay={(start, end) => this.setState({currentSection: s.section.id, toPlay: [start, end]})}
             isOverlayed={(start, end) => isOverlayed(this.props.item.solutions.map(s => s.section), start, end, idx)}
           />
         )}
