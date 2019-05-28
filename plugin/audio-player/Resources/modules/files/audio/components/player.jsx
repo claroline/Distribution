@@ -46,7 +46,7 @@ class Section extends Component {
 
     this.state = {
       showHelp: false,
-      showComment: false,
+      showComment: constants.USER_TYPE === props.section.type,
       showCommentForm: false,
       showAudioUrl: false
     }
