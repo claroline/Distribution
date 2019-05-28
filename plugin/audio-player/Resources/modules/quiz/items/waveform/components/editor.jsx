@@ -305,9 +305,11 @@ class WaveformComponent extends Component {
                     }
                     this.setState({currentSection: newSolutions[regionIdx]['section']['id']})
                   } else {
+                    const newId = makeId()
+
                     newSolutions.push({
                       section: {
-                        id: makeId(),
+                        id: newId,
                         regionId: region.id,
                         start: parseFloat(region.start.toFixed(1)),
                         end: parseFloat(region.end.toFixed(1)),
@@ -316,6 +318,7 @@ class WaveformComponent extends Component {
                       },
                       score: 1
                     })
+                    this.setState({currentSection: newId})
                   }
                 } else {
                   this.setState({currentSection: null})

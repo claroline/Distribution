@@ -221,7 +221,6 @@ class Audio extends Component {
             this.props.file.sections :
             []
           }
-          forceRegions={true}
           eventsCallbacks={{
             'seek-time': (time) => {
               if (this.props.file.sections) {

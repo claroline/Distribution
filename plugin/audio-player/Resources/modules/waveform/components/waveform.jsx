@@ -236,11 +236,21 @@ class Waveform extends Component {
       // As the displayed regions are fetched from [wavesurfer.regions.list]
       // it is possible that a newly created region is deleted from [wavesurfer.regions.list] because of state delay
       // In that case we re-add the region in [wavesurfer.regions.list]
-      if (this.props.forceRegions && prevProps.regions !== this.props.regions) {
+      if (this.props.forceRegions && prevProps.regions.length !== this.props.regions.length && prevProps.regions !== this.props.regions) {
         this.props.regions.forEach(region => {
           const isPresent = this.state.wavesurfer.regions.list[region.id]
 
           if (!isPresent) {
+            if (region.startTolerance || region.endTolerance) {
+              this.state.wavesurfer.addRegion({
+                id: `tolerance-${region.id}`,
+                start: region.start - region.startTolerance,
+                end: region.end + region.endTolerance,
+                resize: this.props.editable,
+                drag: false,
+                color: constants.COLORS.tolerance
+              })
+            }
             this.state.wavesurfer.addRegion(Object.assign(
               {},
               region,
@@ -514,7 +524,7 @@ Waveform.defaultProps = {
   editable: true,
   rateControl: true,
   regions: [],
-  forceRegions: false,
+  forceRegions: true,
   eventsCallbacks: {}
 }
 

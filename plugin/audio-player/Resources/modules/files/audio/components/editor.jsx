@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import cloneDeep from 'lodash/cloneDeep'
+import classes from 'classnames'
 
 import {asset} from '#/main/app/config/asset'
 import {trans} from '#/main/app/intl/translation'
@@ -57,14 +58,52 @@ SectionAudio.propTypes = {
 }
 
 const SectionConfiguration = (props) =>
-  <div className="section-configuration">
-    <CallbackButton
-      className="btn pull-right"
-      callback={() => props.onRemove()}
-      dangerous={true}
-    >
-      {trans('delete')}
-    </CallbackButton>
+  <div className={classes('section-configuration', {'selected': props.selected})}>
+    <div className="section-configuration-head form-group">
+      <CallbackButton
+        id={`section-${props.section.id}-play`}
+        className="btn-link"
+        callback={() => props.onPlay(props.section.start, props.section.end)}
+      >
+        <span className="fa fa-fw fa-play-circle-o" />
+      </CallbackButton>
+
+      <div className="section-time-group input-group">
+        <span className="input-group-addon">
+          <b>{`${trans('start', {}, 'audio')} (${trans('second')})`}</b>
+        </span>
+        <input
+          title={trans('start', {}, 'audio')}
+          type="number"
+          className="form-control section-start"
+          disabled={true}
+          value={props.section.start}
+        />
+      </div>
+      <div className="section-time-group input-group">
+        <span className="input-group-addon">
+          <b>{`${trans('end', {}, 'audio')} (${trans('second')})`}</b>
+        </span>
+        <input
+          title={trans('end', {}, 'audio')}
+          type="number"
+          className="form-control section-end"
+          disabled={true}
+          value={props.section.end}
+        />
+      </div>
+
+      <div className="right-controls">
+        <CallbackButton
+          id={`section-${props.section.id}-delete`}
+          className="btn-link"
+          callback={() => props.onRemove()}
+          dangerous={true}
+        >
+          <span className="fa fa-fw fa-trash-o" />
+        </CallbackButton>
+      </div>
+    </div>
     <Checkbox
       key={`section-${props.section.id}-comments`}
       id={`section-${props.section.id}-comments`}
@@ -124,8 +163,10 @@ const SectionConfiguration = (props) =>
 
 SectionConfiguration.propTypes = {
   section: T.shape(SectionType.propTypes).isRequired,
+  selected: T.bool.isRequired,
   onUpdate: T.func.isRequired,
-  onRemove: T.func.isRequired
+  onRemove: T.func.isRequired,
+  onPlay: T.func.isRequired
 }
 
 class AudioConfiguration extends Component {
@@ -133,7 +174,8 @@ class AudioConfiguration extends Component {
     super(props)
 
     this.state = {
-      currentSection: null
+      currentSection: null,
+      toPlay: null
     }
   }
 
@@ -146,6 +188,7 @@ class AudioConfiguration extends Component {
           rateControl={this.props.file.rateControl}
           regions={constants.MANAGER_TYPE === this.props.file.sectionsType && this.props.file.sections ? this.props.file.sections : []}
           selectedRegion={this.state.currentSection}
+          toPlay={this.state.toPlay}
           eventsCallbacks={constants.MANAGER_TYPE === this.props.file.sectionsType ?
             {
               'region-update-end': (region) => {
@@ -163,8 +206,10 @@ class AudioConfiguration extends Component {
                   })
                   this.setState({currentSection: newSections[regionIdx]['id']})
                 } else {
+                  const newId = makeId()
+
                   newSections.push(Object.assign({}, SectionType.defaultProps, {
-                    id: makeId(),
+                    id: newId,
                     regionId: region.id,
                     start: start,
                     end: end,
@@ -173,6 +218,7 @@ class AudioConfiguration extends Component {
                       resourceNode: {id: this.props.resourceNodeId}
                     }
                   }))
+                  this.setState({currentSection: newId})
                 }
                 this.props.update('sections', newSections)
               },
@@ -193,12 +239,14 @@ class AudioConfiguration extends Component {
             {}
           }
         />
-        {this.state.currentSection && this.props.file.sections.find(section => section.id === this.state.currentSection) &&
+        {constants.MANAGER_TYPE === this.props.file.sectionsType && this.props.file.sections && this.props.file.sections.map((section) =>
           <SectionConfiguration
-            section={this.props.file.sections.find(section => section.id === this.state.currentSection)}
+            key={`section-configuration-${section.id}`}
+            section={section}
+            selected={section.id === this.state.currentSection}
             onUpdate={(prop, value) => {
               const newSections = cloneDeep(this.props.file.sections)
-              const idx = newSections.findIndex(section => section.id === this.state.currentSection)
+              const idx = newSections.findIndex(s => s.id === section.id)
 
               if (-1 < idx) {
                 newSections[idx][prop] = value
@@ -207,15 +255,19 @@ class AudioConfiguration extends Component {
             }}
             onRemove={() => {
               const newSections = cloneDeep(this.props.file.sections)
-              const idx = newSections.findIndex(section => section.id === this.state.currentSection)
+              const idx = newSections.findIndex(s => s.id === section.id)
 
               if (-1 < idx) {
+                if (this.state.currentSection === section.id) {
+                  this.setState({currentSection: null})
+                }
                 newSections.splice(idx, 1)
-                this.setState({currentSection: null}, () => this.props.update('sections', newSections))
+                this.props.update('sections', newSections)
               }
             }}
+            onPlay={(start, end) => this.setState({currentSection: section.id, toPlay: [start, end]})}
           />
-        }
+        )}
       </div>
     )
   }
