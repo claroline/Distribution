@@ -221,6 +221,7 @@ class Audio extends Component {
             this.props.file.sections :
             []
           }
+          forceRegions={true}
           eventsCallbacks={{
             'seek-time': (time) => {
               if (this.props.file.sections) {
@@ -276,21 +277,6 @@ class Audio extends Component {
                   isNew = true
                 }
                 this.props.saveSection(this.props.file.sections, newSection, isNew)
-              }
-            },
-            'region-click': (region) => {
-              if (constants.USER_TYPE === this.props.file.sectionsType) {
-                // const current = this.props.file.sections ?
-                //   this.props.file.sections.find(section => section.id === region.id || section.regionId === region.id) :
-                //   null
-                //
-                // if (current) {
-                //   if (current.id === this.state.currentSection) {
-                //     this.setState({currentSection: null})
-                //   } else {
-                //     this.setState({currentSection: current.id})
-                //   }
-                // }
               }
             }
           }}

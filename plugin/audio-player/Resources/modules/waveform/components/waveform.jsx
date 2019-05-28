@@ -233,6 +233,31 @@ class Waveform extends Component {
         }
       })
 
+      // As the displayed regions are fetched from [wavesurfer.regions.list]
+      // it is possible that a newly created region is deleted from [wavesurfer.regions.list] because of state delay
+      // In that case we re-add the region in [wavesurfer.regions.list]
+      if (this.props.forceRegions && prevProps.regions !== this.props.regions) {
+        this.props.regions.forEach(region => {
+          const isPresent = this.state.wavesurfer.regions.list[region.id]
+
+          if (!isPresent) {
+            this.state.wavesurfer.addRegion(Object.assign(
+              {},
+              region,
+              {
+                resize: this.props.editable,
+                drag: this.props.editable,
+                color: region.color ?
+                  region.color :
+                  region.id === this.props.selectedRegion ?
+                    constants.COLORS.selected :
+                    constants.COLORS.section
+              }
+            ))
+          }
+        })
+      }
+
       if (this.props.toPlay && prevProps.toPlay !== this.props.toPlay) {
         this.play(this.props.toPlay[0], this.props.toPlay[1])
       }
@@ -257,7 +282,6 @@ class Waveform extends Component {
   playRegion(region) {
     if (this.state.regionLoop) {
       if (this.state.wavesurfer.regions.list[region.id]) {
-        console.log('loop')
         this.state.wavesurfer.regions.list[region.id].playLoop()
       }
     } else {
@@ -482,6 +506,7 @@ Waveform.propTypes = {
   })),
   selectedRegion: T.string,
   maxRegions: T.number,
+  forceRegions: T.bool,
   eventsCallbacks: T.object
 }
 
@@ -489,6 +514,7 @@ Waveform.defaultProps = {
   editable: true,
   rateControl: true,
   regions: [],
+  forceRegions: false,
   eventsCallbacks: {}
 }
 

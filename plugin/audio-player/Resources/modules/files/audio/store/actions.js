@@ -20,7 +20,8 @@ actions.saveSection = (sections, section, isNew) => ({
       if (-1 < index) {
         newSections[index] = data
       } else {
-        newSections.push(data)
+        const newData = Object.assign({}, data, {regionId: section.regionId})
+        newSections.push(newData)
       }
       dispatch(fileActions.updateFileProp('sections', newSections))
     }
