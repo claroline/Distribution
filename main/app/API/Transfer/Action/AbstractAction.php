@@ -62,6 +62,11 @@ abstract class AbstractAction
         return self::MODE_DEFAULT;
     }
 
+    public function getExtraDefinition($options = null)
+    {
+        return [];
+    }
+
     public function export()
     {
         throw new \Exception("I don't plan to implements you anytime soon");

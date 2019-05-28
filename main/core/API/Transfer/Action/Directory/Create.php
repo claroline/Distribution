@@ -146,6 +146,18 @@ class Create extends AbstractAction
         return $schema;
     }
 
+    public function getExtraDefinition($options = null)
+    {
+        return ['fields' => [
+          [
+            'name' => 'directory',
+            'type' => 'resource',
+            'required' => false,
+            'label' => 'root',
+          ],
+        ]];
+    }
+
     public function supports($format, $options = null)
     {
         if (Options::WORKSPACE_IMPORT !== $options) {

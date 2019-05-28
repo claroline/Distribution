@@ -307,24 +307,24 @@ class TransferProvider
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->schema->getSchema($schema['$root']);
 
-            if ($jsonSchema) {
-                return $adapter->explainSchema($jsonSchema, $action->getMode());
-            } else {
-                return $adapter->explainSchema($schema['$root'], $action->getMode());
+            $data = $jsonSchema ?
+                $adapter->explainSchema($jsonSchema, $action->getMode()) :
+                $adapter->explainSchema($schema['$root'], $action->getMode());
+        } else {
+            $identifiersSchema = [];
+
+            foreach ($schema as $prop => $value) {
+                if ($this->serializer->has($value)) {
+                    $identifiersSchema[$prop] = $this->schema->getSchema($value);
+                } else {
+                    $identifiersSchema[$prop] = $value;
+                }
             }
+
+            $data = $adapter->explainIdentifiers($identifiersSchema);
         }
 
-        $identifiersSchema = [];
-
-        foreach ($schema as $prop => $value) {
-            if ($this->serializer->has($value)) {
-                $identifiersSchema[$prop] = $this->schema->getSchema($value);
-            } else {
-                $identifiersSchema[$prop] = $value;
-            }
-        }
-
-        return $adapter->explainIdentifiers($identifiersSchema);
+        return (object) array_merge((array) $data, $action->getExtraDefinition($mode));
     }
 
     /**

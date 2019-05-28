@@ -81,6 +81,34 @@ class RoutedExplain extends Component {
     choices['none'] = ''
     Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: trans(key, {}, 'transfer')}), choices)
 
+    const defaultFields = [
+      {
+        name: 'action',
+        type: 'choice',
+        label: trans('action'),
+        onChange: (value) => {
+          props.history.push('/import/' + entity + '/' + value.substring(value.indexOf('_') + 1))
+          props.resetLog()
+        },
+        required: true,
+        options: {
+          noEmpty: true,
+          condensed: true,
+          choices: choices
+        }
+      }, {
+        name: 'file',
+        type: 'file',
+        label: trans('file'),
+        options: {
+          uploadUrl: ['apiv2_transfer_upload_file']
+        }
+      }
+    ]
+
+    console.log(props.explanation[entity][action])
+    const additionalFields = props.explanation[entity][action].fields || []
+    
     return (
       <div>
         <FormData
@@ -114,30 +142,7 @@ class RoutedExplain extends Component {
             {
               title: trans('general'),
               primary: true,
-              fields: [
-                {
-                  name: 'action',
-                  type: 'choice',
-                  label: trans('action'),
-                  onChange: (value) => {
-                    props.history.push('/import/' + entity + '/' + value.substring(value.indexOf('_') + 1))
-                    props.resetLog()
-                  },
-                  required: true,
-                  options: {
-                    noEmpty: true,
-                    condensed: true,
-                    choices: choices
-                  }
-                }, {
-                  name: 'file',
-                  type: 'file',
-                  label: trans('file'),
-                  options: {
-                    uploadUrl: ['apiv2_transfer_upload_file']
-                  }
-                }
-              ]
+              fields: defaultFields.concat(additionalFields)
             }
           ]}
         />
