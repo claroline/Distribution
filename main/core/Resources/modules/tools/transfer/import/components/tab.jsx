@@ -101,7 +101,7 @@ class RoutedExplain extends Component {
         type: 'file',
         label: trans('file'),
         options: {
-          uploadUrl: ['apiv2_transfer_upload_file']
+          uploadUrl: ['apiv2_transfer_upload_file', {workspace: props.workspace ? props.workspace.id: 0}]
         }
       }
     ]

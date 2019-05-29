@@ -24,6 +24,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,20 +100,25 @@ class TransferController extends AbstractCrudController
 
     /**
      * @Route(
-     *    "/upload",
+     *    "/upload/{workspaceId}",
      *    name="apiv2_transfer_upload_file"
      * )
+     * @ParamConverter("organization", options={"mapping": {"id": "uuid"}})
      * @Method("POST")
      *
      * @param Request $request
      */
-    public function uploadFileAction(Request $request)
+    public function uploadFileAction(Request $request, $workspaceId = 0)
     {
         $file = $this->uploadFile($request);
+        $workspace = $this->om->getRepository(Workspace::class)->find($workspaceId);
+        if ($workspace) {
+            $workspace = $this->serializer->serialize($workspace);
+        }
 
         $this->crud->create(
             File::class,
-            ['uploadedFile' => $file]
+            ['uploadedFile' => $file, 'workspace' => $workspace]
         );
 
         return new JsonResponse([$file], 200);
@@ -120,7 +126,7 @@ class TransferController extends AbstractCrudController
 
     /**
      * @Route(
-     *    "/list/{workspaceId}",
+     *    "/workspace/{workspaceId}",
      *    name="apiv2_workspace_transfer_list"
      * )
      * @Method("GET")
@@ -139,7 +145,7 @@ class TransferController extends AbstractCrudController
         $query['hiddenFilters'] = ['workspace' => $workspaceId];
 
         return new JsonResponse($this->finder->search(
-          $class,
+          self::getClass(),
           $query,
           $options
       ));

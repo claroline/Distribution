@@ -15,7 +15,7 @@ const Tab = (props) =>
       {
         path: '/history',
         exact: true,
-        component: List
+        component: ConnectedList
       }, {
         path: '/history/:log',
         component: Logs,
@@ -32,7 +32,7 @@ const List = props =>
       target: '/history/' + row.log
     })}
     fetch={{
-      url: props.workspace ? ['apiv2_workspace_transfer_list', {workspace: props.workspace.id}]: ['apiv2_transfer_list'],
+      url: props.workspace ? ['apiv2_workspace_transfer_list', {workspaceId: props.workspace.id}]: ['apiv2_transfer_list'],
       autoload: true
     }}
     delete={{
@@ -76,6 +76,12 @@ const History = connect(
     }
   })
 )(Tab)
+
+const ConnectedList = connect(
+  state => ({
+    workspace: state.currentContext.data
+  })
+)(List)
 
 export {
   History
