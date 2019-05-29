@@ -183,6 +183,8 @@ class TransferProvider
         $loaded = [];
         $loggedSuccess = [];
 
+        //here we look for duplicates
+
         foreach ($data as $el) {
             ++$i;
             $this->log("{$i}/{$total}: ".$this->getActionName($executor));
