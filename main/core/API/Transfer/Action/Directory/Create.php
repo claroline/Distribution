@@ -79,8 +79,10 @@ class Create extends AbstractAction
           'rights' => $rights,
         ];
 
+        $parent = $this->om->getRepository(ResourceNode::class)->findOneByUuid($data['directory']['id']);
         /** @var ResourceNode $resourceNode */
         $resourceNode = $this->crud->create(ResourceNode::class, $dataResourceNode, $options);
+
         $resourceNode->setParent($parent);
         $resourceNode->setWorkspace($parent->getWorkspace());
 
@@ -90,7 +92,7 @@ class Create extends AbstractAction
     /**
      * @return array
      */
-    public function getSchema(array $options = [], $extra = null)
+    public function getSchema(array $options = [], array $extra = [])
     {
         $directory = [
           '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',
@@ -149,9 +151,9 @@ class Create extends AbstractAction
         return $schema;
     }
 
-    public function getExtraDefinition(array $options = [], $extra = null)
+    public function getExtraDefinition(array $options = [], array $extra = [])
     {
-        $root = $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra]));
+        $root = $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra['workspace']['id']]));
 
         return ['fields' => [
           [
@@ -161,17 +163,17 @@ class Create extends AbstractAction
             'label' => 'root',
             'options' => ['picker' => [
               'filters' => [
-                ['property' => 'workspace', 'value' => $extra->getUuid(), 'locked' => true],
+                ['property' => 'workspace', 'value' => $extra['workspace']['uuid'], 'locked' => true],
                 ['property' => 'resourceType', 'value' => 'directory', 'locked' => true],
               ],
-              //'current' => $root,
-              //'root' => $root,
+              'current' => $root,
+              'root' => $root,
             ]],
           ],
         ]];
     }
 
-    public function supports($format, array $options = [], $extra = null)
+    public function supports($format, array $options = [], array $extra = [])
     {
         if (!in_array(Options::WORKSPACE_IMPORT, $options)) {
             return false;

@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
@@ -52,6 +53,7 @@ class TransferController extends AbstractCrudController
     /**
      * @DI\InjectParams({
      *    "provider"   = @DI\Inject("claroline.api.transfer"),
+     *    "serializer" = @DI\Inject("claroline.api.serializer"),
      *    "router"     = @DI\Inject("router"),
      *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
      *    "fileUt"     = @DI\Inject("claroline.utilities.file"),
@@ -67,6 +69,7 @@ class TransferController extends AbstractCrudController
      */
     public function __construct(
         TransferProvider $provider,
+        SerializerProvider $serializer,
         FileUtilities $fileUt,
         RouterInterface $router,
         ObjectManager $om,
@@ -79,6 +82,7 @@ class TransferController extends AbstractCrudController
         $this->fileUt = $fileUt;
         $this->router = $router;
         $this->crud = $crud;
+        $this->serializer = $serializer;
         $this->async = $async;
         $this->om = $om;
     }
@@ -131,17 +135,24 @@ class TransferController extends AbstractCrudController
     public function startAction(Request $request)
     {
         $data = json_decode($request->getContent(), true);
+        $file = $data['file'];
+        unset($data['file']);
+        $action = $data['action'];
+        unset($data['action']);
 
-        $publicFile = $this->om->getObject($data['file'], PublicFile::class) ?? new PublicFile();
+        $publicFile = $this->om->getObject($file, PublicFile::class) ?? new PublicFile();
         $uuid = $request->get('workspace');
         $workspace = $this->om->getRepository(Workspace::class)->findOneByUuid($uuid);
-        //do things here
+
+        if ($workspace) {
+            $data['workspace'] = $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
+        }
 
         $this->container->get('claroline.manager.api_manager')->import(
             $publicFile,
-            $data['action'],
+            $action,
             $this->getLogFile($request),
-            $workspace
+            $data
         );
 
         //the following line doesn't work on our live server but it's supposed to be the proper way to do it

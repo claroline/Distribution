@@ -56,7 +56,9 @@ class DataTransferListener
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
         $workspace = $event->getWorkspace();
-        $explanations = $this->transfer->getAvailableActions('csv', [Options::WORKSPACE_IMPORT], $workspace);
+        $explanations = $this->transfer->getAvailableActions('csv', [Options::WORKSPACE_IMPORT], [
+          'workspace' => $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]),
+        ]);
 
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:data-transfer.html.twig', [

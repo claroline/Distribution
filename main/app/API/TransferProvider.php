@@ -89,7 +89,7 @@ class TransferProvider
      * @param string|null $logFile
      * @param mixed       $options  (currently used to pass the workspace so it' an entity but we might improve it later with an array of parameters)
      */
-    public function execute($data, $action, $mimeType, $logFile = null, array $options = [], $extra = null)
+    public function execute($data, $action, $mimeType, $logFile = null, array $options = [], array $extra = [])
     {
         if (!$logFile) {
             $logFile = uniqid();
@@ -142,6 +142,7 @@ class TransferProvider
                     foreach ($properties as $index => $property) {
                         $row[$headers[$index]] = $property;
                     }
+
                     $data[] = $row;
                 }
             }
@@ -161,17 +162,11 @@ class TransferProvider
             }
 
             $explanation = $adapter->explainIdentifiers($identifiersSchema);
-            $data = $adapter->decodeSchema($data, $explanation);
         }
 
-        //this probably should be moved somewhere else but I don't know where. Core bundle dependencies shouldn't be allowed.
-        if (Workspace::class === $this->om->getClassMetaData(get_class($extra))->name) {
-            $data = array_map(function ($el) use ($extra) {
-                $el['workspace'] = $this->serializer->serialize($extra, [Options::SERIALIZE_MINIMAL]);
-
-                return $el;
-            }, $data);
-        }
+        $data = array_map(function ($el) use ($extra) {
+            return array_merge($el, $extra);
+        }, $data);
 
         $i = 0;
         $this->om->startFlushSuite();
@@ -296,7 +291,7 @@ class TransferProvider
      *
      * @return mixed|array
      */
-    public function explainAction($actionName, $format, array $options = [], $extra = null)
+    public function explainAction($actionName, $format, array $options = [], array $extra = [])
     {
         $adapter = $this->getAdapter($format);
         $action = $this->getExecutor($actionName);

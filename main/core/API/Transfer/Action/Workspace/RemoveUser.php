@@ -72,7 +72,7 @@ class RemoveUser extends AbstractAction
         return $string;
     }
 
-    public function getSchema(array $options = [], $extra = null)
+    public function getSchema(array $options = [], array $extra = [])
     {
         $roleSchema = [
           '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',

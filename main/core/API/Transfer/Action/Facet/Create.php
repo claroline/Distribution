@@ -41,7 +41,7 @@ class Create extends AbstractAction
     /**
      * @return array
      */
-    public function getSchema(array $options = [], $extra = null)
+    public function getSchema(array $options = [], array $extra = [])
     {
         return [
           '$root' => 'Claroline\CoreBundle\Entity\Facet\Facet',

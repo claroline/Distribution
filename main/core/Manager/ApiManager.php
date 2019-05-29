@@ -63,7 +63,7 @@ class ApiManager
         $this->crud = $crud;
     }
 
-    public function import(PublicFile $publicFile, $action, $log, $workspace = null)
+    public function import(PublicFile $publicFile, $action, $log, array $extra = [])
     {
         $historyFile = $this->finder->fetch(
             HistoryFile::class,
@@ -78,7 +78,7 @@ class ApiManager
         $content = $this->fileUt->getContents($publicFile);
         $options = [];
 
-        if ($workspace) {
+        if (isset($extra['workspace'])) {
             $options[] = Options::WORKSPACE_IMPORT;
         }
 
@@ -88,7 +88,7 @@ class ApiManager
           $publicFile->getMimeType(),
           $log,
           $options,
-          $workspace
+          $extra
       );
 
         //should probably reset entity manager here
