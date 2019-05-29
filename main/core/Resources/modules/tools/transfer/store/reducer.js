@@ -1,7 +1,7 @@
 import {makeReducer} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
-import {reducer as logReducer} from '#/main/core/transfer/log/reducer'
+import {reducer as logReducer} from '#/main/core/tools/transfer/log/reducer'
 
 const reducer = {
   explanation: makeReducer({}),

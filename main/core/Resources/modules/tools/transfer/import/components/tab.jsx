@@ -9,10 +9,10 @@ import {Routes, withRouter} from '#/main/app/router'
 import {Heading} from '#/main/core/layout/components/heading'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {Logs} from '#/main/core/transfer/log/components/logs'
-import {select} from '#/main/core/transfer/store/selectors'
-import {actions} from '#/main/core/transfer/store/actions'
-import {actions as logActions} from '#/main/core/transfer/log/actions'
+import {Logs} from '#/main/core/tools/transfer/log/components/logs'
+import {select} from '#/main/core/tools/transfer/store/selectors'
+import {actions} from '#/main/core/tools/transfer/store/actions'
+import {actions as logActions} from '#/main/core/tools/transfer/log/actions'
 
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">

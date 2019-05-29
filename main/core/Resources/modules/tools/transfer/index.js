@@ -1,6 +1,6 @@
-import {TransferTool} from '#/main/core/transfer/containers/tool'
+import {TransferTool} from '#/main/core/tools/transfer/containers/tool'
 //import {reducer} from '#/main/core/tools/transfer/store'
-import {reducer} from '#/main/core/transfer/store/reducer'
+import {reducer} from '#/main/core/tools/transfer/store/reducer'
 
 /**
  * Resources tool application.
