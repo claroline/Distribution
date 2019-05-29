@@ -118,6 +118,33 @@ class TransferController extends AbstractCrudController
         return new JsonResponse([$file], 200);
     }
 
+    /**
+     * @Route(
+     *    "/list/{workspaceId}",
+     *    name="apiv2_workspace_transfer_list"
+     * )
+     * @Method("GET")
+     *
+     * @param Request $request
+     */
+    public function workspaceListAction($workspaceId, Request $request)
+    {
+        $query = $request->query->all();
+        $options = $this->options['list'];
+
+        if (isset($query['options'])) {
+            $options = $query['options'];
+        }
+
+        $query['hiddenFilters'] = ['workspace' => $workspaceId];
+
+        return new JsonResponse($this->finder->search(
+          $class,
+          $query,
+          $options
+      ));
+    }
+
     public function getName()
     {
         return 'transfer';

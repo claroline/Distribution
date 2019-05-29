@@ -162,6 +162,7 @@ class TransferProvider
             }
 
             $explanation = $adapter->explainIdentifiers($identifiersSchema);
+            $data = $adapter->decodeSchema($data, $explanation);
         }
 
         $data = array_map(function ($el) use ($extra) {
@@ -327,7 +328,7 @@ class TransferProvider
      *
      * @return array
      */
-    public function getAvailableActions($format, array $options = [], $extra = null)
+    public function getAvailableActions($format, array $options = [], array $extra = [])
     {
         $availables = [];
 

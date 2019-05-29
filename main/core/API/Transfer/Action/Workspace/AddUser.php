@@ -106,7 +106,7 @@ class AddUser extends AbstractAction
         return ['workspace', 'add_user'];
     }
 
-    public function supports($format, array $options = [], $extra = null)
+    public function supports($format, array $options = [], array $extra = [])
     {
         return in_array($format, ['json', 'csv']);
     }

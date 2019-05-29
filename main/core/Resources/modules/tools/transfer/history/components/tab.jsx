@@ -24,7 +24,7 @@ const Tab = (props) =>
     ]}
   />
 
-const List = () =>
+const List = props =>
   <ListData
     name="history"
     primaryAction={(row) => ({
@@ -32,7 +32,7 @@ const List = () =>
       target: '/history/' + row.log
     })}
     fetch={{
-      url: ['apiv2_transfer_list'],
+      url: props.workspace ? ['apiv2_workspace_transfer_list', {workspace: props.workspace.id}]: ['apiv2_transfer_list'],
       autoload: true
     }}
     delete={{
@@ -67,7 +67,9 @@ const List = () =>
   />
 
 const History = connect(
-  null,
+  state => ({
+    workspace: state.currentContext.data
+  }),
   dispatch => ({
     loadLog(filename) {
       dispatch(actions.load(filename))
