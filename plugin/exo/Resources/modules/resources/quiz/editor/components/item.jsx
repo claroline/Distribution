@@ -2,12 +2,13 @@ import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
-import {trans} from '#/main/app/intl/translation'
+import {trans, transChoice} from '#/main/app/intl/translation'
 import {Await} from '#/main/app/components/await'
 import {FormSection} from '#/main/app/content/form/components/sections'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 
 import {getItem} from '#/plugin/exo/items'
+import {calculateTotal} from '#/plugin/exo/items/score'
 import {Item as ItemTypes} from '#/plugin/exo/items/prop-types'
 import {ItemIcon} from '#/plugin/exo/items/components/icon'
 import {ItemEditor} from '#/plugin/exo/items/components/editor'
@@ -26,10 +27,11 @@ const EditorItem = props =>
 
     then={(itemDefinition) => {
       const itemTitle = props.item.title || trans(itemDefinition.name, {}, 'question_types')
+      const itemScore = calculateTotal(props.item)
 
       return (
         <FormSection
-          {...omit(props, 'formName', 'path', 'index', 'item', 'update')}
+          {...omit(props, 'formName', 'path', 'index', 'item', 'update', 'enableScores')}
           id={props.item.id}
           className="embedded-form-section"
           icon={
@@ -41,7 +43,9 @@ const EditorItem = props =>
               <ItemIcon name={itemDefinition.name} className="panel-title-icon" />
             </Fragment>
           }
+          subtitle={(itemScore || 0 === itemScore) ? `(${transChoice('solution_score', itemScore, {score: itemScore}, 'quiz')})` : undefined}
           title={itemTitle}
+
           actions={props.actions}
         >
           <ItemEditor
@@ -49,6 +53,7 @@ const EditorItem = props =>
             formName={props.formName}
             path={props.path}
             disabled={!props.item.rights.edit}
+            enableScores={props.enableScores}
 
             definition={itemDefinition}
             item={props.item}
@@ -63,6 +68,7 @@ EditorItem.propTypes = {
   formName: T.string.isRequired,
   path: T.string.isRequired,
 
+  enableScores: T.bool,
   numbering: T.string,
   item: T.shape(
     ItemTypes.propTypes

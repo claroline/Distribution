@@ -12,16 +12,29 @@ import {makeId} from '#/main/core/scaffolding/id'
 import {Item as ItemTypes, ItemType as ItemTypeTypes} from '#/plugin/exo/items/prop-types'
 import {ItemType} from '#/plugin/exo/items/components/type'
 
+import ScoreNone from '#/plugin/exo/scores/none'
+
 const ItemEditor = props => {
   let supportedScores, currentScore, availableScores
   if (props.definition.answerable) {
-    supportedScores = props.definition.supportScores(props.item)
+    supportedScores = [ScoreNone].concat(props.definition.supportScores(props.item) || [])
 
     currentScore = supportedScores.find(score => score.name === get(props.item, 'score.type'))
     availableScores = supportedScores.reduce((scoreChoices, current) => Object.assign(scoreChoices, {
       [current.name]: current.meta.label
     }), {})
   }
+
+  const CurrentType = <ItemType name={props.definition.name} size="lg" />
+
+  const CustomSection = createElement(props.definition.components.editor, {
+    formName: props.formName,
+    path: props.path,
+    disabled: props.disabled,
+    item: props.item,
+    hasAnswerScores: currentScore.hasAnswerScores,
+    update: props.update
+  })
 
   return (
     <FormData
@@ -43,33 +56,33 @@ const ItemEditor = props => {
               type: 'string',
               hideLabel: true,
               displayed: props.meta,
-              render: () => {
-                const CurrentType = <ItemType name={props.definition.name} size="lg" />
-
-                return CurrentType
-              }
+              component: CurrentType
             }, {
               name: 'content',
               label: trans('question', {}, 'quiz'),
               type: 'html',
               required: true,
               displayed: props.definition.answerable
+            }, {
+              name: 'hasExpectedAnswers',
+              label: trans('has_expected_answers', {}, 'quiz'),
+              type: 'boolean',
+              displayed: props.enableScores,
+              help: [
+                trans('has_expected_answers_help', {}, 'quiz'),
+                trans('has_expected_answers_help_score', {}, 'quiz')
+              ],
+              onChange: (checked) => {
+                if (!checked) {
+                  props.update('score.type', ScoreNone.name)
+                }
+              }
             }
           ]
         }, {
           title: trans('custom'),
           primary: true,
-          render: () => {
-            const CustomSection = createElement(props.definition.components.editor, {
-              formName: props.formName,
-              path: props.path,
-              disabled: props.disabled,
-              item: props.item,
-              update: props.update
-            })
-
-            return CustomSection
-          }
+          component: CustomSection
         }, {
           icon: 'fa fa-fw fa-info',
           title: trans('information'),
@@ -105,7 +118,7 @@ const ItemEditor = props => {
         }, {
           icon: 'fa fa-fw fa-percentage',
           title: trans('score'),
-          displayed: props.definition.answerable,
+          displayed: props.enableScores && props.definition.answerable && props.item.hasExpectedAnswers,
           fields: [
             {
               name: 'score.type',
@@ -118,11 +131,16 @@ const ItemEditor = props => {
                 // get the list of score supported by the current type
                 choices: availableScores
               },
+              // TODO : make it a new dataType (duplicated in quiz editor)
               linked: currentScore ? currentScore
                 // generate the list of fields for the score type
-                .configure(get(props.item, 'score'))
+                .configure(get(props.item, 'score'), (prop, value) => props.update(`score.${prop}`, value))
                 .map(scoreProp => Object.assign({}, scoreProp, {
-                  name: `score.${scoreProp.name}`
+                  name: `score.${scoreProp.name}`,
+                  // slightly ugly because I only support 1 level
+                  linked: scoreProp.linked ? scoreProp.linked.map(linkedProp => Object.assign({}, linkedProp, {
+                    name: `score.${linkedProp.name}`
+                  })) : []
                 })) : []
             }
           ]
@@ -183,6 +201,7 @@ ItemEditor.propTypes = {
   formName: T.string.isRequired,
   path: T.string,
   disabled: T.bool,
+  enableScores: T.bool, // used when the parent quiz disable the score
 
   /**
    * The item object currently edited.
@@ -204,7 +223,8 @@ ItemEditor.propTypes = {
 ItemEditor.defaultProps = {
   embedded: false,
   meta: false,
-  disabled: false
+  disabled: false,
+  enableScores: true
 }
 
 export {

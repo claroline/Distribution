@@ -20,6 +20,8 @@ const EditorMain = withRouter(
       quizType: selectors.quizType(state),
       workspace: resourceSelectors.workspace(state),
       numberingType: selectors.numberingType(state),
+      hasExpectedAnswers: selectors.hasExpectedAnswers(state),
+      score: selectors.score(state),
       tags: selectors.tags(state),
       randomPick: selectors.randomPick(state),
       steps: selectors.steps(state)

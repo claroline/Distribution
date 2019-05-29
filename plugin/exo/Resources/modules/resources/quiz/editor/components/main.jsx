@@ -121,10 +121,12 @@ class EditorMain extends Component {
                   <EditorParameters
                     formName={this.props.formName}
                     quizType={this.props.quizType}
+                    score={this.props.score}
                     numberingType={this.props.numberingType}
                     randomPick={this.props.randomPick}
                     tags={this.props.tags}
                     workspace={this.props.workspace}
+                    steps={this.props.steps}
                     update={this.props.update}
                   />
                 )
@@ -144,6 +146,8 @@ class EditorMain extends Component {
                         index={stepIndex}
                         id={currentStep.id}
                         title={currentStep.title}
+                        hasExpectedAnswers={this.props.hasExpectedAnswers}
+                        score={this.props.score}
                         items={currentStep.items}
                         errors={get(this.props.errors, `steps[${stepIndex}]`)}
                         actions={this.getStepActions(currentStep, stepIndex)}
@@ -177,6 +181,10 @@ EditorMain.propTypes = {
 
   quizId: T.string.isRequired,
   quizType: T.string.isRequired,
+  hasExpectedAnswers: T.bool.isRequired,
+  score: T.shape({
+    type: T.string.isRequired
+  }).isRequired,
   workspace: T.object,
   numberingType: T.string,
   tags: T.array.isRequired,
