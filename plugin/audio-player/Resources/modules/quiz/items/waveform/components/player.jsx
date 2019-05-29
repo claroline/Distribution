@@ -118,7 +118,7 @@ class WaveformPlayer extends Component {
                   if (-1 < answerIdx) {
                     newAnswer[answerIdx]['start'] = parseFloat(region.start.toFixed(1))
                     newAnswer[answerIdx]['end'] = parseFloat(region.end.toFixed(1))
-                  } else if (!this.props.answersLimit || newAnswer.length < this.props.answersLimit) {
+                  } else if (!this.props.item.answersLimit || newAnswer.length < this.props.item.answersLimit) {
                     newAnswer.push({
                       id: region.id,
                       start: parseFloat(region.start.toFixed(1)),
@@ -155,6 +155,7 @@ class WaveformPlayer extends Component {
 
 WaveformPlayer.propTypes = {
   item: T.shape({
+    id: T.string.isRequired,
     url: T.string.isRequired,
     answersLimit: T.number.isRequired
   }).isRequired,

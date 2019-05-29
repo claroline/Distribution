@@ -11,7 +11,6 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
-import {HtmlInput} from '#/main/app/data/types/html/components/input'
 
 import {makeId} from '#/main/core/scaffolding/id'
 import {selectors as fileSelect} from '#/main/core/resources/file/store'

@@ -58,7 +58,7 @@ const AnswerTable = props =>
   >
     <h3 className="title">{props.title}</h3>
 
-    {props.sections.map((section, idx) =>
+    {props.sections.map((section) =>
       <div
         key={section.id}
         className={classes('answer-row', {

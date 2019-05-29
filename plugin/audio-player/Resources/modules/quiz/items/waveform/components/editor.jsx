@@ -325,7 +325,7 @@ class WaveformComponent extends Component {
                 }
                 this.props.update('solutions', newSolutions)
               },
-              'region-click': (region, e) => {
+              'region-click': (region) => {
                 const newSolutions = cloneDeep(this.props.item.solutions)
                 const current = newSolutions.find(s => s.section.id === region.id || s.section.regionId === region.id)
 

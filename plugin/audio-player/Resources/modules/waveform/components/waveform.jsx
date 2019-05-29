@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import WaveSurfer from 'wavesurfer.js';
+import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions'
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline'
 
@@ -531,7 +531,8 @@ Waveform.propTypes = {
   selectedRegion: T.string,
   maxRegions: T.number,
   forceRegions: T.bool,
-  eventsCallbacks: T.object
+  eventsCallbacks: T.object,
+  toPlay: T.array
 }
 
 Waveform.defaultProps = {

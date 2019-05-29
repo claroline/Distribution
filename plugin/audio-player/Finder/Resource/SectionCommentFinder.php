@@ -68,7 +68,7 @@ class SectionCommentFinder extends AbstractFinder
                         $qb->join('obj.section', 's');
                         $sectionJoin = true;
                     }
-                    $qb->andWhere("s.start = :sectionStart");
+                    $qb->andWhere('s.start = :sectionStart');
                     $qb->setParameter('sectionStart', $filterValue);
                     break;
                 case 'meta.section.end':
@@ -76,7 +76,7 @@ class SectionCommentFinder extends AbstractFinder
                         $qb->join('obj.section', 's');
                         $sectionJoin = true;
                     }
-                    $qb->andWhere("s.end = :sectionEnd");
+                    $qb->andWhere('s.end = :sectionEnd');
                     $qb->setParameter('sectionEnd', $filterValue);
                     break;
                 case 'user':
