@@ -160,6 +160,20 @@ class Waveform extends Component {
     })
   }
 
+  regionsEquals(oldRegions, regions) {
+    let isEqual = oldRegions.length === regions.length
+
+    if (isEqual) {
+      oldRegions.forEach((r, idx) => {
+        if (r.id !== regions[idx].id) {
+          isEqual = false
+        }
+      })
+    }
+
+    return isEqual
+  }
+
   componentDidUpdate(prevProps) {
     // Required if we want the waveform to be refreshed when another audio file is selected
     if (this.props.url !== prevProps.url) {
@@ -236,7 +250,7 @@ class Waveform extends Component {
       // As the displayed regions are fetched from [wavesurfer.regions.list]
       // it is possible that a newly created region is deleted from [wavesurfer.regions.list] because of state delay
       // In that case we re-add the region in [wavesurfer.regions.list]
-      if (this.props.forceRegions && prevProps.regions.length !== this.props.regions.length && prevProps.regions !== this.props.regions) {
+      if (this.props.forceRegions && !this.regionsEquals(prevProps.regions, this.props.regions)) {
         this.props.regions.forEach(region => {
           const isPresent = this.state.wavesurfer.regions.list[region.id]
 
@@ -447,7 +461,7 @@ class Waveform extends Component {
               </CallbackButton>
             }
 
-            {0 < this.props.regions.length &&
+            {0 < this.props.regions.length && false &&
               <CallbackButton
                 className="btn"
                 callback={() => this.setState({regionLoop: !this.state.regionLoop})}

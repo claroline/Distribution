@@ -34,13 +34,50 @@ class SectionCommentFinder extends AbstractFinder
         array $options = ['count' => false, 'page' => 0, 'limit' => -1]
     ) {
         $userJoin = false;
+        $sectionJoin = false;
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+                case 'resourceNode':
+                    if (!$sectionJoin) {
+                        $qb->join('obj.section', 's');
+                        $sectionJoin = true;
+                    }
+                    $qb->join('s.resourceNode', 'r');
+                    $qb->andWhere("r.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'type':
+                    if (!$sectionJoin) {
+                        $qb->join('obj.section', 's');
+                        $sectionJoin = true;
+                    }
+                    $qb->andWhere("s.type = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
                 case 'section':
-                    $qb->join('obj.section', 's');
+                    if (!$sectionJoin) {
+                        $qb->join('obj.section', 's');
+                        $sectionJoin = true;
+                    }
                     $qb->andWhere("s.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'meta.section.start':
+                    if (!$sectionJoin) {
+                        $qb->join('obj.section', 's');
+                        $sectionJoin = true;
+                    }
+                    $qb->andWhere("s.start = :sectionStart");
+                    $qb->setParameter('sectionStart', $filterValue);
+                    break;
+                case 'meta.section.end':
+                    if (!$sectionJoin) {
+                        $qb->join('obj.section', 's');
+                        $sectionJoin = true;
+                    }
+                    $qb->andWhere("s.end = :sectionEnd");
+                    $qb->setParameter('sectionEnd', $filterValue);
                     break;
                 case 'user':
                     if (!$userJoin) {
@@ -51,6 +88,7 @@ class SectionCommentFinder extends AbstractFinder
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'user.name':
+                case 'meta.user.name':
                     if (!$userJoin) {
                         $qb->join('obj.user', 'u');
                         $userJoin = true;
@@ -68,6 +106,7 @@ class SectionCommentFinder extends AbstractFinder
                     $qb->setParameter('name', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'user.firstName':
+                case 'meta.user.firstName':
                     if (!$userJoin) {
                         $qb->join('obj.user', 'u');
                         $userJoin = true;
@@ -76,6 +115,7 @@ class SectionCommentFinder extends AbstractFinder
                     $qb->setParameter('firstName', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'user.lastName':
+                case 'meta.user.lastName':
                     if (!$userJoin) {
                         $qb->join('obj.user', 'u');
                         $userJoin = true;
@@ -105,10 +145,27 @@ class SectionCommentFinder extends AbstractFinder
                     $qb->orderBy('u.firstName', $sortByDirection);
                     break;
                 case 'user.lastName':
+                case 'user.name':
+                case 'meta.user.name':
                     if (!$userJoin) {
                         $qb->join('obj.user', 'u');
                     }
                     $qb->orderBy('u.lastName', $sortByDirection);
+                    break;
+                case 'meta.section.start':
+                    if (!$sectionJoin) {
+                        $qb->join('obj.section', 's');
+                    }
+                    $qb->orderBy('s.start', $sortByDirection);
+                    break;
+                case 'meta.section.end':
+                    if (!$sectionJoin) {
+                        $qb->join('obj.section', 's');
+                    }
+                    $qb->orderBy('s.end', $sortByDirection);
+                    break;
+                case 'meta.creationDate':
+                    $qb->orderBy('obj.creationDate', $sortByDirection);
                     break;
             }
         }

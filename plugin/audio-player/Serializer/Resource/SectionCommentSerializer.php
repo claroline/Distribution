@@ -23,6 +23,8 @@ class SectionCommentSerializer
     /** @var ObjectManager */
     private $om;
 
+    /** @var SectionSerializer */
+    private $sectionSerializer;
     /** @var UserSerializer */
     private $userSerializer;
 
@@ -31,16 +33,19 @@ class SectionCommentSerializer
 
     /**
      * @DI\InjectParams({
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *      "userSerializer" = @DI\Inject("claroline.serializer.user")
+     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
+     *     "sectionSerializer" = @DI\Inject("claroline.serializer.audio.resource_section"),
+     *     "userSerializer"    = @DI\Inject("claroline.serializer.user")
      * })
      *
-     * @param ObjectManager  $om
-     * @param UserSerializer $userSerializer
+     * @param ObjectManager     $om
+     * @param SectionSerializer $sectionSerializer
+     * @param UserSerializer    $userSerializer
      */
-    public function __construct(ObjectManager $om, UserSerializer $userSerializer)
+    public function __construct(ObjectManager $om, SectionSerializer $sectionSerializer, UserSerializer $userSerializer)
     {
         $this->om = $om;
+        $this->sectionSerializer = $sectionSerializer;
         $this->userSerializer = $userSerializer;
 
         $this->sectionRepo = $om->getRepository(Section::class);
@@ -66,6 +71,7 @@ class SectionCommentSerializer
                 'user' => $sectionComment->getUser() ?
                     $this->userSerializer->serialize($sectionComment->getUser(), [Options::SERIALIZE_MINIMAL]) :
                     null,
+                'section' => $this->sectionSerializer->serialize($sectionComment->getSection()),
             ],
         ];
 
