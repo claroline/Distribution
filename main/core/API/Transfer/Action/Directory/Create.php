@@ -86,7 +86,11 @@ class Create extends AbstractAction
         $resourceNode->setParent($parent);
         $resourceNode->setWorkspace($parent->getWorkspace());
 
-        $this->crud->create(Directory::class, [], $options);
+        $resource = $this->crud->create(Directory::class, [], $options);
+        $resource->setResourceNode($resourceNode);
+
+        $this->om->persist($resourceNode);
+        $this->om->persist($resource);
     }
 
     /**
