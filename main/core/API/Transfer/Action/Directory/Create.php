@@ -151,6 +151,8 @@ class Create extends AbstractAction
 
     public function getExtraDefinition(array $options = [], $extra = null)
     {
+        $root = $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra]));
+
         return ['fields' => [
           [
             'name' => 'directory',
@@ -158,8 +160,12 @@ class Create extends AbstractAction
             'required' => false,
             'label' => 'root',
             'options' => ['picker' => [
-              'current' => $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra])),
-              'root' => $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra])),
+              'filters' => [
+                ['property' => 'workspace', 'value' => $extra->getUuid(), 'locked' => true],
+                ['property' => 'resourceType', 'value' => 'directory', 'locked' => true],
+              ],
+              //'current' => $root,
+              //'root' => $root,
             ]],
           ],
         ]];
