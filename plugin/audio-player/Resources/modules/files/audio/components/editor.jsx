@@ -22,35 +22,25 @@ import {constants} from '#/plugin/audio-player/files/audio/constants'
 import {Audio as AudioType, Section as SectionType} from '#/plugin/audio-player/files/audio/prop-types'
 import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
 
-class SectionAudio extends Component {
-  componentDidUpdate() {
-    this.refs.audio.load()
-  }
-
-  render() {
-    return (
-      <div className="section-audio-group">
-        <audio
-          id={`section-${this.props.section.id}-audio`}
-          controls
-          ref="audio"
-        >
-          <source
-            id={`section-${this.props.section.id}-audio-source`}
-            src={asset(this.props.section.audioUrl)}
-          />
-        </audio>
-        <CallbackButton
-          className="btn-link"
-          callback={() => this.props.onDelete()}
-          dangerous={true}
-        >
-          <span className="fa fa-trash-o"/>
-        </CallbackButton>
-      </div>
-    )
-  }
-}
+const SectionAudio = props =>
+  <div className="section-audio-group">
+    <audio
+      id={`section-${props.section.id}-audio`}
+      controls
+    >
+      <source
+        id={`section-${props.section.id}-audio-source`}
+        src={asset(props.section.audioUrl)}
+      />
+    </audio>
+    <CallbackButton
+      className="btn-link"
+      callback={() => props.onDelete()}
+      dangerous={true}
+    >
+      <span className="fa fa-trash-o"/>
+    </CallbackButton>
+  </div>
 
 SectionAudio.propTypes = {
   section: T.shape(SectionType.propTypes).isRequired,
