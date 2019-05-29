@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Transfer\Action\Directory;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\Directory;
@@ -24,16 +25,18 @@ class Create extends AbstractAction
      * Action constructor.
      *
      * @DI\InjectParams({
-     *     "crud" = @DI\Inject("claroline.api.crud"),
-     *     "om"   = @DI\Inject("claroline.persistence.object_manager")
+     *     "crud"       = @DI\Inject("claroline.api.crud"),
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud, ObjectManager $om)
+    public function __construct(Crud $crud, ObjectManager $om, SerializerProvider $serializer)
     {
         $this->crud = $crud;
         $this->om = $om;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -87,7 +90,7 @@ class Create extends AbstractAction
     /**
      * @return array
      */
-    public function getSchema($options = null)
+    public function getSchema(array $options = [], $extra = null)
     {
         $directory = [
           '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',
@@ -131,7 +134,7 @@ class Create extends AbstractAction
           ],
         ];
 
-        if (Options::WORKSPACE_IMPORT !== $options) {
+        if (!in_array(Options::WORKSPACE_IMPORT, $options)) {
             $directory['properties']['workspace'] = [
               'type' => 'string',
               'description' => 'The workspace code',
@@ -146,7 +149,7 @@ class Create extends AbstractAction
         return $schema;
     }
 
-    public function getExtraDefinition($options = null)
+    public function getExtraDefinition(array $options = [], $extra = null)
     {
         return ['fields' => [
           [
@@ -154,13 +157,17 @@ class Create extends AbstractAction
             'type' => 'resource',
             'required' => false,
             'label' => 'root',
+            'options' => ['picker' => [
+              'current' => $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra])),
+              'root' => $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra])),
+            ]],
           ],
         ]];
     }
 
-    public function supports($format, $options = null)
+    public function supports($format, array $options = [], $extra = null)
     {
-        if (Options::WORKSPACE_IMPORT !== $options) {
+        if (!in_array(Options::WORKSPACE_IMPORT, $options)) {
             return false;
         }
 

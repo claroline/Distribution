@@ -89,7 +89,7 @@ class TransferProvider
      * @param string|null $logFile
      * @param mixed       $options  (currently used to pass the workspace so it' an entity but we might improve it later with an array of parameters)
      */
-    public function execute($data, $action, $mimeType, $logFile = null, $options = null)
+    public function execute($data, $action, $mimeType, $logFile = null, array $options = [], $extra = null)
     {
         if (!$logFile) {
             $logFile = uniqid();
@@ -150,9 +150,7 @@ class TransferProvider
                 //this is for the custom schema defined in the transfer stuff (atm add user to roles for workspace)
                 //there is probably a better way to handle this
                 if (!$value instanceof \stdClass) {
-                    $schemaOptions = $options instanceof Workspace ? Options::WORKSPACE_IMPORT : null;
-                    $schemaOptions = null;
-                    $jsonSchema = $this->schema->getSchema($value, $schemaOptions);
+                    $jsonSchema = $this->schema->getSchema($value, $options, $extra);
 
                     if ($jsonSchema) {
                         $identifiersSchema[$prop] = $jsonSchema;
@@ -167,9 +165,9 @@ class TransferProvider
         }
 
         //this probably should be moved somewhere else but I don't know where. Core bundle dependencies shouldn't be allowed.
-        if (Workspace::class === $this->om->getClassMetaData(get_class($options))->name) {
-            $data = array_map(function ($el) use ($options) {
-                $el['workspace'] = $this->serializer->serialize($options, [Options::SERIALIZE_MINIMAL]);
+        if (Workspace::class === $this->om->getClassMetaData(get_class($extra))->name) {
+            $data = array_map(function ($el) use ($extra) {
+                $el['workspace'] = $this->serializer->serialize($extra, [Options::SERIALIZE_MINIMAL]);
 
                 return $el;
             }, $data);
@@ -298,11 +296,11 @@ class TransferProvider
      *
      * @return mixed|array
      */
-    public function explainAction($actionName, $format, $mode = null)
+    public function explainAction($actionName, $format, array $options = [], $extra = null)
     {
         $adapter = $this->getAdapter($format);
         $action = $this->getExecutor($actionName);
-        $schema = $action->getSchema($mode);
+        $schema = $action->getSchema($options, $extra);
 
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->schema->getSchema($schema['$root']);
@@ -324,7 +322,7 @@ class TransferProvider
             $data = $adapter->explainIdentifiers($identifiersSchema);
         }
 
-        return (object) array_merge((array) $data, $action->getExtraDefinition($mode));
+        return (object) array_merge((array) $data, $action->getExtraDefinition($options, $extra));
     }
 
     /**
@@ -334,15 +332,15 @@ class TransferProvider
      *
      * @return array
      */
-    public function getAvailableActions($format, $mode = null)
+    public function getAvailableActions($format, array $options = [], $extra = null)
     {
         $availables = [];
 
-        foreach (array_filter($this->actions, function ($action) use ($format, $mode) {
-            return $action->supports($format, $mode);
+        foreach (array_filter($this->actions, function ($action) use ($format, $options, $extra) {
+            return $action->supports($format, $options, $extra);
         }) as $action) {
             $schema = $action->getAction();
-            $availables[$schema[0]][$schema[1]] = $this->explainAction($this->getActionName($action), $format, $mode);
+            $availables[$schema[0]][$schema[1]] = $this->explainAction($this->getActionName($action), $format, $options, $extra);
         }
 
         return $availables;

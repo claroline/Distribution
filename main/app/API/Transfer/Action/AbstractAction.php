@@ -18,7 +18,7 @@ abstract class AbstractAction
     abstract public function execute(array $data, &$successData = []);
 
     //better explain the structure
-    abstract public function getSchema();
+    abstract public function getSchema(/*array $options = [], $extra = null*/);
 
     /**
      * return an array with the following element:
@@ -28,9 +28,9 @@ abstract class AbstractAction
      */
     abstract public function getAction();
 
-    public function supports($format, $options = null)
+    public function supports($format, array $options = []/*, $extra = null*/)
     {
-        if (Options::WORKSPACE_IMPORT === $options) {
+        if (in_array(Options::WORKSPACE_IMPORT, $options)) {
             return false;
         }
 
@@ -62,7 +62,7 @@ abstract class AbstractAction
         return self::MODE_DEFAULT;
     }
 
-    public function getExtraDefinition($options = null)
+    public function getExtraDefinition(array $options = [], $extra = null)
     {
         return [];
     }

@@ -72,7 +72,7 @@ class RemoveUser extends AbstractAction
         return $string;
     }
 
-    public function getSchema($options = null)
+    public function getSchema(array $options = [], $extra = null)
     {
         $roleSchema = [
           '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',
@@ -97,7 +97,7 @@ class RemoveUser extends AbstractAction
           'role' => $schema,
         ];
 
-        if (Options::WORKSPACE_IMPORT !== $options) {
+        if (!in_array(Options::WORKSPACE_IMPORT, $options)) {
             $schema['workspace'] = Workspace::class;
         }
 
@@ -109,7 +109,7 @@ class RemoveUser extends AbstractAction
         return ['workspace', 'remove_user'];
     }
 
-    public function supports($format, $options = null)
+    public function supports($format, array $options = [], $extra = null)
     {
         return in_array($format, ['json', 'csv']);
     }

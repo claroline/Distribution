@@ -106,9 +106,9 @@ class RoutedExplain extends Component {
       }
     ]
 
-    console.log(props.explanation[entity][action])
-    const additionalFields = props.explanation[entity][action].fields || []
-    
+    const explanationAction = props.explanation[entity][action]
+    const additionalFields = explanationAction ? explanationAction.fields || []: []
+
     return (
       <div>
         <FormData

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\Api\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Import\File as HistoryFile;
@@ -75,12 +76,18 @@ class ApiManager
         $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_ERROR);
 
         $content = $this->fileUt->getContents($publicFile);
+        $options = [];
+
+        if ($workspace) {
+            $options[] = Options::WORKSPACE_IMPORT;
+        }
 
         $data = $this->transfer->execute(
           $content,
           $action,
           $publicFile->getMimeType(),
           $log,
+          $options,
           $workspace
       );
 

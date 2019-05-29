@@ -44,7 +44,7 @@ abstract class AbstractCreateOrUpdateAction extends AbstractAction
         return $this->transfer->getExecutor($action)->execute($data, $successData);
     }
 
-    public function getSchema()
+    public function getSchema(array $options = [], $extra = null)
     {
         return ['$root' => $this->getClass()];
     }
