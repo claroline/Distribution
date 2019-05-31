@@ -185,7 +185,7 @@ class TransferProvider
 
         //look for duplicatas here
         //JsonSchema defined above
-        if (array_key_exists('$root', $schema) && $jsonSchema && isset($jsonSchema->claroline)) {
+        if (array_key_exists('$root', $schema) && $jsonSchema && isset($jsonSchema->claroline) && isset($jsonSchema->claroline->ids)) {
             $ids = $jsonSchema->claroline->ids;
 
             //make 3 array with the list of ids
