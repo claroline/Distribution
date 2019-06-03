@@ -4,7 +4,6 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {Liquid} from '#/main/app/animation/components/liquid'
 
-import {constants} from '#/main/core/layout/gauge/constants'
 import {Gauge as GaugeTypes} from '#/main/core/layout/gauge/prop-types'
 import {
   GaugeContainer,

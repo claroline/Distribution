@@ -1,6 +1,8 @@
 import merge from 'lodash/merge'
+import set from 'lodash/set'
 
 import {trans} from '#/main/app/intl/translation'
+import {notBlank} from '#/main/core/validation'
 
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {OrderingItem as OrderingItemType} from '#/plugin/exo/items/ordering/prop-types'
@@ -58,6 +60,21 @@ export default {
    */
   validate: (item) => {
     const errors = {}
+
+    if (item.items.find(oItem => notBlank(oItem.data, {isHtml: true}))) {
+      errors.items = trans('ordering_item_empty_data_error', {}, 'quiz')
+    }
+
+    if (item.score.type === 'fixed') {
+      if (item.score.failure >= item.score.success) {
+        set(errors, 'score.failure', trans('fixed_failure_above_success_error', {}, 'quiz'))
+        set(errors, 'score.success', trans('fixed_success_under_failure_error', {}, 'quiz'))
+      }
+    } else {
+      if (!item.solutions.find(oItem => oItem.score > 0)) {
+        errors.items = trans('ordering_no_correct_answer_error', {}, 'quiz')
+      }
+    }
 
     return errors
   },

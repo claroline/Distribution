@@ -1,6 +1,7 @@
 import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
+import {notBlank, number, gteZero, chain} from '#/main/core/validation'
 
 import {CorrectedAnswer} from '#/plugin/exo/items/utils'
 import {OpenItem} from '#/plugin/exo/items/open/prop-types'
@@ -55,6 +56,8 @@ export default {
    */
   validate: (item) => {
     const errors = {}
+
+    errors.maxLength = chain(item.maxLength, {}, [notBlank, number, gteZero])
 
     return errors
   },

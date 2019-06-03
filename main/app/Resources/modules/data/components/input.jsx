@@ -1,7 +1,6 @@
 import {createElement, Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
 import {makeCancelable} from '#/main/app/api'
@@ -177,7 +176,8 @@ DataInput.propTypes = {
 
   // customization
   // It will replace the render of the input.
-  children: T.node
+  children: T.node,
+  render: T.func
 }
 
 DataInput.defaultProps = {

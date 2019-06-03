@@ -1,15 +1,11 @@
 import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
-import {notBlank, notEmpty, number, gteZero, gtZero, chain, setIfError} from '#/main/core/validation'
+import {notBlank, notEmpty, number, gteZero, gtZero, chain} from '#/main/core/validation'
 import {trans, tval} from '#/main/app/intl/translation'
 
 import {validate as validateItem} from '#/plugin/exo/items/validation'
 import {constants} from '#/plugin/exo/resources/quiz/constants'
-import {
-  QUIZ_PICKING_DEFAULT,
-  QUIZ_PICKING_TAGS
-} from '#/plugin/exo/quiz/enums'
 
 /**
  * Validates a quiz step.

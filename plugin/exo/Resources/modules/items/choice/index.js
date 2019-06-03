@@ -1,6 +1,8 @@
 import merge from 'lodash/merge'
+import set from 'lodash/set'
 
 import {trans} from '#/main/app/intl/translation'
+import {notBlank} from '#/main/core/validation'
 
 import {emptyAnswer, CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {ChoiceItem} from '#/plugin/exo/items/choice/prop-types'
@@ -89,32 +91,32 @@ export default {
   validate: (item) => {
     const errors = {}
 
-    /*if (item.choices.find(choice => notBlank(choice.data, {isHtml: true}))) {
-      errors.choices = tex('choice_empty_data_error')
+    if (item.choices.find(choice => notBlank(choice.data, {isHtml: true}))) {
+      errors.choices = trans('choice_empty_data_error', {}, 'quiz')
     }
 
-    if (item.score.type === SCORE_FIXED) {
+    if (item.score.type === 'fixed') {
       if (item.score.failure >= item.score.success) {
-        set(errors, 'score.failure', tex('fixed_failure_above_success_error'))
-        set(errors, 'score.success', tex('fixed_success_under_failure_error'))
+        set(errors, 'score.failure', trans('fixed_failure_above_success_error', {}, 'quiz'))
+        set(errors, 'score.success', trans('fixed_success_under_failure_error', {}, 'quiz'))
       }
 
-      if (!item.choices.find(choice => choice._score > 0)) {
-        errors.choices = tex(
+      if (!item.solutions.find(solution => solution.score > 0)) {
+        errors.choices = trans(
           item.multiple ?
             'fixed_score_choice_at_least_one_correct_answer_error' :
             'fixed_score_choice_no_correct_answer_error'
-        )
+          , {}, 'quiz')
       }
     } else {
-      if (!item.choices.find(choice => choice._score > 0)) {
-        errors.choices = tex(
+      if (!item.solutions.find(solution => solution.score > 0)) {
+        errors.choices = trans(
           item.multiple ?
             'sum_score_choice_at_least_one_correct_answer_error' :
             'sum_score_choice_no_correct_answer_error'
-        )
+          , {}, 'quiz')
       }
-    }*/
+    }
 
     return errors
   },

@@ -4,10 +4,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
 import set from 'lodash/set'
 
-import {createFieldsetDefinition} from '#/main/app/content/form/utils'
-import {FormGroup} from '#/main/app/content/form/components/group'
-
 import {DataInput} from '#/main/app/data/components/input'
+import {createFieldsetDefinition} from '#/main/app/content/form/utils'
 
 // todo : restore readOnly
 // todo : add auto focus

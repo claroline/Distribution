@@ -1,7 +1,10 @@
+import isEmpty from 'lodash/isEmpty'
+
 import {trans} from '#/main/app/intl/translation'
 
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {WordsItem as WordsItemTypes} from '#/plugin/exo/items/words/prop-types'
+import {keywords as keywordsUtils} from '#/plugin/exo/utils/keywords'
 import {utils} from '#/plugin/exo/items/words/utils'
 
 // components
@@ -54,6 +57,12 @@ export default {
    */
   validate: (item) => {
     const errors = {}
+
+    // Checks keyword collection
+    const keywordsErrors = keywordsUtils.validate(item.solutions, true, 1)
+    if (!isEmpty(keywordsErrors)) {
+      errors.keywords = keywordsErrors
+    }
 
     return errors
   },

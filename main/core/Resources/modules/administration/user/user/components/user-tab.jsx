@@ -45,6 +45,7 @@ const UserTabComponent = props =>
 
 UserTabComponent.propTypes = {
   openForm: T.func.isRequired,
+  closeForm: T.func.isRequired,
   compare: T.func.isRequired
 }
 
