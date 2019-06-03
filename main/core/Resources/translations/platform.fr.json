@@ -1756,5 +1756,7 @@
     "update_anyway": "Modifier quand même",
     "choices": "Choix",
     "medias": "Médias",
-    "archive": "Archive"
+    "archive": "Archive",
+    "form_not_validating_desc": "Travail en cours : certaines données sont manquantes ou nécessitent une correction.",
+    "form_validating_desc": "Des erreurs ou des informations manquantes empêchent la sauvegarde des données."
 }

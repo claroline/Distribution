@@ -1,41 +1,24 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import omit from 'lodash/omit'
 
 import {scrollTo} from '#/main/app/dom/scroll'
 import {trans} from '#/main/app/intl/translation'
-import {TooltipOverlay} from '#/main/app/overlay/tooltip/components/overlay'
+import {FormStatus} from '#/main/app/content/form/components/status'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {LinkButton} from '#/main/app/buttons/link/components/button'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
-const ValidationStatus = props =>
-  <TooltipOverlay
-    id={props.id}
-    tip={trans(props.validating ? 'editor_validating_desc' : 'editor_not_validating_desc', {}, 'quiz')}
-    position="right"
-  >
-    <span className={classes('validation-status fa fa-fw', {
-      'fa-warning text-danger': props.validating,
-      'fa-clock-o text-warning': !props.validating
-    })} />
-  </TooltipOverlay>
-
-ValidationStatus.propTypes = {
-  id: T.string.isRequired,
-  validating: T.bool.isRequired
-}
-
 const StepLink = props =>
   <li className="quiz-navlink">
     {props.errors &&
-      <ValidationStatus
+      <FormStatus
         id={props.id}
         validating={props.validating}
+        position="right"
       />
     }
 
@@ -89,9 +72,10 @@ class EditorSummary extends Component {
         <li className="quiz-navlink">
           <LinkButton target="/edit/parameters">
             {!isEmpty(omit(this.props.errors, 'steps')) &&
-              <ValidationStatus
+              <FormStatus
                 id="quiz-parameters-errors"
                 validating={this.props.validating}
+                position="right"
               />
             }
 
