@@ -150,6 +150,19 @@ export default {
     return Object.assign(item, GridItemTypes.defaultProps)
   },
 
+  /**
+   * Validate a grid item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    return errors
+  },
+
   correctAnswer: (item, answer = {data: []}) => {
     if (item.score.type === 'fixed') {
       return getCorrectAnswerForFixMode(item, answer)

@@ -170,6 +170,9 @@ const EditorParameters = props => {
                 onChange: (pickingType) => {
                   if (constants.QUIZ_PICKING_TAGS === pickingType) {
                     props.update('picking.randomPick', constants.SHUFFLE_ALWAYS)
+                    props.update('picking.pick', [])
+                  } else {
+                    props.update('picking.pick', 0)
                   }
                 },
                 linked: [

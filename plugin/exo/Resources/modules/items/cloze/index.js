@@ -48,6 +48,19 @@ export default {
   },
 
   /**
+   * Validate a cloze item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    return errors
+  },
+
+  /**
    * Correct an answer submitted to a cloze item.
    *
    * @param {object} item

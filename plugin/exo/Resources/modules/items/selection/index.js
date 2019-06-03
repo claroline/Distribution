@@ -100,6 +100,19 @@ export default {
    */
   create: (baseItem) => merge({}, baseItem, SelectionItemType.defaultProps),
 
+  /**
+   * Validate a selection item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    return errors
+  },
+
   correctAnswer: (item, answer) => {
     const corrected = new CorrectedAnswer()
 

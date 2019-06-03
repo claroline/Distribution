@@ -52,6 +52,19 @@ export default {
   }),
 
   /**
+   * Validate a set item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    return errors
+  },
+
+  /**
    * Correct an answer submitted to a set item.
    *
    * @param {object} item

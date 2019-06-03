@@ -47,6 +47,19 @@ export default {
   create: (baseItem) => merge({}, baseItem, OpenItem.defaultProps),
 
   /**
+   * Validate a open item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    return errors
+  },
+
+  /**
    * Correct an answer submitted to a open item.
    *
    * @return {CorrectedAnswer}

@@ -189,6 +189,8 @@ const EditorStep = props => {
                     if (!props.hasExpectedAnswers || 'none' === props.score.type) {
                       item.score = props.score
                     }
+
+                    return item
                   })
 
                   props.update('items', uniqBy([].concat(props.items, items), (item) => item.id))

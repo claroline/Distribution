@@ -50,6 +50,19 @@ export default {
   create: (baseItem) => merge({}, OrderingItemType.defaultProps, baseItem),
 
   /**
+   * Validate a ordering item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    return errors
+  },
+
+  /**
    * Correct an answer submitted to a ordering item.
    *
    * @param {object} item

@@ -60,25 +60,17 @@ class DataInput extends Component {
 
     this.pending = makeCancelable(
       Promise.all([
-        this.props.type ? getType(this.props.type) : Promise.resolve({}),
-        validateProp(this.props, this.props.value)
+        this.props.type ? getType(this.props.type) : Promise.resolve({})
       ])
     )
 
     this.pending.promise
       .then(
-        (result = []) => {
-          if (this.props.onError && !isEmpty(result[1])) {
-            // forward error to the caller
-            this.props.onError(result[1])
-          }
-
-          this.setState({
-            loaded: true,
-            group: get(result[0], 'components.group'),
-            input: get(result[0], 'components.input')
-          })
-        }
+        (result = []) => this.setState({
+          loaded: true,
+          group: get(result[0], 'components.group'),
+          input: get(result[0], 'components.input')
+        })
       )
       .then(
         () => this.pending = null,
@@ -129,6 +121,7 @@ class DataInput extends Component {
           placeholder: this.props.placeholder,
           disabled: this.props.disabled,
           size: this.props.size,
+          validating: this.props.validating,
           onChange: this.onChange
         })
       )
@@ -173,6 +166,7 @@ DataInput.propTypes = {
   error: T.oneOfType([
     T.string,
     T.arrayOf(T.string),
+    T.arrayOf(T.arrayOf(T.string)),
     T.object
   ]),
 

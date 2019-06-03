@@ -46,6 +46,19 @@ export default {
   create: (baseItem) => Object.assign(baseItem, WordsItemTypes.defaultProps),
 
   /**
+   * Validate a words item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    return errors
+  },
+
+  /**
    * Correct an answer submitted to a words item.
    *
    * @param {object} item

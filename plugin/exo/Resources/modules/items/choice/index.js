@@ -80,6 +80,46 @@ export default {
   },
 
   /**
+   * Validate a choice item.
+   *
+   * @param {object} item
+   *
+   * @return {object} the list of item errors
+   */
+  validate: (item) => {
+    const errors = {}
+
+    /*if (item.choices.find(choice => notBlank(choice.data, {isHtml: true}))) {
+      errors.choices = tex('choice_empty_data_error')
+    }
+
+    if (item.score.type === SCORE_FIXED) {
+      if (item.score.failure >= item.score.success) {
+        set(errors, 'score.failure', tex('fixed_failure_above_success_error'))
+        set(errors, 'score.success', tex('fixed_success_under_failure_error'))
+      }
+
+      if (!item.choices.find(choice => choice._score > 0)) {
+        errors.choices = tex(
+          item.multiple ?
+            'fixed_score_choice_at_least_one_correct_answer_error' :
+            'fixed_score_choice_no_correct_answer_error'
+        )
+      }
+    } else {
+      if (!item.choices.find(choice => choice._score > 0)) {
+        errors.choices = tex(
+          item.multiple ?
+            'sum_score_choice_at_least_one_correct_answer_error' :
+            'sum_score_choice_no_correct_answer_error'
+        )
+      }
+    }*/
+
+    return errors
+  },
+
+  /**
    * Correct an answer submitted to a choice item.
    *
    * @param {object} item
