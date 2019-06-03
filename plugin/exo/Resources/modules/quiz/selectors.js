@@ -1,8 +1,6 @@
 import {createSelector} from 'reselect'
 
 import {currentUser} from '#/main/app/security'
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {hasPermission} from '#/main/app/security'
 
 // TODO : there is possible code refactoring with editor/selectors.js
 
@@ -25,11 +23,6 @@ const papers = createSelector(
   (resource) => resource.papers
 )
 
-const viewMode = createSelector(
-  resource,
-  (resource) => resource.viewMode
-)
-
 const quiz = createSelector(
   resource,
   (resource) => resource.quiz
@@ -43,11 +36,6 @@ const statistics = createSelector(
 const id = createSelector(
   quiz,
   (quiz) => quiz.id
-)
-
-const testMode = createSelector(
-  quiz,
-  (quiz) => quiz.testMode || false
 )
 
 const quizSteps = createSelector(
@@ -80,15 +68,6 @@ const meta = createSelector(
   (quiz) => quiz.meta || {}
 )
 
-const noItems = createSelector(
-  [steps, items],
-  (steps, items) => Object.keys(steps).length === 1 && Object.keys(items).length === 0
-)
-const firstStepId = createSelector(
-  quizSteps,
-  (quizSteps) => quizSteps[0]
-)
-
 const hasOverview = createSelector(
   parameters,
   (parameters) => parameters.showOverview || false
@@ -110,16 +89,6 @@ const quizNumbering = createSelector(
   (parameters) => parameters.numbering
 )
 
-const papersAdmin = createSelector(
-  [resourceSelect.resourceNode],
-  (resourceNode) => hasPermission('manage_papers', resourceNode)
-)
-
-const docimologyAdmin = createSelector(
-  [resourceSelect.resourceNode],
-  (resourceNode) => hasPermission('view_docimology', resourceNode)
-)
-
 // TODO : remove default export and use named one
 export default {
   STORE_NAME,
@@ -131,18 +100,12 @@ export default {
   empty,
   papers,
   statistics,
-  papersAdmin,
-  docimologyAdmin,
   registered,
   description,
   meta,
   parameters,
   title,
-  viewMode,
-  noItems,
-  firstStepId,
   hasOverview,
-  testMode,
   quizNumbering,
   papersShowExpectedAnswers,
   papersShowStatistics,
@@ -159,18 +122,12 @@ export const select = {
   empty,
   papers,
   statistics,
-  papersAdmin,
-  docimologyAdmin,
   registered,
   description,
   meta,
   parameters,
   title,
-  viewMode,
-  noItems,
-  firstStepId,
   hasOverview,
-  testMode,
   quizNumbering,
   papersShowExpectedAnswers,
   papersShowStatistics,
@@ -187,18 +144,12 @@ export const selectors = {
   empty,
   papers,
   statistics,
-  papersAdmin,
-  docimologyAdmin,
   registered,
   description,
   meta,
   parameters,
   title,
-  viewMode,
-  noItems,
-  firstStepId,
   hasOverview,
-  testMode,
   quizNumbering,
   papersShowExpectedAnswers,
   papersShowStatistics,

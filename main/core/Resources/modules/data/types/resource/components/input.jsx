@@ -30,7 +30,7 @@ const ResourceInput = props => {
               current: props.picker.current,
               root: props.picker.root,
               selectAction: (selected) => ({
-                type: 'callback',
+                type: CALLBACK_BUTTON,
                 label: trans('select', {}, 'actions'),
                 callback: () => props.onChange(selected[0])
               })
@@ -42,8 +42,6 @@ const ResourceInput = props => {
             label: trans('delete', {}, 'actions'),
             dangerous: true,
             modal: [MODAL_CONFIRM, {
-              dangerous: true,
-              icon: 'fa fa-fw fa-trash-o',
               title: transChoice('resources_delete_confirm', 1),
               question: transChoice('resources_delete_message', 1, {count: 1}),
               handleConfirm: () => props.onChange(null)
@@ -92,6 +90,7 @@ const ResourceInput = props => {
             title: props.picker.title,
             current: props.picker.current,
             root: props.picker.root,
+            filters: props.picker.filters,
             selectAction: (selected) => ({
               type: CALLBACK_BUTTON,
               label: trans('select', {}, 'actions'),
@@ -119,7 +118,8 @@ implementPropTypes(ResourceInput, FormFieldTypes, {
   picker: T.shape({
     title: T.string,
     current: T.shape(ResourceNodeTypes.propTypes),
-    root: T.shape(ResourceNodeTypes.propTypes)
+    root: T.shape(ResourceNodeTypes.propTypes),
+    filters: T.object
   }),
   onEmbeddedResourceClose: T.func
 }, {
@@ -127,6 +127,7 @@ implementPropTypes(ResourceInput, FormFieldTypes, {
   picker: {
     title: trans('resource_picker'),
     current: null,
+    filters: {},
     root: null
   }
 })
