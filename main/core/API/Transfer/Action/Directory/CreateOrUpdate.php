@@ -105,7 +105,7 @@ class CreateOrUpdate extends AbstractAction
         $resourceNode = $this->om->getRepository(ResourceNode::class)->findOneBy(['name' => $dataResourceNode['name'], 'parent' => $parent]);
 
         if ($resourceNode) {
-            $object = $this->serializer->deserialize($dataResourceNode, $resourceNode, []);
+            $resourceNode = $this->serializer->deserialize($dataResourceNode, $resourceNode, []);
         } else {
             $resourceNode = $this->crud->create(ResourceNode::class, $dataResourceNode, $options);
             $resource = $this->crud->create(Directory::class, [], $options);
