@@ -2,9 +2,6 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/app/intl/translation'
-import {PageFull} from '#/main/app/page/components/full'
-
 import {actions, selectors} from '#/main/core/tools/dashboard/store'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'

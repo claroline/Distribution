@@ -13,7 +13,6 @@ import {UserLogs} from '#/main/core/tools/dashboard/components/logs-user'
 import {LogDetails} from '#/main/core/layout/logs'
 import {Progression} from '#/main/core/tools/dashboard/components/progression'
 
-
 const DashboardTool = (props) =>
   <ToolPage>
     <div className="row">
