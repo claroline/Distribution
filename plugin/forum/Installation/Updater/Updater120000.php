@@ -78,7 +78,7 @@ class Updater120000 extends Updater
         $this->log('Insert tags...');
 
         $sql = '
-            INSERT INTO claro_tagbundle_tag (tag_name)
+            INSERT IGNORE INTO claro_tagbundle_tag (tag_name)
             SELECT DISTINCT category.name
             FROM claro_forum_category category
             JOIN claro_forum forum on category.forum_id = forum.id
