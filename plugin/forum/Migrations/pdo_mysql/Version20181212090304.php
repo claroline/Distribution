@@ -22,4 +22,8 @@ class Version20181212090304 extends AbstractMigration
             WHERE t.object_id = "0" AND object_class = "Claroline\\ForumBundle\\Entity\\Subject"
         ');
     }
+
+    public function down(Schema $schema)
+    {
+    }
 }
