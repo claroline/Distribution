@@ -30,8 +30,16 @@ class Updater110000 extends Updater
     public function postUpdate()
     {
         //old compatibility for pictures
-        $this->lnPictureDirectory();
-        $this->lnPackageDirectory();
+        try {
+            $this->lnPictureDirectory();
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to link picture directory (see updater 110000.php)');
+        }
+        try {
+            $this->lnPackageDirectory();
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to link package directory (see updater 110000.php)');
+        }
     }
 
     public function lnPictureDirectory()
