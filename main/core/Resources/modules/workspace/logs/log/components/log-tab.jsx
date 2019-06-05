@@ -122,7 +122,7 @@ LogTabComponent.propTypes = {
 
 const LogTab = connect(
   state => ({
-    workspaceId: state.workspaceId
+    workspaceId: state.workspace.id
   }),
   dispatch => ({
     openLog(id, workspaceId) {
