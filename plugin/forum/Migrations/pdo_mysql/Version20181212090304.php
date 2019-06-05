@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\TagBundle\Migrations\pdo_mysql;
+namespace Claroline\ForumBundle\Migrations\pdo_mysql;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
