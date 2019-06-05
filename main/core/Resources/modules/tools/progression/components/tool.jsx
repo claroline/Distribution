@@ -8,12 +8,10 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 import {List} from '#/main/core/tools/progression/components/list'
 
 const ProgressionToolComponent = (props) =>
-  <ToolPage>
-    <List
-      items={props.items}
-      levelMax={props.levelMax}
-    />
-  </ToolPage>
+  <List
+    items={props.items}
+    levelMax={props.levelMax}
+  />
 
 ProgressionToolComponent.propTypes = {
   items: T.arrayOf(T.shape(ProgressionItemType.propTypes)),

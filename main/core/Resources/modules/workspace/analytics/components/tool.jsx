@@ -1,64 +1,101 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
-import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
-import {PageFull} from '#/main/app/page/components/full'
+import {Routes} from '#/main/app/router'
+import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
-import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
-import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
+import {ToolPage} from '#/main/core/tool/containers/page'
+import {AnalyticsTool} from '#/main/core/workspace/analytics/components/analytics-tool'
+import {LogTool} from '#/main/core/workspace/logs/components/tool'
+import {ProgressionTool} from '#/main/core/tools/progression/components/tool'
+import {Connections} from '#/main/core/workspace/logs/connection/components/connections'
+import {Logs} from '#/main/core/workspace/logs/log/components/log-list'
+import {UserLogs} from '#/main/core/workspace/logs/log/components/user-list'
+import {LogDetails} from '#/main/core/layout/logs'
+import {actions as logActions} from  '#/main/core/layout/logs/actions'
 
-import {actions} from '#/main/core/workspace/analytics/actions'
-import {DailyActivity} from '#/main/core/workspace/analytics/components/daily-activity'
-import {Resources} from '#/main/core/workspace/analytics/components/resources'
-
-class Tool extends Component {
-  constructor(props) {
-    super(props)
-
-    if (!this.props.dashboard.loaded) {
-      this.props.getDashboard(this.props.workspace.id)
-    }
-  }
-
-  render() {
-    return (
-      <PageFull title={trans('dashboard', {}, 'tools')}>
-        <WorkspaceMetrics
-          workspace={this.props.workspace}
+const Tool = (props) =>
+  <ToolPage>
+    <div className="row">
+      <div className="col-md-3">
+        <Vertical
+          style={{
+            marginTop: '20px'
+          }}
+          tabs={[
+            {
+              icon: 'fa fa-fw fa-pie-chart',
+              title: trans('dashboard', {}, 'tools'),
+              path: '/',
+              exact: true
+            // }, {
+            //   icon: 'fa fa-fw fa-line-chart',
+            //   title: trans('logs', {}, 'tools'),
+            //   path: '/logs'
+            }, {
+              icon: 'fa fa-fw fa-clock',
+              title: trans('connection_time'),
+              path: '/connections'
+            }, {
+              icon: 'fa fa-fw fa-user',
+              title: trans('users_tracking'),
+              path: '/log'
+            }, {
+              icon: 'fa fa-fw fa-tasks',
+              title: trans('progression', {}, 'tools'),
+              path: '/progression',
+              exact: true
+            }
+          ]}
         />
+      </div>
 
-        {this.props.dashboard.loaded &&
-          <DailyActivity activity={this.props.dashboard.data.activity} />
-        }
-
-        {this.props.dashboard.loaded &&
-          <Resources resourceTypes={this.props.dashboard.data.resourceTypes} />
-        }
-      </PageFull>
-    )
-  }
-}
+      <div className="dashboard-content col-md-9">
+        <Routes
+          routes={[
+            {
+              path: '/',
+              component: AnalyticsTool,
+              exact: true
+            }, {
+              path: '/connections',
+              component: Connections
+            }, {
+              path: '/log',
+              component: Logs,
+              exact: true
+            }, {
+              path: '/log/:id',
+              component: LogDetails,
+              exact: true,
+              onEnter: (params) => props.openLog(params.id, props.workspaceId)
+            }, {
+              path: '/log/users/logs',
+              component: UserLogs,
+              exact: true
+            }, {
+              path: '/progression',
+              component: ProgressionTool
+            }
+          ]}
+        />
+      </div>
+    </div>
+  </ToolPage>
 
 Tool.propTypes = {
-  dashboard: T.shape({
-    loaded: T.bool.isRequired,
-    data: T.object
-  }).isRequired,
-  workspace: T.shape(
-    WorkspaceTypes.propTypes
-  ).isRequired,
-  getDashboard: T.func.isRequired
+  workspaceId: T.string,
+  openLog: T.func
 }
 
-const DashboardTool  = connect(
+const DashboardTool = connect(
   state => ({
-    dashboard: state.dashboard,
-    workspace: state.workspace
+    workspaceId: state.workspace.id
   }),
   dispatch => ({
-    getDashboard: (workspaceId) => {
-      dispatch(actions.getDashboardData('apiv2_workspace_tool_dashboard', {workspaceId}))
+    openLog(id, workspaceId) {
+      dispatch(logActions.openLog('apiv2_workspace_tool_logs_get', {id, workspaceId}))
     }
   })
 )(Tool)

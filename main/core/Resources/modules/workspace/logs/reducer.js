@@ -5,7 +5,6 @@ import {reducer as connectionsReducer} from '#/main/core/workspace/logs/connecti
 
 
 const reducer = makeLogReducer({}, {
-  workspaceId: makeReducer(null, {}),
   connections: connectionsReducer
 })
 

@@ -24,7 +24,7 @@ ConnectionsComponent.propTypes = {
 
 const Connections = connect(
   state => ({
-    workspaceId: state.workspaceId
+    workspaceId: state.workspace.id
     // workspaceUuid: workspaceSelect.workspace(state).uuid
   })
 )(ConnectionsComponent)

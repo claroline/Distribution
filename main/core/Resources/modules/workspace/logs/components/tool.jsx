@@ -7,7 +7,6 @@ import {ConnectionTab, ConnectionTabActions} from '#/main/core/workspace/logs/co
 
 const LogTool = () =>
   <TabbedPageContainer
-    title={trans('logs', {}, 'tools')}
     redirect={[
       {from: '/', exact: true, to: '/connections'}
     ]}

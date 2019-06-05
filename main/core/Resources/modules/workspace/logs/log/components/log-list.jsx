@@ -27,7 +27,7 @@ List.propTypes = {
 
 const ListContainer = connect(
   state => ({
-    workspaceId: state.workspaceId,
+    workspaceId: state.workspace.id,
     chart: state.chart,
     actions: state.actions,
     queryString: listSelect.queryString(listSelect.list(state, 'logs'))

@@ -12,5 +12,14 @@ bootstrap(
   DashboardTool,
   
   // app store configuration
-  reducer
+  reducer,
+
+  // initial data
+  initialData => Object.assign({}, initialData, {
+    // tool: {
+    //   icon: 'pie-chart',
+    //   name: 'analytics',
+    //   currentContext: initialData.currentContext
+    // }
+  })
 )

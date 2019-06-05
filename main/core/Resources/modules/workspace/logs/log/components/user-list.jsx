@@ -15,7 +15,7 @@ List.propTypes = {
 
 const ListContainer = connect(
   state => ({
-    workspaceId: state.workspaceId
+    workspaceId: state.workspace.id
   }),
   null
 )(List)

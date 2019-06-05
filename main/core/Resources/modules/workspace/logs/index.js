@@ -13,10 +13,5 @@ bootstrap(
   LogTool,
 
   // app store configuration
-  reducer,
-  // initial data
-  initialData => ({
-    workspaceId: initialData.workspaceId,
-    actions: initialData.actions
-  })
+  reducer
 )

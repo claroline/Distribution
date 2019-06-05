@@ -38,7 +38,7 @@ ConnectionTabActionsComponent.propTypes = {
 
 const ConnectionTabActions = connect(
   state => ({
-    workspaceId: state.workspaceId,
+    workspaceId: state.workspace.id,
     // workspaceUuid: workspaceSelect.workspace(state).uuid,
     queryString: listSelect.queryString(listSelect.list(state, 'connections.list'))
   })
