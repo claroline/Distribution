@@ -3,7 +3,6 @@
 namespace Claroline\ForumBundle\Installation\Updater;
 
 use Claroline\ForumBundle\Entity\Forum;
-use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
 use Claroline\ForumBundle\Entity\Validation\User;
 use Claroline\InstallationBundle\Updater\Updater;
