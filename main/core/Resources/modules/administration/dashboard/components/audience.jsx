@@ -63,7 +63,7 @@ FilterForm.propTypes = {
   'data': T.object.isRequired
 }
 
-class Tab extends Component {
+class AudienceComponent extends Component {
   constructor(props) {
     super(props)
     
@@ -172,7 +172,7 @@ class Tab extends Component {
   }
 }
 
-Tab.propTypes = {
+AudienceComponent.propTypes = {
   audience: T.shape({
     loaded: T.bool.isRequired,
     data: T.object
@@ -180,7 +180,7 @@ Tab.propTypes = {
   getAudienceData: T.func.isRequired
 }
 
-const TabContainer = connect(
+const Audience = connect(
   state => ({
     audience: state.audience
   }),
@@ -189,8 +189,8 @@ const TabContainer = connect(
       dispatch(actions.getAudienceData(filters))
     }
   })
-)(Tab)
+)(AudienceComponent)
 
 export {
-  TabContainer as AudienceTab
+  Audience
 }

@@ -10,7 +10,7 @@ import {actions} from '#/main/core/administration/dashboard/store'
 import {PieChart} from '#/main/core/layout/chart/pie/components/pie-chart'
 import {DashboardTable, DashboardCard} from '#/main/core/layout/dashboard'
 
-class Tab extends Component {
+class ResourcesComponent extends Component {
   constructor(props) {
     super(props)
     
@@ -97,7 +97,7 @@ class Tab extends Component {
   }
 }
 
-Tab.propTypes = {
+ResourcesComponent.propTypes = {
   resources: T.shape({
     loaded: T.bool.isRequired,
     data: T.object
@@ -105,7 +105,7 @@ Tab.propTypes = {
   getResourcesData: T.func.isRequired
 }
 
-const TabContainer = connect(
+const Resources = connect(
   state => ({
     resources: state.resources
   }),
@@ -114,8 +114,8 @@ const TabContainer = connect(
       dispatch(actions.getResourcesData())
     }
   })
-)(Tab)
+)(ResourcesComponent)
 
 export {
-  TabContainer as ResourcesTab
+  Resources
 }

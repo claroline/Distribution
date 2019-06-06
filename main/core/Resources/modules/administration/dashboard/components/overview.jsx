@@ -11,7 +11,7 @@ import {LineChart} from '#/main/core/layout/chart/line/components/line-chart'
 import {PieChart} from '#/main/core/layout/chart/pie/components/pie-chart'
 import {DashboardTable, DashboardCard} from '#/main/core/layout/dashboard'
 
-class Tab extends Component {
+class OverviewComponent extends Component {
   constructor(props) {
     super(props)
     
@@ -172,7 +172,7 @@ class Tab extends Component {
   }
 }
 
-Tab.propTypes = {
+OverviewComponent.propTypes = {
   overview: T.shape({
     loaded: T.bool.isRequired,
     data: T.object
@@ -180,7 +180,7 @@ Tab.propTypes = {
   getOverviewData: T.func.isRequired
 }
 
-const TabContainer = connect(
+const Overview = connect(
   state => ({
     overview: state.overview
   }),
@@ -189,8 +189,8 @@ const TabContainer = connect(
       dispatch(actions.getOverviewData())
     }
   })
-)(Tab)
+)(OverviewComponent)
 
 export {
-  TabContainer as OverviewTab
+  Overview
 }

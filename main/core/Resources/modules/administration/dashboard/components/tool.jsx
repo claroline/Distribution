@@ -8,14 +8,14 @@ import {Vertical} from '#/main/app/content/tabs/components/vertical'
 import {ToolPage} from '#/main/core/tool/containers/page'
 
 // app sections
-import {OverviewTab} from '#/main/core/administration/dashboard/components/overview/tab'
-import {AudienceTab} from '#/main/core/administration/dashboard/components/audience/tab'
-import {ResourcesTab} from '#/main/core/administration/dashboard/components/resources/tab'
-import {WidgetsTab} from '#/main/core/administration/dashboard/components/widgets/tab'
-import {TopActionsTab} from '#/main/core/administration/dashboard/components/top-actions/tab'
-import {Connections} from '#/main/core/administration/dashboard/components/connections/connections'
-import {Logs} from '#/main/core/administration/dashboard/components/logs/logs'
-import {UserLogs} from '#/main/core/administration/dashboard/components/logs/logs-user'
+import {Overview} from '#/main/core/administration/dashboard/components/overview'
+import {Audience} from '#/main/core/administration/dashboard/components/audience'
+import {Resources} from '#/main/core/administration/dashboard/components/resources'
+import {Widgets} from '#/main/core/administration/dashboard/components/widgets'
+import {TopActions} from '#/main/core/administration/dashboard/components/top-actions'
+import {Connections} from '#/main/core/administration/dashboard/components/connections'
+import {Logs} from '#/main/core/administration/dashboard/components/logs'
+import {UserLogs} from '#/main/core/administration/dashboard/components/logs-user'
 import {LogDetails} from '#/main/core/layout/logs'
 
 const DashboardTool = (props) =>
@@ -71,23 +71,23 @@ const DashboardTool = (props) =>
           routes={[
             {
               path: '/',
-              component: OverviewTab,
+              component: Overview,
               exact: true
             }, {
               path: '/audience',
-              component: AudienceTab,
+              component: Audience,
               exact: true
             }, {
               path: '/resources',
-              component: ResourcesTab,
+              component: Resources,
               exact: true
             }, {
               path: '/widgets',
-              component: WidgetsTab,
+              component: Widgets,
               exact: true
             }, {
               path: '/top',
-              component: TopActionsTab,
+              component: TopActions,
               exact: true
             }, {
               path: '/connections',

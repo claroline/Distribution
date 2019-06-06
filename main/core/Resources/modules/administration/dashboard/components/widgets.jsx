@@ -10,7 +10,7 @@ import {actions} from '#/main/core/administration/dashboard/store'
 import {PieChart} from '#/main/core/layout/chart/pie/components/pie-chart'
 import {DashboardTable, DashboardCard} from '#/main/core/layout/dashboard'
 
-class Tab extends Component {
+class WidgetsComponent extends Component {
   constructor(props) {
     super(props)
     
@@ -108,7 +108,7 @@ class Tab extends Component {
   }
 }
 
-Tab.propTypes = {
+WidgetsComponent.propTypes = {
   widgets: T.shape({
     loaded: T.bool.isRequired,
     data: T.object
@@ -116,7 +116,7 @@ Tab.propTypes = {
   getWidgetsData: T.func.isRequired
 }
 
-const TabContainer = connect(
+const Widgets = connect(
   state => ({
     widgets: state.widgets
   }),
@@ -125,8 +125,8 @@ const TabContainer = connect(
       dispatch(actions.getWidgetsData())
     }
   })
-)(Tab)
+)(WidgetsComponent)
 
 export {
-  TabContainer as WidgetsTab
+  Widgets
 }

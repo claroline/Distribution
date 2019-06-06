@@ -19,7 +19,7 @@ const topTypes = {
   top_users_connections: trans('top_users_connections')
 }
 
-class Tab extends Component {
+class TopActionsComponent extends Component {
   getDefinition() {
     const defaultDefinition = [
       {
@@ -237,19 +237,19 @@ class Tab extends Component {
   }
 }
 
-Tab.propTypes = {
+TopActionsComponent.propTypes = {
   type: T.string.isRequired
 }
 
-const TabContainer = connect(
+const TopActions = connect(
   state => ({
     type: select
       .filters(select.list(state, 'topActions'))
       .filter(it => it.property === 'type')
       .reduce((t, i) => i.value || t, '')
   })
-)(Tab)
+)(TopActionsComponent)
 
 export {
-  TabContainer as TopActionsTab
+  TopActions
 }
