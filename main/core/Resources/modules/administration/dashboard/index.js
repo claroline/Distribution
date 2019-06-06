@@ -1,8 +1,8 @@
-import {DashboardTool} from '#/main/core/tools/dashboard/containers/tool'
-import {reducer} from '#/main/core/tools/dashboard/store/reducer'
+import {DashboardTool} from '#/main/core/administration/dashboard/containers/tool'
+import {reducer} from '#/main/core/administration/dashboard/store/reducer'
 
 /**
- * Dashboard tool application.
+ * Dashboard admin tool application.
  *
  * @constructor
  */
@@ -11,9 +11,8 @@ export const App = () => ({
   store: reducer,
   initialData: (initialData) => Object.assign({}, initialData, {
     tool: {
-      name: 'dashboard',
+      name: 'platform_dashboard',
       currentContext: initialData.currentContext
     }
   })
 })
-

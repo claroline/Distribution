@@ -164,14 +164,6 @@ plugin:
         - name: desktop_and_home
           class: home
 
-        # todo move as desktop tool
-        - name: platform_logs
-          class: line-chart
-
-        # todo move as desktop tool
-        - name: platform_analytics
-          class: pie-chart
-
         - name: tasks_scheduling
           class: clock-o
 
@@ -183,6 +175,9 @@ plugin:
 
         - name: integration
           class: plug
+
+        - name: platform_dashboard
+          class: tachometer
 
     widgets:
         - name: simple
