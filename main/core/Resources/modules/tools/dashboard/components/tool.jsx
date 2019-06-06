@@ -1,8 +1,10 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {url} from '#/main/app/api'
 import {trans} from '#/main/app/intl/translation'
-import {Routes} from '#/main/app/router'
+import {DOWNLOAD_BUTTON} from '#/main/app/buttons'
+import {matchPath, Routes} from '#/main/app/router'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
 import {ToolPage} from '#/main/core/tool/containers/page'
@@ -14,7 +16,38 @@ import {LogDetails} from '#/main/core/layout/logs'
 import {Progression} from '#/main/core/tools/dashboard/components/progression'
 
 const DashboardTool = (props) =>
-  <ToolPage>
+  <ToolPage
+    actions={[
+      {
+        name: 'download',
+        type: DOWNLOAD_BUTTON,
+        file: {
+          url: url(['apiv2_log_connect_workspace_list_csv', {'workspace': props.workspaceId}]) + props.connectionsQuery
+        },
+        label: trans('download_csv_list', {}, 'log'),
+        icon: 'fa fa-download',
+        displayed: matchPath(props.location.pathname, {path: '/connections', exact: true})
+      }, {
+        name: 'download',
+        type: DOWNLOAD_BUTTON,
+        file: {
+          url: url(['apiv2_workspace_tool_logs_list_csv', {'workspaceId': props.workspaceId}]) + props.logsQuery
+        },
+        label: trans('download_csv_list', {}, 'log'),
+        icon: 'fa fa-download',
+        displayed: matchPath(props.location.pathname, {path: '/log', exact: true})
+      }, {
+        name: 'download',
+        type: DOWNLOAD_BUTTON,
+        file: {
+          url: url(['apiv2_workspace_tool_logs_list_users_csv', {'workspaceId': props.workspaceId}]) + props.usersQuery
+        },
+        label: trans('download_csv_list', {}, 'log'),
+        icon: 'fa fa-download',
+        displayed: matchPath(props.location.pathname, {path: '/logs/users', exact: true})
+      }
+    ]}
+  >
     <div className="row">
       <div className="col-md-3">
         <Vertical
@@ -84,7 +117,11 @@ const DashboardTool = (props) =>
   </ToolPage>
 
 DashboardTool.propTypes = {
+  location: T.object.isRequired,
   workspaceId: T.number.isRequired,
+  connectionsQuery: T.string,
+  logsQuery: T.string,
+  usersQuery: T.string,
   openLog: T.func.isRequired
 }
 

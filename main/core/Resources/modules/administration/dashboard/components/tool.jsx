@@ -1,13 +1,13 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {url} from '#/main/app/api'
 import {trans} from '#/main/app/intl/translation'
-import {Routes} from '#/main/app/router'
+import {DOWNLOAD_BUTTON} from '#/main/app/buttons'
+import {matchPath, Routes} from '#/main/app/router'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
 import {ToolPage} from '#/main/core/tool/containers/page'
-
-// app sections
 import {Overview} from '#/main/core/administration/dashboard/components/overview'
 import {Audience} from '#/main/core/administration/dashboard/components/audience'
 import {Resources} from '#/main/core/administration/dashboard/components/resources'
@@ -19,7 +19,38 @@ import {UserLogs} from '#/main/core/administration/dashboard/components/logs-use
 import {LogDetails} from '#/main/core/layout/logs'
 
 const DashboardTool = (props) =>
-  <ToolPage>
+  <ToolPage
+    actions={[
+      {
+        name: 'download',
+        type: DOWNLOAD_BUTTON,
+        file: {
+          url: url(['apiv2_log_connect_platform_list_csv']) + props.connectionsQuery
+        },
+        label: trans('download_csv_list', {}, 'log'),
+        icon: 'fa fa-download',
+        displayed: matchPath(props.location.pathname, {path: '/connections', exact: true})
+      }, {
+        name: 'download',
+        type: DOWNLOAD_BUTTON,
+        file: {
+          url: url(['apiv2_admin_tool_logs_list_csv']) + props.logsQuery
+        },
+        label: trans('download_csv_list', {}, 'log'),
+        icon: 'fa fa-download',
+        displayed: matchPath(props.location.pathname, {path: '/log', exact: true})
+      }, {
+        name: 'download',
+        type: DOWNLOAD_BUTTON,
+        file: {
+          url: url(['apiv2_admin_tool_logs_list_users_csv']) + props.usersQuery
+        },
+        label: trans('download_csv_list', {}, 'log'),
+        icon: 'fa fa-download',
+        displayed: matchPath(props.location.pathname, {path: '/logs/users', exact: true})
+      }
+    ]}
+  >
     <div className="row">
       <div className="col-md-3">
         <Vertical
@@ -113,6 +144,10 @@ const DashboardTool = (props) =>
   </ToolPage>
 
 DashboardTool.propTypes = {
+  location: T.object.isRequired,
+  connectionsQuery: T.string,
+  logsQuery: T.string,
+  usersQuery: T.string,
   openLog: T.func.isRequired
 }
 
