@@ -10,7 +10,8 @@ const LayoutMain = withRouter(
     (state) => ({
       maintenance: selectors.maintenance(state),
       impersonated: selectors.impersonated(state),
-      menuOpened: selectors.menuOpened(state)
+      menuOpened: selectors.menuOpened(state),
+      sidebar: selectors.sidebar(state)
     }),
     (dispatch) => ({
       /**
@@ -21,10 +22,10 @@ const LayoutMain = withRouter(
       },
 
       openSidebar(toolName) {
-
+        dispatch(actions.openSidebar(toolName))
       },
       closeSidebar() {
-
+        dispatch(actions.closeSidebar())
       }
     })
   )(LayoutMainComponent)

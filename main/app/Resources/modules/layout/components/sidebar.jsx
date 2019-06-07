@@ -1,4 +1,5 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {Toolbar} from '#/main/app/action/components/toolbar'
@@ -30,12 +31,16 @@ const LayoutSidebar = props =>
             type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-times',
             label: trans('close', 'actions'),
-            callback: () => true
+            callback: props.close
           }
         ]}
       />
     </header>
   </aside>
+
+LayoutSidebar.propTypes = {
+  close: T.func.isRequired
+}
 
 export {
   LayoutSidebar

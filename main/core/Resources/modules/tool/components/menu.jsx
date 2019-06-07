@@ -1,20 +1,26 @@
 import React, {createElement} from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 
 import {trans} from '#/main/app/intl/translation'
 import {Await} from '#/main/app/components/await'
+import {CallbackButton} from '#/main/app/buttons/callback'
 
 import {getTool} from '#/main/core/tools'
 
 const ToolMenu = props => {
   if (props.name) {
     return (
-      <nav className="current-tool">
+      <nav className={classes('current-tool', {
+        opened: props.opened
+      })}>
         <h2 className="h4">
-          {trans(props.name, {}, 'tools')}
+          <CallbackButton callback={props.open}>
+            {trans(props.name, {}, 'tools')}
+          </CallbackButton>
         </h2>
 
-        {props.loaded &&
+        {(props.loaded && props.opened) &&
           <Await
             for={getTool(props.name)}
             then={(module) => {
@@ -24,7 +30,7 @@ const ToolMenu = props => {
                 })
               }
 
-              return 'no menu'
+              return null
             }}
           />
         }
@@ -38,7 +44,9 @@ const ToolMenu = props => {
 ToolMenu.propTypes = {
   basePath: T.string.isRequired,
   name: T.string,
-  loaded: T.bool.isRequired
+  loaded: T.bool.isRequired,
+  opened: T.bool.isRequired,
+  open: T.func.isRequired
 }
 
 export {

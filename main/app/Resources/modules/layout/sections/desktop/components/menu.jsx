@@ -8,7 +8,7 @@ import {trans} from '#/main/app/intl/translation'
 import {number} from '#/main/app/intl'
 import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {LiquidGauge} from '#/main/core/layout/gauge/components/liquid-gauge'
-import {LayoutMenu} from '#/main/app/layout/components/menu'
+import {LayoutMenu} from '#/main/app/layout/containers/menu'
 import {actions as walkthroughActions} from '#/main/app/overlays/walkthrough/store'
 
 import {MODAL_WORKSPACE_IMPERSONATION} from '#/main/core/workspace/modals/impersonation'

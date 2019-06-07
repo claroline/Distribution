@@ -13,9 +13,6 @@ const ToolMain = withRouter(
         loaded: selectors.loaded(state)
       }),
       (dispatch) => ({
-        /*open(name, context, basePath) {
-          dispatch(actions.open(name, context, basePath))
-        },*/
         close() {
           dispatch(actions.close())
         }

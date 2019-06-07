@@ -6,8 +6,6 @@ import {withReducer} from '#/main/app/store/components/withReducer'
 import {DesktopMain as DesktopMainComponent} from '#/main/app/layout/sections/desktop/components/main'
 import {actions, reducer, selectors} from '#/main/app/layout/sections/desktop/store'
 
-import {actions as toolActions} from '#/main/core/tool/store'
-
 const DesktopMain = withRouter(
   withReducer(selectors.STORE_NAME, reducer)(
     connect(
@@ -27,10 +25,6 @@ const DesktopMain = withRouter(
 
         openTool(toolName) {
           return dispatch(actions.openTool(toolName))
-        },
-
-        setTool(toolName) {
-          dispatch(toolActions.open(toolName))
         }
       })
     )(DesktopMainComponent)

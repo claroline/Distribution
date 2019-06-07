@@ -10,7 +10,7 @@ export default (workspaces) => ({
   icon: 'fa fa-fw fa-cog',
   label: trans('configure', {}, 'actions'),
   displayed: -1 !== workspaces.findIndex(workspace => hasPermission('administrate', workspace)),
-  target: `/workspaces/form/${workspaces[0].uuid}`,
+  target: `/desktop/workspaces/form/${workspaces[0].uuid}`,
   group: trans('management'),
   scope: ['object']
 })

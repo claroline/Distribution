@@ -2,7 +2,6 @@
     "all_day": "the whole day",
     "event": "Event",
     "events": "Events",
-    "filter_ws": "Filter by workspace",
     "high": "High",
     "low": "Low",
     "medium": "Medium",
@@ -10,5 +9,6 @@
     "send_message_content": "You have received an invitation to an event from %Sender%. This event will take place from %Start% to %End% : %Description%.<br><a href=\"%JoinAction%\" class=\"btn btn-success\">Participate</a> <a href=\"%MaybeAction%\" class=\"btn btn-primary\">Maybe</a> <a href=\"%ResignAction%\" class=\"btn btn-danger\">Do not participate</a>",
     "send_message_object": "Invitation to an event : %EventName%",
     "task": "Task",
-    "tasks": "Tasks"
+    "tasks": "Tasks",
+    "display_modes": "View modes"
 }

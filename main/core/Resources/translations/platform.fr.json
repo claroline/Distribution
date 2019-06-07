@@ -1749,5 +1749,6 @@
     "maintenance_mode_alert": "Le mode maintenance de la plateforme est activé.",
     "register_confirm_message": "Êtes-vous sûr de vouloir vous inscrire ?",
     "form_not_validating_desc": "Travail en cours : certaines données sont manquantes ou nécessitent une correction.",
-    "form_validating_desc": "Des erreurs ou des informations manquantes empêchent la sauvegarde des données."
+    "form_validating_desc": "Des erreurs ou des informations manquantes empêchent la sauvegarde des données.",
+    "avatar": "Avatar"
 }

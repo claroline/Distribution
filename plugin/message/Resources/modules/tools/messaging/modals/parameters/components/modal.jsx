@@ -13,6 +13,8 @@ import {selectors} from '#/plugin/message/tools/messaging/modals/parameters/stor
 
 const authenticatedUser = currentUser()
 
+// target={(parameters) => ['apiv2_contact_options_update', {id: parameters.id}]}
+
 const ParametersModal = props =>
   <Modal
     {...omit(props, 'mailNotified', 'saveEnabled', 'save')}

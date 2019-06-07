@@ -58,13 +58,16 @@ const LayoutMain = props =>
       </div>
 
       <LayoutToolbar
+        opened={props.sidebar}
         open={props.openSidebar}
       />
     </div>
 
-    <LayoutSidebar
-      close={props.closeSidebar}
-    />
+    {props.sidebar &&
+      <LayoutSidebar
+        close={props.closeSidebar}
+      />
+    }
   </Fragment>
 
 LayoutMain.propTypes = {
@@ -74,6 +77,7 @@ LayoutMain.propTypes = {
   menuOpened: T.bool.isRequired,
   toggleMenu: T.func.isRequired,
 
+  sidebar: T.string,
   openSidebar: T.func.isRequired,
   closeSidebar: T.func.isRequired
 }

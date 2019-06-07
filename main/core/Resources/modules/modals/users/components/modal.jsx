@@ -7,9 +7,11 @@ import {Button} from '#/main/app/action/components/button'
 import {Modal} from '#/main/app/overlays/modal/components/modal'
 import {ListData} from '#/main/app/content/list/containers/data'
 
-import {selectors} from '#/main/core/modals/users/store'
-import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {UserCard} from '#/main/core/user/data/components/user-card'
+import {UserAvatar} from '#/main/core/user/components/avatar'
 import {User as UserType} from '#/main/core/user/prop-types'
+
+import {selectors} from '#/main/core/modals/users/store'
 
 const UsersModal = props => {
   const selectAction = props.selectAction(props.selected)
@@ -30,10 +32,25 @@ const UsersModal = props => {
         }}
         definition={[
           {
+            name: 'picture',
+            type: 'user', // required to get correct styles (no padding + small picture size)
+            label: trans('avatar'),
+            displayed: true,
+            filterable: false,
+            sortable: false,
+            render: (user) => {
+              const Avatar = (
+                <UserAvatar picture={user.picture} alt={false} />
+              )
+
+              return Avatar
+            }
+          }, {
             name: 'username',
             type: 'username',
             label: trans('username'),
-            displayed: true
+            displayed: true,
+            primary: true
           }, {
             name: 'lastName',
             type: 'string',
@@ -65,7 +82,7 @@ const UsersModal = props => {
             sortable: false
           }
         ]}
-        card={UserList.card}
+        card={UserCard}
       />
 
       <Button

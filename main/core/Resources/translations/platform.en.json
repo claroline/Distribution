@@ -1715,5 +1715,6 @@
     "maintenance_mode_alert": "The maintenance mode of the platform is enabled.",
     "register_confirm_message": "Are you sure you want to register?",
     "form_not_validating_desc": "Work in progress: some information is missing or requires changes.",
-    "form_validating_desc": "Some errors or missing information prevent saving data."
+    "form_validating_desc": "Some errors or missing information prevent saving data.",
+    "avatar": "Avatar"
 }

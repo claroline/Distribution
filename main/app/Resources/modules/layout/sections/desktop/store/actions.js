@@ -2,8 +2,9 @@ import {makeActionCreator} from '#/main/app/store/actions'
 
 import {API_REQUEST} from '#/main/app/api'
 
-import {constants as toolConst} from '#/main/core/tool/constants'
+import {actions as layoutActions} from '#/main/app/layout/store/actions'
 import {actions as toolActions} from '#/main/core/tool/store/actions'
+import {constants as toolConst} from '#/main/core/tool/constants'
 
 // actions
 export const DESKTOP_LOAD = 'DESKTOP_LOAD'
@@ -41,6 +42,7 @@ actions.openTool = (toolName) => (dispatch, getState) => {
   }
 
   dispatch(toolActions.open(toolName, {type: toolConst.TOOL_DESKTOP, data: {}}))
+  dispatch(layoutActions.changeMenuSection('tool'))
 
   return dispatch({
     [API_REQUEST]: {

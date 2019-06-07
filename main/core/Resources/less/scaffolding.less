@@ -11,6 +11,7 @@ body {
 
     > body {
         height: 100%;
+        overflow-y: hidden;
 
         // only put body bg for claroline apps (avoids modifying TinyMCE content bg)
         background: @body-bg;
@@ -53,7 +54,7 @@ body {
     flex-direction: column;
     flex: 1;
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .app-toolbar {

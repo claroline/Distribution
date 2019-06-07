@@ -58,14 +58,20 @@
         }
     }
 
-    .current-tool {
-        flex: 1;
-    }
-
     nav {
+        &.opened {
+            flex: 1;
+        }
+
         h2 {
             margin: 0;
-            padding: floor(@grid-gutter-width / 2);
+
+            > button {
+                text-align: left;
+                padding: floor(@grid-gutter-width / 2);
+                display: block;
+                width: 100%;
+            }
         }
     }
 

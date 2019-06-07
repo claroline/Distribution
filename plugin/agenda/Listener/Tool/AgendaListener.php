@@ -76,15 +76,7 @@ class AgendaListener
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
-        $content = $this->templating->render(
-            'ClarolineAgendaBundle:tool:agenda.html.twig', [
-                'context' => [
-                    'type' => Tool::DESKTOP,
-                ],
-            ]
-        );
-
-        $event->setContent($content);
+        $event->setData([]);
         $event->stopPropagation();
     }
 }

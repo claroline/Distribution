@@ -45,7 +45,8 @@ const MessagingTool = (props) =>
         type: MODAL_BUTTON,
         icon: 'fa fa-fw fa-cog',
         label: trans('configure', {}, 'actions'),
-        modal: [MODAL_MESSAGING_PARAMETERS]
+        modal: [MODAL_MESSAGING_PARAMETERS],
+        group: trans('management')
       }
     ]}
     subtitle={

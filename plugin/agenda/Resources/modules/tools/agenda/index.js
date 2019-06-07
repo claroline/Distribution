@@ -1,24 +1,11 @@
-import {bootstrap} from '#/main/app/dom/bootstrap'
 
 import {reducer} from '#/plugin/agenda/tools/agenda/store/reducer'
 import {AgendaTool} from '#/plugin/agenda/tools/agenda/containers/tool'
+import {AgendaMenu} from '#/plugin/agenda/tools/agenda/containers/menu'
 
-// mount the react application
-bootstrap(
-  // app DOM container (also holds initial app data as data attributes)
-  '.agenda-container',
-
-  // app main component
-  AgendaTool,
-
-  // app store configuration
-  reducer,
-
-  // remap data-attributes set on the app DOM container
-  (initialData) => ({
-    tool: {
-      name: 'agenda',
-      currentContext: initialData.currentContext
-    }
-  })
-)
+export default {
+  component: AgendaTool,
+  menu: AgendaMenu,
+  store: reducer,
+  styles: ['claroline-distribution-plugin-agenda-agenda']
+}

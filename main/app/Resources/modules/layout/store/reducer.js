@@ -1,6 +1,11 @@
 import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 
-import {MENU_TOGGLE} from '#/main/app/layout/store/actions'
+import {
+  MENU_TOGGLE,
+  MENU_CHANGE_SECTION,
+  SIDEBAR_OPEN,
+  SIDEBAR_CLOSE
+} from '#/main/app/layout/store/actions'
 
 export const reducer = {
   maintenance: makeReducer(false),
@@ -14,7 +19,19 @@ export const reducer = {
     version: makeReducer('12.4.8')
   }),
 
-  menuOpened: makeReducer(true, {
-    [MENU_TOGGLE]: (state) => !state
+  menu: combineReducers({
+    opened: makeReducer(true, {
+      [MENU_TOGGLE]: (state) => !state
+    }),
+    section: makeReducer(null, {
+      [MENU_CHANGE_SECTION]: (state, action) => action.section
+    })
+  }),
+
+  sidebar: combineReducers({
+    name: makeReducer(null, {
+      [SIDEBAR_OPEN]: (state, action) => state !== action.toolName ? action.toolName : null,
+      [SIDEBAR_CLOSE]: () => null
+    })
   })
 }

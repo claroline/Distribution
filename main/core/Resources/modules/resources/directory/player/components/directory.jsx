@@ -18,7 +18,7 @@ const DirectoryPlayerComponent = (props) =>
     primaryAction={(resourceNode) => ({ // todo : use resource default action
       type: URL_BUTTON,
       label: trans('open', {}, 'actions'),
-      target: [ 'claro_resource_show', {
+      target: ['claro_resource_show', {
         type: resourceNode.meta.type,
         id: resourceNode.id
       }]
