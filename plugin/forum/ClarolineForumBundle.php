@@ -24,7 +24,7 @@ class ClarolineForumBundle extends DistributionPluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null, 'forum');
+        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null);
     }
 
     public function getAdditionalInstaller()

@@ -12,11 +12,6 @@ use Claroline\CoreBundle\Library\DistributionPluginBundle;
 
 class InnovaCollecticielBundle extends DistributionPluginBundle
 {
-    public function getRoutingPrefix()
-    {
-        return 'collecticiel';
-    }
-
     public function getRequiredPlugins()
     {
         return ['Claroline\\AgendaBundle\\ClarolineAgendaBundle'];

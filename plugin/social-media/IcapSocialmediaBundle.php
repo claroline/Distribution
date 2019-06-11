@@ -16,7 +16,7 @@ class IcapSocialmediaBundle extends DistributionPluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null, 'icap_socialmedia');
+        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null);
     }
 
     /*

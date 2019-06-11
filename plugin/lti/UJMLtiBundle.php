@@ -12,7 +12,7 @@ class UJMLtiBundle extends DistributionPluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null, 'lti');
+        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null);
     }
 
     public function getAdditionalInstaller()

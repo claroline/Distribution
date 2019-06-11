@@ -11,7 +11,7 @@ class FormaLibreReservationBundle extends DistributionPluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null, 'reservation');
+        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null);
     }
 
     public function hasMigrations()
