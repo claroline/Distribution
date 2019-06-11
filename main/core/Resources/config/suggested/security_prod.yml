@@ -27,6 +27,12 @@ security:
                 login_path: /oauth/v2/auth_login
                 default_target_path: /oauth/v2/auth/form
             anonymous: true
+            
+        api:
+            pattern: ^/api
+            stateless: true
+            simple_preauth:
+                authenticator: claroline.security.authentication.apitoken_authenticator
 
         main:
             pattern: ^/
@@ -62,6 +68,5 @@ security:
 
     access_control:
         - { path: ^/oauth/v2/auth_login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,                  role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
