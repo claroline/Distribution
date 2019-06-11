@@ -49,6 +49,5 @@ security:
         allow_if_all_abstain: false
 
     access_control:
-        - { path: ^/api,                  role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
