@@ -16,6 +16,9 @@ const reducer = combineReducers({
     [TOOL_OPEN]: (state, action) => action.name,
     [TOOL_CLOSE]: () => null
   }),
+  basePath: makeReducer('', {
+    [TOOL_OPEN]: (state, action) => action.basePath
+  }),
   currentContext: makeReducer({}, {
     [TOOL_OPEN]: (state, action) => action.context,
     [TOOL_CLOSE]: () => ({}),

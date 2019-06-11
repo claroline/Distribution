@@ -2,20 +2,19 @@ import {connect} from 'react-redux'
 
 import {withRouter} from '#/main/app/router'
 
-import {selectors as toolSelectors} from '#/main/core/tool/store'
-import {actions as explorerActions, selectors as explorerSelectors} from '#/main/core/resource/explorer/store'
-import {selectors} from '#/main/core/tools/resources/store'
 import {ResourcesTool as ResourcesToolComponent} from '#/main/core/tools/resources/components/tool'
+import {selectors, actions} from '#/main/core/tools/resources/store'
 
 const ResourcesTool = withRouter(
   connect(
     (state) => ({
-      contextType: toolSelectors.contextType(state),
-      loading: explorerSelectors.loading(explorerSelectors.explorer(state, selectors.STORE_NAME)),
-      current: explorerSelectors.currentNode(explorerSelectors.explorer(state, selectors.STORE_NAME))
+      root: selectors.root(state)
     }),
     (dispatch) => ({
-      addNodes(resourceNodes) {
+      openResource(resourceId) {
+        dispatch(actions.openResource(resourceId))
+      }
+      /*addNodes(resourceNodes) {
         dispatch(explorerActions.addNodes(selectors.STORE_NAME, resourceNodes))
       },
 
@@ -25,12 +24,12 @@ const ResourcesTool = withRouter(
 
       deleteNodes(resourceNodes) {
         dispatch(explorerActions.deleteNodes(selectors.STORE_NAME, resourceNodes))
-      }
-    }),
+      }*/
+    })/*,
     undefined,
     {
       areStatesEqual: (next, prev) => selectors.store(prev) === selectors.store(next)
-    }
+    }*/
   )(ResourcesToolComponent)
 )
 

@@ -6,14 +6,15 @@ import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
 import {selectors} from '#/main/core/resources/directory/store/selectors'
 
 const reducer = {
-  directoryExplorer: makeResourceExplorerReducer(selectors.EXPLORER_NAME, {}, {
+  /*directoryExplorer: makeResourceExplorerReducer(selectors.EXPLORER_NAME, {}, {
     root: makeReducer({}, {
       [RESOURCE_LOAD]: (state, action) => action.resourceData.resourceNode
     }),
     directories: makeReducer({}, {
       [RESOURCE_LOAD]: (state, action) => [action.resourceData.resourceNode]
     })
-  })
+  })*/
+  //resources:
 }
 
 export {

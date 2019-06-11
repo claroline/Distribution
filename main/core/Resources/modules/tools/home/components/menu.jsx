@@ -16,7 +16,7 @@ const HomeMenu = (props) => {
             type={LINK_BUTTON}
             icon={tab.icon ? `fa fa-fw fa-${tab.icon}` : undefined}
             label={tab.title}
-            target={`${props.basePath}/tab/${tab.id}`}
+            target={`${props.path}/tab/${tab.id}`}
             activeStyle={{
               borderColor: get(tab, 'display.color')
             }}
@@ -30,7 +30,7 @@ const HomeMenu = (props) => {
 }
 
 HomeMenu.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string,
   tabs: T.arrayOf(T.shape({
     // TODO : tab types
   }))

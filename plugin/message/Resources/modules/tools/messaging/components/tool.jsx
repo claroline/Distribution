@@ -25,7 +25,7 @@ const MessagingTool = (props) =>
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-paper-plane',
         label: trans('send-message', {}, 'actions'),
-        target: props.basePath + '/new',
+        target: props.path + '/new',
         primary: true
       }, {
         name: 'add-contact',
@@ -51,7 +51,7 @@ const MessagingTool = (props) =>
     ]}
     subtitle={
       <Routes
-        path={props.basePath}
+        path={props.path}
         routes={[
           {path: '/received', render: () => trans('messages_received', {}, 'message')},
           {path: '/sent',     render: () => trans('messages_sent', {}, 'message')},
@@ -63,7 +63,7 @@ const MessagingTool = (props) =>
     }
   >
     <Routes
-      path={props.basePath}
+      path={props.path}
       redirect={[
         {from: '/', exact: true, to: '/received' }
       ]}
@@ -98,7 +98,7 @@ const MessagingTool = (props) =>
   </ToolPage>
 
 MessagingTool.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
 
   addContacts: T.func.isRequired,
   openMessage: T.func.isRequired,

@@ -14,6 +14,16 @@ const name = createSelector(
   (store) => store.name
 )
 
+const basePath = createSelector(
+  [store],
+  (store) => store.basePath
+)
+
+const path = createSelector(
+  [basePath, name],
+  (basePath, name) => basePath + '/' + name
+)
+
 const icon = createSelector(
   [store],
   (store) => store.icon
@@ -37,8 +47,11 @@ const contextData = createSelector(
 export const selectors = {
   STORE_NAME,
   store,
+
   loaded,
   name,
+  basePath,
+  path,
   icon,
   context,
   contextType,

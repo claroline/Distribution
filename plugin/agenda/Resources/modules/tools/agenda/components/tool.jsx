@@ -28,13 +28,13 @@ const AgendaTool = props => {
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-chevron-left',
           label: trans('previous'),
-          target: calendarUrl(props.basePath, props.view, currentView.previous(props.referenceDate))
+          target: calendarUrl(props.path, props.view, currentView.previous(props.referenceDate))
         }, {
           name: 'next',
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-chevron-right',
           label: trans('next'),
-          target: calendarUrl(props.basePath, props.view, currentView.next(props.referenceDate))
+          target: calendarUrl(props.path, props.view, currentView.next(props.referenceDate))
         }, {
           name: 'range',
           type: MENU_BUTTON,
@@ -46,7 +46,7 @@ const AgendaTool = props => {
             items: Object.keys(AGENDA_VIEWS).map(viewName => ({
               type: LINK_BUTTON,
               label: AGENDA_VIEWS[viewName].label,
-              target: calendarUrl(props.basePath, viewName, props.referenceDate)
+              target: calendarUrl(props.path, viewName, props.referenceDate)
             }))
           }
         }, {
@@ -54,7 +54,7 @@ const AgendaTool = props => {
           type: LINK_BUTTON,
           icon: <span>{trans('today')}</span>,
           label: trans('today'),
-          target: calendarUrl(props.basePath, props.view, now())
+          target: calendarUrl(props.path, props.view, now())
         }, {
           name: 'add',
           type: MODAL_BUTTON,
@@ -87,7 +87,7 @@ const AgendaTool = props => {
       ]}
     >
       <Routes
-        path={props.basePath}
+        path={props.path}
         routes={[
           {
             path: '/:view?/:year?/:month?/:day?',
@@ -115,7 +115,7 @@ const AgendaTool = props => {
             },
             render: () => {
               return createElement(currentView.component, {
-                basePath: props.basePath,
+                path: props.path,
                 referenceDate: props.referenceDate,
                 range: currentRange
               })
@@ -128,7 +128,7 @@ const AgendaTool = props => {
 }
 
 AgendaTool.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   contextData: T.shape({
     id: T.number
   }),

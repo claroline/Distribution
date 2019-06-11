@@ -19,14 +19,14 @@ const WorkspacesTool = (props) =>
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-plus',
         label: trans('create_workspace', {}, 'workspace'),
-        target: `${props.basePath}/new`,
+        target: `${props.path}/new`,
         primary: true,
         displayed: props.creatable
       }
     ]}
     subtitle={
       <Routes
-        path={props.basePath}
+        path={props.path}
         routes={[
           {path: '/new',        render: () => trans('new_workspace', {}, 'workspace'), disabled: !props.creatable},
           {path: '/registered', render: () => trans('my_workspaces', {}, 'workspace')},
@@ -38,7 +38,7 @@ const WorkspacesTool = (props) =>
     }
   >
     <Routes
-      path={props.basePath}
+      path={props.path}
       routes={[
         {
           path: '/new',
@@ -50,7 +50,7 @@ const WorkspacesTool = (props) =>
                 buttons={true}
                 cancel={{
                   type: LINK_BUTTON,
-                  target: props.basePath,
+                  target: props.path,
                   exact: true
                 }}
               />
@@ -112,7 +112,7 @@ const WorkspacesTool = (props) =>
   </ToolPage>
 
 WorkspacesTool.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   creatable: T.bool.isRequired,
   open: T.func.isRequired
 }

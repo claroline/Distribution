@@ -23,9 +23,7 @@ actions.open = () => ({
   [API_REQUEST]: {
     silent: true,
     url: ['claro_desktop_open'],
-    success: (response, dispatch) => {
-      dispatch(actions.load(response))
-    }
+    success: (response, dispatch) => dispatch(actions.load(response))
   }
 })
 
@@ -41,7 +39,7 @@ actions.openTool = (toolName) => (dispatch, getState) => {
     return Promise.resolve(true)
   }
 
-  dispatch(toolActions.open(toolName, {type: toolConst.TOOL_DESKTOP, data: {}}))
+  dispatch(toolActions.open(toolName, {type: toolConst.TOOL_DESKTOP, data: {}}, '/desktop'))
   dispatch(layoutActions.changeMenuSection('tool'))
 
   return dispatch({

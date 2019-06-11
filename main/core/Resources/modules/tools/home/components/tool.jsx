@@ -8,15 +8,15 @@ import {EditorMain} from '#/main/core/tools/home/editor/containers/main'
 
 const HomeTool = props =>
   <Routes
-    path={`${props.basePath}`}
+    path={props.path}
     routes={[
       {
         path: '/tab',
-        render: () => <PlayerMain basePath={props.basePath} />
+        render: () => <PlayerMain basePath={props.path} />
       }, {
         path: '/edit/tab',
         disabled: !props.editable,
-        render: () => <EditorMain basePath={props.basePath} />
+        render: () => <EditorMain basePath={props.path} />
       }
     ]}
     redirect={[
@@ -25,7 +25,7 @@ const HomeTool = props =>
   />
 
 HomeTool.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   editable: T.bool.isRequired
 }
 

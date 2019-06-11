@@ -5,7 +5,7 @@ import {trans} from '#/main/app/intl/translation'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {PageHeader, PageContent, PageActions, PageAction} from '#/main/core/layout/page'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {getToolPath, showToolBreadcrumb} from '#/main/core/tool/utils'
+import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
 
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {WidgetGrid} from '#/main/core/widget/player/components/grid'
@@ -16,7 +16,7 @@ const PlayerTab = props =>
   <PageSimple
     className="home-tool"
     showBreadcrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
-    path={[].concat(getToolPath('home', props.currentContext.type, props.currentContext.data), props.currentTab ? [{
+    path={[].concat(getToolBreadcrumb('home', props.currentContext.type, props.currentContext.data), props.currentTab ? [{
       label: props.currentTab.title,
       target: '/' // this don't work but it's never used as current tab is always last for now
     }] : [])}
@@ -28,7 +28,7 @@ const PlayerTab = props =>
     >
       {1 < props.tabs.length &&
         <Tabs
-          prefix={props.basePath}
+          prefix={props.path}
           tabs={props.tabs}
           currentContext={props.currentContext}
           editing={false}
@@ -42,7 +42,7 @@ const PlayerTab = props =>
           label={trans('configure', {}, 'actions')}
           icon="fa fa-fw fa-cog"
           primary={true}
-          target={`${props.basePath}/edit/tab/${props.currentTab.id}`}
+          target={`${props.path}/edit/tab/${props.currentTab.id}`}
         />
       </PageActions>
       }
@@ -57,7 +57,7 @@ const PlayerTab = props =>
   </PageSimple>
 
 PlayerTab.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   currentContext: T.object.isRequired,
   tabs: T.arrayOf(T.shape(
     TabTypes.propTypes

@@ -36,7 +36,7 @@ const MessagingMenu = (props) => {
           type={LINK_BUTTON}
           icon={link.icon}
           label={link.label}
-          target={`${props.basePath}${link.path}`}
+          target={`${props.path}${link.path}`}
         />
       )}
     </div>
@@ -44,7 +44,7 @@ const MessagingMenu = (props) => {
 }
 
 MessagingMenu.propTypes = {
-  basePath: T.string.isRequired
+  path: T.string.isRequired
 }
 
 MessagingMenu.defaultProps = {

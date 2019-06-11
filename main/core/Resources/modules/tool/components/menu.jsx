@@ -26,7 +26,7 @@ const ToolMenu = props => {
             then={(module) => {
               if (module.default.menu) {
                 return createElement(module.default.menu, {
-                  basePath: props.basePath + '/' + props.name
+                  path: props.path
                 })
               }
 
@@ -42,7 +42,7 @@ const ToolMenu = props => {
 }
 
 ToolMenu.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string,
   name: T.string,
   loaded: T.bool.isRequired,
   opened: T.bool.isRequired,

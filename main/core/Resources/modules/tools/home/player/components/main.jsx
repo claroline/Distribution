@@ -9,7 +9,7 @@ import {PlayerTab} from '#/main/core/tools/home/player/components/tab'
 
 const PlayerMain = props =>
   <Routes
-    path={`${props.basePath}`}
+    path={props.path}
     redirect={[
       props.tabs[0] && {from: '/tab', exact: true, to: '/tab/'+props.tabs[0].id },
     ].filter(redirect => !!redirect)}
@@ -21,7 +21,7 @@ const PlayerMain = props =>
           if (props.tabs.find(tab => tab.id === routeProps.match.params.id)) {
             return (
               <PlayerTab
-                basePath={props.basePath}
+                basePath={props.path}
                 currentContext={props.currentContext}
                 tabs={props.tabs}
                 currentTabTitle={props.currentTabTitle}
@@ -34,7 +34,7 @@ const PlayerMain = props =>
 
           // tab does not exist
           // let's redirection open the first available
-          routeProps.history.push(props.basePath)
+          routeProps.history.push(props.path)
 
           return null
         }
@@ -43,7 +43,7 @@ const PlayerMain = props =>
   />
 
 PlayerMain.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   currentContext: T.object.isRequired,
   tabs: T.arrayOf(T.shape(
     TabTypes.propTypes

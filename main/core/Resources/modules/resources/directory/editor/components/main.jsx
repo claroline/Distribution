@@ -1,6 +1,5 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
@@ -13,7 +12,7 @@ import resourcesList from '#/main/core/data/sources/resources'
 
 import {Directory as DirectoryTypes} from '#/main/core/resources/directory/prop-types'
 
-const DirectoryForm = (props) =>
+const EditorMain = (props) =>
   <FormData
     level={2}
     title={trans('parameters')}
@@ -22,7 +21,7 @@ const DirectoryForm = (props) =>
     buttons={true}
     cancel={{
       type: LINK_BUTTON,
-      target: '/',
+      target: props.path,
       exact: true
     }}
     sections={[
@@ -49,22 +48,18 @@ const DirectoryForm = (props) =>
     />
   </FormData>
 
-DirectoryForm.propTypes = {
+EditorMain.propTypes = {
+  path: T.string,
   directory: T.shape(
     DirectoryTypes.propTypes
   )
 }
 
-DirectoryForm.defaultProps = {
+EditorMain.defaultProps = {
   directory: DirectoryTypes.defaultProps
 }
 
-const DirectoryEditor = connect(
-  (state) => ({
-    directory: selectors.directory(state)
-  })
-)(DirectoryForm)
 
 export {
-  DirectoryEditor
+  EditorMain
 }

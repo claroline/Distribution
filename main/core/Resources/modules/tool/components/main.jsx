@@ -77,7 +77,7 @@ class ToolMain extends Component {
                 styles={module.default.styles}
               >
                 {module.default.component && createElement(module.default.component, {
-                  basePath: props.basePath + '/' + props.toolName
+                  path: props.path
                 })}
               </ToolApp>
             )
@@ -91,7 +91,7 @@ class ToolMain extends Component {
 }
 
 ToolMain.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   toolName: T.string.isRequired,
 
   loaded: T.bool.isRequired,

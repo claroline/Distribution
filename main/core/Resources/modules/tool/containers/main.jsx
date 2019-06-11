@@ -10,6 +10,7 @@ const ToolMain = withRouter(
   withReducer(selectors.STORE_NAME, reducer)(
     connect(
       (state) => ({
+        path: selectors.path(state),
         loaded: selectors.loaded(state)
       }),
       (dispatch) => ({

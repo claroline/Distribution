@@ -10,8 +10,9 @@ const ToolMenu = withRouter(
   withReducer(selectors.STORE_NAME, reducer)(
     connect(
       (state) => ({
-        loaded: selectors.loaded(state),
-        name: selectors.name(state)
+        name: selectors.name(state),
+        path: selectors.path(state),
+        loaded: selectors.loaded(state)
       })
     )(ToolMenuComponent)
   )

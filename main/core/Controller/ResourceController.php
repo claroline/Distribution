@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
@@ -216,7 +217,7 @@ class ResourceController
      * @param bool    $forceArchive
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse|BinaryFileResponse
      */
     public function downloadAction($forceArchive = false, Request $request)
     {
@@ -324,9 +325,34 @@ class ResourceController
     /**
      * Gets a resource.
      *
-     * @EXT\Route("/{id}", name="claro_resource_load_short")
-     * @EXT\Route("/{type}/{id}", name="claro_resource_load")
-     * @EXT\Route("/{type}/{id}/embedded/{embedded}", name="claro_resource_load_embedded")
+     * @EXT\Route("/{id}", name="claro_resource_get")
+     * @EXT\Method("GET")
+     *
+     * @param int|string $id - the id of the target node (we don't use ParamConverter to support ID and UUID)
+     *
+     * @return JsonResponse
+     *
+     * @throws ResourceNotFoundException
+     */
+    public function getAction($id)
+    {
+        /** @var ResourceNode $resourceNode */
+        $resourceNode = $this->om->find(ResourceNode::class, $id);
+        if (!$resourceNode) {
+            throw new ResourceNotFoundException();
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($resourceNode, [Options::SERIALIZE_MINIMAL])
+        );
+    }
+
+    /**
+     * Gets a resource.
+     *
+     * @EXT\Route("/load/{id}", name="claro_resource_load_short")
+     * @EXT\Route("/load/{type}/{id}", name="claro_resource_load")
+     * @EXT\Route("/load/{type}/{id}/embedded/{embedded}", name="claro_resource_load_embedded")
      * @EXT\Method("GET")
      *
      * @param int|string $id       - the id of the target node (we don't use ParamConverter to support ID and UUID)
@@ -336,7 +362,7 @@ class ResourceController
      *
      * @throws ResourceNotFoundException
      */
-    public function getAction($id, $embedded = 0)
+    public function loadAction($id, $embedded = 0)
     {
         /** @var ResourceNode $resourceNode */
         $resourceNode = $this->om->find(ResourceNode::class, $id);

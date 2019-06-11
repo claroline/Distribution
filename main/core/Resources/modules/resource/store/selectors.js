@@ -1,20 +1,54 @@
 import {createSelector} from 'reselect'
 import isEmpty from 'lodash/isEmpty'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store/selectors'
+
 import {constants} from '#/main/core/resource/constants'
 
-const embedded = (state) => state.embedded
-const showHeader = (state) => state.showHeader
+const STORE_NAME = 'resource'
 
-const managed = (state) => state.managed
+const store = (state) => state[STORE_NAME]
 
-const loaded = (state) => state.loaded
+const resourceNode = createSelector(
+  [store],
+  (store) => store.resourceNode || {}
+)
+
+const path = createSelector(
+  [toolSelectors.path, resourceNode],
+  (toolPath, resourceNode) => toolPath + '/' + resourceNode.id
+)
+
+const embedded = createSelector(
+  [store],
+  (store) => store.embedded
+)
+const showHeader = createSelector(
+  [store],
+  (store) => store.showHeader
+)
+
+const managed = createSelector(
+  [store],
+  (store) => store.managed
+)
+
+const loaded = createSelector(
+  [store],
+  (store) => store.loaded
+)
 
 // lifecycle selectors
-const resourceLifecycle = (state) => state.lifecycle
+const resourceLifecycle = createSelector(
+  [store],
+  (store) => store.lifecycle
+)
 
 // node selectors
-const resourceNode = (state) => state.resourceNode
+const id = createSelector(
+  [resourceNode],
+  (resourceNode) => resourceNode.id
+)
 
 const parent = createSelector(
   [resourceNode],
@@ -33,7 +67,7 @@ const workspaceId = createSelector(
 
 const meta = createSelector(
   [resourceNode],
-  (resourceNode) => resourceNode.meta
+  (resourceNode) => resourceNode.meta || {}
 )
 
 const published = createSelector(
@@ -52,12 +86,21 @@ const mimeType = createSelector(
 )
 
 // access restrictions selectors
-const accessErrors = (state) => !state.accessErrors.dismissed && !isEmpty(state.accessErrors.details) ? state.accessErrors.details : {}
+const accessErrors = createSelector(
+  [store],
+  (store) => !store.accessErrors.dismissed && !isEmpty(store.accessErrors.details) ? store.accessErrors.details : {}
+)
 
-const serverErrors = (state) => !isEmpty(state.serverErrors) ? state.serverErrors : []
+const serverErrors = createSelector(
+  [store],
+  (store) => !isEmpty(store.serverErrors) ? store.serverErrors : []
+)
 
 // evaluation selectors
-const resourceEvaluation = (state) => state.userEvaluation
+const resourceEvaluation = createSelector(
+  [store],
+  (store) => store.userEvaluation
+)
 
 const evaluationStatus = createSelector(
   [resourceEvaluation],
@@ -87,6 +130,9 @@ const isSuccessful = createSelector(
 )
 
 export const selectors = {
+  STORE_NAME,
+
+  path,
   embedded,
   showHeader,
   managed,
@@ -98,6 +144,7 @@ export const selectors = {
   serverErrors,
   // node
   resourceNode,
+  id,
   workspace,
   workspaceId,
   parent,

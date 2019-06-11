@@ -15,7 +15,7 @@ import {currentUser} from '#/main/app/security'
  *
  * @return {Array}
  */
-function getToolPath(toolName, contextType, contextData = {}) {
+function getToolBreadcrumb(toolName, contextType, contextData = {}) {
   const user = currentUser()
   const breadcrumbItems = get(contextData, 'breadcrumb.items') || []
 
@@ -104,6 +104,6 @@ function showToolBreadcrumb(contextType, contextData) {
 }
 
 export {
-  getToolPath,
+  getToolBreadcrumb,
   showToolBreadcrumb
 }

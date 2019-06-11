@@ -49,7 +49,7 @@ const EditorMain = connect(
       })))
 
       // open new tab
-      navigate(`${ownProps.basePath}/edit/tab/${newTabId}`)
+      navigate(`${ownProps.path}/edit/tab/${newTabId}`)
     },
     moveTab(tabs, currentTab, newPosition) {
       dispatch(editorActions.moveTab(tabs, currentTab, newPosition))
@@ -61,7 +61,7 @@ const EditorMain = connect(
       dispatch(editorActions.deleteTab(tabs, currentTab))
       const redirected = tabs[tabIndex]
       // redirect
-      navigate(ownProps.basePath + '/edit/tab/' + redirected.id)
+      navigate(ownProps.path + '/edit/tab/' + redirected.id)
     }
   })
 )(EditorMainComponent)

@@ -14,7 +14,7 @@ const AgendaMenu = props =>
     <Calendar
       selected={props.selected}
       onChange={(selected) => props.history.push(
-        calendarUrl(props.basePath, props.view, selected)
+        calendarUrl(props.path, props.view, selected)
       )}
       time={false}
       showCurrent={false}
@@ -43,7 +43,7 @@ AgendaMenu.propTypes = {
     push: T.func.isRequired
   }).isRequired,
 
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   view: T.oneOf([
     'day',
     'week',

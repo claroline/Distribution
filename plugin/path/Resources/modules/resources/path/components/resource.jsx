@@ -20,23 +20,24 @@ const PathResource = props =>
         icon: 'fa fa-fw fa-home',
         label: trans('show_overview'),
         displayed: props.overview,
-        target: '/',
+        target: props.path,
         exact: true
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-play',
         label: trans('start', {}, 'actions'),
-        target: '/play'
+        target: `${props.path}/play`
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-tachometer',
         label: trans('dashboard'),
         displayed: props.editable,
-        target: '/dashboard'
+        target: `${props.path}/dashboard`
       }
     ]}
   >
     <Routes
+      path={props.path}
       routes={[
         {
           path: '/edit',
@@ -68,6 +69,7 @@ const PathResource = props =>
   </ResourcePage>
 
 PathResource.propTypes = {
+  path: T.string.isRequired,
   editable: T.bool.isRequired,
   overview: T.bool.isRequired
 }

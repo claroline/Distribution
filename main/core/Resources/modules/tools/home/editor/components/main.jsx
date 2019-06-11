@@ -16,7 +16,7 @@ import {
 import {CALLBACK_BUTTON, MODAL_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {MODAL_WALKTHROUGHS} from '#/main/app/overlays/walkthrough/modals/walkthroughs'
 
-import {getToolPath, showToolBreadcrumb} from '#/main/core/tool/utils'
+import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
 import {getWalkthroughs} from '#/main/core/tools/home/walkthroughs'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
@@ -28,7 +28,7 @@ const EditorMain = props =>
   <PageSimple
     className="home-tool"
     showBreadcrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
-    path={[].concat(getToolPath('home', props.currentContext.type, props.currentContext.data), props.currentTab ? [{
+    path={[].concat(getToolBreadcrumb('home', props.currentContext.type, props.currentContext.data), props.currentTab ? [{
       label: props.currentTab.longTitle,
       target: '/' // this don't work but it's never used as current tab is always last for now
     }] : [])}
@@ -39,7 +39,7 @@ const EditorMain = props =>
       poster={props.currentTab && props.currentTab.poster ? props.currentTab.poster.url: undefined}
     >
       <Tabs
-        prefix={`${props.basePath}/edit`}
+        prefix={`${props.path}/edit`}
         tabs={props.tabs}
         create={() => props.createTab(props.currentContext, props.administration, props.tabs.length, props.history.push)}
         currentContext={props.currentContext}
@@ -52,7 +52,7 @@ const EditorMain = props =>
             type={LINK_BUTTON}
             label={trans('configure', {}, 'actions')}
             icon="fa fa-fw fa-cog"
-            target={`${props.basePath}/edit`}
+            target={`${props.path}/edit`}
             disabled={true}
             primary={true}
           />
@@ -106,7 +106,7 @@ const EditorMain = props =>
   </PageSimple>
 
 EditorMain.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   currentContext: T.object.isRequired,
   administration: T.bool.isRequired,
   readOnly: T.bool.isRequired,

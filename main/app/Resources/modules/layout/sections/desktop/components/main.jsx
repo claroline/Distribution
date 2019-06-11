@@ -28,7 +28,6 @@ const DesktopMain = (props) =>
                   // tool is enabled for the desktop
                   return (
                     <ToolMain
-                      basePath="/desktop"
                       open={props.openTool}
                       toolName={routeProps.match.params.toolName}
                     />

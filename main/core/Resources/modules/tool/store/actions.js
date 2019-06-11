@@ -16,7 +16,7 @@ export const actions = {}
 actions.load = makeInstanceActionCreator(TOOL_LOAD, 'toolData')
 actions.setLoaded = makeActionCreator(TOOL_SET_LOADED)
 
-actions.open = makeActionCreator(TOOL_OPEN, 'name', 'context')
+actions.open = makeActionCreator(TOOL_OPEN, 'name', 'context', 'basePath')
 actions.close = makeActionCreator(TOOL_CLOSE)
 
 actions.setContext = (contextType, contextData = null) => {

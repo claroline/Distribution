@@ -13,14 +13,14 @@ const Day = props =>
   <div className={classes('calendar-cell day', props.className)}>
     <LinkButton
       className="day-number"
-      target={calendarUrl(props.basePath, 'day', props.current)}
+      target={calendarUrl(props.path, 'day', props.current)}
     >
       {props.current.format('D')}
     </LinkButton>
   </div>
 
 Day.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   className: T.string,
   current: T.object.isRequired
 }
@@ -48,7 +48,7 @@ const AgendaViewMonth = props => {
             return (
               <Day
                 key={`day-${weekNum}-${dayNum}`}
-                basePath={props.basePath}
+                path={props.path}
                 className={classes({
                   now:      current.isSame(nowDate, 'day'),
                   selected: current.isSame(props.referenceDate, 'day'),
@@ -65,7 +65,7 @@ const AgendaViewMonth = props => {
 }
 
 AgendaViewMonth.propTypes = {
-  basePath: T.string.isRequired,
+  path: T.string.isRequired,
   referenceDate: T.object,
   range: T.arrayOf(T.object)
 }
