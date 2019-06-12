@@ -56,6 +56,8 @@ class ApiTokenController extends AbstractCrudController
      */
     public function getCurrentAction(Request $request)
     {
+        var_dump('je passe');
+        var_dump($this->tokenStorage->getToken()->getUser()->getUsername());
         $query = $request->query->all();
         $options = $this->options['list'];
 

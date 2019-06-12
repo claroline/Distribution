@@ -34,12 +34,24 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
     }
 
     public function supportsToken(TokenInterface $token, $providerKey)
-    {
+    {/*
+        var_dump('do I support ?'.$providerKey);
+        var_dump($token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey);
+*/
         return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey;
     }
 
     public function createToken(Request $request, $providerKey)
     {
+        /*        $session = $request->hasPreviousSession() ? $request->getSession() : null;
+
+                if ($session) {
+                    $token = $session->get('_security_main');
+                    $token = unserialize($token);
+
+                    return $token;
+                }*/
+
         $apiKey = $request->query->get('apitoken');
         //skip if unavailable
 

@@ -27,17 +27,18 @@ security:
                 login_path: /oauth/v2/auth_login
                 default_target_path: /oauth/v2/auth/form
             anonymous: true
-            
-        api:
-            pattern: ^/api
-            stateless: true
-            simple_preauth:
-                authenticator: claroline.security.authentication.apitoken_authenticator
+
+        # api:
+        #    pattern:    /(api|apiv2)/
+        #    #stateless: true
+        #    simple_preauth:
+        #       authenticator: claroline.security.authentication.apitoken_authenticator
 
         main:
             pattern: ^/
             simple_preauth:
                 authenticator: claroline.security.authentication.ip_authenticator
+                #authenticator: claroline.security.authentication.apitoken_authenticator
             simple_form:
                 authenticator: claroline.core_bundle.library.security.external_authenticator
                 check_path: /login_check
