@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
@@ -38,19 +39,19 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
         var_dump('do I support ?'.$providerKey);
         var_dump($token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey);
 */
-        return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey;
+        return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey || $token instanceof UsernamePasswordToken;
     }
 
     public function createToken(Request $request, $providerKey)
     {
-        /*        $session = $request->hasPreviousSession() ? $request->getSession() : null;
+        $session = $request->hasPreviousSession() ? $request->getSession() : null;
 
-                if ($session) {
-                    $token = $session->get('_security_main');
-                    $token = unserialize($token);
+        if ($session) {
+            $token = $session->get('_security_main');
+            $token = unserialize($token);
 
-                    return $token;
-                }*/
+            return $token;
+        }
 
         $apiKey = $request->query->get('apitoken');
         //skip if unavailable
@@ -69,6 +70,11 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
 
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
+        if ($token instanceof UsernamePasswordToken) {
+            var_dump($token);
+            //return $token;
+        }
+
         $apiKey = $token->getCredentials();
         $user = $this->om->getRepository(ApiToken::class)->findOneByToken($apiKey)->getUser();
 
