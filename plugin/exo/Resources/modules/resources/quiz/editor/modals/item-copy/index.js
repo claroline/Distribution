@@ -7,7 +7,7 @@
 import {registry} from '#/main/app/modals/registry'
 
 // gets the modal component
-import {CopyModal} from '#/plugin/exo/resources/quiz/editor/modals/item-copy/components/modal'
+import {CopyModal} from '#/plugin/exo/resources/quiz/editor/modals/item-copy/containers/modal'
 
 const MODAL_ITEM_COPY = 'MODAL_QUIZ_ITEM_COPY'
 

@@ -15,6 +15,8 @@ import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {MODAL_ITEM_CREATION} from '#/plugin/exo/items/modals/creation'
 import {MODAL_ITEM_IMPORT} from '#/plugin/exo/items/modals/import'
 import {MODAL_ITEM_POSITION} from '#/plugin/exo/resources/quiz/editor/modals/item-position'
+import {MODAL_STEP_POSITION} from '#/plugin/exo/resources/quiz/editor/modals/step-position'
+import {MODAL_ITEM_COPY} from '#/plugin/exo/resources/quiz/editor/modals/item-copy'
 import {getNumbering} from '#/plugin/exo/resources/quiz/utils'
 import {EditorItem} from '#/plugin/exo/resources/quiz/editor/components/item'
 
@@ -105,14 +107,30 @@ const EditorStep = props => {
                     name: 'copy',
                     type: MODAL_BUTTON,
                     icon: 'fa fa-fw fa-clone',
-                    label: trans('copy', {}, 'actions'),
-                    modal: [],
+                    label: trans('copy2', {}, 'actions'),
+                    modal: [MODAL_ITEM_POSITION, {
+                      icon: 'fa fa-fw fa-arrows',
+                      title: trans('copy'),
+                      step: {
+                        id: props.id,
+                        title: props.title || trans('step', {number: props.index + 1}, 'quiz')
+                      },
+                      steps: (props.steps || []).map((s, i) => ({
+                        id: s.id,
+                        title: s.title || trans('step', {number: i + 1}, 'quiz')
+                      })),
+                      selectAction: (position) => ({
+                        type: CALLBACK_BUTTON,
+                        label: trans('move', {}, 'actions'),
+                        callback: () => alert('copy')
+                      })
+                    }],
                     group: trans('management')
                   }, {
                     name: 'move',
                     type: MODAL_BUTTON,
                     icon: 'fa fa-fw fa-arrows',
-                    label: trans('move', {}, 'actions'),
+                    label: trans('move2', {}, 'actions'),
                     modal: [MODAL_ITEM_POSITION, {
                       icon: 'fa fa-fw fa-arrows',
                       title: trans('movement'),
@@ -123,7 +141,12 @@ const EditorStep = props => {
                       steps: (props.steps || []).map((s, i) => ({
                         id: s.id,
                         title: s.title || trans('step', {number: i + 1}, 'quiz')
-                      }))
+                      })),
+                      selectAction: (position) => ({
+                        type: CALLBACK_BUTTON,
+                        label: trans('move', {}, 'actions'),
+                        callback: () => alert('move')
+                      })
                     }],
                     group: trans('management')
                   }, {

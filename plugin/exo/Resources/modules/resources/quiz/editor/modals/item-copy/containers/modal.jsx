@@ -3,10 +3,10 @@ import {connect} from 'react-redux'
 import {withReducer} from '#/main/app/store/components/withReducer'
 import {actions as formActions, selectors as formSelectors} from '#/main/app/content/form/store'
 
-import {PositionModal as PositionModalComponent} from '#/plugin/exo/resources/quiz/editor/modals/step-position/components/modal'
-import {reducer, selectors} from '#/plugin/exo/resources/quiz/editor/modals/step-position/store'
+import {CopyModal as CopyModalComponent} from '#/plugin/exo/resources/quiz/editor/modals/item-copy/components/modal'
+import {reducer, selectors} from '#/plugin/exo/resources/quiz/editor/modals/item-copy/store'
 
-const PositionModal = withReducer(selectors.STORE_NAME, reducer)(
+const CopyModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
       positionData: formSelectors.data(formSelectors.form(state, selectors.STORE_NAME)),
@@ -20,9 +20,9 @@ const PositionModal = withReducer(selectors.STORE_NAME, reducer)(
         dispatch(formActions.updateProp(selectors.STORE_NAME, prop, value))
       }
     })
-  )(PositionModalComponent)
+  )(CopyModalComponent)
 )
 
 export {
-  PositionModal
+  CopyModal
 }
