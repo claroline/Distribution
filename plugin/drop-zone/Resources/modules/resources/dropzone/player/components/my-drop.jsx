@@ -127,6 +127,14 @@ const MyDropComponent = props =>
         />
         <Button
           type={CALLBACK_BUTTON}
+          icon={'fa fa-fw fa-comments-o icon-with-text-right'}
+          label= {trans('submit_for_revision', {}, 'dropzone')}
+          className="btn"
+          disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
+          callback={() => props.submitForRevision(props.myDrop.id)}
+        />
+        <Button
+          type={CALLBACK_BUTTON}
           icon={'fa fa-fw fa-upload icon-with-text-right'}
           label= {trans('submit_my_drop', {}, 'dropzone')}
           className="btn primary"
@@ -150,7 +158,8 @@ MyDropComponent.propTypes = {
   denyCorrection: T.func.isRequired,
   showModal: T.func.isRequired,
   addDocument: T.func.isRequired,
-  saveDocument: T.func.isRequired
+  saveDocument: T.func.isRequired,
+  submitForRevision: T.func.isRequired
 }
 
 const MyDrop = connect(
@@ -194,6 +203,17 @@ const MyDrop = connect(
           question: trans('submit_my_drop_confirm', {}, 'dropzone'),
           confirmButtonText: trans('submit'),
           handleConfirm: () => dispatch(actions.submitDrop(id))
+        })
+      )
+    },
+    submitForRevision(id) {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          icon: 'fa fa-fw fa-exclamation-triangle',
+          title: trans('submit_for_revision', {}, 'dropzone'),
+          question: trans('submit_for_revision_confirm', {}, 'dropzone'),
+          confirmButtonText: trans('submit_for_revision', {}, 'dropzone'),
+          handleConfirm: () => console.log('submit for revision')
         })
       )
     },
