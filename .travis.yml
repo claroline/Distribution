@@ -23,6 +23,10 @@ env:
   matrix:
     - DB=mysql
 
+
+services:
+  - xvfb
+  
 mysql:
   adapter: mysql2
   database: claroline_test
