@@ -49,7 +49,7 @@ class LogList extends Component {
         </div>
         }
         <ListData
-          name="logs"
+          name={this.props.name}
           fetch={{
             url: props.listUrl,
             autoload: true
@@ -110,6 +110,7 @@ class LogList extends Component {
 
 LogList.propTypes = {
   id: T.oneOfType([T.number, T.string]),
+  name: T.string,
   listUrl: T.oneOfType([T.string, T.array]).isRequired,
   actions: T.array.isRequired,
   chart: T.object.isRequired,
@@ -118,7 +119,8 @@ LogList.propTypes = {
 }
 
 LogList.defaultProps = {
-  id: null
+  id: null,
+  name: 'logs'
 }
 
 

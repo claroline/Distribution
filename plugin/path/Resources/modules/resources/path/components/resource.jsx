@@ -27,12 +27,6 @@ const PathResource = props =>
         icon: 'fa fa-fw fa-play',
         label: trans('start', {}, 'actions'),
         target: '/play'
-      }, {
-        type: LINK_BUTTON,
-        icon: 'fa fa-fw fa-tachometer',
-        label: trans('dashboard'),
-        displayed: props.editable,
-        target: '/dashboard'
       }
     ]}
   >
