@@ -137,9 +137,8 @@ ResourceCreationModal.propTypes = {
   save: T.func.isRequired,
   reset: T.func.isRequired,
   saveEnabled: T.bool.isRequired,
-  newNode: T.shape(
-    ResourceNodeTypes.propTypes
-  ).isRequired
+  // not a ResourceNodeTypes to avoid prop-types fails before the node is valid (ie. filled by user)
+  newNode: T.object.isRequired
 }
 
 export {

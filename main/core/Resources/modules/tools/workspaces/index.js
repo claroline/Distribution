@@ -9,6 +9,5 @@ import {reducer} from '#/main/core/tools/workspaces/store'
 export default {
   component: WorkspacesTool,
   menu: WorkspacesMenu,
-  store: reducer,
-  //styles: ['claroline-distribution-main-core-home-tool']
+  store: reducer
 }

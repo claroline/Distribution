@@ -35,7 +35,7 @@ const TabEditor = props =>
     }
     cancel={{
       type: LINK_BUTTON,
-      target: `/tab/${props.currentTab.id}`,
+      target: `${props.path}/tab/${props.currentTab.id}`,
       exact: true
     }}
     sections={[
@@ -173,6 +173,7 @@ const TabEditor = props =>
   </FormData>
 
 TabEditor.propTypes = {
+  path: T.string.isRequired,
   currentContext: T.object.isRequired,
   currentTab: T.shape(TabTypes.propTypes),
 

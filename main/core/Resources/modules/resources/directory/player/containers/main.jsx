@@ -1,32 +1,27 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {actions as listActions} from '#/main/app/content/list/store'
 import {selectors as resourceSelectors} from '#/main/core/resource/store'
-//import {actions as explorerActions} from '#/main/core/resource/explorer/store'
 
 import {PlayerMain as PlayerMainComponent} from '#/main/core/resources/directory/player/components/main'
 import {selectors} from '#/main/core/resources/directory/player/store'
 
 const PlayerMain = connect(
   (state) => ({
-    path: toolSelectors.path(state), // get path from tool to not get the current resource id
+    path: resourceSelectors.basePath(state), // the base path without current resource id
     id: resourceSelectors.id(state),
     listName: selectors.LIST_NAME,
     listConfiguration: selectors.listConfiguration(state)
   }),
   (dispatch) => ({
-    /*addNodes(resourceNodes) {
-      dispatch(explorerActions.addNodes(selectors.EXPLORER_NAME, resourceNodes))
+    updateNodes() {
+      dispatch(listActions.invalidateData(selectors.LIST_NAME))
     },
 
-    updateNodes(resourceNodes) {
-      dispatch(explorerActions.updateNodes(selectors.EXPLORER_NAME, resourceNodes))
-    },
-
-    deleteNodes(resourceNodes) {
-      dispatch(explorerActions.deleteNodes(selectors.EXPLORER_NAME, resourceNodes))
-    }*/
+    deleteNodes() {
+      dispatch(listActions.invalidateData(selectors.LIST_NAME))
+    }
   })
 )(PlayerMainComponent)
 

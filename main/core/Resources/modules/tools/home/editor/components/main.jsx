@@ -90,6 +90,7 @@ const EditorMain = props =>
 
     <PageContent>
       <TabEditor
+        path={props.path}
         currentContext={props.currentContext}
         currentTabIndex={props.currentTabIndex}
         currentTab={props.currentTab}

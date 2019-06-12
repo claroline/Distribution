@@ -12,11 +12,11 @@ const HomeTool = props =>
     routes={[
       {
         path: '/tab',
-        render: () => <PlayerMain basePath={props.path} />
+        render: () => <PlayerMain path={props.path} />
       }, {
         path: '/edit/tab',
         disabled: !props.editable,
-        render: () => <EditorMain basePath={props.path} />
+        render: () => <EditorMain path={props.path} />
       }
     ]}
     redirect={[

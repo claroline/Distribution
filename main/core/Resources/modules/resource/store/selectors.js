@@ -14,9 +14,11 @@ const resourceNode = createSelector(
   (store) => store.resourceNode || {}
 )
 
+const basePath = toolSelectors.path
+
 const path = createSelector(
-  [toolSelectors.path, resourceNode],
-  (toolPath, resourceNode) => toolPath + '/' + resourceNode.id
+  [basePath, resourceNode],
+  (basePath, resourceNode) => basePath + '/' + resourceNode.id
 )
 
 const embedded = createSelector(
@@ -133,6 +135,7 @@ export const selectors = {
   STORE_NAME,
 
   path,
+  basePath,
   embedded,
   showHeader,
   managed,

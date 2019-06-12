@@ -4,7 +4,7 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {getActions} from '#/main/core/resource/utils'
+import {getActions, getDefaultAction} from '#/main/core/resource/utils'
 import {ListSource} from '#/main/app/content/list/containers/source'
 import {ListParameters as ListParametersTypes} from '#/main/app/content/list/parameters/prop-types'
 import resourcesSource from '#/main/core/data/sources/resources'
@@ -21,12 +21,14 @@ const PlayerMain = props =>
     source={merge({}, resourcesSource, {
       // adds actions to source
       parameters: {
-        primaryAction: (resourceNode) => ({
-          label: trans('open', {}, 'actions'),
-          type: LINK_BUTTON,
-          target: `${props.path}/${resourceNode.id}`
-        }),
-        //actions: props.actions || () => []
+        primaryAction: (resourceNode) => getDefaultAction(resourceNode, {
+          update: props.updateNodes,
+          delete: props.deleteNodes
+        }, props.path),
+        actions: (resourceNodes) => getActions(resourceNodes, {
+          update: props.updateNodes,
+          delete: props.deleteNodes
+        }, props.path)
       }
     })}
     parameters={props.listConfiguration}
@@ -34,11 +36,14 @@ const PlayerMain = props =>
 
 PlayerMain.propTypes = {
   path: T.string,
-  listName: T.string.isRequired,
   id: T.string,
+  listName: T.string.isRequired,
   listConfiguration: T.shape(
     ListParametersTypes.propTypes
-  )
+  ),
+
+  updateNodes: T.func.isRequired,
+  deleteNodes: T.func.isRequired
 }
 
 export {

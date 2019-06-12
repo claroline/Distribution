@@ -21,7 +21,7 @@ const PlayerMain = props =>
           if (props.tabs.find(tab => tab.id === routeProps.match.params.id)) {
             return (
               <PlayerTab
-                basePath={props.path}
+                path={props.path}
                 currentContext={props.currentContext}
                 tabs={props.tabs}
                 currentTabTitle={props.currentTabTitle}

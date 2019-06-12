@@ -15,9 +15,7 @@
       "trash-tool": "tools/trash/bootstrap",
       "workspace-user-management": "workspace/user",
       "resource-logs": "resource/logs",
-      "resource": "resource/bootstrap",
       "desktop-parameters-tool": "tools/desktop-parameters",
-      "home": "home/bootstrap",
       "templates-management": "administration/template/bootstrap",
       "dashboard-tool": "tools/dashboard/bootstrap",
       "dashboard-admin-tool": "administration/dashboard/bootstrap"

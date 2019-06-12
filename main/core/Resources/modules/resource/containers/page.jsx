@@ -13,6 +13,7 @@ import {actions, selectors} from '#/main/core/resource/store'
  */
 const ResourcePage = connect(
   (state) => ({
+    basePath: selectors.basePath(state),
     loaded: selectors.loaded(state),
     embedded: selectors.embedded(state),
     showHeader: selectors.showHeader(state),

@@ -7,7 +7,7 @@ import isEmpty from 'lodash/isEmpty'
 import {trans} from '#/main/app/intl/translation'
 import {url} from '#/main/app/api'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
-import {URL_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {
   ResourceNode as ResourceNodeTypes,
@@ -68,11 +68,9 @@ class ResourcePage extends Component {
         title={this.props.resourceNode.name}
         subtitle={this.props.subtitle}
         path={[].concat(ancestors.map(ancestorNode => ({
-          type: URL_BUTTON,
+          type: LINK_BUTTON,
           label: ancestorNode.name,
-          target: this.props.resourceNode.workspace ?
-            url(['claro_workspace_open_tool', {workspaceId: get(this.props.resourceNode, 'workspace.autoId'), toolName: 'resource_manager'}]) + `#/${ancestorNode.id}` :
-            url(['claro_desktop_open_tool', {toolName: 'resource_manager'}]) + `#/${ancestorNode.id}`
+          target: `${this.props.basePath}/${ancestorNode.id}`
         })), this.props.path)}
         poster={this.props.resourceNode.poster ? this.props.resourceNode.poster.url : undefined}
         icon={get(this.props.resourceNode, 'display.showIcon') && (this.props.userEvaluation ?
@@ -87,6 +85,9 @@ class ResourcePage extends Component {
         )}
         toolbar={getToolbar(this.props.primaryAction, true)}
         actions={getActions([this.props.resourceNode], {
+          add: () => {
+            this.props.loadResource(this.props.resourceNode, this.props.embedded)
+          },
           update: (resourceNodes) => {
             // checks if the action have modified the current node
             const currentNode = resourceNodes.find(node => node.id === this.props.resourceNode.id)
@@ -104,7 +105,7 @@ class ResourcePage extends Component {
               //this.props.deleteNode(currentNode)
             }
           }
-        }).then((actions) => [].concat(this.props.customActions || [], actions, [
+        }, this.props.basePath).then((actions) => [].concat(this.props.customActions || [], actions, [
           {
             name: 'fullscreen',
             type: 'callback',
@@ -139,6 +140,7 @@ class ResourcePage extends Component {
 }
 
 ResourcePage.propTypes = {
+  basePath: T.string,
   loaded: T.bool.isRequired,
   embedded: T.bool,
   showHeader: T.bool,
