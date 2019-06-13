@@ -17,26 +17,26 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
-use Claroline\DropZoneBundle\Entity\Document;
-use Claroline\DropZoneBundle\Entity\DocumentComment;
+use Claroline\DropZoneBundle\Entity\Drop;
+use Claroline\DropZoneBundle\Entity\DropComment;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.serializer.dropzone.document.comment")
+ * @DI\Service("claroline.serializer.dropzone.drop.comment")
  * @DI\Tag("claroline.serializer")
  */
-class DocumentCommentSerializer
+class DropCommentSerializer
 {
     use SerializerTrait;
 
     /** @var SerializerProvider */
     private $serializer;
 
-    private $documentRepo;
+    private $dropRepo;
     private $userRepo;
 
     /**
-     * DocumentCommentSerializer constructor.
+     * DropCommentSerializer constructor.
      *
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
@@ -50,17 +50,17 @@ class DocumentCommentSerializer
     {
         $this->serializer = $serializer;
 
-        $this->documentRepo = $om->getRepository(Document::class);
+        $this->dropRepo = $om->getRepository(Drop::class);
         $this->userRepo = $om->getRepository(User::class);
     }
 
     /**
-     * @param DocumentComment $comment
-     * @param array           $options
+     * @param DropComment $comment
+     * @param array       $options
      *
      * @return array
      */
-    public function serialize(DocumentComment $comment, array $options = [])
+    public function serialize(DropComment $comment, array $options = [])
     {
         $serialized = [
             'id' => $comment->getUuid(),
@@ -80,12 +80,12 @@ class DocumentCommentSerializer
     }
 
     /**
-     * @param array           $data
-     * @param DocumentComment $comment
+     * @param array       $data
+     * @param DropComment $comment
      *
-     * @return DocumentComment
+     * @return DropComment
      */
-    public function deserialize($data, DocumentComment $comment)
+    public function deserialize($data, DropComment $comment)
     {
         $this->sipe('id', 'setUuid', $data, $comment);
         $this->sipe('content', 'setContent', $data, $comment);
@@ -94,9 +94,9 @@ class DocumentCommentSerializer
             $user = $this->userRepo->findOneBy(['uuid' => $data['user']['id']]);
             $comment->setUser($user);
         }
-        if (!$comment->getDocument() && isset($data['meta']['document']['id'])) {
-            $document = $this->documentRepo->findOneBy(['uuid' => $data['meta']['document']['id']]);
-            $comment->setDocument($document);
+        if (!$comment->getDrop() && isset($data['meta']['drop']['id'])) {
+            $drop = $this->dropRepo->findOneBy(['uuid' => $data['meta']['drop']['id']]);
+            $comment->setDrop($drop);
         }
 
         return $comment;

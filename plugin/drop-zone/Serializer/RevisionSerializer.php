@@ -13,8 +13,8 @@ namespace Claroline\DropZoneBundle\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Revision;
@@ -29,9 +29,8 @@ class RevisionSerializer
 {
     use SerializerTrait;
 
-    private $documentSerializer;
-    private $revisionCommentSerializer;
-    private $userSerializer;
+    /** @var SerializerProvider */
+    private $serializer;
 
     private $revisionRepo;
     private $dropRepo;
@@ -41,26 +40,16 @@ class RevisionSerializer
      * RevisionSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "documentSerializer"        = @DI\Inject("claroline.serializer.dropzone.document"),
-     *     "revisionCommentSerializer" = @DI\Inject("claroline.serializer.dropzone.revision.comment"),
-     *     "userSerializer"            = @DI\Inject("claroline.serializer.user"),
-     *     "om"                        = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param DocumentSerializer        $documentSerializer
-     * @param RevisionCommentSerializer $revisionCommentSerializer
-     * @param UserSerializer            $userSerializer
-     * @param ObjectManager             $om
+     * @param ObjectManager      $om
+     * @param SerializerProvider $serializer
      */
-    public function __construct(
-        DocumentSerializer $documentSerializer,
-        RevisionCommentSerializer $revisionCommentSerializer,
-        UserSerializer $userSerializer,
-        ObjectManager $om
-    ) {
-        $this->documentSerializer = $documentSerializer;
-        $this->revisionCommentSerializer = $revisionCommentSerializer;
-        $this->userSerializer = $userSerializer;
+    public function __construct(ObjectManager $om, SerializerProvider $serializer)
+    {
+        $this->serializer = $serializer;
 
         $this->revisionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Revision');
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
@@ -78,7 +67,7 @@ class RevisionSerializer
         $serialized = [
             'id' => $revision->getUuid(),
             'creator' => $revision->getCreator() ?
-                $this->userSerializer->serialize($revision->getCreator(), [Options::SERIALIZE_MINIMAL]) :
+                $this->serializer->serialize($revision->getCreator(), [Options::SERIALIZE_MINIMAL]) :
                 null,
             'creationDate' => DateNormalizer::normalize($revision->getCreationDate()),
         ];
@@ -86,10 +75,10 @@ class RevisionSerializer
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'documents' => array_values(array_map(function (Document $document) {
-                    return $this->documentSerializer->serialize($document);
-                }, $revision->getComments()->toArray())),
+                    return $this->serializer->serialize($document);
+                }, $revision->getDocuments()->toArray())),
                 'comments' => array_values(array_map(function (RevisionComment $comment) use ($options) {
-                    return $this->revisionCommentSerializer->serialize($comment, $options);
+                    return $this->serializer->serialize($comment, $options);
                 }, $revision->getComments()->toArray())),
             ]);
         }

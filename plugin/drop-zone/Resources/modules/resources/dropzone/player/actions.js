@@ -12,6 +12,9 @@ export const DOCUMENT_REMOVE = 'DOCUMENT_REMOVE'
 export const PEER_DROP_LOAD = 'PEER_DROP_LOAD'
 export const PEER_DROP_RESET = 'PEER_DROP_RESET'
 export const PEER_DROPS_INC = 'PEER_DROPS_INC'
+export const REVISION_LOAD = 'REVISION_LOAD'
+export const REVISION_RESET = 'REVISION_RESET'
+export const REVISION_COMMENT_UPDATE = 'REVISION_COMMENT_UPDATE'
 
 export const actions = {}
 
@@ -124,5 +127,43 @@ actions.submitCorrection = (correctionId, navigate) => ({
       dispatch(actions.resetPeerDrop())
       navigate('/')
     }
+  }
+})
+
+actions.submitDropForRevision = (dropId) => ({
+  [API_REQUEST]: {
+    url: ['claro_dropzone_drop_submit_for_revision', {id: dropId}],
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => dispatch(actions.loadMyDrop(data))
+  }
+})
+
+actions.fetchRevision = (revisionId) => (dispatch) => {
+  dispatch({
+    [API_REQUEST]: {
+      url: ['apiv2_droprevision_get', {id: revisionId}],
+      success: (data, dispatch) => {
+        if (data && data.id) {
+          dispatch(actions.loadRevision(data))
+        }
+      }
+    }
+  })
+}
+
+actions.loadRevision = makeActionCreator(REVISION_LOAD, 'revision')
+actions.resetRevision = makeActionCreator(REVISION_RESET)
+actions.updateRevisionComment = makeActionCreator(REVISION_COMMENT_UPDATE, 'comment')
+
+actions.saveRevisionComment = (comment) => ({
+  [API_REQUEST]: {
+    url: comment.id ? ['apiv2_revisioncomment_update', {id: comment.id}] : ['apiv2_revisioncomment_create'],
+    request: {
+      method: comment.id ? 'PUT' : 'POST',
+      body: JSON.stringify(comment)
+    },
+    success: (data, dispatch) => dispatch(actions.updateRevisionComment(data))
   }
 })

@@ -17,9 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_dropzonebundle_document_comment")
+ * @ORM\Table(name="claro_dropzonebundle_drop_comment")
  */
-class DocumentComment
+class DropComment
 {
     use UuidTrait;
 
@@ -39,12 +39,12 @@ class DocumentComment
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\DropZoneBundle\Entity\Document",
+     *     targetEntity="Claroline\DropZoneBundle\Entity\Drop",
      *     inversedBy="comments"
      * )
-     * @ORM\JoinColumn(name="document_id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="drop_id", onDelete="CASCADE")
      */
-    protected $document;
+    protected $drop;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
@@ -63,7 +63,7 @@ class DocumentComment
     protected $editionDate;
 
     /**
-     * DocumentComment constructor.
+     * DropComment constructor.
      */
     public function __construct()
     {
@@ -104,19 +104,19 @@ class DocumentComment
     }
 
     /**
-     * @return Document
+     * @return Drop
      */
-    public function getDocument()
+    public function getDrop()
     {
-        return $this->document;
+        return $this->drop;
     }
 
     /**
-     * @param Document $document
+     * @param Drop $drop
      */
-    public function setDocument(Document $document)
+    public function setDrop(Drop $drop)
     {
-        $this->document = $document;
+        $this->drop = $drop;
     }
 
     /**

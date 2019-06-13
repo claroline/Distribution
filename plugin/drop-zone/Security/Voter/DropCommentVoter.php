@@ -12,7 +12,7 @@
 namespace Claroline\DropZoneBundle\Security\Voter;
 
 use Claroline\CoreBundle\Security\Voter\AbstractVoter;
-use Claroline\DropZoneBundle\Entity\DocumentComment;
+use Claroline\DropZoneBundle\Entity\DropComment;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  * @DI\Service
  * @DI\Tag("security.voter")
  */
-class DocumentCommentVoter extends AbstractVoter
+class DropCommentVoter extends AbstractVoter
 {
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
     {
@@ -41,7 +41,7 @@ class DocumentCommentVoter extends AbstractVoter
 
     public function getClass()
     {
-        return DocumentComment::class;
+        return DropComment::class;
     }
 
     public function getSupportedActions()
@@ -49,20 +49,20 @@ class DocumentCommentVoter extends AbstractVoter
         return[self::OPEN, self::VIEW, self::CREATE, self::EDIT, self::DELETE];
     }
 
-    private function canEditResource(DocumentComment $comment)
+    private function canEditResource(DropComment $comment)
     {
-        $resourceNode = $comment->getDocument()->getDrop()->getDropzone()->getResourceNode();
+        $resourceNode = $comment->getDrop()->getDropzone()->getResourceNode();
 
         return $this->isGranted(self::EDIT, $resourceNode);
     }
 
-    private function isOwner(TokenInterface $token, DocumentComment $comment)
+    private function isOwner(TokenInterface $token, DropComment $comment)
     {
         $isOwner = false;
         $user = $token->getUser();
 
         if ('anon.' !== $user) {
-            $drop = $comment->getDocument()->getDrop();
+            $drop = $comment->getDrop();
             $dropUsers = $drop->getUsers();
 
             if ($drop->getUser()) {

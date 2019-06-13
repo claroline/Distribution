@@ -65,10 +65,10 @@ class RevisionCommentSerializer
         $serialized = [
             'id' => $comment->getUuid(),
             'content' => $comment->getContent(),
-            'user' => $comment->getUser() ?
-                $this->serializer->serialize($comment->getUser(), [Options::SERIALIZE_MINIMAL]) :
-                null,
             'meta' => [
+                'user' => $comment->getUser() ?
+                    $this->serializer->serialize($comment->getUser(), [Options::SERIALIZE_MINIMAL]) :
+                    null,
                 'creationDate' => DateNormalizer::normalize($comment->getCreationDate()),
                 'editionDate' => $comment->getEditionDate() ?
                     DateNormalizer::normalize($comment->getEditionDate()) :
@@ -90,8 +90,8 @@ class RevisionCommentSerializer
         $this->sipe('id', 'setUuid', $data, $comment);
         $this->sipe('content', 'setContent', $data, $comment);
 
-        if (!$comment->getUser() && isset($data['user']['id'])) {
-            $user = $this->userRepo->findOneBy(['uuid' => $data['user']['id']]);
+        if (!$comment->getUser() && isset($data['meta']['user']['id'])) {
+            $user = $this->userRepo->findOneBy(['uuid' => $data['meta']['user']['id']]);
             $comment->setUser($user);
         }
         if (!$comment->getRevision() && isset($data['meta']['revision']['id'])) {

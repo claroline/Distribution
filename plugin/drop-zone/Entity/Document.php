@@ -121,21 +121,12 @@ class Document
     protected $revision;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\DropZoneBundle\Entity\DocumentComment",
-     *     mappedBy="document"
-     * )
-     */
-    protected $comments;
-
-    /**
      * Document constructor.
      */
     public function __construct()
     {
         $this->refreshUuid();
         $this->toolDocuments = new ArrayCollection();
-        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -375,14 +366,6 @@ class Document
     public function setRevision(Revision $revision = null)
     {
         $this->revision = $revision;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getComments()
-    {
-        return $this->comments;
     }
 
     /**

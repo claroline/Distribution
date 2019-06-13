@@ -7,7 +7,7 @@ import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {Button} from '#/main/app/action/components/button'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
@@ -45,7 +45,7 @@ const Corrections = props =>
         <th>{trans('start_date', {}, 'platform')}</th>
         <th>{trans('end_date', {}, 'platform')}</th>
         {props.dropzone.display.showScore &&
-        <th>{trans('score', {}, 'platform')}</th>
+          <th>{trans('score', {}, 'platform')}</th>
         }
       </tr>
     </thead>
@@ -79,7 +79,7 @@ const Corrections = props =>
             <td>{c.startDate}</td>
             <td>{c.endDate}</td>
             {props.dropzone.display.showScore &&
-            <td>{c.score} / {props.dropzone.parameters.scoreMax}</td>
+              <td>{c.score} / {props.dropzone.parameters.scoreMax}</td>
             }
           </tr>
         )
@@ -109,40 +109,51 @@ const MyDropComponent = props =>
     />
 
     {props.dropzone.display.displayCorrectionsToLearners && props.myDrop.finished && props.myDrop.corrections.filter(c => c.finished).length > 0 &&
-    <Corrections
-      corrections={props.myDrop.corrections.filter(c => c.finished && c.valid)}
-      {...props}
-    />
+      <Corrections
+        corrections={props.myDrop.corrections.filter(c => c.finished && c.valid)}
+        {...props}
+      />
     }
 
     {props.isDropEnabled && !props.myDrop.finished &&
-    <div className="text-right">
-      <ButtonToolbar className={'pull-right'}>
-        <Button
-          type={CALLBACK_BUTTON}
-          icon={'fa fa-fw fa-plus icon-with-text-right'}
-          label= {trans('add_document', {}, 'dropzone')}
-          className="btn btn-default"
-          callback={() => props.addDocument(props.myDrop.id, props.dropzone.parameters.documents)}
-        />
-        <Button
-          type={CALLBACK_BUTTON}
-          icon={'fa fa-fw fa-comments-o icon-with-text-right'}
-          label= {trans('submit_for_revision', {}, 'dropzone')}
-          className="btn"
-          disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
-          callback={() => props.submitForRevision(props.myDrop.id)}
-        />
-        <Button
-          type={CALLBACK_BUTTON}
-          icon={'fa fa-fw fa-upload icon-with-text-right'}
-          label= {trans('submit_my_drop', {}, 'dropzone')}
-          className="btn primary"
-          disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
-          callback={() => props.submit(props.myDrop.id)}
-        />
-      </ButtonToolbar>
-    </div>
+      <div className="text-right">
+        <ButtonToolbar className={'pull-right'}>
+          {props.dropzone.parameters.revisionEnabled &&
+            <Button
+              type={CALLBACK_BUTTON}
+              icon={'fa fa-fw fa-comments-o icon-with-text-right'}
+              label= {trans('submit_for_revision', {}, 'dropzone')}
+              className="btn"
+              disabled={!props.myDrop.documents || 0 === props.myDrop.documents.filter(d => !d.revision).length}
+              callback={() => props.submitForRevision(props.myDrop.id)}
+            />
+          }
+          {props.dropzone.parameters.revisionEnabled &&
+            <Button
+              type={LINK_BUTTON}
+              icon={'fa fa-fw fa-history icon-with-text-right'}
+              label={trans('revisions_history', {}, 'dropzone')}
+              className="btn"
+              target={'/my/drop/revisions'}
+            />
+          }
+          <Button
+            type={CALLBACK_BUTTON}
+            icon={'fa fa-fw fa-plus icon-with-text-right'}
+            label= {trans('add_document', {}, 'dropzone')}
+            className="btn btn-default"
+            callback={() => props.addDocument(props.myDrop.id, props.dropzone.parameters.documents)}
+          />
+          <Button
+            type={CALLBACK_BUTTON}
+            icon={'fa fa-fw fa-upload icon-with-text-right'}
+            label= {trans('submit_my_drop', {}, 'dropzone')}
+            className="btn primary"
+            disabled={!props.myDrop.documents || 0 === props.myDrop.documents.length}
+            callback={() => props.submit(props.myDrop.id)}
+          />
+        </ButtonToolbar>
+      </div>
     }
   </section>
 
@@ -213,7 +224,7 @@ const MyDrop = connect(
           title: trans('submit_for_revision', {}, 'dropzone'),
           question: trans('submit_for_revision_confirm', {}, 'dropzone'),
           confirmButtonText: trans('submit_for_revision', {}, 'dropzone'),
-          handleConfirm: () => console.log('submit for revision')
+          handleConfirm: () => dispatch(actions.submitDropForRevision(id))
         })
       )
     },

@@ -12,22 +12,22 @@
 namespace Claroline\DropZoneBundle\Controller\API;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\DropZoneBundle\Entity\DocumentComment;
+use Claroline\DropZoneBundle\Entity\DropComment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
- * @EXT\Route("/documentcomment")
+ * @EXT\Route("/dropcomment")
  */
-class DocumentCommentController extends AbstractCrudController
+class DropCommentController extends AbstractCrudController
 {
     public function getName()
     {
-        return 'documentcomment';
+        return 'dropcomment';
     }
 
     public function getClass()
     {
-        return DocumentComment::class;
+        return DropComment::class;
     }
 
     public function getIgnore()
