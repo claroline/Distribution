@@ -1,16 +1,22 @@
 import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Calendar} from '#/main/core/layout/calendar/components/calendar'
 import {Checkboxes} from '#/main/app/input/components/checkboxes'
+import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 import {calendarUrl} from '#/plugin/agenda/tools/agenda/utils'
 
 const AgendaMenu = props =>
-  <div className="agenda-menu">
+  <MenuSection
+    {...omit(props, 'history', 'path', 'view', 'selected')}
+    className="agenda-menu"
+    title={trans('agenda', {}, 'tools')}
+  >
     <Calendar
       selected={props.selected}
       onChange={(selected) => props.history.push(
@@ -36,7 +42,7 @@ const AgendaMenu = props =>
         callback={() => true}
       />
     </div>
-  </div>
+  </MenuSection>
 
 AgendaMenu.propTypes = {
   history: T.shape({

@@ -1,13 +1,19 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
+import omit from 'lodash/omit'
 
+import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {MenuSection} from '#/main/app/layout/menu/components/section'
 
-const HomeMenu = (props) => {
-  if (0 !== props.tabs.length) {
-    return (
+const HomeMenu = (props) =>
+  <MenuSection
+    {...omit(props, 'path', 'tabs')}
+    title={trans('home', {}, 'tools')}
+  >
+    {0 < props.tabs.length &&
       <div className="list-group">
         {props.tabs.map(tab =>
           <Button
@@ -23,17 +29,18 @@ const HomeMenu = (props) => {
           />
         )}
       </div>
-    )
-  }
-
-  return null
-}
+    }
+  </MenuSection>
 
 HomeMenu.propTypes = {
   path: T.string,
   tabs: T.arrayOf(T.shape({
     // TODO : tab types
-  }))
+  })),
+
+  // from menu
+  opened: T.bool.isRequired,
+  toggle: T.func.isRequired
 }
 
 HomeMenu.defaultProps = {

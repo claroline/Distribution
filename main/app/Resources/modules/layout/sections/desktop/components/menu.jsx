@@ -8,7 +8,7 @@ import {trans} from '#/main/app/intl/translation'
 import {number} from '#/main/app/intl'
 import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {LiquidGauge} from '#/main/core/layout/gauge/components/liquid-gauge'
-import {LayoutMenu} from '#/main/app/layout/containers/menu'
+import {MenuMain} from '#/main/app/layout/menu/containers/main'
 import {actions as walkthroughActions} from '#/main/app/overlays/walkthrough/store'
 
 import {MODAL_WORKSPACE_IMPERSONATION} from '#/main/core/workspace/modals/impersonation'
@@ -57,7 +57,7 @@ class DesktopMenu extends Component {
 
   render() {
     return (
-      <LayoutMenu
+      <MenuMain
         title={trans('desktop')}
         backAction={{
           type: LINK_BUTTON,
@@ -90,7 +90,7 @@ class DesktopMenu extends Component {
             Vous n'avez pas terminé toutes les activités disponibles.
           </div>
         </section>
-      </LayoutMenu>
+      </MenuMain>
     )
   }
 }

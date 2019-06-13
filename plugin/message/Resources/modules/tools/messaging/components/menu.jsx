@@ -1,10 +1,12 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 const MessagingMenu = (props) => {
   const links = [
@@ -28,18 +30,23 @@ const MessagingMenu = (props) => {
   ]
 
   return (
-    <div className="list-group">
-      {links.map(link =>
-        <Button
-          key={toKey(link.label)}
-          className="list-group-item"
-          type={LINK_BUTTON}
-          icon={link.icon}
-          label={link.label}
-          target={`${props.path}${link.path}`}
-        />
-      )}
-    </div>
+    <MenuSection
+      {...omit(props, 'path')}
+      title={trans('messaging', {}, 'tools')}
+    >
+      <div className="list-group">
+        {links.map(link =>
+          <Button
+            key={toKey(link.label)}
+            className="list-group-item"
+            type={LINK_BUTTON}
+            icon={link.icon}
+            label={link.label}
+            target={`${props.path}${link.path}`}
+          />
+        )}
+      </div>
+    </MenuSection>
   )
 }
 

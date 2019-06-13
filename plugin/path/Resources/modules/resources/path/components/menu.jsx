@@ -1,22 +1,52 @@
-// player
-function getStepSummary(step) {
-  return {
-    type: LINK_BUTTON,
-    icon: classes('step-progression fa fa-circle', step.userProgression && step.userProgression.status),
-    label: step.title,
-    target: `/play/${step.id}`,
-    children: step.children ? step.children.map(getStepSummary) : []
-  }
+import React from 'react'
+import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
+
+import {trans} from '#/main/app/intl/translation'
+import {Routes} from '#/main/app/router'
+import {MenuSection} from '#/main/app/layout/menu/components/section'
+
+import {EditorMenu} from '#/plugin/path/resources/path/editor/containers/menu'
+import {PlayerMenu} from '#/plugin/path/resources/path/player/containers/menu'
+
+const PathMenu = props =>
+  <MenuSection
+    {...omit(props, 'path')}
+    title={trans('innova_path', {}, 'resource')}
+  >
+    <Routes
+      path={props.path}
+      routes={[
+        {
+          path: '/edit',
+          render: () => {
+            return (
+              <EditorMenu path={props.path} />
+            )
+          },
+          disabled: !props.editable
+        }, {
+          path: '/',
+          render: () => {
+            return (
+              <PlayerMenu path={props.path} />
+            )
+          },
+        }
+      ]}
+    />
+  </MenuSection>
+
+PathMenu.propTypes = {
+  path: T.string.isRequired,
+
+  editable: T.bool.isRequired,
+
+  // from menu
+  opened: T.bool.isRequired,
+  toggle: T.func.isRequired
 }
 
-// editor
-function getStepSummary(step) {
-  return {
-    type: LINK_BUTTON,
-    icon: classes('step-progression fa fa-circle', step.userProgression && step.userProgression.status),
-    label: step.title,
-    target: `/edit/${step.id}`,
-    additional: this.getStepActions(step),
-    children: step.children ? step.children.map(this.getStepSummary) : []
-  }
+export {
+  PathMenu
 }

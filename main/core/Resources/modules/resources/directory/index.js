@@ -1,5 +1,6 @@
 
 import {DirectoryResource} from '#/main/core/resources/directory/containers/resource'
+import {DirectoryMenu} from '#/main/core/resources/directory/containers/menu'
 import {reducer} from '#/main/core/resources/directory/store'
 
 /**
@@ -7,5 +8,6 @@ import {reducer} from '#/main/core/resources/directory/store'
  */
 export default {
   component: DirectoryResource,
+  menu: DirectoryMenu,
   store: reducer
 }

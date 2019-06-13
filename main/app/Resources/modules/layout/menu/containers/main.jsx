@@ -2,10 +2,10 @@ import {connect} from 'react-redux'
 
 import {withRouter} from '#/main/app/router'
 
-import {LayoutMenu as LayoutMenuComponent} from '#/main/app/layout/components/menu'
+import {MenuMain as MenuMainComponent} from '#/main/app/layout/menu/components/main'
 import {actions, selectors} from '#/main/app/layout/store'
 
-const LayoutMenu =
+const MenuMain =
   connect(
     (state) => ({
       section: selectors.menuSection(state)
@@ -18,8 +18,8 @@ const LayoutMenu =
         dispatch(actions.changeMenuSection(section))
       }
     })
-  )(LayoutMenuComponent)
+  )(MenuMainComponent)
 
 export {
-  LayoutMenu
+  MenuMain
 }

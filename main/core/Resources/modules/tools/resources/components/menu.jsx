@@ -1,37 +1,58 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import get from 'lodash/get'
+import omit from 'lodash/omit'
 
-import {Button} from '#/main/app/action/components/button'
-import {LINK_BUTTON} from '#/main/app/buttons'
+import {trans} from '#/main/app/intl/translation'
+import {Routes} from '#/main/app/router'
+import {MenuSection} from '#/main/app/layout/menu/components/section'
 
-import {ToolMenu} from '#/main/core/tool/containers/menu'
+import {ResourceMenu} from '#/main/core/resource/containers/menu'
 
-function summaryLink(directory) {
-  return {
-    type: LINK_BUTTON,
-    id: directory.id,
-    icon: directory._opened ? 'fa fa-fw fa-folder-open' : 'fa fa-fw fa-folder',
-    label: directory.name,
-    collapsed: !directory._opened,
-    collapsible: !directory._loaded || (directory.children && 0 !== directory.children.length),
-    toggleCollapse: (collapsed) => props.toggleDirectoryOpen(directory, !collapsed),
-    target: `${props.path}/${directory.id}`,
-    children: directory.children ? directory.children.map(summaryLink) : []
-  }
+const RootMenu = props =>
+  <MenuSection
+    {...omit(props, 'path')}
+    title={trans('resources', {}, 'tools')}
+  >
+    root menu
+  </MenuSection>
+
+RootMenu.propTypes = {
+  path: T.string,
+
+  // from menu
+  opened: T.bool.isRequired,
+  toggle: T.func.isRequired
 }
 
 const ResourcesMenu = (props) =>
-  <div>
-    resources menu
-  </div>
+  <Routes
+    path={props.path}
+    routes={[
+      {
+        path: '/',
+        exact: true,
+        render: () => {
+          return (
+            <RootMenu {...props} />
+          )
+        }
+      }, {
+        path: '/:id',
+        render: () => {
+          return (
+            <ResourceMenu {...omit(props, 'path')} />
+          )
+        }
+      }
+    ]}
+  />
 
 ResourcesMenu.propTypes = {
-  path: T.string.isRequired
-}
+  path: T.string.isRequired,
 
-ResourcesMenu.defaultProps = {
-
+  // from menu
+  opened: T.bool.isRequired,
+  toggle: T.func.isRequired
 }
 
 export {

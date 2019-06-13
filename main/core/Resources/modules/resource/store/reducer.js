@@ -20,7 +20,7 @@ import {
 
 const reducer = combineReducers({
   loaded: makeReducer(false, {
-    [RESOURCE_SET_LOADED]: () => true
+    [RESOURCE_SET_LOADED]: (state, action) => action.loaded
   }),
 
   accessErrors: combineReducers({

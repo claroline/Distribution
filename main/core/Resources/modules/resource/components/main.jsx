@@ -61,7 +61,13 @@ class ResourceMain extends Component {
 
     this.pending = makeCancelable(this.props.loadNode(this.props.resourceId))
     this.pending.promise
-      .then((result) => this.setState({loaded: true}))
+      .then(() => {
+        this.setState({loaded: true})
+
+        if (this.props.open) {
+          this.props.open()
+        }
+      })
       .then(
         () => this.pending = null,
         () => this.pending = null
@@ -111,8 +117,7 @@ ResourceMain.propTypes = {
   resourceType: T.string,
 
   loaded: T.bool.isRequired,
-  //embedded: T.bool.isRequired,
-
+  open: T.func,
   loadNode: T.func.isRequired
 }
 

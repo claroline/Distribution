@@ -20,7 +20,7 @@ export const RESOURCE_COMMENT_REMOVE = 'RESOURCE_COMMENT_REMOVE'
 // action creators
 export const actions = {}
 
-actions.setResourceLoaded = makeActionCreator(RESOURCE_SET_LOADED)
+actions.setResourceLoaded = makeActionCreator(RESOURCE_SET_LOADED, 'loaded')
 actions.setRestrictionsError = makeActionCreator(RESOURCE_RESTRICTIONS_ERROR, 'errors')
 actions.setServerErrors = makeActionCreator(RESOURCE_SERVER_ERRORS, 'errors')
 actions.unlockResource = makeActionCreator(RESOURCE_RESTRICTIONS_UNLOCKED)
@@ -38,6 +38,7 @@ actions.fetchNode = (id) => (dispatch, getState) => {
     [API_REQUEST]: {
       silent: true,
       url: ['claro_resource_get', {id: id}],
+      before: (dispatch) => dispatch(actions.setResourceLoaded(false)),
       success: (response, dispatch) => dispatch(actions.openResource(response))
     }
   })
@@ -54,7 +55,7 @@ actions.fetchResource = (resourceNode, embedded = false) => ({
       // mark the resource as loaded
       // it's done through another action (not RESOURCE_LOAD) to be sure all reducers have been resolved
       // and store is up-to-date
-      dispatch(actions.setResourceLoaded())
+      dispatch(actions.setResourceLoaded(true))
     },
     error: (response, status, dispatch) => {
       switch(status) {

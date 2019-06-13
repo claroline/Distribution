@@ -1,13 +1,14 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import get from 'lodash/get'
+import omit from 'lodash/omit'
+
+import {trans} from '#/main/app/intl/translation'
+import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {ToolMenu} from '#/main/core/tool/containers/menu'
-
-function summaryLink(directory) {
+/*function summaryLink(directory) {
   return {
     type: LINK_BUTTON,
     id: directory.id,
@@ -19,21 +20,24 @@ function summaryLink(directory) {
     target: `${props.path}/${directory.id}`,
     children: directory.children ? directory.children.map(summaryLink) : []
   }
-}
+}*/
 
-const ResourcesMenu = (props) =>
-  <div>
-    resources menu
-  </div>
+const DirectoryMenu = (props) =>
+  <MenuSection
+    {...omit(props, 'path')}
+    title={trans('directory', {}, 'resource')}
+  >
+    My directory menu
+  </MenuSection>
 
-ResourcesMenu.propTypes = {
-  path: T.string.isRequired
-}
+DirectoryMenu.propTypes = {
+  path: T.string.isRequired,
 
-ResourcesMenu.defaultProps = {
-
+  // from menu
+  opened: T.bool.isRequired,
+  toggle: T.func.isRequired
 }
 
 export {
-  ResourcesMenu
+  DirectoryMenu
 }

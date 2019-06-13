@@ -2,13 +2,13 @@ import React, {createElement} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {Await} from '#/main/app/components/await'
-import {getTool} from '#/main/core/tools'
+import {getResource} from '#/main/core/resources'
 
-const ToolMenu = props => {
-  if (props.name && props.loaded) {
+const ResourceMenu = props => {
+  if (props.resourceType && props.loaded) {
     return (
       <Await
-        for={getTool(props.name)}
+        for={getResource(props.resourceType)}
         then={(module) => {
           if (module.default.menu) {
             return createElement(module.default.menu, {
@@ -27,9 +27,10 @@ const ToolMenu = props => {
   return null
 }
 
-ToolMenu.propTypes = {
-  path: T.string,
-  name: T.string,
+ResourceMenu.propTypes = {
+  path: T.string.isRequired,
+  resourceId: T.string,
+  resourceType: T.string,
   loaded: T.bool.isRequired,
 
   // from menu
@@ -38,5 +39,5 @@ ToolMenu.propTypes = {
 }
 
 export {
-  ToolMenu
+  ResourceMenu
 }

@@ -8,6 +8,7 @@ import {Toolbar} from '#/main/app/action/components/toolbar'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {LINK_BUTTON, CALLBACK_BUTTON} from '#/main/app/buttons'
 
+import {MenuSection} from '#/main/app/layout/menu/components/section'
 import {ToolMenu} from '#/main/core/tool/containers/menu'
 
 const LayoutMenuSection = props =>
@@ -34,7 +35,7 @@ LayoutMenuSection.propTypes = {
   children: T.node.isRequired
 }
 
-class LayoutMenu extends Component {
+class MenuMain extends Component {
   constructor(props) {
     super(props)
 
@@ -66,28 +67,28 @@ class LayoutMenu extends Component {
         {props.children}
 
         <ToolMenu
-          basePath="/desktop"
+          path="/desktop"
           opened={'tool' === props.section}
-          open={() => props.changeSection('tool')}
+          toggle={() => props.changeSection('tool')}
         />
 
-        <LayoutMenuSection
+        <MenuSection
           className="history"
           icon="fa fa-fw fa-history"
-          label="Historique"
+          title={trans('history')}
           opened={'history' === props.section}
-          open={() => props.changeSection('history')}
+          toggle={() => props.changeSection('history')}
         >
           Mon historique
-        </LayoutMenuSection>
+        </MenuSection>
 
         {0 !== props.tools.length &&
-          <LayoutMenuSection
+          <MenuSection
             className="tools"
             icon="fa fa-fw fa-tools"
-            label={trans('tools')}
+            title={trans('tools')}
             opened={'tools' === props.section}
-            open={() => props.changeSection('tools')}
+            toggle={() => props.changeSection('tools')}
           >
             <Toolbar
               className="list-group"
@@ -100,23 +101,23 @@ class LayoutMenu extends Component {
                 target: `/desktop/${tool.name}`
               }))}
             />
-          </LayoutMenuSection>
+          </MenuSection>
         }
 
         {0 !== props.actions.length &&
-          <LayoutMenuSection
+          <MenuSection
             className="actions"
             icon="fa fa-fw fa-ellipsis-v"
-            label={trans('more')}
+            title={trans('more')}
             opened={'actions' === props.section}
-            open={() => props.changeSection('actions')}
+            toggle={() => props.changeSection('actions')}
           >
             <Toolbar
               className="list-group"
               buttonName="list-group-item"
               actions={props.actions}
             />
-          </LayoutMenuSection>
+          </MenuSection>
         }
       </aside>
     )
@@ -124,7 +125,7 @@ class LayoutMenu extends Component {
 }
 
 
-LayoutMenu.propTypes = {
+MenuMain.propTypes = {
   title: T.string,
   backAction: T.shape(ActionTypes.propTypes),
 
@@ -141,11 +142,11 @@ LayoutMenu.propTypes = {
   changeSection: T.func.isRequired
 }
 
-LayoutMenu.defaultProps = {
+MenuMain.defaultProps = {
   tools: [],
   actions: []
 }
 
 export {
-  LayoutMenu
+  MenuMain
 }
