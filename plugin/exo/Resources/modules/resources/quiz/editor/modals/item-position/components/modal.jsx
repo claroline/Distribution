@@ -70,9 +70,9 @@ const PositionModal = props => {
                   choices: stepChoices
                 },
                 value: props.step.id,
-                onChange: () => {/*
+                onChange: parent => {
                   props.update('order', 'last')
-                  props.update('step', null)*/
+                  props.update('step', parent)
                 }
               },
               {
@@ -92,7 +92,7 @@ const PositionModal = props => {
                     last: trans('last')
                   }
                 },
-                onChange: (order) => {/*
+                onChange: (order) => {
                   if (-1 !== ['first', 'last'].indexOf(order)) {
                     props.update('step', null)
                   } else if (!props.positionData.step) {
@@ -106,7 +106,7 @@ const PositionModal = props => {
 
                       props.update('step', step)
                     }
-                  }*/
+                  }
                 },
                 linked: [
                   {

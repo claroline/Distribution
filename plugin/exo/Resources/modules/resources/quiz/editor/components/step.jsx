@@ -128,7 +128,10 @@ const EditorStep = props => {
                       selectAction: (position) => ({
                         type: CALLBACK_BUTTON,
                         label: trans('move', {}, 'actions'),
-                        callback: () => alert('copy')
+                        callback: () => {
+                          console.log(position)
+                          alert('copy')
+                        }
                       })
                     }],
                     group: trans('management')
@@ -157,7 +160,10 @@ const EditorStep = props => {
                       selectAction: (position) => ({
                         type: CALLBACK_BUTTON,
                         label: trans('move', {}, 'actions'),
-                        callback: () => alert('move')
+                        callback: () => {
+                          console.log(position)
+                          alert('move')
+                        }
                       })
                     }],
                     group: trans('management')
