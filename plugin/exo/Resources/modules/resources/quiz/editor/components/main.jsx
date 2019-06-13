@@ -144,7 +144,7 @@ class EditorMain extends Component {
                         formName={this.props.formName}
                         path={`steps[${stepIndex}]`}
                         numberingType={this.props.numberingType}
-
+                        steps={this.props.steps}
                         index={stepIndex}
                         id={currentStep.id}
                         title={currentStep.title}

@@ -12,10 +12,18 @@ import {selectors} from '#/plugin/exo/resources/quiz/editor/modals/item-position
 
 const PositionModal = props => {
   const stepChoices = props.steps
-    .filter(step => step.id !== props.step.id)
     .reduce((stepChoices, current) => Object.assign(stepChoices, {
       [current.id]: current.title
     }), {})
+
+  console.log(stepChoices)
+
+  const qChoices = props.items
+    .filter(item => item.id !== props.item.id)
+    .reduce((qChoices, current) => Object.assign(qChoices, {
+      [current.id]: current.title
+    }), {})
+
 
   // generate select actions
   const selectAction = props.selectAction(props.positionData)
@@ -48,24 +56,25 @@ const PositionModal = props => {
         name={selectors.STORE_NAME}
         sections={[
           {
-            title: trans('general'),
+            title: trans('parent'),
             primary: true,
             fields: [
               {
                 name: 'parent',
                 label: trans('parent'),
                 type: 'choice',
+                required: true,
                 options: {
                   condensed: true,
-                  choices: props.steps.reduce((stepChoices, current) => Object.assign(stepChoices, {
-                    [current.id]: current.title
-                  }), {})
+                  noEmpty: true,
+                  choices: stepChoices
                 },
                 onChange: () => {
                   props.update('order', 'last')
                   props.update('step', null)
                 }
-              }, {
+              },
+              {
                 name: 'order',
                 label: trans('position'),
                 type: 'choice',
@@ -73,7 +82,7 @@ const PositionModal = props => {
                 options: {
                   condensed: true,
                   noEmpty: true,
-                  choices: isEmpty(stepChoices) ? {
+                  choices: isEmpty(qChoices) ? {
                     first: trans('first')
                   } : {
                     first: trans('first'),
@@ -87,7 +96,7 @@ const PositionModal = props => {
                     props.update('step', null)
                   } else if (!props.positionData.step) {
                     // auto select a step
-                    const siblings = Object.keys(stepChoices)
+                    const siblings = Object.keys(qChoices)
                     if (!isEmpty(siblings)) {
                       let step = siblings[siblings.length - 1]
                       if ('before' === order) {
@@ -100,7 +109,7 @@ const PositionModal = props => {
                 },
                 linked: [
                   {
-                    name: 'step',
+                    name: 'question',
                     label: trans('step', {}, 'quiz'),
                     type: 'choice',
                     required: true,
@@ -109,7 +118,7 @@ const PositionModal = props => {
                     options: {
                       condensed: true,
                       noEmpty: true,
-                      choices: stepChoices
+                      choices: qChoices
                     }
                   }
                 ]
@@ -141,6 +150,14 @@ PositionModal.propTypes = {
     id: T.string.isRequired,
     title: T.string.isRequired
   })),
+  items: T.arrayOf(T.shape({
+    id: T.string.isRequired,
+    title: T.string.isRequired
+  })),
+  item: T.arrayOf(T.shape({
+    id: T.string.isRequired,
+    title: T.string.isRequired
+  })),
   positionData: T.shape({
     order: T.oneOf(['first', 'before', 'after', 'last']),
     step: T.string
@@ -154,6 +171,7 @@ PositionModal.propTypes = {
 
 PositionModal.defaultProps = {
   steps: [],
+  questions: [],
   selectEnabled: false
 }
 

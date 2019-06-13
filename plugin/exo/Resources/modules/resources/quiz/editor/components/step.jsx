@@ -119,6 +119,11 @@ const EditorStep = props => {
                         id: s.id,
                         title: s.title || trans('step', {number: i + 1}, 'quiz')
                       })),
+                      items: (props.items || []).map((s, i) => ({
+                        id: s.id,
+                        title: s.title || trans('item', {number: i + 1}, 'quiz')
+                      })),
+                      item: item,
                       selectAction: (position) => ({
                         type: CALLBACK_BUTTON,
                         label: trans('move', {}, 'actions'),
@@ -142,6 +147,11 @@ const EditorStep = props => {
                         id: s.id,
                         title: s.title || trans('step', {number: i + 1}, 'quiz')
                       })),
+                      items: (props.items || []).map((s, i) => ({
+                        id: s.id,
+                        title: s.title || trans('item', {number: i + 1}, 'quiz')
+                      })),
+                      item: item,
                       selectAction: (position) => ({
                         type: CALLBACK_BUTTON,
                         label: trans('move', {}, 'actions'),
@@ -233,6 +243,9 @@ EditorStep.propsTypes = {
   formName: T.string.isRequired,
   path: T.string.isRequired,
   numberingType: T.string.isRequired,
+  steps: T.arrayOf(T.shape({
+    // TODO : prop types
+  })),
 
   index: T.number.isRequired,
   id: T.string.isRequired,
