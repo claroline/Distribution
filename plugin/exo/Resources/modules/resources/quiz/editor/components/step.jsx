@@ -117,7 +117,8 @@ const EditorStep = props => {
                       },
                       steps: (props.steps || []).map((s, i) => ({
                         id: s.id,
-                        title: s.title || trans('step', {number: i + 1}, 'quiz')
+                        title: s.title || trans('step', {number: i + 1}, 'quiz'),
+                        items: s.items
                       })),
                       items: (props.items || []).map((s, i) => ({
                         id: s.id,
@@ -145,7 +146,8 @@ const EditorStep = props => {
                       },
                       steps: (props.steps || []).map((s, i) => ({
                         id: s.id,
-                        title: s.title || trans('step', {number: i + 1}, 'quiz')
+                        title: s.title || trans('step', {number: i + 1}, 'quiz'),
+                        items: s.items
                       })),
                       items: (props.items || []).map((s, i) => ({
                         id: s.id,

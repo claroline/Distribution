@@ -15,15 +15,15 @@ const PositionModal = props => {
     .reduce((stepChoices, current) => Object.assign(stepChoices, {
       [current.id]: current.title
     }), {})
+  const selectedParent = props.steps.find(step => props.form.parent ? step.id === props.form.parent: props.step.id)
 
-  console.log(stepChoices)
+  let i = 0
 
-  const qChoices = props.items
+  const qChoices = (selectedParent.items || [])
     .filter(item => item.id !== props.item.id)
     .reduce((qChoices, current) => Object.assign(qChoices, {
-      [current.id]: current.title
+      [current.id]: current.title || trans('question') + ' ' + ++i
     }), {})
-
 
   // generate select actions
   const selectAction = props.selectAction(props.positionData)
@@ -69,9 +69,10 @@ const PositionModal = props => {
                   noEmpty: true,
                   choices: stepChoices
                 },
-                onChange: () => {
+                value: props.step.id,
+                onChange: () => {/*
                   props.update('order', 'last')
-                  props.update('step', null)
+                  props.update('step', null)*/
                 }
               },
               {
@@ -91,7 +92,7 @@ const PositionModal = props => {
                     last: trans('last')
                   }
                 },
-                onChange: (order) => {
+                onChange: (order) => {/*
                   if (-1 !== ['first', 'last'].indexOf(order)) {
                     props.update('step', null)
                   } else if (!props.positionData.step) {
@@ -105,7 +106,7 @@ const PositionModal = props => {
 
                       props.update('step', step)
                     }
-                  }
+                  }*/
                 },
                 linked: [
                   {
@@ -160,13 +161,16 @@ PositionModal.propTypes = {
   })),
   positionData: T.shape({
     order: T.oneOf(['first', 'before', 'after', 'last']),
-    step: T.string
+    item: T.string
   }),
   selectEnabled: T.bool,
   selectAction: T.func.isRequired, // action generator
   reset: T.func.isRequired,
   update: T.func.isRequired,
-  fadeModal: T.func.isRequired
+  fadeModal: T.func.isRequired,
+  form: T.shape({
+
+  })
 }
 
 PositionModal.defaultProps = {
