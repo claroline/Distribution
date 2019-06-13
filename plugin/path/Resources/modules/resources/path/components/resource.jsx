@@ -13,7 +13,6 @@ import {DashboardMain} from '#/plugin/path/resources/path/dashboard/containers/m
 
 const PathResource = props =>
   <ResourcePage
-    styles={['claroline-distribution-plugin-path-path-resource']}
     customActions={[
       {
         type: LINK_BUTTON,

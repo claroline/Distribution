@@ -24,7 +24,8 @@ actions.setResourceLoaded = makeActionCreator(RESOURCE_SET_LOADED)
 actions.setRestrictionsError = makeActionCreator(RESOURCE_RESTRICTIONS_ERROR, 'errors')
 actions.setServerErrors = makeActionCreator(RESOURCE_SERVER_ERRORS, 'errors')
 actions.unlockResource = makeActionCreator(RESOURCE_RESTRICTIONS_UNLOCKED)
-actions.loadResource = makeInstanceActionCreator(RESOURCE_LOAD, 'resourceData')
+actions.loadResource = makeActionCreator(RESOURCE_LOAD, 'resourceData')
+actions.loadResourceType = makeInstanceActionCreator(RESOURCE_LOAD, 'resourceData')
 actions.openResource = makeActionCreator(RESOURCE_OPEN, 'resourceNode')
 
 actions.fetchNode = (id) => (dispatch, getState) => {
@@ -46,8 +47,9 @@ actions.fetchResource = (resourceNode, embedded = false) => ({
   [API_REQUEST]: {
     url: ['claro_resource_load_embedded', {type: resourceNode.meta.type, id: resourceNode.id, embedded: embedded ? 1 : 0}],
     success: (response, dispatch) => {
+      dispatch(actions.loadResource(response))
       // load resource data inside the store
-      dispatch(actions.loadResource(resourceNode.meta.type, response))
+      dispatch(actions.loadResourceType(resourceNode.meta.type, response))
 
       // mark the resource as loaded
       // it's done through another action (not RESOURCE_LOAD) to be sure all reducers have been resolved

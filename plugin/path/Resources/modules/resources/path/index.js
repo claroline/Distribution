@@ -7,5 +7,6 @@ import {reducer} from '#/plugin/path/resources/path/store'
  */
 export default {
   component: PathResource,
-  store: reducer
+  store: reducer,
+  styles: ['claroline-distribution-plugin-path-path-resource']
 }

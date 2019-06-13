@@ -29,6 +29,7 @@ const PlayerMain = props => {
     <Fragment>
       <h2 className="sr-only">{trans('play')}</h2>
       <Routes
+        path={props.basePath}
         redirect={[
           {from: '/play', to: `/play/${props.steps[0].id}`}
         ]}
@@ -45,7 +46,7 @@ const PlayerMain = props => {
               if (step) {
                 const Current =
                   <PathCurrent
-                    prefix="/play"
+                    prefix={`${props.basePath}/play`}
                     current={step}
                     all={props.steps}
                     navigation={props.navigationEnabled}
@@ -65,7 +66,7 @@ const PlayerMain = props => {
                 return Current
               }
 
-              routeProps.history.push('/play')
+              routeProps.history.push(props.basePath+'/play')
 
               return null
             }
@@ -77,6 +78,7 @@ const PlayerMain = props => {
 }
 
 PlayerMain.propTypes = {
+  basePath: T.string.isRequired,
   navigationEnabled: T.bool.isRequired,
   path: T.shape(
     PathTypes.propTypes

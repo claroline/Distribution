@@ -9,8 +9,6 @@ import {ListSource} from '#/main/app/content/list/containers/source'
 import {ListParameters as ListParametersTypes} from '#/main/app/content/list/parameters/prop-types'
 import resourcesSource from '#/main/core/data/sources/resources'
 
-// TODO : fix reloading at resource creation
-
 const PlayerMain = props =>
   <ListSource
     name={props.listName}

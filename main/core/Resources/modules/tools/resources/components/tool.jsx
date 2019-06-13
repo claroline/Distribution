@@ -5,6 +5,7 @@ import {Routes} from '#/main/app/router'
 
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {ResourceMain} from '#/main/core/resource/containers/main'
+import {ResourcesRoot} from '#/main/core/tools/resources/components/root'
 
 const ResourcesTool = props =>
   <Routes
@@ -16,8 +17,16 @@ const ResourcesTool = props =>
       {
         path: '/',
         exact: true,
+        disabled: !!props.root,
         render: () => {
-          return 'empty'
+          return (
+            <ResourcesRoot
+              path={props.path}
+              listName={props.listRootName}
+              updateNodes={props.updateNodes}
+              deleteNodes={props.deleteNodes}
+            />
+          )
         }
       }, {
         path: '/:id',
@@ -38,16 +47,9 @@ ResourcesTool.propTypes = {
   root: T.shape(
     ResourceNodeTypes.propTypes
   ),
-
-
-  /*contextType: T.string.isRequired,
-  current: T.shape(
-    ResourceNodeTypes.propTypes
-  ),
-  loading: T.bool.isRequired,
-  addNodes: T.func.isRequired,
+  listRootName: T.string.isRequired,
   updateNodes: T.func.isRequired,
-  deleteNodes: T.func.isRequired*/
+  deleteNodes: T.func.isRequired
 }
 
 export {

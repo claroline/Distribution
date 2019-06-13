@@ -52,11 +52,11 @@ class ResourcePage extends Component {
     // remove workspace root from path (it's already known by the breadcrumb)
     // find a better way to handle this
     let ancestors
-    if (this.props.resourceNode.workspace) {
+    /*if (this.props.resourceNode.workspace) {
       ancestors = this.props.resourceNode.path.slice(1)
-    } else {
+    } else {*/
       ancestors = this.props.resourceNode.path.slice(0)
-    }
+    /*}*/
 
     return (
       <ToolPage

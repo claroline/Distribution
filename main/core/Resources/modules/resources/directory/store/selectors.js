@@ -1,3 +1,4 @@
+
 const STORE_NAME = 'directory'
 
 const resource = (state) => state[STORE_NAME]

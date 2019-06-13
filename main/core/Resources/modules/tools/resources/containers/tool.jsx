@@ -1,35 +1,26 @@
 import {connect} from 'react-redux'
 
 import {withRouter} from '#/main/app/router'
+import {actions as listActions} from '#/main/app/content/list/store'
 
 import {ResourcesTool as ResourcesToolComponent} from '#/main/core/tools/resources/components/tool'
-import {selectors, actions} from '#/main/core/tools/resources/store'
+import {selectors} from '#/main/core/tools/resources/store'
 
 const ResourcesTool = withRouter(
   connect(
     (state) => ({
-      root: selectors.root(state)
+      root: selectors.root(state),
+      listRootName: selectors.LIST_ROOT_NAME
     }),
     (dispatch) => ({
-      openResource(resourceId) {
-        dispatch(actions.openResource(resourceId))
+      updateNodes() {
+        dispatch(listActions.invalidateData(selectors.LIST_ROOT_NAME))
+      },
+
+      deleteNodes() {
+        dispatch(listActions.invalidateData(selectors.LIST_ROOT_NAME))
       }
-      /*addNodes(resourceNodes) {
-        dispatch(explorerActions.addNodes(selectors.STORE_NAME, resourceNodes))
-      },
-
-      updateNodes(resourceNodes) {
-        dispatch(explorerActions.updateNodes(selectors.STORE_NAME, resourceNodes))
-      },
-
-      deleteNodes(resourceNodes) {
-        dispatch(explorerActions.deleteNodes(selectors.STORE_NAME, resourceNodes))
-      }*/
-    })/*,
-    undefined,
-    {
-      areStatesEqual: (next, prev) => selectors.store(prev) === selectors.store(next)
-    }*/
+    })
   )(ResourcesToolComponent)
 )
 

@@ -11,6 +11,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Layout\InjectJavascriptEvent;
 use Claroline\CoreBundle\Event\Layout\InjectStylesheetEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\MessageBundle\Entity\Message;
 use Icap\NotificationBundle\Manager\NotificationManager;
@@ -132,12 +133,9 @@ class ClientController
         });
 
         return [
-            'maintenance' => true,
-            //'maintenance' => MaintenanceHandler::isMaintenanceEnabled(),
             'meta' => [],
-
-            'impersonated' => true,
-            //'impersonated' => $this->isImpersonated(),
+            'maintenance' => MaintenanceHandler::isMaintenanceEnabled(),
+            'impersonated' => $this->isImpersonated(),
 
             'header' => [
                 'mainMenu' => $this->configHandler->getParameter('header_menu'),

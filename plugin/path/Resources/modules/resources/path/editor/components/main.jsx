@@ -89,6 +89,7 @@ class EditorMain extends Component {
       <Fragment>
         <h2 className="sr-only">{trans('configuration')}</h2>
         <Routes
+          path={this.props.basePath}
           redirect={[
             {from: '/edit/', to: '/edit/parameters', exact: true}
           ]}
@@ -114,7 +115,7 @@ class EditorMain extends Component {
                 if (step) {
                   const CurrentStep = (
                     <PathCurrent
-                      prefix="/edit"
+                      prefix={`${this.props.basePath}/edit`}
                       current={step}
                       all={this.props.steps}
                       navigation={true}
@@ -149,6 +150,7 @@ class EditorMain extends Component {
 }
 
 EditorMain.propTypes = {
+  basePath: T.string.isRequired,
   workspace: T.object,
   path: T.shape(
     PathTypes.propTypes
