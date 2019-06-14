@@ -163,8 +163,8 @@ export default {
   },
 
   refreshIdentifiers: (item) => {
-    console.log(item)
-
+    //broken aswell
+    
     return item
   }
 }
