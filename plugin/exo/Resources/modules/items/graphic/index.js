@@ -1,4 +1,5 @@
 import {trans} from '#/main/app/intl/translation'
+import {makeId} from '#/main/core/scaffolding/id'
 
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 
@@ -128,7 +129,10 @@ export default {
   },
 
   refreshIdentifiers: (item) => {
-    console.log(item)
+    item.id = makeId()
+
+    item.solutions.forEach(solution => solution.area.id = makeId())
+    item.image.id = makeId()
 
     return item
   }

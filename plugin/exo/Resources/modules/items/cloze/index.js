@@ -166,7 +166,6 @@ export default {
     item.id = makeId()
 
     Object.keys(mapIds).forEach(string => {
-      console.log(string)
       item.text = item.text.replace(string, mapIds[string])
     })
 
