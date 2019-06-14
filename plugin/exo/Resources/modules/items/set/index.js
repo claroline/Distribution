@@ -173,7 +173,6 @@ export default {
   },
 
   refreshIdentifiers: (item) => {
-    console.log(item)
     item.id = makeId()
 
     const mapIds = {}
@@ -196,10 +195,6 @@ export default {
     item.solutions.odd.forEach(odd => {
       odd.itemId = mapIds[odd.itemId]
     })
-
-
-
-    console.log(item)
 
     return item
   }
