@@ -73,8 +73,6 @@ export default {
   allAnswers: () => [],
 
   refreshIdentifiers: (item) => {
-    console.log(item)
-
     return item
   }
 }

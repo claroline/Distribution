@@ -3,6 +3,7 @@ import set from 'lodash/set'
 
 import {trans} from '#/main/app/intl/translation'
 import {notBlank} from '#/main/core/validation'
+import {makeId} from '#/main/core/scaffolding/id'
 
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {OrderingItem as OrderingItemType} from '#/plugin/exo/items/ordering/prop-types'
@@ -126,7 +127,15 @@ export default {
   },
 
   refreshIdentifiers: (item) => {
-    console.log(item)
+    const mapIds = {}
+
+    item.choices.forEach(choice => {
+      mapIds[choice.id] = makeId()
+      choice.id = mapIds[choice.id]
+    })
+
+    item.solutions.forEach(solution => solution.id = mapIds[solution.id])
+    item.id = makeId()
 
     return item
   }
