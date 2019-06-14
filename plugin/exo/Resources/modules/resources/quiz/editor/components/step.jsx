@@ -129,7 +129,7 @@ const EditorStep = props => {
                         callback: () => {
                           console.log(item)
                           refreshIdentifiers(item).then(item => {
-                            console.log(item)
+
                             props.copyItem(item, position)
                           })
                         }

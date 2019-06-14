@@ -147,6 +147,8 @@ export default {
     item.solutions.forEach(solution => {
       mapIds[solution.firstId] = makeId()
       mapIds[solution.secondId] = makeId()
+      solution.firstId = mapIds[solution.firstId]
+      solution.secondId = mapIds[solution.secondId]
     })
 
     item.firstSet.forEach(set => set.id = mapIds[set.id])
