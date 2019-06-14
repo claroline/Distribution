@@ -166,6 +166,34 @@ class RevisionController extends AbstractCrudController
         return new JsonResponse($data, 200);
     }
 
+    /**
+     * @EXT\Route("/{id}/revision/drop", name="claro_dropzone_drop_from_revision_get")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "revision",
+     *     class="ClarolineDropZoneBundle:Revision",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Revision $revision
+     * @param User     $user
+     *
+     * @return JsonResponse
+     */
+    public function dropFromRevisionFetcAction(Revision $revision, User $user)
+    {
+        $drop = $revision->getDrop();
+        $dropzone = $drop->getDropzone();
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
+
+        if (!$this->authorization->isGranted('EDIT', $collection) && $drop->getUser() !== $user && !in_array($user, $drop->getUsers())) {
+            throw new AccessDeniedException();
+        }
+
+        return new JsonResponse($this->manager->serializeDrop($drop), 200);
+    }
+
     private function checkPermission($permission, ResourceNode $resourceNode)
     {
         $collection = new ResourceCollection([$resourceNode]);

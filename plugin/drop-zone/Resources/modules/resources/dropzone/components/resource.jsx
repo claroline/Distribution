@@ -115,8 +115,14 @@ const DropzoneResource = props =>
         }, {
           path: '/my/drop/revisions/:id',
           component: Revision,
-          onEnter: (params) => props.fetchRevision(params.id),
-          onLeave: () => props.resetRevision()
+          onEnter: (params) => {
+            props.fetchRevision(params.id)
+            props.fetchDropFromRevision(params.id)
+          },
+          onLeave: () => {
+            props.resetRevision()
+            props.resetCurrentDrop()
+          }
         }, {
           path: '/revisions',
           component: Revisions,
@@ -126,8 +132,14 @@ const DropzoneResource = props =>
           path: '/revisions/:id',
           component: Revision,
           disabled: !props.canEdit,
-          onEnter: (params) => props.fetchRevision(params.id),
-          onLeave: () => props.resetRevision()
+          onEnter: (params) => {
+            props.fetchRevision(params.id)
+            props.fetchDropFromRevision(params.id)
+          },
+          onLeave: () => {
+            props.resetRevision()
+            props.resetCurrentDrop()
+          }
         }
       ]}
     />
@@ -146,6 +158,7 @@ DropzoneResource.propTypes = {
   resetCorrectorDrop: T.func.isRequired,
   fetchPeerDrop: T.func.isRequired,
   fetchRevision: T.func.isRequired,
+  fetchDropFromRevision: T.func.isRequired,
   resetRevision: T.func.isRequired
 }
 

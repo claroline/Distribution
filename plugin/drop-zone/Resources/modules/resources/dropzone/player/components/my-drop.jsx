@@ -197,7 +197,8 @@ MyDropComponent.propTypes = {
   addDocument: T.func.isRequired,
   saveDocument: T.func.isRequired,
   submitForRevision: T.func.isRequired,
-  saveRevisionComment: T.func.isRequired
+  saveRevisionComment: T.func.isRequired,
+  saveDropComment: T.func.isRequired
 }
 
 const MyDrop = connect(

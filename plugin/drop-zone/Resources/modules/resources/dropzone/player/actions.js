@@ -3,6 +3,7 @@ import {actions as listActions} from '#/main/app/content/list/store'
 import {API_REQUEST} from '#/main/app/api'
 
 import {select} from '#/plugin/drop-zone/resources/dropzone/store/selectors'
+import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
 export const MY_DROP_LOAD = 'MY_DROP_LOAD'
@@ -17,7 +18,6 @@ export const CURRENT_REVISION_ID_LOAD = 'CURRENT_REVISION_ID_LOAD'
 export const REVISION_LOAD = 'REVISION_LOAD'
 export const REVISION_RESET = 'REVISION_RESET'
 export const REVISION_COMMENT_UPDATE = 'REVISION_COMMENT_UPDATE'
-export const DROP_COMMENT_UPDATE = 'DROP_COMMENT_UPDATE'
 export const MY_DROP_COMMENT_UPDATE = 'MY_DROP_COMMENT_UPDATE'
 
 export const actions = {}
@@ -167,11 +167,23 @@ actions.fetchRevision = (revisionId) => (dispatch) => {
   })
 }
 
+actions.fetchDropFromRevision = (revisionId) => (dispatch) => {
+  dispatch({
+    [API_REQUEST]: {
+      url: ['claro_dropzone_drop_from_revision_get', {id: revisionId}],
+      success: (data, dispatch) => {
+        if (data && data.id) {
+          dispatch(correctionActions.loadCurrentDrop(data))
+        }
+      }
+    }
+  })
+}
+
 actions.loadCurrentRevisionId = makeActionCreator(CURRENT_REVISION_ID_LOAD, 'revisionId')
 actions.loadRevision = makeActionCreator(REVISION_LOAD, 'revision')
 actions.resetRevision = makeActionCreator(REVISION_RESET)
 actions.updateRevisionComment = makeActionCreator(REVISION_COMMENT_UPDATE, 'comment')
-actions.updateDropComment = makeActionCreator(DROP_COMMENT_UPDATE, 'comment')
 actions.updateMyDropComment = makeActionCreator(MY_DROP_COMMENT_UPDATE, 'comment')
 
 actions.saveRevisionComment = (comment) => ({
@@ -192,6 +204,8 @@ actions.saveDropComment = (comment, myDrop = false) => ({
       method: comment.id ? 'PUT' : 'POST',
       body: JSON.stringify(comment)
     },
-    success: (data, dispatch) => myDrop? dispatch(actions.updateMyDropComment(data)) : dispatch(actions.updateDropComment(data))
+    success: (data, dispatch) => myDrop?
+      dispatch(actions.updateMyDropComment(data)) :
+      dispatch(correctionActions.updateCurrentDropComment(data))
   }
 })

@@ -30,6 +30,7 @@ const DropzoneResource = withRouter(
         resetCorrectorDrop: () => dispatch(correctionActions.resetCorrectorDrop()),
         fetchPeerDrop: () => dispatch(playerActions.fetchPeerDrop()),
         fetchRevision: (revisionId) => dispatch(playerActions.fetchRevision(revisionId)),
+        fetchDropFromRevision: (revisionId) => dispatch(playerActions.fetchDropFromRevision(revisionId)),
         resetRevision: () => dispatch(playerActions.resetRevision())
       })
     )(DropzoneResourceComponent)
