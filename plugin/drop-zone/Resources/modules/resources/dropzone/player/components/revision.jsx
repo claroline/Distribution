@@ -7,6 +7,7 @@ import {displayDate} from '#/main/app/intl/date'
 
 import {Revision as RevisionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/store/selectors'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents'
 import {Comments} from '#/plugin/drop-zone/resources/dropzone/player/components/comments'
 
@@ -35,18 +36,25 @@ const RevisionComponent = props => props.revision ?
     <Comments
       comments={props.revision.comments}
       revisionId={props.revision.id}
+      saveComment={props.saveComment}
     />
   </section> :
   <div>
   </div>
 
 RevisionComponent.propTypes = {
-  revision: T.shape(RevisionType.propTypes)
+  revision: T.shape(RevisionType.propTypes),
+  saveComment: T.func.isRequired
 }
 
 const Revision = connect(
   (state) => ({
     revision: select.revision(state)
+  }),
+  (dispatch) => ({
+    saveComment(comment) {
+      dispatch(actions.saveRevisionComment(comment))
+    }
   })
 )(RevisionComponent)
 

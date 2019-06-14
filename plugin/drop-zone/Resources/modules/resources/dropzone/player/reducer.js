@@ -19,7 +19,8 @@ import {
   CURRENT_REVISION_ID_LOAD,
   REVISION_LOAD,
   REVISION_RESET,
-  REVISION_COMMENT_UPDATE
+  REVISION_COMMENT_UPDATE,
+  MY_DROP_COMMENT_UPDATE
 } from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {
   DROP_UPDATE,
@@ -77,6 +78,18 @@ const myDropReducer = makeReducer({}, {
     } else {
       return state
     }
+  },
+  [MY_DROP_COMMENT_UPDATE]: (state, action) => {
+    const newComments = cloneDeep(state.comments)
+    const commentIdx = newComments.findIndex(c => c.id === action.comment.id)
+
+    if (-1 < commentIdx) {
+      newComments[commentIdx] = action.comment
+    } else {
+      newComments.push(action.comment)
+    }
+
+    return Object.assign({}, state, {comments: newComments})
   }
 })
 
@@ -123,16 +136,16 @@ const revisionReducer = makeReducer(null, {
     return null
   },
   [REVISION_COMMENT_UPDATE]: (state, action) => {
-    const newRevision = cloneDeep(state)
-    const commentIdx = newRevision.comments.findIndex(c => c.id === action.comment.id)
+    const newComments = cloneDeep(state.comments)
+    const commentIdx = newComments.findIndex(c => c.id === action.comment.id)
 
     if (-1 < commentIdx) {
-      newRevision.comments[commentIdx] = action.comment
+      newComments[commentIdx] = action.comment
     } else {
-      newRevision.comments.push(action.comment)
+      newComments.push(action.comment)
     }
 
-    return newRevision
+    return Object.assign({}, state, {comments: newComments})
   }
 })
 

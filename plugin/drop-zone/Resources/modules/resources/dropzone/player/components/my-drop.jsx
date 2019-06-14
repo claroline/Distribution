@@ -164,8 +164,23 @@ const MyDropComponent = props =>
 
     {props.isDropEnabled && !props.myDrop.finished && props.currentRevisionId && props.revision &&
       <Comments
+        comments={props.myDrop.comments}
+        dropId={props.myDrop.id}
+        title={trans('drop_comments', {}, 'dropzone')}
+        saveComment={props.saveDropComment}
+      />
+    }
+
+    {props.isDropEnabled && !props.myDrop.finished && props.currentRevisionId && props.revision &&
+      <hr className="revision-comments-separator"/>
+    }
+
+    {props.isDropEnabled && !props.myDrop.finished && props.currentRevisionId && props.revision &&
+      <Comments
         comments={props.revision.comments}
         revisionId={props.currentRevisionId}
+        title={trans('revision_comments', {}, 'dropzone')}
+        saveComment={props.saveRevisionComment}
       />
     }
   </section>
@@ -181,7 +196,8 @@ MyDropComponent.propTypes = {
   showModal: T.func.isRequired,
   addDocument: T.func.isRequired,
   saveDocument: T.func.isRequired,
-  submitForRevision: T.func.isRequired
+  submitForRevision: T.func.isRequired,
+  saveRevisionComment: T.func.isRequired
 }
 
 const MyDrop = connect(
@@ -242,7 +258,13 @@ const MyDrop = connect(
       )
     },
     denyCorrection: (correctionId, comment) => dispatch(correctionActions.denyCorrection(correctionId, comment)),
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
+    saveRevisionComment(comment) {
+      dispatch(actions.saveRevisionComment(comment))
+    },
+    saveDropComment(comment) {
+      dispatch(actions.saveDropComment(comment, true))
+    }
   })
 )(MyDropComponent)
 

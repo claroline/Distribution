@@ -17,6 +17,8 @@ export const CURRENT_REVISION_ID_LOAD = 'CURRENT_REVISION_ID_LOAD'
 export const REVISION_LOAD = 'REVISION_LOAD'
 export const REVISION_RESET = 'REVISION_RESET'
 export const REVISION_COMMENT_UPDATE = 'REVISION_COMMENT_UPDATE'
+export const DROP_COMMENT_UPDATE = 'DROP_COMMENT_UPDATE'
+export const MY_DROP_COMMENT_UPDATE = 'MY_DROP_COMMENT_UPDATE'
 
 export const actions = {}
 
@@ -169,6 +171,8 @@ actions.loadCurrentRevisionId = makeActionCreator(CURRENT_REVISION_ID_LOAD, 'rev
 actions.loadRevision = makeActionCreator(REVISION_LOAD, 'revision')
 actions.resetRevision = makeActionCreator(REVISION_RESET)
 actions.updateRevisionComment = makeActionCreator(REVISION_COMMENT_UPDATE, 'comment')
+actions.updateDropComment = makeActionCreator(DROP_COMMENT_UPDATE, 'comment')
+actions.updateMyDropComment = makeActionCreator(MY_DROP_COMMENT_UPDATE, 'comment')
 
 actions.saveRevisionComment = (comment) => ({
   [API_REQUEST]: {
@@ -178,5 +182,16 @@ actions.saveRevisionComment = (comment) => ({
       body: JSON.stringify(comment)
     },
     success: (data, dispatch) => dispatch(actions.updateRevisionComment(data))
+  }
+})
+
+actions.saveDropComment = (comment, myDrop = false) => ({
+  [API_REQUEST]: {
+    url: comment.id ? ['apiv2_dropcomment_update', {id: comment.id}] : ['apiv2_dropcomment_create'],
+    request: {
+      method: comment.id ? 'PUT' : 'POST',
+      body: JSON.stringify(comment)
+    },
+    success: (data, dispatch) => myDrop? dispatch(actions.updateMyDropComment(data)) : dispatch(actions.updateDropComment(data))
   }
 })
