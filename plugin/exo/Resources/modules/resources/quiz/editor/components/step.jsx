@@ -15,8 +15,6 @@ import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {MODAL_ITEM_CREATION} from '#/plugin/exo/items/modals/creation'
 import {MODAL_ITEM_IMPORT} from '#/plugin/exo/items/modals/import'
 import {MODAL_ITEM_POSITION} from '#/plugin/exo/resources/quiz/editor/modals/item-position'
-import {MODAL_STEP_POSITION} from '#/plugin/exo/resources/quiz/editor/modals/step-position'
-import {MODAL_ITEM_COPY} from '#/plugin/exo/resources/quiz/editor/modals/item-copy'
 import {getNumbering} from '#/plugin/exo/resources/quiz/utils'
 import {EditorItem} from '#/plugin/exo/resources/quiz/editor/components/item'
 
@@ -129,8 +127,7 @@ const EditorStep = props => {
                         type: CALLBACK_BUTTON,
                         label: trans('move', {}, 'actions'),
                         callback: () => {
-                          console.log(position)
-                          alert('copy')
+                          props.copyItem(item.id, position)
                         }
                       })
                     }],
@@ -161,8 +158,7 @@ const EditorStep = props => {
                         type: CALLBACK_BUTTON,
                         label: trans('move', {}, 'actions'),
                         callback: () => {
-                          console.log(position)
-                          alert('move')
+                          props.moveItem(item.id, position)
                         }
                       })
                     }],
@@ -254,6 +250,8 @@ EditorStep.propsTypes = {
   steps: T.arrayOf(T.shape({
     // TODO : prop types
   })),
+  moveItem: T.func.isRequired,
+  copyItem: T.func.isRequired,
 
   index: T.number.isRequired,
   id: T.string.isRequired,

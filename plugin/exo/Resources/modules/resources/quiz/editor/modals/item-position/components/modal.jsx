@@ -15,18 +15,21 @@ const PositionModal = props => {
     .reduce((stepChoices, current) => Object.assign(stepChoices, {
       [current.id]: current.title
     }), {})
-  const selectedParent = props.steps.find(step => props.form.parent ? step.id === props.form.parent: props.step.id)
+
+  const selectedParent = props.steps.find(step => props.positionData.parent ? step.id === props.positionData.parent: props.step.id)
 
   let i = 0
 
   const qChoices = (selectedParent.items || [])
-    .filter(item => item.id !== props.item.id)
+    //.filter(item => item.id !== props.item.id)
     .reduce((qChoices, current) => Object.assign(qChoices, {
       [current.id]: current.title || trans('question') + ' ' + ++i
     }), {})
 
   // generate select actions
   const selectAction = props.selectAction(props.positionData)
+
+  //props.update('parent', props.step.id)
 
   return (
     <Modal
@@ -69,10 +72,8 @@ const PositionModal = props => {
                   noEmpty: true,
                   choices: stepChoices
                 },
-                value: props.step.id,
-                onChange: parent => {
+                onChange: () => {
                   props.update('order', 'last')
-                  props.update('step', parent)
                 }
               },
               {
@@ -92,26 +93,19 @@ const PositionModal = props => {
                     last: trans('last')
                   }
                 },
-                onChange: (order) => {
-                  if (-1 !== ['first', 'last'].indexOf(order)) {
-                    props.update('step', null)
-                  } else if (!props.positionData.step) {
-                    // auto select a step
-                    const siblings = Object.keys(qChoices)
-                    if (!isEmpty(siblings)) {
-                      let step = siblings[siblings.length - 1]
-                      if ('before' === order) {
-                        step = siblings[0]
-                      }
+                onChange: () => {
+                  if (!props.positionData.parent) {
+                    props.update('parent', props.steps[0].id)
+                  }
 
-                      props.update('step', step)
-                    }
+                  if (!props.positionData.item) {
+                    props.update('item', Object.keys(qChoices)[0])
                   }
                 },
                 linked: [
                   {
-                    name: 'question',
-                    label: trans('step', {}, 'quiz'),
+                    name: 'item',
+                    label: trans('question', {}, 'quiz'),
                     type: 'choice',
                     required: true,
                     hideLabel: true,
@@ -161,7 +155,8 @@ PositionModal.propTypes = {
   })),
   positionData: T.shape({
     order: T.oneOf(['first', 'before', 'after', 'last']),
-    item: T.string
+    item: T.string,
+    parent: T.string
   }),
   selectEnabled: T.bool,
   selectAction: T.func.isRequired, // action generator
