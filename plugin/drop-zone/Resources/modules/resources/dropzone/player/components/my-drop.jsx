@@ -1,24 +1,26 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
 
 import {trans} from '#/main/app/intl/translation'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
-import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
+import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {Button} from '#/main/app/action/components/button'
 
-import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
-import {select} from '#/plugin/drop-zone/resources/dropzone/store/selectors'
+import {MODAL_RESOURCE_EXPLORER} from '#/main/core/modals/resources'
+import {HtmlText} from '#/main/core/layout/components/html-text'
+
+import {DropzoneType, DropType, Revision as RevisionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+import {select} from '#/plugin/drop-zone/resources/dropzone/store/selectors'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
-import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
-import {MODAL_ADD_DOCUMENT} from '#/plugin/drop-zone/resources/dropzone/player/components/modal/add-document.jsx'
+import {MODAL_ADD_DOCUMENT} from '#/plugin/drop-zone/resources/dropzone/player/components/modal/add-document'
 import {MODAL_CORRECTION} from '#/plugin/drop-zone/resources/dropzone/correction/components/modal/correction-modal'
-import {MODAL_RESOURCE_EXPLORER} from '#/main/core/modals/resources'
+import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents'
+import {Comments} from '#/plugin/drop-zone/resources/dropzone/player/components/comments'
 
 const getTitle = (dropzone, correction, index) => {
   let title = ''
@@ -117,7 +119,7 @@ const MyDropComponent = props =>
 
     {props.isDropEnabled && !props.myDrop.finished &&
       <div className="text-right">
-        <ButtonToolbar className={'pull-right'}>
+        <ButtonToolbar className="pull-right">
           {props.dropzone.parameters.revisionEnabled &&
             <Button
               type={CALLBACK_BUTTON}
@@ -155,16 +157,25 @@ const MyDropComponent = props =>
         </ButtonToolbar>
       </div>
     }
+
+    {props.isDropEnabled && !props.myDrop.finished && props.currentRevisionId && props.revision &&
+      <hr className="revision-comments-separator"/>
+    }
+
+    {props.isDropEnabled && !props.myDrop.finished && props.currentRevisionId && props.revision &&
+      <Comments
+        comments={props.revision.comments}
+        revisionId={props.currentRevisionId}
+      />
+    }
   </section>
 
 MyDropComponent.propTypes = {
-  dropzone: T.shape(
-    DropzoneType.propTypes
-  ).isRequired,
-  myDrop: T.shape(
-    DropType.propTypes
-  ).isRequired,
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
+  myDrop: T.shape(DropType.propTypes).isRequired,
   isDropEnabled: T.bool.isRequired,
+  currentRevisionId: T.string,
+  revision: T.shape(RevisionType.propTypes),
   submit: T.func.isRequired,
   denyCorrection: T.func.isRequired,
   showModal: T.func.isRequired,
@@ -177,7 +188,9 @@ const MyDrop = connect(
   (state) => ({
     dropzone: select.dropzone(state),
     myDrop: select.myDrop(state),
-    isDropEnabled: select.isDropEnabled(state)
+    isDropEnabled: select.isDropEnabled(state),
+    currentRevisionId: select.currentRevisionId(state),
+    revision: select.revision(state)
   }),
   (dispatch) => ({
     saveDocument: (dropType, dropData) => dispatch(actions.saveDocument(dropType, dropData)),

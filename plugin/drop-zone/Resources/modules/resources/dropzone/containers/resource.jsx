@@ -18,7 +18,8 @@ const DropzoneResource = withRouter(
       (state) => ({
         canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
         dropzone: select.dropzone(state),
-        myDrop: select.myDrop(state)
+        myDrop: select.myDrop(state),
+        currentRevisionId: select.currentRevisionId(state)
       }),
       (dispatch) => ({
         resetForm: (formData) => dispatch(formActions.resetForm(select.STORE_NAME+'.dropzoneForm', formData)),

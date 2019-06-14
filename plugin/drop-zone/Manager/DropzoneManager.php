@@ -213,6 +213,18 @@ class DropzoneManager
     }
 
     /**
+     * Serializes a Revision entity.
+     *
+     * @param Revision $revision
+     *
+     * @return array
+     */
+    public function serializeRevision(Revision $revision)
+    {
+        return $this->serializer->serialize($revision);
+    }
+
+    /**
      * Updates a Dropzone.
      *
      * @param Dropzone $dropzone
@@ -565,6 +577,8 @@ class DropzoneManager
         $this->om->persist($revision);
         $this->om->persist($drop);
         $this->om->flush();
+
+        return $revision;
     }
 
     /**

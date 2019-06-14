@@ -75,7 +75,13 @@ const DropzoneResource = props =>
         }, {
           path: '/my/drop',
           component: MyDrop,
-          exact: true
+          exact: true,
+          onEnter: () => {
+            if (props.currentRevisionId) {
+              props.fetchRevision(props.currentRevisionId)
+            }
+          },
+          onLeave: () => props.resetRevision()
         }, {
           path: '/drops',
           component: Drops
@@ -131,6 +137,7 @@ DropzoneResource.propTypes = {
   canEdit: T.bool.isRequired,
   dropzone: T.object.isRequired,
   myDrop: T.object,
+  currentRevisionId: T.string,
 
   resetForm: T.func.isRequired,
   fetchDrop: T.func.isRequired,

@@ -95,9 +95,12 @@ class RevisionController extends AbstractCrudController
         $this->checkDropEdition($drop, $user);
 
         try {
-            $this->manager->submitDropForRevision($drop, $user);
+            $revision = $this->manager->submitDropForRevision($drop, $user);
 
-            return new JsonResponse($this->manager->serializeDrop($drop));
+            return new JsonResponse([
+                'drop' => $this->manager->serializeDrop($drop),
+                'revision' => $this->manager->serializeRevision($revision),
+            ]);
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }

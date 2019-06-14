@@ -46,6 +46,17 @@ class RevisionFinder extends AbstractFinder
                     $qb->andWhere("drop.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
+                case 'creator':
+                    $qb->join('obj.creator', 'u');
+                    $qb->andWhere("
+                        UPPER(u.firstName) LIKE :name
+                        OR UPPER(u.lastName) LIKE :name
+                        OR UPPER(u.username) LIKE :name
+                        OR CONCAT(UPPER(u.firstName), CONCAT(' ', UPPER(u.lastName))) LIKE :name
+                        OR CONCAT(UPPER(u.lastName), CONCAT(' ', UPPER(u.firstName))) LIKE :name
+                    ");
+                    $qb->setParameter('name', '%'.strtoupper($filterValue).'%');
+                    break;
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);
             }

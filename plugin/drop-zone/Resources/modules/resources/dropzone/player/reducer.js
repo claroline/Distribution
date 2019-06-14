@@ -16,6 +16,7 @@ import {
   PEER_DROP_LOAD,
   PEER_DROP_RESET,
   PEER_DROPS_INC,
+  CURRENT_REVISION_ID_LOAD,
   REVISION_LOAD,
   REVISION_RESET,
   REVISION_COMMENT_UPDATE
@@ -136,7 +137,8 @@ const revisionReducer = makeReducer(null, {
 })
 
 const currentRevisionIdReducer = makeReducer(null, {
-  [RESOURCE_LOAD]: (state, action) => action.resourceData.currentRevisionId
+  [RESOURCE_LOAD]: (state, action) => action.resourceData.currentRevisionId,
+  [CURRENT_REVISION_ID_LOAD]: (state, action) => action.revisionId
 })
 
 const reducer = {

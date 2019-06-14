@@ -37,6 +37,7 @@ const MyRevisionsComponent = props =>
           label: trans('creation_date'),
           type: 'date',
           displayed: true,
+          filterable: false,
           options: {
             time: true
           }
