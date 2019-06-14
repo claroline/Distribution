@@ -84,6 +84,11 @@ class DesktopController
         ]);
     }
 
+    public function configureAction()
+    {
+
+    }
+
     /**
      * Opens a tool.
      *

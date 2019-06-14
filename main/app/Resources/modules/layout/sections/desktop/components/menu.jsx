@@ -86,7 +86,6 @@ class DesktopMenu extends Component {
           />
 
           <div className="user-progression-info">
-            <h3 className="h4">Collaborateur</h3>
             Vous n'avez pas terminé toutes les activités disponibles.
           </div>
         </section>
@@ -94,6 +93,8 @@ class DesktopMenu extends Component {
     )
   }
 }
+
+// <h3 className="h4">Collaborateur</h3>
 
 DesktopMenu.propTypes = {
   openedTool: T.string,

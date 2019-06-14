@@ -323,7 +323,7 @@ class ResourceController
     }
 
     /**
-     * Gets a resource.
+     * Gets a resource node.
      *
      * @EXT\Route("/{id}", name="claro_resource_get")
      * @EXT\Method("GET")
@@ -348,7 +348,7 @@ class ResourceController
     }
 
     /**
-     * Gets a resource.
+     * Loads a resource and its related data.
      *
      * @EXT\Route("/load/{id}", name="claro_resource_load_short")
      * @EXT\Route("/load/{type}/{id}", name="claro_resource_load")

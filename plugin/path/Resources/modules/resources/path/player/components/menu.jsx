@@ -9,7 +9,7 @@ import {Summary} from '#/main/app/content/components/summary'
 function getStepSummary(step, path) {
   return {
     type: LINK_BUTTON,
-    icon: classes('step-progression fa fa-circle', get(step, 'userProgression.status')),
+    icon: classes('step-progression fa fa-fw fa-circle', get(step, 'userProgression.status')),
     label: step.title,
     target: `${path}/play/${step.id}`,
     //additional: this.getStepActions(step), // TODO : restore actions

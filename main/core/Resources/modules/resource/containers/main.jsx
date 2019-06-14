@@ -14,8 +14,7 @@ const ResourceMain = withRouter(
       (state) => ({
         path: selectors.path(state),
         resourceType: selectors.resourceType(state),
-        loaded: selectors.loaded(state),
-        //embedded: selectors.embedded(state)
+        loaded: selectors.loaded(state)
       }),
       (dispatch) => ({
         loadNode(resourceId) {

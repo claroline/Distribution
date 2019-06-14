@@ -29,8 +29,10 @@ actions.loadResourceType = makeInstanceActionCreator(RESOURCE_LOAD, 'resourceDat
 actions.openResource = makeActionCreator(RESOURCE_OPEN, 'resourceNode')
 
 actions.fetchNode = (id) => (dispatch, getState) => {
+  console.log('fetch')
   const resourceNode = selectors.resourceNode(getState())
   if (resourceNode && resourceNode.id === id) {
+    console.log('already found')
     return Promise.resolve(resourceNode)
   }
 

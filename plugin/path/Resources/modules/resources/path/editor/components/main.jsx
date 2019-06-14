@@ -137,7 +137,7 @@ class EditorMain extends Component {
                   return CurrentStep
                 }
 
-                routeProps.history.push('/edit')
+                routeProps.history.push(`${this.props.basePath}/edit`)
 
                 return null
               }

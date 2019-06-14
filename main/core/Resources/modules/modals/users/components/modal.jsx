@@ -80,6 +80,13 @@ const UsersModal = props => {
             displayed: false,
             displayable: false,
             sortable: false
+          }, {
+            name: 'unionOrganizationName',
+            label: trans('organization'),
+            type: 'string',
+            displayed: false,
+            displayable: false,
+            sortable: false
           }
         ]}
         card={UserCard}
