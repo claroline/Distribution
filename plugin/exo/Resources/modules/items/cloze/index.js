@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
 
+import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/app/intl/translation'
 import {notBlank, notEmpty, chain} from '#/main/core/validation'
 
@@ -71,7 +72,7 @@ export default {
 
     item.holes.forEach(hole => {
       const holeErrors = {}
-      const solution = utils.getHoleSolution(item, hole)
+      const solution = utils.getHoleSolution(hole, item.solutions)
 
       if (notBlank(hole.size)) {
         holeErrors.size = trans('cloze_empty_size_error', {}, 'quiz')
@@ -154,7 +155,15 @@ export default {
   },
 
   refreshIdentifiers: (item) => {
-    console.log(item)
+    const mapIds = {}
+
+    item.holes.forEach(hole => {
+      mapIds[hole.id] = makeId()
+      hole.id = mapIds[hole.id]
+    })
+
+    item.solutions.forEach(solution => solution.holeId = mapIds[solution.holeId])
+    item.id = makeId()
 
     return item
   }
