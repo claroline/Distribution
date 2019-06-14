@@ -158,11 +158,11 @@ const MyDropComponent = props =>
       </div>
     }
 
-    {props.isDropEnabled && !props.myDrop.finished && props.currentRevisionId && props.revision &&
+    {props.isDropEnabled && !props.myDrop.finished && props.dropzone.parameters.revisionEnabled &&
       <hr className="revision-comments-separator"/>
     }
 
-    {props.isDropEnabled && !props.myDrop.finished && props.currentRevisionId && props.revision &&
+    {props.isDropEnabled && !props.myDrop.finished && props.dropzone.parameters.revisionEnabled &&
       <Comments
         comments={props.myDrop.comments}
         dropId={props.myDrop.id}

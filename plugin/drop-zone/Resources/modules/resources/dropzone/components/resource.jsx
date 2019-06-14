@@ -111,10 +111,12 @@ const DropzoneResource = props =>
         }, {
           path: '/my/drop/revisions',
           component: MyRevisions,
+          disabled: !props.dropzone || !props.dropzone.parameters || !props.dropzone.parameters.revisionEnabled,
           exact: true
         }, {
           path: '/my/drop/revisions/:id',
           component: Revision,
+          disabled: !props.dropzone || !props.dropzone.parameters || !props.dropzone.parameters.revisionEnabled,
           onEnter: (params) => {
             props.fetchRevision(params.id)
             props.fetchDropFromRevision(params.id)
