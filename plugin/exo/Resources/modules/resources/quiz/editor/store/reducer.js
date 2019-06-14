@@ -121,15 +121,10 @@ export const reducer = makeFormReducer('resource.editor', {}, {
     [QUIZ_ITEM_COPY]: (state, action) => {
       const newState = cloneDeep(state)
 
-      const original = newState.steps.find(step => step.items.find(item => item.id === action.id)).items.find(item => item.id === action.id)
       const newParent = newState.steps.find(step => step.id === action.position.parent)
       const newItems = newParent.items
 
-      if (original) {
-        const copy = cloneDeep(original)
-        copy.id = makeId()
-        newParent.items = pushItem(copy, newItems, action.position)
-      }
+      newParent.items = pushItem(action.item, newItems, action.position)
 
       return newState
     },

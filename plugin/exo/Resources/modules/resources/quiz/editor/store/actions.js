@@ -20,7 +20,7 @@ actions.copyStep = makeActionCreator(QUIZ_STEP_COPY, 'id', 'position')
 actions.moveStep = makeActionCreator(QUIZ_STEP_MOVE, 'id', 'position')
 actions.removeStep = makeActionCreator(QUIZ_STEP_REMOVE, 'id')
 
-actions.copyItem = makeActionCreator(QUIZ_ITEM_COPY, 'id', 'position')
+actions.copyItem = makeActionCreator(QUIZ_ITEM_COPY, 'item', 'position')
 actions.moveItem = makeActionCreator(QUIZ_ITEM_MOVE, 'id', 'position')
 
 actions.save = (quizId) => (dispatch, getState) => {

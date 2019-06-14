@@ -110,5 +110,11 @@ export default {
     }
 
     return []
+  },
+
+  refreshIdentifiers: (item) => {
+    console.log(item)
+
+    return item
   }
 }

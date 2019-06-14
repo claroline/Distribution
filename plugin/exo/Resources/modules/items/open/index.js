@@ -70,5 +70,11 @@ export default {
   correctAnswer: () => new CorrectedAnswer(),
 
   expectAnswer: () => [],
-  allAnswers: () => []
+  allAnswers: () => [],
+
+  refreshIdentifiers: (item) => {
+    console.log(item)
+
+    return item
+  }
 }

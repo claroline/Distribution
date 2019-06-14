@@ -160,5 +160,11 @@ export default {
     }
 
     return answers
+  },
+
+  refreshIdentifiers: (item) => {
+    console.log(item)
+
+    return item
   }
 }

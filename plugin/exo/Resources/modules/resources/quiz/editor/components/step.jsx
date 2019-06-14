@@ -15,7 +15,7 @@ import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {MODAL_ITEM_CREATION} from '#/plugin/exo/items/modals/creation'
 import {MODAL_ITEM_IMPORT} from '#/plugin/exo/items/modals/import'
 import {MODAL_ITEM_POSITION} from '#/plugin/exo/resources/quiz/editor/modals/item-position'
-import {getNumbering} from '#/plugin/exo/resources/quiz/utils'
+import {getNumbering, refreshIdentifiers} from '#/plugin/exo/resources/quiz/utils'
 import {EditorItem} from '#/plugin/exo/resources/quiz/editor/components/item'
 
 // TODO : lock edition of protected items
@@ -105,7 +105,7 @@ const EditorStep = props => {
                     name: 'copy',
                     type: MODAL_BUTTON,
                     icon: 'fa fa-fw fa-clone',
-                    label: trans('copy2', {}, 'actions'),
+                    label: trans('copy', {}, 'actions'),
                     modal: [MODAL_ITEM_POSITION, {
                       icon: 'fa fa-fw fa-arrows',
                       title: trans('copy'),
@@ -125,9 +125,13 @@ const EditorStep = props => {
                       item: item,
                       selectAction: (position) => ({
                         type: CALLBACK_BUTTON,
-                        label: trans('move', {}, 'actions'),
+                        label: trans('copy', {}, 'actions'),
                         callback: () => {
-                          props.copyItem(item.id, position)
+                          console.log(item)
+                          refreshIdentifiers(item).then(item => {
+                            console.log(item)
+                            props.copyItem(item, position)
+                          })
                         }
                       })
                     }],
@@ -136,7 +140,7 @@ const EditorStep = props => {
                     name: 'move',
                     type: MODAL_BUTTON,
                     icon: 'fa fa-fw fa-arrows',
-                    label: trans('move2', {}, 'actions'),
+                    label: trans('move', {}, 'actions'),
                     modal: [MODAL_ITEM_POSITION, {
                       icon: 'fa fa-fw fa-arrows',
                       title: trans('movement'),
