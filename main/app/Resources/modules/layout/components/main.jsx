@@ -34,7 +34,7 @@ const LayoutMain = props =>
               path: '/desktop',
               component: DesktopMenu
             }, {
-              path: '/administration',
+              path: '/admin',
               component: AdministrationMenu
             }
           ]}
@@ -52,7 +52,7 @@ const LayoutMain = props =>
                 path: '/desktop',
                 component: DesktopMain
               }, {
-                path: '/administration',
+                path: '/admin',
                 component: AdministrationMain
               }
             ]}

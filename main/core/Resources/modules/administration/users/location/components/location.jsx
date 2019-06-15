@@ -11,7 +11,10 @@ import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {actions} from '#/main/core/administration/users/location/actions'
+
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {actions} from '#/main/core/administration/users/location/store'
 import {OrganizationList} from '#/main/core/administration/users/organization/components/organization-list'
 import {UserList} from '#/main/core/administration/users/user/components/user-list'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
@@ -21,7 +24,7 @@ import {locationTypes} from '#/main/core/administration/users/location/constants
 const LocationForm = props =>
   <FormData
     level={3}
-    name="locations.current"
+    name={`${baseSelectors.STORE_NAME}.locations.current`}
     buttons={true}
     target={(location, isNew) => isNew ?
       ['apiv2_location_create'] :
@@ -29,7 +32,7 @@ const LocationForm = props =>
     }
     cancel={{
       type: LINK_BUTTON,
-      target: '/locations',
+      target: props.path+'/locations',
       exact: true
     }}
     sections={[
@@ -81,12 +84,16 @@ const LocationForm = props =>
         ]}
       >
         <ListData
-          name="locations.current.users"
+          name={`${baseSelectors.STORE_NAME}.locations.current.users`}
           fetch={{
             url: ['apiv2_location_list_users', {id: props.location.id}],
             autoload: props.location.id && !props.new
           }}
-          primaryAction={UserList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/users/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_location_remove_users', {id: props.location.id}]
           }}
@@ -110,12 +117,16 @@ const LocationForm = props =>
         ]}
       >
         <ListData
-          name="locations.current.groups"
+          name={`${baseSelectors.STORE_NAME}.locations.current.groups`}
           fetch={{
             url: ['apiv2_location_list_groups', {id: props.location.id}],
             autoload: props.location.id && !props.new
           }}
-          primaryAction={GroupList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/groups/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_location_remove_groups', {id: props.location.id}]
           }}
@@ -139,12 +150,16 @@ const LocationForm = props =>
         ]}
       >
         <ListData
-          name="locations.current.organizations"
+          name={`${baseSelectors.STORE_NAME}.locations.current.organizations`}
           fetch={{
             url: ['apiv2_location_list_organizations', {id: props.location.id}],
             autoload: props.location.id && !props.new
           }}
-          primaryAction={OrganizationList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/organizations/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_location_remove_organizations', {id: props.location.id}]
           }}
@@ -156,6 +171,7 @@ const LocationForm = props =>
   </FormData>
 
 LocationForm.propTypes = {
+  path: T.string.isRequired,
   new: T.bool.isRequired,
   location: T.shape({
     id: T.string
@@ -167,8 +183,9 @@ LocationForm.propTypes = {
 
 const Location = connect(
   state => ({
-    new: formSelect.isNew(formSelect.form(state, 'locations.current')),
-    location: formSelect.data(formSelect.form(state, 'locations.current'))
+    path: toolSelectors.path(state),
+    new: formSelect.isNew(formSelect.form(state, baseSelectors.STORE_NAME+'.locations.current')),
+    location: formSelect.data(formSelect.form(state, baseSelectors.STORE_NAME+'.locations.current'))
   }),
   dispatch =>({
     pickUsers(locationId) {
@@ -176,7 +193,7 @@ const Location = connect(
         icon: 'fa fa-fw fa-user',
         title: trans('add_users'),
         confirmText: trans('add'),
-        name: 'users.picker',
+        name: baseSelectors.STORE_NAME+'.users.picker',
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
@@ -191,7 +208,7 @@ const Location = connect(
         icon: 'fa fa-fw fa-users',
         title: trans('add_groups'),
         confirmText: trans('add'),
-        name: 'groups.picker',
+        name: baseSelectors.STORE_NAME+'.groups.picker',
         definition: GroupList.definition,
         card: GroupList.card,
         fetch: {
@@ -206,7 +223,7 @@ const Location = connect(
         icon: 'fa fa-fw fa-buildings',
         title: trans('add_organizations'),
         confirmText: trans('add'),
-        name: 'organizations.picker',
+        name: baseSelectors.STORE_NAME+'.organizations.picker',
         definition: OrganizationList.definition,
         card: OrganizationList.card,
         fetch: {

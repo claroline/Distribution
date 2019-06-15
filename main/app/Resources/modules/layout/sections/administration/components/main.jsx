@@ -26,10 +26,10 @@ const AdministrationMain = (props) =>
               path: '/:toolName',
               render: (routeProps) => {
                 if (-1 !== props.tools.findIndex(tool => tool.name === routeProps.match.params.toolName)) {
-                  // tool is enabled for the desktop
+                  // tool is enabled for the admin
                   return (
                     <ToolMain
-                      getToolApp={getTool}
+                      getApp={getTool}
                       open={props.openTool}
                       toolName={routeProps.match.params.toolName}
                     />

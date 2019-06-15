@@ -1,7 +1,9 @@
 import {createSelector} from 'reselect'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
-const formName = 'profile'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
+
+const formName = baseSelectors.STORE_NAME+'.profile'
 const form =  state => formSelect.form(state, formName)
 
 const facets = createSelector(
@@ -24,7 +26,7 @@ const currentFacet = createSelector(
   (facets, currentFacetIndex) => -1 !== currentFacetIndex ? facets[currentFacetIndex] : undefined
 )
 
-export const select = {
+export const selectors = {
   formName,
   facets,
   currentFacetIndex,

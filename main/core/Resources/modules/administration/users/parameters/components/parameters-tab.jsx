@@ -8,6 +8,7 @@ import {url} from '#/main/app/api'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {constants} from '#/main/core/administration/users/parameters/constants'
 
 const Parameters = (props) => {
@@ -19,7 +20,7 @@ const Parameters = (props) => {
   return (
     <FormData
       level={3}
-      name="parameters"
+      name={`${baseSelectors.STORE_NAME}.parameters`}
       target={['apiv2_parameters_update']}
       buttons={true}
       sections={[
@@ -231,8 +232,8 @@ Parameters.propTypes = {
 
 const ParametersTab = connect(
   (state) => ({
-    parameters: formSelect.data(formSelect.form(state, 'parameters')),
-    platformRoles: state.platformRoles
+    parameters: formSelect.data(formSelect.form(state, baseSelectors.STORE_NAME+'.parameters')),
+    platformRoles: baseSelectors.platformRoles(state)
   })
 )(Parameters)
 

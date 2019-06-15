@@ -8,6 +8,7 @@ import {LiquidGauge} from '#/main/core/layout/gauge/components/liquid-gauge'
 import {MenuMain} from '#/main/app/layout/menu/containers/main'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 import {ToolMenu} from '#/main/core/tool/containers/menu'
+import {getTool} from '#/main/core/tools'
 import {DesktopHistory} from '#/main/app/layout/sections/desktop/components/history'
 
 const DesktopMenu = props =>
@@ -66,6 +67,7 @@ const DesktopMenu = props =>
     <ToolMenu
       path="/desktop"
       opened={'tool' === props.section}
+      getApp={getTool}
       toggle={() => props.changeSection('tool')}
     />
 

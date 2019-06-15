@@ -29,7 +29,7 @@ const DesktopMain = (props) =>
                   // tool is enabled for the desktop
                   return (
                     <ToolMain
-                      getToolApp={getTool}
+                      getApp={getTool}
                       open={props.openTool}
                       toolName={routeProps.match.params.toolName}
                     />

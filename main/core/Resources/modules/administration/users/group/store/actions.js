@@ -4,6 +4,7 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {actions as listActions} from '#/main/app/content/list/store'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {Group as GroupTypes} from '#/main/core/user/prop-types'
 
 export const actions = {}
@@ -28,8 +29,8 @@ actions.addUsers = (id, users) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('groups.list'))
-      dispatch(listActions.invalidateData('groups.current.users'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.groups.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.groups.current.users'))
     }
   }
 })
@@ -41,8 +42,8 @@ actions.addRoles = (id, roles) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('groups.list'))
-      dispatch(listActions.invalidateData('groups.current.roles'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.groups.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.groups.current.roles'))
     }
   }
 })
@@ -54,8 +55,8 @@ actions.addOrganizations = (id, organizations) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('groups.list'))
-      dispatch(listActions.invalidateData('groups.current.organizations'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.groups.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.groups.current.organizations'))
     }
   }
 })

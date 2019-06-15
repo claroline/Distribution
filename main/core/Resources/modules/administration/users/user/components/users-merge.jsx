@@ -13,8 +13,8 @@ import {ListData} from '#/main/app/content/list/containers/data'
 
 import {User as UserTypes} from '#/main/core/user/prop-types'
 import {UserAvatar} from '#/main/core/user/components/avatar'
-import {actions} from '#/main/core/administration/users/user/actions'
-
+import {actions} from '#/main/core/administration/users/user/store'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {OrganizationList} from '#/main/core/administration/users/organization/components/organization-list'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
 import {RoleList} from '#/main/core/administration/users/role/components/role-list'
@@ -89,7 +89,7 @@ const UserCompare = props =>
           title={trans('groups')}
         >
           <ListData
-            name={`users.compare.groupsUser${props.index}`}
+            name={`${baseSelectors.STORE_NAME}.users.compare.groupsUser${props.index}`}
             fetch={{
               url: ['apiv2_user_list_groups', {id: props.user.id}],
               autoload: true
@@ -106,7 +106,7 @@ const UserCompare = props =>
           title={trans('organizations')}
         >
           <ListData
-            name={`users.compare.organizationsUser${props.index}`}
+            name={`${baseSelectors.STORE_NAME}.users.compare.organizationsUser${props.index}`}
             fetch={{
               url: ['apiv2_user_list_organizations', {id: props.user.id}],
               autoload: true
@@ -123,7 +123,7 @@ const UserCompare = props =>
           title={trans('roles')}
         >
           <ListData
-            name={`users.compare.rolesUser${props.index}`}
+            name={`${baseSelectors.STORE_NAME}.users.compare.rolesUser${props.index}`}
             fetch={{
               url: ['apiv2_user_list_roles', {id: props.user.id}],
               autoload: true

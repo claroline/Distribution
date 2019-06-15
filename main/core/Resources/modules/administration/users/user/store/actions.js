@@ -4,6 +4,7 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as listActions} from '#/main/app/content/list/store/actions'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
 export const USER_COMPARE = 'USER_COMPARE'
@@ -52,8 +53,8 @@ actions.addGroups = (id, groups) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('users.current.groups'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.current.groups'))
     }
   }
 })
@@ -65,8 +66,8 @@ actions.addRoles = (id, roles) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('users.current.roles'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.current.roles'))
     }
   }
 })
@@ -78,8 +79,8 @@ actions.addOrganizations = (id, organizations) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('users.current.organizations'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.current.organizations'))
     }
   }
 })
@@ -91,7 +92,7 @@ actions.enable = (users) => ({
       method: 'PUT'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
     }
   }
 })
@@ -103,7 +104,7 @@ actions.disable = (users) => ({
       method: 'PUT'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
     }
   }
 })
@@ -114,7 +115,7 @@ actions.createWorkspace = (users) => ({
     request: {
       method: 'POST'
     },
-    success: (data, dispatch) => dispatch(listActions.invalidateData('users.list'))
+    success: (data, dispatch) => dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
   }
 })
 
@@ -124,7 +125,7 @@ actions.deleteWorkspace = (users) => ({
     request: {
       method: 'DELETE'
     },
-    success: (data, dispatch) => dispatch(listActions.invalidateData('users.list'))
+    success: (data, dispatch) => dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
   }
 })
 
@@ -142,9 +143,9 @@ actions.merge = (id1, id2, navigate) => ({
     url: ['apiv2_user_merge', {keep: id1, remove: id2}],
     request: {method: 'PUT'},
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.resetSelect('users.list'))
-      navigate('/users')
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.users.list'))
+      dispatch(listActions.resetSelect(baseSelectors.STORE_NAME+'.users.list'))
+      //navigate('/users')
     }
   }
 })

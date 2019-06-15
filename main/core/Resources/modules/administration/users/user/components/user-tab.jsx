@@ -7,24 +7,30 @@ import {Routes} from '#/main/app/router'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {User}       from '#/main/core/administration/users/user/components/user'
 import {Users}      from '#/main/core/administration/users/user/components/users'
 import {UsersMerge} from '#/main/core/administration/users/user/components/users-merge'
-import {actions}    from '#/main/core/administration/users/user/actions'
+import {actions}    from '#/main/core/administration/users/user/store'
 
-const UserTabActions = () =>
+const UserTabActionsComponent = (props) =>
   <PageActions>
     <PageAction
       type={LINK_BUTTON}
       icon="fa fa-plus"
       label={trans('add_user')}
-      target="/users/form"
+      target={`${props.path}/users/form`}
       primary={true}
     />
   </PageActions>
 
+UserTabActionsComponent.propTypes = {
+  path: T.string.isRequired
+}
+
 const UserTabComponent = props =>
   <Routes
+    path={props.path}
     routes={[
       {
         path: '/users',
@@ -44,13 +50,22 @@ const UserTabComponent = props =>
   />
 
 UserTabComponent.propTypes = {
+  path: T.string.isRequired,
   openForm: T.func.isRequired,
   closeForm: T.func.isRequired,
   compare: T.func.isRequired
 }
 
+const UserTabActions = connect(
+  (state) => ({
+    path: toolSelectors.path(state)
+  })
+)(UserTabActionsComponent)
+
 const UserTab = connect(
-  null,
+  (state) => ({
+    path: toolSelectors.path(state)
+  }),
   dispatch => ({
     openForm(id = null) {
       dispatch(actions.open('users.current', id))

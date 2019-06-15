@@ -16,16 +16,18 @@ import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {enumRole, PLATFORM_ROLE} from '#/main/core/user/role/constants'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
-import {actions} from '#/main/core/administration/users/role/actions'
+import {actions} from '#/main/core/administration/users/role/store'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
 import {UserList} from '#/main/core/administration/users/user/components/user-list'
 
 const RoleForm = props =>
   <FormData
     level={3}
-    name="roles.current"
+    name={`${baseSelectors.STORE_NAME}.roles.current`}
     buttons={true}
     target={(role, isNew) => isNew ?
       ['apiv2_role_create'] :
@@ -33,7 +35,7 @@ const RoleForm = props =>
     }
     cancel={{
       type: LINK_BUTTON,
-      target: '/roles',
+      target: props.path+'/roles',
       exact: true
     }}
     sections={[
@@ -170,12 +172,16 @@ const RoleForm = props =>
         ]}
       >
         <ListData
-          name="roles.current.users"
+          name={`${baseSelectors.STORE_NAME}.roles.current.users`}
           fetch={{
             url: ['apiv2_role_list_users', {id: props.role.id}],
             autoload: props.role.id && !props.new
           }}
-          primaryAction={UserList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/users/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_role_remove_users', {id: props.role.id}]
           }}
@@ -199,12 +205,16 @@ const RoleForm = props =>
         ]}
       >
         <ListData
-          name="roles.current.groups"
+          name={`${baseSelectors.STORE_NAME}.roles.current.groups`}
           fetch={{
             url: ['apiv2_role_list_groups', {id: props.role.id}],
             autoload: props.role.id && !props.new
           }}
-          primaryAction={GroupList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/groups/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_role_remove_groups', {id: props.role.id}]
           }}
@@ -216,6 +226,7 @@ const RoleForm = props =>
   </FormData>
 
 RoleForm.propTypes = {
+  path: T.string.isRequired,
   new: T.bool.isRequired,
   role: T.shape(
     RoleTypes.propTypes
@@ -227,19 +238,20 @@ RoleForm.propTypes = {
 
 const Role = connect(
   state => ({
-    new: formSelect.isNew(formSelect.form(state, 'roles.current')),
-    role: formSelect.data(formSelect.form(state, 'roles.current'))
+    path: toolSelectors.path(state),
+    new: formSelect.isNew(formSelect.form(state, baseSelectors.STORE_NAME+'.roles.current')),
+    role: formSelect.data(formSelect.form(state, baseSelectors.STORE_NAME+'.roles.current'))
   }),
   dispatch => ({
     updateProp(propName, propValue) {
-      dispatch(formActions.updateProp('roles.current', propName, propValue))
+      dispatch(formActions.updateProp(baseSelectors.STORE_NAME+'.roles.current', propName, propValue))
     },
     pickUsers(roleId) {
       dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-user',
         title: trans('add_users'),
         confirmText: trans('add'),
-        name: 'users.picker',
+        name: baseSelectors.STORE_NAME+'.users.picker',
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
@@ -254,7 +266,7 @@ const Role = connect(
         icon: 'fa fa-fw fa-users',
         title: trans('add_groups'),
         confirmText: trans('add'),
-        name: 'groups.picker',
+        name: baseSelectors.STORE_NAME+'.groups.picker',
         definition: GroupList.definition,
         card: GroupList.card,
         fetch: {

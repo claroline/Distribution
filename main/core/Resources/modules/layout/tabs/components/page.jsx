@@ -20,7 +20,7 @@ const PageHeader = props =>
               'only-icon': section.onlyIcon
             })}
             key={`section-link-${sectionIndex}`}
-            to={section.path}
+            to={props.path+section.path}
             exact={section.exact}
           >
             <span className={classes('page-tabs-icon', section.icon)} />
@@ -40,6 +40,7 @@ const PageHeader = props =>
 PageHeader.propTypes = {
   className: T.string,
   title: T.string.isRequired,
+  path: T.string.isRequired,
   tabs: T.arrayOf(T.shape({
     path: T.string.isRequired,
     exact: T.bool,
@@ -59,6 +60,7 @@ const TabbedPage = props => {
     <PageContainer {...props} className="tabbed-page">
       <PageHeader
         title={props.title}
+        path={props.path}
         tabs={displayedTabs}
       >
         <Routes

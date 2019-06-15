@@ -14,7 +14,7 @@ import {OrganizationTab, OrganizationTabActions} from '#/main/core/administratio
 import {ProfileTab} from '#/main/core/administration/users/profile/components/profile-tab'
 import {LocationTab, LocationTabActions} from '#/main/core/administration/users/location/components/location-tab'
 
-const UserTool = (props) =>
+const UsersTool = (props) =>
   <TabbedPageContainer
     title={trans('users_management', {}, 'tools')}
 
@@ -72,10 +72,10 @@ const UserTool = (props) =>
     ]}
   />
 
-UserTool.propTypes = {
-  path: T.String.isRequired
+UsersTool.propTypes = {
+  path: T.string.isRequired
 }
 
 export {
-  UserTool
+  UsersTool
 }

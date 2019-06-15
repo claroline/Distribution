@@ -4,6 +4,7 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {actions as listActions} from '#/main/app/content/list/store'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {Location as LocationTypes} from '#/main/core/user/prop-types'
 
 export const actions = {}
@@ -30,8 +31,8 @@ actions.addUsers = (id, users) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('locations.list'))
-      dispatch(listActions.invalidateData('locations.current.users'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.locations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.locations.current.users'))
     }
   }
 })
@@ -43,8 +44,8 @@ actions.addGroups = (id, groups) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('locations.list'))
-      dispatch(listActions.invalidateData('locations.current.groups'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.locations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.locations.current.groups'))
     }
   }
 })
@@ -56,8 +57,8 @@ actions.addOrganizations = (id, organizations) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('locations.list'))
-      dispatch(listActions.invalidateData('locations.current.organizations'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.locations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.locations.current.organizations'))
     }
   }
 })
@@ -66,7 +67,7 @@ actions.geolocate = (location) => ({
   [API_REQUEST]: {
     url: ['apiv2_location_geolocate', {id: location.id}],
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('locations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.locations.list'))
     }
   }
 })

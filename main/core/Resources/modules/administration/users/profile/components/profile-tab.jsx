@@ -9,15 +9,15 @@ import {Button} from '#/main/app/action/components/button'
 import {ProfileNav} from '#/main/core/user/profile/components/nav'
 import {ProfileFacets} from '#/main/core/user/profile/components/facets'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {ProfileFacet} from '#/main/core/administration/users/profile/components/facet'
-import {actions} from '#/main/core/administration/users/profile/actions'
-import {select} from '#/main/core/administration/users/profile/selectors'
+import {actions, selectors} from '#/main/core/administration/users/profile/store'
 
 const ProfileTabComponent = props =>
   <div className="row user-profile">
     <div className="user-profile-aside col-md-3">
       <ProfileNav
-        prefix="/profile"
+        prefix={`${props.path}/profile`}
         facets={props.facets}
         actions={(facet) => [
           {
@@ -46,7 +46,7 @@ const ProfileTabComponent = props =>
 
     <div className="user-profile-content col-md-9">
       <ProfileFacets
-        prefix="/profile"
+        prefix={`${props.path}/profile`}
         facets={props.facets}
         facetComponent={ProfileFacet}
         openFacet={props.openFacet}
@@ -55,6 +55,7 @@ const ProfileTabComponent = props =>
   </div>
 
 ProfileTabComponent.propTypes = {
+  path: T.string.isRequired,
   facets: T.arrayOf(T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
@@ -66,7 +67,8 @@ ProfileTabComponent.propTypes = {
 
 const ProfileTab = connect(
   (state) => ({
-    facets: select.facets(state)
+    path: toolSelectors.path(state),
+    facets: selectors.facets(state)
   }),
   (dispatch) => ({
     openFacet(id) {

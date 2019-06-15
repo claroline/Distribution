@@ -29,7 +29,7 @@ const AdministrationMenu = (props) =>
           className="list-group-item"
           icon={`fa fa-fw fa-${tool.icon}`}
           label={trans(tool.name, {}, 'tools')}
-          target={`/administration/${tool.name}`}
+          target={`/admin/${tool.name}`}
         />
       )}
     </div>

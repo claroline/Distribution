@@ -7,6 +7,7 @@ import {LiquidGauge} from '#/main/core/layout/gauge/components/liquid-gauge'
 
 import {MenuMain} from '#/main/app/layout/menu/containers/main'
 import {ToolMenu} from '#/main/core/tool/containers/menu'
+import {getTool} from '#/main/core/administration'
 
   const AdministrationMenu = props =>
   <MenuMain
@@ -42,28 +43,10 @@ import {ToolMenu} from '#/main/core/tool/containers/menu'
       }
     ]}
   >
-    <section className="user-progression">
-      <h2 className="sr-only">
-        Ma progression
-      </h2>
-
-      <LiquidGauge
-        id="workspace-progression"
-        type="user"
-        value={25}
-        displayValue={(value) => number(value) + '%'}
-        width={80}
-        height={80}
-      />
-
-      <div className="user-progression-info">
-        Vous n'avez pas terminé toutes les activités disponibles.
-      </div>
-    </section>
-
     <ToolMenu
       path="/admin"
       opened={'tool' === props.section}
+      getApp={getTool}
       toggle={() => props.changeSection('tool')}
     />
   </MenuMain>

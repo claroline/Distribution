@@ -4,12 +4,16 @@ import {connect} from 'react-redux'
 
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {MODAL_USER_PASSWORD} from '#/main/core/user/modals/password'
 import {actions as userActions} from '#/main/core/user/actions'
-import {actions} from '#/main/core/administration/users/user/actions'
+import {actions} from '#/main/core/administration/users/user/store'
+
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {UserList, getUserListDefinition} from '#/main/core/administration/users/user/components/user-list'
 import {getActions} from '#/main/core/user/utils'
 
@@ -17,7 +21,7 @@ import {getActions} from '#/main/core/user/utils'
 
 const UsersList = props =>
   <ListData
-    name="users.list"
+    name={`${baseSelectors.STORE_NAME}.users.list`}
     fetch={{
       url: ['apiv2_user_list_managed_organization'],
       autoload: true
@@ -25,7 +29,11 @@ const UsersList = props =>
     delete={{
       url: ['apiv2_user_delete_bulk']
     }}
-    primaryAction={UserList.open}
+    primaryAction={(row) => ({
+      type: LINK_BUTTON,
+      target: `${props.path}/users/form/${row.id}`,
+      label: trans('edit', {}, 'actions')
+    })}
     actions={(rows) => getActions(rows, {
       enable: props.enable,
       disable: props.disable,
@@ -39,6 +47,7 @@ const UsersList = props =>
   />
 
 UsersList.propTypes = {
+  path: T.string.isRequired,
   enable: T.func.isRequired,
   disable: T.func.isRequired,
   createWorkspace: T.func.isRequired,
@@ -54,7 +63,8 @@ UsersList.defaultProps = {
 
 const Users = connect(
   state => ({
-    platformRoles: state.platformRoles
+    path: toolSelectors.path(state),
+    platformRoles: baseSelectors.platformRoles(state)
   }),
   dispatch => ({
     enable(users) {

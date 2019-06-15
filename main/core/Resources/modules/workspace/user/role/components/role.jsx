@@ -16,7 +16,7 @@ import {Checkbox} from '#/main/app/input/components/checkbox'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
-import {actions} from '#/main/core/administration/users/role/actions'
+import {actions} from '#/main/core/administration/users/role/store'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
 import {UserList} from '#/main/core/administration/users/user/components/user-list'
 

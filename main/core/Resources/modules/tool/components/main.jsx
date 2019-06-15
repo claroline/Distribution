@@ -60,7 +60,7 @@ class ToolMain extends Component {
 
     return (
       <Await
-        for={props.getToolApp(props.toolName)}
+        for={props.getApp(props.toolName)}
         placeholder={
           <ContentLoader
             size="lg"
@@ -94,7 +94,7 @@ ToolMain.propTypes = {
   path: T.string.isRequired,
   toolName: T.string.isRequired,
 
-  getToolApp: T.func.isRequired,
+  getApp: T.func.isRequired,
   loaded: T.bool.isRequired,
   open: T.func.isRequired,
   close: T.func.isRequired

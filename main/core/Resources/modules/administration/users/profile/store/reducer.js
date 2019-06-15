@@ -6,6 +6,7 @@ import {makeInstanceAction} from '#/main/app/store/actions'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {decorate} from '#/main/core/user/profile/decorator'
 import {
   PROFILE_FACET_OPEN,
@@ -20,7 +21,7 @@ const defaultState = {
   data: []
 }
 
-const reducer = makeFormReducer('profile', defaultState, {
+const reducer = makeFormReducer(baseSelectors.STORE_NAME+'.profile', defaultState, {
   pendingChanges: makeReducer(false, {
     [PROFILE_FACET_ADD]: () => true,
     [PROFILE_FACET_REMOVE]: () => true,

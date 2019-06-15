@@ -6,6 +6,7 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {actions as listActions} from '#/main/app/content/list/store'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {Organization as OrganizationTypes} from '#/main/core/user/prop-types'
 
 export const UPDATE_LIMIT = 'UPDATE_LIMIT'
@@ -37,8 +38,8 @@ actions.addUsers = (id, users) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('organizations.list'))
-      dispatch(listActions.invalidateData('organizations.current.users'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.current.users'))
     }
   }
 })
@@ -50,8 +51,8 @@ actions.addManagers = (id, users) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('organizations.list'))
-      dispatch(listActions.invalidateData('organizations.current.managers'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.current.managers'))
     }
   }
 })
@@ -63,8 +64,8 @@ actions.addWorkspaces = (id, workspaces) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('organizations.list'))
-      dispatch(listActions.invalidateData('organizations.current.workspaces'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.current.workspaces'))
     }
   }
 })
@@ -76,8 +77,8 @@ actions.addGroups = (id, groups) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('organizations.list'))
-      dispatch(listActions.invalidateData('organizations.current.groups'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.organizations.current.groups'))
     }
   }
 })

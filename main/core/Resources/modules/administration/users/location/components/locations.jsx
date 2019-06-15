@@ -3,10 +3,12 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
-
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
-import {actions} from '#/main/core/administration/users/location/actions'
+
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {actions} from '#/main/core/administration/users/location/store'
 import {LocationList} from '#/main/core/administration/users/location/components/location-list'
 
 /**
@@ -17,13 +19,17 @@ import {LocationList} from '#/main/core/administration/users/location/components
  */
 const LocationsList = props =>
   <ListData
-    name="locations.list"
+    name={`${baseSelectors.STORE_NAME}.locations.list`}
     fetch={{
       url: ['apiv2_location_list'],
       autoload: true
     }}
     definition={LocationList.definition}
-    primaryAction={LocationList.open}
+    primaryAction={(row) => ({
+      type: LINK_BUTTON,
+      target: `${props.path}/locations/form/${row.id}`,
+      label: trans('edit', {}, 'actions')
+    })}
     delete={{
       url: ['apiv2_location_delete_bulk']
     }}
@@ -38,11 +44,14 @@ const LocationsList = props =>
   />
 
 LocationsList.propTypes = {
+  path: T.string.isRequired,
   geolocate: T.func.isRequired
 }
 
 const Locations = connect(
-  null,
+  (state) => ({
+    path: toolSelectors.path(state)
+  }),
   (dispatch) => ({
     geolocate: (location) => dispatch(actions.geolocate(location))
   })

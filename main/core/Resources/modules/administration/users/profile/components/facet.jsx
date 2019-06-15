@@ -9,9 +9,9 @@ import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
-import {actions} from '#/main/core/administration/users/profile/actions'
-import {select} from '#/main/core/administration/users/profile/selectors'
+import {actions, selectors} from '#/main/core/administration/users/profile/store'
 
 const FacetSection = props =>
   <FormSection
@@ -35,7 +35,7 @@ const FacetSection = props =>
     <FormData
       embedded={true}
       level={3}
-      name="profile"
+      name={`${baseSelectors.STORE_NAME}.profile`}
       dataPart={`[${props.parentIndex}].sections[${props.index}]`}
       sections={[
         {
@@ -74,7 +74,7 @@ FacetSection.propTypes = {
 const ProfileFacetComponent = props =>
   <FormData
     level={2}
-    name="profile"
+    name={`${baseSelectors.STORE_NAME}.profile`}
     className="profile-facet"
     dataPart={`[${props.index}]`}
     buttons={true}
@@ -142,8 +142,8 @@ ProfileFacetComponent.defaultProps = {
 
 const ProfileFacet = connect(
   (state) => ({
-    index: select.currentFacetIndex(state),
-    facet: select.currentFacet(state)
+    index: selectors.currentFacetIndex(state),
+    facet: selectors.currentFacet(state)
   }),
   (dispatch) => ({
     addSection(facetId) {

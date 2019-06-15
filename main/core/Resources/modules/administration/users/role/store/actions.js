@@ -4,6 +4,7 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {actions as listActions} from '#/main/app/content/list/store'
 
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
 
 export const actions = {}
@@ -30,8 +31,8 @@ actions.addUsers = (id, users) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('roles.list'))
-      dispatch(listActions.invalidateData('roles.current.users'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.roles.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.roles.current.users'))
     }
   }
 })
@@ -43,8 +44,8 @@ actions.addGroups = (id, groups) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('roles.list'))
-      dispatch(listActions.invalidateData('roles.current.groups'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.roles.list'))
+      dispatch(listActions.invalidateData(baseSelectors.STORE_NAME+'.roles.current.groups'))
     }
   }
 })

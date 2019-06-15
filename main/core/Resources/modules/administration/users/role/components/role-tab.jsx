@@ -7,23 +7,30 @@ import {Routes} from '#/main/app/router'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {Role}    from '#/main/core/administration/users/role/components/role'
 import {Roles}   from '#/main/core/administration/users/role/components/roles'
-import {actions} from '#/main/core/administration/users/role/actions'
+import {actions} from '#/main/core/administration/users/role/store'
 
-const RoleTabActions = () =>
+const RoleTabActionsComponent = (props) =>
   <PageActions>
     <PageAction
       type={LINK_BUTTON}
       icon="fa fa-plus"
       label={trans('add_role')}
-      target="/roles/form"
+      target={`${props.path}/roles/form`}
       primary={true}
     />
   </PageActions>
 
+RoleTabActionsComponent.propTypes = {
+  path: T.string.isRequired
+}
+
 const RoleTabComponent = props =>
   <Routes
+    path={props.path}
     routes={[
       {
         path: '/roles',
@@ -38,14 +45,23 @@ const RoleTabComponent = props =>
   />
 
 RoleTabComponent.propTypes = {
+  path: T.string.isRequired,
   openForm: T.func.isRequired
 }
 
+const RoleTabActions = connect(
+  (state) => ({
+    path: toolSelectors.path(state)
+  })
+)(RoleTabActionsComponent)
+
 const RoleTab = connect(
-  null,
+  (state) => ({
+    path: toolSelectors.path(state)
+  }),
   dispatch => ({
     openForm(id = null) {
-      dispatch(actions.open('roles.current', id))
+      dispatch(actions.open(baseSelectors.STORE_NAME+'.roles.current', id))
     }
   })
 )(RoleTabComponent)

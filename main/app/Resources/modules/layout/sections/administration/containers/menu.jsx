@@ -12,16 +12,11 @@ const AdministrationMenu = withRouter(
     connect(
       (state) => ({
         section: menuSelectors.openedSection(state),
-        tools: selectors.tools(state),
-        historyLoaded: selectors.historyLoaded(state),
-        historyResults: selectors.historyResults(state)
+        tools: selectors.tools(state)
       }),
       (dispatch) => ({
         changeSection(section) {
           dispatch(menuActions.changeSection(section))
-        },
-        getHistory() {
-          dispatch(actions.getHistory())
         }
       })
     )(AdministrationMenuComponent)

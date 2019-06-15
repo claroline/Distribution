@@ -3,19 +3,26 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
-import {actions} from '#/main/core/administration/users/group/actions'
+import {actions} from '#/main/core/administration/users/group/store'
 
 const GroupsList = props =>
   <ListData
-    name="groups.list"
+    name={`${baseSelectors.STORE_NAME}.groups.list`}
     fetch={{
       url: ['apiv2_group_list_managed'],
       autoload: true
     }}
-    primaryAction={GroupList.open}
+    primaryAction={(row) => ({
+      type: LINK_BUTTON,
+      target: `${props.path}/groups/form/${row.id}`,
+      label: trans('edit', {}, 'actions')
+    })}
     delete={{
       url: ['apiv2_group_delete_bulk']
     }}
@@ -40,12 +47,15 @@ const GroupsList = props =>
   />
 
 GroupsList.propTypes = {
+  path: T.string.isRequired,
   updatePassword: T.func.isRequired
 }
 
 const Groups = connect(
-  null,
-  dispatch => ({
+  (state) => ({
+    path: toolSelectors.path(state)
+  }),
+  (dispatch) => ({
     updatePassword(groups) {
       dispatch(actions.updatePassword(groups.map(group => group.id)))
     }

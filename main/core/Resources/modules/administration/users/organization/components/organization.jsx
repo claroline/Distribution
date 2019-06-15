@@ -12,7 +12,10 @@ import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {actions} from '#/main/core/administration/users/organization/actions'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+
+import {actions} from '#/main/core/administration/users/organization/store'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
 import {UserList} from '#/main/core/administration/users/user/components/user-list'
 import {WorkspaceList} from '#/main/core/administration/workspace/workspace/components/workspace-list'
@@ -20,7 +23,7 @@ import {WorkspaceList} from '#/main/core/administration/workspace/workspace/comp
 const OrganizationForm = props =>
   <FormData
     level={3}
-    name="organizations.current"
+    name={`${baseSelectors.STORE_NAME}.organizations.current`}
     buttons={true}
     target={(organization, isNew) => isNew ?
       ['apiv2_organization_create'] :
@@ -28,7 +31,7 @@ const OrganizationForm = props =>
     }
     cancel={{
       type: LINK_BUTTON,
-      target: '/organizations',
+      target: props.path+'/organizations',
       exact: true
     }}
     sections={[
@@ -124,7 +127,7 @@ const OrganizationForm = props =>
         ]}
       >
         <ListData
-          name="organizations.current.workspaces"
+          name={`${baseSelectors.STORE_NAME}.organizations.current.workspaces`}
           fetch={{
             url: ['apiv2_organization_list_workspaces', {id: props.organization.id}],
             autoload: props.organization.id && !props.new
@@ -153,12 +156,16 @@ const OrganizationForm = props =>
         ]}
       >
         <ListData
-          name="organizations.current.users"
+          name={`${baseSelectors.STORE_NAME}.organizations.current.users`}
           fetch={{
             url: ['apiv2_organization_list_users', {id: props.organization.id}],
             autoload: props.organization.id && !props.new
           }}
-          primaryAction={UserList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/users/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_organization_remove_users', {id: props.organization.id}]
           }}
@@ -182,12 +189,16 @@ const OrganizationForm = props =>
         ]}
       >
         <ListData
-          name="organizations.current.groups"
+          name={`${baseSelectors.STORE_NAME}.organizations.current.groups`}
           fetch={{
             url: ['apiv2_organization_list_groups', {id: props.organization.id}],
             autoload: props.organization.id && !props.new
           }}
-          primaryAction={GroupList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/groups/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_organization_remove_groups', {id: props.organization.id}]
           }}
@@ -211,12 +222,16 @@ const OrganizationForm = props =>
         ]}
       >
         <ListData
-          name="organizations.current.managers"
+          name={`${baseSelectors.STORE_NAME}.organizations.current.managers`}
           fetch={{
             url: ['apiv2_organization_list_managers', {id: props.organization.id}],
             autoload: props.organization.id && !props.new
           }}
-          primaryAction={UserList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/users/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_organization_remove_managers', {id: props.organization.id}]
           }}
@@ -228,6 +243,7 @@ const OrganizationForm = props =>
   </FormData>
 
 OrganizationForm.propTypes = {
+  path: T.string.isRequired,
   new: T.bool.isRequired,
   organization: T.shape({
     id: T.string,
@@ -245,8 +261,9 @@ OrganizationForm.propTypes = {
 
 const Organization = connect(
   state => ({
-    new: formSelect.isNew(formSelect.form(state, 'organizations.current')),
-    organization: formSelect.data(formSelect.form(state, 'organizations.current'))
+    path: toolSelectors.path(state),
+    new: formSelect.isNew(formSelect.form(state, baseSelectors.STORE_NAME+'.organizations.current')),
+    organization: formSelect.data(formSelect.form(state, baseSelectors.STORE_NAME+'.organizations.current'))
   }),
   dispatch => ({
     updateLimit(enabled) {
@@ -257,7 +274,7 @@ const Organization = connect(
         icon: 'fa fa-fw fa-user',
         title: trans('add_users'),
         confirmText: trans('add'),
-        name: 'users.picker',
+        name: baseSelectors.STORE_NAME+'.users.picker',
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
@@ -272,7 +289,7 @@ const Organization = connect(
         icon: 'fa fa-fw fa-user',
         title: trans('add_managers'),
         confirmText: trans('add'),
-        name: 'users.picker',
+        name: baseSelectors.STORE_NAME+'.users.picker',
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
@@ -287,7 +304,7 @@ const Organization = connect(
         icon: 'fa fa-fw fa-users',
         title: trans('add_groups'),
         confirmText: trans('add'),
-        name: 'groups.picker',
+        name: baseSelectors.STORE_NAME+'.groups.picker',
         definition: GroupList.definition,
         card: GroupList.card,
         fetch: {
@@ -302,7 +319,7 @@ const Organization = connect(
         icon: 'fa fa-fw fa-books',
         title: trans('add_workspaces'),
         confirmText: trans('add'),
-        name: 'workspaces.picker',
+        name: baseSelectors.STORE_NAME+'.workspaces.picker',
         definition: WorkspaceList.definition,
         card: WorkspaceList.card,
         fetch: {

@@ -13,7 +13,9 @@ import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {actions} from '#/main/core/administration/users/user/actions'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
+import {actions} from '#/main/core/administration/users/user/store'
 
 import {OrganizationList} from '#/main/core/administration/users/organization/components/organization-list'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
@@ -22,7 +24,7 @@ import {RoleList} from '#/main/core/administration/users/role/components/role-li
 const UserForm = props =>
   <FormData
     level={3}
-    name="users.current"
+    name={`${baseSelectors.STORE_NAME}.users.current`}
     buttons={true}
     target={(user, isNew) => isNew ?
       ['apiv2_user_create'] :
@@ -30,7 +32,7 @@ const UserForm = props =>
     }
     cancel={{
       type: LINK_BUTTON,
-      target: '/users',
+      target: props.path+'/users',
       exact: true
     }}
     sections={[
@@ -162,12 +164,16 @@ const UserForm = props =>
         ]}
       >
         <ListData
-          name="users.current.groups"
+          name={`${baseSelectors.STORE_NAME}.users.current.groups`}
           fetch={{
             url: ['apiv2_user_list_groups', {id: props.user.id}],
             autoload: props.user.id && !props.new
           }}
-          primaryAction={GroupList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/groups/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_user_remove_groups', {id: props.user.id}]
           }}
@@ -191,12 +197,16 @@ const UserForm = props =>
         ]}
       >
         <ListData
-          name="users.current.organizations"
+          name={`${baseSelectors.STORE_NAME}.users.current.organizations`}
           fetch={{
             url: ['apiv2_user_list_organizations', {id: props.user.id}],
             autoload: props.user.id && !props.new
           }}
-          primaryAction={OrganizationList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/organizations/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_user_remove_organizations', {id: props.user.id}]
           }}
@@ -220,12 +230,16 @@ const UserForm = props =>
         ]}
       >
         <ListData
-          name="users.current.roles"
+          name={`${baseSelectors.STORE_NAME}.users.current.roles`}
           fetch={{
             url: ['apiv2_user_list_roles', {id: props.user.id}],
             autoload: props.user.id && !props.new
           }}
-          primaryAction={RoleList.open}
+          primaryAction={(row) => ({
+            type: LINK_BUTTON,
+            target: `${props.path}/roles/form/${row.id}`,
+            label: trans('edit', {}, 'actions')
+          })}
           delete={{
             url: ['apiv2_user_remove_roles', {id: props.user.id}]
           }}
@@ -237,6 +251,7 @@ const UserForm = props =>
   </FormData>
 
 UserForm.propTypes = {
+  path: T.string.isRequired,
   new: T.bool.isRequired,
   user: T.shape({
     id: T.string,
@@ -252,18 +267,19 @@ UserForm.propTypes = {
 
 const User = connect(
   state => ({
-    new: formSelect.isNew(formSelect.form(state, 'users.current')),
-    user: formSelect.data(formSelect.form(state, 'users.current'))
+    path: toolSelectors.path(state),
+    new: formSelect.isNew(formSelect.form(state, baseSelectors.STORE_NAME+'.users.current')),
+    user: formSelect.data(formSelect.form(state, baseSelectors.STORE_NAME+'.users.current'))
   }),
   dispatch => ({
     updateProp(propName, propValue) {
-      dispatch(formActions.updateProp('users.current', propName, propValue))
+      dispatch(formActions.updateProp(baseSelectors.STORE_NAME+'.users.current', propName, propValue))
     },
     pickGroups(userId) {
       dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-users',
         title: trans('add_groups'),
-        name: 'groups.picker',
+        name: baseSelectors.STORE_NAME+'.groups.picker',
         definition: GroupList.definition,
         card: GroupList.card,
         fetch: {
@@ -278,7 +294,7 @@ const User = connect(
         icon: 'fa fa-fw fa-building',
         title: trans('add_organizations'),
         confirmText: trans('add'),
-        name: 'organizations.picker',
+        name: baseSelectors.STORE_NAME+'.organizations.picker',
         definition: OrganizationList.definition,
         card: OrganizationList.card,
         fetch: {
@@ -292,7 +308,7 @@ const User = connect(
       dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-id-badge',
         title: trans('add_roles'),
-        name: 'roles.picker',
+        name: baseSelectors.STORE_NAME+'.roles.picker',
         definition: RoleList.definition,
         card: RoleList.card,
         fetch: {
