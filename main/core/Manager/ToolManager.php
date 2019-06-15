@@ -93,12 +93,12 @@ class ToolManager
         ToolRightsManager $toolRightsManager,
         ContainerInterface $container
     ) {
-        $this->orderedToolRepo = $om->getRepository('ClarolineCoreBundle:Tool\OrderedTool');
-        $this->toolRepo = $om->getRepository('ClarolineCoreBundle:Tool\Tool');
-        $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
-        $this->toolRoleRepo = $om->getRepository('ClarolineCoreBundle:Tool\ToolRole');
-        $this->adminToolRepo = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool');
-        $this->pwsToolConfigRepo = $om->getRepository('ClarolineCoreBundle:Tool\PwsToolConfig');
+        $this->orderedToolRepo = $om->getRepository(OrderedTool::class);
+        $this->toolRepo = $om->getRepository(Tool::class);
+        $this->roleRepo = $om->getRepository(Role::class);
+        $this->toolRoleRepo = $om->getRepository(ToolRole::class);
+        $this->adminToolRepo = $om->getRepository(AdminTool::class);
+        $this->pwsToolConfigRepo = $om->getRepository(PwsToolConfig::class);
         $this->userRepo = $om->getRepository('ClarolineCoreBundle:User');
         $this->utilities = $utilities;
         $this->om = $om;
@@ -579,6 +579,11 @@ class ToolManager
     public function getToolById($id)
     {
         return $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')->find($id);
+    }
+
+    public function getToolByName($name)
+    {
+        return $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $name]);
     }
 
     /**

@@ -10,7 +10,7 @@ import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {PageActions, PageAction} from '#/main/core/layout/page'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {User}    from '#/main/core/administration/user/user/components/user'
+import {User}    from '#/main/core/administration/users/user/components/user'
 import {Users}   from '#/main/core/workspace/user/user/components/users'
 
 import {actions} from '#/main/core/workspace/user/user/actions'
@@ -19,7 +19,7 @@ import {select}  from '#/main/core/workspace/user/selectors'
 import {getModalDefinition} from '#/main/core/workspace/user/role/modal'
 
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
-import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {UserList} from '#/main/core/administration/users/user/components/user-list'
 
 const UserTabActionsComponent = props =>
   <PageActions>

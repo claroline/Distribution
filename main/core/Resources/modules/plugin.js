@@ -74,7 +74,7 @@ registry.add('ClarolineCoreBundle', {
   },
 
   /**
-   * Provides new types of resources
+   * Provides new types of resources.
    */
   resources: {
     'directory': () => { return import(/* webpackChunkName: "core-resource-directory" */ '#/main/core/resources/directory') },
@@ -82,10 +82,20 @@ registry.add('ClarolineCoreBundle', {
     'text'     : () => { return import(/* webpackChunkName: "core-resource-text" */      '#/main/core/resources/text') }
   },
 
+  /**
+   * Provides Desktop and/or Workspace tools.
+   */
   tools: {
     'home'            : () => { return import(/* webpackChunkName: "core-tool-home" */       '#/main/core/tools/home') },
     'workspaces'      : () => { return import(/* webpackChunkName: "core-tool-workspaces" */ '#/main/core/tools/workspaces') },
-    'resource_manager': () => { return import(/* webpackChunkName: "core-tool-resources" */ '#/main/core/tools/resources') }
+    'resource_manager': () => { return import(/* webpackChunkName: "core-tool-resources" */  '#/main/core/tools/resources') }
+  },
+
+  /**
+   * Provides Administration tools.
+   */
+  administration: {
+    'user_management': () => { return import(/* webpackChunkName: "core-admin-users" */       '#/main/core/administration/users') }
   },
 
   widgets: {

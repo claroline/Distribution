@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
 import {asset} from '#/main/app/config/asset'
@@ -16,16 +17,16 @@ const WorkspaceCard = props =>
     title={props.data.name}
     subtitle={props.data.code}
     flags={[
-      props.data.meta.personal                       && ['fa fa-user',      trans('personal_workspace')],
-      props.data.meta.model                          && ['fa fa-briefcase', trans('model')],
-      props.data.display.displayable                 && ['fa fa-eye',       trans('displayable_in_workspace_list')],
-      props.data.registration.selfRegistration       && ['fa fa-globe',     trans('public_registration')],
-      props.data.registration.waitingForRegistration && ['fa fa-hourglass', trans('pending')]
+      get(props.data, 'meta.personal')                       && ['fa fa-user',      trans('personal_workspace')],
+      get(props.data, 'meta.model')                          && ['fa fa-briefcase', trans('model')],
+      get(props.data, 'display.displayable')                 && ['fa fa-eye',       trans('displayable_in_workspace_list')],
+      get(props.data, 'registration.selfRegistration')       && ['fa fa-globe',     trans('public_registration')],
+      get(props.data, 'registration.waitingForRegistration') && ['fa fa-hourglass', trans('pending')]
     ].filter(flag => !!flag)}
-    contentText={props.data.meta.description}
+    contentText={get(props.data, 'meta.description')}
     footer={
       <span>
-        created by <b>{props.data.meta.creator ? props.data.meta.creator.name : trans('unknown')}</b>
+        created by <b>{get(props.data, 'meta.creator') ? props.data.meta.creator.name : trans('unknown')}</b>
       </span>
     }
   />

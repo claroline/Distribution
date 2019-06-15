@@ -8,7 +8,6 @@ import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {MenuSection} from '#/main/app/layout/menu/components/section'
-import {ToolMenu} from '#/main/core/tool/containers/menu'
 
 const MenuMain = props =>
   <aside className="app-menu">
@@ -28,22 +27,6 @@ const MenuMain = props =>
     </header>
 
     {props.children}
-
-    <ToolMenu
-      path="/desktop"
-      opened={'tool' === props.section}
-      toggle={() => props.changeSection('tool')}
-    />
-
-    <MenuSection
-      className="history"
-      icon="fa fa-fw fa-history"
-      title={trans('history')}
-      opened={'history' === props.section}
-      toggle={() => props.changeSection('history')}
-    >
-      Mon historique
-    </MenuSection>
 
     {0 !== props.tools.length &&
       <MenuSection

@@ -22,9 +22,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class UserListener
 {
-    /** @var TwigEngine */
-    private $templating;
-
     /** @var FinderProvider */
     private $finder;
 
@@ -44,7 +41,6 @@ class UserListener
      * UserListener constructor.
      *
      * @DI\InjectParams({
-     *     "templating"           = @DI\Inject("templating"),
      *     "finder"               = @DI\Inject("claroline.api.finder"),
      *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
      *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile"),
@@ -52,7 +48,6 @@ class UserListener
      *     "userManager"          = @DI\Inject("claroline.manager.user_manager")
      * })
      *
-     * @param TwigEngine           $templating
      * @param FinderProvider       $finder
      * @param ParametersSerializer $parametersSerializer
      * @param ProfileSerializer    $profileSerializer
@@ -60,14 +55,12 @@ class UserListener
      * @param UserManager          $userManager
      */
     public function __construct(
-        TwigEngine $templating,
         FinderProvider $finder,
         ParametersSerializer $parametersSerializer,
         ProfileSerializer $profileSerializer,
         ResourceManager $resourceManager,
         UserManager $userManager
     ) {
-        $this->templating = $templating;
         $this->finder = $finder;
         $this->parametersSerializer = $parametersSerializer;
         $this->profileSerializer = $profileSerializer;
@@ -84,18 +77,14 @@ class UserListener
      */
     public function onDisplayTool(OpenAdministrationToolEvent $event)
     {
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:administration:users.html.twig', [
-                // todo : put it in the async load of form
-                'parameters' => $this->parametersSerializer->serialize(),
-                'profile' => $this->profileSerializer->serialize(),
-                'platformRoles' => $this->finder->search('Claroline\CoreBundle\Entity\Role', [
-                    'filters' => ['type' => Role::PLATFORM_ROLE],
-                ]),
-            ]
-        );
-
-        $event->setResponse(new Response($content));
+        $event->setData([
+            // todo : put it in the async load of form
+            'parameters' => $this->parametersSerializer->serialize(),
+            'profile' => $this->profileSerializer->serialize(),
+            'platformRoles' => $this->finder->search('Claroline\CoreBundle\Entity\Role', [
+                'filters' => ['type' => Role::PLATFORM_ROLE],
+            ]),
+        ]);
         $event->stopPropagation();
     }
 

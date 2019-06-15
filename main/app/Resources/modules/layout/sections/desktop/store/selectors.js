@@ -27,9 +27,27 @@ const defaultOpening = createSelector(
   }
 )
 
+const history = createSelector(
+  [store],
+  (store) => store.history
+)
+
+const historyLoaded = createSelector(
+  [history],
+  (history) => history.loaded
+)
+
+const historyResults = createSelector(
+  [history],
+  (history) => history.results
+)
+
 export const selectors = {
   STORE_NAME,
+
   loaded,
   tools,
-  defaultOpening
+  defaultOpening,
+  historyLoaded,
+  historyResults
 }

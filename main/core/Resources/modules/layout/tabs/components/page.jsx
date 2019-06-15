@@ -4,7 +4,8 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
-import {Route, NavLink, Switch} from '#/main/app/router'
+import {NavLink} from '#/main/app/router'
+import {Routes} from '#/main/app/router'
 import {PageContainer} from '#/main/core/layout/page'
 import {RoutedPageContent} from '#/main/core/layout/router'
 
@@ -60,22 +61,21 @@ const TabbedPage = props => {
         title={props.title}
         tabs={displayedTabs}
       >
-        <Switch>
-          {displayedTabs
+        <Routes
+          path={props.path}
+          routes={displayedTabs
             .filter(tab => !!tab.actions)
-            .map((tab, tabIndex) =>
-              <Route
-                {...tab}
-                key={`tab-actions-${tabIndex}`}
-                component={tab.actions}
-              />
-            )
-          }
-        </Switch>
+            .map((tab, tabIndex) => ({
+              ...tab,
+              component: tab.actions
+            })
+          )}
+        />
       </PageHeader>
 
       <RoutedPageContent
         className="page-tab"
+        path={props.path}
         routes={displayedTabs.map((tab) => ({
           path: tab.path,
           exact: tab.exact,
@@ -89,6 +89,7 @@ const TabbedPage = props => {
 
 implementPropTypes(TabbedPage, PageTypes, {
   title: T.string.isRequired,
+  path: T.string,
   tabs: T.arrayOf(T.shape({
     path: T.string.isRequired,
     exact: T.bool,

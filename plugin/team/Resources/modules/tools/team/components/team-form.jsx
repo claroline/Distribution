@@ -11,7 +11,7 @@ import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
 import {trans} from '#/main/app/intl/translation'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
-import {UserList} from '#/main/core/administration/user/user/components/user-list'
+import {UserList} from '#/main/core/administration/users/user/components/user-list'
 
 import {Team as TeamType} from '#/plugin/team/tools/team/prop-types'
 import {actions, selectors} from '#/plugin/team/tools/team/store'

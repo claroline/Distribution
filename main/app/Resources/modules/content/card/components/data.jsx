@@ -205,7 +205,7 @@ const DataCard = props =>
         }
       </Heading>
 
-      {'sm' !== props.size && -1 !== props.display.indexOf('description') && props.contentText &&
+      {-1 === ['xs', 'sm'].indexOf(props.size) && -1 !== props.display.indexOf('description') && props.contentText &&
         <div key="data-card-description" className="data-card-description">
           {getPlainText(props.contentText)}
         </div>
@@ -213,7 +213,7 @@ const DataCard = props =>
 
       {props.children}
 
-      {'sm' !== props.size && -1 !== props.display.indexOf('footer') && props.footer &&
+      {-1 === ['xs', 'sm'].indexOf(props.size) && -1 !== props.display.indexOf('footer') && props.footer &&
         <div key="data-card-footer" className="data-card-footer">
           {props.footer}
         </div>

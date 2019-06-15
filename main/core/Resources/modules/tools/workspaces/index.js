@@ -4,7 +4,7 @@ import {WorkspacesMenu} from '#/main/core/tools/workspaces/containers/menu'
 import {reducer} from '#/main/core/tools/workspaces/store'
 
 /**
- * WorkspacesTool application.
+ * Workspaces tool application.
  */
 export default {
   component: WorkspacesTool,

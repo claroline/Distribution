@@ -166,6 +166,7 @@ class WorkspaceSerializer
                 'administrate' => $this->authorization->isGranted('EDIT', $workspace),
                 'export' => $this->authorization->isGranted('EXPORT', $workspace),
             ],
+            'meta' => $this->getMeta($workspace, $options),
         ];
 
         if (!in_array(Options::REFRESH_UUID, $options)) {
@@ -178,7 +179,6 @@ class WorkspaceSerializer
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'registered' => $this->isRegistered($workspace),
-                'meta' => $this->getMeta($workspace, $options),
                 'opening' => $this->getOpening($workspace),
                 'display' => $this->getDisplay($workspace),
                 'breadcrumb' => $this->getBreadcrumb($workspace),
@@ -268,7 +268,7 @@ class WorkspaceSerializer
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
         ];
 
-        if (!in_array(Options::SERIALIZE_LIST, $options)) {
+        if (!in_array(Options::SERIALIZE_LIST, $options) && !in_array(Options::SERIALIZE_MINIMAL, $options)) {
             // this query is very slow
             $data['totalUsers'] = $this->finder->fetch(
               User::class,

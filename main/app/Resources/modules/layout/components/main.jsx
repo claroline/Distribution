@@ -11,6 +11,9 @@ import {FooterMain} from '#/main/app/layout/footer/containers/main'
 import {DesktopMenu} from '#/main/app/layout/sections/desktop/containers/menu'
 import {DesktopMain} from '#/main/app/layout/sections/desktop/containers/main'
 
+import {AdministrationMenu} from '#/main/app/layout/sections/administration/containers/menu'
+import {AdministrationMain} from '#/main/app/layout/sections/administration/containers/main'
+
 const LayoutMain = props =>
   <Fragment>
     <div className="app" role="presentation">
@@ -31,7 +34,8 @@ const LayoutMain = props =>
               path: '/desktop',
               component: DesktopMenu
             }, {
-              path: '/administration'
+              path: '/administration',
+              component: AdministrationMenu
             }
           ]}
         />
@@ -48,7 +52,8 @@ const LayoutMain = props =>
                 path: '/desktop',
                 component: DesktopMain
               }, {
-                path: '/administration'
+                path: '/administration',
+                component: AdministrationMain
               }
             ]}
           />

@@ -5,6 +5,7 @@ import {Routes} from '#/main/app/router'
 import {Await} from '#/main/app/components/await'
 import {ContentLoader} from '#/main/app/content/components/loader'
 
+import {getTool} from '#/main/core/tools'
 import {ToolMain} from '#/main/core/tool/containers/main'
 
 const DesktopMain = (props) =>
@@ -28,6 +29,7 @@ const DesktopMain = (props) =>
                   // tool is enabled for the desktop
                   return (
                     <ToolMain
+                      getToolApp={getTool}
                       open={props.openTool}
                       toolName={routeProps.match.params.toolName}
                     />
