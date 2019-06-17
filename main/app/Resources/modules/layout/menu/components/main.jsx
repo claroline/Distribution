@@ -44,7 +44,7 @@ const MenuMain = props =>
             type: LINK_BUTTON,
             icon: `fa fa-fw fa-${tool.icon}`,
             label: trans(tool.name, {}, 'tools'),
-            target: `/desktop/${tool.name}`
+            target: tool.path
           }))}
         />
       </MenuSection>
@@ -73,7 +73,9 @@ MenuMain.propTypes = {
   backAction: T.shape(ActionTypes.propTypes),
 
   tools: T.arrayOf(T.shape({
-
+    icon: T.string.isRequired,
+    name: T.string.isRequired,
+    path: T.string.isRequired
   })),
   actions: T.arrayOf(T.shape({
 

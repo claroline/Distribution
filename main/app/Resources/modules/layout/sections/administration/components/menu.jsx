@@ -20,7 +20,11 @@ import {getTool} from '#/main/core/administration'
       exact: true
     }}
 
-    tools={props.tools}
+    tools={props.tools.map(tool => ({
+      name: tool.name,
+      icon: tool.icon,
+      path: `/admin/${tool.name}`
+    }))}
     actions={[
       {
         name: 'walkthrough',

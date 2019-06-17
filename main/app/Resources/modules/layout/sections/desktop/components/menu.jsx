@@ -22,7 +22,11 @@ const DesktopMenu = props =>
       exact: true
     }}
 
-    tools={props.tools}
+    tools={props.tools.map(tool => ({
+      name: tool.name,
+      icon: tool.icon,
+      path: `/desktop/${tool.name}`
+    }))}
     actions={[
       {
         name: 'walkthrough',

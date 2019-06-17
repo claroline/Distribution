@@ -6,6 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {MessageCard} from '#/plugin/message/data/components/message-card'
 import {actions, selectors} from '#/plugin/message/tools/messaging/store'
 
@@ -18,7 +19,7 @@ const ReceivedMessagesComponent = (props) =>
     }}
     primaryAction={(message) => ({
       type: LINK_BUTTON,
-      target: '/message/'+message.id,
+      target: props.path+'/message/'+message.id,
       label: trans('open', {}, 'actions')
     })}
     definition={[
@@ -86,14 +87,17 @@ const ReceivedMessagesComponent = (props) =>
   />
 
 ReceivedMessagesComponent.propTypes = {
+  path: T.string.isRequired,
   removeMessages: T.func.isRequired,
   unreadMessages: T.func.isRequired,
   readMessages: T.func.isRequired,
 }
 
 const ReceivedMessages = connect(
-  null,
-  dispatch => ({
+  (state) => ({
+    path: toolSelectors.path(state)
+  }),
+  (dispatch) => ({
     removeMessages(message) {
       dispatch(actions.removeMessages(message, `${selectors.STORE_NAME}.receivedMessages`))
     },

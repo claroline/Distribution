@@ -6,6 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {actions, selectors} from '#/plugin/message/tools/messaging/store'
 import {MessageCard} from '#/plugin/message/data/components/message-card'
 
@@ -18,7 +19,7 @@ const DeletedMessagesComponent = (props) =>
     }}
     primaryAction={(message) => ({
       type: LINK_BUTTON,
-      target: '/message/'+message.id,
+      target: props.path+'/message/'+message.id,
       label: trans('open', {}, 'actions')
     })}
     definition={[
@@ -83,13 +84,16 @@ const DeletedMessagesComponent = (props) =>
   />
 
 DeletedMessagesComponent.propTypes = {
+  path: T.string.isRequired,
   deleteMessages: T.func.isRequired,
   restoreMessages: T.func.isRequired
 }
 
 const DeletedMessages = connect(
-  null,
-  dispatch => ({
+  (state) => ({
+    path: toolSelectors.path(state)
+  }),
+  (dispatch) => ({
     deleteMessages(messages) {
       dispatch(actions.deleteMessages(messages))
     },

@@ -8,6 +8,7 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {User}       from '#/main/core/administration/users/user/components/user'
 import {Users}      from '#/main/core/administration/users/user/components/users'
 import {UsersMerge} from '#/main/core/administration/users/user/components/users-merge'
@@ -68,10 +69,10 @@ const UserTab = connect(
   }),
   dispatch => ({
     openForm(id = null) {
-      dispatch(actions.open('users.current', id))
+      dispatch(actions.open(baseSelectors.STORE_NAME+'.users.current', id))
     },
     closeForm() {
-      dispatch(actions.close('users.current'))
+      dispatch(actions.close(baseSelectors.STORE_NAME+'.users.current'))
     },
     compare(userIds) {
       dispatch(actions.compare(userIds))
