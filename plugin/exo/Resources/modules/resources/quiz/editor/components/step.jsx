@@ -127,7 +127,6 @@ const EditorStep = props => {
                         type: CALLBACK_BUTTON,
                         label: trans('copy', {}, 'actions'),
                         callback: () => {
-                          console.log(item)
                           refreshIdentifiers(item).then(item => {
 
                             props.copyItem(item, position)

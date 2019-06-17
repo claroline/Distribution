@@ -55,7 +55,6 @@ const EditorItem = props =>
             path={props.path}
             disabled={!props.item.rights.edit}
             enableScores={props.enableScores}
-
             definition={itemDefinition}
             item={props.item}
             update={props.update}

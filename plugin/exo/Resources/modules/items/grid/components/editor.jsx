@@ -453,7 +453,7 @@ const GridTable = props =>
           sumMode={props.item.sumMode}
           deletable={utils.getNbRows(props.item.cells) > 1}
           validating={props.validating}
-          _errors={props.item._errors}
+          _errors={props.errors}
           _popover={props.item._popover}
           removeRow={() => props.removeRow(rowIndex)}
           updateScore={(newScore) => {
@@ -766,9 +766,44 @@ const GridEditor = (props) => {
                 max: 6
               }
             }, {
-              name: 'grid',
+              name: 'solutions',
               required: true,
-              component: GridComponent
+              //component: GridComponent,
+              render: (item, itemErrors) => {
+                const renderedItem = cloneDeep(item)
+                decoratedItem.solutions.forEach(s => {
+                  if (s.answers) {
+                    s.answers.forEach(a => {
+                      if (a['_id'] === undefined) {
+                        a['_id'] = makeId()
+                      }
+                      a['_deletable'] = 1 < s.answers.length
+                    })
+                  }
+                })
+
+                return (<div className="grid-body">
+                  <GridTable
+                    item={renderedItem}
+                    hasScore={props.hasAnswerScores}
+                    validating={props.validating}
+                    update={props.update}
+                    removeRow={(row) => {
+                      const newItem = cloneDeep(renderedItem)
+                      deleteRow(row, newItem, true)
+                      props.update('cells', newItem.cells)
+                    }}
+                    removeColumn={(col) => {
+                      const newItem = cloneDeep(renderedItem)
+                      deleteCol(col, newItem, true)
+                      props.update('cells', newItem.cells)
+                    }}
+                    openPopover={(cellId) => props.update('_popover', cellId)}
+                    closePopover={() => props.update('_popover', null) }
+                    errors={itemErrors}
+                  />
+                </div>)
+              }
             }
           ]
         }
