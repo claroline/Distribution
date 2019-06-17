@@ -57,7 +57,9 @@ export default {
   validate: (item) => {
     const errors = {}
 
-    errors.maxLength = chain(item.maxLength, {}, [notBlank, number, gteZero])
+    if (item._restrictLength) errors.maxLength = chain(item.maxLength, {}, [notBlank, number, gteZero])
+
+    console.log(errors)
 
     return errors
   },

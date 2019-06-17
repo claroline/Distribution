@@ -172,12 +172,8 @@ export default {
       item.id = mapIds[item.id]
     })
 
-
-    console.log(mapIds)
     item.solutions.forEach(solution => solution.itemIds.forEach((itemId, idx) => solution.itemIds[idx] = mapIds[itemId]))
     item.id = makeId()
-
-    console.log(item)
 
     return item
   }
