@@ -210,7 +210,7 @@ class Documentator
         if (is_array($body)) {
             if (isset($body['schema']) && '$schema' === $body['schema']) {
                 //cast to array recursively
-                $body['schema'] = json_decode(json_encode($this->schema->getSchema($objectClass)), true);
+                //$body['schema'] = json_decode(json_encode($this->schema->getSchema($objectClass)), true);
             }
         }
 

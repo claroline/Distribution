@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
+use Claroline\AppBundle\API\SchemaProvider;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -25,14 +26,16 @@ class SwaggerController
      * ParametersController constructor.
      *
      * @DI\InjectParams({
-     *     "routerFinder" = @DI\Inject("claroline.api.routing.finder"),
-     *     "documentator" = @DI\Inject("claroline.api.routing.documentator"),
+     *     "routerFinder"   = @DI\Inject("claroline.api.routing.finder"),
+     *     "documentator"   = @DI\Inject("claroline.api.routing.documentator"),
+     *     "schemaProvider" = @DI\Inject("claroline.api.schema"),
      * })
      */
-    public function __construct($routerFinder, $documentator)
+    public function __construct($routerFinder, $documentator, SchemaProvider $schemaProvider)
     {
         $this->routerFinder = $routerFinder;
         $this->documentator = $documentator;
+        $this->schemaProvider = $schemaProvider;
     }
 
     /**
@@ -65,96 +68,22 @@ class SwaggerController
 
         $data = new \StdClass();
 
-        /*
-                foreach ($classes as $class) {
-                    $data[$class] = $this->documentator->documentClass($class);
-                }
-        */
+        foreach ($classes as $class) {
+            $data = (object) array_merge((array) $data, $this->documentator->documentClass($class));
+        }
 
-        $data = (object) array_merge((array) $data, $this->documentator->documentClass($classes[4]));
+        $definitions = [];
 
-        //$data[] = $this->documentator->documentClass($classes[4]);
+        foreach ($classes as $class) {
+            $def = json_decode(json_encode($this->schemaProvider->getSchema($class)), true);
+            if (is_array($def)) {
+                $definitions[$class] = $def;
+            }
+        }
+
         $swagger['paths'] = $data;
-        //$swagger['paths'] = $this->getExample()['paths'];
+        $swagger['definitions'] = $definitions;
 
         return new JsonResponse($swagger);
-    }
-
-    public function getExample()
-    {
-        return array(
-  'swagger' => '2.0',
-  'info' => array(
-    'version' => 'v2',
-    'title' => 'SwaggerDemo API',
-    'description' => 'Customers API to demo Swagger',
-    'termsOfService' => 'None',
-    'contact' => array(
-      'name' => 'Hinault Romaric',
-      'url' => 'http://rdonfack.developpez.com/',
-      'email' => 'hinault@monsite.com',
-    ),
-    'license' => array(
-      'name' => 'Apache 2.0',
-      'url' => 'http://www.apache.org',
-    ),
-  ),
-  'basePath' => '/',
-  'paths' => array(
-    '/api/Customers/{id}' => array(
-      'get' => array(
-        'tags' => array(
-          0 => 'Customers',
-        ),
-        'summary' => 'Retourne un client spécifique à partir de son id',
-        'description' => 'Je manque d\'imagination',
-        'operationId' => 'ApiCustomersByIdGet',
-        'consumes' => array(
-        ),
-        'produces' => array(
-          0 => 'application/json',
-        ),
-        'parameters' => array(
-          0 => array(
-            'name' => 'id',
-            'in' => 'path',
-            'description' => 'id du client à retourner',
-            'required' => true,
-            'type' => 'integer',
-            'format' => 'int32',
-          ),
-        ),
-        'responses' => array(
-          200 => array(
-            'description' => 'client sélectionné',
-            'schema' => array(
-              '$ref' => '#/definitions/Customer',
-            ),
-          ),
-        ),
-      ),
-    ),
-  ),
-  'definitions' => array(
-    'Customer' => array(
-      'type' => 'object',
-      'properties' => array(
-        'id' => array(
-          'format' => 'int32',
-          'type' => 'integer',
-        ),
-        'firstName' => array(
-          'type' => 'string',
-        ),
-        'lastName' => array(
-          'type' => 'string',
-        ),
-        'eMail' => array(
-          'type' => 'string',
-        ),
-      ),
-    ),
-  ),
-);
     }
 }
