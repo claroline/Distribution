@@ -95,6 +95,31 @@ class UserController extends AbstractCrudController
         return parent::listAction($request, $class);
     }
 
+    /**
+     * @ApiDoc(
+     *     description="List the objects of class $class.",
+     *     queryString={
+     *         "$finder",
+     *         {"name": "page", "type": "integer", "description": "The queried page."},
+     *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
+     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
+     *     }
+     * )
+     * @Route("/current", name="apiv2_users_current")
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function currentAction(Request $request)
+    {
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        return new JsonResponse($this->serializer->serialize($user));
+    }
+
     use HasRolesTrait;
     use HasOrganizationsTrait;
     use HasGroupsTrait;
@@ -564,5 +589,17 @@ class UserController extends AbstractCrudController
             ),
             [Options::SERIALIZE_MINIMAL]
         ));
+    }
+
+    /**
+     * @return array
+     */
+    private function getDefaultRequirements()
+    {
+        return [
+          'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|csv|current|\/)).*'],
+          'update' => ['id' => '^(?!.*(schema|parameters|find|doc|csv|current|\/)).*'],
+          'exist' => [],
+        ];
     }
 }

@@ -47,7 +47,7 @@ class ApiToken
     public function __construct()
     {
         $this->refreshUuid();
-        $this->token = bin2hex(openssl_random_pseudo_bytes(36));
+        $this->token = mb_substr(bin2hex(openssl_random_pseudo_bytes(36)), 0, 36);
     }
 
     /**

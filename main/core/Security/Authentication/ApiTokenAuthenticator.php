@@ -4,6 +4,8 @@ namespace Claroline\CoreBundle\Security\Authentication;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Cryptography\ApiToken;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Security\Authentication\Token\ApiToken as SecurityApiToken;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
@@ -39,12 +41,23 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
         var_dump('do I support ?'.$providerKey);
         var_dump($token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey);
 */
-        return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey || $token instanceof UsernamePasswordToken;
+        return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey /*|| $token instanceof UsernamePasswordToken*/;
     }
 
     public function createToken(Request $request, $providerKey)
     {
         $session = $request->hasPreviousSession() ? $request->getSession() : null;
+
+        $apiKey = $request->query->get('apitoken');
+        //if we're in the application, use the regular token
+        if ($apiKey) {
+            // initialize a new token for the user
+            return new PreAuthenticatedToken(
+              'anon.',
+              $apiKey,
+              $providerKey
+          );
+        }
 
         if ($session) {
             $token = $session->get('_security_main');
@@ -52,27 +65,21 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
 
             return $token;
         }
-
-        $apiKey = $request->query->get('apitoken');
-        //skip if unavailable
-
-        if (!$apiKey) {
-            return null;
-        }
-
-        // initialize a new token for the user
-        return new PreAuthenticatedToken(
-            'anon.',
-            $apiKey,
-            $providerKey
-        );
     }
 
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         if ($token instanceof UsernamePasswordToken) {
-            var_dump($token);
-            //return $token;
+            $username = $token->getUser();
+
+            $user = $this->om->getRepository(User::class)->loadUserByUsername($username);
+
+            return new UsernamePasswordToken(
+                $user,
+                null,
+                'main',
+                $user->getRoles()
+            );
         }
 
         $apiKey = $token->getCredentials();
@@ -84,7 +91,8 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
             );
         }
 
-        return new PreAuthenticatedToken(
+        //could return UsernamePasswordToken and maybe the PreAuthName I'm not sure
+        return new SecurityApiToken(
             $user,
             $apiKey,
             $providerKey,

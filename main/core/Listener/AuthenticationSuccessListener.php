@@ -42,6 +42,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -141,11 +142,14 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
     /**
      * @DI\Observe("security.interactive_login")
      */
-    public function onLoginSuccess()
+    public function onLoginSuccess(InteractiveLoginEvent $event)
     {
         $user = $this->tokenStorage->getToken()->getUser();
-
-        $this->userManager->logUser($user);
+        $request = $event->getRequest();
+        $pathInfo = $request->getPathInfo();
+        //we should check the regex set in the security thingy
+        $fromApi = strpos($pathInfo, 'apiv2') ? true : false;
+        $this->userManager->logUser($user, $fromApi);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
