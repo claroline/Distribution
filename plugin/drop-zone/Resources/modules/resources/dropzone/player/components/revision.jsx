@@ -76,7 +76,7 @@ const RevisionComponent = props => props.revision && props.drop ?
 
 RevisionComponent.propTypes = {
   location: T.shape({
-    path: T.string
+    pathname: T.string
   }),
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
   revision: T.shape(RevisionType.propTypes),
