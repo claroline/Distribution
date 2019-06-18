@@ -53,7 +53,7 @@ class AdministrationController
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param TokenStorageInterface         $tokenStorage
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcherInterface      $eventDispatcher
      * @param ToolManager                   $toolManager
      */
     public function __construct(

@@ -41,6 +41,8 @@ actions.openTool = (toolName) => (dispatch, getState) => {
     return Promise.resolve(true)
   }
 
+  console.log('open tool action')
+
   dispatch(toolActions.open(toolName, {type: toolConst.TOOL_DESKTOP, data: {}}, '/desktop'))
   dispatch(menuActions.changeSection('tool'))
 

@@ -3,26 +3,25 @@
 namespace Claroline\CoreBundle\Manager\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * ResourceRestrictionsManager.
+ * WorkspaceRestrictionsManager.
  *
- * It validates access restrictions on ResourceNodes.
+ * It validates access restrictions on Workspaces.
  *
- * @DI\Service("claroline.manager.resource_restrictions")
+ * @DI\Service("claroline.manager.workspace_restrictions")
+ *
+ * @todo merge restrictions checks with ResourceRestrictionsManager.
  */
-class ResourceRestrictionsManager
+class WorkspaceRestrictionsManager
 {
     /** @var SessionInterface */
     private $session;
-
-    /** @var RightsManager */
-    private $rightsManager;
 
     /** @var AuthorizationCheckerInterface */
     private $authorization;
@@ -32,76 +31,66 @@ class ResourceRestrictionsManager
      *
      * @DI\InjectParams({
      *     "session"       = @DI\Inject("session"),
-     *     "rightsManager" = @DI\Inject("claroline.manager.rights_manager"),
      *     "authorization" = @DI\Inject("security.authorization_checker")
      * })
      *
      * @param SessionInterface              $session
-     * @param RightsManager                 $rightsManager
      * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
         SessionInterface $session,
-        RightsManager $rightsManager,
         AuthorizationCheckerInterface $authorization
     ) {
         $this->session = $session;
-        $this->rightsManager = $rightsManager;
         $this->authorization = $authorization;
     }
 
     /**
-     * Checks access restrictions of a resource.
+     * Checks access restrictions of a workspace.
      *
-     * @param ResourceNode $resourceNode
-     * @param Role[]       $userRoles
+     * @param Workspace $workspace
      *
      * @return bool
      */
-    public function isGranted(ResourceNode $resourceNode, array $userRoles): bool
+    public function isGranted(Workspace $workspace): bool
     {
-        return $this->hasRights($resourceNode, $userRoles)
-            && $resourceNode->isActive()
-            && $resourceNode->isPublished()
-            && ($this->isStarted($resourceNode) && !$this->isEnded($resourceNode))
-            && $this->isUnlocked($resourceNode)
-            && $this->isIpAuthorized($resourceNode);
+        return $this->hasRights($workspace)
+            && ($this->isStarted($workspace) && !$this->isEnded($workspace))
+            && $this->isUnlocked($workspace)
+            && $this->isIpAuthorized($workspace);
     }
 
     /**
-     * Gets the list of access error for a resource and a user roles.
+     * Gets the list of access error for a workspace and a user.
      *
-     * @param ResourceNode $resourceNode
-     * @param Role[]       $userRoles
+     * @param Workspace $workspace
      *
      * @return array
      */
-    public function getErrors(ResourceNode $resourceNode, array $userRoles): array
+    public function getErrors(Workspace $workspace): array
     {
-        if (!$this->isGranted($resourceNode, $userRoles)) {
+        if (!$this->isGranted($workspace)) {
             // return restrictions details
             $errors = [
-                'noRights' => !$this->hasRights($resourceNode, $userRoles),
-                'deleted' => !$resourceNode->isActive(),
-                'notPublished' => !$resourceNode->isPublished(),
+                'noRights' => !$this->hasRights($workspace),
             ];
 
             // optional restrictions
             // we return them only if they are enabled
-            if (!empty($resourceNode->getAccessCode())) {
-                $errors['locked'] = !$this->isUnlocked($resourceNode);
+            if (!empty($workspace->getAccessCode())) {
+                $errors['locked'] = !$this->isUnlocked($workspace);
             }
 
-            if (!empty($resourceNode->getAccessibleFrom()) || !empty($resourceNode->getAccessibleUntil())) {
-                $errors['notStarted'] = !$this->isStarted($resourceNode);
-                $errors['startDate'] = $resourceNode->getAccessibleFrom() ?
-                    $resourceNode->getAccessibleFrom()->format('d/m/Y') :
+            if (!empty($workspace->getAccessibleFrom()) || !empty($workspace->getAccessibleUntil())) {
+                $errors['notStarted'] = !$this->isStarted($workspace);
+                $errors['startDate'] = $workspace->getAccessibleFrom() ?
+                    $workspace->getAccessibleFrom()->format('d/m/Y') :
                     null;
-                $errors['ended'] = $this->isEnded($resourceNode);
+                $errors['ended'] = $this->isEnded($workspace);
             }
 
-            if (!empty($resourceNode->getAllowedIps())) {
-                $errors['invalidLocation'] = !$this->isIpAuthorized($resourceNode);
+            if (!empty($workspace->getAllowedIps())) {
+                $errors['invalidLocation'] = !$this->isIpAuthorized($workspace);
             }
 
             return $errors;
@@ -111,26 +100,19 @@ class ResourceRestrictionsManager
     }
 
     /**
-     * Checks if a user has at least the right to access to one of the resource action.
+     * Checks if a user has at least the right to access the workspace.
      *
-     * @param ResourceNode $resourceNode
-     * @param Role[]       $userRoles
+     * @param Workspace $workspace
      *
      * @return bool
      */
-    public function hasRights(ResourceNode $resourceNode, array $userRoles): bool
+    public function hasRights(Workspace $workspace): bool
     {
-        $isAdmin = false;
-
-        if ($workspace = $resourceNode->getWorkspace()) {
-            $isAdmin = $this->authorization->isGranted('administrate', $workspace);
-        }
-
-        return 0 !== $this->rightsManager->getMaximumRights($userRoles, $resourceNode) || $isAdmin;
+        return $this->authorization->isGranted('open', $workspace);
     }
 
     /**
-     * Checks if the access period of the resource is started.
+     * Checks if the access period of the workspace is started.
      *
      * @param ResourceNode $resourceNode
      *
@@ -142,7 +124,7 @@ class ResourceRestrictionsManager
     }
 
     /**
-     * Checks if the access period of the resource is over.
+     * Checks if the access period of the workspace is over.
      *
      * @param ResourceNode $resourceNode
      *
@@ -154,17 +136,17 @@ class ResourceRestrictionsManager
     }
 
     /**
-     * Checks if the ip of the current user is allowed to access the resource.
+     * Checks if the ip of the current user is allowed to access the workspace.
      *
-     * @param ResourceNode $resourceNode
+     * @param Workspace $workspace
      *
      * @return bool
      *
      * @todo works just with IPv4, should be working with IPv6
      */
-    public function isIpAuthorized(ResourceNode $resourceNode): bool
+    public function isIpAuthorized(Workspace $workspace): bool
     {
-        $allowed = $resourceNode->getAllowedIps();
+        $allowed = $workspace->getAllowedIps();
         if (!empty($allowed)) {
             $currentParts = explode('.', $_SERVER['REMOTE_ADDR']);
 
@@ -187,27 +169,27 @@ class ResourceRestrictionsManager
             return false;
         }
 
-        // the current resource does not restrict ips
+        // the current workspace does not restrict ips
         return true;
     }
 
     /**
-     * Checks if a resource is unlocked.
+     * Checks if a workspace is unlocked.
      * (aka it has no access code, or user has already submitted it).
      *
-     * @param ResourceNode $resourceNode
+     * @param Workspace $workspace
      *
      * @return bool
      */
-    public function isUnlocked(ResourceNode $resourceNode): bool
+    public function isUnlocked(Workspace $workspace): bool
     {
-        if ($resourceNode->getAccessCode()) {
-            // check if the current user already has unlocked the resource
+        if ($workspace->getAccessCode()) {
+            // check if the current user already has unlocked the workspace
             // maybe store it another way to avoid require it each time the user session expires
-            return !empty($this->session->get($resourceNode->getUuid()));
+            return !empty($this->session->get($workspace->getUuid()));
         }
 
-        // the current resource does not require a code
+        // the current workspace does not require a code
         return true;
     }
 

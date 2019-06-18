@@ -18,7 +18,7 @@ import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {actions} from '#/main/core/administration/users/organization/store'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
 import {UserList} from '#/main/core/administration/users/user/components/user-list'
-import {WorkspaceList} from '#/main/core/administration/workspace/workspace/components/workspace-list'
+import {WorkspaceList} from '#/main/core/workspace/list/components/workspace-list'
 
 const OrganizationForm = props =>
   <FormData

@@ -12,10 +12,10 @@
 namespace Claroline\MessageBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\MessageBundle\Entity\Contact\Category;
 use Claroline\MessageBundle\Entity\Contact\Contact;
 use Claroline\MessageBundle\Entity\Contact\Options;
-use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

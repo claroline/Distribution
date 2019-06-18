@@ -5,14 +5,11 @@ namespace Claroline\CoreBundle\API\Serializer\Workspace;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
-use Claroline\CoreBundle\API\Serializer\User\OrganizationSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
-use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -49,9 +46,6 @@ class WorkspaceSerializer
     /** @var ResourceManager */
     private $resourceManager;
 
-    /** @var SerializerProvider */
-    private $serializer;
-
     /** @var ClaroUtilities */
     private $utilities;
 
@@ -60,6 +54,15 @@ class WorkspaceSerializer
 
     /** @var FinderProvider */
     private $finder;
+
+    /** @var UserSerializer */
+    private $userSerializer;
+
+    /** @var PublicFileSerializer */
+    private $publicFileSerializer;
+
+    /** @var ResourceNodeSerializer */
+    private $resNodeSerializer;
 
     /**
      * WorkspaceSerializer constructor.
@@ -74,20 +77,21 @@ class WorkspaceSerializer
      *     "tokenStorage"         = @DI\Inject("security.token_storage"),
      *     "finder"               = @DI\Inject("claroline.api.finder"),
      *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
-     *     "orgaSerializer"       = @DI\Inject("claroline.serializer.organization"),
      *     "publicFileSerializer" = @DI\Inject("claroline.serializer.public_file"),
      *     "resNodeSerializer"    = @DI\Inject("claroline.serializer.resource_node")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
+     * @param TokenStorageInterface         $tokenStorage
      * @param ObjectManager                 $om
      * @param WorkspaceManager              $workspaceManager
      * @param ResourceManager               $resourceManager
-     * @param SerializerProvider            $serializer
      * @param ClaroUtilities                $utilities
      * @param FileUtilities                 $fileUt
-     * @param TokenStorageInterface         $tokenStorage
      * @param FinderProvider                $finder
+     * @param UserSerializer                $userSerializer
+     * @param PublicFileSerializer          $publicFileSerializer
+     * @param ResourceNodeSerializer        $resNodeSerializer
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -99,7 +103,6 @@ class WorkspaceSerializer
         FileUtilities $fileUt,
         FinderProvider $finder,
         UserSerializer $userSerializer,
-        OrganizationSerializer $orgaSerializer,
         PublicFileSerializer $publicFileSerializer,
         ResourceNodeSerializer $resNodeSerializer
     ) {
@@ -112,7 +115,6 @@ class WorkspaceSerializer
         $this->fileUt = $fileUt;
         $this->finder = $finder;
         $this->userSerializer = $userSerializer;
-        $this->orgaSerializer = $orgaSerializer;
         $this->publicFileSerializer = $publicFileSerializer;
         $this->resNodeSerializer = $resNodeSerializer;
     }
@@ -187,6 +189,7 @@ class WorkspaceSerializer
                 'notifications' => $this->getNotifications($workspace),
             ]);
 
+            // TODO : remove me. Used by ViewAs modal in UI and workspace transfer
             if (!in_array(Options::SERIALIZE_LIST, $options)) {
                 if (in_array(Options::REFRESH_UUID, $options)) {
                     $serialized['roles'] = array_map(function (Role $role) {
@@ -205,33 +208,7 @@ class WorkspaceSerializer
                         ];
                     }, array_values(array_unique(array_merge($this->workspaceManager->getRolesWithAccess($workspace), $workspace->getRoles()->toArray()))));
                 }
-
-                $managerRole = $workspace->getManagerRole();
-
-                if ($managerRole) {
-                    $serialized['managers'] = array_map(function (User $manager) {
-                        return $this->userSerializer->serialize($manager, [Options::SERIALIZE_MINIMAL]);
-                    }, $this->finder->fetch(User::class, ['unionRole' => $managerRole->getUuid()]));
-                }
-
-                $serialized['organizations'] = array_map(function ($organization) {
-                    return $this->orgaSerializer->serialize($organization);
-                }, $workspace->getOrganizations()->toArray());
             }
-        }
-
-        // maybe do the same for users one day
-        if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
-            $groups = $this->om
-                ->getRepository(Group::class)
-                ->findByWorkspace($workspace);
-
-            $serialized['groups'] = array_map(function (Group $group) {
-                return [
-                  'id' => $group->getUuid(),
-                  'name' => $group->getName(),
-                ];
-            }, $groups);
         }
 
         return $serialized;
@@ -242,7 +219,7 @@ class WorkspaceSerializer
         $user = $this->tokenStorage->getToken()->getUser();
 
         if ($user instanceof User) {
-            return $this->workspaceManager->isRegistered($user, $workspace);
+            return $this->workspaceManager->isRegistered($workspace, $user);
         }
 
         return false;
@@ -268,6 +245,7 @@ class WorkspaceSerializer
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
         ];
 
+        // TODO : create an endpoint in the api to retrieve it instead
         if (!in_array(Options::SERIALIZE_LIST, $options) && !in_array(Options::SERIALIZE_MINIMAL, $options)) {
             // this query is very slow
             $data['totalUsers'] = $this->finder->fetch(
@@ -371,6 +349,7 @@ class WorkspaceSerializer
 
     /**
      * @param Workspace $workspace
+     * @param array     $options
      *
      * @return array
      */

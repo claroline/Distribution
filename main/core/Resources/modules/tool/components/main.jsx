@@ -36,6 +36,7 @@ Tool.propTypes = {
 
 class ToolMain extends Component {
   componentDidMount() {
+    console.log('tool mount')
     this.props.open(this.props.toolName)
   }
 

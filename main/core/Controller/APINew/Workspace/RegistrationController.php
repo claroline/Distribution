@@ -416,7 +416,7 @@ class RegistrationController extends AbstractApiController
 
         foreach ($workspaces as $workspace) {
             if ($this->authorization->isGranted('ROLE_ADMIN') || !$workspace->getRegistrationValidation()) {
-                $this->workspaceManager->addUserAction($workspace, $user);
+                $this->workspaceManager->addUser($workspace, $user);
             } else {
                 // Otherwise add user to validation queue if not already there
                 if (!$this->workspaceManager->isUserInValidationQueue($workspace, $user)) {

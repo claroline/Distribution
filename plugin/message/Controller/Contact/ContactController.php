@@ -13,12 +13,12 @@ namespace Claroline\MessageBundle\Controller\Contact;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\MessageBundle\Serializer\Contact\ContactSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
-use Claroline\MessageBundle\Entity\Contact\Contact;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ApiManager;
+use Claroline\MessageBundle\Entity\Contact\Contact;
 use Claroline\MessageBundle\Manager\ContactManager;
+use Claroline\MessageBundle\Serializer\Contact\ContactSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;

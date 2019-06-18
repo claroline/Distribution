@@ -28,24 +28,6 @@
     {# Alerts #}
     {% include "ClarolineCoreBundle::alerts.html.twig" %}
 
-    {# Main navigation #}
-    {% if (hideTopBar is not defined or not hideTopBar) and not has_role('ROLE_USURPATE_WORKSPACE_ROLE') %}
-        {% block topBarRender %}
-            {% if workspace is defined and workspace is not null %}
-                {{ render(controller('ClarolineCoreBundle:Layout:topBar', {request: app.request, workspace: workspace})) }}
-            {% else %}
-                {{ render(controller('ClarolineCoreBundle:Layout:topBar', {request: app.request})) }}
-            {% endif %}
-        {% endblock %}
-    {% endif %}
-
-    {# User impersonated notification #}
-    {% block impersonation %}
-        {% if has_role('ROLE_USURPATE_WORKSPACE_ROLE') or is_impersonated() %}
-            {{ render(controller('ClarolineCoreBundle:Layout:renderWarningImpersonation')) }}
-        {% endif %}
-    {% endblock %}
-
     {# Content #}
     {# do not use block `wrap_attrs` it will be removed (only used in login) #}
     <div {% block wrap_attrs %}class="app-content"{% endblock %}>
@@ -79,20 +61,8 @@
                 </main>
             </div>
         {% endblock %}
-
-        {% if hideFooter is not defined or not hideFooter %}
-            {% block footer %}
-                {{ render(controller('ClarolineCoreBundle:Layout:footer', {request: app.request})) }}
-            {% endblock%}
-        {% endif %}
     </div>
 
     {# Anchor for UI portals (eg. modals, walkthroughs) #}
     <div class="app-overlays-container"></div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-    {% include 'ClarolineCoreBundle:layout:javascripts.html.twig' %}
 {% endblock %}

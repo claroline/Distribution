@@ -3,8 +3,7 @@ import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 import {
   TOOL_OPEN,
   TOOL_CLOSE,
-  TOOL_SET_LOADED,
-  TOOL_SET_CONTEXT
+  TOOL_SET_LOADED
 } from '#/main/core/tool/store/actions'
 
 const reducer = combineReducers({
@@ -21,11 +20,7 @@ const reducer = combineReducers({
   }),
   currentContext: makeReducer({}, {
     [TOOL_OPEN]: (state, action) => action.context,
-    [TOOL_CLOSE]: () => ({}),
-    [TOOL_SET_CONTEXT]: (state, action) => ({
-      type: action.contextType,
-      data: action.contextData
-    })
+    [TOOL_CLOSE]: () => ({})
   })
 })
 

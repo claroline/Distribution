@@ -35,7 +35,6 @@ security:
                 lifetime: 31536000 # 365 days
                 path:     /
                 domain:   ~
-            access_denied_handler: claroline.exception.access_denied_handler
 
         # Won't go here unless cas bundle is present and cas is activated
         cas:

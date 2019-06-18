@@ -49,7 +49,7 @@ class Updater120414 extends Updater
         }
     }
 
-    private function renameTool($oldName, $newName, $admin = false)
+    /*private function renameTool($oldName, $newName, $admin = false)
     {
         $this->log(sprintf('Renaming `%s` tool into %s...', $oldName, $newName));
 
@@ -60,5 +60,5 @@ class Updater120414 extends Updater
             $this->om->persist($tool);
             $this->om->flush();
         }
-    }
+    }*/
 }

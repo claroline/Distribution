@@ -14,12 +14,10 @@ namespace Claroline\CoreBundle\Controller;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
-use Claroline\CoreBundle\Exception\WorkspaceAccessException;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\ToolManager;
@@ -31,6 +29,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -40,11 +39,6 @@ use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * This controller is able to:
- * - list/create/delete/show workspaces.
- * - return some users/groups list (ie: (un)registered users to a workspace).
- * - add/delete users/groups to a workspace.
- *
  * @EXT\Route("/workspaces", options={"expose" = true})
  */
 class WorkspaceController
@@ -134,21 +128,27 @@ class WorkspaceController
     }
 
     /**
-     * @EXT\Route("/{workspaceId}/open", name="claro_workspace_open")
+     * @EXT\Route("/{workspaceId}", name="claro_workspace_open")
      *
      * @param int     $workspaceId - the id or uuid of the WS to open
      * @param Request $request
      *
      * @throws AccessDeniedException
      *
-     * @return array
+     * @return JsonResponse
      */
     public function openAction($workspaceId, Request $request)
     {
         /** @var Workspace $workspace */
         $workspace = $this->om->getObject(['id' => $workspaceId], Workspace::class);
+        if (!$workspace) {
+            throw new NotFoundHttpException('Workspace not found');
+        }
 
-        $this->assertIsGranted('OPEN', $workspace);
+        if (!$this->authorization->isGranted('open', $workspace)) {
+            throw new AccessDeniedException();
+        }
+
         $this->forceWorkspaceLang($workspace, $request);
 
         // Log workspace opening
@@ -170,43 +170,47 @@ class WorkspaceController
             $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
         }
 
+        // TODO : impersonation
         // TODO : access errors
 
-        return [
+        return new JsonResponse([
+            'impersonated' => false,
             'accessErrors' => [],
-            'workspace' => $workspace,
             'tools' => array_values(array_map(function (OrderedTool $orderedTool) { // todo : create a serializer
                 return [
                     'icon' => $orderedTool->getTool()->getClass(),
                     'name' => $orderedTool->getTool()->getName(),
                 ];
             }, $orderedTools)),
-        ];
+        ]);
     }
 
     /**
      * Opens a tool.
      *
-     * @EXT\Route("/{workspaceId}/open/tool/{toolName}", name="claro_workspace_open_tool")
+     * @EXT\Route("/{id}/tool/{toolName}", name="claro_workspace_open_tool")
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true},
+     *      options={"id" = "id", "strictId" = true},
      *      converter="strict_id"
      * )
      *
-     * @param string    $toolName
      * @param Workspace $workspace
-     * @param Request   $request
+     * @param string    $toolName
      *
      * @return Response
      */
-    public function openToolAction($toolName, Workspace $workspace, Request $request)
+    public function openToolAction(Workspace $workspace, $toolName)
     {
-        $this->assertIsGranted($toolName, $workspace);
+        $tool = $this->toolManager->getToolByName($toolName);
+        if (!$tool) {
+            throw new NotFoundHttpException('Tool not found');
+        }
 
-        // I'm not sure this is still required. In real life, you need to open the workspace first (which do it)
-        $this->forceWorkspaceLang($workspace, $request);
+        if (!$this->authorization->isGranted($toolName, $workspace)) {
+            throw new AccessDeniedException();
+        }
 
         /** @var DisplayToolEvent $event */
         $event = $this->eventDispatcher->dispatch('open_tool_workspace_'.$toolName, new DisplayToolEvent($workspace));
@@ -253,34 +257,6 @@ class WorkspaceController
         ];
     }
 
-    /**
-     * @EXT\Route("/{workspace}/register/redirect", name="claro_workspace_register_redirect")
-     * @EXT\Template
-     *
-     * @param Workspace $workspace
-     * @param Request   $request
-     *
-     * @return array
-     *
-     * @throws \Exception
-     */
-    public function registerAndRedirect(Workspace $workspace, Request $request)
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        if ($user instanceof User && $workspace->getSelfRegistration()) {
-            if ($workspace->getRegistrationValidation()) {
-                $this->workspaceManager->addUserQueue($workspace, $user);
-            } else {
-                $this->workspaceManager->addUserAction($workspace, $user);
-            }
-
-            return $this->openAction($workspace->getId(), $request);
-        } else {
-            throw new \Exception('No self registration allowed');
-        }
-    }
-
     private function isUsurpator(TokenInterface $token = null)
     {
         if ($token) {
@@ -292,17 +268,6 @@ class WorkspaceController
         }
 
         return false;
-    }
-
-    private function assertIsGranted($attributes, Workspace $workspace)
-    {
-        if (!$this->authorization->isGranted($attributes, $workspace)) {
-            $exception = new WorkspaceAccessException();
-            $exception->setWorkspace($workspace);
-            $exception->setAction($attributes);
-
-            throw $exception;
-        }
     }
 
     private function forceWorkspaceLang(Workspace $workspace, Request $request)

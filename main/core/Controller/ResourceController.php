@@ -106,6 +106,7 @@ class ResourceController
      * @param ResourceRestrictionsManager   $restrictionsManager
      * @param ObjectManager                 $om
      * @param AuthorizationCheckerInterface $authorization
+     * @param EventManager                  $eventManager
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
@@ -147,13 +148,15 @@ class ResourceController
      * @return array
      *
      * @throws ResourceNotFoundException
+     *
+     * @deprecated
      */
     public function showAction($id, User $currentUser = null)
     {
         /** @var ResourceNode $resourceNode */
         $resourceNode = $this->om->find(ResourceNode::class, $id);
         if (!$resourceNode) {
-            throw new ResourceNotFoundException();
+            throw new NotFoundHttpException('Resource not found');
         }
 
         // TODO : not pretty, but might want on some case to download files instead ?
@@ -383,8 +386,8 @@ class ResourceController
 
             return new JsonResponse(
                 array_merge([
-                    // append access restrictions to the loaded node
-                    // if any to let know the manager that other user can not enter the resource
+                    // append access restrictions to the loaded node if any
+                    // to let the manager knows that other users can not enter the resource
                     'accessErrors' => $accessErrors,
                 ], $loaded)
             );

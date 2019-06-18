@@ -42,22 +42,20 @@ const LayoutMain = props =>
       }
 
       <div className="app-content" role="presentation">
-        <div className="page-container" role="presentation">
-          <Routes
-            routes={[
-              {
-                path: '/',
-                exact: true
-              }, {
-                path: '/desktop',
-                component: DesktopMain
-              }, {
-                path: '/admin',
-                component: AdministrationMain
-              }
-            ]}
-          />
-        </div>
+        <Routes
+          routes={[
+            {
+              path: '/',
+              exact: true
+            }, {
+              path: '/desktop',
+              component: DesktopMain
+            }, {
+              path: '/admin',
+              component: AdministrationMain
+            }
+          ]}
+        />
 
         <FooterMain />
       </div>
