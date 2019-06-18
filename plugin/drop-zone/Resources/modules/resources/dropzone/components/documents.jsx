@@ -44,7 +44,7 @@ Document.propTypes = {
 const formatUrl = (url) => url.startsWith('http') ? url : `http://${url}`
 
 const DocumentRow = props =>
-  <tr className="drop-document">
+  <tr className={classes('drop-document', {'manager-document': props.document.isManager})}>
     <td className="document-type">
       {constants.DOCUMENT_TYPES[props.document.type]}
     </td>
