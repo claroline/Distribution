@@ -5,6 +5,7 @@ import {TabbedPageContainer} from '#/main/core/layout/tabs'
 
 import {List} from '#/main/core/tools/desktop-parameters/components/list'
 import {TokenTabActions, TokenTabComponent} from '#/main/core/tools/desktop-parameters/token/components/token-tab'
+import {DocumentationComponent} from '#/main/core/tools/desktop-parameters/documentation/components/documentation'
 
 const Tool = () =>
   <TabbedPageContainer
@@ -21,6 +22,11 @@ const Tool = () =>
         path: '/tokens',
         actions: TokenTabActions,
         content: TokenTabComponent
+      }, {
+        icon: 'fa fa-fw fa-book',
+        title: trans('documentation'),
+        path: '/documentation',
+        content: DocumentationComponent
       }
     ]}
   />
