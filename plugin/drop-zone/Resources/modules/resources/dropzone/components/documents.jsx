@@ -31,9 +31,7 @@ const Document = props =>
 
     {constants.DOCUMENT_TYPES[props.type]}
 
-    <DocumentActions
-
-    />
+    <DocumentActions/>
   </li>
 
 Document.propTypes = {
@@ -143,28 +141,28 @@ DocumentRow.propTypes = {
 }
 
 const Documents = props =>
-  <section>
+  <section className="dropzone-documents">
     <h3>{trans('documents_added_to_copy', {}, 'dropzone')}</h3>
 
     {0 !== props.documents.length &&
       <table className="table">
         <thead>
-          <tr>
-            <th>{trans('drop_type', {}, 'dropzone')}</th>
-            {props.showUser &&
+        <tr>
+          <th>{trans('drop_type', {}, 'dropzone')}</th>
+          {props.showUser &&
             <th>{trans('user', {}, 'platform')}</th>
-            }
-            {props.showMeta &&
+          }
+          {props.showMeta &&
             <th>{trans('drop_date', {}, 'dropzone')}</th>
-            }
-            <th>{trans('document', {}, 'dropzone')}</th>
-            {props.canEdit &&
+          }
+          <th>{trans('document', {}, 'dropzone')}</th>
+          {props.canEdit &&
             <th>{trans('actions', {}, 'platform')}</th>
-            }
-            {props.showTools && props.tools.length > 0 &&
+          }
+          {props.showTools && props.tools.length > 0 &&
             <th>{trans('tools', {}, 'platform')}</th>
-            }
-          </tr>
+          }
+        </tr>
         </thead>
 
         <tbody>
