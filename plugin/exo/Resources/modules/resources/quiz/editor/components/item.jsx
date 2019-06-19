@@ -26,8 +26,9 @@ const EditorItem = props =>
     }
 
     then={(itemDefinition) => {
+          
       const itemTitle = props.item.title || trans(itemDefinition.name, {}, 'question_types')
-      const itemScore = calculateTotal(props.item)
+      const itemScore = itemDefinition.answerable ? calculateTotal(props.item): null
 
       return (
         <FormSection
