@@ -153,6 +153,16 @@ const revisionReducer = makeReducer(null, {
     action.documents.forEach(d => newDocuments.push(d))
 
     return Object.assign({}, state, {documents: newDocuments})
+  },
+  [DOCUMENT_REMOVE]: (state, action) => {
+    const newDocuments = cloneDeep(state.documents)
+    const index = newDocuments.findIndex(d => d.id === action.documentId)
+
+    if (index > -1) {
+      newDocuments.splice(index, 1)
+    }
+
+    return Object.assign({}, state, {documents: newDocuments})
   }
 })
 

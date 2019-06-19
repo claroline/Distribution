@@ -233,3 +233,13 @@ actions.saveManagerDocument = (dropId, revisionId, documentType, documentData) =
     }
   }
 }
+
+actions.deleteManagerDocument = (documentId) => ({
+  [API_REQUEST]: {
+    url: ['claro_dropzone_manager_document_delete', {id: documentId}],
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => dispatch(actions.removeDocument(documentId))
+  }
+})

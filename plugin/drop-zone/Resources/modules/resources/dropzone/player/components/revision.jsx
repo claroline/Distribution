@@ -2,12 +2,14 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
+import {hasPermission} from '#/main/app/security'
 import {matchPath, withRouter} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
 import {displayDate} from '#/main/app/intl/date'
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
+import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {MODAL_RESOURCE_EXPLORER} from '#/main/core/modals/resources'
 
 import {
@@ -41,6 +43,7 @@ const RevisionComponent = props => props.revision && props.drop ?
     <Documents
       documents={props.revision.documents}
       showMeta={true}
+      isManager={props.isManager}
       {...props}
     />
 
@@ -78,9 +81,11 @@ RevisionComponent.propTypes = {
   location: T.shape({
     pathname: T.string
   }),
+  isManager: T.bool,
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
   revision: T.shape(RevisionType.propTypes),
   drop: T.shape(DropType.propTypes),
+  showModal: T.func.isRequired,
   saveDropComment: T.func.isRequired,
   saveRevisionComment: T.func.isRequired,
   addDocument: T.func.isRequired
@@ -88,6 +93,7 @@ RevisionComponent.propTypes = {
 
 const Revision = withRouter(connect(
   (state) => ({
+    isManager: hasPermission('edit', resourceSelect.resourceNode(state)),
     dropzone: select.dropzone(state),
     revision: select.revision(state),
     drop: select.currentDrop(state)
@@ -99,6 +105,7 @@ const Revision = withRouter(connect(
     saveRevisionComment(comment) {
       dispatch(actions.saveRevisionComment(comment))
     },
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
     addDocument(dropId, revisionId, allowedDocuments) {
       dispatch(
         modalActions.showModal(MODAL_ADD_DOCUMENT, {
@@ -120,6 +127,9 @@ const Revision = withRouter(connect(
           }
         })
       )
+    },
+    deleteDocument(documentId) {
+      dispatch(actions.deleteManagerDocument(documentId))
     }
   })
 )(RevisionComponent))
