@@ -622,7 +622,8 @@ GridTable.propTypes = {
   removeColumn: T.func.isRequired,
   openPopover: T.func.isRequired,
   closePopover: T.func.isRequired,
-  update: T.func.isRequired
+  update: T.func.isRequired,
+  errors: T.array
 }
 
 const GridEditor = (props) => {
