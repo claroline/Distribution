@@ -59,8 +59,6 @@ export default {
 
     if (item._restrictLength) errors.maxLength = chain(item.maxLength, {}, [notBlank, number, gteZero])
 
-    console.log(errors)
-
     return errors
   },
 

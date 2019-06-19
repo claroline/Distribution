@@ -638,28 +638,42 @@ const GridEditor = (props) => {
     }
   })
 
-  const GridComponent = (
-    <div className="grid-body">
+  const GridComponent = (item, itemErrors) => {
+    const renderedItem = cloneDeep(item)
+    decoratedItem.solutions.forEach(s => {
+      if (s.answers) {
+        s.answers.forEach(a => {
+          if (a['_id'] === undefined) {
+            a['_id'] = makeId()
+          }
+          a['_deletable'] = 1 < s.answers.length
+        })
+      }
+    })
+
+    return (<div className="grid-body">
       <GridTable
-        item={decoratedItem}
+        item={renderedItem}
         hasScore={props.hasAnswerScores}
         validating={props.validating}
         update={props.update}
         removeRow={(row) => {
-          const newItem = cloneDeep(decoratedItem)
+          const newItem = cloneDeep(renderedItem)
           deleteRow(row, newItem, true)
           props.update('cells', newItem.cells)
         }}
         removeColumn={(col) => {
-          const newItem = cloneDeep(decoratedItem)
+          const newItem = cloneDeep(renderedItem)
           deleteCol(col, newItem, true)
           props.update('cells', newItem.cells)
         }}
         openPopover={(cellId) => props.update('_popover', cellId)}
         closePopover={() => props.update('_popover', null) }
+        errors={itemErrors}
       />
-    </div>
-  )
+    </div>)
+  }
+  
 
   return (
     <FormData
@@ -769,41 +783,7 @@ const GridEditor = (props) => {
               name: 'solutions',
               required: true,
               //component: GridComponent,
-              render: (item, itemErrors) => {
-                const renderedItem = cloneDeep(item)
-                decoratedItem.solutions.forEach(s => {
-                  if (s.answers) {
-                    s.answers.forEach(a => {
-                      if (a['_id'] === undefined) {
-                        a['_id'] = makeId()
-                      }
-                      a['_deletable'] = 1 < s.answers.length
-                    })
-                  }
-                })
-
-                return (<div className="grid-body">
-                  <GridTable
-                    item={renderedItem}
-                    hasScore={props.hasAnswerScores}
-                    validating={props.validating}
-                    update={props.update}
-                    removeRow={(row) => {
-                      const newItem = cloneDeep(renderedItem)
-                      deleteRow(row, newItem, true)
-                      props.update('cells', newItem.cells)
-                    }}
-                    removeColumn={(col) => {
-                      const newItem = cloneDeep(renderedItem)
-                      deleteCol(col, newItem, true)
-                      props.update('cells', newItem.cells)
-                    }}
-                    openPopover={(cellId) => props.update('_popover', cellId)}
-                    closePopover={() => props.update('_popover', null) }
-                    errors={itemErrors}
-                  />
-                </div>)
-              }
+              render:(item, itemErrors) => GridComponent(item, itemErrors)
             }
           ]
         }
