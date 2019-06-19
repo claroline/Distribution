@@ -68,7 +68,7 @@
     "expected_correction_total_label": "Nombre de corrections attendues par production",
     "fail_message": "Message en cas d'échec",
     "file_type": "Fichier envoyé",
-    "final_drop": "Dépôt définitif",
+    "final_drop": "Déposer définitivement",
     "finished": "Terminé",
     "finished_corrections": "Corrections terminées",
     "force_comment": "Rendre le commentaire obligatoire",
