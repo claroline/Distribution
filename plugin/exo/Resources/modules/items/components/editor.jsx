@@ -32,7 +32,7 @@ const ItemEditor = props => {
     path: props.path,
     disabled: props.disabled,
     item: props.item,
-    hasAnswerScores: props.definition.answerable ? currentScore.hasAnswerScores: false,
+    hasAnswerScores: props.definition.answerable && props.enableScores ? currentScore.hasAnswerScores: false,
     update: props.update
   })
 
