@@ -5,7 +5,7 @@ import {TabbedPageContainer} from '#/main/core/layout/tabs'
 
 import {List} from '#/main/core/tools/desktop-parameters/components/list'
 import {TokenTabActions, TokenTabComponent} from '#/main/core/tools/desktop-parameters/token/components/token-tab'
-import {DocumentationComponent} from '#/main/core/tools/desktop-parameters/documentation/components/documentation'
+import {DocumentationComponent} from '#/main/core/documentation/components/documentation'
 
 const Tool = () =>
   <TabbedPageContainer
