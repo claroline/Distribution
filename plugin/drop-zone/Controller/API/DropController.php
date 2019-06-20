@@ -552,7 +552,7 @@ class DropController
         }
         $params = $request->query->all();
         $filters = array_key_exists('filters', $params) ? $params['filters'] : [];
-        $filters['dropzone'] = $drop->getDropzone()->getUuid();
+        $filters['dropzone'] = $dropzone->getUuid();
         $sortBy = array_key_exists('sortBy', $params) ? $params['sortBy'] : null;
 
         //array map is not even needed; objects are fine here
@@ -597,23 +597,23 @@ class DropController
         }
         $params = $request->query->all();
         $filters = array_key_exists('filters', $params) ? $params['filters'] : [];
-        $filters['dropzone'] = $drop->getDropzone()->getUuid();
+        $filters['dropzone'] = $dropzone->getUuid();
         $sortBy = array_key_exists('sortBy', $params) ? $params['sortBy'] : null;
 
         //array map is not even needed; objects are fine here
         /** @var Drop[] $data */
         $data = $this->finder->get(Drop::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
-        $next = null;
+        $previous = null;
 
         foreach ($data as $position => $value) {
             if ($value->getUuid() === $drop->getUuid()) {
-                $next = $position - 1;
+                $previous = $position - 1;
             }
         }
 
-        $nextDrop = array_key_exists($next, $data) ? $data[$next] : reset($data);
+        $previousDrop = array_key_exists($previous, $data) ? $data[$previous] : end($data);
 
-        return new JsonResponse($this->manager->serializeDrop($nextDrop), 200);
+        return new JsonResponse($this->manager->serializeDrop($previousDrop), 200);
     }
 
     private function checkDropEdition(Drop $drop, User $user)

@@ -6,12 +6,11 @@ import {url} from '#/main/app/api'
 import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
 import {ASYNC_BUTTON} from '#/main/app/buttons'
-import {FormSections, FormSection} from '#/main/app/content/form/components/sections.jsx'
+import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {Button} from '#/main/app/action/components/button'
 
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/store/selectors'
-import {selectors as correctionSelectors} from '#/plugin/drop-zone/resources/dropzone/correction/selectors'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents'
@@ -136,7 +135,7 @@ const ConnectedDrop = withRouter(connect(
     dropzone: select.dropzone(state),
     drop: select.currentDrop(state),
     tools: select.tools(state),
-    slideshowQueryString: correctionSelectors.slideshowQueryString(state),
+    slideshowQueryString: select.slideshowQueryString(state, select.STORE_NAME+'.drops')
   }),
   (dispatch) => ({
     saveCorrection: (correction) => dispatch(actions.saveCorrection(correction)),
