@@ -3,8 +3,10 @@
 namespace Claroline\CoreBundle\API\Serializer\Cryptography;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Cryptography\ApiToken;
+use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -21,14 +23,16 @@ class ApiTokenSerializer
      * OptionsSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "userSerializer" = @DI\Inject("claroline.serializer.user")
+     *     "userSerializer" = @DI\Inject("claroline.serializer.user"),
+     *     "om"             = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param UserSerializer $userSerializer
      */
-    public function __construct(UserSerializer $userSerializer)
+    public function __construct(UserSerializer $userSerializer, ObjectManager $om)
     {
         $this->userSerializer = $userSerializer;
+        $this->om = $om;
     }
 
     /**
@@ -55,6 +59,11 @@ class ApiTokenSerializer
     public function deserialize(array $data, ApiToken $token, array $options = [])
     {
         $this->sipe('description', 'setDescription', $data, $token);
+
+        if (isset($data['user'])) {
+            $user = $this->om->getRepository(User::class)->findOneByUsername($data['user']['username']);
+            $token->setUser($user);
+        }
 
         return $token;
     }
