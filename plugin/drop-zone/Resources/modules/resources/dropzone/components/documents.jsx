@@ -147,22 +147,22 @@ const Documents = props =>
     {0 !== props.documents.length &&
       <table className="table">
         <thead>
-        <tr>
-          <th>{trans('drop_type', {}, 'dropzone')}</th>
-          {props.showUser &&
-            <th>{trans('user', {}, 'platform')}</th>
-          }
-          {props.showMeta &&
-            <th>{trans('drop_date', {}, 'dropzone')}</th>
-          }
-          <th>{trans('document', {}, 'dropzone')}</th>
-          {props.canEdit &&
-            <th>{trans('actions', {}, 'platform')}</th>
-          }
-          {props.showTools && props.tools.length > 0 &&
-            <th>{trans('tools', {}, 'platform')}</th>
-          }
-        </tr>
+          <tr>
+            <th>{trans('drop_type', {}, 'dropzone')}</th>
+            {props.showUser &&
+              <th>{trans('user', {}, 'platform')}</th>
+            }
+            {props.showMeta &&
+              <th>{trans('drop_date', {}, 'dropzone')}</th>
+            }
+            <th>{trans('document', {}, 'dropzone')}</th>
+            {props.canEdit &&
+              <th>{trans('actions', {}, 'platform')}</th>
+            }
+            {props.showTools && props.tools.length > 0 &&
+              <th>{trans('tools', {}, 'platform')}</th>
+            }
+          </tr>
         </thead>
 
         <tbody>
