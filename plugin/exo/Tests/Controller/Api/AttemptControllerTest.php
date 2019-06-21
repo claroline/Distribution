@@ -80,7 +80,7 @@ class AttemptControllerTest extends TransactionalTestCase
     public function testAnonymousAttempt()
     {
         $this->request('POST', "/api/exercises/{$this->ex1->getUuid()}/attempts");
-        $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
     }
 
     public function testNewAttempt()

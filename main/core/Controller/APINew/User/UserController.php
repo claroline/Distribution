@@ -594,7 +594,7 @@ class UserController extends AbstractCrudController
     /**
      * @return array
      */
-    private function getDefaultRequirements()
+    public function getDefaultRequirements()
     {
         return [
           'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|csv|current|\/)).*'],

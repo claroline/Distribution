@@ -1,5 +1,4 @@
 security:
-
     providers:
         user_db:
             entity: { class: Claroline\CoreBundle\Entity\User }
@@ -17,7 +16,7 @@ security:
             security: false
 
         api:
-           pattern:    /(api|apiv2)/
+           pattern: %firewall_api_regex%
            stateless: true
            simple_preauth:
               authenticator: claroline.security.authentication.apitoken_authenticator

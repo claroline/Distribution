@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
@@ -37,17 +38,13 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
     }
 
     public function supportsToken(TokenInterface $token, $providerKey)
-    {/*
-        var_dump('do I support ?'.$providerKey);
-        var_dump($token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey);
-*/
+    {
         return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey /*|| $token instanceof UsernamePasswordToken*/;
     }
 
     public function createToken(Request $request, $providerKey)
     {
         $session = $request->hasPreviousSession() ? $request->getSession() : null;
-
         $apiKey = $request->query->get('apitoken');
         //if we're in the application, use the regular token
         if ($apiKey) {
@@ -63,7 +60,11 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
             $token = $session->get('_security_main');
             $token = unserialize($token);
 
-            return $token;
+            if ($token) {
+                return $token;
+            }
+        } else {
+            throw new BadCredentialsException();
         }
     }
 

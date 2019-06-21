@@ -82,7 +82,7 @@ class Documentator
         $routes = $this->router->find($class);
         $documented = [];
 
-        foreach ($routes->getIterator() as $name => $route) {
+        foreach ($routes->getIterator() as $route) {
             $method = strtolower(isset($route->getMethods()[0]) ? $route->getMethods()[0] : 'get');
             $documented[$route->getPath()][$method] = $this->documentRoute($route);
             $documented[$route->getPath()][$method]['tags'] = [$class];
@@ -113,11 +113,7 @@ class Documentator
         if ($queryString) {
             $data['parameters'] = $queryString;
         }
-        /*
-                if ($doc->getParameters()) {
-                    $data['parameters'] = $doc->getParameters();
-                }
-        */
+
         if ($body) {
             $data['body'] = $body;
         }

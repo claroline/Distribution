@@ -20,7 +20,7 @@ const Tokens = () =>
     }}
     definition={[
       {
-        name: 'token',
+        name: 'url',
         label: trans('url', {}, 'lti'),
         type: 'string',
         primary: true,

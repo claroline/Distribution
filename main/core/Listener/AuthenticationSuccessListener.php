@@ -92,7 +92,8 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
      *     "router"               = @DI\Inject("router"),
      *     "userManager"          = @DI\Inject("claroline.manager.user_manager"),
      *     "requestStack"         = @DI\Inject("request_stack"),
-     *     "kernelRootDir"        = @DI\Inject("%kernel.root_dir%")
+     *     "kernelRootDir"        = @DI\Inject("%kernel.root_dir%"),
+     *     "firewallApiRegex"     = @DI\Inject("%firewall_api_regex%")
      * })
      *
      * @param Kernel                        $kernel
@@ -108,6 +109,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
      * @param UserManager                   $userManager
      * @param RequestStack                  $requestStack
      * @param string                        $kernelRootDir
+     * @param string                        $firewallApiRegex
      */
     public function __construct(
         Kernel $kernel,
@@ -122,7 +124,8 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
         Router $router,
         UserManager $userManager,
         RequestStack $requestStack,
-        $kernelRootDir
+        $kernelRootDir,
+        $firewallApiRegex
     ) {
         $this->kernel = $kernel;
         $this->tokenStorage = $tokenStorage;
@@ -136,6 +139,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
         $this->router = $router;
         $this->userManager = $userManager;
         $this->requestStack = $requestStack;
+        $this->firewallApiRegex = $firewallApiRegex;
         $this->logger = FileLogger::get($kernelRootDir.'/logs/login.log', 'claroline.login.logger');
     }
 
@@ -148,7 +152,8 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
         $request = $event->getRequest();
         $pathInfo = $request->getPathInfo();
         //we should check the regex set in the security thingy
-        $fromApi = strpos($pathInfo, 'apiv2') ? true : false;
+        $apiFirewall = $this->firewallApiRegex;
+        $fromApi = preg_match($apiFirewall, $pathInfo) ? true : false;
         $this->userManager->logUser($user, $fromApi);
     }
 

@@ -4,8 +4,8 @@ import {trans} from '#/main/app/intl/translation'
 import {TabbedPageContainer} from '#/main/core/layout/tabs'
 
 import {List} from '#/main/core/tools/desktop-parameters/components/list'
-import {TokenTabActions, TokenTabComponent} from '#/main/core/tools/desktop-parameters/token/components/token-tab'
-import {DocumentationComponent} from '#/main/core/documentation/components/documentation'
+//import {TokenTabActions, TokenTabComponent} from '#/main/core/tools/desktop-parameters/token/components/token-tab'
+//import {DocumentationComponent} from '#/main/core/documentation/components/documentation'
 
 const Tool = () =>
   <TabbedPageContainer
@@ -16,7 +16,7 @@ const Tool = () =>
         path: '/',
         exact: true,
         content: List
-      }, {
+      }/*, {
         icon: 'fa fa-fw fa-wrench',
         title: trans('tokens'),
         path: '/tokens',
@@ -27,7 +27,7 @@ const Tool = () =>
         title: trans('documentation'),
         path: '/documentation',
         content: DocumentationComponent
-      }
+      }*/
     ]}
   />
 
