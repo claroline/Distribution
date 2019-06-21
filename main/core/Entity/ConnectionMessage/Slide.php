@@ -50,7 +50,7 @@ class Slide
      *     targetEntity="Claroline\CoreBundle\Entity\ConnectionMessage\ConnectionMessage",
      *     inversedBy="slides"
      * )
-     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="message_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @var ConnectionMessage
      */
