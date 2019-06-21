@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
@@ -86,18 +85,13 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
         $apiKey = $token->getCredentials();
         $user = $this->om->getRepository(ApiToken::class)->findOneByToken($apiKey)->getUser();
 
-        if (!$user) {
-            throw new AuthenticationException(
-                sprintf('No user found for api token "%s"', $apiKey)
-            );
+        if ($user) {
+            return new SecurityApiToken(
+              $user,
+              $apiKey,
+              $providerKey,
+              $user->getRoles()
+          );
         }
-
-        //could return UsernamePasswordToken and maybe the PreAuthName I'm not sure
-        return new SecurityApiToken(
-            $user,
-            $apiKey,
-            $providerKey,
-            $user->getRoles()
-        );
     }
 }

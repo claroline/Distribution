@@ -16,15 +16,15 @@ trait RequestTrait
                 'Symfony\Component\BrowserKit\Client'
             );
         }
-        $om = $this->client->getContainer()->get('claroline.persistence.object_manager');
-        $user = $om->getRepository(User::class)->findOneByUsername($user);
-        $token = new ApiToken();
-        $token->setUser($user);
-        $om->persist($token);
-        $om->flush($token);
 
-        var_dump($uri.'?apitoken='.$token->getToken());
+        if ($user) {
+            $om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+            $token = $om->getRepository(ApiToken::class)->findOneByUser($user);
+            $uri = strpos($uri, '?') ? $uri.'&apitoken='.$token->getToken() : $uri.'?apitoken='.$token->getToken();
+        }
 
-        return $this->client->request($method, $uri.'?apitoken='.$token->getToken(), $parameters, [], [], $content);
+        var_dump($uri);
+
+        return $this->client->request($method, $uri, $parameters, [], [], $content);
     }
 }
