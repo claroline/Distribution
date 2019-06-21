@@ -21,6 +21,7 @@ use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Entity\DropzoneTool;
+use Claroline\DropZoneBundle\Entity\Revision;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use Claroline\TeamBundle\Entity\Team;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -309,6 +310,97 @@ class DropController
     }
 
     /**
+     * Adds a manager Document to a Drop.
+     *
+     * @EXT\Route(
+     *     "/drop/{id}/revision/{revision}/type/{type}/manager",
+     *     name="claro_dropzone_manager_documents_add"
+     * )
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter(
+     *     "revision",
+     *     class="ClarolineDropZoneBundle:Revision",
+     *     options={"mapping": {"revision": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Drop     $drop
+     * @param Revision $revision
+     * @param int      $type
+     * @param User     $user
+     * @param Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function addManagerDocumentAction(Drop $drop, Revision $revision, $type, User $user, Request $request)
+    {
+        $dropzone = $drop->getDropzone();
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+        $documents = [];
+
+        try {
+            if (!$drop->isFinished()) {
+                switch ($type) {
+                    case Document::DOCUMENT_TYPE_FILE:
+                        $files = $request->files->all();
+                        $documents = $this->manager->createFilesDocuments($drop, $user, $files, $revision, true);
+                        break;
+                    case Document::DOCUMENT_TYPE_TEXT:
+                    case Document::DOCUMENT_TYPE_URL:
+                    case Document::DOCUMENT_TYPE_RESOURCE:
+                        $uuid = $request->request->get('dropData', false);
+                        $document = $this->manager->createDocument($drop, $user, $type, $uuid, $revision, true);
+                        $documents[] = $this->manager->serializeDocument($document);
+                        break;
+                }
+                $progression = $dropzone->isPeerReview() ? 0 : 50;
+                $this->manager->updateDropProgression($dropzone, $drop, $progression);
+            }
+
+            return new JsonResponse($documents);
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * Deletes a manager Document.
+     *
+     * @EXT\Route("/document/{id}/manager", name="claro_dropzone_manager_document_delete")
+     * @EXT\Method("DELETE")
+     * @EXT\ParamConverter(
+     *     "document",
+     *     class="ClarolineDropZoneBundle:Document",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Document $document
+     *
+     * @return JsonResponse
+     */
+    public function deleteManagerDocumentAction(Document $document)
+    {
+        $drop = $document->getDrop();
+        $dropzone = $drop->getDropzone();
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $documentId = $document->getUuid();
+            $this->manager->deleteDocument($document);
+
+            return new JsonResponse($documentId);
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
      * Unlocks Drop.
      *
      * @EXT\Route("/drop/{id}/unlock", name="claro_dropzone_drop_unlock")
@@ -432,6 +524,96 @@ class DropController
         $response->headers->set('Connection', 'close');
 
         return $response->send();
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/drop/{id}/next",
+     *     name="claro_dropzone_drop_next"
+     * )
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     *
+     * @param Drop    $drop
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function nextDropAction(Drop $drop, Request $request)
+    {
+        $dropzone = $drop->getDropzone();
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
+
+        if (!$this->authorization->isGranted('EDIT', $collection)) {
+            throw new AccessDeniedException();
+        }
+        $params = $request->query->all();
+        $filters = array_key_exists('filters', $params) ? $params['filters'] : [];
+        $filters['dropzone'] = $dropzone->getUuid();
+        $sortBy = array_key_exists('sortBy', $params) ? $params['sortBy'] : null;
+
+        //array map is not even needed; objects are fine here
+        /** @var Drop[] $data */
+        $data = $this->finder->get(Drop::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        $next = null;
+
+        foreach ($data as $position => $value) {
+            if ($value->getUuid() === $drop->getUuid()) {
+                $next = $position + 1;
+            }
+        }
+
+        $nextDrop = array_key_exists($next, $data) ? $data[$next] : reset($data);
+
+        return new JsonResponse($this->manager->serializeDrop($nextDrop), 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/drop/{id}/previous",
+     *     name="claro_dropzone_drop_previous"
+     * )
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     *
+     * @param Drop    $drop
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function previousDropAction(Drop $drop, Request $request)
+    {
+        $dropzone = $drop->getDropzone();
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
+
+        if (!$this->authorization->isGranted('EDIT', $collection)) {
+            throw new AccessDeniedException();
+        }
+        $params = $request->query->all();
+        $filters = array_key_exists('filters', $params) ? $params['filters'] : [];
+        $filters['dropzone'] = $dropzone->getUuid();
+        $sortBy = array_key_exists('sortBy', $params) ? $params['sortBy'] : null;
+
+        //array map is not even needed; objects are fine here
+        /** @var Drop[] $data */
+        $data = $this->finder->get(Drop::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        $previous = null;
+
+        foreach ($data as $position => $value) {
+            if ($value->getUuid() === $drop->getUuid()) {
+                $previous = $position - 1;
+            }
+        }
+
+        $previousDrop = array_key_exists($previous, $data) ? $data[$previous] : end($data);
+
+        return new JsonResponse($this->manager->serializeDrop($previousDrop), 200);
     }
 
     private function checkDropEdition(Drop $drop, User $user)
