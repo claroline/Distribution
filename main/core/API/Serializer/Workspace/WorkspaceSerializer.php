@@ -337,9 +337,11 @@ class WorkspaceSerializer
         return [
             'hidden' => $workspace->isHidden(),
             'dates' => DateRangeNormalizer::normalize(
-                $workspace->getStartDate(),
-                $workspace->getEndDate()
+                $workspace->getAccessibleFrom(),
+                $workspace->getAccessibleUntil()
             ),
+            'code' => $workspace->getAccessCode(),
+            'allowedIps' => $workspace->getAllowedIps(),
             'maxUsers' => $workspace->getMaxUsers(),
             // TODO : store raw file size to avoid this
             'maxStorage' => $this->utilities->getRealFileSize($workspace->getMaxStorageSize()),
@@ -434,8 +436,11 @@ class WorkspaceSerializer
         $this->sipe('notifications.enabled', 'setNotifications', $data, $workspace);
 
         $this->sipe('restrictions.hidden', 'setHidden', $data, $workspace);
+        $this->sipe('restrictions.code', 'setAccessCode', $data, $workspace);
+        $this->sipe('restrictions.allowedIps', 'setAllowedIps', $data, $workspace);
         $this->sipe('restrictions.maxUsers', 'setMaxUsers', $data, $workspace);
         $this->sipe('restrictions.maxResources', 'setMaxUploadResources', $data, $workspace);
+
         $this->sipe('registration.validation', 'setRegistrationValidation', $data, $workspace);
         $this->sipe('registration.selfRegistration', 'setSelfRegistration', $data, $workspace);
         $this->sipe('registration.selfUnregistration', 'setSelfUnregistration', $data, $workspace);
@@ -456,8 +461,8 @@ class WorkspaceSerializer
             if (isset($data['restrictions']['dates'])) {
                 $dateRange = DateRangeNormalizer::denormalize($data['restrictions']['dates']);
 
-                $workspace->setStartDate($dateRange[0]);
-                $workspace->setEndDate($dateRange[1]);
+                $workspace->setAccessibleFrom($dateRange[0]);
+                $workspace->setAccessibleUntil($dateRange[1]);
             }
         }
 

@@ -11,6 +11,9 @@ import {HeaderAdministration} from '#/main/app/layout/header/components/administ
 import {HeaderUser} from '#/main/app/layout/header/components/user'
 import {HeaderMain} from '#/main/app/layout/header/components/main'
 
+import {HeaderFavorites} from '#/main/app/layout/header/components/favorites'
+import {HeaderHistory} from '#/main/app/layout/header/components/history'
+
 import {getWalkthrough} from '#/main/app/layout/header/walkthroughs/menus'
 
 const Header = props =>
@@ -41,12 +44,16 @@ const Header = props =>
         user={props.currentUser}
       />
 
-      {0 !== props.administration.length &&
+      {false && 0 !== props.administration.length &&
         <HeaderAdministration
           maintenance={props.maintenance}
           tools={props.administration}
         />
       }
+
+      <HeaderHistory />
+
+      <HeaderFavorites />
 
       {props.authenticated &&
         <HeaderNotifications

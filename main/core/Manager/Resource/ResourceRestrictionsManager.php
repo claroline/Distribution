@@ -98,6 +98,9 @@ class ResourceRestrictionsManager
                     $resourceNode->getAccessibleFrom()->format('d/m/Y') :
                     null;
                 $errors['ended'] = $this->isEnded($resourceNode);
+                $errors['endDate'] = $resourceNode->getAccessibleUntil() ?
+                    $resourceNode->getAccessibleUntil()->format('d/m/Y') :
+                    null;
             }
 
             if (!empty($resourceNode->getAllowedIps())) {

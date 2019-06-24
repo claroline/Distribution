@@ -20,6 +20,10 @@ const tools = [
     label: 'Tâches'
   }, {
     name: 'favorites',
+    icon: 'fa fa-fw fa-history',
+    label: 'Historique'
+  }, {
+    name: 'favorites',
     icon: 'fa fa-fw fa-star',
     label: 'Favoris'
   }, {

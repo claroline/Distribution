@@ -3,7 +3,9 @@
 namespace Claroline\CoreBundle\Manager\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -26,23 +28,30 @@ class WorkspaceRestrictionsManager
     /** @var AuthorizationCheckerInterface */
     private $authorization;
 
+    /** @var WorkspaceManager */
+    private $workspaceManager;
+
     /**
      * ResourceRestrictionsManager constructor.
      *
      * @DI\InjectParams({
-     *     "session"       = @DI\Inject("session"),
-     *     "authorization" = @DI\Inject("security.authorization_checker")
+     *     "session"          = @DI\Inject("session"),
+     *     "authorization"    = @DI\Inject("security.authorization_checker"),
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
      * })
      *
      * @param SessionInterface              $session
      * @param AuthorizationCheckerInterface $authorization
+     * @param WorkspaceManager              $workspaceManager
      */
     public function __construct(
         SessionInterface $session,
-        AuthorizationCheckerInterface $authorization
+        AuthorizationCheckerInterface $authorization,
+        WorkspaceManager $workspaceManager
     ) {
         $this->session = $session;
         $this->authorization = $authorization;
+        $this->workspaceManager = $workspaceManager;
     }
 
     /**
@@ -64,16 +73,22 @@ class WorkspaceRestrictionsManager
      * Gets the list of access error for a workspace and a user.
      *
      * @param Workspace $workspace
+     * @param User      $user
      *
      * @return array
      */
-    public function getErrors(Workspace $workspace): array
+    public function getErrors(Workspace $workspace, User $user = null): array
     {
         if (!$this->isGranted($workspace)) {
             // return restrictions details
             $errors = [
                 'noRights' => !$this->hasRights($workspace),
             ];
+
+            if ($user) {
+                $errors['autoRegistration'] = $workspace->getSelfRegistration();
+                $errors['pendingRegistration'] = $this->workspaceManager->isUserInValidationQueue($workspace, $user);
+            }
 
             // optional restrictions
             // we return them only if they are enabled
@@ -87,6 +102,9 @@ class WorkspaceRestrictionsManager
                     $workspace->getAccessibleFrom()->format('d/m/Y') :
                     null;
                 $errors['ended'] = $this->isEnded($workspace);
+                $errors['endDate'] = $workspace->getAccessibleUntil() ?
+                    $workspace->getAccessibleUntil()->format('d/m/Y') :
+                    null;
             }
 
             if (!empty($workspace->getAllowedIps())) {
@@ -114,25 +132,25 @@ class WorkspaceRestrictionsManager
     /**
      * Checks if the access period of the workspace is started.
      *
-     * @param ResourceNode $resourceNode
+     * @param Workspace $workspace
      *
      * @return bool
      */
-    public function isStarted(ResourceNode $resourceNode): bool
+    public function isStarted(Workspace $workspace): bool
     {
-        return empty($resourceNode->getAccessibleFrom()) || $resourceNode->getAccessibleFrom() <= new \DateTime();
+        return empty($workspace->getAccessibleFrom()) || $workspace->getAccessibleFrom() <= new \DateTime();
     }
 
     /**
      * Checks if the access period of the workspace is over.
      *
-     * @param ResourceNode $resourceNode
+     * @param Workspace $workspace
      *
      * @return bool
      */
-    public function isEnded(ResourceNode $resourceNode): bool
+    public function isEnded(Workspace $workspace): bool
     {
-        return !empty($resourceNode->getAccessibleUntil()) && $resourceNode->getAccessibleUntil() <= new \DateTime();
+        return !empty($workspace->getAccessibleUntil()) && $workspace->getAccessibleUntil() <= new \DateTime();
     }
 
     /**

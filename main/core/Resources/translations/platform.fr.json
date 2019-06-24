@@ -1466,6 +1466,8 @@
     "access_date": "Date d'accès",
     "access_dates": "Période d'accès",
     "restrict_by_dates": "Restreindre par dates",
+    "restrict_by_ips": "Restreindre par IPs",
+    "restrict_by_code": "Restreindre par code",
     "rich_text_tools": "Outils de texte riche",
     "minimize": "Réduire",
     "display_parameters": "Paramètres d'affichage",

@@ -40,6 +40,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Role\SwitchUserRole;
 
 /**
  * @DI\Service("claroline.manager.workspace_manager")
@@ -598,7 +599,7 @@ class WorkspaceManager
             return false;
         }
 
-        if (!$this->isUsurper($token)) {
+        if (!$this->isImpersonated($token)) {
             if ($workspace->getCreator() === $token->getUser()) {
                 return true;
             }
@@ -629,9 +630,19 @@ class WorkspaceManager
         return false;
     }
 
-    protected function isUsurper(TokenInterface $token)
+    public function isImpersonated(TokenInterface $token)
     {
-        return $token instanceof ViewAsToken;
+        if ($token instanceof ViewAsToken) {
+             return true;
+        }
+
+        foreach ($token->getRoles() as $role) {
+            if ('ROLE_USURPATE_WORKSPACE_ROLE' === $role->getRole() || $role instanceof SwitchUserRole) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -677,7 +688,7 @@ class WorkspaceManager
         $transferManager = $this->container->get('claroline.manager.workspace.transfer');
 
         $fileBag = new FileBag();
-        //these are the new workspace datas
+        //these are the new workspace data
         $data = $transferManager->serialize($workspace);
         $data = $transferManager->exportFiles($data, $fileBag, $workspace);
 
@@ -695,9 +706,11 @@ class WorkspaceManager
 
         $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
+
+        /** @var Workspace $workspace */
         $workspace = $transferManager->deserialize($data, $newWorkspace, $options, $fileBag);
 
-        $workspace->setIsModel($model);
+        $workspace->setModel($model);
 
         //set the manager
         $managerRole = $this->roleManager->getManagerRole($workspace);
@@ -778,6 +791,7 @@ class WorkspaceManager
             $workspace->setName($name);
             $workspace->setPersonal($isPersonal);
             $workspace->setCode($name);
+            /** @var Workspace $workspace */
             $workspace = $this->container->get('claroline.manager.workspace.transfer')->create($data, $workspace);
             //just in case
             $workspace->setName($name);
@@ -856,6 +870,7 @@ class WorkspaceManager
 
     public function setWorkspacesFlag()
     {
+        /** @var Workspace[] $workspaces */
         $workspaces = $this->container->get('claroline.api.finder')->fetch(Workspace::class, [
             'name' => 'Espace personnel',
             'meta.personal' => false,
@@ -866,7 +881,7 @@ class WorkspaceManager
         $total = count($workspaces);
 
         foreach ($workspaces as $workspace) {
-            $workspace->setIsPersonal(true);
+            $workspace->setPersonal(true);
             $this->om->persist($workspace);
 
             ++$i;
@@ -881,18 +896,5 @@ class WorkspaceManager
 
         $this->log('Flushing...');
         $this->om->flush();
-    }
-
-    /**
-     * Gets the list of access error for a resource and a user roles.
-     *
-     * @param Workspace $workspace
-     * @param Role[]    $userRoles
-     *
-     * @return array
-     */
-    public function getAccessErrors(Workspace $workspace, array $userRoles): array
-    {
-        return [];
     }
 }

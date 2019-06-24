@@ -20,9 +20,12 @@ import {actions} from '#/main/core/workspace/creation/store/actions'
 
 // easy selection for restrictions
 // TODO : create selectors
-const restrictByDates   = (workspace) => workspace.restrictions && (workspace.restrictions.enableDates        || (workspace.restrictions.dates && 0 !== workspace.restrictions.dates.length))
-const restrictUsers     = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxUsers     || 0 === workspace.restrictions.maxUsers || !!workspace.restrictions.maxUsers)
+const restrictByDates   = (workspace) => get(workspace, 'restrictions.enableDates') || !isEmpty(get(workspace, 'restrictions.dates'))
+const restrictByCode    = (workspace) => get(workspace, 'restrictions.enableCode') || !!get(workspace, 'restrictions.code')
+const restrictByIps     = (workspace) => get(workspace, 'restrictions.enableIps') || !isEmpty(get(workspace, 'restrictions.allowedIps'))
+
 const restrictResources = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxResources || 0 === workspace.restrictions.maxResources || !!workspace.restrictions.maxResources)
+const restrictUsers     = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxUsers     || 0 === workspace.restrictions.maxUsers || !!workspace.restrictions.maxUsers)
 const restrictStorage   = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxStorage   || !!workspace.restrictions.maxStorage)
 
 const WorkspaceFormComponent = (props) => {
@@ -256,6 +259,49 @@ const WorkspaceFormComponent = (props) => {
                   required: true,
                   options: {
                     time: true
+                  }
+                }
+              ]
+            }, {
+              name: 'restrictions.enableCode',
+              label: trans('restrict_by_code'),
+              type: 'boolean',
+              calculated: restrictByCode,
+              onChange: activated => {
+                if (!activated) {
+                  props.updateProp('restrictions.code', null)
+                }
+              },
+              linked: [
+                {
+                  name: 'restrictions.code',
+                  label: trans('access_code'),
+                  displayed: restrictByCode,
+                  type: 'password',
+                  required: true
+                }
+              ]
+            }, {
+              name: 'restrictions.enableIps',
+              label: trans('restrict_by_ips'),
+              type: 'boolean',
+              calculated: restrictByIps,
+              onChange: activated => {
+                if (!activated) {
+                  props.updateProp('restrictions.allowedIps', [])
+                }
+              },
+              linked: [
+                {
+                  name: 'restrictions.allowedIps',
+                  label: trans('allowed_ips'),
+                  type: 'collection',
+                  required: true,
+                  displayed: restrictByIps,
+                  options: {
+                    type: 'ip',
+                    placeholder: trans('no_allowed_ip'),
+                    button: trans('add_ip')
                   }
                 }
               ]

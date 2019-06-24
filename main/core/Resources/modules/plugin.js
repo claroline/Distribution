@@ -10,7 +10,8 @@ registry.add('ClarolineCoreBundle', {
    * Provides menu which can be used as the main header menu.
    */
   header: {
-    'workspaces': () => { return import(/* webpackChunkName: "core-header-workspaces" */ '#/main/core/header/workspaces') }
+    'workspaces': () => { return import(/* webpackChunkName: "core-header-workspaces" */ '#/main/core/header/workspaces') },
+    'search'    : () => { return import(/* webpackChunkName: "core-header-search" */ '#/main/core/header/search') }
   },
 
   /**

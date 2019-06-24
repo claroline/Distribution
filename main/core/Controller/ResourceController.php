@@ -178,6 +178,52 @@ class ResourceController
     }
 
     /**
+     * Opens a resource.
+     *
+     * @EXT\Route("/load/{id}", name="claro_resource_load_short")
+     * @EXT\Route("/load/{type}/{id}", name="claro_resource_load")
+     * @EXT\Route("/load/{type}/{id}/embedded/{embedded}", name="claro_resource_load_embedded")
+     * @EXT\Method("GET")
+     *
+     * @param int|string $id       - the id of the target node (we don't use ParamConverter to support ID and UUID)
+     * @param int        $embedded
+     *
+     * @return JsonResponse
+     *
+     * @throws ResourceNotFoundException
+     */
+    public function openAction($id, $embedded = 0)
+    {
+        /** @var ResourceNode $resourceNode */
+        $resourceNode = $this->om->find(ResourceNode::class, $id);
+        if (!$resourceNode) {
+            throw new ResourceNotFoundException();
+        }
+
+        // gets the current user roles to check access restrictions
+        $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
+        $accessErrors = $this->restrictionsManager->getErrors($resourceNode, $userRoles);
+
+        if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
+            try {
+                $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
+            } catch (ResourceNotFoundException $e) {
+                return new JsonResponse(['resource_not_found'], 500);
+            }
+
+            return new JsonResponse(
+                array_merge([
+                    // append access restrictions to the loaded node if any
+                    // to let the manager knows that other users can not enter the resource
+                    'accessErrors' => $accessErrors,
+                ], $loaded)
+            );
+        }
+
+        return new JsonResponse($accessErrors, 403);
+    }
+
+    /**
      * Embeds a resource inside a rich text content.
      *
      * @EXT\Route("/embed/{id}", name="claro_resource_embed_short")
@@ -326,77 +372,6 @@ class ResourceController
     }
 
     /**
-     * Gets a resource node.
-     *
-     * @EXT\Route("/{id}", name="claro_resource_get")
-     * @EXT\Method("GET")
-     *
-     * @param int|string $id - the id of the target node (we don't use ParamConverter to support ID and UUID)
-     *
-     * @return JsonResponse
-     *
-     * @throws ResourceNotFoundException
-     */
-    public function getAction($id)
-    {
-        /** @var ResourceNode $resourceNode */
-        $resourceNode = $this->om->find(ResourceNode::class, $id);
-        if (!$resourceNode) {
-            throw new ResourceNotFoundException();
-        }
-
-        return new JsonResponse(
-            $this->serializer->serialize($resourceNode, [Options::SERIALIZE_MINIMAL])
-        );
-    }
-
-    /**
-     * Loads a resource and its related data.
-     *
-     * @EXT\Route("/load/{id}", name="claro_resource_load_short")
-     * @EXT\Route("/load/{type}/{id}", name="claro_resource_load")
-     * @EXT\Route("/load/{type}/{id}/embedded/{embedded}", name="claro_resource_load_embedded")
-     * @EXT\Method("GET")
-     *
-     * @param int|string $id       - the id of the target node (we don't use ParamConverter to support ID and UUID)
-     * @param int        $embedded
-     *
-     * @return JsonResponse
-     *
-     * @throws ResourceNotFoundException
-     */
-    public function loadAction($id, $embedded = 0)
-    {
-        /** @var ResourceNode $resourceNode */
-        $resourceNode = $this->om->find(ResourceNode::class, $id);
-        if (!$resourceNode) {
-            throw new ResourceNotFoundException();
-        }
-
-        // gets the current user roles to check access restrictions
-        $userRoles = $this->security->getRoles($this->tokenStorage->getToken());
-        $accessErrors = $this->restrictionsManager->getErrors($resourceNode, $userRoles);
-
-        if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
-            try {
-                $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
-            } catch (ResourceNotFoundException $e) {
-                return new JsonResponse(['resource_not_found'], 500);
-            }
-
-            return new JsonResponse(
-                array_merge([
-                    // append access restrictions to the loaded node if any
-                    // to let the manager knows that other users can not enter the resource
-                    'accessErrors' => $accessErrors,
-                ], $loaded)
-            );
-        }
-
-        return new JsonResponse($accessErrors, 403);
-    }
-
-    /**
      * Executes an action on one resource.
      *
      * @EXT\Route("/{action}/{id}", name="claro_resource_action_short")
@@ -462,6 +437,31 @@ class ResourceController
             '_resource' => $resource,
             'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_WORKSPACE),
         ];
+    }
+
+    /**
+     * Gets a resource node.
+     *
+     * @EXT\Route("/{id}", name="claro_resource_get")
+     * @EXT\Method("GET")
+     *
+     * @param int|string $id - the id of the target node (we don't use ParamConverter to support ID and UUID)
+     *
+     * @return JsonResponse
+     *
+     * @throws ResourceNotFoundException
+     */
+    public function getAction($id)
+    {
+        /** @var ResourceNode $resourceNode */
+        $resourceNode = $this->om->find(ResourceNode::class, $id);
+        if (!$resourceNode) {
+            throw new ResourceNotFoundException();
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($resourceNode, [Options::SERIALIZE_MINIMAL])
+        );
     }
 
     /**

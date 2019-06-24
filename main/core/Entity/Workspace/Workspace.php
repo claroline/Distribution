@@ -17,6 +17,10 @@ use Claroline\AppBundle\Entity\Meta\Creator;
 use Claroline\AppBundle\Entity\Meta\Description;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
+use Claroline\AppBundle\Entity\Restriction\AccessCode;
+use Claroline\AppBundle\Entity\Restriction\AccessibleFrom;
+use Claroline\AppBundle\Entity\Restriction\AccessibleUntil;
+use Claroline\AppBundle\Entity\Restriction\AllowedIps;
 use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
@@ -43,6 +47,12 @@ class Workspace
     use Thumbnail;
     use Description;
     use Creator;
+
+    // restrictions
+    use AccessibleFrom;
+    use AccessibleUntil;
+    use AccessCode;
+    use AllowedIps;
 
     use OrganizationsTrait;
 
@@ -185,20 +195,6 @@ class Workspace
      * @var bool
      */
     protected $personal = false;
-
-    /**
-     * @ORM\Column(name="start_date", type="datetime", nullable=true)
-     *
-     * @var \DateTime
-     */
-    protected $startDate;
-
-    /**
-     * @ORM\Column(name="end_date", type="datetime", nullable=true)
-     *
-     * @var \DateTime
-     */
-    protected $endDate;
 
     /**
      * @ORM\Column(name="workspace_type", type="integer", nullable=true)
@@ -552,26 +548,6 @@ class Workspace
     public function isPersonal()
     {
         return $this->personal;
-    }
-
-    public function getStartDate()
-    {
-        return $this->startDate;
-    }
-
-    public function setStartDate(\DateTime $startDate = null)
-    {
-        $this->startDate = $startDate;
-    }
-
-    public function getEndDate()
-    {
-        return $this->endDate;
-    }
-
-    public function setEndDate(\DateTime $endDate = null)
-    {
-        $this->endDate = $endDate;
     }
 
     public function getWorkspaceType()
