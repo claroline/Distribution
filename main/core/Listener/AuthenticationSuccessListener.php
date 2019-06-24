@@ -149,6 +149,11 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
     public function onLoginSuccess(InteractiveLoginEvent $event)
     {
         $user = $this->tokenStorage->getToken()->getUser();
+
+        //todo this probably shouldn't happen
+        if ('anon.' === $user) {
+            return;
+        }
         $request = $event->getRequest();
         $pathInfo = $request->getPathInfo();
         //we should check the regex set in the security thingy

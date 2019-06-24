@@ -8,10 +8,10 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Security\Authentication\Token\ApiToken as SecurityApiToken;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
@@ -38,7 +38,8 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
 
     public function supportsToken(TokenInterface $token, $providerKey)
     {
-        return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey /*|| $token instanceof UsernamePasswordToken*/;
+        //maybe filter here
+        return true;
     }
 
     public function createToken(Request $request, $providerKey)
@@ -62,9 +63,9 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
             if ($token) {
                 return $token;
             }
-        } else {
-            throw new BadCredentialsException();
         }
+
+        return new AnonymousToken('key', 'anon.', ['ROLE_ANONYMOUS']);
     }
 
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
@@ -83,15 +84,21 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
         }
 
         $apiKey = $token->getCredentials();
-        $user = $this->om->getRepository(ApiToken::class)->findOneByToken($apiKey)->getUser();
 
-        if ($user) {
-            return new SecurityApiToken(
-              $user,
-              $apiKey,
-              $providerKey,
-              $user->getRoles()
-          );
+        if ($apiKey) {
+            $user = $this->om->getRepository(ApiToken::class)->findOneByToken($apiKey)->getUser();
+
+            if ($user) {
+                return new SecurityApiToken(
+                $user,
+                $apiKey,
+                $providerKey,
+                $user->getRoles()
+            );
+            }
         }
+
+        //I wish it didn't have to handle anonymous aswell
+        return new AnonymousToken($providerKey, 'anon.', ['ROLE_ANONYMOUS']);
     }
 }

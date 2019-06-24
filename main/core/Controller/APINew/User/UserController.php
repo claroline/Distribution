@@ -117,6 +117,10 @@ class UserController extends AbstractCrudController
     {
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
+        if ('anon.' === $user) {
+            throw new \Exception('No user authentified');
+        }
+
         return new JsonResponse($this->serializer->serialize($user));
     }
 

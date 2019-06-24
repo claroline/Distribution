@@ -23,8 +23,6 @@ trait RequestTrait
             $uri = strpos($uri, '?') ? $uri.'&apitoken='.$token->getToken() : $uri.'?apitoken='.$token->getToken();
         }
 
-        var_dump($uri);
-
         return $this->client->request($method, $uri, $parameters, [], [], $content);
     }
 }
