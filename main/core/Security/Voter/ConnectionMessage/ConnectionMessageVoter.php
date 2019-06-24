@@ -33,9 +33,11 @@ class ConnectionMessageVoter extends AbstractVoter
                     VoterInterface::ACCESS_GRANTED :
                     VoterInterface::ACCESS_DENIED;
             case self::DELETE:
-                return $object->isLocked ?
+                return $object->isLocked() ?
                     VoterInterface::ACCESS_DENIED :
-                    VoterInterface::ACCESS_GRANTED;
+                    $this->hasAdminToolAccess($token, 'main_settings') ?
+                        VoterInterface::ACCESS_GRANTED :
+                        VoterInterface::ACCESS_DENIED;
         }
 
         return VoterInterface::ACCESS_ABSTAIN;
