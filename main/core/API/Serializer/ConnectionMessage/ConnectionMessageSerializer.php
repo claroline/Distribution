@@ -90,11 +90,11 @@ class ConnectionMessageSerializer
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
-                'slides' => array_keys(array_map(function (Slide $slide) {
+                'slides' => array_values(array_map(function (Slide $slide) {
                     return $this->serializer->serialize($slide, [Options::SERIALIZE_MINIMAL]);
                 }, $message->getSlides()->toArray())),
-                'roles' => array_keys(array_map(function (Role $role) {
-                    return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
+                'roles' => array_values(array_map(function (Role $role) {
+                    return $this->serializer->serialize($role);
                 }, $message->getRoles()->toArray())),
             ]);
         }

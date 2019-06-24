@@ -35,20 +35,14 @@ class ConnectionMessageFinder extends AbstractFinder
     ) {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+                case 'messageType':
+                    $qb->andWhere("obj.type = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
-
-//        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
-//            $sortByProperty = $sortBy['property'];
-//            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
-//
-//            switch ($sortByProperty) {
-//                default:
-//                   $qb->orderBy("obj.{$sortByProperty}", $sortByDirection);
-//            }
-//        }
 
         return $qb;
     }

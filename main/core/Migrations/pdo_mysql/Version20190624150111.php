@@ -8,23 +8,23 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2019/06/20 02:55:56
+ * Generation date: 2019/06/24 03:01:13
  */
-class Version20190620145554 extends AbstractMigration
+class Version20190624150111 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql('
             CREATE TABLE claro_connection_message_slide (
                 id INT AUTO_INCREMENT NOT NULL, 
-                ticket_id INT DEFAULT NULL, 
+                message_id INT DEFAULT NULL, 
                 content LONGTEXT DEFAULT NULL, 
                 title VARCHAR(255) DEFAULT NULL, 
                 picture VARCHAR(255) DEFAULT NULL, 
                 slide_order INT NOT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_DBB5C281D17F50A6 (uuid), 
-                INDEX IDX_DBB5C281700047D2 (ticket_id), 
+                INDEX IDX_DBB5C281537A1329 (message_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
         ');
@@ -61,7 +61,7 @@ class Version20190620145554 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE claro_connection_message_slide 
-            ADD CONSTRAINT FK_DBB5C281700047D2 FOREIGN KEY (ticket_id) 
+            ADD CONSTRAINT FK_DBB5C281537A1329 FOREIGN KEY (message_id) 
             REFERENCES claro_connection_message (id) 
             ON DELETE CASCADE
         ');
@@ -98,7 +98,7 @@ class Version20190620145554 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE claro_connection_message_slide 
-            DROP FOREIGN KEY FK_DBB5C281700047D2
+            DROP FOREIGN KEY FK_DBB5C281537A1329
         ');
         $this->addSql('
             ALTER TABLE claro_connection_message_role 
