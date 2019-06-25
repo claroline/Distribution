@@ -61,7 +61,10 @@ class SlideSerializer
             'id' => $slide->getUuid(),
             'title' => $slide->getTitle(),
             'content' => $slide->getContent(),
-            'picture' => $slide->getPicture(),
+            'picture' => $slide->getPicture() ? [
+                'url' => $slide->getPicture(),
+                'mimeType' => 'image/*',
+            ] : null,
             'order' => $slide->getOrder(),
         ];
     }
@@ -79,7 +82,7 @@ class SlideSerializer
         $this->sipe('id', 'setUuid', $data, $slide);
         $this->sipe('title', 'setTitle', $data, $slide);
         $this->sipe('content', 'setContent', $data, $slide);
-        $this->sipe('picture', 'setPicture', $data, $slide);
+        $this->sipe('picture.url', 'setPicture', $data, $slide);
         $this->sipe('order', 'setOrder', $data, $slide);
 
         if (isset($data['message']['id']) && !$slide->getMessage()) {

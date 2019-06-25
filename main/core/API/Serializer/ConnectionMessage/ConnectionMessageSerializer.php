@@ -152,7 +152,7 @@ class ConnectionMessageSerializer
                 $slide->setOrder($slideOrder);
                 $this->sipe('content', 'setContent', $slideData, $slide);
                 $this->sipe('title', 'setTitle', $slideData, $slide);
-                $this->sipe('picture', 'setPicture', $slideData, $slide);
+                $this->sipe('picture.url', 'setPicture', $slideData, $slide);
 
                 $this->om->persist($slide);
 
