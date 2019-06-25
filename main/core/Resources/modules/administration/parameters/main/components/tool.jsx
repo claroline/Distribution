@@ -26,7 +26,7 @@ const Tool = (props) =>
         icon: 'fa fa-fw fa-plus',
         label: trans('add_connection_message'),
         target: '/messages/form',
-        primary: true,
+        primary: true
       }
     ] : []}
   >

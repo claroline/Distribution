@@ -12,7 +12,6 @@ import {
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
-import {ModalButton} from '#/main/app/buttons/modal/containers/button'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 
@@ -68,7 +67,7 @@ const SlidesForm = (props) =>
               /> :
               <HtmlText className="text-thumbnail">
                 {slide.content || slide.title}
-                </HtmlText>
+              </HtmlText>
             }
 
             {!props.disabled &&

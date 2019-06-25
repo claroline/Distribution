@@ -6,8 +6,6 @@ import {trans} from '#/main/app/intl/translation'
 import {Modal} from '#/main/app/overlay/modal/components/modal'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-import {selectors} from '#/plugin/slideshow/resources/slideshow/editor/modals/slide/store/selectors'
-
 const SlideFormModal = props =>
   <Modal
     {...omit(props, 'formName', 'dataPart')}
