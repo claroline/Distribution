@@ -1,0 +1,41 @@
+import {trans} from '#/main/app/intl/translation'
+import React from 'react'
+
+import {ListData} from '#/main/app/content/list/containers/data'
+import {
+  PageContainer,
+  PageHeader,
+  PageContent
+} from '#/main/core/layout/page'
+
+const List = () =>
+  <PageContainer>
+    <PageHeader
+      title={trans('notifications', {}, 'tools')}
+    />
+    <PageContent>
+      <ListData
+        name="notifications"
+        fetch={{
+          url: ['apiv2_workspace_list_notifications_current'],
+          autoload: true
+        }}
+        definition={[{
+          name: 'notification.action',
+          type: 'string',
+          label: trans('text'),
+          displayed: true,
+          primary: true
+        }, {
+          name: 'text',
+          render: (el) => <div dangerouslySetInnerHTML={{__html: el.text}}/>,
+          label: trans('text'),
+          displayed: true
+        }]}
+      />
+    </PageContent>
+  </PageContainer>
+
+export {
+  List
+}
