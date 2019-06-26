@@ -63,7 +63,7 @@ class NotificationsViewerController extends AbstractCrudController
     {
         $user = $this->tokenStorage->getToken()->getUser();
         $filters = [
-          'viewerId' => $user->getId(),
+          'user' => $user->getId(),
         ];
 
         return new JsonResponse(

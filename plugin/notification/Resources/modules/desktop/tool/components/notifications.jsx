@@ -8,6 +8,11 @@ import {
   PageContent
 } from '#/main/core/layout/page'
 
+
+import {NotificationCard} from '#/plugin/notification/desktop/tool/components/notification-card'
+
+const Notification = props => <div dangerouslySetInnerHTML={{__html: props.notification.text}}/>
+
 const List = () =>
   <PageContainer>
     <PageHeader
@@ -21,17 +26,12 @@ const List = () =>
           autoload: true
         }}
         definition={[{
-          name: 'notification.action',
-          type: 'string',
-          label: trans('text'),
-          displayed: true,
-          primary: true
-        }, {
           name: 'text',
-          render: (el) => <div dangerouslySetInnerHTML={{__html: el.text}}/>,
+          render: (notification) => <Notification notification={notification}/>,
           label: trans('text'),
           displayed: true
         }]}
+        card={(row) => <NotificationCard {...row}/>}
       />
     </PageContent>
   </PageContainer>

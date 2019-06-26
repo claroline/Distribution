@@ -72,5 +72,27 @@ class NotificationViewerFinder extends AbstractFinder
                 break;
           }
         }
+
+        $this->sortBy($qb, $sortBy);
+
+        return $qb;
+    }
+
+    //probably deprecated since we try hard to optimize everything and is a duplicata of getExtraFieldMapping
+    private function sortBy($qb, array $sortBy = null)
+    {
+        // manages custom sort properties
+        if ($sortBy && 0 !== $sortBy['direction']) {
+            switch ($sortBy['property']) {
+              case 'name':
+                  $qb->orderBy('obj.lastName', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
+                  break;
+              case 'isDisabled':
+                  $qb->orderBy('obj.isEnabled', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
+                  break;
+          }
+        }
+
+        return $qb;
     }
 }
