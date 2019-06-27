@@ -46,6 +46,8 @@ abstract class AbstractLogResourceEvent extends LogGenericEvent
             'resource' => array(
                 'name' => $node->getName(),
                 'path' => $node->getPathForDisplay(),
+                'uuid' => $node->getUuid(),
+                'id' => $node->getId(),
             ),
             'workspace' => array(
                 'name' => $node->getWorkspace()->getName(),
