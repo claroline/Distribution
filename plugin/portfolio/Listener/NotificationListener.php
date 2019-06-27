@@ -10,19 +10,10 @@ class NotificationListener
     use ContainerAwareTrait;
 
     public function onCreateNotificationItem(NotificationCreateDelegateViewEvent $event)
-    {
-        $notificationView = $event->getNotificationView();
-        $notification = $notificationView->getNotification();
-        $content = $this->container->get('templating')->render(
-            'IcapPortfolioBundle:notification:notification_item.html.twig',
-            [
-                'notification' => $notification,
-                'status' => $notificationView->getStatus(),
-                'systemName' => $event->getSystemName(),
-            ]
-        );
+    {/*
+      {% set path = path('icap_portfolio_view', {'portfolioSlug': notification.details.portfolio.slug}) %}
+      {% set portfolio = '<a href="' ~ path ~ '">' ~ notification.details.portfolio.title ~ '</a>' %}
 
-        $event->setResponseContent($content);
-        $event->stopPropagation();
+      {{ notification.actionKey|trans({'%portfolio%': portfolio}, 'notification') | raw }}*/
     }
 }
