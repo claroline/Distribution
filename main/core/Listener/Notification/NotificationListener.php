@@ -49,7 +49,7 @@ class NotificationListener
                 ]);
             }
 
-              $text = $this->translator->trans(
+              $text = $translator->trans(
                 $notification->getActionKey(),
                 ['%resource%' => $notification->getDetails()['resource']['name'], '%workspace%' => $notification->getDetails()['workspace']['name']],
                 'notification'
@@ -70,9 +70,9 @@ class NotificationListener
             if (isset($notification->getDetails()['receiverUser']['username']) && $notification->getDetails()['receiverUser']['username'] !== $current->getUsername()) {
                 $text = $trans->translator->trans('user_subscription_notification_for_admin', ['%workspace%' => $notification->getDetails()['workspace']['name']]);
             } else {
-                $text = $this->translator->trans(
+                $text = $translator->trans(
                 $notification->getActionKey(),
-                ['%role%' => $this->translator->trans($notification->getDetails()['role']['name']), '%workspace%' => $notification->getDetails()['workspace']['name']],
+                ['%role%' => $translator->trans($notification->getDetails()['role']['name']), '%workspace%' => $notification->getDetails()['workspace']['name']],
                 'notification'
               );
             }
@@ -89,26 +89,26 @@ class NotificationListener
               ]);
             }
 
-            $text = $this->translator->trans(
+            $text = $translator->trans(
               $notification->getActionKey(),
-              ['%role%' => $this->translator->trans($notification->getDetails()['role']['name']), '%workspace%' => $notification->getDetails()['workspace']['name']],
+              ['%role%' => $translator->trans($notification->getDetails()['role']['name']), '%workspace%' => $notification->getDetails()['workspace']['name']],
               'notification'
             );
 
             $this->setText($text);
             break;
           case LogRoleSubscribeEvent::ACTION_GROUP:
-            $text = $this->translator->trans(
+            $text = $translator->trans(
               $notification->getActionKey(),
-              ['%role%' => $this->translator->trans($notification->getDetails()['role']['name'])],
+              ['%role%' => $translator->trans($notification->getDetails()['role']['name'])],
               'notification'
             );
             $event->setText($text);
             break;
           case LogRoleSubscribeEvent::ACTION_USER:
-            $text = $this->translator->trans(
+            $text = $translator->trans(
               $notification->getActionKey(),
-              ['%role%' => $this->translator->trans($notification->getDetails()['role']['name'])],
+              ['%role%' => $translator->trans($notification->getDetails()['role']['name'])],
               'notification'
             );
             $event->setText($text);
@@ -211,7 +211,7 @@ class NotificationListener
                 }
             }
 
-            $text = $this->translator->trans(
+            $text = $translator->trans(
               'text_update_notification_message',
               ['%resource%' => $notification->getDetails()['resource']['name'], '%workspace%' => $notification->getDetails()['workspace']['name']],
               'notification'

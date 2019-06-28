@@ -36,7 +36,7 @@ class NotificationListener
                 ]);
             }
 
-            $text = $this->translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
+            $text = $translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
             $event->setText($text);
             break;
           case LogCorrectionReportEvent::ACTION:
@@ -50,7 +50,7 @@ class NotificationListener
                 ]);
             }
 
-            $text = $this->translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
+            $text = $translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
             $event->setText($text);
             break;
           case LogDropGradeAvailableEvent::ACTION:
@@ -64,7 +64,7 @@ class NotificationListener
                 ]);
             }
 
-            $text = $this->translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
+            $text = $translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
             $event->setText($text);
 
             break;
@@ -75,7 +75,7 @@ class NotificationListener
                 'dropzoneId' => $notification->getDetails()['report']['dropzoneId'],
               ],
             ]);
-            $text = $this->translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name'], '%newState%' => $this->tranlator->trans($notification->getDetails()['resource']['newState'], [], 'dropzone')], 'notification');
+            $text = $translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name'], '%newState%' => $this->tranlator->trans($notification->getDetails()['resource']['newState'], [], 'dropzone')], 'notification');
             $event->setText($text);
             break;
           case LogDropEndEvent::ACTION:
@@ -89,7 +89,7 @@ class NotificationListener
                 ]);
             }
 
-            $text = $this->translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
+            $text = $translator->trans($notification->getActionKey(), ['%dropzone%' => $notification->getDetails()['resource']['name']], 'notification');
             $event->setText($text);
             break;
       }

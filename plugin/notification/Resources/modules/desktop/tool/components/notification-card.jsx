@@ -19,9 +19,8 @@ const NotificationCard = props => {
       id={props.data.id}
       poster={null}
       icon={<UserAvatar picture={props.data.picture} alt={true} />}
-      title={props.data.username}
-      subtitle={props.data.firstName + ' ' + props.data.lastName}
-      contentText={<Notification notification={props.data}/>}
+      contentText={props.data.text}
+      primaryAction={props.data.primaryAction ?[]:null}
       footer={
         <span>
           {trans('last_logged_at')}
