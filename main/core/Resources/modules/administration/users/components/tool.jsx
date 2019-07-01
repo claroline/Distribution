@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {TabbedPageContainer} from '#/main/core/layout/tabs'
-import {isAdmin} from '#/main/app/security'
 
 // app sections
 import {ParametersTab} from '#/main/core/administration/users/parameters/components/parameters-tab'
@@ -52,28 +51,29 @@ const UsersTool = (props) =>
         icon: 'fa fa-id-badge',
         title: trans('roles'),
         path: '/roles',
-        displayed: isAdmin(),
+        displayed: props.isAdmin,
         actions: RoleTabActions,
         content: RoleTab
       }, {
         icon: 'fa fa-id-card-o',
         title: trans('user_profile'),
         path: '/profile',
-        displayed: isAdmin(),
+        displayed: props.isAdmin,
         content: ProfileTab
       }, {
         icon: 'fa fa-cog',
         title: trans('parameters'),
         path: '/parameters',
         onlyIcon: true,
-        displayed: isAdmin(),
+        displayed: props.isAdmin,
         content: ParametersTab
       }
     ]}
   />
 
 UsersTool.propTypes = {
-  path: T.string.isRequired
+  path: T.string.isRequired,
+  isAdmin: T.bool.isRequired
 }
 
 export {

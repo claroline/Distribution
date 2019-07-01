@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
-import {currentUser} from '#/main/app/security'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
@@ -12,8 +11,6 @@ import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path
 import {PathCurrent} from '#/plugin/path/resources/path/components/current'
 import {Step} from '#/plugin/path/resources/path/player/components/step'
 import {getNumbering, getStepUserProgression} from '#/plugin/path/resources/path/utils'
-
-const authenticatedUser = currentUser()
 
 const PlayerMain = props => {
   if (0 === props.steps.length) {
@@ -37,7 +34,7 @@ const PlayerMain = props => {
           {
             path: '/play/:id',
             onEnter: (params) => {
-              if (authenticatedUser && getStepUserProgression(props.steps, params.id) === constants.STATUS_UNSEEN) {
+              if (props.currentUser && getStepUserProgression(props.steps, params.id) === constants.STATUS_UNSEEN) {
                 props.updateProgression(params.id)
               }
             },
@@ -53,6 +50,7 @@ const PlayerMain = props => {
                   >
                     <Step
                       {...step}
+                      currentUser={props.currentUser}
                       numbering={getNumbering(props.path.display.numbering, props.path.steps, step)}
                       manualProgressionAllowed={props.path.display.manualProgressionAllowed}
                       updateProgression={props.updateProgression}
@@ -79,6 +77,7 @@ const PlayerMain = props => {
 
 PlayerMain.propTypes = {
   basePath: T.string.isRequired,
+  currentUser: T.object,
   navigationEnabled: T.bool.isRequired,
   path: T.shape(
     PathTypes.propTypes

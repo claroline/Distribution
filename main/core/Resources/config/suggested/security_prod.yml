@@ -20,12 +20,14 @@ security:
             pattern: ^/
             simple_preauth:
                 authenticator: claroline.security.authentication.ip_authenticator
-            simple_form:
-                authenticator: claroline.core_bundle.library.security.external_authenticator
-                check_path: /login_check
-            form_login:
-                success_handler: claroline.security.authentication.success_handler
-                failure_handler: claroline.security.authentication.failure_handler
+            #simple_form:
+            #    authenticator: claroline.core_bundle.library.security.external_authenticator
+            #    check_path: /login_check
+            #form_login:
+            #    success_handler: claroline.security.authentication.success_handler
+            #    failure_handler: claroline.security.authentication.failure_handler
+            json_login:
+                check_path: /login
             anonymous: ~
             logout: true
             switch_user: { role: ROLE_ALLOWED_TO_SWITCH, parameter: _switch }

@@ -57,6 +57,13 @@ const UserMenu = props =>
       </div>
     }
 
+    {props.maintenance &&
+      <div className="alert alert-warning">
+        <span className="fa fa-fw fa-exclamation-triangle" />
+        {trans('maintenance_mode_alert')}
+      </div>
+    }
+
     {props.impersonated &&
       <div className="alert alert-warning">
         <span className="fa fa-fw fa-mask" />
@@ -130,6 +137,7 @@ const UserMenu = props =>
   </div>
 
 UserMenu.propTypes = {
+  maintenance: T.bool,
   authenticated: T.bool.isRequired,
   impersonated: T.bool.isRequired,
   tools: T.array.isRequired,
@@ -186,6 +194,7 @@ HeaderUser.propTypes = {
     ActionTypes.propTypes
   )),
   registration: T.string,
+  maintenance: T.bool,
   authenticated: T.bool.isRequired,
   impersonated: T.bool.isRequired,
   currentUser: T.shape({

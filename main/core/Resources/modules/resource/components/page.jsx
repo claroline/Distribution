@@ -105,7 +105,7 @@ class ResourcePage extends Component {
               //this.props.deleteNode(currentNode)
             }
           }
-        }, this.props.basePath).then((actions) => [].concat(this.props.customActions || [], actions, [
+        }, this.props.basePath, this.props.currentUser).then((actions) => [].concat(this.props.customActions || [], actions, [
           {
             name: 'fullscreen',
             type: 'callback',
@@ -141,6 +141,7 @@ class ResourcePage extends Component {
 
 ResourcePage.propTypes = {
   basePath: T.string,
+  currentUser: T.object,
   loaded: T.bool.isRequired,
   embedded: T.bool,
   showHeader: T.bool,

@@ -63,6 +63,7 @@ const Header = props =>
       }
 
       <HeaderUser
+        maintenance={props.maintenance}
         currentUser={props.currentUser}
         authenticated={props.authenticated}
         impersonated={props.impersonated}

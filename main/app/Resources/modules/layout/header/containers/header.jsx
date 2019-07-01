@@ -3,12 +3,15 @@ import {connect} from 'react-redux'
 import {withReducer} from '#/main/app/store/components/withReducer'
 import {actions as walkthroughActions} from '#/main/app/overlays/walkthrough/store'
 
+import {selectors as securitySelectors} from '#/main/app/security/store'
+
 import {selectors, reducer} from '#/main/app/layout/header/store'
 import {Header as HeaderComponent} from '#/main/app/layout/header/components/header'
 
 const Header = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
+      // platform parameters
       mainMenu: selectors.mainMenu(state),
       logo: selectors.logo(state),
       title: selectors.title(state),
@@ -18,13 +21,16 @@ const Header = withReducer(selectors.STORE_NAME, reducer)(
       helpUrl: selectors.helpUrl(state),
       loginUrl: selectors.loginUrl(state),
       registrationUrl: selectors.registrationUrl(state),
-      currentUser: selectors.user(state),
-      authenticated: selectors.authenticated(state),
+      redirectHome: selectors.redirectHome(state),
+
+      // user related parameters
+      currentUser: securitySelectors.currentUser(state) || securitySelectors.fakeUser(state),
+      authenticated: securitySelectors.isAuthenticated(state),
+      impersonated: securitySelectors.isImpersonated(state),
       locale: selectors.locale(state),
       administration: selectors.administration(state),
       tools: selectors.tools(state),
-      notificationTools: selectors.notificationTools(state),
-      redirectHome: selectors.redirectHome(state)
+      notificationTools: selectors.notificationTools(state)
     }),
     (dispatch) => ({
       startWalkthrough(steps, additional, documentation) {

@@ -95,6 +95,10 @@ class DesktopController
     public function openAction(User $currentUser = null)
     {
         // TODO : manage anonymous. This will break like this imo but they need to have access to tools opened to them.
+        if (empty($currentUser)) {
+            throw new AccessDeniedException();
+        }
+
         $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
         if (0 === count($tools)) {
             throw new AccessDeniedException();

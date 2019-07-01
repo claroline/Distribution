@@ -19,7 +19,7 @@ const tools = [
     icon: 'fa fa-fw fa-tasks',
     label: 'Tâches'
   }, {
-    name: 'favorites',
+    name: 'history',
     icon: 'fa fa-fw fa-history',
     label: 'Historique'
   }, {

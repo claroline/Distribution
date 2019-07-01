@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
-import {currentUser} from '#/main/app/security'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {
   PageHeader,
@@ -91,6 +90,7 @@ const EditorMain = props =>
     <PageContent>
       <TabEditor
         path={props.path}
+        currentUser={props.currentUser}
         currentContext={props.currentContext}
         currentTabIndex={props.currentTabIndex}
         currentTab={props.currentTab}
@@ -108,6 +108,7 @@ const EditorMain = props =>
 
 EditorMain.propTypes = {
   path: T.string.isRequired,
+  currentUser: T.object,
   currentContext: T.object.isRequired,
   administration: T.bool.isRequired,
   readOnly: T.bool.isRequired,

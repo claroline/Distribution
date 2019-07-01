@@ -3,8 +3,8 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
-import {currentUser} from '#/main/app/security'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {selectors as securitySelectors} from '#/main/app/security/store'
 
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 
@@ -14,6 +14,7 @@ import {actions as editorActions, selectors as editorSelectors} from '#/main/cor
 
 const EditorMain = connect(
   (state) => ({
+    currentUser: securitySelectors.currentUser(state),
     currentContext: selectors.context(state),
     administration: selectors.administration(state),
     readOnly: editorSelectors.readOnly(state),
@@ -44,7 +45,7 @@ const EditorMain = connect(
         position: position + 1,
         type: administration ? 'administration' : context.type,
         administration: administration,
-        user: context.type === 'desktop' && !administration ? currentUser() : null,
+        user: context.type === 'desktop' && !administration ? ownProps.currentUser : null,
         workspace: context.type === 'workspace' ? {uuid: context.data.uuid} : null
       })))
 

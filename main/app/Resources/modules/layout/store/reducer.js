@@ -5,21 +5,23 @@ import {
   SIDEBAR_CLOSE
 } from '#/main/app/layout/store/actions'
 
+// security
+import {reducer as securityReducer} from '#/main/app/security/store/reducer'
+import {selectors as securitySelectors} from '#/main/app/security/store/selectors'
+
 // menu
 import {reducer as menuReducer} from '#/main/app/layout/menu/store/reducer'
 import {selectors as menuSelectors} from '#/main/app/layout/menu/store/selectors'
 
 export const reducer = {
   maintenance: makeReducer(false),
-
-  currentUser: makeReducer(null),
-  impersonated: makeReducer(false),
-
   meta: combineReducers({
     name: makeReducer('Claroline Connect'),
     secondaryName: makeReducer('Easy & flexible learning'),
     version: makeReducer('12.4.8')
   }),
+
+  [securitySelectors.STORE_NAME]: securityReducer,
 
   [menuSelectors.STORE_NAME]: menuReducer,
 

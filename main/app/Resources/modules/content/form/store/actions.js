@@ -11,7 +11,7 @@ import {constants as alertConstants} from '#/main/app/overlays/alert/constants'
 import {constants as actionConstants} from '#/main/app/action/constants'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
-import {currentUser} from '#/main/app/security'
+import {selectors as securitySelectors} from '#/main/app/security/store/selectors'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 
 export const FORM_RESET          = 'FORM_RESET'
@@ -60,8 +60,10 @@ actions.getItemLock = (className, id) => (dispatch) => {
   }
 }
 
-actions.validateLock = (lock) => (dispatch) => {
-  if (lock.user.username !== currentUser().username) {
+actions.validateLock = (lock) => (dispatch, getState) => {
+  const currentUser = securitySelectors.currentUser(getState())
+
+  if (lock.user.username !== currentUser.username) {
     dispatch(
       modalActions.showModal(MODAL_CONFIRM, {
         title: trans('update_object'),

@@ -934,8 +934,8 @@ class UserManager
         $this->strictEventDispatcher->dispatch('log', 'Log\LogUserLogin', [$user]);
 
         // TODO : nope, we should let Symfony handles token creation
-        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
-        $this->tokenStorage->setToken($token);
+        //$token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+        //$this->tokenStorage->setToken($token);
 
         if (null === $user->getInitDate()) {
             $this->setUserInitDate($user);

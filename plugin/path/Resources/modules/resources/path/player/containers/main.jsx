@@ -1,5 +1,6 @@
 import {connect} from 'react-redux'
 
+import {selectors as securitySelectors} from '#/main/app/security/store'
 import {selectors as resourceSelectors} from '#/main/core/resource/store'
 
 import {PlayerMain as PlayerMainComponent} from '#/plugin/path/resources/path/player/components/main'
@@ -10,6 +11,7 @@ import {flattenSteps} from '#/plugin/path/resources/path/utils'
 const PlayerMain = connect(
   state => ({
     basePath: resourceSelectors.path(state),
+    currentUser: securitySelectors.currentUser(state),
     path: selectors.path(state),
     navigationEnabled: selectors.navigationEnabled(state),
     steps: flattenSteps(selectors.steps(state))

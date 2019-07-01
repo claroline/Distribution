@@ -22,6 +22,7 @@ const ResourcesTool = props =>
           return (
             <ResourcesRoot
               path={props.path}
+              currentUser={props.currentUser}
               listName={props.listRootName}
               updateNodes={props.updateNodes}
               deleteNodes={props.deleteNodes}
@@ -44,6 +45,7 @@ const ResourcesTool = props =>
 
 ResourcesTool.propTypes = {
   path: T.string.isRequired,
+  currentUser: T.object,
   root: T.shape(
     ResourceNodeTypes.propTypes
   ),

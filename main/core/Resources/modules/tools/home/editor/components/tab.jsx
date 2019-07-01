@@ -1,9 +1,9 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
-import {currentUser} from '#/main/app/security'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
@@ -26,11 +26,11 @@ const TabEditor = props =>
     target={props.administration ?
       ['apiv2_home_admin', {
         context: props.currentContext.type,
-        contextId: props.currentContext.data ? props.currentContext.data.uuid : currentUser().id
+        contextId: props.currentContext.data ? props.currentContext.data.uuid : get(props.currentUser, 'id')
       }] :
       ['apiv2_home_update', {
         context: props.currentContext.type,
-        contextId: props.currentContext.data ? props.currentContext.data.uuid : currentUser().id
+        contextId: props.currentContext.data ? props.currentContext.data.uuid : get(props.currentUser, 'id')
       }]
     }
     cancel={{
@@ -174,6 +174,7 @@ const TabEditor = props =>
 
 TabEditor.propTypes = {
   path: T.string.isRequired,
+  currentUser: T.object,
   currentContext: T.object.isRequired,
   currentTab: T.shape(TabTypes.propTypes),
 

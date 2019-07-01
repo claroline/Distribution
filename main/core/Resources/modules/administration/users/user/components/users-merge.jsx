@@ -3,10 +3,10 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
-import {currentUser} from '#/main/app/security'
 
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {selectors as securitySelectors} from '#/main/app/security/store'
 import {Sections, Section} from '#/main/app/content/components/sections'
 import {DetailsData} from '#/main/app/content/details/components/data'
 import {ListData} from '#/main/app/content/list/containers/data'
@@ -169,7 +169,7 @@ const UsersMergeForm = props => 0 !== props.selectedUsers.length ?
         index={0}
         user={props.selectedUsers[0]}
         merge={() => props.mergeUsers(props.selectedUsers[0], props.selectedUsers[1], props.history.push)}
-        disabled={props.selectedUsers[1].id === currentUser().id}
+        disabled={props.selectedUsers[1].id === props.currentUser.id}
       />
     </div>
 
@@ -178,13 +178,16 @@ const UsersMergeForm = props => 0 !== props.selectedUsers.length ?
         index={1}
         user={props.selectedUsers[1]}
         merge={() => props.mergeUsers(props.selectedUsers[1], props.selectedUsers[0], props.history.push)}
-        disabled={props.selectedUsers[0].id === currentUser().id}
+        disabled={props.selectedUsers[0].id === props.currentUser.id}
       />
     </div>
   </div> :
   <div>Loading</div>
 
 UsersMergeForm.propTypes = {
+  currentUser: T.shape({
+
+  }),
   selectedUsers: T.arrayOf(T.shape(
     UserTypes.propTypes
   )),
@@ -195,10 +198,11 @@ UsersMergeForm.propTypes = {
 }
 
 const UsersMerge = connect(
-  state => ({
-    selectedUsers: state.users.compare.selected
+  (state) => ({
+    currentUser: securitySelectors.currentUser(state),
+    selectedUsers: state.users.compare.selected // TODO : use a selector
   }),
-  dispatch => ({
+  (dispatch) => ({
     mergeUsers(userToKeep, userToRemove, navigate) {
       dispatch(actions.merge(userToKeep.id, userToRemove.id, navigate))
     }

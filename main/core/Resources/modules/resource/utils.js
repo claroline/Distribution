@@ -30,14 +30,15 @@ function getType(resourceNode) {
 /**
  * Loads the available actions apps from configuration.
  *
- * @param {Array}  resourceNodes
- * @param {Array}  actions
+ * @param {Array}  resourceNodes  - the current resource node(s)
+ * @param {Array}  actions        - the list of actions to load
  * @param {object} nodesRefresher - an object containing methods to update the node context
- * @param {string} path
+ * @param {string} path           - the UI path where the resource is opened
+ * @param {object} currentUser    - the authenticated user
  *
  * @return {Promise.<Array>}
  */
-function loadActions(resourceNodes, actions, nodesRefresher, path) {
+function loadActions(resourceNodes, actions, nodesRefresher, path, currentUser) {
   // adds default refresher actions
   const refresher = Object.assign({
     add: identity,
@@ -58,7 +59,7 @@ function loadActions(resourceNodes, actions, nodesRefresher, path) {
     // generates action from loaded modules
     const realActions = {}
     loadedActions.map(actionModule => {
-      const generated = actionModule.default(resourceNodes, refresher, path)
+      const generated = actionModule.default(resourceNodes, refresher, path, currentUser)
 
       realActions[generated.name] = generated
     })
@@ -73,14 +74,15 @@ function loadActions(resourceNodes, actions, nodesRefresher, path) {
 /**
  * Gets the list of available actions for a resource.
  *
- * @param {Array}   resourceNodes  - the current resource node
+ * @param {Array}   resourceNodes  - the current resource node(s)
  * @param {object}  nodesRefresher - an object containing methods to update the node context
- * @param {string}  path
+ * @param {string}  path           - the UI path where the resource is opened
+ * @param {object}  currentUser    - the authenticated user
  * @param {boolean} withDefault    - include the default action (most of the time, it's not useful to get it)
  *
  * @return {Promise.<Array>}
  */
-function getActions(resourceNodes, nodesRefresher, path, withDefault = false) {
+function getActions(resourceNodes, nodesRefresher, path, currentUser = null, withDefault = false) {
   const resourceTypes = uniq(resourceNodes.map(resourceNode => resourceNode.meta.type))
 
   const collectionActions = resourceTypes
@@ -101,24 +103,25 @@ function getActions(resourceNodes, nodesRefresher, path, withDefault = false) {
       return accumulator
     }, [])
 
-  return loadActions(resourceNodes, collectionActions, nodesRefresher, path)
+  return loadActions(resourceNodes, collectionActions, nodesRefresher, path, currentUser)
 }
 
 /**
  * Gets the default action of a resource.
  *
- * @param {object} resourceNode
- * @param {object} nodesRefresher
- * @param {string} path
+ * @param {object} resourceNode   - the current resource node
+ * @param {object} nodesRefresher - an object containing methods to update the node context
+ * @param {string} path           - the UI path where the resource is opened
+ * @param {object} currentUser    - the authenticated user
  *
  * @return {Promise.<Array>}
  */
-function getDefaultAction(resourceNode, nodesRefresher, path) {
+function getDefaultAction(resourceNode, nodesRefresher, path, currentUser = null) {
   const defaultAction = getType(resourceNode).actions
     .find(action => action.default)
 
   if (hasPermission(defaultAction.permission, resourceNode)) {
-    return loadActions([resourceNode], [defaultAction], nodesRefresher, path)
+    return loadActions([resourceNode], [defaultAction], nodesRefresher, path, currentUser)
       .then(loadActions => loadActions[0] || null)
   }
 

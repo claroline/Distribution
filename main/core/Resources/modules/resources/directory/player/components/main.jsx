@@ -22,11 +22,11 @@ const PlayerMain = props =>
         primaryAction: (resourceNode) => getDefaultAction(resourceNode, {
           update: props.updateNodes,
           delete: props.deleteNodes
-        }, props.path),
+        }, props.path, props.currentUser),
         actions: (resourceNodes) => getActions(resourceNodes, {
           update: props.updateNodes,
           delete: props.deleteNodes
-        }, props.path)
+        }, props.path, props.currentUser)
       }
     })}
     parameters={props.listConfiguration}
@@ -34,6 +34,7 @@ const PlayerMain = props =>
 
 PlayerMain.propTypes = {
   path: T.string,
+  currentUser: T.object,
   id: T.string,
   listName: T.string.isRequired,
   listConfiguration: T.shape(

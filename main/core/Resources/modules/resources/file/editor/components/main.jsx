@@ -1,6 +1,5 @@
-import React, {Component} from 'react'
+import React, {Component, createElement} from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 import get from 'lodash/get'
 
 import {theme} from '#/main/app/config'
@@ -15,7 +14,7 @@ import {selectors} from '#/main/core/resources/file/editor/store/selectors'
 
 // TODO : find a way to reuse file creation form component
 
-class Editor extends Component {
+class EditorMain extends Component {
   constructor(props) {
     super(props)
 
@@ -69,7 +68,7 @@ class Editor extends Component {
                     className="embedded-list-section"
                     title={trans(getTypeName(this.props.mimeType))}
                   >
-                    {React.createElement(get(module, 'fileType.components.editor'), {
+                    {createElement(get(module, 'fileType.components.editor'), {
                       file: this.props.file
                     })}
 
@@ -88,20 +87,13 @@ class Editor extends Component {
   }
 }
 
-Editor.propTypes = {
+EditorMain.propTypes = {
   mimeType: T.string.isRequired,
   file: T.shape({
     id: T.number.isRequired
   }).isRequired
 }
 
-const FileEditor = connect(
-  (state) => ({
-    mimeType: selectors.mimeType(state),
-    file: selectors.file(state)
-  })
-)(Editor)
-
 export {
-  FileEditor
+  EditorMain
 }

@@ -100,7 +100,7 @@ class AuthenticationController
 
     /**
      * @Route(
-     *     "/login",
+     *     "/login_old",
      *     name="claro_security_login",
      *     options={"expose"=true}
      * )
@@ -332,7 +332,7 @@ class AuthenticationController
      * )
      * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      */
-    public function hideEmailConformationAction(User $user)
+    public function hideEmailConfirmationAction(User $user)
     {
         $this->userManager->hideEmailValidation($user);
 

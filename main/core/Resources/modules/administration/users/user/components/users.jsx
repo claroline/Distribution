@@ -6,7 +6,7 @@ import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
-
+import {selectors as securitySelectors} from '#/main/app/security/store'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {MODAL_USER_PASSWORD} from '#/main/core/user/modals/password'
 import {actions as userActions} from '#/main/core/user/actions'
@@ -41,12 +41,13 @@ const UsersList = props =>
       deleteWorkspace: props.deleteWorkspace,
       updatePassword: props.updatePassword,
       resetPassword: props.resetPassword
-    })}
+    }, props.path, props.currentUser)}
     definition={getUserListDefinition({platformRoles: props.platformRoles})}
     card={UserList.card}
   />
 
 UsersList.propTypes = {
+  currentUser: T.object,
   path: T.string.isRequired,
   enable: T.func.isRequired,
   disable: T.func.isRequired,
@@ -63,6 +64,7 @@ UsersList.defaultProps = {
 
 const Users = connect(
   state => ({
+    currentUser: securitySelectors.currentUser(state),
     path: toolSelectors.path(state),
     platformRoles: baseSelectors.platformRoles(state)
   }),

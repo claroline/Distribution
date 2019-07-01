@@ -3,7 +3,6 @@ import classes from 'classnames'
 
 import {trans} from '#/main/app/intl/translation'
 import {asset} from '#/main/app/config/asset'
-import {currentUser} from '#/main/app/security'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {Button} from '#/main/app/action/components/button'
@@ -89,7 +88,7 @@ const Step = props =>
 
       {props.title}
 
-      {props.manualProgressionAllowed && currentUser() &&
+      {props.manualProgressionAllowed && props.currentUser &&
         <ManualProgression
           status={props.userProgression.status}
           stepId={props.id}
@@ -136,6 +135,7 @@ const Step = props =>
   </section>
 
 implementPropTypes(Step, StepTypes, {
+  currentUser: T.object,
   numbering: T.string,
   showResourceHeader: T.bool.isRequired,
   manualProgressionAllowed: T.bool.isRequired,

@@ -24,8 +24,6 @@ use Symfony\Component\Security\Core\Role\SwitchUserRole;
 /**
  * ClientController.
  * It's responsible of the rendering of the Claroline web UI.
- *
- * @EXT\Route
  */
 class ClientController
 {

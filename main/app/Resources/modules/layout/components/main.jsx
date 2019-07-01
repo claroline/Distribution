@@ -19,8 +19,6 @@ const LayoutMain = props =>
     <div className="app" role="presentation">
       <Header
         maintenance={props.maintenance}
-        impersonated={props.impersonated}
-
         toggleMenu={props.toggleMenu}
       />
 
@@ -75,7 +73,6 @@ const LayoutMain = props =>
 
 LayoutMain.propTypes = {
   maintenance: T.bool.isRequired,
-  impersonated: T.bool.isRequired,
 
   menuOpened: T.bool.isRequired,
   toggleMenu: T.func.isRequired,

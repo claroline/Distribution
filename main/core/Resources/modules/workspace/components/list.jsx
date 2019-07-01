@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
+import {selectors as securitySelectors} from '#/main/app/security/store'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {actions as listActions} from '#/main/app/content/list/store'
 
@@ -88,20 +89,28 @@ const Workspaces = (props) => {
       ]}
       card={WorkspaceCard}
 
-      primaryAction={(row) => getDefaultAction(row, workspacesRefresher)}
-      actions={(rows) => getActions(rows, workspacesRefresher)}
+      primaryAction={(row) => getDefaultAction(row, workspacesRefresher, props.basePath, props.currentUser)}
+      actions={(rows) => getActions(rows, workspacesRefresher, props.basePath, props.currentUser)}
     />
   )
 }
 
 Workspaces.propTypes = {
+  basePath: T.string,
+  currentUser: T.object,
   name: T.string.isRequired,
   url: T.oneOfType([T.string, T.array]).isRequired,
   invalidate: T.func.isRequired
 }
 
+Workspaces.defaultProps = {
+  basePath: ''
+}
+
 const WorkspaceList = connect(
-  null,
+  (state) => ({
+    currentUser: securitySelectors.currentUser(state)
+  }),
   dispatch => ({
     invalidate(name) {
       dispatch(listActions.invalidateData(name))

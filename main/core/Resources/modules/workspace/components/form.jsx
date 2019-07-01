@@ -6,9 +6,9 @@ import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
 import {url} from '#/main/app/api'
-import {isAdmin} from '#/main/app/security'
 
 //import {select as workspaceSelect} from '#/main/core/workspace/selectors'
+import {selectors as securitySelectors} from '#/main/app/security/store'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {
   actions as formActions,
@@ -249,7 +249,7 @@ const WorkspaceFormComponent = (props) => {
                   props.updateProp('restrictions.dates', [])
                 }
               },
-              displayed: isAdmin(),
+              displayed: props.isAdmin,
               linked: [
                 {
                   name: 'restrictions.dates',
@@ -310,7 +310,7 @@ const WorkspaceFormComponent = (props) => {
               type: 'boolean',
               label: trans('restrict_max_users'),
               calculated: restrictUsers,
-              displayed: isAdmin(),
+              displayed: props.isAdmin,
               onChange: activated => {
                 if (!activated) {
                   // reset max users field
@@ -334,7 +334,7 @@ const WorkspaceFormComponent = (props) => {
               type: 'boolean',
               label: trans('restrict_max_resources'),
               calculated: restrictResources,
-              displayed: isAdmin(),
+              displayed: props.isAdmin,
               onChange: activated => {
                 if (!activated) {
                   // reset max users field
@@ -358,7 +358,7 @@ const WorkspaceFormComponent = (props) => {
               type: 'boolean',
               label: trans('restrict_max_storage'),
               calculated: restrictStorage,
-              displayed: isAdmin(),
+              displayed: props.isAdmin,
               onChange: activated => {
                 if (!activated) {
                   // reset max users field
@@ -398,16 +398,18 @@ const WorkspaceFormComponent = (props) => {
 }
 
 WorkspaceFormComponent.propTypes = {
-  children: T.any,
   tools: T.array,
   models: T.object,
+  children: T.any,
   // from redux
+  isAdmin: T.bool.isRequired,
   new: T.bool.isRequired,
   updateProp: T.func.isRequired
 }
 
 const WorkspaceForm = connect(
   (state, ownProps) => ({
+    isAdmin: securitySelectors.isAdmin(state),
     new: formSelect.isNew(formSelect.form(state, ownProps.name))/*,
     tools: workspaceSelect.tools(state)*/
   }),

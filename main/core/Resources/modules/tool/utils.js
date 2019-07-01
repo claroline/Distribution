@@ -4,7 +4,6 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {constants} from '#/main/core/tool/constants'
-import {currentUser} from '#/main/app/security'
 
 /**
  * Gets the path of a tool based on its rendering context.
@@ -16,7 +15,6 @@ import {currentUser} from '#/main/app/security'
  * @return {Array}
  */
 function getToolBreadcrumb(toolName, contextType, contextData = {}) {
-  const user = currentUser()
   const breadcrumbItems = get(contextData, 'breadcrumb.items') || []
 
   let path = []
@@ -37,33 +35,18 @@ function getToolBreadcrumb(toolName, contextType, contextData = {}) {
       break
 
     case constants.TOOL_WORKSPACE:
-      if (user) {
-        path = [
-          {
-            type: LINK_BUTTON,
-            label: trans('desktop'),
-            displayed: -1 !== breadcrumbItems.indexOf('desktop'),
-            target: '/desktop'
-          }, {
-            type: LINK_BUTTON,
-            label: trans('my_workspaces', {}, 'workspace'),
-            displayed: -1 !== breadcrumbItems.indexOf('workspaces'),
-            target: '/desktop/workspaces'
-          }
-        ]
-      } else {
-        path = [
-          {
-            type: LINK_BUTTON,
-            label: trans('public_workspaces', {}, 'workspace'),
-            displayed: -1 !== breadcrumbItems.indexOf('workspaces'),
-            target: '/desktop/workspaces'
-          }
-        ]
-      }
-
-      path = path.concat([
+      path = [
         {
+          type: LINK_BUTTON,
+          label: trans('desktop'),
+          displayed: -1 !== breadcrumbItems.indexOf('desktop'),
+          target: '/desktop'
+        }, {
+          type: LINK_BUTTON,
+          label: trans('my_workspaces', {}, 'workspace'),
+          displayed: -1 !== breadcrumbItems.indexOf('workspaces'),
+          target: '/desktop/workspaces'
+        }, {
           type: LINK_BUTTON,
           label: contextData.name,
           displayed: -1 !== breadcrumbItems.indexOf('current'),
@@ -74,7 +57,7 @@ function getToolBreadcrumb(toolName, contextType, contextData = {}) {
           displayed: -1 !== breadcrumbItems.indexOf('tool'),
           target: '/desktop/workspaces/' + contextData.id + '/' + toolName
         }
-      ])
+      ]
       break
 
     case constants.TOOL_ADMINISTRATION:

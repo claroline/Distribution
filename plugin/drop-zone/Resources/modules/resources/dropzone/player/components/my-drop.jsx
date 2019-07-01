@@ -9,7 +9,6 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {Button} from '#/main/app/action/components/button'
 
-import {MODAL_RESOURCE_EXPLORER} from '#/main/core/modals/resources'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {DropzoneType, DropType, Revision as RevisionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'

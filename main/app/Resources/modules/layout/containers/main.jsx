@@ -10,7 +10,6 @@ const LayoutMain = withRouter(
   connect(
     (state) => ({
       maintenance: selectors.maintenance(state),
-      impersonated: selectors.impersonated(state),
       menuOpened: menuSelectors.opened(state),
       sidebar: selectors.sidebar(state)
     }),

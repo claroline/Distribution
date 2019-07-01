@@ -2,7 +2,6 @@ import {createSelector} from 'reselect'
 
 import {trans} from '#/main/app/intl/translation'
 import {param} from '#/main/app/config'
-import {currentUser} from '#/main/app/security'
 
 const STORE_NAME = 'header'
 
@@ -39,24 +38,6 @@ const logo = () => param('logo')
 const redirectHome = () => param('logo_redirect_home') || false
 const title = () => param('name')
 const subtitle = () => param('secondaryName')
-const user = () => {
-  let current = currentUser()
-  if (!current) {
-    // create a fake user for anonymous
-    // this is a little hacky and cannot be used has a real user
-    current = {
-      name: trans('guest'),
-      username: trans('guest'),
-      roles: [{
-        name: 'ROLE_ANONYMOUS',
-        translationKey: 'anonymous'
-      }]
-    }
-  }
-
-  return current
-}
-const authenticated = () => !!currentUser()
 
 const locale = () => param('locale')
 
@@ -88,6 +69,7 @@ const maintenance = () => param('maintenance')
 
 export const selectors = {
   STORE_NAME,
+
   mainMenu,
   administration,
   tools,
@@ -98,8 +80,6 @@ export const selectors = {
   title,
   subtitle,
   display,
-  user,
-  authenticated,
   locale,
   loginUrl,
   helpUrl,
