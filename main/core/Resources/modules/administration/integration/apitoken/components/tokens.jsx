@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
+//import {LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 const Tokens = () =>
@@ -11,17 +11,17 @@ const Tokens = () =>
       url: ['apiv2_apitoken_list'],
       autoload: true
     }}
-    primaryAction={(row) => ({
+    /*primaryAction={(row) => ({
       type: LINK_BUTTON,
       target: `/token/form/${row.id}`
-    })}
+    })}*/
     delete={{
       url: ['apiv2_apitoken_delete_bulk']
     }}
     definition={[
       {
-        name: 'url',
-        label: trans('url', {}, 'lti'),
+        name: 'token',
+        label: trans('token', {}, 'claroline'),
         type: 'string',
         primary: true,
         displayed: true

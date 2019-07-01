@@ -45,7 +45,8 @@ const ApiToken = props =>
           component: Token,
           onLeave: () => {
             props.resetForm()
-          }
+          },
+          exact: true
         }
       ]}
     />

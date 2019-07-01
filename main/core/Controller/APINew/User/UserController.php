@@ -97,13 +97,7 @@ class UserController extends AbstractCrudController
 
     /**
      * @ApiDoc(
-     *     description="List the objects of class $class.",
-     *     queryString={
-     *         "$finder",
-     *         {"name": "page", "type": "integer", "description": "The queried page."},
-     *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
-     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
-     *     }
+     *     description="List the objects of class $class."
      * )
      * @Route("/current", name="apiv2_users_current")
      * @Method("GET")

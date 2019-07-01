@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\AppBundle\API\SchemaProvider;
+use Claroline\CoreBundle\API\Serializer\Platform\ClientSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,13 +30,15 @@ class SwaggerController
      *     "routerFinder"   = @DI\Inject("claroline.api.routing.finder"),
      *     "documentator"   = @DI\Inject("claroline.api.routing.documentator"),
      *     "schemaProvider" = @DI\Inject("claroline.api.schema"),
+     *     "configuration"  = @DI\Inject("claroline.serializer.platform_client")
      * })
      */
-    public function __construct($routerFinder, $documentator, SchemaProvider $schemaProvider)
+    public function __construct($routerFinder, $documentator, SchemaProvider $schemaProvider, ClientSerializer $configuration)
     {
         $this->routerFinder = $routerFinder;
         $this->documentator = $documentator;
         $this->schemaProvider = $schemaProvider;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -44,24 +47,26 @@ class SwaggerController
      */
     public function getApiAction()
     {
+        $config = $this->configuration->serialize();
+
         $swagger = [
           'swagger' => '2.0',
           'info' => [
               'version' => 'v2',
-              'title' => 'SwaggerDemo API',
-              'description' => 'Customers API to demo Swagger',
+              'title' => 'Claroline API',
+              'description' => 'Claroline API',
               'termsOfService' => 'None',
               'contact' => [
-                  'name' => 'Jean Guillaume',
-                  'url' => 'Jean Guillaume 42',
-                  'email' => 'Guillaume @monsite.com',
+                  'name' => 'Claroline',
+                  'url' => 'www.claroline.net',
+                  'email' => 'claroline@ovh.com',
               ],
               'license' => [
-                  'name' => 'Apache 2.0',
-                  'url' => 'http://www.apache.org',
+                  'name' => 'GPL-3.0-or-later',
+                  'url' => 'https://www.gnu.org/licenses/gpl-3.0.fr.html',
               ],
           ],
-          'basePath' => '/',
+          'basePath' => $config['swagger']['base'],
         ];
 
         $classes = $this->routerFinder->getHandledClasses();
