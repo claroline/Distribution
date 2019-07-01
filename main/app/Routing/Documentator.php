@@ -230,7 +230,7 @@ class Documentator
 
         if (is_array($body)) {
             if (isset($body['schema']) && '$schema' === $body['schema']) {
-                $data['schema']['$ref'] = '#/definitions/'.$objectClass;
+                $data['schema']['$ref'] = '#/definitions/'.$objectClass.'/post';
                 $data['in'] = 'body';
                 $data['name'] = 'body';
                 $requestBody[] = $data;

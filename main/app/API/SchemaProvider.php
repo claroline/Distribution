@@ -140,7 +140,7 @@ class SchemaProvider
      *
      * @return \stdClass
      */
-    public function getSchema($class)
+    public function getSchema($class, array $options = [])
     {
         $serializer = $this->get($class);
 
@@ -153,7 +153,17 @@ class SchemaProvider
             $absolutePath = $this->rootDir.'/vendor/claroline/distribution/'
             .$first.'/'.$sec.'/Resources/schemas/'.implode('/', $path);
 
-            return $this->loadSchema($absolutePath);
+            $schema = $this->loadSchema($absolutePath);
+
+            if (in_array(Options::IGNORE_COLLECTIONS, $options) && isset($schema->properties)) {
+                foreach ($schema->properties as $key => $property) {
+                    if ('array' === $property->type) {
+                        unset($schema->properties->{$key});
+                    }
+                }
+            }
+
+            return $schema;
         }
     }
 

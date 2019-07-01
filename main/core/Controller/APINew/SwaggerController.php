@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SchemaProvider;
 use Claroline\CoreBundle\API\Serializer\Platform\ClientSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -80,9 +81,11 @@ class SwaggerController
         $definitions = [];
 
         foreach ($classes as $class) {
-            $def = json_decode(json_encode($this->schemaProvider->getSchema($class)), true);
+            $def = json_decode(json_encode($this->schemaProvider->getSchema($class, [Options::IGNORE_COLLECTIONS])), true);
+            //we need to mode, return and submit
+
             if (is_array($def)) {
-                $definitions[$class] = $def;
+                $definitions[$class]['post'] = $def;
             }
         }
 
