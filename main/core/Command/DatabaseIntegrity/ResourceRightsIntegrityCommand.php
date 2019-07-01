@@ -54,7 +54,6 @@ class ResourceRightsIntegrityCommand extends ContainerAwareCommand
 
         while ($row = $ids->fetch()) {
             $node = $om->getRepository(ResourceNode::class)->find($row['id']);
-            $wsRoles = [];
             $workspace = $node->getWorkspace();
             $output->writeln('Restore '.$i.'/'.$ids->rowCount());
 

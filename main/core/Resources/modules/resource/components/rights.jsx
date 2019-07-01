@@ -192,7 +192,6 @@ const AdvancedTab = props => {
         {props.permissions.map((rolePerm, index) => {
           const workspaceCode = rolePerm.workspace ? rolePerm.workspace.code : null
           const displayName = workspaceCode ? rolePerm.translationKey + ' (' + workspaceCode + ')': rolePerm.translationKey
-          console.log(displayName)
           return (<RolePermissions
             key={rolePerm.id}
             name={rolePerm.name}
