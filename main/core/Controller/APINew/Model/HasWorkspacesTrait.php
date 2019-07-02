@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Model;
 
+use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\API\Crud;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,6 +40,16 @@ trait HasWorkspacesTrait
      *
      * @EXT\Route("/{id}/workspace")
      * @EXT\Method("PATCH")
+     * @ApiDoc(
+     *     description="List the objects of class $class.",
+     *     parameters={
+     *         {"name": "id", "type": "string", "description": "The object id."}
+     *     },
+     *     response={"$object"},
+     *     queryString={
+     *         {"name": "ids[]", "type": {"string", "integer"}, "description": "The workspace id or uuid."}
+     *     }
+     * )
      *
      * @param string  $id
      * @param string  $class
@@ -62,6 +73,16 @@ trait HasWorkspacesTrait
      *
      * @EXT\Route("/{id}/workspace")
      * @EXT\Method("DELETE")
+     * @ApiDoc(
+     *     description="List the objects of class $class.",
+     *     parameters={
+     *         {"name": "id", "type": "string", "description": "The object id."}
+     *     },
+     *     response={"$object"},
+     *     queryString={
+     *         {"name": "ids[]", "type": {"string", "integer"}, "description": "The workspace id or uuid."}
+     *     }
+     * )
      *
      * @param string  $id
      * @param string  $class
