@@ -196,7 +196,7 @@ class ScormListener
     {
         $file = $exportEvent->getObject();
         $ds = DIRECTORY_SEPARATOR;
-        $path = $this->filesDir.$ds.'scorm'.$ds.$file->getResourceNode()->getWorkspace()->getUuid().$ds.$file->getHashName();
+        $path = $this->getScormArchive($file);
         $file = $exportEvent->getObject();
         $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);
         //get the filePath
@@ -280,9 +280,37 @@ class ScormListener
         $ds = DIRECTORY_SEPARATOR;
         $scorm = $event->getResource();
         $workspace = $scorm->getResourceNode()->getWorkspace();
-        $event->setItem($this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$scorm->getHashName());
+        $event->setItem($path = $this->getScormArchive($scorm));
         $event->setExtension('zip');
         $event->stopPropagation();
+    }
+
+    public function getScormArchive(Scorm $scorm)
+    {
+        $workspace = $scorm->getResourceNode()->getWorkspace();
+        $ds = DIRECTORY_SEPARATOR;
+        $supposedArchiveLocation = $this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$scorm->getHashName();
+
+        if (is_file($supposedArchiveLocation)) {
+            return $supposedArchiveLocation;
+        }
+
+        $uploadArchiveLocation = $this->uploadDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$scorm->getHashName();
+
+        // initialize the ZIP archive
+        $zip = new \ZipArchive();
+        $zip->open($scorm->getHashName(), \ZipArchive::CREATE);
+
+        // create recursive directory iterator
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uploadArchiveLocation), \RecursiveIteratorIterator::LEAVES_ONLY);
+
+        // let's iterate
+        foreach ($files as $name => $file) {
+            $filePath = $file->getRealPath();
+            $zip->addFile($filePath);
+        }
+
+        $zip->close();
     }
 
     /**
