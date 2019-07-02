@@ -76,6 +76,18 @@ class SubjectFinder extends AbstractFinder
                         $qb->setParameter('filter_none', Forum::VALIDATE_NONE);
                     }
                     break;
+                case 'tag':
+                    $qb->andWhere($qb->expr()->exists('
+                        SELECT taggedObject
+                        FROM Claroline\TagBundle\Entity\TaggedObject taggedObject
+                        JOIN taggedObject.tag tag
+                        WHERE tag.name = :tag
+                        AND taggedObject.objectClass = :objectClass
+                        AND taggedObject.objectId = obj.uuid
+                    '));
+                    $qb->setParameter('tag', $filterValue);
+                    $qb->setParameter('objectClass', 'Claroline\ForumBundle\Entity\Subject');
+                    break;
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);
             }
@@ -141,6 +153,10 @@ class SubjectFinder extends AbstractFinder
             'viewCount' => [
                 'type' => 'integer',
                 'description' => 'The number of views',
+            ],
+            'tag' => [
+                'type' => 'string',
+                'description' => 'The name of a tag',
             ],
         ];
     }

@@ -120,7 +120,7 @@ const Overview = connect(
   }),
   dispatch =>({
     goToList(tag) {
-      dispatch(listActions.addFilter(`${select.STORE_NAME}.subjects.list`, 'tags', tag))
+      dispatch(listActions.addFilter(`${select.STORE_NAME}.subjects.list`, 'tag', tag))
       dispatch(listActions.invalidateData(`${select.STORE_NAME}.subjects.list`))
     }
   })

@@ -90,15 +90,22 @@ const SubjectsList = props =>
           filterable: true,
           alias: 'creator'
         }, {
-          name: 'tags',
-          type: 'tag',
-          label: trans('tags'),
+        //   name: 'tags',
+        //   type: 'tag',
+        //   label: trans('tags'),
+        //   displayable: false,
+        //   filterable: true,
+        //   sortable: false,
+        //   options: {
+        //     objectClass: 'Claroline\\ForumBundle\\Entity\\Subject'
+        //   }
+        // }, {
+          name: 'tag',
+          type: 'string',
+          label: trans('tag'),
           displayable: false,
           filterable: true,
-          sortable: false,
-          options: {
-            objectClass: 'Claroline\\ForumBundle\\Entity\\Subject'
-          }
+          sortable: false
         }, {
           name: 'createdBefore',
           type: 'date',
