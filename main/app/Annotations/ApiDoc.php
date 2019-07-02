@@ -15,6 +15,7 @@ final class ApiDoc extends Annotation
     public $parameters = null;
     public $queryString = null;
     public $produce = null;
+    public $response = null;
 
     /**
      * @return string
@@ -42,5 +43,10 @@ final class ApiDoc extends Annotation
     public function getProduce()
     {
         return $this->produce;
+    }
+
+    public function getResponse()
+    {
+        return $this->response;
     }
 }

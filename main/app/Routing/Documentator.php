@@ -107,6 +107,9 @@ class Documentator
         $body = $doc->getBody() ?
             $this->parseBody($doc->getBody(), $objectClass) : null;
 
+        $responses = $doc->getResponse() ?
+            $this->parseResponse($doc->getResponse(), $objectClass) : null;
+
         $data['produce'] = $doc->getProduce() ?? ['application/json'];
 
         if ($description) {
@@ -119,6 +122,10 @@ class Documentator
 
         if ($body) {
             $data['parameters'] = array_merge($data['parameters'], $body);
+        }
+
+        if ($responses) {
+            $data['responses'] = $responses;
         }
 
         return $data;
@@ -230,7 +237,7 @@ class Documentator
 
         if (is_array($body)) {
             if (isset($body['schema']) && '$schema' === $body['schema']) {
-                $data['schema']['$ref'] = '#/definitions/'.$objectClass.'/post';
+                $data['schema']['$ref'] = '#/extendedModels/'.$objectClass.'/post';
                 $data['in'] = 'body';
                 $data['name'] = 'body';
                 $requestBody[] = $data;
@@ -238,5 +245,22 @@ class Documentator
         }
 
         return $requestBody;
+    }
+
+    private function parseResponse($responses, $objectClass)
+    {
+        $data = [];
+
+        foreach ($responses as $response) {
+            if (is_string($response) && '$object' === $response) {
+                $data['200']['description'] = 'successfull operation';
+                $data['200']['schema']['$ref'] = '#/definitions/'.$objectClass;
+            } elseif (is_string($response) && '$list' === $response) {
+                $data['200']['description'] = 'successfull operation';
+                $data['200']['schema']['$ref'] = '#/extendedModels/'.$objectClass.'/list';
+            }
+        }
+
+        return $data;
     }
 }

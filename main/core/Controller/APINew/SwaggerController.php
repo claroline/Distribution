@@ -31,15 +31,18 @@ class SwaggerController
      *     "routerFinder"   = @DI\Inject("claroline.api.routing.finder"),
      *     "documentator"   = @DI\Inject("claroline.api.routing.documentator"),
      *     "schemaProvider" = @DI\Inject("claroline.api.schema"),
-     *     "configuration"  = @DI\Inject("claroline.serializer.platform_client")
+     *     "configuration"  = @DI\Inject("claroline.serializer.platform_client"),
+     *      "rootDir" = @DI\Inject("%kernel.root_dir%")
      * })
      */
-    public function __construct($routerFinder, $documentator, SchemaProvider $schemaProvider, ClientSerializer $configuration)
+    public function __construct($routerFinder, $documentator, SchemaProvider $schemaProvider, ClientSerializer $configuration, $rootDir)
     {
         $this->routerFinder = $routerFinder;
         $this->documentator = $documentator;
         $this->schemaProvider = $schemaProvider;
         $this->configuration = $configuration;
+        $this->rootDir = $rootDir.'/..';
+        $this->baseUri = 'https://github.com/claroline/Distribution/tree/master';
     }
 
     /**
@@ -83,9 +86,27 @@ class SwaggerController
         foreach ($classes as $class) {
             $def = json_decode(json_encode($this->schemaProvider->getSchema($class, [Options::IGNORE_COLLECTIONS])), true);
             //we need to mode, return and submit
+            $defFull = json_decode(json_encode($this->schemaProvider->getSchema($class)), true);
+
+            if (is_array($defFull)) {
+                $definitions[$class] = $defFull;
+            }
 
             if (is_array($def)) {
-                $definitions[$class]['post'] = $def;
+                $absolutePath = $this->rootDir.'/vendor/claroline/distribution/main/core/Resources/schemas/datalist/list.json';
+                $listSchema = $this->schemaProvider->loadSchema($absolutePath);
+                $listSchema = json_decode(json_encode($listSchema), true);
+                $listSchema['properties']['data'] = [
+                  'type' => 'array',
+                  'description' => 'the object list',
+                  'uniqueItems' => true,
+                  'items' => [
+                    '$ref' => '#/definitions/'.$class,
+                  ],
+                ];
+
+                $swagger['extendedModels'][$class]['list'] = $listSchema;
+                $swagger['extendedModels'][$class]['post'] = $def;
             }
         }
 

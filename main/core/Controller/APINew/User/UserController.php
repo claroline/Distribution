@@ -78,7 +78,8 @@ class UserController extends AbstractCrudController
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
-     *     }
+     *     },
+     *     response={"$list"}
      * )
      *
      * @param Request $request
@@ -97,7 +98,8 @@ class UserController extends AbstractCrudController
 
     /**
      * @ApiDoc(
-     *     description="List the objects of class $class."
+     *     description="List the objects of class $class.",
+     *     response={"$object"}
      * )
      * @Route("/current", name="apiv2_users_current")
      * @Method("GET")
