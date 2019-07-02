@@ -280,7 +280,7 @@ class ScormListener
         $ds = DIRECTORY_SEPARATOR;
         $scorm = $event->getResource();
         $workspace = $scorm->getResourceNode()->getWorkspace();
-        $event->setItem($path = $this->getScormArchive($scorm));
+        $event->setItem($this->getScormArchive($scorm));
         $event->setExtension('zip');
         $event->stopPropagation();
     }
@@ -297,9 +297,12 @@ class ScormListener
 
         $uploadArchiveLocation = $this->uploadDir.$ds.'scorm'.$ds.$workspace->getUuid().$ds.$scorm->getHashName();
 
+        if (!is_dir($this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid())) {
+            mkdir($this->filesDir.$ds.'scorm'.$ds.$workspace->getUuid());
+        }
         // initialize the ZIP archive
         $zip = new \ZipArchive();
-        $zip->open($scorm->getHashName(), \ZipArchive::CREATE);
+        $zip->open($supposedArchiveLocation, \ZipArchive::CREATE);
 
         // create recursive directory iterator
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uploadArchiveLocation), \RecursiveIteratorIterator::LEAVES_ONLY);
@@ -307,10 +310,31 @@ class ScormListener
         // let's iterate
         foreach ($files as $name => $file) {
             $filePath = $file->getRealPath();
-            $zip->addFile($filePath);
+
+            if (file_exists($filePath) && is_file($filePath)) {
+                $rel = $this->getRelativePath($filePath, $scorm->getHashName(), $workspace->getUuid());
+                $zip->addFile($filePath, $rel);
+            }
         }
 
         $zip->close();
+
+        return $supposedArchiveLocation;
+    }
+
+    /**
+     * Gets the relative path between 2 instances (not optimized yet).
+     *
+     * @param ResourceNode $root
+     * @param ResourceNode $node
+     *
+     * @return string
+     */
+    private function getRelativePath($current, $hashName, $wuid)
+    {
+        $path = substr($current, strlen($this->uploadDir.'/scorm/'.$wuid.'/'.$hashName.'/'));
+
+        return $path;
     }
 
     /**
