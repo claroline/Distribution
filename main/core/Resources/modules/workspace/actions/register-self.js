@@ -8,30 +8,26 @@ import {isAdmin} from '#/main/app/security/permissions'
 /**
  * Let the current user register himself to some workspaces.
  */
-export default (workspaces, refresher, path, currentUser) => {
-  const authenticatedUser = currentUser()
-
-  return {
-    name: 'register-self',
-    type: ASYNC_BUTTON,
-    icon: 'fa fa-fw fa-sign-in',
-    label: trans('self-register', {}, 'actions'),
-    // TODO : replace by workspace.permissions.register later
-    displayed: !!currentUser && -1 !== workspaces.findIndex(workspace =>
-      !workspace.registered && !get(workspace, 'registration.waitingForRegistration') && (get(workspace, 'registration.selfRegistration') || isAdmin(currentUser))
-    ),
+export default (workspaces, refresher, path, currentUser) => ({
+  name: 'register-self',
+  type: ASYNC_BUTTON,
+  icon: 'fa fa-fw fa-sign-in',
+  label: trans('self-register', {}, 'actions'),
+  // TODO : replace by workspace.permissions.register later
+  displayed: !!currentUser && -1 !== workspaces.findIndex(workspace =>
+    !workspace.registered && !get(workspace, 'registration.waitingForRegistration') && (get(workspace, 'registration.selfRegistration') || isAdmin(currentUser))
+  ),
+  request: {
+    url: url(['apiv2_workspace_register', {user: get(currentUser, 'id')}], {workspaces: workspaces.map(workspace => workspace.id)}),
     request: {
-      url: url(['apiv2_workspace_register', {user: authenticatedUser.id}], {workspaces: workspaces.map(workspace => workspace.id)}),
-      request: {
-        method: 'PATCH'
-      },
-      success: (response) => refresher.update(response)
+      method: 'PATCH'
     },
-    confirm: {
-      title: trans('register'),
-      message: trans('register_confirm_message')
-    },
-    group: trans('registration'),
-    scope: ['object', 'collection']
-  }
-}
+    success: (response) => refresher.update(response)
+  },
+  confirm: {
+    title: trans('register'),
+    message: trans('register_confirm_message')
+  },
+  group: trans('registration'),
+  scope: ['object', 'collection']
+})

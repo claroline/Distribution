@@ -4,18 +4,20 @@ import {API_REQUEST} from '#/main/app/api'
 import {selectors} from '#/main/core/resource/store/selectors'
 
 // actions
-export const RESOURCE_UPDATE_NODE   = 'RESOURCE_UPDATE_NODE'
-export const USER_EVALUATION_UPDATE = 'USER_EVALUATION_UPDATE'
-export const RESOURCE_OPEN          = 'RESOURCE_OPEN'
-export const RESOURCE_LOAD          = 'RESOURCE_LOAD'
-export const RESOURCE_SET_LOADED    = 'RESOURCE_SET_LOADED'
-export const RESOURCE_SERVER_ERRORS  = 'RESOURCE_SERVER_ERRORS'
-export const RESOURCE_RESTRICTIONS_DISMISS = 'RESOURCE_RESTRICTIONS_DISMISS'
-export const RESOURCE_RESTRICTIONS_ERROR = 'RESOURCE_RESTRICTIONS_ERROR'
+export const RESOURCE_UPDATE_NODE           = 'RESOURCE_UPDATE_NODE'
+export const USER_EVALUATION_UPDATE         = 'USER_EVALUATION_UPDATE'
+export const RESOURCE_OPEN                  = 'RESOURCE_OPEN'
+export const RESOURCE_LOAD                  = 'RESOURCE_LOAD'
+export const RESOURCE_SET_LOADED            = 'RESOURCE_SET_LOADED'
+export const RESOURCE_SERVER_ERRORS         = 'RESOURCE_SERVER_ERRORS'
+export const RESOURCE_RESTRICTIONS_DISMISS  = 'RESOURCE_RESTRICTIONS_DISMISS'
+export const RESOURCE_RESTRICTIONS_ERROR    = 'RESOURCE_RESTRICTIONS_ERROR'
 export const RESOURCE_RESTRICTIONS_UNLOCKED = 'RESOURCE_RESTRICTIONS_UNLOCKED'
-export const RESOURCE_COMMENT_ADD = 'RESOURCE_COMMENT_ADD'
-export const RESOURCE_COMMENT_UPDATE = 'RESOURCE_COMMENT_UPDATE'
-export const RESOURCE_COMMENT_REMOVE = 'RESOURCE_COMMENT_REMOVE'
+
+// this ones should not be here
+export const RESOURCE_COMMENT_ADD           = 'RESOURCE_COMMENT_ADD'
+export const RESOURCE_COMMENT_UPDATE        = 'RESOURCE_COMMENT_UPDATE'
+export const RESOURCE_COMMENT_REMOVE        = 'RESOURCE_COMMENT_REMOVE'
 
 // action creators
 export const actions = {}
@@ -102,6 +104,7 @@ actions.checkAccessCode = (resourceNode, code, embedded = false) => ({
   }
 })
 
+// this ones should not be here
 actions.addResourceComment = makeActionCreator(RESOURCE_COMMENT_ADD, 'comment')
 actions.updateResourceComment = makeActionCreator(RESOURCE_COMMENT_UPDATE, 'comment')
 actions.removeResourceComment = makeActionCreator(RESOURCE_COMMENT_REMOVE, 'commentId')

@@ -3,6 +3,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 
+import {SECURITY_USER_CHANGE} from '#/main/app/security/store/actions'
 import {
   RESOURCE_OPEN,
   RESOURCE_LOAD,
@@ -20,6 +21,7 @@ import {
 
 const reducer = combineReducers({
   loaded: makeReducer(false, {
+    [SECURITY_USER_CHANGE]: () => false,
     [RESOURCE_SET_LOADED]: (state, action) => action.loaded
   }),
 
