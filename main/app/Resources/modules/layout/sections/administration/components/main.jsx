@@ -24,7 +24,9 @@ const AdministrationMain = (props) =>
           routes={[
             {
               path: '/:toolName',
+              onEnter: () => console.log('enter administration'),
               render: (routeProps) => {
+                console.log('render administration')
                 if (-1 !== props.tools.findIndex(tool => tool.name === routeProps.match.params.toolName)) {
                   // tool is enabled for the admin
                   return (

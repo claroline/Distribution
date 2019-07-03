@@ -9,7 +9,7 @@ import {MenuMain} from '#/main/app/layout/menu/containers/main'
 import {ToolMenu} from '#/main/core/tool/containers/menu'
 import {getTool} from '#/main/core/administration'
 
-  const AdministrationMenu = props =>
+const AdministrationMenu = props =>
   <MenuMain
     title={trans('administration')}
     backAction={{

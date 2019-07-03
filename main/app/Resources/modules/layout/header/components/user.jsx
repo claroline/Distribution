@@ -36,6 +36,20 @@ const UserMenu = props =>
       </em>
     </div>
 
+    {props.maintenance &&
+      <div className="alert alert-warning">
+        <span className="fa fa-fw fa-exclamation-triangle" />
+        {trans('maintenance_mode_alert')}
+      </div>
+    }
+
+    {props.impersonated &&
+      <div className="alert alert-warning">
+        <span className="fa fa-fw fa-mask" />
+        {trans('impersonation_mode_alert')}
+      </div>
+    }
+
     {!props.authenticated &&
       <div className="app-current-user-body">
         <Button
@@ -54,20 +68,6 @@ const UserMenu = props =>
             target={props.registration}
           />
         }
-      </div>
-    }
-
-    {props.maintenance &&
-      <div className="alert alert-warning">
-        <span className="fa fa-fw fa-exclamation-triangle" />
-        {trans('maintenance_mode_alert')}
-      </div>
-    }
-
-    {props.impersonated &&
-      <div className="alert alert-warning">
-        <span className="fa fa-fw fa-mask" />
-        {trans('impersonation_mode_alert')}
       </div>
     }
 
@@ -100,6 +100,16 @@ const UserMenu = props =>
           icon="fa fa-fw fa-cog"
           label={trans('parameters', {}, 'tools')}
           target={['claro_desktop_open_tool', {toolName: 'parameters'}]}
+        />
+      }
+
+      {props.authenticated &&
+        <Button
+          type={LINK_BUTTON}
+          className="list-group-item"
+          icon="fa fa-fw fa-cogs"
+          label={trans('administration')}
+          target="/admin"
         />
       }
 
@@ -165,7 +175,9 @@ const HeaderUser = props =>
     id="app-user"
     className="app-header-user app-header-item app-header-btn"
     type={MENU_BUTTON}
-    icon={<UserAvatar picture={props.currentUser.picture} alt={false} />}
+    icon={
+      <UserAvatar picture={props.currentUser.picture} alt={false} />
+    }
     label={props.authenticated ? props.currentUser.username : trans('login')}
     tooltip="bottom"
     subscript={props.impersonated ? {

@@ -157,7 +157,7 @@ class WorkspaceController
                 // append access restrictions to the loaded data if any
                 // to let the manager knows that other users can not enter the workspace
                 'accessErrors' => $accessErrors,
-                'userProgression',
+                'userProgression' => null,
                 'tools' => array_values(array_map(function (OrderedTool $orderedTool) { // todo : create a serializer
                     return [
                         'icon' => $orderedTool->getTool()->getClass(),
