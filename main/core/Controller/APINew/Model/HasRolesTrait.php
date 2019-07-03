@@ -14,14 +14,14 @@ trait HasRolesTrait
      * @EXT\Route("/{id}/role")
      * @EXT\Method("GET")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="List the objects of class Claroline\CoreBundle\Entity\Role.",
      *     queryString={
      *         "$finder",
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     },
-     *     response={"$list"}
+     *     response={"$list=Claroline\CoreBundle\Entity\Role"}
      * )
      *
      * @param string  $id
@@ -44,7 +44,7 @@ trait HasRolesTrait
      * @EXT\Route("/{id}/role")
      * @EXT\Method("PATCH")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="add objects of class Claroline\CoreBundle\Entity\Role.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },
@@ -76,7 +76,7 @@ trait HasRolesTrait
      * @EXT\Route("/{id}/role")
      * @EXT\Method("DELETE")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="Remove objects of class Claroline\CoreBundle\Entity\Role.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },

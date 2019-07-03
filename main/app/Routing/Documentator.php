@@ -84,6 +84,9 @@ class Documentator
 
         foreach ($routes->getIterator() as $route) {
             $method = strtolower(isset($route->getMethods()[0]) ? $route->getMethods()[0] : 'get');
+            if ('/apiv2/user/{id}/group' === $route->getPath()) {
+                var_dump($method, $route, $route->getMethods());
+            }
             $documented[$route->getPath()][$method] = $this->documentRoute($route);
             $documented[$route->getPath()][$method]['tags'] = [$class];
         }
@@ -252,10 +255,18 @@ class Documentator
         $data = [];
 
         foreach ($responses as $response) {
-            if (is_string($response) && '$object' === $response) {
+            $options = explode('=', $response);
+            $objectClass = isset($options[1]) ? $options[1] : $objectClass;
+
+            if (is_string($response) && null !== strpos($response, '$object')) {
+                $options = explode('=', $response);
+
+                $objectClass = isset($options[1]) ? $options[1] : $objectClass;
                 $data['200']['description'] = 'successfull operation';
                 $data['200']['schema']['$ref'] = '#/definitions/'.$objectClass;
-            } elseif (is_string($response) && '$list' === $response) {
+            } elseif (is_string($response) && null !== strpos($response, '$list')) {
+                $options = explode('=', $response);
+                $objectClass = isset($options[1]) ? $options[1] : $objectClass;
                 $data['200']['description'] = 'successfull operation';
                 $data['200']['schema']['$ref'] = '#/extendedModels/'.$objectClass.'/list';
             }

@@ -19,14 +19,14 @@ trait HasGroupsTrait
      * @EXT\Route("/{id}/group")
      * @EXT\Method("GET")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="List the objects of class Claroline\CoreBundle\Entity\Group.",
      *     queryString={
      *         "$finder",
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     },
-     *     response={"$list"}
+     *     response={"$list=Claroline\CoreBundle\Entity\Group"}
      * )
      *
      * @param string  $id

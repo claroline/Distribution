@@ -90,11 +90,11 @@ class ApiTokenAuthenticator implements SimplePreAuthenticatorInterface
 
             if ($user) {
                 return new SecurityApiToken(
-                $user,
-                $apiKey,
-                $providerKey,
-                $user->getRoles()
-            );
+                  $user,
+                  $apiKey,
+                  $providerKey,
+                  $user->getRoles()
+              );
             }
         }
 
