@@ -120,12 +120,8 @@ class Documentator
             $data['parameters'] = array_merge($queryString, $parameters);
         }
 
-        if ($body) {
-            $data['parameters'] = array_merge($data['parameters'], $body);
-        }
-
-        if ($responses) {
-            $data['responses'] = $responses;
+        if (isset($body['parameters'])) {
+            $data['parameters'] = array_merge($data['parameters'], $body['parameters']);
         }
 
         return $data;
@@ -233,6 +229,7 @@ class Documentator
     private function parseBody($body, $objectClass)
     {
         $requestBody = [];
+        $examples = [];
         $data = [];
 
         if (is_array($body)) {
@@ -240,11 +237,14 @@ class Documentator
                 $data['schema']['$ref'] = '#/extendedModels/'.$objectClass.'/post';
                 $data['in'] = 'body';
                 $data['name'] = 'body';
+                $examples = $this->schema->getSamples($objectClass);
+                $data['examples'] = $examples;
+
                 $requestBody[] = $data;
             }
         }
 
-        return $requestBody;
+        return ['parameters' => $requestBody, 'samples' => $examples];
     }
 
     private function parseResponse($responses, $objectClass)

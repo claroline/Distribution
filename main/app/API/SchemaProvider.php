@@ -150,6 +150,7 @@ class SchemaProvider
             array_shift($path); //that one is for the #, we have no implementation for plugins yet
             $first = array_shift($path);
             $sec = array_shift($path);
+
             $absolutePath = $this->rootDir.'/vendor/claroline/distribution/'
             .$first.'/'.$sec.'/Resources/schemas/'.implode('/', $path);
 
@@ -165,6 +166,32 @@ class SchemaProvider
 
             return $schema;
         }
+    }
+
+    /**
+     * Gets the json schema examples.
+     *
+     * @param string $class
+     *
+     * @return \stdClass
+     */
+    public function getSamples($class, array $options = [])
+    {
+        $serializer = $this->get($class);
+        $samples = [];
+
+        if (method_exists($serializer, 'getSamples')) {
+            $iterator = new \DirectoryIterator($this->getSampleDirectory($class).'/json/valid/create');
+
+            foreach ($iterator as $file) {
+                if ($file->isFile()) {
+                    $originalData = \file_get_contents($file->getPathName());
+                    $samples[basename($file)] = json_decode($originalData, true);
+                }
+            }
+        }
+
+        return $samples;
     }
 
     /**
