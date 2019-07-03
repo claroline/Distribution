@@ -51,7 +51,7 @@ trait HasGroupsTrait
      * @EXT\Route("/{id}/group")
      * @EXT\Method("PATCH")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="Add objects of class Claroline\CoreBundle\Entity\Group.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },
@@ -84,7 +84,7 @@ trait HasGroupsTrait
      * @EXT\Route("/{id}/group")
      * @EXT\Method("DELETE")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="Removes objects of class Claroline\CoreBundle\Entity\Group.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },

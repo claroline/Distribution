@@ -19,14 +19,14 @@ trait HasOrganizationsTrait
      * @EXT\Route("/{id}/organization")
      * @EXT\Method("GET")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="List the objects of class Claroline\CoreBundle\Entity\Organization\Organization.",
      *     queryString={
      *         "$finder",
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     },
-     *     response={"$list"}
+     *     response={"$list=Claroline\CoreBundle\Entity\Organization\Organization"}
      * )
      *
      * @param string  $id
@@ -51,7 +51,7 @@ trait HasOrganizationsTrait
      * @EXT\Route("/{id}/organization")
      * @EXT\Method("PATCH")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="Adds objects of class Claroline\CoreBundle\Entity\Organization\Organization.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },
@@ -84,7 +84,7 @@ trait HasOrganizationsTrait
      * @EXT\Route("/{id}/organization")
      * @EXT\Method("DELETE")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="Removes objects of class Claroline\CoreBundle\Entity\Organization\Organization.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },

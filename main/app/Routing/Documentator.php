@@ -84,9 +84,6 @@ class Documentator
 
         foreach ($routes->getIterator() as $route) {
             $method = strtolower(isset($route->getMethods()[0]) ? $route->getMethods()[0] : 'get');
-            if ('/apiv2/user/{id}/group' === $route->getPath()) {
-                var_dump($method, $route, $route->getMethods());
-            }
             $documented[$route->getPath()][$method] = $this->documentRoute($route);
             $documented[$route->getPath()][$method]['tags'] = [$class];
         }

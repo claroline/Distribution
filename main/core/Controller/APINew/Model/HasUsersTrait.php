@@ -19,14 +19,14 @@ trait HasUsersTrait
      * @EXT\Route("/{id}/user")
      * @EXT\Method("GET")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="List the objects of class Claroline\CoreBundle\Entity\User.",
      *     queryString={
      *         "$finder",
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     },
-     *     response={"$list"}
+     *     response={"$list=Claroline\CoreBundle\Entity\User"}
      * )
      *
      * @param string  $id
@@ -51,7 +51,7 @@ trait HasUsersTrait
      * @EXT\Route("/{id}/user")
      * @EXT\Method("PATCH")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="Add objects of class Claroline\CoreBundle\Entity\User.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },
@@ -84,7 +84,7 @@ trait HasUsersTrait
      * @EXT\Route("/{id}/user")
      * @EXT\Method("DELETE")
      * @ApiDoc(
-     *     description="List the objects of class $class.",
+     *     description="Removes objects of class Claroline\CoreBundle\Entity\User.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },

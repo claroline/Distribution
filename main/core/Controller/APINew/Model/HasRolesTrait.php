@@ -44,7 +44,7 @@ trait HasRolesTrait
      * @EXT\Route("/{id}/role")
      * @EXT\Method("PATCH")
      * @ApiDoc(
-     *     description="add objects of class Claroline\CoreBundle\Entity\Role.",
+     *     description="Add objects of class Claroline\CoreBundle\Entity\Role.",
      *     parameters={
      *         {"name": "id", "type": "string", "description": "The object id."}
      *     },
