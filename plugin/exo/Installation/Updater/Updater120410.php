@@ -93,12 +93,7 @@ class Updater120410 extends Updater
                 if (isset($structure['parameters']) && !empty($structure['parameters']['totalScoreOn'])) {
                     $structure['score'] = ['type' => 'sum', 'total' => $structure['parameters']['totalScoreOn']];
                 } else {
-                    //we have a lot of paper having a score, but not a score type. This means that is wrongly displayed.
-                    if ($paper->getScore()) {
-                        $structure['score'] = ['type' => 'sum'];
-                    } else {
-                        $structure['score'] = ['type' => 'none'];
-                    }
+                    $structure['score'] = ['type' => 'sum'];
                 }
 
                 if (!empty($structure['steps'])) {
