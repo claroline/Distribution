@@ -200,6 +200,9 @@ class BlogListener
                 /** @var \Icap\BlogBundle\Entity\Comment $newComment */
                 $newComment = new Comment();
                 $newComment
+                    ->setCreationDate($comment->getCreationDate())
+                    ->setPublicationDate($comment->getPublicationDate())
+                    ->setUpdateDate($comment->getUpdateDate())
                     ->setAuthor($comment->getAuthor())
                     ->setMessage($comment->getMessage())
                     ->setPost($newPost)
