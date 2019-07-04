@@ -12,7 +12,7 @@ const Header = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
       // platform parameters
-      mainMenu: selectors.mainMenu(state),
+      menus: selectors.menus(state),
       logo: selectors.logo(state),
       title: selectors.title(state),
       subtitle: selectors.subtitle(state),

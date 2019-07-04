@@ -1,19 +1,16 @@
-import React from 'react'
+import React, {createElement} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {Await} from '#/main/app/components/await'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 import {HeaderBrand} from '#/main/app/layout/header/components/brand'
 import {HeaderNotifications} from '#/main/app/layout/header/components/notifications'
-import {HeaderAdministration} from '#/main/app/layout/header/components/administration'
 import {HeaderUser} from '#/main/app/layout/header/components/user'
-import {HeaderMain} from '#/main/app/layout/header/components/main'
 
-import {HeaderFavorites} from '#/main/app/layout/header/components/favorites'
-import {HeaderHistory} from '#/main/app/layout/header/components/history'
-
+import {getMenu} from '#/main/app/layout/header/utils'
 import {getWalkthrough} from '#/main/app/layout/header/walkthroughs/menus'
 
 const Header = props =>
@@ -38,22 +35,16 @@ const Header = props =>
         />
       }
 
-      <HeaderMain
-        menu={props.mainMenu}
-        authenticated={props.authenticated}
-        user={props.currentUser}
-      />
-
-      {false && 0 !== props.administration.length &&
-        <HeaderAdministration
-          maintenance={props.maintenance}
-          tools={props.administration}
+      {props.menus.map((menu) => (
+        <Await
+          key={menu}
+          for={getMenu(menu)}
+          then={(menuApp) => createElement(menuApp.default, {
+            authenticated: props.authenticated,
+            user: props.user
+          })}
         />
-      }
-
-      <HeaderHistory />
-
-      <HeaderFavorites />
+      ))}
 
       {props.authenticated &&
         <HeaderNotifications
@@ -106,7 +97,7 @@ const Header = props =>
 Header.propTypes = {
   maintenance: T.bool.isRequired,
 
-  mainMenu: T.string,
+  menus: T.arrayOf(T.string),
   locale: T.shape({
     current: T.string.isRequired,
     available: T.arrayOf(T.string).isRequired
@@ -153,6 +144,7 @@ Header.propTypes = {
 }
 
 Header.defaultProps = {
+  menus: [],
   impersonated: true,
   currentUser: null,
   tools: [],

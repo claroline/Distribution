@@ -7,11 +7,11 @@ import {registry} from '#/main/app/plugins/registry'
  */
 registry.add('ClarolineCoreBundle', {
   /**
-   * Provides menu which can be used as the main header menu.
+   * Provides menu which can be used in the main header menu.
    */
   header: {
-    'workspaces': () => { return import(/* webpackChunkName: "core-header-workspaces" */ '#/main/core/header/workspaces') },
-    'search'    : () => { return import(/* webpackChunkName: "core-header-search" */ '#/main/core/header/search') }
+    'search'    : () => { return import(/* webpackChunkName: "core-header-search" */   '#/main/core/header/search') },
+    'history'    : () => { return import(/* webpackChunkName: "core-header-history" */ '#/main/core/header/history') }
   },
 
   /**

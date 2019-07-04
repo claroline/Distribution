@@ -7,9 +7,9 @@ const STORE_NAME = 'header'
 
 const store = (state) => state[STORE_NAME]
 
-const mainMenu = createSelector(
+const menus = createSelector(
   [store],
-  (store) => store.mainMenu
+  (store) => store.menus
 )
 const administration = createSelector(
   [store],
@@ -70,7 +70,7 @@ const maintenance = () => param('maintenance')
 export const selectors = {
   STORE_NAME,
 
-  mainMenu,
+  menus,
   administration,
   tools,
   notificationTools,

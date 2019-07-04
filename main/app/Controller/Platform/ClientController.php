@@ -136,7 +136,7 @@ class ClientController
             'impersonated' => $this->isImpersonated(),
 
             'header' => [
-                'mainMenu' => $this->configHandler->getParameter('header_menu'),
+                'menus' => $this->configHandler->getParameter('header_menu'),
                 'display' => [
                     'about' => $this->configHandler->getParameter('show_about_button'),
                     'help' => $this->configHandler->getParameter('show_help_button'),

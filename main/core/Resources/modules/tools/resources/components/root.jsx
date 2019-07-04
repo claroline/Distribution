@@ -21,13 +21,15 @@ const ResourcesRoot = props =>
         // adds actions to source
         parameters: {
           primaryAction: (resourceNode) => getDefaultAction(resourceNode, {
-            update: props.updateNodes,
-            delete: props.deleteNodes
-          }, props.path, props.currentUSer),
+            add: props.invalidate,
+            update: props.invalidate,
+            delete: props.invalidate
+          }, props.path, props.currentUser),
           actions: (resourceNodes) => getActions(resourceNodes, {
-            update: props.updateNodes,
-            delete: props.deleteNodes
-          }, props.path, props.currentUSer)
+            add: props.invalidate,
+            update: props.invalidate,
+            delete: props.invalidate
+          }, props.path, props.currentUser)
         }
       })}
       parameters={DirectoryTypes.defaultProps.list}
@@ -38,8 +40,7 @@ ResourcesRoot.propTypes = {
   path: T.string.isRequired,
   currentUSer: T.object,
   listName: T.string.isRequired,
-  updateNodes: T.func.isRequired,
-  deleteNodes: T.func.isRequired
+  invalidate: T.func.isRequired,
 }
 
 export {

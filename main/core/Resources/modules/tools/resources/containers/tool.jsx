@@ -15,11 +15,7 @@ const ResourcesTool = withRouter(
       listRootName: selectors.LIST_ROOT_NAME
     }),
     (dispatch) => ({
-      updateNodes() {
-        dispatch(listActions.invalidateData(selectors.LIST_ROOT_NAME))
-      },
-
-      deleteNodes() {
+      invalidateRoot() {
         dispatch(listActions.invalidateData(selectors.LIST_ROOT_NAME))
       }
     })

@@ -1,3 +1,5 @@
+import invariant from 'invariant'
+
 import {asset} from '#/main/app/config/asset'
 
 /**

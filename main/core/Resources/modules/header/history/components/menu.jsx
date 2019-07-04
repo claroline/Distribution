@@ -5,34 +5,34 @@ import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {MENU_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-const HistoryMenu = (props) =>
+const HistoryDropdown = (props) =>
   <div className="app-header-dropdown dropdown-menu dropdown-menu-right">
     HISTORY
   </div>
 
-HistoryMenu.propTypes = {
+HistoryDropdown.propTypes = {
 
 }
 
-const HeaderHistory = props =>
+const HistoryMenu = props =>
   <Button
-    id="app-history"
+    id="app-favorites"
     type={MENU_BUTTON}
     className="app-header-btn app-header-item"
     icon="fa fa-fw fa-history"
     label={trans('history')}
     tooltip="bottom"
     menu={
-      <HistoryMenu
+      <HistoryDropdown
 
       />
     }
   />
 
-HeaderHistory.propTypes = {
+HistoryMenu.propTypes = {
 
 }
 
 export {
-  HeaderHistory
+  HistoryMenu
 }

@@ -1,7 +1,7 @@
 import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 
 const reducer = combineReducers({
-  mainMenu: makeReducer(null),
+  menus: makeReducer([]),
   display: makeReducer({}),
   tools: makeReducer([]),
   notificationTools: makeReducer([]),

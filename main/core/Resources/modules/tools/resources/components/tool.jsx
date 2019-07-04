@@ -24,8 +24,7 @@ const ResourcesTool = props =>
               path={props.path}
               currentUser={props.currentUser}
               listName={props.listRootName}
-              updateNodes={props.updateNodes}
-              deleteNodes={props.deleteNodes}
+              invalidate={props.invalidateRoot}
             />
           )
         }
@@ -50,8 +49,7 @@ ResourcesTool.propTypes = {
     ResourceNodeTypes.propTypes
   ),
   listRootName: T.string.isRequired,
-  updateNodes: T.func.isRequired,
-  deleteNodes: T.func.isRequired
+  invalidateRoot: T.func.isRequired
 }
 
 export {
