@@ -137,7 +137,7 @@ class HomeTabCommand extends ContainerAwareCommand implements AdminCliCommand
                     }
 
                     $homeTabConfig->setTabOrder($i);
-                    $manager->persist($desktopHomeTabConfig);
+                    $manager->persist($homeTabConfig);
                 }
 
                 $manager->flush();
