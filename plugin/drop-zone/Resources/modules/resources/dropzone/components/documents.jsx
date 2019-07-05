@@ -31,9 +31,7 @@ const Document = props =>
 
     {constants.DOCUMENT_TYPES[props.type]}
 
-    <DocumentActions
-
-    />
+    <DocumentActions/>
   </li>
 
 Document.propTypes = {
@@ -44,7 +42,7 @@ Document.propTypes = {
 const formatUrl = (url) => url.startsWith('http') ? url : `http://${url}`
 
 const DocumentRow = props =>
-  <tr className="drop-document">
+  <tr className={classes('drop-document', {'manager-document': props.document.isManager})}>
     <td className="document-type">
       {constants.DOCUMENT_TYPES[props.document.type]}
     </td>
@@ -80,7 +78,7 @@ const DocumentRow = props =>
         </a>
       }
     </td>
-    {props.canEdit &&
+    {(props.canEdit && !props.document.isManager) || (props.isManager && props.document.isManager) ?
       <td>
         <span
           className="fa fa-fw fa-trash pointer-hand"
@@ -94,7 +92,8 @@ const DocumentRow = props =>
             })
           }}
         />
-      </td>
+      </td> :
+      <td></td>
     }
     {props.showTools && props.tools.length > 0 &&
       <td>
@@ -130,6 +129,7 @@ const DocumentRow = props =>
 
 DocumentRow.propTypes = {
   canEdit: T.bool.isRequired,
+  isManager: T.bool.isRequired,
   showUser: T.bool.isRequired,
   showMeta: T.bool.isRequired,
   showTools: T.bool.isRequired,
@@ -141,7 +141,7 @@ DocumentRow.propTypes = {
 }
 
 const Documents = props =>
-  <section>
+  <section className="dropzone-documents">
     <h3>{trans('documents_added_to_copy', {}, 'dropzone')}</h3>
 
     {0 !== props.documents.length &&
@@ -150,17 +150,17 @@ const Documents = props =>
           <tr>
             <th>{trans('drop_type', {}, 'dropzone')}</th>
             {props.showUser &&
-            <th>{trans('user', {}, 'platform')}</th>
+              <th>{trans('user', {}, 'platform')}</th>
             }
             {props.showMeta &&
-            <th>{trans('drop_date', {}, 'dropzone')}</th>
+              <th>{trans('drop_date', {}, 'dropzone')}</th>
             }
             <th>{trans('document', {}, 'dropzone')}</th>
             {props.canEdit &&
-            <th>{trans('actions', {}, 'platform')}</th>
+              <th>{trans('actions', {}, 'platform')}</th>
             }
             {props.showTools && props.tools.length > 0 &&
-            <th>{trans('tools', {}, 'platform')}</th>
+              <th>{trans('tools', {}, 'platform')}</th>
             }
           </tr>
         </thead>
@@ -186,6 +186,7 @@ const Documents = props =>
 
 Documents.propTypes = {
   canEdit: T.bool.isRequired,
+  isManager: T.bool.isRequired,
   showUser: T.bool.isRequired,
   showMeta: T.bool.isRequired,
   showTools: T.bool.isRequired,
@@ -195,6 +196,7 @@ Documents.propTypes = {
 
 Documents.defaultProps = {
   canEdit: false,
+  isManager: false,
   showUser: false,
   showMeta: true,
   showTools: false
