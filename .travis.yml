@@ -35,8 +35,6 @@ mysql:
   encoding: utf8
 
 before_install:
-  #show the current branchs
-  - set | grep TRAVIS
   # prepare execution of chromium in js tests
   - export CHROME_BIN=chromium-browser
   - export DISPLAY=:99.0
