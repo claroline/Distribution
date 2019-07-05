@@ -116,6 +116,10 @@ class Documentator
             $data['description'] = $description;
         }
 
+        if ($responses) {
+            $data['responses'] = $responses;
+        }
+
         if ($queryString || $parameters) {
             $data['parameters'] = array_merge($queryString, $parameters);
         }
@@ -136,7 +140,7 @@ class Documentator
     {
         $doc = [];
 
-        foreach ($parameters as $key => $parameter) {
+        foreach ($parameters as $parameter) {
             $data['name'] = $parameter['name'];
             $data['type'] = $parameter['type'];
             $data['required'] = true;
