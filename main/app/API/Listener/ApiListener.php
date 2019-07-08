@@ -45,7 +45,10 @@ class ApiListener
      */
     public function onError(GetResponseForExceptionEvent $event)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = null;
+        if ($this->tokenStorage->getToken()) {
+            $user = $this->tokenStorage->getToken()->getUser();
+        }
 
         $exception = $event->getException();
         if ($exception instanceof AccessDeniedException && !$user instanceof User) {
