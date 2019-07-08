@@ -6,7 +6,6 @@ import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {LiquidGauge} from '#/main/core/layout/gauge/components/liquid-gauge'
 
 import {MenuMain} from '#/main/app/layout/menu/containers/main'
-import {MenuSection} from '#/main/app/layout/menu/components/section'
 import {ToolMenu} from '#/main/core/tool/containers/menu'
 import {getTool} from '#/main/core/tools'
 import {DesktopHistory} from '#/main/app/layout/sections/desktop/components/history'
@@ -64,7 +63,7 @@ const DesktopMenu = props =>
       />
 
       <div className="user-progression-info">
-        Vous n'avez pas terminé toutes les activités disponibles.
+        {trans('Vous n\'avez pas terminé toutes les activités disponibles.')}
       </div>
     </section>
 

@@ -53,6 +53,7 @@ const OrganizationTabComponent = props =>
   />
 
 OrganizationTabComponent.propTypes = {
+  path: T.string,
   openForm: T.func.isRequired,
   organizations: T.array.isRequired
 }

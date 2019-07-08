@@ -24,18 +24,18 @@ const AdministrationMain = (props) =>
           routes={[
             {
               path: '/:toolName',
-              onEnter: () => console.log('enter administration'),
               render: (routeProps) => {
-                console.log('render administration')
                 if (-1 !== props.tools.findIndex(tool => tool.name === routeProps.match.params.toolName)) {
                   // tool is enabled for the admin
-                  return (
+                  const AdministrationTool = (
                     <ToolMain
                       getApp={getTool}
                       open={props.openTool}
                       toolName={routeProps.match.params.toolName}
                     />
                   )
+
+                  return AdministrationTool
                 }
 
                 // tool is disabled (or does not exist) for the admin

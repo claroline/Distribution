@@ -19,7 +19,7 @@ use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Library\Security\Utilities;
-use Claroline\CoreBundle\Manager\Resource\WorkspaceRestrictionsManager;
+use Claroline\CoreBundle\Manager\Workspace\WorkspaceRestrictionsManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;

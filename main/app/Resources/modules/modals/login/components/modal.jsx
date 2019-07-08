@@ -4,8 +4,6 @@ import omit from 'lodash/omit'
 
 import BaseModal from 'react-bootstrap/lib/Modal'
 
-import {trans} from '#/main/app/intl/translation'
-
 import {LoginForm} from '#/main/app/security/login/containers/form'
 
 const LoginModal = props =>
@@ -37,7 +35,8 @@ const LoginModal = props =>
 LoginModal.propTypes = {
   onLogin: T.func,
   onAbort: T.func,
-  fadeModal: T.func.isRequired
+  fadeModal: T.func.isRequired,
+  hideModal: T.func.isRequired
 }
 
 export {

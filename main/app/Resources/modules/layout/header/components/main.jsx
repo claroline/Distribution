@@ -41,7 +41,7 @@ const HeaderMain = props =>
           for={getMenu(menu)}
           then={(menuApp) => createElement(menuApp.default, {
             authenticated: props.authenticated,
-            user: props.user
+            user: props.currentUser
           })}
         />
       ))}

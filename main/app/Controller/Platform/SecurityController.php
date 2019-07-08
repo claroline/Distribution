@@ -66,9 +66,7 @@ class SecurityController
 
         return new JsonResponse([
             'user' => $this->serializer->serialize($user),
-            'messages' => [
-                'test'
-            ]
+            'messages' => []
         ]);
     }
 }

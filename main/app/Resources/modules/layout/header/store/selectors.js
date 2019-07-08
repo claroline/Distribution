@@ -1,6 +1,5 @@
 import {createSelector} from 'reselect'
 
-import {trans} from '#/main/app/intl/translation'
 import {param} from '#/main/app/config'
 
 const STORE_NAME = 'header'

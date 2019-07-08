@@ -24,18 +24,18 @@ const DesktopMain = (props) =>
           routes={[
             {
               path: '/:toolName',
-              onEnter: () => console.log('enter tool'),
               render: (routeProps) => {
-                console.log('render tool')
                 if (-1 !== props.tools.findIndex(tool => tool.name === routeProps.match.params.toolName)) {
                   // tool is enabled for the desktop
-                  return (
+                  const DesktopTool = (
                     <ToolMain
                       getApp={getTool}
                       open={props.openTool}
                       toolName={routeProps.match.params.toolName}
                     />
                   )
+
+                  return DesktopTool
                 }
 
                 // tool is disabled (or does not exist) for the desktop

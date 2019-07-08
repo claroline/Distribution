@@ -633,7 +633,7 @@ class WorkspaceManager
     public function isImpersonated(TokenInterface $token)
     {
         if ($token instanceof ViewAsToken) {
-             return true;
+            return true;
         }
 
         foreach ($token->getRoles() as $role) {

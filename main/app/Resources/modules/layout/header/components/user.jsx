@@ -6,8 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Button} from '#/main/app/action/components/button'
-import {CALLBACK_BUTTON, LINK_BUTTON, MENU_BUTTON, MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
-import {MenuButton} from '#/main/app/buttons/menu/components/button'
+import {LINK_BUTTON, MENU_BUTTON, MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 
 import {MODAL_LOCALE} from '#/main/app/modals/locale'
 

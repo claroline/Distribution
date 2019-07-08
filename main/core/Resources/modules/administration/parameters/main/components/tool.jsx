@@ -79,6 +79,7 @@ const ParametersTool = (props) =>
   </ToolPage>
 
 ParametersTool.propTypes = {
+  path: T.string,
   location: T.shape({
     pathname: T.string
   }),

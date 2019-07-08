@@ -16,7 +16,7 @@ const reducer = combineReducers({
   }),
   iconSetChoices: makeReducer([], {
     [makeInstanceAction(TOOL_LOAD, 'appearance_settings')]: (state, action) => action.toolData.iconSetChoices
-  }),
+  })
 })
 
 export {

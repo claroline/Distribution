@@ -54,7 +54,7 @@ class ApiListener
             $response = new JsonResponse($exception->getMessage(), 401);
 
             $event->setResponse($response);
-        } else if ($exception instanceof InvalidDataException) {
+        } elseif ($exception instanceof InvalidDataException) {
             // return correct status code for invalid data sent by the user
             $response = new JsonResponse($exception->getErrors(), 422);
 

@@ -2,9 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl'
-import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {MenuLoader} from '#/main/app/layout/menu/components/loader'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 import {WorkspaceCard} from '#/main/core/workspace/components/card'

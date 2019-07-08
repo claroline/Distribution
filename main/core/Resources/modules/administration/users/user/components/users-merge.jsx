@@ -186,7 +186,7 @@ const UsersMergeForm = props => 0 !== props.selectedUsers.length ?
 
 UsersMergeForm.propTypes = {
   currentUser: T.shape({
-
+    id: T.string.isRequired
   }),
   selectedUsers: T.arrayOf(T.shape(
     UserTypes.propTypes

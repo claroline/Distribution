@@ -5,7 +5,7 @@ import {withReducer} from '#/main/app/store/components/withReducer'
 
 import {AdministrationMenu as AdministrationMenuComponent} from '#/main/app/layout/sections/administration/components/menu'
 import {actions as menuActions, selectors as menuSelectors} from '#/main/app/layout/menu/store'
-import {actions, reducer, selectors} from '#/main/app/layout/sections/administration/store'
+import {reducer, selectors} from '#/main/app/layout/sections/administration/store'
 
 const AdministrationMenu = withRouter(
   withReducer(selectors.STORE_NAME, reducer)(

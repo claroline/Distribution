@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Library\Configuration;
 
 use Claroline\AppBundle\API\Utils\ArrayUtils;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * @DI\Service("claroline.config.platform_config_handler")

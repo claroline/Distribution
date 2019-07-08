@@ -13,8 +13,7 @@ namespace Claroline\CoreBundle\Security\Voter;
 
 use Claroline\AppBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Library\Security\Token\ViewAsToken;
-use Claroline\CoreBundle\Manager\Resource\WorkspaceRestrictionsManager;
+use Claroline\CoreBundle\Manager\Workspace\WorkspaceRestrictionsManager;
 use Claroline\CoreBundle\Security\PlatformRoles;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
