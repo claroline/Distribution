@@ -12,8 +12,6 @@ import {
 import {constants as listConstants} from '#/main/app/content/list/constants'
 import {NotificationCard} from '#/plugin/notification/desktop/tool/components/notification-card'
 
-const Notification = props => <div dangerouslySetInnerHTML={{__html: props.notification.text}}/>
-
 const List = () =>
   <PageContainer>
     <PageHeader
@@ -32,7 +30,6 @@ const List = () =>
         }}
         definition={[{
           name: 'text',
-          render: (notification) => <Notification notification={notification}/>,
           label: trans('text'),
           displayed: true
         }]}
