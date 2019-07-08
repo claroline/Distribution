@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AgendaSidebar = props =>
+const AgendaSidebar = () =>
   <div>
     AGENDA
   </div>

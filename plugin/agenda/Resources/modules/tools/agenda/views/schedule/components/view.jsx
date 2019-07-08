@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AgendaViewSchedule = props =>
+const AgendaViewSchedule = () =>
   <div>
     VIEW SCHEDULE
   </div>

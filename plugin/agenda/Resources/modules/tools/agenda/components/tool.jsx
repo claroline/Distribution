@@ -1,4 +1,4 @@
-import React, {Component, createElement} from 'react'
+import React, {createElement} from 'react'
 import {PropTypes as T} from 'prop-types'
 import moment from 'moment'
 import get from 'lodash/get'
@@ -114,11 +114,13 @@ const AgendaTool = props => {
               }
             },
             render: () => {
-              return createElement(currentView.component, {
+              const CurrentView = createElement(currentView.component, {
                 path: props.path,
                 referenceDate: props.referenceDate,
                 range: currentRange
               })
+
+              return CurrentView
             }
           }
         ]}

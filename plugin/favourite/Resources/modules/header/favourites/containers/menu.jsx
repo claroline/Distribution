@@ -7,9 +7,7 @@ import {actions, reducer, selectors} from '#/plugin/favourite/header/favourites/
 
 const FavouritesMenu = withReducer(selectors.STORE_NAME, reducer)(
   connect(
-    (state) => ({
-
-    }),
+    null,
     (dispatch) => ({
       loadMenu() {
         dispatch(actions.fetchMenu())

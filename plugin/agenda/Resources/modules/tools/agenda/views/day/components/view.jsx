@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AgendaViewDay = props =>
+const AgendaViewDay = () =>
   <div>
     VIEW DAY
   </div>

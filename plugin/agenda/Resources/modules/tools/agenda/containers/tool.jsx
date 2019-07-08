@@ -1,6 +1,5 @@
 import {connect} from 'react-redux'
 
-import {withRouter} from '#/main/app/router'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 
 import {AgendaTool as AgendaToolComponent} from '#/plugin/agenda/tools/agenda/components/tool'

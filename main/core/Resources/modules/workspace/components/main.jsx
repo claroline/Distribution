@@ -1,7 +1,6 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 
-const WorkspaceMain = props =>
+const WorkspaceMain = () =>
   <div>
     My workspace is now opened
   </div>

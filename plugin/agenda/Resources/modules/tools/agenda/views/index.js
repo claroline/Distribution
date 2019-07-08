@@ -10,7 +10,7 @@ const AGENDA_VIEWS = {
   week: ViewWeek,
   month: ViewMonth,
   year: ViewYear,
-  schedule: ViewSchedule,
+  schedule: ViewSchedule
 }
 
 export {

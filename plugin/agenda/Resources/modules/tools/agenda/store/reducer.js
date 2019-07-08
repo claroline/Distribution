@@ -2,7 +2,6 @@ import moment from 'moment'
 
 import {now, getApiFormat} from '#/main/app/intl/date'
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
-import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
 import {
   AGENDA_CHANGE_VIEW,
