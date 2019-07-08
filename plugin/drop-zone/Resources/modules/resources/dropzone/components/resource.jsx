@@ -64,17 +64,29 @@ const DropzoneResource = props =>
       routes={[
         {
           path: '/',
-          render: () => <Overview path={props.path} />,
+          render: () => {
+            const component = <Overview path={props.path} />
+
+            return component
+          },
           exact: true
         }, {
           path: '/edit',
-          render: () => <Editor path={props.path} />,
+          render: () => {
+            const component = <Editor path={props.path} />
+
+            return component
+          },
           disabled: !props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.dropzone)
         }, {
           path: '/my/drop',
-          render: () => <MyDrop path={props.path} />,
+          render: () => {
+            const component = <MyDrop path={props.path} />
+
+            return component
+          },
           exact: true,
           onEnter: () => {
             if (props.currentRevisionId) {
@@ -84,19 +96,35 @@ const DropzoneResource = props =>
           onLeave: () => props.resetRevision()
         }, {
           path: '/drops',
-          render: () => <Drops path={props.path} />
+          render: () => {
+            const component = <Drops path={props.path} />
+
+            return component
+          }
         }, {
           path: '/drop/:id',
-          render: () => <Drop path={props.path} />,
+          render: () => {
+            const component = <Drop path={props.path} />
+
+            return component
+          },
           onEnter: (params) => props.fetchDrop(params.id, 'current'),
           onLeave: () => props.resetCurrentDrop()
         }, {
           path: '/peer/drop',
-          render: () => <PeerDrop path={props.path} />,
+          render: () => {
+            const component = <PeerDrop path={props.path} />
+
+            return component
+          },
           onEnter: () => props.fetchPeerDrop()
         }, {
           path: '/correctors',
-          render: () => <Correctors path={props.path} />,
+          render: () => {
+            const component = <Correctors path={props.path} />
+
+            return component
+          },
           onEnter: () => {
             props.fetchCorrections(props.dropzone.id)
           }
@@ -110,12 +138,20 @@ const DropzoneResource = props =>
           onLeave: () => props.resetCorrectorDrop()
         }, {
           path: '/my/drop/revisions',
-          render: () => <MyRevisions path={props.path} />,
+          render: () => {
+            const component = <MyRevisions path={props.path} />
+
+            return component
+          },
           disabled: !props.dropzone || !props.dropzone.parameters || !props.dropzone.parameters.revisionEnabled,
           exact: true
         }, {
           path: '/my/drop/revisions/:id',
-          render: () => <Revision path={props.path} />,
+          render: () => {
+            const component = <Revision path={props.path} />
+
+            return component
+          },
           disabled: !props.dropzone || !props.dropzone.parameters || !props.dropzone.parameters.revisionEnabled,
           onEnter: (params) => {
             props.fetchRevision(params.id)
@@ -127,12 +163,20 @@ const DropzoneResource = props =>
           }
         }, {
           path: '/revisions',
-          render: () => <Revisions path={props.path} />,
+          render: () => {
+            const component = <Revisions path={props.path} />
+
+            return component
+          },
           disabled: !props.canEdit,
           exact: true
         }, {
           path: '/revisions/:id',
-          render: () => <Revision path={props.path} />,
+          render: () => {
+            const component = <Revision path={props.path} />
+
+            return component
+          },
           disabled: !props.canEdit,
           onEnter: (params) => {
             props.fetchRevision(params.id)

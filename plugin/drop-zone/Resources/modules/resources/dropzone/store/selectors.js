@@ -2,7 +2,6 @@ import {createSelector} from 'reselect'
 
 import {trans} from '#/main/app/intl/translation'
 import {now} from '#/main/app/intl/date'
-import {currentUser} from '#/main/app/security'
 import {selectors as searchSelectors} from '#/main/app/content/search/store/selectors'
 import {selectors as listSelectors} from '#/main/app/content/list/store/selectors'
 import {selectors as securitySelectors} from '#/main/app/security/store'
