@@ -21,7 +21,7 @@ const List = () =>
     />
     <PageContent>
       <ListData
-        name="notifications"
+        name="notification.notifications"
         fetch={{
           url: ['apiv2_workspace_list_notifications_current'],
           autoload: true

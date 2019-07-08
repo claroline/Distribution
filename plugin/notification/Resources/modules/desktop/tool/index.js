@@ -1,16 +1,18 @@
-import {bootstrap} from '#/main/app/dom/bootstrap'
-
 import {reducer} from '#/plugin/notification/desktop/tool/store/reducer'
 import {List} from '#/plugin/notification/desktop/tool/components/notifications'
 
-// mount the react application
-bootstrap(
-  // app DOM container (also holds initial app data as data attributes)
-  '.desktop-notifications-container',
+/**
+ * Notification application.
+ *
+ * @constructor
+ */
+export const App = () => ({
+  component: List,
+  styles: []
+})
 
-  // app main component
-  List,
-
-  // app store configuration
-  reducer
-)
+export default {
+  component: List,
+  store: reducer,
+  styles: []
+}

@@ -49,11 +49,6 @@ class NotificationListener
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
-        $content = $this->templating->render(
-            'IcapNotificationBundle:notification:list.html.twig'
-        );
-
-        $event->setContent($content);
         $event->stopPropagation();
     }
 }

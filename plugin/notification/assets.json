@@ -1,7 +1,0 @@
-{
-  "webpack": {
-    "entry": {
-      "desktop-notification-tool": "desktop/tool/"
-    }
-  }
-}
