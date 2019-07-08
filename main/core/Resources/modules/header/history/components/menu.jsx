@@ -7,7 +7,30 @@ import {MENU_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 const HistoryDropdown = (props) =>
   <div className="app-header-dropdown dropdown-menu dropdown-menu-right">
-    HISTORY
+    <ul className="nav nav-tabs">
+      <li className="active">
+        <a
+          role="button"
+          href=""
+          onClick={(e) => {
+            e.preventDefault()
+          }}
+        >
+          Espaces d'activités
+        </a>
+      </li>
+      <li>
+        <a
+          role="button"
+          href=""
+          onClick={(e) => {
+            e.preventDefault()
+          }}
+        >
+          Ressources
+        </a>
+      </li>
+    </ul>
   </div>
 
 HistoryDropdown.propTypes = {

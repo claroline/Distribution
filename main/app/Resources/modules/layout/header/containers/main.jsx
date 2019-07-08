@@ -6,9 +6,9 @@ import {actions as walkthroughActions} from '#/main/app/overlays/walkthrough/sto
 import {selectors as securitySelectors} from '#/main/app/security/store'
 
 import {selectors, reducer} from '#/main/app/layout/header/store'
-import {Header as HeaderComponent} from '#/main/app/layout/header/components/header'
+import {HeaderMain as HeaderMainComponent} from '#/main/app/layout/header/components/main'
 
-const Header = withReducer(selectors.STORE_NAME, reducer)(
+const HeaderMain = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
       // platform parameters
@@ -37,9 +37,9 @@ const Header = withReducer(selectors.STORE_NAME, reducer)(
         dispatch(walkthroughActions.start(steps, additional, documentation))
       }
     })
-  )(HeaderComponent)
+  )(HeaderMainComponent)
 )
 
 export {
-  Header
+  HeaderMain
 }

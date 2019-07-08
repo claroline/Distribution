@@ -5,7 +5,7 @@ import {Routes} from '#/main/app/router/components/routes'
 
 import {LayoutSidebar} from '#/main/app/layout/components/sidebar'
 import {LayoutToolbar} from '#/main/app/layout/components/toolbar'
-import {Header} from '#/main/app/layout/header/containers/header'
+import {HeaderMain} from '#/main/app/layout/header/containers/main'
 import {FooterMain} from '#/main/app/layout/footer/containers/main'
 
 import {DesktopMenu} from '#/main/app/layout/sections/desktop/containers/menu'
@@ -17,7 +17,7 @@ import {AdministrationMain} from '#/main/app/layout/sections/administration/cont
 const LayoutMain = props =>
   <Fragment>
     <div className="app" role="presentation">
-      <Header
+      <HeaderMain
         maintenance={props.maintenance}
         toggleMenu={props.toggleMenu}
       />
