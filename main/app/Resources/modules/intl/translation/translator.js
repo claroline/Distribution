@@ -9,9 +9,9 @@ import {asset} from '#/main/app/config/asset'
 var _messages     = {},
   _fallbackLocale = 'en',
   _domains      = [],
-  _sPluralRegex = new RegExp(/^\w+\: +(.+)$/),
-  _cPluralRegex = new RegExp(/^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/),
-  _iPluralRegex = new RegExp(/^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/)
+  _sPluralRegex = new RegExp(/^\w+\: +(.+)$/), // eslint-disable-line no-useless-escape
+  _cPluralRegex = new RegExp(/^\s*((\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]]))\s?(.+?)$/), // eslint-disable-line no-useless-escape
+  _iPluralRegex = new RegExp(/^\s*(\{\s*(\-?\d+[\s*,\s*\-?\d+]*)\s*\})|([\[\]])\s*(-Inf|\-?\d+)\s*,\s*(\+?Inf|\-?\d+)\s*([\[\]])/) // eslint-disable-line no-useless-escape
 
 const Translator = {
 

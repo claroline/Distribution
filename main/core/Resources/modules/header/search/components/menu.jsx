@@ -1,7 +1,6 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 
-const SearchMenu = props =>
+const SearchMenu = () =>
   <div className="app-header-search">
     <input
       type="search"

@@ -6,9 +6,7 @@ import {DirectoryMenu as DirectoryMenuComponent} from '#/main/core/resources/dir
 
 const DirectoryMenu = withRouter(
   connect(
-    (state) => ({
-      // todo : summary
-    })
+
   )(DirectoryMenuComponent)
 )
 

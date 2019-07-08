@@ -1,7 +1,5 @@
 import {makeActionCreator, makeInstanceActionCreator} from '#/main/app/store/actions'
 
-import {constants} from '#/main/core/tool/constants'
-
 // actions
 export const TOOL_OPEN        = 'TOOL_OPEN'
 export const TOOL_CLOSE       = 'TOOL_CLOSE'

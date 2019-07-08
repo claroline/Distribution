@@ -5,7 +5,6 @@ import {theme} from '#/main/app/config'
 import {withReducer} from '#/main/app/store/components/withReducer'
 import {Await} from '#/main/app/components/await'
 import {ContentLoader} from '#/main/app/content/components/loader'
-import {getTool} from '#/main/core/tools'
 
 const Tool = props => {
   if (props.loaded) {
@@ -36,7 +35,6 @@ Tool.propTypes = {
 
 class ToolMain extends Component {
   componentDidMount() {
-    console.log('tool mount')
     this.props.open(this.props.toolName)
   }
 

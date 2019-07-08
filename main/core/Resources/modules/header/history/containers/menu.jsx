@@ -7,9 +7,7 @@ import {actions, reducer, selectors} from '#/main/core/header/history/store'
 
 const HistoryMenu = withReducer(selectors.STORE_NAME, reducer)(
   connect(
-    (state) => ({
-
-    }),
+    null,
     (dispatch) => ({
       loadMenu() {
         dispatch(actions.fetchMenu())

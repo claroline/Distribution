@@ -14,9 +14,6 @@ const ResourceMenu = withRouter(
         loaded: selectors.loaded(state),
         resourceId: selectors.id(state),
         resourceType: selectors.resourceType(state)
-      }),
-      (dispatch) => ({
-
       })
     )(ResourceMenuComponent)
   )

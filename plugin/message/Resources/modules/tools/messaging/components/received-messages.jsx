@@ -90,7 +90,7 @@ ReceivedMessagesComponent.propTypes = {
   path: T.string.isRequired,
   removeMessages: T.func.isRequired,
   unreadMessages: T.func.isRequired,
-  readMessages: T.func.isRequired,
+  readMessages: T.func.isRequired
 }
 
 const ReceivedMessages = connect(

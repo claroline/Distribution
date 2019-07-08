@@ -100,7 +100,10 @@ const EditorParameters = props =>
 EditorParameters.propTypes = {
   workspace: T.object,
   path: T.shape({
-    id: T.string
+    id: T.string,
+    display: T.shape({
+      showOverview: T.bool
+    })
   }).isRequired
 }
 

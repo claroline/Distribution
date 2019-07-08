@@ -5,9 +5,9 @@ namespace Claroline\AppBundle\Controller\Platform;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SecurityController
@@ -66,7 +66,7 @@ class SecurityController
 
         return new JsonResponse([
             'user' => $this->serializer->serialize($user),
-            'messages' => []
+            'messages' => [],
         ]);
     }
 }

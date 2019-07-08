@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 
-import {trans} from '#/main/app/intl/translation'
 import {theme} from '#/main/app/config'
 import {Await} from '#/main/app/components/await'
 

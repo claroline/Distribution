@@ -19,7 +19,7 @@ const ResourceMain = withRouter(
       (dispatch) => ({
         loadNode(resourceId) {
           return dispatch(actions.fetchNode(resourceId))
-        },
+        }
       })
     )(ResourceMainComponent)
   )

@@ -3,9 +3,9 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
-import {MENU_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {MENU_BUTTON} from '#/main/app/buttons'
 
-const HistoryDropdown = (props) =>
+const HistoryDropdown = () =>
   <div className="app-header-dropdown dropdown-menu dropdown-menu-right">
     <ul className="nav nav-tabs">
       <li className="active">
@@ -16,7 +16,7 @@ const HistoryDropdown = (props) =>
             e.preventDefault()
           }}
         >
-          Espaces d'activités
+          {trans('workspaces')}
         </a>
       </li>
       <li>
@@ -27,7 +27,7 @@ const HistoryDropdown = (props) =>
             e.preventDefault()
           }}
         >
-          Ressources
+          {trans('resources')}
         </a>
       </li>
     </ul>
@@ -37,7 +37,7 @@ HistoryDropdown.propTypes = {
 
 }
 
-const HistoryMenu = props =>
+const HistoryMenu = () =>
   <Button
     id="app-favorites"
     type={MENU_BUTTON}
@@ -53,7 +53,9 @@ const HistoryMenu = props =>
   />
 
 HistoryMenu.propTypes = {
+  history: T.arrayOf(T.shape({
 
+  }))
 }
 
 export {

@@ -2,8 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import merge from 'lodash/merge'
 
-import {trans} from '#/main/app/intl/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
 import {getActions, getDefaultAction} from '#/main/core/resource/utils'
 import {ListSource} from '#/main/app/content/list/containers/source'
 import {ListParameters as ListParametersTypes} from '#/main/app/content/list/parameters/prop-types'

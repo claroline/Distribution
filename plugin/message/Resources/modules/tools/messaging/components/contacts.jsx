@@ -81,7 +81,7 @@ ContactsComponent.propTypes = {
 }
 
 const Contacts = connect(
-  (state) => ({
+  () => ({
     options: {
       show_username: true,
       show_mail: true,

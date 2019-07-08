@@ -24,6 +24,7 @@ const SummaryStep = props =>
   </li>
 
 SummaryStep.propTypes = {
+  basePath: T.string.isRequired,
   step: T.shape(
     StepTypes.propTypes
   ).isRequired

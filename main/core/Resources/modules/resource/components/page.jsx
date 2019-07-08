@@ -5,7 +5,6 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
-import {url} from '#/main/app/api'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
@@ -55,7 +54,7 @@ class ResourcePage extends Component {
     /*if (this.props.resourceNode.workspace) {
       ancestors = this.props.resourceNode.path.slice(1)
     } else {*/
-      ancestors = this.props.resourceNode.path.slice(0)
+    ancestors = this.props.resourceNode.path.slice(0)
     /*}*/
 
     return (

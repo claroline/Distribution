@@ -31,7 +31,7 @@ const PathMenu = props =>
             return (
               <PlayerMenu path={props.path} />
             )
-          },
+          }
         }
       ]}
     />

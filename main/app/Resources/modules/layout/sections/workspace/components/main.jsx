@@ -28,12 +28,14 @@ const WorkspaceMain = (props) =>
                 // tool is enabled for the workspace
                 props.openTool(routeProps.match.params.toolName, props.workspace)
 
-                return (
+                const WorkspaceTool = (
                   <ToolMain
                     basePath={`/${routeProps.match.params.toolName}`}
                     toolName={routeProps.match.params.toolName}
                   />
                 )
+
+                return WorkspaceTool
               }
 
               // tool is disabled for the workspace
@@ -41,7 +43,7 @@ const WorkspaceMain = (props) =>
               props.history.push('/')
 
               return null
-            },
+            }
           }
         ]}
         redirect={[

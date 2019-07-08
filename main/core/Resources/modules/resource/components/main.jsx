@@ -33,14 +33,11 @@ class ResourceMain extends Component {
   }
 
   componentDidMount() {
-    console.log('mount')
     this.load()
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.resourceId !== prevProps.resourceId) {
-      console.log(prevProps.resourceId)
-      console.log(this.props.resourceId)
       if (this.pending) {
         this.pending.cancel()
       }

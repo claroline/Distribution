@@ -67,11 +67,11 @@ const TabbedPage = props => {
           path={props.path}
           routes={displayedTabs
             .filter(tab => !!tab.actions)
-            .map((tab, tabIndex) => ({
+            .map((tab) => ({
               ...tab,
               component: tab.actions
-            })
-          )}
+            }))
+          }
         />
       </PageHeader>
 

@@ -1,10 +1,9 @@
-import React, {Component, cloneElement} from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {mount, unmount} from '#/main/app/dom/mount'
 
-import {constants} from '#/main/core/tool/constants'
 import {ResourceMain} from '#/main/core/resource/containers/main'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 

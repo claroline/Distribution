@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
-import {LINK_BUTTON} from '#/main/app/buttons'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 import {constants} from '#/plugin/path/resources/path/constants'

@@ -7,6 +7,5 @@ import {reducer} from '#/plugin/message/tools/messaging/store'
 export default {
   component: MessagingTool,
   menu: MessagingMenu,
-  store: reducer,
-  //styles: ['claroline-distribution-main-core-home-tool']
+  store: reducer
 }

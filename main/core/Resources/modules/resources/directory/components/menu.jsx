@@ -5,9 +5,6 @@ import omit from 'lodash/omit'
 import {trans} from '#/main/app/intl/translation'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 
-import {Button} from '#/main/app/action/components/button'
-import {LINK_BUTTON} from '#/main/app/buttons'
-
 /*function summaryLink(directory) {
   return {
     type: LINK_BUTTON,

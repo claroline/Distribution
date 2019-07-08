@@ -4,7 +4,6 @@ import omit from 'lodash/omit'
 import uniq from 'lodash/uniq'
 import uniqBy from 'lodash/uniqBy'
 
-import {url} from '#/main/app/api'
 import {param} from '#/main/app/config'
 import {getApps} from '#/main/app/plugins'
 import {trans} from '#/main/app/intl/translation'
