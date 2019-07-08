@@ -14,6 +14,11 @@ registry.add('ClarolineCoreBundle', {
     'history'    : () => { return import(/* webpackChunkName: "core-header-history" */ '#/main/core/header/history') }
   },
 
+  integration: {
+    'api' : () => { return import(/* webpackChunkName: "core-integration-api" */ '#/main/core/administration/integration/documentation')},
+    'api_tokens' : () => { return import(/* webpackChunkName: "core-integration-api_tokens" */ '#/main/core/administration/integration/apitoken')}
+  },
+
   /**
    * Provides actions for base Claroline objects.
    */
@@ -122,7 +127,8 @@ registry.add('ClarolineCoreBundle', {
       'groups'       : () => { return import(/* webpackChunkName: "core-data-type-groups" */        '#/main/core/data/types/groups') },
       'group'        : () => { return import(/* webpackChunkName: "core-data-type-group" */         '#/main/core/data/types/group') },
       'location'     : () => { return import(/* webpackChunkName: "core-data-type-location" */      '#/main/core/data/types/location') },
-      'template_type': () => { return import(/* webpackChunkName: "core-data-type-template-type" */ '#/main/core/data/types/template-type') }
+      'template_type': () => { return import(/* webpackChunkName: "core-data-type-template-type" */ '#/main/core/data/types/template-type') },
+      'roles'        : () => { return import(/* webpackChunkName: "core-data-type-roles" */         '#/main/core/data/types/roles') }
     },
     sources: {
       'resources'         : () => { return import(/* webpackChunkName: "core-data-source-resources" */  '#/main/core/data/sources/resources') },

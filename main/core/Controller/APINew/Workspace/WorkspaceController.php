@@ -309,46 +309,10 @@ class WorkspaceController extends AbstractCrudController
     }
 
     /**
-     * Gets the main workspace menu for the current user.
-     *
-     * @Route("/menu", name="apiv2_workspace_menu")
-     * @Method("GET")
-     *
-     * @return JsonResponse
-     */
-    public function menuAction()
-    {
-        $workspaces = [];
-        $personalWs = null;
-
-        $user = null;
-        $token = $this->tokenStorage->getToken();
-        if ($token) {
-            $user = $token->getUser();
-        }
-
-        if ($user instanceof User) {
-            $personalWs = $user->getPersonalWorkspace();
-            $workspaces = $this->workspaceManager->getRecentWorkspaceForUser($user, $this->utils->getRoles($token));
-        }
-
-        return new JsonResponse([
-            'creatable' => $this->authorization->isGranted('CREATE', new Workspace()),
-            'personal' => $personalWs ? $this->serializer->serialize($personalWs, [Options::SERIALIZE_MINIMAL]) : null,
-            'history' => array_map(function (Workspace $workspace) {
-                return $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
-            }, $workspaces),
-        ]);
-    }
-
-    /**
      * @ApiDoc(
      *     description="Export the workspace as a zip archive.",
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The workspace id or uuid"
-     *          }
+     *         {"name": "id", "type": {"string", "integer"},  "description": "The workspace id or uuid"}
      *     }
      * )
      * @Route(
@@ -433,10 +397,7 @@ class WorkspaceController extends AbstractCrudController
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string"},
-     *              "description": "The workspace uuid"
-     *          }
+     *         {"name": "id", "type": {"string", "integer"},  "description": "The workspace id or uuid"}
      *     }
      * )
      * @Route(
@@ -539,10 +500,7 @@ class WorkspaceController extends AbstractCrudController
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string"},
-     *              "description": "The workspace uuid"
-     *          }
+     *         {"name": "id", "type": {"string", "integer"},  "description": "The workspace id or uuid"}
      *     }
      * )
      * @Route(

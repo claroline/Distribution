@@ -51,6 +51,9 @@ class PlatformDefaults implements ParameterProviderInterface
             'text' => [
               'enable_opengraph' => true,
             ],
+            'swagger' => [
+              'base' => '/Claroline/Claroline/web/app_dev.php',
+            ],
             'logs' => [
               'enabled' => true,
             ],

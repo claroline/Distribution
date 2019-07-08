@@ -1,5 +1,4 @@
 security:
-
     providers:
         user_db:
             entity: { class: Claroline\CoreBundle\Entity\User }
@@ -15,6 +14,12 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        api:
+           pattern: %firewall_api_regex%
+           stateless: true
+           simple_preauth:
+              authenticator: claroline.security.authentication.apitoken_authenticator
 
         main:
             pattern: ^/
