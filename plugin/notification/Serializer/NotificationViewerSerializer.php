@@ -67,7 +67,7 @@ class NotificationViewerSerializer
         $data = [
             'id' => $viewer->getId(),
             'notification' => $this->notificationSerializer->serialize($viewer->getNotification()),
-            'renderedText' => $this->render($viewer),
+            'renderedText' => $doer->getUsername().' '.$this->render($viewer),
             'doer' => $this->userSerializer->serialize($doer, [Options::SERIALIZE_MINIMAL]),
             'primaryAction' => $event->getPrimaryAction(),
             'text' => $event->getText(),

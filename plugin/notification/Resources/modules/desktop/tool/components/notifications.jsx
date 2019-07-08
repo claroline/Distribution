@@ -9,6 +9,7 @@ import {
 } from '#/main/core/layout/page'
 
 
+import {constants as listConstants} from '#/main/app/content/list/constants'
 import {NotificationCard} from '#/plugin/notification/desktop/tool/components/notification-card'
 
 const Notification = props => <div dangerouslySetInnerHTML={{__html: props.notification.text}}/>
@@ -24,6 +25,10 @@ const List = () =>
         fetch={{
           url: ['apiv2_workspace_list_notifications_current'],
           autoload: true
+        }}
+        display={{
+          available: [listConstants.DISPLAY_LIST],
+          current: listConstants.DISPLAY_LIST
         }}
         definition={[{
           name: 'text',

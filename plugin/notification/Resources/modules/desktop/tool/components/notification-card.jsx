@@ -21,9 +21,10 @@ const NotificationCard = props => {
       icon={<UserAvatar picture={props.data.picture} alt={true} />}
       contentText={props.data.text}
       primaryAction={props.data.primaryAction ?[]:null}
+
       footer={
         <span>
-          {trans('last_logged_at')}
+          {trans('done_at')}: {displayDate(props.data.notification.creation)}
         </span>
       }
     />

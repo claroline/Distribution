@@ -57,17 +57,17 @@ class NotificationListener
 
         switch ($notification->getActionKey()) {
           case LogSocialmediaLikeEvent::ACTION:
-            $text .= $translator->trans('liked', [], 'icap_socialmedia');
+            $text .= $this->translator->trans('liked', [], 'icap_socialmedia');
             break;
           case LogSocialmediaShareEvent::ACTION:
             if (isset($notification->getDetails()['share']) && isset($notification->getDetails()['network'])) {
-                $text .= $translator->trans('shared_on', ['%network%' => $notification->getDetails()['network']], 'icap_socialmedia');
+                $text .= $this->translator->trans('shared_on', ['%network%' => $notification->getDetails()['network']], 'icap_socialmedia');
             } else {
-                $text .= $translator->trans('shared_on', ['%network%' => 'claroline'], 'icap_socialmedia');
+                $text .= $this->translator->trans('shared_on', ['%network%' => 'claroline'], 'icap_socialmedia');
             }
             break;
           case LogSocialmediaCommentEvent::ACTION:
-            $text .= $translator->trans('commented', [], 'icap_socialmedia');
+            $text .= $this->translator->trans('commented', [], 'icap_socialmedia');
             $primaryAction = [
               'url' => 'icap_socialmedia_comments_view',
               'parameters' => [

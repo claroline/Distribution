@@ -2,6 +2,7 @@
 
 namespace  Icap\NotificationBundle\Serializer;
 
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Icap\NotificationBundle\Entity\Notification;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -29,6 +30,7 @@ class NotificationSerializer
         return [
             'id' => $notification->getId(),
             'action' => $notification->getActionKey(),
+            'creation' => DateNormalizer::normalize($notification->getCreationDate()),
         ];
     }
 
