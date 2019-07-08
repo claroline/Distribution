@@ -23,58 +23,58 @@ import {Revision} from '#/plugin/drop-zone/resources/dropzone/player/components/
 
 const DropzoneResource = props =>
   <ResourcePage
-    styles={['claroline-distribution-plugin-drop-zone-dropzone-resource']}
     customActions={[
       {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-home',
         label: trans('show_overview'),
-        target: '/',
+        target: props.path,
         exact: true
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-upload',
         label: trans('show_evaluation', {}, 'dropzone'),
-        target: '/my/drop',
+        target: `${props.path}/my/drop`,
         displayed: !!props.myDrop,
         exact: true
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-list',
         label: trans('show_drops', {}, 'dropzone'),
-        target: '/drops',
+        target: `${props.path}/drops`,
         displayed: props.canEdit
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-users',
         label: trans('correctors', {}, 'dropzone'),
-        target: '/correctors',
+        target: `${props.path}/correctors`,
         displayed: props.canEdit && constants.REVIEW_TYPE_PEER === get(props.dropzone, 'parameters.reviewType')
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-history',
         label: trans('show_revisions', {}, 'dropzone'),
-        target: '/revisions',
+        target: `${props.path}/revisions`,
         displayed: props.canEdit,
         exact: true
       }
     ]}
   >
     <Routes
+      path={props.path}
       routes={[
         {
           path: '/',
-          component: Overview,
+          render: () => <Overview path={props.path} />,
           exact: true
         }, {
           path: '/edit',
-          component: Editor,
+          render: () => <Editor path={props.path} />,
           disabled: !props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.dropzone)
         }, {
           path: '/my/drop',
-          component: MyDrop,
+          render: () => <MyDrop path={props.path} />,
           exact: true,
           onEnter: () => {
             if (props.currentRevisionId) {
@@ -84,19 +84,19 @@ const DropzoneResource = props =>
           onLeave: () => props.resetRevision()
         }, {
           path: '/drops',
-          component: Drops
+          render: () => <Drops path={props.path} />
         }, {
           path: '/drop/:id',
-          component: Drop,
+          render: () => <Drop path={props.path} />,
           onEnter: (params) => props.fetchDrop(params.id, 'current'),
           onLeave: () => props.resetCurrentDrop()
         }, {
           path: '/peer/drop',
-          component: PeerDrop,
+          render: () => <PeerDrop path={props.path} />,
           onEnter: () => props.fetchPeerDrop()
         }, {
           path: '/correctors',
-          component: Correctors,
+          render: () => <Correctors path={props.path} />,
           onEnter: () => {
             props.fetchCorrections(props.dropzone.id)
           }
@@ -110,12 +110,12 @@ const DropzoneResource = props =>
           onLeave: () => props.resetCorrectorDrop()
         }, {
           path: '/my/drop/revisions',
-          component: MyRevisions,
+          render: () => <MyRevisions path={props.path} />,
           disabled: !props.dropzone || !props.dropzone.parameters || !props.dropzone.parameters.revisionEnabled,
           exact: true
         }, {
           path: '/my/drop/revisions/:id',
-          component: Revision,
+          render: () => <Revision path={props.path} />,
           disabled: !props.dropzone || !props.dropzone.parameters || !props.dropzone.parameters.revisionEnabled,
           onEnter: (params) => {
             props.fetchRevision(params.id)
@@ -127,12 +127,12 @@ const DropzoneResource = props =>
           }
         }, {
           path: '/revisions',
-          component: Revisions,
+          render: () => <Revisions path={props.path} />,
           disabled: !props.canEdit,
           exact: true
         }, {
           path: '/revisions/:id',
-          component: Revision,
+          render: () => <Revision path={props.path} />,
           disabled: !props.canEdit,
           onEnter: (params) => {
             props.fetchRevision(params.id)
@@ -148,6 +148,7 @@ const DropzoneResource = props =>
   </ResourcePage>
 
 DropzoneResource.propTypes = {
+  path: T.string.isRequired,
   canEdit: T.bool.isRequired,
   dropzone: T.object.isRequired,
   myDrop: T.object,
