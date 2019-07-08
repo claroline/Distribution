@@ -17,7 +17,6 @@ import {Message} from '#/main/core/administration/parameters/main/components/mes
 
 const ParametersTool = (props) =>
   <ToolPage
-    styles={['claroline-distribution-main-core-administration-parameters']}
     actions={'/messages' === props.location.pathname ? [
       {
         name: 'add',
@@ -38,7 +37,7 @@ const ParametersTool = (props) =>
           {path: '/plugins',       render: () => trans('plugins')},
           {path: '/maintenance',   render: () => trans('maintenance')},
           {path: '/archives',      render: () => trans('archive')},
-		  {path: '/messages',      render: () => trans('connection_messages')}
+          {path: '/messages',      render: () => trans('connection_messages')}
         ]}
       />
     }

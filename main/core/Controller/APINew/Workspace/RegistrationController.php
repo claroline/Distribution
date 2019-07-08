@@ -105,10 +105,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The workspace id or uuid"
-     *          }
+     *         {"name": "id",  "type": {"string", "integer"}, "description": "The workspace id or uuid"}
      *     }
      * )
      * @EXT\Route(
@@ -138,10 +135,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "ids", "type": "array", "description": "the list of user uuids."}
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The workspace uuid"
-     *          }
+     *         {"name": "id", "type": {"string", "integer"},  "description": "The workspace id or uuid"}
      *     }
      * )
      * @EXT\Route(
@@ -183,10 +177,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "ids", "type": "array", "description": "the list of user uuids."}
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The workspace uuid"
-     *          }
+     *         {"name": "id", "type": {"string", "integer"},  "description": "The workspace id or uuid"}
      *     }
      * )
      * @EXT\Route(
@@ -226,10 +217,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "ids", "type": "array", "description": "the list of user uuids."}
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The workspace uuid"
-     *          }
+     *         {"name": "id", "type": {"string", "integer"},  "description": "The workspace id or uuid"}
      *     }
      * )
      * @EXT\Route(
@@ -267,10 +255,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "ids", "type": "array", "description": "the list of group uuids."}
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The workspace uuid"
-     *          }
+     *         {"name": "id", "type": {"string", "integer"},  "description": "The workspace id or uuid"}
      *     }
      * )
      * @EXT\Route(
@@ -309,10 +294,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "workspaces", "type": "array", "description": "The list of workspace uuids."},
      *     },
      *     parameters={
-     *         "role": {
-     *              "type": {"string"},
-     *              "description": "The role translation key"
-     *          }
+     *         {"name": "role", "type": {"string"}, "description": "The role translation key"}
      *     }
      * )
      * @EXT\Route(
@@ -351,10 +333,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "workspaces", "type": "array", "description": "The list of workspace uuids."},
      *     },
      *     parameters={
-     *         "role": {
-     *              "type": {"string"},
-     *              "description": "The role translation key"
-     *          }
+     *         {"name": "role", "type": {"string"}, "description": "The role translation key"}
      *     }
      * )
      * @EXT\Route(
@@ -392,10 +371,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "workspaces", "type": "array", "description": "The list of workspace uuids."},
      *     },
      *     parameters={
-     *         "user": {
-     *              "type": {"string"},
-     *              "description": "The user uuid"
-     *          }
+     *         {"name": "user", "type": {"string"}, "description": "The user uuid"}
      *     }
      * )
      * @EXT\Route("/register/{user}", name="apiv2_workspace_register")
@@ -437,10 +413,7 @@ class RegistrationController extends AbstractApiController
      *         {"name": "workspaces", "type": "array", "description": "The list of workspace uuids."},
      *     },
      *     parameters={
-     *         "user": {
-     *              "type": {"string"},
-     *              "description": "The user uuid"
-     *          }
+     *         {"name": "user", "type": {"string"}, "description": "The user uuid"}
      *     }
      * )
      * @EXT\Route("/unregister/{user}", name="apiv2_workspace_unregister")

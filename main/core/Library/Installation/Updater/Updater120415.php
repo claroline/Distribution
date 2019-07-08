@@ -11,31 +11,46 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater120414 extends Updater
+class Updater120415 extends Updater
 {
     protected $logger;
     private $container;
+    /** @var ObjectManager */
     private $om;
+    /** @var PlatformConfigurationHandler */
+    private $configHandler;
 
     public function __construct(ContainerInterface $container, $logger = null)
     {
         $this->logger = $logger;
         $this->container = $container;
         $this->om = $container->get('claroline.persistence.object_manager');
-    }
-
-    public function preUpdate()
-    {
-        //$this->renameTool('resource_manager', 'resources');
+        $this->configHandler = $container->get('claroline.config.platform_config_handler');
     }
 
     public function postUpdate()
     {
+        $this->updatePlatformOptions();
+
         $this->removeTool('my_contacts');
         $this->removeTool('workspace_management');
+    }
+
+    private function updatePlatformOptions()
+    {
+        $header = $this->configHandler->getParameter('header_menu');
+        if (!empty($header)) {
+            $this->configHandler->setParameter('header_menu', [
+                'search',
+                'history',
+                'favourites',
+            ]);
+        }
     }
 
     private function removeTool($toolName, $admin = false)
@@ -48,17 +63,4 @@ class Updater120414 extends Updater
             $this->om->flush();
         }
     }
-
-    /*private function renameTool($oldName, $newName, $admin = false)
-    {
-        $this->log(sprintf('Renaming `%s` tool into %s...', $oldName, $newName));
-
-        $tool = $this->om->getRepository($admin ? 'ClarolineCoreBundle:Tool\AdminTool' : 'ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $oldName]);
-        if (!empty($tool)) {
-            $tool->setName($newName);
-
-            $this->om->persist($tool);
-            $this->om->flush();
-        }
-    }*/
 }

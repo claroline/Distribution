@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Library\Configuration;
 
 use Claroline\AppBundle\API\Utils\ArrayUtils;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * @DI\Service("claroline.config.platform_config_handler")
@@ -51,8 +52,6 @@ class PlatformConfigurationHandler
 
     /**
      * @param string $parameter
-     *
-     * @deprecated (use ParameterSerializer instead)
      *
      * @return mixed
      */
@@ -100,7 +99,14 @@ class PlatformConfigurationHandler
 
     public function setParameter($parameter, $value)
     {
-        throw new \Exception('use serializer instead');
+        if (!is_writable($this->configFile)) {
+            throw new \RuntimeException('Platform options is not writable');
+        }
+        $this->parameters[$parameter] = $value;
+
+        ksort($this->parameters);
+        $parameters = json_encode($this->parameters, JSON_PRETTY_PRINT);
+        file_put_contents($this->configFile, $parameters);
     }
 
     public function isRedirectOption($option)
