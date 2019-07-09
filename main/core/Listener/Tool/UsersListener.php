@@ -78,4 +78,17 @@ class UsersListener
         $event->setContent($content);
         $event->stopPropagation();
     }
+
+    /**
+     * Displays users on Workspace.
+     *
+     * @DI\Observe("open_tool_desktop_users")
+     *
+     * @param DisplayToolEvent $event
+     */
+    public function onDisplayDesktop(DisplayToolEvent $event)
+    {
+        $event->setData([]);
+        $event->stopPropagation();
+    }
 }
