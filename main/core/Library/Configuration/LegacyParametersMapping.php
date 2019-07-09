@@ -95,7 +95,6 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'ssl_enabled' => 'ssl.enabled',
             'ssl_version_value' => 'ssl.version',
             'enable_rich_text_file_import' => 'workspace.enable_rich_text_file_import',
-            'login_target_route' => 'authentication.login_target_route',
             'enable_opengraph' => 'text.enable_opengraph',
             'tmp_dir' => 'server.tmp_dir',
             'resource_icon_set' => 'display.resource_icon_set',
@@ -116,7 +115,6 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'profile_roles_edition' => 'profile.roles_edition',
             'profile_show_email' => 'profile.show_email',
             'workspace_list_default_properties' => 'workspace.list.default_properties',
-            'logo_redirect_home' => 'display.logo_redirect_home',
             'home_redirection_type' => 'home.redirection_type',
             'home_redirection_url' => 'home.redirection_url',
         ];

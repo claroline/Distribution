@@ -8,6 +8,8 @@ import {LayoutToolbar} from '#/main/app/layout/components/toolbar'
 import {HeaderMain} from '#/main/app/layout/header/containers/main'
 import {FooterMain} from '#/main/app/layout/footer/containers/main'
 
+import {HomeMain} from '#/main/app/layout/sections/home/containers/main'
+
 import {DesktopMenu} from '#/main/app/layout/sections/desktop/containers/menu'
 import {DesktopMain} from '#/main/app/layout/sections/desktop/containers/main'
 
@@ -43,15 +45,18 @@ const LayoutMain = props =>
         <Routes
           routes={[
             {
-              path: '/',
-              exact: true
-            }, {
               path: '/desktop',
               component: DesktopMain
             }, {
               path: '/admin',
               component: AdministrationMain
-            }
+            },
+            // it must be declared last otherwise it will always match.
+            // and it cannot be set to exact: true because it contains sub routes for maintenance, login and registration.
+            {
+              path: '/',
+              component: HomeMain
+            },
           ]}
         />
 

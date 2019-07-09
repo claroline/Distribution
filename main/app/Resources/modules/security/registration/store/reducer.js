@@ -1,16 +1,18 @@
+import cloneDeep from 'lodash/cloneDeep'
 
-import {makeReducer} from '#/main/app/store/reducer'
+import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {url} from '#/main/app/api'
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 import {LIST_TOGGLE_SELECT, LIST_TOGGLE_SELECT_ALL} from '#/main/app/content/list/store/actions'
-import cloneDeep from 'lodash/cloneDeep'
+
+import {selectors} from '#/main/app/security/registration/store/selectors'
 
 const getDefaultRole = (workspace) => workspace.registration.defaultRole
 
-export const reducer = {
-  workspaces: makeListReducer('workspaces'),
+export const reducer = combineReducers({
+  workspaces: makeListReducer(selectors.STORE_NAME+'.workspaces'),
   defaultWorkspaces: (state = null) => state,
   termOfService: (state = null) => state,
   facets: (state = []) => state,
@@ -21,7 +23,7 @@ export const reducer = {
      *
      * @param state
      */
-    [FORM_SUBMIT_SUCCESS+'/user']: (state) => {
+    [FORM_SUBMIT_SUCCESS+'/'+selectors.FORM_NAME]: (state) => {
       if (state.redirectAfterLoginUrl) {
         window.location = state.redirectAfterLoginUrl
       } else {
@@ -32,12 +34,12 @@ export const reducer = {
       }
     }
   }),
-  user: makeFormReducer('user', {
+  form: makeFormReducer(selectors.FORM_NAME, {
     new: true,
     data: {roles: [], code: null}
   }, {
     data: makeReducer({}, {
-      [LIST_TOGGLE_SELECT+'/workspaces']: (state, action) => {
+      [LIST_TOGGLE_SELECT+'/'+selectors.STORE_NAME+'.workspaces']: (state, action) => {
         const user = cloneDeep(state)
 
         action.selected ?
@@ -46,7 +48,7 @@ export const reducer = {
 
         return user
       },
-      [LIST_TOGGLE_SELECT_ALL+'/workspaces']: (state, action) => {
+      [LIST_TOGGLE_SELECT_ALL+'/'+selectors.STORE_NAME+'.workspaces']: (state, action) => {
         const user = cloneDeep(state)
         user.roles = action.rows.map(workspace => getDefaultRole(workspace))
 
@@ -54,4 +56,4 @@ export const reducer = {
       }
     })
   })
-}
+})

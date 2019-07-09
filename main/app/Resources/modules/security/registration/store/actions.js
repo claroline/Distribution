@@ -1,6 +1,6 @@
 import {API_REQUEST} from '#/main/app/api'
 
-import {constants} from '#/main/core/user/registration/constants'
+import {constants} from '#/main/app/security/registration/constants'
 
 export const actions = {}
 
@@ -12,7 +12,6 @@ actions.createUser = (user, onCreated = () => {}) => ({
       method: 'POST',
       body: JSON.stringify(user)
     },
-    success: () => onCreated(),
-    error: () => alert('error')
+    success: onCreated
   }
 })

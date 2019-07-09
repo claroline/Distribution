@@ -15,11 +15,7 @@ import {selectors as menuSelectors} from '#/main/app/layout/menu/store/selectors
 
 export const reducer = {
   maintenance: makeReducer(false),
-  meta: combineReducers({
-    name: makeReducer('Claroline Connect'),
-    secondaryName: makeReducer('Easy & flexible learning'),
-    version: makeReducer('12.4.8')
-  }),
+  parameters: makeReducer({}),
 
   [securitySelectors.STORE_NAME]: securityReducer,
 

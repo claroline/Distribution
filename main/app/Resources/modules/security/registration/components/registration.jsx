@@ -1,13 +1,11 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {select} from '#/main/core/user/registration/selectors'
+import {connect} from 'react-redux'
+
 import {trans} from '#/main/app/intl/translation'
 import {url} from '#/main/app/api'
+import {selectors} from '#/main/app/security/registration/store/selectors'
 
-/**
- * @constructor
- */
 const Registration = props => {
   const link = props.defaultWorkspaces[0] ?
     `<a href='${url(['claro_workspace_subscription_url_generate_user', {workspace: props.defaultWorkspaces[0].id}])}'>${trans('here')}</a>`:
@@ -36,7 +34,7 @@ Registration.propTypes = {
 
 const ConnectedRegistration = connect(
   (state) => ({
-    defaultWorkspaces: select.defaultWorkspaces(state)
+    defaultWorkspaces: selectors.defaultWorkspaces(state)
   }),
   null
 )(Registration)

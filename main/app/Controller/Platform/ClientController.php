@@ -138,10 +138,9 @@ class ClientController
             'header' => [
                 'menus' => $this->configHandler->getParameter('header_menu'),
                 'display' => [
+                    'name' => $this->configHandler->getParameter('name_active'),
                     'about' => $this->configHandler->getParameter('show_about_button'),
                     'help' => $this->configHandler->getParameter('show_help_button'),
-                    'registration' => $this->configHandler->getParameter('allow_self_registration'),
-                    'name' => $this->configHandler->getParameter('name_active'),
                 ],
 
                 'notifications' => [
