@@ -16,7 +16,7 @@ const ToolComponent = (props) =>
   <FormData
     level={2}
     buttons={true}
-    name={selectors.STORE_NAME}
+    name={selectors.STORE_NAME+'.toolsConfig'}
     title={trans('parameters')}
     target={['apiv2_desktop_tools_configure']}
     sections={[]}
