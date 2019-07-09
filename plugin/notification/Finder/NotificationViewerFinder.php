@@ -46,7 +46,7 @@ class NotificationViewerFinder extends AbstractFinder
                 $qb->setParameter('viewerId', $filterValue);
                 break;
               case 'types':
-                foreach ($visibleTypes as $name) {
+                foreach ($filterValue as $name) {
                     $qb->andWhere(
                       $qb->expr()
                         ->notLike(
@@ -56,7 +56,7 @@ class NotificationViewerFinder extends AbstractFinder
                     );
                     break;
                 }
-                // no break
+                break;
               case 'category':
                 if ('system' !== $category) {
                     $qb->andWhere('notification.iconKey = :category')
