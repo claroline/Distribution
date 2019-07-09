@@ -2,8 +2,8 @@ import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {Parameters} from '#/main/core/tools/desktop-parameters/components/parameters'
-//import {TokenTabActions, TokenTabComponent} from '#/main/core/tools/desktop-parameters/token/components/token-tab'
+import {Parameters} from '#/main/core/tools/parameters/components/parameters'
+//import {TokenTabActions, TokenTabComponent} from '#/main/core/tools/parameters/token/components/token-tab'
 //import {DocumentationCompone
 import {PropTypes as T} from 'prop-types'
 
@@ -13,7 +13,7 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 
 // TODO : redirect to public list if user is not registered
 
-const Tool = (props) =>
+const ParametersTool = (props) =>
   <ToolPage
     subtitle={
       <Routes
@@ -30,21 +30,20 @@ const Tool = (props) =>
         {
           path: '/',
           disabled: false,
-          render: () =>
-            <Parameters tools={props.tools} toolsConfig={props.toolsConfig} />
+          render: () => {
+            const Params = <Parameters/>
+
+            return Params
+          }
         }]
       }
-
-      redirect={[
-        {from: '/', exact: true, to: '/'}
-      ]}
     />
   </ToolPage>
 
-Tool.propTypes = {
+ParametersTool.propTypes = {
   path: T.string.isRequired
 }
 
 export {
-  Tool
+  ParametersTool
 }

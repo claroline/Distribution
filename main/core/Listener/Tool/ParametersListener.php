@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * @DI\Service()
  */
-class ToolListener
+class ParametersListener
 {
     /** @var FinderProvider */
     private $finder;
