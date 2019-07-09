@@ -49,7 +49,7 @@ const EditorComponent = props =>
     target={(clacoForm) => ['apiv2_clacoform_update', {id: clacoForm.id}]}
     cancel={{
       type: LINK_BUTTON,
-      target: '/',
+      target: props.path,
       exact: true
     }}
     sections={[
@@ -503,6 +503,7 @@ const EditorComponent = props =>
   </FormData>
 
 EditorComponent.propTypes = {
+  path: T.string.isRequired,
   clacoForm: T.shape(
     ClacoFormTypes.propTypes
   ),

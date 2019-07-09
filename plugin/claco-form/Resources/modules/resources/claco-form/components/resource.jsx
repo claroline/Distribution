@@ -15,7 +15,7 @@ import {Entries} from '#/plugin/claco-form/resources/claco-form/player/component
 import {EntryForm} from '#/plugin/claco-form/resources/claco-form/player/components/entry-form'
 import {Entry} from '#/plugin/claco-form/resources/claco-form/player/components/entry'
 
-function getHome(type) {
+function getHome(type, path) {
   switch (type) {
     case 'search':
       return Entries
@@ -34,20 +34,19 @@ function getHome(type) {
 
 const ClacoFormResource = props =>
   <ResourcePage
-    styles={['claroline-distribution-plugin-claco-form-resource']}
     primaryAction="add-entry"
     customActions={[
       {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-home',
         label: trans('show_overview'),
-        target: '/menu'
+        target: `${props.path}/menu`
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-search',
         label: trans('entries_list', {}, 'clacoform'),
         displayed: props.canSearchEntry,
-        target: '/entries',
+        target: `${props.path}/entries`,
         exact: true
       }, {
         type: URL_BUTTON,
@@ -60,10 +59,11 @@ const ClacoFormResource = props =>
     ]}
   >
     <Routes
+      path={props.path}
       routes={[
         {
           path: '/',
-          component: getHome(props.defaultHome),
+          component: getHome(props.defaultHome, props.path),
           exact: true,
           onEnter: () => {
             switch (props.defaultHome) {
@@ -71,7 +71,7 @@ const ClacoFormResource = props =>
                 props.loadAllUsedCountries(props.clacoForm.id)
                 break
               case 'add':
-                props.openEntryForm(null, props.clacoForm.id)
+                props.openEntryForm(null, props.clacoForm.id, [], props.currentUser)
                 break
               case 'random':
                 fetch(url(['claro_claco_form_entry_random', {clacoForm: props.clacoForm.id}]), {
@@ -81,8 +81,8 @@ const ClacoFormResource = props =>
                   .then(response => response.json())
                   .then(entryId => {
                     if (entryId) {
-                      props.openEntryForm(entryId, props.clacoForm.id)
-                      props.loadEntryUser(entryId)
+                      props.openEntryForm(entryId, props.clacoForm.id, [], props.currentUser)
+                      props.loadEntryUser(entryId, props.currentUser)
                     }
                   })
                 break
@@ -93,7 +93,11 @@ const ClacoFormResource = props =>
           component: Overview
         }, {
           path: '/edit',
-          component: Editor,
+          render: () => {
+            const component = <Editor path={props.path} />
+
+            return component
+          },
           disabled: !props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.clacoForm)
@@ -107,8 +111,8 @@ const ClacoFormResource = props =>
           path: '/entries/:id',
           component: Entry,
           onEnter: (params) => {
-            props.openEntryForm(params.id, props.clacoForm.id)
-            props.loadEntryUser(params.id)
+            props.openEntryForm(params.id, props.clacoForm.id, [], props.currentUser)
+            props.loadEntryUser(params.id, props.currentUser)
           },
           onLeave: () => {
             props.resetEntryForm()
@@ -118,10 +122,10 @@ const ClacoFormResource = props =>
           path: '/entry/form/:id?',
           component: EntryForm,
           onEnter: (params) => {
-            props.openEntryForm(params.id, props.clacoForm.id, props.clacoForm.fields)
+            props.openEntryForm(params.id, props.clacoForm.id, props.clacoForm.fields, props.currentUser)
 
             if (params.id) {
-              props.loadEntryUser(params.id)
+              props.loadEntryUser(params.id, props.currentUser)
             }
           },
           onLeave: () => {
@@ -134,6 +138,8 @@ const ClacoFormResource = props =>
   </ResourcePage>
 
 ClacoFormResource.propTypes = {
+  path: T.string.isRequired,
+  currentUser: T.object,
   clacoForm: T.shape(ClacoFormType.propTypes).isRequired,
   canEdit: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,

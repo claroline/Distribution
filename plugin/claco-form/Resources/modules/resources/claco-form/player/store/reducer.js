@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 
+import {makeInstanceAction} from '#/main/app/store/actions'
 import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
@@ -140,7 +141,7 @@ const reducer = combineReducers({
     }
   }),
   myEntriesCount: makeReducer({}, {
-    [RESOURCE_LOAD]: (state, action) => action.resourceData.myEntriesCount || state,
+    [makeInstanceAction(RESOURCE_LOAD, selectors.STORE_NAME)]: (state, action) => action.resourceData.myEntriesCount || state,
     [ENTRY_CREATED]: (state) => {
       return state + 1
     }

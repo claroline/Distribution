@@ -5,6 +5,9 @@ import classes from 'classnames'
 
 import {url} from '#/main/app/api'
 import {withRouter} from '#/main/app/router'
+import {hasPermission} from '#/main/app/security'
+import {displayDate} from '#/main/app/intl/date'
+import {trans} from '#/main/app/intl/translation'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {ASYNC_BUTTON, CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
@@ -13,12 +16,10 @@ import {Button} from '#/main/app/action/components/button'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 
 import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {hasPermission} from '#/main/app/security'
-import {trans} from '#/main/app/intl/translation'
-import {displayDate} from '#/main/app/intl/date'
-import {UserMicro} from '#/main/core/user/components/micro'
-import {HtmlText} from '#/main/core/layout/components/html-text'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {MODAL_USER_PICKER} from '#/main/core/layout/modal/user-picker'
+import {HtmlText} from '#/main/core/layout/components/html-text'
+import {UserMicro} from '#/main/core/user/components/micro'
 
 import {
   Field as FieldType,
@@ -45,7 +46,7 @@ const EntryActions = props =>
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-pencil',
         label: trans('edit', {}, 'actions'),
-        target: `/entry/form/${props.entryId}`,
+        target: `${props.path}/entry/form/${props.entryId}`,
         displayed: !props.locked && props.canEdit,
         group: trans('management'),
         primary: true
@@ -140,6 +141,7 @@ const EntryActions = props =>
   />
 
 EntryActions.propTypes = {
+  path: T.string.isRequired,
   // data
   entryTitle: T.string.isRequired,
   entryId: T.string.isRequired,
@@ -287,7 +289,7 @@ class EntryComponent extends Component {
                   url: url(['apiv2_clacoformentry_previous', {clacoForm: this.props.clacoFormId, entry: this.props.entryId}])+this.props.slideshowQueryString,
                   success: (previous) => {
                     if (previous && previous.id) {
-                      this.props.history.push(`/entries/${previous.id}`)
+                      this.props.history.push(`${this.props.path}/entries/${previous.id}`)
                     }
                   }
                 }}
@@ -315,6 +317,7 @@ class EntryComponent extends Component {
 
                   {this.props.entry.id && this.props.entryUser.id &&
                     <EntryActions
+                      path={this.props.path}
                       entryId={this.props.entry.id}
                       entryTitle={this.props.entry.title}
                       status={this.props.entry.status}
@@ -385,7 +388,7 @@ class EntryComponent extends Component {
                   url: url(['apiv2_clacoformentry_next', {clacoForm: this.props.clacoFormId, entry: this.props.entryId}])+this.props.slideshowQueryString,
                   success: (next) => {
                     if (next && next.id) {
-                      this.props.history.push(`/entries/${next.id}`)
+                      this.props.history.push(`${this.props.path}/entries/${next.id}`)
                     }
                   }
                 }}
@@ -412,6 +415,7 @@ class EntryComponent extends Component {
 }
 
 EntryComponent.propTypes = {
+  path: T.string.isRequired,
   clacoFormId: T.string.isRequired,
   slideshowQueryString: T.string,
   entryId: T.string,
@@ -461,6 +465,7 @@ EntryComponent.propTypes = {
 
 const Entry = withRouter(connect(
   (state, ownProps) => ({
+    path: toolSelectors.path(state),
     clacoFormId: selectors.clacoForm(state).id,
     slideshowQueryString: playerSelectors.slideshowQueryString(state),
     entryId: ownProps.match.params.id || formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')).id,
