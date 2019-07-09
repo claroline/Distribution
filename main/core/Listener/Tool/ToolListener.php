@@ -118,16 +118,13 @@ class ToolListener
             ];
         }
 
-        $event->setContent(
-            $this->templating->render(
-                'ClarolineCoreBundle:tool\desktop\parameters:parameters.html.twig',
-                [
-                    'tools' => array_map(function (Tool $tool) {
-                        return $this->serializer->serialize($tool);
-                    }, $tools),
-                    'toolsConfig' => 0 < count($toolsConfig) ? $toolsConfig : new \stdClass(),
-                ]
-            )
+        $event->setData(
+          [
+              'tools' => array_map(function (Tool $tool) {
+                  return $this->serializer->serialize($tool);
+              }, $tools),
+              'toolsConfig' => 0 < count($toolsConfig) ? $toolsConfig : new \stdClass(),
+          ]
         );
     }
 }

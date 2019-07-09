@@ -120,7 +120,6 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
             LEFT JOIN tool.plugin p
             WHERE user.id = {$user->getId()}
             AND ot.type = :type
-            AND ot.isVisibleInDesktop = true
             AND tool.isDisplayableInDesktop = true
             AND (
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
@@ -155,7 +154,6 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
             LEFT JOIN tool.plugin p
             WHERE user.id = {$user->getId()}
             AND ot.type = :type
-            AND ot.isVisibleInDesktop = true
             AND tool.isDisplayableInDesktop = true
             AND tool NOT IN (:excludedTools)
             AND (

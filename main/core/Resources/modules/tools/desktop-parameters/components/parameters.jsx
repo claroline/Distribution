@@ -19,9 +19,7 @@ import {Checkbox} from '#/main/app/input/components/checkbox'
 
 const ToolComponent = (props) =>
   <PageContainer>
-    <PageHeader
-      title={trans('parameters', {}, 'tools')}
-    >
+    <PageHeader>
       <PageActions>
         <PageAction
           id="save"
@@ -60,22 +58,22 @@ ToolComponent.propTypes = {
   save: T.func
 }
 
-const List = connect(
+const Parameters = connect(
   (state) => ({
     tools: selectors.tools(state),
-    toolsConfig: formSelect.data(formSelect.form(state, 'toolsConfig')),
-    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'toolsConfig'))
+    toolsConfig: formSelect.data(formSelect.form(state, 'parameters.toolsConfig')),
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'parameters.toolsConfig'))
   }),
   (dispatch) => ({
     updateProp(propName, propValue) {
-      dispatch(formActions.updateProp('toolsConfig', propName, propValue))
+      dispatch(formActions.updateProp('parameters.toolsConfig', propName, propValue))
     },
     save() {
-      dispatch(formActions.save('toolsConfig', ['apiv2_desktop_tools_configure']))
+      dispatch(formActions.save('parameters.toolsConfig', ['apiv2_desktop_tools_configure']))
     }
   })
 )(ToolComponent)
 
 export {
-  List
+  Parameters
 }

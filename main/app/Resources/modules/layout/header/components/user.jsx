@@ -94,16 +94,6 @@ const UserMenu = props =>
 
       {props.authenticated &&
         <Button
-          type={URL_BUTTON}
-          className="list-group-item"
-          icon="fa fa-fw fa-cog"
-          label={trans('parameters', {}, 'tools')}
-          target={['claro_desktop_open_tool', {toolName: 'parameters'}]}
-        />
-      }
-
-      {props.authenticated &&
-        <Button
           type={LINK_BUTTON}
           className="list-group-item"
           icon="fa fa-fw fa-cogs"

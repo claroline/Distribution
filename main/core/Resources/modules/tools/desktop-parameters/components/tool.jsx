@@ -1,35 +1,49 @@
 import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
-import {TabbedPageContainer} from '#/main/core/layout/tabs'
 
-import {List} from '#/main/core/tools/desktop-parameters/components/list'
+import {Parameters} from '#/main/core/tools/desktop-parameters/components/parameters'
 //import {TokenTabActions, TokenTabComponent} from '#/main/core/tools/desktop-parameters/token/components/token-tab'
-//import {DocumentationComponent} from '#/main/core/documentation/components/documentation'
+//import {DocumentationCompone
+import {PropTypes as T} from 'prop-types'
 
-const Tool = () =>
-  <TabbedPageContainer
-    tabs={[
-      {
-        icon: 'fa fa-fw fa-cog',
-        title: trans('tools'),
-        path: '/',
-        exact: true,
-        content: List
-      }/*, {
-        icon: 'fa fa-fw fa-wrench',
-        title: trans('tokens'),
-        path: '/tokens',
-        actions: TokenTabActions,
-        content: TokenTabComponent
-      }, {
-        icon: 'fa fa-fw fa-book',
-        title: trans('documentation'),
-        path: '/documentation',
-        content: DocumentationComponent
-      }*/
-    ]}
-  />
+import {Routes} from '#/main/app/router'
+import {ToolPage} from '#/main/core/tool/containers/page'
+
+
+// TODO : redirect to public list if user is not registered
+
+const Tool = (props) =>
+  <ToolPage
+    subtitle={
+      <Routes
+        path={props.path}
+        routes={[
+          {path: '/parameters', render: () => trans('configuration'), disabled: false}
+        ]}
+      />
+    }
+  >
+    <Routes
+      path={props.path}
+      routes={[
+        {
+          path: '/',
+          disabled: false,
+          render: () =>
+            <Parameters tools={props.tools} toolsConfig={props.toolsConfig} />
+        }]
+      }
+
+      redirect={[
+        {from: '/', exact: true, to: '/'}
+      ]}
+    />
+  </ToolPage>
+
+Tool.propTypes = {
+  path: T.string.isRequired
+}
 
 export {
   Tool
