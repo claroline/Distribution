@@ -16,10 +16,8 @@ class NotificationListener
 
     public function onCreateNotificationItem(NotificationCreateDelegateViewEvent $event)
     {
-        $router = $this->container->get('router');
         $translator = $this->container->get('translator');
         $authStorage = $this->container->get('security.token_storage');
-        $current = $authStorage->getToken()->getUser();
 
         $notificationView = $event->getNotificationView();
         $notification = $notificationView->getNotification();

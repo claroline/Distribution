@@ -29,7 +29,6 @@ class NotificationListener
 
     public function onCreateNotificationItem(NotificationCreateDelegateViewEvent $event)
     {
-        $router = $this->container->get('router');
         $translator = $this->container->get('translator');
         $authStorage = $this->container->get('security.token_storage');
         $current = $authStorage->getToken()->getUser();
@@ -68,7 +67,7 @@ class NotificationListener
             }
 
             if (isset($notification->getDetails()['receiverUser']['username']) && $notification->getDetails()['receiverUser']['username'] !== $current->getUsername()) {
-                $text = $trans->translator->trans('user_subscription_notification_for_admin', ['%workspace%' => $notification->getDetails()['workspace']['name']]);
+                $text = $translator->trans('user_subscription_notification_for_admin', ['%workspace%' => $notification->getDetails()['workspace']['name']]);
             } else {
                 $text = $translator->trans(
                 $notification->getActionKey(),

@@ -46,22 +46,19 @@ class NotificationViewerFinder extends AbstractFinder
                 $qb->setParameter('viewerId', $filterValue);
                 break;
               case 'types':
-                foreach ($visibleTypes as $name => $val) {
-                    if (!$val) {
-                        $qb->andWhere(
-                            $qb
-                                ->expr()
-                                ->notLike(
-                                    'notification.actionKey',
-                                    $qb->expr()->literal('%'.$name.'%')
-                                )
-                        );
-                    }
+                foreach ($visibleTypes as $name) {
+                    $qb->andWhere(
+                      $qb->expr()
+                        ->notLike(
+                          'notification.actionKey',
+                          $qb->expr()->literal('%'.$name.'%')
+                      )
+                    );
                     break;
                 }
                 // no break
               case 'category':
-                if ('system' != $category) {
+                if ('system' !== $category) {
                     $qb->andWhere('notification.iconKey = :category')
                         ->setParameter('category', $category);
                 } else {
