@@ -398,7 +398,7 @@ class EntryComponent extends Component {
               title={trans('shared_with', {}, 'clacoform')}
             >
               {this.props.sharedUsers.map(u =>
-                <div>
+                <div key={`shared-${u.id}`}>
                   {u.firstName} {u.lastName}
                   <Button
                     className="btn-link"
@@ -473,6 +473,7 @@ EntryComponent.propTypes = {
   unshareEntry: T.func.isRequired,
   updateEntryUserProp: T.func.isRequired,
   saveEntryUser: T.func.isRequired,
+  fetchEntryUsersShared: T.func.isRequired,
   showModal: T.func.isRequired,
   history: T.object.isRequired,
   sharedUsers: T.arrayOf(T.object)
