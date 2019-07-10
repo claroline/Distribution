@@ -13,7 +13,7 @@ const ParametersTool = (props) =>
       <Routes
         path={props.path}
         routes={[
-          {path: '/parameters', render: () => trans('tools'), disabled: false}
+          {path: '/', render: () => trans('tools'), exact: true}
         ]}
       />
     }
@@ -23,7 +23,6 @@ const ParametersTool = (props) =>
       routes={[
         {
           path: '/',
-          disabled: false,
           render: () => {
             const Params = <Parameters/>
 
