@@ -6,7 +6,7 @@ import {UserDetails} from '#/main/core/user/components/details'
 import {connectProfile} from '#/main/core/tools/users/components/profile/connect'
 import {ProfileNav} from '#/main/core/tools/users/components/profile/components/nav'
 import {ProfileFacets} from '#/main/core/tools/users/components/profile/components/facets'
-
+import {selectors as select} from '#/main/core/tools/users/components/profile/store/selectors'
 import {selectors} from '#/main/app/content/details/store'
 import {ProfileFacet} from '#/main/core/tools/users/components/profile/player/components/facet'
 
@@ -43,7 +43,7 @@ ProfileShowComponent.propTypes = {
 
 const ProfileShow = connectProfile(
   state => ({
-    user: selectors.data(selectors.details(state, 'user'))
+    user: selectors.data(selectors.details(state, select.FORM_NAME))
   })
 )(ProfileShowComponent)
 

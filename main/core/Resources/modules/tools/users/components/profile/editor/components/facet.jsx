@@ -13,6 +13,7 @@ import {ProfileFacet as ProfileFacetTypes} from '#/main/core/tools/users/compone
 import {selectors as select} from '#/main/core/tools/users/components/profile/store/selectors'
 import {getFormDefaultSection, formatFormSections} from '#/main/core/tools/users/components/profile/utils'
 
+
 // todo manage differences between main / default / plugin facets
 
 const ProfileFacetComponent = props => {
@@ -30,7 +31,7 @@ const ProfileFacetComponent = props => {
 
   return (
     <FormData
-      name="user"
+      name={select.STORE_NAME}
       title={props.facet.title}
       target={['apiv2_user_update', {id: props.user.id}]}
       buttons={true}
@@ -57,8 +58,8 @@ ProfileFacetComponent.propTypes = {
 const ProfileFacet = connect(
   state => ({
     currentUser: securitySelectors.currentUser(state),
-    user: formSelect.data(formSelect.form(state, 'user')),
-    originalUser: formSelect.originalData(formSelect.form(state, 'user')),
+    user: formSelect.data(formSelect.form(state, select.STORE_NAME)),
+    originalUser: formSelect.originalData(formSelect.form(state, select.STORE_NAME)),
     facet: select.currentFacet(state),
     parameters: select.parameters(state)
   })

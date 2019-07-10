@@ -46,7 +46,7 @@ ProfileFacetComponent.propTypes = {
 const ProfileFacet = connect(
   state => ({
     currentUser: securitySelectors.currentUser(state),
-    user: detailsSelect.data(detailsSelect.details(state, 'user')),
+    user: detailsSelect.data(detailsSelect.details(state, select.STORE_NAME)),
     facet: select.currentFacet(state),
     parameters: select.parameters(state)
   })

@@ -1,12 +1,9 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
+import {Profile} from '#/main/core/tools/users/components/profile/containers/main.jsx'
 import {ToolPage} from '#/main/core/tool/containers/page'
-import {Profile} from '#/main/core/tools/users/components/profile/components/main.jsx'
-
-// TODO : redirect to public list if user is not registered
 
 const UsersTool = (props) =>
   <ToolPage
@@ -26,7 +23,7 @@ const UsersTool = (props) =>
         {
           path: '/profile',
           render: () => {
-            return(<div>profile</div>)
+            return (<Profile/>)
           }
         }, {
           path: '/list',

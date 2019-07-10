@@ -55,12 +55,6 @@ claro_log:
     prefix: log
     type: annotation
 
-# new
-claro_user_profile:
-    resource: "@ClarolineCoreBundle/Controller/tools/users/components/profileController.php"
-    type: annotation
-    options: { expose: true }
-
 claro_user_registration:
     resource: "@ClarolineCoreBundle/Controller/User/RegistrationController.php"
     type: annotation

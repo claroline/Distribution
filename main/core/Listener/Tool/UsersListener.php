@@ -19,7 +19,7 @@ use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -35,7 +35,8 @@ class UsersListener
      *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
      *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
      *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile"),
-     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters")
+     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
+     *     "request"              = @DI\Inject("request_stack")
      * })
      *
      * @param ObjectManager        $om
@@ -49,14 +50,14 @@ class UsersListener
         UserSerializer $userSerializer,
         ProfileSerializer $profileSerializer,
         ParametersSerializer $parametersSerializer,
-        Request $request
+        RequestStack $request
     ) {
-        $this->authorization = $authorization;
+        $this->tokenStorage = $tokenStorage;
         $this->om = $om;
         $this->userSerializer = $userSerializer;
         $this->profileSerializer = $profileSerializer;
         $this->parametersSerializer = $parametersSerializer;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
     }
 
     /**
@@ -96,13 +97,16 @@ class UsersListener
     {
         $userId = $this->request->query->get('userId');
 
-        $profileUser = $this->om->getRepository(User::class)->findOneByIdOrPublicUrl($userId) ??
+        $profileUser = $userId ? $this->om->getRepository(User::class)->findOneById($userId) :
           $this->tokenStorage->getToken()->getUser();
 
         $serializedUser = $this->userSerializer->serialize($profileUser, [Options::SERIALIZE_FACET]);
 
         $event->setData([
-          'user' => $serializedUser,
+          'user' => [
+              'data' => $serializedUser,
+              'originalData' => $serializedUser,
+          ],
           'facets' => $this->profileSerializer->serialize(),
           'parameters' => $this->parametersSerializer->serialize()['profile'],
         ]);

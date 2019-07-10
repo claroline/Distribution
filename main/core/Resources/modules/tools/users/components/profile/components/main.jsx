@@ -1,14 +1,10 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
-import {Routes, withRouter} from '#/main/app/router'
-import {selectors as securitySelectors} from '#/main/app/security/store'
+import {Routes} from '#/main/app/router'
 import {UserPageContainer} from '#/main/core/user/containers/page'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
-import {selectors} from '#/main/app/content/details/store'
-import {selectors as profileSelect} from '#/main/core/tools/users/components/profile/store/selectors'
 import {ProfileEdit} from '#/main/core/tools/users/components/profile/editor/components/main'
 import {ProfileShow} from '#/main/core/tools/users/components/profile/player/components/main'
 import {ProfileBadgeList} from '#/plugin/open-badge/tools/badges/badge/components/profile-badges'
@@ -46,16 +42,6 @@ ProfileComponent.propTypes = {
   parameters: T.object.isRequired
 }
 
-const Profile = withRouter(
-  connect(
-    (state) => ({
-      currentUser: securitySelectors.currentUser(state),
-      user: selectors.data(selectors.details(state, 'user')),
-      parameters: profileSelect.parameters(state)
-    })
-  )(ProfileComponent)
-)
-
 export {
-  Profile
+  ProfileComponent
 }
