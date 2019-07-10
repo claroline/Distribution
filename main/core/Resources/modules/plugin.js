@@ -93,6 +93,7 @@ registry.add('ClarolineCoreBundle', {
    */
   tools: {
     'home'            : () => { return import(/* webpackChunkName: "core-tool-home" */       '#/main/core/tools/home') },
+    'user'            : () => { return import(/* webpackChunkName: "core-tool-user" */       '#/main/core/tools/user') },
     'workspaces'      : () => { return import(/* webpackChunkName: "core-tool-workspaces" */ '#/main/core/tools/workspaces') },
     'resource_manager': () => { return import(/* webpackChunkName: "core-tool-resources" */  '#/main/core/tools/resources') }
   },
