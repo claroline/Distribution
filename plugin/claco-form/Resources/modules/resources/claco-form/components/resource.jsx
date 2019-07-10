@@ -15,7 +15,7 @@ import {Entries} from '#/plugin/claco-form/resources/claco-form/player/component
 import {EntryForm} from '#/plugin/claco-form/resources/claco-form/player/components/entry-form'
 import {Entry} from '#/plugin/claco-form/resources/claco-form/player/components/entry'
 
-function getHome(type, path) {
+function getHome(type) {
   switch (type) {
     case 'search':
       return Entries
@@ -63,7 +63,7 @@ const ClacoFormResource = props =>
       routes={[
         {
           path: '/',
-          component: getHome(props.defaultHome, props.path),
+          component: getHome(props.defaultHome),
           exact: true,
           onEnter: () => {
             switch (props.defaultHome) {
