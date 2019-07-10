@@ -10,7 +10,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 
 import {selectors as baseSelectors} from '#/main/core/administration/users/store'
-import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/tools/users/components/profile/prop-types'
 import {actions, selectors} from '#/main/core/administration/users/profile/store'
 
 const FacetSection = props =>

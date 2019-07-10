@@ -57,7 +57,7 @@ claro_log:
 
 # new
 claro_user_profile:
-    resource: "@ClarolineCoreBundle/Controller/User/ProfileController.php"
+    resource: "@ClarolineCoreBundle/Controller/tools/users/components/profileController.php"
     type: annotation
     options: { expose: true }
 

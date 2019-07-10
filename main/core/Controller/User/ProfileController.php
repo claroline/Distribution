@@ -25,7 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * @EXT\Route("/user/profile")
+ * @EXT\Route("/tools/users/components/profile")
  */
 class ProfileController extends Controller
 {

@@ -3,8 +3,8 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
-import {LINK_BUTTON} from '#/main/app/buttons'
 import {ToolPage} from '#/main/core/tool/containers/page'
+import {Profile} from '#/main/core/tools/users/components/profile/components/main.jsx'
 
 // TODO : redirect to public list if user is not registered
 
@@ -14,8 +14,8 @@ const UsersTool = (props) =>
       <Routes
         path={props.path}
         routes={[
-          {path: '/profile',        render: () => trans('new_workspace', {}, 'workspace'), disabled: false},
-          {path: '/list', render: () => trans('my_workspaces', {}, 'workspace'), disabled: false}
+          {path: '/profile',        render: () => trans('profile'), disabled: false},
+          {path: '/list', render: () => trans('users'), disabled: false}
         ]}
       />
     }

@@ -9,9 +9,9 @@ import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
-import {select} from '#/main/core/user/profile/selectors'
-import {getFormDefaultSection, formatFormSections} from '#/main/core/user/profile/utils'
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/tools/users/components/profile/prop-types'
+import {selectors as select} from '#/main/core/tools/users/components/profile/store/selectors'
+import {getFormDefaultSection, formatFormSections} from '#/main/core/tools/users/components/profile/utils'
 
 // todo manage differences between main / default / plugin facets
 

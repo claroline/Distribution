@@ -11,45 +11,52 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
+use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service
  */
 class UsersListener
 {
-    /** @var AuthorizationCheckerInterface */
-    private $authorization;
-    /** @var TwigEngine */
-    private $templating;
-    /** @var ObjectManager */
-    private $om;
-
     /**
-     * UsersListener constructor.
+     * ProfileController constructor.
      *
      * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "templating"    = @DI\Inject("templating"),
-     *     "om"            = @DI\Inject("claroline.persistence.object_manager")
+     *     "tokenStorage"         = @DI\Inject("security.token_storage"),
+     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
+     *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
+     *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile"),
+     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters")
      * })
      *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param TwigEngine                    $templating
-     * @param ObjectManager                 $om
+     * @param ObjectManager        $om
+     * @param UserSerializer       $userSerializer
+     * @param ProfileSerializer    $profileSerializer
+     * @param ParametersSerializer $parametersSerializer
      */
     public function __construct(
-        AuthorizationCheckerInterface $authorization,
-        TwigEngine $templating,
-        ObjectManager $om
+        TokenStorageInterface $tokenStorage,
+        ObjectManager $om,
+        UserSerializer $userSerializer,
+        ProfileSerializer $profileSerializer,
+        ParametersSerializer $parametersSerializer,
+        Request $request
     ) {
         $this->authorization = $authorization;
-        $this->templating = $templating;
         $this->om = $om;
+        $this->userSerializer = $userSerializer;
+        $this->profileSerializer = $profileSerializer;
+        $this->parametersSerializer = $parametersSerializer;
+        $this->request = $request;
     }
 
     /**
@@ -61,6 +68,7 @@ class UsersListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
+        //change this
         $workspace = $event->getWorkspace();
 
         $content = $this->templating->render(
@@ -80,15 +88,24 @@ class UsersListener
     }
 
     /**
-     * Displays users on Workspace.
-     *
      * @DI\Observe("open_tool_desktop_users")
      *
      * @param DisplayToolEvent $event
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
-        $event->setData([]);
+        $userId = $this->request->query->get('userId');
+
+        $profileUser = $this->om->getRepository(User::class)->findOneByIdOrPublicUrl($userId) ??
+          $this->tokenStorage->getToken()->getUser();
+
+        $serializedUser = $this->userSerializer->serialize($profileUser, [Options::SERIALIZE_FACET]);
+
+        $event->setData([
+          'user' => $serializedUser,
+          'facets' => $this->profileSerializer->serialize(),
+          'parameters' => $this->parametersSerializer->serialize()['profile'],
+        ]);
         $event->stopPropagation();
     }
 }

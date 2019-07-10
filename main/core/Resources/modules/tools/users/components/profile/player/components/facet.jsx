@@ -8,9 +8,9 @@ import {selectors as securitySelectors} from '#/main/app/security/store'
 import {selectors as detailsSelect} from '#/main/app/content/details/store'
 import {DetailsData} from '#/main/app/content/details/containers/data'
 
-import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
-import {select} from '#/main/core/user/profile/selectors'
-import {getDetailsDefaultSection, formatDetailsSections} from '#/main/core/user/profile/utils'
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/tools/users/components/profile/prop-types'
+import {selectors as select} from '#/main/core/tools/users/components/profile/store/selectors'
+import {getDetailsDefaultSection, formatDetailsSections} from '#/main/core/tools/users/components/profile/utils'
 
 const ProfileFacetComponent = props => {
   // todo : create a selector instead

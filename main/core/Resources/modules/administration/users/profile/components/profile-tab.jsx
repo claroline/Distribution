@@ -6,8 +6,8 @@ import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
 
-import {ProfileNav} from '#/main/core/user/profile/components/nav'
-import {ProfileFacets} from '#/main/core/user/profile/components/facets'
+import {ProfileNav} from '#/main/core/tools/users/components/profile/components/nav'
+import {ProfileFacets} from '#/main/core/tools/users/components/profile/components/facets'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {ProfileFacet} from '#/main/core/administration/users/profile/components/facet'

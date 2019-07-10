@@ -2,12 +2,12 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {UserDetails} from '#/main/core/user/components/details'
-import {connectProfile} from '#/main/core/user/profile/connect'
-import {ProfileNav} from '#/main/core/user/profile/components/nav'
-import {ProfileFacets} from '#/main/core/user/profile/components/facets'
+import {connectProfile} from '#/main/core/tools/users/components/profile/connect'
+import {ProfileNav} from '#/main/core/tools/users/components/profile/components/nav'
+import {ProfileFacets} from '#/main/core/tools/users/components/profile/components/facets'
 
 import {selectors as select} from '#/main/app/content/form/store/selectors'
-import {ProfileFacet} from '#/main/core/user/profile/editor/components/facet'
+import {ProfileFacet} from '#/main/core/tools/users/components/profile/editor/components/facet'
 
 const ProfileEditComponent = props =>
   <div className="row user-profile user-profile-edit">

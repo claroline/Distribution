@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import {
   getDefaultFacet,
   getMainFacet
-} from '#/main/core/user/profile/utils'
+} from '#/main/core/tools/users/components/profile/utils'
 
 /**
  *

@@ -1,5 +1,26 @@
-const STORE_NAME = 'users'
+import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 
-export const selectors = {
-  STORE_NAME
+import {makeReducer} from '#/main/app/store/reducer'
+import {makeFormReducer} from '#/main/app/content/form/store/reducer'
+import {makeListReducer} from '#/main/app/content/list/store'
+import {combineReducers} from '#/main/app/store/reducer'
+
+import {
+  PROFILE_FACET_OPEN
+} from '#/main/core/tools/users/components/profile/store/actions'
+
+const reducer = {
+  currentFacet: makeReducer(null, {
+    [PROFILE_FACET_OPEN]: (state, action) => action.id
+  }),
+  facets: makeReducer([], {}),
+  user: makeFormReducer('user', {}),
+  parameters: makeReducer({}, {}),
+  badges: combineReducers({
+    mine: makeListReducer('badges.mine', {})
+  })
+}
+
+export {
+  reducer
 }

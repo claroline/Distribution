@@ -8,9 +8,9 @@ import {UserPageContainer} from '#/main/core/user/containers/page'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
 import {selectors} from '#/main/app/content/details/store'
-import {select as profileSelect} from '#/main/core/user/profile/selectors'
-import {ProfileEdit} from '#/main/core/user/profile/editor/components/main'
-import {ProfileShow} from '#/main/core/user/profile/player/components/main'
+import {selectors as profileSelect} from '#/main/core/tools/users/components/profile/store/selectors'
+import {ProfileEdit} from '#/main/core/tools/users/components/profile/editor/components/main'
+import {ProfileShow} from '#/main/core/tools/users/components/profile/player/components/main'
 import {ProfileBadgeList} from '#/plugin/open-badge/tools/badges/badge/components/profile-badges'
 
 const ProfileComponent = props =>

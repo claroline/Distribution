@@ -3,12 +3,12 @@ import {PropTypes as T} from 'prop-types'
 
 import {UserDetails} from '#/main/core/user/components/details'
 
-import {connectProfile} from '#/main/core/user/profile/connect'
-import {ProfileNav} from '#/main/core/user/profile/components/nav'
-import {ProfileFacets} from '#/main/core/user/profile/components/facets'
+import {connectProfile} from '#/main/core/tools/users/components/profile/connect'
+import {ProfileNav} from '#/main/core/tools/users/components/profile/components/nav'
+import {ProfileFacets} from '#/main/core/tools/users/components/profile/components/facets'
 
 import {selectors} from '#/main/app/content/details/store'
-import {ProfileFacet} from '#/main/core/user/profile/player/components/facet'
+import {ProfileFacet} from '#/main/core/tools/users/components/profile/player/components/facet'
 
 const ProfileShowComponent = props =>
   <div className="user-profile row">
