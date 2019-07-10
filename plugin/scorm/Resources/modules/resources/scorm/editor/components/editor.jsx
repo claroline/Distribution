@@ -7,6 +7,8 @@ import {actions as formActions} from '#/main/app/content/form/store/actions'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
+
 import {constants} from '#/plugin/scorm/resources/scorm/constants'
 import {selectors} from '#/plugin/scorm/resources/scorm/store'
 
@@ -60,7 +62,9 @@ EditorComponent.propTypes = {
 }
 
 const Editor = connect(
-  null,
+  (state) => ({
+    path: resourceSelectors.path(state)
+  }),
   (dispatch) => ({
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(selectors.STORE_NAME+'.scormForm', propName, propValue))
