@@ -14,10 +14,10 @@ import {ASYNC_BUTTON, CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/a
 import {DetailsData} from '#/main/app/content/details/containers/data'
 import {Button} from '#/main/app/action/components/button'
 import {Toolbar} from '#/main/app/action/components/toolbar'
+import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {selectors as toolSelectors} from '#/main/core/tool/store'
-import {MODAL_USER_PICKER} from '#/main/core/layout/modal/user-picker'
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
+import {MODAL_USERS} from '#/main/core/modals/users'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {UserMicro} from '#/main/core/user/components/micro'
 
@@ -67,11 +67,13 @@ const EntryActions = props =>
         icon: 'fa fa-fw fa-user-edit',
         label: trans('change_entry_owner', {}, 'clacoform'),
         callback: props.changeOwner,
-        modal: [MODAL_USER_PICKER, {
-          title: trans('change_entry_owner', {}, 'clacoform'),
-          unique: true,
-          handleRemove: () => {},
-          handleSelect: props.changeOwner
+        modal: [MODAL_USERS, {
+          url: ['apiv2_visible_users_list'],
+          selectAction: (users) => ({
+            type: CALLBACK_BUTTON,
+            label: trans('change_entry_owner', {}, 'clacoform'),
+            callback: () => props.changeOwner(users[0])
+          })
         }],
         displayed: props.canAdministrate,
         group: trans('management')
@@ -109,10 +111,18 @@ const EntryActions = props =>
         group: trans('transfer')
       }, {
         name: 'share',
-        type: CALLBACK_BUTTON,
+        type: MODAL_BUTTON,
         icon: 'fa fa-fw fa-share-alt',
         label: trans('share', {}, 'actions'),
         callback: props.share,
+        modal: [MODAL_USERS, {
+          url: ['apiv2_visible_users_list'],
+          selectAction: (users) => ({
+            type: CALLBACK_BUTTON,
+            label: trans('share', {}, 'actions'),
+            callback: () => props.share(users[0])
+          })
+        }],
         displayed: props.canShare,
         group: trans('community')
       }, {
@@ -170,10 +180,8 @@ EntryActions.propTypes = {
 }
 
 class EntryComponent extends Component {
-  constructor(props) {
-    super(props)
-
-    this.showSharingForm = this.showSharingForm.bind(this)
+  componentDidMount() {
+    this.props.fetchEntryUsersShared(this.props.entryId)
   }
 
   canViewMetadata() {
@@ -192,26 +200,6 @@ class EntryComponent extends Component {
 
   isFieldDisplayable(field) {
     return this.canViewMetadata() || !field.restrictions.isMetadata
-  }
-
-  showSharingForm() {
-    fetch(url(['claro_claco_form_entry_shared_users_list', {entry: this.props.entryId}]), {
-      method: 'GET' ,
-      credentials: 'include'
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.props.showModal(
-          MODAL_USER_PICKER,
-          {
-            title: trans('select_users_to_share', {}, 'clacoform'),
-            help: trans('share_entry_msg', {}, 'clacoform'),
-            handleRemove: (user) => this.props.unshareEntry(this.props.entryId, user.id),
-            handleSelect: (user) => this.props.shareEntry(this.props.entryId, user.id),
-            selected: data.users
-          }
-        )
-      })
   }
 
   getSections(fields) {
@@ -333,7 +321,7 @@ class EntryComponent extends Component {
 
                       changeOwner={(user) => this.props.changeEntryOwner(this.props.entry.id, user.id)}
                       downloadPdf={() => this.props.downloadEntryPdf(this.props.entry.id)}
-                      share={this.showSharingForm}
+                      share={(user) => this.props.shareEntry(this.props.entryId, user.id)}
                       delete={() => this.props.deleteEntry(this.props.entry)}
                       toggleStatus={() => this.props.switchEntryStatus(this.props.entry.id)}
                       toggleLock={() => this.props.switchEntryLock(this.props.entry.id)}
@@ -401,6 +389,32 @@ class EntryComponent extends Component {
           }
         </div>
 
+        {this.canShare() && 0 < this.props.sharedUsers.length &&
+          <FormSections level={3}>
+            <FormSection
+              id="shared-users"
+              className="embedded-list-section"
+              icon="fa fa-fw fa-share-alt"
+              title={trans('shared_with', {}, 'clacoform')}
+            >
+              {this.props.sharedUsers.map(u =>
+                <div>
+                  {u.firstName} {u.lastName}
+                  <Button
+                    className="btn-link"
+                    type={CALLBACK_BUTTON}
+                    icon="fa fa-fw fa-trash-o"
+                    label={trans('unshare', {}, 'clacoform')}
+                    tooltip="left"
+                    dangerous={true}
+                    callback={() => this.props.unshareEntry(this.props.entryId, u.id)}
+                  />
+                </div>
+              )}
+            </FormSection>
+          </FormSections>
+        }
+
         {(this.props.canViewComments || this.props.canComment) &&
           <EntryComments
             opened={this.props.openComments}
@@ -460,19 +474,21 @@ EntryComponent.propTypes = {
   updateEntryUserProp: T.func.isRequired,
   saveEntryUser: T.func.isRequired,
   showModal: T.func.isRequired,
-  history: T.object.isRequired
+  history: T.object.isRequired,
+  sharedUsers: T.arrayOf(T.object)
 }
 
 const Entry = withRouter(connect(
   (state, ownProps) => ({
-    path: toolSelectors.path(state),
+    path: resourceSelectors.path(state),
     clacoFormId: selectors.clacoForm(state).id,
     slideshowQueryString: playerSelectors.slideshowQueryString(state),
     entryId: ownProps.match.params.id || formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')).id,
     entry: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.entries.current')),
     entryUser: selectors.entryUser(state),
+    sharedUsers: selectors.entryUsersShared(state),
 
-    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
+    canEdit: hasPermission('edit', resourceSelectors.resourceNode(state)),
     canEditEntry: selectors.canEditCurrentEntry(state),
     canViewEntry: selectors.canOpenCurrentEntry(state),
     canAdministrate: selectors.canAdministrate(state),
@@ -524,6 +540,9 @@ const Entry = withRouter(connect(
     },
     saveEntryUser(entryUser) {
       dispatch(actions.saveEntryUser(entryUser))
+    },
+    fetchEntryUsersShared(entryId) {
+      dispatch(actions.fetchEntryUsersShared(entryId))
     },
     showModal(type, props) {
       dispatch(modalActions.showModal(type, props))

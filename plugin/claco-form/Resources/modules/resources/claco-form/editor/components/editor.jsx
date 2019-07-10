@@ -15,6 +15,8 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {ListForm} from '#/main/app/content/list/parameters/containers/form'
 import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
+
 import {getTemplateErrors, getTemplateHelp} from '#/plugin/claco-form/resources/claco-form/template'
 import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {ClacoForm as ClacoFormTypes} from '#/plugin/claco-form/resources/claco-form/prop-types'
@@ -517,6 +519,7 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   (state) => ({
+    path: resourceSelectors.path(state),
     clacoForm: formSelect.data(formSelect.form(state, selectors.STORE_NAME+'.clacoFormForm')),
     errors: formSelect.errors(formSelect.form(state, selectors.STORE_NAME+'.clacoFormForm')),
     roles: selectors.roles(state)

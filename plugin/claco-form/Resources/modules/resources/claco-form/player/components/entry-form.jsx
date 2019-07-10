@@ -18,8 +18,7 @@ import {trans} from '#/main/app/intl/translation'
 import {hasPermission} from '#/main/app/security'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 
-import {selectors as resourceSelect} from '#/main/core/resource/store'
-import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
@@ -291,9 +290,9 @@ EntryFormComponent.propTypes = {
 
 const EntryForm = withRouter(connect(
   state => ({
-    path: toolSelectors.path(state),
+    path: resourceSelectors.path(state),
     currentUser: securitySelectors.currentUser(state),
-    canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
+    canEdit: hasPermission('edit', resourceSelectors.resourceNode(state)),
     clacoFormId: selectors.clacoForm(state).id,
     fields: selectors.visibleFields(state),
     useTemplate: selectors.useTemplate(state),

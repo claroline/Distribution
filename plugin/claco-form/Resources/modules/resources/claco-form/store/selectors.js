@@ -10,15 +10,11 @@ const STORE_NAME = 'claroline_claco_form'
 
 const resource = (state) => state[STORE_NAME]
 const authenticatedUser = (state) => securitySelectors.currentUser(state)
+const isAnon = (state) => !securitySelectors.isAuthenticated(state)
 
 const clacoForm = createSelector(
   [resource],
   (resource) => resource.clacoForm
-)
-
-const isAnon = createSelector(
-  [authenticatedUser],
-  (authenticatedUser) => authenticatedUser === null
 )
 
 const params = createSelector(
@@ -94,6 +90,11 @@ const entryUser = createSelector(
 const usedCountries = createSelector(
   [entries],
   (entries) => entries.countries
+)
+
+const entryUsersShared = createSelector(
+  [entries],
+  (entries) => entries.entryUsersShared
 )
 
 const canEdit = createSelector(
@@ -292,6 +293,7 @@ export const selectors = {
   myRoles,
   entryUser,
   usedCountries,
+  entryUsersShared,
   canGeneratePdf,
   message,
   listConfiguration,

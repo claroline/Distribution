@@ -8,7 +8,7 @@ import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
-import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
 
 import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 
@@ -58,7 +58,7 @@ EntryMenuComponent.propTypes = {
 
 const EntryMenu = withRouter(connect(
   (state) => ({
-    path: toolSelectors.path(state),
+    path: resourceSelectors.path(state),
     clacoFormId: selectors.clacoForm(state).id,
     canSearchEntry: selectors.canSearchEntry(state),
     randomEnabled: selectors.clacoForm(state).random.enabled

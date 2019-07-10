@@ -23,7 +23,10 @@ import {
   ENTRY_CATEGORY_REMOVE,
   ENTRY_KEYWORD_ADD,
   ENTRY_KEYWORD_REMOVE,
-  USED_COUNTRIES_LOAD
+  USED_COUNTRIES_LOAD,
+  ENTRY_USERS_SHARED_LOAD,
+  ENTRY_USERS_SHARED_ADD,
+  ENTRY_USERS_SHARED_REMOVE
 } from '#/plugin/claco-form/resources/claco-form/player/store/actions'
 
 const reducer = combineReducers({
@@ -148,6 +151,29 @@ const reducer = combineReducers({
   }),
   countries: makeReducer([], {
     [USED_COUNTRIES_LOAD]: (state, action) => action.countries
+  }),
+  entryUsersShared: makeReducer([], {
+    [ENTRY_USERS_SHARED_LOAD]: (state, action) => action.users,
+    [ENTRY_USERS_SHARED_ADD]: (state, action) => {
+      const newUsers = cloneDeep(state)
+      const user = newUsers.find(u => u.id === action.user.id)
+
+      if (!user) {
+        newUsers.push(action.user)
+      }
+
+      return newUsers
+    },
+    [ENTRY_USERS_SHARED_REMOVE]: (state, action) => {
+      const newUsers = cloneDeep(state)
+      const index = newUsers.findIndex(u => u.id === action.userId)
+
+      if (-1 < index) {
+        newUsers.splice(index, 1)
+      }
+
+      return newUsers
+    }
   })
 })
 

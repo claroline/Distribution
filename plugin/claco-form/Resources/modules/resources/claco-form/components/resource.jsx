@@ -93,11 +93,7 @@ const ClacoFormResource = props =>
           component: Overview
         }, {
           path: '/edit',
-          render: () => {
-            const component = <Editor path={props.path} />
-
-            return component
-          },
+          component: Editor,
           disabled: !props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.clacoForm)

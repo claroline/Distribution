@@ -9,7 +9,7 @@ import {selectors as securitySelectors} from '#/main/app/security/store'
 import {ListSource} from '#/main/app/content/list/containers/source'
 import {ListParameters as ListParametersTypes} from '#/main/app/content/list/parameters/prop-types'
 
-import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
 
 import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/store'
@@ -130,7 +130,7 @@ EntriesComponent.propTypes = {
 
 const Entries = connect(
   (state) => ({
-    path: toolSelectors.path(state),
+    path: resourceSelectors.path(state),
     currentUser: securitySelectors.currentUser(state),
     listConfiguration: selectors.listConfiguration(state),
     clacoForm: selectors.clacoForm(state),
