@@ -5,14 +5,14 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {ToolPage} from '#/main/core/tool/containers/page'
 
 import {constants as listConstants} from '#/main/app/content/list/constants'
-import {NotificationCard} from '#/plugin/notification/desktop/tool/components/notification-card'
+import {NotificationCard} from '#/plugin/notification/tools/notification/components/notification-card'
 
 const List = () =>
   <ToolPage>
     <ListData
       name="notification.notifications"
       fetch={{
-        url: ['apiv2_workspace_list_notifications_current'],
+        url: ['apiv2_get_notifications_current'],
         autoload: true
       }}
       display={{

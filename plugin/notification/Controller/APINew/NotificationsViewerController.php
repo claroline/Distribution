@@ -49,7 +49,7 @@ class NotificationsViewerController extends AbstractCrudController
     /**
      * @EXT\Route(
      *    "/current",
-     *    name="apiv2_workspace_list_notifications_current",
+     *    name="apiv2_get_notifications_current",
      *    options={ "method_prefix" = false }
      * )
      *

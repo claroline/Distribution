@@ -14,6 +14,6 @@ registry.add('IcapNotificationBundle', {
   },
 
   tools: {
-    'notification'   : () => { return import(/* webpackChunkName: "plugin-tool-notification" */       '#/plugin/notification/desktop/tool') }
+    'notification'   : () => { return import(/* webpackChunkName: "plugin-tool-notification" */       '#/plugin/notification/tools/notification') }
   },
 })
