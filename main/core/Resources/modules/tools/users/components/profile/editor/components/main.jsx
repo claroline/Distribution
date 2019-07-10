@@ -7,6 +7,8 @@ import {ProfileNav} from '#/main/core/tools/users/components/profile/components/
 import {ProfileFacets} from '#/main/core/tools/users/components/profile/components/facets'
 
 import {selectors as select} from '#/main/app/content/form/store/selectors'
+import {selectors as profileSelector} from '#/main/core/tools/users/components/profile/store/selectors'
+import {selectors as baseSelector} from '#/main/core/tools/users/store'
 import {ProfileFacet} from '#/main/core/tools/users/components/profile/editor/components/facet'
 
 const ProfileEditComponent = props =>
@@ -18,7 +20,7 @@ const ProfileEditComponent = props =>
 
       {1 < props.facets.length &&
         <ProfileNav
-          prefix="/edit"
+          prefix={props.path + '/edit'}
           facets={props.facets}
         />
       }
@@ -26,7 +28,7 @@ const ProfileEditComponent = props =>
 
     <div className="user-profile-content col-md-9">
       <ProfileFacets
-        prefix="/edit"
+        prefix={props.path + '/edit'}
         facets={props.facets}
         facetComponent={ProfileFacet}
         openFacet={props.openFacet}
@@ -37,12 +39,15 @@ const ProfileEditComponent = props =>
 ProfileEditComponent.propTypes = {
   user: T.object.isRequired,
   facets: T.array.isRequired,
-  openFacet: T.func.isRequired
+  openFacet: T.func.isRequired,
+  path: T.string
 }
 
 const ProfileEdit = connectProfile(
   (state) => ({
-    user: select.data(select.form(state, 'user'))
+    path:'/desktop/users/profile',
+    user: select.data(select.form(state, baseSelector.FORM_NAME)),
+    facets: profileSelector.facets(state)
   })
 )(ProfileEditComponent)
 

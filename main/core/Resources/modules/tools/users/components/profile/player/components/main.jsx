@@ -10,16 +10,17 @@ import {selectors as select} from '#/main/core/tools/users/components/profile/st
 import {selectors} from '#/main/app/content/details/store'
 import {ProfileFacet} from '#/main/core/tools/users/components/profile/player/components/facet'
 
-const ProfileShowComponent = props =>
-  <div className="user-profile row">
+const ProfileShowComponent = props => {
+  console.log(props)
+  return (<div className="user-profile row">
     <div className="user-profile-aside col-md-3">
       <UserDetails
         user={props.user}
       />
 
-      {1 < props.facets.length &&
+      {props.facets && 1 < props.facets.length &&
         <ProfileNav
-          prefix="/show"
+          prefix={props.path+'/show'}
           facets={props.facets}
         />
       }
@@ -27,15 +28,17 @@ const ProfileShowComponent = props =>
 
     <div className="user-profile-content col-md-9">
       <ProfileFacets
-        prefix="/show"
+        prefix={props.path+'/show'}
         facets={props.facets}
         facetComponent={ProfileFacet}
         openFacet={props.openFacet}
       />
     </div>
-  </div>
+  </div>)
+}
 
 ProfileShowComponent.propTypes = {
+  path: T.string,
   user: T.object.isRequired,
   facets: T.array.isRequired,
   openFacet: T.func.isRequired
@@ -43,9 +46,15 @@ ProfileShowComponent.propTypes = {
 
 const ProfileShow = connectProfile(
   state => ({
-    user: selectors.data(selectors.details(state, select.FORM_NAME))
+    user: selectors.data(selectors.details(state, 'users.user')),
+    facets: select.facets(state)
   })
 )(ProfileShowComponent)
+
+ProfileShow.defaultProps = {
+  path: '/desktop/user/profile',
+  facets: []
+}
 
 export {
   ProfileShow

@@ -8,11 +8,14 @@ import {selectors as profileSelect} from '#/main/core/tools/users/components/pro
 
 const Profile = withRouter(
   connect(
-    (state) => ({
-      currentUser: securitySelectors.currentUser(state),
-      user: selectors.data(selectors.details(state, profileSelect.FORM_NAME)),
-      parameters: profileSelect.parameters(state)
-    })
+    (state) => {
+      return {
+        path: '/desktop/users/profile',
+        currentUser: securitySelectors.currentUser(state),
+        user: selectors.data(selectors.details(state, 'users.user')),
+        parameters: profileSelect.parameters(state)
+      }
+    }
   )(ProfileComponent)
 )
 

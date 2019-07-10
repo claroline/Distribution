@@ -14,23 +14,24 @@ const ProfileComponent = props =>
     user={props.user}
   >
     <Routes
+      path={props.path}
       routes={[
         {
-          path: '/show',
+          path: props.path + '/show',
           component: ProfileShow
         }, {
-          path: '/edit',
+          path: props.path + '/edit',
           component: ProfileEdit,
           disabled: !props.currentUser || (props.user.username !== props.currentUser.username &&
             props.currentUser.roles.filter(r => ['ROLE_ADMIN'].concat(props.parameters['roles_edition']).indexOf(r.name) > -1).length === 0
           )
         }, {
-          path: '/badges/:id',
+          path: props.path + '/badges/:id',
           component: ProfileBadgeList
         }
       ]}
       redirect={[
-        {from: '/', exact: true, to: '/show'}
+        {from: '/', exact: true, to: props.path + '/show'}
       ]}
     />
   </UserPageContainer>
@@ -39,6 +40,10 @@ ProfileComponent.propTypes = {
   user: T.shape(
     UserTypes.propTypes
   ).isRequired,
+  currentUser: T.shape(
+    UserTypes.propTypes
+  ).isRequired,
+  path: T.string,
   parameters: T.object.isRequired
 }
 
