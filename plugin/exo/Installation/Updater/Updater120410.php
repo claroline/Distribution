@@ -12,6 +12,10 @@ class Updater120410 extends Updater
 {
     private $container;
 
+    // Define load batch size, and flush size
+    const BATCH_SIZE = 1000;
+    const FLUSH_SIZE = 250;
+
     public function __construct($container)
     {
         $this->container = $container;
@@ -28,29 +32,26 @@ class Updater120410 extends Updater
 
         /** @var ObjectManager $om */
         $om = $this->container->get('claroline.persistence.object_manager');
+        $total = $this->container->get('ujm_exo.api.finder.paper')->find([], null, 0, -1, true);
 
         // retrieve all papers
-        $papers = $om
-            ->createQuery('
-                SELECT p
-                FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
-            ')
-            ->getResult();
-
+        $papers = [];
         $i = 0;
-        $total = count($papers);
 
-        /** @var Paper $paper */
-        foreach ($papers as $paper) {
-            ++$i;
-            $this->log("Migrating $i/$total...");
+        for ($batch = 0; $batch < ceil($total / self::BATCH_SIZE); ++$batch) {
+            $papers = $this->container->get('ujm_exo.api.finder.paper')->find([], null, $batch, self::BATCH_SIZE);
+            $this->log('Batch '.$batch.'/'.ceil($total / self::BATCH_SIZE).': size - '.self::BATCH_SIZE);
+            foreach ($papers as $paper) {
+                ++$i;
+                $this->log("Migrating $i/$total...");
 
-            $this->migrateStructure($paper);
-            $this->dumpTotal($paper);
+                $this->migrateStructure($paper);
+                $this->dumpTotal($paper);
 
-            if (0 === $i % 100) {
-                $om->flush();
-                $this->log('flush');
+                if (0 === $i % self::FLUSH_SIZE) {
+                    $om->flush();
+                    $this->log('flush');
+                }
             }
         }
 
