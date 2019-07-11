@@ -19,7 +19,7 @@ const ProfileEditComponent = props =>
         user={props.user}
       />
 
-      {1 < props.facets.length &&
+      {props.facets && 1 < props.facets.length &&
         <ProfileNav
           prefix={props.path + '/edit'}
           facets={props.facets}
@@ -45,14 +45,15 @@ ProfileEditComponent.propTypes = {
 }
 
 const ProfileEdit = connectProfile(
-  (state) => {return 
-    console.log(state)
-    {
-    path:'/desktop/users/profile',
-    user: selectors.data(selectors.details(state, select.FORM_NAME)),
-    //user: select.data(select.form(state, baseSelector.FORM_NAME)),
-    facets: profileSelector.facets(state)
-  }}
+  (state) => {
+    console.log(state,  profileSelector.FORM_NAME)
+    return  {
+      path:'/desktop/users/profile',
+      //user: selectors.data(selectors.details(state, select.FORM_NAME)),
+      user: select.data(select.form(state, profileSelector.FORM_NAME)),
+      facets: profileSelector.facets(state)
+    }
+  }
 )(ProfileEditComponent)
 
 export {
