@@ -96,6 +96,16 @@ const UserMenu = props =>
         <Button
           type={LINK_BUTTON}
           className="list-group-item"
+          icon="fa fa-fw fa-cog"
+          label={trans('parameters', {}, 'tools')}
+          target={'/desktop/parameters'}
+        />
+      }
+
+      {props.authenticated &&
+        <Button
+          type={LINK_BUTTON}
+          className="list-group-item"
           icon="fa fa-fw fa-cogs"
           label={trans('administration')}
           target="/admin"
