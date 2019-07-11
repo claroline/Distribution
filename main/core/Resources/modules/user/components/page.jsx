@@ -76,7 +76,7 @@ const UserPage = props =>
             type: LINK_BUTTON,
             icon: 'fa fa-pencil',
             label: trans('edit', {}, 'actions'),
-            target: '/edit',
+            target: props.path + '/edit',
             displayed: hasPermission('edit', props.user),
             primary: true
           }, {
@@ -165,8 +165,9 @@ implementPropTypes(UserPage, PageTypes, {
     name: T.string.isRequired
   }).isRequired,
   children: T.node.isRequired,
+  path: T.string.isRequired,
   updatePassword: T.func.isRequired,
-  updatePublicUrl: T.func.isRequired,
+  updatePublicUrl: T.func.isRequired
 })
 
 export {

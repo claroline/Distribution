@@ -9,6 +9,7 @@ import {ProfileFacets} from '#/main/core/tools/users/components/profile/componen
 import {selectors as select} from '#/main/app/content/form/store/selectors'
 import {selectors as profileSelector} from '#/main/core/tools/users/components/profile/store/selectors'
 import {selectors as baseSelector} from '#/main/core/tools/users/store'
+import {selectors} from '#/main/app/content/details/store'
 import {ProfileFacet} from '#/main/core/tools/users/components/profile/editor/components/facet'
 
 const ProfileEditComponent = props =>
@@ -44,11 +45,14 @@ ProfileEditComponent.propTypes = {
 }
 
 const ProfileEdit = connectProfile(
-  (state) => ({
+  (state) => {return 
+    console.log(state)
+    {
     path:'/desktop/users/profile',
-    user: select.data(select.form(state, baseSelector.FORM_NAME)),
+    user: selectors.data(selectors.details(state, select.FORM_NAME)),
+    //user: select.data(select.form(state, baseSelector.FORM_NAME)),
     facets: profileSelector.facets(state)
-  })
+  }}
 )(ProfileEditComponent)
 
 export {

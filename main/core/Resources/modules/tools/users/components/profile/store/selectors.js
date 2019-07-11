@@ -2,7 +2,7 @@ import {selectors as select} from '#/main/core/tools/users/store/selectors'
 import {createSelector} from 'reselect'
 
 const store = (state) => state[select.STORE_NAME]
-const FORM_NAME = select.STORE_NAME + '/user'
+const FORM_NAME = select.STORE_NAME + '.user'
 
 const facets = createSelector(
   [store],

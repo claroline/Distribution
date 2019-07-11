@@ -14,10 +14,12 @@ import {UserPage} from '#/main/core/user/components/page'
  */
 const UserPageContainer = withRouter(
   connect(
-    (state, ownProps) =>  ({
-      currentUser: securitySelectors.currentUser(state),
-      user: ownProps.user || state.user
-    }),
+    (state, ownProps) =>  {
+      return {
+        currentUser: securitySelectors.currentUser(state),
+        user: ownProps.user || state.user,
+        path: ownProps.path || ''
+      }},
     (dispatch) => ({
       updatePassword(user, password) {
         dispatch(actions.updatePassword(user, password))
