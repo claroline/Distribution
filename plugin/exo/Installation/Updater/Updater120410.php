@@ -53,6 +53,10 @@ class Updater120410 extends Updater
                     $this->log('flush');
                 }
             }
+
+            foreach ($papers as $paper) {
+                $om->detach($paper);
+            }
         }
 
         $om->flush();
