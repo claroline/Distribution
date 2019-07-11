@@ -43,33 +43,41 @@ const LayoutMain = props =>
 
       <div className="app-content" role="presentation">
         <Routes
+          redirect={[
+            {from: '/desktop', to: '/', disabled: !props.maintenance || props.authenticated},
+            {from: '/admin',   to: '/', disabled: !props.maintenance || props.authenticated}
+          ]}
           routes={[
             {
               path: '/desktop',
-              component: DesktopMain
+              component: DesktopMain,
+              disabled: !props.authenticated && props.maintenance
             }, {
               path: '/admin',
-              component: AdministrationMain
+              component: AdministrationMain,
+              disabled: !props.authenticated && props.maintenance
             },
             // it must be declared last otherwise it will always match.
             // and it cannot be set to exact: true because it contains sub routes for maintenance, login and registration.
             {
               path: '/',
               component: HomeMain
-            },
+            }
           ]}
         />
 
         <FooterMain />
       </div>
 
-      <LayoutToolbar
-        opened={props.sidebar}
-        open={props.openSidebar}
-      />
+      {props.authenticated &&
+        <LayoutToolbar
+          opened={props.sidebar}
+          open={props.openSidebar}
+        />
+      }
     </div>
 
-    {props.sidebar &&
+    {(props.authenticated && props.sidebar) &&
       <LayoutSidebar
         close={props.closeSidebar}
       />
@@ -78,6 +86,7 @@ const LayoutMain = props =>
 
 LayoutMain.propTypes = {
   maintenance: T.bool.isRequired,
+  authenticated: T.bool.isRequired,
 
   menuOpened: T.bool.isRequired,
   toggleMenu: T.func.isRequired,

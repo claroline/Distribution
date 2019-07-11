@@ -88,7 +88,9 @@ const LoginForm = props =>
 
     {props.registration &&
       <Button
-        className="btn btn-lg btn-block btn-registration"
+        className={classes('btn btn-lg btn-block btn-registration', {
+          'login-with-sso': 0 !== props.sso.length
+        })}
         type={LINK_BUTTON}
         label={trans('self-register', {}, 'actions')}
         target="/registration"

@@ -20,7 +20,8 @@ const LoginForm = withReducer(selectors.STORE_NAME, reducer)(
         dispatch((dispatch, getState) => {
           const formData = formSelectors.data(formSelectors.form(getState(), selectors.FORM_NAME))
 
-          return dispatch(securityActions.login(formData.username, formData.password, formData.remember_me)).then(() => {
+          return dispatch(securityActions.login(formData.username, formData.password, formData.remember_me)).then((response) => {
+            console.log(response)
             if (callback) {
               callback()
             }

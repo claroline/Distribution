@@ -162,7 +162,7 @@ class ClientSerializer
             ],
             'home' => [
                 'type' => $this->config->getParameter('home_redirection_type'),
-                'url' => $this->config->getParameter('home_redirection_url')
+                'url' => $this->config->getParameter('home_redirection_url'),
             ],
             'resources' => [
                 'types' => array_map(function (ResourceType $resourceType) {
