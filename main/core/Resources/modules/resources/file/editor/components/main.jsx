@@ -69,7 +69,8 @@ class EditorMain extends Component {
                     title={trans(getTypeName(this.props.mimeType))}
                   >
                     {createElement(get(module, 'fileType.components.editor'), {
-                      file: this.props.file
+                      file: this.props.file,
+                      path: this.props.path
                     })}
 
                     {get(module, 'fileType.styles') &&
