@@ -14,7 +14,6 @@
 
       "integration": "administration/integration/bootstrap",
       "admin-desktop-tool": "administration/home/bootstrap",
-      "templates-management": "administration/template/bootstrap",
       "dashboard-admin-tool": "administration/dashboard/bootstrap"
     }
   },

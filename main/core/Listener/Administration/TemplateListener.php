@@ -73,13 +73,10 @@ class TemplateListener
             throw new AccessDeniedException();
         }
         $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:administration:templates.html.twig', [
-                'locales' => isset($parameters['locales']['available']) ? $parameters['locales']['available'] : [],
-                'defaultLocale' => isset($parameters['locales']['default']) ? $parameters['locales']['default'] : null,
-            ]
-        );
-        $event->setResponse(new Response($content));
+        $event->setData([
+            'locales' => isset($parameters['locales']['available']) ? $parameters['locales']['available'] : [],
+            'defaultLocale' => isset($parameters['locales']['default']) ? $parameters['locales']['default'] : null,
+        ]);
         $event->stopPropagation();
     }
 }
