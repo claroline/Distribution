@@ -101,10 +101,11 @@ registry.add('ClarolineCoreBundle', {
    * Provides Administration tools.
    */
   administration: {
-    'user_management'   : () => { return import(/* webpackChunkName: "core-admin-users" */       '#/main/core/administration/users') },
-    'main_settings'     : () => { return import(/* webpackChunkName: "core-admin-parameters" */  '#/main/core/administration/parameters/main') },
-    'technical_settings': () => { return import(/* webpackChunkName: "core-admin-technical" */  '#/main/core/administration/parameters/technical') },
-    'appearance_settings': () => { return import(/* webpackChunkName: "core-admin-appearance" */  '#/main/core/administration/parameters/appearance') }
+    'user_management'    : () => { return import(/* webpackChunkName: "core-admin-users" */           '#/main/core/administration/users') },
+    'main_settings'      : () => { return import(/* webpackChunkName: "core-admin-parameters" */      '#/main/core/administration/parameters/main') },
+    'technical_settings' : () => { return import(/* webpackChunkName: "core-admin-technical" */       '#/main/core/administration/parameters/technical') },
+    'appearance_settings': () => { return import(/* webpackChunkName: "core-admin-appearance" */      '#/main/core/administration/parameters/appearance') },
+    'tasks_scheduling'   : () => { return import(/* webpackChunkName: "core-admin-scheduled-task" */ '#/main/core/administration/scheduled-task') }
   },
 
   widgets: {
