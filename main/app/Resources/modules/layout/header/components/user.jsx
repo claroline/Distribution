@@ -88,7 +88,7 @@ const UserMenu = props =>
           className="list-group-item"
           icon="fa fa-fw fa-cog"
           label={trans('parameters', {}, 'tools')}
-          target={['claro_desktop_open_tool', {toolName: 'parameters'}]}
+          target={'/desktop/parameters'}
         />
       }
 
