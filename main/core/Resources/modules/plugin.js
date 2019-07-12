@@ -92,20 +92,22 @@ registry.add('ClarolineCoreBundle', {
    * Provides Desktop and/or Workspace tools.
    */
   tools: {
-    'home'            : () => { return import(/* webpackChunkName: "core-tool-home" */       '#/main/core/tools/home') },
-    'users'            : () => { return import(/* webpackChunkName: "core-tool-user" */       '#/main/core/tools/users') },
-    'workspaces'      : () => { return import(/* webpackChunkName: "core-tool-workspaces" */ '#/main/core/tools/workspaces') },
-    'resource_manager': () => { return import(/* webpackChunkName: "core-tool-resources" */  '#/main/core/tools/resources') }
+    'home'            :   () => { return import(/* webpackChunkName: "core-tool-home" */       '#/main/core/tools/home') },
+    'users'           :   () => { return import(/* webpackChunkName: "core-tool-users" */       '#/main/core/tools/users') },
+    'workspaces'      :   () => { return import(/* webpackChunkName: "core-tool-workspaces" */ '#/main/core/tools/workspaces') },
+    'resource_manager':   () => { return import(/* webpackChunkName: "core-tool-resources" */  '#/main/core/tools/resources') },
+    'parameters'      :   () => { return import(/* webpackChunkName: "core-tool-parameters" */  '#/main/core/tools/parameters') }
   },
 
   /**
    * Provides Administration tools.
    */
   administration: {
-    'user_management'   : () => { return import(/* webpackChunkName: "core-admin-users" */       '#/main/core/administration/users') },
-    'main_settings'     : () => { return import(/* webpackChunkName: "core-admin-parameters" */  '#/main/core/administration/parameters/main') },
-    'technical_settings': () => { return import(/* webpackChunkName: "core-admin-technical" */  '#/main/core/administration/parameters/technical') },
-    'appearance_settings': () => { return import(/* webpackChunkName: "core-admin-appearance" */  '#/main/core/administration/parameters/appearance') }
+    'user_management'      : () => { return import(/* webpackChunkName: "core-admin-users" */          '#/main/core/administration/users') },
+    'main_settings'        : () => { return import(/* webpackChunkName: "core-admin-parameters" */     '#/main/core/administration/parameters/main') },
+    'technical_settings'   : () => { return import(/* webpackChunkName: "core-admin-technical" */      '#/main/core/administration/parameters/technical') },
+    'appearance_settings'  : () => { return import(/* webpackChunkName: "core-admin-appearance" */     '#/main/core/administration/parameters/appearance') },
+    'templates_management' : () => { return import(/* webpackChunkName: "core-admin-template" */       '#/main/core/administration/template') }
   },
 
   widgets: {
