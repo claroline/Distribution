@@ -11,6 +11,7 @@ import {selectors} from '#/main/app/content/details/store'
 import {ProfileFacet} from '#/main/core/tools/users/components/profile/player/components/facet'
 
 const ProfileShowComponent = props => {
+  console.log(props)
   return (<div className="user-profile row">
     <div className="user-profile-aside col-md-3">
       <UserDetails
