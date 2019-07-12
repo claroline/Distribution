@@ -7,7 +7,6 @@ const FORM_NAME = select.STORE_NAME + '.user'
 const facets = createSelector(
   [store],
   (store) => {
-    console.log(store.facets)
     return store.facets
   }
 )
