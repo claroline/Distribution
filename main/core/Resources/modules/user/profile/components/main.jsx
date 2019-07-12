@@ -40,7 +40,7 @@ const ProfileComponent = props =>
         }
       ]}
       redirect={[
-        {from: props.path, exact: true, to: props.path + '/show'}
+        {from: props.path, exact: true, to: props.path + '/' + props.user.publicUrl + '/show'}
       ]}
     />
   </UserPageContainer>

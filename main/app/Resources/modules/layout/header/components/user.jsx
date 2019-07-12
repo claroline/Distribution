@@ -77,7 +77,7 @@ const UserMenu = props =>
           className="list-group-item"
           icon="fa fa-fw fa-user"
           label={trans('profile')}
-          target="/desktop/users/profile/show"
+          target={'/desktop/users/profile/'+ props.currentUser.publicUrl +'/show'}
         />
       }
 

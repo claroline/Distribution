@@ -39,11 +39,6 @@ const UsersTool = (props) =>
           }
         }
       ]}
-
-      redirect={[
-        {from: '/', exact: true, to: '/profile/'+ props.user.publicUrl+'show'},
-        {from: '/profile', exact: true, to: '/profile' +props.user.publicUrl+'/show'}
-      ]}
     />
   </ToolPage>
 
