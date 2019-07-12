@@ -5,10 +5,7 @@ namespace Claroline\CoreBundle\Listener\Administration;
 use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
-use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Scheduled tasks tool.
@@ -17,36 +14,21 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class ScheduledTaskListener
 {
-    /** @var AuthorizationCheckerInterface */
-    private $authorization;
-
     /** @var ParametersSerializer */
     private $parametersSerializer;
-
-    /** @var ToolManager */
-    private $toolManager;
 
     /**
      * ScheduledTaskListener constructor.
      *
      * @DI\InjectParams({
-     *     "authorization"        = @DI\Inject("security.authorization_checker"),
-     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
-     *     "toolManager"          = @DI\Inject("claroline.manager.tool_manager")
+     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters")
      * })
      *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param ParametersSerializer          $parametersSerializer
-     * @param ToolManager                   $toolManager
+     * @param ParametersSerializer $parametersSerializer
      */
-    public function __construct(
-        AuthorizationCheckerInterface $authorization,
-        ParametersSerializer $parametersSerializer,
-        ToolManager $toolManager
-    ) {
-        $this->authorization = $authorization;
+    public function __construct(ParametersSerializer $parametersSerializer)
+    {
         $this->parametersSerializer = $parametersSerializer;
-        $this->toolManager = $toolManager;
     }
 
     /**
@@ -58,11 +40,6 @@ class ScheduledTaskListener
      */
     public function onDisplayTool(OpenAdministrationToolEvent $event)
     {
-        $adminTool = $this->toolManager->getAdminToolByName('tasks_scheduling');
-
-        if (is_null($adminTool) || !$this->authorization->isGranted('OPEN', $adminTool)) {
-            throw new AccessDeniedException();
-        }
         $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
 
         $event->setData([
