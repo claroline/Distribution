@@ -44,7 +44,7 @@ class ToolListener
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
-        $event->setData(['context' => 'desktop']);
+        $event->setData([]);
 
         $event->stopPropagation();
     }
@@ -58,6 +58,6 @@ class ToolListener
     {
         $workspace = $event->getWorkspace();
 
-        $event->setData(['context' => 'workspace', 'workspace' => $this->serializer->serialize($workspace)]);
+        $event->setData(['workspace' => $this->serializer->serialize($workspace)]);
     }
 }

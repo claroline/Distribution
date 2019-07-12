@@ -27,36 +27,36 @@ const BadgeTabActionsComponent = props =>
     }
   </PageActions>
 
-const BadgeTabComponent = props =>
-  <Routes
-    path={props.path}
-    routes={[
-      {
-        path: '/badges',
-        exact: true,
-        component: Badges
-      }, {
-        path: '/badges/form/:id?',
-        component: () => {
-          const BadgeWithPath = <Badge path={props.path}/>
+const BadgeTabComponent = props => <Routes
+  path={props.path}
+  routes={[
+    {
+      path: '/badges',
+      exact: true,
+      component: Badges
+    }, {
+      path: '/badges/form/:id?',
+      component: () => {
+        const BadgeWithPath = <Badge path={props.path}/>
 
-          return BadgeWithPath
-        },
-        exact: true,
-        onEnter: (params) => props.openBadge(params.id, props.workspace)
-      }, {
-        path: '/badges/assertion/:id',
-        component: Assertion,
-        exact: true,
-        onEnter: (params) => props.openAssertion(params.id)
-      }, {
-        path: '/badges/view/:id',
-        component: BadgeViewer,
-        exact: true,
-        onEnter: (params) => props.openBadge(params.id, props.workspace)
-      }
-    ]}
-  />
+        return BadgeWithPath
+      },
+      exact: true,
+      onEnter: (params) => props.openBadge(params.id, props.workspace)
+    }, {
+      path: '/badges/assertion/:id',
+      component: Assertion,
+      exact: true,
+      onEnter: (params) => props.openAssertion(params.id)
+    }, {
+      path: '/badges/view/:id',
+      component: BadgeViewer,
+      exact: true,
+      onEnter: (params) => props.openBadge(params.id, props.workspace)
+    }
+  ]}
+/>
+
 
 BadgeTabComponent.propTypes = {
   openBadge: T.func.isRequired,
@@ -67,7 +67,7 @@ BadgeTabComponent.propTypes = {
 
 const BadgeTab = connect(
   (state, ownProps) => ({
-    currentContext: state.currentContext,
+    currentContext: state.tool.currentContext,
     workspace: state.workspace,
     path: ownProps.path
   }),

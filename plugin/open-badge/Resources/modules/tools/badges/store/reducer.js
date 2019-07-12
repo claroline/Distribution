@@ -11,9 +11,6 @@ import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 import {reducer as parametersReducer} from '#/plugin/open-badge/tools/badges/parameters/store/reducer'
 
 const reducer = combineReducers({
-  currentContext: makeReducer({}, {
-    [makeInstanceAction(TOOL_LOAD, 'open-badge')]: (state, action) => action.toolData.context
-  }),
   workspace: makeReducer(null, {
     [makeInstanceAction(TOOL_LOAD, 'open-badge')]: (state, action) => action.toolData.workspace || state
   }),

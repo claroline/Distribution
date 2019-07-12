@@ -29,7 +29,7 @@ class AdministrationListener
      */
     public function onDisplayTool(OpenAdministrationToolEvent $event)
     {
-        $event->setData(['parameters' => $this->parameters->serialize(), 'context' => 'administration']);
+        $event->setData(['parameters' => $this->parameters->serialize()]);
         $event->stopPropagation();
     }
 }

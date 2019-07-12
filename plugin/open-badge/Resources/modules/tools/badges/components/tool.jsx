@@ -19,7 +19,7 @@ const Tool = props =>
         icon: 'fa fa-user',
         title: trans('my_badges'),
         path: '/my-badges',
-        displayed: props.currentContext === 'desktop',
+        displayed: props.currentContext.type === 'desktop',
         content: MyBadgeTabComponent
       }, {
         icon: 'fa fa-book',
@@ -35,21 +35,25 @@ const Tool = props =>
 
           return ComponentWithPath
         },
-        displayed: props.currentContext !== 'profile'
+        displayed: props.currentContext.type !== 'profile'
       }, {
         icon: 'fa fa-cog',
         title: trans('parameters'),
         path: '/parameters',
         onlyIcon: true,
         //only for admin
-        displayed: props.currentContext === 'administration',
-        content: ParametersForm
+        displayed: props.currentContext.type === 'administration',
+        content: () => {
+          const ParametersWithPath = <ParametersForm path={props.path}/>
+
+          return ParametersWithPath
+        }
       }, {
         icon: 'fa fa-book',
         title: trans('profile'),
         path: '/profile/:id',
         content: BadgeTabComponent,
-        displayed: props.currentContext === 'profile'
+        displayed: props.currentContext.type === 'profile'
       }
     ]}
   />

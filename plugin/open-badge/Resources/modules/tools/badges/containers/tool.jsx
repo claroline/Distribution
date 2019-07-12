@@ -5,7 +5,7 @@ import {Tool} from '#/plugin/open-badge/tools/badges/components/tool'
 
 const ConnectedTool = withRouter(connect(
   state => ({
-    currentContext: state.currentContext
+    currentContext: state.tool.currentContext
   }),
   null
 )(Tool))
