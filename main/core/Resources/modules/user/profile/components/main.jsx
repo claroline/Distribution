@@ -19,10 +19,18 @@ const ProfileComponent = props =>
       routes={[
         {
           path: '/show',
-          component: ProfileShow
+          component: () => {
+            const WithPathShow = <ProfileShow path={props.path}/>
+
+            return WithPathShow
+          }
         }, {
           path: '/edit',
-          component: ProfileEdit,
+          component: () => {
+            const WithPathEdit = <ProfileEdit path={props.path}/>
+
+            return WithPathEdit
+          },
           disabled: !props.currentUser || (props.user.username !== props.currentUser.username &&
             props.currentUser.roles.filter(r => ['ROLE_ADMIN'].concat(props.parameters['roles_edition']).indexOf(r.name) > -1).length === 0
           )

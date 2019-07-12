@@ -11,8 +11,8 @@ const UsersTool = (props) =>
       <Routes
         path={props.path}
         routes={[
-          {path: '/profile',        render: () => trans('profile'), disabled: false},
-          {path: '/list', render: () => trans('users'), disabled: false}
+          {path: '/profile', render: () => trans('profile'), disabled: false},
+          {path: '/list',    render: () => trans('users'), disabled: false}
         ]}
       />
     }
@@ -23,7 +23,7 @@ const UsersTool = (props) =>
         {
           path: '/profile',
           render: () => {
-            const ProfileComponent = <Profile/>
+            const ProfileComponent = <Profile path={props.path + '/profile'}/>
 
             return ProfileComponent
           }
@@ -38,7 +38,8 @@ const UsersTool = (props) =>
       ]}
 
       redirect={[
-        {from: '/', exact: true, to: '/profile'}
+        {from: '/', exact: true, to: '/profile/show'},
+        {from: '/profile', exact: true, to: '/profile/show'}
       ]}
     />
   </ToolPage>

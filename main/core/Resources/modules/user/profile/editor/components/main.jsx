@@ -11,7 +11,6 @@ import {selectors as profileSelector} from '#/main/core/user/profile/store/selec
 import {ProfileFacet} from '#/main/core/user/profile/editor/components/facet'
 
 const ProfileEditComponent = props => {
-  console.log(props)
   return (
     <div className="row user-profile user-profile-edit">
       <div className="user-profile-aside col-md-3">
@@ -46,10 +45,9 @@ ProfileEditComponent.propTypes = {
 }
 
 const ProfileEdit = connectProfile(
-  (state) => {
-    console.log(state)
+  (state, ownProps) => {
     return  {
-      path:'/desktop/users/profile',
+      path: ownProps.path || '',
       //user: selectors.data(selectors.details(state, select.FORM_NAME)),
       user: select.data(select.form(state, profileSelector.FORM_NAME)),
       //facets: profileSelector.facets(state)

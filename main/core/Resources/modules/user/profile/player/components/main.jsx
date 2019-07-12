@@ -11,7 +11,6 @@ import {selectors} from '#/main/app/content/details/store'
 import {ProfileFacet} from '#/main/core/user/profile/player/components/facet'
 
 const ProfileShowComponent = props => {
-  console.log(props)
   return (<div className="user-profile row">
     <div className="user-profile-aside col-md-3">
       <UserDetails
@@ -45,14 +44,14 @@ ProfileShowComponent.propTypes = {
 }
 
 const ProfileShow = connectProfile(
-  state => ({
+  (state, ownProps) => ({
+    path: ownProps.path || '',
     user: selectors.data(selectors.details(state, select.FORM_NAME)),
     facets: select.facets(state)
   })
 )(ProfileShowComponent)
 
 ProfileShow.defaultProps = {
-  path: '/desktop/user/profile',
   facets: []
 }
 
