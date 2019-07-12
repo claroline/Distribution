@@ -1,12 +1,11 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {PageFull} from '#/main/app/page/components/full'
 
 import {RegistrationMain} from '#/main/app/security/registration/containers/main'
 
-const HomeRegistration = (props) =>
+const HomeRegistration = () =>
   <PageFull
     title={trans('registration')}
   >

@@ -12,7 +12,6 @@ const HomeContent = props => {
           {props.content}
         </PageSimple>
       )
-      break
 
     case 'tool':
       return (

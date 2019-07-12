@@ -163,11 +163,13 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
     }
 
     /**
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
+     *
      * @return RedirectResponse
      *
      * @deprecated
+     *
      * @todo remove me
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
