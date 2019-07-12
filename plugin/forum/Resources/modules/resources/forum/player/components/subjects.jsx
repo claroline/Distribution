@@ -197,6 +197,7 @@ SubjectsList.propTypes = {
   forum: T.shape(ForumType.propTypes),
   subject: T.shape(SubjectType.propTypes),
   moderator: T.object,
+  data: T.object,
   stickSubject: T.func.isRequired,
   unStickSubject: T.func.isRequired,
   closeSubject: T.func.isRequired,

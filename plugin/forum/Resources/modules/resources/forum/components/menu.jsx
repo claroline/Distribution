@@ -12,9 +12,9 @@ const ForumMenu = (props) =>
   <MenuSection
     {...omit(props, 'path')}
     title={
-      !!matchPath(props.location.pathname, {path: `${props.path}/moderation/blocked`}) ?
+      matchPath(props.location.pathname, {path: `${props.path}/moderation/blocked`}) ?
         trans('blocked_messages_subjects', {}, 'forum') :
-        !!matchPath(props.location.pathname, {path: `${props.path}/moderation/flagged`}) ?
+        matchPath(props.location.pathname, {path: `${props.path}/moderation/flagged`}) ?
           trans('flagged_messages_subjects', {}, 'forum') :
           ''
     }

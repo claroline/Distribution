@@ -83,6 +83,7 @@ FlaggedSubjectsComponent.propTypes = {
   path: T.string.isRequired,
   forum: T.shape(ForumType.propTypes),
   subject: T.object,
+  data: T.object,
   unFlagSubject: T.func.isRequired
 }
 

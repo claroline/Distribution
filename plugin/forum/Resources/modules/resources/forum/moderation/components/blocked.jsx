@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {Routes} from '#/main/app/router'
-import {trans} from '#/main/app/intl/translation'
 
 import {BlockedMessages} from '#/plugin/forum/resources/forum/moderation/components/blocked-messages'
 import {BlockedSubjects} from '#/plugin/forum/resources/forum/moderation/components/blocked-subjects'
