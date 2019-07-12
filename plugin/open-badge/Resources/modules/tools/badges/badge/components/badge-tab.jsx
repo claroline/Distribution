@@ -37,7 +37,11 @@ const BadgeTabComponent = props =>
         component: Badges
       }, {
         path: '/badges/form/:id?',
-        component: Badge,
+        component: () => {
+          const BadgeWithPath = <Badge path={props.path}/>
+
+          return BadgeWithPath
+        },
         exact: true,
         onEnter: (params) => props.openBadge(params.id, props.workspace)
       }, {
