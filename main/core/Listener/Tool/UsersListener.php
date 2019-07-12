@@ -95,9 +95,9 @@ class UsersListener
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
-        $userId = $this->request->query->get('userId');
+        $publicUrl = $this->request->query->get('publicUrl');
 
-        $profileUser = $userId ? $this->om->getRepository(User::class)->findOneById($userId) :
+        $profileUser = $publicUrl ? $this->om->getRepository(User::class)->findOneByPublicUrl($publicUrl) :
           $this->tokenStorage->getToken()->getUser();
 
         $serializedUser = $this->userSerializer->serialize($profileUser, [Options::SERIALIZE_FACET]);

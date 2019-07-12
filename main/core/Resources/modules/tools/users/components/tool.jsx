@@ -4,6 +4,9 @@ import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 import {Profile} from '#/main/core/user/profile/containers/main.jsx'
 import {ToolPage} from '#/main/core/tool/containers/page'
+import {connect} from 'react-redux'
+import {withRouter} from '#/main/app/router'
+import {selectors} from '#/main/app/content/details/store'
 
 const UsersTool = (props) =>
   <ToolPage
@@ -21,9 +24,9 @@ const UsersTool = (props) =>
       path={props.path}
       routes={[
         {
-          path: '/profile',
+          path: '/profile/:publicUrl',
           render: () => {
-            const ProfileComponent = <Profile path={props.path + '/profile'}/>
+            const ProfileComponent = <Profile path={props.path + '/profile/' + props.user.publicUrl}/>
 
             return ProfileComponent
           }
@@ -38,16 +41,27 @@ const UsersTool = (props) =>
       ]}
 
       redirect={[
-        {from: '/', exact: true, to: '/profile/show'},
-        {from: '/profile', exact: true, to: '/profile/show'}
+        {from: '/', exact: true, to: '/profile/'+ props.user.publicUrl+'show'},
+        {from: '/profile', exact: true, to: '/profile' +props.user.publicUrl+'/show'}
       ]}
     />
   </ToolPage>
 
+const ConnectedTool = withRouter(
+  connect(
+    (state) => {
+      return {
+        user: selectors.data(selectors.details(state, 'users.user'))
+      }
+    }
+  )(UsersTool)
+)
+
 UsersTool.propTypes = {
-  path: T.string.isRequired
+  path: T.string.isRequired,
+  user: T.object
 }
 
 export {
-  UsersTool
+  ConnectedTool as UsersTool
 }
