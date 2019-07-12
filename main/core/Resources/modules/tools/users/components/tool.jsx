@@ -23,12 +23,16 @@ const UsersTool = (props) =>
         {
           path: '/profile',
           render: () => {
-            return (<Profile/>)
+            const ProfileComponent = <Profile/>
+
+            return ProfileComponent
           }
         }, {
           path: '/list',
           render: () => {
-            return(<div>list</div>)
+            const ListComponent = <div>list</div>
+
+            return ListComponent
           }
         }
       ]}
