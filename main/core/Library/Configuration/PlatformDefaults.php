@@ -35,8 +35,8 @@ class PlatformDefaults implements ParameterProviderInterface
     {
         return [
             'home' => [
-              'redirection_type' => null,
-              'redirection_url' => null,
+              'type' => 'none',
+              'data' => null,
             ],
             'profile' => [
               'roles_confidential' => [],

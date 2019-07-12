@@ -132,7 +132,10 @@ class ClientController
 
         return [
             'meta' => [],
-            'maintenance' => MaintenanceHandler::isMaintenanceEnabled(),
+            'maintenance' => [
+                'enabled' => MaintenanceHandler::isMaintenanceEnabled(),
+                'message' => $this->configHandler->getParameter('maintenance.message'),
+            ],
             'impersonated' => $this->isImpersonated(),
 
             'header' => [

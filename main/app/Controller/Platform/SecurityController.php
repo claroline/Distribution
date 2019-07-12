@@ -9,6 +9,7 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
+use Claroline\CoreBundle\Manager\ConnectionMessageManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -33,6 +34,9 @@ class SecurityController
     /** @var UserManager */
     private $manager;
 
+    /** @var ConnectionMessageManager */
+    private $messageManager;
+
     /**
      * SecurityController constructor.
      *
@@ -41,7 +45,8 @@ class SecurityController
      *     "config"          = @DI\Inject("claroline.config.platform_config_handler"),
      *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
      *     "serializer"      = @DI\Inject("claroline.api.serializer"),
-     *     "manager"         = @DI\Inject("claroline.manager.user_manager")
+     *     "manager"         = @DI\Inject("claroline.manager.user_manager"),
+     *     "messageManager"  = @DI\Inject("claroline.manager.connection_message_manager")
      * })
      *
      * @param TokenStorageInterface        $tokenStorage
@@ -49,19 +54,22 @@ class SecurityController
      * @param StrictDispatcher             $eventDispatcher
      * @param SerializerProvider           $serializer
      * @param UserManager                  $manager
+     * @param ConnectionMessageManager     $messageManager
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         PlatformConfigurationHandler $config,
         StrictDispatcher $eventDispatcher,
         SerializerProvider $serializer,
-        UserManager $manager
+        UserManager $manager,
+        ConnectionMessageManager $messageManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->config = $config;
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
         $this->manager = $manager;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -87,7 +95,7 @@ class SecurityController
         return new JsonResponse([
             'user' => $this->serializer->serialize($user),
             'redirect' => $this->getRedirection(),
-            'messages' => [],
+            'messages' => $this->messageManager->getConnectionMessagesByUser($user),
         ]);
     }
 

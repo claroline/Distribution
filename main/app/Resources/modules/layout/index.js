@@ -8,7 +8,7 @@ export default {
   initialData: (initialData) => ({
     maintenance: initialData.maintenance,
     header: initialData.header,
-    parameters: initialData.parameters,
+    config: initialData.config,
     security: {
       impersonated: initialData.impersonated,
       currentUser: initialData.currentUser

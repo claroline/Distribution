@@ -114,8 +114,8 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'profile_roles_edition' => 'profile.roles_edition',
             'profile_show_email' => 'profile.show_email',
             'workspace_list_default_properties' => 'workspace.list.default_properties',
-            'home_redirection_type' => 'home.redirection_type',
-            'home_redirection_url' => 'home.redirection_url',
+            'home_redirection_type' => 'home.type',
+            'home_redirection_url' => 'home.data',
         ];
     }
 }

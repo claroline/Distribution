@@ -36,7 +36,6 @@ const display = createSelector(
 const logo = () => param('logo')
 const title = () => param('name')
 const subtitle = () => param('secondaryName')
-
 const locale = () => param('locale')
 
 const helpUrl = createSelector(
@@ -49,8 +48,6 @@ const helpUrl = createSelector(
     return null
   }
 )
-
-const maintenance = () => param('maintenance')
 
 export const selectors = {
   STORE_NAME,
@@ -65,6 +62,5 @@ export const selectors = {
   subtitle,
   display,
   locale,
-  helpUrl,
-  maintenance
+  helpUrl
 }

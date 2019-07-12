@@ -1,17 +1,38 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {PageSimple} from '#/main/app/page/components/simple'
+import {ToolMain} from '#/main/core/tool/containers/main'
+
 const HomeContent = props => {
-  switch (props.homeType) {
+  switch (props.type) {
     case 'html':
+      return (
+        <PageSimple>
+          {props.content}
+        </PageSimple>
+      )
       break
+
     case 'tool':
-      break
+      return (
+        <ToolMain
+          toolName="home"
+          toolContext={{
+            type: 'home', // TODO : use var
+            url: ['apiv2_home'],
+            data: {}
+          }}
+        />
+      )
   }
+
+  return null
 }
 
 HomeContent.propTypes = {
-
+  type: T.string.isRequired,
+  content: T.string
 }
 
 export {

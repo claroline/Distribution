@@ -1671,7 +1671,6 @@
     "icons": "Icons",
     "identification": "Identification",
     "secondary_name": "Secondary name",
-    "home_redirection_type": "Home redirection type",
     "auto_logging_after_registration": "Auto logging after registration",
     "count_elements": "{0, 1} %count% element|[2,Inf[ %count% elements",
     "header_locale": "Change the language in the header",

@@ -160,10 +160,7 @@ class ClientSerializer
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
             ],
-            'home' => [
-                'type' => $this->config->getParameter('home_redirection_type'),
-                'url' => $this->config->getParameter('home_redirection_url'),
-            ],
+            'home' => $this->config->getParameter('home'),
             'resources' => [
                 'types' => array_map(function (ResourceType $resourceType) {
                     return $this->resourceTypeSerializer->serialize($resourceType);

@@ -1705,7 +1705,6 @@
     "icons": "Icones",
     "identification": "Identification",
     "secondary_name": "Nom secondaire",
-    "home_redirection_type": "Type de redirection de l'accueil",
     "auto_logging_after_registration": "Connexion automatique après l'inscription",
     "count_elements": "{0, 1} %count% élément|[2,Inf[ %count% éléments",
     "header_locale": "Changer la langue dans le header",

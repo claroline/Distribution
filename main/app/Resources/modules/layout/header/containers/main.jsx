@@ -3,8 +3,8 @@ import {connect} from 'react-redux'
 import {withReducer} from '#/main/app/store/components/withReducer'
 import {actions as walkthroughActions} from '#/main/app/overlays/walkthrough/store'
 
+import {selectors as configSelectors} from '#/main/app/config/store'
 import {selectors as securitySelectors} from '#/main/app/security/store'
-import {selectors as layoutSelectors} from '#/main/app/layout/store'
 
 import {selectors, reducer} from '#/main/app/layout/header/store'
 import {HeaderMain as HeaderMainComponent} from '#/main/app/layout/header/components/main'
@@ -20,7 +20,7 @@ const HeaderMain = withReducer(selectors.STORE_NAME, reducer)(
       display: selectors.display(state),
       count: selectors.count(state),
       helpUrl: selectors.helpUrl(state),
-      registration: layoutSelectors.selfRegistration(state),
+      registration: configSelectors.selfRegistration(state),
 
       // user related parameters
       currentUser: securitySelectors.currentUser(state) || securitySelectors.fakeUser(state),
