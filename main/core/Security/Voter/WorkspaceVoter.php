@@ -69,11 +69,7 @@ class WorkspaceVoter extends AbstractVoter
     //workspace creator handling ?
     private function checkCreation(TokenInterface $token)
     {
-        if ($this->hasAdminToolAccess($token, 'workspace_management') || $this->isWorkspaceCreator($token)) {
-            return VoterInterface::ACCESS_GRANTED;
-        }
-
-        return VoterInterface::ACCESS_DENIED;
+        return VoterInterface::ACCESS_GRANTED;
     }
 
     private function checkEdit($token, Workspace $workspace)
