@@ -30,7 +30,7 @@ const Tool = props =>
 
           return ActionsWithPath
         },
-        component: () => {
+        content: () => {
           const ComponentWithPath = <BadgeTabComponent path={props.path}/>
 
           return ComponentWithPath

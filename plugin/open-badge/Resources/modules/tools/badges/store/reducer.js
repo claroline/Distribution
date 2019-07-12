@@ -15,7 +15,7 @@ const reducer = combineReducers({
     [makeInstanceAction(TOOL_LOAD, 'open-badge')]: (state, action) => action.toolData.context
   }),
   workspace: makeReducer(null, {
-    [makeInstanceAction(TOOL_LOAD, 'open-badge')]: (state, action) => action.toolData.workspace
+    [makeInstanceAction(TOOL_LOAD, 'open-badge')]: (state, action) => action.toolData.workspace || state
   }),
   badges: combineReducers({
     list: makeListReducer('badges.list', {}),

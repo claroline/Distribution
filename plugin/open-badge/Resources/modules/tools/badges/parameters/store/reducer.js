@@ -5,10 +5,10 @@ import {makeInstanceAction} from '#/main/app/store/actions'
 
 const reducer = makeFormReducer('parameters',{
   originalData: makeReducer({}, {
-    [makeInstanceAction(TOOL_LOAD, 'appearance_settings')]: (state, action) => action.toolData.parameters
+    [makeInstanceAction(TOOL_LOAD, 'open-badge')]: (state, action) => action.toolData.parameters
   }),
   data: makeReducer({}, {
-    [makeInstanceAction(TOOL_LOAD, 'appearance_settings')]: (state, action) => action.toolData.parameters
+    [makeInstanceAction(TOOL_LOAD, 'open-badge')]: (state, action) => action.toolData.parameters
   })
 })
 

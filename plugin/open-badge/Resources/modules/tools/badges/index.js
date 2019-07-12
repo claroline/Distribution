@@ -1,7 +1,7 @@
 
 import {OpenBadgeTool} from '#/plugin/open-badge/tools/badges/containers/tool'
 
-import {reducer} from '#/main/core/tools/workspaces/store'
+import {reducer} from '#/plugin/open-badge/tools/badges/store/reducer'
 
 /**
  * OpenBadge tool application.
