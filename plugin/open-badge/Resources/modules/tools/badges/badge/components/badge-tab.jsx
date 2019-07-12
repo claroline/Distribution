@@ -21,7 +21,7 @@ const BadgeTabActionsComponent = props =>
         type={LINK_BUTTON}
         icon="fa fa-plus"
         label={trans('add_badge')}
-        target="/badges/form"
+        target={props.path+'/badges/form'}
         primary={true}
       />
     }
@@ -29,6 +29,7 @@ const BadgeTabActionsComponent = props =>
 
 const BadgeTabComponent = props =>
   <Routes
+    path={props.path}
     routes={[
       {
         path: '/badges',
@@ -56,13 +57,15 @@ const BadgeTabComponent = props =>
 BadgeTabComponent.propTypes = {
   openBadge: T.func.isRequired,
   openAssertion: T.func.isRequired,
-  workspace: T.object
+  workspace: T.object,
+  path: T.string
 }
 
 const BadgeTab = connect(
-  (state) => ({
+  (state, ownProps) => ({
     currentContext: state.currentContext,
-    workspace: state.workspace
+    workspace: state.workspace,
+    path: ownProps.path
   }),
   dispatch => ({
     openBadge(id = null, workspace = null) {

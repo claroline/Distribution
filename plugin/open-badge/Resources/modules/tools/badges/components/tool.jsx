@@ -8,6 +8,7 @@ import {ParametersForm} from '#/plugin/open-badge/tools/badges/parameters/compon
 
 const Tool = props =>
   <TabbedPageContainer
+    path={props.path}
     title={trans('open-badge-management', {}, 'tools')}
     redirect={[
       {from: '/', exact: true, to: '/badges'}
@@ -24,8 +25,16 @@ const Tool = props =>
         icon: 'fa fa-book',
         title: trans('badges'),
         path: '/badges',
-        actions: BadgeTabActions,
-        content: BadgeTabComponent,
+        actions: () => {
+          const ActionsWithPath = <BadgeTabActions path={props.path}/>
+
+          return ActionsWithPath
+        },
+        component: () => {
+          const ComponentWithPath = <BadgeTabComponent path={props.path}/>
+
+          return ComponentWithPath
+        },
         displayed: props.currentContext !== 'profile'
       }, {
         icon: 'fa fa-cog',
@@ -46,5 +55,5 @@ const Tool = props =>
   />
 
 export {
-  Tool as OpenBadgeAdminTool
+  Tool
 }
