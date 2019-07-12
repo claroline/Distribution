@@ -7,7 +7,7 @@ import {makeListReducer} from '#/main/app/content/list/store'
 
 import {
   PROFILE_FACET_OPEN
-} from '#/main/core/tools/users/components/profile/store/actions'
+} from '#/main/core/user/profile/store/actions'
 
 const reducer = combineReducers({
   currentFacet: makeReducer(null, {

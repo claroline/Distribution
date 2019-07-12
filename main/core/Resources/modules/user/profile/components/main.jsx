@@ -5,8 +5,8 @@ import {Routes} from '#/main/app/router'
 import {UserPageContainer} from '#/main/core/user/containers/page'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
-import {ProfileEdit} from '#/main/core/tools/users/components/profile/editor/components/main'
-import {ProfileShow} from '#/main/core/tools/users/components/profile/player/components/main'
+import {ProfileEdit} from '#/main/core/user/profile/editor/components/main'
+import {ProfileShow} from '#/main/core/user/profile/player/components/main'
 import {ProfileBadgeList} from '#/plugin/open-badge/tools/badges/badge/components/profile-badges'
 
 const ProfileComponent = props =>

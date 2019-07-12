@@ -3,8 +3,8 @@ import {PropTypes as T} from 'prop-types'
 
 import {Routes} from '#/main/app/router'
 
-import {ProfileFacet as ProfileFacetTypes} from '#/main/core/tools/users/components/profile/prop-types'
-import {getMainFacet} from '#/main/core/tools/users/components/profile/utils'
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
+import {getMainFacet} from '#/main/core/user/profile/utils'
 
 const ProfileFacets = props => {
   let redirect

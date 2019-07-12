@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 
-import {actions} from '#/main/core/tools/users/components/profile/store/actions'
+import {actions} from '#/main/core/user/profile/store/actions'
 
 function mapStateToProps(state) {
   return {

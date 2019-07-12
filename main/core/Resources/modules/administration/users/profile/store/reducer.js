@@ -7,7 +7,7 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 
 import {selectors as baseSelectors} from '#/main/core/administration/users/store'
-import {decorate} from '#/main/core/tools/users/components/profile/decorator'
+import {decorate} from '#/main/core/user/profile/decorator'
 import {
   PROFILE_FACET_OPEN,
   PROFILE_FACET_ADD,

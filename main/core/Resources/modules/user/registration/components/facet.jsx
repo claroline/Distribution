@@ -2,10 +2,10 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {FormData} from '#/main/app/content/form/containers/data'
-import {ProfileFacet as ProfileFacetTypes} from '#/main/core/tools/users/components/profile/prop-types'
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 
-// todo maybe merge with #/main/core/tools/users/components/profile/editor/components/facet.jsx
+// todo maybe merge with #/main/core/user/profile/editor/components/facet.jsx
 
 /**
  * Registration Form : Facet section.
