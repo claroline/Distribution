@@ -1,10 +1,4 @@
 {
-  "webpack": {
-    "entry": {
-      "my-objectives": "my-objectives/index.jsx"
-    }
-  },
-
   "styles": {
     "entry": {
       "competency": "tools/competency.less",
