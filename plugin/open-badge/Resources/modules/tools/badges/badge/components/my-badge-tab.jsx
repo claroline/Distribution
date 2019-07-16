@@ -6,9 +6,10 @@ import {MyBadges} from '#/plugin/open-badge/tools/badges/badge/components/my-bad
 
 const MyBadgeTab = props =>
   <Routes
+    path={props.path}
     routes={[
       {
-        path: props.path + '/my-badges',
+        path: '/my-badges',
         exact: true,
         component: MyBadges
       }
