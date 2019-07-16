@@ -111,7 +111,7 @@ class PluginListener
     public function onOpenMyLearningObjectivesTool(DisplayToolEvent $event)
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        $objectives = $user !== 'anon.' ? $this->objectiveManager->loadSubjectObjectives($user) : [];
+        $objectives = 'anon.' !== $user ? $this->objectiveManager->loadSubjectObjectives($user) : [];
         $objectivesCompetencies = [];
         $competencies = [];
 

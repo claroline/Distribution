@@ -57,6 +57,7 @@ const ScalesPickerModal = props => {
 ScalesPickerModal.propTypes = {
   title: T.string,
   confirmText: T.string,
+  display: T.object,
   selectAction: T.func.isRequired,
   fadeModal: T.func.isRequired,
   selected: T.arrayOf(T.shape(ScaleType.propTypes)).isRequired,

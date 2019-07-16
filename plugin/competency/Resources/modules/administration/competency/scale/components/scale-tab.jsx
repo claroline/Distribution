@@ -3,12 +3,10 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 
 import {makeId} from '#/main/core/scaffolding/id'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions'
 
 import {selectors as competencySelectors} from '#/plugin/competency/administration/competency/store'
 import {actions} from '#/plugin/competency/administration/competency/scale/store'
