@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {trans} from '#/main/app/intl/translation'
 import {getApps} from '#/main/app/plugins'
 import {Routes} from '#/main/app/router'
 import {Await} from '#/main/app/components/await'
@@ -14,28 +15,40 @@ function getIntegrationApps() {
 }
 
 const IntegrationTool = props =>
-  <ToolPage>
-    <Await
-      for={getIntegrationApps()}
-      then={(apps) => {
-        const routes = []
+  <Await
+    for={getIntegrationApps()}
+    then={(apps) => {
+      const routes = []
+      const subtitlesRoutes = []
 
-        apps.map(app => {
-          routes.push({
-            path: `/${app.default.name}`,
-            component: app.default.component
-          })
+      apps.map(app => {
+        routes.push({
+          path: `/${app.default.name}`,
+          component: app.default.component
         })
+        subtitlesRoutes.push({
+          path: `/${app.default.name}`,
+          render: () => trans(app.default.name, {}, 'tools')
+        })
+      })
 
-        return (
+      return (
+        <ToolPage
+          subtitle={
+            <Routes
+              path={props.path}
+              routes={subtitlesRoutes}
+            />
+          }
+        >
           <Routes
             path={props.path}
             routes={routes}
           />
-        )
-      }}
-    />
-  </ToolPage>
+        </ToolPage>
+      )
+    }}
+  />
 
 IntegrationTool.propTypes = {
   path: T.string.isRequired
