@@ -1,7 +1,6 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/app/intl/translation'
 import {getApps} from '#/main/app/plugins'
 import {Routes} from '#/main/app/router'
 import {Await} from '#/main/app/components/await'

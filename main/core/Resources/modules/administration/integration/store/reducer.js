@@ -1,4 +1,4 @@
-import {makeReducer, combineReducers} from '#/main/app/store/reducer'
+import {makeReducer} from '#/main/app/store/reducer'
 
 const reducer = makeReducer()
 
