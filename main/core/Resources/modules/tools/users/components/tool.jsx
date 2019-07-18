@@ -1,12 +1,11 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
-import {Profile} from '#/main/core/user/profile/containers/main.jsx'
+
 import {ToolPage} from '#/main/core/tool/containers/page'
-import {connect} from 'react-redux'
-import {withRouter} from '#/main/app/router'
-import {selectors} from '#/main/app/content/details/store'
+import {Profile} from '#/main/core/user/profile/containers/main'
 
 const UsersTool = (props) =>
   <ToolPage
@@ -14,8 +13,15 @@ const UsersTool = (props) =>
       <Routes
         path={props.path}
         routes={[
-          {path: '/profile', render: () => trans('profile'), disabled: false},
-          {path: '/list',    render: () => trans('users'), disabled: false}
+          {
+            path: '/profile',
+            render: () => trans('profile'),
+            disabled: false
+          }, {
+            path: '/list',
+            render: () => trans('users'),
+            disabled: false
+          }
         ]}
       />
     }
@@ -42,21 +48,11 @@ const UsersTool = (props) =>
     />
   </ToolPage>
 
-const ConnectedTool = withRouter(
-  connect(
-    (state) => {
-      return {
-        user: selectors.data(selectors.details(state, 'users.user'))
-      }
-    }
-  )(UsersTool)
-)
-
 UsersTool.propTypes = {
   path: T.string.isRequired,
   user: T.object
 }
 
 export {
-  ConnectedTool as UsersTool
+  UsersTool
 }

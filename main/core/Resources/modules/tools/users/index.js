@@ -1,7 +1,6 @@
-import {UsersTool} from '#/main/core/tools/users/components/tool'
-import {UsersMenu} from '#/main/core/tools/users/components/menu'
-
 import {reducer} from '#/main/core/tools/users/store'
+import {UsersTool} from '#/main/core/tools/users/containers/tool'
+import {UsersMenu} from '#/main/core/tools/users/containers/menu'
 
 /**
  * Users tool application.

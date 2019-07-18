@@ -1,8 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
-import {withRouter} from '#/main/app/router'
-import {selectors} from '#/main/app/content/details/store'
+import omit from 'lodash/omit'
+
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {Toolbar} from '#/main/app/action/components/toolbar'
@@ -10,6 +9,7 @@ import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 const UsersMenu = (props) =>
   <MenuSection
+    {...omit(props, 'path')}
     title={trans('users', {}, 'tools')}
   >
     <Toolbar
@@ -20,27 +20,16 @@ const UsersMenu = (props) =>
           name: 'profile',
           type: LINK_BUTTON,
           label: trans('profile'),
-          target: props.path+'/profile/' + props.user.publicUrl
+          target: `${props.path}/profile/${props.user.publicUrl}`
         }, {
           name: 'users',
           type: LINK_BUTTON,
           label: trans('list'),
-          target: props.path+'/list'
+          target: `${props.path}/list`
         }
       ]}
     />
   </MenuSection>
-
-const ConnectedMenu = withRouter(
-  connect(
-    (state) => {
-      return {
-        user: selectors.data(selectors.details(state, 'users.user'))
-      }
-    }
-  )(UsersMenu)
-)
-
 
 UsersMenu.propTypes = {
   user: T.object,
@@ -48,5 +37,5 @@ UsersMenu.propTypes = {
 }
 
 export {
-  ConnectedMenu as UsersMenu
+  UsersMenu
 }
