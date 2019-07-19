@@ -45,6 +45,7 @@ const Section = props =>
         <CallbackButton
           className={classes('btn section-btn', {'activated': props.options.showHelp})}
           callback={() => props.updateOption(props.section.id, 'showHelp', !props.options.showHelp)}
+          primary={true}
         >
           <span className="fa fa-file-text-o"/>
         </CallbackButton>
@@ -53,6 +54,7 @@ const Section = props =>
         <CallbackButton
           className={classes('btn section-btn', {'activated': props.options.showComment})}
           callback={() => props.updateOption(props.section.id, 'showComment', !props.options.showComment)}
+          primary={true}
         >
           <span className="fa fa-comment-alt"/>
         </CallbackButton>
@@ -61,6 +63,7 @@ const Section = props =>
         <CallbackButton
           className={classes('btn section-btn', {'activated': props.options.showAudioUrl})}
           callback={() => props.updateOption(props.section.id, 'showAudioUrl', !props.options.showAudioUrl)}
+          primary={true}
         >
           <span className="fa fa-volume-up"/>
         </CallbackButton>
