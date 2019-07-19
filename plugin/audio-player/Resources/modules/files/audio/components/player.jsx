@@ -227,6 +227,12 @@ class Audio extends Component {
           </div>
         }
 
+        {this.props.file.description &&
+          <HtmlText className="audio-player-transcripts">
+            {this.props.file.description}
+          </HtmlText>
+        }
+
         {(!this.props.canEdit || !this.state.displayAllComments) &&
         0 < this.state.ongoingSections.length &&
         0 < this.props.file.sections.filter(s => -1 < this.state.ongoingSections.indexOf(s.id) && s.showTranscript && s.transcript).length &&
