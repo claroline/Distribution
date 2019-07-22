@@ -6,6 +6,7 @@
     "display_sections": "Afficher les sections",
     "end": "Fin",
     "end_tolerance": "Tolérance de fin",
+    "export_comments_to_csv": "Exporter les commentaires (CSV)",
     "introduction": "Introduction",
     "pause": "Pause",
     "play": "Play",

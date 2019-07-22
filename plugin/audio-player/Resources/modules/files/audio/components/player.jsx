@@ -9,8 +9,7 @@ import {asset} from '#/main/app/config/asset'
 import {trans} from '#/main/app/intl/translation'
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {CallbackButton} from '#/main/app/buttons/callback/components/button'
+import {CALLBACK_BUTTON, CallbackButton, DownloadButton} from '#/main/app/buttons'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 import {makeId} from '#/main/core/scaffolding/id'
 import {selectors as fileSelect} from '#/main/core/resources/file/store'
@@ -213,20 +212,29 @@ class Audio extends Component {
   render() {
     return (
       <div className="audio-resource-player">
-        {this.props.canEdit && (
-          constants.USER_TYPE === this.props.file.sectionsType ||
-          (constants.MANAGER_TYPE === this.props.file.sectionsType && 0 < this.props.file.sections.filter(s => s.commentsAllowed).length)
-        ) &&
-          <div className="comments-mode-btn">
-            <CallbackButton
+        {this.props.canEdit &&
+          <div className="comments-buttons">
+            {(constants.USER_TYPE === this.props.file.sectionsType ||
+              (constants.MANAGER_TYPE === this.props.file.sectionsType && 0 < this.props.file.sections.filter(s => s.commentsAllowed).length)
+            ) &&
+              <CallbackButton
+                className="btn"
+                callback={() => this.setState({
+                  displayAllComments: !this.state.displayAllComments,
+                  ongoingSections: []
+                })}
+              >
+                {trans(this.state.displayAllComments ? 'display_my_comments' : 'display_all_comments', {}, 'audio')}
+              </CallbackButton>
+            }
+            <DownloadButton
               className="btn"
-              callback={() => this.setState({
-                displayAllComments: !this.state.displayAllComments,
-                ongoingSections: []
-              })}
+              file={{
+                url: ['apiv2_audioresourcesectioncomment_list_comments_csv', {resourceNode: this.props.resourceNodeId}]
+              }}
             >
-              {trans(this.state.displayAllComments ? 'display_my_comments' : 'display_all_comments', {}, 'audio')}
-            </CallbackButton>
+              {trans('export_comments_to_csv', {}, 'audio')}
+            </DownloadButton>
           </div>
         }
 
