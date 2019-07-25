@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
 
+import {selectors} from '#/main/core/tools/transfer/store'
+
 const Error = error => {
   return(
     <pre>
@@ -109,7 +111,7 @@ Logs.propTypes = {
 
 const ConnectedLog = connect(
   state => ({
-    data: state.log
+    data: selectors.log
   }),
   null
 )(Logs)
