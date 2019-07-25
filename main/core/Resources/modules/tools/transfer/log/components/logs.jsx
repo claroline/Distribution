@@ -100,7 +100,7 @@ Logs.propTypes = {
 
 const ConnectedLog = connect(
   state => ({
-    data: selectors.log
+    data: selectors.log(state)
   }),
   null
 )(Logs)
