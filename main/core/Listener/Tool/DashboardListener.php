@@ -11,13 +11,11 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Manager\EventManager;
 use Claroline\CoreBundle\Manager\ProgressionManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -32,12 +30,6 @@ class DashboardListener
     /** @var ProgressionManager */
     private $progressionManager;
 
-    /** @var SerializerProvider */
-    private $serializer;
-
-    /** @var TwigEngine */
-    private $templating;
-
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
@@ -47,28 +39,20 @@ class DashboardListener
      * @DI\InjectParams({
      *     "eventManager"       = @DI\Inject("claroline.event.manager"),
      *     "progressionManager" = @DI\Inject("claroline.manager.progression_manager"),
-     *     "serializer"         = @DI\Inject("claroline.api.serializer"),
-     *     "templating"         = @DI\Inject("templating"),
      *     "tokenStorage"       = @DI\Inject("security.token_storage")
      * })
      *
      * @param EventManager          $eventManager
      * @param ProgressionManager    $progressionManager
-     * @param SerializerProvider    $serializer
-     * @param TwigEngine            $templating
      * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         EventManager $eventManager,
         ProgressionManager $progressionManager,
-        SerializerProvider $serializer,
-        TwigEngine $templating,
         TokenStorageInterface $tokenStorage
     ) {
         $this->eventManager = $eventManager;
         $this->progressionManager = $progressionManager;
-        $this->serializer = $serializer;
-        $this->templating = $templating;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -87,22 +71,12 @@ class DashboardListener
         $user = 'anon.' !== $authenticatedUser ? $authenticatedUser : null;
         $items = $this->progressionManager->fetchItems($workspace, $user, $levelMax);
 
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:tool\workspace:dashboard.html.twig', [
-                'workspace' => $workspace,
-                // For logs tool
-                'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_WORKSPACE),
-                // For progression tool
-                'context' => [
-                    'type' => 'workspace',
-                    'data' => $this->serializer->serialize($workspace),
-                ],
-                'items' => $items,
-                'levelMax' => null,    // how deep to process children recursively
-            ]
-        );
+        $event->setData([
+            'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_WORKSPACE),
+            'items' => $items,
+            'levelMax' => null,    // how deep to process children recursively
 
-        $event->setContent($content);
+        ]);
         $event->stopPropagation();
     }
 }
