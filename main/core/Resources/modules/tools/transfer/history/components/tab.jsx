@@ -35,7 +35,7 @@ const List = props =>
       target: `${props.path}/history/${row.log}`
     })}
     fetch={{
-      url: props.workspace ? ['apiv2_workspace_transfer_list', {workspaceId: props.workspace.id}]: ['apiv2_transfer_list'],
+      url: props.workspace && props.workspace.id ? ['apiv2_workspace_transfer_list', {workspaceId: props.workspace.id}]: ['apiv2_transfer_list'],
       autoload: true
     }}
     delete={{

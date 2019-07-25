@@ -106,7 +106,7 @@ class RoutedExplain extends Component {
         type: 'file',
         label: trans('file'),
         options: {
-          uploadUrl: ['apiv2_transfer_upload_file', {workspace: props.workspace ? props.workspace.id: 0}]
+          uploadUrl: ['apiv2_transfer_upload_file', {workspace: props.workspace && props.workspace.id ? props.workspace.id : 0}]
         }
       }
     ]
@@ -120,7 +120,7 @@ class RoutedExplain extends Component {
           level={2}
           name={selectors.STORE_NAME + '.import'}
           title={trans(entity)}
-          target={['apiv2_transfer_start', {log: this.getLogId(), workspace: props.workspace ? props.workspace.uuid: null }]}
+          target={['apiv2_transfer_start', {log: this.getLogId(), workspace: props.workspace && props.workspace.uuid ? props.workspace.uuid : null }]}
           buttons={true}
           save={{
             type: CALLBACK_BUTTON,
