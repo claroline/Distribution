@@ -23,7 +23,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class DashboardListener
 {
-
     /** @var EventManager */
     private $eventManager;
 
@@ -75,7 +74,6 @@ class DashboardListener
             'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_WORKSPACE),
             'items' => $items,
             'levelMax' => null,    // how deep to process children recursively
-
         ]);
         $event->stopPropagation();
     }

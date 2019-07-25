@@ -22,6 +22,7 @@ const LogsComponent = (props) =>
   />
 
 LogsComponent.propTypes = {
+  path: T.string.isRequired,
   workspaceId: T.number.isRequired,
   actions: T.array.isRequired,
   chart: T.object.isRequired,
@@ -31,6 +32,7 @@ LogsComponent.propTypes = {
 
 const Logs = connect(
   state => ({
+    path: toolSelectors.path(state),
     workspaceId: toolSelectors.contextData(state).id,
     chart: selectors.chart(state),
     actions: selectors.actions(state),
