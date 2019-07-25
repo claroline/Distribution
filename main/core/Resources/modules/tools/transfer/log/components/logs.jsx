@@ -84,7 +84,7 @@ const Logs = props => {
               {props.data.data && props.data.data.error.map((error, k) =>
                 <Error key={'error'+k} {...error}/>
               )}
-              </div>
+            </div>
           </FormSection>
         </FormSections>
       </div>
