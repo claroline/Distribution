@@ -9,7 +9,6 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {selectors as baseSelectors} from '#/main/core/tools/users/store'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
-import {UserList} from '#/main/core/administration/users/user/components/user-list'
 
 const GroupForm = props =>
   <FormData

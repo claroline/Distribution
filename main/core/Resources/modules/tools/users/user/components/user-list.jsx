@@ -7,9 +7,9 @@ function getRoles(user, workspace) {
   return user.roles.filter(role => role.workspace && role.workspace.id === workspace.uuid).map(role => trans(role.translationKey)).join(', ')
 }
 
-function getGroups(workspace) {
-  return workspace.groups.map(group => group.name).join(', ')
-}
+// function getGroups(workspace) {
+//   return workspace.groups.map(group => group.name).join(', ')
+// }
 
 function getWorkspaceRoles(workspace) {
   const roles = {}
@@ -21,15 +21,15 @@ function getWorkspaceRoles(workspace) {
   return roles
 }
 
-function getWorkspaceGroups(workspace) {
-  const groups = {}
-
-  workspace.groups.forEach(group => {
-    groups[group.id] = group.translationKey
-  })
-
-  return groups
-}
+// function getWorkspaceGroups(workspace) {
+//   const groups = {}
+//
+//   workspace.groups.forEach(group => {
+//     groups[group.id] = group.translationKey
+//   })
+//
+//   return groups
+// }
 
 function getUserList(workspace) {
   return {

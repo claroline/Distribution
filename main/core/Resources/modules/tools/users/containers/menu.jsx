@@ -1,6 +1,5 @@
 import {connect} from 'react-redux'
 
-import {withRouter} from '#/main/app/router'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'

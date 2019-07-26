@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'

@@ -29,7 +29,7 @@ const RoleTabComponent = props =>
 RoleTabComponent.propTypes = {
   path: T.string.isRequired,
   workspace: T.object.isRequired,
-  openForm: T.func.isRequired,
+  openForm: T.func.isRequired
 }
 
 const RoleTab = connect(
