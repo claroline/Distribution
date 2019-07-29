@@ -18,7 +18,7 @@ import {UsersTool as UsersToolComponent} from '#/main/core/tools/users/component
 const UsersTool = withRouter(connect(
   (state) => {
     return {
-      context: state.tool.currentContext,
+      context: toolSelectors.contextType(state),
       currentUser: securitySelectors.currentUser(state),
       workspace: toolSelectors.contextData(state)
     }},

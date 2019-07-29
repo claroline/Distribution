@@ -12,7 +12,8 @@ import {Toolbar} from '#/main/app/action/components/toolbar'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 const UsersMenu = (props) => {
-  if (props.context.type === 'desktop') {
+
+  if (props.context === 'desktop') {
     return (
       <MenuSection
         title={trans('users', {}, 'tools')}
@@ -92,6 +93,7 @@ const UsersMenu = (props) => {
 }
 
 UsersMenu.propTypes = {
+  context: T.string,
   path: T.string,
   currentUser: T.shape(UserType.propTypes),
   workspace: T.shape(WorkspaceType.propTypes).isRequired

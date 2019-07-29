@@ -7,7 +7,7 @@ import {UsersMenu as UsersMenuComponent} from '#/main/core/tools/users/component
 
 const UsersMenu = connect(
   (state) => ({
-    context: state.tool.currentContext,
+    context: toolSelectors.contextType(state),
     currentUser: securitySelectors.currentUser(state),
     workspace: toolSelectors.contextData(state)
   })

@@ -11,6 +11,7 @@ import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 import {constants} from '#/main/core/tools/users/constants'
 import {getPermissionLevel} from  '#/main/core/tools/users/restrictions'
 import {UserTab} from '#/main/core/tools/users/user/components/user-tab'
+import {Users} from '#/main/core/tools/users/contact/components/users'
 import {GroupTab} from '#/main/core/tools/users/group/components/group-tab'
 import {RoleTab} from '#/main/core/tools/users/role/components/role-tab'
 import {ParametersTab} from '#/main/core/tools/users/parameters/components/parameters-tab'
@@ -19,8 +20,8 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 
 const UsersTool = (props) => {
   const permLevel = getPermissionLevel(props.workspace, props.currentUser)
-  
-  if (props.context.type === 'desktop') {
+
+  if (props.context === 'desktop') {
     return (
       <ToolPage
         subtitle={
@@ -28,7 +29,7 @@ const UsersTool = (props) => {
             path={props.path}
             routes={[
               {path: '/profile', render: () => trans('profile'), disabled: false},
-              {path: '/list',    render: () => trans('users'), disabled: false}
+              {path: '/list',    render: () => trans('contacts'), disabled: false}
             ]}
           />
         }
@@ -45,11 +46,7 @@ const UsersTool = (props) => {
               }
             }, {
               path: '/list',
-              render: () => {
-                const ListComponent = <div>list</div>
-
-                return ListComponent
-              }
+              component: Users
             }
           ]}
         />
@@ -167,6 +164,7 @@ const UsersTool = (props) => {
 }
 
 UsersTool.propTypes = {
+  context: T.string,
   path: T.string.isRequired,
   location: T.object.isRequired,
   currentUser: T.shape(UserType.propTypes),
