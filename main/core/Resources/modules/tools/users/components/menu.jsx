@@ -16,6 +16,7 @@ const UsersMenu = (props) => {
   if (props.context === 'desktop') {
     return (
       <MenuSection
+        {...omit(props, 'path')}
         title={trans('users', {}, 'tools')}
       >
         <Toolbar
@@ -26,7 +27,7 @@ const UsersMenu = (props) => {
               name: 'profile',
               type: LINK_BUTTON,
               label: trans('profile'),
-              target: props.path+'/profile/' + props.currentUser.publicUrl
+              target: props.path+'/profile/' + props.currentUser.publicUrl + '/show'
             }, {
               name: 'users',
               type: LINK_BUTTON,
