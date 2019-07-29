@@ -91,9 +91,9 @@ class TransferManager
      *
      * @return object
      */
-    public function create(array $data, Workspace $workspace)
+    public function create(array $data, Workspace $workspace, array $options = [Options::EXPORT_USERS])
     {
-        $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
+        $options = array_merge($options, [Options::LIGHT_COPY, Options::REFRESH_UUID]);
         // gets entity from raw data.
         $workspace = $this->deserialize($data, $workspace, $options);
 
@@ -121,7 +121,7 @@ class TransferManager
         return $generic->isAllowed() && $specific->isAllowed();
     }
 
-    public function export(Workspace $workspace, array $options = [Options::EXPORT_USERS])
+    public function export(Workspace $workspace, array $options = [])
     {
         $fileBag = new FileBag();
         $data = $this->serialize($workspace);
@@ -261,6 +261,8 @@ class TransferManager
         }
 
         if (in_array(Options::EXPORT_USERS, $options)) {
+            $this->log('Import users');
+
             $this->importUsers($data['users'], $workspace);
         }
 
@@ -308,18 +310,28 @@ class TransferManager
     {
         foreach ($users as $user) {
             //test if user exists
-            $exists = $this->om->getRepository(User::class)->findOneByUsername($user['username']);
+            $this->log('Searching for '.$user['username'].'...');
+            $entity = $this->om->getRepository(User::class)->findOneByUsername($user['username']);
 
-            if (!$exists) {
+            if (!$entity) {
+                $this->log($user['username'].' not found: creating...');
+                $user['plainPassword'] = $user['username'];
                 $entity = $this->crud->create(
-                  User::class,
-                  $user,
-                  [Options::ADD_NOTIFICATIONS]
-              );
+                    User::class,
+                    $user,
+                    [Options::ADD_NOTIFICATIONS]
+                );
             }
 
-            //then we need to add the role
+            foreach ($user['roles'] as $translationKey) {
+                $role = $this->om->getRepository(Role::class)->findOneBy(['workspace' => $workspace, 'translationKey' => $translationKey]);
+                $entity->addRole($role);
+                $this->log('Add role '.$translationKey.' to user '.$user['username']);
+                $this->om->persist($entity);
+            }
         }
+
+        $this->om->flush();
     }
 
     private function getFileBag(array $data = [])
