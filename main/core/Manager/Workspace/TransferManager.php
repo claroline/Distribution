@@ -91,7 +91,7 @@ class TransferManager
      *
      * @return object
      */
-    public function create(array $data, Workspace $workspace, array $options = [Options::EXPORT_USERS])
+    public function create(array $data, Workspace $workspace)
     {
         $options = array_merge($options, [Options::LIGHT_COPY, Options::REFRESH_UUID]);
         // gets entity from raw data.
@@ -260,7 +260,7 @@ class TransferManager
             $workspace->setCreator($this->tokenStorage->getToken()->getUser());
         }
 
-        if (in_array(Options::EXPORT_USERS, $options)) {
+        if (isset($data['users'])) {
             $this->log('Import users');
 
             $this->importUsers($data['users'], $workspace);
