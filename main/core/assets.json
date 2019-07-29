@@ -5,7 +5,6 @@
       "user-profile": "user/profile",
       "user-tracking": "user/tracking",
       "resource-logs": "resource/logs",
-      "trash-tool": "tools/trash/bootstrap",
       "dashboard-tool": "tools/dashboard/bootstrap",
       "admin-desktop-tool": "administration/home/bootstrap"
     }

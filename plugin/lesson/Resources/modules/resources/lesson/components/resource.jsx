@@ -1,17 +1,14 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
 import {url} from '#/main/app/api'
 
 import {ResourcePage} from '#/main/core/resource/containers/page'
 import {Routes} from '#/main/app/router'
-import {SummarizedContent} from '#/main/app/content/summary/components/content'
 import {LINK_BUTTON, DOWNLOAD_BUTTON} from '#/main/app/buttons'
 
 import {ChapterResource} from '#/plugin/lesson/resources/lesson/components/chapter'
-import {normalizeTree} from '#/plugin/lesson/resources/lesson/utils'
 import {ChapterForm} from '#/plugin/lesson/resources/lesson/components/chapter-form'
 import {Editor} from '#/plugin/lesson/resources/lesson/editor/components/editor'
 
@@ -37,14 +34,13 @@ class LessonResource extends Component {
   render() {
     return (
       <ResourcePage
-        styles={['claroline-distribution-plugin-lesson-lesson-resource']}
         primaryAction="chapter"
         customActions={[
           {
             type: LINK_BUTTON,
             icon: 'fa fa-home',
             label: trans('show_overview'),
-            target: '/',
+            target: this.props.path,
             exact: true
           },
           {
@@ -58,16 +54,10 @@ class LessonResource extends Component {
           }
         ]}
       >
-        <SummarizedContent
-          summary={{
-            displayed: true,
-            opened: true,
-            pinned: true,
-            title: trans('summary'),
-            links: !isEmpty(this.props.tree) ? normalizeTree(this.props.tree, this.props.lesson.id, this.props.canEdit).children : []
-          }}
-        >
-          <Routes className="lesson-page-content" routes={[
+        <Routes
+          className="lesson-page-content"
+          path={this.props.path}
+          routes={[
             {
               path: '/',
               component: ChapterResource,
@@ -97,14 +87,15 @@ class LessonResource extends Component {
               exact: true,
               onEnter: params => this.props.copyChapter(this.props.lesson.id, params.slug)
             }
-          ]}/>
-        </SummarizedContent>
+          ]}
+        />
       </ResourcePage>
     )
   }
 }
 
 LessonResource.propTypes = {
+  path: T.string.isRequired,
   invalidated: T.bool.isRequired,
   fetchChapterTree: T.func.isRequired,
   lesson: T.any.isRequired,
