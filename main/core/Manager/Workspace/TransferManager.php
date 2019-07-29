@@ -121,11 +121,16 @@ class TransferManager
         return $generic->isAllowed() && $specific->isAllowed();
     }
 
-    public function export(Workspace $workspace)
+    public function export(Workspace $workspace, array $options = [Options::EXPORT_USERS])
     {
         $fileBag = new FileBag();
         $data = $this->serialize($workspace);
         $data = $this->exportFiles($data, $fileBag, $workspace);
+
+        if (in_array(Options::EXPORT_USERS, $options)) {
+            $data['users'] = $this->exportUsers($workspace);
+        }
+
         $archive = new \ZipArchive();
         $pathArch = $this->tempFileManager->generate();
         $archive->open($pathArch, \ZipArchive::CREATE);
@@ -255,6 +260,10 @@ class TransferManager
             $workspace->setCreator($this->tokenStorage->getToken()->getUser());
         }
 
+        if (in_array(Options::EXPORT_USERS, $options)) {
+            $this->importUsers($data['users'], $workspace);
+        }
+
         return $workspace;
     }
 
@@ -275,6 +284,42 @@ class TransferManager
         }
 
         return $data;
+    }
+
+    public function exportUsers(Workspace $workspace)
+    {
+        $serializedUsers = [];
+
+        foreach ($workspace->getRoles() as $role) {
+            $users = $role->getUsers();
+
+            foreach ($users as $user) {
+                if (!isset($serializedUsers[$user->getUsername()])) {
+                    $serializedUsers[$user->getUsername()] = $this->serializer->serialize($user, [Options::SERIALIZE_MINIMAL]);
+                }
+                $serializedUsers[$user->getUsername()]['roles'][] = $role->getTranslationKey();
+            }
+        }
+
+        return $serializedUsers;
+    }
+
+    public function importUsers($users, Workspace $workspace)
+    {
+        foreach ($users as $user) {
+            //test if user exists
+            $exists = $this->om->getRepository(User::class)->findOneByUsername($user['username']);
+
+            if (!$exists) {
+                $entity = $this->crud->create(
+                  User::class,
+                  $user,
+                  [Options::ADD_NOTIFICATIONS]
+              );
+            }
+
+            //then we need to add the role
+        }
     }
 
     private function getFileBag(array $data = [])

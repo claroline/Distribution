@@ -111,6 +111,7 @@ final class Options
     const SQL_QUERY = 'sql_query';
 
     //transfer_options
+    const EXPORT_USERS = 'export_users';
     const WORKSPACE_IMPORT = 'workspace_import';
     const ADMINISTRATION_IMPORT = 'administration_import';
 }
