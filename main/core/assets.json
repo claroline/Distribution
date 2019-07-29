@@ -1,15 +1,9 @@
 {
   "webpack": {
     "entry": {
-      "transfer-management": "tools/transfer/bootstrap",
       "user-tracking": "user/tracking",
-      "workspace-user-management": "workspace/user",
       "resource-logs": "resource/logs",
-      "trash-tool": "tools/trash/bootstrap",
-      "dashboard-tool": "tools/dashboard/bootstrap",
-      "integration": "administration/integration/bootstrap",
-      "admin-desktop-tool": "administration/home/bootstrap",
-      "dashboard-admin-tool": "administration/dashboard/bootstrap"
+      "admin-desktop-tool": "administration/home/bootstrap"
     }
   },
 

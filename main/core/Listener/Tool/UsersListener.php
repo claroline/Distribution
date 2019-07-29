@@ -16,11 +16,13 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service
@@ -34,9 +36,11 @@ class UsersListener
      *     "tokenStorage"         = @DI\Inject("security.token_storage"),
      *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
      *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
+     *     "workspaceSerializer"  = @DI\Inject("claroline.serializer.workspace"),
      *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile"),
      *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
-     *     "request"              = @DI\Inject("request_stack")
+     *     "request"              = @DI\Inject("request_stack"),
+     *     "authorization"        = @DI\Inject("security.authorization_checker"),
      * })
      *
      * @param ObjectManager        $om
@@ -50,14 +54,18 @@ class UsersListener
         UserSerializer $userSerializer,
         ProfileSerializer $profileSerializer,
         ParametersSerializer $parametersSerializer,
-        RequestStack $request
+        RequestStack $request,
+        AuthorizationCheckerInterface $authorization,
+        WorkspaceSerializer $workspaceSerializer
     ) {
         $this->tokenStorage = $tokenStorage;
+        $this->authorization = $authorization;
         $this->om = $om;
         $this->userSerializer = $userSerializer;
         $this->profileSerializer = $profileSerializer;
         $this->parametersSerializer = $parametersSerializer;
         $this->request = $request->getMasterRequest();
+        $this->workspaceSerializer = $workspaceSerializer;
     }
 
     /**
@@ -72,19 +80,18 @@ class UsersListener
         //change this
         $workspace = $event->getWorkspace();
 
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:workspace:users.html.twig', [
-                'workspace' => $workspace,
-                'restrictions' => [
-                    'hasUserManagementAccess' => $this->authorization->isGranted('OPEN', $this->om
-                        ->getRepository('ClarolineCoreBundle:Tool\AdminTool')
-                        ->findOneBy(['name' => 'user_management'])
-                    ),
-                ],
-            ]
-        );
-
-        $event->setContent($content);
+        $event->setData([
+            'parameters' => $this->workspaceSerializer->serialize($workspace),
+            'restrictions' => [
+                // TODO: computes rights more accurately
+                'hasUserManagementAccess' => $this->authorization->isGranted('ROLE_ADMIN'),
+            ],
+            'user' => [
+              'data' => [],
+              'originalData' => [],
+            ],
+            'facets' => [],
+        ]);
         $event->stopPropagation();
     }
 
@@ -107,9 +114,11 @@ class UsersListener
               'data' => $serializedUser,
               'originalData' => $serializedUser,
           ],
+          'restrictions' => [],
           'facets' => $this->profileSerializer->serialize(),
           'parameters' => $this->parametersSerializer->serialize()['profile'],
         ]);
+
         $event->stopPropagation();
     }
 }

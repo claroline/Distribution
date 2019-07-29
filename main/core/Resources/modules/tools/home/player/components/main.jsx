@@ -11,15 +11,15 @@ const PlayerMain = props =>
   <Routes
     path={props.path}
     redirect={[
-      props.tabs[0] && {from: '/tab', exact: true, to: '/tab/'+props.tabs[0].id },
+      props.tabs[0] && {from: '/', exact: true, to: '/'+props.tabs[0].id }
     ].filter(redirect => !!redirect)}
     routes={[
       {
-        path: '/tab/:id',
+        path: '/:id',
         onEnter: (params = {}) => props.setCurrentTab(params.id),
         render: (routeProps) => {
           if (props.tabs.find(tab => tab.id === routeProps.match.params.id)) {
-            return (
+            const Player = (
               <PlayerTab
                 path={props.path}
                 currentContext={props.currentContext}
@@ -30,11 +30,13 @@ const PlayerMain = props =>
                 widgets={props.widgets}
               />
             )
+
+            return Player
           }
 
           // tab does not exist
           // let's redirection open the first available
-          routeProps.history.push(props.path)
+          routeProps.history.replace(props.path)
 
           return null
         }

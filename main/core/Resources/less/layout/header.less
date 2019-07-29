@@ -16,7 +16,7 @@
     .box-shadow(@top-bar-box-shadow);
 
     // FIXME
-    z-index: 2;
+    z-index: 3;
 }
 
 .app-header {
@@ -33,19 +33,10 @@
         .border-top-radius(0);
     }
 
-    .app-header-item {
-        padding: 0 floor(@grid-gutter-width / 2);
-        display: flex;
-        vertical-align: middle;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-    }
-
     .dropdown {
         display: flex;
-        justify-content: center;
-        align-items: stretch;
+        //justify-content: center;
+        //align-items: stretch;
 
         &.open .dropdown-toggle {
             &,
@@ -56,6 +47,15 @@
             }
         }
     }
+}
+
+.app-header-item {
+    padding: 0 floor(@grid-gutter-width / 2);
+    display: flex;
+    vertical-align: middle;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .app-header-brand {
@@ -158,6 +158,46 @@
         padding: floor(@grid-gutter-width / 2);
         text-align: center;
         background: @panel-default-heading-bg;
+
+        .fa {
+            margin-right: 0; // because there is a hack in styles to add margins on dropdown icons
+        }
+
+        h2 {
+            margin: 0;
+            color: @text-color;
+            font-weight: 900;
+        }
+
+        em {
+            margin-top: 5px;
+        }
+    }
+
+    .app-header-dropdown-icon {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+        font-size: floor(80px / 2); // for FA icons
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, .6);
+        border-radius: 50%;
+        line-height: 0;
+
+        // for FA icons
+        color: #777777 !important;
+
+        // for SVG icons
+        fill: #777777 !important;
+        stroke: #777777 !important;
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
     }
 
     .alert {
@@ -196,77 +236,9 @@
 }
 
 .app-current-user {
-    width: 360px;
-    padding: 0; // reset default .dropdown-menu
-
-    .app-current-user-header {
-        padding: floor(@grid-gutter-width / 2);
-        text-align: center;
-        background: @panel-default-heading-bg;
-
-        .fa {
-            margin-right: 0; // because there is a hack in styles to add margins on dropdown icons
-        }
-
-        h2 {
-            color: @text-color;
-            margin-bottom: 5px;
-            font-weight: 900;
-        }
-    }
-
-    .app-current-user-icon {
-        width: 80px;
-        height: 80px;
-        font-size: floor(80px / 2); // for FA icons
-
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, .6);
-        border-radius: 50%;
-        line-height: 0;
-
-        // for FA icons
-        color: #777777 !important;
-
-        // for SVG icons
-        fill: #777777 !important;
-        stroke: #777777 !important;
-
-        img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-    }
-
-    .alert {
-        font-weight: bold;
-        border-radius: 0;
-        margin: 0;
-    }
-
     .app-current-user-body {
         padding: floor(@grid-gutter-width / 2);
         border-top: 1px solid @list-group-border;
-    }
-
-    .app-current-user-tools {
-        margin: 0;
-
-        .list-group-item {
-            border-left-color: transparent;
-            border-right-color: transparent;
-        }
-        .list-group-item:first-child {
-            border-top-right-radius: 0;
-            border-top-left-radius: 0;
-        }
-
-        .list-group-item:last-child {
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
-        }
     }
 
     .app-current-user-footer {
@@ -295,8 +267,7 @@
 
     .app-current-locale {
         .locale-icon {
-            margin: 0;
-            margin-right: @icon-text-spacer;
+            margin: 0 @icon-text-spacer 0 0;
         }
 
         + .app-current-user-btn {
@@ -316,6 +287,7 @@
     .form-control {
         width: 50%;
         font-family: @headings-font-family;
+        color: @top-bar-link-color;
         background: #393939;
         border-color: transparent;
         box-shadow: none;
