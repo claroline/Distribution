@@ -44,9 +44,7 @@ const ProfileEdit = connectProfile(
   (state, ownProps) => {
     return  {
       path: ownProps.path || '',
-      //user: selectors.data(selectors.details(state, select.FORM_NAME)),
-      user: select.data(select.form(state, profileSelector.FORM_NAME)),
-      facets: profileSelector.facets(state)
+      user: select.data(select.form(state, profileSelector.FORM_NAME))
     }
   }
 )(ProfileEditComponent)

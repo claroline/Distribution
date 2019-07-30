@@ -2,8 +2,11 @@ import {connect} from 'react-redux'
 
 import {actions} from '#/main/core/user/profile/store/actions'
 
-function mapStateToProps() {
+import {selectors as profileSelector} from '#/main/core/user/profile/store/selectors'
+
+function mapStateToProps(state) {
   return {
+    facets: profileSelector.facets(state)
   }
 }
 
