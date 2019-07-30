@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {ListData} from '#/main/app/content/list/containers/data'
-import {UserCard} from '#/main/core/user/data/components/user-card'
+import {UserCard} from '#/main/core/user/components/card'
 import {URL_BUTTON} from '#/main/app/buttons'
 
 import {selectors} from '#/main/core/tools/users/store'
@@ -16,7 +16,7 @@ const Users = () =>
     }}
     primaryAction={(row) => ({
       type: URL_BUTTON,
-      target: '#/desktop/users/profile/'+ row.meta.publicUrl + '/show/main'
+      target: '#/desktop/users/profile/'+ row.meta.publicUrl
     })}
     definition={[
       {

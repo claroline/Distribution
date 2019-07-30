@@ -9,8 +9,9 @@ import {ProfileEdit} from '#/main/core/user/profile/editor/components/main'
 import {ProfileShow} from '#/main/core/user/profile/player/components/main'
 import {ProfileBadgeList} from '#/plugin/open-badge/tools/badges/badge/components/profile-badges'
 
-const ProfileComponent = props =>
-  <UserPageContainer
+const ProfileComponent = props => {
+  console.log(   {from: props.path, exact: true, to: props.path + '/show/main'})
+  return (<UserPageContainer
     user={props.user}
     path={props.path}
   >
@@ -40,10 +41,11 @@ const ProfileComponent = props =>
         }
       ]}
       redirect={[
-        {from: props.path, exact: true, to: props.path + '/' + props.user.publicUrl + '/show'}
+        {from: props.path, /*exact: true,*/ to: props.path + '/show/main'}
       ]}
     />
-  </UserPageContainer>
+  </UserPageContainer>)
+}
 
 ProfileComponent.propTypes = {
   user: T.shape(

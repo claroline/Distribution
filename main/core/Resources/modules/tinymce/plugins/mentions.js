@@ -279,7 +279,7 @@ AutoComplete.prototype = {
   },
 
   insert: function (item) {
-    //  target: '#/desktop/users/profile/'+ rows[0].meta.publicUrl + '/show/main',
+    //  target: '#/desktop/users/profile/'+ rows[0].meta.publicUrl',
     return (`
       <user id="${item.id}">
         <a class="user-mention" href="${url(['claro_user_profile', {user: item.meta.publicUrl}])}">@${item.name}</a>

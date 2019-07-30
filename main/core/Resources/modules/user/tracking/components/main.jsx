@@ -39,7 +39,7 @@ class TrackingComponent extends Component {
             type: 'url',
             icon: 'fa fa-fw fa-address-card',
             label: trans('show_profile', {}, 'platform'),
-            target: '#/desktop/users/profile/'+ this.props.user.meta.publicUrl + '/show/main'
+            target: '#/desktop/users/profile/'+ this.props.user.meta.publicUrl
           }, {
             type: 'callback',
             icon: 'fa fa-fw fa-file-pdf-o',

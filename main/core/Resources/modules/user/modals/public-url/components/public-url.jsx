@@ -39,7 +39,7 @@ class PublicUrlModal extends Component {
                 hideLabel: true,
                 render: () =>
                   <HtmlText className="read-only">
-                  //            target: '#/desktop/users/profile/'+ this.props.user.meta.publicUrl + '/show/main'
+                  //            target: '#/desktop/users/profile/'+ this.props.user.meta.publicUrl
                     {url(['claro_user_profile', {user: this.state.url}, true]).replace(this.state.url, `<b>${this.state.url}</b>`)}
                   </HtmlText>
               }, {
