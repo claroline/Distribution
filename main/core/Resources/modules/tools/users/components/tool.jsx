@@ -25,6 +25,28 @@ const UsersTool = (props) => {
   const match = pathName.match(regExp)
   const publicUrl = match ? pathName.match(regExp)[1]: null
 
+  if (props.context === 'desktop') {
+    return <Routes
+      path={props.path}
+      routes={[
+        {
+          path: '/profile/:publicUrl',
+          component: Profile,
+          onEnter: () => {
+            if (props.originalUser.publicUrl !== publicUrl) {
+              props.loadUser(publicUrl)
+            }
+          },
+          disabled: props.context !== 'desktop'
+        }, {
+          path: '/list',
+          component: Users,
+          disabled: props.context !== 'desktop'
+        }
+      ]}
+    />
+  }
+
   return (
     <ToolPage
       actions={[
@@ -101,16 +123,6 @@ const UsersTool = (props) => {
               path: '/parameters',
               render: () => trans('parameters'),
               disabled: props.context !== 'workspace'
-            },
-            {
-              path: '/profile',
-              render: () => trans('profile'),
-              disabled: props.context !== 'desktop'
-            },
-            {
-              path: '/list',
-              render: () => trans('contacts'),
-              disabled: props.context !== 'desktop'
             }
           ]}
         />
@@ -118,9 +130,9 @@ const UsersTool = (props) => {
     >
       <Routes
         path={props.path}
-        redirect={props.context === 'workspace' ? [
+        redirect={[
           {from: '/', exact: true, to: '/users'}
-        ]: []}
+        ]}
         routes={[
           {
             path: '/users',
@@ -142,7 +154,7 @@ const UsersTool = (props) => {
             path: '/parameters',
             component: ParametersTab,
             disabled: permLevel === constants.READ_ONLY && props.context !== 'workspace'
-          }, {
+          }/*, {
             path: '/profile/:publicUrl',
             component: Profile,
             onEnter: () => {
@@ -155,7 +167,7 @@ const UsersTool = (props) => {
             path: '/list',
             component: Users,
             disabled: props.context !== 'desktop'
-          }
+          }*/
         ]}
       />
     </ToolPage>
