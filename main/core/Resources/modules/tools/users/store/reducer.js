@@ -9,6 +9,7 @@ import {
 import {makeListReducer} from '#/main/app/content/list/store'
 import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 import {selectors} from '#/main/core/tools/users/store/selectors'
+import {selectors as select} from '#/main/core/user/profile/store/selectors'
 import {reducer as pendingReducer} from '#/main/core/tools/users/pending/store/reducer'
 import {reducer as usersReducer} from '#/main/core/tools/users/user/store/reducer'
 import {reducer as groupsReducer} from '#/main/core/tools/users/group/store/reducer'
@@ -19,13 +20,14 @@ const reducer = combineReducers({
     [PROFILE_FACET_OPEN]: (state, action) => action.id
   }),
   facets: makeReducer([], {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.facets}),
-  user: makeFormReducer('user', {}, {
+  user: makeFormReducer(select.FORM_NAME, {}, {
     originalData: makeReducer({}, {
       [makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.user
     }),
     data: makeReducer({}, {
       [makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.user
-    })
+    }),
+    loaded: makeReducer(false)
   }),
   userParameters: makeReducer({}, {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.parameters}),
   badges: combineReducers({
