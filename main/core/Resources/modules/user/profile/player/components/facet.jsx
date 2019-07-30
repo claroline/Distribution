@@ -21,7 +21,7 @@ const ProfileFacetComponent = props => {
     }
 
     if (get(props.facet, 'meta.main')) {
-      sections.unshift(getDetailsDefaultSection(props.parameters))
+      sections.unshift(getDetailsDefaultSection(props.parameters, props.user))
     }
   }
 

@@ -31,7 +31,7 @@ const ProfileFacetComponent = props => {
 
   return (
     <FormData
-      name={select.STORE_NAME}
+      name={select.FORM_NAME}
       title={props.facet.title}
       target={['apiv2_user_update', {id: props.user.id}]}
       buttons={true}

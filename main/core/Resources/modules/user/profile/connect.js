@@ -2,9 +2,8 @@ import {connect} from 'react-redux'
 
 import {actions} from '#/main/core/user/profile/store/actions'
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {
-    facets: state.facets
   }
 }
 
