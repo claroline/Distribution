@@ -21,11 +21,13 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 const UsersTool = (props) => {
   const permLevel = getPermissionLevel(props.workspace, props.currentUser)
 
-  const pathName = props.location.pathname
-  const regExp = new RegExp('/desktop/users/profile/([^/]*)')
-  const publicUrl = pathName.match(regExp)[1]
-
   if (props.context === 'desktop') {
+
+    const pathName = props.location.pathname
+    const regExp = new RegExp('/desktop/users/profile/([^/]*)')
+    const match = pathName.match(regExp)
+    const publicUrl = match ? pathName.match(regExp)[1]: null
+
     return (
       <ToolPage
         subtitle={
