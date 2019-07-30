@@ -21,6 +21,10 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 const UsersTool = (props) => {
   const permLevel = getPermissionLevel(props.workspace, props.currentUser)
 
+  const pathName = props.location.pathname
+  const regExp = new RegExp('/desktop/users/profile/([^/]*)')
+  const publicUrl = pathName.match(regExp)[1]
+
   if (props.context === 'desktop') {
     return (
       <ToolPage
@@ -40,9 +44,12 @@ const UsersTool = (props) => {
             {
               path: '/profile/:publicUrl',
               render: () => {
-                const ProfileComponent = <Profile path={props.path + '/profile/' + props.currentUser.publicUrl}/>
+                const ProfileComponent = <Profile path={props.path + '/profile/' + publicUrl}/>
 
                 return ProfileComponent
+              },
+              onEnter: () => {
+                props.loadUser(publicUrl)
               }
             }, {
               path: '/list',
@@ -170,7 +177,8 @@ UsersTool.propTypes = {
   currentUser: T.shape(UserType.propTypes),
   workspace: T.shape(WorkspaceType.propTypes).isRequired,
   registerUsers: T.func.isRequired,
-  registerGroups: T.func.isRequired
+  registerGroups: T.func.isRequired,
+  loadUser: T.func.isRequired
 }
 
 export {

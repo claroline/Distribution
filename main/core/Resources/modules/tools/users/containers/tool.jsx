@@ -2,7 +2,9 @@ import {connect} from 'react-redux'
 
 import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
-import {selectors as securitySelectors} from '#/main/app/security/store'
+//import {selectors as securitySelectors} from '#/main/app/security/store'
+import {selectors as select} from '#/main/app/content/form/store/selectors'
+import {selectors as profileSelector} from '#/main/core/user/profile/store/selectors'
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
 
@@ -19,10 +21,13 @@ const UsersTool = withRouter(connect(
   (state) => {
     return {
       context: toolSelectors.contextType(state),
-      currentUser: securitySelectors.currentUser(state),
+      currentUser: select.data(select.form(state, profileSelector.FORM_NAME)),// securitySelectors.currentUser(state),
       workspace: toolSelectors.contextData(state)
     }},
   (dispatch) => ({
+    loadUser(publicUrl) {
+      dispatch(userActions.open(profileSelector.FORM_NAME, publicUrl))
+    },
     registerUsers(workspace) {
       dispatch(modalActions.showModal(MODAL_DATA_LIST, {
         icon: 'fa fa-fw fa-user',
