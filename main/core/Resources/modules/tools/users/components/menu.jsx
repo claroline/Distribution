@@ -12,34 +12,6 @@ import {Toolbar} from '#/main/app/action/components/toolbar'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 const UsersMenu = (props) => {
-
-  if (props.context === 'desktop') {
-    return (
-      <MenuSection
-        {...omit(props, 'path')}
-        title={trans('users', {}, 'tools')}
-      >
-        <Toolbar
-          className="list-group"
-          buttonName="list-group-item"
-          actions={[
-            {
-              name: 'profile',
-              type: LINK_BUTTON,
-              label: trans('profile'),
-              target: props.path+'/profile/' + props.currentUser.publicUrl + '/show'
-            }, {
-              name: 'users',
-              type: LINK_BUTTON,
-              label: trans('list'),
-              target: props.path+'/list'
-            }
-          ]}
-        />
-      </MenuSection>
-    )
-  }
-
   const permLevel = getPermissionLevel(props.workspace, props.currentUser)
 
   return (
@@ -52,40 +24,53 @@ const UsersMenu = (props) => {
         buttonName="list-group-item"
         actions={[
           {
+            name: 'profile',
+            type: LINK_BUTTON,
+            label: trans('profile'),
+            target: props.path+'/profile/' + props.currentUser.publicUrl + '/show',
+            displayed: props.context === 'desktop'
+          }, {
+            name: 'users',
+            type: LINK_BUTTON,
+            label: trans('list'),
+            target: props.path+'/list',
+            displayed: props.context === 'desktop'
+          },
+          {
             name: 'users',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-user',
             label: trans('users'),
             target: `${props.path}/users`,
-            displayed: !props.workspace.meta.model
+            displayed: props.context === 'workspace' && !props.workspace.meta.model
           }, {
             name: 'groups',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-users',
             label: trans('groups'),
             target: `${props.path}/groups`,
-            displayed: !props.workspace.meta.model
+            displayed: props.context === 'workspace' && !props.workspace.meta.model
           }, {
             name: 'roles',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-id-badge',
             label: trans('roles'),
             target: `${props.path}/roles`,
-            displayed: permLevel !== constants.READ_ONLY
+            displayed: props.context === 'workspace' && permLevel !== constants.READ_ONLY
           }, {
             name: 'pending',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-user-plus',
             label: trans('pending_registrations'),
             target: `${props.path}/pending`,
-            displayed: permLevel !== constants.READ_ONLY && props.workspace.registration.selfRegistration && props.workspace.registration.validation
+            displayed: props.context === 'workspace' && permLevel !== constants.READ_ONLY && props.workspace.registration.selfRegistration && props.workspace.registration.validation
           }, {
             name: 'parameters',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-cog',
             label: trans('parameters'),
             target: `${props.path}/parameters`,
-            displayed: permLevel !== constants.READ_ONLY
+            displayed: props.context === 'workspace' && permLevel !== constants.READ_ONLY
           }
         ]}
       />

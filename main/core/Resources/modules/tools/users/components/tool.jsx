@@ -20,48 +20,10 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 
 const UsersTool = (props) => {
   const permLevel = getPermissionLevel(props.workspace, props.currentUser)
-
-  if (props.context === 'desktop') {
-
-    const pathName = props.location.pathname
-    const regExp = new RegExp('/desktop/users/profile/([^/]*)')
-    const match = pathName.match(regExp)
-    const publicUrl = match ? pathName.match(regExp)[1]: null
-
-    return (
-      <ToolPage
-        subtitle={
-          <Routes
-            path={props.path}
-            routes={[
-              {path: '/profile', render: () => trans('profile'), disabled: false},
-              {path: '/list',    render: () => trans('contacts'), disabled: false}
-            ]}
-          />
-        }
-      >
-        <Routes
-          path={props.path}
-          routes={[
-            {
-              path: '/profile/:publicUrl',
-              render: () => {
-                const ProfileComponent = <Profile path={props.path + '/profile/' + publicUrl}/>
-
-                return ProfileComponent
-              },
-              onEnter: () => {
-                props.loadUser(publicUrl)
-              }
-            }, {
-              path: '/list',
-              component: Users
-            }
-          ]}
-        />
-      </ToolPage>
-    )
-  }
+  const pathName = props.location.pathname
+  const regExp = new RegExp('/desktop/users/profile/([^/]*)')
+  const match = pathName.match(regExp)
+  const publicUrl = match ? pathName.match(regExp)[1]: null
 
   return (
     <ToolPage
@@ -73,7 +35,7 @@ const UsersTool = (props) => {
           icon: 'fa fa-plus',
           callback: () => props.registerUsers(props.workspace),
           primary: true,
-          displayed: !props.workspace.meta.model &&
+          displayed: props.context === 'workspace' && !props.workspace.meta.model &&
             matchPath(props.location.pathname, {path: `${props.path}/users`, exact: true}) &&
             (permLevel === constants.MANAGER || permLevel === constants.ADMIN)
         }, {
@@ -82,7 +44,7 @@ const UsersTool = (props) => {
           label: trans('create_user'),
           icon: 'fa fa-pencil',
           target: `${props.path}/users/form`,
-          displayed: !props.workspace.meta.model &&
+          displayed: props.context === 'workspace' && !props.workspace.meta.model &&
             matchPath(props.location.pathname, {path: `${props.path}/users`, exact: true}) &&
             permLevel === constants.ADMIN
         }, {
@@ -92,7 +54,7 @@ const UsersTool = (props) => {
           icon: 'fa fa-plus',
           callback: () => props.registerGroups(props.workspace),
           primary: true,
-          displayed: !props.workspace.meta.model &&
+          displayed: props.context === 'workspace' && !props.workspace.meta.model &&
             matchPath(props.location.pathname, {path: `${props.path}/groups`, exact: true}) &&
             (permLevel === constants.MANAGER || permLevel === constants.ADMIN)
         }, {
@@ -101,7 +63,7 @@ const UsersTool = (props) => {
           label: trans('create_group'),
           icon: 'fa fa-pencil',
           target: `${props.path}/groups/form`,
-          displayed: !props.workspace.meta.model &&
+          displayed: props.context === 'workspace' && !props.workspace.meta.model &&
             matchPath(props.location.pathname, {path: `${props.path}/groups`, exact: true}) &&
             permLevel === constants.ADMIN
         }, {
@@ -111,7 +73,7 @@ const UsersTool = (props) => {
           icon: 'fa fa-plus',
           target: `${props.path}/roles/form`,
           primary: true,
-          displayed: matchPath(props.location.pathname, {path: `${props.path}/roles`, exact: true}) &&
+          displayed: props.context === 'workspace' && matchPath(props.location.pathname, {path: `${props.path}/roles`, exact: true}) &&
             permLevel !== constants.READ_ONLY
         }
       ]}
@@ -121,19 +83,34 @@ const UsersTool = (props) => {
           routes={[
             {
               path: '/users',
-              render: () => trans('users')
+              render: () => trans('users'),
+              disabled: props.context !== 'workspace'
             }, {
               path: '/groups',
-              render: () => trans('groups')
+              render: () => trans('groups'),
+              disabled: props.context !== 'workspace'
             }, {
               path: '/roles',
-              render: () => trans('roles')
+              render: () => trans('roles'),
+              disabled: props.context !== 'workspace'
             }, {
               path: '/pending',
-              render: () => trans('pending_registrations')
+              render: () => trans('pending_registrations'),
+              disabled: props.context !== 'workspace'
             }, {
               path: '/parameters',
-              render: () => trans('parameters')
+              render: () => trans('parameters'),
+              disabled: props.context !== 'workspace'
+            },
+            {
+              path: '/profile',
+              render: () => trans('profile'),
+              disabled: props.context !== 'desktop'
+            },
+            {
+              path: '/list',
+              render: () => trans('contacts'),
+              disabled: props.context !== 'desktop'
             }
           ]}
         />
@@ -141,30 +118,45 @@ const UsersTool = (props) => {
     >
       <Routes
         path={props.path}
-        redirect={[
+        redirect={props.context === 'workspace' ? [
           {from: '/', exact: true, to: '/users'}
-        ]}
+        ]: []}
         routes={[
           {
             path: '/users',
             component: UserTab,
-            disabled: props.workspace.meta.model
+            disabled: props.context !== 'workspace' && props.workspace.meta && props.workspace.meta.model
           }, {
             path: '/groups',
             component: GroupTab,
-            disabled: props.workspace.meta.model
+            disabled:  props.context !== 'workspace' && props.workspace.meta && props.workspace.meta.model
           }, {
             path: '/roles',
             component: RoleTab,
-            disabled: permLevel === constants.READ_ONLY
+            disabled: permLevel === constants.READ_ONLY && props.context !== 'workspace'
           }, {
             path: '/pending',
             component: PendingTab,
-            disabled: permLevel === constants.READ_ONLY || !props.workspace.registration.selfRegistration || !props.workspace.registration.validation
+            disabled: props.workspace && permLevel === constants.READ_ONLY || (props.workspace.registration && !props.workspace.registration.selfRegistration) || (props.workspace.registration && !props.workspace.registration.validation)
           }, {
             path: '/parameters',
             component: ParametersTab,
-            disabled: permLevel === constants.READ_ONLY
+            disabled: permLevel === constants.READ_ONLY && props.context !== 'workspace'
+          }, {
+            path: '/profile/:publicUrl',
+            render: () => {
+              const ProfileComponent = <Profile path={props.path + '/profile/' + publicUrl}/>
+
+              return ProfileComponent
+            },
+            onEnter: () => {
+              props.loadUser(publicUrl)
+            },
+            disabled: props.context !== 'desktop'
+          }, {
+            path: '/list',
+            component: Users,
+            disabled: props.context !== 'desktop'
           }
         ]}
       />

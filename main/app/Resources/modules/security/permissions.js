@@ -4,7 +4,7 @@
  * @param {object} user
  */
 function isAdmin(user) {
-  if (user) {
+  if (user && user.roles) {
     return !!user.roles.find(role => role.name === 'ROLE_ADMIN')
   }
 
