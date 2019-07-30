@@ -96,10 +96,6 @@ class UserController extends AbstractCrudController
 
         $options = $this->options['get'];
 
-        if (isset($query['options'])) {
-            $options = $query['options'];
-        }
-
         return $object ?
             new JsonResponse(
                 $this->serializer->serialize($object, $options)

@@ -21,10 +21,10 @@ const reducer = combineReducers({
   facets: makeReducer([], {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.facets}),
   user: makeFormReducer('user', {}, {
     originalData: makeReducer({}, {
-      [makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.user.originalData
+      [makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.user
     }),
     data: makeReducer({}, {
-      [makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.user.data
+      [makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.user
     })
   }),
   userParameters: makeReducer({}, {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.parameters}),

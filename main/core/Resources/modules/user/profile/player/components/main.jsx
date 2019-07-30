@@ -44,8 +44,7 @@ ProfileShowComponent.propTypes = {
 }
 
 const ProfileShow = connectProfile(
-  (state, ownProps) => ({
-    path: ownProps.path || '',
+  (state) => ({
     user: selectors.data(selectors.details(state, select.FORM_NAME)),
     facets: select.facets(state)
   })

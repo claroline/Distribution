@@ -8,9 +8,8 @@ import {selectors as profileSelect} from '#/main/core/user/profile/store/selecto
 
 const Profile = withRouter(
   connect(
-    (state, ownProps) => {
+    (state) => {
       return {
-        path: ownProps.path || '',
         currentUser: securitySelectors.currentUser(state),
         user: selectors.data(selectors.details(state, 'users.user')),
         parameters: profileSelect.parameters(state)

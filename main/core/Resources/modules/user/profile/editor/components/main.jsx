@@ -41,9 +41,8 @@ ProfileEditComponent.propTypes = {
 }
 
 const ProfileEdit = connectProfile(
-  (state, ownProps) => {
+  (state) => {
     return  {
-      path: ownProps.path || '',
       user: select.data(select.form(state, profileSelector.FORM_NAME))
     }
   }

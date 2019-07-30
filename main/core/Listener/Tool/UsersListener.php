@@ -77,20 +77,14 @@ class UsersListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        //change this
         $workspace = $event->getWorkspace();
 
         $event->setData([
-            'parameters' => $this->workspaceSerializer->serialize($workspace),
-            'restrictions' => [
-                // TODO: computes rights more accurately
-                'hasUserManagementAccess' => $this->authorization->isGranted('ROLE_ADMIN'),
-            ],
-            'user' => [
-              'data' => [],
-              'originalData' => [],
-            ],
-            'facets' => [],
+          'parameters' => $this->workspaceSerializer->serialize($workspace),
+          'restrictions' => [
+              // TODO: computes rights more accurately
+              'hasUserManagementAccess' => $this->authorization->isGranted('ROLE_ADMIN'),
+          ],
         ]);
         $event->stopPropagation();
     }
@@ -110,10 +104,7 @@ class UsersListener
         $serializedUser = $this->userSerializer->serialize($profileUser, [Options::SERIALIZE_FACET]);
 
         $event->setData([
-          'user' => [
-              'data' => $serializedUser,
-              'originalData' => $serializedUser,
-          ],
+          'user' => $serializedUser,
           'restrictions' => [],
           'facets' => $this->profileSerializer->serialize(),
           'parameters' => $this->parametersSerializer->serialize()['profile'],
