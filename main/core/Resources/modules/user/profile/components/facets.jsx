@@ -12,7 +12,7 @@ const ProfileFacets = props => {
     exact: true,
     to: `${props.prefix}/${getMainFacet(props.facets).id}`
   }]
-
+  
   return (
     <Routes
       routes={[

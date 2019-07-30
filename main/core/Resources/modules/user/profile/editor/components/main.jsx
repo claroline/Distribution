@@ -6,6 +6,7 @@ import {connectProfile} from '#/main/core/user/profile/connect'
 import {ProfileNav} from '#/main/core/user/profile/components/nav'
 import {ProfileFacets} from '#/main/core/user/profile/components/facets'
 
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {selectors as select} from '#/main/app/content/form/store/selectors'
 import {selectors as profileSelector} from '#/main/core/user/profile/store/selectors'
 import {ProfileFacet} from '#/main/core/user/profile/editor/components/facet'
@@ -18,14 +19,14 @@ const ProfileEditComponent = props =>
       />
 
       <ProfileNav
-        prefix={props.path + '/edit'}
+        prefix={props.path + '/profile/' + props.user.publicUrl + '/edit'}
         facets={props.facets}
       />
     </div>
 
     <div className="user-profile-content col-md-9">
       <ProfileFacets
-        prefix={props.path + '/edit'}
+        prefix={props.path + '/profile/' + props.user.publicUrl + '/edit'}
         facets={props.facets}
         facetComponent={ProfileFacet}
         openFacet={props.openFacet}
@@ -43,6 +44,7 @@ ProfileEditComponent.propTypes = {
 const ProfileEdit = connectProfile(
   (state) => {
     return  {
+      path: toolSelectors.path(state),
       user: select.data(select.form(state, profileSelector.FORM_NAME))
     }
   }

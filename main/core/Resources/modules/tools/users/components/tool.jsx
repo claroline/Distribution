@@ -144,11 +144,7 @@ const UsersTool = (props) => {
             disabled: permLevel === constants.READ_ONLY && props.context !== 'workspace'
           }, {
             path: '/profile/:publicUrl',
-            render: () => {
-              const ProfileComponent = <Profile path={props.path + '/profile/' + publicUrl}/>
-
-              return ProfileComponent
-            },
+            component: Profile,
             onEnter: () => {
               props.loadUser(publicUrl)
             },

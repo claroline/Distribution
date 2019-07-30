@@ -13,8 +13,9 @@ import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {ProfileFacet} from '#/main/core/administration/users/profile/components/facet'
 import {actions, selectors} from '#/main/core/administration/users/profile/store'
 
-const ProfileTabComponent = props =>
-  <div className="row user-profile">
+const ProfileTabComponent = props => {
+  console.log(props.path)
+  return (<div className="row user-profile">
     <div className="user-profile-aside col-md-3">
       <ProfileNav
         prefix={`${props.path}/profile`}
@@ -53,6 +54,8 @@ const ProfileTabComponent = props =>
       />
     </div>
   </div>
+  )
+}
 
 ProfileTabComponent.propTypes = {
   path: T.string.isRequired,
