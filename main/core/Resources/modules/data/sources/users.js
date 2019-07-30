@@ -9,7 +9,7 @@ export default {
   parameters: {
     primaryAction: (user) => ({
       type: URL_BUTTON,
-      target: ['claro_user_profile', {user: user.meta.publicUrl}]
+      target: '#/desktop/users/profile/'+ user.meta.publicUrl+ '/show/main'
     }),
     definition: [
       {

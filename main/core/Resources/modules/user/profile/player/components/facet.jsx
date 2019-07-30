@@ -27,7 +27,7 @@ const ProfileFacetComponent = props => {
 
   return (
     <DetailsData
-      name="user"
+      name={select.FORM_NAME}
       title={props.facet.title}
       sections={sections}
     />
@@ -46,7 +46,7 @@ ProfileFacetComponent.propTypes = {
 const ProfileFacet = connect(
   state => ({
     currentUser: securitySelectors.currentUser(state),
-    user: detailsSelect.data(detailsSelect.details(state, select.STORE_NAME)),
+    user: detailsSelect.data(detailsSelect.details(state, select.FORM_NAME)),
     facet: select.currentFacet(state),
     parameters: select.parameters(state)
   })

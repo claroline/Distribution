@@ -16,7 +16,7 @@ const Users = () =>
     }}
     primaryAction={(row) => ({
       type: URL_BUTTON,
-      target: ['claro_user_profile', {user: row.meta.publicUrl}]
+      target: '#/desktop/users/profile/'+ row.meta.publicUrl + '/show/main'
     })}
     definition={[
       {

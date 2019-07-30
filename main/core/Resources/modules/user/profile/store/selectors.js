@@ -18,7 +18,7 @@ const currentFacet = createSelector(
 
 const parameters = createSelector(
   [store],
-  (store) => store.parameters
+  (store) => store.userParameters
 )
 
 export const selectors = {

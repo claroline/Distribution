@@ -23,6 +23,7 @@ actions.updatePublicUrl = (user, publicUrl, redirect = false) => ({
     },
     success: () => {
       if (redirect) {
+        //  target: '#/desktop/users/profile/'+ rows[0].meta.publicUrl + '/show/main',
         window.location = url(['claro_user_profile', {user: publicUrl}]) // TODO : find better
       }
     }
