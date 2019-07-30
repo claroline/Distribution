@@ -6,6 +6,7 @@ import {selectors as toolSelectors} from  '#/main/core/tool/store'
 import {ProfileComponent} from '#/main/core/user/profile/components/main.jsx'
 import {selectors} from '#/main/app/content/details/store'
 import {selectors as profileSelect} from '#/main/core/user/profile/store/selectors'
+import {selectors as select} from '#/main/core/user/profile/store/selectors'
 
 const Profile = withRouter(
   connect(
@@ -13,8 +14,9 @@ const Profile = withRouter(
       return {
         path: toolSelectors.path(state) + '/profile',
         currentUser: securitySelectors.currentUser(state),
-        user: selectors.data(selectors.details(state, 'users.user')),
-        parameters: profileSelect.parameters(state)
+        user: selectors.data(selectors.details(state, select.FORM_NAME)),
+        parameters: profileSelect.parameters(state),
+        loaded: profileSelect.loaded(state)
       }
     }
   )(ProfileComponent)

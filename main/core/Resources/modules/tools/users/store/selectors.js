@@ -9,8 +9,14 @@ const restrictions = createSelector(
   (store) => store.restrictions
 )
 
+const loaded = createSelector(
+  [store],
+  (store) => store.user.loaded
+)
+
 export const selectors = {
   STORE_NAME,
   store,
+  loaded,
   restrictions
 }

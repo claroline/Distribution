@@ -98,7 +98,7 @@ class UserController extends AbstractCrudController
 
         return $object ?
             new JsonResponse(
-                $this->serializer->serialize($object, $options)
+                $this->serializer->serialize($object, [Options::SERIALIZE_FACET])
             ) :
             new JsonResponse("No object found for id {$id} of class {$class}", 404);
     }

@@ -9,9 +9,10 @@ import {Profile} from '#/main/core/user/profile/containers/main.jsx'
 import {User as UserType} from '#/main/core/user/prop-types'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 import {constants} from '#/main/core/tools/users/constants'
+import {selectors} from '#/main/core/tools/users/store'
 import {getPermissionLevel} from  '#/main/core/tools/users/restrictions'
 import {UserTab} from '#/main/core/tools/users/user/components/user-tab'
-import {Users} from '#/main/core/tools/users/user/components/contacts'
+import {UserList} from '#/main/core/user/components/list'
 import {GroupTab} from '#/main/core/tools/users/group/components/group-tab'
 import {RoleTab} from '#/main/core/tools/users/role/components/role-tab'
 import {ParametersTab} from '#/main/core/tools/users/parameters/components/parameters-tab'
@@ -24,28 +25,6 @@ const UsersTool = (props) => {
   const regExp = new RegExp('/desktop/users/profile/([^/]*)')
   const match = pathName.match(regExp)
   const publicUrl = match ? pathName.match(regExp)[1]: null
-
-  if (props.context === 'desktop') {
-    return <Routes
-      path={props.path}
-      routes={[
-        {
-          path: '/profile/:publicUrl',
-          component: Profile,
-          onEnter: () => {
-            if (props.originalUser.publicUrl !== publicUrl) {
-              props.loadUser(publicUrl)
-            }
-          },
-          disabled: props.context !== 'desktop'
-        }, {
-          path: '/list',
-          component: Users,
-          disabled: props.context !== 'desktop'
-        }
-      ]}
-    />
-  }
 
   return (
     <ToolPage
@@ -154,20 +133,29 @@ const UsersTool = (props) => {
             path: '/parameters',
             component: ParametersTab,
             disabled: permLevel === constants.READ_ONLY && props.context !== 'workspace'
-          }/*, {
+          }, {
             path: '/profile/:publicUrl',
             component: Profile,
             onEnter: () => {
-              if (props.originalUser.publicUrl !== publicUrl) {
+              if (!props.originalUser || props.originalUser.publicUrl !== publicUrl) {
                 props.loadUser(publicUrl)
               }
             },
             disabled: props.context !== 'desktop'
           }, {
             path: '/list',
-            component: Users,
+            render: () => {
+              const Contacts = (
+                <UserList
+                  url={['apiv2_users_picker_list']}
+                  name={selectors.STORE_NAME + '.profile.contacts'}
+                />
+              )
+
+              return Contacts
+            },
             disabled: props.context !== 'desktop'
-          }*/
+          }
         ]}
       />
     </ToolPage>

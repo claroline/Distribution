@@ -4,20 +4,22 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {UserCard} from '#/main/core/user/components/card'
 import {URL_BUTTON} from '#/main/app/buttons'
 
-import {selectors} from '#/main/core/tools/users/store'
 import {trans} from '#/main/app/intl/translation'
+import {actions as listActions} from '#/main/app/content/list/store'
+import {connect} from 'react-redux'
 
-const Users = () =>
+const Users = props =>
   <ListData
-    name={selectors.STORE_NAME + '.users.list'}
+    name={props.name}
     fetch={{
-      url: ['apiv2_users_picker_list'],
+      url: props.url,
       autoload: true
     }}
     primaryAction={(row) => ({
       type: URL_BUTTON,
       target: '#/desktop/users/profile/'+ row.meta.publicUrl
     })}
+    actions={(rows) => props.getActions ? props.getActions(rows): []}
     definition={[
       {
         name: 'username',
@@ -54,6 +56,15 @@ const Users = () =>
     card={UserCard}
   />
 
+const UserList = connect(
+  null,
+  dispatch => ({
+    invalidate(name) {
+      dispatch(listActions.invalidateData(name))
+    }
+  })
+)(Users)
+
 export {
-  Users
+  UserList
 }

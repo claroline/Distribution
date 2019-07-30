@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
-use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
@@ -81,6 +80,7 @@ class UsersListener
 
         $event->setData([
           'parameters' => $this->workspaceSerializer->serialize($workspace),
+          'facets' => $this->profileSerializer->serialize(),
           'restrictions' => [
               // TODO: computes rights more accurately
               'hasUserManagementAccess' => $this->authorization->isGranted('ROLE_ADMIN'),
@@ -96,15 +96,7 @@ class UsersListener
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
-        $publicUrl = $this->request->query->get('publicUrl');
-
-        $profileUser = $publicUrl ? $this->om->getRepository(User::class)->findOneByPublicUrl($publicUrl) :
-          $this->tokenStorage->getToken()->getUser();
-
-        $serializedUser = $this->userSerializer->serialize($profileUser, [Options::SERIALIZE_FACET]);
-
         $event->setData([
-          'user' => $serializedUser,
           'restrictions' => [],
           'facets' => $this->profileSerializer->serialize(),
           'parameters' => $this->parametersSerializer->serialize()['profile'],
