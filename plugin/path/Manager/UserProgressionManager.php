@@ -11,7 +11,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Innova\PathBundle\Entity\Path\Path;
 use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Entity\UserProgression;
-use Innova\PathBundle\Repository\UserProgressionRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -23,14 +22,15 @@ class UserProgressionManager
     /** @var ObjectManager */
     private $om;
 
-    /** @var UserProgressionRepository */
-    private $repository;
-
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
     /** @var ResourceEvaluationManager */
     private $resourceEvalManager;
+
+    private $progressionRepo;
+    private $stepRepo;
+    private $resourceUserEvalRepo;
 
     /**
      * UserProgressionManager constructor.
@@ -51,9 +51,12 @@ class UserProgressionManager
         ResourceEvaluationManager $resourceEvalManager
     ) {
         $this->om = $om;
-        $this->repository = $this->om->getRepository('InnovaPathBundle:UserProgression');
         $this->tokenStorage = $tokenStorage;
         $this->resourceEvalManager = $resourceEvalManager;
+
+        $this->progressionRepo = $this->om->getRepository(UserProgression::class);
+        $this->stepRepo = $this->om->getRepository(Step::class);
+        $this->resourceUserEvalRepo = $this->om->getRepository(ResourceUserEvaluation::class);
     }
 
     /**
@@ -276,7 +279,7 @@ class UserProgressionManager
         $stepsProgression = [];
 
         foreach ($path->getSteps() as $step) {
-            $userProgression = $this->repository->findOneBy(['step' => $step, 'user' => $user]);
+            $userProgression = $this->progressionRepo->findOneBy(['step' => $step, 'user' => $user]);
 
             if ($userProgression) {
                 $stepsProgression[$step->getUuid()] = $userProgression->getStatus();
@@ -284,5 +287,89 @@ class UserProgressionManager
         }
 
         return $stepsProgression;
+    }
+
+    /**
+     * Fetches and updates score for all paths linked to the evaluation.
+     *
+     * @param ResourceEvaluation $evaluation
+     */
+    public function handleResourceEvaluation(ResourceEvaluation $evaluation)
+    {
+        $resourceUserEvaluation = $evaluation->getResourceUserEvaluation();
+        $resourceNode = $resourceUserEvaluation->getResourceNode();
+        $user = $resourceUserEvaluation->getUser();
+
+        // Gets all steps containing the resource node
+        $steps = $this->stepRepo->findBy(['resource' => $resourceNode]);
+
+        // Retrieves corresponding paths
+        $paths = [];
+
+        foreach ($steps as $step) {
+            $path[$step->getPath()->getUuid()] = $step->getPath();
+        }
+
+        // Gets all ResourceUserEvaluation entities linked to each path and user
+        foreach ($paths as $path) {
+            $userEval = $this->resourceUserEvalRepo->findOneBy([
+                'user' => $user,
+                'resourceNode' => $path->getResourceNode(),
+            ]);
+
+            if ($userEval) {
+                // Updates score of each path having an evaluation for user
+                $this->computeUserPathScore($path, $userEval);
+            }
+        }
+    }
+
+    /**
+     * Computes score for path and updates user evaluation.
+     *
+     * @param Path                   $path
+     * @param ResourceUserEvaluation $resourceUserEvaluation
+     */
+    public function computeUserPathScore(Path $path, ResourceUserEvaluation $resourceUserEvaluation)
+    {
+        $evaluatedType = [
+            'ujm_exercise',
+            'claroline_dropzone',
+            'claroline_scorm',
+        ];
+        $user = $resourceUserEvaluation->getUser();
+        $total = $path->getScoreTotal();
+        $successScore = $path->getSuccessScore();
+        $nbEvaluatedSteps = 0;
+        $nbEvaluatedStepsDone = 0;
+        $score = 0;
+        $scoreTotal = 0;
+
+        $steps = $path->getSteps();
+
+        foreach ($steps as $step) {
+            $stepResource = $step->getResource();
+
+            if ($stepResource && in_array($stepResource->getResourceType()->getName(), $evaluatedType)) {
+                ++$nbEvaluatedSteps;
+
+                $stepEval = $this->resourceUserEvalRepo->findOneBy([
+                    'user' => $user,
+                    'resourceNode' => $stepResource,
+                ]);
+
+                if ($stepEval && !is_null($stepEval->getScore()) && !is_null($stepEval->getScoreMax())) {
+                    ++$nbEvaluatedStepsDone;
+                    $score += $stepEval->getScore();
+                    $scoreTotal += $stepEval->getScoreMax();
+                }
+            }
+        }
+
+        if (0 < $scoreTotal) {
+            $finalScore = ($score * $total) / $scoreTotal;
+            $finished = 0 < $nbEvaluatedSteps && $nbEvaluatedSteps === $nbEvaluatedStepsDone;
+            $success = $finished && $successScore <= ($score * 100) / $scoreTotal;
+        }
     }
 }

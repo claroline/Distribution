@@ -93,6 +93,7 @@ class PathSerializer
                 'showOverview' => $path->getShowOverview(),
                 'numbering' => $path->getNumbering() ? $path->getNumbering() : 'none',
                 'manualProgressionAllowed' => $path->isManualProgressionAllowed(),
+                'showScore' => $path->getShowScore(),
             ],
             'opening' => [
                 'secondaryResources' => $path->getSecondaryResourcesTarget(),
@@ -100,6 +101,10 @@ class PathSerializer
             'steps' => array_map(function (Step $step) {
                 return $this->serializeStep($step);
             }, $path->getRootSteps()),
+            'score' => [
+                'success' => $path->getSuccessScore(),
+                'total' => $path->getScoreTotal(),
+            ],
         ];
     }
 
@@ -122,8 +127,12 @@ class PathSerializer
         $this->sipe('display.showOverview', 'setShowOverview', $data, $path);
         $this->sipe('display.numbering', 'setNumbering', $data, $path);
         $this->sipe('display.manualProgressionAllowed', 'setManualProgressionAllowed', $data, $path);
+        $this->sipe('display.showScore', 'setShowScore', $data, $path);
 
         $this->sipe('opening.secondaryResources', 'setSecondaryResourcesTarget', $data, $path);
+
+        $this->sipe('score.success', 'setSuccessScore', $data, $path);
+        $this->sipe('score.total', 'setScoreTotal', $data, $path);
 
         if (isset($data['steps'])) {
             $this->deserializeSteps($data['steps'], $path, $options);
