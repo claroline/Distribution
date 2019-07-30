@@ -146,7 +146,9 @@ const UsersTool = (props) => {
             path: '/profile/:publicUrl',
             component: Profile,
             onEnter: () => {
-              props.loadUser(publicUrl)
+              if (props.originalUser.publicUrl !== publicUrl) {
+                props.loadUser(publicUrl)
+              }
             },
             disabled: props.context !== 'desktop'
           }, {
@@ -165,6 +167,7 @@ UsersTool.propTypes = {
   path: T.string.isRequired,
   location: T.object.isRequired,
   currentUser: T.shape(UserType.propTypes),
+  originalUser: T.shape(UserType.propTypes),
   workspace: T.shape(WorkspaceType.propTypes).isRequired,
   registerUsers: T.func.isRequired,
   registerGroups: T.func.isRequired,

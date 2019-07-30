@@ -26,8 +26,7 @@ const reducer = combineReducers({
     }),
     data: makeReducer({}, {
       [makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.user
-    }),
-    loaded: makeReducer(false)
+    })
   }),
   userParameters: makeReducer({}, {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.parameters}),
   badges: combineReducers({

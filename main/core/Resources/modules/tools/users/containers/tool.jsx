@@ -12,6 +12,8 @@ import {selectors} from '#/main/core/tools/users/store'
 import {actions as userActions} from '#/main/core/tools/users/user/store'
 import {actions as groupActions}   from '#/main/core/tools/users/group/store'
 import {getModalDefinition} from '#/main/core/tools/users/role/modal'
+import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
+import {selectors as select} from '#/main/core/user/profile/store/selectors'
 import {UserList} from '#/main/core/administration/users/user/components/user-list'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
 import {UsersTool as UsersToolComponent} from '#/main/core/tools/users/components/tool'
@@ -20,6 +22,7 @@ const UsersTool = withRouter(connect(
   (state) => {
     return {
       context: toolSelectors.contextType(state),
+      originalUser: formSelect.originalData(formSelect.form(state, select.FORM_NAME)),
       currentUser: securitySelectors.currentUser(state),
       workspace: toolSelectors.contextData(state)
     }},
