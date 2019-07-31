@@ -262,6 +262,7 @@ class ResourceNodeSerializer
             'active' => $resourceNode->isActive(),
             'views' => $resourceNode->getViewsCount(),
             'commentsActivated' => $resourceNode->isCommentsActivated(),
+            'slug' => $resourceNode->getSlug(),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
