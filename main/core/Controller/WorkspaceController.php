@@ -114,7 +114,7 @@ class WorkspaceController
     }
 
     /**
-     * @EXT\Route("/{workspaceId}", name="claro_workspace_open")
+     * @EXT\Route("/{slug}", name="claro_workspace_open")
      * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param int     $workspaceId - the id or uuid of the WS to open
@@ -125,10 +125,11 @@ class WorkspaceController
      *
      * @return JsonResponse
      */
-    public function openAction($workspaceId, User $user = null, Request $request)
+    public function openAction($slug, User $user = null, Request $request)
     {
         /** @var Workspace $workspace */
-        $workspace = $this->om->getObject(['id' => $workspaceId], Workspace::class);
+        $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['slug' => $slug]);
+
         if (!$workspace) {
             throw new NotFoundHttpException('Workspace not found');
         }
@@ -181,21 +182,19 @@ class WorkspaceController
     /**
      * Opens a tool.
      *
-     * @EXT\Route("/{id}/tool/{toolName}", name="claro_workspace_open_tool")
-     * @EXT\ParamConverter(
-     *      "workspace",
-     *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "id", "strictId" = true},
-     *      converter="strict_id"
-     * )
+     * @EXT\Route("/{slug}/tool/{toolName}", name="claro_workspace_open_tool")
+
      *
      * @param Workspace $workspace
      * @param string    $toolName
      *
      * @return Response
      */
-    public function openToolAction(Workspace $workspace, $toolName)
+    public function openToolAction($slug, $toolName)
     {
+        /** @var Workspace $workspace */
+        $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['slug' => $slug]);
+
         $tool = $this->toolManager->getToolByName($toolName);
         if (!$tool) {
             throw new NotFoundHttpException('Tool not found');

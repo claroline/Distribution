@@ -6,6 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {route} from '#/main/core/workspace/routing'
 import {ScoreGauge} from '#/main/core/layout/gauge/components/score'
 
 import {showCorrection, showScore} from '#/plugin/exo/resources/quiz/papers/restrictions'
@@ -66,8 +67,8 @@ const PlayerRestrictions = props => {
                 type: URL_BUTTON,
                 icon: 'fa fa-fw fa-home',
                 label: trans('return-home', {}, 'actions'),
-                target: ['claro_workspace_open', {workspaceId: props.workspaceId}],
-                displayed: !!props.workspaceId
+                target: route(props.workspace),
+                displayed: !!props.workspace
               }
             ]}
           />
@@ -79,7 +80,7 @@ const PlayerRestrictions = props => {
 
 PlayerRestrictions.propTypes = {
   showStatistics: T.bool,
-  workspaceId: T.number,
+  workspace: T.object,
   message: T.string,
   lastAttempt: T.shape({ // TODO : paper propTypes
     id: T.string.isRequired,

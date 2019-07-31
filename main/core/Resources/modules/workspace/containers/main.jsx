@@ -24,9 +24,9 @@ const WorkspaceMain = withRouter(
         openTool(toolName, workspace) {
           dispatch(toolActions.open(toolName, {
             type: toolConst.TOOL_WORKSPACE,
-            url: ['claro_workspace_open_tool', {id: workspace.id, toolName: toolName}],
+            url: ['claro_workspace_open_tool', {slug: workspace.meta.slug, toolName: toolName}],
             data: workspace // TODO : find a way to not duplicate workspace data
-          }, '/desktop/workspaces/open/'+workspace.id))
+          }, '/desktop/workspaces/open/'+workspace.meta.slug))
         },
         dismissRestrictions() {
           dispatch(actions.dismissRestrictions())

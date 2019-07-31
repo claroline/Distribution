@@ -27,7 +27,7 @@ const WorkspaceMenu = (props) =>
     tools={props.tools.map(tool => ({
       name: tool.name,
       icon: tool.icon,
-      path: `/desktop/workspaces/open/${props.workspace.id}/${tool.name}`
+      path: `/desktop/workspaces/open/${props.workspace.meta.slug}/${tool.name}`
     }))}
     actions={!isEmpty(props.workspace) ? getActions([props.workspace], {
 

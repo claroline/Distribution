@@ -61,7 +61,7 @@ class RedirectController extends Controller
     public function openWorkspaceSlugAction(Workspace $workspace)
     {
         return $this->redirectToRoute('claro_workspace_open', [
-            'workspaceId' => $workspace->getId(),
+            'slug' => $workspace->getSlug(),
         ]);
     }
 

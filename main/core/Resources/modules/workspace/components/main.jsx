@@ -32,7 +32,7 @@ const WorkspaceMain = (props) => {
   if (!isEmpty(props.workspace)) {
     return (
       <Routes
-        path={`/desktop/workspaces/open/${props.workspace.id}`}
+        path={`/desktop/workspaces/open/${props.workspace.meta.slug}`}
         routes={[
           {
             path: '/:toolName',
