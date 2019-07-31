@@ -5,7 +5,7 @@
  * (c) Claroline Consortium <consortium@claroline.net>
  *
  * Author: Panagiotis TSAVDARIS
- * 
+ *
  * Date: 4/22/15
  */
 
@@ -71,16 +71,16 @@ class ShareActionManager
     {
         $return = array();
         $resourceId = $request->get('resourceId');
-        if ($resourceId === null) {
+        if (null === $resourceId) {
             $url = $request->get('url');
-            if ($url === null) {
+            if (null === $url) {
                 throw new BadRequestHttpException();
             }
             $share->setUrl($url);
             $return['url'] = $url;
             $title = $request->get('title');
             $share->setTitle($title);
-            if ($title !== null) {
+            if (null !== $title) {
                 $return['title'] = $title;
             }
         } else {
@@ -101,7 +101,7 @@ class ShareActionManager
 
     public function countShares(Request $request = null, $criteria = array())
     {
-        if ($request !== null) {
+        if (null !== $request) {
             $criteria = $this->getCriteriaFromRequest($request, null, $criteria);
         }
 
@@ -110,16 +110,16 @@ class ShareActionManager
 
     private function getCriteriaFromRequest(Request $request = null, User $user = null, $criteria = array())
     {
-        if ($user !== null) {
+        if (null !== $user) {
             $criteria['user'] = $user;
         }
 
-        if ($request !== null) {
+        if (null !== $request) {
             $resourceId = $request->get('resourceId');
-            if ($resourceId == null) {
+            if (null == $resourceId) {
                 $resourceId = $request->get('resource');
             }
-            if ($resourceId !== null) {
+            if (null !== $resourceId) {
                 $criteria['resource'] = $resourceId;
             } else {
                 $url = $request->get('url');

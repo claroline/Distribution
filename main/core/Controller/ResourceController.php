@@ -442,7 +442,7 @@ class ResourceController
     /**
      * Gets a resource node.
      *
-     * @EXT\Route("/{id}", name="claro_resource_get")
+     * @EXT\Route("/{slug}", name="claro_resource_get")
      * @EXT\Method("GET")
      *
      * @param int|string $id - the id of the target node (we don't use ParamConverter to support ID and UUID)
@@ -451,10 +451,12 @@ class ResourceController
      *
      * @throws ResourceNotFoundException
      */
-    public function getAction($id)
+    public function getAction($slug)
     {
         /** @var ResourceNode $resourceNode */
-        $resourceNode = $this->om->find(ResourceNode::class, $id);
+        //          $parentNode = $this->finder->get(ResourceNode::class)->findOneBy(['uuid_or_slug' => $parent]);
+        $resourceNode = $this->om->getRepository(ResourceNode::class)->findOneBy(['slug' => $slug]);
+
         if (!$resourceNode) {
             throw new ResourceNotFoundException('Resource not found');
         }
