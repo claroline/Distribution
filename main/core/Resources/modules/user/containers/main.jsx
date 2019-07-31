@@ -4,7 +4,7 @@ import {withRouter} from '#/main/app/router'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 
 import {actions} from '#/main/core/user/actions'
-import {UserPage} from '#/main/core/user/components/page'
+import {UserMain} from '#/main/core/user/components/main'
 
 /**
  * Connected container for users.
@@ -12,7 +12,7 @@ import {UserPage} from '#/main/core/user/components/page'
  * Connects the <UserPage> component to a redux store.
  * If you don't use redux in your implementation @see Resource functional component.
  */
-const UserPageContainer = withRouter(
+const UserMainContainer = withRouter(
   connect(
     (state) =>  {
       return {
@@ -26,9 +26,9 @@ const UserPageContainer = withRouter(
         dispatch(actions.updatePublicUrl(user, publicUrl, true))
       }
     })
-  )(UserPage)
+  )(UserMain)
 )
 
 export {
-  UserPageContainer
+  UserMainContainer
 }

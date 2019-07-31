@@ -7,7 +7,7 @@ import {trans} from '#/main/app/intl/translation'
 import {User} from '#/main/core/user/prop-types'
 import {actions} from '#/main/core/user/tracking/store'
 import {ResourceUserEvaluation} from '#/main/core/user/tracking/prop-types'
-import {UserPageContainer} from '#/main/core/user/containers/page'
+import {UserPage} from '#/main/core/user/components/page'
 import {UserDetails} from '#/main/core/user/components/details'
 import {Timeline} from '#/main/core/user/tracking/components/timeline'
 import {Search} from '#/main/core/user/tracking/components/search'
@@ -33,7 +33,7 @@ class TrackingComponent extends Component {
 
   render() {
     return(
-      <UserPageContainer
+      <UserPage
         customActions={[
           {
             type: 'url',
@@ -85,7 +85,7 @@ class TrackingComponent extends Component {
             />
           </div>
         </div>
-      </UserPageContainer>
+      </UserPage>
     )
   }
 }

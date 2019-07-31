@@ -56,7 +56,7 @@ UserMainHeader.propTypes = {
 }
 
 const UserMain = props =>
-  <div  >
+  <div>
     <UserMainHeader
       picture={props.user.picture}
       title={props.user.name}

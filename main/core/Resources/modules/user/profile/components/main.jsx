@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {Routes} from '#/main/app/router'
-import {UserPageContainer} from '#/main/core/user/containers/page'
+import {UserMainContainer} from '#/main/core/user/containers/main'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
 import {ContentLoader} from '#/main/app/content/components/loader'
@@ -21,7 +21,7 @@ const ProfileComponent = props => {
   }
 
   return(
-    <UserPageContainer
+    <UserMainContainer
       user={props.user}
       path={props.path + '/' + props.user.publicUrl}
     >
@@ -47,7 +47,7 @@ const ProfileComponent = props => {
           {from: '/show', exact: true, to: '/show/main'}
         ]}
       />
-    </UserPageContainer>
+    </UserMainContainer>
   )
 }
 
