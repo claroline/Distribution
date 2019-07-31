@@ -87,14 +87,11 @@ class UserController extends AbstractCrudController
      */
     public function getAction(Request $request, $id, $class)
     {
-        $query = $request->query->all();
         $object = $this->find($class, $id);
 
         if (!$object) {
             $object = $this->om->getRepository($class)->findOneBy(['publicUrl' => $id]);
         }
-
-        $options = $this->options['get'];
 
         return $object ?
             new JsonResponse(
