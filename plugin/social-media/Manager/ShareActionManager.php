@@ -69,7 +69,7 @@ class ShareActionManager
 
     public function createShare(Request $request, ShareAction $share)
     {
-        $return = array();
+        $return = [];
         $resourceId = $request->get('resourceId');
         if (null === $resourceId) {
             $url = $request->get('url');
@@ -99,7 +99,7 @@ class ShareActionManager
         return $return;
     }
 
-    public function countShares(Request $request = null, $criteria = array())
+    public function countShares(Request $request = null, $criteria = [])
     {
         if (null !== $request) {
             $criteria = $this->getCriteriaFromRequest($request, null, $criteria);
@@ -108,7 +108,7 @@ class ShareActionManager
         return $this->shareActionRepository->countShares($criteria);
     }
 
-    private function getCriteriaFromRequest(Request $request = null, User $user = null, $criteria = array())
+    private function getCriteriaFromRequest(Request $request = null, User $user = null, $criteria = [])
     {
         if (null !== $user) {
             $criteria['user'] = $user;
