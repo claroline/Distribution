@@ -5,13 +5,19 @@ import {Routes} from '#/main/app/router'
 import {UserPageContainer} from '#/main/core/user/containers/page'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
+import {ContentLoader} from '#/main/app/content/components/loader'
 import {ProfileEdit} from '#/main/core/user/profile/editor/components/main'
 import {ProfileShow} from '#/main/core/user/profile/player/components/main'
 import {ProfileBadgeList} from '#/plugin/open-badge/tools/badges/badge/components/profile-badges'
 
 const ProfileComponent = props => {
   if (!props.loaded) {
-    return <div> Loading </div>
+    return (
+      <ContentLoader
+        size="lg"
+        description="Nous chargeons votre utilisateur"
+      />
+    )
   }
 
   return(
