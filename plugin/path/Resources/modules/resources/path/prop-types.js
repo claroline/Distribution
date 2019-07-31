@@ -18,6 +18,7 @@ const Step = {
         type: T.string.isRequired
       })
     }),
+    evaluated: T.bool,
     showResourceHeader: T.bool,
     secondaryResources: T.arrayOf(T.shape({
       // minimal resource

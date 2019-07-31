@@ -8,12 +8,16 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2019/07/29 05:28:06
+ * Generation date: 2019/07/31 03:39:24
  */
-class Version20190729172805 extends AbstractMigration
+class Version20190731153920 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
+        $this->addSql('
+            ALTER TABLE innova_step 
+            ADD evaluated TINYINT(1) NOT NULL
+        ');
         $this->addSql("
             ALTER TABLE innova_path 
             ADD score_total DOUBLE PRECISION DEFAULT '100' NOT NULL, 
@@ -29,6 +33,10 @@ class Version20190729172805 extends AbstractMigration
             DROP score_total, 
             DROP success_score, 
             DROP show_score
+        ');
+        $this->addSql('
+            ALTER TABLE innova_step 
+            DROP evaluated
         ');
     }
 }

@@ -145,12 +145,12 @@ class UserProgressionManager
             $resourceUserEvaluation = $this->resourceEvalManager->getResourceUserEvaluation($path->getResourceNode(), $user);
             $data = $this->computeResourceUserEvaluation($path, $user);
 
-            if ($data['score'] !== $resourceUserEvaluation->getScore() ||
-                $data['scoreMax'] !== $resourceUserEvaluation->getScoreMax() ||
+            if ($data['progression'] !== $resourceUserEvaluation->getProgression() ||
+                $data['progressionMax'] !== $resourceUserEvaluation->getProgressionMax() ||
                 $data['status'] !== $resourceUserEvaluation->getStatus()
             ) {
-                $resourceUserEvaluation->setScore($data['score']);
-                $resourceUserEvaluation->setScoreMax($data['scoreMax']);
+                $resourceUserEvaluation->setProgression($data['progression']);
+                $resourceUserEvaluation->setProgressionMax($data['progressionMax']);
                 $resourceUserEvaluation->setStatus($data['status']);
                 $resourceUserEvaluation->setDate(new \DateTime());
                 $this->om->persist($resourceUserEvaluation);
@@ -189,7 +189,7 @@ class UserProgressionManager
         $stepIndex = array_search($step->getUuid(), $statusData['stepsToDo']);
 
         if (false !== $stepIndex && false !== array_search($status, ['seen', 'done'])) {
-            ++$statusData['score'];
+            ++$statusData['progression'];
             array_splice($statusData['stepsToDo'], $stepIndex, 1);
         }
 
@@ -198,9 +198,6 @@ class UserProgressionManager
             'status' => $status,
             'toDo' => $statusData['stepsToDo'],
         ];
-        $progression = !is_null($statusData['score']) && $statusData['scoreMax'] > 0 ?
-            floor(($statusData['score'] / $statusData['scoreMax']) * 100) :
-            null;
 
         return $this->resourceEvalManager->createResourceEvaluation(
             $step->getPath()->getResourceNode(),
@@ -208,9 +205,10 @@ class UserProgressionManager
             null,
             [
                 'status' => $statusData['status'],
-                'score' => $statusData['score'],
-                'scoreMax' => $statusData['scoreMax'],
-                'progression' => $progression,
+//                'score' => $statusData['score'],
+//                'scoreMax' => $statusData['scoreMax'],
+                'progression' => $statusData['progression'],
+                'progressionMax' => $statusData['progressionMax'],
                 'data' => $evaluationData,
             ],
             [
@@ -237,8 +235,8 @@ class UserProgressionManager
         }, $steps);
         $resourceUserEval = $this->resourceEvalManager->getResourceUserEvaluation($path->getResourceNode(), $user);
         $evaluations = $resourceUserEval->getEvaluations();
-        $score = 0;
-        $scoreMax = count($steps);
+        $progression = 0;
+        $progressionMax = count($steps);
 
         /** @var ResourceEvaluation $evaluation */
         foreach ($evaluations as $evaluation) {
@@ -249,18 +247,18 @@ class UserProgressionManager
                 $uuidIndex = array_search($data['step'], $stepsUuids);
 
                 if (false !== $statusIndex && false !== $uuidIndex) {
-                    ++$score;
+                    ++$progression;
                     array_splice($stepsUuids, $uuidIndex, 1);
                 }
             }
         }
-        $status = $score >= $scoreMax ?
+        $status = $progression >= $progressionMax ?
             AbstractResourceEvaluation::STATUS_COMPLETED :
             AbstractResourceEvaluation::STATUS_INCOMPLETE;
 
         return [
-            'score' => $score,
-            'scoreMax' => $scoreMax,
+            'progression' => $progression,
+            'progressionMax' => $progressionMax,
             'status' => $status,
             'stepsToDo' => $stepsUuids,
         ];
@@ -301,13 +299,13 @@ class UserProgressionManager
         $user = $resourceUserEvaluation->getUser();
 
         // Gets all steps containing the resource node
-        $steps = $this->stepRepo->findBy(['resource' => $resourceNode]);
+        $steps = $this->stepRepo->findBy(['resource' => $resourceNode, 'evaluated' => true]);
 
         // Retrieves corresponding paths
         $paths = [];
 
         foreach ($steps as $step) {
-            $path[$step->getPath()->getUuid()] = $step->getPath();
+            $paths[$step->getPath()->getUuid()] = $step->getPath();
         }
 
         // Gets all ResourceUserEvaluation entities linked to each path and user
@@ -332,27 +330,23 @@ class UserProgressionManager
      */
     public function computeUserPathScore(Path $path, ResourceUserEvaluation $resourceUserEvaluation)
     {
-        $evaluatedType = [
-            'ujm_exercise',
-            'claroline_dropzone',
-            'claroline_scorm',
-        ];
         $user = $resourceUserEvaluation->getUser();
         $total = $path->getScoreTotal();
         $successScore = $path->getSuccessScore();
-        $nbEvaluatedSteps = 0;
         $nbEvaluatedStepsDone = 0;
         $score = 0;
         $scoreTotal = 0;
+        $evaluatedSteps = [];
 
-        $steps = $path->getSteps();
+        foreach ($path->getSteps() as $step) {
+            if ($step->isEvaluated()) {
+                $evaluatedSteps[] = $step;
+            }
+        }
 
-        foreach ($steps as $step) {
-            $stepResource = $step->getResource();
-
-            if ($stepResource && in_array($stepResource->getResourceType()->getName(), $evaluatedType)) {
-                ++$nbEvaluatedSteps;
-
+        if (0 < count($evaluatedSteps)) {
+            foreach ($evaluatedSteps as $step) {
+                $stepResource = $step->getResource();
                 $stepEval = $this->resourceUserEvalRepo->findOneBy([
                     'user' => $user,
                     'resourceNode' => $stepResource,
@@ -362,14 +356,21 @@ class UserProgressionManager
                     ++$nbEvaluatedStepsDone;
                     $score += $stepEval->getScore();
                     $scoreTotal += $stepEval->getScoreMax();
+                } else {
+                    // TODO: retrieve total score of resource
                 }
             }
-        }
 
-        if (0 < $scoreTotal) {
-            $finalScore = ($score * $total) / $scoreTotal;
-            $finished = 0 < $nbEvaluatedSteps && $nbEvaluatedSteps === $nbEvaluatedStepsDone;
-            $success = $finished && $successScore <= ($score * 100) / $scoreTotal;
+            if (0 < $scoreTotal) {
+                $finalScore = ($score * $total) / $scoreTotal;
+                $finished = count($evaluatedSteps) === $nbEvaluatedStepsDone;
+                $success = $finished && $successScore <= ($score * 100) / $scoreTotal;
+                $resourceUserEvaluation->setDate(new \DateTime());
+                $resourceUserEvaluation->setScore($finalScore);
+                $resourceUserEvaluation->setScoreMax($total);
+                $this->om->persist($resourceUserEvaluation);
+                $this->om->flush();
+            }
         }
     }
 }

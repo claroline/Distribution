@@ -178,6 +178,7 @@ class PathSerializer
                 return $this->serializeStep($child);
             }, $step->getChildren()->toArray()),
             'userProgression' => $this->serializeUserProgression($step),
+            'evaluated' => $step->isEvaluated(),
         ];
     }
 
@@ -265,11 +266,18 @@ class PathSerializer
             }
         }
 
+        if (isset($data['evaluated'])) {
+            $step->setEvaluated($data['evaluated']);
+        }
+
         /* Set primary resource */
         $resource = isset($data['primaryResource']['id']) ?
             $this->resourceNodeRepo->findOneBy(['uuid' => $data['primaryResource']['id']]) :
             null;
         $step->setResource($resource);
+
+        $evalutated = isset($data['evaluated']) && $step->getResource() ? $data['evaluated'] : false;
+        $step->setEvaluated($evalutated);
 
         if (isset($data['showResourceHeader'])) {
             $step->setShowResourceHeader($data['showResourceHeader']);
