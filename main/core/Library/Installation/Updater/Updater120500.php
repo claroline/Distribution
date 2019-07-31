@@ -39,6 +39,8 @@ class Updater120500 extends Updater
 
         $this->removeTool('my_contacts');
         $this->removeTool('workspace_management');
+
+        $this->updateRoutes();
     }
 
     private function updatePlatformOptions()
@@ -81,6 +83,67 @@ class Updater120500 extends Updater
         if (!empty($tool)) {
             $this->om->remove($tool);
             $this->om->flush();
+        }
+    }
+
+    public function updateRoutes()
+    {
+        $this->log('Updating routes in database rich text');
+        //the list is probably incomplete, but it is a start
+
+        $parsableEntities = [
+            'Claroline\CoreBundle\Entity\Content' => ['content'],
+            'Claroline\CoreBundle\Entity\Resource\Revision' => ['content'],
+            'Claroline\AgendaBundle\Entity\Event' => ['description'],
+            'Claroline\AnnouncementBundle\Entity\Announcement' => ['content'],
+            'Innova\PathBundle\Entity\Path\Path' => ['description'],
+            'Innova\PathBundle\Entity\Step' => ['description'],
+            'Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget' => ['content'],
+            'UJM\ExoBundle\Entity\Exercise' => ['endMessage'],
+            'UJM\ExoBundle\Entity\Item\Item' => ['content'],
+            'Claroline\ForumBundle\Entity\Message' => ['content'],
+        ];
+
+        //this is the list of regexes we'll need to use
+        $regexes = [
+        ];
+
+        foreach ($parsableEntities as $entity => $properties) {
+            $this->log('Replacing old urls for '.$entity.'...');
+            foreach ($properties as $property) {
+                $this->log('Looking for property '.$property.'...');
+                $em = $this->container->get('doctrine.orm.entity_manager');
+                $metadata = $em->getClassMetadata($class);
+
+                $tableName = $metadata->getTableName();
+                $columnName = $metadata->getColumnName($property);
+
+                foreach ($regexes as $regex => $replacement) {
+                    $this->log('Matching regex '.$regex.'...');
+                    $sql = 'SELECT * from '.$tableName.' WHERE '.$columnName." RLIKE '{$regex}'";
+                    $this->log($sql);
+                    $rsm = new ResultSetMappingBuilder($em);
+                    $rsm->addRootEntityFromClassMetadata($class, '');
+                    $query = $em->createNativeQuery($sql, $rsm);
+                    $data = $query->getResult();
+                    $this->log(count($data).'results...');
+                    $i = 0;
+
+                    foreach ($data as $entity) {
+                        $this->log('Updating '.$i.'/'.count($data));
+                        $func = 'get'.ucfirst($property);
+                        $text = $entity->$func();
+                        $text = preg_replace('#'.$regex.'#', $replacement, $text);
+                        $func = 'set'.ucfirst($property);
+                        $entity->$func($text);
+                        $em->persist($entity);
+                        ++$i;
+                    }
+
+                    $this->log('Flushing...');
+                    $em->flush();
+                }
+            }
         }
     }
 }
