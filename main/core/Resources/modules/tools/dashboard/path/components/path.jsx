@@ -10,7 +10,7 @@ const Path = (props) =>
     <h2>{props.path.name}</h2>
     <BarChart
       data={props.steps.reduce((acc, step) => {
-        acc[step.id] = {
+        acc[step.step.id] = {
           xData: step.step.title,
           yData: step.users.length
         }
@@ -19,7 +19,7 @@ const Path = (props) =>
       }, {})}
       yAxisLabel={{
         show: true,
-        text: trans('nb_users')
+        text: trans('users_count')
       }}
       xAxisLabel={{
         show: true,
