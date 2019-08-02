@@ -1,7 +1,5 @@
 import {API_REQUEST} from '#/main/app/api'
 
-import {url} from '#/main/app/api'
-
 export const actions = {}
 
 actions.updatePassword = (user, plainPassword) => ({
@@ -23,8 +21,7 @@ actions.updatePublicUrl = (user, publicUrl, redirect = false) => ({
     },
     success: () => {
       if (redirect) {
-        //  target: '#/desktop/users/profile/'+ rows[0].meta.publicUrl',
-        window.location = url(['claro_user_profile', {user: publicUrl}]) // TODO : find better
+        window.location = '#/desktop/users/profile/' + publicUrl
       }
     }
   }
