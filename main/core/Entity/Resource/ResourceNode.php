@@ -305,7 +305,7 @@ class ResourceNode
 
     /**
      * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(length=128, unique=true, nullable=true)
+     * @ORM\Column(length=128, unique=true)
      */
     private $slug;
 
