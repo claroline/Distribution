@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -87,6 +88,7 @@ class ResourceController
      * @DI\InjectParams({
      *     "tokenStorage"        = @DI\Inject("security.token_storage"),
      *     "templating"          = @DI\Inject("templating"),
+     *     "finder"              = @DI\Inject("claroline.api.finder"),
      *     "security"            = @DI\Inject("claroline.security.utilities"),
      *     "serializer"          = @DI\Inject("claroline.api.serializer"),
      *     "manager"             = @DI\Inject("claroline.manager.resource_manager"),
@@ -118,7 +120,8 @@ class ResourceController
         ResourceActionManager $actionManager,
         ResourceRestrictionsManager $restrictionsManager,
         ObjectManager $om,
-        EventManager $eventManager
+        EventManager $eventManager,
+        FinderProvider $finder
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
@@ -131,6 +134,7 @@ class ResourceController
         $this->rightsRepo = $om->getRepository(ResourceRights::class);
         $this->authorization = $authorization;
         $this->eventManager = $eventManager;
+        $this->finder = $finder;
     }
 
     /**
@@ -454,8 +458,12 @@ class ResourceController
     public function getAction($slug)
     {
         /** @var ResourceNode $resourceNode */
-        //          $parentNode = $this->finder->get(ResourceNode::class)->findOneBy(['uuid_or_slug' => $parent]);
-        $resourceNode = $this->om->getRepository(ResourceNode::class)->findOneBy(['slug' => $slug]);
+        $resourceNode = $this->finder->get(ResourceNode::class)->findOneBy(['uuid_or_slug' => $slug]);
+        //$resourceNode = $this->om->getRepository(ResourceNode::class)->findOneBy(['slug' => $slug]);
+        /*
+        if (!$resourceNode) {
+            $this->om->getRepository(ResourceNode::class)->findOneBy(['uuid' => $slug]);
+        }*/
 
         if (!$resourceNode) {
             throw new ResourceNotFoundException('Resource not found');
