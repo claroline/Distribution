@@ -150,21 +150,6 @@ const UsersTool = (props) => {
             component: UserTab,
             disabled: props.context !== toolConstants.TOOL_DESKTOP
           }
-
-          /*{
-            path: '/list',
-            render: () => {
-              const Contacts = (
-                <UserList
-                  url={['apiv2_users_picker_list']}
-                  name={selectors.STORE_NAME + '.profile.contacts'}
-                />
-              )
-
-              return Contacts
-            },
-            disabled: props.context !== toolConstants.TOOL_DESKTOP
-          }*/
         ]}
       />
     </ToolPage>
