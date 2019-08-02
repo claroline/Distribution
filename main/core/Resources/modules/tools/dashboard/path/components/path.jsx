@@ -2,10 +2,12 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {MODAL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {Section} from '#/main/app/content/components/sections'
 
 import {selectors} from '#/main/core/tools/dashboard/path/store'
+import {MODAL_USER_MESSAGE} from '#/main/core/user/modals/message'
 import {BarChart} from '#/main/core/layout/chart/bar/components/bar-chart'
 
 const Path = (props) =>
@@ -33,8 +35,6 @@ const Path = (props) =>
       <Section
         icon="fa fa-fw fa-user"
         title={trans('users')}
-        expanded={true}
-        onClick={() => props.openPath()}
       >
         {props.opened &&
           <ListData
@@ -43,6 +43,20 @@ const Path = (props) =>
               url: ['claroline_path_evaluations_list', {resourceNode: props.path.resourceId}],
               autoload: true
             }}
+            actions={(rows) => [
+              {
+                type: MODAL_BUTTON,
+                icon: 'fa fa-fw fa-envelope',
+                label: trans('send_message'),
+                scope: ['object', 'collection'],
+                modal: [MODAL_USER_MESSAGE, {
+                  to: rows.map((row) => ({
+                    id: row.user.id,
+                    name: `${row.user.firstName} ${row.user.lastName}`
+                  }))
+                }]
+              }
+            ]}
             definition={[
               {
                 name: 'user.firstName',
