@@ -14,7 +14,8 @@ namespace Innova\PathBundle\Controller\API;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Innova\PathBundle\Entity\Path\Path;
@@ -23,6 +24,7 @@ use Innova\PathBundle\Manager\UserProgressionManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -36,9 +38,6 @@ class PathTrackingController
 
     /** @var FinderProvider */
     private $finder;
-
-    /** @var ObjectManager */
-    private $om;
 
     /** @var SerializerProvider */
     private $serializer;
@@ -150,11 +149,51 @@ class PathTrackingController
                 'path' => [
                     'id' => $path->getResourceNode()->getUuid(),
                     'name' => $path->getResourceNode()->getName(),
+                    'resourceId' => $path->getResourceNode()->getUuid(),
                 ],
                 'steps' => $stepsData,
             ];
         }
 
         return new JsonResponse($data, 200);
+    }
+
+    /**
+     * Fetch path evaluations.
+     *
+     * @EXT\Route(
+     *     "/path/{resourceNode}/evaluations/list",
+     *     name="claroline_path_evaluations_list"
+     * )
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "resourceNode",
+     *     class="ClarolineCoreBundle:Resource\ResourceNode",
+     *     options={"mapping": {"resourceNode": "uuid"}}
+     * )
+     *
+     * @param ResourceNode $resourceNode
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function pathEvaluationFetchAction(ResourceNode $resourceNode, Request $request)
+    {
+        $tool = $this->toolManager->getToolByName('dashboard');
+
+        if (!$tool || !$this->authorization->isGranted('OPEN', $tool)) {
+            throw new AccessDeniedException();
+        }
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [
+                'resourceNode' => $resourceNode->getUuid(),
+            ];
+        }
+
+        return new JsonResponse(
+            $this->finder->search(ResourceUserEvaluation::class, $params)
+        );
     }
 }

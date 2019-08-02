@@ -6,6 +6,10 @@ import {Path} from '#/main/core/tools/dashboard/path/components/path'
 class Paths extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      currentPath: null
+    }
   }
 
   componentDidMount() {
@@ -20,6 +24,15 @@ class Paths extends Component {
             key={`path-tracking-${index}`}
             path={tracking.path}
             steps={tracking.steps}
+            opened={tracking.path.id === this.state.currentPath}
+            openPath={() => {
+              if (this.state.currentPath === tracking.path.id) {
+                this.setState({currentPath: null})
+              } else {
+                this.props.invalidateEvaluations()
+                this.setState({currentPath: tracking.path.id})
+              }
+            }}
           />
         )}
       </div>
@@ -30,7 +43,8 @@ class Paths extends Component {
 Paths.propTypes = {
   workspaceId: T.string.isRequired,
   trackings: T.array,
-  fetchPathsData: T.func.isRequired
+  fetchPathsData: T.func.isRequired,
+  invalidateEvaluations: T.func.isRequired
 }
 
 export {

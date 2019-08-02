@@ -2,6 +2,8 @@ import {createSelector} from 'reselect'
 
 import {selectors as dashboardSelectors} from '#/main/core/tools/dashboard/store/selectors'
 
+const STORE_NAME = dashboardSelectors.STORE_NAME + '.path'
+
 const store = (state) => state[dashboardSelectors.STORE_NAME]
 
 const path = createSelector(
@@ -15,6 +17,7 @@ const trackings = createSelector(
 )
 
 export const selectors = {
+  STORE_NAME,
   path,
   trackings
 }
