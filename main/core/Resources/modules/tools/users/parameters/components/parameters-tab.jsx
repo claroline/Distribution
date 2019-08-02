@@ -6,7 +6,7 @@ import get from 'lodash/get'
 import {url} from '#/main/app/api'
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {actions as formActions, selectors as formSelect} from '#/main/app/content/form/store'
+import {actions as formActions} from '#/main/app/content/form/store'
 import {FormData} from '#/main/app/content/form/containers/data'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'
@@ -23,6 +23,7 @@ import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
  */
 const Parameters = props => {
   const roleEnum = {}
+
   props.workspace.roles.forEach(role => {
     roleEnum[role.id] = trans(role.translationKey)
   })
@@ -133,7 +134,7 @@ Parameters.propTypes = {
 const ParametersTab = connect(
   (state) => ({
     path: toolSelectors.path(state),
-    workspace: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.parameters'))
+    workspace: toolSelectors.context(state).data
   }),
   (dispatch) => ({
     updateProp(propName, propValue) {

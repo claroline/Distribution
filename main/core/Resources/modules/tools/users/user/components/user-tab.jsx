@@ -9,25 +9,43 @@ import {selectors} from '#/main/core/tools/users/store'
 import {actions} from '#/main/core/tools/users/user/store'
 import {Users} from '#/main/core/tools/users/user/components/users'
 import {User} from '#/main/core/tools/users/user/components/user'
+import {UserList} from '#/main/core/user/components/list'
+import {constants as toolConstants} from '#/main/core/tool/constants'
 
-const UserTabComponent = props =>
-  <Routes
-    path={props.path}
-    routes={[
-      {
-        path: '/users',
-        exact: true,
-        component: Users
-      }, {
-        path: '/users/form/:id?',
-        component: User,
-        onEnter: (params) => props.openForm(params.id || null, props.collaboratorRole)
-      }
-    ]}
-  />
+const UserTabComponent = props => <Routes
+  path={props.path}
+  routes={[
+    {
+      path: '/users',
+      exact: true,
+      component: Users,
+      disabled: props.context !== toolConstants.TOOL_WORKSPACE
+    }, {
+      path: '/users/form/:id?',
+      component: User,
+      disabled: props.context !== toolConstants.TOOL_WORKSPACE,
+      onEnter: (params) => props.openForm(params.id || null, props.collaboratorRole)
+    },
+    {
+      path: '/contacts',
+      render: () => {
+        const Contacts = (
+          <UserList
+            url={['apiv2_users_picker_list']}
+            name={selectors.STORE_NAME + '.profile.contacts'}
+          />
+        )
+
+        return Contacts
+      },
+      disabled: props.context !== toolConstants.TOOL_DESKTOP
+    }
+  ]}
+/>
 
 UserTabComponent.propTypes = {
   path: T.string.isRequired,
+  context: T.string.isRequired,
   openForm: T.func.isRequired,
   collaboratorRole: T.object
 }
@@ -35,7 +53,8 @@ UserTabComponent.propTypes = {
 const UserTab = connect(
   state => ({
     path: toolSelectors.path(state),
-    collaboratorRole: toolSelectors.contextData(state).roles.find(role => role.translationKey === 'collaborator')
+    context: toolSelectors.contextType(state),
+    collaboratorRole: toolSelectors.contextType(state) === toolConstants.TOOL_WORKSPACE ? toolSelectors.contextData(state).roles.find(role => role.translationKey === 'collaborator'): toolConstants.TOOL_DESKTOP
   }),
   dispatch => ({
     openForm(id = null, collaboratorRole) {

@@ -35,7 +35,7 @@ function getUserList(workspace) {
   return {
     open: (row) => ({
       type: URL_BUTTON,
-      target: 'desktop/users/profile/' + row.meta.publicUrl + '/show'
+      target: 'desktop/users/profile/' + row.meta.publicUrl
     }),
     definition: [
       {

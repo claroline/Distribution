@@ -21,14 +21,11 @@ const reducer = combineReducers({
   facets: makeReducer([], {
     [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => action.toolData.facets}
   ),
-  user: makeFormReducer(select.FORM_NAME, {}, {
-    originalData: makeReducer({}, {}),
-    data: makeReducer({}, {}),
-    loaded: makeReducer(false, {
-      ['FORM_RESET/' + select.FORM_NAME]: () => true
-    })
+  user: makeFormReducer(select.FORM_NAME),
+  loaded: makeReducer(false, {
+    ['FORM_RESET/' + select.FORM_NAME]: () => true
   }),
-  parameters: makeReducer({}, {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.parameters}),
+  parameters: makeReducer({}, {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.parameters ? action.toolData.parameters: {}}),
   badges: combineReducers({
     mine: makeListReducer('badges.mine', {})
   })

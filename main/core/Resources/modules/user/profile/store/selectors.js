@@ -14,7 +14,7 @@ const facets = createSelector(
 const loaded = createSelector(
   [store],
   (store) => {
-    return store.profile.user.loaded
+    return store.profile.loaded
   }
 )
 

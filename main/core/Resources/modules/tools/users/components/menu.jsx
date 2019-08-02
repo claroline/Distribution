@@ -10,6 +10,7 @@ import omit from 'lodash/omit'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
+import {constants as toolConstants} from '#/main/core/tool/constants'
 
 const UsersMenu = (props) => {
   const permLevel = getPermissionLevel(props.workspace, props.currentUser)
@@ -27,50 +28,50 @@ const UsersMenu = (props) => {
             name: 'profile',
             type: LINK_BUTTON,
             label: trans('profile'),
-            target: props.path+'/profile/' + props.currentUser.publicUrl + '/show',
-            displayed: props.context === 'desktop'
+            target: props.path+'/profile/' + props.currentUser.publicUrl,
+            displayed: props.context === toolConstants.TOOL_DESKTOP
           }, {
-            name: 'users',
-            type: LINK_BUTTON,
-            label: trans('list'),
-            target: props.path+'/list',
-            displayed: props.context === 'desktop'
-          },
-          {
             name: 'users',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-user',
             label: trans('users'),
             target: `${props.path}/users`,
-            displayed: props.context === 'workspace' && !props.workspace.meta.model
+            displayed: props.context === toolConstants.TOOL_WORKSPACE && !props.workspace.meta.model
+          }, {
+            name: 'contacts',
+            type: LINK_BUTTON,
+            icon: 'fa fa-fw fa-user',
+            label: trans('users'),
+            target: `${props.path}/contacts`,
+            displayed: props.context === toolConstants.TOOL_DESKTOP
           }, {
             name: 'groups',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-users',
             label: trans('groups'),
             target: `${props.path}/groups`,
-            displayed: props.context === 'workspace' && !props.workspace.meta.model
+            displayed: props.context === toolConstants.TOOL_WORKSPACE && !props.workspace.meta.model
           }, {
             name: 'roles',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-id-badge',
             label: trans('roles'),
             target: `${props.path}/roles`,
-            displayed: props.context === 'workspace' && permLevel !== constants.READ_ONLY
+            displayed: props.context === toolConstants.TOOL_WORKSPACE && permLevel !== constants.READ_ONLY
           }, {
             name: 'pending',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-user-plus',
             label: trans('pending_registrations'),
             target: `${props.path}/pending`,
-            displayed: props.context === 'workspace' && permLevel !== constants.READ_ONLY && props.workspace.registration.selfRegistration && props.workspace.registration.validation
+            displayed: props.context === toolConstants.TOOL_WORKSPACE && permLevel !== constants.READ_ONLY && props.workspace.registration.selfRegistration && props.workspace.registration.validation
           }, {
             name: 'parameters',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-cog',
             label: trans('parameters'),
             target: `${props.path}/parameters`,
-            displayed: props.context === 'workspace' && permLevel !== constants.READ_ONLY
+            displayed: props.context === toolConstants.TOOL_WORKSPACE && permLevel !== constants.READ_ONLY
           }
         ]}
       />

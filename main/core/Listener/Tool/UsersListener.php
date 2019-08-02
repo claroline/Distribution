@@ -79,7 +79,6 @@ class UsersListener
         $workspace = $event->getWorkspace();
 
         $event->setData([
-          'parameters' => $this->workspaceSerializer->serialize($workspace),
           'facets' => $this->profileSerializer->serialize(),
           'restrictions' => [
               // TODO: computes rights more accurately

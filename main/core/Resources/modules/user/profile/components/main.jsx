@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {Routes} from '#/main/app/router'
-import {UserMainContainer} from '#/main/core/user/containers/main'
+import {UserPage} from '#/main/core/user/components/page'
 import {User as UserTypes} from '#/main/core/user/prop-types'
 
 import {ContentLoader} from '#/main/app/content/components/loader'
@@ -21,9 +21,12 @@ const ProfileComponent = props => {
   }
 
   return(
-    <UserMainContainer
+    <UserPage
       user={props.user}
       path={props.path + '/' + props.user.publicUrl}
+      currentUser={props.currentUser}
+      updatePassword={props.updatePassword}
+      updatePublicUrl={props.updatePublicUrl}
     >
       <Routes
         path={props.path + '/' + props.user.publicUrl}
@@ -43,11 +46,10 @@ const ProfileComponent = props => {
           }
         ]}
         redirect={[
-          {from: '/', exact: true, to: '/show/main'},
-          {from: '/show', exact: true, to: '/show/main'}
+          {from: '/', exact: true, to: '/show/main'}
         ]}
       />
-    </UserMainContainer>
+    </UserPage>
   )
 }
 
@@ -60,7 +62,9 @@ ProfileComponent.propTypes = {
   ).isRequired,
   path: T.string,
   loaded: T.bool,
-  parameters: T.object.isRequired
+  parameters: T.object.isRequired,
+  updatePublicUrl: T.func.isRequired,
+  updatePassword: T.func.isRequired
 }
 
 export {
