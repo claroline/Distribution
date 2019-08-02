@@ -22,8 +22,7 @@ class ClarolineTeamBundle extends DistributionPluginBundle
 
         return $config->addRoutingResource(
             __DIR__.'/Resources/config/routing.yml',
-            null,
-            'team'
+            null
         );
     }
 

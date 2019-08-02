@@ -79,26 +79,6 @@ abstract class PluginBundle extends InstallableBundle implements PluginBundleInt
         return [];
     }
 
-    /**
-     * Deprecated: use getConfiguration instead.
-     *
-     * @deprecated
-     */
-    public function getRoutingPrefix()
-    {
-        $vendor = $this->getVendorName();
-        $prefix = $this->getBundleName();
-        $pattern = '#^(.+)Bundle$#';
-
-        if (preg_match($pattern, $prefix, $matches)) {
-            $prefix = $matches[1];
-        }
-
-        $prefix = strtolower("{$vendor}_{$prefix}");
-
-        return $prefix;
-    }
-
     public function getConfigFile()
     {
         $ds = DIRECTORY_SEPARATOR;

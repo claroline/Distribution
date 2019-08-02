@@ -11,6 +11,6 @@ class ClarolineHistoryBundle extends DistributionPluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null, 'history');
+        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null);
     }
 }

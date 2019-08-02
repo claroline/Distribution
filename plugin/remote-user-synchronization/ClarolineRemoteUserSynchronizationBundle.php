@@ -20,7 +20,7 @@ class ClarolineRemoteUserSynchronizationBundle extends DistributionPluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null, 'remote-user-synchronization');
+        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml', null);
     }
 
     public function hasMigrations()
