@@ -30,6 +30,11 @@ const Path = (props) =>
         show: true,
         text: trans('steps', {}, 'path')
       }}
+      onClick={(data, idx) => {
+        if (props.steps[idx] && props.steps[idx].users) {
+          props.showStepDetails(props.steps[idx].users)
+        }
+      }}
     />
     {props.opened ?
       <Section
@@ -108,10 +113,27 @@ const Path = (props) =>
   </div>
 
 Path.propTypes = {
-  path: T.object,
-  steps: T.array,
+  path: T.shape({
+    id: T.string,
+    name: T.string,
+    resourceId: T.string
+  }),
+  steps: T.arrayOf(T.shape({
+    step: T.shape({
+      id: T.string,
+      title: T.string
+    }),
+    users: T.arrayOf(T.shape({
+      id: T.string,
+      username: T.string,
+      firstName: T.string,
+      lastName: T.string,
+      name: T.string
+    }))
+  })),
   opened: T.bool.isRequired,
-  openPath: T.func.isRequired
+  openPath: T.func.isRequired,
+  showStepDetails: T.func.isRequired
 }
 
 export {

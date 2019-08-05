@@ -132,6 +132,8 @@ class PathTrackingController
                         $stepUsers[] = [
                             'id' => $user->getUuid(),
                             'username' => $user->getUsername(),
+                            'firstName' => $user->getFirstName(),
+                            'lastName' => $user->getLastName(),
                             'name' => $user->getFirstName().' '.$user->getLastName(),
                         ];
                     }

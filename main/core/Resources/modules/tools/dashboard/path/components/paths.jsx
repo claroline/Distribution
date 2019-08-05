@@ -33,6 +33,7 @@ class Paths extends Component {
                 this.setState({currentPath: tracking.path.id})
               }
             }}
+            showStepDetails={this.props.showStepDetails}
           />
         )}
       </div>
@@ -42,9 +43,29 @@ class Paths extends Component {
 
 Paths.propTypes = {
   workspaceId: T.string.isRequired,
-  trackings: T.array,
+  trackings: T.arrayOf(T.shape({
+    path: T.shape({
+      id: T.string,
+      name: T.string,
+      resourceId: T.string
+    }),
+    steps: T.arrayOf(T.shape({
+      step: T.shape({
+        id: T.string,
+        title: T.string
+      }),
+      users: T.arrayOf(T.shape({
+        id: T.string,
+        username: T.string,
+        firstName: T.string,
+        lastName: T.string,
+        name: T.string
+      }))
+    }))
+  })),
   fetchPathsData: T.func.isRequired,
-  invalidateEvaluations: T.func.isRequired
+  invalidateEvaluations: T.func.isRequired,
+  showStepDetails: T.func.isRequired,
 }
 
 export {
