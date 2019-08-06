@@ -65,7 +65,7 @@ Paths.propTypes = {
   })),
   fetchPathsData: T.func.isRequired,
   invalidateEvaluations: T.func.isRequired,
-  showStepDetails: T.func.isRequired,
+  showStepDetails: T.func.isRequired
 }
 
 export {
