@@ -52,6 +52,9 @@ const reducer = combineReducers({
   levelMax: makeReducer(null, {
     [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => action.toolData.levelMax
   }),
+  nbConnections: makeReducer(null, {
+    [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => action.toolData.nbConnections
+  }),
   path: pathReducer
 })
 
