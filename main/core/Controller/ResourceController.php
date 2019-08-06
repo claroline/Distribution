@@ -459,11 +459,6 @@ class ResourceController
     {
         /** @var ResourceNode $resourceNode */
         $resourceNode = $this->finder->get(ResourceNode::class)->findOneBy(['uuid_or_slug' => $slug]);
-        //$resourceNode = $this->om->getRepository(ResourceNode::class)->findOneBy(['slug' => $slug]);
-        /*
-        if (!$resourceNode) {
-            $this->om->getRepository(ResourceNode::class)->findOneBy(['uuid' => $slug]);
-        }*/
 
         if (!$resourceNode) {
             throw new ResourceNotFoundException('Resource not found');

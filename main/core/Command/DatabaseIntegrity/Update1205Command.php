@@ -27,7 +27,7 @@ class Update1205Command extends ContainerAwareCommand
         $this->setName('claroline:routes:12.5')
             ->setDescription('Update 12.5 routes')
             ->setDefinition([
-                new InputArgument('base_path', InputArgument::REQUIRED, 'The value'),
+                new InputArgument('base_path', InputArgument::OPTIONAL, 'The value'),
            ]);
     }
 
@@ -53,15 +53,45 @@ class Update1205Command extends ContainerAwareCommand
             'Claroline\ForumBundle\Entity\Message' => ['content'],
         ];
 
+        $endOfUrl = '[^"^#^&^<]';
+
         //this is the list of regexes we'll need to use
         $regexes = [
-          '\/workspaces\/(.*)\/open' => [
+          //open can be id
+          '\/workspaces\/([\d]+)\/open"' => [
               '/#/desktop/workspaces/open/:wslug',
               ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
           ],
-          '\/resource\/open/([^\/]*)\/(.*)' => [
+          //open can be id
+          '\/workspaces\/([\d]+)\/open\/tool\('.$endOfUrl.'*)' => [
+              '/#/desktop/workspaces/open/:wslug',
+              ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
+          ],
+          //open can be uuid or id
+          '\/resource\/open\/([^\/]*)"' => [
             '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
             ['Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+          ],
+          //open can be uuid or id (resource type then id)
+          '\/resource\/open\/([^\/]+)\/('.$endOfUrl.'*)' => [
+            '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
+            [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+          ],
+          //show is type then id or uuid
+          '\/resources\/show\/([^\/]*)"' => [
+            '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
+            [
+              null,
+              'Claroline\CoreBundle\Entity\Resource\ResourceNode',
+            ],
+          ],
+          //show is type then id or uuid
+          '\/resources\/show\/([^\/]*)\/('.$endOfUrl.'*)' => [
+            '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
+            [
+              null,
+              'Claroline\CoreBundle\Entity\Resource\ResourceNode',
+            ],
           ],
         ];
 
@@ -106,26 +136,48 @@ class Update1205Command extends ContainerAwareCommand
 
     public function replace($regex, $replacement, $text, $prefix)
     {
-        $finder = $this->getContainer()->get('claroline.api.finder');
+        $om = $this->getContainer()->get('claroline.persistence.object_manager');
         $matches = [];
-        preg_match('#'.$regex.'#', $text, $matches, PREG_OFFSET_CAPTURE);
+        preg_match('!'.$regex.'!', $text, $matches, PREG_OFFSET_CAPTURE);
         array_shift($matches);
 
+        $regexError = true;
+
+        //if (count($matches)) {
         foreach ($replacement[1] as $pos => $class) {
-            $object = $finder->get($class)->findOneBy(['identifier' => $matches[$pos][0]]);
+            $this->log('Finding resource of class '.$class.' with identifier '.$matches[$pos][0]);
+            if ($class) {
+                $object = $om->getRepository($class)->find($matches[$pos][0]);
 
-            if (Workspace::class === $class) {
-                $replacement[0] = str_replace(':wslug', $object->getSlug(), $replacement[0]);
-            }
+                if ($object) {
+                    $regexError = false;
+                    if (Workspace::class === $class) {
+                        $replacement[0] = str_replace(':wslug', $object->getSlug(), $replacement[0]);
+                    }
 
-            if (ResourceNode::class === $class) {
-                $replacement[0] = str_replace(':nslug', $object->getSlug(), $replacement[0]);
+                    if (ResourceNode::class === $class) {
+                        if ($object->getWorkspace()) {
+                            $replacement[0] = str_replace(':nslug', $object->getSlug(), $replacement[0]);
+                            $replacement[0] = str_replace(':wslug', $object->getWorkspace()->getSlug(), $replacement[0]);
+                        } else {
+                            $this->error('Resource '.$matches[$pos][0].' has no workspace');
+                        }
+                    }
+                } else {
+                    $this->error('Could not find object... skipping');
+                }
             }
         }
 
         $regex = $prefix.$regex;
 
-        $text = preg_replace('#'.$regex.'#', $prefix.$replacement[0], $text);
+        if ($regexError) {
+            $this->error('Could not find some objects for replacing ids by slugs');
+        } else {
+            $text = preg_replace('!'.$regex.'!', $replacement[0], $text);
+        }
+
+        return $text;
     }
 
     private function setLogger($logger)
@@ -136,5 +188,10 @@ class Update1205Command extends ContainerAwareCommand
     private function log($log)
     {
         $this->consoleLogger->info($log);
+    }
+
+    private function error($error)
+    {
+        $this->consoleLogger->error($error);
     }
 }

@@ -87,7 +87,7 @@ class ShareActionManager
             $resourceNode = $this->resourceNodeRepository->find($resourceId);
             $share->setResource($resourceNode);
             $return['title'] = $resourceNode->getName();
-            $return['url'] = $this->router->generate('claro_resource_open_short', array('node' => $resourceNode->getId()), true);
+            $return['url'] = $this->router->generate('claro_resource_open_short', ['node' => $resourceNode->getId()], true);
         }
         $network = $request->get('network');
         $share->setNetwork($network);
@@ -116,7 +116,7 @@ class ShareActionManager
 
         if (null !== $request) {
             $resourceId = $request->get('resourceId');
-            if (null == $resourceId) {
+            if (null === $resourceId) {
                 $resourceId = $request->get('resource');
             }
             if (null !== $resourceId) {
