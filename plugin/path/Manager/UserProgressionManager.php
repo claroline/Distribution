@@ -365,9 +365,17 @@ class UserProgressionManager
                 $finalScore = ($score * $total) / $scoreTotal;
                 $finished = count($evaluatedSteps) === $nbEvaluatedStepsDone;
                 $success = $finished && $successScore <= ($score * 100) / $scoreTotal;
-                $resourceUserEvaluation->setDate(new \DateTime());
-                $resourceUserEvaluation->setScore($finalScore);
-                $resourceUserEvaluation->setScoreMax($total);
+
+                if (AbstractResourceEvaluation::STATUS_PASSED !== $resourceUserEvaluation->getStatus()) {
+                    $resourceUserEvaluation->setDate(new \DateTime());
+                    $resourceUserEvaluation->setScore($finalScore);
+                    $resourceUserEvaluation->setScoreMax($total);
+
+                    if ($finished) {
+                        $status = $success ? AbstractResourceEvaluation::STATUS_PASSED : AbstractResourceEvaluation::STATUS_FAILED;
+                        $resourceUserEvaluation->setStatus($status);
+                    }
+                }
                 $this->om->persist($resourceUserEvaluation);
                 $this->om->flush();
             }
