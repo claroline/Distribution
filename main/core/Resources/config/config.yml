@@ -158,7 +158,7 @@ plugin:
         - name: user_management
           class: user
 
-        - name: desktop_and_home
+        - name: home
           class: home
 
         - name: tasks_scheduling

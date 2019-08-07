@@ -114,6 +114,7 @@ const EditorTab = props =>
           widgets={props.widgets}
           administration={props.administration}
           tabs={props.tabs}
+          roles={props.roles}
 
           update={props.updateTab}
           move={props.moveTab}
@@ -132,6 +133,7 @@ EditorTab.propTypes = {
   tabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
+  roles: T.array,
   currentTabTitle: T.string,
   currentTab: T.shape(TabTypes.propTypes),
   currentTabIndex: T.number.isRequired,

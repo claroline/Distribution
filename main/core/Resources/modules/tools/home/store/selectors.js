@@ -32,6 +32,11 @@ const tabs = createSelector(
   (store) => store.tabs || []
 )
 
+const roles = createSelector(
+  [store],
+  (store) => store.roles || []
+)
+
 const currentTab = createSelector(
   [tabs, currentTabId],
   (tabs, currentTabId) => tabs.find(tab => currentTabId === tab.id)
@@ -77,5 +82,6 @@ export const selectors = {
   editing,
   context,
   tabs,
+  roles,
   widgets
 }

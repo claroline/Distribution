@@ -26,6 +26,10 @@ const reducer = combineReducers({
     [makeInstanceAction(FORM_SUBMIT_SUCCESS, 'editor')]: (state, action) => action.updatedData
   }),
 
+  roles: makeReducer([], {
+    [makeInstanceAction(TOOL_LOAD, 'home')]: (state, action) => action.toolData.roles || []
+  }),
+
   editor: editorReducer
 })
 
