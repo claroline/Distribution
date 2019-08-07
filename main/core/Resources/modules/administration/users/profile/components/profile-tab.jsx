@@ -14,7 +14,6 @@ import {ProfileFacet} from '#/main/core/administration/users/profile/components/
 import {actions, selectors} from '#/main/core/administration/users/profile/store'
 
 const ProfileTabComponent = props => {
-  console.log(props.path)
   return (<div className="row user-profile">
     <div className="user-profile-aside col-md-3">
       <ProfileNav
