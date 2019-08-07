@@ -58,7 +58,7 @@ class StepDetailsModal extends Component {
             </thead>
             <tbody>
               {this.props.users.map((user) =>
-                <TableRow key={`table-row` + user.id}>
+                <TableRow key={`table-row-${user.id}`}>
                   <TableCell align={'left'}>
                     <input
                       type="checkbox"
