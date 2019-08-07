@@ -182,20 +182,23 @@ class WorkspaceController
     /**
      * Opens a tool.
      *
-     * @EXT\Route("/{slug}/tool/{toolName}", name="claro_workspace_open_tool")
-
+     * @EXT\Route("/{id}/tool/{toolName}", name="claro_workspace_open_tool")
+     * @EXT\ParamConverter(
+     *      "workspace",
+     *      class="ClarolineCoreBundle:Workspace\Workspace",
+     *      options={"id" = "id", "strictId" = true},
+     *      converter="strict_id"
+     * )
      *
      * @param Workspace $workspace
      * @param string    $toolName
      *
      * @return Response
      */
-    public function openToolAction($slug, $toolName)
+    public function openToolAction(Workspace $workspace, $toolName)
     {
-        /** @var Workspace $workspace */
-        $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['slug' => $slug]);
-
         $tool = $this->toolManager->getToolByName($toolName);
+
         if (!$tool) {
             throw new NotFoundHttpException('Tool not found');
         }

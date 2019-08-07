@@ -50,7 +50,7 @@ const RoleList = {
 
         if (rowData.workspace) {
           //TODO: WORKSPACE OPEN URL CHANGE
-          WorkspaceLink = <a href={url(['claro_workspace_open', {workspaceId: rowData.workspace.meta.slug}])}>{rowData.workspace.name}</a>
+          WorkspaceLink = <a href={url(['claro_workspace_open', {workspaceId: rowData.workspaceid}])}>{rowData.workspace.name}</a>
         } else {
           WorkspaceLink = '-'
         }

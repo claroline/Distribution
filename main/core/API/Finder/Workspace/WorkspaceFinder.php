@@ -68,14 +68,6 @@ class WorkspaceFinder extends AbstractFinder
             }
 
             switch ($filterName) {
-                case 'identifier':
-                  $qb->andWhere($qb->expr()->orX(
-                      $qb->expr()->eq('obj.id', ':identifier'),
-                      $qb->expr()->like('obj.uuid', ':identifier')
-                  ));
-                  $qb->setParameter($filterName, $filterValue);
-
-                  break;
                 case 'orphan':
                     if ($filterValue) {
                         $qb->andWhere('obj.personal = true');
