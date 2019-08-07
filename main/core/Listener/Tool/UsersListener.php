@@ -76,8 +76,6 @@ class UsersListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        $workspace = $event->getWorkspace();
-
         $event->setData([
           'facets' => $this->profileSerializer->serialize(),
           'restrictions' => [
