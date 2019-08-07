@@ -11,6 +11,7 @@ import {EvidenceList} from '#/plugin/open-badge/tools/badges/evidence/components
 import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/tools/badges/modals/evidence'
 import {selectors as evidenceSelectors} from '#/plugin/open-badge/tools/badges/modals/evidence/store/selectors'
 import {actions as formActions} from '#/main/app/content/form/store'
+import {selectors}  from '#/plugin/open-badge/tools/badges/store/selectors'
 
 import {
   selectors as formSelect
@@ -21,7 +22,7 @@ const AssertionPageComponent = (props) => {
   return (
     <FormData
       {...props}
-      name="badges.assertion"
+      name={selectors.STORE_NAME + '.badges.assertion'}
       meta={false}
       buttons={true}
       target={(assertion, isNew) => isNew ?
@@ -68,7 +69,7 @@ const AssertionPageComponent = (props) => {
           }]}
         >
           <ListData
-            name="badges.assertion.evidences"
+            name={selectors.STORE_NAME + '.badges.assertion.evidences'}
             fetch={{
               url: ['apiv2_assertion_evidences', {assertion: props.assertion.id}],
               autoload: props.assertion.id && !props.new
@@ -98,8 +99,8 @@ const AssertionPageComponent = (props) => {
 const AssertionPage = connect(
   (state) => ({
     currentContext: state.currentContext,
-    new: formSelect.isNew(formSelect.form(state, 'badges.assertion')),
-    assertion: formSelect.data(formSelect.form(state, 'badges.assertion'))
+    new: formSelect.isNew(formSelect.form(state, selectors.STORE_NAME + '.badges.assertion')),
+    assertion: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.badges.assertion'))
   }),
   dispatch => ({
     initForm(evidence = null) {

@@ -8,19 +8,24 @@ import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {LINK_BUTTON, CALLBACK_BUTTON} from '#/main/app/buttons'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {actions} from '#/plugin/open-badge/tools/badges/badge/store/actions'
-
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {selectors}  from '#/plugin/open-badge/tools/badges/store/selectors'
 import {constants as listConstants} from '#/main/app/content/list/constants'
+
 // todo : restore custom actions the same way resource actions are implemented
-const BadgesList = props =>
-  <ListData
+const BadgesList = props => {
+  return <ListData
     name={selectors.STORE_NAME +'.badges.list'}
     fetch={{
       url: props.currentContext === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}]: ['apiv2_badge-class_list'],
       autoload: true
     }}
     definition={BadgeList.definition}
-    primaryAction={BadgeList.open}
+    primaryAction={(row) => ({
+      label: trans('open'),
+      type: LINK_BUTTON,
+      target: props.path + `/badges/view/${row.id}`
+    })}
     delete={{
       url: ['apiv2_badge-class_delete_bulk'],
       displayed: () => props.currentContext !== 'desktop',
@@ -54,12 +59,13 @@ const BadgesList = props =>
     card={BadgeList.card}
     display={{current: listConstants.DISPLAY_LIST_SM}}
   />
+}
 
 const Badges = connect(
-  (state, ownProps) => ({
+  (state) => ({
     currentContext: state.currentContext,
     workspace: state.workspace,
-    path: ownProps.path
+    path: toolSelectors.path(state)
   }),
   dispatch => ({
     enable(badges) {

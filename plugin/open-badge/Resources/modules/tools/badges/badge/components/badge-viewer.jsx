@@ -5,7 +5,10 @@ import {trans} from '#/main/app/intl/translation'
 import {actions}    from '#/plugin/open-badge/tools/badges/store/actions'
 
 import {MODAL_USERS} from '#/main/core/modals/users'
-import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, MODAL_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+
+import {selectors}  from '#/plugin/open-badge/tools/badges/store/selectors'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSection} from '#/main/app/content/form/components/sections'
@@ -48,15 +51,18 @@ const BadgeViewerComponent = (props) => {
             }]
           }]}
         >
-        
           {props.badge.meta && props.badge.meta.enabled ?
             <ListData
-              name="badges.current.assertions"
+              name={selectors.STORE_NAME + '.badges.current.assertions'}
               fetch={{
                 url: ['apiv2_badge-class_assertion', {badge: props.badge.id}],
                 autoload: props.badge.id && !props.new
               }}
-              primaryAction={AssertionList.open}
+              primaryAction={(row) => ({
+                type: LINK_BUTTON,
+                target: props.path + `/badges/assertion/${row.id}`,
+                label: trans('', {}, 'actions')
+              })}
               delete={{
                 url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
               }}
@@ -74,11 +80,12 @@ const BadgeViewerComponent = (props) => {
 const BadgeViewer = connect(
   (state) => ({
     currentContext: state.currentContext,
-    badge: formSelect.data(formSelect.form(state, 'badges.current'))
+    path: toolSelectors.path(state),
+    badge: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.badges.current'))
   }),
   (dispatch) =>({
     save(badge, workspace, isNew) {
-      dispatch(actions.save('badges.current', badge, workspace, isNew))
+      dispatch(actions.save(selectors.STORE_NAME  + '.badges.current', badge, workspace, isNew))
     },
     addUsers(badgeId, selected) {
       dispatch(actions.addUsers(badgeId, selected))

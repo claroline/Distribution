@@ -25,16 +25,8 @@ const Tool = props =>
         icon: 'fa fa-book',
         title: trans('badges'),
         path: '/badges',
-        actions: () => {
-          const ActionsWithPath = <BadgeTabActions path={props.path}/>
-
-          return ActionsWithPath
-        },
-        content: () => {
-          const ComponentWithPath = <BadgeTabComponent path={props.path}/>
-
-          return ComponentWithPath
-        },
+        actions: BadgeTabActions,
+        content: BadgeTabComponent,
         displayed: props.currentContext.type !== 'profile'
       }, {
         icon: 'fa fa-cog',
@@ -43,11 +35,7 @@ const Tool = props =>
         onlyIcon: true,
         //only for admin
         displayed: props.currentContext.type === 'administration',
-        content: () => {
-          const ParametersWithPath = <ParametersForm path={props.path}/>
-
-          return ParametersWithPath
-        }
+        content: ParametersForm
       }, {
         icon: 'fa fa-book',
         title: trans('profile'),

@@ -1,14 +1,8 @@
 import {trans} from '#/main/app/intl/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {UserCard} from '#/main/core/user/components/card'
 
 const AssertionList = {
-  open: (row) => ({
-    type: LINK_BUTTON,
-    target: `/badges/assertion/${row.id}`,
-    label: trans('', {}, 'actions')
-  }),
   definition: [
     {
       name: 'user.username',

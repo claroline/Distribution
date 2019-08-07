@@ -103,7 +103,7 @@ class BadgeClassSerializer
                   'url' => $badge->getImage(),
               ])
             ) : null,
-            'issuer' => $this->organizationSerializer->serialize($badge->getIssuer()),
+            'issuer' => $badge->getIssuer() ? $this->organizationSerializer->serialize($badge->getIssuer()) : null,
             //only in non list mode I guess
             'tags' => $this->serializeTags($badge),
         ];
@@ -123,7 +123,7 @@ class BadgeClassSerializer
                 $data['image'] = $this->imageSerializer->serialize($image)['id'];
             }
 
-            $data['issuer'] = $this->profileSerializer->serialize($badge->getIssuer());
+            $data['issuer'] = $badge->getIssuer() ? $this->profileSerializer->serialize($badge->getIssuer()) : null;
         } else {
             $data['issuingMode'] = $badge->getIssuingMode();
             $data['meta'] = [

@@ -57,7 +57,7 @@ class AssertionSerializer
     {
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
             $data = [
-                  'uid' => $assertion->getUuid(),
+                'uid' => $assertion->getUuid(),
                 'id' => $this->router->generate('apiv2_open_badge__assertion', ['assertion' => $assertion->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL),
                 'type' => 'Assertion',
                 'verify' => $this->verificationObjectSerializer->serialize($assertion),

@@ -30,14 +30,20 @@ class VerificationObjectSerializer
     public function serialize(Assertion $assertion)
     {
         $issuer = $assertion->getBadge()->getIssuer();
-        $crypto = $issuer->getKeys()->toArray()[0];
+
+        if ($issuer) {
+            return [
+              'type' => 'SignedBadge',
+              'creator' => $this->router->generate(
+                  'apiv2_open_badge__cryptographic_key',
+                  ['key' => $crypto->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL
+              ),
+          ];
+        }
 
         return [
-            'type' => 'SignedBadge',
-            'creator' => $this->router->generate(
-                'apiv2_open_badge__cryptographic_key',
-                ['key' => $crypto->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL
-            ),
-        ];
+          'type' => 'SignedBadge',
+          'creator' => null,
+      ];
     }
 }
