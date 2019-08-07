@@ -18,6 +18,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Update1205Command extends ContainerAwareCommand
@@ -28,7 +29,9 @@ class Update1205Command extends ContainerAwareCommand
             ->setDescription('Update 12.5 routes')
             ->setDefinition([
                 new InputArgument('base_path', InputArgument::OPTIONAL, 'The value'),
-           ]);
+            ])
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'If not force, command goes dry run')
+            ->addOption('show-text', 's', InputOption::VALUE_NONE, 'Show the replaced texts');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -59,27 +62,27 @@ class Update1205Command extends ContainerAwareCommand
         $regexes = [
           //open can be id
           '\/workspaces\/([\d]+)\/open"' => [
-              '/#/desktop/workspaces/open/:wslug',
+              '#/desktop/workspaces/open/:wslug',
               ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
           ],
           //open can be id
           '\/workspaces\/([\d]+)\/open\/tool\('.$endOfUrl.'*)' => [
-              '/#/desktop/workspaces/open/:wslug',
+              '#/desktop/workspaces/open/:wslug',
               ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
           ],
           //open can be uuid or id
           '\/resource\/open\/([^\/]*)"' => [
-            '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
+            '#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
             ['Claroline\CoreBundle\Entity\Resource\ResourceNode'],
           ],
           //open can be uuid or id (resource type then id)
           '\/resource\/open\/([^\/]+)\/('.$endOfUrl.'*)' => [
-            '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
+            '#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
             [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
           ],
           //show is type then id or uuid
           '\/resources\/show\/([^\/]*)"' => [
-            '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
+            '#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
             [
               null,
               'Claroline\CoreBundle\Entity\Resource\ResourceNode',
@@ -87,7 +90,7 @@ class Update1205Command extends ContainerAwareCommand
           ],
           //show is type then id or uuid
           '\/resources\/show\/([^\/]*)\/('.$endOfUrl.'*)' => [
-            '/#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
+            '#/desktop/workspaces/open/:wslug/resource_manager/:nslug',
             [
               null,
               'Claroline\CoreBundle\Entity\Resource\ResourceNode',
@@ -120,21 +123,27 @@ class Update1205Command extends ContainerAwareCommand
                         $this->log('Updating '.$i.'/'.count($data));
                         $func = 'get'.ucfirst($property);
                         $text = $entity->$func();
-                        $text = $this->replace($regex, $replacement, $text, $prefix);
+                        $text = $this->replace($regex, $replacement, $text, $prefix, $input->getOption('show-text'));
                         $func = 'set'.ucfirst($property);
-                        //$entity->$func($text);
-                        //$em->persist($entity);
+
+                        if ($input->getOption('force')) {
+                            $entity->$func($text);
+                            $em->persist($entity);
+                        }
+
                         ++$i;
                     }
 
-                    $this->log('Flushing...');
-                    $em->flush();
+                    if ($input->getOption('force')) {
+                        $this->log('Flushing...');
+                        $em->flush();
+                    }
                 }
             }
         }
     }
 
-    public function replace($regex, $replacement, $text, $prefix)
+    public function replace($regex, $replacement, $text, $prefix, $show = false)
     {
         $om = $this->getContainer()->get('claroline.persistence.object_manager');
         $matches = [];
@@ -145,8 +154,8 @@ class Update1205Command extends ContainerAwareCommand
 
         //if (count($matches)) {
         foreach ($replacement[1] as $pos => $class) {
-            $this->log('Finding resource of class '.$class.' with identifier '.$matches[$pos][0]);
             if ($class) {
+                $this->log('Finding resource of class '.$class.' with identifier '.$matches[$pos][0]);
                 $object = $om->getRepository($class)->find($matches[$pos][0]);
 
                 if ($object) {
@@ -174,7 +183,14 @@ class Update1205Command extends ContainerAwareCommand
         if ($regexError) {
             $this->error('Could not find some objects for replacing ids by slugs');
         } else {
+            $this->log('Replacing '.$replacement[0].' using regex '.$regex);
+            if ($show) {
+                $this->log('Old text: '.$text);
+            }
             $text = preg_replace('!'.$regex.'!', $replacement[0], $text);
+            if ($show) {
+                $this->log('New text: '.$text);
+            }
         }
 
         return $text;
