@@ -121,12 +121,7 @@ class ResourceNodeFinder extends AbstractFinder
                         $qb->andWhere('obj.parent IS NULL');
                     } else {
                         $qb->join('obj.parent', 'par');
-
-                        $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->like('par.uuid', ':parent'),
-                            $qb->expr()->like('par.slug', ':parent')
-                        ));
-
+                        $qb->andWhere('par.uuid = :parent');
                         $qb->setParameter('parent', $filterValue);
                     }
                     break;
