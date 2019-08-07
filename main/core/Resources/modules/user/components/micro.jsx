@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {url} from '#/main/app/api'
 import {trans} from '#/main/app/intl/translation'
 
 import {UserAvatar} from '#/main/core/user/components/avatar'
@@ -23,8 +22,7 @@ const UserMicro = props => {
 
   if (props.link && props.publicUrl) {
     return (
-      //            target: '#/desktop/users/profile/'+ this.props.user.meta.publicUrl
-      <a className={classes('user-micro', props.className)} href={url(['claro_user_profile', {user: props.publicUrl}])}>
+      <a className={classes('user-micro', props.className)} href={'#/desktop/users/profile/'+ this.props.publicUrl}>
         <UserAvatar picture={props.picture} alt={false} />
 
         {displayName ?
