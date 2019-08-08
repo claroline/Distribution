@@ -20,6 +20,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Rule
 {
+    const RULE_RESOURCE_PASSED = 'resource_passed';
+    const RULE_RESOURCE_SCORE_ABOVE = 'resource_score_above';
+    const RULE_RESOURCE_COMPLETED_ABOVE = 'resource_completed_above';
+    const RULE_WORKSPACE_PASSED = 'workspace_passed';
+    const RULE_WORKSPACE_SCORE_ABOVE = 'workspace_score_above';
+    const RULE_WORKSPACE_COMPLETED_ABOVE = 'workspace_completed_above';
+    const RULE_RESOURCE_PARTICIPATED = 'resource_participated';
+    const RULE_IN_GROUP_OR_ROLE = 'user_in_group_or_role';
+    const RULE_PROFILE_COMPLETED = 'profile_completed';
+
     use UuidTrait;
 
     /**
@@ -37,4 +47,19 @@ class Rule
      * @ORM\Column(type="string", nullable=false)
      */
     protected $action;
+
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }
