@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\OpenBadgeBundle\Entity;
+namespace Claroline\OpenBadgeBundle\Entity\Rules;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -48,6 +48,15 @@ class Rule
      */
     protected $action;
 
+    /**
+     * @ORM\Column(type="json_array")
+     *
+     * @var array
+     */
+    private $data = [];
+
+    private $enabled = true;
+
     public function setAction($action)
     {
         $this->action = $action;
@@ -61,5 +70,15 @@ class Rule
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setData(array $data = [])
+    {
+        $this->data = $data;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 }
