@@ -41,6 +41,9 @@ class HomeListener
     /** @var SerializerProvider */
     private $serializer;
 
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /**
      * HomeListener constructor.
      *

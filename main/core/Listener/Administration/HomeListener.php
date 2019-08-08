@@ -41,27 +41,28 @@ class HomeListener
     {
         $tabs = $this->finder->search(
           HomeTab::class,
-          ['filters' => ['type' => HomeTab::TYPE_ADMIN_DESKTOP]]
+          ['filters' => ['type' => HomeTab::TYPE_ADMIN]]
         );
 
         $tabs = array_filter($tabs['data'], function ($data) {
             return $data !== [];
         });
+        $orderedTabs = [];
 
         foreach ($tabs as $tab) {
             $orderedTabs[$tab['position']] = $tab;
         }
         ksort($orderedTabs);
 
-        $roles = $this->finder->search('Claroline\CoreBundle\Entity\Role',
-          ['filters' => ['type' => Role::PLATFORM_ROLE]]
-        );
+//        $roles = $this->finder->search('Claroline\CoreBundle\Entity\Role',
+//          ['filters' => ['type' => Role::PLATFORM_ROLE]]
+//        );
 
         $event->setData([
             'editable' => true,
             'administration' => true,
             'tabs' => array_values($orderedTabs),
-            'roles' => $roles['data'],
+//            'roles' => $roles['data'],
         ]);
         $event->stopPropagation();
     }
