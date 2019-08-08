@@ -119,6 +119,7 @@ class HomeTabSerializer
         $data = [
             'id' => $homeTab->getUuid(),
             'title' => $homeTabConfig->getName(),
+            'slug' => $homeTabConfig->getName() ? strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $homeTabConfig->getName()))) : 'new',
             'longTitle' => $homeTabConfig->getLongTitle(),
             'centerTitle' => $homeTabConfig->isCenterTitle(),
             'poster' => $poster,
