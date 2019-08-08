@@ -60,12 +60,12 @@ class RegistrationController extends Controller
      *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters")
      * })
      *
-     * @param TokenStorageInterface        $tokenStorage
-     * @param SessionInterface             $session
-     * @param TranslatorInterface          $translator
-     * @param ProfileSerializer            $profileSerializer
-     * @param UserManager                  $userManager
-     * @param ParametersSerializer         $parametersSerializer
+     * @param TokenStorageInterface $tokenStorage
+     * @param SessionInterface      $session
+     * @param TranslatorInterface   $translator
+     * @param ProfileSerializer     $profileSerializer
+     * @param UserManager           $userManager
+     * @param ParametersSerializer  $parametersSerializer
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
