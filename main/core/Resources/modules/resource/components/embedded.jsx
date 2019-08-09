@@ -12,6 +12,12 @@ import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types
 
 // the class is because of the use of references and lifecycle
 class ResourceEmbedded extends Component {
+  constructor(props) {
+    super(props)
+
+    this.mountResource = this.mountResource.bind(this)
+  }
+
   componentDidMount() {
     this.mountResource()
   }
@@ -23,7 +29,7 @@ class ResourceEmbedded extends Component {
       unmount(this.mountNode)
       this.props.onResourceClose(prevProps.resourceNode.id)
 
-      this.mountResource()
+      setTimeout(this.mountResource, 0)
     }
   }
 
@@ -49,12 +55,12 @@ class ResourceEmbedded extends Component {
         }
       },
       resource: {
-        id: this.props.resourceNode.id,
+        slug: this.props.resourceNode.meta.slug,
         embedded: true,
         showHeader: this.props.showHeader,
         lifecycle: this.props.lifecycle
       }
-    }, true, `/resource_manager/${this.props.resourceNode.id}`)
+    }, true, `/resource_manager/${this.props.resourceNode.meta.slug}`)
   }
 
   render() {
