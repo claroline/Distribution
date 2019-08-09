@@ -31,7 +31,7 @@ class HomeListener
     }
 
     /**
-     * Displays analytics administration tool.
+     * Displays home administration tool.
      *
      * @DI\Observe("administration_tool_home")
      *
@@ -39,12 +39,12 @@ class HomeListener
      */
     public function onDisplayTool(OpenAdministrationToolEvent $event)
     {
-        $tabs = $this->finder->search(
+        $homeTabs = $this->finder->search(
           HomeTab::class,
           ['filters' => ['type' => HomeTab::TYPE_ADMIN]]
         );
 
-        $tabs = array_filter($tabs['data'], function ($data) {
+        $tabs = array_filter($homeTabs['data'], function ($data) {
             return $data !== [];
         });
         $orderedTabs = [];
@@ -54,15 +54,10 @@ class HomeListener
         }
         ksort($orderedTabs);
 
-//        $roles = $this->finder->search('Claroline\CoreBundle\Entity\Role',
-//          ['filters' => ['type' => Role::PLATFORM_ROLE]]
-//        );
-
         $event->setData([
             'editable' => true,
             'administration' => true,
             'tabs' => array_values($orderedTabs),
-//            'roles' => $roles['data'],
         ]);
         $event->stopPropagation();
     }

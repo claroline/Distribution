@@ -48,16 +48,6 @@ const EditorTab = props =>
 
       <PageActions>
         <PageGroupActions>
-          <PageAction
-            type={LINK_BUTTON}
-            label={trans('configure', {}, 'actions')}
-            icon="fa fa-fw fa-cog"
-            target={`${props.path}/edit`}
-            primary={true}
-          />
-        </PageGroupActions>
-
-        <PageGroupActions>
           <MoreAction
             actions={[
               {

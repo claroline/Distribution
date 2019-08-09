@@ -85,6 +85,7 @@ class HomeListener
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
         $currentUser = $this->tokenStorage->getToken()->getUser();
+        $isAdmin = $this->authorization->isGranted('ROLE_ADMIN');
 
         $allTabs = $this->finder->search(HomeTab::class, [
             'filters' => ['user' => $currentUser->getUuid()],
@@ -121,9 +122,15 @@ class HomeListener
             $tab['position'] = $index;
         }
 
+        $roles = $isAdmin ?
+            $this->finder->search('Claroline\CoreBundle\Entity\Role', ['filters' => ['type' => Role::PLATFORM_ROLE]]) :
+            [];
+
         $event->setData([
             'editable' => true,
             'tabs' => $orderedTabs,
+            'roles' => $isAdmin ? $roles['data'] : [],
+            'desktopAdmin' => $isAdmin,
         ]);
         $event->stopPropagation();
     }

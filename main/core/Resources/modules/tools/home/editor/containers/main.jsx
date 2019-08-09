@@ -28,7 +28,6 @@ const EditorMain = withRouter(
       setCurrentTab(tab){
         dispatch(actions.setCurrentTab(tab))
       },
-
       updateTab(currentTabIndex, field, value) {
         dispatch(formActions.updateProp(editorSelectors.FORM_NAME, `[${currentTabIndex}].${field}`, value))
       },
