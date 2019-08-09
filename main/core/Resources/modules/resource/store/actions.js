@@ -30,12 +30,12 @@ actions.unlockResource = makeActionCreator(RESOURCE_RESTRICTIONS_UNLOCKED)
 actions.loadNode = makeActionCreator(RESOURCE_LOAD_NODE, 'resourceNode')
 actions.loadResource = makeActionCreator(RESOURCE_LOAD, 'resourceData')
 actions.loadResourceType = makeInstanceActionCreator(RESOURCE_LOAD, 'resourceData')
-actions.openResource = (resourceId) => (dispatch, getState) => {
-  const id = selectors.id(getState())
-  if (id !== resourceId) {
+actions.openResource = (resourceSlug) => (dispatch, getState) => {
+  const currentSlug = selectors.slug(getState())
+  if (currentSlug !== resourceSlug) {
     dispatch({
       type: RESOURCE_OPEN,
-      resourceId: resourceId
+      resourceSlug: resourceSlug
     })
   }
 }
@@ -58,6 +58,7 @@ actions.fetchNode = (slug) => (dispatch, getState) => {
 
 actions.fetchResource = (resourceNode, embedded = false) => ({
   [API_REQUEST]: {
+    silent: true,
     url: ['claro_resource_load_embedded', {type: resourceNode.meta.type, id: resourceNode.id, embedded: embedded ? 1 : 0}],
     success: (response, dispatch) => {
       dispatch(actions.loadResource(response))
