@@ -237,6 +237,16 @@ plugin:
           context: [desktop, workspace, administration]
           tags: [community]
 
+        - name: admin_tools
+          type: list
+          context: [administration]
+          tags: [tools]
+
+        - name: tools
+          type: list
+          context: [desktop, workspace]
+          tags: [tools]
+
     tools:
         - name: workspaces
           class: book
