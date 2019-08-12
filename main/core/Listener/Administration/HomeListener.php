@@ -3,7 +3,6 @@
 namespace Claroline\CoreBundle\Listener\Administration;
 
 use Claroline\AppBundle\API\FinderProvider;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;

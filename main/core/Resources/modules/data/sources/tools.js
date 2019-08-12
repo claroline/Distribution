@@ -1,7 +1,7 @@
 import {trans} from '#/main/app/intl/translation'
-import {URL_BUTTON} from '#/main/app/buttons'
+// import {URL_BUTTON} from '#/main/app/buttons'
 
-// import {route} from '#/main/core/administration/routing'
+// import {route} from '#/main/core/tool/routing'
 import {ToolCard} from '#/main/core/tool/components/card'
 
 export default {
