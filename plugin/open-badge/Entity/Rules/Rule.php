@@ -27,7 +27,8 @@ class Rule
     const RULE_WORKSPACE_SCORE_ABOVE = 'workspace_score_above';
     const RULE_WORKSPACE_COMPLETED_ABOVE = 'workspace_completed_above';
     const RULE_RESOURCE_PARTICIPATED = 'resource_participated';
-    const RULE_IN_GROUP_OR_ROLE = 'user_in_group_or_role';
+    const IN_GROUP = 'in_group';
+    const IN_ROLE = 'in_role';
     const RULE_PROFILE_COMPLETED = 'profile_completed';
 
     use UuidTrait;
@@ -47,6 +48,13 @@ class Rule
      * @ORM\Column(type="string", nullable=false)
      */
     protected $action;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\BadgeClass", inversedBy="rules")
+     *
+     * @var BadgeClass
+     */
+    private $badge;
 
     /**
      * @ORM\Column(type="json_array")
@@ -80,5 +88,15 @@ class Rule
     public function getData()
     {
         return $this->data;
+    }
+
+    public function setBadge($badge)
+    {
+        $this->badge = $badge;
+    }
+
+    public function getBadge()
+    {
+        return $this->badge;
     }
 }

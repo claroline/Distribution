@@ -5,7 +5,8 @@ const RULE_WORKSPACE_PASSED = 'workspace_passed'
 const RULE_WORKSPACE_SCORE_ABOVE = 'workspace_score_above'
 const RULE_WORKSPACE_COMPLETED_ABOVE = 'workspace_completed_above'
 const RULE_RESOURCE_PARTICIPATED = 'resource_participated'
-const RULE_IN_GROUP_OR_ROLE = 'user_in_group_or_role'
+const IN_GROUP = 'in_group'
+const IN_ROLE = 'in_role'
 const RULE_PROFILE_COMPLETED = 'profile_completed'
 
 export {
@@ -16,6 +17,7 @@ export {
   RULE_WORKSPACE_SCORE_ABOVE,
   RULE_WORKSPACE_COMPLETED_ABOVE,
   RULE_RESOURCE_PARTICIPATED,
-  RULE_IN_GROUP_OR_ROLE,
+  IN_GROUP,
+  IN_ROLE,
   RULE_PROFILE_COMPLETED
 }

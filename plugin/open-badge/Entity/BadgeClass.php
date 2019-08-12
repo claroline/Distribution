@@ -71,6 +71,11 @@ class BadgeClass
     private $criteria;
 
     /**
+     * @ORM\OneToMany(targetEntity="Claroline\OpenBadgeBundle\Entity\Rules\Rule", mappedBy="badge")
+     */
+    private $rules;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Organization\Organization")
      *
      * @var Organization

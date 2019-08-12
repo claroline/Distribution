@@ -3,13 +3,13 @@
 namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
  */
-class RevocationListSerializer
+class RuleSerializer
 {
     use SerializerTrait;
 
@@ -17,10 +17,9 @@ class RevocationListSerializer
     {
     }
 
-    public function serialize(Rule $rule, array $options = []))
+    public function serialize(Rule $rule, array $options = [])
     {
         return [
-
         ];
     }
 
@@ -36,7 +35,6 @@ class RevocationListSerializer
     public function deserialize($data, Rule $rule = null, array $options = [])
     {
         return [
-
         ];
     }
 }

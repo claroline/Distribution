@@ -13,19 +13,6 @@ import {
   ISSUING_MODE_AUTO
 } from '#/plugin/open-badge/tools/badges/badge/constants'
 
-
-import {
-  RULE_RESOURCE_PASSED,
-  RULE_RESOURCE_SCORE_ABOVE,
-  RULE_RESOURCE_COMPLETED_ABOVE,
-  RULE_WORKSPACE_PASSED,
-  RULE_WORKSPACE_SCORE_ABOVE,
-  RULE_WORKSPACE_COMPLETED_ABOVE,
-  RULE_RESOURCE_PARTICIPATED,
-  RULE_IN_GROUP_OR_ROLE,
-  RULE_PROFILE_COMPLETED
-} from '#/plugin/open-badge/tools/badges/rule/constants'
-
 import {
   actions as formActions,
   selectors as formSelect
@@ -149,22 +136,12 @@ const BadgeFormComponent = (props) => {
             }, {
               name: 'rules',
               label: trans('rules'),
-              type: 'choice',
+              type: 'collection',
               displayed: badge =>  badge.issuingMode && badge.issuingMode.indexOf(ISSUING_MODE_AUTO) > -1,
               options: {
-                choices: {
-                  [RULE_RESOURCE_PASSED]: trans(RULE_RESOURCE_PASSED),
-                  [RULE_RESOURCE_SCORE_ABOVE]: trans(RULE_RESOURCE_SCORE_ABOVE),
-                  [RULE_RESOURCE_COMPLETED_ABOVE]: trans(RULE_RESOURCE_COMPLETED_ABOVE),
-                  [RULE_WORKSPACE_PASSED]: trans(RULE_WORKSPACE_PASSED),
-                  [RULE_WORKSPACE_SCORE_ABOVE]: trans(RULE_WORKSPACE_SCORE_ABOVE),
-                  [RULE_WORKSPACE_COMPLETED_ABOVE]: trans(RULE_WORKSPACE_COMPLETED_ABOVE),
-                  [RULE_RESOURCE_PARTICIPATED]: trans(RULE_RESOURCE_PARTICIPATED),
-                  [RULE_IN_GROUP_OR_ROLE]: trans(RULE_IN_GROUP_OR_ROLE),
-                  [RULE_PROFILE_COMPLETED]: trans(RULE_PROFILE_COMPLETED)
-                },
-                
-                multiple: true
+                type: 'rule',
+                placeholder: trans('no_rule'),
+                button: trans('add_rule')
               }
             }
           ]
