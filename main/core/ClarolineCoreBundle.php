@@ -81,7 +81,6 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
             'JMS\SecurityExtraBundle\JMSSecurityExtraBundle' => 'jms_security_extra',
             'Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle' => 'stof_doctrine_extensions',
             'Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle' => 'sensio_framework_extra',
-            'FOS\RestBundle\FOSRestBundle' => 'fos_rest',
             'Gregwar\CaptchaBundle\GregwarCaptchaBundle' => 'gregwar_captcha',
             'Knp\Bundle\MenuBundle\KnpMenuBundle' => 'knp_menu',
         ];

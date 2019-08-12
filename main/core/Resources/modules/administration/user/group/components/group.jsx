@@ -6,6 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 
 import {actions as modalActions} from '#/main/app/overlay/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+import {MODAL_TEXT_SEARCH} from '#/main/core/modals/text'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
@@ -61,6 +62,12 @@ const GroupForm = props =>
             icon: 'fa fa-fw fa-plus',
             label: trans('add_users'),
             callback: () => props.pickUsers(props.group.id)
+          },
+          {
+            type: CALLBACK_BUTTON,
+            icon: 'fa fa-fw fa-plus',
+            label: trans('bulk_add_users'),
+            callback: () => props.bulkPickUsers(props.group.id)
           }
         ]}
       >
@@ -145,6 +152,7 @@ GroupForm.propTypes = {
     id: T.string
   }).isRequired,
   pickUsers: T.func.isRequired,
+  bulkPickUsers: T.func.isRequired,
   pickRoles: T.func.isRequired,
   pickOrganizations: T.func.isRequired
 }
@@ -166,6 +174,20 @@ const Group = connect(
         fetch: {
           url: ['apiv2_user_list'],
           autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addUsers(groupId, selected))
+      }))
+    },
+    bulkPickUsers(groupId) {
+      dispatch(modalActions.showModal(MODAL_TEXT_SEARCH, {
+        icon: 'fa fa-fw fa-user',
+        title: trans('add_users'),
+        name: baseSelectors.STORE_NAME+'.users.bulk',
+        definition: UserList.definition,
+        card: UserList.card,
+        fetch: {
+          url: ['apiv2_user_list_registerable'],
+          autoload: false
         },
         handleSelect: (selected) => dispatch(actions.addUsers(groupId, selected))
       }))
