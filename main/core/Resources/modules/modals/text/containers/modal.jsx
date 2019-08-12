@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 
 import {withReducer} from '#/main/app/store/components/withReducer'
-import {reducer, selectors} from '#/main/core/modals/groups/store'
+import {reducer, selectors} from '#/main/core/modals/text/store'
 import {API_REQUEST} from '#/main/app/api'
 import {url} from '#/main/app/api'
 
@@ -14,7 +14,7 @@ import {TextModal as TextModalComponent} from '#/main/core/modals/text/component
 const TextModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
-      data: listSelect.data(state, selectors.STORE_NAME)
+      data: listSelect.data(state[selectors.STORE_NAME])
     }),
     (dispatch) => ({
       search(target, data) {
@@ -33,9 +33,6 @@ const TextModal = withReducer(selectors.STORE_NAME, reducer)(
             body: data
           }
         })
-      },
-      resetText() {
-        dispatch(listAction.reset(selectors.STORE_NAME))
       }
     })
   )(TextModalComponent)
