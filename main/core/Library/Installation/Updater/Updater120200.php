@@ -138,8 +138,8 @@ class Updater120200 extends Updater
                     $template->setType($templateType);
                     $template->setName($type);
                     $template->setLang('en');
-                    $template->setTitle($content->getTitle());
-                    $template->setContent($content->getContent());
+                    $template->setTitle($content->getTitle() ?? '');
+                    $template->setContent($content->getContent() ?? '');
                     $this->om->persist($template);
 
                     $templateType->setDefaultTemplate($type);
@@ -163,10 +163,10 @@ class Updater120200 extends Updater
                         $translatedTemplate->setType($templateType);
                         $translatedTemplate->setName($type);
                         $translatedTemplate->setLang($locale);
-                        $translatedTemplate->setContent($translatedContent->getContent());
+                        $translatedTemplate->setContent($translatedContent->getContent() ?? '');
 
                         if ($translatedTitle) {
-                            $translatedTemplate->setTitle($translatedTitle->getContent());
+                            $translatedTemplate->setTitle($translatedTitle->getContent() ?? '');
                         }
                         $this->om->persist($translatedTemplate);
                     }
