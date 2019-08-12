@@ -149,7 +149,8 @@ registry.add('ClarolineCoreBundle', {
       'my_workspaces'     : () => { return import(/* webpackChunkName: "core-data-source-workspaces" */  '#/main/core/data/sources/workspaces') },
       'managed_workspaces': () => { return import(/* webpackChunkName: "core-data-source-workspaces" */  '#/main/core/data/sources/workspaces') },
       'workspace_models'  : () => { return import(/* webpackChunkName: "core-data-source-workspaces" */  '#/main/core/data/sources/workspaces') },
-      'admin_tools'       : () => { return import(/* webpackChunkName: "core-data-source-admin-tools" */ '#/main/core/data/sources/admin-tools') }
+      'admin_tools'       : () => { return import(/* webpackChunkName: "core-data-source-admin-tools" */ '#/main/core/data/sources/admin-tools') },
+      'tools'             : () => { return import(/* webpackChunkName: "core-data-source-tools" */       '#/main/core/data/sources/tools') }
     }
   },
 

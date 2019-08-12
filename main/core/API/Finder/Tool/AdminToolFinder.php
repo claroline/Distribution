@@ -30,7 +30,7 @@ class AdminToolFinder extends AbstractFinder
      * AdminToolFinder constructor.
      *
      * @DI\InjectParams({
-     *     "pluginManager"  = @DI\Inject("claroline.manager.plugin_manager")
+     *     "pluginManager" = @DI\Inject("claroline.manager.plugin_manager")
      * })
      *
      * @param PluginManager $pluginManager
@@ -39,6 +39,7 @@ class AdminToolFinder extends AbstractFinder
     {
         $this->pluginManager = $pluginManager;
     }
+
     public function getClass()
     {
         return AdminTool::class;
