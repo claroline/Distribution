@@ -1064,6 +1064,7 @@
         "manager_rights_access": "Vos droits de gestionnaires vous permettents d'accéder à toutes les fonctions de l'espace d'activités.",
         "not_started": "L'espace d'activités n'est pas encore accessible.",
         "rights_access": "Vos droits vous permettent d'accéder à une ou plusieurs fonctions de l'espace d'activités.",
+        "self_register": "S'inscire à l'espace d'activités",
         "unlocked": "Vous avez déverrouillé l'espace d'activités.",
         "use_authorized_ip": "Veuillez utiliser l'un des postes de travail authorisés afin d'accéder à l'espace d'activités.",
         "wait": "Veuillez patientez jusqu'au",

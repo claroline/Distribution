@@ -176,7 +176,10 @@ class WorkspaceController
             ]);
         }
 
-        return new JsonResponse($accessErrors, 403);
+        return new JsonResponse([
+            'workspace' => $this->serializer->serialize($workspace),
+            'accessErrors' => $accessErrors,
+        ]);
     }
 
     /**

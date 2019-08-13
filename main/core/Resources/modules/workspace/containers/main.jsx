@@ -34,6 +34,9 @@ const WorkspaceMain = withRouter(
         },
         checkAccessCode(workspace, code) {
           dispatch(actions.checkAccessCode(workspace, code))
+        },
+        selfRegister(workspace) {
+          dispatch(actions.selfRegister(workspace))
         }
       })
     )(WorkspaceMainComponent)

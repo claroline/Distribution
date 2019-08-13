@@ -80,3 +80,13 @@ actions.checkAccessCode = (workspace, code) => ({
     }
   }
 })
+
+actions.selfRegister = (workspace) => ({
+  [API_REQUEST] : {
+    url: ['apiv2_workspace_self_register', {workspace: workspace.uuid}],
+    request: {
+      method: 'PUT'
+    }
+  }
+})
+

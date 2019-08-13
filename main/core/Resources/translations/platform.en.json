@@ -1040,6 +1040,7 @@
         "manager_rights_access": "Your rights as manager allow you to access to all the features of the workspace.",
         "not_started": "The workspace is not available yet.",
         "rights_access": "Your rights allow you to access some fetaures of the workspace.",
+        "self_register": "Register to workspace",
         "unlocked": "You have unlocked the workspace.",
         "use_authorized_ip": "Please use of the authorized work stations to access workspace.",
         "wait": "Please wait until",

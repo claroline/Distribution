@@ -9,6 +9,7 @@ import {Button} from '#/main/app/action'
 import {PasswordInput} from '#/main/app/data/types/password/components/input'
 import {ContentHelp} from '#/main/app/content/components/help'
 
+import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 const Restriction = props => {
@@ -167,6 +168,17 @@ class WorkspaceRestrictions extends Component {
           />
         }
 
+        {this.props.errors.noRights && /*this.props.workspace && this.props.workspace.registration.selfRegistration &&*/
+          <Button
+            className="btn btn-block btn-emphasis"
+            type={CALLBACK_BUTTON}
+            icon="fa fa-fw fa-user-plus"
+            label={trans('restricted_workspace.self_register')}
+            callback={this.props.selfRegister}
+            primary={true}
+          />
+        }
+
         {this.props.managed &&
           <Button
             className="btn btn-block btn-emphasis"
@@ -199,8 +211,12 @@ WorkspaceRestrictions.propTypes = {
     ended: T.bool,
     endDate: T.string
   }).isRequired,
+  workspace: T.shape(
+    WorkspaceType.propTypes
+  ),
   dismiss: T.func.isRequired,
-  checkAccessCode: T.func
+  checkAccessCode: T.func,
+  selfRegister: T.func
 }
 
 export {

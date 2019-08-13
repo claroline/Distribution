@@ -25,10 +25,10 @@ const reducer = combineReducers({
     [WORKSPACE_LOAD]: (state, action) => action.workspaceData.workspace
   }),
   tools: makeReducer([], {
-    [WORKSPACE_LOAD]: (state, action) => action.workspaceData.tools
+    [WORKSPACE_LOAD]: (state, action) => action.workspaceData.tools || state
   }),
   userProgression: makeReducer(null, {
-    [WORKSPACE_LOAD]: (state, action) => action.workspaceData.userProgression
+    [WORKSPACE_LOAD]: (state, action) => action.workspaceData.userProgression || state
   }),
   accessErrors: combineReducers({
     dismissed: makeReducer(false, {
