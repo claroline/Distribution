@@ -17,6 +17,7 @@ class InRoleInput extends Component {
     return (
       <RoleInput
         onChange={(value) => this.props.onChange(value)}
+        value={this.props.value}
       />
     )
   }

@@ -17,6 +17,7 @@ class WorkspacePassedInput extends Component {
     return (
       <WorkspaceInput
         onChange={(value) => this.props.onChange(value)}
+        value={this.props.value}
       />
     )
   }

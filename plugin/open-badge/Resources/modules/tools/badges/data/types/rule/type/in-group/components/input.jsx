@@ -17,6 +17,7 @@ class InGroupInput extends Component {
     return (
       <GroupInput
         onChange={(value) => this.props.onChange(value)}
+        value={this.props.value}
       />
     )
   }

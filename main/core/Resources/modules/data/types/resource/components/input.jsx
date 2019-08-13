@@ -17,6 +17,7 @@ import {MODAL_RESOURCES} from '#/main/core/modals/resources'
 // TODO : manage disabled state
 
 const ResourceInput = props => {
+  console.log(props)
   if (!isEmpty(props.value) && !props.embedded) {
     return(
       <ResourceCard

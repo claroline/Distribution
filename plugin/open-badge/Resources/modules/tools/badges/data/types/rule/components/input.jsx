@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import classes from 'classnames'
 
+import merge from 'lodash/merge'
+
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
@@ -77,23 +79,50 @@ class RuleInput extends Component {
           {(() => {
             switch(this.state.type) {
               case RULE_RESOURCE_PASSED:
-                return <ResourcePassedInput/>
+                return <ResourcePassedInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
+                />
               case RULE_RESOURCE_SCORE_ABOVE:
-                return <ResourceScoreAboveInput/>
+                return <ResourceScoreAboveInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
+                />
               case RULE_RESOURCE_COMPLETED_ABOVE:
-                return <ResourceCompletedAboveInput/>
+                return <ResourceCompletedAboveInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
+                />
               case RULE_WORKSPACE_PASSED:
-                return <WorkspacePassedInput/>
+                return <WorkspacePassedInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
+                />
               case RULE_WORKSPACE_SCORE_ABOVE:
-                return <WorkspaceScoreAboveInput/>
+                return <WorkspaceScoreAboveInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
+                />
               case RULE_WORKSPACE_COMPLETED_ABOVE:
-                return <WorkspaceCompletedAboveInput/>
+                return <WorkspaceCompletedAboveInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
+                />
               case RULE_RESOURCE_PARTICIPATED:
-                return <ResourceParticipatedInput/>
+                return <ResourceParticipatedInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
+                />
               case IN_GROUP:
-                return <InGroupInput/>
+                return <InGroupInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
+                />
               case IN_ROLE:
-                return <InRoleInput/>
+                return <InRoleInput
+                  value={this.props.value.data}
+                  onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
+                />
               case RULE_PROFILE_COMPLETED:
                 return <div> RULE_PROFILE_COMPLETED </div>
             }
