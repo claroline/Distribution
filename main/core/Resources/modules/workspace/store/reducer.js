@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep'
+
 import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 
 import {
@@ -5,7 +7,8 @@ import {
   WORKSPACE_SET_LOADED,
   WORKSPACE_SERVER_ERRORS,
   WORKSPACE_RESTRICTIONS_ERROR,
-  WORKSPACE_RESTRICTIONS_DISMISS
+  WORKSPACE_RESTRICTIONS_DISMISS,
+  WORKSPACE_RESTRICTIONS_UNLOCKED
 } from '#/main/core/workspace/store/actions'
 
 const reducer = combineReducers({
@@ -42,12 +45,12 @@ const reducer = combineReducers({
     }),
     details: makeReducer({}, {
       [WORKSPACE_LOAD]: (state, action) => action.workspaceData.accessErrors || {},
-      [WORKSPACE_RESTRICTIONS_ERROR]: (state, action) => action.errors//,
-      /*[RESOURCE_RESTRICTIONS_UNLOCKED]: (state) => {
-       const newState = cloneDeep(state)
-       newState.locked = false
-       return newState
-       }*/
+      [WORKSPACE_RESTRICTIONS_ERROR]: (state, action) => action.errors,
+      [WORKSPACE_RESTRICTIONS_UNLOCKED]: (state) => {
+         const newState = cloneDeep(state)
+         newState.locked = false
+         return newState
+       }
     })
   }),
 

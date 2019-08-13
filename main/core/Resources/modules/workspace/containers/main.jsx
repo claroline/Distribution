@@ -31,6 +31,9 @@ const WorkspaceMain = withRouter(
         },
         dismissRestrictions() {
           dispatch(actions.dismissRestrictions())
+        },
+        checkAccessCode(workspace, code) {
+          dispatch(actions.checkAccessCode(workspace, code))
         }
       })
     )(WorkspaceMainComponent)
