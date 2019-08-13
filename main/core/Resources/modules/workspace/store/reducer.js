@@ -47,10 +47,10 @@ const reducer = combineReducers({
       [WORKSPACE_LOAD]: (state, action) => action.workspaceData.accessErrors || {},
       [WORKSPACE_RESTRICTIONS_ERROR]: (state, action) => action.errors,
       [WORKSPACE_RESTRICTIONS_UNLOCKED]: (state) => {
-         const newState = cloneDeep(state)
-         newState.locked = false
-         return newState
-       }
+        const newState = cloneDeep(state)
+        newState.locked = false
+        return newState
+      }
     })
   }),
 
