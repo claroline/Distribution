@@ -6,6 +6,16 @@ import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 
 import {Select} from '#/main/app/input/components/select'
 
+import {InGroupInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/in-group/components/input'
+import {InRoleInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/in-role/components/input'
+import {ResourceCompletedAboveInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/resource-completed-above/components/input'
+import {ResourceParticipatedInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/resource-participated/components/input'
+import {ResourcePassedInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/resource-passed/components/input'
+import {ResourceScoreAboveInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/resource-score-above/components/input'
+import {WorkspaceCompletedAboveInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/workspace-completed-above/components/input'
+import {WorkspacePassedInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/workspace-passed/components/input'
+import {WorkspaceScoreAboveInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/workspace-score-above/components/input'
+
 import {
   RULE_RESOURCE_PASSED,
   RULE_RESOURCE_SCORE_ABOVE,
@@ -53,19 +63,41 @@ class RuleInput extends Component {
               }
             }
             onChange={(value) => {
-              console.log('onChange')
               this.props.onChange({
                 type: value
               })
               this.setState({
-                name: value
+                type: value
               })
             }}
             value={this.props.value.type}
           />
         </div>
         <div>
-          currentValue: {this.state.value}
+          {(() => {
+            switch(this.state.type) {
+              case RULE_RESOURCE_PASSED:
+                return <ResourcePassedInput/>
+              case RULE_RESOURCE_SCORE_ABOVE:
+                return <ResourceScoreAboveInput/>
+              case RULE_RESOURCE_COMPLETED_ABOVE:
+                return <ResourceCompletedAboveInput/>
+              case RULE_WORKSPACE_PASSED:
+                return <WorkspacePassedInput/>
+              case RULE_WORKSPACE_SCORE_ABOVE:
+                return <WorkspaceScoreAboveInput/>
+              case RULE_WORKSPACE_COMPLETED_ABOVE:
+                return <WorkspaceCompletedAboveInput/>
+              case RULE_RESOURCE_PARTICIPATED:
+                return <ResourceParticipatedInput/>
+              case IN_GROUP:
+                return <InGroupInput/>
+              case IN_ROLE:
+                return <InRoleInput/>
+              case RULE_PROFILE_COMPLETED:
+                return <div> RULE_PROFILE_COMPLETED </div>
+            }
+          }).bind(this)()}
         </div>
       </div>
     )
