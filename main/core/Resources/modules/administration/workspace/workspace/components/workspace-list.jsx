@@ -76,6 +76,12 @@ const WorkspaceList = {
       label: trans('workspace_max_users'),
       type: 'number',
       alias: 'maxUsers'
+    }, {
+      name: 'archived',
+      label: trans('archived'),
+      type: 'boolean',
+      filterable: true,
+      displayable: false
     }
   ],
   card: WorkspaceCard

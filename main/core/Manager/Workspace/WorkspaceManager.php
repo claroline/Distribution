@@ -982,6 +982,27 @@ class WorkspaceManager
         return $workspaceRoles;
     }
 
+    public function archive(Workspace $workspace, array $options = [])
+    {
+        //rename with [archive] and ids
+        $workspace->setName('[archive]'.$workspace->getName());
+        $workspace->setCode('[archive]'.$workspace->getCode().uniqid());
+        $workspace->setArchived(true);
+
+        //remove everyone but the managers
+        $roles = $workspace->getRoles();
+
+        foreach ($roles as $role) {
+            if ($role !== $workspace->getManagerRole()) {
+                $role->initUsers();
+                $role->initGroups();
+                $this->om->persist($role);
+            }
+        }
+
+        $this->om->persist($workspace);
+    }
+
     public function getDefaultModel($isPersonal = false, $restore = false)
     {
         $name = $isPersonal ? 'default_personal' : 'default_workspace';
