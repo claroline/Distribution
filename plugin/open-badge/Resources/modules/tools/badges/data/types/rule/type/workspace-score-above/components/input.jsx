@@ -18,11 +18,11 @@ class WorkspaceScoreAboveInput extends Component {
     return (
       <Fragment>
         <WorkspaceInput
-          onChange={(value) => this.props.onChange(value)}
+          onChange={(value) => this.props.onChange({workspace: value})}
           value={this.props.value.workspace}
         />
         <NumberInput
-          onChange = {(value) => this.props.onChange(value)}
+          onChange = {(value) => this.props.onChange({value})}
           min={0}
           value={this.props.value.value}
         />
@@ -33,7 +33,7 @@ class WorkspaceScoreAboveInput extends Component {
 
 implementPropTypes(WorkspaceScoreAboveInput, FormFieldTypes, {
   // more precise value type
-  value: T.arrayOf(T.string)
+  value: T.object
 
 
 }, {

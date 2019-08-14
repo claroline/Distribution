@@ -18,11 +18,11 @@ class WorkspaceCompletedAboveInput extends Component {
     return (
       <Fragment>
         <WorkspaceInput
-          onChange={(value) => this.props.onChange(value)}
+          onChange={(value) => this.props.onChange({workspace: value})}
           value={this.props.value.workspace}
         />
         <NumberInput
-          onChange = {(value) => this.props.onChange(value)}
+          onChange = {(value) => this.props.onChange({value})}
           min={0}
           max={100}
           value={this.props.value.value}
