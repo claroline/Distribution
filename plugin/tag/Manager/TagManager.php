@@ -79,10 +79,10 @@ class TagManager
         // search for a platform tag first
         $tag = $this->getUowScheduledTag($tagName);
         if (empty($tag)) {
-	    try {
-               $tag = $this->getOnePlatformTagByName($tagName);
-	    } catch (\Exception $e) {
-	       $tag = null;
+            try {
+                $tag = $this->getOnePlatformTagByName($tagName);
+            } catch (\Exception $e) {
+                $tag = null;
             }
         }
 
