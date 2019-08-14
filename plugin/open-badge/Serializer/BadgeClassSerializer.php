@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
+use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -39,6 +40,7 @@ class BadgeClassSerializer
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "criteriaSerializer"     = @DI\Inject("claroline.serializer.open_badge.criteria"),
      *     "imageSerializer"        = @DI\Inject("claroline.serializer.open_badge.image"),
+     *     "ruleSerializer"         = @DI\Inject("claroline.serializer.open_badge.rule"),
      *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
      *     "profileSerializer"      = @DI\Inject("claroline.serializer.open_badge.profile"),
      *     "tokenStorage"           = @DI\Inject("security.token_storage"),
@@ -64,7 +66,8 @@ class BadgeClassSerializer
         ImageSerializer $imageSerializer,
         TokenStorageInterface $tokenStorage,
         OrganizationSerializer $organizationSerializer,
-        PublicFileSerializer $publicFileSerializer
+        PublicFileSerializer $publicFileSerializer,
+        RuleSerializer $ruleSerializer
     ) {
         $this->router = $router;
         $this->fileUt = $fileUt;
@@ -79,6 +82,7 @@ class BadgeClassSerializer
         $this->tokenStorage = $tokenStorage;
         $this->publicFileSerializer = $publicFileSerializer;
         $this->organizationSerializer = $organizationSerializer;
+        $this->ruleSerializer = $ruleSerializer;
     }
 
     /**
@@ -131,6 +135,9 @@ class BadgeClassSerializer
                'updated' => $badge->getUpdated()->format('Y-m-d\TH:i:s'),
                'enabled' => $badge->getEnabled(),
             ];
+            $data['rules'] = array_map(function (Rule $rule) {
+                return $this->ruleSerializer->serialize($rule);
+            }, $badge->getRules()->toArray());
             $data['workspace'] = $badge->getWorkspace() ? $this->workspaceSerializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null;
             $data['allowedUsers'] = array_map(function (User $user) {
                 return $this->userSerializer->serialize($user);
@@ -205,7 +212,22 @@ class BadgeClassSerializer
             $badge->setAllowedIssuersGroups($allowed);
         }
 
+        if (isset($data['rules'])) {
+            $this->deserializeRules($data['rules'], $badge);
+        }
+
         return $badge;
+    }
+
+    private function deserializeRules(array $rules, BadgeClass $badge)
+    {
+        foreach ($rules as $rule) {
+            if (!isset($rule['id'])) {
+                $entity = $this->ruleSerializer->deserialize($rule, new Rule());
+                $entity->setBadge($badge);
+                $this->om->persist($entity);
+            }
+        }
     }
 
     private function deserializeTags(BadgeClass $badge, array $tags = [], array $options = [])

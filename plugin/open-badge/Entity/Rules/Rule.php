@@ -63,7 +63,10 @@ class Rule
      */
     private $data = [];
 
-    private $enabled = true;
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function setAction($action)
     {

@@ -77,7 +77,7 @@ class RuleInput extends Component {
         </div>
         <div>
           {(() => {
-            switch(this.state.type) {
+            switch(this.props.value.type) {
               case RULE_RESOURCE_PASSED:
                 return <ResourcePassedInput
                   value={this.props.value.data}

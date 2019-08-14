@@ -7,19 +7,18 @@ use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service()
+ * @DI\Service("claroline.serializer.open_badge.rule")
  */
 class RuleSerializer
 {
     use SerializerTrait;
 
-    public function __construct()
-    {
-    }
-
     public function serialize(Rule $rule, array $options = [])
     {
         return [
+            'data' => $rule->getData(),
+            'type' => $rule->getAction(),
+            'id' => $rule->getUuid(),
         ];
     }
 
@@ -34,7 +33,9 @@ class RuleSerializer
      */
     public function deserialize($data, Rule $rule = null, array $options = [])
     {
-        return [
-        ];
+        $rule->setData($data['data']);
+        $rule->setAction($data['type']);
+
+        return $rule;
     }
 }

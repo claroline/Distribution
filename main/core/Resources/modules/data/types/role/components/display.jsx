@@ -8,7 +8,7 @@ import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {Role as RoleType} from '#/main/core/user/prop-types'
 import {RoleCard} from '#/main/core/user/data/components/role-card'
 
-const RoleCardDisplay = (props) => !isEmpty(props.data) ?
+const RoleDisplay = (props) => !isEmpty(props.data) ?
   <div>
     {props.data.map(group =>
       <RoleCard
@@ -25,10 +25,10 @@ const RoleCardDisplay = (props) => !isEmpty(props.data) ?
     title={trans('no_group')}
   />
 
-RoleCardDisplay.propTypes = {
+RoleDisplay.propTypes = {
   data: T.arrayOf(T.shape(RoleType.propTypes))
 }
 
 export {
-  RoleCardDisplay
+  RoleDisplay
 }

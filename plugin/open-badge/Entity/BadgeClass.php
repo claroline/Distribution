@@ -84,8 +84,6 @@ class BadgeClass
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
-     *
-     * @var Organization
      */
     private $workspace;
 
@@ -122,15 +120,11 @@ class BadgeClass
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
-     *
-     * @var Organization
      */
     private $allowedIssuers;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Group")
-     *
-     * @var Organization
      */
     private $allowedIssuersGroups;
 
@@ -145,6 +139,7 @@ class BadgeClass
     {
         $this->refreshUuid();
         $this->allowedIssuers = new ArrayCollection();
+        $this->rules = new ArrayCollection();
         $this->allowedIssuersGroups = new ArrayCollection();
     }
 
@@ -367,5 +362,10 @@ class BadgeClass
     public function getIssuingMode()
     {
         return $this->issuingMode;
+    }
+
+    public function getRules()
+    {
+        return $this->rules;
     }
 }
