@@ -799,7 +799,7 @@ class Workspace
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getBackgroundColor()
     {
