@@ -989,17 +989,6 @@ class WorkspaceManager
         $workspace->setCode('[archive]'.$workspace->getCode().uniqid());
         $workspace->setArchived(true);
 
-        //remove everyone but the managers
-        $roles = $workspace->getRoles();
-
-        foreach ($roles as $role) {
-            if ($role !== $workspace->getManagerRole()) {
-                $role->initUsers();
-                $role->initGroups();
-                $this->om->persist($role);
-            }
-        }
-
         $this->om->persist($workspace);
     }
 
