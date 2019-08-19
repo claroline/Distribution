@@ -17,6 +17,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
+use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -41,6 +42,7 @@ class BadgeClassSerializer
      *     "criteriaSerializer"     = @DI\Inject("claroline.serializer.open_badge.criteria"),
      *     "imageSerializer"        = @DI\Inject("claroline.serializer.open_badge.image"),
      *     "ruleSerializer"         = @DI\Inject("claroline.serializer.open_badge.rule"),
+     *     "organizationManager"    = @DI\Inject("claroline.manager.organization.organization_manager"),
      *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
      *     "profileSerializer"      = @DI\Inject("claroline.serializer.open_badge.profile"),
      *     "tokenStorage"           = @DI\Inject("security.token_storage"),
@@ -57,6 +59,7 @@ class BadgeClassSerializer
         FileUtilities $fileUt,
         RouterInterface $router,
         ObjectManager $om,
+        OrganizationManager $organizationManager,
         CriteriaSerializer $criteriaSerializer,
         ProfileSerializer $profileSerializer,
         EventDispatcherInterface $eventDispatcher,
@@ -75,6 +78,7 @@ class BadgeClassSerializer
         $this->userSerializer = $userSerializer;
         $this->groupSerializer = $groupSerializer;
         $this->om = $om;
+        $this->organizationManager = $organizationManager;
         $this->criteriaSerializer = $criteriaSerializer;
         $this->profileSerializer = $profileSerializer;
         $this->imageSerializer = $imageSerializer;
@@ -107,7 +111,7 @@ class BadgeClassSerializer
                   'url' => $badge->getImage(),
               ])
             ) : null,
-            'issuer' => $badge->getIssuer() ? $this->organizationSerializer->serialize($badge->getIssuer()) : null,
+            'issuer' => $this->organizationSerializer->serialize($badge->getIssuer() ? $badge->getIssuer() : $this->organizationManager->getDefault(true)),
             //only in non list mode I guess
             'tags' => $this->serializeTags($badge),
         ];
@@ -319,7 +323,9 @@ class BadgeClassSerializer
         ]);
         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
 
-        return $event->getResponse();
+        $tags = $event->getResponse();
+
+        return implode(',', $tags);
     }
 
     public function getClass()
