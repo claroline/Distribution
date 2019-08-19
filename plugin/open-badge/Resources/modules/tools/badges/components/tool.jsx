@@ -9,6 +9,8 @@ import {trans} from '#/main/app/intl/translation'
 import {ParametersForm} from '#/plugin/open-badge/tools/badges/parameters/components/parameters'
 import {Badge}  from '#/plugin/open-badge/tools/badges/badge/components/badge'
 import {Badges}  from '#/plugin/open-badge/tools/badges/badge/components/list'
+import {BadgeViewer} from '#/plugin/open-badge/tools/badges/badge/components/viewer'
+import {BadgeForm} from '#/plugin/open-badge/tools/badges/badge/components/form'
 /*
 url: props.currentContext === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}]: ['apiv2_badge-class_list'],
 autoload: true*/
@@ -34,8 +36,9 @@ const Tool = props =>
           {path: '/new',        render: () => trans('add_badge', {} ), disabled: false},
           {path: '/my-badges', render: () => trans('my_badges', {} )},
           {path: '/badges',     render: () => trans('badges', {})},
-          {path: '/parameters',    render: () => trans('parameters', {})},
-          {path: '/profile/:id',      render: () => trans('profile', {})}
+          {path: '/badges/:id', render: () => trans('view', {})},
+          {path: '/badges/:id/form', render: () => trans('view', {})},
+          {path: '/parameters',    render: () => trans('parameters', {})}
         ]}
       />
     }
@@ -46,7 +49,8 @@ const Tool = props =>
         {
           path: '/new',
           disabled: false,
-          component: Badge
+          component: Badge,
+          onEnter: () => props.openBadge(null, props.workspace)
         }, {
           path: '/my-badges',
           render: () => {
@@ -70,7 +74,30 @@ const Tool = props =>
             )
 
             return AllBadges
-          }
+          },
+          exact: true
+        }, {
+          path: '/badges/:id',
+          render: () => {
+            const BadgeViewerComponent = (
+              <BadgeViewer/>
+            )
+
+            return BadgeViewerComponent
+          },
+          onEnter: (params) => props.openBadge(params.id, props.workspace),
+          exact: true
+        }, {
+          path: '/badges/:id/form',
+          render: () => {
+            const BadgeEditorComponent = (
+              <BadgeForm/>
+            )
+
+            return BadgeEditorComponent
+          },
+          onEnter: (params) => props.openBadge(params.id, props.workspace),
+          exact: true
         }, {
           path: '/parameters',
           component: ParametersForm

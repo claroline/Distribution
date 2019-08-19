@@ -30,7 +30,7 @@ const BadgesList = (props) => {
       primaryAction={(row) => ({
         label: trans('open'),
         type: LINK_BUTTON,
-        target: props.path + `/badges/view/${row.id}`
+        target: props.path + `/badges/${row.id}`
       })}
       delete={{
         url: ['apiv2_badge-class_delete_bulk']
@@ -40,7 +40,7 @@ const BadgesList = (props) => {
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-pen',
           label: trans('edit'),
-          target: props.path + `/badges/form/${rows[0].id}`,
+          target: props.path + `/badges/${rows[0].id}/form`,
           scope: ['object']
         }, {
           type: CALLBACK_BUTTON,
@@ -69,7 +69,6 @@ BadgesList.propTypes = {
   currentUser: T.object,
   name: T.string.isRequired,
   url: T.oneOfType([T.string, T.array]).isRequired,
-  invalidate: T.func.isRequired,
   disable: T.func.isRequired,
   enable: T.func.isRequired,
   currentContext: T.object.isRequired,
