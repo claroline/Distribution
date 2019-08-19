@@ -60,7 +60,7 @@ const BadgeViewerComponent = (props) => {
               }}
               primaryAction={(row) => ({
                 type: LINK_BUTTON,
-                target: props.path + `/badges/assertion/${row.id}`,
+                target: props.path + `/badges/${props.badge.id}/assertion/${row.id}`,
                 label: trans('', {}, 'actions')
               })}
               delete={{

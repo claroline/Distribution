@@ -11,6 +11,7 @@ import {Badge}  from '#/plugin/open-badge/tools/badges/badge/components/badge'
 import {Badges}  from '#/plugin/open-badge/tools/badges/badge/components/list'
 import {BadgeViewer} from '#/plugin/open-badge/tools/badges/badge/components/viewer'
 import {BadgeForm} from '#/plugin/open-badge/tools/badges/badge/components/form'
+import {AssertionForm} from '#/plugin/open-badge/tools/badges/assertion/components/form'
 /*
 url: props.currentContext === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}]: ['apiv2_badge-class_list'],
 autoload: true*/
@@ -37,7 +38,8 @@ const Tool = props =>
           {path: '/my-badges', render: () => trans('my_badges', {} )},
           {path: '/badges',     render: () => trans('badges', {})},
           {path: '/badges/:id', render: () => trans('view', {})},
-          {path: '/badges/:id/form', render: () => trans('view', {})},
+          {path: '/badges/:id/form', render: () => trans('edit', {})},
+          {path: '/badges/:badgeId/assertions/:id', render: () => trans('assertions', {})},
           {path: '/parameters',    render: () => trans('parameters', {})}
         ]}
       />
@@ -95,8 +97,11 @@ const Tool = props =>
             )
 
             return BadgeEditorComponent
-          },
-          onEnter: (params) => props.openBadge(params.id, props.workspace),
+          }
+        }, {
+          path: '/badges/:badgeId/assertion/:id',
+          component: AssertionForm,
+          onEnter: (params) => props.openAssertion(params.id),
           exact: true
         }, {
           path: '/parameters',

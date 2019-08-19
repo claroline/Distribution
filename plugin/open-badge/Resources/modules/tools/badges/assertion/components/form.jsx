@@ -18,7 +18,7 @@ import {
 } from '#/main/app/content/form/store'
 
 // TODO : add tools
-const AssertionPageComponent = (props) => {
+const AssertionFormComponent = (props) => {
   return (
     <FormData
       {...props}
@@ -96,7 +96,7 @@ const AssertionPageComponent = (props) => {
 
 
 
-const AssertionPage = connect(
+const AssertionForm = connect(
   (state) => ({
     currentContext: state.currentContext,
     new: formSelect.isNew(formSelect.form(state, selectors.STORE_NAME + '.badges.assertion')),
@@ -111,8 +111,8 @@ const AssertionPage = connect(
       }
     }
   })
-)(AssertionPageComponent)
+)(AssertionFormComponent)
 
 export {
-  AssertionPage as Assertion
+  AssertionForm
 }

@@ -5,7 +5,6 @@ namespace Claroline\OpenBadgeBundle\Serializer;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -29,21 +28,12 @@ class VerificationObjectSerializer
 
     public function serialize(Assertion $assertion)
     {
-        $issuer = $assertion->getBadge()->getIssuer();
-
-        if ($issuer) {
-            return [
-              'type' => 'SignedBadge',
-              'creator' => $this->router->generate(
-                  'apiv2_open_badge__cryptographic_key',
-                  ['key' => $crypto->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL
-              ),
-          ];
-        }
+        $issuer = $assertion->getBadge();
 
         return [
           'type' => 'SignedBadge',
+          //is a link to a cryptographic key
           'creator' => null,
-      ];
+        ];
     }
 }
