@@ -1,21 +1,22 @@
 import React from 'react'
-
-import {ListData} from '#/main/app/content/list/containers/data'
-import issue from '#/plugin/open-badge/tools/badges/badge/actions/issue'
-import {selectors}  from '#/plugin/open-badge/tools/badges/store/selectors'
-import {LINK_BUTTON} from '#/main/app/buttons'
-import {trans} from '#/main/app/intl/translation'
-import {selectors as toolSelectors} from '#/main/core/tool/store'
-import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-user-list'
+import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-// todo : restore custom actions the same way resource actions are implemented
-const MyBadgesComponent = props => {
-  return(
+import {trans} from '#/main/app/intl/translation'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import issue from '#/plugin/open-badge/tools/badges/badge/actions/issue'
+import {LINK_BUTTON} from '#/main/app/buttons'
+
+import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-user-list'
+
+const AssertionsList = (props) => {
+
+  return (
     <ListData
-      name={selectors.STORE_NAME + '.badges.mine'}
+      name={props.name}
       fetch={{
-        url: ['apiv2_assertion_current_user_list'],
+        url: props.url,
         autoload: true
       }}
       primaryAction={(row) => ({
@@ -30,8 +31,19 @@ const MyBadgesComponent = props => {
   )
 }
 
-export const MyBadges = connect(
+AssertionsList.propTypes = {
+  currentUser: T.object,
+  name: T.string.isRequired,
+  url: T.oneOfType([T.string, T.array]).isRequired,
+  invalidate: T.func.isRequired,
+  disable: T.func.isRequired,
+  enable: T.func.isRequired,
+  currentContext: T.object.isRequired,
+  path: T.string.isRequired
+}
+
+export const Assertions = connect(
   (state) => ({
     path: toolSelectors.path(state)
   })
-)(MyBadgesComponent)
+)(AssertionsList)

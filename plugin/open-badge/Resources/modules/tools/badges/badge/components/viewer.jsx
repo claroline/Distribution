@@ -13,8 +13,8 @@ import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSection} from '#/main/app/content/form/components/sections'
 
-import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-list'
-import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/badge-card'
+import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/definition'
+import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/card'
 
 import {
   selectors as formSelect

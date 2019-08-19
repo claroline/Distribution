@@ -1,6 +1,6 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/badge-card'
+import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/card'
 
 const BadgeList = {
   definition: [

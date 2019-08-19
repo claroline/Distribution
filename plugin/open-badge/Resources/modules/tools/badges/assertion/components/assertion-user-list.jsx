@@ -1,7 +1,7 @@
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {AssertionCard} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-card'
+import {AssertionCard} from '#/plugin/open-badge/tools/badges/assertion/components/card'
 
 const AssertionList = {
   open: (row) => ({
