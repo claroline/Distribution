@@ -8,7 +8,7 @@ import {selectors as toolSelectors} from '#/main/core/tool/store'
 import issue from '#/plugin/open-badge/tools/badges/badge/actions/issue'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-user-list'
+import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/definition'
 
 const AssertionsList = (props) => {
 

@@ -8,7 +8,7 @@ import {selectors}  from '#/plugin/open-badge/tools/badges/store/selectors'
 const ParametersForm = props =>
   <FormData
     level={2}
-    title={trans('home')}
+    title={trans('parameters')}
     name={selectors.STORE_NAME + '.parameters'}
     target={['apiv2_parameters_update']}
     buttons={true}

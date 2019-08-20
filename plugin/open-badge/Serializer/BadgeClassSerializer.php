@@ -116,10 +116,6 @@ class BadgeClassSerializer
             'tags' => $this->serializeTags($badge),
         ];
 
-        if (!in_array(APIOptions::SERIALIZE_LIST, $options)) {
-            $data['assignable'] = $this->isAssignable($badge);
-        }
-
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
             $data['id'] = $this->router->generate('apiv2_open_badge__badge_class', ['badge' => $badge->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL);
             $data['type'] = 'BadgeClass';
@@ -139,15 +135,17 @@ class BadgeClassSerializer
                'updated' => $badge->getUpdated()->format('Y-m-d\TH:i:s'),
                'enabled' => $badge->getEnabled(),
             ];
+            $data['permissions'] = $this->serializePermissions($badge);
+            $data['assignable'] = $data['permissions']['assign'];
             $data['rules'] = array_map(function (Rule $rule) {
                 return $this->ruleSerializer->serialize($rule);
             }, $badge->getRules()->toArray());
             $data['workspace'] = $badge->getWorkspace() ? $this->workspaceSerializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null;
             $data['allowedUsers'] = array_map(function (User $user) {
-                return $this->userSerializer->serialize($user);
+                return $this->userSerializer->serialize($user, [APIOptions::SERIALIZE_MINIMAL]);
             }, $badge->getAllowedIssuers()->toArray());
             $data['allowedGroups'] = array_map(function (Group $group) {
-                return $this->groupSerializer->serialize($group);
+                return $this->groupSerializer->serialize($group, [APIOptions::SERIALIZE_MINIMAL]);
             }, $badge->getAllowedIssuersGroups()->toArray());
         }
 
@@ -251,70 +249,6 @@ class BadgeClassSerializer
         $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
     }
 
-    private function isAssignable(BadgeClass $badge)
-    {
-        $issuingModes = $badge->getIssuingMode();
-        $currentUser = $this->tokenStorage->getToken()->getUser();
-
-        if (!$currentUser instanceof User) {
-            return false;
-        }
-
-        $roles = array_map(function ($role) {
-            return $role->getRole();
-        }, $this->tokenStorage->getToken()->getRoles());
-
-        if (in_array('ROLE_ADMIN', $roles)) {
-            return true;
-        }
-
-        foreach ($issuingModes as $mode) {
-            switch ($mode) {
-                case BadgeClass::ISSUING_MODE_ORGANIZATION:
-                    $organization = $badge->getIssuer();
-                    $userOrganizations = $currentUser->getAdministratedOrganizations();
-                    foreach ($userOrganizations as $userOrga) {
-                        if ($userOrga->getId() === $organization->getId()) {
-                            return true;
-                        }
-                    }
-                    break;
-                case BadgeClass::ISSUING_MODE_USER:
-                    $allowedIssuers = $badge->getAllowedIssuers();
-                    foreach ($allowedIssuers as $allowed) {
-                        if ($allowed->getId() === $currentUser->getId()) {
-                            return true;
-                        }
-                    }
-                    break;
-                case BadgeClass::ISSUING_MODE_GROUP:
-                    $allowedIssuers = $badge->getAllowedIssuersGroups();
-                    foreach ($allowedIssuers as $allowed) {
-                        foreach ($currentUser->getGroups() as $group) {
-                            if ($group->getId() === $allowed->getId()) {
-                                return true;
-                            }
-                        }
-                    }
-                    break;
-                case BadgeClass::ISSaUING_MODE_PEER:
-                    break;
-                case BadgeClass::ISSUING_MODE_WORKSPACE:
-                    $workspace = $badge->getWorkspace();
-                    $managerRole = $workspace->getManagerRole();
-
-                    if (in_array($managerRole, $roles)) {
-                        return true;
-                    }
-                    break;
-                case BadgeClass::ISSUING_MODE_AUTO:
-                  break;
-            }
-        }
-
-        return false;
-    }
-
     private function serializeTags(BadgeClass $badge)
     {
         $event = new GenericDataEvent([
@@ -326,6 +260,48 @@ class BadgeClassSerializer
         $tags = $event->getResponse();
 
         return implode(',', $tags);
+    }
+
+    private function serializePermissions(BadgeClass $badge)
+    {
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+
+        //we might want to move this logic somewhere else
+        $assign = false;
+        $isOrganizationManager = false;
+
+        //check if user manager of badge organization (issuer)
+        $administratedOrganizationsIds = array_map(function (Organization $organization) {
+            return $organization->getId();
+        }, $currentUser->getAdministratedOrganizations()->toArray());
+
+        if ($badge->getIssuer() && in_array($badge->getIssuer()->getId(), $administratedOrganizationsIds)) {
+            $isOrganizationManager = true;
+        }
+        //check if user in allowed users or groups
+        $allowedUserIds = array_map(function (User $user) {
+            return $user->getId();
+        }, $badge->getAllowedIssuers(true));
+
+        if (in_array($currentUser->getId(), $allowedUserIds)) {
+            $assign = true;
+        }
+
+        $assign = $assign | $isOrganizationManager;
+        $isAdmin = false;
+        //check administrator status here
+
+        foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
+            if ('ROLE_ADMIN' === $role->getRole()) {
+                $isAdmin = true;
+            }
+        }
+
+        return [
+          'assign' => (bool) ($assign | $isAdmin),
+          'edit' => (bool) ($isOrganizationManager | $isAdmin),
+          'delete' => (bool) ($isOrganizationManager | $isAdmin),
+        ];
     }
 
     public function getClass()

@@ -344,8 +344,24 @@ class BadgeClass
         $this->allowedIssuersGroups = $groups;
     }
 
-    public function getAllowedIssuers()
+    public function getAllowedIssuers($includeGroups = false)
     {
+        if ($includeGroups) {
+            $users = [];
+
+            foreach ($this->getAllowedIssuersGroups() as $group) {
+                foreach ($group->getUsers() as $user) {
+                    $users[$user->getId()] = $user;
+                }
+            }
+
+            foreach ($this->allowedIssuers as $user) {
+                $users[$user->getId()] = $user;
+            }
+
+            return $users;
+        }
+
         return $this->allowedIssuers;
     }
 

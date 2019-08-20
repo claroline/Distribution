@@ -11,6 +11,9 @@ import {constants as listConstants} from '#/main/app/content/list/constants'
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {actions} from '#/plugin/open-badge/tools/badges/badge/store/actions'
 import {transChoice} from '#/main/app/intl/translation'
+import {isAdmin as userIsAdmin} from '#/main/app/security/permissions'
+import {currentUser} from '#/main/app/security'
+
 
 import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/card'
 import {BadgeList} from '#/plugin/open-badge/tools/badges/badge/components/definition'
@@ -33,28 +36,30 @@ const BadgesList = (props) => {
         target: props.path + `/badges/${row.id}`
       })}
       delete={{
-        url: ['apiv2_badge-class_delete_bulk']
+        url: ['apiv2_badge-class_delete_bulk'],
+        displayed: (rows) => 0 < (rows.filter(b => b.permissions.delete).length)
       }}
       actions={(rows) => [
         {
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-pen',
           label: trans('edit'),
+          scope: ['object', 'collection'],
           target: props.path + `/badges/${rows[0].id}/form`,
-          scope: ['object']
+          displayed: 0 < (rows.filter(b => b.permissions.edit).length)
         }, {
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-check-circle',
           label: trans('enable'),
           scope: ['object', 'collection'],
-          displayed: 0 < (rows.filter(b => !b.meta.enabled).length) && props.currentContext === 'administration',
+          displayed: 0 < (rows.filter(b => !b.meta.enabled).length) && userIsAdmin(currentUser()),
           callback: () => props.enable(rows)
         }, {
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-times-circle',
           label: trans('disable'),
           scope: ['object', 'collection'],
-          displayed: 0 < (rows.filter(b => b.meta.enabled).length) && props.currentContext === 'administration',
+          displayed: 0 < (rows.filter(b => b.meta.enabled).length) && userIsAdmin(currentUser()),
           callback: () => props.disable(rows),
           dangerous: true
         }

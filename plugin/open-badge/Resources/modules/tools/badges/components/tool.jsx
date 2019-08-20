@@ -8,6 +8,7 @@ import {selectors}  from '#/plugin/open-badge/tools/badges/store/selectors'
 import {trans} from '#/main/app/intl/translation'
 import {ParametersForm} from '#/plugin/open-badge/tools/badges/parameters/components/parameters'
 import {Badge}  from '#/plugin/open-badge/tools/badges/badge/components/badge'
+import {Assertions} from '#/plugin/open-badge/tools/badges/assertion/components/list'
 import {Badges}  from '#/plugin/open-badge/tools/badges/badge/components/list'
 import {BadgeViewer} from '#/plugin/open-badge/tools/badges/badge/components/viewer'
 import {BadgeForm} from '#/plugin/open-badge/tools/badges/badge/components/form'
@@ -57,7 +58,7 @@ const Tool = props =>
           path: '/my-badges',
           render: () => {
             const MyBadges = (
-              <Badges
+              <Assertions
                 url={['apiv2_assertion_current_user_list']}
                 name={selectors.STORE_NAME + '.badges.mine'}
               />
@@ -97,7 +98,8 @@ const Tool = props =>
             )
 
             return BadgeEditorComponent
-          }
+          },
+          onEnter: (params) => props.openBadge(params.id, props.workspace)
         }, {
           path: '/badges/:badgeId/assertion/:id',
           component: AssertionForm,

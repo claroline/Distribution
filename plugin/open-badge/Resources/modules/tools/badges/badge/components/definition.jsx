@@ -15,6 +15,13 @@ const BadgeList = {
       label: trans('enabled'),
       type: 'boolean',
       displayed: true
+    },
+    {
+      name: 'assignable',
+      label: trans('assignable'),
+      type: 'boolean',
+      displayed: true,
+      filterable: true
     }
   ],
   card: BadgeCard

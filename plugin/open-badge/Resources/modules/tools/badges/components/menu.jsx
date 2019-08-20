@@ -8,6 +8,7 @@ import {Toolbar} from '#/main/app/action/components/toolbar'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 
 import {isAdmin as userIsAdmin} from '#/main/app/security/permissions'
+import {currentUser} from '#/main/app/security'
 
 const BadgeMenu = (props) =>
   <MenuSection
@@ -36,8 +37,7 @@ const BadgeMenu = (props) =>
           type: LINK_BUTTON,
           target: props.path+'/parameters',
           onlyIcon: true,
-          //only for admin
-          displayed: userIsAdmin()
+          displayed: userIsAdmin(currentUser())
         }, {
           icon: 'fa fa-book',
           label: trans('profile'),
@@ -51,6 +51,7 @@ const BadgeMenu = (props) =>
 
 BadgeMenu.propTypes = {
   path: T.string,
+  currentUser: T.object.isRequired,
   authenticated: T.bool.isRequired,
   creatable: T.bool.isRequired,
   currentContext: T.object.isRequired

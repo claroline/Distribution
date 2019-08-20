@@ -1,33 +1,28 @@
 import {trans} from '#/main/app/intl/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {UserCard} from '#/main/core/user/components/card'
+import {AssertionCard} from '#/plugin/open-badge/tools/badges/assertion/components/card'
 
 const AssertionList = {
+  open: (row) => ({
+    label: trans('open'),
+    type: LINK_BUTTON,
+    target: `/badges/view/${row.badge.id}`
+  }),
   definition: [
     {
-      name: 'user.username',
-      type: 'username',
-      label: trans('username'),
+      name: 'badge.name',
+      label: trans('name'),
       displayed: true,
       primary: true
-    }, {
-      name: 'user.lastName',
-      type: 'string',
-      label: trans('last_name'),
-      displayed: true
-    }, {
-      name: 'user.firstName',
-      type: 'string',
-      label: trans('first_name'),
-      displayed: true
-    }, {
-      name: 'user.email',
-      type: 'email',
-      label: trans('email'),
+    },
+    {
+      name: 'badge.meta.enabled',
+      label: trans('enabled'),
       displayed: true
     }
   ],
-  card: UserCard
+  card: AssertionCard
 }
 
 export {

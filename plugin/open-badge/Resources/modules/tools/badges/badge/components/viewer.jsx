@@ -13,8 +13,8 @@ import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSection} from '#/main/app/content/form/components/sections'
 
-import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/definition'
 import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/card'
+import {UserCard} from '#/main/core/user/components/card'
 
 import {
   selectors as formSelect
@@ -66,8 +66,31 @@ const BadgeViewerComponent = (props) => {
               delete={{
                 url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
               }}
-              definition={AssertionList.definition}
-              card={AssertionList.card}
+              definition={[
+                {
+                  name: 'user.username',
+                  type: 'username',
+                  label: trans('username'),
+                  displayed: true,
+                  primary: true
+                }, {
+                  name: 'user.lastName',
+                  type: 'string',
+                  label: trans('last_name'),
+                  displayed: true
+                }, {
+                  name: 'user.firstName',
+                  type: 'string',
+                  label: trans('first_name'),
+                  displayed: true
+                }, {
+                  name: 'user.email',
+                  type: 'email',
+                  label: trans('email'),
+                  displayed: true
+                }
+              ]}
+              card={UserCard}
             />:
             <div>{trans('badge_must_be_enabled or assignable')}</div>
           }
