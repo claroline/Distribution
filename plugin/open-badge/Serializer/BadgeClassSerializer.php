@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
+use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -308,7 +309,13 @@ class BadgeClassSerializer
                         return $user->getId();
                     }, $users, $allowedUserIds));
                     break;
-                case BadgeClass::ISSUING_MODE_USER:
+                case BadgeClass::ISSUING_MODE_PEER:
+                    //check if current user already has the badge
+                    $assertion = $this->om->getRepository(Assertion::class)->findOneBy(['badge' => $badge, 'recipient' => $currentUser]);
+
+                    if ($assertion) {
+                        $assign = true;
+                    }
                     break;
                 case BadgeClass::ISSUING_MODE_WORKSPACE:
                     $workspace = $badge->getWorkspace();
