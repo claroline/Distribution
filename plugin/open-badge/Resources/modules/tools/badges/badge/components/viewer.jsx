@@ -102,14 +102,11 @@ const BadgeViewerComponent = (props) => {
 
 const BadgeViewer = connect(
   (state) => ({
-    currentContext: state.currentContext,
+    currentContext: toolSelectors.context(state),
     path: toolSelectors.path(state),
     badge: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.badges.current'))
   }),
   (dispatch) =>({
-    save(badge, workspace, isNew) {
-      dispatch(actions.save(selectors.STORE_NAME  + '.badges.current', badge, workspace, isNew))
-    },
     addUsers(badgeId, selected) {
       dispatch(actions.addUsers(badgeId, selected))
     }

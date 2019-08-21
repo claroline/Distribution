@@ -3,9 +3,9 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {selectors}  from '#/plugin/open-badge/tools/badges/store/selectors'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 
 import {
-  ISSUING_MODE_ORGANIZATION,
   ISSUING_MODE_USER,
   ISSUING_MODE_GROUP,
   ISSUING_MODE_PEER,
@@ -26,6 +26,15 @@ const BadgeFormComponent = (props) => {
     props.models.data.forEach(model => {
       modelChoice[model.code] = model.code
     })
+  }
+
+  const issuingChoices =  {
+    //[ISSUING_MODE_ORGANIZATION]: trans(ISSUING_MODE_ORGANIZATION),
+    [ISSUING_MODE_USER]: trans(ISSUING_MODE_USER),
+    [ISSUING_MODE_GROUP]: trans(ISSUING_MODE_GROUP),
+    [ISSUING_MODE_PEER]: trans(ISSUING_MODE_PEER),
+    [ISSUING_MODE_WORKSPACE]: trans(ISSUING_MODE_WORKSPACE),
+    [ISSUING_MODE_AUTO]: trans(ISSUING_MODE_AUTO)
   }
 
   const fields = [
@@ -74,7 +83,7 @@ const BadgeFormComponent = (props) => {
     }
   ]
 
-  if (props.workspace !== null) {
+  if (props.currentContext.type === 'workspace') {
     fields.splice(4, 1)
   }
 
@@ -103,14 +112,7 @@ const BadgeFormComponent = (props) => {
               type: 'choice',
               label: trans('issuing_mode'),
               options: {
-                choices:  {
-                  [ISSUING_MODE_ORGANIZATION]: trans(ISSUING_MODE_ORGANIZATION),
-                  [ISSUING_MODE_USER]: trans(ISSUING_MODE_USER),
-                  [ISSUING_MODE_GROUP]: trans(ISSUING_MODE_GROUP),
-                  [ISSUING_MODE_PEER]: trans(ISSUING_MODE_PEER),
-                  [ISSUING_MODE_WORKSPACE]: trans(ISSUING_MODE_WORKSPACE),
-                  [ISSUING_MODE_AUTO]: trans(ISSUING_MODE_AUTO)
-                },
+                choices: issuingChoices,
                 multiple: true
               }
             }, {
@@ -154,10 +156,9 @@ const BadgeFormComponent = (props) => {
 
 const BadgeForm = connect(
   (state) => ({
-    currentContext: state.currentContext,
+    currentContext: toolSelectors.context(state),
     new: formSelect.isNew(formSelect.form(state, selectors.STORE_NAME + '.badges.current')),
-    badge: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.badges.current')),
-    workspace: state.workspace
+    badge: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.badges.current'))
   }),
   (dispatch, ownProps) =>({
     updateProp(propName, propValue) {

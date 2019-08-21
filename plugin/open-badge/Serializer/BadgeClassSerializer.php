@@ -187,7 +187,9 @@ class BadgeClassSerializer
             $workspace = $this->om->getRepository(Workspace::class)->find($data['workspace']['id']);
             $badge->setWorkspace($workspace);
             //main orga maybe instead ? this is fishy
-            $badge->setIssuer($workspace->getOrganizations()[0]);
+            if (count($workspace->getOrganizations()) > 1) {
+                $badge->setIssuer($workspace->getOrganizations()[0]);
+            }
         }
 
         if (isset($data['tags'])) {
@@ -265,10 +267,16 @@ class BadgeClassSerializer
     private function serializePermissions(BadgeClass $badge)
     {
         $currentUser = $this->tokenStorage->getToken()->getUser();
+        $issuingModes = $badge->getIssuingMode();
 
         //we might want to move this logic somewhere else
         $assign = false;
         $isOrganizationManager = false;
+        $allowedUserIds = [];
+
+        $roles = array_map(function ($role) {
+            return $role->getRole();
+        }, $this->tokenStorage->getToken()->getRoles());
 
         //check if user manager of badge organization (issuer)
         $administratedOrganizationsIds = array_map(function (Organization $organization) {
@@ -279,9 +287,41 @@ class BadgeClassSerializer
             $isOrganizationManager = true;
         }
         //check if user in allowed users or groups
-        $allowedUserIds = array_map(function (User $user) {
-            return $user->getId();
-        }, $badge->getAllowedIssuers(true));
+
+        foreach ($issuingModes as $mode) {
+            switch ($mode) {
+                case BadgeClass::ISSUING_MODE_USER:
+                    $allowedUserIds = array_merge(array_map(function (User $user) {
+                        return $user->getId();
+                    }, $badge->getAllowedIssuers()->toArray(), $allowedUserIds));
+                    break;
+                case BadgeClass::ISSUING_MODE_GROUP:
+                    $users = [];
+
+                    foreach ($this->getAllowedIssuersGroups() as $group) {
+                        foreach ($group->getUsers() as $user) {
+                            $users[$user->getId()] = $user;
+                        }
+                    }
+
+                    $allowedUserIds = array_merge(array_map(function (User $user) {
+                        return $user->getId();
+                    }, $users, $allowedUserIds));
+                    break;
+                case BadgeClass::ISSUING_MODE_USER:
+                    break;
+                case BadgeClass::ISSUING_MODE_WORKSPACE:
+                    $workspace = $badge->getWorkspace();
+                    $managerRole = $workspace->getManagerRole();
+                    if (in_array($managerRole, $roles)) {
+                        $assign = true;
+                    }
+                    break;
+                case BadgeClass::ISSUING_MODE_AUTO:
+                    //user can't assign if it's automatic
+                  break;
+            }
+        }
 
         if (in_array($currentUser->getId(), $allowedUserIds)) {
             $assign = true;

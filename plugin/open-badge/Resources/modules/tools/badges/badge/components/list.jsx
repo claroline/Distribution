@@ -18,57 +18,53 @@ import {currentUser} from '#/main/app/security'
 import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/card'
 import {BadgeList} from '#/plugin/open-badge/tools/badges/badge/components/definition'
 
-const BadgesList = (props) => {
+const BadgesList = (props) =>
+  <ListData
+    name={props.name}
+    fetch={{
+      url: props.url,
+      autoload: true
+    }}
+    definition={BadgeList.definition}
+    card={BadgeCard}
 
-  return (
-    <ListData
-      name={props.name}
-      fetch={{
-        url: props.url,
-        autoload: true
-      }}
-      definition={BadgeList.definition}
-      card={BadgeCard}
-
-      primaryAction={(row) => ({
-        label: trans('open'),
+    primaryAction={(row) => ({
+      label: trans('open'),
+      type: LINK_BUTTON,
+      target: props.path + `/badges/${row.id}`
+    })}
+    delete={{
+      url: ['apiv2_badge-class_delete_bulk'],
+      displayed: (rows) => 0 < (rows.filter(b => b.permissions.delete).length)
+    }}
+    actions={(rows) => [
+      {
         type: LINK_BUTTON,
-        target: props.path + `/badges/${row.id}`
-      })}
-      delete={{
-        url: ['apiv2_badge-class_delete_bulk'],
-        displayed: (rows) => 0 < (rows.filter(b => b.permissions.delete).length)
-      }}
-      actions={(rows) => [
-        {
-          type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-pen',
-          label: trans('edit'),
-          scope: ['object', 'collection'],
-          target: props.path + `/badges/${rows[0].id}/form`,
-          displayed: 0 < (rows.filter(b => b.permissions.edit).length)
-        }, {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-check-circle',
-          label: trans('enable'),
-          scope: ['object', 'collection'],
-          displayed: 0 < (rows.filter(b => !b.meta.enabled).length) && userIsAdmin(currentUser()),
-          callback: () => props.enable(rows)
-        }, {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-times-circle',
-          label: trans('disable'),
-          scope: ['object', 'collection'],
-          displayed: 0 < (rows.filter(b => b.meta.enabled).length) && userIsAdmin(currentUser()),
-          callback: () => props.disable(rows),
-          dangerous: true
-        }
-      ]}
+        icon: 'fa fa-fw fa-pen',
+        label: trans('edit'),
+        scope: ['object', 'collection'],
+        target: props.path + `/badges/${rows[0].id}/form`,
+        displayed: 0 < (rows.filter(b => b.permissions.edit).length)
+      }, {
+        type: CALLBACK_BUTTON,
+        icon: 'fa fa-fw fa-check-circle',
+        label: trans('enable'),
+        scope: ['object', 'collection'],
+        displayed: 0 < (rows.filter(b => !b.meta.enabled).length) && userIsAdmin(currentUser()),
+        callback: () => props.enable(rows)
+      }, {
+        type: CALLBACK_BUTTON,
+        icon: 'fa fa-fw fa-times-circle',
+        label: trans('disable'),
+        scope: ['object', 'collection'],
+        displayed: 0 < (rows.filter(b => b.meta.enabled).length) && userIsAdmin(currentUser()),
+        callback: () => props.disable(rows),
+        dangerous: true
+      }
+    ]}
 
-      display={{current: listConstants.DISPLAY_LIST_SM}}
-    />
-  )
-}
+    display={{current: listConstants.DISPLAY_LIST_SM}}
+  />
 
 BadgesList.propTypes = {
   currentUser: T.object,
@@ -82,8 +78,7 @@ BadgesList.propTypes = {
 
 const Badges = connect(
   (state) => ({
-    currentContext: state.currentContext,
-    workspace: state.workspace,
+    currentContext: toolSelectors.context(state),
     path: toolSelectors.path(state)
   }),
   dispatch => ({

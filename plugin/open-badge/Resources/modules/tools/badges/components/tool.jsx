@@ -13,9 +13,6 @@ import {Badges}  from '#/plugin/open-badge/tools/badges/badge/components/list'
 import {BadgeViewer} from '#/plugin/open-badge/tools/badges/badge/components/viewer'
 import {BadgeForm} from '#/plugin/open-badge/tools/badges/badge/components/form'
 import {AssertionForm} from '#/plugin/open-badge/tools/badges/assertion/components/form'
-/*
-url: props.currentContext === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}]: ['apiv2_badge-class_list'],
-autoload: true*/
 
 const Tool = props =>
   <ToolPage
@@ -53,7 +50,7 @@ const Tool = props =>
           path: '/new',
           disabled: false,
           component: Badge,
-          onEnter: () => props.openBadge(null, props.workspace)
+          onEnter: () => props.openBadge(null, props.currentContext.data)
         }, {
           path: '/my-badges',
           render: () => {
@@ -71,7 +68,7 @@ const Tool = props =>
           render: () => {
             const AllBadges = (
               <Badges
-                url={props.currentContext === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.workspace.uuid}]: ['apiv2_badge-class_list']}
+                url={props.currentContext.type === 'workspace' ? ['apiv2_badge-class_workspace_badge_list', {workspace: props.currentContext.data.uuid}]: ['apiv2_badge-class_list']}
                 name={selectors.STORE_NAME +'.badges.list'}
               />
             )
@@ -88,7 +85,7 @@ const Tool = props =>
 
             return BadgeViewerComponent
           },
-          onEnter: (params) => props.openBadge(params.id, props.workspace),
+          onEnter: (params) => props.openBadge(params.id, props.currentContext.data),
           exact: true
         }, {
           path: '/badges/:id/form',
@@ -99,7 +96,7 @@ const Tool = props =>
 
             return BadgeEditorComponent
           },
-          onEnter: (params) => props.openBadge(params.id, props.workspace)
+          onEnter: (params) => props.openBadge(params.id, props.currentContext.data)
         }, {
           path: '/badges/:badgeId/assertion/:id',
           component: AssertionForm,

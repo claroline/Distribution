@@ -16,9 +16,8 @@ class AdministrationListener
      *     "parameters" = @DI\Inject("claroline.serializer.parameters")
      * })
      */
-    public function __construct(
-        ParametersSerializer $parameters
-    ) {
+    public function __construct(ParametersSerializer $parameters)
+    {
         $this->parameters = $parameters;
     }
 

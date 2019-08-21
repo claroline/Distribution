@@ -22,6 +22,13 @@ const BadgeList = {
       type: 'boolean',
       displayed: true,
       filterable: true
+    },
+    {
+      name: 'workspace',
+      label: trans('workspace'),
+      type: 'workspace',
+      displayed: true,
+      filterable: true
     }
   ],
   card: BadgeCard
