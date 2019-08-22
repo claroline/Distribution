@@ -24,7 +24,6 @@
 
 ## DEV DEPENDENCIES
 - sensio/generator-bundle
-- sensio/distribution-bundle
 
 
 ## OURS
