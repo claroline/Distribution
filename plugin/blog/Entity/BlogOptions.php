@@ -4,7 +4,6 @@ namespace Icap\BlogBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Expose;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -145,14 +144,11 @@ class BlogOptions
      * @var UploadedFile
      *
      * @Assert\Image()
-     *
-     * @Expose
      */
     protected $file;
 
     /**
      * @var string
-     * @Expose
      */
     protected $oldFileName = null;
 
