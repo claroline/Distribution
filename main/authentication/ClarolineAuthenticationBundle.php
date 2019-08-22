@@ -26,7 +26,7 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
     {
         parent::build($container);
 
-        //$container->addCompilerPass(new SsoServerPass());
+        $container->addCompilerPass(new SsoServerPass());
         $container->addCompilerPass(new OauthConfigPass());
     }
 
