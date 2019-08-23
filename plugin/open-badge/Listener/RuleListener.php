@@ -11,7 +11,9 @@
 
 namespace Claroline\OpenBadgeBundle\Listener;
 
-use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
+use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -23,13 +25,12 @@ class RuleListener
      * BadgeListener constructor.
      *
      * @DI\InjectParams({
-     *     "serializer"        = @DI\Inject("claroline.api.serializer")
+     *     "om" = @DI\Inject("claroline.claroline.persistence.object_manager")
      * })
      */
-    public function __construct(
-        SerializerProvider $serializer
-    ) {
-        $this->serializer = $serializer;
+    public function __construct(ObjectManager $om)
+    {
+        $this->om = $om;
     }
 
     /**
@@ -41,6 +42,44 @@ class RuleListener
     {
         $evaluation = $event->getEvaluation();
 
-        //check the list of rules for the current node
+        $rules = $this->om->getRepository(Rule::class)->findBy(['node' => $evaluation->getResourceNode()]);
+
+        foreach ($rules as $rule) {
+            switch ($rule->getAction()) {
+                case Rule::RULE_RESOURCE_PASSED:
+                  break;
+                case Rule::RULE_RESOURCE_SCORE_ABOVE:
+                  break;
+                case Rule::RULE_RESOURCE_COMPLETED_ABOVE:
+                  break;
+                case Rule::RULE_RESOURCE_PARTICIPATED:
+                    break;
+                default:
+                  break;
+            }
+        }
+    }
+
+    /**
+     * @DI\Observe("workspace_evaluation")
+     */
+    public function onWorkspaceEvaluation($event)
+    {
+        $evaluation = $event->getEvaluation();
+
+        $rules = $this->om->getRepository(Rule::class)->findBy(['workspace' => $evaluation->getWorkspace()]);
+
+        foreach ($rules as $rule) {
+            switch ($rule->getAction()) {
+                case Rule::RULE_WORKSPACE_PASSED:
+                  break;
+                case Rule::RULE_WORKSPACE_SCORE_ABOVE:
+                  break;
+                case Rule::RULE_WORKSPACE_COMPLETED_ABOVE:
+                  break;
+                default:
+                  break;
+            }
+        }
     }
 }
