@@ -30,9 +30,4 @@ class ClarolineOpenBadgeBundle extends DistributionPluginBundle
     {
         return ['Claroline\\CoreBundle\\ClarolineCoreBundle'];
     }
-
-    public function getRequiredFixturesDirectory($environment)
-    {
-        return 'DataFixtures/Required';
-    }
 }
