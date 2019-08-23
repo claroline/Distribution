@@ -14,20 +14,24 @@ export const actions = {}
 
 actions.createTab = (context, administration, position, currentUser, navigate) => (dispatch) => {
   const newTabId = makeId()
+  const newSlug = 'new' + newTabId
 
   dispatch(formActions.updateProp(selectors.FORM_NAME, `[${position}]`, merge({}, TabTypes.defaultProps, {
     id: newTabId,
     title: trans('tab'),
     longTitle: trans('tab'),
     position: position + 1,
-    type: administration ? 'administration' : context.type,
+    slug: newSlug,
+    type: administration ?
+      'desktop' === context.type ? 'administration' : 'admin' :
+      context.type,
     administration: administration,
     user: context.type === 'desktop' && !administration ? currentUser : null,
     workspace: context.type === 'workspace' ? {uuid: context.data.uuid} : null
   })))
 
   // open new tab
-  navigate(`/edit/${newTabId}`)
+  navigate(`/edit/${newSlug}`)
 }
 
 actions.deleteTab = (tabs, tabToDelete) => (dispatch) => {

@@ -114,7 +114,7 @@ class WorkspaceController
     }
 
     /**
-     * @EXT\Route("/{workspaceId}", name="claro_workspace_open")
+     * @EXT\Route("/{slug}", name="claro_workspace_open")
      * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param int     $workspaceId - the id or uuid of the WS to open
@@ -125,10 +125,11 @@ class WorkspaceController
      *
      * @return JsonResponse
      */
-    public function openAction($workspaceId, User $user = null, Request $request)
+    public function openAction($slug, User $user = null, Request $request)
     {
         /** @var Workspace $workspace */
-        $workspace = $this->om->getObject(['id' => $workspaceId], Workspace::class);
+        $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['slug' => $slug]);
+
         if (!$workspace) {
             throw new NotFoundHttpException('Workspace not found');
         }
@@ -175,7 +176,10 @@ class WorkspaceController
             ]);
         }
 
-        return new JsonResponse($accessErrors, 403);
+        return new JsonResponse([
+            'workspace' => $this->serializer->serialize($workspace),
+            'accessErrors' => $accessErrors,
+        ]);
     }
 
     /**
@@ -197,6 +201,7 @@ class WorkspaceController
     public function openToolAction(Workspace $workspace, $toolName)
     {
         $tool = $this->toolManager->getToolByName($toolName);
+
         if (!$tool) {
             throw new NotFoundHttpException('Tool not found');
         }
@@ -211,6 +216,32 @@ class WorkspaceController
         $this->eventDispatcher->dispatch('log', new LogWorkspaceToolReadEvent($workspace, $toolName));
 
         return new JsonResponse($event->getData());
+    }
+
+    /**
+     * Submit access code.
+     *
+     * @EXT\Route(
+     *     "/unlock/{id}",
+     *     name="claro_workspace_unlock"
+     * )
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter(
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     *
+     * @param Workspace $workspace
+     * @param Request   $request
+     *
+     * @return JsonResponse
+     */
+    public function unlockAction(Workspace $workspace, Request $request)
+    {
+        $this->restrictionsManager->unlock($workspace, json_decode($request->getContent(), true)['code']);
+
+        return new JsonResponse(null, 204);
     }
 
     private function forceWorkspaceLang(Workspace $workspace, Request $request)

@@ -8,6 +8,7 @@ import {ContentLoader} from '#/main/app/content/components/loader'
 import {ToolMain} from '#/main/core/tool/containers/main'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {WorkspaceRestrictions} from '#/main/core/workspace/components/restrictions'
+import {route as workspaceRoute} from '#/main/core/workspace/routing'
 
 const WorkspaceMain = (props) => {
   if (!props.loaded) {
@@ -25,6 +26,9 @@ const WorkspaceMain = (props) => {
         errors={props.accessErrors}
         dismiss={props.dismissRestrictions}
         managed={props.managed}
+        workspace={props.workspace}
+        checkAccessCode={(code) => props.checkAccessCode(props.workspace, code)}
+        selfRegister={() => props.selfRegister(props.workspace)}
       />
     )
   }
@@ -32,7 +36,7 @@ const WorkspaceMain = (props) => {
   if (!isEmpty(props.workspace)) {
     return (
       <Routes
-        path={`/desktop/workspaces/open/${props.workspace.id}`}
+        path={workspaceRoute(props.workspace)}
         routes={[
           {
             path: '/:toolName',
@@ -74,7 +78,9 @@ WorkspaceMain.propTypes = {
   })),
   openTool: T.func.isRequired,
   accessErrors: T.object,
-  dismissRestrictions: T.func.isRequired
+  dismissRestrictions: T.func.isRequired,
+  checkAccessCode: T.func,
+  selfRegister: T.func
 }
 
 WorkspaceMain.defaultProps = {

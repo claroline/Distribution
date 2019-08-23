@@ -133,6 +133,7 @@ class ResourceNodeSerializer
                 'autoId' => $resourceNode->getWorkspace()->getId(), // because open url does not work with uuid
                 'name' => $resourceNode->getWorkspace()->getName(),
                 'code' => $resourceNode->getWorkspace()->getCode(),
+                'meta' => ['slug' => $resourceNode->getWorkspace()->getSlug()],
             ];
         }
 
@@ -151,6 +152,7 @@ class ResourceNodeSerializer
                 'id' => $parent->getUuid(),
                 'autoId' => $parent->getId(), // TODO : remove me
                 'name' => $parent->getName(),
+                'meta' => ['slug' => $parent->getSlug()],
             ];
         }
 
@@ -262,6 +264,7 @@ class ResourceNodeSerializer
             'active' => $resourceNode->isActive(),
             'views' => $resourceNode->getViewsCount(),
             'commentsActivated' => $resourceNode->isCommentsActivated(),
+            'slug' => $resourceNode->getSlug(),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
