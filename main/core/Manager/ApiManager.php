@@ -48,7 +48,6 @@ class ApiManager
     ) {
         $this->om = $om;
         $this->curlManager = $curlManager;
-        $this->viewHandler = $viewHandler;
         $this->container = $container;
         $this->transfer = $transfer;
         $this->finder = $finder;
