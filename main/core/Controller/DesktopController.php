@@ -118,12 +118,13 @@ class DesktopController
     public function openToolAction($toolName)
     {
         $tool = $this->toolManager->getToolByName($toolName);
+
         if (!$tool) {
             throw new NotFoundHttpException('Tool not found');
         }
 
         if (!$this->authorization->isGranted('OPEN', $tool)) {
-            throw new AccessDeniedException();
+            //      throw new AccessDeniedException();
         }
 
         /** @var DisplayToolEvent $event */

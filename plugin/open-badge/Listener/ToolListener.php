@@ -56,8 +56,8 @@ class ToolListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        $workspace = $event->getWorkspace();
+        $event->setData([]);
 
-        $event->setData(['workspace' => $this->serializer->serialize($workspace)]);
+        $event->stopPropagation();
     }
 }

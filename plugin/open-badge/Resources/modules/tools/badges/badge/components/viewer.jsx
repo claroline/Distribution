@@ -13,8 +13,8 @@ import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSection} from '#/main/app/content/form/components/sections'
 
-import {AssertionList} from '#/plugin/open-badge/tools/badges/assertion/components/assertion-list'
-import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/badge-card'
+import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/card'
+import {UserCard} from '#/main/core/user/components/card'
 
 import {
   selectors as formSelect
@@ -60,14 +60,37 @@ const BadgeViewerComponent = (props) => {
               }}
               primaryAction={(row) => ({
                 type: LINK_BUTTON,
-                target: props.path + `/badges/assertion/${row.id}`,
+                target: props.path + `/badges/${props.badge.id}/assertion/${row.id}`,
                 label: trans('', {}, 'actions')
               })}
               delete={{
                 url: ['apiv2_badge-class_remove_users', {badge: props.badge.id}]
               }}
-              definition={AssertionList.definition}
-              card={AssertionList.card}
+              definition={[
+                {
+                  name: 'user.username',
+                  type: 'username',
+                  label: trans('username'),
+                  displayed: true,
+                  primary: true
+                }, {
+                  name: 'user.lastName',
+                  type: 'string',
+                  label: trans('last_name'),
+                  displayed: true
+                }, {
+                  name: 'user.firstName',
+                  type: 'string',
+                  label: trans('first_name'),
+                  displayed: true
+                }, {
+                  name: 'user.email',
+                  type: 'email',
+                  label: trans('email'),
+                  displayed: true
+                }
+              ]}
+              card={UserCard}
             />:
             <div>{trans('badge_must_be_enabled or assignable')}</div>
           }
@@ -79,14 +102,11 @@ const BadgeViewerComponent = (props) => {
 
 const BadgeViewer = connect(
   (state) => ({
-    currentContext: state.currentContext,
+    currentContext: toolSelectors.context(state),
     path: toolSelectors.path(state),
     badge: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.badges.current'))
   }),
   (dispatch) =>({
-    save(badge, workspace, isNew) {
-      dispatch(actions.save(selectors.STORE_NAME  + '.badges.current', badge, workspace, isNew))
-    },
     addUsers(badgeId, selected) {
       dispatch(actions.addUsers(badgeId, selected))
     }

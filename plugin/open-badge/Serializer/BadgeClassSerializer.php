@@ -17,6 +17,8 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
+use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
+use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -41,6 +43,7 @@ class BadgeClassSerializer
      *     "criteriaSerializer"     = @DI\Inject("claroline.serializer.open_badge.criteria"),
      *     "imageSerializer"        = @DI\Inject("claroline.serializer.open_badge.image"),
      *     "ruleSerializer"         = @DI\Inject("claroline.serializer.open_badge.rule"),
+     *     "organizationManager"    = @DI\Inject("claroline.manager.organization.organization_manager"),
      *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
      *     "profileSerializer"      = @DI\Inject("claroline.serializer.open_badge.profile"),
      *     "tokenStorage"           = @DI\Inject("security.token_storage"),
@@ -57,6 +60,7 @@ class BadgeClassSerializer
         FileUtilities $fileUt,
         RouterInterface $router,
         ObjectManager $om,
+        OrganizationManager $organizationManager,
         CriteriaSerializer $criteriaSerializer,
         ProfileSerializer $profileSerializer,
         EventDispatcherInterface $eventDispatcher,
@@ -75,6 +79,7 @@ class BadgeClassSerializer
         $this->userSerializer = $userSerializer;
         $this->groupSerializer = $groupSerializer;
         $this->om = $om;
+        $this->organizationManager = $organizationManager;
         $this->criteriaSerializer = $criteriaSerializer;
         $this->profileSerializer = $profileSerializer;
         $this->imageSerializer = $imageSerializer;
@@ -107,14 +112,10 @@ class BadgeClassSerializer
                   'url' => $badge->getImage(),
               ])
             ) : null,
-            'issuer' => $badge->getIssuer() ? $this->organizationSerializer->serialize($badge->getIssuer()) : null,
+            'issuer' => $this->organizationSerializer->serialize($badge->getIssuer() ? $badge->getIssuer() : $this->organizationManager->getDefault(true)),
             //only in non list mode I guess
             'tags' => $this->serializeTags($badge),
         ];
-
-        if (!in_array(APIOptions::SERIALIZE_LIST, $options)) {
-            $data['assignable'] = $this->isAssignable($badge);
-        }
 
         if (in_array(Options::ENFORCE_OPEN_BADGE_JSON, $options)) {
             $data['id'] = $this->router->generate('apiv2_open_badge__badge_class', ['badge' => $badge->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -135,15 +136,17 @@ class BadgeClassSerializer
                'updated' => $badge->getUpdated()->format('Y-m-d\TH:i:s'),
                'enabled' => $badge->getEnabled(),
             ];
+            $data['permissions'] = $this->serializePermissions($badge);
+            $data['assignable'] = $data['permissions']['assign'];
             $data['rules'] = array_map(function (Rule $rule) {
                 return $this->ruleSerializer->serialize($rule);
             }, $badge->getRules()->toArray());
             $data['workspace'] = $badge->getWorkspace() ? $this->workspaceSerializer->serialize($badge->getWorkspace(), [APIOptions::SERIALIZE_MINIMAL]) : null;
             $data['allowedUsers'] = array_map(function (User $user) {
-                return $this->userSerializer->serialize($user);
+                return $this->userSerializer->serialize($user, [APIOptions::SERIALIZE_MINIMAL]);
             }, $badge->getAllowedIssuers()->toArray());
             $data['allowedGroups'] = array_map(function (Group $group) {
-                return $this->groupSerializer->serialize($group);
+                return $this->groupSerializer->serialize($group, [APIOptions::SERIALIZE_MINIMAL]);
             }, $badge->getAllowedIssuersGroups()->toArray());
         }
 
@@ -185,7 +188,9 @@ class BadgeClassSerializer
             $workspace = $this->om->getRepository(Workspace::class)->find($data['workspace']['id']);
             $badge->setWorkspace($workspace);
             //main orga maybe instead ? this is fishy
-            $badge->setIssuer($workspace->getOrganizations()[0]);
+            if (count($workspace->getOrganizations()) > 1) {
+                $badge->setIssuer($workspace->getOrganizations()[0]);
+            }
         }
 
         if (isset($data['tags'])) {
@@ -247,70 +252,6 @@ class BadgeClassSerializer
         $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
     }
 
-    private function isAssignable(BadgeClass $badge)
-    {
-        $issuingModes = $badge->getIssuingMode();
-        $currentUser = $this->tokenStorage->getToken()->getUser();
-
-        if (!$currentUser instanceof User) {
-            return false;
-        }
-
-        $roles = array_map(function ($role) {
-            return $role->getRole();
-        }, $this->tokenStorage->getToken()->getRoles());
-
-        if (in_array('ROLE_ADMIN', $roles)) {
-            return true;
-        }
-
-        foreach ($issuingModes as $mode) {
-            switch ($mode) {
-                case BadgeClass::ISSUING_MODE_ORGANIZATION:
-                    $organization = $badge->getIssuer();
-                    $userOrganizations = $currentUser->getAdministratedOrganizations();
-                    foreach ($userOrganizations as $userOrga) {
-                        if ($userOrga->getId() === $organization->getId()) {
-                            return true;
-                        }
-                    }
-                    break;
-                case BadgeClass::ISSUING_MODE_USER:
-                    $allowedIssuers = $badge->getAllowedIssuers();
-                    foreach ($allowedIssuers as $allowed) {
-                        if ($allowed->getId() === $currentUser->getId()) {
-                            return true;
-                        }
-                    }
-                    break;
-                case BadgeClass::ISSUING_MODE_GROUP:
-                    $allowedIssuers = $badge->getAllowedIssuersGroups();
-                    foreach ($allowedIssuers as $allowed) {
-                        foreach ($currentUser->getGroups() as $group) {
-                            if ($group->getId() === $allowed->getId()) {
-                                return true;
-                            }
-                        }
-                    }
-                    break;
-                case BadgeClass::ISSaUING_MODE_PEER:
-                    break;
-                case BadgeClass::ISSUING_MODE_WORKSPACE:
-                    $workspace = $badge->getWorkspace();
-                    $managerRole = $workspace->getManagerRole();
-
-                    if (in_array($managerRole, $roles)) {
-                        return true;
-                    }
-                    break;
-                case BadgeClass::ISSUING_MODE_AUTO:
-                  break;
-            }
-        }
-
-        return false;
-    }
-
     private function serializeTags(BadgeClass $badge)
     {
         $event = new GenericDataEvent([
@@ -319,7 +260,95 @@ class BadgeClassSerializer
         ]);
         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
 
-        return $event->getResponse();
+        $tags = $event->getResponse();
+
+        return implode(',', $tags);
+    }
+
+    private function serializePermissions(BadgeClass $badge)
+    {
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+        $issuingModes = $badge->getIssuingMode();
+
+        //we might want to move this logic somewhere else
+        $assign = false;
+        $isOrganizationManager = false;
+        $allowedUserIds = [];
+
+        $roles = array_map(function ($role) {
+            return $role->getRole();
+        }, $this->tokenStorage->getToken()->getRoles());
+
+        //check if user manager of badge organization (issuer)
+        $administratedOrganizationsIds = array_map(function (Organization $organization) {
+            return $organization->getId();
+        }, $currentUser->getAdministratedOrganizations()->toArray());
+
+        if ($badge->getIssuer() && in_array($badge->getIssuer()->getId(), $administratedOrganizationsIds)) {
+            $isOrganizationManager = true;
+        }
+        //check if user in allowed users or groups
+
+        foreach ($issuingModes as $mode) {
+            switch ($mode) {
+                case BadgeClass::ISSUING_MODE_USER:
+                    $allowedUserIds = array_merge(array_map(function (User $user) {
+                        return $user->getId();
+                    }, $badge->getAllowedIssuers()->toArray(), $allowedUserIds));
+                    break;
+                case BadgeClass::ISSUING_MODE_GROUP:
+                    $users = [];
+
+                    foreach ($this->getAllowedIssuersGroups() as $group) {
+                        foreach ($group->getUsers() as $user) {
+                            $users[$user->getId()] = $user;
+                        }
+                    }
+
+                    $allowedUserIds = array_merge(array_map(function (User $user) {
+                        return $user->getId();
+                    }, $users, $allowedUserIds));
+                    break;
+                case BadgeClass::ISSUING_MODE_PEER:
+                    //check if current user already has the badge
+                    $assertion = $this->om->getRepository(Assertion::class)->findOneBy(['badge' => $badge, 'recipient' => $currentUser]);
+
+                    if ($assertion) {
+                        $assign = true;
+                    }
+                    break;
+                case BadgeClass::ISSUING_MODE_WORKSPACE:
+                    $workspace = $badge->getWorkspace();
+                    $managerRole = $workspace->getManagerRole();
+                    if (in_array($managerRole, $roles)) {
+                        $assign = true;
+                    }
+                    break;
+                case BadgeClass::ISSUING_MODE_AUTO:
+                    //user can't assign if it's automatic
+                  break;
+            }
+        }
+
+        if (in_array($currentUser->getId(), $allowedUserIds)) {
+            $assign = true;
+        }
+
+        $assign = $assign | $isOrganizationManager;
+        $isAdmin = false;
+        //check administrator status here
+
+        foreach ($this->tokenStorage->getToken()->getRoles() as $role) {
+            if ('ROLE_ADMIN' === $role->getRole()) {
+                $isAdmin = true;
+            }
+        }
+
+        return [
+          'assign' => (bool) ($assign | $isAdmin),
+          'edit' => (bool) ($isOrganizationManager | $isAdmin),
+          'delete' => (bool) ($isOrganizationManager | $isAdmin),
+        ];
     }
 
     public function getClass()
