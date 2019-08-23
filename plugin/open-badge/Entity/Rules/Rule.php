@@ -20,13 +20,18 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Rule
 {
+    //[parcours/exo/dropzone]
     const RULE_RESOURCE_PASSED = 'resource_passed';
+    //tag [evaluation]
     const RULE_RESOURCE_SCORE_ABOVE = 'resource_score_above';
+    //tlm //exclure les répertoires
     const RULE_RESOURCE_COMPLETED_ABOVE = 'resource_completed_above';
+
     const RULE_WORKSPACE_PASSED = 'workspace_passed';
     const RULE_WORKSPACE_SCORE_ABOVE = 'workspace_score_above';
     const RULE_WORKSPACE_COMPLETED_ABOVE = 'workspace_completed_above';
     const RULE_RESOURCE_PARTICIPATED = 'resource_participated';
+
     const IN_GROUP = 'in_group';
     const IN_ROLE = 'in_role';
     const RULE_PROFILE_COMPLETED = 'profile_completed';
@@ -62,6 +67,26 @@ class Rule
      * @var array
      */
     private $data = [];
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode")
+     */
+    private $node;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
+     */
+    private $workspace;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     */
+    private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Group")
+     */
+    private $group;
 
     public function __construct()
     {
@@ -101,5 +126,45 @@ class Rule
     public function getBadge()
     {
         return $this->badge;
+    }
+
+    public function setResourceNode($node)
+    {
+        $this->node = $node;
+    }
+
+    public function getResourceNode()
+    {
+        return $this->node;
+    }
+
+    public function setWorkspace($workspace)
+    {
+        $this->workspace = $workspace;
+    }
+
+    public function getWorkspace()
+    {
+        return $this->workspace;
+    }
+
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 }

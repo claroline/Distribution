@@ -31,4 +31,16 @@ class RuleListener
     ) {
         $this->serializer = $serializer;
     }
+
+    /**
+     * @DI\Observe("resource_evaluation")
+     *
+     * @param ResourceEvaluationEvent $event
+     */
+    public function onResourceEvaluation(ResourceEvaluationEvent $event)
+    {
+        $evaluation = $event->getEvaluation();
+
+        //check the list of rules for the current node
+    }
 }

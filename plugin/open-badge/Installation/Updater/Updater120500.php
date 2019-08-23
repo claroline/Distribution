@@ -19,12 +19,5 @@ class Updater120500 extends Updater
     public function __construct(ContainerInterface $container, $logger = null)
     {
         $this->logger = $logger;
-
-        //$this->ruleManager = $container->get('claroline.manager.open_badge.rule_manager');
-    }
-
-    public function postUpdate()
-    {
-        $this->ruleManager->createRules();
     }
 }

@@ -124,7 +124,7 @@ class DesktopController
         }
 
         if (!$this->authorization->isGranted('OPEN', $tool)) {
-            //      throw new AccessDeniedException();
+            throw new AccessDeniedException();
         }
 
         /** @var DisplayToolEvent $event */
