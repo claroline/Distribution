@@ -41,7 +41,6 @@
         "knplabs/knp-snappy-bundle": "1.5.2",
         "meyfa/php-svg": "0.8.0",
         "mrclay/minify": "3.0.3",
-        "natxet/cssmin": "3.0.6",
         "postal/postal": "1.0",
         "psr/log": "1.0.2",
         "ramsey/uuid": "3.7.3",
