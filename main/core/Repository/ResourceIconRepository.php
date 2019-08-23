@@ -11,10 +11,17 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ResourceIconRepository extends EntityRepository
+class ResourceIconRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, ResourceIcon::class);
+    }
+
     public function findCustomIcons()
     {
         $dql = 'SELECT i FROM Claroline\CoreBundle\Entity\Resource\ResourceIcon i

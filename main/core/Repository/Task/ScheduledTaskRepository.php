@@ -11,10 +11,17 @@
 
 namespace Claroline\CoreBundle\Repository\Task;
 
-use Doctrine\ORM\EntityRepository;
+use Claroline\CoreBundle\Entity\Task\ScheduledTask;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ScheduledTaskRepository extends EntityRepository
+class ScheduledTaskRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, ScheduledTask::class);
+    }
+
     public function findTasksToExecute()
     {
         $dql = '

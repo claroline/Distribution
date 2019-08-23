@@ -10,10 +10,17 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Claroline\CoreBundle\Entity\Facet\GeneralFacetPreference;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class GeneralFacetPreferenceRepository extends EntityRepository
+class GeneralFacetPreferenceRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, GeneralFacetPreference::class);
+    }
+
     public function getAdminPublicProfilePreferenceByRole(array $roles)
     {
         if (in_array('ROLE_ADMIN', $roles)) {

@@ -13,10 +13,16 @@ namespace Claroline\CoreBundle\Repository;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Tool\ToolRights;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ToolRightsRepository extends EntityRepository
+class ToolRightsRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, ToolRights::class);
+    }
+
     public function findRightsByOrderedTool(
         OrderedTool $orderedTool,
         $executeQuery = true

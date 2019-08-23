@@ -11,11 +11,18 @@
 
 namespace Claroline\CoreBundle\Repository\Facet;
 
+use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class FieldFacetValueRepository extends EntityRepository
+class FieldFacetValueRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, FieldFacetValue::class);
+    }
+
     public function findPlatformValuesByUser(User $user)
     {
         return $this->_em

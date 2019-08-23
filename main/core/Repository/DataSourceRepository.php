@@ -12,10 +12,16 @@
 namespace Claroline\CoreBundle\Repository;
 
 use Claroline\CoreBundle\Entity\DataSource;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class DataSourceRepository extends EntityRepository
+class DataSourceRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, DataSource::class);
+    }
+
     /**
      * Finds all available data sources in the platform.
      * It only grabs sources from enabled plugins.

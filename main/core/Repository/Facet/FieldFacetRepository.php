@@ -11,10 +11,17 @@
 
 namespace Claroline\CoreBundle\Repository\Facet;
 
-use Doctrine\ORM\EntityRepository;
+use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class FieldFacetRepository extends EntityRepository
+class FieldFacetRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, FieldFacet::class);
+    }
+
     public function findByRoles(array $roles)
     {
         $dql = '

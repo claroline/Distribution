@@ -14,10 +14,16 @@ namespace Claroline\CoreBundle\Repository;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Role;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ResourceRightsRepository extends EntityRepository
+class ResourceRightsRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, ResourceRights::class);
+    }
+
     /**
      * Returns the maximum rights on a given resource for a set of roles.
      * Used by the ResourceVoter.

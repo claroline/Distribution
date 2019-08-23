@@ -11,10 +11,17 @@
 
 namespace Claroline\CoreBundle\Repository\Organization;
 
-use Doctrine\ORM\EntityRepository;
+use Claroline\CoreBundle\Entity\Organization\Organization;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class OrganizationRepository extends EntityRepository
+class OrganizationRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Organization::class);
+    }
+
     public function findOrganizationsByIds(array $ids)
     {
         $dql = '

@@ -11,12 +11,19 @@
 
 namespace Claroline\CoreBundle\Repository\Oauth;
 
+use Claroline\CoreBundle\Entity\Oauth\Client;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ClientRepository extends EntityRepository
+class ClientRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Client::class);
+    }
+
     /**
      * @param User $user
      * @param bool $executeQuery

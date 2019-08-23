@@ -12,17 +12,17 @@
 namespace Claroline\CoreBundle\Repository\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Claroline\CoreBundle\Manager\PluginManager;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ResourceActionRepository extends EntityRepository implements ContainerAwareInterface
+class ResourceActionRepository extends ServiceEntityRepository
 {
-    private $bundles = [];
-
-    public function setContainer(ContainerInterface $container = null)
+    public function __construct(RegistryInterface $registry, PluginManager $manager)
     {
-        $this->bundles = $container->get('claroline.manager.plugin_manager')->getEnabled(true);
+        $this->bundles = $manager->getEnabled(true);
+
+        parent::__construct($registry, MenuAction::class);
     }
 
     /**

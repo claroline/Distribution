@@ -2,9 +2,22 @@
 
 services:
     _defaults:
-        autowire: false #default should be true now
-        autoconfigure: false #default should be true now
-        public: true #default should be false now
+        autowire: true #change to true
+        autoconfigure: true #change to true
+        public: false #default should be false now
+
+
+    #         tags: [doctrine.repository_service]
+
+        # Register all classes in these directories as services
+
+    _instanceof:
+        Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository:
+            autowire: true
+            tags: [doctrine.repository_service]
+
+    Claroline\CoreBundle\Repository\:
+         resource: '../../Repository/*'
 
     # array injection with annotations is not supported
     claroline.plugin.validator:
@@ -17,19 +30,6 @@ services:
     claroline.symfony_yaml:
         class: Symfony\Component\Yaml\Parser
         public: false
-
-    # doctrine repositories
-    claroline.repository.log:
-        class: Claroline\CoreBundle\Repository\Log\LogRepository
-        factory: ["@doctrine.orm.entity_manager", getRepository]
-        arguments:
-            - Claroline\CoreBundle\Entity\Log\Log
-
-    claroline.repository.user:
-        class: Claroline\CoreBundle\Repository\UserRepository
-        factory: ["@doctrine.orm.entity_manager", getRepository]
-        arguments:
-            - Claroline\CoreBundle\Entity\User
 
     # pseudo-services used for dynamic parameter injection
     # (see Claroline\CoreBundle\DependencyInjection\Compiler\DynamicConfigPass
