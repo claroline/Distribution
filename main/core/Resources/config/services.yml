@@ -13,11 +13,43 @@ services:
 
     _instanceof:
         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository:
-            autowire: true
+            autowire: false
             tags: [doctrine.repository_service]
 
-    Claroline\CoreBundle\Repository\Service\:
-         resource: '../../Repository/Service/*'
+    Claroline\CoreBundle\Repository\Service\AdministrationToolRepository:
+        arguments:
+          - '@Symfony\Bridge\Doctrine\RegistryInterface'
+          - '@claroline.manager.plugin_manager'
+
+    Claroline\CoreBundle\Repository\Service\OrderedToolRepository:
+        arguments:
+          - '@Symfony\Bridge\Doctrine\RegistryInterface'
+          - '@claroline.manager.plugin_manager'
+
+    Claroline\CoreBundle\Repository\Service\ResourceActionRepository:
+        arguments:
+          - '@Symfony\Bridge\Doctrine\RegistryInterface'
+          - '@claroline.manager.plugin_manager'
+
+    Claroline\CoreBundle\Repository\Service\ResourceTypeRepository:
+        arguments:
+          - '@Symfony\Bridge\Doctrine\RegistryInterface'
+          - '@claroline.manager.plugin_manager'
+
+    Claroline\CoreBundle\Repository\Service\ToolRepository:
+        arguments:
+          - '@Symfony\Bridge\Doctrine\RegistryInterface'
+          - '@claroline.manager.plugin_manager'
+
+    Claroline\CoreBundle\Repository\Service\UserRepository:
+        arguments:
+          - '@Symfony\Bridge\Doctrine\RegistryInterface'
+          - '@claroline.config.platform_config_handler'
+
+    Claroline\CoreBundle\Repository\Service\LogRepository:
+        arguments:
+          - '@Symfony\Bridge\Doctrine\RegistryInterface'
+          - '@claroline.api.finder.log'
 
     # array injection with annotations is not supported
     claroline.plugin.validator:
