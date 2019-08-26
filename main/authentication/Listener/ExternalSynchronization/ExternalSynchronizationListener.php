@@ -17,7 +17,6 @@ use Claroline\AuthenticationBundle\Manager\ExternalSynchronization\ExternalSynch
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogUserDeleteEvent;
 use Claroline\CoreBundle\Event\RenderExternalGroupsButtonEvent;
-use Claroline\CoreBundle\Menu\ConfigureMenuEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -59,27 +58,6 @@ class ExternalSynchronizationListener
         $this->templating = $templating;
         $this->externalSyncManager = $externalSyncManager;
         $this->externalSyncUserManager = $externalSyncUserManager;
-    }
-
-    /**
-     * @DI\Observe("claroline_external_parameters_menu_configure")
-     *
-     * @param \Claroline\CoreBundle\Menu\ConfigureMenuEvent $event
-     *
-     * @return \Knp\Menu\ItemInterface $menu
-     */
-    public function onExternalAuthenticationMenuConfigure(ConfigureMenuEvent $event)
-    {
-        $name = $this->translator->trans('external_user_group_parameters', [], 'claro_external_user_group');
-        $menu = $event->getMenu();
-        $menu->addChild(
-            $name,
-            [
-                'route' => 'claro_admin_external_sync_config_index',
-            ]
-        )->setExtra('name', $name);
-
-        return $menu;
     }
 
     /**
