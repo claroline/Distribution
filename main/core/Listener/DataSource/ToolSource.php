@@ -99,8 +99,8 @@ class ToolSource
         ];
         $tools = $this->finder->search(Tool::class, $options);
 
-        foreach ($tools['data'] as $key => $toolData) {
-            $tools['data'][$key]['context'] = $context;
+        for ($i = 0; $i < count($tools['data']); ++$i) {
+            $tools['data'][$i]['context'] = $context;
         }
         $event->setData($tools);
         $event->stopPropagation();
