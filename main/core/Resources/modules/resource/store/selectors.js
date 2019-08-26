@@ -9,9 +9,9 @@ const STORE_NAME = 'resource'
 
 const store = (state) => state[STORE_NAME]
 
-const id = createSelector(
+const slug = createSelector(
   [store],
-  (store) => store.id
+  (store) => store.slug
 )
 
 const resourceNode = createSelector(
@@ -19,11 +19,18 @@ const resourceNode = createSelector(
   (store) => store.resourceNode || {}
 )
 
+const id = createSelector(
+  [resourceNode],
+  (resourceNode) => resourceNode.id
+)
+
 const basePath = toolSelectors.path
 
 const path = createSelector(
   [basePath, resourceNode],
-  (basePath, resourceNode) => basePath + '/' + resourceNode.id
+  (basePath, resourceNode) => {
+    return basePath + '/' + (resourceNode.meta ? resourceNode.meta.slug: null)
+  }
 )
 
 const embedded = createSelector(
@@ -153,6 +160,7 @@ export const selectors = {
   serverErrors,
   // node
   resourceNode,
+  slug,
   id,
   workspace,
   workspaceId,

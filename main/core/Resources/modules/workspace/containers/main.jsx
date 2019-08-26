@@ -6,6 +6,7 @@ import {withReducer} from '#/main/app/store/components/withReducer'
 import {constants as toolConst} from '#/main/core/tool/constants'
 import {actions as toolActions} from '#/main/core/tool/store'
 
+import {route} from '#/main/core/workspace/routing'
 import {WorkspaceMain as WorkspaceMainComponent} from '#/main/core/workspace/components/main'
 import {actions, reducer, selectors} from '#/main/core/workspace/store'
 
@@ -26,10 +27,16 @@ const WorkspaceMain = withRouter(
             type: toolConst.TOOL_WORKSPACE,
             url: ['claro_workspace_open_tool', {id: workspace.id, toolName: toolName}],
             data: workspace // TODO : find a way to not duplicate workspace data
-          }, '/desktop/workspaces/open/'+workspace.id))
+          }, route(workspace)))
         },
         dismissRestrictions() {
           dispatch(actions.dismissRestrictions())
+        },
+        checkAccessCode(workspace, code) {
+          dispatch(actions.checkAccessCode(workspace, code))
+        },
+        selfRegister(workspace) {
+          dispatch(actions.selfRegister(workspace))
         }
       })
     )(WorkspaceMainComponent)

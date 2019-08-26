@@ -133,6 +133,8 @@ class Workspace
      * @ORM\OrderBy({"order" = "ASC"})
      *
      * @var OrderedTool[]|ArrayCollection
+     *
+     * @todo : remove me. relation should be unidirectional
      */
     protected $orderedTools;
 
@@ -223,6 +225,15 @@ class Workspace
     protected $options;
 
     /**
+     * Display user progression when the workspace is rendered.
+     *
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $showProgression = true;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User",
      *     mappedBy="personalWorkspace",
@@ -245,6 +256,13 @@ class Workspace
 
     //not mapped. Used for creation
     private $workspaceModel;
+
+    /**
+     * @ORM\Column(name="archived", type="boolean")
+     *
+     * @var bool
+     */
+    protected $archived = false;
 
     /**
      * Workspace constructor.
@@ -691,5 +709,25 @@ class Workspace
     public function getLang()
     {
         return $this->lang;
+    }
+
+    public function getShowProgression()
+    {
+        return $this->showProgression;
+    }
+
+    public function setShowProgression($showProgression)
+    {
+        $this->showProgression = $showProgression;
+    }
+
+    public function setArchived($archived)
+    {
+        $this->archived = $archived;
+    }
+
+    public function getArchived()
+    {
+        return $this->archived;
     }
 }

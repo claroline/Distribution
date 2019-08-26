@@ -2,8 +2,7 @@
   "webpack": {
     "entry": {
       "user-tracking": "user/tracking",
-      "resource-logs": "resource/logs",
-      "admin-desktop-tool": "administration/home/bootstrap"
+      "resource-logs": "resource/logs"
     }
   },
 

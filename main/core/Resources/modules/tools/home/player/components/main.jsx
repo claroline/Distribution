@@ -7,18 +7,18 @@ import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {PlayerTab} from '#/main/core/tools/home/player/components/tab'
 
-const PlayerMain = props =>
+const PlayerMain = props => 
   <Routes
     path={props.path}
     redirect={[
-      props.tabs[0] && {from: '/', exact: true, to: '/'+props.tabs[0].id }
+      props.tabs[0] && {from: '/', exact: true, to: '/' + props.tabs[0].slug }
     ].filter(redirect => !!redirect)}
     routes={[
       {
-        path: '/:id',
-        onEnter: (params = {}) => props.setCurrentTab(params.id),
+        path: '/:slug',
+        onEnter: (params = {}) => props.setCurrentTab(params.slug),
         render: (routeProps) => {
-          if (props.tabs.find(tab => tab.id === routeProps.match.params.id)) {
+          if (props.tabs.find(tab => tab.slug === routeProps.match.params.slug)) {
             const Player = (
               <PlayerTab
                 path={props.path}
@@ -27,7 +27,11 @@ const PlayerMain = props =>
                 currentTabTitle={props.currentTabTitle}
                 currentTab={props.currentTab}
                 editable={props.editable}
+                administration={props.administration}
+                desktopAdmin={props.desktopAdmin}
                 widgets={props.widgets}
+                setAdministration={props.setAdministration}
+                fetchTabs={props.desktopAdmin ? props.fetchTabs : () => false}
               />
             )
 
@@ -44,6 +48,7 @@ const PlayerMain = props =>
     ]}
   />
 
+
 PlayerMain.propTypes = {
   path: T.string.isRequired,
   currentContext: T.object.isRequired,
@@ -53,11 +58,15 @@ PlayerMain.propTypes = {
   currentTabTitle: T.string.isRequired,
   currentTab: T.shape(TabTypes.propTypes),
   editable: T.bool.isRequired,
+  administration: T.bool.isRequired,
+  desktopAdmin: T.bool.isRequired,
   widgets: T.arrayOf(T.shape(
     WidgetContainerTypes.propTypes
   )).isRequired,
 
-  setCurrentTab: T.func.isRequired
+  setCurrentTab: T.func.isRequired,
+  setAdministration: T.func.isRequired,
+  fetchTabs: T.func.isRequired
 }
 
 export {
