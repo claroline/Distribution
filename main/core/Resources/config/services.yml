@@ -16,7 +16,7 @@ services:
             autowire: true
             tags: [doctrine.repository_service]
 
-    Claroline\CoreBundle\Repository\Service:
+    Claroline\CoreBundle\Repository\Service\:
          resource: '../../Repository/Service/*'
 
     # array injection with annotations is not supported
