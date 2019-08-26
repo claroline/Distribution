@@ -15,7 +15,6 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Role;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityRepository;
 
 class ResourceRightsRepository extends EntityRepository
 {

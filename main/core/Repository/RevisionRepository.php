@@ -14,7 +14,6 @@ namespace Claroline\CoreBundle\Repository;
 use Claroline\CoreBundle\Entity\Resource\Revision;
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityRepository;
 
 class RevisionRepository extends EntityRepository
 {

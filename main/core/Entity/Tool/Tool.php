@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ToolRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Service\ToolRepository")
  * @ORM\Table(
  *      name="claro_tools",
  *      uniqueConstraints={@ORM\UniqueConstraint(name="tool_plugin_unique",columns={"name", "plugin_id"})}
