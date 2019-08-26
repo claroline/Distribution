@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution
+ * Auto-generated migration based on mapping information: modify it with caution.
  *
  * Generation date: 2019/08/08 04:44:53
  */
@@ -28,8 +28,8 @@ class Version20190808164452 extends AbstractMigration
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             DROP TABLE claro__open_badge_rule
-        ");
+        ');
     }
 }
