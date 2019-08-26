@@ -35,7 +35,6 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
         $container->addCompilerPass(new PlatformConfigPass());
         $container->addCompilerPass(new DynamicConfigPass());
         $container->addCompilerPass(new DoctrineEntityListenerPass());
-        $container->addCompilerPass(new RuleConstraintsConfigPass());
         $container->addCompilerPass(new RouterPass());
         $container->addCompilerPass(new MailingConfigPass());
     }
