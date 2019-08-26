@@ -41,7 +41,6 @@
 
 ## TO REMOVE WITH REFACTORING
 - mrclay/minify : minification des JS / remplacé par Webpack
-- natxet/CssMin : minification des CSS / sera remplacé par un gestionnaire de tâche JS (Gulp, Grunt)
 - symfony/assetic-bundle
 - knplabs/knp-menu-bundle
 - gregwar/captcha-bundle
