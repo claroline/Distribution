@@ -12,7 +12,7 @@ services:
         # Register all classes in these directories as services
 
     _instanceof:
-        Doctrine\ORM\EntityRepository:
+        Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository:
             autowire: true
             tags: [doctrine.repository_service]
 
