@@ -16,7 +16,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AuthenticationBundle\Entity\ExternalSynchronization\ExternalUser;
 use Claroline\AuthenticationBundle\Repository\ExternalSynchronization\ExternalUserRepository;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Pager\PagerFactory;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -30,24 +29,18 @@ class ExternalSynchronizationUserManager
     private $om;
     /** @var ExternalUserRepository */
     private $externalUserRepo;
-    /** @var PagerFactory */
-    private $pagerFactory;
 
     /**
      * @DI\InjectParams({
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "pagerFactory"           = @DI\Inject("claroline.pager.pager_factory")
+     *     "om"                     = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param ObjectManager $om
-     * @param PagerFactory  $pagerFactory
      */
     public function __construct(
-        ObjectManager $om,
-        PagerFactory $pagerFactory
+        ObjectManager $om
     ) {
         $this->om = $om;
-        $this->pagerFactory = $pagerFactory;
         $this->externalUserRepo = $om->getRepository('ClarolineAuthenticationBundle:ExternalSynchronization\ExternalUser');
     }
 
@@ -114,17 +107,6 @@ class ExternalSynchronizationUserManager
 
         // Otherwise create new user
         return $this->createExternalUser($externalId, $sourceSlug, $user);
-    }
-
-    public function searchExternalUsersForSource(
-        $source,
-        $page = 1,
-        $max = 50,
-        $orderBy = 'username',
-        $direction = 'ASC',
-        $search = ''
-    ) {
-        return $this->externalUserRepo->searchForSourcePaginated($source, $page, $max, $orderBy, $direction, $search);
     }
 
     public function countExternalUsersForSourceAndSearch($source, $search = '')

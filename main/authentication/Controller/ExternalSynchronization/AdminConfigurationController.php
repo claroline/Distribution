@@ -308,26 +308,6 @@ class AdminConfigurationController extends Controller
     }
 
     /**
-     * @EXT\Route("/{source}/users/page/{page}/max/{max}/order/{orderBy}/direction/{direction}/search/{search}",
-     *     defaults={"page"=1, "max"=50, "orderBy"="username", "direction"="ASC", "search"=""},
-     *     options={"expose"=true},
-     *     name="claro_admin_external_sync_source_search_users"
-     * )
-     * @EXT\Method({ "GET" })
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function searchUsersForSourceAction($source, $page, $max, $orderBy, $direction, $search)
-    {
-        $totalItems = $this->externalUserManager->countExternalUsersForSourceAndSearch($source, $search);
-        $items = $this
-            ->externalUserManager
-            ->searchExternalUsersForSource($source, $page, $max, $orderBy, $direction, $search);
-
-        return new JsonResponse(['totalItems' => $totalItems, 'items' => $items]);
-    }
-
-    /**
      * @EXT\Route("/{source}/users/synchronize/batch/{batch}/cas/{cas}/{casField}/role/{role}",
      *     defaults={"batch"=1, "role"=null, "cas"=true, "casField"="username"},
      *     options={"expose"=true},
@@ -348,26 +328,6 @@ class AdminConfigurationController extends Controller
             ->synchronizeUsersForExternalSource($source, $cas, $casField, $role, $batch);
 
         return new JsonResponse($syncObj);
-    }
-
-    /**
-     * @EXT\Route("/{source}/groups/page/{page}/max/{max}/order/{orderBy}/direction/{direction}/search/{search}",
-     *     defaults={"page"=1, "max"=50, "orderBy"="username", "direction"="ASC", "search"=""},
-     *     options={"expose"=true},
-     *     name="claro_admin_external_sync_source_search_groups"
-     * )
-     * @EXT\Method({ "GET" })
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function searchGroupsForSourceAction($source, $page, $max, $orderBy, $direction, $search)
-    {
-        $totalItems = $this->externalGroupManager->countExternalGroupsForSourceAndSearch($source, $search);
-        $items = $this
-            ->externalGroupManager
-            ->searchExternalGroupsForSource($source, $page, $max, $orderBy, $direction, $search);
-
-        return new JsonResponse(['totalItems' => $totalItems, 'items' => $items]);
     }
 
     /**
