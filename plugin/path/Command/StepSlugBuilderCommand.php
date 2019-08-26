@@ -18,7 +18,7 @@ class StepSlugBuilderCommand extends ContainerAwareCommand
     {
         $this->conn = $this->getContainer()->get('doctrine.dbal.default_connection');
         $sql = "
-           UPDATE innova_step step set SLUG = CONCAT(SUBSTR(step.title,1,100) , '-', step.id)
+           UPDATE innova_step step SET slug = CONCAT(SUBSTR(step.title,1,100) , '-', step.id)
         ";
         $output->writeln($sql);
         $stmt = $this->conn->prepare($sql);
