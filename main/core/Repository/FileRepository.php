@@ -11,18 +11,11 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class FileRepository extends ServiceEntityRepository
+class FileRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, File::class);
-    }
-
     public function findDirectoryChildren(ResourceNode $parent)
     {
         $dql = "

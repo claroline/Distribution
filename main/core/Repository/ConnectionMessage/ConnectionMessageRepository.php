@@ -13,16 +13,10 @@ namespace Claroline\CoreBundle\Repository\ConnectionMessage;
 
 use Claroline\CoreBundle\Entity\ConnectionMessage\ConnectionMessage;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class ConnectionMessageRepository extends ServiceEntityRepository
+class ConnectionMessageRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, ConnectionMessage::class);
-    }
-
     public function findConnectionMessageByUser(User $user)
     {
         $dql = '

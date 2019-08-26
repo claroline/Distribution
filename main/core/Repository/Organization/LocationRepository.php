@@ -11,17 +11,10 @@
 
 namespace Claroline\CoreBundle\Repository\Organization;
 
-use Claroline\CoreBundle\Entity\Organization\Location;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class LocationRepository extends ServiceEntityRepository
+class LocationRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Location::class);
-    }
-
     public function findLocationsByTypes($types)
     {
         $dql = '

@@ -36,7 +36,7 @@ use Claroline\CoreBundle\Manager\Exception\WrongClassException;
 use Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
-use Claroline\CoreBundle\Repository\ResourceTypeRepository;
+use Claroline\CoreBundle\Repository\Service\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\RoleRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;

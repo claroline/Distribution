@@ -13,16 +13,11 @@ namespace Claroline\CoreBundle\Repository;
 
 use Claroline\CoreBundle\Entity\Resource\Revision;
 use Claroline\CoreBundle\Entity\Resource\Text;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityRepository;
 
-class RevisionRepository extends ServiceEntityRepository
+class RevisionRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Revision::class);
-    }
-
     /**
      * Returns the last revision of a text.
      *

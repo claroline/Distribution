@@ -12,12 +12,12 @@ services:
         # Register all classes in these directories as services
 
     _instanceof:
-        Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository:
+        Doctrine\ORM\EntityRepository:
             autowire: true
             tags: [doctrine.repository_service]
 
-    Claroline\CoreBundle\Repository\:
-         resource: '../../Repository/*'
+    Claroline\CoreBundle\Repository\Service:
+         resource: '../../Repository/Service/*'
 
     # array injection with annotations is not supported
     claroline.plugin.validator:

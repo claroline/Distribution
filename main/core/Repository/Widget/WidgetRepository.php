@@ -11,17 +11,10 @@
 
 namespace Claroline\CoreBundle\Repository\Widget;
 
-use Claroline\CoreBundle\Entity\Widget\Widget;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class WidgetRepository extends ServiceEntityRepository
+class WidgetRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Widget::class);
-    }
-
     /**
      * Finds all available widgets in the platform.
      * It only grabs widgets from enabled plugins.

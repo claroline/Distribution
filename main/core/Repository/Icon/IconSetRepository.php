@@ -13,18 +13,11 @@
 
 namespace Claroline\CoreBundle\Repository\Icon;
 
-use Claroline\CoreBundle\Entity\Icon\IconSet;
 use Claroline\CoreBundle\Entity\Icon\IconSetTypeEnum;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class IconSetRepository extends ServiceEntityRepository
+class IconSetRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, IconSet::class);
-    }
-
     public function findActiveRepositoryResourceStampIcon()
     {
         $qb = $this->createQueryBuilder('iconset')

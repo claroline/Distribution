@@ -13,16 +13,10 @@ namespace Claroline\CoreBundle\Repository\Facet;
 
 use Claroline\CoreBundle\Entity\Facet\PanelFacet;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class PanelFacetRepository extends ServiceEntityRepository
+class PanelFacetRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, PanelFacet::class);
-    }
-
     public function findPanelsAfter(PanelFacet $panel)
     {
         $dql = '

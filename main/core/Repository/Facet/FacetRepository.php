@@ -13,18 +13,12 @@ namespace Claroline\CoreBundle\Repository\Facet;
 
 use Claroline\CoreBundle\Entity\Facet\Facet;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Role\Role;
 
-class FacetRepository extends ServiceEntityRepository
+class FacetRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Facet::class);
-    }
-
     /**
      * Find facets visible by the current User.
      *

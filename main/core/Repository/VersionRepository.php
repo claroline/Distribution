@@ -11,17 +11,10 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\Update\Version;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class VersionRepository extends ServiceEntityRepository
+class VersionRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Version::class);
-    }
-
     public function getLatest($fqcn)
     {
         return $this->createQueryBuilder('e')->

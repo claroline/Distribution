@@ -12,16 +12,10 @@ namespace Claroline\CoreBundle\Repository;
 
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class ToolMaskDecoderRepository extends ServiceEntityRepository
+class ToolMaskDecoderRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, ToolMaskDecoder::class);
-    }
-
     public function findMaskDecodersByTool(Tool $tool, $executeQuery = true)
     {
         $dql = '

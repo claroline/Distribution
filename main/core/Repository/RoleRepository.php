@@ -18,17 +18,11 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class RoleRepository extends ServiceEntityRepository
+class RoleRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Role::class);
-    }
-
     /**
      * Returns the roles associated to a workspace.
      *

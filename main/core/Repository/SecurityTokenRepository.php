@@ -11,17 +11,10 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\SecurityToken;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class SecurityTokenRepository extends ServiceEntityRepository
+class SecurityTokenRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, SecurityToken::class);
-    }
-
     public function findAllTokens($order = 'clientName', $direction = 'ASC')
     {
         $dql = "

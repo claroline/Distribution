@@ -38,7 +38,7 @@ class LogManager
      */
     private $om;
 
-    /** @var \CLaroline\CoreBundle\Repository\Log\LogRepository $logRepository */
+    /** @var \Claroline\CoreBundle\Repository\Service\LogRepository $logRepository */
     private $logRepository;
 
     /** @var FinderProvider */

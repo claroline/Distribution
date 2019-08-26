@@ -12,16 +12,10 @@
 namespace Claroline\CoreBundle\Repository;
 
 use Claroline\CoreBundle\Entity\Plugin;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class PluginRepository extends ServiceEntityRepository
+class PluginRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Plugin::class);
-    }
-
     /**
      * Returns a plugin by its fully qualified class name.
      *

@@ -13,17 +13,10 @@ namespace Claroline\CoreBundle\Repository;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class WorkspaceRegistrationQueueRepository extends ServiceEntityRepository
+class WorkspaceRegistrationQueueRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, WorkspaceRegistrationQueue::class);
-    }
-
     public function findByWorkspace(Workspace $workspace)
     {
         $dql = "

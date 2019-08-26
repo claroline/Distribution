@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Repository\Resource;
+namespace Claroline\CoreBundle\Repository\Service;
 
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Manager\PluginManager;

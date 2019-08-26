@@ -2,18 +2,12 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ResourceMaskDecoderRepository extends ServiceEntityRepository
+class ResourceMaskDecoderRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, MaskDecoder::class);
-    }
-
     public function removeMasksByIds($ids)
     {
         $qb = $this

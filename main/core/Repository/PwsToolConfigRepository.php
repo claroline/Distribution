@@ -11,18 +11,11 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\Tool\PwsToolConfig;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class PwsToolConfigRepository extends ServiceEntityRepository
+class PwsToolConfigRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, PwsToolConfig::class);
-    }
-
     /**
      * Returns the configuration for a user and it's rights (masks already calculated).
      *

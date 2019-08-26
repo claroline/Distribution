@@ -11,17 +11,10 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\RoleOptions;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class RoleOptionsRepository extends ServiceEntityRepository
+class RoleOptionsRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, RoleOptions::class);
-    }
-
     public function findRoleOptionsByRoles(array $roles)
     {
         $dql = '

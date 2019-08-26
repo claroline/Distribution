@@ -11,17 +11,10 @@
 
 namespace Claroline\CoreBundle\Repository\Log;
 
-use Claroline\CoreBundle\Entity\Log\LogWidgetConfig;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class LogWidgetConfigRepository extends ServiceEntityRepository
+class LogWidgetConfigRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, LogWidgetConfig::class);
-    }
-
     public function findByWorkspaces(array $workspaces)
     {
         $ids = [];

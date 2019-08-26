@@ -13,21 +13,14 @@
 
 namespace Claroline\CoreBundle\Repository\Icon;
 
-use Claroline\CoreBundle\Entity\Icon\IconItem;
 use Claroline\CoreBundle\Entity\Icon\IconSet;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class IconItemRepository extends ServiceEntityRepository
+class IconItemRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, IconItem::class);
-    }
-
     public function findIconsForResourceIconSetByMimeTypes(
         IconSet $iconSet = null,
         $excludeMimeTypes = null,

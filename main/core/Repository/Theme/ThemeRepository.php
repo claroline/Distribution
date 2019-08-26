@@ -3,16 +3,10 @@
 namespace Claroline\CoreBundle\Repository\Theme;
 
 use Claroline\CoreBundle\Entity\Theme\Theme;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class ThemeRepository extends ServiceEntityRepository
+class ThemeRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Theme::class);
-    }
-
     /**
      * Returns the themes corresponding to an array of UUIDs.
      *

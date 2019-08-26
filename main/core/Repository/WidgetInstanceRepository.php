@@ -11,17 +11,10 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class WidgetInstanceRepository extends ServiceEntityRepository
+class WidgetInstanceRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, WidgetInstance::class);
-    }
-
     /**
      * @param string $filter
      *

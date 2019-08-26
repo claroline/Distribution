@@ -25,7 +25,7 @@ use Claroline\CoreBundle\Manager\Exception\AddRoleException;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Repository\UserRepository;
+use Claroline\CoreBundle\Repository\Service\UserRepository;
 use Claroline\CoreBundle\Security\PlatformRoles;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;

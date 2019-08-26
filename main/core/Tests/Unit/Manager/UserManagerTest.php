@@ -34,7 +34,7 @@ class UserManagerTest extends MockeryTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\UserRepository');
+        $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\Service\UserRepository');
         $this->roleManager = $this->mock('Claroline\CoreBundle\Manager\RoleManager');
         $this->mailManager = $this->mock('Claroline\CoreBundle\Manager\MailManager');
         $this->workspaceManager = $this->mock('Claroline\CoreBundle\Manager\Workspace\WorkspaceManager');

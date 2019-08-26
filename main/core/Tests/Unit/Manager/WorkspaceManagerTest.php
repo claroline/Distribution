@@ -49,11 +49,11 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->roleManager = $this->mock('Claroline\CoreBundle\Manager\RoleManager');
         $this->toolManager = $this->mock('Claroline\CoreBundle\Manager\ToolManager');
         $this->resourceManager = $this->mock('Claroline\CoreBundle\Manager\ResourceManager');
-        $this->orderedToolRepo = $this->mock('Claroline\CoreBundle\Repository\OrderedToolRepository');
+        $this->orderedToolRepo = $this->mock('Claroline\CoreBundle\Repository\Service\OrderedToolRepository');
         $this->resourceNodeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceNodeRepository');
         $this->resourceRightsRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceRightsRepository');
-        $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceTypeRepository');
-        $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\UserRepository');
+        $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\Service\ResourceTypeRepository');
+        $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\Service\UserRepository');
         $this->roleRepo = $this->mock('Claroline\CoreBundle\Repository\RoleRepository');
         $this->workspaceRepo = $this->mock('Claroline\CoreBundle\Repository\WorkspaceRepository');
         $this->rightsRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceRightsRepository');

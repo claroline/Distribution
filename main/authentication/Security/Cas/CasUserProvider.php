@@ -16,7 +16,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AuthenticationBundle\Entity\Cas\CasUser;
 use Claroline\AuthenticationBundle\Repository\Cas\CasUserRepository;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Repository\UserRepository;
+use Claroline\CoreBundle\Repository\Service\UserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;

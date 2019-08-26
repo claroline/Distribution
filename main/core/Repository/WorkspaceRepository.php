@@ -14,16 +14,10 @@ namespace Claroline\CoreBundle\Repository;
 use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
 
-class WorkspaceRepository extends ServiceEntityRepository
+class WorkspaceRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Workspace::class);
-    }
-
     public function search(string $search, int $nbResults)
     {
         return $this->createQueryBuilder('w')

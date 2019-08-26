@@ -27,7 +27,7 @@ use Claroline\CoreBundle\Manager\Exception\RoleReadOnlyException;
 use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CoreBundle\Repository\GroupRepository;
 use Claroline\CoreBundle\Repository\RoleRepository;
-use Claroline\CoreBundle\Repository\UserRepository;
+use Claroline\CoreBundle\Repository\Service\UserRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
