@@ -122,36 +122,6 @@ class CorrectionController extends DropzoneBaseController
         return $correction;
     }
 
-    private function persistGrade($grades, $criterionId, $value, $correction)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $grade = null;
-        $i = 0;
-        while ($i < count($grades) && null === $grade) {
-            $current = $grades[$i];
-            if (
-                $current->getCriterion()->getId() === $criterionId
-                && $current->getCorrection()->getId() === $correction->getId()
-            ) {
-                $grade = $current;
-            }
-            ++$i;
-        }
-
-        if (null === $grade) {
-            $criterionReference = $em->getReference('IcapDropzoneBundle:Criterion', $criterionId);
-            $grade = new Grade();
-            $grade->setCriterion($criterionReference);
-            $grade->setCorrection($correction);
-        }
-        $grade->setValue($value);
-        $em->persist($grade);
-        $em->flush();
-
-        return $grade;
-    }
-
     private function endCorrection(Request $request, Dropzone $dropzone, Correction $correction, $admin)
     {
         $em = $this->getDoctrine()->getManager();
@@ -991,44 +961,6 @@ class CorrectionController extends DropzoneBaseController
                 ]
             )
         );
-    }
-
-    private function addCorrectionCount(Dropzone $dropzone, $users)
-    {
-        $correctionRepo = $this->getDoctrine()->getManager()->getRepository('IcapDropzoneBundle:Correction');
-        $dropRepo = $this->getDoctrine()->getManager()->getRepository('IcapDropzoneBundle:Drop');
-        $response = [];
-        foreach ($users as $user) {
-            $responseItem = [];
-            $responseItem['userId'] = $user->getId();
-            $corrections = $correctionRepo->getByDropzoneUser($dropzone->getId(), $user->getId());
-            $isUnlockedDrop = $dropRepo->isUnlockedDrop($dropzone->getId(), $user->getId());
-            $count = count($corrections);
-            $responseItem['correction_count'] = $count;
-
-            $finishedCount = 0;
-            $reportsCount = 0;
-            $deniedCount = 0;
-            foreach ($corrections as $correction) {
-                if ($correction->getCorrectionDenied()) {
-                    ++$deniedCount;
-                }
-                if ($correction->getReporter()) {
-                    ++$reportsCount;
-                }
-                if ($correction->getFinished()) {
-                    ++$finishedCount;
-                }
-            }
-
-            $responseItem['correction_deniedCount'] = $deniedCount;
-            $responseItem['correction_reportCount'] = $reportsCount;
-            $responseItem['correction_finishedCount'] = $finishedCount;
-            $responseItem['drop_isUnlocked'] = $isUnlockedDrop;
-            $response[$user->getId()] = $responseItem;
-        }
-
-        return $response;
     }
 
     /**

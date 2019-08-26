@@ -193,15 +193,6 @@ class DropController extends DropzoneBaseController
         ];
     }
 
-    private function addDropsStats($dropzone, $array)
-    {
-        $dropRepo = $this->getDoctrine()->getManager()->getRepository('IcapDropzoneBundle:Drop');
-        $array['nbDropCorrected'] = $dropRepo->countDropsFullyCorrected($dropzone);
-        $array['nbDrop'] = $dropRepo->countDrops($dropzone);
-
-        return $array;
-    }
-
     /**
      * @Route(
      *      "/{resourceId}/unlock/{userId}",
