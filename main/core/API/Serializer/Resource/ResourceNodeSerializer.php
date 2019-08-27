@@ -134,7 +134,6 @@ class ResourceNodeSerializer
                 'autoId' => $resourceNode->getWorkspace()->getId(), // because open url does not work with uuid
                 'name' => $resourceNode->getWorkspace()->getName(),
                 'code' => $resourceNode->getWorkspace()->getCode(),
-                'meta' => ['' => $resourceNode->getWorkspace()->getSlug()],
             ];
         }
 
