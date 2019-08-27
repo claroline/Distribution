@@ -1,23 +1,23 @@
 import {connect} from 'react-redux'
-
 import {withRouter} from '#/main/app/router'
+
+import {selectors as detailsSelectors} from '#/main/app/content/details/store'
 import {selectors as securitySelectors} from '#/main/app/security/store'
+import {selectors as toolSelectors} from  '#/main/core/tool/store'
 
+import {UserMain as UserMainComponent} from '#/main/core/user/components/main'
+import {selectors as profileSelectors} from '#/main/core/user/profile/store/selectors'
 import {actions} from '#/main/core/user/store/actions'
-import {UserMain} from '#/main/core/user/components/main'
 
-/**
- * Connected container for users.
- *
- * Connects the <UserPage> component to a redux store.
- * If you don't use redux in your implementation @see Resource functional component.
- */
-const UserMainContainer = withRouter(
+const UserMain = withRouter(
   connect(
-    (state) =>  {
-      return {
-        currentUser: securitySelectors.currentUser(state)
-      }},
+    (state) => ({
+      path: toolSelectors.path(state) + '/profile',
+      currentUser: securitySelectors.currentUser(state),
+      user: detailsSelectors.data(detailsSelectors.details(state, profileSelectors.FORM_NAME)),
+      parameters: profileSelectors.parameters(state),
+      loaded: profileSelectors.loaded(state)
+    }),
     (dispatch) => ({
       updatePassword(user, password) {
         dispatch(actions.updatePassword(user, password))
@@ -26,9 +26,9 @@ const UserMainContainer = withRouter(
         dispatch(actions.updatePublicUrl(user, publicUrl, true))
       }
     })
-  )(UserMain)
+  )(UserMainComponent)
 )
 
 export {
-  UserMainContainer
+  UserMain
 }

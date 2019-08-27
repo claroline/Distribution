@@ -13,8 +13,8 @@ import {Toolbar} from '#/main/app/action/components/toolbar'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 import {constants as toolConstants} from '#/main/core/tool/constants'
 
-const UsersMenu = (props) => {
-  const permLevel = getPermissionLevel(props.workspace, props.currentUser)
+const CommunityMenu = (props) => {
+  const permLevel = getPermissionLevel(props.currentUser, props.workspace)
 
   return (
     <MenuSection
@@ -73,7 +73,7 @@ const UsersMenu = (props) => {
   )
 }
 
-UsersMenu.propTypes = {
+CommunityMenu.propTypes = {
   context: T.string,
   path: T.string,
   currentUser: T.shape(
@@ -85,5 +85,5 @@ UsersMenu.propTypes = {
 }
 
 export {
-  UsersMenu
+  CommunityMenu
 }

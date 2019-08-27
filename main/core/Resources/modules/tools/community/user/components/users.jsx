@@ -12,6 +12,8 @@ import {UserCard} from '#/main/core/user/components/card'
 import {constants} from '#/main/core/user/constants'
 import {actions, selectors} from '#/main/core/tools/community/user/store'
 
+// TODO : reuse main/core/user/components/list
+
 const UsersList = props =>
   <ListData
     name={selectors.LIST_NAME}

@@ -1,28 +1,71 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
-import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
-import {UserPageContainer} from '#/main/core/user/containers/page'
-import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
-import {PageContainer} from '#/main/core/layout/page'
+import {Routes} from '#/main/app/router'
+import {UserPage} from '#/main/core/user/components/page'
+import {User as UserTypes} from '#/main/core/user/prop-types'
 
-const UserMain = props =>
-  <PageContainer
-    {...props}
-    className="user-page"
-  >
-    <UserPageContainer {...props}   />
-  </PageContainer>
+import {ContentLoader} from '#/main/app/content/components/loader'
+import {ProfileEdit} from '#/main/core/user/profile/editor/components/main'
+import {ProfileShow} from '#/main/core/user/profile/player/components/main'
+import {ProfileBadgeList} from '#/plugin/open-badge/tools/badges/badge/components/profile-badges'
 
-implementPropTypes(UserMain, PageTypes, {
-  currentUser: T.object,
-  user: T.shape({
-    name: T.string.isRequired
-  }).isRequired,
-  children: T.node.isRequired,
-  path: T.string.isRequired,
-  updatePassword: T.func.isRequired,
-  updatePublicUrl: T.func.isRequired
-})
+const UserMain = props => {
+  if (!props.loaded) {
+    return (
+      <ContentLoader
+        size="lg"
+        description="Nous chargeons votre utilisateur"
+      />
+    )
+  }
+
+  return(
+    <UserPage
+      user={props.user}
+      path={props.path + '/' + props.user.publicUrl}
+      currentUser={props.currentUser}
+      updatePassword={props.updatePassword}
+      updatePublicUrl={props.updatePublicUrl}
+    >
+      <Routes
+        path={props.path + '/' + props.user.publicUrl}
+        routes={[
+          {
+            path: '/show',
+            component: ProfileShow
+          }, {
+            path: '/edit',
+            component: ProfileEdit,
+            disabled: !props.currentUser || (props.user.username !== props.currentUser.username &&
+              props.currentUser.roles.filter(r => ['ROLE_ADMIN'].concat(props.parameters['roles_edition']).indexOf(r.name) > -1).length === 0
+            )
+          }, {
+            path: '/badges/:id',
+            component: ProfileBadgeList
+          }
+        ]}
+        redirect={[
+          {from: '/', exact: true, to: '/show/main'}
+        ]}
+      />
+    </UserPage>
+  )
+}
+
+UserMain.propTypes = {
+  user: T.shape(
+    UserTypes.propTypes
+  ).isRequired,
+  currentUser: T.shape(
+    UserTypes.propTypes
+  ).isRequired,
+  path: T.string,
+  loaded: T.bool,
+  parameters: T.object.isRequired,
+  updatePublicUrl: T.func.isRequired,
+  updatePassword: T.func.isRequired
+}
 
 export {
   UserMain

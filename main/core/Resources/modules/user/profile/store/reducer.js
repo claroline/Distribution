@@ -25,7 +25,7 @@ const reducer = combineReducers({
   loaded: makeReducer(false, {
     ['FORM_RESET/' + select.FORM_NAME]: () => true
   }),
-  parameters: makeReducer({}, {[makeInstanceAction(TOOL_LOAD, 'users')]: (state, action) => action.toolData.parameters ? action.toolData.parameters: {}}),
+  parameters: makeReducer({}, {[makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => action.toolData.parameters ? action.toolData.parameters: {}}),
   badges: combineReducers({
     mine: makeListReducer('badges.mine', {})
   })

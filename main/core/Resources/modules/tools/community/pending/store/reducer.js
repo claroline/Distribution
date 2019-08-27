@@ -1,12 +1,8 @@
-import {combineReducers} from '#/main/app/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
 
-import {selectors} from '#/main/core/tools/community/store/selectors'
+import {selectors} from '#/main/core/tools/community/pending/store/selectors'
 
-const reducer = combineReducers({
-  picker: makeListReducer(selectors.STORE_NAME + '.pending.picker'),
-  list: makeListReducer(selectors.STORE_NAME + '.pending.list')
-})
+const reducer = makeListReducer(selectors.LIST_NAME)
 
 export {
   reducer

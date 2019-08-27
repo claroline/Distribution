@@ -1,9 +1,9 @@
 import {reducer} from '#/main/core/tools/community/store/reducer'
-import {UsersTool} from '#/main/core/tools/community/containers/tool'
-import {UsersMenu} from '#/main/core/tools/community/containers/menu'
+import {CommunityTool} from '#/main/core/tools/community/containers/tool'
+import {CommunityMenu} from '#/main/core/tools/community/containers/menu'
 
 export default {
-  component: UsersTool,
-  menu: UsersMenu,
+  component: CommunityTool,
+  menu: CommunityMenu,
   store: reducer
 }
