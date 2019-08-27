@@ -21,7 +21,7 @@ const RedactorsComponent = props =>
     <div className="panel-body">
       {!isEmpty(props.authors) ? (props.authors.map((author, index) =>(
         <span key={index}>
-          <UrlButton target={'/desktop/users/profile/'+ get(author, 'meta.publicUrl')}>
+          <UrlButton target={'/desktop/community/profile/'+ get(author, 'meta.publicUrl')}>
             <UserAvatar className="user-picture" picture={author ? author.picture : undefined} alt={true} />
           </UrlButton>
           <CallbackButton className="redactor-name link" callback={() => {

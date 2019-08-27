@@ -74,7 +74,7 @@ registry.add('ClarolineCoreBundle', {
       'show-tracking'  : () => { return import(/* webpackChunkName: "core-action-user-show-tracking" */   '#/main/core/user/actions/show-tracking') },
       'ws-disable'     : () => { return import(/* webpackChunkName: "core-action-user-ws-disable" */      '#/main/core/user/actions/ws-disable') },
       'ws-enable'      : () => { return import(/* webpackChunkName: "core-action-user-ws-enable" */       '#/main/core/user/actions/ws-enable') },
-      'merge'          : () => { return import(/* webpackChunkName: "core-action-user-ws-merge" */        '#/main/core/user/actions/merge') }
+      'merge'          : () => { return import(/* webpackChunkName: "core-action-user-merge" */           '#/main/core/user/actions/merge') }
     }
   },
 
@@ -96,7 +96,7 @@ registry.add('ClarolineCoreBundle', {
     'workspaces'      : () => { return import(/* webpackChunkName: "core-tool-workspaces" */ '#/main/core/tools/workspaces') },
     'resource_manager': () => { return import(/* webpackChunkName: "core-tool-resources" */  '#/main/core/tools/resources') },
     'parameters'      : () => { return import(/* webpackChunkName: "core-tool-parameters" */ '#/main/core/tools/parameters') },
-    'users'           : () => { return import(/* webpackChunkName: "core-tool-users" */      '#/main/core/tools/users') },
+    'community'       : () => { return import(/* webpackChunkName: "core-tool-users" */      '#/main/core/tools/community') },
     'data_transfer'   : () => { return import(/* webpackChunkName: "core-tool-transfer" */   '#/main/core/tools/transfer') },
     'resource_trash'  : () => { return import(/* webpackChunkName: "core-tool-trash" */      '#/main/core/tools/trash') }
   },

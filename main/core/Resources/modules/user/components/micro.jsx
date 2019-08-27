@@ -22,7 +22,7 @@ const UserMicro = props => {
 
   if (props.link && props.publicUrl) {
     return (
-      <a className={classes('user-micro', props.className)} href={'#/desktop/users/profile/'+ this.props.publicUrl}>
+      <a className={classes('user-micro', props.className)} href={'#/desktop/community/profile/'+ this.props.publicUrl}>
         <UserAvatar picture={props.picture} alt={false} />
 
         {displayName ?

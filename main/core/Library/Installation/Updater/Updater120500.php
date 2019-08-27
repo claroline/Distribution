@@ -39,6 +39,11 @@ class Updater120500 extends Updater
         $this->translator = $container->get('translator');
     }
 
+    public function preUpdate()
+    {
+        $this->renameTool('users', 'community');
+    }
+
     public function postUpdate()
     {
         $this->updatePlatformOptions();
@@ -87,6 +92,16 @@ class Updater120500 extends Updater
         $tool = $this->om->getRepository($admin ? 'ClarolineCoreBundle:Tool\AdminTool' : 'ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $toolName]);
         if (!empty($tool)) {
             $this->om->remove($tool);
+            $this->om->flush();
+        }
+    }
+
+    private function renameTool($oldName, $newName, $admin = false)
+    {
+        $tool = $this->om->getRepository($admin ? 'ClarolineCoreBundle:Tool\AdminTool' : 'ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $oldName]);
+        if (!empty($tool)) {
+            $tool->setName($newName);
+            $this->om->persist($tool);
             $this->om->flush();
         }
     }

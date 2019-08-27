@@ -1,15 +1,15 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-
-import {UserDetails} from '#/main/core/user/components/details'
-import {connectProfile} from '#/main/core/user/profile/connect'
-import {ProfileNav} from '#/main/core/user/profile/components/nav'
-import {ProfileFacets} from '#/main/core/user/profile/components/facets'
+import {connect} from 'react-redux'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'
-import {selectors as select} from '#/main/app/content/form/store/selectors'
-import {selectors as profileSelector} from '#/main/core/user/profile/store/selectors'
+import {selectors as detailsSelectors} from '#/main/app/content/form/store/selectors'
+
+import {UserDetails} from '#/main/core/user/components/details'
+import {ProfileNav} from '#/main/core/user/profile/components/nav'
+import {ProfileFacets} from '#/main/core/user/profile/components/facets'
 import {ProfileFacet} from '#/main/core/user/profile/editor/components/facet'
+import {actions, selectors} from '#/main/core/user/profile/store'
 
 const ProfileEditComponent = props =>
   <div className="row user-profile user-profile-edit">
@@ -35,19 +35,27 @@ const ProfileEditComponent = props =>
   </div>
 
 ProfileEditComponent.propTypes = {
+  path: T.string,
   user: T.object.isRequired,
   facets: T.array.isRequired,
-  openFacet: T.func.isRequired,
-  path: T.string
+  openFacet: T.func.isRequired
 }
 
-const ProfileEdit = connectProfile(
-  (state) => {
-    return  {
-      path: toolSelectors.path(state),
-      user: select.data(select.form(state, profileSelector.FORM_NAME))
+ProfileEditComponent.defaultProps = {
+  facets: []
+}
+
+const ProfileEdit = connect(
+  (state) => ({
+    path: toolSelectors.path(state),
+    user: detailsSelectors.data(detailsSelectors.form(state, selectors.FORM_NAME)),
+    facets: selectors.facets(state)
+  }),
+  (dispatch) => ({
+    openFacet(id) {
+      dispatch(actions.openFacet(id))
     }
-  }
+  })
 )(ProfileEditComponent)
 
 export {

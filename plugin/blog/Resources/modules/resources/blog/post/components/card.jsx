@@ -39,7 +39,7 @@ const CardMeta = props =>
       }}
     >
       <span>
-        <UrlButton target={'/desktop/users/profile/'+ get(props.post.author, 'meta.publicUrl')}>
+        <UrlButton target={'/desktop/community/profile/'+ get(props.post.author, 'meta.publicUrl')}>
           <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} />
         </UrlButton>
         <a className="user-name link">{props.post.author.firstName} {props.post.author.lastName}</a>

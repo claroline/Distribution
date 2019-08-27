@@ -5,7 +5,7 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 
-import {PLATFORM_ROLE} from '#/main/core/user/role/constants'
+import {constants} from '#/main/core/user/constants'
 import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 
 const reducer = combineReducers({
@@ -18,7 +18,7 @@ const reducer = combineReducers({
   current: makeFormReducer(baseSelectors.STORE_NAME+'.groups.current', {}, {
     users: makeListReducer(baseSelectors.STORE_NAME+'.groups.current.users'),
     roles: makeListReducer(baseSelectors.STORE_NAME+'.groups.current.roles', {
-      filters: [{property: 'type', value: PLATFORM_ROLE}]
+      filters: [{property: 'type', value: constants.ROLE_PLATFORM}]
     }),
     organizations: makeListReducer(baseSelectors.STORE_NAME+'.groups.current.organizations')
   })

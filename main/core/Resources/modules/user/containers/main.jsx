@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {withRouter} from '#/main/app/router'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 
-import {actions} from '#/main/core/user/actions'
+import {actions} from '#/main/core/user/store/actions'
 import {UserMain} from '#/main/core/user/components/main'
 
 /**

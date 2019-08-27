@@ -9,7 +9,7 @@ import {ListData} from '#/main/app/content/list/containers/data'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {MODAL_USER_PASSWORD} from '#/main/core/user/modals/password'
-import {actions as userActions} from '#/main/core/user/actions'
+import {actions as userActions} from '#/main/core/user/store/actions'
 import {actions} from '#/main/core/administration/users/user/store'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'

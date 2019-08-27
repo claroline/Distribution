@@ -9,7 +9,7 @@ export default {
   parameters: {
     primaryAction: (user) => ({
       type: URL_BUTTON,
-      target: '#/desktop/users/profile/'+ user.meta.publicUrl
+      target: '#/desktop/community/profile/'+ user.meta.publicUrl
     }),
     definition: [
       {

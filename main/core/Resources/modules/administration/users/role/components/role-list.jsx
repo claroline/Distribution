@@ -1,12 +1,11 @@
 import React from 'react'
 
 import {trans} from '#/main/app/intl/translation'
+import {url} from '#/main/app/api'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
-import {enumRole} from '#/main/core/user/role/constants'
+import {constants} from '#/main/core/user/constants'
 import {RoleCard} from '#/main/core/user/data/components/role-card'
-
-import {url} from '#/main/app/api'
 
 const RoleList = {
   open: (row) => ({
@@ -31,7 +30,7 @@ const RoleList = {
       type: 'choice',
       label: trans('type'),
       options: {
-        choices: enumRole
+        choices: constants.ROLE_TYPES
       },
       displayed: true
     }, {

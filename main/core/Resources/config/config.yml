@@ -309,7 +309,7 @@ plugin:
           is_locked_for_admin: false
           is_anonymous_excluded: false
 
-        - name: users
+        - name: community
           class: user
           is_displayable_in_workspace: true
           is_displayable_in_desktop: true

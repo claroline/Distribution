@@ -17,7 +17,7 @@ const Users = props =>
     }}
     primaryAction={(row) => ({
       type: URL_BUTTON,
-      target: '#/desktop/users/profile/'+ row.meta.publicUrl
+      target: '#/desktop/community/profile/'+ row.meta.publicUrl
     })}
     actions={(rows) => props.getActions ? props.getActions(rows): []}
     definition={[
@@ -52,7 +52,8 @@ const Users = props =>
         options: {
           time: true
         }
-      }]}
+      }
+    ]}
     card={UserCard}
   />
 

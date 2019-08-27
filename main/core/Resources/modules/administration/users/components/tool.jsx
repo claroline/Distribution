@@ -15,7 +15,7 @@ import {LocationTab, LocationTabActions} from '#/main/core/administration/users/
 
 const UsersTool = (props) =>
   <TabbedPageContainer
-    title={trans('users_management', {}, 'tools')}
+    title={trans('user_management', {}, 'tools')}
 
     path={props.path}
     redirect={[

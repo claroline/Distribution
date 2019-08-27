@@ -11,7 +11,7 @@ import {LINK_BUTTON, MENU_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {MODAL_LOCALE} from '#/main/app/modals/locale'
 
 import {UserAvatar} from '#/main/core/user/components/avatar'
-import {constants as roleConstants} from '#/main/core/user/role/constants'
+import {constants as roleConstants} from '#/main/core/user/constants'
 
 // TODO : add email validation warning
 // TODO : add user poster when available
@@ -97,7 +97,7 @@ const UserMenu = props =>
           className="list-group-item"
           icon="fa fa-fw fa-user"
           label={trans('user_profile')}
-          target={['claro_user_profile', {user: props.currentUser.publicUrl}]}
+          target={`/desktop/community/profile/${props.currentUser.publicUrl}`}
           onClick={props.closeMenu}
         />
       }

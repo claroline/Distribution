@@ -174,6 +174,9 @@ class ClientSerializer
                 'defaultTool' => $this->config->getParameter('desktop.default_tool'),
                 'showProgression' => $this->config->getParameter('desktop.show_progression'),
             ],
+            'admin' => [ // TODO : find a better way to store and expose this
+                'defaultTool' => $this->config->getParameter('admin.default_tool'),
+            ],
             'plugins' => $this->pluginManager->getEnabled(true),
             'javascripts' => $this->config->getParameter('javascripts'),
             'stylesheets' => $this->config->getParameter('stylesheets'),

@@ -38,7 +38,7 @@ class PublicUrlModal extends Component {
                 hideLabel: true,
                 render: () =>
                   <HtmlText className="read-only">
-                    {'#/desktop/users/profile/'+ this.state.url}
+                    {'#/desktop/community/profile/'+ this.state.url}
                   </HtmlText>
               }, {
                 name: 'url',

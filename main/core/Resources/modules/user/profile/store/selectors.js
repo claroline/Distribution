@@ -1,4 +1,4 @@
-import {selectors as select} from '#/main/core/tools/users/store/selectors'
+import {selectors as select} from '#/main/core/tools/community/store/selectors'
 import {createSelector} from 'reselect'
 
 const store = (state) => state[select.STORE_NAME]

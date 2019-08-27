@@ -36,7 +36,7 @@ const UserMessage = props => {
       'user-message-right': 'right' === props.position
     })}>
       {'left' === props.position &&
-      //            target: '#/desktop/users/profile/'+ this.props.user.meta.publicUrl
+      //            target: '#/desktop/community/profile/'+ this.props.user.meta.publicUrl
         <UrlButton target={['claro_user_profile', {user: get(props.user, 'meta.publicUrl')}]}>
           <UserAvatar picture={props.user && props.user.picture} alt={false} />
         </UrlButton>

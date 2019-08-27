@@ -18,7 +18,7 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {selectors as baseSelectors} from '#/main/core/administration/users/store'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
-import {enumRole, PLATFORM_ROLE} from '#/main/core/user/role/constants'
+import {constants} from '#/main/core/user/constants'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
 import {actions} from '#/main/core/administration/users/role/store'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
@@ -57,7 +57,7 @@ const RoleForm = props =>
             displayed: !props.new,
             options: {
               condensed: true,
-              choices: enumRole
+              choices: constants.ROLE_TYPES
             }
           }
         ]
@@ -110,7 +110,7 @@ const RoleForm = props =>
     <FormSections
       level={3}
     >
-      {PLATFORM_ROLE === props.role.type &&
+      {constants.ROLE_PLATFORM === props.role.type &&
         <FormSection
           icon="fa fa-fw fa-cogs"
           title={trans('administration_tools')}
@@ -132,7 +132,7 @@ const RoleForm = props =>
         </FormSection>
       }
 
-      {PLATFORM_ROLE === props.role.type &&
+      {constants.ROLE_PLATFORM === props.role.type &&
         <FormSection
           icon="fa fa-fw fa-tools"
           title={trans('desktop_tools')}

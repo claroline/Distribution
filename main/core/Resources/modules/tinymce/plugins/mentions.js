@@ -281,7 +281,7 @@ AutoComplete.prototype = {
   insert: function (item) {
     return (`
       <user id="${item.id}">
-        <a class="user-mention" href="${'#/desktop/users/profile/' + item.meta.publicUrl}">@${item.name}</a>
+        <a class="user-mention" href="${'#/desktop/community/profile/' + item.meta.publicUrl}">@${item.name}</a>
       </user>
     `)
   },

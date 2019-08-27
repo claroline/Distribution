@@ -10,7 +10,7 @@ import {makeListReducer} from '#/main/app/content/list/store'
 import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 import {selectors as select} from '#/main/core/user/profile/store/selectors'
 //celui là devrait pas forcément etre là
-import {selectors} from '#/main/core/tools/users/store'
+import {selectors} from '#/main/core/tools/community/store'
 
 const reducer = combineReducers({
   currentFacet: makeReducer(null, {
