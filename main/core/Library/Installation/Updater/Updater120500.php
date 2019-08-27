@@ -49,12 +49,18 @@ class Updater120500 extends Updater
         $this->updatePlatformOptions();
 
         $this->removeTool('my_contacts');
-        $this->removeTool('workspace_management');
+        $this->removeTool('workspace_management', true);
+
+        // old inwicast plugin tools
+        $this->removeTool('inwicast_portal');
+        $this->removeTool('inwicast_configuration', true);
+
         $this->createDefaultAdminHomeTab();
     }
 
     private function updatePlatformOptions()
     {
+        // configure new header
         $header = $this->configHandler->getParameter('header_menu');
         if (!empty($header)) {
             $this->configHandler->setParameter('header_menu', [
@@ -64,6 +70,7 @@ class Updater120500 extends Updater
             ]);
         }
 
+        // configure new home
         $homeType = $this->configHandler->getParameter('home.redirection_type');
         $homeData = null;
         if ('login' === $homeType) {
@@ -82,6 +89,11 @@ class Updater120500 extends Updater
         $this->configHandler->setParameter('home', [
             'type' => $homeType,
             'data' => $homeData,
+        ]);
+
+        // configure default admin tool
+        $this->configHandler->setParameter('admin', [
+            'default_tool' => 'home',
         ]);
     }
 
