@@ -61,6 +61,24 @@ class RuleListener
     }
 
     /**
+     * @DI\Observe("user_add_group")
+     *
+     * @param ResourceEvaluationEvent $event
+     */
+    public function onUserAddGroup($event)
+    {
+    }
+
+    /**
+     * @DI\Observe("user_add_role")
+     *
+     * @param ResourceEvaluationEvent $event
+     */
+    public function onUserAddRole($event)
+    {
+    }
+
+    /**
      * @DI\Observe("workspace_evaluation")
      */
     public function onWorkspaceEvaluation($event)

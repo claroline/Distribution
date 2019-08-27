@@ -48,6 +48,10 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     abstract public function getName();
 
+    /**
+     * @deprecated
+     * inject in constructor instead
+     */
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;

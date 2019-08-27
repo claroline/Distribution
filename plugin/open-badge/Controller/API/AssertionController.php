@@ -16,7 +16,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\Evidence;
 use Claroline\OpenBadgeBundle\Manager\OpenBadgeManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,11 +27,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class AssertionController extends AbstractCrudController
 {
     /**
-     * @DI\InjectParams({
-     *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "manager"      = @DI\Inject("claroline.manager.open_badge_manager"),
-     * })
-     *
      * @param TwigEngine     $templating
      * @param FinderProvider $finder
      */

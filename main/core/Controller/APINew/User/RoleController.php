@@ -25,6 +25,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RoleController extends AbstractCrudController
 {
+    use HasUsersTrait;
+    use HasGroupsTrait;
+
     public function getName()
     {
         return 'role';
@@ -56,7 +59,7 @@ class RoleController extends AbstractCrudController
     public function listPlatformRolesAction(Request $request)
     {
         return new JsonResponse(
-            $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
+            $this->finder->search(Role::class, array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => ['type' => 1]]
             ))
@@ -76,7 +79,7 @@ class RoleController extends AbstractCrudController
     public function listPlatformRolesGrantableAction(Request $request)
     {
         return new JsonResponse(
-            $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
+            $this->finder->search(Role::class, array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => ['type' => 1, 'grantable' => true]]
             ))
@@ -96,7 +99,7 @@ class RoleController extends AbstractCrudController
     public function listLoggablePlatformRolesAction(Request $request)
     {
         return new JsonResponse(
-            $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
+            $this->finder->search(Role::class, array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => [
                     'type' => 1,
@@ -106,11 +109,8 @@ class RoleController extends AbstractCrudController
         );
     }
 
-    use HasUsersTrait;
-    use HasGroupsTrait;
-
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Role';
+        return Role::class;
     }
 }

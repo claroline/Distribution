@@ -1,0 +1,28 @@
+services:
+    _defaults:
+        autowire: false #change to true
+        autoconfigure: true
+        public: true #because controller
+
+    Claroline\OpenBadgeBundle\Controller\OpenBadgeController:
+        arguments:
+          - '@claroline.api.serializer'
+          - '@claroline.serializer.open_badge.criteria'
+          - '@claroline.serializer.open_badge.image'
+          - '@claroline.serializer.open_badge.profile'
+
+    Claroline\OpenBadgeBundle\Controller\API\AssertionController:
+        arguments:
+          - '@security.token_storage'
+          - '@claroline.manager.open_badge_manager'
+
+    Claroline\OpenBadgeBundle\Controller\API\BadgeClassController:
+        arguments:
+          - '@security.token_storage'
+          - '@claroline.manager.open_badge_manager'
+
+    Claroline\OpenBadgeBundle\Controller\API\EndorsementController: ~
+
+    Claroline\OpenBadgeBundle\Controller\API\EvidenceController: ~
+
+    Claroline\OpenBadgeBundle\Controller\API\RuleController: ~

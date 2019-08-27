@@ -15,7 +15,7 @@ use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
- * @EXT\Route("/ruke")
+ * @EXT\Route("/rule")
  */
 class RuleController extends AbstractCrudController
 {
