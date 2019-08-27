@@ -5,11 +5,11 @@ namespace Claroline\AppBundle\Controller;
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
-use Claroline\AppBundle\API\Routing\Documentator;
-use Claroline\AppBundle\API\Routing\Finder;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\Utils\ArrayUtils;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Routing\Documentator;
+use Claroline\AppBundle\Routing\Finder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -550,7 +550,9 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     private function mergeOptions()
     {
-        return array_merge_recursive($this->getDefaultOptions(), $this->getOptions());
+        $this->options = array_merge_recursive($this->getDefaultOptions(), $this->getOptions());
+
+        return $this->options;
     }
 
     /**
