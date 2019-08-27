@@ -15,6 +15,11 @@ import {selectors} from '#/main/core/tools/community/pending/store'
 
 const PendingTab = props =>
   <ToolPage
+    path={[{
+      type: LINK_BUTTON,
+      label: trans('pending_registrations'),
+      target: `${props.path}/pending`
+    }]}
     subtitle={trans('pending_registrations')}
   >
     <ListData

@@ -15,6 +15,11 @@ import {Group} from '#/main/core/tools/community/group/components/group'
 
 const GroupTab = props =>
   <ToolPage
+    path={[{
+      type: LINK_BUTTON,
+      label: trans('groups'),
+      target: `${props.path}/groups`
+    }]}
     subtitle={trans('groups')}
     actions={[
       {

@@ -20,6 +20,11 @@ const ParametersTab = props => {
 
   return (
     <ToolPage
+      path={[{
+        type: LINK_BUTTON,
+        label: trans('parameters'),
+        target: `${props.path}/parameters`
+      }]}
       subtitle={trans('parameters')}
     >
       <FormData
@@ -37,7 +42,7 @@ const ParametersTab = props => {
           {
             icon: 'fa fa-fw fa-user-plus',
             title: trans('registration'),
-            defaultOpened: true,
+            primary: true,
             fields: [
               {
                 name: 'registration.url',

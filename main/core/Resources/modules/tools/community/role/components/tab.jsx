@@ -11,6 +11,11 @@ import {Roles} from '#/main/core/tools/community/role/components/roles'
 
 const RoleTab = props =>
   <ToolPage
+    path={[{
+      type: LINK_BUTTON,
+      label: trans('roles'),
+      target: `${props.path}/roles`
+    }]}
     subtitle={trans('roles')}
     actions={[
       {

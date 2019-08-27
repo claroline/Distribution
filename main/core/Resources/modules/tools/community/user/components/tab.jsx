@@ -15,6 +15,11 @@ import {User} from '#/main/core/tools/community/user/components/user'
 
 const UserTab = props =>
   <ToolPage
+    path={[{
+      type: LINK_BUTTON,
+      label: trans('users'),
+      target: `${props.path}/users`
+    }]}
     subtitle={trans('users')}
     actions={[
       {
