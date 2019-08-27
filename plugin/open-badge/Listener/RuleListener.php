@@ -11,6 +11,8 @@
 
 namespace Claroline\OpenBadgeBundle\Listener;
 
+use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\Event\Crud\PatchEvent;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
@@ -61,21 +63,65 @@ class RuleListener
     }
 
     /**
-     * @DI\Observe("user_add_group")
+     * @DI\Observe("crud_pre_patch_object_claroline_corebundle_entity_user")
      *
      * @param ResourceEvaluationEvent $event
      */
-    public function onUserAddGroup($event)
+    public function listenUserPatch(PatchEvent $event)
     {
+        if (Crud::COLLECTION_ADD === $event->getAction()) {
+            if ('role' === $event->getProperty()) {
+                $rules = $this->om->getRepository(Rule::class)->findBy(['role' => $event->getValue()]);
+
+                foreach ($rules as $rule) {
+                    //add role rule thingy
+                }
+            }
+
+            if ('group' === $event->getProperty()) {
+                $rules = $this->om->getRepository(Rule::class)->findBy(['group' => $event->getValue()]);
+
+                foreach ($rules as $rule) {
+                    //add role group thingy
+                }
+            }
+        }
     }
 
     /**
-     * @DI\Observe("user_add_role")
+     * @DI\Observe("crud_pre_patch_object_claroline_corebundle_entity_role")
      *
      * @param ResourceEvaluationEvent $event
      */
-    public function onUserAddRole($event)
+    public function listenRolePatch(PatchEvent $event)
     {
+        if (Crud::COLLECTION_ADD === $event->getAction()) {
+            if ('user' === $event->getProperty()) {
+                $rules = $this->om->getRepository(Rule::class)->findBy(['role' => $event->getObject()]);
+
+                foreach ($rules as $rule) {
+                    //add role rule thingy
+                }
+            }
+        }
+    }
+
+    /**
+     * @DI\Observe("crud_pre_patch_object_claroline_corebundle_entity_group")
+     *
+     * @param ResourceEvaluationEvent $event
+     */
+    public function listenGroupPatch(PatchEvent $event)
+    {
+        if (Crud::COLLECTION_ADD === $event->getAction()) {
+            if ('user' === $event->getProperty()) {
+                $rules = $this->om->getRepository(Rule::class)->findBy(['group' => $event->getObject()]);
+
+                foreach ($rules as $rule) {
+                    //add role rule thingy
+                }
+            }
+        }
     }
 
     /**

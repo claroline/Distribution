@@ -1,5 +1,5 @@
-imports:
-    - { resource: ../../../../../main/app/Resources/config/services/controller.yml }
+# imports:
+#     - { resource: ../../../../../main/app/Resources/config/services/controller.yml }
 
 services:
     _defaults:

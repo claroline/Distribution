@@ -79,9 +79,9 @@ class Rule
     private $workspace;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Role")
      */
-    private $user;
+    private $role;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Group")
@@ -158,13 +158,13 @@ class Rule
         return $this->group;
     }
 
-    public function setUser($user)
+    public function setRole($role)
     {
-        $this->user = $user;
+        $this->role = $role;
     }
 
-    public function getUser()
+    public function getRole()
     {
-        return $this->user;
+        return $this->role;
     }
 }
