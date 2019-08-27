@@ -25,7 +25,7 @@ class RuleListener
      * BadgeListener constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.claroline.persistence.object_manager")
+     *     "om" = @DI\Inject("claroline.persistence.object_manager")
      * })
      */
     public function __construct(ObjectManager $om)

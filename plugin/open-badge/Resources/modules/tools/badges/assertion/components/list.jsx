@@ -21,7 +21,7 @@ const AssertionsList = (props) => {
       }}
       primaryAction={(row) => ({
         type: LINK_BUTTON,
-        target: props.path + `/badges/assertion/${row.id}`,
+        target: props.path + `/badges/${row.badge.id}/assertion/${row.id}`,
         label: trans('', {}, 'actions')
       })}
       definition={AssertionList.definition}
@@ -34,6 +34,7 @@ const AssertionsList = (props) => {
 AssertionsList.propTypes = {
   currentUser: T.object,
   name: T.string.isRequired,
+  badge: T.object,
   url: T.oneOfType([T.string, T.array]).isRequired,
   invalidate: T.func.isRequired,
   disable: T.func.isRequired,
