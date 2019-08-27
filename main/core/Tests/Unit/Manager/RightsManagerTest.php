@@ -39,7 +39,7 @@ class RightsManagerTest extends MockeryTestCase
         $this->roleManager = $this->mock('Claroline\CoreBundle\Manager\RoleManager');
         $this->resourceNodeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceNodeRepository');
         $this->roleRepo = $this->mock('Claroline\CoreBundle\Repository\RoleRepository');
-        $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\Service\ResourceTypeRepository');
+        $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceTypeRepository');
         $this->translator = $this->mock('Symfony\Component\Translation\Translator');
         $this->dispatcher = $this->mock('Claroline\CoreBundle\Event\StrictDispatcher');
         $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');

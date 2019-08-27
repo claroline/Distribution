@@ -25,7 +25,7 @@ use Claroline\CoreBundle\Event\Resource\UpdateResourceRightsEvent;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceRightsRepository;
-use Claroline\CoreBundle\Repository\Service\ResourceTypeRepository;
+use Claroline\CoreBundle\Repository\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\RoleRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LogLevel;

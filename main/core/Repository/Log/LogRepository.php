@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Repository\Service;
+namespace Claroline\CoreBundle\Repository\Log;
 
 use Claroline\CoreBundle\API\Finder\Log\LogFinder;
 use Claroline\CoreBundle\Entity\Log\Log;

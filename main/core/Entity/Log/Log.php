@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping\Index;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Service\LogRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Log\LogRepository")
  * @ORM\Table(name="claro_log", indexes={
  *     @Index(name="action_idx", columns={"action"}),
  *     @Index(name="tool_idx", columns={"tool_name"}),

@@ -8,7 +8,7 @@ use Claroline\AppBundle\API\ValidatorInterface;
 use Claroline\AppBundle\API\ValidatorProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
-use Claroline\CoreBundle\Repository\Service\UserRepository;
+use Claroline\CoreBundle\Repository\UserRepository;
 use  Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 

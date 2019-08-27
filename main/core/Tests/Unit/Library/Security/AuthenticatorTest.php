@@ -26,7 +26,7 @@ class AuthenticatorTest extends MockeryTestCase
         parent::setUp();
 
         $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
-        $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\Service\UserRepository');
+        $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\UserRepository');
         $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:User')->andReturn($this->userRepo);
         $this->sc = $this->mock('Symfony\Component\Security\Core\SecurityContextInterface');
         $this->encoderFactory = $this->mock('Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface');

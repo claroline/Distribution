@@ -34,8 +34,8 @@ class ToolManagerTest extends MockeryTestCase
         $this->markTestSkipped('Needs to be fixed');
 
         parent::setUp();
-        $this->orderedToolRepo = $this->mock('Claroline\CoreBundle\Repository\Service\OrderedToolRepository');
-        $this->toolRepo = $this->mock('Claroline\CoreBundle\Repository\Service\ResourceTypeRepository');
+        $this->orderedToolRepo = $this->mock('Claroline\CoreBundle\Repository\OrderedToolRepository');
+        $this->toolRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceTypeRepository');
         $this->ed = $this->mock('Claroline\CoreBundle\Event\StrictDispatcher');
         $this->utilities = $this->mock('Claroline\CoreBundle\Library\Utilities\ClaroUtilities');
         $this->roleRepo = $this->mock('Claroline\CoreBundle\Repository\RoleRepository');

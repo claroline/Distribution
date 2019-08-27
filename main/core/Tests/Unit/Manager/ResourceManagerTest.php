@@ -38,7 +38,7 @@ class ResourceManagerTest extends MockeryTestCase
 
         $this->rightsManager = $this->mock('Claroline\CoreBundle\Manager\Resource\RightsManager');
         $this->resourceNodeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceNodeRepository');
-        $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\Service\ResourceTypeRepository');
+        $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceTypeRepository');
         $this->shortcutRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceShortcutRepository');
         $this->roleRepo = $this->mock('Claroline\CoreBundle\Repository\RoleRepository');
         $this->roleManager = $this->mock('Claroline\CoreBundle\Manager\RoleManager');

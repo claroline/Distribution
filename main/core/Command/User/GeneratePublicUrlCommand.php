@@ -30,7 +30,7 @@ class GeneratePublicUrlCommand extends ContainerAwareCommand
 
         $objectManager = $this->getContainer()->get('claroline.persistence.object_manager');
 
-        /** @var \Claroline\CoreBundle\Repository\Service\UserRepository $userRepository */
+        /** @var \Claroline\CoreBundle\Repository\UserRepository $userRepository */
         $userRepository = $objectManager->getRepository('ClarolineCoreBundle:User');
 
         $output->writeln('Start of update, it may take a while to process - '.date('Y/m/d H:i:s'));
