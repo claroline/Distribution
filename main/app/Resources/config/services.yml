@@ -1,2 +1,2 @@
- imports:
-    - { resource: services/controller.yml }
+imports:
+  - { resource: services/controller.yml }
