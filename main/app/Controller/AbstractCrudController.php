@@ -50,7 +50,7 @@ abstract class AbstractCrudController extends AbstractApiController
 
     /**
      * @deprecated
-     * inject in constructor instead
+     * user setter injection instead
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -63,6 +63,39 @@ abstract class AbstractCrudController extends AbstractApiController
         $this->routerDocumentator = $container->get('claroline.api.routing.documentator');
         $this->options = $this->mergeOptions();
     }
+
+    //these are the injectors you whould use
+    public function setFinder(FinderProvider $finder)
+    {
+        $this->finder = $finder;
+    }
+
+    public function setSerializer(SerializerProvider $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    public function setCrud(Crud $crud)
+    {
+        $this->crud = $crud;
+    }
+
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
+    public function setRouterFinder(Finder $routerFinder)
+    {
+        $this->routerFinder = $routerFinder;
+    }
+
+    public function setRouterDocumentator(Documentator $routerDocumentator)
+    {
+        $this->routerDocumentator = $routerDocumentator;
+    }
+
+    //end
 
     /**
      * @ApiDoc(
