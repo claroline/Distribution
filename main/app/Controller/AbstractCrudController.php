@@ -550,10 +550,9 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     public function mergeOptions()
     {
-        $options = array_merge_recursive($this->getDefaultOptions(), $this->getOptions());
-        $this->options = $options;
+        $this->options = array_merge_recursive($this->getDefaultOptions(), $this->getOptions());
 
-        return $options;
+        return $this->options;
     }
 
     /**
