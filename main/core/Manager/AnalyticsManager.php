@@ -21,8 +21,8 @@ use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
-use Claroline\CoreBundle\Repository\Service\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\Service\LogRepository;
+use Claroline\CoreBundle\Repository\Service\ResourceTypeRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

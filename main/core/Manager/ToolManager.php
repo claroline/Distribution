@@ -26,7 +26,6 @@ use Claroline\CoreBundle\Manager\Exception\ToolPositionAlreadyOccupiedException;
 use Claroline\CoreBundle\Repository\RoleRepository;
 use Claroline\CoreBundle\Repository\Service\AdministrationToolRepository;
 use Claroline\CoreBundle\Repository\Service\OrderedToolRepository;
-use Claroline\CoreBundle\Repository\Service\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\Service\UserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
