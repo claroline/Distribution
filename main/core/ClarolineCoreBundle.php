@@ -70,18 +70,15 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
             'WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle',
             'Claroline\MigrationBundle\ClarolineMigrationBundle',
             'Claroline\Bundle\FrontEndBundle\FrontEndBundle',
-            'JMS\SerializerBundle\JMSSerializerBundle',
             'Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle',
         ];
         // simple container configuration, same for every environment
         $simpleConfigs = [
             'Symfony\Bundle\TwigBundle\TwigBundle' => 'twig',
-            'Symfony\Bundle\AsseticBundle\AsseticBundle' => 'assetic',
             'JMS\DiExtraBundle\JMSDiExtraBundle' => 'jms_di_extra',
             'JMS\SecurityExtraBundle\JMSSecurityExtraBundle' => 'jms_security_extra',
             'Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle' => 'stof_doctrine_extensions',
             'Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle' => 'sensio_framework_extra',
-            'FOS\RestBundle\FOSRestBundle' => 'fos_rest',
             'Knp\Bundle\MenuBundle\KnpMenuBundle' => 'knp_menu',
         ];
         // one configuration file for every standard environment (prod, dev, test)
