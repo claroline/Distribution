@@ -1,10 +1,34 @@
+imports:
+    - { resource: ../../../../../main/app/Resources/config/services/controller.yml }
+
 services:
     _defaults:
         autowire: false #change to true
         autoconfigure: false
         public: true #because controller
-        bind:
 
+    _instanceof:
+        Claroline\AppBundle\Controller\AbstractCrudController:
+            calls:
+              - method: setFinder
+                arguments:
+                  - '@claroline.api.finder'
+              - method: setSerializer
+                arguments:
+                  - '@claroline.api.serializer'
+              - method: setCrud
+                arguments:
+                  - '@claroline.api.crud'
+              - method: setObjectManager
+                arguments:
+                  - '@claroline.persistence.object_manager'
+              - method: setRouterFinder
+                arguments:
+                  - '@claroline.api.routing.finder'
+              - method: setRouterDocumentator
+                arguments:
+                  - '@claroline.api.routing.documentator'
+              - method: mergeOptions
 
     Claroline\OpenBadgeBundle\Controller\OpenBadgeController:
         arguments:
