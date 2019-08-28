@@ -40,14 +40,14 @@ services:
     Claroline\OpenBadgeBundle\Controller\API\AssertionController:
         arguments:
           - '%claroline.param.files_directory%'
-          - '@claroline.manager.open_badge_manager'
+          - '@Claroline\OpenBadgeBundle\Manager\OpenBadgeManager'
           - '@claroline.manager.pdf_manager'
           - '@security.token_storage'
 
     Claroline\OpenBadgeBundle\Controller\API\BadgeClassController:
         arguments:
           - '@security.token_storage'
-          - '@claroline.manager.open_badge_manager'
+          - '@Claroline\OpenBadgeBundle\Manager\OpenBadgeManager'
 
     Claroline\OpenBadgeBundle\Controller\API\EndorsementController: ~
 

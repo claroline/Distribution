@@ -8,12 +8,8 @@ use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-/**
- * @DI\Service("claroline.manager.open_badge_manager")
- */
 class OpenBadgeManager
 {
     /** @var ObjectManager */
@@ -30,13 +26,6 @@ class OpenBadgeManager
 
     /**
      * OpenBadgeManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
-     *     "templateManager"  = @DI\Inject("claroline.manager.template_manager"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "webDir"           = @DI\Inject("%claroline.param.web_directory%")
-     * })
      *
      * @param ObjectManager    $om
      * @param TemplateManager  $templateManager
