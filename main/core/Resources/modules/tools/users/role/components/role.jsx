@@ -213,7 +213,7 @@ const RoleForm = props =>
           ]}
         >
           <div className="list-group" fill={true}>
-            {!!props.shortcuts.find(shortcut => shortcut.role.id === props.role.id) ?
+            {!!props.shortcuts.find(shortcut => shortcut.role.id === props.role.id) && 0 < props.shortcuts.find(shortcut => shortcut.role.id === props.role.id).data.length ?
               props.shortcuts.find(shortcut => shortcut.role.id === props.role.id).data.map(shortcut =>
                 <ShortcutRow
                   key={`shortcut-${shortcut.type}-${shortcut.name}`}

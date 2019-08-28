@@ -888,7 +888,7 @@ class WorkspaceManager
             $data = $workspaceShortcuts->getData();
             $newData = [];
 
-            forEach ($data as $shortcut) {
+            foreach ($data as $shortcut) {
                 if ($shortcut['type'] !== $type || $shortcut['name'] !== $name) {
                     $newData[] = $shortcut;
                 }
