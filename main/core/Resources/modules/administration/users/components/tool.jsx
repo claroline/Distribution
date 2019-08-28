@@ -55,7 +55,7 @@ const UsersTool = (props) =>
         actions: RoleTabActions,
         content: RoleTab
       }, {
-        icon: 'fa fa-id-card-o',
+        icon: 'fa fa-id-card',
         title: trans('user_profile'),
         path: '/profile',
         displayed: props.isAdmin,

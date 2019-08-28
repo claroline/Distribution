@@ -1,5 +1,7 @@
 import {API_REQUEST} from '#/main/app/api'
 
+import {route} from '#/main/core/user/routing'
+
 export const actions = {}
 
 actions.updatePassword = (user, plainPassword) => ({
@@ -19,9 +21,9 @@ actions.updatePublicUrl = (user, publicUrl, redirect = false) => ({
       method: 'PUT',
       body: JSON.stringify(Object.assign({}, user, {meta: {publicUrl: publicUrl, publicUrlTuned: true}}))
     },
-    success: () => {
+    success: (response) => {
       if (redirect) {
-        window.location = '#/desktop/community/profile/' + publicUrl
+        window.location = '#' + route(response)
       }
     }
   }

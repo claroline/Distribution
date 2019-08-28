@@ -2,13 +2,11 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 
-import {trans} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
-import {matchPath, Routes} from '#/main/app/router'
+import {Routes} from '#/main/app/router'
+import {constants as toolConstants} from '#/main/core/tool/constants'
 
 import {Profile} from '#/main/core/user/profile/containers/main'
 import {User as UserType} from '#/main/core/user/prop-types'
-import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 import {constants} from '#/main/core/tools/community/constants'
 import {getPermissionLevel} from '#/main/core/tools/community/permissions'
 import {UserTab} from '#/main/core/tools/community/user/containers/tab'
@@ -16,7 +14,6 @@ import {GroupTab} from '#/main/core/tools/community/group/containers/tab'
 import {RoleTab} from '#/main/core/tools/community/role/containers/tab'
 import {ParametersTab} from '#/main/core/tools/community/parameters/containers/tab'
 import {PendingTab} from '#/main/core/tools/community/pending/containers/tab'
-import {constants as toolConstants} from '#/main/core/tool/constants'
 
 const CommunityTool = (props) => {
   const permLevel = getPermissionLevel(props.currentUser, props.workspace)
@@ -53,7 +50,7 @@ const CommunityTool = (props) => {
           component: Profile,
           onEnter: (params = {}) => {
             if (!props.originalUser || props.originalUser.publicUrl !== params.publicUrl) {
-              props.loadUser(publicUrl)
+              props.loadUser(params.publicUrl)
             }
           }
         }
@@ -65,10 +62,9 @@ const CommunityTool = (props) => {
 CommunityTool.propTypes = {
   contextType: T.string,
   path: T.string.isRequired,
-  location: T.object.isRequired,
   currentUser: T.shape(UserType.propTypes),
   originalUser: T.shape(UserType.propTypes),
-  workspace: T.shape(WorkspaceType.propTypes).isRequired,
+  workspace: T.object,
   loadUser: T.func.isRequired
 }
 

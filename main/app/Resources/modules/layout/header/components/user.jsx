@@ -10,6 +10,7 @@ import {LINK_BUTTON, MENU_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 
 import {MODAL_LOCALE} from '#/main/app/modals/locale'
 
+import {route} from '#/main/core/user/routing'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {constants as roleConstants} from '#/main/core/user/constants'
 
@@ -97,7 +98,7 @@ const UserMenu = props =>
           className="list-group-item"
           icon="fa fa-fw fa-user"
           label={trans('user_profile')}
-          target={`/desktop/community/profile/${props.currentUser.publicUrl}`}
+          target={route(props.currentUser)}
           onClick={props.closeMenu}
         />
       }

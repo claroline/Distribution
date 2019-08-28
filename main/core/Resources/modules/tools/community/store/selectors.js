@@ -61,6 +61,7 @@ const defaultRole = createSelector(
 
 export const selectors = {
   STORE_NAME,
+
   store,
   loaded,
   restrictions,

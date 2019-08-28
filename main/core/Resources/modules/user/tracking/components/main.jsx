@@ -12,6 +12,7 @@ import {UserDetails} from '#/main/core/user/components/details'
 import {Timeline} from '#/main/core/user/tracking/components/timeline'
 import {Search} from '#/main/core/user/tracking/components/search'
 import {Summary} from '#/main/core/user/tracking/components/summary'
+import {route} from '#/main/core/user/routing'
 
 class TrackingComponent extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class TrackingComponent extends Component {
             type: 'url',
             icon: 'fa fa-fw fa-address-card',
             label: trans('show_profile', {}, 'platform'),
-            target: '#/desktop/community/profile/'+ this.props.user.meta.publicUrl
+            target: route(this.props.user)
           }, {
             type: 'callback',
             icon: 'fa fa-fw fa-file-pdf-o',

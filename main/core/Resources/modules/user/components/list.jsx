@@ -1,12 +1,13 @@
 import React from 'react'
-
-import {ListData} from '#/main/app/content/list/containers/data'
-import {UserCard} from '#/main/core/user/components/card'
-import {URL_BUTTON} from '#/main/app/buttons'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {ListData} from '#/main/app/content/list/containers/data'
 import {actions as listActions} from '#/main/app/content/list/store'
-import {connect} from 'react-redux'
+
+import {route} from '#/main/core/user/routing'
+import {UserCard} from '#/main/core/user/components/card'
 
 const Users = props =>
   <ListData
@@ -16,8 +17,8 @@ const Users = props =>
       autoload: true
     }}
     primaryAction={(row) => ({
-      type: URL_BUTTON,
-      target: '#/desktop/community/profile/'+ row.meta.publicUrl
+      type: LINK_BUTTON,
+      target: route(row)
     })}
     actions={(rows) => props.getActions ? props.getActions(rows): []}
     definition={[

@@ -7,6 +7,7 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {ToolPage} from '#/main/core/tool/containers/page'
 
+import {route} from '#/main/core/user/routing'
 import {UserCard} from '#/main/core/user/components/card'
 import {constants} from '#/main/core/user/constants'
 import {selectors} from '#/main/core/tools/community/pending/store'
@@ -30,7 +31,7 @@ const PendingTab = props =>
       }}
       primaryAction={(row) => ({
         type: LINK_BUTTON,
-        target: props.path + '/profile/' + row.meta.publicUrl
+        target: route(row, props.path)
       })}
       actions={(rows) => [{
         type: CALLBACK_BUTTON,

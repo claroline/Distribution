@@ -7,7 +7,7 @@ import {CommunityMenu as CommunityMenuComponent} from '#/main/core/tools/communi
 
 const CommunityMenu = connect(
   (state) => ({
-    context: toolSelectors.contextType(state),
+    contextType: toolSelectors.contextType(state),
     currentUser: securitySelectors.currentUser(state),
     workspace: toolSelectors.contextData(state)
   })

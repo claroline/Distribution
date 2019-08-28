@@ -8,6 +8,7 @@ import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 
+import {route} from '#/main/core/user/routing'
 import {UserCard} from '#/main/core/user/components/card'
 import {constants} from '#/main/core/user/constants'
 import {actions, selectors} from '#/main/core/tools/community/user/store'
@@ -23,9 +24,10 @@ const UsersList = props =>
     }}
     primaryAction={(row) => ({
       type: LINK_BUTTON,
-      target: props.path + '/profile/' + row.meta.publicUrl
+      target: route(row, props.path)
     })}
     actions={(rows) => !isEmpty(props.workspace) ? [{
+      name: 'unregister',
       type: CALLBACK_BUTTON,
       icon: 'fa fa-fw fa-trash-o',
       label: trans('unregister', {}, 'actions'),

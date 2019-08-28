@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {selectors as detailsSelectors} from '#/main/app/content/details/store'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 
+import {route} from '#/main/core/user/routing'
 import {UserDetails} from '#/main/core/user/components/details'
 import {ProfileNav} from '#/main/core/user/profile/components/nav'
 import {ProfileFacets} from '#/main/core/user/profile/components/facets'
@@ -20,7 +21,7 @@ const ProfileShowComponent = props =>
 
       {props.facets && 1 < props.facets.length &&
         <ProfileNav
-          prefix={props.path + '/profile/' + props.user.publicUrl + '/show'}
+          prefix={route(props.user, props.path) + '/show'}
           facets={props.facets}
         />
       }
@@ -28,7 +29,7 @@ const ProfileShowComponent = props =>
 
     <div className="user-profile-content col-md-9">
       <ProfileFacets
-        prefix={props.path + '/profile/' + props.user.publicUrl + '/show'}
+        prefix={route(props.user, props.path) + '/show'}
         facets={props.facets}
         facetComponent={ProfileFacet}
         openFacet={props.openFacet}
