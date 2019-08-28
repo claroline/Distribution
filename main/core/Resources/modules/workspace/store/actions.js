@@ -36,7 +36,7 @@ actions.loadShortcuts = makeActionCreator(SHORTCUTS_LOAD, 'shortcuts')
 actions.open = (slug) => (dispatch, getState) => {
   const workspace = selectors.workspace(getState())
   const loaded = selectors.loaded(getState())
-  if (!loaded || !workspace || workspace.meta.slug !== slug) {
+  if (!loaded || !workspace || workspace.slug !== slug) {
     dispatch({
       [API_REQUEST]: {
         silent: true,
@@ -91,7 +91,7 @@ actions.selfRegister = (workspace) => ({
     },
     success: (response, dispatch) => {
       dispatch(actions.setLoaded(false))
-      dispatch(actions.open(workspace.meta.slug))
+      dispatch(actions.open(workspace.slug))
     }
   }
 })
