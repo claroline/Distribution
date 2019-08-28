@@ -229,9 +229,13 @@ class BadgeClassSerializer
         foreach ($rules as $rule) {
             if (!isset($rule['id'])) {
                 $entity = $this->ruleSerializer->deserialize($rule, new Rule());
-                $entity->setBadge($badge);
-                $this->om->persist($entity);
+            } else {
+                $entity = $this->om->getObject($rule, Rule::class);
+                $entity = $this->ruleSerializer->deserialize($rule, $entity);
             }
+
+            $entity->setBadge($badge);
+            $this->om->persist($entity);
         }
     }
 

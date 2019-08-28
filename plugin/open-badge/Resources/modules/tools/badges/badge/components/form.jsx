@@ -10,6 +10,7 @@ import {
   ISSUING_MODE_GROUP,
   ISSUING_MODE_PEER,
   ISSUING_MODE_WORKSPACE,
+  ISSUING_MODE_ORGANIZATION,
   ISSUING_MODE_AUTO
 } from '#/plugin/open-badge/tools/badges/badge/constants'
 
@@ -29,7 +30,7 @@ const BadgeFormComponent = (props) => {
   }
 
   const issuingChoices =  {
-    //[ISSUING_MODE_ORGANIZATION]: trans(ISSUING_MODE_ORGANIZATION),
+    [ISSUING_MODE_ORGANIZATION]: trans(ISSUING_MODE_ORGANIZATION),
     [ISSUING_MODE_USER]: trans(ISSUING_MODE_USER),
     [ISSUING_MODE_GROUP]: trans(ISSUING_MODE_GROUP),
     [ISSUING_MODE_PEER]: trans(ISSUING_MODE_PEER),

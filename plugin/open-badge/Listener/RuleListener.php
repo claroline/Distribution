@@ -14,9 +14,16 @@ namespace Claroline\OpenBadgeBundle\Listener;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\Event\Crud\PatchEvent;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Group;
+use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
+use Claroline\OpenBadgeBundle\Entity\Assertion;
+use Claroline\OpenBadgeBundle\Entity\Evidence;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service()
@@ -27,12 +34,16 @@ class RuleListener
      * BadgeListener constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     *     "translator"   = @DI\Inject("translator"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager")
      * })
      */
-    public function __construct(ObjectManager $om)
+    public function __construct(ObjectManager $om, TranslatorInterface $translator, TokenStorageInterface $tokenStorage)
     {
         $this->om = $om;
+        $this->translator = $translator;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -74,7 +85,7 @@ class RuleListener
                 $rules = $this->om->getRepository(Rule::class)->findBy(['role' => $event->getValue()]);
 
                 foreach ($rules as $rule) {
-                    //add role rule thingy
+                    $this->awardInRole($event->getObject(), $event->getValue(), $rule);
                 }
             }
 
@@ -82,7 +93,7 @@ class RuleListener
                 $rules = $this->om->getRepository(Rule::class)->findBy(['group' => $event->getValue()]);
 
                 foreach ($rules as $rule) {
-                    //add role group thingy
+                    $this->awardInGroup($event->getObject(), $event->getValue(), $rule);
                 }
             }
         }
@@ -100,7 +111,7 @@ class RuleListener
                 $rules = $this->om->getRepository(Rule::class)->findBy(['role' => $event->getObject()]);
 
                 foreach ($rules as $rule) {
-                    //add role rule thingy
+                    $this->awardInRole($event->getValue(), $event->getObject(), $rule);
                 }
             }
         }
@@ -118,7 +129,7 @@ class RuleListener
                 $rules = $this->om->getRepository(Rule::class)->findBy(['group' => $event->getObject()]);
 
                 foreach ($rules as $rule) {
-                    //add role rule thingy
+                    $this->awardInGroup($event->getValue(), $event->getObject(), $rule);
                 }
             }
         }
@@ -145,5 +156,71 @@ class RuleListener
                   break;
             }
         }
+    }
+
+    private function awardResourcePassed(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
+    {
+        $assertion = $this->makeAssertion($user, $rule);
+    }
+
+    private function awardResourceScoreAbove(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
+    {
+        $assertion = $this->makeAssertion($user, $rule);
+    }
+
+    private function awardResourceCompletedAbove(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
+    {
+        $assertion = $this->makeAssertion($user, $rule);
+    }
+
+    private function awardResourceParticipated(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
+    {
+        $assertion = $this->makeAssertion($user, $rule);
+    }
+
+    private function awardInGroup(User $user, Group $group, Rule $rule)
+    {
+        $assertion = $this->makeAssertion($user, $rule);
+        $evidence = new Evidence();
+        $now = new \DateTime();
+        $evidence->setNarrative($this->translator->trans(
+          'evidence_narrative_add_group',
+          [
+            '%doer%' => $this->tokenStorage->getToken()->getUser(),
+            '%date%' => $now->format('Y-m-d H:i:s'),
+          ]
+        ));
+        $evidence->setAssertion($assertion);
+        $evidence->setName(Rule::IN_GROUP);
+        $this->om->persist($evidence);
+        $this->om->flush();
+    }
+
+    private function awardInRole(User $user, Role $role, Rule $rule)
+    {
+        $assertion = $this->makeAssertion($user, $rule);
+        $evidence = new Evidence();
+        $now = new \DateTime();
+        $evidence->setNarrative($this->translator->trans(
+          'evidence_narrative_add_group',
+          [
+            '%doer%' => $this->tokenStorage->getToken()->getUser(),
+            '%date%' => $now->format('Y-m-d H:i:s'),
+          ]
+        ));
+        $evidence->setAssertion($assertion);
+        $evidence->setName(Rule::IN_ROLE);
+        $this->om->persist($evidence);
+        $this->om->flush();
+    }
+
+    private function makeAssertion($user, $rule)
+    {
+        $assertion = new Assertion();
+        $assertion->setRecipient($user);
+        $assertion->setBadge($rule->getBadge());
+        $this->om->persist($assertion);
+
+        return $assertion;
     }
 }

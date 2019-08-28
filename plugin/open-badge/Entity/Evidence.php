@@ -62,7 +62,7 @@ class Evidence
     private $assertion;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode")
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation")
      *
      * @var ResourceNode
      */
