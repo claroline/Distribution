@@ -1732,7 +1732,7 @@
     "secondary_name": "Nom secondaire",
     "auto_logging_after_registration": "Connexion automatique après l'inscription",
     "count_elements": "{0, 1} %count% élément|[2,Inf[ %count% éléments",
-    "header_locale": "Changer la langue dans le header",
+    "footer_locale": "Changer la langue dans le pied de page",
     "search_and_filters": "Recherche & filtres",
     "disabled_admin_tools": "Outils admins désactivés",
     "workspace_denied": "L'action %action% n'a pas pu être effectuée sur l'espace d'activité %workspace%.",

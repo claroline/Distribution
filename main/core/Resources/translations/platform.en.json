@@ -1698,7 +1698,7 @@
     "secondary_name": "Secondary name",
     "auto_logging_after_registration": "Auto logging after registration",
     "count_elements": "{0, 1} %count% element|[2,Inf[ %count% elements",
-    "header_locale": "Change the language in the header",
+    "footer_locale": "Change the language in the footer",
     "search_and_filters": "Search & filters",
     "disabled_admin_tools": "Admin tools disabled",
     "workspace_denied": "The action %action% could not be done on the workspace %workspace%.",

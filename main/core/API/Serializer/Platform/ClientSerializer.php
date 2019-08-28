@@ -138,10 +138,7 @@ class ClientSerializer
         ]);
 
         $data = [
-            'logo' => $logo ? [
-                'url' => $logo->getUrl(),
-                'colorized' => 'image/svg+xml' === $logo->getMimeType(),
-            ] : null,
+            'logo' => $logo ? $logo->getUrl() : null,
             'name' => $this->config->getParameter('name'),
             'secondaryName' => $this->config->getParameter('secondary_name'),
             'description' => null, // the one for the current locale

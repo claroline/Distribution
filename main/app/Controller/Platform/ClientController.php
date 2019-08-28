@@ -120,13 +120,6 @@ class ClientController
                     'about' => $this->configHandler->getParameter('show_about_button'),
                     'help' => $this->configHandler->getParameter('show_help_button'),
                 ],
-                'administration' => array_map(function (AdminTool $tool) {
-                    return [
-                        'icon' => $tool->getClass(),
-                        'name' => $tool->getName(),
-                    ];
-                }, $this->toolManager->getAdminToolsByRoles($token->getRoles())),
-
                 'tools' => array_map(function (OrderedTool $orderedTool) {
                     $tool = $orderedTool->getTool();
 
@@ -136,6 +129,7 @@ class ClientController
                     ];
                 }, array_values($orderedTools)),
             ],
+            'footer' => $this->configHandler->getParameter('footer'),
 
             'injectedJavascripts' => $this->injectJavascript(),
             'injectedStylesheets' => $this->injectStylesheet(),
