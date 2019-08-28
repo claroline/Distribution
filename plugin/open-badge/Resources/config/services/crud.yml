@@ -9,6 +9,3 @@ services:
       arguments:
         - '@security.token_storage'
         - '@claroline.serializer.parameters'
-
-    claroline.crud.open_badge.badge:
-      alias: Claroline\OpenBadgeBundle\Crud\BadgeClassCrud

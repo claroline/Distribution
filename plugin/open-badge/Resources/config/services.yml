@@ -6,6 +6,7 @@ imports:
     - { resource: services/crud.yml }
     - { resource: services/manager.yml }
     - { resource: services/voter.yml }
+    - { resource: services/library.yml }
 
 services:
     _defaults:
