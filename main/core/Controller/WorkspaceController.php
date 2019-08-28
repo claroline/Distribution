@@ -176,7 +176,7 @@ class WorkspaceController
                 }, $orderedTools)),
                 'shortcuts' => array_values(array_map(function (Shortcuts $shortcuts) {
                     return $this->serializer->serialize($shortcuts);
-                }, $workspace->getShortcuts()->toArray()))
+                }, $workspace->getShortcuts()->toArray())),
             ]);
         }
 

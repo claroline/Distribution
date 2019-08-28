@@ -21,6 +21,7 @@ import {
 } from '#/main/core/workspace/store'
 import {selectors} from '#/main/core/tools/users/store'
 import {MODAL_WORKSPACE_SHOTCUTS} from '#/main/core/workspace/modals/shortcuts'
+import {constants as workspaceContants} from '#/main/core/workspace/constants'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 import {GroupList} from '#/main/core/administration/users/group/components/group-list'
@@ -197,7 +198,12 @@ const RoleForm = props =>
         <FormSection
           className="embedded-list-section"
           icon="fa fa-fw fa-external-link"
-          title={trans('shortcuts')}
+          title={trans('shortcuts') + ' (' +
+            (props.shortcuts && !!props.shortcuts.find(shortcut => shortcut.role.id === props.role.id) ?
+              props.shortcuts.find(shortcut => shortcut.role.id === props.role.id).data.length :
+              0) +
+            '/' + workspaceContants.SHORTCUTS_LIMIT + ')'
+          }
           disabled={props.new}
           actions={[
             {
