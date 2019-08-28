@@ -22,6 +22,7 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Shortcuts;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceOptions;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceRegistrationQueue;
@@ -70,6 +71,7 @@ class WorkspaceManager
     /** @var array */
     private $importData;
     private $templateDirectory;
+    private $shortcutsRepo;
 
     /**
      * WorkspaceManager constructor.
@@ -113,6 +115,7 @@ class WorkspaceManager
         $this->container = $container;
         $this->importData = [];
         $this->templateDirectory = $container->getParameter('claroline.param.templates_directory');
+        $this->shortcutsRepo = $om->getRepository(Shortcuts::class);
     }
 
     /**
@@ -860,5 +863,39 @@ class WorkspaceManager
 
         $this->log('Flushing...');
         $this->om->flush();
+    }
+
+    public function addShortcuts(Workspace $workspace, Role $role, array $toAdd)
+    {
+        $workspaceShortcuts = $this->shortcutsRepo->findOneBy(['workspace' => $workspace, 'role' => $role]);
+
+        if (!$workspaceShortcuts) {
+            $workspaceShortcuts = new Shortcuts();
+            $workspaceShortcuts->setWorkspace($workspace);
+            $workspaceShortcuts->setRole($role);
+        }
+        $shortcuts = array_merge($workspaceShortcuts->getData(), $toAdd);
+        $workspaceShortcuts->setData($shortcuts);
+        $this->om->persist($workspaceShortcuts);
+        $this->om->flush();
+    }
+
+    public function removeShortcut(Workspace $workspace, Role $role, $type, $name)
+    {
+        $workspaceShortcuts = $this->shortcutsRepo->findOneBy(['workspace' => $workspace, 'role' => $role]);
+
+        if ($workspaceShortcuts) {
+            $data = $workspaceShortcuts->getData();
+            $newData = [];
+
+            forEach ($data as $shortcut) {
+                if ($shortcut['type'] !== $type || $shortcut['name'] !== $name) {
+                    $newData[] = $shortcut;
+                }
+            }
+            $workspaceShortcuts->setData($newData);
+            $this->om->persist($workspaceShortcuts);
+            $this->om->flush();
+        }
     }
 }
