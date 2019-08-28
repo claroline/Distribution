@@ -19,6 +19,7 @@ use Claroline\OpenBadgeBundle\Manager\OpenBadgeManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -26,15 +27,31 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class AssertionController extends AbstractCrudController
 {
+    /** @var string */
+    private $filesDir;
+
+    /** @var OpenBadgeManager */
+    private $manager;
+
+    /** @var PdfManager */
+    private $pdfManager;
+
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /**
      * @param TwigEngine     $templating
      * @param FinderProvider $finder
      */
     public function __construct(
-        TokenStorageInterface $tokenStorage,
-        OpenBadgeManager $manager
+        $filesDir,
+        OpenBadgeManager $manager,
+        PdfManager $pdfManager,
+        TokenStorageInterface $tokenStorage
     ) {
+        $this->filesDir = $filesDir;
         $this->manager = $manager;
+        $this->pdfManager = $pdfManager;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -92,6 +109,49 @@ class AssertionController extends AbstractCrudController
         ));
 
         return new JsonResponse($assertions);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/{assertion}/pdf/download",
+     *     name="apiv2_assertion_pdf_download"
+     * )
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "assertion",
+     *     class="ClarolineOpenBadgeBundle:Assertion",
+     *     options={"mapping": {"assertion": "uuid"}}
+     * )
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * Downloads pdf version of assertion
+     *
+     * @param Assertion $assertion
+     * @param User      $currentUser
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function assertionPdfDownloadAction(Assertion $assertion, User $currentUser)
+    {
+        $badge = $assertion->getBadge();
+        $user = $assertion->getRecipient();
+        $pdfName = $badge->getName().'_'.$user->getFirstName().$user->getLastName();
+
+        $content = $this->manager->generateCertificate($assertion);
+        $pdf = $this->pdfManager->create($content, $pdfName, $currentUser, 'badges');
+
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$pdfName.'.pdf"',
+        ];
+
+        return new Response(
+            file_get_contents($this->filesDir.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.$pdf->getPath()),
+            200,
+            $headers
+        );
     }
 
     public function getClass()
