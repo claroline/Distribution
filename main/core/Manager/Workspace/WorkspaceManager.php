@@ -874,8 +874,20 @@ class WorkspaceManager
             $workspaceShortcuts->setWorkspace($workspace);
             $workspaceShortcuts->setRole($role);
         }
-        $shortcuts = array_merge($workspaceShortcuts->getData(), $toAdd);
-        $workspaceShortcuts->setData($shortcuts);
+        $data = $workspaceShortcuts->getData();
+
+        foreach ($toAdd as $shortcut) {
+            if (Shortcuts::SHORTCUTS_LIMIT > count($data)) {
+                $filteredArray = array_filter($data, function ($element) use ($shortcut) {
+                    return $element['type'] === $shortcut['type'] && $element['name'] === $shortcut['name'];
+                });
+
+                if (0 === count($filteredArray)) {
+                    $data[] = $shortcut;
+                }
+            }
+        }
+        $workspaceShortcuts->setData($data);
         $this->om->persist($workspaceShortcuts);
         $this->om->flush();
     }

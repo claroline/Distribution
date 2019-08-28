@@ -210,6 +210,8 @@ const RoleForm = props =>
               type: MODAL_BUTTON,
               icon: 'fa fa-fw fa-plus',
               label: trans('add_shortcut'),
+              disabled: !!props.shortcuts.find(shortcut => shortcut.role.id === props.role.id) &&
+                props.shortcuts.find(shortcut => shortcut.role.id === props.role.id).data.length >= workspaceContants.SHORTCUTS_LIMIT,
               modal: [MODAL_WORKSPACE_SHOTCUTS, {
                 workspace: props.workspace,
                 tools: Object.keys(props.role.tools || {}),

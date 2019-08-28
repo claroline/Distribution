@@ -25,6 +25,8 @@ class Shortcuts
     use Id;
     use Uuid;
 
+    const SHORTCUTS_LIMIT = 8;
+
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace", inversedBy="shortcuts")
      * @ORM\JoinColumn(name="workspace_id", onDelete="CASCADE")
