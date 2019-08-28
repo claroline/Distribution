@@ -13,7 +13,9 @@ namespace Claroline\OpenBadgeBundle\Listener;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
+use Claroline\CoreBundle\Event\Layout\InjectJavascriptEvent;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 /**
  * Badge tool.
@@ -26,12 +28,15 @@ class ToolListener
      * BadgeListener constructor.
      *
      * @DI\InjectParams({
-     *     "serializer"        = @DI\Inject("claroline.api.serializer")
+     *     "serializer"      = @DI\Inject("claroline.api.serializer"),
+     *     "templating"      = @DI\Inject("templating"),
      * })
      */
     public function __construct(
-        SerializerProvider $serializer
+        SerializerProvider $serializer,
+        EngineInterface $templating
     ) {
+        $this->templating = $templating;
         $this->serializer = $serializer;
     }
 
@@ -59,5 +64,19 @@ class ToolListener
         $event->setData([]);
 
         $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("layout.inject.javascript")
+     *
+     * @param InjectJavascriptEvent $event
+     *
+     * @return string
+     */
+    public function onInjectJs(InjectJavascriptEvent $event)
+    {
+        $event->addContent(
+            $this->templating->render('ClarolineOpenBadgeBundle::javascripts.html.twig')
+        );
     }
 }

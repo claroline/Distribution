@@ -4,6 +4,9 @@ import {url} from '#/main/app/api/router'
 
 /* global OpenBadges */
 
+//need to load OpenBadges
+
+
 /**
  * Displays a general information about a resource node.
  *
