@@ -11,7 +11,8 @@
 
 namespace Claroline\OpenBadgeBundle\Entity\Rules;
 
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\AppBundle\Entity\Identifier\Id;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,16 +37,8 @@ class Rule
     const IN_ROLE = 'in_role';
     const PROFILE_COMPLETED = 'profile_completed';
 
-    use UuidTrait;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    use Uuid;
+    use Id;
 
     /**
      * @var string
@@ -101,11 +94,6 @@ class Rule
     public function getAction()
     {
         return $this->action;
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function setData(array $data = [])

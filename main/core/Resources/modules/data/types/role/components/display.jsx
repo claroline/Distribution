@@ -10,10 +10,10 @@ import {RoleCard} from '#/main/core/user/data/components/role-card'
 
 const RoleDisplay = (props) => !isEmpty(props.data) ?
   <Fragment>
-    {props.data.map(group =>
+    {props.data.map(role =>
       <RoleCard
-        key={`group-card-${group.id}`}
-        data={group}
+        key={`group-card-${role.id}`}
+        data={role}
         size="sm"
         orientation="col"
       />
@@ -21,8 +21,8 @@ const RoleDisplay = (props) => !isEmpty(props.data) ?
   </Fragment> :
   <EmptyPlaceholder
     size="lg"
-    icon="fa fa-users"
-    title={trans('no_group')}
+    icon="fa fa-id-card"
+    title={trans('no_role')}
   />
 
 RoleDisplay.propTypes = {

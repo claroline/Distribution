@@ -7,7 +7,7 @@ const dataType = {
   name: 'role',
   meta: {
     creatable: false,
-    icon: 'fa fa-fw fa fa-users',
+    icon: 'fa fa-fw fa fa-id-card',
     label: trans('role'),
     description: trans('role_desc')
   },
