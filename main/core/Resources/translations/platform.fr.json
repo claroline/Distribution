@@ -1580,7 +1580,6 @@
     "change_profile_public_url": "Changer l'URL du profil",
     "profile_public_url": "URL publique",
     "show_tracking": "Voir le suivi",
-    "user_management": "Gestion",
     "remove_contact": "Retirer des contacts",
     "never": "jamais",
     "required": "requis",
@@ -1791,5 +1790,6 @@
     "avatar": "Avatar",
     "current_of_total": "%current% sur %total%",
     "do_not_display_anymore": "Ne plus afficher",
-    "back_to": "Retour à %target%"
+    "back_to": "Retour à %target%",
+    "advanced_tools": "Outils avancés"
 }

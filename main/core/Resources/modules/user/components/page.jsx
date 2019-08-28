@@ -94,7 +94,7 @@ const UserPage = props =>
             type: MODAL_BUTTON,
             icon: 'fa fa-fw fa-lock',
             label: trans('change_password'),
-            group: trans('user_management'),
+            group: trans('management'),
             displayed: hasPermission('administrate', props.user) || props.user.id === get(props.currentUser, 'id'),
             modal: [MODAL_USER_PASSWORD, {
               changePassword: (password) => props.updatePassword(props.user, password)
@@ -104,7 +104,7 @@ const UserPage = props =>
             type: MODAL_BUTTON,
             icon: 'fa fa-fw fa-link',
             label: trans('change_profile_public_url'),
-            group: trans('user_management'),
+            group: trans('management'),
             displayed: hasPermission('edit', props.user),
             disabled: props.user.meta.publicUrlTuned,
             modal: [MODAL_USER_PUBLIC_URL, {
@@ -123,7 +123,7 @@ const UserPage = props =>
             type: URL_BUTTON,
             icon: 'fa fa-fw fa-line-chart',
             label: trans('show_tracking'),
-            group: trans('user_management'),
+            group: trans('management'),
             displayed: hasPermission('administrate', props.user),
             target: ['claro_user_tracking', {publicUrl: props.user.meta.publicUrl}]
           }, {

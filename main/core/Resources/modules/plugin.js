@@ -97,7 +97,7 @@ registry.add('ClarolineCoreBundle', {
     'resources'      : () => { return import(/* webpackChunkName: "core-tool-resources" */  '#/main/core/tools/resources') },
     'parameters'     : () => { return import(/* webpackChunkName: "core-tool-parameters" */ '#/main/core/tools/parameters') },
     'community'      : () => { return import(/* webpackChunkName: "core-tool-users" */      '#/main/core/tools/community') },
-    'data_transfer'  : () => { return import(/* webpackChunkName: "core-tool-transfer" */   '#/main/core/tools/transfer') },
+    'transfer'       : () => { return import(/* webpackChunkName: "core-tool-transfer" */   '#/main/core/tools/transfer') },
     'resource_trash' : () => { return import(/* webpackChunkName: "core-tool-trash" */      '#/main/core/tools/trash') }
   },
 
@@ -105,7 +105,7 @@ registry.add('ClarolineCoreBundle', {
    * Provides Administration tools.
    */
   administration: {
-    'user_management'      : () => { return import(/* webpackChunkName: "core-admin-users" */          '#/main/core/administration/users') },
+    'community'            : () => { return import(/* webpackChunkName: "core-admin-users" */          '#/main/core/administration/community') },
     'main_settings'        : () => { return import(/* webpackChunkName: "core-admin-parameters" */     '#/main/core/administration/parameters/main') },
     'technical_settings'   : () => { return import(/* webpackChunkName: "core-admin-technical" */      '#/main/core/administration/parameters/technical') },
     'appearance_settings'  : () => { return import(/* webpackChunkName: "core-admin-appearance" */     '#/main/core/administration/parameters/appearance') },
@@ -113,7 +113,7 @@ registry.add('ClarolineCoreBundle', {
     'tasks_scheduling'     : () => { return import(/* webpackChunkName: "core-admin-scheduled-task" */ '#/main/core/administration/scheduled-task') },
     'platform_dashboard'   : () => { return import(/* webpackChunkName: "core-admin-dashboard" */      '#/main/core/administration/dashboard') },
     'integration'          : () => { return import(/* webpackChunkName: "core-admin-integration" */    '#/main/core/administration/integration') },
-    'data_transfer'        : () => { return import(/* webpackChunkName: "core-tool-transfer" */        '#/main/core/tools/transfer') },
+    'transfer'             : () => { return import(/* webpackChunkName: "core-tool-transfer" */        '#/main/core/tools/transfer') },
     'home'                 : () => { return import(/* webpackChunkName: "core-tool-home" */            '#/main/core/tools/home') }
   },
 

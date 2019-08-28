@@ -1,6 +1,6 @@
 {
     "dashboard": "Tableau de bord",
-    "data_transfer": "Import/Export de données",
+    "transfer": "Import/Export de données",
     "desktop_tools": "Outils du bureau",
     "home": "Accueil",
     "learning_outcomes": "Référentiel de compétences",
@@ -13,7 +13,6 @@
     "platform_plugins": "Plugins de la plateforme",
     "resources": "Ressources",
     "tasks_scheduling": "Planification de tâches",
-    "user_management": "Gestion des utilisateurs",
     "community": "Communauté",
     "main_settings": "Paramètres généraux",
     "technical_settings": "Paramètres techniques",

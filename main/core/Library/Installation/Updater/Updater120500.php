@@ -43,6 +43,9 @@ class Updater120500 extends Updater
     {
         $this->renameTool('resource_manager', 'resources');
         $this->renameTool('users', 'community');
+        $this->renameTool('user_management', 'community', true);
+        $this->renameTool('data_transfer', 'transfer');
+        $this->renameTool('data_transfer', 'transfer', true);
     }
 
     public function postUpdate()

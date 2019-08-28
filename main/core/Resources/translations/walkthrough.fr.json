@@ -55,7 +55,7 @@
     },
 
     "administration": {
-      "user_management": {
+      "community": {
         "documentation": "",
         "message": "Permet de voir les utilisateurs et les groupes inscrits, de changer leurs droits ainsi que d'en inscrire de nouveaux."
       }

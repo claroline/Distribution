@@ -1,6 +1,6 @@
 {
     "dashboard": "Dashboard",
-    "data_transfer": "Data import/export",
+    "transfer": "Data import/export",
     "desktop_tools": "Desktop tools",
     "home": "Home",
     "learning_outcomes": "Learning outcomes",
@@ -13,7 +13,6 @@
     "platform_plugins": "Platform plugins",
     "resources": "Resources",
     "tasks_scheduling": "Tasks scheduling",
-    "user_management": "Users management",
     "community": "Community",
     "main_settings": "Main settings",
     "technical_settings": "Technical settings",

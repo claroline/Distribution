@@ -24,7 +24,7 @@ const UserMicro = props => {
 
   if (props.link && props.publicUrl) {
     return (
-      <LinkButton className={classes('user-micro', props.className)} target={route(this.props)}>
+      <LinkButton className={classes('user-micro', props.className)} target={route(props)}>
         <UserAvatar picture={props.picture} alt={false} />
 
         {displayName ?

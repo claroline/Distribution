@@ -16,8 +16,8 @@ import {actions} from '#/main/core/tools/community/role/store'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {selectors} from '#/main/core/tools/community/store'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
-import {GroupList} from '#/main/core/administration/users/group/components/group-list'
-import {UserList} from '#/main/core/administration/users/user/components/user-list'
+import {GroupList} from '#/main/core/administration/community/group/components/group-list'
+import {UserList} from '#/main/core/administration/community/user/components/user-list'
 
 const ToolRightsRow = props =>
   <div className="tool-rights-row list-group-item">

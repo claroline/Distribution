@@ -308,7 +308,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         }
 
         /** @var AdminTool $tool */
-        $userManagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('user_management');
+        $userManagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('community');
         $userManagement->addRole($adminOrganization);
 
         $om->persist($userManagement);

@@ -155,7 +155,7 @@ plugin:
         - name: appearance_settings
           class: drafting-compass
 
-        - name: user_management
+        - name: community
           class: user
 
         - name: home
@@ -164,7 +164,7 @@ plugin:
         - name: tasks_scheduling
           class: clock-o
 
-        - name: data_transfer
+        - name: transfer
           class: exchange
 
         - name: templates_management
@@ -321,7 +321,7 @@ plugin:
           is_locked_for_admin: false
           is_anonymous_excluded: true
 
-        - name: data_transfer
+        - name: transfer
           class: exchange
           is_displayable_in_workspace: true
           is_displayable_in_desktop: false
