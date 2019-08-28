@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 import isEmpty from 'lodash/isEmpty'
 
@@ -9,7 +9,7 @@ import {Role as RoleType} from '#/main/core/user/prop-types'
 import {RoleCard} from '#/main/core/user/data/components/role-card'
 
 const RoleDisplay = (props) => !isEmpty(props.data) ?
-  <div>
+  <Fragment>
     {props.data.map(group =>
       <RoleCard
         key={`group-card-${group.id}`}
@@ -18,7 +18,7 @@ const RoleDisplay = (props) => !isEmpty(props.data) ?
         orientation="col"
       />
     )}
-  </div> :
+  </Fragment> :
   <EmptyPlaceholder
     size="lg"
     icon="fa fa-users"
