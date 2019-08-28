@@ -240,9 +240,9 @@ class Evidence
         return $this;
     }
 
-    public function setResourceEvidence($node)
+    public function setResourceEvidence($resourceEvidence)
     {
-        $this->resourceEvidence = $nodes;
+        $this->resourceEvidence = $resourceEvidence;
     }
 
     public function getResourceEvidence()

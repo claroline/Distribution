@@ -20,8 +20,6 @@ class VerificationObjectSerializer
 
     public function serialize(Assertion $assertion)
     {
-        $issuer = $assertion->getBadge();
-
         return [
           'type' => 'SignedBadge',
           //is a link to a cryptographic key
