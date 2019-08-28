@@ -62,13 +62,13 @@ class RuleListener
                 case Rule::RULE_RESOURCE_PASSED:
                     $this->awardResourcePassed($evaluation->getUser(), $evaluation, $rule);
                     break;
-                case Rule::RULE_RESOURCE_SCORE_ABOVE:
+                case Rule::RESOURCE_SCORE_ABOVE:
                     $this->awardResourceScoreAbove($evaluation->getUser(), $evaluation, $rule);
                     break;
-                case Rule::RULE_RESOURCE_COMPLETED_ABOVE:
+                case Rule::RESOURCE_COMPLETED_ABOVE:
                     $this->awardResourceCompletedAbove($evaluation->getUser(), $evaluation, $rule);
                     break;
-                case Rule::RULE_RESOURCE_PARTICIPATED:
+                case Rule::RESOURCE_PARTICIPATED:
                     $this->awardResourceParticipated($evaluation->getUser(), $evaluation, $rule);
                     break;
                 default:
@@ -150,11 +150,11 @@ class RuleListener
 
         foreach ($rules as $rule) {
             switch ($rule->getAction()) {
-                case Rule::RULE_WORKSPACE_PASSED:
+                case Rule::WORKSPACE_PASSED:
                   break;
-                case Rule::RULE_WORKSPACE_SCORE_ABOVE:
+                case Rule::WORKSPACE_SCORE_ABOVE:
                   break;
-                case Rule::RULE_WORKSPACE_COMPLETED_ABOVE:
+                case Rule::WORKSPACE_COMPLETED_ABOVE:
                   break;
                 default:
                   break;
@@ -192,7 +192,7 @@ class RuleListener
           ]
         ));
         $evidence->setAssertion($assertion);
-        $evidence->setName(Rule::RULE_RESOURCE_SCORE_ABOVE);
+        $evidence->setName(Rule::RESOURCE_SCORE_ABOVE);
         $evidence->setResourceEvidence($evaluation);
         $this->om->persist($evidence);
         $this->om->flush();
@@ -210,7 +210,7 @@ class RuleListener
           ]
         ));
         $evidence->setAssertion($assertion);
-        $evidence->setName(Rule::RULE_RESOURCE_COMPLETED_ABOVE);
+        $evidence->setName(Rule::RESOURCE_COMPLETED_ABOVE);
         $evidence->setResourceEvidence($evaluation);
         $this->om->persist($evidence);
         $this->om->flush();
@@ -228,7 +228,7 @@ class RuleListener
           ]
         ));
         $evidence->setAssertion($assertion);
-        $evidence->setName(Rule::RULE_RESOURCE_PARTICIPATED);
+        $evidence->setName(Rule::RESOURCE_PARTICIPATED);
         $evidence->setResourceEvidence($evaluation);
         $this->om->persist($evidence);
         $this->om->flush();

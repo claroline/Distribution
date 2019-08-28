@@ -19,16 +19,16 @@ import {WorkspacePassedInput} from '#/plugin/open-badge/tools/badges/data/types/
 import {WorkspaceScoreAboveInput} from '#/plugin/open-badge/tools/badges/data/types/rule/type/workspace-score-above/components/input'
 
 import {
-  RULE_RESOURCE_PASSED,
-  RULE_RESOURCE_SCORE_ABOVE,
-  RULE_RESOURCE_COMPLETED_ABOVE,
-  RULE_WORKSPACE_PASSED,
-  RULE_WORKSPACE_SCORE_ABOVE,
-  RULE_WORKSPACE_COMPLETED_ABOVE,
-  RULE_RESOURCE_PARTICIPATED,
+  RESOURCE_PASSED,
+  RESOURCE_SCORE_ABOVE,
+  RESOURCE_COMPLETED_ABOVE,
+  WORKSPACE_PASSED,
+  WORKSPACE_SCORE_ABOVE,
+  WORKSPACE_COMPLETED_ABOVE,
+  RESOURCE_PARTICIPATED,
   IN_ROLE,
   IN_GROUP,
-  RULE_PROFILE_COMPLETED
+  PROFILE_COMPLETED
 } from '#/plugin/open-badge/tools/badges/data/types/rule/constants'
 
 import {trans} from '#/main/app/intl/translation'
@@ -52,16 +52,16 @@ class RuleInput extends Component {
             multiple={false}
             choices={
               {
-                [RULE_RESOURCE_PASSED]: trans(RULE_RESOURCE_PASSED),
-                [RULE_RESOURCE_SCORE_ABOVE]: trans(RULE_RESOURCE_SCORE_ABOVE),
-                [RULE_RESOURCE_COMPLETED_ABOVE]: trans(RULE_RESOURCE_COMPLETED_ABOVE),
-                [RULE_WORKSPACE_PASSED]: trans(RULE_WORKSPACE_PASSED),
-                [RULE_WORKSPACE_SCORE_ABOVE]: trans(RULE_WORKSPACE_SCORE_ABOVE),
-                [RULE_WORKSPACE_COMPLETED_ABOVE]: trans(RULE_WORKSPACE_COMPLETED_ABOVE),
-                [RULE_RESOURCE_PARTICIPATED]: trans(RULE_RESOURCE_PARTICIPATED),
+                [RESOURCE_PASSED]: trans(RESOURCE_PASSED),
+                [RESOURCE_SCORE_ABOVE]: trans(RESOURCE_SCORE_ABOVE),
+                [RESOURCE_COMPLETED_ABOVE]: trans(RESOURCE_COMPLETED_ABOVE),
+                [WORKSPACE_PASSED]: trans(WORKSPACE_PASSED),
+                [WORKSPACE_SCORE_ABOVE]: trans(WORKSPACE_SCORE_ABOVE),
+                [WORKSPACE_COMPLETED_ABOVE]: trans(WORKSPACE_COMPLETED_ABOVE),
+                [RESOURCE_PARTICIPATED]: trans(RESOURCE_PARTICIPATED),
                 [IN_GROUP]: trans(IN_GROUP),
                 [IN_ROLE]: trans(IN_ROLE),
-                [RULE_PROFILE_COMPLETED]: trans(RULE_PROFILE_COMPLETED)
+                [PROFILE_COMPLETED]: trans(PROFILE_COMPLETED)
               }
             }
             onChange={(value) => {
@@ -78,37 +78,37 @@ class RuleInput extends Component {
         <div>
           {(() => {
             switch(this.props.value.type) {
-              case RULE_RESOURCE_PASSED:
+              case RESOURCE_PASSED:
                 return <ResourcePassedInput
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
                 />
-              case RULE_RESOURCE_SCORE_ABOVE:
+              case RESOURCE_SCORE_ABOVE:
                 return <ResourceScoreAboveInput
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
                 />
-              case RULE_RESOURCE_COMPLETED_ABOVE:
+              case RESOURCE_COMPLETED_ABOVE:
                 return <ResourceCompletedAboveInput
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
                 />
-              case RULE_WORKSPACE_PASSED:
+              case WORKSPACE_PASSED:
                 return <WorkspacePassedInput
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
                 />
-              case RULE_WORKSPACE_SCORE_ABOVE:
+              case WORKSPACE_SCORE_ABOVE:
                 return <WorkspaceScoreAboveInput
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
                 />
-              case RULE_WORKSPACE_COMPLETED_ABOVE:
+              case WORKSPACE_COMPLETED_ABOVE:
                 return <WorkspaceCompletedAboveInput
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: merge(this.props.value.data, value)})}}
                 />
-              case RULE_RESOURCE_PARTICIPATED:
+              case RESOURCE_PARTICIPATED:
                 return <ResourceParticipatedInput
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
@@ -123,8 +123,8 @@ class RuleInput extends Component {
                   value={this.props.value.data}
                   onChange={(value) => {this.props.onChange({type: this.state.type, data: value})}}
                 />
-              case RULE_PROFILE_COMPLETED:
-                return <div> RULE_PROFILE_COMPLETED </div>
+              case PROFILE_COMPLETED:
+                return <div> PROFILE_COMPLETED </div>
             }
           }).bind(this)()}
         </div>
