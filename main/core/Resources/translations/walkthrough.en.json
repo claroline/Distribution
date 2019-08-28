@@ -48,7 +48,7 @@
     },
 
     "tools": {
-      "resource_manager": {
+      "resources": {
         "documentation": "https://claroline.gitbooks.io/claroline-connect-documentation/content/en/resources/resources.html",
         "message": "Allows you to see and manage all your resources."
       }
@@ -107,7 +107,7 @@
         "documentation": "",
         "message": "Shows your progression in the resources of the workspace."
       },
-      "resource_manager": {
+      "resources": {
         "documentation": "https://claroline.gitbooks.io/claroline-connect-documentation/content/fr/resources/resources.html",
         "message": "Permits to view and manage the resources of the workspace."
       },

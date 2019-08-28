@@ -183,7 +183,7 @@ class ResourceManager implements ToolImporterInterface
     }
 
     /**
-     * @DI\Observe("export_tool_resource_manager")
+     * @DI\Observe("export_tool_resources")
      */
     public function onExport(ExportObjectEvent $event)
     {
@@ -205,7 +205,7 @@ class ResourceManager implements ToolImporterInterface
     }
 
     /**
-     * @DI\Observe("import_tool_resource_manager")
+     * @DI\Observe("import_tool_resources")
      */
     public function onImport(ImportObjectEvent $event)
     {

@@ -41,6 +41,7 @@ class Updater120500 extends Updater
 
     public function preUpdate()
     {
+        $this->renameTool('resource_manager', 'resources');
         $this->renameTool('users', 'community');
     }
 

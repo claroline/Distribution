@@ -284,7 +284,7 @@ plugin:
           is_locked_for_admin: false
           is_anonymous_excluded: false
 
-        - name: resource_manager
+        - name: resources
           class: folder
           is_displayable_in_workspace: true
           is_displayable_in_desktop: true
