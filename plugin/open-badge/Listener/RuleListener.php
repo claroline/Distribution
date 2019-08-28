@@ -60,15 +60,19 @@ class RuleListener
         foreach ($rules as $rule) {
             switch ($rule->getAction()) {
                 case Rule::RULE_RESOURCE_PASSED:
-                  break;
+                    $this->awardResourcePassed($evaluation->getUser(), $evaluation, $rule);
+                    break;
                 case Rule::RULE_RESOURCE_SCORE_ABOVE:
-                  break;
+                    $this->awardResourceScoreAbove($evaluation->getUser(), $evaluation, $rule);
+                    break;
                 case Rule::RULE_RESOURCE_COMPLETED_ABOVE:
-                  break;
+                    $this->awardResourceCompletedAbove($evaluation->getUser(), $evaluation, $rule);
+                    break;
                 case Rule::RULE_RESOURCE_PARTICIPATED:
+                    $this->awardResourceParticipated($evaluation->getUser(), $evaluation, $rule);
                     break;
                 default:
-                  break;
+                    break;
             }
         }
     }
@@ -161,21 +165,73 @@ class RuleListener
     private function awardResourcePassed(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
         $assertion = $this->makeAssertion($user, $rule);
+        $evidence = new Evidence();
+        $now = new \DateTime();
+        $evidence->setNarrative($this->translator->trans(
+          'evidence_narrative_resource_passed',
+          [
+            '%date%' => $now->format('Y-m-d H:i:s'),
+          ]
+        ));
+        $evidence->setAssertion($assertion);
+        $evidence->setName(Rule::RULE_RESOURCE_PASSED);
+        $evidence->setResourceEvidence($evaluation);
+        $this->om->persist($evidence);
+        $this->om->flush();
     }
 
     private function awardResourceScoreAbove(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
         $assertion = $this->makeAssertion($user, $rule);
+        $evidence = new Evidence();
+        $now = new \DateTime();
+        $evidence->setNarrative($this->translator->trans(
+          'evidence_narrative_resource_score_above',
+          [
+            '%date%' => $now->format('Y-m-d H:i:s'),
+          ]
+        ));
+        $evidence->setAssertion($assertion);
+        $evidence->setName(Rule::RULE_RESOURCE_SCORE_ABOVE);
+        $evidence->setResourceEvidence($evaluation);
+        $this->om->persist($evidence);
+        $this->om->flush();
     }
 
     private function awardResourceCompletedAbove(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
         $assertion = $this->makeAssertion($user, $rule);
+        $evidence = new Evidence();
+        $now = new \DateTime();
+        $evidence->setNarrative($this->translator->trans(
+          'evidence_narrative_resource_score_above',
+          [
+            '%date%' => $now->format('Y-m-d H:i:s'),
+          ]
+        ));
+        $evidence->setAssertion($assertion);
+        $evidence->setName(Rule::RULE_RESOURCE_COMPLETED_ABOVE);
+        $evidence->setResourceEvidence($evaluation);
+        $this->om->persist($evidence);
+        $this->om->flush();
     }
 
     private function awardResourceParticipated(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
         $assertion = $this->makeAssertion($user, $rule);
+        $evidence = new Evidence();
+        $now = new \DateTime();
+        $evidence->setNarrative($this->translator->trans(
+          'evidence_narrative_resource_score_above',
+          [
+            '%date%' => $now->format('Y-m-d H:i:s'),
+          ]
+        ));
+        $evidence->setAssertion($assertion);
+        $evidence->setName(Rule::RULE_RESOURCE_PARTICIPATED);
+        $evidence->setResourceEvidence($evaluation);
+        $this->om->persist($evidence);
+        $this->om->flush();
     }
 
     private function awardInGroup(User $user, Group $group, Rule $rule)
