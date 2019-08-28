@@ -17,10 +17,6 @@ use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service("claroline.api.finder.openbadge.badgeclass")
- * @DI\Tag("claroline.finder")
- */
 class BadgeClassFinder extends AbstractFinder
 {
     /**

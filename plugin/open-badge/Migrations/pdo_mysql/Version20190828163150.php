@@ -61,7 +61,7 @@ class Version20190828163150 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE claro__open_badge_evidence
-            ADD resourceEvidence_id INT DEFAULT NULL,
+            ADD resourceEvidence_id INT DEFAULT NULL
         ');
         $this->addSql('
             ALTER TABLE claro__open_badge_evidence

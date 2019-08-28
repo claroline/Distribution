@@ -8,21 +8,13 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.serializer.open_badge.rule")
- */
 class RuleSerializer
 {
     use SerializerTrait;
 
     /**
-     * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     *
-     * @param Router $router
+     * @param ObjectManager $om
      */
     public function __construct(ObjectManager $om)
     {
@@ -79,5 +71,10 @@ class RuleSerializer
         }
 
         return $rule;
+    }
+
+    public function getClass()
+    {
+        return Rule::class;
     }
 }

@@ -7,10 +7,6 @@ use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service("claroline.crud.open_badge.badge")
- * @DI\Tag("claroline.crud")
- */
 class BadgeClassCrud
 {
     /** @var ParametersSerializer */
@@ -19,16 +15,6 @@ class BadgeClassCrud
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
-    /**
-     * TemplateSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "tokenStorage"  = @DI\Inject("security.token_storage"),
-     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters")
-     * })
-     *
-     * @param ParametersSerializer $parametersSerializer
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         ParametersSerializer $parametersSerializer

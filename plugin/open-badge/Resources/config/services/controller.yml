@@ -33,14 +33,16 @@ services:
     Claroline\OpenBadgeBundle\Controller\OpenBadgeController:
         arguments:
           - '@claroline.api.serializer'
-          - '@claroline.serializer.open_badge.criteria'
-          - '@claroline.serializer.open_badge.image'
-          - '@claroline.serializer.open_badge.profile'
+          - '@Claroline\OpenBadgeBundle\Serializer\CriteriaSerializer'
+          - '@Claroline\OpenBadgeBundle\Serializer\ImageSerializer'
+          - '@Claroline\OpenBadgeBundle\Serializer\ProfileSerializer'
 
     Claroline\OpenBadgeBundle\Controller\API\AssertionController:
         arguments:
-          - '@security.token_storage'
+          - '%claroline.param.files_directory%'
           - '@claroline.manager.open_badge_manager'
+          - '@claroline.manager.pdf_manager'
+          - '@security.token_storage'
 
     Claroline\OpenBadgeBundle\Controller\API\BadgeClassController:
         arguments:

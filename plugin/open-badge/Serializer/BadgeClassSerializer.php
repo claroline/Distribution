@@ -21,41 +21,15 @@ use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service("claroline.serializer.open_badge.badge")
- * @DI\Tag("claroline.serializer")
- */
 class BadgeClassSerializer
 {
     use SerializerTrait;
 
-    /**
-     * @DI\InjectParams({
-     *     "fileUt"                 = @DI\Inject("claroline.utilities.file"),
-     *     "router"                 = @DI\Inject("router"),
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "criteriaSerializer"     = @DI\Inject("claroline.serializer.open_badge.criteria"),
-     *     "imageSerializer"        = @DI\Inject("claroline.serializer.open_badge.image"),
-     *     "ruleSerializer"         = @DI\Inject("claroline.serializer.open_badge.rule"),
-     *     "organizationManager"    = @DI\Inject("claroline.manager.organization.organization_manager"),
-     *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
-     *     "profileSerializer"      = @DI\Inject("claroline.serializer.open_badge.profile"),
-     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
-     *     "workspaceSerializer"    = @DI\Inject("claroline.serializer.workspace"),
-     *     "userSerializer"         = @DI\Inject("claroline.serializer.user"),
-     *     "groupSerializer"        = @DI\Inject("claroline.serializer.group"),
-     *     "organizationSerializer" = @DI\Inject("claroline.serializer.organization"),
-     *     "publicFileSerializer"   = @DI\Inject("claroline.serializer.public_file")
-     * })
-     *
-     * @param Router $router
-     */
     public function __construct(
         FileUtilities $fileUt,
         RouterInterface $router,

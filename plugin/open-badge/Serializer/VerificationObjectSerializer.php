@@ -4,22 +4,14 @@ namespace Claroline\OpenBadgeBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * @DI\Service("claroline.serializer.open_badge.verification_object")
- */
 class VerificationObjectSerializer
 {
     use SerializerTrait;
 
     /**
-     * @DI\InjectParams({
-     *     "router" = @DI\Inject("router")
-     * })
-     *
-     * @param Router $router
+     * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
     {
