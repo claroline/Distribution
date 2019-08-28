@@ -211,6 +211,10 @@ class PlatformDefaults implements ParameterProviderInterface
             'admin' => [
                 'default_tool' => 'home'
             ],
+            'desktop' => [
+                'default_tool' => 'home',
+                'show_progression' => true
+            ],
             'show_about_button' => true,
             'notifications_refresh_delay' => 20000, // in ms
             'is_cron_configured' => false,
