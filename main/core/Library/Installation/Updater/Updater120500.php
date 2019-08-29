@@ -47,6 +47,7 @@ class Updater120500 extends Updater
 
     public function preUpdate()
     {
+        $this->renameTool('agenda_', 'agenda');
         $this->renameTool('resource_manager', 'resources');
         $this->renameTool('users', 'community');
         $this->renameTool('user_management', 'community', true);
@@ -184,8 +185,8 @@ class Updater120500 extends Updater
 
         $managerShortCuts = [
             ['type' => 'tool', 'name' => 'home'],
-            ['type' => 'tool', 'name' => 'resource_manager'],
-            ['type' => 'tool', 'name' => 'agenda_'],
+            ['type' => 'tool', 'name' => 'resources'],
+            ['type' => 'tool', 'name' => 'agenda'],
             ['type' => 'tool', 'name' => 'users'],
             ['type' => 'tool', 'name' => 'dashboard'],
             ['type' => 'action', 'name' => 'favourite'],
@@ -194,8 +195,8 @@ class Updater120500 extends Updater
         ];
         $collaboratorShortCuts = [
             ['type' => 'tool', 'name' => 'home'],
-            ['type' => 'tool', 'name' => 'resource_manager'],
-            ['type' => 'tool', 'name' => 'agenda_'],
+            ['type' => 'tool', 'name' => 'resources'],
+            ['type' => 'tool', 'name' => 'agenda'],
             ['type' => 'action', 'name' => 'favourite'],
         ];
         $shortcutsRepo = $this->om->getRepository(Shortcuts::class);

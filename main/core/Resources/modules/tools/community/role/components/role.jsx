@@ -19,10 +19,9 @@ import {
   actions as workspaceActions,
   selectors as workspaceSelectors
 } from '#/main/core/workspace/store'
-import {selectors} from '#/main/core/tools/users/store'
 import {getActions as getWorkspaceActions} from '#/main/core/workspace/utils'
 import {MODAL_WORKSPACE_SHOTCUTS} from '#/main/core/workspace/modals/shortcuts'
-import {constants as workspaceContants} from '#/main/core/workspace/constants'
+import {constants as workspaceConstants} from '#/main/core/workspace/constants'
 import {selectors} from '#/main/core/tools/community/store'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
@@ -236,7 +235,7 @@ class RoleForm extends Component {
                 (this.props.shortcuts && !!this.props.shortcuts.find(shortcut => shortcut.role.id === this.props.role.id) ?
                   this.props.shortcuts.find(shortcut => shortcut.role.id === this.props.role.id).data.length :
                   0) +
-                '/' + workspaceContants.SHORTCUTS_LIMIT + ')'
+                '/' + workspaceConstants.SHORTCUTS_LIMIT + ')'
               }
               disabled={this.props.new}
               actions={[
@@ -245,7 +244,7 @@ class RoleForm extends Component {
                   icon: 'fa fa-fw fa-plus',
                   label: trans('add_shortcut'),
                   disabled: !!this.props.shortcuts.find(shortcut => shortcut.role.id === this.props.role.id) &&
-                    this.props.shortcuts.find(shortcut => shortcut.role.id === this.props.role.id).data.length >= workspaceContants.SHORTCUTS_LIMIT,
+                    this.props.shortcuts.find(shortcut => shortcut.role.id === this.props.role.id).data.length >= workspaceConstants.SHORTCUTS_LIMIT,
                   modal: [MODAL_WORKSPACE_SHOTCUTS, {
                     workspace: this.props.workspace,
                     tools: Object.keys(this.props.role.tools || {}),

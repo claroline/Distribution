@@ -54,7 +54,7 @@ class EventRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('userId', $user->getId());
         $query->setParameter('isTask', $isTask);
-        $query->setParameter('agenda', 'agenda_');
+        $query->setParameter('agenda', 'agenda');
         $query->setParameter('open', 'open');
 
         return $query->getResult();
@@ -97,7 +97,7 @@ class EventRepository extends EntityRepository
         ";
         $query = $this->_em->createQuery($dql);
         $query->setParameter('userId', $user->getId());
-        $query->setParameter('agenda', 'agenda_');
+        $query->setParameter('agenda', 'agenda');
         $query->setParameter('open', 'open');
 
         return $query->getResult();
@@ -133,7 +133,7 @@ class EventRepository extends EntityRepository
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('userId', $user->getId());
-        $query->setParameter('agenda', 'agenda_');
+        $query->setParameter('agenda', 'agenda');
         $query->setParameter('edit', 'edit');
 
         return $query->getResult();

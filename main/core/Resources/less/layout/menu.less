@@ -29,6 +29,23 @@
         margin: 0;
     }
 
+    .app-menu-shortcuts {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .app-menu-shortcuts-btn {
+            flex: 1;
+            font-size: 16px;
+            color: @toolbar-link-color;
+            background: @toolbar-link-hover-bg;
+
+            + .app-menu-shortcuts-btn {
+                margin-left: 2px;
+            }
+        }
+    }
+
     .user-progression {
         background: @toolbar-link-hover-bg;
         padding: floor(@grid-gutter-width / 2);
@@ -51,6 +68,10 @@
                 font-style: normal;
                 color: @toolbar-color;
             }
+        }
+
+        + .app-menu-shortcuts {
+            margin-top: 2px;
         }
     }
 

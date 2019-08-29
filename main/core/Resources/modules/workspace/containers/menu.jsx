@@ -17,7 +17,8 @@ const WorkspaceMenu = withRouter(
         currentUser: securitySelectors.currentUser(state),
         workspace: selectors.workspace(state),
         section: menuSelectors.openedSection(state),
-        tools: selectors.tools(state)
+        tools: selectors.tools(state),
+        shortcuts: selectors.shortcuts(state)
       }),
       (dispatch) => ({
         update(workspace) {

@@ -10,7 +10,7 @@ export default {
   parameters: {
     primaryAction: (event) => ({
       type: URL_BUTTON,
-      target: `#${route(event.workspace, 'agenda_')}`
+      target: `#${route(event.workspace, 'agenda')}`
     }),
     definition: [
       {

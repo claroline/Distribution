@@ -42,7 +42,7 @@ const DailyActivity = props =>
   </section>
 
 DailyActivity.propTypes = {
-  activity: T.object.isRequired // todo check
+  activity: T.object // todo check
 }
 
 export {
