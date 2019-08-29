@@ -28,10 +28,11 @@ const AssertionFormComponent = (props) => {
       {props.assertion.badge &&
         <BadgeCard data={props.assertion.badge}/>
       }
-      
+
       {props.assertion.user &&
         <UserCard data={props.assertion.user}/>
       }
+      
       <FormData
         {...props}
         name={selectors.STORE_NAME + '.badges.assertion'}
