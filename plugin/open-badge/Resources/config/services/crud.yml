@@ -5,7 +5,8 @@ services:
         public: true #because lazy
 
     Claroline\OpenBadgeBundle\Crud\BadgeClassCrud:
-      tags: [claroline.crud]
-      arguments:
-        - '@security.token_storage'
-        - '@claroline.serializer.parameters'
+        arguments:
+            - '@security.token_storage'
+            - '@claroline.serializer.parameters'
+        tags:
+            - { name: kernel.event_listener, event: crud_pre_create_object_claroline_openbadgebundle_entity_badgeclass, method: preCreate }

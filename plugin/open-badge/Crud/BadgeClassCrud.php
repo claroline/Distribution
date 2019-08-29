@@ -4,7 +4,6 @@ namespace Claroline\OpenBadgeBundle\Crud;
 
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class BadgeClassCrud
@@ -24,8 +23,6 @@ class BadgeClassCrud
     }
 
     /**
-     * @DI\Observe("crud_pre_create_object_claroline_openbadgebundle_entity_badgeclass")
-     *
      * @param CreateEvent $event
      */
     public function preCreate(CreateEvent $event)

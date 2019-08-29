@@ -14,23 +14,15 @@ namespace Claroline\OpenBadgeBundle\Listener;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Layout\InjectJavascriptEvent;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 /**
  * Badge tool.
- *
- * @DI\Service()
  */
 class ToolListener
 {
     /**
      * BadgeListener constructor.
-     *
-     * @DI\InjectParams({
-     *     "serializer"      = @DI\Inject("claroline.api.serializer"),
-     *     "templating"      = @DI\Inject("templating"),
-     * })
      */
     public function __construct(
         SerializerProvider $serializer,
@@ -43,8 +35,6 @@ class ToolListener
     /**
      * Displays home on Desktop.
      *
-     * @DI\Observe("open_tool_desktop_open-badge")
-     *
      * @param DisplayToolEvent $event
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
@@ -55,8 +45,6 @@ class ToolListener
     }
 
     /**
-     * @DI\Observe("open_tool_workspace_open-badge")
-     *
      * @param DisplayToolEvent $event
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
@@ -67,8 +55,6 @@ class ToolListener
     }
 
     /**
-     * @DI\Observe("layout.inject.javascript")
-     *
      * @param InjectJavascriptEvent $event
      *
      * @return string

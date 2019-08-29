@@ -21,23 +21,13 @@ use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
 use Claroline\OpenBadgeBundle\Entity\Assertion;
 use Claroline\OpenBadgeBundle\Entity\Evidence;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * @DI\Service()
- */
 class RuleListener
 {
     /**
      * BadgeListener constructor.
-     *
-     * @DI\InjectParams({
-     *     "translator"   = @DI\Inject("translator"),
-     *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager")
-     * })
      */
     public function __construct(ObjectManager $om, TranslatorInterface $translator, TokenStorageInterface $tokenStorage)
     {
@@ -47,8 +37,6 @@ class RuleListener
     }
 
     /**
-     * @DI\Observe("resource_evaluation")
-     *
      * @param ResourceEvaluationEvent $event
      */
     public function onResourceEvaluation(ResourceEvaluationEvent $event)
@@ -78,8 +66,6 @@ class RuleListener
     }
 
     /**
-     * @DI\Observe("crud_pre_patch_object_claroline_corebundle_entity_user")
-     *
      * @param ResourceEvaluationEvent $event
      */
     public function listenUserPatch(PatchEvent $event)
@@ -104,8 +90,6 @@ class RuleListener
     }
 
     /**
-     * @DI\Observe("crud_pre_patch_object_claroline_corebundle_entity_role")
-     *
      * @param ResourceEvaluationEvent $event
      */
     public function listenRolePatch(PatchEvent $event)
@@ -122,8 +106,6 @@ class RuleListener
     }
 
     /**
-     * @DI\Observe("crud_pre_patch_object_claroline_corebundle_entity_group")
-     *
      * @param ResourceEvaluationEvent $event
      */
     public function listenGroupPatch(PatchEvent $event)
@@ -139,9 +121,6 @@ class RuleListener
         }
     }
 
-    /**
-     * @DI\Observe("workspace_evaluation")
-     */
     public function onWorkspaceEvaluation($event)
     {
         $evaluation = $event->getEvaluation();
