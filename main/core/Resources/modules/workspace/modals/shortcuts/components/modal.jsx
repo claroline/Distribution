@@ -15,7 +15,7 @@ import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 const ShortcutRow = props =>
   <div className="tool-rights-row list-group-item">
     <div className="tool-rights-title">
-      {trans(props.name, {}, 'tool' === props.type ? 'tools' : 'actions')}
+      {props.label}
     </div>
     <div className="tool-rights-actions">
       <Checkbox
@@ -29,6 +29,7 @@ const ShortcutRow = props =>
 
 ShortcutRow.propTypes = {
   name: T.string.isRequired,
+  label: T.string.isRequired,
   type: T.string.isRequired,
   checked: T.bool.isRequired,
   updateChecked: T.func.isRequired
@@ -65,6 +66,12 @@ class ShortcutsModal extends Component {
     this.setState({selected: newSelected})
   }
 
+  getActionLabel(name) {
+    const action = this.state.actions.find(a => a.name === name)
+
+    return action ? action.label : name
+  }
+
   render() {
     return (
       <Modal
@@ -79,6 +86,7 @@ class ShortcutsModal extends Component {
             key={`shortcut-tool-${toolName}`}
             name={toolName}
             type="tool"
+            label={trans(toolName, {}, 'tools')}
             checked={-1 < this.state.selected.findIndex(s => 'tool' === s.type && toolName === s.name)}
             updateChecked={checked => this.handleSelection(checked, 'tool', toolName)}
           />
@@ -89,6 +97,7 @@ class ShortcutsModal extends Component {
             key={`shortcut-action-${action.name}`}
             name={action.name}
             type="action"
+            label={this.getActionLabel(action.name)}
             checked={-1 < this.state.selected.findIndex(s => 'action' === s.type && action.name === s.name)}
             updateChecked={checked => this.handleSelection(checked, 'action', action.name)}
           />

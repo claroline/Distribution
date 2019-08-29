@@ -1,5 +1,4 @@
 {
-  "about": "Voir les informations",
   "add": "Ajouter",
   "administrate": "Administrer",
   "cancel": "Annuler",
@@ -29,7 +28,6 @@
   "filter": "Filtrer",
   "finish": "Terminer",
   "follow": "Suivre",
-  "impersonation": "Voir en tant que",
   "import": "Importer",
   "learn-more": "En savoir plus",
   "like": "J'aime",
@@ -49,9 +47,6 @@
   "preview": "Prévisualiser",
   "publish": "Publier",
   "register": "Inscrire",
-  "register-groups": "Inscrire des groupes",
-  "register-self": "M'inscrire",
-  "register-users": "Inscrire des utilisateurs",
   "replace": "Remplacer",
   "reply": "Répondre",
   "restart": "Recommencer",
@@ -87,7 +82,6 @@
   "unlock": "Déverrouiller",
   "unpublish": "Dépublier",
   "unregister": "Désinscrire",
-  "unregister-self": "Me désinscrire",
   "upload": "Télécharger",
   "view-as": "Voir en tant que"
 }
