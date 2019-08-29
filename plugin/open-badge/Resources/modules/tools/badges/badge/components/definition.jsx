@@ -18,7 +18,7 @@ const BadgeList = {
     },
     {
       name: 'assignable',
-      label: trans('assignable'),
+      label: trans('assignable', {}, 'openbadge'),
       type: 'boolean',
       displayed: true,
       filterable: true

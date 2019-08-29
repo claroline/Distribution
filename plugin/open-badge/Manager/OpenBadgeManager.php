@@ -105,8 +105,6 @@ class OpenBadgeManager
                 if ($workspace) {
                 }
                 break;
-              case BadgeClass::ISSUING_MODE_AUTO:
-                break;
             }
         }
 

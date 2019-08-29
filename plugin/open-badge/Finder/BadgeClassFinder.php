@@ -56,6 +56,8 @@ class BadgeClassFinder extends AbstractFinder
                     $qb->expr()->eq('user.id', $user->getId()),
                     $qb->expr()->eq('groupUser.id', $user->getId())
                   ));
+                  //also from those who already have the badge
+
                   break;
               case 'meta.enabled':
                   $qb->andWhere('obj.enabled = :enabled');

@@ -33,7 +33,6 @@ class BadgeClass
     const ISSUING_MODE_GROUP = 'group';
     const ISSUING_MODE_PEER = 'peer';
     const ISSUING_MODE_WORKSPACE = 'workspace';
-    const ISSUING_MODE_AUTO = 'auto';
 
     /**
      * @ORM\Column()

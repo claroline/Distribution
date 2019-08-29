@@ -23,7 +23,7 @@ const ParametersForm = props =>
           {
             name: 'props.badges.enable_default',
             type: 'boolean',
-            label: trans('required_validation')
+            label: trans('required_validation', {}, 'openbadge')
           }
         ]
       }

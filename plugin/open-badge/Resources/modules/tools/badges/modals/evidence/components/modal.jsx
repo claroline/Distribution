@@ -13,7 +13,7 @@ const EvidenceModal = props =>
   <Modal
     {...props}
     icon="fa fa-fw fa-cog"
-    title={trans('evidence')}
+    title={trans('evidence', {}, 'openbadge')}
     subtitle={props.assertion.badge.name}
     onEntering={() => props.initForm(props.evidence)}
   >
@@ -25,7 +25,7 @@ const EvidenceModal = props =>
       target={['apiv2_evidence_create']}
       sections={[
         {
-          title: trans('evidence'),
+          title: trans('evidence', {}, 'openbadge'),
           primary: true,
           fields: [
             {
@@ -37,7 +37,7 @@ const EvidenceModal = props =>
             {
               name: 'narrative',
               type: 'html',
-              label: trans('narrative'),
+              label: trans('narrative', {}, 'openbadge'),
               required: true,
               options: {
                 long: true

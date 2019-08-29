@@ -21,13 +21,13 @@ const BadgeMenu = (props) =>
       actions={[
         {
           icon: 'fa fa-user',
-          label: trans('my_badges'),
+          label: trans('my_badges', {}, 'openbadge'),
           target: props.path+'/my-badges',
           type: LINK_BUTTON,
           displayed: props.currentContext.type === 'desktop'
         }, {
           icon: 'fa fa-book',
-          label: trans('badges'),
+          label: trans('badges', {}, 'openbadge'),
           target: props.path+'/badges',
           type: LINK_BUTTON,
           displayed: props.currentContext.type !== 'profile'

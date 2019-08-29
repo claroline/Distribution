@@ -302,9 +302,6 @@ class BadgeClassSerializer
                         $assign = true;
                     }
                     break;
-                case BadgeClass::ISSUING_MODE_AUTO:
-                    //user can't assign if it's automatic
-                  break;
             }
         }
 

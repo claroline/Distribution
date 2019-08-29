@@ -17,7 +17,7 @@ const BadgeButton = () =>
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
     icon="fa fa-fw fa-trophy"
-    label={trans('select_a_badge')}
+    label={trans('select_a_badge', {}, 'openbadge')}
     primary={true}
   />
 
@@ -61,7 +61,7 @@ const BadgeInput = props => {
       <EmptyPlaceholder
         size="lg"
         icon="fa fa-book"
-        title={trans('no_badge')}
+        title={trans('no_badge', {}, 'openbadge')}
       >
         {!props.disabled &&
           <BadgeButton
@@ -82,7 +82,7 @@ implementPropTypes(BadgeInput, FormFieldTypes, {
 }, {
   value: null,
   picker: {
-    title: trans('badge_selector')
+    title: trans('badge_selector', {}, 'openbadge')
   }
 })
 

@@ -21,7 +21,7 @@ const Tool = props =>
         name: 'new',
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-plus',
-        label: trans('add_badge', {}),
+        label: trans('add_badge', {}, 'openbadge'),
         target: `${props.path}/new`,
         primary: true,
         //only for organizationManager
@@ -32,12 +32,12 @@ const Tool = props =>
       <Routes
         path={props.path}
         routes={[
-          {path: '/new',        render: () => trans('add_badge', {} ), disabled: false},
-          {path: '/my-badges', render: () => trans('my_badges', {} )},
-          {path: '/badges',     render: () => trans('badges', {})},
+          {path: '/new',        render: () => trans('add_badge', {}, 'openbadge'), disabled: false},
+          {path: '/my-badges', render: () => trans('my_badges', {}, 'openbadge')},
+          {path: '/badges',     render: () => trans('badges', {}, 'openbadge')},
           {path: '/badges/:id', render: () => trans('view', {})},
           {path: '/badges/:id/form', render: () => trans('edit', {})},
-          {path: '/badges/:badgeId/assertions/:id', render: () => trans('assertions', {})},
+          {path: '/badges/:badgeId/assertions/:id', render: () => trans('assertions', {}, 'openbadge')},
           {path: '/parameters',    render: () => trans('parameters', {})}
         ]}
       />
@@ -109,7 +109,7 @@ const Tool = props =>
       ]}
 
       redirect={[
-        {from: '/', exact: true, to: '/badges', disabled: !props.authenticated}
+        {from: '/', exact: true, to: '/badges'}
       ]}
     />
   </ToolPage>

@@ -150,7 +150,8 @@ class RuleListener
           'evidence_narrative_resource_passed',
           [
             '%date%' => $now->format('Y-m-d H:i:s'),
-          ]
+          ],
+          'openbadge'
         ));
         $evidence->setAssertion($assertion);
         $evidence->setName(Rule::RULE_RESOURCE_PASSED);
@@ -168,7 +169,8 @@ class RuleListener
           'evidence_narrative_resource_score_above',
           [
             '%date%' => $now->format('Y-m-d H:i:s'),
-          ]
+          ],
+          'openbadge'
         ));
         $evidence->setAssertion($assertion);
         $evidence->setName(Rule::RESOURCE_SCORE_ABOVE);
@@ -183,10 +185,11 @@ class RuleListener
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
-          'evidence_narrative_resource_score_above',
+          'evidence_narrative_resource_completed_above',
           [
             '%date%' => $now->format('Y-m-d H:i:s'),
-          ]
+          ],
+          'openbadge'
         ));
         $evidence->setAssertion($assertion);
         $evidence->setName(Rule::RESOURCE_COMPLETED_ABOVE);
@@ -201,10 +204,11 @@ class RuleListener
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
-          'evidence_narrative_resource_score_above',
+          'evidence_narrative_resource_participated',
           [
             '%date%' => $now->format('Y-m-d H:i:s'),
-          ]
+          ],
+          'openbadge'
         ));
         $evidence->setAssertion($assertion);
         $evidence->setName(Rule::RESOURCE_PARTICIPATED);
@@ -221,9 +225,10 @@ class RuleListener
         $evidence->setNarrative($this->translator->trans(
           'evidence_narrative_add_group',
           [
-            '%doer%' => $this->tokenStorage->getToken()->getUser(),
+            '%doer%' => $this->tokenStorage->getToken()->getUser()->getUsername(),
             '%date%' => $now->format('Y-m-d H:i:s'),
-          ]
+          ],
+          'openbadge'
         ));
         $evidence->setAssertion($assertion);
         $evidence->setName(Rule::IN_GROUP);
@@ -237,11 +242,12 @@ class RuleListener
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
-          'evidence_narrative_add_group',
+          'evidence_narrative_add_role',
           [
-            '%doer%' => $this->tokenStorage->getToken()->getUser(),
+            '%doer%' => $this->tokenStorage->getToken()->getUser()->getUsername(),
             '%date%' => $now->format('Y-m-d H:i:s'),
-          ]
+          ],
+          'openbadge'
         ));
         $evidence->setAssertion($assertion);
         $evidence->setName(Rule::IN_ROLE);

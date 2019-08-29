@@ -10,8 +10,7 @@ import {
   ISSUING_MODE_GROUP,
   ISSUING_MODE_PEER,
   ISSUING_MODE_WORKSPACE,
-  ISSUING_MODE_ORGANIZATION,
-  ISSUING_MODE_AUTO
+  ISSUING_MODE_ORGANIZATION
 } from '#/plugin/open-badge/tools/badges/badge/constants'
 
 import {
@@ -30,12 +29,11 @@ const BadgeFormComponent = (props) => {
   }
 
   const issuingChoices =  {
-    [ISSUING_MODE_ORGANIZATION]: trans(ISSUING_MODE_ORGANIZATION),
-    [ISSUING_MODE_USER]: trans(ISSUING_MODE_USER),
-    [ISSUING_MODE_GROUP]: trans(ISSUING_MODE_GROUP),
-    [ISSUING_MODE_PEER]: trans(ISSUING_MODE_PEER),
-    [ISSUING_MODE_WORKSPACE]: trans(ISSUING_MODE_WORKSPACE),
-    [ISSUING_MODE_AUTO]: trans(ISSUING_MODE_AUTO)
+    [ISSUING_MODE_ORGANIZATION]: trans('issuing_mode_organization', {}, 'openbadge'),
+    [ISSUING_MODE_USER]: trans('issuing_mode_user', {}, 'openbadge'),
+    [ISSUING_MODE_GROUP]: trans('issuing_mode_group', {}, 'openbadge'),
+    [ISSUING_MODE_PEER]: trans('issuing_mode_peer', {}, 'openbadge'),
+    [ISSUING_MODE_WORKSPACE]: trans('issuing_mode_workspace', {}, 'openbadge')
   }
 
   const fields = [
@@ -54,7 +52,7 @@ const BadgeFormComponent = (props) => {
     {
       name: 'criteria',
       type: 'html',
-      label: trans('criteria'),
+      label: trans('criteria', {}, 'openbadge'),
       required: true
     },
     {
@@ -66,7 +64,7 @@ const BadgeFormComponent = (props) => {
     {
       name: 'issuer',
       type: 'organization',
-      label: trans('issuer'),
+      label: trans('issuer', {}, 'openbadge'),
       required: true
     },
     {
@@ -80,7 +78,7 @@ const BadgeFormComponent = (props) => {
       type: 'string',
       required: false,
       label: trans('tags'),
-      help: trans('tag_form_help', {}, 'forum')
+      help: trans('tag_form_help', {}, 'openbadge')
     }
   ]
 
@@ -105,13 +103,13 @@ const BadgeFormComponent = (props) => {
           fields
         },
         {
-          title: trans('allowed_issuer'),
+          title: trans('allowed_issuers', {}, 'openbadge'),
           primary: false,
           fields: [
             {
               name: 'issuingMode',
               type: 'choice',
-              label: trans('issuing_mode'),
+              label: trans('issuing_mode', {}, 'openbadge'),
               options: {
                 choices: issuingChoices,
                 multiple: true
@@ -136,21 +134,29 @@ const BadgeFormComponent = (props) => {
                 placeholder: trans('no_group'),
                 button: trans('add_group')
               }
-            }, {
+            }
+          ]
+        },
+        {
+          title: trans('automatic_award', {}, 'openbadge'),
+          primary: false,
+          fields:[
+            {
               name: 'rules',
-              label: trans('rules'),
+              label: trans('rules', {}, 'openbadge'),
               type: 'collection',
-              displayed: badge =>  badge.issuingMode && badge.issuingMode.indexOf(ISSUING_MODE_AUTO) > -1,
               options: {
                 type: 'rule',
-                placeholder: trans('no_rule'),
-                button: trans('add_rule')
+                placeholder: trans('no_rule', {}, 'openbadge'),
+                button: trans('add_rule', {}, 'openbadge')
               }
             }
           ]
         }
       ]}
     >
+
+
       {props.children}
     </FormData>)
 }

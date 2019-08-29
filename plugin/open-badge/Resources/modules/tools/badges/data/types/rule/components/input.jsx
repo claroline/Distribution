@@ -45,6 +45,7 @@ class RuleInput extends Component {
   }
 
   render() {
+    //the "col-md-6 col-xs-12" and the rules className for layout should be changed later
     return (
       <div className={classes('row', this.props.className)}>
         <div className="col-md-6 col-xs-12">
@@ -52,16 +53,16 @@ class RuleInput extends Component {
             multiple={false}
             choices={
               {
-                [RESOURCE_PASSED]: trans(RESOURCE_PASSED),
-                [RESOURCE_SCORE_ABOVE]: trans(RESOURCE_SCORE_ABOVE),
-                [RESOURCE_COMPLETED_ABOVE]: trans(RESOURCE_COMPLETED_ABOVE),
-                [WORKSPACE_PASSED]: trans(WORKSPACE_PASSED),
-                [WORKSPACE_SCORE_ABOVE]: trans(WORKSPACE_SCORE_ABOVE),
-                [WORKSPACE_COMPLETED_ABOVE]: trans(WORKSPACE_COMPLETED_ABOVE),
-                [RESOURCE_PARTICIPATED]: trans(RESOURCE_PARTICIPATED),
-                [IN_GROUP]: trans(IN_GROUP),
-                [IN_ROLE]: trans(IN_ROLE),
-                [PROFILE_COMPLETED]: trans(PROFILE_COMPLETED)
+                [RESOURCE_PASSED]: trans(RESOURCE_PASSED, {}, 'openbadge'),
+                [RESOURCE_SCORE_ABOVE]: trans(RESOURCE_SCORE_ABOVE, {}, 'openbadge'),
+                [RESOURCE_COMPLETED_ABOVE]: trans(RESOURCE_COMPLETED_ABOVE, {}, 'openbadge'),
+                //[WORKSPACE_PASSED]: trans(WORKSPACE_PASSED),
+                //[WORKSPACE_SCORE_ABOVE]: trans(WORKSPACE_SCORE_ABOVE),
+                //[WORKSPACE_COMPLETED_ABOVE]: trans(WORKSPACE_COMPLETED_ABOVE),
+                [RESOURCE_PARTICIPATED]: trans(RESOURCE_PARTICIPATED, {}, 'openbadge'),
+                [IN_GROUP]: trans(IN_GROUP, {}, 'openbadge'),
+                [IN_ROLE]: trans(IN_ROLE, {}, 'openbadge')
+                //[PROFILE_COMPLETED]: trans(PROFILE_COMPLETED)
               }
             }
             onChange={(value) => {

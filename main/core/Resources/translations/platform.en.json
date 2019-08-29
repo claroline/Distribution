@@ -1760,5 +1760,6 @@
     "avatar": "Avatar",
     "current_of_total": "%current% of %total%",
     "do_not_display_anymore": "Do not display anymore",
-    "back_to": "Back to %target%"
+    "back_to": "Back to %target%",
+    "select_an_organization": "Select an organization"
 }
