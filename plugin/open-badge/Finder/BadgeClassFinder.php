@@ -14,16 +14,11 @@ namespace Claroline\OpenBadgeBundle\Finder;
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Claroline\OpenBadgeBundle\Entity\BadgeClass;
 use Doctrine\ORM\QueryBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class BadgeClassFinder extends AbstractFinder
 {
     /**
-     * @DI\InjectParams({
-     *     "tokenStorage" = @DI\Inject("security.token_storage")
-     * })
-     *
      * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(TokenStorageInterface $tokenStorage)
