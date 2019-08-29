@@ -7,6 +7,8 @@ import {FormSections, FormSection} from '#/main/app/content/form/components/sect
 import {ListData} from '#/main/app/content/list/containers/data'
 import {MODAL_BUTTON} from '#/main/app/buttons'
 
+import {BadgeCard} from '#/plugin/open-badge/tools/badges/badge/components/card'
+import {UserCard} from '#/main/core/user/components/card'
 import {EvidenceList} from '#/plugin/open-badge/tools/badges/evidence/components/definition'
 import {MODAL_BADGE_EVIDENCE} from '#/plugin/open-badge/tools/badges/modals/evidence'
 import {selectors as evidenceSelectors} from '#/plugin/open-badge/tools/badges/modals/evidence/store/selectors'
@@ -19,79 +21,69 @@ import {
 
 // TODO : add tools
 const AssertionFormComponent = (props) => {
+
+  //maybe don't use form data because it's not usefull
   return (
-    <FormData
-      {...props}
-      name={selectors.STORE_NAME + '.badges.assertion'}
-      meta={false}
-      buttons={true}
-      target={(assertion, isNew) => isNew ?
-        ['apiv2_assertion_create'] :
-        ['apiv2_assertion_update', {id: assertion.id}]
+    <div>
+      {props.assertion.badge &&
+        <BadgeCard data={props.assertion.badge}/>
       }
-      sections={[
-        {
-          title: trans('assertion'),
-          primary: true,
-          fields: [
-            {
-              name: 'user',
-              type: 'user',
-              disabled: true,
-              required: true
-            },
-            {
-              name: 'badge',
-              type: 'badge',
-              disabled: true,
-              required: true
-            }
-          ]
-        }
-      ]}
-    >
-      <FormSections
-        level={3}
+      
+      {props.assertion.user &&
+        <UserCard data={props.assertion.user}/>
+      }
+      <FormData
+        {...props}
+        name={selectors.STORE_NAME + '.badges.assertion'}
+        meta={false}
+        buttons={false}
+        target={(assertion) => ['apiv2_assertion_update', {id: assertion.id}]}
+        sections={[]}
       >
-        <FormSection
-          className="embedded-list-section"
-          icon="fa fa-fw fa-user"
-          title={trans('evidences')}
-          disabled={props.new}
-          actions={[{
-            type: MODAL_BUTTON,
-            icon: 'fa fa-fw fa-plus',
-            label: trans('add_evidence'),
-            modal: [MODAL_BADGE_EVIDENCE, {
-              assertion: props.assertion,
-              initForm: props.initForm
-            }]
-          }]}
+        <FormSections
+          level={3}
         >
-          <ListData
-            name={selectors.STORE_NAME + '.badges.assertion.evidences'}
-            fetch={{
-              url: ['apiv2_assertion_evidences', {assertion: props.assertion.id}],
-              autoload: props.assertion.id && !props.new
-            }}
-            primaryAction={(row) => ({
+          <FormSection
+            className="embedded-list-section"
+            icon="fa fa-fw fa-user"
+            title={trans('evidences', {}, 'openbadge')}
+            disabled={props.new}
+            actions={[{
               type: MODAL_BUTTON,
+              icon: 'fa fa-fw fa-plus',
+              label: trans('add_evidence'),
               modal: [MODAL_BADGE_EVIDENCE, {
-                evidence: row,
                 assertion: props.assertion,
                 initForm: props.initForm
               }]
-            })}
-            delete={{
-              url: ['apiv2_evidence_delete_bulk']
-            }}
-            definition={EvidenceList.definition}
-            card={EvidenceList.card}
+            }]}
+          >
+            <ListData
+              name={selectors.STORE_NAME + '.badges.assertion.evidences'}
+              fetch={{
+                url: ['apiv2_assertion_evidences', {assertion: props.assertion.id}],
+                autoload: props.assertion.id && !props.new
+              }}
+              primaryAction={(row) => ({
+                type: MODAL_BUTTON,
+                modal: [MODAL_BADGE_EVIDENCE, {
+                  evidence: row,
+                  assertion: props.assertion,
+                  initForm: props.initForm
+                }]
+              })}
+              delete={{
+                url: ['apiv2_evidence_delete_bulk']
+              }}
+              definition={EvidenceList.definition}
+              card={EvidenceList.card}
 
-          />
-        </FormSection>
-      </FormSections>
-    </FormData>)
+            />
+          </FormSection>
+        </FormSections>
+      </FormData>
+    </div>
+  )
 }
 
 
@@ -99,7 +91,7 @@ const AssertionFormComponent = (props) => {
 const AssertionForm = connect(
   (state) => ({
     currentContext: state.currentContext,
-    new: formSelect.isNew(formSelect.form(state, selectors.STORE_NAME + '.badges.assertion')),
+    new: false,
     assertion: formSelect.data(formSelect.form(state, selectors.STORE_NAME + '.badges.assertion'))
   }),
   dispatch => ({
