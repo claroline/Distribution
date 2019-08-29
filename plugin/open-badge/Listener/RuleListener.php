@@ -16,6 +16,7 @@ use Claroline\AppBundle\Event\Crud\PatchEvent;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
 use Claroline\OpenBadgeBundle\Entity\Assertion;

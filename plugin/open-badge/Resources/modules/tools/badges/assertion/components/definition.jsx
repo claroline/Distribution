@@ -18,7 +18,7 @@ const AssertionList = {
     },
     {
       name: 'badge.meta.enabled',
-      label: trans('enabled'),
+      label: trans('enabled', {}, 'openbadge'),
       displayed: true
     }
   ],

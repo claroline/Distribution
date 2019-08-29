@@ -41,5 +41,6 @@
   "resource_participated": "Resource participated",
   "in_group": "In group",
   "in_role": "In role",
-  "profile_completed": "Profile completed"
+  "profile_completed": "Profile completed",
+  "enabled": "enabled"
 }

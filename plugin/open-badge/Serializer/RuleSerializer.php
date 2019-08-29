@@ -6,6 +6,7 @@ use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 
