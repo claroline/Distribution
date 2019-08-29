@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
@@ -18,15 +18,7 @@ class PluginsComponent extends Component {
 
   render() {
     return (
-      <div>
-        <Heading level={2}>
-          {trans('plugins')}
-          <span className="text-danger">
-            <span className="fa fa-fw fa-exclamation-triangle" />
-            en construction
-          </span>
-        </Heading>
-
+      <Fragment>
         {0 !== this.props.plugins.length &&
           <ul className="app-plugins">
             {this.props.plugins.map(plugin =>
@@ -37,7 +29,7 @@ class PluginsComponent extends Component {
             )}
           </ul>
         }
-      </div>
+      </Fragment>
     )
   }
 }

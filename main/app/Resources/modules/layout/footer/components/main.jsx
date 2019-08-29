@@ -14,12 +14,16 @@ import {MODAL_LOCALE} from '#/main/app/modals/locale'
 const FooterMain = (props) =>
   <footer className="app-footer-container">
     <div className="app-footer" role="presentation">
+      {props.content &&
+        <HtmlText className="app-footer-content">{props.content}</HtmlText>
+      }
+
       <div className="app-footer-brand">
         <img src={asset('bundles/clarolinecore/images/logos/logo-sm.svg')} alt="logo" />
-        <h1 className="h5">
+        <div role="presentation">
           <a href="http://www.claroline.net">Claroline Connect</a>
           <small>{param('version')}</small>
-        </h1>
+        </div>
       </div>
 
       {props.showLocale &&
@@ -31,10 +35,6 @@ const FooterMain = (props) =>
           label={trans(props.locale.current)}
           onClick={props.closeMenu}
         />
-      }
-
-      {props.content &&
-        <HtmlText className="app-footer-content">{props.content}</HtmlText>
       }
     </div>
   </footer>

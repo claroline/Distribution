@@ -40,7 +40,8 @@ const DashboardMenu = (props) =>
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-list-alt',
           label: trans('widgets'),
-          target: props.path + '/widgets'
+          target: props.path + '/widgets',
+          displayed: false // TODO : fix app and restore
         }, {
           name: 'top',
           type: LINK_BUTTON,

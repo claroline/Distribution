@@ -34,7 +34,7 @@
     }
 
     .app-footer-brand {
-        height: @footer-height;
+        min-height: @footer-height;
         padding: 0 floor(@grid-gutter-width / 2);
         display: flex;
         flex-direction: row;
@@ -42,12 +42,8 @@
         flex: 1;
 
         img {
-            max-height: 30px;
+            max-height: 18px;
             margin-right: 10px;
-        }
-
-        h1 {
-            margin: 0;
         }
 
         a {
@@ -55,19 +51,16 @@
         }
 
         small {
-            display: block;
-            margin-top: 5px;
+            margin-left: 5px;
         }
     }
 
     .app-current-locale {
-        margin: 0 floor(@grid-gutter-width / 2);
         margin-left: auto;
+        padding: @padding-base-vertical floor(@grid-gutter-width / 2);
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 16px; // todo : calculate
-        background: white;
 
         .locale-icon {
             margin: 0 @icon-text-spacer 0 0;
@@ -77,9 +70,6 @@
     .app-footer-content {
         min-width: 100%; // force display in a new line in flex container
         padding: floor(@grid-gutter-width / 2);
-
-        background: @footer-content-bg;
-        border-top: 1px solid @footer-content-border-color;
-        .box-shadow(@footer-content-box-shadow);
+        border-bottom: 1px solid @footer-inner-border-color;
     }
 }

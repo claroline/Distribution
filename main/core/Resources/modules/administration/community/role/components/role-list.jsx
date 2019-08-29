@@ -39,23 +39,11 @@ const RoleList = {
       label: trans('maxUsers'),
       displayed: false
     }, {
-      name: 'workspace.name',
-      type: 'string',
+      name: 'workspace',
+      type: 'workspace',
       label: trans('workspace'),
       displayed: true,
-      filterable: false,
-      render: (rowData) => {
-        let WorkspaceLink
-
-        if (rowData.workspace) {
-          //TODO: WORKSPACE OPEN URL CHANGE
-          WorkspaceLink = <a href={url(['claro_workspace_open', {workspaceId: rowData.workspaceid}])}>{rowData.workspace.name}</a>
-        } else {
-          WorkspaceLink = '-'
-        }
-
-        return WorkspaceLink
-      }
+      filterable: false
     }
   ],
 
