@@ -1,4 +1,4 @@
-const SHORTCUTS_LIMIT = 7
+const SHORTCUTS_LIMIT = 8
 
 export const constants = {
   SHORTCUTS_LIMIT

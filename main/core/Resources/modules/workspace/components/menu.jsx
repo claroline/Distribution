@@ -3,10 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
-import {trans} from '#/main/app/intl/translation'
+import {trans, number} from '#/main/app/intl'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {LINK_BUTTON} from '#/main/app/buttons'
-import {number} from '#/main/app/intl'
 import {LiquidGauge} from '#/main/core/layout/gauge/components/liquid-gauge'
 
 import {MenuMain} from '#/main/app/layout/menu/containers/main'
