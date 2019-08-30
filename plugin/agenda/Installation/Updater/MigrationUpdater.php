@@ -57,8 +57,11 @@ class MigrationUpdater extends Updater
         if ($previous = $this->find($type, 'agenda')) {
             $this->log("Re-using previous agenda {$type}...");
             $current = $this->find($type, 'agenda_');
-            $current->setName('agenda_tmp');
-            $this->em->flush();
+            if ($current) {
+                $current->setName('agenda_tmp');
+                $this->em->flush();
+            }
+
             $previous->setName('agenda_');
             $previous->setPlugin($current->getPlugin());
             $this->em->flush();
