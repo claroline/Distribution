@@ -52,9 +52,18 @@ class BadgeClassFinder extends AbstractFinder
                   $qb->leftJoin('obj.allowedIssuers', 'user');
                   $qb->leftJoin('obj.allowedIssuersGroups', 'group');
                   $qb->leftJoin('group.users', 'groupUser');
+                  $qb->leftJoin('obj.assertions', 'assertion');
+                  $qb->leftJoin('assertion.recipient', 'recipient');
+
                   $qb->andWhere($qb->expr()->orX(
                     $qb->expr()->eq('user.id', $user->getId()),
-                    $qb->expr()->eq('groupUser.id', $user->getId())
+                    $qb->expr()->eq('groupUser.id', $user->getId()),
+                    $qb->expr()->orX(
+                      $qb->expr()->andX(
+                          $qb->expr()->eq('recipient.id', $user->getId()),
+                          $qb->expr()->like('obj.issuingMode', '%'.BadgeClass::ISSUING_MODE_PEER.'%')
+                      )
+                    )
                   ));
                   //also from those who already have the badge
 

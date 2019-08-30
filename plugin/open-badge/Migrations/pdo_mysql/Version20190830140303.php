@@ -17,7 +17,7 @@ class Version20190830140303 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro__open_badge_evidence
             ADD rule_id INT DEFAULT NULL,
-            ADD user_id INT DEFAULT NULL,
+            ADD user_id INT DEFAULT NULL
         ');
 
         $this->addSql('
