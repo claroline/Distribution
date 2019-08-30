@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
@@ -16,7 +16,7 @@ const RoleButton = props =>
     className="btn"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-users"
+    icon="fa fa-fw fa-id-card"
     label={trans('add_roles')}
     primary={true}
     modal={[MODAL_ROLES, {
@@ -49,7 +49,7 @@ const RoleInput = props => {
 
   if (props.value) {
     return(
-      <div>
+      <Fragment>
         <RoleCard
           data={props.value}
           size="sm"
@@ -63,13 +63,13 @@ const RoleInput = props => {
             onChange={props.onChange}
           />
         }
-      </div>
+      </Fragment>
     )
   } else {
     return (
       <EmptyPlaceholder
         size="lg"
-        icon="fa fa-users"
+        icon="fa fa-id-card"
         title={trans('no_role')}
       >
         <RoleButton
