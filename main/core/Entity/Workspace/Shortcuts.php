@@ -25,7 +25,7 @@ class Shortcuts
     use Id;
     use Uuid;
 
-    const SHORTCUTS_LIMIT = 8;
+    const SHORTCUTS_LIMIT = 7;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace", inversedBy="shortcuts")

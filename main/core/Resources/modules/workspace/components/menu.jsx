@@ -50,7 +50,7 @@ const WorkspaceMenu = (props) => {
       actions={workspaceActions}
     >
       {get(props.workspace, 'display.showProgression') &&
-        <section className="user-progression">
+        <section className="app-menu-progression">
           <h2 className="sr-only">
             Ma progression
           </h2>
@@ -64,7 +64,7 @@ const WorkspaceMenu = (props) => {
             height={70}
           />
 
-          <div className="user-progression-info">
+          <div className="app-menu-progression-info">
             <h3 className="h4">Collaborateur</h3>
             {trans('Vous n\'avez pas terminé toutes les activités disponibles.')}
           </div>

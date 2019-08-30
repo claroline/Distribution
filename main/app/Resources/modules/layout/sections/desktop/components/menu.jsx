@@ -41,7 +41,7 @@ const DesktopMenu = props =>
     ]}
   >
     {props.showProgression &&
-      <section className="user-progression">
+      <section className="app-menu-progression">
         <h2 className="sr-only">
           Ma progression
         </h2>
@@ -55,7 +55,7 @@ const DesktopMenu = props =>
           height={70}
         />
 
-        <div className="user-progression-info">
+        <div className="app-menu-progression-info">
           {trans('Vous n\'avez pas terminé toutes les activités disponibles.')}
         </div>
       </section>
