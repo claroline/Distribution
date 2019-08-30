@@ -21,7 +21,6 @@ use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Psr\Log\LogLevel;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -148,8 +147,6 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
     /**
      * @param Request        $request
      * @param TokenInterface $token
-     *
-     * @return null
      *
      * @deprecated
      *

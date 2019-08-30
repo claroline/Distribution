@@ -86,7 +86,7 @@ UserTab.propTypes = {
   canRegister: T.bool.isRequired,
   defaultRole: T.object, // for user creation
   addUsersToRoles: T.func.isRequired,
-  open: T.func.isRequired,
+  open: T.func.isRequired
 }
 
 export {

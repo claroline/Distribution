@@ -1,6 +1,5 @@
 import {createSelector} from 'reselect'
 
-import {param} from '#/main/app/config'
 import {selectors as configSelectors} from '#/main/app/config/store/selectors'
 
 const STORE_NAME = 'header'

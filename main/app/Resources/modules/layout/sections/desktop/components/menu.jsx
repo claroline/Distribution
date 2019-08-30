@@ -47,24 +47,24 @@ const DesktopMenu = props => {
       actions={actions}
     >
       {props.showProgression &&
-      <section className="app-menu-progression">
-        <h2 className="sr-only">
-          Ma progression
-        </h2>
+        <section className="app-menu-progression">
+          <h2 className="sr-only">
+            Ma progression
+          </h2>
 
-        <LiquidGauge
-          id="desktop-progression"
-          type="user"
-          value={25}
-          displayValue={(value) => number(value) + '%'}
-          width={70}
-          height={70}
-        />
+          <LiquidGauge
+            id="desktop-progression"
+            type="user"
+            value={25}
+            displayValue={(value) => number(value) + '%'}
+            width={70}
+            height={70}
+          />
 
-        <div className="app-menu-progression-info">
-          {trans('Vous n\'avez pas terminé toutes les activités disponibles.')}
-        </div>
-      </section>
+          <div className="app-menu-progression-info">
+            {trans('Vous n\'avez pas terminé toutes les activités disponibles.')}
+          </div>
+        </section>
       }
 
       {!isEmpty(props.shortcuts) &&

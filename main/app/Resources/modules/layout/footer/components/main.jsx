@@ -33,7 +33,6 @@ const FooterMain = (props) =>
           modal={[MODAL_LOCALE, props.locale]}
           icon={<LocaleFlag locale={props.locale.current} />}
           label={trans(props.locale.current)}
-          onClick={props.closeMenu}
         />
       }
     </div>

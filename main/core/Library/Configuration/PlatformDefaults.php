@@ -208,11 +208,11 @@ class PlatformDefaults implements ParameterProviderInterface
                 'notifications',
             ],
             'admin' => [
-                'default_tool' => 'home'
+                'default_tool' => 'home',
             ],
             'desktop' => [
                 'default_tool' => 'home',
-                'show_progression' => true
+                'show_progression' => true,
             ],
             'show_about_button' => true,
             'notifications_refresh_delay' => 20000, // in ms

@@ -3,9 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 
-import {trans} from '#/main/app/intl/translation'
-import {Heading} from '#/main/core/layout/components/heading'
-
 import {actions, selectors} from '#/main/core/administration/parameters/main/store'
 import {Plugin} from '#/main/core/administration/parameters/main/components/plugin'
 

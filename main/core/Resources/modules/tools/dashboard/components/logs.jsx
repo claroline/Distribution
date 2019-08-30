@@ -40,7 +40,6 @@ const Logs = connect(
   }),
   dispatch => ({
     getChartData(workspaceId, filters) {
-      console.log('coucou')
       dispatch(logActions.getChartData('apiv2_workspace_tool_logs_list_chart', {workspaceId}, filters))
     }
   })

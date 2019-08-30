@@ -13,8 +13,8 @@ function getPermissionLevel(user, workspace = null) {
       //now we check if we are an organization manager
       if (workspace.organization) {
         if (workspace.organizations.find(organization =>
-            !!user.administratedOrganizations.find(administratedOrganization => administratedOrganization.id === organization.id)
-          )) {
+          !!user.administratedOrganizations.find(administratedOrganization => administratedOrganization.id === organization.id)
+        )) {
           return constants.ADMIN
         }
       }
