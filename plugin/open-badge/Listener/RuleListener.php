@@ -144,7 +144,6 @@ class RuleListener
 
     private function awardResourcePassed(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
-        $assertion = $this->makeAssertion($user, $rule);
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
@@ -154,16 +153,17 @@ class RuleListener
           ],
           'openbadge'
         ));
-        $evidence->setAssertion($assertion);
+        $evidence->setRule($rule);
         $evidence->setName(Rule::RULE_RESOURCE_PASSED);
         $evidence->setResourceEvidence($evaluation);
+        $evidence->setUser($user);
+        $this->verifyAssertion($user, $rule);
         $this->om->persist($evidence);
         $this->om->flush();
     }
 
     private function awardResourceScoreAbove(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
-        $assertion = $this->makeAssertion($user, $rule);
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
@@ -173,16 +173,17 @@ class RuleListener
           ],
           'openbadge'
         ));
-        $evidence->setAssertion($assertion);
+        $evidence->setRule($rule);
         $evidence->setName(Rule::RESOURCE_SCORE_ABOVE);
         $evidence->setResourceEvidence($evaluation);
+        $evidence->setUser($user);
+        $this->verifyAssertion($user, $rule);
         $this->om->persist($evidence);
         $this->om->flush();
     }
 
     private function awardResourceCompletedAbove(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
-        $assertion = $this->makeAssertion($user, $rule);
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
@@ -192,16 +193,17 @@ class RuleListener
           ],
           'openbadge'
         ));
-        $evidence->setAssertion($assertion);
+        $evidence->setRule($rule);
         $evidence->setName(Rule::RESOURCE_COMPLETED_ABOVE);
         $evidence->setResourceEvidence($evaluation);
+        $evidence->setUser($user);
+        $this->verifyAssertion($user, $rule);
         $this->om->persist($evidence);
         $this->om->flush();
     }
 
     private function awardResourceParticipated(User $user, ResourceUserEvaluation $evaluation, Rule $rule)
     {
-        $assertion = $this->makeAssertion($user, $rule);
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
@@ -211,16 +213,17 @@ class RuleListener
           ],
           'openbadge'
         ));
-        $evidence->setAssertion($assertion);
+        $evidence->setRule($rule);
         $evidence->setName(Rule::RESOURCE_PARTICIPATED);
         $evidence->setResourceEvidence($evaluation);
+        $evidence->setUser($user);
+        $this->verifyAssertion($user, $rule);
         $this->om->persist($evidence);
         $this->om->flush();
     }
 
     private function awardInGroup(User $user, Group $group, Rule $rule)
     {
-        $assertion = $this->makeAssertion($user, $rule);
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
@@ -231,15 +234,16 @@ class RuleListener
           ],
           'openbadge'
         ));
-        $evidence->setAssertion($assertion);
+        $evidence->setRule($rule);
         $evidence->setName(Rule::IN_GROUP);
+        $evidence->setUser($user);
+        $this->verifyAssertion($user, $rule);
         $this->om->persist($evidence);
         $this->om->flush();
     }
 
     private function awardInRole(User $user, Role $role, Rule $rule)
     {
-        $assertion = $this->makeAssertion($user, $rule);
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
@@ -250,19 +254,35 @@ class RuleListener
           ],
           'openbadge'
         ));
-        $evidence->setAssertion($assertion);
+        $evidence->setRule($rule);
         $evidence->setName(Rule::IN_ROLE);
+        $evidence->setUser($user);
+        $this->verifyAssertion($user, $rule);
         $this->om->persist($evidence);
         $this->om->flush();
     }
 
-    private function makeAssertion($user, $rule)
+    private function verifyAssertion(User $user, Rule $rule)
     {
-        $assertion = $this->om->getRepository(Assertion::class)->findBy(['user' => $user, 'badge' => $rule->getBadge()]) ?? new Assertion();
-        $assertion->setRecipient($user);
-        $assertion->setBadge($rule->getBadge());
-        $this->om->persist($assertion);
+        $isGranted = true;
+        $badge = $rule->getBadge();
+        $badgeRules = $badge->getRules();
 
-        return $assertion;
+        foreach ($badgeRules as $badgeRule) {
+            $evidences = $this->om->getRepository(Evidence::class)->findBy(['user' => $user, 'rule' => $rule]);
+
+            if (0 === count($evidences)) {
+                $isGranted = false;
+            }
+        }
+
+        if ($isGranted) {
+            $assertion = $this->om->getRepository(Assertion::class)->findOneBy(['recipient' => $user, 'badge' => $rule->getBadge()]) ?? new Assertion();
+            $assertion->setRecipient($user);
+            $assertion->setBadge($rule->getBadge());
+            $this->om->persist($assertion);
+
+            return $assertion;
+        }
     }
 }

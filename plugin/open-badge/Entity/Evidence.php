@@ -13,6 +13,9 @@ namespace Claroline\OpenBadgeBundle\Entity;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -58,9 +61,23 @@ class Evidence
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation")
      *
-     * @var ResourceNode
+     * @var ResourceUserEvaluation
      */
     private $resourceEvidence;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\OpenBadgeBundle\Entity\Rules\Rule")
+     *
+     * @var Rule
+     */
+    private $rule;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     *
+     * @var User
+     */
+    private $user;
 
     public function __construct()
     {
@@ -219,5 +236,25 @@ class Evidence
     public function getResourceEvidence()
     {
         return $this->resourceEvidence;
+    }
+
+    public function setRule(Rule $rule)
+    {
+        $this->rule = $rule;
+    }
+
+    public function getRule()
+    {
+        return $this->rule;
+    }
+
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 }
