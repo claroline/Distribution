@@ -1072,7 +1072,9 @@
         "unlocked": "Vous avez déverrouillé l'espace d'activités.",
         "use_authorized_ip": "Veuillez utiliser l'un des postes de travail authorisés afin d'accéder à l'espace d'activités.",
         "wait": "Veuillez patientez jusqu'au",
-        "you_are_manager": "Vous êtes un gestionnaire de l'espace d'activités."
+        "you_are_manager": "Vous êtes un gestionnaire de l'espace d'activités.",
+        "pending_registration": "Votre demande d'inscription est en attente de validation.",
+        "wait_validation": "Veuillez attendre qu'un gestionnaire valide votre demande afin d'accéder à l'espace d'activités."
     },
     "restrictions": "Restrictions",
     "results": "Résultats",

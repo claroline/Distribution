@@ -4,8 +4,9 @@ import {PropTypes as T} from 'prop-types'
 import {Routes} from '#/main/app/router'
 import {UserPage} from '#/main/core/user/components/page'
 import {User as UserTypes} from '#/main/core/user/prop-types'
-
 import {ContentLoader} from '#/main/app/content/components/loader'
+import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
+
 import {ProfileEdit} from '#/main/core/user/profile/editor/components/main'
 import {ProfileShow} from '#/main/core/user/profile/player/components/main'
 import {ProfileBadgeList} from '#/plugin/open-badge/tools/badges/badge/components/profile-badges'
@@ -22,6 +23,8 @@ const ProfileComponent = props => {
 
   return(
     <UserPage
+      showBreadcrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
+      breadcrumb={getToolBreadcrumb('community', props.currentContext.type, props.currentContext.data)}
       user={props.user}
       path={props.path + '/' + props.user.publicUrl}
       currentUser={props.currentUser}
@@ -54,6 +57,7 @@ const ProfileComponent = props => {
 }
 
 ProfileComponent.propTypes = {
+  currentContext: T.object,
   user: T.shape(
     UserTypes.propTypes
   ).isRequired,

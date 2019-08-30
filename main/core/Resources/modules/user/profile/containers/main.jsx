@@ -12,6 +12,7 @@ import {actions} from '#/main/core/user/store/actions'
 const Profile = withRouter(
   connect(
     (state) => ({
+      currentContext: toolSelectors.context(state),
       path: toolSelectors.path(state) + '/profile',
       currentUser: securitySelectors.currentUser(state),
       user: selectors.data(selectors.details(state, select.FORM_NAME)),

@@ -8,6 +8,7 @@ import {selectors as securitySelectors} from '#/main/app/security/store'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 
 import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
 import {selectors as select} from '#/main/core/user/profile/store/selectors'
@@ -37,7 +38,7 @@ const ProfileFacetComponent = props => {
       buttons={true}
       cancel={{
         type: LINK_BUTTON,
-        target: '/show',
+        target: props.path + '/profile/' + props.user.publicUrl +  '/show',
         exact: true
       }}
       sections={sections}
@@ -46,6 +47,7 @@ const ProfileFacetComponent = props => {
 }
 
 ProfileFacetComponent.propTypes = {
+  path: T.string,
   currentUser: T.object,
   user: T.object.isRequired,
   originalUser: T.object.isRequired,
@@ -57,6 +59,7 @@ ProfileFacetComponent.propTypes = {
 
 const ProfileFacet = connect(
   state => ({
+    path: toolSelectors.path(state),
     currentUser: securitySelectors.currentUser(state),
     user: formSelect.data(formSelect.form(state, select.FORM_NAME)),
     originalUser: formSelect.originalData(formSelect.form(state, select.FORM_NAME)),

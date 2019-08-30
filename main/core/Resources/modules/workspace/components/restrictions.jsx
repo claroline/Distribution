@@ -52,7 +52,7 @@ class WorkspaceRestrictions extends Component {
           <h2>{trans('restricted_access')}</h2>
           <p>{trans('restricted_workspace.access_message')}</p>
 
-          {this.props.errors.noRights && !this.props.errors.pendingRegistration &&
+          {!this.props.errors.pendingRegistration &&
             <ContentRestriction
               icon="fa fa-fw fa-id-badge"
               failed={this.props.errors.noRights}
@@ -112,24 +112,29 @@ class WorkspaceRestrictions extends Component {
 
               {!this.props.authenticated && this.props.errors.selfRegistration &&
                 <ContentHelp
-                  help={"Vous serez automatiquement inscrit à l'espace d'activités après votre connexion ou inscription."}
+                  help="Vous serez automatiquement inscrit à l'espace d'activités après votre connexion ou inscription."
                 />
               }
             </ContentRestriction>
           }
 
-          {this.props.errors.noRights && this.props.errors.pendingRegistration &&
+          {this.props.errors.pendingRegistration &&
             <ContentRestriction
               icon="fa fa-fw fa-id-badge"
               failed={this.props.errors.noRights}
-              onlyWarn={true}
               success={{
-                title: this.props.managed ? trans('restricted_workspace.you_are_manager') : trans('restricted_workspace.can_access'),
-                help: this.props.managed ? trans('restricted_workspace.manager_rights_access') : trans('restricted_workspace.rights_access')
+                title: classes({
+                  [trans('restricted_workspace.you_are_manager')]: this.props.managed,
+                  [trans('restricted_workspace.can_access')]: !this.props.managed
+                }),
+                help: classes({
+                  [trans('restricted_workspace.manager_rights_access')]: this.props.managed,
+                  [trans('restricted_workspace.rights_access')]: !this.props.managed
+                })
               }}
               fail={{
-                title: trans('restricted_workspace.cannot_access'),
-                help: trans('restricted_workspace.contact_manager')
+                title: this.props.managed ? trans('restricted_workspace.you_are_manager') : trans('restricted_workspace.pending_registration'),
+                help: this.props.managed ? trans('restricted_workspace.manager_rights_access') : trans('restricted_workspace.wait_validation')
               }}
             />
           }
@@ -228,6 +233,8 @@ WorkspaceRestrictions.propTypes = {
   managed: T.bool.isRequired,
   errors: T.shape({
     noRights: T.bool.isRequired,
+    pendingRegistration: T.bool,
+    selfRegistration: T.bool,
     locked: T.bool,
     invalidLocation: T.bool,
     notStarted: T.bool,

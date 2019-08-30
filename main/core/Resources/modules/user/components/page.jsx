@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import classes from 'classnames'
 import get from 'lodash/get'
 
@@ -14,6 +14,7 @@ import {
   URL_BUTTON
 } from '#/main/app/buttons'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
+import {PageSimple} from '#/main/app/page/components/simple'
 import {PageContent} from '#/main/core/layout/page'
 
 import {UserAvatar} from '#/main/core/user/components/avatar'
@@ -56,7 +57,13 @@ UserPageHeader.propTypes = {
 }
 
 const UserPage = props =>
-  <Fragment>
+  <PageSimple
+    showBreadcrumb={props.showBreadcrumb}
+    path={props.breadcrumb.concat([{
+      label: props.user.name,
+      target: ''
+    }])}
+  >
     <UserPageHeader
       picture={props.user.picture}
       title={props.user.name}
@@ -82,13 +89,14 @@ const UserPage = props =>
             label: trans('send_message'),
             icon: 'fa fa-paper-plane-o',
             modal: [MODAL_USER_MESSAGE],
-            displayed: hasPermission('contact', props.user)
+            displayed: false && hasPermission('contact', props.user) // TODO : restore (to implement in message plugin)
           }, {
             name: 'add-contact',
             type: CALLBACK_BUTTON,
             label: trans('add_contact'),
             icon: 'fa fa-address-book-o',
-            callback: () => true
+            callback: () => true,
+            displayed: false  // TODO : restore
           }, {
             name: 'change-password',
             type: MODAL_BUTTON,
@@ -117,14 +125,15 @@ const UserPage = props =>
             icon: 'fa fa-trophy',
             label: trans('user-badges'),
             group: trans('badges'),
-            target: '#/badges/'+props.user.id
+            target: '#/badges/'+props.user.id,
+            displayed: false, // TODO : restore
           }, {
             name: 'show-tracking',
             type: URL_BUTTON,
             icon: 'fa fa-fw fa-line-chart',
             label: trans('show_tracking'),
             group: trans('management'),
-            displayed: hasPermission('administrate', props.user),
+            displayed: false && hasPermission('administrate', props.user), // TODO : restore
             target: ['claro_user_tracking', {publicUrl: props.user.meta.publicUrl}]
           }, {
             name: 'delete',
@@ -154,7 +163,7 @@ const UserPage = props =>
     <PageContent>
       {props.children}
     </PageContent>
-  </Fragment>
+  </PageSimple>
 
 implementPropTypes(UserPage, PageTypes, {
   currentUser: T.object,
@@ -163,8 +172,12 @@ implementPropTypes(UserPage, PageTypes, {
   }).isRequired,
   children: T.node.isRequired,
   path: T.string.isRequired,
+  showBreadcrumb: T.bool.isRequired,
+  breadcrumb: T.array, // TODO : correct prop type
   updatePassword: T.func.isRequired,
   updatePublicUrl: T.func.isRequired
+}, {
+  breadcrumb: []
 })
 
 export {

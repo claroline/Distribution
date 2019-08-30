@@ -1,13 +1,6 @@
-import React, {Component, Fragment}from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-
-import {trans} from '#/main/app/intl/translation'
-import {Button} from '#/main/app/action'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {PasswordInput} from '#/main/app/data/types/password/components/input'
-import {ContentHelp} from '#/main/app/content/components/help'
-import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 const ContentRestriction = props => {
   let title, help
@@ -31,7 +24,7 @@ const ContentRestriction = props => {
         <h5 className="alert-title h4">{title}</h5>
 
         {help &&
-        <p className="alert-text">{help}</p>
+          <p className="alert-text">{help}</p>
         }
 
         {props.failed && props.children}

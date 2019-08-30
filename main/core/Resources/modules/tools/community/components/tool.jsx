@@ -48,11 +48,7 @@ const CommunityTool = (props) => {
         }, {
           path: '/profile/:publicUrl',
           component: Profile,
-          onEnter: (params = {}) => {
-            if (!props.originalUser || props.originalUser.publicUrl !== params.publicUrl) {
-              props.loadUser(params.publicUrl)
-            }
-          }
+          onEnter: (params = {}) => props.loadUser(params.publicUrl)
         }
       ]}
     />
@@ -63,7 +59,6 @@ CommunityTool.propTypes = {
   contextType: T.string,
   path: T.string.isRequired,
   currentUser: T.shape(UserType.propTypes),
-  originalUser: T.shape(UserType.propTypes),
   workspace: T.object,
   loadUser: T.func.isRequired
 }
