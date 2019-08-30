@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Entity\Workspace\Shortcuts;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -34,6 +35,8 @@ class Updater120500 extends Updater
     private $translator;
     /** @var RoleManager */
     private $roleManager;
+    /** @var WorkspaceManager */
+    private $workspaceManager;
 
     public function __construct(ContainerInterface $container, $logger = null)
     {
@@ -43,10 +46,12 @@ class Updater120500 extends Updater
         $this->configHandler = $container->get('claroline.config.platform_config_handler');
         $this->translator = $container->get('translator');
         $this->roleManager = $container->get('claroline.manager.role_manager');
+        $this->workspaceManager = $container->get('claroline.manager.workspace_manager');
     }
 
     public function preUpdate()
     {
+        $this->renameTool('platform_dashboard', 'dashboard', true);
         $this->renameTool('agenda_', 'agenda');
         $this->renameTool('resource_manager', 'resources');
         $this->renameTool('users', 'community');
@@ -69,6 +74,12 @@ class Updater120500 extends Updater
         $this->createDefaultAdminHomeTab();
         $this->updateSlugs();
         $this->createDefaultWorkspaceShortcuts();
+
+        $this->log('Build default workspace');
+        $this->workspaceManager->getDefaultModel(false, true);
+
+        $this->log('Build default personal workspace');
+        $this->workspaceManager->getDefaultModel(true, true);
     }
 
     private function updatePlatformOptions()
@@ -128,6 +139,17 @@ class Updater120500 extends Updater
             $tool->setName($newName);
             $this->om->persist($tool);
             $this->om->flush();
+
+            if (!$admin) {
+                $conn = $this->container->get('doctrine.dbal.default_connection');
+                $sql = "
+                    UPDATE claro_ordered_tool SET name = '${newName}' WHERE name = '${oldName}'
+                ";
+
+                $this->log($sql);
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+            }
         }
     }
 

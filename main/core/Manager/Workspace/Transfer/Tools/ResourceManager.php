@@ -21,7 +21,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
- * @DI\Service("claroline.transfer.resource_manager")
+ * @DI\Service("claroline.transfer.resources")
  */
 class ResourceManager implements ToolImporterInterface
 {

@@ -10,7 +10,7 @@ import {MenuSection} from '#/main/app/layout/menu/components/section'
 const DashboardMenu = (props) =>
   <MenuSection
     {...omit(props, 'path')}
-    title={trans('platform_dashboard', {}, 'tools')}
+    title={trans('dashboard', {}, 'tools')}
   >
     <Toolbar
       className="list-group"

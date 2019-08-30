@@ -83,7 +83,7 @@ const DesktopMenu = props => {
                     type: LINK_BUTTON,
                     icon: `fa fa-fw fa-${tool.icon}`,
                     label: trans('open-tool', {tool: trans(tool.name, {}, 'tools')}, 'actions'),
-                    target: toolRoute(props.workspace, tool.name)
+                    target: toolRoute(tool.name)
                   }
                 }
 

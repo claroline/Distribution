@@ -173,7 +173,7 @@ plugin:
         - name: integration
           class: plug
 
-        - name: platform_dashboard
+        - name: dashboard
           class: tachometer
 
     widgets:
