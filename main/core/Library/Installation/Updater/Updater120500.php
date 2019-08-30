@@ -139,17 +139,15 @@ class Updater120500 extends Updater
             $tool->setName($newName);
             $this->om->persist($tool);
             $this->om->flush();
+        }
 
-            if (!$admin) {
-                $conn = $this->container->get('doctrine.dbal.default_connection');
-                $sql = "
-                    UPDATE claro_ordered_tool SET name = '${newName}' WHERE name = '${oldName}'
-                ";
+        if (!$admin) {
+            $conn = $this->container->get('doctrine.dbal.default_connection');
+            $sql = "UPDATE claro_ordered_tool SET name = '${newName}' WHERE name = '${oldName}'";
 
-                $this->log($sql);
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-            }
+            $this->log($sql);
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
         }
     }
 
