@@ -6,6 +6,7 @@ import {Modal} from '#/main/app/overlays/modal/components/modal'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
+import {ResourceCard} from '#/main/core/resource/components/card'
 
 import {selectors} from '#/plugin/open-badge/tools/badges/modals/evidence/store/selectors'
 
@@ -42,21 +43,15 @@ const EvidenceModal = props =>
               options: {
                 long: true
               }
-            }, {
-              name: 'resources',
-              label: trans('resources'),
-              type: 'collection',
-              options: {
-                type: 'resource',
-                placeholder: trans('no_resource'),
-                button: trans('add_resource')
-              }
             }
           ]
         }
       ]}
     >
     </FormData>
+    {props.evidence.resource &&
+      <ResourceCard data={props.evidence.resource}/> 
+    }
     <Button
       className="btn"
       style={{marginTop: 10}}
