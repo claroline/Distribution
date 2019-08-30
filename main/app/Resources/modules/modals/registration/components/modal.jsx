@@ -10,10 +10,9 @@ import {RegistrationMain} from '#/main/app/security/registration/containers/main
 
 const RegistrationModal = props =>
   <Modal
-    {...omit(props, 'fadeModal', 'hideModal', 'onRegister')}
+    {...omit(props, 'onRegister')}
     title={trans('registration')}
     bsSize="lg"
-    onHide={props.fadeModal}
   >
     <div className="modal-body">
       <Router embedded={true}>
