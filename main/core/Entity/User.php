@@ -435,6 +435,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->id = $user['id'];
         $this->username = $user['username'];
         $this->rolesStringAsArray = $user['roles'];
+        $this->roles = new ArrayCollection();
         $this->groups = new ArrayCollection();
     }
 

@@ -30,24 +30,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 /**
  * @Route("/user")
  */
 class UserController extends AbstractCrudController
 {
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-
     /** @var AuthorizationCheckerInterface */
     private $authChecker;
 
     /** @var StrictDispatcher */
     private $eventDispatcher;
+
+    /** @var UserManager */
+    private $manager;
 
     /** @var MailManager */
     private $mailManager;
@@ -56,26 +54,26 @@ class UserController extends AbstractCrudController
      * UserController constructor.
      *
      * @DI\InjectParams({
-     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "authChecker"     = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "manager"         = @DI\Inject("claroline.manager.user_manager"),
      *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager")
      * })
      *
-     * @param TokenStorageInterface         $tokenStorage
      * @param AuthorizationCheckerInterface $authChecker
      * @param StrictDispatcher              $eventDispatcher
      * @param MailManager                   $mailManager
+     * @param UserManager                   $manager
      */
     public function __construct(
-        TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authChecker,
         StrictDispatcher $eventDispatcher,
+        UserManager $manager,
         MailManager $mailManager
     ) {
-        $this->tokenStorage = $tokenStorage;
         $this->authChecker = $authChecker;
         $this->eventDispatcher = $eventDispatcher;
+        $this->manager = $manager;
         $this->mailManager = $mailManager;
     }
 
@@ -310,10 +308,7 @@ class UserController extends AbstractCrudController
         }
 
         if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
-            // Fire the login event
-            // Logging the user in above the way we do it doesn't do this automatically
-            $event = new InteractiveLoginEvent($request, $this->tokenStorage->getTOken());
-            $this->eventDispatcher->dispatch('security.interactive_login', $event);
+            $this->manager->logUser($user, $request);
         }
 
         return new JsonResponse(

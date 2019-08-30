@@ -130,21 +130,6 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
     }
 
     /**
-     * @DI\Observe("security.interactive_login")
-     */
-    public function onLoginSuccess()
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        //todo this probably shouldn't happen
-        if ('anon.' === $user) {
-            return;
-        }
-
-        $this->userManager->logUser($user);
-    }
-
-    /**
      * @param Request        $request
      * @param TokenInterface $token
      *

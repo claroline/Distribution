@@ -56,7 +56,7 @@ class CommunityListener
     {
         $event->setData([
             'facets' => $this->profileSerializer->serialize(),
-
+            'parameters' => $this->parametersSerializer->serialize()['profile'],
             'restrictions' => [
                 // TODO: computes rights more accurately
                 'hasUserManagementAccess' => $this->authorization->isGranted('ROLE_ADMIN'),
