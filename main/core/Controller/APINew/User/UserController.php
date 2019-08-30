@@ -23,20 +23,29 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use Claroline\CoreBundle\Manager\MailManager;
+use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 /**
  * @Route("/user")
  */
 class UserController extends AbstractCrudController
 {
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
+    /** @var AuthorizationCheckerInterface */
+    private $authChecker;
+
     /** @var StrictDispatcher */
     private $eventDispatcher;
 
@@ -47,22 +56,27 @@ class UserController extends AbstractCrudController
      * UserController constructor.
      *
      * @DI\InjectParams({
-     *    "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
-     *    "mailManager"     = @DI\Inject("claroline.manager.mail_manager"),
-     *    "authChecker"     = @DI\Inject("security.authorization_checker")
+     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
+     *     "authChecker"     = @DI\Inject("security.authorization_checker"),
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager")
      * })
      *
-     * @param StrictDispatcher $eventDispatcher
-     * @param MailManager      $mailManager
+     * @param TokenStorageInterface         $tokenStorage
+     * @param AuthorizationCheckerInterface $authChecker
+     * @param StrictDispatcher              $eventDispatcher
+     * @param MailManager                   $mailManager
      */
     public function __construct(
-      StrictDispatcher $eventDispatcher,
-      MailManager $mailManager,
-      AuthorizationCheckerInterface $authChecker
+        TokenStorageInterface $tokenStorage,
+        AuthorizationCheckerInterface $authChecker,
+        StrictDispatcher $eventDispatcher,
+        MailManager $mailManager
     ) {
+        $this->tokenStorage = $tokenStorage;
+        $this->authChecker = $authChecker;
         $this->eventDispatcher = $eventDispatcher;
         $this->mailManager = $mailManager;
-        $this->authChecker = $authChecker;
     }
 
     public function getName()
@@ -251,10 +265,6 @@ class UserController extends AbstractCrudController
         //step one: creation the organization if it's here. If it exists, we fetch it.
         $data = $this->decodeRequest($request);
 
-        if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
-            $this->options['create'][] = Options::USER_SELF_LOG;
-        }
-
         $organization = null;
 
         if ($autoOrganization) {
@@ -297,6 +307,13 @@ class UserController extends AbstractCrudController
 
         if ($organization) {
             $this->crud->replace($user, 'mainOrganization', $organization);
+        }
+
+        if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
+            // Fire the login event
+            // Logging the user in above the way we do it doesn't do this automatically
+            $event = new InteractiveLoginEvent($request, $this->tokenStorage->getTOken());
+            $this->eventDispatcher->dispatch('security.interactive_login', $event);
         }
 
         return new JsonResponse(

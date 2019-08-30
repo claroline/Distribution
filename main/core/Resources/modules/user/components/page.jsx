@@ -126,7 +126,7 @@ const UserPage = props =>
             label: trans('user-badges'),
             group: trans('badges'),
             target: '#/badges/'+props.user.id,
-            displayed: false, // TODO : restore
+            displayed: false // TODO : restore
           }, {
             name: 'show-tracking',
             type: URL_BUTTON,
