@@ -48,7 +48,7 @@ class RuleListener
 
         foreach ($rules as $rule) {
             switch ($rule->getAction()) {
-                case Rule::RULE_RESOURCE_PASSED:
+                case Rule::RESOURCE_PASSED:
                     $this->awardResourcePassed($evaluation->getUser(), $evaluation, $rule);
                     break;
                 case Rule::RESOURCE_SCORE_ABOVE:
@@ -258,7 +258,7 @@ class RuleListener
 
     private function makeAssertion($user, $rule)
     {
-        $assertion = new Assertion();
+        $assertion = $this->om->getRepository(Assertion::class)->findBy(['user' => $user, 'badge' => $rule->getBadge()]) ?? new Assertion();
         $assertion->setRecipient($user);
         $assertion->setBadge($rule->getBadge());
         $this->om->persist($assertion);

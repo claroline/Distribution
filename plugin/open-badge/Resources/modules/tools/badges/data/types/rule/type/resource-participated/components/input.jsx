@@ -17,6 +17,7 @@ class ResourceParticipatedInput extends Component {
     return (
       <ResourceInput
         onChange={(value) => this.props.onChange(value)}
+        value={this.props.value}
       />
     )
   }
