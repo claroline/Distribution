@@ -4,7 +4,7 @@ import {selectors as toolSelectors} from '#/main/core/tool/store'
 
 import {selectors as communitySelectors} from '#/main/core/tools/community/store'
 import {RoleTab as RoleTabComponent} from '#/main/core/tools/community/role/components/tab'
-import {actions, selectors} from '#/main/core/tools/community/user/store'
+import {actions, selectors} from '#/main/core/tools/community/role/store'
 
 const RoleTab = connect(
   state => ({

@@ -55,11 +55,12 @@ class CommunityListener
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
         $event->setData([
-          'facets' => $this->profileSerializer->serialize(),
-          'restrictions' => [
-              // TODO: computes rights more accurately
-              'hasUserManagementAccess' => $this->authorization->isGranted('ROLE_ADMIN'),
-          ],
+            'facets' => $this->profileSerializer->serialize(),
+
+            'restrictions' => [
+                // TODO: computes rights more accurately
+                'hasUserManagementAccess' => $this->authorization->isGranted('ROLE_ADMIN'),
+            ],
         ]);
 
         $event->stopPropagation();

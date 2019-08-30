@@ -174,7 +174,12 @@ class WorkspaceController
                         'name' => $orderedTool->getTool()->getName(),
                     ];
                 }, $orderedTools)),
-                'shortcuts' => $this->manager->getShortcuts($workspace, $user),
+                //'shortcuts' => $this->manager->getShortcuts($workspace, $user),
+
+                // TODO : only export current user shortcuts (we get all roles for the configuration in community/editor)
+                'shortcuts' => array_values(array_map(function (Shortcuts $shortcuts) {
+                    return $this->serializer->serialize($shortcuts);
+                }, $workspace->getShortcuts()->toArray())),
             ]);
         }
 

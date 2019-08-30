@@ -6,12 +6,12 @@ import {trans} from '#/main/app/intl/translation'
 import {actions as formActions, selectors as formSelect} from '#/main/app/content/form/store'
 import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_DATA_LIST} from '#/main/app/modals/list'
+import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 import {Checkbox} from '#/main/app/input/components/checkbox'
-import {CallbackButton} from '#/main/app/buttons/callback/components/button'
 
 import {actions} from '#/main/core/tools/community/role/store'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
@@ -20,7 +20,7 @@ import {
   selectors as workspaceSelectors
 } from '#/main/core/workspace/store'
 import {getActions as getWorkspaceActions} from '#/main/core/workspace/utils'
-import {MODAL_WORKSPACE_SHOTCUTS} from '#/main/core/workspace/modals/shortcuts'
+import {MODAL_WORKSPACE_SHORTCUTS} from '#/main/core/workspace/modals/shortcuts'
 import {constants as workspaceConstants} from '#/main/core/workspace/constants'
 import {selectors} from '#/main/core/tools/community/store'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
@@ -65,13 +65,15 @@ const ShortcutRow = props =>
       {props.label}
     </div>
     <div className="tool-rights-actions">
-      <CallbackButton
+      <Button
         className="btn btn-link"
+        type={CALLBACK_BUTTON}
+        icon="fa fa-fw fa-trash-o"
+        label={trans('delete', {}, 'actions')}
         dangerous={true}
         callback={() => props.removeShortcut()}
-      >
-        <span className="fa fa-trash" />
-      </CallbackButton>
+        tooltip="left"
+      />
     </div>
   </div>
 
@@ -172,6 +174,7 @@ class RoleForm extends Component {
               disabled={this.props.new}
               actions={[
                 {
+                  name: 'add',
                   type: CALLBACK_BUTTON,
                   icon: 'fa fa-fw fa-plus',
                   label: trans('add_user'),
@@ -204,6 +207,7 @@ class RoleForm extends Component {
               disabled={this.props.new}
               actions={[
                 {
+                  name: 'add',
                   type: CALLBACK_BUTTON,
                   icon: 'fa fa-fw fa-plus',
                   label: trans('add_group'),
@@ -245,7 +249,7 @@ class RoleForm extends Component {
                   label: trans('add_shortcut'),
                   disabled: !!this.props.shortcuts.find(shortcut => shortcut.role.id === this.props.role.id) &&
                     this.props.shortcuts.find(shortcut => shortcut.role.id === this.props.role.id).data.length >= workspaceConstants.SHORTCUTS_LIMIT,
-                  modal: [MODAL_WORKSPACE_SHOTCUTS, {
+                  modal: [MODAL_WORKSPACE_SHORTCUTS, {
                     workspace: this.props.workspace,
                     tools: Object.keys(this.props.role.tools || {}),
                     handleSelect: (selected) => this.props.addShortcuts(this.props.workspace.uuid, this.props.role.id, selected)
@@ -264,8 +268,8 @@ class RoleForm extends Component {
                       removeShortcut={() => this.props.removeShortcut(this.props.workspace.uuid, this.props.role.id, shortcut.type, shortcut.name)}
                     />
                   ) :
-                  <div className="alert alert-warning">
-                    {trans('no_shortcut')}
+                  <div className="panel-body">
+                    <em>{trans('no_shortcut')}</em>
                   </div>
                 }
               </div>
@@ -284,10 +288,10 @@ RoleForm.propTypes = {
   workspace: T.shape(WorkspaceType.propTypes),
   shortcuts: T.arrayOf(T.shape({
     role: T.shape(RoleTypes.propTypes),
-    data: T.shape({
+    data: T.arrayOf(T.shape({
       type: T.string,
       name: T.string
-    })
+    }))
   })),
   updateProp: T.func.isRequired,
   pickUsers: T.func.isRequired,

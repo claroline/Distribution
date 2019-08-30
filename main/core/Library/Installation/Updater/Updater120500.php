@@ -187,7 +187,7 @@ class Updater120500 extends Updater
             ['type' => 'tool', 'name' => 'home'],
             ['type' => 'tool', 'name' => 'resources'],
             ['type' => 'tool', 'name' => 'agenda'],
-            ['type' => 'tool', 'name' => 'users'],
+            ['type' => 'tool', 'name' => 'community'],
             ['type' => 'tool', 'name' => 'dashboard'],
             ['type' => 'action', 'name' => 'favourite'],
             ['type' => 'action', 'name' => 'configure'],
