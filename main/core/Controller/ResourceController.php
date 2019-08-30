@@ -220,12 +220,12 @@ class ResourceController
         if (empty($accessErrors) || $this->manager->isManager($resourceNode)) {
             try {
                 $loaded = $this->manager->load($resourceNode, intval($embedded) ? true : false);
-                //Commented because I have no idea if it is correct to do this
-                /*if ($this->tokenStorage->getToken()->getUser()) {
+                //I have no idea if it is correct to do this
+                if ($this->tokenStorage->getToken()->getUser()) {
                     $this->resourceEvaluationManager->createResourceEvaluation($resourceNode, $this->tokenStorage->getToken()->getUser(), null, [
                       'status' => ResourceEvaluation::STATUS_PARTICIPATED,
                     ]);
-                }*/
+                }
             } catch (ResourceNotFoundException $e) {
                 return new JsonResponse(['resource_not_found'], 500);
             }
