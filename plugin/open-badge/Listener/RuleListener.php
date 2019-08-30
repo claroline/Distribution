@@ -239,6 +239,7 @@ class RuleListener
 
     private function awardInRole(User $user, Role $role, Rule $rule)
     {
+        $assertion = $this->makeAssertion($user, $rule);
         $evidence = new Evidence();
         $now = new \DateTime();
         $evidence->setNarrative($this->translator->trans(
