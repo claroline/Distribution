@@ -17,9 +17,7 @@ const ResourceExplorer = props => {
       routes={[
         {
           path: props.root ? '/:id' : '/:id?',
-          onEnter: (params = {}) => {
-            props.changeDirectory(params.id)
-          },
+          onEnter: (params = {}) => props.changeDirectory(params.id),
           render: () => {
             const Current =
               <CurrentDirectory
