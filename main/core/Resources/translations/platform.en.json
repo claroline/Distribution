@@ -1659,6 +1659,7 @@
     "group_password_reset": "Reset the user passwords",
     "send_password_reset": "Do you really want to initialize the passwords of the following groups: %groups%",
     "guest": "Guest",
+    "guests": "Guests",
     "restricted_access": "Restricted access",
     "sorting": "Sorting",
     "modification_date": "Last modification",
@@ -1763,5 +1764,6 @@
     "current_of_total": "%current% of %total%",
     "do_not_display_anymore": "Do not display anymore",
     "back_to": "Back to %target%",
+    "select_an_organization": "Select an organization",
     "advanced_tools": "Advanced tools"
 }
