@@ -21,9 +21,8 @@ actions.createUser = (user, onCreated = () => {}) => ({
     success: (response, dispatch) => {
       if (response) {
         dispatch(securityActions.changeUser(response))
+        onCreated(response)
       }
-
-      onCreated(response)
     }
   }
 })

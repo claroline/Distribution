@@ -73,8 +73,7 @@ class RegistrationMain extends Component {
         submit={{
           icon: 'fa fa-user-plus',
           label: trans('registration_confirm'),
-          action: () => this.props.register(this.props.user, this.props.termOfService, (user, dispatch) => {
-            dispatch(securityActions.changeUser(user))
+          action: () => this.props.register(this.props.user, this.props.termOfService, () => {
             this.props.history.push('/login')
           })
         }}
