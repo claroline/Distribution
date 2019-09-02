@@ -2,8 +2,10 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {actions as securityActions} from '#/main/app/security/store/actions'
 
 import {FormStepper} from '#/main/core/layout/form/components/form-stepper'
+
 
 import {Facet} from '#/main/app/security/registration/components/facet'
 import {Required} from '#/main/app/security/registration/components/required'
@@ -71,7 +73,10 @@ class RegistrationMain extends Component {
         submit={{
           icon: 'fa fa-user-plus',
           label: trans('registration_confirm'),
-          action: () => this.props.register(this.props.user, this.props.termOfService, () => this.props.history.push('/login'))
+          action: () => this.props.register(this.props.user, this.props.termOfService, (user, dispatch) => {
+            dispatch(securityActions.changeUser(user))
+            this.props.history.push('/login')
+          })
         }}
         steps={steps}
         redirect={[
