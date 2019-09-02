@@ -15,6 +15,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Shortcuts;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
@@ -115,9 +116,9 @@ class WorkspaceController
 
     /**
      * @EXT\Route("/{slug}", name="claro_workspace_open")
-     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
-     * @param int     $workspaceId - the id or uuid of the WS to open
+     * @param string  $slug
      * @param User    $user
      * @param Request $request
      *
@@ -173,6 +174,12 @@ class WorkspaceController
                         'name' => $orderedTool->getTool()->getName(),
                     ];
                 }, $orderedTools)),
+                //'shortcuts' => $this->manager->getShortcuts($workspace, $user),
+
+                // TODO : only export current user shortcuts (we get all roles for the configuration in community/editor)
+                'shortcuts' => array_values(array_map(function (Shortcuts $shortcuts) {
+                    return $this->serializer->serialize($shortcuts);
+                }, $workspace->getShortcuts()->toArray())),
             ]);
         }
 

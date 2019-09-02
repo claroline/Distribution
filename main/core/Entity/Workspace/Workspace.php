@@ -265,6 +265,17 @@ class Workspace
     protected $archived = false;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Workspace\Shortcuts",
+     *     mappedBy="workspace",
+     *     cascade={"persist", "merge"}
+     * )
+     *
+     * @var Shortcuts[]|ArrayCollection
+     */
+    protected $shortcuts;
+
+    /**
      * Workspace constructor.
      */
     public function __construct()
@@ -275,6 +286,7 @@ class Workspace
         $this->orderedTools = new ArrayCollection();
         $this->organizations = new ArrayCollection();
         $this->options = new WorkspaceOptions();
+        $this->shortcuts = new ArrayCollection();
     }
 
     public function __toString()
@@ -686,6 +698,8 @@ class Workspace
                     return $role;
                 }
             }
+
+            return $this->roles[0];
         }
 
         return $this->defaultRole;
@@ -729,5 +743,29 @@ class Workspace
     public function getArchived()
     {
         return $this->archived;
+    }
+
+    /**
+     * Get shortcuts.
+     *
+     * @return Shortcuts[]|ArrayCollection
+     */
+    public function getShortcuts()
+    {
+        return $this->shortcuts;
+    }
+
+    public function addShortcuts(Shortcuts $shortcuts)
+    {
+        if (!$this->shortcuts->contains($shortcuts)) {
+            $this->shortcuts->add($shortcuts);
+        }
+    }
+
+    public function removeShortcuts(Shortcuts $shortcuts)
+    {
+        if ($this->shortcuts->contains($shortcuts)) {
+            $this->shortcuts->removeElement($shortcuts);
+        }
     }
 }
