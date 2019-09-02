@@ -14,7 +14,7 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
+        
         api:
            pattern: "%firewall_api_regex%"
            stateless: true

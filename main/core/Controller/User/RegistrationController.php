@@ -11,16 +11,22 @@
 
 namespace Claroline\CoreBundle\Controller\User;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Controller\RequestDecoderTrait;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -35,6 +41,8 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class RegistrationController extends Controller
 {
+    use RequestDecoderTrait;
+
     /** @var TokenStorageInterface */
     private $tokenStorage;
     /** @var SessionInterface */
@@ -57,7 +65,11 @@ class RegistrationController extends Controller
      *     "translator"           = @DI\Inject("translator"),
      *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile"),
      *     "userManager"          = @DI\Inject("claroline.manager.user_manager"),
-     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters")
+     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters"),
+     *     "serializer"           = @DI\Inject("claroline.api.serializer"),
+     *     "crud"                 = @DI\Inject("claroline.api.crud"),
+     *     "configHandler"        = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param TokenStorageInterface $tokenStorage
@@ -69,19 +81,26 @@ class RegistrationController extends Controller
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
+        PlatformConfigurationHandler $configHandler,
         SessionInterface $session,
         TranslatorInterface $translator,
         ProfileSerializer $profileSerializer,
         UserManager $userManager,
-        ParametersSerializer $parametersSerializer
+        ParametersSerializer $parametersSerializer,
+        SerializerProvider $serializer,
+        ObjectManager $om,
+        Crud $crud
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->session = $session;
         $this->translator = $translator;
         $this->profileSerializer = $profileSerializer;
         $this->userManager = $userManager;
-
+        $this->serializer = $serializer;
+        $this->configHandler = $configHandler;
         $this->parameters = $parametersSerializer->serialize();
+        $this->om = $om;
+        $this->crud = $crud;
     }
 
     /**
@@ -151,6 +170,87 @@ class RegistrationController extends Controller
                 'allowWorkspace' => $this->parameters['registration']['allow_workspace'],
             ],
         ]);
+    }
+
+    /**
+     * @EXT\Route("/user/login", name="apiv2_user_create_and_login")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createAndLoginAction(Request $request)
+    {
+        //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
+        //but keep it easy for now because an other route could be relevant
+        $options = [
+              //maybe move these options in an other class
+              Options::SEND_EMAIL,
+              Options::ADD_NOTIFICATIONS,
+              Options::WORKSPACE_VALIDATE_ROLES,
+        ];
+
+        $selfLog = true;
+        $autoOrganization = $this->configHandler->getParameter('force_organization_creation');
+
+        $organizationRepository = $this->om->getRepository('ClarolineCoreBundle:Organization\Organization');
+
+        //step one: creation the organization if it's here. If it exists, we fetch it.
+        $data = $this->decodeRequest($request);
+
+        if ($selfLog && 'anon.' === $this->tokenStorage->getToken()->getUser()) {
+            $options[] = Options::USER_SELF_LOG;
+        }
+
+        $organization = null;
+
+        if ($autoOrganization) {
+            //try to find orga first
+            //first find by vat
+            if (isset($data['mainOrganization'])) {
+                if (isset($data['mainOrganization']['vat']) && null !== $data['mainOrganization']['vat']) {
+                    $organization = $organizationRepository
+                      ->findOneBy(['vat' => $data['mainOrganization']['vat']]);
+                //then by code
+                } else {
+                    $organization = $organizationRepository
+                      ->findOneBy(['code' => $data['mainOrganization']['code']]);
+                }
+            }
+
+            if (!$organization && isset($data['mainOrganization'])) {
+                $organization = $this->crud->create(
+                    'Claroline\CoreBundle\Entity\Organization\Organization',
+                    $data['mainOrganization']
+                );
+            }
+
+            //error handling
+            if (is_array($organization)) {
+                return new JsonResponse($organization, 400);
+            }
+        }
+
+        $user = $this->crud->create(
+            User::class,
+            $this->decodeRequest($request),
+            array_merge($options, [Options::VALIDATE_FACET])
+        );
+
+        //error handling
+        if (is_array($user)) {
+            return new JsonResponse($user, 400);
+        }
+
+        if ($organization) {
+            $this->crud->replace($user, 'mainOrganization', $organization);
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($user, [Options::SERIALIZE_FACET]),
+            201
+        );
     }
 
     /**
