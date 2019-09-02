@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
-import {actions as securityActions} from '#/main/app/security/store/actions'
+import {param} from '#/main/app/config/parameters'
 
 import {FormStepper} from '#/main/core/layout/form/components/form-stepper'
 
@@ -74,7 +74,9 @@ class RegistrationMain extends Component {
           icon: 'fa fa-user-plus',
           label: trans('registration_confirm'),
           action: () => this.props.register(this.props.user, this.props.termOfService, () => {
-            this.props.history.push('/login')
+            //not the cleanest but it refresh the user properly
+            //we should ba able to do it by using history.push but that one doesn't refresh (yet =/)
+            window.location.replace(param('platform.full')+'/#desktop')
           })
         }}
         steps={steps}

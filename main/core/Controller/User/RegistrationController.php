@@ -199,10 +199,6 @@ class RegistrationController extends Controller
         //step one: creation the organization if it's here. If it exists, we fetch it.
         $data = $this->decodeRequest($request);
 
-        if ($selfLog && 'anon.' === $this->tokenStorage->getToken()->getUser()) {
-            $options[] = Options::USER_SELF_LOG;
-        }
-
         $organization = null;
 
         if ($autoOrganization) {
@@ -245,6 +241,10 @@ class RegistrationController extends Controller
 
         if ($organization) {
             $this->crud->replace($user, 'mainOrganization', $organization);
+        }
+
+        if ($selfLog && 'anon.' === $this->tokenStorage->getToken()->getUser()) {
+            $this->userManager->logUser($user);
         }
 
         return new JsonResponse(

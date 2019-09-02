@@ -152,6 +152,12 @@ class ClientSerializer
                 'host' => $this->config->getParameter('domain_name') ? $this->config->getParameter('domain_name') : $request->getHost(),
                 'path' => $request->getBasePath(),
             ],
+            'platform' => [
+              'url' => $this->router->getContext()->getBaseUrl(),
+              'scheme' => $this->router->getContext()->getScheme(),
+              'host' => $this->router->getContext()->getHost(),
+              'full' => $this->router->getContext()->getScheme().'://'.$this->router->getContext()->getHost().$this->router->getContext()->getBaseUrl(),
+            ],
             'theme' => $this->serializeTheme(),
             'locale' => $this->serializeLocale(),
             'openGraph' => [
