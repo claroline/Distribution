@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect'
 import moment from 'moment'
 
-const STORE_NAME = 'agenda_'
+const STORE_NAME = 'agenda'
 
 const store = (state) => state[STORE_NAME]
 
@@ -20,10 +20,23 @@ const referenceDate = createSelector(
   (referenceDateStr) => moment(referenceDateStr)
 )
 
+const loaded = createSelector(
+  [store],
+  (store) => store.loaded
+)
+
+const events = createSelector(
+  [store],
+  (store) => store.events
+)
+
 export const selectors = {
   STORE_NAME,
 
   view,
   referenceDateStr,
-  referenceDate
+  referenceDate,
+
+  loaded,
+  events
 }

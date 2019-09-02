@@ -2,18 +2,15 @@ import {URL_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/app/intl/translation'
 
+import {route} from '#/main/core/workspace/routing'
 import {EventCard} from '#/plugin/agenda/data/components/event-card'
 
 export default {
   name: 'events',
   parameters: {
-    //TODO: WORKSPACE OPEN URL CHANGE
     primaryAction: (event) => ({
       type: URL_BUTTON,
-      target: ['claro_workspace_open_tool', {
-        workspaceId: event.workspace.id,
-        toolName: 'agenda_'
-      }]
+      target: `#${route(event.workspace, 'agenda')}`
     }),
     definition: [
       {
@@ -38,16 +35,13 @@ export default {
         label: trans('start_date'),
         displayed: true
       }, {
-        name: 'notDoneYet',
-        type: 'boolean',
-        label: trans('not_done_yet'),
-        displayed: false,
-        displayable: false,
-        filterable: true,
-        sortable: false
+        name: 'end',
+        type: 'date',
+        label: trans('end_date'),
+        displayed: true
       }, {
-        name: 'workspace.code',
-        type: 'string',
+        name: 'workspace',
+        type: 'workspace',
         label: trans('workspace'),
         displayed: true,
         filterable: false,

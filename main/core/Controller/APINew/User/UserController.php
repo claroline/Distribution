@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use Claroline\CoreBundle\Manager\MailManager;
+use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -37,8 +38,18 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class UserController extends AbstractCrudController
 {
+    use HasRolesTrait;
+    use HasOrganizationsTrait;
+    use HasGroupsTrait;
+
+    /** @var AuthorizationCheckerInterface */
+    private $authChecker;
+
     /** @var StrictDispatcher */
     private $eventDispatcher;
+
+    /** @var UserManager */
+    private $manager;
 
     /** @var MailManager */
     private $mailManager;
@@ -47,27 +58,62 @@ class UserController extends AbstractCrudController
      * UserController constructor.
      *
      * @DI\InjectParams({
-     *    "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
-     *    "mailManager"     = @DI\Inject("claroline.manager.mail_manager"),
-     *    "authChecker"     = @DI\Inject("security.authorization_checker")
+     *     "authChecker"     = @DI\Inject("security.authorization_checker"),
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "manager"         = @DI\Inject("claroline.manager.user_manager"),
+     *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager")
      * })
      *
-     * @param StrictDispatcher $eventDispatcher
-     * @param MailManager      $mailManager
+     * @param AuthorizationCheckerInterface $authChecker
+     * @param StrictDispatcher              $eventDispatcher
+     * @param MailManager                   $mailManager
+     * @param UserManager                   $manager
      */
     public function __construct(
-      StrictDispatcher $eventDispatcher,
-      MailManager $mailManager,
-      AuthorizationCheckerInterface $authChecker
+        AuthorizationCheckerInterface $authChecker,
+        StrictDispatcher $eventDispatcher,
+        UserManager $manager,
+        MailManager $mailManager
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->mailManager = $mailManager;
         $this->authChecker = $authChecker;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->manager = $manager;
+        $this->mailManager = $mailManager;
     }
 
     public function getName()
     {
         return 'user';
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Finds an object class $class.",
+     *     parameters={
+     *          {"name": "id", "type": {"string", "integer"}, "description": "The object id or uuid or publicUrl"}
+     *     },
+     *     response={"$object"}
+     * )
+     *
+     * @param Request    $request
+     * @param string|int $id
+     * @param string     $class
+     *
+     * @return JsonResponse
+     */
+    public function getAction(Request $request, $id, $class)
+    {
+        $object = $this->find($class, $id);
+
+        if (!$object) {
+            $object = $this->om->getRepository($class)->findOneBy(['publicUrl' => $id]);
+        }
+
+        return $object ?
+            new JsonResponse(
+                $this->serializer->serialize($object, [Options::SERIALIZE_FACET])
+            ) :
+            new JsonResponse("No object found for id {$id} of class {$class}", 404);
     }
 
     /**
@@ -119,10 +165,6 @@ class UserController extends AbstractCrudController
 
         return new JsonResponse($this->serializer->serialize($user));
     }
-
-    use HasRolesTrait;
-    use HasOrganizationsTrait;
-    use HasGroupsTrait;
 
     /**
      * @ApiDoc(
@@ -190,6 +232,89 @@ class UserController extends AbstractCrudController
         return new JsonResponse(array_map(function (User $user) {
             return $this->serializer->serialize($user);
         }, $users));
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Create and log a user.",
+     *     body={
+     *         "schema":"$schema"
+     *     }
+     * )
+     * @Route("/user/login", name="apiv2_user_create_and_login")
+     * @Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createAndLoginAction(Request $request)
+    {
+        //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
+        //but keep it easy for now because an other route could be relevant
+        $selfLog = true;
+        $autoOrganization = $this->container
+            ->get('claroline.config.platform_config_handler')
+            ->getParameter('force_organization_creation');
+
+        $organizationRepository = $this->container->get('claroline.persistence.object_manager')
+            ->getRepository('ClarolineCoreBundle:Organization\Organization');
+
+        //step one: creation the organization if it's here. If it exists, we fetch it.
+        $data = $this->decodeRequest($request);
+
+        $organization = null;
+
+        if ($autoOrganization) {
+            //try to find orga first
+            //first find by vat
+            if (isset($data['mainOrganization'])) {
+                if (isset($data['mainOrganization']['vat']) && null !== $data['mainOrganization']['vat']) {
+                    $organization = $organizationRepository
+                      ->findOneBy(['vat' => $data['mainOrganization']['vat']]);
+                //then by code
+                } else {
+                    $organization = $organizationRepository
+                      ->findOneBy(['code' => $data['mainOrganization']['code']]);
+                }
+            }
+
+            if (!$organization && isset($data['mainOrganization'])) {
+                $organization = $this->crud->create(
+                    'Claroline\CoreBundle\Entity\Organization\Organization',
+                    $data['mainOrganization']
+                );
+            }
+
+            //error handling
+            if (is_array($organization)) {
+                return new JsonResponse($organization, 400);
+            }
+        }
+
+        $user = $this->crud->create(
+            User::class,
+            $this->decodeRequest($request),
+            array_merge($this->options['create'], [Options::VALIDATE_FACET])
+        );
+
+        //error handling
+        if (is_array($user)) {
+            return new JsonResponse($user, 400);
+        }
+
+        if ($organization) {
+            $this->crud->replace($user, 'mainOrganization', $organization);
+        }
+
+        if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
+            $this->manager->logUser($user, $request);
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($user, $this->options['get']),
+            201
+        );
     }
 
     public function getOptions()

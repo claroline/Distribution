@@ -698,6 +698,8 @@ class Workspace
                     return $role;
                 }
             }
+
+            return $this->roles[0];
         }
 
         return $this->defaultRole;
@@ -751,5 +753,19 @@ class Workspace
     public function getShortcuts()
     {
         return $this->shortcuts;
+    }
+
+    public function addShortcuts(Shortcuts $shortcuts)
+    {
+        if (!$this->shortcuts->contains($shortcuts)) {
+            $this->shortcuts->add($shortcuts);
+        }
+    }
+
+    public function removeShortcuts(Shortcuts $shortcuts)
+    {
+        if ($this->shortcuts->contains($shortcuts)) {
+            $this->shortcuts->removeElement($shortcuts);
+        }
     }
 }

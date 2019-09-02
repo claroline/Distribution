@@ -12,6 +12,11 @@ function route(workspace, toolName = null) {
   return toolRoute('workspaces')+`/open/${workspace.slug}`
 }
 
+function registrationRoute(workspace) {
+  return toolRoute('workspaces')+`/register/${workspace.slug}`
+}
+
 export {
-  route
+  route,
+  registrationRoute
 }

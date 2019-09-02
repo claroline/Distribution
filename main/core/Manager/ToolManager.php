@@ -23,10 +23,9 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\Exception\ToolPositionAlreadyOccupiedException;
+use Claroline\CoreBundle\Repository\RoleRepository;
 use Claroline\CoreBundle\Repository\AdministrationToolRepository;
 use Claroline\CoreBundle\Repository\OrderedToolRepository;
-use Claroline\CoreBundle\Repository\RoleRepository;
-use Claroline\CoreBundle\Repository\ToolRepository;
 use Claroline\CoreBundle\Repository\UserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -39,7 +38,7 @@ class ToolManager
     use LoggableTrait;
 
     // todo adds a config in tools to avoid this
-    const WORKSPACE_MODEL_TOOLS = ['home', 'resource_manager', 'users'];
+    const WORKSPACE_MODEL_TOOLS = ['home', 'resources', 'users'];
 
     /** @var OrderedToolRepository */
     private $orderedToolRepo;
