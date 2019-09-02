@@ -17,12 +17,13 @@ const WorkspaceMenu = withRouter(
         currentUser: securitySelectors.currentUser(state),
         workspace: selectors.workspace(state),
         section: menuSelectors.openedSection(state),
-        tools: selectors.tools(state)
+        tools: selectors.tools(state),
+        shortcuts: selectors.userShortcuts(state)
       }),
       (dispatch) => ({
         update(workspace) {
           dispatch(actions.setLoaded(false))
-          dispatch(actions.open(workspace.meta.slug))
+          dispatch(actions.open(workspace.slug))
         },
         changeSection(section) {
           dispatch(menuActions.changeSection(section))

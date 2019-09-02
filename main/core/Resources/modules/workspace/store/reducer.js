@@ -2,17 +2,20 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 
+import {SECURITY_USER_CHANGE} from '#/main/app/security/store/actions'
 import {
   WORKSPACE_LOAD,
   WORKSPACE_SET_LOADED,
   WORKSPACE_SERVER_ERRORS,
   WORKSPACE_RESTRICTIONS_ERROR,
   WORKSPACE_RESTRICTIONS_DISMISS,
-  WORKSPACE_RESTRICTIONS_UNLOCKED
+  WORKSPACE_RESTRICTIONS_UNLOCKED,
+  SHORTCUTS_LOAD
 } from '#/main/core/workspace/store/actions'
 
 const reducer = combineReducers({
   loaded: makeReducer(false, {
+    [SECURITY_USER_CHANGE]: () => false,
     [WORKSPACE_SET_LOADED]: (state, action) => action.loaded
   }),
   impersonated: makeReducer(false, {
@@ -26,6 +29,10 @@ const reducer = combineReducers({
   }),
   tools: makeReducer([], {
     [WORKSPACE_LOAD]: (state, action) => action.workspaceData.tools || state
+  }),
+  shortcuts: makeReducer([], {
+    [WORKSPACE_LOAD]: (state, action) => action.workspaceData.shortcuts || state,
+    [SHORTCUTS_LOAD]: (state, action) => action.shortcuts || state
   }),
   userProgression: makeReducer(null, {
     [WORKSPACE_LOAD]: (state, action) => action.workspaceData.userProgression || state

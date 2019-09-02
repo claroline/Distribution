@@ -7,7 +7,6 @@
 - doctrine/orm
 - jms/di-extra-bundle
 - jms/security-extra-bundle
-- jms/serializer-bundle
 - stof/doctrine-extensions-bundle
 - symfony/monolog-bundle
 - symfony/swiftmailer-bundle
@@ -24,7 +23,6 @@
 
 ## DEV DEPENDENCIES
 - sensio/generator-bundle
-- sensio/distribution-bundle
 
 
 ## OURS
@@ -43,8 +41,6 @@
 
 ## TO REMOVE WITH REFACTORING
 - mrclay/minify : minification des JS / remplacé par Webpack
-- natxet/CssMin : minification des CSS / sera remplacé par un gestionnaire de tâche JS (Gulp, Grunt)
-- white-october/pagerfanta-bundle : système de pagination
 - symfony/assetic-bundle
 - knplabs/knp-menu-bundle
 - gregwar/captcha-bundle
