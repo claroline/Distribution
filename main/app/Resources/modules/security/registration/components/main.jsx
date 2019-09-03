@@ -73,7 +73,9 @@ class RegistrationMain extends Component {
         submit={{
           icon: 'fa fa-user-plus',
           label: trans('registration_confirm'),
-          action: () => this.props.register(this.props.user, this.props.termOfService, () => {
+          action: () => this.props.register(this.props.user, this.props.termOfService, (user) => {
+            //not sure I want to keep it
+            this.props.onRegister(user)
             //not the cleanest but it refresh the user properly
             //we should ba able to do it by using history.push but that one doesn't refresh (yet =/)
             window.location.replace(param('platform.full')+'/#desktop')
