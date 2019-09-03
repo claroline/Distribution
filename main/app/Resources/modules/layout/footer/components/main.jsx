@@ -32,7 +32,7 @@ const FooterMain = (props) =>
           type={MODAL_BUTTON}
           modal={[MODAL_LOCALE, props.locale]}
           icon={<LocaleFlag locale={props.locale.current} />}
-          label={<span className="hidden-xs">{trans(props.locale.current)}</span>}
+          label={<span key="locale" className="hidden-xs">{trans(props.locale.current)}</span>}
         />
       }
     </div>
