@@ -2,6 +2,8 @@
 
 imports:
     - { resource: services/repository.yml }
+    - { resource: services/serializer.yml }
+    - { resource: services/manager.yml }
 
 services:
 
