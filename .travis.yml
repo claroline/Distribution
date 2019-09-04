@@ -9,8 +9,6 @@ addons:
       - sshpass
   mariadb: '10.0.5'
 
-sudo: true
-
 env:
   global:
     # REMOTE_HOST
@@ -26,12 +24,14 @@ env:
   matrix:
     - DB=mysql
 
+#mariadb not well supported otherwise
+dist: precise
 
 services:
   - xvfb
   - mysql
 
-mysql:
+mariadb:
   adapter: mysql2
   database: claroline_test
   username: root
