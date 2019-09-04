@@ -476,13 +476,13 @@ services:
     Claroline\CoreBundle\Manager\Workspace\Transfer\Tools\ResourceManager:
         arguments:
           - '@claroline.api.serializer'
+          - '@claroline.manager.user_manager'
           - '@claroline.api.finder'
           - '@claroline.api.crud'
           - '@security.token_storage'
-          - '@claroline.manager.user_manager'
+          - '@claroline.manager.resource_manager'
           - '@claroline.persistence.object_manager'
           - '@claroline.event.event_dispatcher'
-          - '@claroline.manager.resource_manager'
 
     claroline.transfer.resources:
         alias: Claroline\CoreBundle\Manager\Workspace\Transfer\Tools\ResourceManager
