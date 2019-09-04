@@ -9,7 +9,7 @@ addons:
       - sshpass
   mariadb: '10.0.5'
 
-dist: precise
+sudo: true
 
 env:
   global:
@@ -65,6 +65,15 @@ before_script:
   - sudo mkswap /swapfile
   - sudo swapon /swapfile
   - sudo swapon -s
+
+  #mysql8 install
+  - wget https://repo.mysql.com//mysql-apt-config_0.8.10-1_all.deb
+  - sudo dpkg -i mysql-apt-config_0.8.10-1_all.deb
+  - sudo apt-get update -q
+  - sudo apt-get install -q -y --allow-unauthenticated -o Dpkg::Options::=--force-confnew mysql-server
+  - sudo systemctl restart mysql
+  - sudo mysql_upgrade
+  - mysql --version
 
   # get and configure claroline platform
   - curl -L https://github.com/claroline/Claroline/archive/${TRAVIS_BRANCH}.tar.gz | tar xzv
