@@ -23,7 +23,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -124,7 +123,7 @@ class DesktopController
      *
      * @param string $toolName
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function openToolAction($toolName)
     {
@@ -144,5 +143,24 @@ class DesktopController
         $this->eventDispatcher->dispatch('log', new LogDesktopToolReadEvent($toolName));
 
         return new JsonResponse($event->getData());
+    }
+
+    /**
+     * Fetches an user.
+     *
+     * @EXT\Route("/user/{user}", name="claro_user_fetch")
+     * @EXT\ParamConverter(
+     *     "user",
+     *     class="ClarolineCoreBundle:User",
+     *     options={"mapping": {"user": "uuid"}}
+     * )
+     *
+     * @param User $user
+     *
+     * @return JsonResponse
+     */
+    public function fetchUserAction(User $user)
+    {
+        return new JsonResponse($this->serializer->serialize($user));
     }
 }
