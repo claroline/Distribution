@@ -8,6 +8,7 @@ import {USER_COMPARE} from '#/main/core/administration/user/user/actions'
 
 const reducer = combineReducers({
   picker: makeListReducer('users.picker'),
+  bulk: makeListReducer('users.bulk'),
   list: makeListReducer('users.list', {
     sortBy: {property: 'created', direction: -1}
   }, {

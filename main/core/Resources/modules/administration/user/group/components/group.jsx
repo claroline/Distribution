@@ -182,7 +182,7 @@ const Group = connect(
       dispatch(modalActions.showModal(MODAL_TEXT_SEARCH, {
         icon: 'fa fa-fw fa-user',
         title: trans('add_users'),
-        name: baseSelectors.STORE_NAME+'.users.bulk',
+        name: 'users.bulk',
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
