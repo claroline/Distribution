@@ -332,7 +332,7 @@ class ScormListener
      */
     private function getRelativePath($current, $hashName, $wuid)
     {
-        $path = substr($current, strlen($this->uploadDir.'/scorm/'.$wuid.'/'.$hashName.'/'));
+        $path = substr($current, strlen(realpath($this->uploadDir).'/scorm/'.$wuid.'/'.$hashName.'/'));
 
         return $path;
     }
