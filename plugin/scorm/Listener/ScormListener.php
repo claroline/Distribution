@@ -195,7 +195,6 @@ class ScormListener
     public function onExportFile(ExportObjectEvent $exportEvent)
     {
         $file = $exportEvent->getObject();
-        $ds = DIRECTORY_SEPARATOR;
         $path = $this->getScormArchive($file);
         $file = $exportEvent->getObject();
         $newPath = uniqid().'.'.pathinfo($file->getHashName(), PATHINFO_EXTENSION);
@@ -277,9 +276,7 @@ class ScormListener
      */
     public function onDownload(DownloadResourceEvent $event)
     {
-        $ds = DIRECTORY_SEPARATOR;
         $scorm = $event->getResource();
-        $workspace = $scorm->getResourceNode()->getWorkspace();
         $event->setItem($this->getScormArchive($scorm));
         $event->setExtension('zip');
         $event->stopPropagation();
@@ -308,7 +305,8 @@ class ScormListener
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uploadArchiveLocation), \RecursiveIteratorIterator::LEAVES_ONLY);
 
         // let's iterate
-        foreach ($files as $name => $file) {
+
+        foreach ($files as $file) {
             $filePath = $file->getRealPath();
 
             if (file_exists($filePath) && is_file($filePath)) {

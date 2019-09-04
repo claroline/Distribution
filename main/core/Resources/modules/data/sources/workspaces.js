@@ -43,8 +43,7 @@ export default {
       }, {
         name: 'createdBefore',
         label: trans('created_before'),
-        type: 'date',
-        displayable: false
+        type: 'date'
       }, {
         name: 'registration.selfRegistration',
         label: trans('public_registration'),
@@ -56,6 +55,21 @@ export default {
         type: 'boolean',
         filterable: false,
         sortable: false
+      }, {
+        name: 'archived',
+        label: trans('archived'),
+        type: 'boolean',
+        filterable: true,
+        displayable: false
+      }, {
+        name: 'tags',
+        type: 'tag',
+        label: trans('tags'),
+        displayable: false,
+        sortable: false,
+        options: {
+          objectClass: 'Claroline\\CoreBundle\\Entity\\Workspace\\Workspace'
+        }
       }
     ],
     card: WorkspaceCard

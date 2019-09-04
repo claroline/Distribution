@@ -351,6 +351,13 @@ class Workspace
     private $workspaceModel;
 
     /**
+     * @ORM\Column(name="archived", type="boolean")
+     *
+     * @var bool
+     */
+    protected $archived = false;
+
+    /**
      * Workspace constructor.
      */
     public function __construct()
@@ -792,7 +799,7 @@ class Workspace
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public function getBackgroundColor()
     {
@@ -913,5 +920,15 @@ class Workspace
     public function getLang()
     {
         return $this->lang;
+    }
+
+    public function setArchived($archived)
+    {
+        $this->archived = $archived;
+    }
+
+    public function getArchived()
+    {
+        return $this->archived;
     }
 }
