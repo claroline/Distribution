@@ -13,7 +13,7 @@ use Doctrine\DBAL\Schema\Schema;
 class Version20190624150111 extends AbstractMigration
 {
     public function up(Schema $schema)
-    {
+    {/*
         $this->addSql('
             CREATE TABLE claro_connection_message_slide (
                 id INT AUTO_INCREMENT NOT NULL, 
@@ -88,7 +88,7 @@ class Version20190624150111 extends AbstractMigration
             ADD CONSTRAINT FK_6B1166A5A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
             ON DELETE CASCADE
-        ');
+	    ');*/
     }
 
     public function down(Schema $schema)
