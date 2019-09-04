@@ -1741,5 +1741,15 @@
     "medias": "Medias",
     "archive": "Archive",
     "form_not_validating_desc": "Work in progress: some information is missing or requires changes.",
-    "form_validating_desc": "Some errors or missing information prevent saving data."
+    "form_validating_desc": "Some errors or missing information prevent saving data.",
+    "transfer_directory_name": "The directory name",
+    "transfer_directory_open": "Open permission [default: 0 (false)]",
+    "transfer_directory_delete": "Delete permission [default: 0 (false)]",
+    "transfer_directory_edit": "Edit permission[default: 0 (false)]",
+    "transfer_directory_copy": "Copy permission [default: 0 (false)]",
+    "transfer_directory_export": "Export permission [default: 0 (false)]",
+    "transfer_directory_administrate": "Administrate permission [default: 0 (false)]",
+    "transfer_directory_user": "A username if these directories are only usable by him",
+    "transfer_directory_role": "A role translation key (workspace default role by default)",
+    "transfer_directory_creation": "The list of creatable types (coma separated) - %types% - default: all"
 }

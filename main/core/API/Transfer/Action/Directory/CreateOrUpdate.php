@@ -9,10 +9,12 @@ use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service()
@@ -29,16 +31,18 @@ class CreateOrUpdate extends AbstractAction
      * @DI\InjectParams({
      *     "crud"       = @DI\Inject("claroline.api.crud"),
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "translator" = @DI\Inject("translator")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud, ObjectManager $om, SerializerProvider $serializer)
+    public function __construct(Crud $crud, ObjectManager $om, SerializerProvider $serializer, TranslatorInterface $translator)
     {
         $this->crud = $crud;
         $this->om = $om;
         $this->serializer = $serializer;
+        $this->translator = $translator;
     }
 
     /**
@@ -81,6 +85,15 @@ class CreateOrUpdate extends AbstractAction
             $roles[] = $workspace->getDefaultRole();
         }
 
+        if (isset($data['create'])) {
+            $create = explode(',', $data['create']);
+            $create = array_map(function ($type) {
+                return trim($type);
+            }, $create);
+
+            $permissions['create'] = $create;
+        }
+
         foreach ($roles as $role) {
             $rights[] = [
               'permissions' => $permissions,
@@ -98,7 +111,9 @@ class CreateOrUpdate extends AbstractAction
           'rights' => $rights,
         ];
 
-        $parent = $this->om->getRepository(ResourceNode::class)->findOneByUuid($data['directory']['id']);
+        if (isset($data['directory'])) {
+            $parent = $this->om->getRepository(ResourceNode::class)->findOneByUuid($data['directory']['id']);
+        }
         /** @var ResourceNode $resourceNode */
 
         //search for the node if it exists
@@ -123,45 +138,54 @@ class CreateOrUpdate extends AbstractAction
      */
     public function getSchema(array $options = [], array $extra = [])
     {
+        $types = array_map(function (ResourceType $type) {
+            return $type->getName();
+        }, $this->om->getRepository(ResourceType::class)->findAll());
+        $types = implode(', ', $types);
+
         $directory = [
           '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',
           'type' => 'object',
           'properties' => [
             'name' => [
               'type' => 'string',
-              'description' => 'The directory name',
+              'description' => $this->translator->trans('transfer_directory_name', [], 'platform'),
             ],
             'open' => [
               'type' => 'boolean',
-              'description' => 'Openable for collaborators',
+              'description' => $this->translator->trans('transfer_directory_open', [], 'platform'),
             ],
             'delete' => [
               'type' => 'boolean',
-              'description' => 'Deletable for collaborators',
+              'description' => $this->translator->trans('transfer_directory_delete', [], 'platform'),
             ],
             'edit' => [
               'type' => 'boolean',
-              'description' => 'Editable for collaborators',
+              'description' => $this->translator->trans('transfer_directory_edit', [], 'platform'),
             ],
             'copy' => [
               'type' => 'boolean',
-              'description' => 'Copyable for collaborators',
+              'description' => $this->translator->trans('transfer_directory_copy', [], 'platform'),
             ],
             'export' => [
               'type' => 'boolean',
-              'description' => 'Exportable for collaborators',
+              'description' => $this->translator->trans('transfer_directory_export', [], 'platform'),
             ],
             'administrate' => [
               'type' => 'boolean',
-              'description' => 'Administrable for collaborators',
+              'description' => $this->translator->trans('transfer_directory_administrate', [], 'platform'),
             ],
             'user' => [
               'type' => 'string',
-              'description' => 'Username of the user',
+              'description' => $this->translator->trans('transfer_directory_user', [], 'platform'),
             ],
             'role' => [
               'type' => 'string',
-              'description' => 'Translation key of role',
+              'description' => $this->translator->trans('transfer_directory_role', [], 'platform'),
+            ],
+            'create' => [
+              'type' => 'string',
+              'description' => $this->translator->trans('transfer_directory_creation', ['%types%' => $types], 'platform'),
             ],
           ],
 
@@ -196,7 +220,7 @@ class CreateOrUpdate extends AbstractAction
           [
             'name' => 'directory',
             'type' => 'resource',
-            'required' => true,
+            'required' => false,
             'label' => 'root',
             'options' => ['picker' => [
               'filters' => [

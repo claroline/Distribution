@@ -305,6 +305,7 @@ class ScormListener
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uploadArchiveLocation), \RecursiveIteratorIterator::LEAVES_ONLY);
 
         // let's iterate
+
         foreach ($files as $file) {
             $filePath = $file->getRealPath();
 
