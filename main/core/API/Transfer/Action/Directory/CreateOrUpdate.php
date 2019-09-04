@@ -85,8 +85,6 @@ class CreateOrUpdate extends AbstractAction
             $roles[] = $workspace->getDefaultRole();
         }
 
-        var_dump($data);
-
         if (isset($data['create'])) {
             $create = explode(',', $data['create']);
             $create = array_map(function ($type) {
