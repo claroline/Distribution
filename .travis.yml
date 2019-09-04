@@ -7,7 +7,7 @@ addons:
   apt:
     packages:
       - sshpass
-  mariadb: '10.4'
+  mariadb: '10.0.5'
 
 dist: precise
 
