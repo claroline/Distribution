@@ -111,9 +111,6 @@ class CreateOrUpdate extends AbstractAction
           'rights' => $rights,
         ];
 
-        //$parent = $this->om->getRepository(ResourceNode::class)->findOneByUuid($data['directory']['id']);
-        /** @var ResourceNode $resourceNode */
-
         //search for the node if it exists
         $resourceNode = $this->om->getRepository(ResourceNode::class)->findOneBy(['name' => $dataResourceNode['name'], 'parent' => $parent]);
 
@@ -209,29 +206,6 @@ class CreateOrUpdate extends AbstractAction
 
         return $schema;
     }
-
-    /*
-        public function getExtraDefinition(array $options = [], array $extra = [])
-        {
-            $root = $this->serializer->serialize($this->om->getRepository(ResourceNode::class)->findOneBy(['parent' => null, 'workspace' => $extra['workspace']['id']]));
-
-            return ['fields' => [
-              [
-                'name' => 'directory',
-                'type' => 'resource',
-                'required' => true,
-                'label' => 'root',
-                'options' => ['picker' => [
-                  'filters' => [
-                    ['property' => 'workspace', 'value' => $extra['workspace']['uuid'], 'locked' => true],
-                    ['property' => 'resourceType', 'value' => 'directory', 'locked' => true],
-                  ],
-                  'current' => $root,
-                  'root' => $root,
-                ]],
-              ],
-            ]];
-        }*/
 
     public function supports($format, array $options = [], array $extra = [])
     {
