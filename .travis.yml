@@ -27,7 +27,7 @@ env:
 
 services:
   - xvfb
-  - mysql
+  #- mysql
 
 mysql:
   adapter: mysql2
