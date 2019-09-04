@@ -144,23 +144,4 @@ class DesktopController
 
         return new JsonResponse($event->getData());
     }
-
-    /**
-     * Fetches an user.
-     *
-     * @EXT\Route("/user/{user}", name="claro_user_fetch")
-     * @EXT\ParamConverter(
-     *     "user",
-     *     class="ClarolineCoreBundle:User",
-     *     options={"mapping": {"user": "uuid"}}
-     * )
-     *
-     * @param User $user
-     *
-     * @return JsonResponse
-     */
-    public function fetchUserAction(User $user)
-    {
-        return new JsonResponse($this->serializer->serialize($user));
-    }
 }
