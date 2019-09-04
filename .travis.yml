@@ -27,9 +27,9 @@ env:
 
 services:
   - xvfb
-  #- mysql
+  - mysql
 
-mysql:
+mariadb:
   adapter: mysql2
   database: claroline_test
   username: root
