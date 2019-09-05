@@ -24,6 +24,9 @@ env:
 
 dist: bionic
 
+addons:
+  mariadb: '10.4'
+  
 services:
   - xvfb
   - mysql
