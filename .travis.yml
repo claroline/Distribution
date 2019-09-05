@@ -22,7 +22,7 @@ env:
     # PREVIEW_PATH
     - secure: "R3yYS0dAT+XLp20qSaq392cUJYfCp63yUypOdFEiisbY+hSkr1m4d5yg5+IOzx0N5hIyft2QRIVHEuXnCKTZgbJ1ykzIyxxtlePFP1vW5zAwZSF8YVBKGMqjDn3osxRKGonNm+yaiMWjJM1TQhrsEXwFVH7XMoK6H6U/KwuncBJ/kLbnEjMYFSLkjPN0YMmPUOg4waaUaNdWQuQO1dj0G4+5CQLcxpxC6rp92I1jamhAAfGnmTfLviSRLEkbF9tmyG7sgfB1sS5OREWQFEAYECSw0CD4oM6aL6FbvX96M/ELUjXN3Nq19U0a5m0tRvPB52nrhTfsjx1tN7Z8+6zABg00rVNAuSMUXoojc86AXR8W4OVFrxsYkRJkJxx/YlUlEDZNWd9SHlq0qmg22Bru/i2eNdDqxeSmqr7C1LmaacHRsgF5OfIeG2U4FYWP6aPeUyHM8erpF24thLGGqKFExsIcIUA1aEM44HiRrcHmVhkawRX6BUHNcWFuiJH036nu9YF/ZdwW5LDFSBO8yUYwQEkoReC67C9qDrRVDx4HwYlFCA+XTdaKPmig6vn+Z3RyylmhyRomP1GK3eCwpt15qVfTCdLLnB5ty7eb1vcDPovvEO+hYXk0CAMIYjiIonOfn2nFPM/ydvmipIvDDATjvNXxTuOnunp5F6w6HCmKJQw="
   matrix:
-    - DB=mysql
+    - DB=mariadb
 
 #mariadb not well supported otherwise
 dist: precise
