@@ -7,7 +7,7 @@ addons:
   apt:
     packages:
       - sshpass
-  mariadb: '10.0.5'
+  mariadb: '10.3'
 
 env:
   global:
@@ -31,7 +31,7 @@ services:
   - xvfb
   - mysql
 
-mariadb:
+mysql:
   adapter: mysql2
   database: claroline_test
   username: root
