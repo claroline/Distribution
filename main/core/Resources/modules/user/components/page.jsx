@@ -89,7 +89,7 @@ const UserPage = props =>
             label: trans('send_message'),
             icon: 'fa fa-paper-plane-o',
             modal: [MODAL_USER_MESSAGE],
-            displayed: false && hasPermission('contact', props.user) // TODO : restore (to implement in message plugin)
+            displayed: hasPermission('contact', props.user) // TODO : restore (to implement in message plugin)
           }, {
             name: 'add-contact',
             type: CALLBACK_BUTTON,
@@ -116,10 +116,10 @@ const UserPage = props =>
             displayed: hasPermission('edit', props.user),
             disabled: props.user.meta.publicUrlTuned,
             modal: [MODAL_USER_PUBLIC_URL, {
-              url: props.user.meta.publicUrl,
-              changeUrl: (publicUrl) => props.updatePublicUrl(props.user, publicUrl)
+              user: props.user,
+              url: props.user.meta.publicUrl
             }]
-          }, {
+          },/* {
             name: 'show-badges',
             type: URL_BUTTON,
             icon: 'fa fa-trophy',
@@ -135,7 +135,7 @@ const UserPage = props =>
             group: trans('management'),
             displayed: false && hasPermission('administrate', props.user), // TODO : restore
             target: ['claro_user_tracking', {publicUrl: props.user.meta.publicUrl}]
-          }, {
+          },*/ {
             name: 'delete',
             type: ASYNC_BUTTON,
             icon: 'fa fa-fw fa-trash-o',
@@ -173,8 +173,7 @@ implementPropTypes(UserPage, PageTypes, {
   children: T.node.isRequired,
   path: T.string.isRequired,
   showBreadcrumb: T.bool.isRequired,
-  breadcrumb: T.array, // TODO : correct prop type
-  updatePublicUrl: T.func.isRequired
+  breadcrumb: T.array // TODO : correct prop type
 }, {
   breadcrumb: []
 })
