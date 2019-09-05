@@ -29,7 +29,7 @@ dist: precise
 
 services:
   - xvfb
-  - mysql
+  - mariadb
 
 mysql:
   adapter: mysql2
