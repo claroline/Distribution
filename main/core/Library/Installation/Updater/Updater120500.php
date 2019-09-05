@@ -91,6 +91,7 @@ class Updater120500 extends Updater
                 'search',
                 'history',
                 'favourites',
+                'notifications',
             ]);
         }
 
