@@ -16,10 +16,10 @@ class Version20190821151113 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE innova_step
-            ADD slug VARCHAR(128) NOT NULL
+            ADD slug VARCHAR(128)
         ');
         $this->addSql("
-             UPDATE innova_step step SET slug = CONCAT(SUBSTR(step.title,1,100) , '-', step.id)
+             UPDATE innova_step step SET slug = REGEXP_REPLACE(SUBSTR(step.title,1,100), '[^A-Za-z0-9]+', '-')
         ");
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_86F48567989D9B62 ON innova_step (slug)
@@ -29,11 +29,8 @@ class Version20190821151113 extends AbstractMigration
     public function down(Schema $schema)
     {
         $this->addSql('
-            DROP INDEX UNIQ_86F48567989D9B62 ON innova_step
-        ');
-        $this->addSql('
             ALTER TABLE innova_step
-            DROP slug,
+            DROP slug
         ');
     }
 }
