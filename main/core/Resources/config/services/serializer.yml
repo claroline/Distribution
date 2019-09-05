@@ -4,7 +4,94 @@ services:
         autoconfigure: true
         public: false
 
+    Claroline\CoreBundle\API\Serializer\ParametersSerializer:
+        arguments:
+          - '@claroline.api.serializer'
+          - '@claroline.api.finder'
+          - '@claroline.manager.icon_set_manager'
+          - '@claroline.persistence.object_manager'
+          - '@claroline.config.platform_config_handler'
+          - '%claroline.param.platform_options%'
+          - '%claroline.param.archive_directory%'
+
+    claroline.serializer.parameters:
+        alias: Claroline\CoreBundle\API\Serializer\ParametersSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\ObjectLockSerializer:
+        tags: [claroline.serializer]
+        arguments:
+          - '@claroline.serializer.user'
+
+    claroline.serializer.object_lock:
+        alias: Claroline\CoreBundle\API\Serializer\ObjectLockSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\MessageSerializer:
+        arguments:
+          - '@claroline.serializer.user'
+
+    claroline.serializer.message:
+        alias: Claroline\CoreBundle\API\Serializer\MessageSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\DataSourceSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.data_source:
+        alias: Claroline\CoreBundle\API\Serializer\DataSourceSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\AdminToolSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.admin_tool:
+        alias: Claroline\CoreBundle\API\Serializer\AdminToolSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer:
+        tags: [claroline.serializer]
+        arguments:
+          - '@security.authorization_checker'
+          - '@security.token_storage'
+          - '@claroline.persistence.object_manager'
+          - '@claroline.manager.workspace_manager'
+          - '@claroline.manager.resource_manager'
+          - '@claroline.utilities.misc'
+          - '@claroline.utilities.file'
+          - '@claroline.api.finder'
+          - '@claroline.serializer.user'
+          - '@claroline.serializer.public_file'
+          - '@claroline.serializer.resource_node'
+
+    claroline.serializer.workspace:
+        alias: Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer
+        public: true
+
     Claroline\CoreBundle\API\Serializer\Workspace\ShortcutsSerializer:
+        tags: [claroline.serializer]
         arguments:
             - '@claroline.serializer.role'
+
+    Claroline\CoreBundle\API\Serializer\Workspace\PendingRegistrationSerializer:
         tags: [claroline.serializer]
+        arguments:
+            - '@claroline.serializer.user'
+
+    claroline.serializer.pending:
+        alias: Claroline\CoreBundle\API\Serializer\Workspace\PendingRegistrationSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\WidgetSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.widget:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\WidgetSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\WidgetSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.widget:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\WidgetSerializer
+        public: true

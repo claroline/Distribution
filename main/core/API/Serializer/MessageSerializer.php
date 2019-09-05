@@ -8,11 +8,7 @@ use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\AbstractMessage;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.serializer.message")
- */
 class MessageSerializer
 {
     use SerializerTrait;
@@ -21,10 +17,6 @@ class MessageSerializer
     private $userSerializer;
 
     /**
-     * @DI\InjectParams({
-     *      "userSerializer" = @DI\Inject("claroline.serializer.user")
-     * })
-     *
      * @param UserSerializer $userSerializer
      */
     public function __construct(UserSerializer $userSerializer)
