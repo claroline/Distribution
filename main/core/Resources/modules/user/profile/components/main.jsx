@@ -27,6 +27,7 @@ const ProfileComponent = props => {
       user={props.user}
       path={props.path + '/' + props.user.publicUrl}
       currentUser={props.currentUser}
+      history={props.history}
     >
       <Routes
         path={props.path + '/' + props.user.publicUrl}
@@ -53,6 +54,7 @@ const ProfileComponent = props => {
 }
 
 ProfileComponent.propTypes = {
+  history: T.object.isRequired,
   currentContext: T.object,
   user: T.shape(
     UserTypes.propTypes

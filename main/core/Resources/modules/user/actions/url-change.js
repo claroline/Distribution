@@ -1,3 +1,5 @@
+import get from 'lodash/get'
+
 import {hasPermission} from '#/main/app/security'
 import {trans} from '#/main/app/intl/translation'
 import {MODAL_BUTTON} from '#/main/app/buttons'
@@ -12,8 +14,8 @@ export default (users, refresher, path, currentUser) => ({
   modal: [MODAL_USER_PUBLIC_URL, {
     user: users[0],
     url: users[0].meta.publicUrl,
-    onSave: (user) => refresher.update(user)
+    onSave: (user) => refresher.update([user])
   }],
-  displayed: hasPermission('edit', users[0]),
+  displayed: hasPermission('edit', users[0]) || users[0].id === get(currentUser, 'id'),
   disabled: users[0].meta.publicUrlTuned
 })
