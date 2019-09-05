@@ -18,12 +18,8 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\LockManager;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.serializer.home_tab")
- * @DI\Tag("claroline.serializer")
- *
  * @todo simplify relationships (there are lots of duplicates)
  * @todo simplify serialized structure
  */
@@ -39,23 +35,13 @@ class HomeTabSerializer
     /**
      * ContactSerializer constructor.
      *
-     * @DI\InjectParams({
-     *     "lockManager"               = @DI\Inject("claroline.manager.lock_manager"),
-     *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
-     *     "widgetContainerFinder"     = @DI\Inject("claroline.api.finder.widget_container"),
-     *     "widgetContainerSerializer" = @DI\Inject("claroline.serializer.widget_container"),
-     *     "workspaceSerializer"       = @DI\Inject("claroline.serializer.workspace"),
-     *     "userSerializer"            = @DI\Inject("claroline.serializer.user"),
-     *     "publicFileSerializer"      = @DI\Inject("claroline.serializer.public_file")
-     * })
-     *
      * @param SerializerProvider    $serializer
      * @param ObjectManager         $om
      * @param WidgetContainerFinder $widgetContainerFinder
      */
     public function __construct(
-        ObjectManager $om,
         LockManager $lockManager,
+        ObjectManager $om,
         WidgetContainerFinder $widgetContainerFinder,
         WidgetContainerSerializer $widgetContainerSerializer,
         WorkspaceSerializer $workspaceSerializer,
@@ -119,7 +105,7 @@ class HomeTabSerializer
         $data = [
             'id' => $homeTab->getUuid(),
             'title' => $homeTabConfig->getName(),
-            'slug' => $homeTabConfig->getLongTitle() ? substr(strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $homeTabConfig->getLongTitle()))), 0, 128)  : 'new',
+            'slug' => $homeTabConfig->getLongTitle() ? substr(strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $homeTabConfig->getLongTitle()))), 0, 128) : 'new',
             'longTitle' => $homeTabConfig->getLongTitle(),
             'centerTitle' => $homeTabConfig->isCenterTitle(),
             'poster' => $poster,

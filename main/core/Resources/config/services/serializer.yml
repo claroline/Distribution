@@ -95,3 +95,81 @@ services:
     claroline.serializer.widget:
         alias: Claroline\CoreBundle\API\Serializer\Widget\WidgetSerializer
         public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\WidgetInstanceSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@claroline.persistence.object_manager'
+            - '@claroline.api.serializer'
+
+    claroline.serializer.widget_instance:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\WidgetInstanceSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\WidgetContainerSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@claroline.persistence.object_manager'
+            - '@claroline.api.finder.widget_instance'
+            - '@claroline.serializer.widget_instance'
+            - '@claroline.serializer.public_file'
+
+    claroline.serializer.widget_container:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\WidgetContainerSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\HomeTabSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@claroline.persistence.object_manager'
+            - '@claroline.api.finder.widget_instance'
+            - '@claroline.serializer.widget_instance'
+            - '@claroline.serializer.public_file'
+            - '@claroline.serializer.workspace'
+            - '@claroline.serializer.user'
+            - '@claroline.serializer.public_file'
+
+    claroline.serializer.home_tab:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\HomeTabSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\Type\SimpleWidgetSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.widget_simple:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\Type\SimpleWidgetSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\Type\ResourceWidgetSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@claroline.persistence.object_manager'
+            - '@claroline.serializer.resource_node'
+
+    claroline.serializer.widget_resource:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\Type\ResourceWidgetSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\Type\ProgressionWidgetSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.widget_progression:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\Type\ProgressionWidgetSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\Type\ResourceWidgetSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@security.token_storage'
+            - '@claroline.serializer.user'
+
+    claroline.serializer.widget_profile:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\Type\ResourceWidgetSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\Widget\Type\ListWidgetSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.widget_list:
+        alias: Claroline\CoreBundle\API\Serializer\Widget\Type\ListWidgetSerializer
+        public: true
