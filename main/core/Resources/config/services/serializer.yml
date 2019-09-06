@@ -122,9 +122,8 @@ services:
         tags: [claroline.serializer]
         arguments:
             - '@claroline.persistence.object_manager'
-            - '@claroline.api.finder.widget_instance'
-            - '@claroline.serializer.widget_instance'
-            - '@claroline.serializer.public_file'
+            - '@claroline.api.finder.widget_container'
+            - '@claroline.serializer.widget_container'
             - '@claroline.serializer.workspace'
             - '@claroline.serializer.user'
             - '@claroline.serializer.public_file'
@@ -172,4 +171,34 @@ services:
 
     claroline.serializer.widget_list:
         alias: Claroline\CoreBundle\API\Serializer\Widget\Type\ListWidgetSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\User\UserSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@security.token_storage'
+            - '@security.authorization_checker'
+            - '@claroline.persistence.object_manager'
+            - '@claroline.config.platform_config_handler'
+            - '@claroline.manager.facet_manager'
+            - '@claroline.serializer.public_file'
+            - '@service_container'
+            - '@claroline.event.event_dispatcher'
+            - '@claroline.serializer.organization'
+            - '@claroline.serializer.field_facet_value'
+
+    claroline.serializer.user:
+        alias: Claroline\CoreBundle\API\Serializer\User\UserSerializer
+        public: true
+
+    Claroline\CoreBundle\API\Serializer\User\RoleSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@claroline.persistence.object_manager'
+            - '@claroline.api.finder.ordered_tool'
+            - '@claroline.serializer.workspace'
+            - '@claroline.serializer.user'
+
+    claroline.serializer.role:
+        alias: Claroline\CoreBundle\API\Serializer\User\RoleSerializer
         public: true

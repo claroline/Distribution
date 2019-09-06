@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Manager\LockManager;
 
 /**
  * @todo simplify relationships (there are lots of duplicates)
@@ -30,7 +29,6 @@ class HomeTabSerializer
     private $serializer;
     private $om;
     private $widgetContainerFinder;
-    private $lockManager;
 
     /**
      * ContactSerializer constructor.
@@ -40,7 +38,6 @@ class HomeTabSerializer
      * @param WidgetContainerFinder $widgetContainerFinder
      */
     public function __construct(
-        LockManager $lockManager,
         ObjectManager $om,
         WidgetContainerFinder $widgetContainerFinder,
         WidgetContainerSerializer $widgetContainerSerializer,
@@ -49,7 +46,6 @@ class HomeTabSerializer
         PublicFileSerializer $publicFileSerializer
     ) {
         $this->om = $om;
-        $this->lockManager = $lockManager;
         $this->widgetContainerFinder = $widgetContainerFinder;
         $this->widgetContainerSerializer = $widgetContainerSerializer;
         $this->workspaceSerializer = $workspaceSerializer;
