@@ -155,6 +155,7 @@ class Update1205Command extends ContainerAwareCommand
         //if (count($matches)) {
         foreach ($replacement[1] as $pos => $class) {
             if ($class) {
+		if (isset($matches[$pos][0])) {
                 $this->log('Finding resource of class '.$class.' with identifier '.$matches[$pos][0]);
                 $object = $om->getRepository($class)->find($matches[$pos][0]);
 
@@ -175,7 +176,8 @@ class Update1205Command extends ContainerAwareCommand
                 } else {
                     $this->error('Could not find object... skipping');
                 }
-            }
+		}
+	    }
         }
 
         $regex = $prefix.$regex;
