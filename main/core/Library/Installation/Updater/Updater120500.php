@@ -74,12 +74,6 @@ class Updater120500 extends Updater
         $this->createDefaultAdminHomeTab();
         $this->updateSlugs();
         $this->createDefaultWorkspaceShortcuts();
-
-        $this->log('Build default workspace');
-        $this->workspaceManager->getDefaultModel(false, true);
-
-        $this->log('Build default personal workspace');
-        $this->workspaceManager->getDefaultModel(true, true);
     }
 
     private function updatePlatformOptions()
@@ -130,10 +124,21 @@ class Updater120500 extends Updater
             $this->om->remove($tool);
             $this->om->flush();
         }
+
+        if (!$admin) {
+            $conn = $this->container->get('doctrine.dbal.default_connection');
+            $sql = "DELETE FROM claro_ordered_tool WHERE name = '${toolName}'";
+
+            $this->log($sql);
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+        }
     }
 
     private function renameTool($oldName, $newName, $admin = false)
     {
+        $this->log(sprintf('Renaming `%s` tool into `%s`...', $oldName, $newName));
+
         $tool = $this->om->getRepository($admin ? 'ClarolineCoreBundle:Tool\AdminTool' : 'ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $oldName]);
         if (!empty($tool)) {
             $tool->setName($newName);
@@ -201,8 +206,6 @@ class Updater120500 extends Updater
 
     private function createDefaultWorkspaceShortcuts()
     {
-        $this->log('Generating default shortcuts for workspaces...');
-
         $managerShortCuts = [
             ['type' => 'tool', 'name' => 'home'],
             ['type' => 'tool', 'name' => 'resources'],
@@ -227,6 +230,62 @@ class Updater120500 extends Updater
         ]);
         $i = 0;
         $this->om->startFlushSuite();
+
+        $this->log('Generating default shortcuts for default workspace models...');
+
+        $defaultModel = $this->om->getRepository(Workspace::class)->findOneBy([
+            'model' => true,
+            'personal' => false,
+            'code' => 'default_workspace',
+        ]);
+        $defaultPersonal = $this->om->getRepository(Workspace::class)->findOneBy([
+            'model' => true,
+            'personal' => true,
+            'code' => 'default_personal',
+        ]);
+
+        if ($defaultModel && 0 === count($shortcutsRepo->findBy(['workspace' => $defaultModel]))) {
+            $managerRole = $this->roleManager->getManagerRole($defaultModel);
+            $collaboratorRole = $this->roleManager->getCollaboratorRole($defaultModel);
+
+            if ($managerRole) {
+                $shortcuts = new Shortcuts();
+                $shortcuts->setWorkspace($defaultModel);
+                $shortcuts->setRole($managerRole);
+                $shortcuts->setData($managerShortCuts);
+                $this->om->persist($shortcuts);
+            }
+            if ($collaboratorRole) {
+                $shortcuts = new Shortcuts();
+                $shortcuts->setWorkspace($defaultModel);
+                $shortcuts->setRole($collaboratorRole);
+                $shortcuts->setData($collaboratorShortCuts);
+                $this->om->persist($shortcuts);
+            }
+        }
+        if ($defaultPersonal && 0 === count($shortcutsRepo->findBy(['workspace' => $defaultPersonal]))) {
+            $managerRole = $this->roleManager->getManagerRole($defaultPersonal);
+            $collaboratorRole = $this->roleManager->getCollaboratorRole($defaultPersonal);
+
+            if ($managerRole) {
+                $shortcuts = new Shortcuts();
+                $shortcuts->setWorkspace($defaultPersonal);
+                $shortcuts->setRole($managerRole);
+                $shortcuts->setData($managerShortCuts);
+                $this->om->persist($shortcuts);
+            }
+            if ($collaboratorRole) {
+                $shortcuts = new Shortcuts();
+                $shortcuts->setWorkspace($defaultPersonal);
+                $shortcuts->setRole($collaboratorRole);
+                $shortcuts->setData($collaboratorShortCuts);
+                $this->om->persist($shortcuts);
+            }
+        }
+
+        $this->log('Default shortcuts for default workspace models generated.');
+
+        $this->log('Generating default shortcuts for workspaces...');
 
         foreach ($workspaces as $workspace) {
             if (0 === count($shortcutsRepo->findBy(['workspace' => $workspace]))) {

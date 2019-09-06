@@ -1,12 +1,25 @@
-import {trans} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {url} from '#/main/app/api'
+import {hasPermission} from '#/main/app/security'
+import {trans, transChoice} from '#/main/app/intl/translation'
+import {ASYNC_BUTTON} from '#/main/app/buttons'
 
-export default (rows, refresher) => ({
-  type: CALLBACK_BUTTON,
+export default (users, refresher) => ({
+  type: ASYNC_BUTTON,
   icon: 'fa fa-fw fa-book',
   label: trans('disable_personal_ws'),
   scope: ['object', 'collection'],
-  displayed: 0 < rows.filter(u => u.meta.personalWorkspace).length,
-  callback: () => refresher.deleteWorkspace(rows),
-  dangerous: true
+  displayed: users.length === users.filter(u => hasPermission('administrate', u)).length &&
+    0 < users.filter(u => u.meta.personalWorkspace).length,
+  dangerous: true,
+  confirm: {
+    title: transChoice('disable_personal_workspaces', users.length, {count: users.length}),
+    message: trans('disable_personal_workspaces_confirm', {users_list: users.map(u => `${u.firstName} ${u.lastName}`).join(', ')})
+  },
+  request: {
+    url: url(['apiv2_users_pws_delete'], {ids: users.map(u => u.id)}),
+    request: {
+      method: 'DELETE'
+    },
+    success: (users) => refresher.update(users)
+  }
 })

@@ -27,8 +27,7 @@ const ProfileComponent = props => {
       user={props.user}
       path={props.path + '/' + props.user.publicUrl}
       currentUser={props.currentUser}
-      updatePassword={props.updatePassword}
-      updatePublicUrl={props.updatePublicUrl}
+      history={props.history}
     >
       <Routes
         path={props.path + '/' + props.user.publicUrl}
@@ -41,10 +40,10 @@ const ProfileComponent = props => {
             component: ProfileEdit,
             disabled: !props.currentUser || (props.user.username !== props.currentUser.username &&
             props.currentUser.roles.filter(r => ['ROLE_ADMIN'].concat(props.parameters['roles_edition']).indexOf(r.name) > -1).length === 0)
-          }, {
+          }/*, {
             path: '/badges/:id',
             component: ProfileBadgeList
-          }
+          }*/
         ]}
         redirect={[
           {from: '/', exact: true, to: '/show/main'}
@@ -55,6 +54,7 @@ const ProfileComponent = props => {
 }
 
 ProfileComponent.propTypes = {
+  history: T.object.isRequired,
   currentContext: T.object,
   user: T.shape(
     UserTypes.propTypes
@@ -64,9 +64,7 @@ ProfileComponent.propTypes = {
   ).isRequired,
   path: T.string,
   loaded: T.bool,
-  parameters: T.object.isRequired,
-  updatePublicUrl: T.func.isRequired,
-  updatePassword: T.func.isRequired
+  parameters: T.object.isRequired
 }
 
 export {

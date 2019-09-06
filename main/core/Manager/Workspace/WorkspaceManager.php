@@ -34,16 +34,12 @@ use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Doctrine\Common\Persistence\ObjectRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 
-/**
- * @DI\Service("claroline.manager.workspace_manager")
- */
 class WorkspaceManager
 {
     use LoggableTrait;
@@ -75,16 +71,6 @@ class WorkspaceManager
 
     /**
      * WorkspaceManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
-     *     "resourceManager"       = @DI\Inject("claroline.manager.resource_manager"),
-     *     "dispatcher"            = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
-     *     "ut"                    = @DI\Inject("claroline.utilities.misc"),
-     *     "sut"                   = @DI\Inject("claroline.security.utilities"),
-     *     "container"             = @DI\Inject("service_container")
-     * })
      *
      * @param RoleManager        $roleManager
      * @param ResourceManager    $resourceManager
@@ -693,29 +679,47 @@ class WorkspaceManager
         // gets entity from raw data.
 
         /** @var Workspace $workspace */
-        $workspace = $transferManager->deserialize($data, $newWorkspace, $options, $fileBag);
+        $workspaceCopy = $transferManager->deserialize($data, $newWorkspace, $options, $fileBag);
 
-        $workspace->setModel($model);
+        $workspaceCopy->setModel($model);
 
         //set the manager
-        $managerRole = $this->roleManager->getManagerRole($workspace);
+        $managerRole = $this->roleManager->getManagerRole($workspaceCopy);
 
-        if ($managerRole && $workspace->getCreator()) {
-            $user = $workspace->getCreator();
+        if ($managerRole && $workspaceCopy->getCreator()) {
+            $user = $workspaceCopy->getCreator();
             $user->addRole($managerRole);
             $this->om->persist($user);
         }
 
-        $root = $this->resourceManager->getWorkspaceRoot($workspace);
+        $root = $this->resourceManager->getWorkspaceRoot($workspaceCopy);
 
         if ($root) {
             $this->resourceManager->createRights($root);
         }
 
-        $this->om->persist($workspace);
+        // Copy workspace shortcuts
+        $workspaceShortcuts = $this->shortcutsRepo->findBy(['workspace' => $workspace]);
+
+        foreach ($workspaceShortcuts as $shortcuts) {
+            $role = $shortcuts->getRole();
+
+            $roleName = preg_replace('/'.$workspace->getUuid().'$/', '', $role->getName()).$workspaceCopy->getUuid();
+            $roleCopy = $this->roleManager->getRoleByName($roleName);
+
+            if ($roleCopy) {
+                $shortcutsCopy = new Shortcuts();
+                $shortcutsCopy->setWorkspace($workspaceCopy);
+                $shortcutsCopy->setRole($roleCopy);
+                $shortcutsCopy->setData($shortcuts->getData());
+                $this->om->persist($shortcutsCopy);
+            }
+        }
+
+        $this->om->persist($workspaceCopy);
         $this->om->flush();
 
-        return $workspace;
+        return $workspaceCopy;
     }
 
     /**
@@ -798,6 +802,41 @@ class WorkspaceManager
             $this->log('Build and set default admin');
             $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultClarolineAdmin());
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->setDefaults();
+
+            if (0 === count($this->shortcutsRepo->findBy(['workspace' => $workspace]))) {
+                $this->log('Generating default shortcuts...');
+                $managerRole = $this->roleManager->getManagerRole($workspace);
+                $collaboratorRole = $this->roleManager->getCollaboratorRole($workspace);
+
+                if ($managerRole) {
+                    $shortcuts = new Shortcuts();
+                    $shortcuts->setWorkspace($workspace);
+                    $shortcuts->setRole($managerRole);
+                    $shortcuts->setData([
+                        ['type' => 'tool', 'name' => 'home'],
+                        ['type' => 'tool', 'name' => 'resources'],
+                        ['type' => 'tool', 'name' => 'agenda'],
+                        ['type' => 'tool', 'name' => 'community'],
+                        ['type' => 'tool', 'name' => 'dashboard'],
+                        ['type' => 'action', 'name' => 'favourite'],
+                        ['type' => 'action', 'name' => 'configure'],
+                        ['type' => 'action', 'name' => 'impersonation'],
+                    ]);
+                    $this->om->persist($shortcuts);
+                }
+                if ($collaboratorRole) {
+                    $shortcuts = new Shortcuts();
+                    $shortcuts->setWorkspace($workspace);
+                    $shortcuts->setRole($collaboratorRole);
+                    $shortcuts->setData([
+                        ['type' => 'tool', 'name' => 'home'],
+                        ['type' => 'tool', 'name' => 'resources'],
+                        ['type' => 'tool', 'name' => 'agenda'],
+                        ['type' => 'action', 'name' => 'favourite'],
+                    ]);
+                    $this->om->persist($shortcuts);
+                }
+            }
 
             if ($restore) {
                 $this->om->persist($workspace);

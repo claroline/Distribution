@@ -1,10 +1,11 @@
 # This file contains only services that cannot be defined using annotations.
 
+imports:
+    - { resource: services/repository.yml }
+    - { resource: services/serializer.yml }
+    - { resource: services/manager.yml }
+
 services:
-    _defaults:
-        autowire: false #default should be true now
-        autoconfigure: false #default should be true now
-        public: true #default should be false now
 
     # array injection with annotations is not supported
     claroline.plugin.validator:
@@ -17,19 +18,6 @@ services:
     claroline.symfony_yaml:
         class: Symfony\Component\Yaml\Parser
         public: false
-
-    # doctrine repositories
-    claroline.repository.log:
-        class: Claroline\CoreBundle\Repository\Log\LogRepository
-        factory: ["@doctrine.orm.entity_manager", getRepository]
-        arguments:
-            - Claroline\CoreBundle\Entity\Log\Log
-
-    claroline.repository.user:
-        class: Claroline\CoreBundle\Repository\UserRepository
-        factory: ["@doctrine.orm.entity_manager", getRepository]
-        arguments:
-            - Claroline\CoreBundle\Entity\User
 
     # pseudo-services used for dynamic parameter injection
     # (see Claroline\CoreBundle\DependencyInjection\Compiler\DynamicConfigPass
@@ -53,5 +41,3 @@ services:
             - { name: kernel.event_listener, event: create_notification_item_role-subscribe-queue, method: onCreateNotificationItem }
             - { name: kernel.event_listener, event: create_notification_item_resource-text-update, method: onCreateNotificationItem }
 
-imports:
-    - { resource: services/serializer.yml }

@@ -20,13 +20,9 @@ use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * @DI\Service("claroline.log.manager")
- */
 class LogManager
 {
     const CSV_LOG_BATCH = 1000;
@@ -38,7 +34,7 @@ class LogManager
      */
     private $om;
 
-    /** @var \CLaroline\CoreBundle\Repository\Log\LogRepository $logRepository */
+    /** @var \Claroline\CoreBundle\Repository\Log\LogRepository $logRepository */
     private $logRepository;
 
     /** @var FinderProvider */
@@ -51,14 +47,6 @@ class LogManager
     private $ut;
 
     /**
-     * @DI\InjectParams({
-     *     "container"          = @DI\Inject("service_container"),
-     *     "objectManager"      = @DI\Inject("claroline.persistence.object_manager"),
-     *     "finder"             = @DI\Inject("claroline.api.finder"),
-     *     "translator"         = @DI\Inject("translator"),
-     *     "ut"                 = @DI\Inject("claroline.utilities.misc")
-     * })
-     *
      * @param $container
      * @param ObjectManager       $objectManager
      * @param FinderProvider      $finder
@@ -91,7 +79,7 @@ class LogManager
      *
      * @param $id
      *
-     * @return null|object
+     * @return object|null
      */
     public function getLog($id)
     {
@@ -148,7 +136,7 @@ class LogManager
         ], ';', '"');
 
         // Get batched logs
-        while ($count === 0 || $count < $total) {
+        while (0 === $count || $count < $total) {
             $logs = $logs = $this->finder->search('Claroline\CoreBundle\Entity\Log\Log', $query, []);
             $total = $logs['totalResults'];
             $count += self::CSV_LOG_BATCH;
@@ -214,8 +202,8 @@ class LogManager
             }
             $userData['u'.$id]['chartData'][] = ['date' => $date, 'total' => floatval($total)];
             $userData['u'.$id]['actions'] += floatval($total);
-            $minDate = $minDate === null || $minDate > $date ? clone $date : $minDate;
-            $maxDate = $maxDate === null || $maxDate < $date ? clone $date : $maxDate;
+            $minDate = null === $minDate || $minDate > $date ? clone $date : $minDate;
+            $maxDate = null === $maxDate || $maxDate < $date ? clone $date : $maxDate;
         }
 
         $data = [];
@@ -269,7 +257,7 @@ class LogManager
         ], ';', '"');
 
         // Get batched logs
-        while ($count === 0 || $count < $total) {
+        while (0 === $count || $count < $total) {
             $logs = $logs = $this->logRepository->fetchUsersByActionsList($allFilters, false, $page, $limit, $sortBy);
             $count += self::CSV_LOG_BATCH;
             ++$page;
@@ -303,7 +291,7 @@ class LogManager
         $idx = 0;
         foreach ($data as $value) {
             // Fill in with zeros from previous date till this date
-            while ($prevDate !== null && $prevDate < $value['date']) {
+            while (null !== $prevDate && $prevDate < $value['date']) {
                 $chartData["c${idx}"] = ['xData' => $prevDate->format('Y-m-d\TH:i:s'), 'yData' => 0];
                 $prevDate->add(new \DateInterval('P1D'));
                 ++$idx;
@@ -313,7 +301,7 @@ class LogManager
             ++$idx;
         }
         // Fill in with zeros till maxDate
-        while ($prevDate !== null && $maxDate !== null && $maxDate >= $prevDate) {
+        while (null !== $prevDate && null !== $maxDate && $maxDate >= $prevDate) {
             $chartData["c${idx}"] = ['xData' => $prevDate->format('Y-m-d\TH:i:s'), 'yData' => 0];
             $prevDate->add(new \DateInterval('P1D'));
             ++$idx;
@@ -366,7 +354,7 @@ class LogManager
 
         $defaultConfig = $this->getLogConfig($defaultInstance);
 
-        if ($defaultConfig === null) {
+        if (null === $defaultConfig) {
             $defaultConfig = new LogWidgetConfig();
             $defaultConfig->setRestrictions(
                 $this->getDefaultWorkspaceConfigRestrictions()
@@ -378,14 +366,14 @@ class LogManager
         foreach ($workspaces as $workspace) {
             $config = null;
 
-            for ($i = 0, $countConfigs = count($configs); $i < $countConfigs && $config === null; ++$i) {
+            for ($i = 0, $countConfigs = count($configs); $i < $countConfigs && null === $config; ++$i) {
                 $current = $configs[$i];
                 if ($current->getWidgetInstance()->getWorkspace()->getId() === $workspace->getId()) {
                     $config = $current;
                 }
             }
 
-            if ($config === null) {
+            if (null === $config) {
                 $config = new LogWidgetConfig();
                 $config->copy($defaultConfig);
                 $widgetInstance = new WidgetInstance();
@@ -401,19 +389,19 @@ class LogManager
             ->getEvents(LogGenericEvent::DISPLAYED_WORKSPACE);
 
         foreach ($configs as $config) {
-            if ($config->hasAllRestriction($events) === false) {
+            if (false === $config->hasAllRestriction($events)) {
                 $configsCleaned[] = $config;
             }
         }
 
         $configs = $configsCleaned;
 
-        if (count($configs) === 0) {
+        if (0 === count($configs)) {
             return;
         }
 
         $desktopConfig = $this->getLogConfig($instance);
-        $desktopConfig = $desktopConfig === null ? $defaultConfig : $desktopConfig;
+        $desktopConfig = null === $desktopConfig ? $defaultConfig : $desktopConfig;
         $query = $this->logRepository->findLogsThroughConfigs($configs, $desktopConfig->getAmount());
         $logs = $query->getResult();
         $chartData = $this->logRepository->countByDayThroughConfigs($configs, $this->getDefaultRange());
@@ -445,13 +433,13 @@ class LogManager
 
         $config = $this->getLogConfig($instance);
 
-        if ($config === null) {
+        if (null === $config) {
             $defaultConfig = $this->om->getRepository('ClarolineCoreBundle:Widget\WidgetInstance')
                 ->findOneBy(['isDesktop' => false, 'isAdmin' => true]);
 
             $config = new LogWidgetConfig();
 
-            if ($defaultConfig !== null) {
+            if (null !== $defaultConfig) {
                 $config->copy($this->getLogConfig($defaultConfig));
             }
 
@@ -517,7 +505,7 @@ class LogManager
             ->findBy(['user' => $user]);
 
         foreach ($hiddenWorkspaceConfigs as $config) {
-            if ($workspacesVisibility[$config->getWorkspaceId()] !== null) {
+            if (null !== $workspacesVisibility[$config->getWorkspaceId()]) {
                 $workspacesVisibility[$config->getWorkspaceId()] = false;
             }
         }
