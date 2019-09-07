@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 
-const STORE_NAME = 'resource'
+const STORE_NAME = 'claroline_forum'
 
 const resource = (state) => state[STORE_NAME]
 
@@ -100,15 +100,15 @@ const moderatedMessages = createSelector(
 const tagsCount = createSelector(
   [forum],
   (forum) => forum.meta.tags.reduce((obj, tag) => {
-    if (!obj[tag]) {
-      obj[tag] = 0
+    if (!obj[tag.name]) {
+      obj[tag.name] = 0
     }
-    obj[tag]++
+    obj[tag.name]++
     return obj
   }, {})
 )
 
-export const select = {
+export const selectors = {
   STORE_NAME,
   resource,
   forum,

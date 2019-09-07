@@ -27,6 +27,7 @@ use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Entity\DropzoneToolDocument;
+use Claroline\DropZoneBundle\Entity\Revision;
 use Claroline\DropZoneBundle\Event\Log\LogCorrectionDeleteEvent;
 use Claroline\DropZoneBundle\Event\Log\LogCorrectionEndEvent;
 use Claroline\DropZoneBundle\Event\Log\LogCorrectionReportEvent;
@@ -209,6 +210,18 @@ class DropzoneManager
     public function serializeTool(DropzoneTool $tool)
     {
         return $this->serializer->serialize($tool);
+    }
+
+    /**
+     * Serializes a Revision entity.
+     *
+     * @param Revision $revision
+     *
+     * @return array
+     */
+    public function serializeRevision(Revision $revision)
+    {
+        return $this->serializer->serialize($revision);
     }
 
     /**
@@ -430,20 +443,25 @@ class DropzoneManager
     /**
      * Creates a Document.
      *
-     * @param Drop  $drop
-     * @param User  $user
-     * @param int   $documentType
-     * @param mixed $documentData
+     * @param Drop     $drop
+     * @param User     $user
+     * @param int      $documentType
+     * @param mixed    $documentData
+     * @param Revision $revision
+     * @param bool     $isManager
      *
      * @return Document
      */
-    public function createDocument(Drop $drop, User $user, $documentType, $documentData)
+    public function createDocument(Drop $drop, User $user, $documentType, $documentData, Revision $revision = null, $isManager = false)
     {
         $document = new Document();
         $document->setDrop($drop);
         $document->setUser($user);
         $document->setDropDate(new \DateTime());
         $document->setType($documentType);
+        $document->setRevision($revision);
+        $document->setIsManager($isManager);
+
         if (Document::DOCUMENT_TYPE_RESOURCE === $document->getType()) {
             $resourceNode = $this->resourceNodeRepo->findOneBy(['uuid' => $documentData]);
             $document->setData($resourceNode);
@@ -462,13 +480,15 @@ class DropzoneManager
     /**
      * Creates Files Documents.
      *
-     * @param Drop  $drop
-     * @param User  $user
-     * @param array $files
+     * @param Drop     $drop
+     * @param User     $user
+     * @param array    $files
+     * @param Revision $revision
+     * @param bool     $isManager
      *
      * @return array
      */
-    public function createFilesDocuments(Drop $drop, User $user, array $files)
+    public function createFilesDocuments(Drop $drop, User $user, array $files, Revision $revision = null, $isManager = false)
     {
         $documents = [];
         $documentEntities = [];
@@ -482,6 +502,8 @@ class DropzoneManager
             $document->setUser($user);
             $document->setDropDate($currentDate);
             $document->setType(Document::DOCUMENT_TYPE_FILE);
+            $document->setRevision($revision);
+            $document->setIsManager($isManager);
             $data = $this->registerUplodadedFile($dropzone, $file);
             $document->setFile($data);
             $this->om->persist($document);
@@ -541,6 +563,31 @@ class DropzoneManager
         $this->om->endFlushSuite();
 
         $this->eventDispatcher->dispatch('log', new LogDropEndEvent($drop->getDropzone(), $drop, $this->roleManager));
+    }
+
+    /**
+     * Creates a revision for drop.
+     *
+     * @param Drop $drop
+     * @param User $user
+     */
+    public function submitDropForRevision(Drop $drop, User $user)
+    {
+        $revision = new Revision();
+        $revision->setDrop($drop);
+        $revision->setCreator($user);
+
+        foreach ($drop->getDocuments() as $document) {
+            if (!$document->getRevision()) {
+                $document->setRevision($revision);
+                $this->om->persist($document);
+            }
+        }
+        $this->om->persist($revision);
+        $this->om->persist($drop);
+        $this->om->flush();
+
+        return $revision;
     }
 
     /**

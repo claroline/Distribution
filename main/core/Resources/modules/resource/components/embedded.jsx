@@ -2,14 +2,22 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {mount, unmount} from '#/main/app/mount'
+import {mount, unmount} from '#/main/app/dom/mount'
 
-import {constants} from '#/main/core/tool/constants'
-import {App} from '#/main/core/resource'
+import {selectors as configSelectors} from '#/main/app/config/store'
+import {selectors as securitySelectors} from '#/main/app/security/store'
+
+import {ResourceMain} from '#/main/core/resource/containers/main'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 
 // the class is because of the use of references and lifecycle
 class ResourceEmbedded extends Component {
+  constructor(props) {
+    super(props)
+
+    this.mountResource = this.mountResource.bind(this)
+  }
+
   componentDidMount() {
     this.mountResource()
   }
@@ -21,9 +29,7 @@ class ResourceEmbedded extends Component {
       unmount(this.mountNode)
       this.props.onResourceClose(prevProps.resourceNode.id)
 
-      // FIXME : otherwise the new app is not correctly booted and I don't know why
-      setTimeout(this.mountResource.bind(this), 0)
-      //this.mountResource()
+      setTimeout(this.mountResource, 0)
     }
   }
 
@@ -34,22 +40,27 @@ class ResourceEmbedded extends Component {
   }
 
   mountResource() {
-    const ResourceApp = new App()
-
-    mount(this.mountNode, ResourceApp.component, ResourceApp.store, {
+    mount(this.mountNode, ResourceMain, {}, {
+      [securitySelectors.STORE_NAME]: {
+        currentUser: this.props.currentUser,
+        impersonated: this.props.impersonated
+      },
+      [configSelectors.STORE_NAME]: this.props.config,
       tool: {
-        name: 'resource_manager',
-        // In fact, I think I should let the caller choose the context
+        loaded: true,
+        name: 'resources',
+        basePath: '',
         currentContext: {
-          type: this.props.resourceNode.workspace ? constants.TOOL_WORKSPACE : constants.TOOL_DESKTOP,
-          data: this.props.resourceNode.workspace || null
+          type: 'desktop'
         }
       },
-      resourceNode: this.props.resourceNode,
-      embedded: true,
-      showHeader: this.props.showHeader,
-      lifecycle: this.props.lifecycle
-    }, true)
+      resource: {
+        slug: this.props.resourceNode.slug,
+        embedded: true,
+        showHeader: this.props.showHeader,
+        lifecycle: this.props.lifecycle
+      }
+    }, true, `/resources/${this.props.resourceNode.slug}`)
   }
 
   render() {
@@ -73,7 +84,12 @@ ResourceEmbedded.propTypes = {
     end: T.func,
     close: T.func
   }),
-  onResourceClose: T.func.isRequired
+  onResourceClose: T.func.isRequired,
+
+  // from store (to build the embedded store)
+  currentUser: T.object,
+  impersonated: T.bool,
+  config: T.object
 }
 
 ResourceEmbedded.defaultProps = {

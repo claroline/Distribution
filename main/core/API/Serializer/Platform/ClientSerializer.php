@@ -3,13 +3,13 @@
 namespace Claroline\CoreBundle\API\Serializer\Platform;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\AuthenticationBundle\Manager\OauthManager;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceTypeSerializer;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Icon\ResourceIconItemFilename;
-use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\IconSetManager;
 use Claroline\CoreBundle\Manager\PluginManager;
@@ -64,6 +64,9 @@ class ClientSerializer
     /** @var ResourceTypeSerializer */
     private $resourceTypeSerializer;
 
+    /** @var OauthManager */
+    private $oauthManager;
+
     /**
      * ClientSerializer constructor.
      *
@@ -80,7 +83,8 @@ class ClientSerializer
      *     "versionManager"         = @DI\Inject("claroline.manager.version_manager"),
      *     "pluginManager"          = @DI\Inject("claroline.manager.plugin_manager"),
      *     "iconManager"            = @DI\Inject("claroline.manager.icon_set_manager"),
-     *     "resourceTypeSerializer" = @DI\Inject("claroline.serializer.resource_type")
+     *     "resourceTypeSerializer" = @DI\Inject("claroline.serializer.resource_type"),
+     *     "oauthManager"           = @DI\Inject("claroline.oauth.manager"),
      * })
      *
      * @param string                       $env
@@ -95,6 +99,8 @@ class ClientSerializer
      * @param PluginManager                $pluginManager
      * @param IconSetManager               $iconManager
      * @param ResourceTypeSerializer       $resourceTypeSerializer
+     * @param EventDispatcherInterface     $eventDispatcher
+     * @param OauthManager                 $oauthManager
      */
     public function __construct(
         $env,
@@ -109,7 +115,8 @@ class ClientSerializer
         PluginManager $pluginManager,
         IconSetManager $iconManager,
         ResourceTypeSerializer $resourceTypeSerializer,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        OauthManager $oauthManager
     ) {
         $this->env = $env;
         $this->assets = $assets;
@@ -124,6 +131,7 @@ class ClientSerializer
         $this->iconManager = $iconManager;
         $this->resourceTypeSerializer = $resourceTypeSerializer;
         $this->eventDispatcher = $eventDispatcher;
+        $this->oauthManager = $oauthManager;
     }
 
     /**
@@ -138,18 +146,14 @@ class ClientSerializer
         ]);
 
         $data = [
-            'maintenance' => MaintenanceHandler::isMaintenanceEnabled(),
-            'logo' => $logo ? [
-                'url' => $logo->getUrl(),
-                'colorized' => 'image/svg+xml' === $logo->getMimeType(),
-            ] : null,
-            'logo_redirect_home' => $this->config->getParameter('logo_redirect_home'),
+            'logo' => $logo ? $logo->getUrl() : null,
             'name' => $this->config->getParameter('name'),
             'secondaryName' => $this->config->getParameter('secondary_name'),
             'description' => null, // the one for the current locale
             'version' => $this->versionManager->getDistributionVersion(),
             'environment' => $this->env,
-            'links' => $this->serializeLinks(),
+            'helpUrl' => $this->config->getParameter('help_url'),
+            'selfRegistration' => $this->config->getParameter('allow_self_registration'),
             'asset' => $this->assets->getUrl(''),
             'server' => [
                 'protocol' => $request->isSecure() || $this->config->getParameter('ssl_enabled') ? 'https' : 'http',
@@ -161,14 +165,27 @@ class ClientSerializer
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
             ],
-            'resources' => [
+            'home' => $this->config->getParameter('home'),
+            'resources' => [ // TODO : maybe no longer needed here
                 'types' => array_map(function (ResourceType $resourceType) {
                     return $this->resourceTypeSerializer->serialize($resourceType);
                 }, $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll()),
                 'softDelete' => $this->config->getParameter('resource.soft_delete'),
             ],
+            'swagger' => [
+                'base' => $this->config->getParameter('swagger.base'),
+            ],
+            'desktop' => [ // TODO : find a better way to store and expose this
+                'defaultTool' => $this->config->getParameter('desktop.default_tool'),
+                'showProgression' => $this->config->getParameter('desktop.show_progression'),
+            ],
+            'admin' => [ // TODO : find a better way to store and expose this
+                'defaultTool' => $this->config->getParameter('admin.default_tool'),
+            ],
+            'sso' => $this->oauthManager->getActiveServices(),
             'plugins' => $this->pluginManager->getEnabled(true),
             'javascripts' => $this->config->getParameter('javascripts'),
+            'stylesheets' => $this->config->getParameter('stylesheets'),
         ];
 
         $event = new GenericDataEvent();
@@ -220,22 +237,6 @@ class ClientSerializer
                 $icons->getDefaultIcons()->getAllIcons(),
                 $icons->getSetIcons()->getAllIcons()
             ))),
-        ];
-    }
-
-    private function serializeLinks()
-    {
-        $loginTargetRoute = $this->config->getParameter('login_target_route');
-        if (!$loginTargetRoute) {
-            $loginTarget = $this->router->generate('claro_security_login');
-        } else {
-            $loginTarget = $this->router->getRouteCollection()->get($loginTargetRoute) ? $this->router->generate($loginTargetRoute) : $loginTargetRoute;
-        }
-
-        return [
-            'help' => $this->config->getParameter('help_url'),
-            'registration' => $this->router->generate('claro_user_registration'),
-            'login' => $loginTarget,
         ];
     }
 }

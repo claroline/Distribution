@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
@@ -9,17 +9,17 @@ import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {OrganizationCard} from '#/main/core/user/data/components/organization-card'
 import {Organization as OrganizationType} from '#/main/core/user/prop-types'
-import {MODAL_ORGANIZATION_PICKER} from '#/main/core/modals/organization'
+import {MODAL_ORGANIZATIONS} from '#/main/core/modals/organizations'
 
 const OrganizationButton = props =>
   <Button
     className="btn"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-book"
-    label={trans('select_a_organization')}
+    icon="fa fa-fw fa-building"
+    label={trans('select_an_organization')}
     primary={true}
-    modal={[MODAL_ORGANIZATION_PICKER, {
+    modal={[MODAL_ORGANIZATIONS, {
       url: ['apiv2_organization_list'],
       title: props.title,
       selectAction: (selected) => ({
@@ -37,11 +37,10 @@ OrganizationButton.propTypes = {
 const OrganizationInput = props => {
   if (props.value) {
     return(
-      <div>
+      <Fragment>
         <OrganizationCard
           data={props.value}
-          size="sm"
-          orientation="col"
+          size="xs"
           actions={[
             {
               name: 'delete',
@@ -49,6 +48,7 @@ const OrganizationInput = props => {
               icon: 'fa fa-fw fa-trash-o',
               label: trans('delete', {}, 'actions'),
               dangerous: true,
+              disabled: props.disabled,
               callback: () => props.onChange(null)
             }
           ]}
@@ -56,24 +56,26 @@ const OrganizationInput = props => {
 
         <OrganizationButton
           {...props.picker}
+          disabled={props.disabled}
           onChange={props.onChange}
         />
-      </div>
-    )
-  } else {
-    return (
-      <EmptyPlaceholder
-        size="lg"
-        icon="fa fa-book"
-        title={trans('no_organization')}
-      >
-        <OrganizationButton
-          {...props.picker}
-          onChange={props.onChange}
-        />
-      </EmptyPlaceholder>
+      </Fragment>
     )
   }
+
+  return (
+    <EmptyPlaceholder
+      size="lg"
+      icon="fa fa-building"
+      title={trans('no_organization')}
+    >
+      <OrganizationButton
+        {...props.picker}
+        disabled={props.disabled}
+        onChange={props.onChange}
+      />
+    </EmptyPlaceholder>
+  )
 }
 
 implementPropTypes(OrganizationInput, FormFieldTypes, {
@@ -82,10 +84,7 @@ implementPropTypes(OrganizationInput, FormFieldTypes, {
     title: T.string
   })
 }, {
-  value: null,
-  picker: {
-    title: trans('organization_selector')
-  }
+  value: null
 })
 
 export {

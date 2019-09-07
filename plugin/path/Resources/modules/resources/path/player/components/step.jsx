@@ -3,14 +3,14 @@ import classes from 'classnames'
 
 import {trans} from '#/main/app/intl/translation'
 import {asset} from '#/main/app/config/asset'
-import {currentUser} from '#/main/app/security'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {Button} from '#/main/app/action/components/button'
-import {MENU_BUTTON, CALLBACK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {MENU_BUTTON, CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {ResourceCard} from '#/main/core/resource/components/card'
-import {ResourceEmbedded} from '#/main/core/resource/components/embedded'
+import {ResourceEmbedded} from '#/main/core/resource/containers/embedded'
+import {route as resourceRoute} from '#/main/core/resource/routing'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
@@ -50,9 +50,9 @@ const SecondaryResources = props =>
         size="sm"
         orientation="row"
         primaryAction={{
-          type: URL_BUTTON,
+          type: LINK_BUTTON,
           label: trans('open', {}, 'actions'),
-          target: ['claro_resource_open', {node: resource.autoId, resourceType: resource.meta.type}],
+          target: resourceRoute(resource),
           open: props.target
         }}
         data={resource}
@@ -64,12 +64,7 @@ SecondaryResources.propTypes = {
   className: T.string,
   target: T.oneOf(['_self', '_blank']),
   resources: T.arrayOf(T.shape({
-    resource: T.shape({
-      autoId: T.number.isRequired,
-      meta: T.shape({
-        type: T.string.isRequired
-      }).isRequired
-    }).isRequired
+    // TODO : resource node type
   })).isRequired
 }
 
@@ -89,7 +84,7 @@ const Step = props =>
 
       {props.title}
 
-      {props.manualProgressionAllowed && currentUser() &&
+      {props.manualProgressionAllowed && props.currentUser &&
         <ManualProgression
           status={props.userProgression.status}
           stepId={props.id}
@@ -101,8 +96,8 @@ const Step = props =>
     <div className="row">
       {(props.primaryResource || props.description) &&
         <div className={classes('col-sm-12', {
-          'col-md-9': (0 !== props.secondaryResources.length) && props.fullWidth,
-          'col-md-12': (0 !== props.secondaryResources.length) && !props.fullWidth
+          'col-md-9': 0 !== props.secondaryResources.length,
+          'col-md-12': 0 === props.secondaryResources.length
         })}>
           {props.description &&
             <div className="panel panel-default">
@@ -127,10 +122,7 @@ const Step = props =>
 
       {0 !== props.secondaryResources.length &&
         <SecondaryResources
-          className={classes('col-sm-12', {
-            'col-md-3': props.fullWidth,
-            'col-md-12': !props.fullWidth
-          })}
+          className="col-md-3 col-sm-12"
           resources={props.secondaryResources}
           target={props.secondaryResourcesTarget}
         />
@@ -139,7 +131,7 @@ const Step = props =>
   </section>
 
 implementPropTypes(Step, StepTypes, {
-  fullWidth: T.bool.isRequired,
+  currentUser: T.object,
   numbering: T.string,
   showResourceHeader: T.bool.isRequired,
   manualProgressionAllowed: T.bool.isRequired,

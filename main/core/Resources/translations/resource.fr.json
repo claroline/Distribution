@@ -7,14 +7,14 @@
     "close_redirect_workspace": "Ouverture de l'espace d'activités",
     "delete_confirm_question": "Êtes-vous sûr de vouloir supprimer cette ressource ?",
     "directory": "Dossier",
+    "directory_desc": "Créer un dossier pour organiser vos ressources.",
     "file": "Fichier",
+    "file_desc": "Ressource permettant de déposer un fichier de format quelconque sur la plateforme. Les pdfs, les fichiers audios, vidéos et les images sont lisibles dans la plateforme. Les autres types de fichiers devront être téléchargés sur l'ordinateur de l'apprenant pour être consultés.",
     "image": "Image",
     "new_resource": "Nouvelle ressource",
     "new_resource_configure": "2. Configurer la ressource",
     "new_resource_configure_rights": "3. Configurer les droits",
     "new_resource_select": "1. Choisir le type de ressource à créer",
-    "resource_access_code": "Restreindre par code",
-    "resource_access_ips": "Restreindre par IPs",
     "resource_access_rights": "Qui peut voir cette resource ?",
     "resource_explorer": "Explorateur de ressources",
     "resource_fullscreen": "Afficher en plein écran à l'ouverture",
@@ -37,5 +37,9 @@
     "resource_views": "{0} Cette ressource n'a jamais été vue. | [1,Inf[ Cette resource a été vue %count% fois.",
     "restricted_access_message": "Vous ne pouvez pas accéder à cette ressource car toutes les conditions d'accès ne sont pas satisfaites.",
     "text": "Texte",
-    "video": "Vidéo"
+    "text_desc": "Permet de rédiger un texte riche (lien, image, vidéo) directement dans la plateforme.",
+    "video": "Vidéo",
+    "resources_delete_confirm": "{1} Suppression d'une ressource | [2,Inf[ Suppression de ressources",
+    "resources_delete_message": "{1} Êtes-vous sûr de vouloir supprimer cette ressource ? | [2,Inf[ Êtes-vous sûr de vouloir supprimer ces %count% ressources ?",
+    "all_resources": "Toutes les ressources"
 }

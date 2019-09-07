@@ -3,14 +3,14 @@ import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
 import {Button} from '#/main/app/action/components/button'
-import {Modal} from '#/main/app/overlay/modal/components/modal'
+import {Modal} from '#/main/app/overlays/modal/components/modal'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans} from '#/main/app/intl/translation'
 
 import {selectors} from '#/plugin/competency/modals/scales/store'
 import {Scale as ScaleType} from '#/plugin/competency/administration/competency/prop-types'
-import {ScaleList} from '#/plugin/competency/administration/competency/scale/components/scale-list'
+import {ScaleCard} from '#/plugin/competency/administration/competency/data/components/scale-card'
 
 const ScalesPickerModal = props => {
   const selectAction = props.selectAction(props.selected)
@@ -29,8 +29,16 @@ const ScalesPickerModal = props => {
           url: ['apiv2_competency_scale_list'],
           autoload: true
         }}
-        definition={ScaleList.definition}
-        card={ScaleList.card}
+        definition={[
+          {
+            name: 'name',
+            label: trans('name'),
+            displayed: true,
+            type: 'string',
+            primary: true
+          }
+        ]}
+        card={ScaleCard}
         display={props.display}
       />
 
@@ -49,6 +57,7 @@ const ScalesPickerModal = props => {
 ScalesPickerModal.propTypes = {
   title: T.string,
   confirmText: T.string,
+  display: T.object,
   selectAction: T.func.isRequired,
   fadeModal: T.func.isRequired,
   selected: T.arrayOf(T.shape(ScaleType.propTypes)).isRequired,

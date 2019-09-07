@@ -2,18 +2,22 @@ import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'
 import merge from 'lodash/merge'
 
+import {makeInstanceAction} from '#/main/app/store/actions'
 import {makeReducer} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
 import {makeId} from '#/main/core/scaffolding/id'
 import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
 
+import {selectors as quizSelectors} from '#/plugin/exo/resources/quiz/store/selectors'
 import {Quiz, Step} from '#/plugin/exo/resources/quiz/prop-types'
 import {
   QUIZ_STEP_ADD,
   QUIZ_STEP_COPY,
   QUIZ_STEP_MOVE,
-  QUIZ_STEP_REMOVE
+  QUIZ_STEP_REMOVE,
+  QUIZ_ITEM_MOVE,
+  QUIZ_ITEM_COPY
 } from '#/plugin/exo/resources/quiz/editor/store/actions'
 
 function setDefaults(quiz) {
@@ -29,7 +33,8 @@ function setDefaults(quiz) {
 }
 
 function createStep(stepData = {}) {
-  return merge({id: makeId()}, Step.defaultProps, stepData)
+  const newId = makeId()
+  return merge({id: newId, slug: newId}, Step.defaultProps, stepData)
 }
 
 function pushStep(step, steps, position) {
@@ -57,15 +62,42 @@ function pushStep(step, steps, position) {
   return newSteps
 }
 
-export const reducer = makeFormReducer('resource.editor', {}, {
+function pushItem(item, items, position) {
+  const newItems = cloneDeep(items)
+
+  switch (position.order) {
+    case 'first':
+      newItems.unshift(item)
+      break
+
+    case 'before':
+    case 'after':
+      if ('before' === position.order) {
+        newItems.splice(items.findIndex(item => item.id === position.item), 0, item)
+      } else {
+        newItems.splice(items.findIndex(item => item.id === position.item) + 1, 0, item)
+      }
+      break
+
+    case 'last':
+      newItems.push(item)
+      break
+  }
+
+  return newItems
+}
+
+export const reducer = makeFormReducer(quizSelectors.STORE_NAME + '.editor', {}, {
   pendingChanges: makeReducer(false, {
     [QUIZ_STEP_ADD]: () => true,
     [QUIZ_STEP_COPY]: () => true,
     [QUIZ_STEP_MOVE]: () => true,
-    [QUIZ_STEP_REMOVE]: () => true
+    [QUIZ_STEP_REMOVE]: () => true,
+    [QUIZ_ITEM_MOVE]: () => true,
+    [QUIZ_ITEM_COPY]: () => true
   }),
   originalData: makeReducer({}, {
-    [RESOURCE_LOAD]: (state, action) => setDefaults(action.resourceData.quiz) || state
+    [makeInstanceAction(RESOURCE_LOAD, quizSelectors.STORE_NAME)]: (state, action) => setDefaults(action.resourceData.quiz) || state
   }),
   data: makeReducer({}, {
     /**
@@ -73,7 +105,7 @@ export const reducer = makeFormReducer('resource.editor', {}, {
      *
      * @param {object} state - the quiz object @see Quiz.propTypes
      */
-    [RESOURCE_LOAD]: (state, action) => setDefaults(action.resourceData.quiz) || state,
+    [makeInstanceAction(RESOURCE_LOAD, quizSelectors.STORE_NAME)]: (state, action) => setDefaults(action.resourceData.quiz) || state,
 
     /**
      * Adds a new step to the quiz.
@@ -85,6 +117,33 @@ export const reducer = makeFormReducer('resource.editor', {}, {
 
       const newStep = createStep(action.step)
       newState.steps.push(newStep)
+
+      return newState
+    },
+
+    [QUIZ_ITEM_COPY]: (state, action) => {
+      const newState = cloneDeep(state)
+
+      const newParent = newState.steps.find(step => step.id === action.position.parent)
+      const newItems = newParent.items
+
+      newParent.items = pushItem(action.item, newItems, action.position)
+
+      return newState
+    },
+
+    [QUIZ_ITEM_MOVE]: (state, action) => {
+      const newState = cloneDeep(state)
+      const oldStep = newState.steps.find(step => step.items.find(item => item.id === action.id))
+      const currentPos = oldStep.items.findIndex(item => item.id === action.id)
+      const newParent = newState.steps.find(step => step.id === action.position.parent)
+      const newItems = newParent.items
+
+      if (-1 !== currentPos) {
+        const currentItem = oldStep.items.splice(currentPos, 1)
+
+        newParent.items = pushItem(currentItem[0], newItems, action.position)
+      }
 
       return newState
     },
@@ -101,7 +160,9 @@ export const reducer = makeFormReducer('resource.editor', {}, {
       if (original) {
         // create a copy of the step
         const copy = cloneDeep(original)
-        copy.id = makeId()
+        const newId = makeId()
+        copy.id = newId
+        copy.slug = newId
 
         // TODO : replace items ids
 

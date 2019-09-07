@@ -2,7 +2,8 @@ import merge from 'lodash/merge'
 import set from 'lodash/set'
 
 import {trans} from '#/main/app/intl/translation'
-import {notBlank} from '#/main/core/validation'
+import {notBlank} from '#/main/app/data/types/validators'
+import {makeId} from '#/main/core/scaffolding/id'
 
 import {emptyAnswer, CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {ChoiceItem} from '#/plugin/exo/items/choice/prop-types'
@@ -167,5 +168,19 @@ export default {
     }
 
     return []
+  },
+
+  refreshIdentifiers: (item) => {
+    const mapIds = {}
+
+    item.choices.forEach(choice => {
+      mapIds[choice.id] = makeId()
+      choice.id = mapIds[choice.id]
+    })
+
+    item.solutions.forEach(solution => solution.id = mapIds[solution.id])
+    item.id = makeId()
+
+    return item
   }
 }

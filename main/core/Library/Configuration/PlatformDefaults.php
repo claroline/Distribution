@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Library\Configuration;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -36,8 +35,8 @@ class PlatformDefaults implements ParameterProviderInterface
     {
         return [
             'home' => [
-              'redirection_type' => null,
-              'redirection_url' => null,
+              'type' => 'none',
+              'data' => null,
             ],
             'profile' => [
               'roles_confidential' => [],
@@ -51,6 +50,9 @@ class PlatformDefaults implements ParameterProviderInterface
             ],
             'text' => [
               'enable_opengraph' => true,
+            ],
+            'swagger' => [
+              'base' => '/Claroline/Claroline/web/app_dev.php',
             ],
             'logs' => [
               'enabled' => true,
@@ -89,9 +91,9 @@ class PlatformDefaults implements ParameterProviderInterface
               'google_meta_tag' => null,
             ],
             'workspace' => [
-              'max_storage_size' => Workspace::DEFAULT_MAX_STORAGE_SIZE,
-              'max_upload_resources' => Workspace::DEFAULT_MAX_FILE_COUNT,
-              'max_workspace_users' => Workspace::DEFAULT_MAX_USERS,
+              'max_storage_size' => '1 TB',
+              'max_upload_resources' => 10000,
+              'max_workspace_users' => 10000,
               'enable_rich_text_file_import' => false,
               'send_mail_at_registration' => true,
               'users_csv_by_full_name' => false, //is it still used ?
@@ -110,7 +112,6 @@ class PlatformDefaults implements ParameterProviderInterface
               'redirect_after_login_option' => self::DEFAULT_REDIRECT_OPTION,
               'redirect_after_login_url' => null,
               'direct_third_party' => false,
-              'login_target_route' => 'claro_security_login',
             ],
             'registration' => [
               'self' => false,
@@ -145,18 +146,16 @@ class PlatformDefaults implements ParameterProviderInterface
               'db_password' => null,
             ],
             'display' => [
-              'footer' => null,
               'logo' => 'logo-sm.svg',
               'theme' => 'claroline',
-              'home_menu' => null,
-              'footer_login' => false,
-              'footer_workspaces' => false,
-              'header_locale' => true,
               'resource_icon_set' => 'claroline',
               'name' => 'Claroline Connect',
               'secondary_name' => 'Easy & flexible learning',
-              'logo_redirect_home' => true,
               'name_active' => true,
+            ],
+            'footer' => [
+                'content' => null,
+                'show_locale' => false,
             ],
             'mailer' => [
               'transport' => 'sendmail',
@@ -202,10 +201,21 @@ class PlatformDefaults implements ParameterProviderInterface
               'message' => null,
             ],
 
-            'header_menu' => 'workspaces',
+            'header_menu' => [
+                'search',
+                'history',
+                'favourites',
+                'notifications',
+            ],
+            'admin' => [
+                'default_tool' => 'home',
+            ],
+            'desktop' => [
+                'default_tool' => 'home',
+                'show_progression' => true,
+            ],
             'show_about_button' => true,
-            //not documented, for the cli tool claroline:user:mailing
-            'notifications_refresh_delay' => 12000, // in ms
+            'notifications_refresh_delay' => 20000, // in ms
             'is_cron_configured' => false,
             'javascripts' => [],
         ];

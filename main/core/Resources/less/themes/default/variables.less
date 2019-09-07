@@ -79,7 +79,7 @@
 @top-bar-border-bottom-size:  0;
 @top-bar-border-bottom-color: @brand-primary;
 @top-bar-border-bottom:       @top-bar-border-bottom-size solid @top-bar-border-bottom-color;
-@top-bar-box-shadow:          none;
+@top-bar-box-shadow:          0 0 5px 1px rgba(0, 0, 0, 0.5);
 
 @top-bar-brand-color:         #FFFFFF;
 @top-bar-brand-font-size:     24px;
@@ -89,7 +89,7 @@
 @top-bar-link-hover-color:    lighten(@top-bar-bg, 70%);
 @top-bar-link-hover-bg:       darken(@top-bar-bg, 5%);
 @top-bar-link-active-color:   lighten(@top-bar-bg, 80%);
-@top-bar-link-active-bg:      darken(@top-bar-bg, 6.5%);
+@top-bar-link-active-bg:      @top-bar-link-hover-bg;
 @top-bar-link-disabled-color: lighten(@top-bar-bg, 30%);
 @top-bar-link-disabled-bg:    transparent;
 
@@ -130,19 +130,19 @@
 // By default it reuses some of the styles from the app header.
 // ---
 
-@toolbar-size:         60px;
-@toolbar-font-size:    22px; // size for icons
-@toolbar-bg:           @top-bar-bg;
-@toolbar-color:        white;
+@toolbar-size:           360px;
+@toolbar-font-size:      22px; // size for icons
+@toolbar-bg:             @top-bar-bg;
+@toolbar-color:          white;
+@toolbar-active-color:   @brand-primary;
 
 // links
 @toolbar-link-color:          @top-bar-link-color;
 @toolbar-link-bg:             @top-bar-link-bg;
-@toolbar-link-shadow:         0 0 3px rgba(0,0,0,0.75);
 @toolbar-link-hover-color:    @top-bar-link-hover-color;
 @toolbar-link-hover-bg:       @top-bar-link-hover-bg;
 @toolbar-link-active-color:   @top-bar-link-active-color;
-@toolbar-link-active-bg:      @brand-primary;
+@toolbar-link-active-bg:      @top-bar-link-active-bg;
 @toolbar-link-disabled-color: @top-bar-link-disabled-color;
 @toolbar-link-disabled-bg:    @top-bar-link-disabled-bg;
 
@@ -151,6 +151,7 @@
 // Page
 // ---
 
+@page-header-bg:               white;
 @page-header-padding:          0;
 @page-header-font-size:        @font-size-h1;
 @page-header-weight:           700;
@@ -205,35 +206,40 @@
 // and adapt to the use case in order to keep common look & feel between all summary implementations
 // ---
 
-@summary-padding:           15px;
-@summary-font:              16px;
-@summary-bg:                #262626;
+@summary-font:              @font-size-base;
 @summary-color:             white;
+@summary-lvl-indent:        20px; // indent children of a step in the summary
+
+// deprecated (? still required by PDF player)
+@summary-padding:           15px;
+@summary-bg:                #262626;
 @summary-border-radius:     0;
 @summary-box-shadow:        0 0 4px 0 rgba(0, 0, 0, 0.4);
 @summary-box-shadow-v:      2px 0 4px 0 rgba(0, 0, 0, 0.4); // box shadow for vertical summaries
 @summary-box-shadow-h:      0 2px 4px 0 rgba(0, 0, 0, 0.4); // box shadow for horizontal summaries
 
 // Links
-@summary-link-bg:           transparent;
-@summary-link-color:        @gray-light;
-@summary-link-border-color: #444444;
-@summary-link-hover-bg:     transparent;
-@summary-link-hover-color:  #BBBBBB;
-@summary-link-active-bg:    transparent;
-@summary-link-active-color: white;
+@summary-link-bg:             @toolbar-link-bg;
+@summary-link-color:          @toolbar-link-color;
+@summary-link-hover-bg:       @toolbar-link-hover-bg;
+@summary-link-hover-color:    @toolbar-link-hover-color;
+@summary-link-active-bg:      @toolbar-link-active-bg;
+@summary-link-active-color:   @toolbar-link-active-color;
+@summary-link-disabled-bg:    @toolbar-link-disabled-bg;
+@summary-link-disabled-color: @toolbar-link-disabled-color;
 
 
 // -
 // Footer
 // ---
 
-@footer-height:            @navbar-height;
-@footer-max-width:         none; // max width for the footer content (do not affect footer container)
-@footer-bg:                #F3F3F3;
-@footer-color:             @gray-light;
-@footer-border-color:      transparent;
-@footer-box-shadow:        @box-shadow-base;
+@footer-height:             floor(@line-height-base*@font-size-base + 2*@padding-base-vertical + 2px); // the size of the locale button
+@footer-max-width:          none; // max width for the footer content (do not affect footer container)
+@footer-bg:                 #F3F3F3;
+@footer-color:              @gray-light;
+@footer-border-color:       transparent;
+@footer-inner-border-color: #E0E0E0;
+@footer-box-shadow:         @box-shadow-base;
 
 // Links
 @footer-link-color:        @gray;
@@ -286,6 +292,7 @@
 @heading-numbering-box-shadow:    @box-shadow-base;
 @heading-numbering-separator:     "."; // separator between numbering levels
 
+
 // -
 // Panels
 // ---
@@ -295,6 +302,15 @@
 
 // Groups
 @panel-group-panel-margin: 5px;
+
+
+// -
+// List groups
+// ---
+
+@list-group-margin-bottom:  @component-margin-bottom;
+@list-group-item-padding-v: 10px;
+@list-group-item-padding-h: 15px;
 
 
 // -

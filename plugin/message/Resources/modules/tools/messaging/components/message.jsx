@@ -1,19 +1,21 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
 
-import {NewMessage} from '#/plugin/message/tools/messaging/components/new-message'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
+import {UserMessage} from '#/main/core/user/message/components/user-message'
+
 import {actions, selectors} from '#/plugin/message/tools/messaging/store'
+import {NewMessage} from '#/plugin/message/tools/messaging/components/new-message'
 
 const MessageComponent = (props) =>
-  <div>
+  <Fragment>
     <h2>{props.message.object}</h2>
     <UserMessage
       user={get(props.message, 'from')}
@@ -38,7 +40,7 @@ const MessageComponent = (props) =>
           type: CALLBACK_BUTTON,
           icon: 'fa fa-fw fa-trash-o',
           label: trans('delete'),
-          callback: () => props.deleteMessage([props.message], props.history.push),
+          callback: () => props.deleteMessage([props.message], props.history.push, props.path),
           dangerous: true,
           displayed: !get(props.message, 'meta.removed')
         }
@@ -48,9 +50,10 @@ const MessageComponent = (props) =>
     {(!get(props.message, 'meta.sent') && !get(props.message, 'meta.removed')) &&
       <NewMessage/>
     }
-  </div>
+  </Fragment>
 
 MessageComponent.propTypes = {
+  path: T.string.isRequired,
   message: T.shape({
     content: T.string,
     object: T.string.isRequired
@@ -74,18 +77,19 @@ MessageComponent.defaultProps = {
 }
 const Message = connect(
   state => ({
+    path: toolSelectors.path(state),
     message: selectors.message(state)
   }),
   dispatch => ({
-    deleteMessage(message, push) {
+    deleteMessage(message, push, path) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
           title: trans('messages_delete_title', {}, 'message'),
-          question: trans('messages_confirm_permanent_delete', {}, 'message'),
+          question: trans('messages_delete_confirm_permanent', {}, 'message'),
           dangerous: true,
           handleConfirm: () => {
             dispatch(actions.deleteMessages(message))
-              .then(() => push('/received'))
+              .then(() => push(`${path}/received`))
           }
         })
       )

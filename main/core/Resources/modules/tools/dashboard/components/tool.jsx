@@ -5,7 +5,6 @@ import {url} from '#/main/app/api'
 import {trans} from '#/main/app/intl/translation'
 import {DOWNLOAD_BUTTON} from '#/main/app/buttons'
 import {matchPath, Routes} from '#/main/app/router'
-import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
 import {ToolPage} from '#/main/core/tool/containers/page'
 import {Analytics} from '#/main/core/tools/dashboard/components/analytics'
@@ -14,6 +13,7 @@ import {Logs} from '#/main/core/tools/dashboard/components/logs'
 import {UserLogs} from '#/main/core/tools/dashboard/components/logs-user'
 import {LogDetails} from '#/main/core/layout/logs'
 import {Progression} from '#/main/core/tools/dashboard/components/progression'
+import {Paths} from '#/main/core/tools/dashboard/path/containers/paths'
 
 const DashboardTool = (props) =>
   <ToolPage
@@ -26,7 +26,7 @@ const DashboardTool = (props) =>
         },
         label: trans('download_csv_list', {}, 'log'),
         icon: 'fa fa-download',
-        displayed: matchPath(props.location.pathname, {path: '/connections', exact: true})
+        displayed: !!matchPath(props.location.pathname, {path: `${props.path}/connections`, exact: true})
       }, {
         name: 'download',
         type: DOWNLOAD_BUTTON,
@@ -35,7 +35,7 @@ const DashboardTool = (props) =>
         },
         label: trans('download_csv_list', {}, 'log'),
         icon: 'fa fa-download',
-        displayed: matchPath(props.location.pathname, {path: '/log', exact: true})
+        displayed: !!matchPath(props.location.pathname, {path: `${props.path}/log`, exact: true})
       }, {
         name: 'download',
         type: DOWNLOAD_BUTTON,
@@ -44,79 +44,73 @@ const DashboardTool = (props) =>
         },
         label: trans('download_csv_list', {}, 'log'),
         icon: 'fa fa-download',
-        displayed: matchPath(props.location.pathname, {path: '/logs/users', exact: true})
+        displayed: !!matchPath(props.location.pathname, {path: `${props.path}/logs/users`, exact: true})
       }
     ]}
+    subtitle={
+      <Routes
+        path={props.path}
+        routes={[
+          {
+            path: '/',
+            render: () => trans('analytics_home'),
+            exact: true
+          }, {
+            path: '/connections',
+            render: () => trans('connection_time')
+          }, {
+            path: '/log',
+            render: () => trans('users_actions')
+          }, {
+            path: '/logs/users',
+            render: () => trans('user_actions')
+          }, {
+            path: '/progression',
+            render: () => trans('progression')
+          }, {
+            path: '/paths',
+            render: () => trans('paths_tracking')
+          }
+        ]}
+      />
+    }
   >
-    <div className="row">
-      <div className="col-md-3">
-        <Vertical
-          style={{
-            marginTop: '20px'
-          }}
-          tabs={[
-            {
-              icon: 'fa fa-fw fa-pie-chart',
-              title: trans('analytics'),
-              path: '/',
-              exact: true
-            }, {
-              icon: 'fa fa-fw fa-clock',
-              title: trans('connection_time'),
-              path: '/connections'
-            }, {
-              icon: 'fa fa-fw fa-users',
-              title: trans('users_tracking'),
-              path: '/log'
-            }, {
-              icon: 'fa fa-fw fa-user',
-              title: trans('user_tracking', {}, 'log'),
-              path: '/logs/users',
-              exact: true
-            }, {
-              icon: 'fa fa-fw fa-tasks',
-              title: trans('progression'),
-              path: '/progression',
-              exact: true
-            }
-          ]}
-        />
-      </div>
-
-      <div className="dashboard-content col-md-9">
-        <Routes
-          routes={[
-            {
-              path: '/',
-              component: Analytics,
-              exact: true
-            }, {
-              path: '/connections',
-              component: Connections,
-              exact: true
-            }, {
-              path: '/log',
-              component: Logs,
-              exact: true
-            }, {
-              path: '/log/:id',
-              component: LogDetails,
-              onEnter: (params) => props.openLog(params.id, props.workspaceId)
-            }, {
-              path: '/logs/users',
-              component: UserLogs,
-              exact: true
-            }, {
-              path: '/progression',
-              component: Progression
-            }
-          ]}
-        />
-      </div>
-    </div>
+    <Routes
+      path={props.path}
+      routes={[
+        {
+          path: '/',
+          component: Analytics,
+          exact: true
+        }, {
+          path: '/connections',
+          component: Connections,
+          exact: true
+        }, {
+          path: '/log',
+          component: Logs,
+          exact: true
+        }, {
+          path: '/log/:id',
+          component: LogDetails,
+          onEnter: (params) => props.openLog(params.id, props.workspaceId)
+        }, {
+          path: '/logs/users',
+          component: UserLogs,
+          exact: true
+        }, {
+          path: '/progression',
+          component: Progression
+        }, {
+          path: '/paths',
+          component: Paths
+        }
+      ]}
+    />
   </ToolPage>
 
 DashboardTool.propTypes = {
+  path: T.string.isRequired,
   location: T.object.isRequired,
   workspaceId: T.number.isRequired,
   connectionsQuery: T.string,

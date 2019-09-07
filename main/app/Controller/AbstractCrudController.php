@@ -5,11 +5,11 @@ namespace Claroline\AppBundle\Controller;
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
-use Claroline\AppBundle\API\Routing\Documentator;
-use Claroline\AppBundle\API\Routing\Finder;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\Utils\ArrayUtils;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Routing\Documentator;
+use Claroline\AppBundle\Routing\Finder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,6 +48,10 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     abstract public function getName();
 
+    /**
+     * @deprecated
+     * user setter injection instead
+     */
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
@@ -60,10 +64,44 @@ abstract class AbstractCrudController extends AbstractApiController
         $this->options = $this->mergeOptions();
     }
 
+    //these are the injectors you whould use
+    public function setFinder(FinderProvider $finder)
+    {
+        $this->finder = $finder;
+    }
+
+    public function setSerializer(SerializerProvider $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    public function setCrud(Crud $crud)
+    {
+        $this->crud = $crud;
+    }
+
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
+    public function setRouterFinder(Finder $routerFinder)
+    {
+        $this->routerFinder = $routerFinder;
+    }
+
+    public function setRouterDocumentator(Documentator $routerDocumentator)
+    {
+        $this->routerDocumentator = $routerDocumentator;
+    }
+
+    //end
+
     /**
      * @ApiDoc(
      *     description="Find a single object of class $class.",
-     *     queryString={"$finder"}
+     *     queryString={"$finder"},
+     *     response={"$object"}
      * )
      *
      * @param Request $request
@@ -114,11 +152,9 @@ abstract class AbstractCrudController extends AbstractApiController
      * @ApiDoc(
      *     description="Finds an object class $class.",
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The object id or uuid"
-     *          }
-     *     }
+     *          {"name": "id", "type": {"string", "integer"}, "description": "The object id or uuid"}
+     *     },
+     *     response={"$object"}
      * )
      *
      * @param Request    $request
@@ -150,7 +186,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *     description="Check if an object exists (it'll eventually fire a doctrine findBy method)",
      *     parameters={
      *         {"name": "field", "type": "string", "description": "The queried field."},
-     *         {"name": "value", "type": "mixed", "description": "The value of the field"}
+     *         {"name": "value", "type": "string", "description": "The value of the field"}
      *     }
      * )
      *
@@ -171,7 +207,8 @@ abstract class AbstractCrudController extends AbstractApiController
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
-     *     }
+     *     },
+     *     response={"$list"}
      * )
      *
      * @param Request $request
@@ -274,7 +311,8 @@ abstract class AbstractCrudController extends AbstractApiController
      *     description="Create an object class $class.",
      *     body={
      *         "schema":"$schema"
-     *     }
+     *     },
+     *     response={"$object"}
      * )
      *
      * @param Request $request
@@ -314,11 +352,9 @@ abstract class AbstractCrudController extends AbstractApiController
      *         "schema":"$schema"
      *     },
      *     parameters={
-     *         "id": {
-     *              "type": {"string", "integer"},
-     *              "description": "The object id or uuid"
-     *          }
-     *     }
+     *          {"name": "id", "type": {"string", "integer"}, "description": "The object id or uuid"}
+     *     },
+     *     response={"$object"}
      * )
      *
      * @param string|int $id
@@ -395,7 +431,8 @@ abstract class AbstractCrudController extends AbstractApiController
      *     description="Copy an array of object of class $class.",
      *     queryString={
      *         {"name": "ids[]", "type": {"string", "integer"}, "description": "The object id or uuid."}
-     *     }
+     *     },
+     *     response={"$array"}
      * )
      *
      * @param Request $request
@@ -437,19 +474,6 @@ abstract class AbstractCrudController extends AbstractApiController
     public function docAction(Request $request, $class)
     {
         return new JsonResponse($this->routerDocumentator->documentClass($class));
-    }
-
-    /**
-     * @param Request $request
-     * @param string  $class
-     * @param string  $property
-     */
-    protected function decodeQueryParam(Request $request, $class, $property)
-    {
-        $ids = $request->query->get($property);
-        $property = is_numeric($ids[0]) ? 'id' : 'uuid';
-
-        return $this->om->findList($class, $property, $ids);
     }
 
     /**
@@ -524,9 +548,11 @@ abstract class AbstractCrudController extends AbstractApiController
     /**
      * @return array
      */
-    private function mergeOptions()
+    public function mergeOptions()
     {
-        return array_merge_recursive($this->getDefaultOptions(), $this->getOptions());
+        $this->options = array_merge_recursive($this->getDefaultOptions(), $this->getOptions());
+
+        return $this->options;
     }
 
     /**

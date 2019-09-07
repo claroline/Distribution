@@ -7,7 +7,7 @@ import {trans} from '#/main/app/intl/translation'
 import {withRouter} from '#/main/app/router'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {MODAL_ALERT} from '#/main/app/modals/alert'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {Timer} from '#/main/core/layout/gauge/components/timer'
@@ -165,7 +165,7 @@ class PlayerComponent extends Component {
         {(!this.state.fetching && this.state.error) &&
           <PlayerRestrictions
             {...this.state.error}
-            workspaceId={this.props.workspaceId}
+            workspace={this.props.workspace}
             showStatistics={this.props.showStatistics}
           />
         }
@@ -214,6 +214,7 @@ class PlayerComponent extends Component {
 
 PlayerComponent.propTypes = {
   workspaceId: T.number,
+  workspace: T.object,
   history: T.object.isRequired,
   quizId: T.string.isRequired,
   numbering: T.string.isRequired,
@@ -264,6 +265,7 @@ const Player = withRouter(connect(
     return {
       // general info
       workspaceId: resourceSelect.workspaceId(state),
+      workspace: resourceSelect.workspace(state),
       quizId: select.quizId(state),
 
       // general attempt info

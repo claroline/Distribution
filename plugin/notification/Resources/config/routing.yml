@@ -1,11 +1,8 @@
 icap_notification:
     resource: "@IcapNotificationBundle/Controller/"
-    type:     annotation
-    prefix: /
-icap_notification_api:
-    resource: "@IcapNotificationBundle/Controller/API/NotificationController.php"
     type: annotation
-    prefix: api
+    options:
+        expose: true
 
 # JSON API
 icap_notification_follower_api:

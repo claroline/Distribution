@@ -161,19 +161,16 @@ plugin:
         - name: appearance_settings
           class: drafting-compass
 
-        - name: user_management
+        - name: community
           class: user
 
-        - name: workspace_management
-          class: book
-
-        - name: desktop_and_home
+        - name: home
           class: home
 
         - name: tasks_scheduling
           class: clock-o
 
-        - name: data_transfer
+        - name: transfer
           class: exchange
 
         - name: templates_management
@@ -182,13 +179,13 @@ plugin:
         - name: integration
           class: plug
 
-        - name: platform_dashboard
+        - name: dashboard
           class: tachometer
 
     widgets:
         - name: simple
           class: Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget
-          context: [workspace, desktop, home]
+          context: [workspace, desktop, home, administration]
           tags: [content]
 
         - name: list
@@ -202,7 +199,7 @@ plugin:
 
         - name: resource
           class: Claroline\CoreBundle\Entity\Widget\Type\ResourceWidget
-          context: [workspace, desktop, home]
+          context: [workspace, desktop, home, administration]
           tags: [resources]
 
         - name: progression
@@ -213,25 +210,74 @@ plugin:
     data_sources:
         - name: resources
           type: list
-          context: [workspace, desktop, home]
+          context: [workspace, desktop, home, administration]
           tags: [resources]
 
         - name: workspaces
           type: list
-          context: [desktop, home]
+          context: [desktop, workspace, home, administration]
+          tags: [workspaces]
+
+        - name: public_workspaces
+          type: list
+          context: [desktop, workspace, home, administration]
           tags: [workspaces]
 
         - name: my_workspaces
+          type: list
+          context: [desktop, workspace, administration]
+          tags: [workspaces]
+
+        - name: managed_workspaces
+          type: list
+          context: [desktop]
+          tags: [workspaces]
+
+        - name: workspace_models
           type: list
           context: [desktop]
           tags: [workspaces]
 
         - name: users
           type: list
-          context: [workspace, desktop]
+          context: [desktop, workspace, administration]
           tags: [community]
 
+        - name: admin_tools
+          type: list
+          context: [administration]
+          tags: [tools]
+
+        - name: tools
+          type: list
+          context: [desktop, workspace]
+          tags: [tools]
+
     tools:
+        - name: workspaces
+          class: book
+          is_displayable_in_workspace: false
+          is_displayable_in_desktop: true
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: true
+          is_workspace_required: false
+          is_exportable: true
+          is_locked_for_admin: false
+          is_anonymous_excluded: false
+
+        - name: parameters
+          class: cog
+          is_displayable_in_workspace: false
+          is_displayable_in_desktop: true
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: true
+          is_workspace_required: false
+          is_exportable: false
+          is_locked_for_admin: false
+          is_anonymous_excluded: true
+
         - name: home
           class: home
           is_displayable_in_workspace: true
@@ -244,7 +290,7 @@ plugin:
           is_locked_for_admin: false
           is_anonymous_excluded: false
 
-        - name: resource_manager
+        - name: resources
           class: folder
           is_displayable_in_workspace: true
           is_displayable_in_desktop: true
@@ -269,32 +315,19 @@ plugin:
           is_locked_for_admin: false
           is_anonymous_excluded: false
 
-        - name: users
+        - name: community
           class: user
           is_displayable_in_workspace: true
-          is_displayable_in_desktop: false
+          is_displayable_in_desktop: true
           is_configurable_in_workspace: false
           is_configurable_in_desktop: false
-          is_desktop_required: false
+          is_desktop_required: true
           is_workspace_required: true
           is_exportable: false
           is_locked_for_admin: false
           is_anonymous_excluded: true
 
-        - name: my_contacts
-          class: address-book
-          is_displayable_in_workspace: false
-          is_displayable_in_desktop: true
-          is_configurable_in_workspace: false
-          is_configurable_in_desktop: false
-          is_desktop_required: false
-          is_workspace_required: false
-          is_exportable: false
-          is_locked_for_admin: false
-          is_anonymous_excluded: true
-          desktop_category: user
-
-        - name: data_transfer
+        - name: transfer
           class: exchange
           is_displayable_in_workspace: true
           is_displayable_in_desktop: false

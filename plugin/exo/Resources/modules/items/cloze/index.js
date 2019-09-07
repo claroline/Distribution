@@ -1,7 +1,8 @@
 import isEmpty from 'lodash/isEmpty'
 
+import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/app/intl/translation'
-import {notBlank, notEmpty, chain} from '#/main/core/validation'
+import {notBlank, notEmpty, chain} from '#/main/app/data/types/validators'
 
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
 import {ClozeItem as ClozeItemTypes} from '#/plugin/exo/items/cloze/prop-types'
@@ -71,7 +72,7 @@ export default {
 
     item.holes.forEach(hole => {
       const holeErrors = {}
-      const solution = utils.getHoleSolution(item, hole)
+      const solution = utils.getHoleSolution(hole, item.solutions)
 
       if (notBlank(hole.size)) {
         holeErrors.size = trans('cloze_empty_size_error', {}, 'quiz')
@@ -151,5 +152,23 @@ export default {
     }
 
     return answers
+  },
+
+  refreshIdentifiers: (item) => {
+    const mapIds = {}
+
+    item.holes.forEach(hole => {
+      mapIds[hole.id] = makeId()
+      hole.id = mapIds[hole.id]
+    })
+
+    item.solutions.forEach(solution => solution.holeId = mapIds[solution.holeId])
+    item.id = makeId()
+
+    Object.keys(mapIds).forEach(string => {
+      item.text = item.text.replace(string, mapIds[string])
+    })
+
+    return item
   }
 }

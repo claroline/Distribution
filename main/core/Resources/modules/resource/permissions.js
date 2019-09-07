@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-// TODO : this 3 methods should be moved in a `role` module
+// TODO : some of this methods should be moved in the `user` module
 const roleAnonymous = () => 'ROLE_ANONYMOUS'
 const roleUser = () => 'ROLE_USER'
 const roleWorkspace = (workspace, admin = false) => (admin ? 'ROLE_WS_MANAGER_':'ROLE_WS_COLLABORATOR_')+workspace.id
@@ -115,19 +115,21 @@ const getSimpleAccessRule = (perms, workspace = null) => {
   const anonymous = findRolePermissions(roleAnonymous(), perms)
   if (anonymous.open) {
     return 'all'
-  } else {
-    const users = findRolePermissions(roleUser(), perms)
-    if (users.open) {
-      return 'user'
-    } else {
-      const wsUsers = findRolePermissions(roleWorkspace(workspace), perms)
-      if (wsUsers.open) {
-        return 'workspace'
-      } else {
-        return 'admin'
-      }
+  }
+
+  const users = findRolePermissions(roleUser(), perms)
+  if (users.open) {
+    return 'user'
+  }
+
+  if (workspace) {
+    const wsUsers = findRolePermissions(roleWorkspace(workspace), perms)
+    if (wsUsers.open) {
+      return 'workspace'
     }
   }
+
+  return 'admin'
 }
 
 const setSimpleAccessRule = (perms, rule, workspace = null) => {

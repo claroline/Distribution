@@ -5,9 +5,12 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
-import {url} from '#/main/app/api'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
-import {URL_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
+import {ContentLoader} from '#/main/app/content/components/loader'
+
+import {route as toolRoute} from '#/main/core/tool/routing'
+import {route as workspaceRoute} from '#/main/core/workspace/routing'
 
 import {
   ResourceNode as ResourceNodeTypes,
@@ -15,12 +18,11 @@ import {
 } from '#/main/core/resource/prop-types'
 import {getActions, getToolbar} from '#/main/core/resource/utils'
 import {ToolPage} from '#/main/core/tool/containers/page'
+import {constants as toolConst} from '#/main/core/tool/constants'
 import {ResourceIcon} from '#/main/core/resource/components/icon'
 import {ResourceRestrictions} from '#/main/core/resource/components/restrictions'
 import {ServerErrors} from '#/main/core/resource/components/errors'
 import {UserProgression} from '#/main/core/resource/components/user-progression'
-
-// todo : manage fullscreen through store
 
 class ResourcePage extends Component {
   constructor(props) {
@@ -36,11 +38,11 @@ class ResourcePage extends Component {
     this.props.loadResource(this.props.resourceNode, this.props.embedded)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     // the resource has changed
-    if (this.props.resourceNode.id !== nextProps.resourceNode.id) {
+    if (this.props.resourceNode.id !== prevProps.resourceNode.id) {
       // load the new one
-      this.props.loadResource(nextProps.resourceNode, nextProps.embedded)
+      this.props.loadResource(this.props.resourceNode, this.props.embedded)
     }
   }
 
@@ -49,10 +51,19 @@ class ResourcePage extends Component {
   }
 
   render() {
+    if (!this.props.loaded) {
+      return (
+        <ContentLoader
+          size="lg"
+          description="Nous chargeons le contenu de votre ressource"
+        />
+      )
+    }
+
     // remove workspace root from path (it's already known by the breadcrumb)
     // find a better way to handle this
     let ancestors
-    if (this.props.resourceNode.workspace) {
+    if (toolConst.TOOL_WORKSPACE === this.props.contextType) {
       ancestors = this.props.resourceNode.path.slice(1)
     } else {
       ancestors = this.props.resourceNode.path.slice(0)
@@ -68,11 +79,9 @@ class ResourcePage extends Component {
         title={this.props.resourceNode.name}
         subtitle={this.props.subtitle}
         path={[].concat(ancestors.map(ancestorNode => ({
-          type: URL_BUTTON,
+          type: LINK_BUTTON,
           label: ancestorNode.name,
-          target: this.props.resourceNode.workspace ?
-            url(['claro_workspace_open_tool', {workspaceId: get(this.props.resourceNode, 'workspace.autoId'), toolName: 'resource_manager'}]) + `#/${ancestorNode.id}` :
-            url(['claro_desktop_open_tool', {toolName: 'resource_manager'}]) + `#/${ancestorNode.id}`
+          target: `${this.props.basePath}/${ancestorNode.slug}`
         })), this.props.path)}
         poster={this.props.resourceNode.poster ? this.props.resourceNode.poster.url : undefined}
         icon={get(this.props.resourceNode, 'display.showIcon') && (this.props.userEvaluation ?
@@ -87,6 +96,9 @@ class ResourcePage extends Component {
         )}
         toolbar={getToolbar(this.props.primaryAction, true)}
         actions={getActions([this.props.resourceNode], {
+          add: () => {
+            this.props.loadResource(this.props.resourceNode, this.props.embedded)
+          },
           update: (resourceNodes) => {
             // checks if the action have modified the current node
             const currentNode = resourceNodes.find(node => node.id === this.props.resourceNode.id)
@@ -100,11 +112,21 @@ class ResourcePage extends Component {
             // checks if the action have deleted the current node
             const currentNode = resourceNodes.find(node => node.id === this.props.resourceNode.id)
             if (currentNode) {
-              // grabs updated data
-              //this.props.deleteNode(currentNode)
+              let redirect
+              if (toolConst.TOOL_WORKSPACE === this.props.contextType && currentNode.workspace) {
+                redirect = workspaceRoute(currentNode.workspace, 'resources')
+              } else {
+                redirect = toolRoute('resources')
+              }
+
+              if (currentNode.parent) {
+                redirect += '/'+currentNode.parent.id
+              }
+
+              this.props.history.push(redirect)
             }
           }
-        }).then((actions) => [].concat(this.props.customActions || [], actions, [
+        }, this.props.basePath, this.props.currentUser).then((actions) => [].concat(this.props.customActions || [], actions, [
           {
             name: 'fullscreen',
             type: 'callback',
@@ -130,7 +152,7 @@ class ResourcePage extends Component {
           <ServerErrors errors={this.props.serverErrors}/>
         }
 
-        {this.props.loaded && isEmpty(this.props.accessErrors) && isEmpty(this.props.serverErrors) &&
+        {isEmpty(this.props.accessErrors) && isEmpty(this.props.serverErrors) &&
           this.props.children
         }
       </ToolPage>
@@ -139,6 +161,13 @@ class ResourcePage extends Component {
 }
 
 ResourcePage.propTypes = {
+  history: T.shape({
+    push: T.func.isRequired
+  }).isRequired,
+
+  basePath: T.string,
+  contextType: T.string.isRequired,
+  currentUser: T.object,
   loaded: T.bool.isRequired,
   embedded: T.bool,
   showHeader: T.bool,

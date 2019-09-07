@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Library\Configuration;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -27,7 +26,7 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'secondary_name' => 'display.secondary_name',
             'name_active' => 'display.name_active',
             'support_email' => 'help.support_email',
-            'footer' => 'display.footer',
+            'footer' => 'footer.content',
             'logo' => 'display.logo',
             'allow_self_registration' => 'registration.self',
             'locale_language' => 'locales.default',
@@ -65,8 +64,8 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'home_menu' => 'display.home_menu',
             'footer_login' => 'display.footer_login',
             'footer_workspaces' => 'display.footer_workspaces',
-            'header_locale' => 'display.header_locale',
-            'header_menu' => 'workspaces',
+            'header_locale' => 'footer.show_locale',
+            'header_menu' => 'header_menu',
             'portfolio_url' => 'portfolio.url',
             'max_storage_size' => 'workspace.max_storage_size',
             'max_upload_resources' => 'workspace.max_upload_resources',
@@ -95,7 +94,6 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'ssl_enabled' => 'ssl.enabled',
             'ssl_version_value' => 'ssl.version',
             'enable_rich_text_file_import' => 'workspace.enable_rich_text_file_import',
-            'login_target_route' => 'authentication.login_target_route',
             'enable_opengraph' => 'text.enable_opengraph',
             'tmp_dir' => 'server.tmp_dir',
             'resource_icon_set' => 'display.resource_icon_set',
@@ -116,9 +114,8 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'profile_roles_edition' => 'profile.roles_edition',
             'profile_show_email' => 'profile.show_email',
             'workspace_list_default_properties' => 'workspace.list.default_properties',
-            'logo_redirect_home' => 'display.logo_redirect_home',
-            'home_redirection_type' => 'home.redirection_type',
-            'home_redirection_url' => 'home.redirection_url',
+            'home_redirection_type' => 'home.type',
+            'home_redirection_url' => 'home.data',
         ];
     }
 }

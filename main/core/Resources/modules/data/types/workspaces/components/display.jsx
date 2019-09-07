@@ -6,7 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
-import {WorkspaceCard} from '#/main/core/workspace/data/components/workspace-card'
+import {WorkspaceCard} from '#/main/core/workspace/components/card'
 
 const WorkspacesDisplay = (props) => {
   if (!isEmpty(props.data)) {
@@ -16,6 +16,7 @@ const WorkspacesDisplay = (props) => {
           <WorkspaceCard
             key={`workspace-card-${workspace.id}`}
             data={workspace}
+            size="xs"
           />
         )}
       </Fragment>

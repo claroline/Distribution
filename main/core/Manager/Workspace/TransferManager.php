@@ -12,7 +12,6 @@ use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\API\Serializer\Workspace\FullSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
@@ -22,13 +21,9 @@ use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-/**
- * @DI\Service("claroline.manager.workspace.transfer")
- */
 class TransferManager
 {
     use PermissionCheckerTrait;
@@ -45,19 +40,6 @@ class TransferManager
 
     /**
      * Crud constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "dispatcher"          = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "fullSerializer"      = @DI\Inject("claroline.serializer.workspace.full"),
-     *     "tempFileManager"     = @DI\Inject("claroline.manager.temp_file"),
-     *     "serializer"          = @DI\Inject("claroline.api.serializer"),
-     *     "finder"              = @DI\Inject("claroline.api.finder"),
-     *     "ots"                 = @DI\Inject("claroline.transfer.ordered_tool"),
-     *     "crud"                = @DI\Inject("claroline.api.crud"),
-     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
-     *     "fileUts"             = @DI\Inject("claroline.utilities.file")
-     * })
      *
      * @param ObjectManager      $om
      * @param StrictDispatcher   $dispatcher
@@ -166,13 +148,13 @@ class TransferManager
 
         $serialized['roles'] = $roles;
 
-        //we want to load  the ressources first
+        //we want to load the resources first
         $ot = $workspace->getOrderedTools()->toArray();
 
         $idx = 0;
 
         foreach ($ot as $key => $tool) {
-            if ('resource_manager' === $tool->getName()) {
+            if ('resources' === $tool->getName()) {
                 $idx = $key;
             }
         }
@@ -203,6 +185,7 @@ class TransferManager
         $data = $this->replaceResourceIds($data);
 
         $defaultRole = $data['registration']['defaultRole'];
+
         unset($data['registration']['defaultRole']);
         //we don't want new workspaces to be considered as models
         $data['meta']['model'] = false;
@@ -215,9 +198,10 @@ class TransferManager
             $role = $this->serializer->deserialize($roleData, new Role());
             $role->setWorkspace($workspace);
             $this->om->persist($role);
+            $roles[] = $role;
         }
 
-        foreach ($workspace->getRoles() as $role) {
+        foreach ($roles as $role) {
             if ($defaultRole['translationKey'] === $role->getTranslationKey()) {
                 $workspace->setDefaultRole($role);
             }
@@ -313,7 +297,7 @@ class TransferManager
         $replaced = json_encode($serialized);
 
         foreach ($serialized['orderedTools'] as $tool) {
-            if ('resource_manager' === $tool['name']) {
+            if ('resources' === $tool['name']) {
                 $nodes = $tool['data']['nodes'];
 
                 foreach ($nodes as $data) {

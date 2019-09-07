@@ -1,7 +1,8 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
+import {selectors as toolSelectors} from  '#/main/core/tool/store'
 import {actions, selectors} from '#/main/core/tools/dashboard/store'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
@@ -19,9 +20,13 @@ class AnalyticsComponent extends Component {
 
   render() {
     return (
-      <div>
+      <Fragment>
         <WorkspaceMetrics
+          style={{
+            marginTop: 20 // FIXME
+          }}
           workspace={this.props.workspace}
+          nbConnections={this.props.nbConnections}
         />
 
         {this.props.analytics.loaded &&
@@ -31,7 +36,7 @@ class AnalyticsComponent extends Component {
         {this.props.analytics.loaded &&
           <Resources resourceTypes={this.props.analytics.data.resourceTypes} />
         }
-      </div>
+      </Fragment>
     )
   }
 }
@@ -41,6 +46,7 @@ AnalyticsComponent.propTypes = {
     loaded: T.bool.isRequired,
     data: T.object
   }).isRequired,
+  nbConnections: T.number.isRequired,
   workspace: T.shape(
     WorkspaceTypes.propTypes
   ).isRequired,
@@ -50,7 +56,8 @@ AnalyticsComponent.propTypes = {
 const Analytics = connect(
   state => ({
     analytics: selectors.analytics(state),
-    workspace: state.workspace
+    nbConnections: selectors.nbConnections(state),
+    workspace: toolSelectors.contextData(state)
   }),
   dispatch => ({
     getAnalytics: (workspaceId) => {

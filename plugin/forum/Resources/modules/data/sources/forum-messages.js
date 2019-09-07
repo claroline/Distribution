@@ -1,7 +1,7 @@
-import {url} from '#/main/app/api'
-import {URL_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/app/intl/translation'
+import {route} from '#/main/core/resource/routing'
 
 import {MessageCard} from '#/plugin/forum/resources/forum/data/components/message-card'
 
@@ -9,10 +9,8 @@ export default {
   name: 'forum_messages',
   parameters: {
     primaryAction: (message) => ({
-      type: URL_BUTTON,
-      target: url([ 'claro_resource_show_short', {
-        id: message.meta.resource.id
-      }]) + `#/subjects/show/${message.subject.id}`
+      type: LINK_BUTTON,
+      target: `${route(message.meta.resource)}/subjects/show/${message.subject.id}`
     }),
     definition: [
       {

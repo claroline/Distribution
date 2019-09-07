@@ -20,12 +20,8 @@ use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
 use Claroline\CoreBundle\Repository\Log\LogRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @DI\Service("claroline.manager.resource_evaluation_manager")
- */
 class ResourceEvaluationManager
 {
     private $eventDispatcher;
@@ -37,11 +33,6 @@ class ResourceEvaluationManager
     private $logRepo;
 
     /**
-     * @DI\InjectParams({
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     *
      * @param EventDispatcherInterface $eventDispatcher
      * @param ObjectManager            $om
      */
@@ -119,6 +110,9 @@ class ResourceEvaluationManager
         }
         if (isset($data['progression'])) {
             $evaluation->setProgression($data['progression']);
+        }
+        if (isset($data['progressionMax'])) {
+            $evaluation->setProgressionMax($data['progressionMax']);
         }
         if (isset($data['duration'])) {
             $evaluation->setDuration($data['duration']);
@@ -199,11 +193,25 @@ class ResourceEvaluationManager
         if (isset($data['progression'])) {
             if (isset($forced['progression']) && $forced['progression']) {
                 $rue->setProgression($data['progression']);
-            } else {
-                $rueProgression = $rue->getProgression();
 
-                if (is_null($rueProgression) || $data['progression'] > $rueProgression) {
+                if (isset($data['progressionMax'])) {
+                    $rue->setProgressionMax($data['progressionMax']);
+                }
+            } else {
+                $newProgresssion = empty($data['progressionMax']) ?
+                    $data['progression'] :
+                    $data['progression'] / $data['progressionMax'];
+
+                $rueProgression = $rue->getProgression();
+                $rueProgressionMax = $rue->getProgressionMax();
+                $oldProgression = empty($rueProgressionMax) ? $rueProgression : $rueProgression / $rueProgressionMax;
+
+                if (is_null($oldProgression) || $newProgresssion >= $oldProgression) {
                     $rue->setProgression($data['progression']);
+
+                    if (isset($data['progressionMax'])) {
+                        $rue->setProgressionMax($data['progressionMax']);
+                    }
                 }
             }
         }

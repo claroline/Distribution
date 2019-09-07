@@ -5,7 +5,6 @@ import get from 'lodash/get'
 import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
 import {ResourcePage} from '#/main/core/resource/containers/page'
-import {currentUser} from '#/main/app/security'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 
 import {Overview} from '#/plugin/forum/resources/forum/overview/components/overview'
@@ -16,7 +15,6 @@ import {Forum as ForumType} from '#/plugin/forum/resources/forum/prop-types'
 
 const ForumResource = props =>
   <ResourcePage
-    styles={['claroline-distribution-plugin-forum-forum-resource']}
     primaryAction="post"
     customActions={[
       {
@@ -24,33 +22,33 @@ const ForumResource = props =>
         icon: 'fa fa-fw fa-home',
         label: trans('show_overview'),
         displayed: !!get(props.forum, 'display.showOverview'),
-        target: '/',
+        target: props.path,
         exact: true
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-list-ul',
         label: trans('see_subjects', {}, 'forum'),
-        target: '/subjects',
+        target: `${props.path}/subjects`,
         exact: true
       }, {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-envelope',
         label: trans('receive_notifications', {}, 'forum'),
         displayed: !get(props.forum, 'meta.notified'),
-        callback: () => props.notify(props.forum, currentUser())
+        callback: () => props.notify(props.forum, props.currentUser)
       },{
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-envelope-o',
         label: trans('stop_receive_notifications', {}, 'forum'),
         displayed: !!get(props.forum, 'meta.notified'),
-        callback: () => props.stopNotify(props.forum, currentUser())
+        callback: () => props.stopNotify(props.forum, props.currentUser)
       }, {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-gavel',
         label: trans('blocked_messages_subjects', {}, 'forum'),
         group: trans('moderation', {}, 'forum'),
         displayed: !!get(props.forum, 'restrictions.moderator'),
-        target: '/moderation/blocked/subjects',
+        target: `${props.path}/moderation/blocked/subjects`,
         exact: true
       }, {
         type: LINK_BUTTON,
@@ -58,12 +56,13 @@ const ForumResource = props =>
         label: trans('flagged_messages_subjects', {}, 'forum'),
         group: trans('moderation', {}, 'forum'),
         displayed: !!get(props.forum, 'restrictions.moderator'),
-        target: '/moderation/flagged/subjects',
+        target: `${props.path}/moderation/flagged/subjects`,
         exact: true
       }
     ]}
   >
     <Routes
+      path={props.path}
       routes={[
         {
           path: '/edit',
@@ -80,7 +79,11 @@ const ForumResource = props =>
           component: Player
         },  {
           path: '/moderation',
-          component: Moderation
+          render: () => {
+            const component = <Moderation path={props.path} />
+
+            return component
+          }
         }
       ]}
       redirect={[
@@ -95,6 +98,8 @@ const ForumResource = props =>
   </ResourcePage>
 
 ForumResource.propTypes = {
+  path: T.string.isRequired,
+  currentUser: T.object,
   forum: T.shape(ForumType.propTypes).isRequired,
   editable: T.bool.isRequired,
   loadLastMessages: T.func.isRequired,

@@ -3,18 +3,16 @@ import {ResourceCard} from '#/main/core/resource/components/card'
 import {trans} from '#/main/app/intl/translation'
 import {URL_BUTTON} from '#/main/app/buttons'
 
+import {route} from '#/main/core/resource/routing'
 import {getTypes} from '#/main/core/resource/utils'
 
 export default {
   name: 'resources',
   icon: 'fa fa-fw fa-folder',
   parameters: {
-    primaryAction: (resourceNode) => ({ // todo : reuse resource default action
+    primaryAction: (resourceNode) => ({
       type: URL_BUTTON,
-      target: ['claro_resource_show', {
-        type: resourceNode.meta.type,
-        id: resourceNode.id
-      }]
+      target: `#${route(resourceNode)}`
     }),
     definition: [
       {
@@ -53,6 +51,11 @@ export default {
         label: trans('modification_date'),
         type: 'date',
         alias: 'modificationDate',
+        displayed: true
+      }, {
+        name: 'meta.creator',
+        type: 'user',
+        label: trans('creator'),
         displayed: true
       }, {
         name: 'tags',

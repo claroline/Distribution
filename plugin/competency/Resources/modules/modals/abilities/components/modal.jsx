@@ -3,14 +3,14 @@ import {PropTypes as T} from 'prop-types'
 import omit from 'lodash/omit'
 
 import {Button} from '#/main/app/action/components/button'
-import {Modal} from '#/main/app/overlay/modal/components/modal'
+import {Modal} from '#/main/app/overlays/modal/components/modal'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {trans} from '#/main/app/intl/translation'
 
 import {selectors} from '#/plugin/competency/modals/abilities/store'
 import {Ability as AbilityType} from '#/plugin/competency/administration/competency/prop-types'
-import {AbilityList} from '#/plugin/competency/administration/competency/framework/components/ability-list'
+import {AbilityCard} from '#/plugin/competency/administration/competency/data/components/ability-card'
 
 const AbilitiesPickerModal = props => {
   const selectAction = props.selectAction(props.selected)
@@ -29,8 +29,16 @@ const AbilitiesPickerModal = props => {
           url: ['apiv2_ability_list'],
           autoload: true
         }}
-        definition={AbilityList.definition}
-        card={AbilityList.card}
+        definition={[
+          {
+            name: 'name',
+            label: trans('name'),
+            displayed: true,
+            type: 'string',
+            primary: true
+          }
+        ]}
+        card={AbilityCard}
       />
 
       <Button

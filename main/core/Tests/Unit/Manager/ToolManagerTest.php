@@ -13,10 +13,8 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Mockery as m;
 
@@ -28,6 +26,8 @@ class ToolManagerTest extends MockeryTestCase
     private $utilities;
     private $roleRepo;
     private $om;
+    private $translator;
+    private $roleManager;
 
     public function setUp()
     {
@@ -35,7 +35,7 @@ class ToolManagerTest extends MockeryTestCase
 
         parent::setUp();
         $this->orderedToolRepo = $this->mock('Claroline\CoreBundle\Repository\OrderedToolRepository');
-        $this->toolRepo = $this->mock('Claroline\CoreBundle\Repository\ToolRepository');
+        $this->toolRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceTypeRepository');
         $this->ed = $this->mock('Claroline\CoreBundle\Event\StrictDispatcher');
         $this->utilities = $this->mock('Claroline\CoreBundle\Library\Utilities\ClaroUtilities');
         $this->roleRepo = $this->mock('Claroline\CoreBundle\Repository\RoleRepository');
@@ -217,30 +217,6 @@ class ToolManagerTest extends MockeryTestCase
     }
 
     /**
-     * @dataProvider removeDesktopToolProvider
-     */
-    public function testRemoveDesktopTool($name, $isExceptionExpected)
-    {
-        $removedTool = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
-        $user = $this->mock('Claroline\CoreBundle\Entity\User');
-        $ot = $this->mock('Claroline\CoreBundle\Entity\Tool\OrderedTool');
-        $removedTool->shouldReceive('getName')->once()->andReturn($name);
-
-        if ($isExceptionExpected) {
-            $this->expectException('Claroline\CoreBundle\Manager\Exception\UnremovableToolException');
-        } else {
-            $this->orderedToolRepo->shouldReceive('findOneBy')
-                ->once()
-                ->with(['user' => $user, 'tool' => $removedTool])
-                ->andReturn($ot);
-            $this->om->shouldReceive('remove')->once();
-            $this->om->shouldReceive('flush');
-        }
-
-        $this->getManager()->removeDesktopTool($removedTool, $user);
-    }
-
-    /**
      * @dataProvider addDesktopToolProvider
      */
     public function testAddDesktopTool($switchTool, $isExceptionExpected)
@@ -328,52 +304,6 @@ class ToolManagerTest extends MockeryTestCase
         $this->assertEquals($expected, $manager->addMissingWorkspaceTools($workspace));
     }
 
-    public function testGetWorkspaceExistingTools()
-    {
-        $manager = $this->getManager();
-
-        $tool = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
-        $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $roleA = $this->mock('Claroline\CoreBundle\Entity\Role');
-        $roleA->shouldReceive('getId')->andReturn(1);
-        $roleB = $this->mock('Claroline\CoreBundle\Entity\Role');
-        $roleB->shouldReceive('getId')->andReturn(2);
-
-        $ot = $this->mock('Claroline\CoreBundle\Entity\Tool\OrderedTool');
-        $ot->shouldReceive('getTool')->andReturn($tool);
-        $tool->shouldReceive('isDisplayableInWorkspace')->andReturn(true);
-        $ot->shouldReceive('getRoles')->andReturn([$roleA]);
-        $ot->shouldReceive('getOrder')->andReturn(1);
-        $ot->shouldReceive('getName')->andReturn('displayedName');
-
-        $expected = [
-            [
-                'tool' => $tool,
-                'visibility' => [1 => true, 2 => false],
-                'position' => 1,
-                'workspace' => $workspace,
-                'displayedName' => 'displayedName',
-            ],
-        ];
-
-        $this->orderedToolRepo->shouldReceive('findBy')->andReturn([$ot])->once();
-        $this->roleManager->shouldReceive('getWorkspaceRoles')
-            ->with($workspace)
-            ->once()
-            ->andReturn([$roleA, $roleB]);
-        $this->assertEquals($expected, $manager->getWorkspaceExistingTools($workspace));
-    }
-
-    public function testGetWorkspaceToolsConfigurationArray()
-    {
-        $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
-        $manager = $this->getManager(['addMissingWorkspaceTools', 'getWorkspaceExistingTools']);
-        $manager->shouldReceive('addMissingWorkspaceTools')->with($workspace)->once()->andReturn(['1']);
-        $manager->shouldReceive('getWorkspaceExistingTools')->with($workspace)->once()->andReturn(['2']);
-        $expected = ['2', '1'];
-        $this->assertEquals($expected, $manager->getWorkspaceToolsConfigurationArray($workspace));
-    }
-
     public function testGetOrderedToolsByWorkspaceAndRoles()
     {
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
@@ -414,42 +344,6 @@ class ToolManagerTest extends MockeryTestCase
         );
     }
 
-    public function testEditOrderedTool()
-    {
-        $entity = new OrderedTool();
-        $this->om->shouldReceive('persist')->once()->with($entity);
-        $this->om->shouldReceive('flush')->once();
-
-        $this->getManager()->editOrderedTool($entity);
-    }
-
-    public function testEditTool()
-    {
-        $entity = new Tool();
-        $this->om->shouldReceive('persist')->once()->with($entity);
-        $this->om->shouldReceive('flush')->once();
-
-        $this->getManager()->editTool($entity);
-    }
-
-    public function testGetAllTools()
-    {
-        $this->toolRepo->shouldReceive('findAll')->once()->andReturn('return');
-
-        $this->assertEquals('return', $this->getManager()->getAllTools());
-    }
-
-    public function testgetOneByWorkspaceAndTool()
-    {
-        $tool = new Tool();
-        $ws = new Workspace();
-
-        $this->orderedToolRepo->shouldReceive('findOneBy')->once()
-            ->with(['workspace' => $ws, 'tool' => $tool])->andReturn('return');
-
-        $this->assertEquals('return', $this->getManager()->getOneByWorkspaceAndTool($ws, $tool));
-    }
-
     public function testAddRequiredToolsUser()
     {
         $manager = $this->getManager(['addDesktopTool']);
@@ -458,43 +352,26 @@ class ToolManagerTest extends MockeryTestCase
         $resmanager = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $parameters = $this->mock('Claroline\CoreBundle\Entity\Tool\Tool');
         $home->shouldReceive('getName')->once()->andReturn('home');
-        $resmanager->shouldReceive('getName')->once()->andReturn('resource_manager');
+        $resmanager->shouldReceive('getName')->once()->andReturn('resources');
         $parameters->shouldReceive('getName')->once()->andReturn('parameters');
 
         $this->toolRepo->shouldReceive('findOneBy')->once()->with(['name' => 'home'])->andReturn($home);
         $this->toolRepo->shouldReceive('findOneBy')
             ->once()
-            ->with(['name' => 'resource_manager'])
+            ->with(['name' => 'resources'])
             ->andReturn($resmanager);
         $this->toolRepo->shouldReceive('findOneBy')
             ->once()
             ->with(['name' => 'parameters'])
             ->andReturn($parameters);
         $manager->shouldReceive('addDesktopTool')->once()->with($home, $user, 1, 'home');
-        $manager->shouldReceive('addDesktopTool')->once()->with($resmanager, $user, 2, 'resource_manager');
+        $manager->shouldReceive('addDesktopTool')->once()->with($resmanager, $user, 2, 'resources');
         $manager->shouldReceive('addDesktopTool')->once()->with($parameters, $user, 3, 'parameters');
         $this->om->shouldReceive('startFlushSuite')->once();
         $this->om->shouldReceive('persist')->once()->with($user);
         $this->om->shouldReceive('endFlushSuite')->once()->with($user);
 
         $manager->addRequiredToolsToUser($user);
-    }
-
-    public function testGetOneToolByName()
-    {
-        $name = 'name';
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->toolRepo->shouldReceive('findOneByName')->once()->with($name)->andReturn('return');
-
-        $this->assertEquals('return', $this->getManager()->getOneToolByName($name));
-    }
-
-    public function testGetToolByCriteria()
-    {
-        $criteria = [];
-        $this->toolRepo->shouldReceive('findBy')->with($criteria)->once()->andReturn('return');
-
-        $this->assertEquals('return', $this->getManager()->getToolByCriterias($criteria));
     }
 
     public function testExtractFiles()
@@ -508,14 +385,6 @@ class ToolManagerTest extends MockeryTestCase
 
         $realPath = $this->getManager()->extractFiles($archpath, $confTools);
         $this->assertContains('path', $realPath[0]);
-    }
-
-    public function removeDesktopToolProvider()
-    {
-        return [
-            ['name' => 'toolname', 'isExceptionExpected' => false],
-            ['name' => 'parameters', 'isExceptionExpected' => true],
-        ];
     }
 
     public function addDesktopToolProvider()

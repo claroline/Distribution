@@ -7,7 +7,7 @@ import omit from 'lodash/omit'
 import set from 'lodash/set'
 
 import {trans} from '#/main/app/intl/translation'
-import {Modal} from '#/main/app/overlay/modal/components/modal'
+import {Modal} from '#/main/app/overlays/modal/components/modal'
 import {DataFormSection as DataFormSectionTypes} from '#/main/app/content/form/prop-types'
 import {FormData} from '#/main/app/content/form/components/data'
 import {cleanErrors} from '#/main/app/content/form/utils'
@@ -32,10 +32,10 @@ class FormDataModal extends Component {
     this.updateProp = this.updateProp.bind(this)
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.data !== this.props.data) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.data !== this.props.data) {
       this.setState({
-        data: cloneDeep(nextProps.data)
+        data: cloneDeep(this.props.data)
       })
     }
   }

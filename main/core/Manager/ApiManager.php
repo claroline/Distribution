@@ -15,33 +15,16 @@ use Claroline\AppBundle\Api\Options;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Import\File as HistoryFile;
-use FOS\RestBundle\View\View;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.manager.api_manager")
  * This service allows 2 instances of claroline-connect to communicate through their REST api.
- * The REST api requires an oauth authentication (wich is why the $id/$secret combination is required)
+ * The REST api requires an oauth authentication (wich is why the $id/$secret combination is required).
  */
 class ApiManager
 {
-    /**
-     * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "curlManager"  = @DI\Inject("claroline.manager.curl_manager"),
-     *     "viewHandler"  = @DI\Inject("fos_rest.view_handler"),
-     *     "container"    = @DI\Inject("service_container"),
-     *     "transfer"     = @DI\Inject("claroline.api.transfer"),
-     *     "finder"       =  @DI\Inject("claroline.api.finder"),
-     *     "serializer"   =  @DI\Inject("claroline.api.serializer"),
-     *     "fileUt"       = @DI\Inject("claroline.utilities.file"),
-     *     "crud"         = @DI\Inject("claroline.api.crud"),
-     * })
-     */
     public function __construct(
         ObjectManager $om,
         CurlManager $curlManager,
-        $viewHandler,
         $container,
         $transfer,
         $finder,
@@ -51,7 +34,6 @@ class ApiManager
     ) {
         $this->om = $om;
         $this->curlManager = $curlManager;
-        $this->viewHandler = $viewHandler;
         $this->container = $container;
         $this->transfer = $transfer;
         $this->finder = $finder;

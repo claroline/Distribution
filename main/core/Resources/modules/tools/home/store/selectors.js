@@ -2,16 +2,52 @@ import {createSelector} from 'reselect'
 
 import {trans} from '#/main/app/intl/translation'
 
-const currentTabId = (state) => state.currentTabId
-const editable = (state) => state.editable
-const administration = (state) => state.administration
-const editing = (state) => state.editing
-const context = (state) => state.currentContext
-const tabs = (state) => state.tabs
+import {selectors as toolSelectors} from '#/main/core/tool/store/selectors'
+
+const STORE_NAME = 'home'
+
+const store = (state) => state[STORE_NAME]
+
+const context = toolSelectors.context
+
+const currentTabId = createSelector(
+  [store],
+  (store) => store.currentTabId
+)
+
+const editable = createSelector(
+  [store],
+  (store) => store.editable
+)
+
+const administration = createSelector(
+  [store],
+  (store) => store.administration
+)
+
+const desktopAdmin = createSelector(
+  [store],
+  (store) => store.desktopAdmin
+)
+
+const editing = createSelector(
+  [store],
+  (store) => store.editing
+)
+
+const tabs = createSelector(
+  [store],
+  (store) => store.tabs || []
+)
+
+const roles = createSelector(
+  [store],
+  (store) => store.roles || []
+)
 
 const currentTab = createSelector(
   [tabs, currentTabId],
-  (tabs, currentTabId) => tabs.find(tab => currentTabId === tab.id)
+  (tabs, currentTabId) => tabs.find(tab => currentTabId === tab.slug)
 )
 
 const currentTabTitle = createSelector(
@@ -44,14 +80,17 @@ const sortedTabs = createSelector(
 )
 
 export const selectors = {
+  STORE_NAME,
   sortedTabs,
   currentTab,
   currentTabId,
   currentTabTitle,
   editable,
   administration,
+  desktopAdmin,
   editing,
   context,
   tabs,
+  roles,
   widgets
 }

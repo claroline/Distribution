@@ -50,7 +50,6 @@ class Configuration implements ConfigurationInterface
         $this->addToolSection($pluginSection);
         $this->addThemeSection($pluginSection);
         $this->addAdminToolSection($pluginSection);
-        $this->addAdditionalActionSection($pluginSection);
         $this->addTemplateSection($pluginSection);
 
         return $treeBuilder;
@@ -263,7 +262,7 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('exportable')->defaultFalse()->end()
                         ->arrayNode('context')
                             ->prototype('scalar')->end()
-                            ->defaultValue(['desktop', 'workspace', 'home'])
+                            ->defaultValue(['desktop', 'workspace', 'home', 'administration'])
                         ->end()
                         ->arrayNode('tags')
                             ->prototype('scalar')->end()
@@ -285,7 +284,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('type')->isRequired()->end()
                         ->arrayNode('context')
                             ->prototype('scalar')->end()
-                            ->defaultValue(['desktop', 'workspace'])
+                            ->defaultValue(['desktop', 'workspace', 'administration'])
                         ->end()
                         ->arrayNode('tags')
                             ->prototype('scalar')->end()
@@ -369,22 +368,6 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('name')->isRequired()->end()
                         ->scalarNode('class')->end()
-                    ->end()
-                ->end()
-            ->end()
-        ->end()->end();
-    }
-
-    private function addAdditionalActionSection(NodeBuilder $pluginSection)
-    {
-        $pluginSection
-            ->arrayNode('additional_action')
-                ->prototype('array')
-                    ->children()
-                        ->scalarNode('action')->isRequired()->end()
-                        ->scalarNode('type')->isRequired()->end()
-                        ->scalarNode('displayed_name')->isRequired()->end()
-                        ->scalarNode('class')->isRequired()->end()
                     ->end()
                 ->end()
             ->end()

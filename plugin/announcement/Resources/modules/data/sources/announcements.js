@@ -1,7 +1,7 @@
-import {url} from '#/main/app/api'
-import {URL_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/app/intl/translation'
+import {route} from '#/main/core/resource/routing'
 
 import {AnnouncementCard} from '#/plugin/announcement/data/components/announcement-card'
 
@@ -9,10 +9,8 @@ export default {
   name: 'announcements',
   parameters: {
     primaryAction: (announcement) => ({
-      type: URL_BUTTON,
-      target: url([ 'claro_resource_show_short', {
-        id: announcement.meta.resource.id
-      }]) + `#/${announcement.id}`
+      type: LINK_BUTTON,
+      target: `${route(announcement.meta.resource)}/${announcement.id}`
     }),
     definition: [
       {

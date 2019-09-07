@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {withRouter} from '#/main/app/router'
 import {makeId} from '#/main/core/scaffolding/id'
 import {actions as formActions} from '#/main/app/content/form/store'
-import {select as workspaceSelectors} from '#/main/core/workspace/selectors'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 
 import {TeamTool as TeamToolComponent} from '#/plugin/team/tools/team/components/tool'
 import {selectors, actions} from '#/plugin/team/tools/team/store'
@@ -14,14 +14,14 @@ const TeamTool = withRouter(
       canEdit: selectors.canEdit(state),
       teamParams: selectors.teamParams(state),
       resourceTypes: selectors.resourceTypes(state),
-      workspaceId: workspaceSelectors.workspace(state).uuid
+      workspaceId: toolSelectors.contextData(state) ? toolSelectors.contextData(state).uuid : null
     }),
     (dispatch) => ({
       resetForm(formData) {
-        dispatch(formActions.resetForm('teamParamsForm', formData))
+        dispatch(formActions.resetForm(selectors.STORE_NAME + '.teamParamsForm', formData))
       },
       openCurrentTeam(id, teamParams, workspaceId, resourceTypes) {
-        dispatch(actions.openForm('teams.current', id, {
+        dispatch(actions.openForm(selectors.STORE_NAME + '.teams.current', id, {
           id: makeId(),
           workspace: {
             uuid: workspaceId
@@ -34,10 +34,10 @@ const TeamTool = withRouter(
         }))
       },
       resetCurrentTeam() {
-        dispatch(formActions.resetForm('teams.current', {}, true))
+        dispatch(formActions.resetForm(selectors.STORE_NAME + '.teams.current', {}, true))
       },
       openMultipleTeamsForm(teamParams, resourceTypes) {
-        dispatch(formActions.resetForm('teams.multiple', {
+        dispatch(formActions.resetForm(selectors.STORE_NAME + '.teams.multiple', {
           nbTeams: 1,
           selfRegistration: teamParams.selfRegistration,
           selfUnregistration: teamParams.selfUnregistration,
@@ -47,7 +47,7 @@ const TeamTool = withRouter(
         }, true))
       },
       resetMultipleTeamsForm() {
-        dispatch(formActions.resetForm('teams.multiple', {}, true))
+        dispatch(formActions.resetForm(selectors.STORE_NAME + '.teams.multiple', {}, true))
       }
     })
   )(TeamToolComponent)

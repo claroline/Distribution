@@ -4,14 +4,16 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
+import {selectors} from '#/main/core/administration/parameters/appearance/store/selectors'
+
 const Layout = () =>
   <FormData
-    name="parameters"
+    name={selectors.FORM_NAME}
     target={['apiv2_parameters_update']}
     buttons={true}
     cancel={{
       type: LINK_BUTTON,
-      target: '/main',
+      target: '/',
       exact: true
     }}
     sections={[
@@ -24,17 +26,9 @@ const Layout = () =>
             type: 'boolean',
             label: trans('show_name_in_top_bar')
           }, {
-            name: 'display.header_locale',
-            type: 'boolean',
-            label: trans('header_locale')
-          }, {
             name: 'display.logo',
             type: 'image',
             label: trans('logo')
-          }, {
-            name: 'display.logo_redirect_home',
-            type: 'boolean',
-            label: trans('logo_redirect_home')
           }
         ]
       }, {
@@ -52,15 +46,11 @@ const Layout = () =>
         title: trans('footer'),
         fields: [
           {
-            name: 'display.footer_login',
+            name: 'footer.show_locale',
             type: 'boolean',
-            label: trans('show_connection_button_at_footer', {}, 'home')
+            label: trans('footer_locale')
           }, {
-            name: 'display.footer_workspaces',
-            type: 'boolean',
-            label: trans('show_workspace_menu_at_footer', {}, 'home')
-          }, {
-            name: 'display.footer',
+            name: 'footer.content',
             type: 'html',
             label: trans('footer')
           }

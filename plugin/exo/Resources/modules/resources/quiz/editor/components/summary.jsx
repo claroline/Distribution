@@ -34,14 +34,16 @@ const StepLink = props =>
     }
 
     <LinkButton
-      target={`/edit/${props.id}`}
+      target={`${props.path}/edit/${props.slug}`}
     >
       {props.title ? props.title.substr(0, 30) : trans('step', {number: props.number}, 'quiz')}
     </LinkButton>
   </li>
 
 StepLink.propTypes = {
+  path: T.string.isRequired,
   id: T.string.isRequired,
+  slug: T.string.isRequired,
   number: T.number.isRequired,
   title: T.string,
   errors: T.bool.isRequired,
@@ -70,7 +72,7 @@ class EditorSummary extends Component {
     return (
       <ul className="quiz-navbar scroller">
         <li className="quiz-navlink">
-          <LinkButton target="/edit/parameters">
+          <LinkButton target={`${this.props.path}/edit/parameters`}>
             {!isEmpty(omit(this.props.errors, 'steps')) &&
               <FormStatus
                 id="quiz-parameters-errors"
@@ -88,11 +90,13 @@ class EditorSummary extends Component {
           <StepLink
             key={step.id}
             id={step.id}
+            slug={step.slug}
             number={index + 1}
             title={step.title}
             actions={step.actions}
             validating={this.props.validating}
             errors={!isEmpty(get(this.props.errors, `steps[${index}]`))}
+            path={this.props.path}
           />
         )}
 
@@ -108,6 +112,7 @@ class EditorSummary extends Component {
 }
 
 EditorSummary.propTypes = {
+  path: T.string.isRequired,
   active: T.string,
   errors: T.object,
   validating: T.bool.isRequired,

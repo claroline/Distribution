@@ -6,7 +6,8 @@
   },
   "styles": {
     "entry": {
-      "agenda": "agenda.less"
+      "clock": "header/clock.less",
+      "agenda": "tools/agenda/index.less"
     }
   }
 }

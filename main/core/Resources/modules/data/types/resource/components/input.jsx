@@ -5,27 +5,30 @@ import {trans, transChoice} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
-import {ResourceEmbedded} from '#/main/core/resource/components/embedded'
 import {ModalButton} from '#/main/app/buttons/modal/containers/button'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 
+import {ResourceEmbedded} from '#/main/core/resource/containers/embedded'
 import {ResourceCard} from '#/main/core/resource/components/card'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
-import {MODAL_RESOURCE_EXPLORER} from '#/main/core/modals/resources'
+import {MODAL_RESOURCES} from '#/main/core/modals/resources'
+
+// TODO : manage disabled state
 
 const ResourceInput = props => {
   if (!isEmpty(props.value) && !props.embedded) {
     return(
       <ResourceCard
         data={props.value}
+        size="xs"
         actions={[
           {
             name: 'replace',
             type: MODAL_BUTTON,
             icon: 'fa fa-fw fa-recycle',
             label: trans('replace', {}, 'actions'),
-            modal: [MODAL_RESOURCE_EXPLORER, {
+            modal: [MODAL_RESOURCES, {
               title: props.picker.title,
               current: props.picker.current,
               root: props.picker.root,
@@ -42,8 +45,8 @@ const ResourceInput = props => {
             label: trans('delete', {}, 'actions'),
             dangerous: true,
             modal: [MODAL_CONFIRM, {
-              title: transChoice('resources_delete_confirm', 1),
-              question: transChoice('resources_delete_message', 1, {count: 1}),
+              title: transChoice('resources_delete_confirm', 1, {}, 'resource'),
+              question: transChoice('resources_delete_message', 1, {count: 1}, 'resource'),
               handleConfirm: () => props.onChange(null)
             }]
           }
@@ -61,13 +64,14 @@ const ResourceInput = props => {
           modal={[MODAL_CONFIRM, {
             dangerous: true,
             icon: 'fa fa-fw fa-trash-o',
-            title: transChoice('resources_delete_confirm', 1),
-            question: transChoice('resources_delete_message', 1, {count: 1}),
+            title: transChoice('resources_delete_confirm', 1, {}, 'resource'),
+            question: transChoice('resources_delete_message', 1, {count: 1}, 'resource'),
             handleConfirm: () => props.onChange(null)
           }]}
         >
           <span>{trans('delete', {}, 'actions')}</span>
         </ModalButton>
+
         <ResourceEmbedded
           resourceNode={props.value}
           onResourceClose={props.onEmbeddedResourceClose}
@@ -76,7 +80,7 @@ const ResourceInput = props => {
     )
   }
   else {
-    return(
+    return (
       <EmptyPlaceholder
         id={props.id}
         size="lg"
@@ -86,7 +90,7 @@ const ResourceInput = props => {
         <ModalButton
           className="btn"
           primary={true}
-          modal={[MODAL_RESOURCE_EXPLORER, {
+          modal={[MODAL_RESOURCES, {
             title: props.picker.title,
             current: props.picker.current,
             root: props.picker.root,
@@ -125,7 +129,6 @@ implementPropTypes(ResourceInput, FormFieldTypes, {
 }, {
   value: null,
   picker: {
-    title: trans('resource_picker'),
     current: null,
     filters: {},
     root: null

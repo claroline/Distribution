@@ -1,15 +1,16 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {trans} from '#/main/app/intl/translation'
-import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
-import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
-import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
-import {WorkspaceCard} from '#/main/core/workspace/data/components/workspace-card'
+import {route} from '#/main/core/workspace/routing'
+import {MODAL_WORKSPACES} from '#/main/core/modals/workspaces'
+import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
-import {MODAL_WORKSPACES_PICKER} from '#/main/core/modals/workspaces'
+import {WorkspaceCard} from '#/main/core/workspace/components/card'
+import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 const WorkspacesButton = props =>
   <Button
@@ -17,11 +18,13 @@ const WorkspacesButton = props =>
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
     icon="fa fa-fw fa-book"
-    label={trans('select_a_workspace')}
+    label={props.model ? trans('select_a_workspace_model') : trans('select_a_workspace')}
     primary={true}
-    modal={[MODAL_WORKSPACES_PICKER, {
-      url: ['apiv2_administrated_list'],
+    disabled={props.disabled}
+    modal={[MODAL_WORKSPACES, {
+      url: props.model ? ['apiv2_workspace_list_model'] : ['apiv2_workspace_list_managed'],
       title: props.title,
+      model: props.model,
       selectAction: (selected) => ({
         type: CALLBACK_BUTTON,
         callback: () => props.onChange(selected[0])
@@ -31,15 +34,22 @@ const WorkspacesButton = props =>
 
 WorkspacesButton.propTypes = {
   title: T.string,
+  model: T.bool,
+  disabled: T.bool,
   onChange: T.func.isRequired
 }
 
 const WorkspaceInput = props => {
   if (props.value) {
     return(
-      <div>
+      <Fragment>
         <WorkspaceCard
           data={props.value}
+          primaryAction={{
+            type: LINK_BUTTON,
+            label: trans('open', {}, 'actions'),
+            target: route(props.value)
+          }}
           actions={[
             {
               name: 'delete',
@@ -47,6 +57,7 @@ const WorkspaceInput = props => {
               icon: 'fa fa-fw fa-trash-o',
               label: trans('delete', {}, 'actions'),
               dangerous: true,
+              disabled: props.disabled,
               callback: () => props.onChange(null)
             }
           ]}
@@ -54,35 +65,38 @@ const WorkspaceInput = props => {
 
         <WorkspacesButton
           {...props.picker}
+          disabled={props.disabled}
           onChange={props.onChange}
         />
-      </div>
-    )
-  } else {
-    return (
-      <EmptyPlaceholder
-        size="lg"
-        icon="fa fa-book"
-        title={trans('no_workspace')}
-      >
-        <WorkspacesButton
-          {...props.picker}
-          onChange={props.onChange}
-        />
-      </EmptyPlaceholder>
+      </Fragment>
     )
   }
+
+  return (
+    <EmptyPlaceholder
+      size="lg"
+      icon="fa fa-book"
+      title={props.picker.model ? trans('no_workspace_model') : trans('no_workspace')}
+    >
+      <WorkspacesButton
+        {...props.picker}
+        disabled={props.disabled}
+        onChange={props.onChange}
+      />
+    </EmptyPlaceholder>
+  )
 }
 
 implementPropTypes(WorkspaceInput, FormFieldTypes, {
   value: T.shape(WorkspaceType.propTypes),
   picker: T.shape({
-    title: T.string
+    title: T.string,
+    model: T.bool
   })
 }, {
   value: null,
   picker: {
-    title: trans('workspace_selector')
+    model: false
   }
 })
 

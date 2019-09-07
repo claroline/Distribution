@@ -4,7 +4,7 @@ import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
-import {Modal} from '#/main/app/overlay/modal/components/modal'
+import {Modal} from '#/main/app/overlays/modal/components/modal'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {selectors} from '#/main/core/modals/workspaces/store'
@@ -28,7 +28,7 @@ const WorkspacesModal = props => {
           url: props.url,
           autoload: true
         }}
-        definition={WorkspaceList.definition}
+        definition={props.model ? WorkspaceList.modelDefinition : WorkspaceList.definition}
         card={WorkspaceList.card}
       />
 
@@ -47,6 +47,7 @@ const WorkspacesModal = props => {
 WorkspacesModal.propTypes = {
   url: T.oneOfType([T.string, T.array]),
   title: T.string,
+  model: T.bool,
   selectAction: T.func.isRequired,
   fadeModal: T.func.isRequired,
   selected: T.arrayOf(T.shape(WorkspaceType.propTypes)).isRequired,
@@ -54,8 +55,9 @@ WorkspacesModal.propTypes = {
 }
 
 WorkspacesModal.defaultProps = {
-  url: ['apiv2_administrated_list'],
-  title: trans('workspace_selector')
+  url: ['apiv2_workspace_list_managed'],
+  title: trans('workspaces'),
+  model: false
 }
 
 export {

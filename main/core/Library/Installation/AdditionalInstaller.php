@@ -64,6 +64,13 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             $updater->setLogger($this->logger);
             $updater->preUpdate();
         }
+
+        if (version_compare($currentVersion, '12.5.0', '<')) {
+            $updater = new Updater\Updater120500($this->container, $this->logger);
+
+            $updater->setLogger($this->logger);
+            $updater->preUpdate();
+        }
     }
 
     public function postUpdate($currentVersion, $targetVersion)
@@ -226,8 +233,22 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             $updater->postUpdate();
         }
 
-        if (version_compare($currentVersion, '12.4.13', '<')) {
-            $updater = new Updater\Updater120413($this->container, $this->logger);
+        if (version_compare($currentVersion, '12.4.14', '<')) {
+            $updater = new Updater\Updater120414($this->container, $this->logger);
+
+            $updater->setLogger($this->logger);
+            $updater->postUpdate();
+        }
+
+        if (version_compare($currentVersion, '12.5.0', '<')) {
+            $updater = new Updater\Updater120500($this->container, $this->logger);
+
+            $updater->setLogger($this->logger);
+            $updater->postUpdate();
+        }
+
+        if (version_compare($currentVersion, '12.5.1', '<')) {
+            $updater = new Updater\Updater120501($this->container, $this->logger);
 
             $updater->setLogger($this->logger);
             $updater->postUpdate();
@@ -287,15 +308,6 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         $om = $this->container->get('claroline.persistence.object_manager');
 
         /** @var Role $role */
-        $wscreator = $om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_WS_CREATOR');
-
-        /** @var AdminTool $tool */
-        $wsmanagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('workspace_management');
-
-        $wsmanagement->addRole($wscreator);
-        $om->persist($wsmanagement);
-
-        /** @var Role $role */
         $adminOrganization = $om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION');
 
         if (!$adminOrganization) {
@@ -303,12 +315,10 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
         }
 
         /** @var AdminTool $tool */
-        $usermanagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('user_management');
-        $workspacemanagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('workspace_management');
-        $usermanagement->addRole($adminOrganization);
-        $workspacemanagement->addRole($adminOrganization);
-        $om->persist($usermanagement);
-        $om->persist($workspacemanagement);
+        $userManagement = $om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('community');
+        $userManagement->addRole($adminOrganization);
+
+        $om->persist($userManagement);
         $om->flush();
     }
 

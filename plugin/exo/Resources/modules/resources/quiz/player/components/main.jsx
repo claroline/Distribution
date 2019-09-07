@@ -9,12 +9,13 @@ import {PlayerEnd} from '#/plugin/exo/resources/quiz/player/components/end'
 
 const PlayerMain = (props) =>
   <Routes
+    path={props.path}
     routes={[
       {
-        path: '/:id',
+        path: '/:slug',
         component: PlayerStep,
         render: (routeProps) => {
-          const stepIndex = props.steps.findIndex(step => routeProps.match.params.id === step.id)
+          const stepIndex = props.steps.findIndex(step => routeProps.match.params.slug === step.slug)
           if (-1 !== stepIndex) {
             const currentStep = props.steps[stepIndex]
 
@@ -31,7 +32,7 @@ const PlayerMain = (props) =>
             return Step
           }
 
-          routeProps.history.push('/')
+          routeProps.history.push(props.path)
 
           return null
         }
@@ -43,6 +44,7 @@ const PlayerMain = (props) =>
   />
 
 PlayerMain.propTypes = {
+  path: T.string.isRequired,
   numberingType: T.string,
   steps: T.arrayOf(T.shape(
     StepTypes.propTypes

@@ -2,39 +2,32 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
 import {url} from '#/main/app/api'
-import {isAdmin} from '#/main/app/security'
 
-import {select as workspaceSelect} from '#/main/core/workspace/selectors'
-import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
+import {selectors as securitySelectors} from '#/main/app/security/store'
+import {selectors as workspaceSelectors} from '#/main/core/workspace/store/selectors'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {
   actions as formActions,
   selectors as formSelect
 } from '#/main/app/content/form/store'
-import {actions} from '#/main/core/workspace/creation/store/actions'
+
+// todo : fix tool selection for opening
 
 // easy selection for restrictions
-// TODO : create selectors
-const restrictByDates   = (workspace) => workspace.restrictions && (workspace.restrictions.enableDates        || (workspace.restrictions.dates && 0 !== workspace.restrictions.dates.length))
-const restrictUsers     = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxUsers     || 0 === workspace.restrictions.maxUsers || !!workspace.restrictions.maxUsers)
+const restrictByDates   = (workspace) => get(workspace, 'restrictions.enableDates') || !isEmpty(get(workspace, 'restrictions.dates'))
+const restrictByCode    = (workspace) => get(workspace, 'restrictions.enableCode') || !!get(workspace, 'restrictions.code')
+const restrictByIps     = (workspace) => get(workspace, 'restrictions.enableIps') || !isEmpty(get(workspace, 'restrictions.allowedIps'))
+
 const restrictResources = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxResources || 0 === workspace.restrictions.maxResources || !!workspace.restrictions.maxResources)
+const restrictUsers     = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxUsers     || 0 === workspace.restrictions.maxUsers || !!workspace.restrictions.maxUsers)
 const restrictStorage   = (workspace) => workspace.restrictions && (workspace.restrictions.enableMaxStorage   || !!workspace.restrictions.maxStorage)
 
-// TODO : add tools
-
-const WorkspaceFormComponent = (props) => {
-  let modelChoice = {}
-
-  if (props.models) {
-    props.models.data.forEach(model => {
-      modelChoice[model.code] = model.code
-    })
-  }
-
-  return (<FormData
+const WorkspaceFormComponent = (props) =>
+  <FormData
     {...props}
     meta={true}
     sections={[
@@ -54,12 +47,13 @@ const WorkspaceFormComponent = (props) => {
             required: true
           }, {
             name: 'extra.model',
-            type: 'choice',
-            label: trans('model'),
+            type: 'workspace',
+            label: trans('create_from_model'),
             options: {
-              choices: modelChoice,
-              multiple: false,
-              condensed: true
+              picker: {
+                model: true,
+                title: trans('workspace_models')
+              }
             },
             displayed: props.new
           }
@@ -77,7 +71,7 @@ const WorkspaceFormComponent = (props) => {
             }
           }, {
             name: 'meta.model',
-            label: trans('model'),
+            label: trans('define_as_model'),
             type: 'boolean',
             disabled: !props.new
           }, {
@@ -112,9 +106,13 @@ const WorkspaceFormComponent = (props) => {
             type: 'image',
             label: trans('thumbnail')
           }, {
-            name: 'display.showTools',
+            name: 'display.showMenu',
             type: 'boolean',
             label: trans('showTools')
+          }, {
+            name: 'display.showProgression',
+            type: 'boolean',
+            label: trans('showProgression')
           }
         ]
       }, {
@@ -155,6 +153,12 @@ const WorkspaceFormComponent = (props) => {
                 type: 'resource',
                 help: trans ('opening_target_resource_help'),
                 label: trans('resource'),
+                options: {
+                  picker: {
+                    current: props.root,
+                    root: props.root
+                  }
+                },
                 required: true,
                 displayed: (workspace) => workspace.opening && 'resource' === workspace.opening.type,
                 onChange: (selected) => {
@@ -177,6 +181,7 @@ const WorkspaceFormComponent = (props) => {
                 name: 'breadcrumb.items',
                 type: 'choice',
                 label: trans('links'),
+                required: true,
                 displayed: (workspace) => get(workspace, 'breadcrumb.displayed') || false,
                 options: {
                   choices: {
@@ -245,7 +250,7 @@ const WorkspaceFormComponent = (props) => {
                 props.updateProp('restrictions.dates', [])
               }
             },
-            displayed: isAdmin(),
+            displayed: props.isAdmin,
             linked: [
               {
                 name: 'restrictions.dates',
@@ -259,11 +264,54 @@ const WorkspaceFormComponent = (props) => {
               }
             ]
           }, {
+            name: 'restrictions.enableCode',
+            label: trans('restrict_by_code'),
+            type: 'boolean',
+            calculated: restrictByCode,
+            onChange: activated => {
+              if (!activated) {
+                props.updateProp('restrictions.code', null)
+              }
+            },
+            linked: [
+              {
+                name: 'restrictions.code',
+                label: trans('access_code'),
+                displayed: restrictByCode,
+                type: 'password',
+                required: true
+              }
+            ]
+          }, {
+            name: 'restrictions.enableIps',
+            label: trans('restrict_by_ips'),
+            type: 'boolean',
+            calculated: restrictByIps,
+            onChange: activated => {
+              if (!activated) {
+                props.updateProp('restrictions.allowedIps', [])
+              }
+            },
+            linked: [
+              {
+                name: 'restrictions.allowedIps',
+                label: trans('allowed_ips'),
+                type: 'collection',
+                required: true,
+                displayed: restrictByIps,
+                options: {
+                  type: 'ip',
+                  placeholder: trans('no_allowed_ip'),
+                  button: trans('add_ip')
+                }
+              }
+            ]
+          }, {
             name: 'restrictions.enableMaxUsers',
             type: 'boolean',
             label: trans('restrict_max_users'),
             calculated: restrictUsers,
-            displayed: isAdmin(),
+            displayed: props.isAdmin,
             onChange: activated => {
               if (!activated) {
                 // reset max users field
@@ -287,7 +335,7 @@ const WorkspaceFormComponent = (props) => {
             type: 'boolean',
             label: trans('restrict_max_resources'),
             calculated: restrictResources,
-            displayed: isAdmin(),
+            displayed: props.isAdmin,
             onChange: activated => {
               if (!activated) {
                 // reset max users field
@@ -311,7 +359,7 @@ const WorkspaceFormComponent = (props) => {
             type: 'boolean',
             label: trans('restrict_max_storage'),
             calculated: restrictStorage,
-            displayed: isAdmin(),
+            displayed: props.isAdmin,
             onChange: activated => {
               if (!activated) {
                 // reset max users field
@@ -346,40 +394,29 @@ const WorkspaceFormComponent = (props) => {
     ]}
   >
     {props.children}
-  </FormData>)
-}
+  </FormData>
+
 
 WorkspaceFormComponent.propTypes = {
-  workspace: T.shape(
-    WorkspaceTypes.propTypes
-  ).isRequired,
-  children: T.any,
   tools: T.array,
-  models: T.object,
+  root: T.object,
+  children: T.any,
   // from redux
+  isAdmin: T.bool.isRequired,
   new: T.bool.isRequired,
   updateProp: T.func.isRequired
 }
 
-WorkspaceFormComponent.defaultProps = {
-  modal: false
-}
-
 const WorkspaceForm = connect(
   (state, ownProps) => ({
-    workspace: formSelect.data(formSelect.form(state, ownProps.name)),
+    isAdmin: securitySelectors.isAdmin(state),
     new: formSelect.isNew(formSelect.form(state, ownProps.name)),
-    tools: workspaceSelect.tools(state)
+    tools: workspaceSelectors.tools(state),
+    root: workspaceSelectors.root(state)
   }),
   (dispatch, ownProps) =>({
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(ownProps.name, propName, propValue))
-    },
-    loadArchive(data) {
-      dispatch(actions.loadArchive(data))
-    },
-    fetchArchive(data) {
-      dispatch(actions.fetchArchive(data))
     }
   })
 )(WorkspaceFormComponent)

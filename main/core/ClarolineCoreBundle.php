@@ -17,7 +17,6 @@ use Claroline\CoreBundle\DependencyInjection\Compiler\DynamicConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\MailingConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\PlatformConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\RouterPass;
-use Claroline\CoreBundle\DependencyInjection\Compiler\RuleConstraintsConfigPass;
 use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\CoreBundle\Library\Installation\AdditionalInstaller;
 use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
@@ -36,7 +35,6 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
         $container->addCompilerPass(new PlatformConfigPass());
         $container->addCompilerPass(new DynamicConfigPass());
         $container->addCompilerPass(new DoctrineEntityListenerPass());
-        $container->addCompilerPass(new RuleConstraintsConfigPass());
         $container->addCompilerPass(new RouterPass());
         $container->addCompilerPass(new MailingConfigPass());
     }
@@ -67,23 +65,17 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
             'Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle',
             'FOS\JsRoutingBundle\FOSJsRoutingBundle',
             'JMS\AopBundle\JMSAopBundle',
-            'WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle',
             'Claroline\MigrationBundle\ClarolineMigrationBundle',
-            'Claroline\Bundle\FrontEndBundle\FrontEndBundle',
-            'JMS\SerializerBundle\JMSSerializerBundle',
             'Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle',
+            'Http\HttplugBundle\HttplugBundle',
         ];
         // simple container configuration, same for every environment
         $simpleConfigs = [
             'Symfony\Bundle\TwigBundle\TwigBundle' => 'twig',
-            'Symfony\Bundle\AsseticBundle\AsseticBundle' => 'assetic',
             'JMS\DiExtraBundle\JMSDiExtraBundle' => 'jms_di_extra',
             'JMS\SecurityExtraBundle\JMSSecurityExtraBundle' => 'jms_security_extra',
             'Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle' => 'stof_doctrine_extensions',
             'Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle' => 'sensio_framework_extra',
-            'FOS\RestBundle\FOSRestBundle' => 'fos_rest',
-            'Gregwar\CaptchaBundle\GregwarCaptchaBundle' => 'gregwar_captcha',
-            'Knp\Bundle\MenuBundle\KnpMenuBundle' => 'knp_menu',
         ];
         // one configuration file for every standard environment (prod, dev, test)
         $envConfigs = [

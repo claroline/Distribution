@@ -4,14 +4,13 @@ import {connect} from 'react-redux'
 import cloneDeep from 'lodash/cloneDeep'
 import classes from 'classnames'
 
-import {currentUser, hasPermission} from '#/main/app/security'
+import {hasPermission} from '#/main/app/security'
 import {asset} from '#/main/app/config/asset'
 import {trans} from '#/main/app/intl/translation'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {CallbackButton} from '#/main/app/buttons/callback/components/button'
-
+import {CALLBACK_BUTTON, CallbackButton, DownloadButton} from '#/main/app/buttons'
+import {selectors as securitySelectors} from '#/main/app/security/store'
 import {makeId} from '#/main/core/scaffolding/id'
 import {selectors as fileSelect} from '#/main/core/resources/file/store'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
@@ -24,8 +23,6 @@ import {actions} from '#/plugin/audio-player/files/audio/store'
 import {Audio as AudioType, Section as SectionType} from '#/plugin/audio-player/files/audio/prop-types'
 import {Waveform} from '#/plugin/audio-player/waveform/components/waveform'
 import {SectionsComments} from '#/plugin/audio-player/files/audio/components/sections-comments'
-
-const authenticatedUser = currentUser()
 
 const Transcripts = props =>
   <div className="audio-player-transcripts">
@@ -47,6 +44,7 @@ const Section = props =>
         <CallbackButton
           className={classes('btn section-btn', {'activated': props.options.showHelp})}
           callback={() => props.updateOption(props.section.id, 'showHelp', !props.options.showHelp)}
+          primary={true}
         >
           <span className="fa fa-file-text-o"/>
         </CallbackButton>
@@ -55,6 +53,7 @@ const Section = props =>
         <CallbackButton
           className={classes('btn section-btn', {'activated': props.options.showComment})}
           callback={() => props.updateOption(props.section.id, 'showComment', !props.options.showComment)}
+          primary={true}
         >
           <span className="fa fa-comment-alt"/>
         </CallbackButton>
@@ -63,11 +62,12 @@ const Section = props =>
         <CallbackButton
           className={classes('btn section-btn', {'activated': props.options.showAudioUrl})}
           callback={() => props.updateOption(props.section.id, 'showAudioUrl', !props.options.showAudioUrl)}
+          primary={true}
         >
           <span className="fa fa-volume-up"/>
         </CallbackButton>
       }
-      {constants.USER_TYPE === props.section.type && authenticatedUser &&
+      {constants.USER_TYPE === props.section.type && props.currentUser &&
         <CallbackButton
           className="btn section-btn"
           callback={() => props.deleteSection()}
@@ -85,7 +85,7 @@ const Section = props =>
       }
       {props.options.showComment && (!props.section.comment || props.options.showCommentForm ?
         <UserMessageForm
-          user={authenticatedUser}
+          user={props.currentUser}
           content={props.section.comment ? props.section.comment.content : ''}
           allowHtml={true}
           submitLabel={trans('add_comment')}
@@ -93,7 +93,7 @@ const Section = props =>
             const comment = {
               content: content,
               meta: {
-                user: authenticatedUser,
+                user: props.currentUser,
                 section: props.section
               }
             }
@@ -149,6 +149,7 @@ const Section = props =>
   </div>
 
 Section.propTypes = {
+  currentUser: T.object,
   section: T.shape(SectionType.propTypes),
   options: T.shape({
     showHelp: T.bool,
@@ -167,6 +168,7 @@ const Sections = props =>
     {props.sections.map(section =>
       <Section
         key={`section-${section.id}`}
+        currentUser={props.currentUser}
         section={section}
         options={props.options[section.id]}
         deleteSection={() => props.deleteSection(section.id)}
@@ -178,6 +180,7 @@ const Sections = props =>
   </div>
 
 Sections.propTypes = {
+  currentUser: T.object,
   sections: T.arrayOf(T.shape(SectionType.propTypes)),
   options: T.object.isRequired,
   deleteSection: T.func.isRequired,
@@ -209,21 +212,36 @@ class Audio extends Component {
   render() {
     return (
       <div className="audio-resource-player">
-        {this.props.canEdit && (
-          constants.USER_TYPE === this.props.file.sectionsType ||
-          (constants.MANAGER_TYPE === this.props.file.sectionsType && 0 < this.props.file.sections.filter(s => s.commentsAllowed).length)
-        ) &&
-          <div className="comments-mode-btn">
-            <CallbackButton
+        {this.props.canEdit &&
+          <div className="comments-buttons">
+            {(constants.USER_TYPE === this.props.file.sectionsType ||
+              (constants.MANAGER_TYPE === this.props.file.sectionsType && 0 < this.props.file.sections.filter(s => s.commentsAllowed).length)
+            ) &&
+              <CallbackButton
+                className="btn"
+                callback={() => this.setState({
+                  displayAllComments: !this.state.displayAllComments,
+                  ongoingSections: []
+                })}
+              >
+                {trans(this.state.displayAllComments ? 'display_my_comments' : 'display_all_comments', {}, 'audio')}
+              </CallbackButton>
+            }
+            <DownloadButton
               className="btn"
-              callback={() => this.setState({
-                displayAllComments: !this.state.displayAllComments,
-                ongoingSections: []
-              })}
+              file={{
+                url: ['apiv2_audioresourcesectioncomment_list_comments_csv', {resourceNode: this.props.resourceNodeId}]
+              }}
             >
-              {trans(this.state.displayAllComments ? 'display_my_comments' : 'display_all_comments', {}, 'audio')}
-            </CallbackButton>
+              {trans('export_comments_to_csv', {}, 'audio')}
+            </DownloadButton>
           </div>
+        }
+
+        {this.props.file.description &&
+          <HtmlText className="audio-player-transcripts">
+            {this.props.file.description}
+          </HtmlText>
         }
 
         {(!this.props.canEdit || !this.state.displayAllComments) &&
@@ -272,7 +290,7 @@ class Audio extends Component {
                 }
               },
               'region-update-end': (region) => {
-                if (constants.USER_TYPE === this.props.file.sectionsType && authenticatedUser) {
+                if (constants.USER_TYPE === this.props.file.sectionsType && this.props.currentUser) {
                   const regionId = region.id
                   const start = parseFloat(region.start.toFixed(1))
                   const end = parseFloat(region.end.toFixed(1))
@@ -298,7 +316,7 @@ class Audio extends Component {
                       commentsAllowed: true,
                       meta: {
                         resourceNode: {id: this.props.resourceNodeId},
-                        user: authenticatedUser
+                        user: this.props.currentUser
                       }
                     })
                     isNew = true
@@ -321,6 +339,7 @@ class Audio extends Component {
 
         {(!this.props.canEdit || !this.state.displayAllComments) && 0 < this.state.ongoingSections.length &&
           <Sections
+            currentUser={this.props.currentUser}
             sections={this.props.file.sections.filter(s => -1 < this.state.ongoingSections.indexOf(s.id))}
             deleteSection={(sectionId) => this.props.deleteSection(this.props.file.sections, sectionId)}
             saveComment={(sectionId, comment) => this.props.saveComment(this.props.file.sections, sectionId, comment)}
@@ -355,6 +374,7 @@ class Audio extends Component {
 }
 
 Audio.propTypes = {
+  currentUser: T.object,
   mimeType: T.string.isRequired,
   file: T.shape(AudioType.propTypes).isRequired,
   resourceNodeId: T.string.isRequired,
@@ -367,6 +387,7 @@ Audio.propTypes = {
 
 const AudioPlayer = connect(
   (state) => ({
+    currentUser: securitySelectors.currentUser(state),
     mimeType: fileSelect.mimeType(state),
     resourceNodeId: resourceSelect.resourceNode(state).id,
     canEdit: hasPermission('edit', resourceSelect.resourceNode(state))

@@ -36,8 +36,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class ResourceNode
 {
     const PATH_SEPARATOR = '/';
-
     const PATH_OLDSEPARATOR = '`';
+
     // identifiers
     use Id;
     use Uuid;
@@ -157,13 +157,12 @@ class ResourceNode
     protected $children;
 
     /**
-     * @var \Claroline\CoreBundle\Entity\Workspace\Workspace
+     * The parent workspace of the resource.
      *
-     * @ORM\ManyToOne(
-     *      targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace",
-     *      inversedBy="resources"
-     * )
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
+     *
+     * @var Workspace
      */
     protected $workspace;
 
@@ -173,7 +172,7 @@ class ResourceNode
      * @Gedmo\TreePath(separator="`")
      * @ORM\Column(length=3000, nullable=true)
      *
-     * @todo a virer
+     * @todo remove me
      */
     protected $path;
 
@@ -229,6 +228,8 @@ class ResourceNode
      *  fetch="EXTRA_LAZY",
      *  mappedBy="resourceNode"
      * )
+     *
+     * @todo : remove me. this relation should not be bi-directional
      */
     protected $logs;
 
@@ -297,12 +298,16 @@ class ResourceNode
      *     mappedBy="resourceNode"
      * )
      * @ORM\OrderBy({"creationDate" = "DESC"})
+     *
+     * @todo : remove me. this relation should not be bi-directional
+     *
+     * @var ResourceComment[]|ArrayCollection
      */
     protected $comments;
 
     /**
      * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(length=128, unique=true, nullable=true)
+     * @ORM\Column(length=128, unique=true)
      */
     private $slug;
 
@@ -909,7 +914,8 @@ class ResourceNode
         $countAncestors = count($parts);
         for ($i = 0; $i < $countAncestors; $i += 2) {
             $ancestors[] = [
-                'id' => $parts[$i + 1],
+                'id' => $parts[$i + 1], // retro-compatibility
+                'slug' => $parts[$i + 1],
                 'name' => $parts[$i],
             ];
         }
@@ -941,9 +947,9 @@ class ResourceNode
     private function makePath(self $node, $path = '')
     {
         if ($node->getParent()) {
-            $path = $this->makePath($node->getParent(), $node->getName().'%'.$node->getUuid().self::PATH_SEPARATOR.$path);
+            $path = $this->makePath($node->getParent(), $node->getName().'%'.$node->getSlug().self::PATH_SEPARATOR.$path);
         } else {
-            $path = $node->getName().'%'.$node->getUuid().self::PATH_SEPARATOR.$path;
+            $path = $node->getName().'%'.$node->getSlug().self::PATH_SEPARATOR.$path;
         }
 
         return $path;
@@ -963,7 +969,8 @@ class ResourceNode
         for ($i = 0; $i < $countAncestors; $i += 2) {
             if (array_key_exists($i + 1, $parts)) {
                 $ancestors[] = [
-                    'id' => (int) $parts[$i + 1],
+                    'id' => $parts[$i + 1], // retro-compatibility
+                    'slug' => $parts[$i + 1],
                     'name' => $parts[$i],
                 ];
             }

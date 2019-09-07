@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
@@ -9,57 +9,58 @@ import {LineChart} from '#/main/core/layout/chart/line/components/line-chart'
 import {constants as listConst} from '#/main/app/content/list/constants'
 
 class LogList extends Component {
-  
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.chart.invalidated) {
-      nextProps.getChartData(nextProps.id, nextProps.queryString)
+  componentDidMount() {
+    if (this.props.chart.invalidated) {
+      this.props.getChartData(this.props.id, this.props.queryString)
     }
-    
-    this.setState(nextProps)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.chart.invalidated !== this.props.chart.invalidated && this.props.chart.invalidated) {
+      this.props.getChartData(this.props.id, this.props.queryString)
+    }
   }
   
   render() {
-    let props =  this.props
     return (
-      <div>
-        { props.chart &&
-        <div className="text-center">
-          <LineChart
-            data={props.chart.data}
-            xAxisLabel={{
-              show: true,
-              text: trans('date'),
-              grid: true
-            }}
-            yAxisLabel={{
-              show: true,
-              text: trans('actions'),
-              grid: true
-            }}
-            height={250}
-            width={700}
-            showArea={true}
-            margin={{
-              top: 20,
-              bottom: 50,
-              left: 50,
-              right: 20
-            }}
-          />
-        </div>
+      <Fragment>
+        {this.props.chart &&
+          <div className="text-center">
+            <LineChart
+              data={this.props.chart.data}
+              xAxisLabel={{
+                show: true,
+                text: trans('date'),
+                grid: true
+              }}
+              yAxisLabel={{
+                show: true,
+                text: trans('actions'),
+                grid: true
+              }}
+              height={250}
+              width={700}
+              showArea={true}
+              margin={{
+                top: 20,
+                bottom: 50,
+                left: 50,
+                right: 20
+              }}
+            />
+          </div>
         }
         <ListData
           name={this.props.name}
           fetch={{
-            url: props.listUrl,
+            url: this.props.listUrl,
             autoload: true
           }}
           primaryAction={(row) =>({
             label: trans('date'),
             type: LINK_BUTTON,
-            target: `/log/${row.id}`
+            target: `${this.props.path}/log/${row.id}`
           })}
-          delete={false}
           definition={[
             {
               name: 'dateLog',
@@ -76,7 +77,7 @@ class LogList extends Component {
               label: trans('action'),
               displayed: true,
               options: {
-                choices: props.actions,
+                choices: this.props.actions,
                 transDomain: 'log'
               }
             }, {
@@ -103,7 +104,7 @@ class LogList extends Component {
           }}
           selectable={false}
         />
-      </div>
+      </Fragment>
     )
   }
 }
@@ -115,14 +116,16 @@ LogList.propTypes = {
   actions: T.array.isRequired,
   chart: T.object.isRequired,
   getChartData: T.func.isRequired,
-  queryString: T.string
+  queryString: T.string,
+  name: T.string.isRequired,
+  path: T.string
 }
 
 LogList.defaultProps = {
   id: null,
-  name: 'logs'
+  name: 'logs',
+  path: ''
 }
-
 
 export {
   LogList

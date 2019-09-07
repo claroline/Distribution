@@ -1,92 +1,101 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {Routes} from '#/main/app/router'
-import {Vertical} from '#/main/app/content/tabs/components/vertical'
-import {ToolPage} from '#/main/core/tool/containers/page'
 
+import {ToolPage} from '#/main/core/tool/containers/page'
 import {Home} from '#/main/core/administration/parameters/main/components/home'
 import {Archive} from '#/main/core/administration/parameters/main/components/archive'
 import {Meta} from '#/main/core/administration/parameters/main/components/meta'
 import {I18n} from '#/main/core/administration/parameters/main/components/i18n'
 import {Plugins} from '#/main/core/administration/parameters/main/components/plugins'
 import {Maintenance} from '#/main/core/administration/parameters/main/components/maintenance'
+import {Messages} from '#/main/core/administration/parameters/main/components/messages'
+import {Message} from '#/main/core/administration/parameters/main/components/message'
 
-const Tool = () =>
+const ParametersTool = (props) =>
   <ToolPage
-    styles={['claroline-distribution-main-core-administration-parameters']}
+    className="main-settings-container"
+    actions={props.path+'/messages' === props.location.pathname ? [
+      {
+        name: 'add',
+        type: LINK_BUTTON,
+        icon: 'fa fa-fw fa-plus',
+        label: trans('add_connection_message'),
+        target: props.path+'/messages/form',
+        primary: true
+      }
+    ] : []}
+    subtitle={
+      <Routes
+        path={props.path}
+        routes={[
+          {path: '/', exact: true, render: () => trans('information')},
+          {path: '/home',          render: () => trans('home')},
+          {path: '/i18n',          render: () => trans('language')},
+          {path: '/plugins',       render: () => trans('plugins')},
+          {path: '/maintenance',   render: () => trans('maintenance')},
+          {path: '/archives',      render: () => trans('archive')},
+          {path: '/messages',      render: () => trans('connection_messages')}
+        ]}
+      />
+    }
   >
-    <div className="row">
-      <div className="col-md-3">
-        <Vertical
-          style={{
-            marginTop: '20px' // FIXME
-          }}
-          tabs={[
-            {
-              icon: 'fa fa-fw fa-info',
-              title: trans('information'),
-              path: '/',
-              exact: true
-            }, {
-              icon: 'fa fa-fw fa-home',
-              title: trans('home'),
-              path: '/home'
-            }, {
-              icon: 'fa fa-fw fa-language',
-              title: trans('language'),
-              path: '/i18n'
-            }, {
-              icon: 'fa fa-fw fa-cubes',
-              title: trans('plugins'),
-              path: '/plugins'
-            }, {
-              icon: 'fa fa-fw fa-wrench',
-              title: trans('maintenance'),
-              path: '/maintenance'
-            }, {
-              icon: 'fa fa-fw fa-book',
-              title: trans('archive'),
-              path: '/archive'
-            }
-          ]}
-        />
-      </div>
+    <Routes
+      path={props.path}
+      routes={[
+        {
+          path: '/',
+          exact: true,
+          component: Meta
+        }, {
+          path: '/home',
+          component: Home
+        }, {
+          path: '/i18n',
+          component: I18n
+        }, {
+          path: '/plugins',
+          component: Plugins
+        }, {
+          path: '/maintenance',
+          component: Maintenance
+        }, {
+          path: '/archives',
+          component: Archive
+        }, {
+          path: '/messages',
+          exact: true,
+          render() {
+            const MessagesList = (
+              <Messages
+                path={props.path}
+              />
+            )
 
-      <div className="col-md-9">
-        <Routes
-          routes={[
-            {
-              path: '/',
-              exact: true,
-              component: Meta
-            }, {
-              path: '/home',
-              exact: true,
-              component: Home
-            }, {
-              path: '/i18n',
-              exact: true,
-              component: I18n
-            }, {
-              path: '/plugins',
-              exact: true,
-              component: Plugins
-            }, {
-              path: '/maintenance',
-              exact: true,
-              component: Maintenance
-            }, {
-              path: '/archive',
-              exact: true,
-              component: Archive
-            }
-          ]}
-        />
-      </div>
-    </div>
+            return MessagesList
+          }
+        }, {
+          path: '/messages/form/:id?', // TODO : should be declared in messages submodule
+          component: Message,
+          onEnter: (params) => props.openConnectionMessageForm(params.id),
+          onLeave: () => props.resetConnectionMessageFrom()
+        }
+      ]}
+    />
   </ToolPage>
 
+ParametersTool.propTypes = {
+  path: T.string,
+  location: T.shape({
+    pathname: T.string
+  }),
+  openConnectionMessageForm: T.func.isRequired,
+  resetConnectionMessageFrom: T.func.isRequired
+}
+
 export {
-  Tool
+  ParametersTool
 }

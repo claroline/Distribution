@@ -11,30 +11,23 @@
 
 namespace Claroline\CoreBundle\Repository\Log;
 
-use Claroline\CoreBundle\API\Finder\LogFinder;
+use Claroline\CoreBundle\API\Finder\Log\LogFinder;
+use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class LogRepository extends EntityRepository
+class LogRepository extends ServiceEntityRepository
 {
-    /** @var LogFinder */
-    private $finder;
-
-    /**
-     * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder.log")
-     * })
-     *
-     * @param LogFinder $finder
-     */
-    public function setFinder(LogFinder $finder)
+    public function __construct(RegistryInterface $registry, LogFinder $finder)
     {
         $this->finder = $finder;
+
+        parent::__construct($registry, Log::class);
     }
 
     /**
@@ -261,12 +254,12 @@ class LogRepository extends EntityRepository
      * @param $configs
      * @param $maxResult
      *
-     * @return null|Query
+     * @return Query|null
      */
     public function findLogsThroughConfigs($configs, $maxResult = -1)
     {
         if (null === $configs || 0 === count($configs)) {
-            return;
+            return null;
         }
 
         $queryBuilder = $this

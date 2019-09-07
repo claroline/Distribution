@@ -2,144 +2,118 @@
 
 namespace HeVinci\FavouriteBundle\Controller;
 
+use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Controller\AbstractApiController;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Manager\ResourceManager;
-use HeVinci\FavouriteBundle\Entity\Favourite;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use HeVinci\FavouriteBundle\Manager\FavouriteManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @EXT\Security("has_role('ROLE_USER')")
+ * @EXT\Route("/favourite", options={"expose"=true})
  */
-class FavouriteController extends Controller
+class FavouriteController extends AbstractApiController
 {
-    protected $manager;
+    /** @var ObjectManager */
+    protected $om; // this is required by the RequestDecoderTrait. It should be fixed
+
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /** @var FavouriteManager */
+    private $manager;
 
     /**
+     * FavouriteController constructor.
+     *
      * @DI\InjectParams({
-     *     "manager" = @DI\Inject("claroline.manager.resource_manager")
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "manager"    = @DI\Inject("hevinci.favourite.manager")
      * })
+     *
+     * @param ObjectManager      $om
+     * @param SerializerProvider $serializer
+     * @param FavouriteManager   $manager
      */
-    public function __construct(ResourceManager $manager)
-    {
+    public function __construct(
+        ObjectManager $om,
+        SerializerProvider $serializer,
+        FavouriteManager $manager
+    ) {
+        $this->om = $om;
+        $this->serializer = $serializer;
         $this->manager = $manager;
     }
 
     /**
-     * @EXT\Route(
-     *     "/node/{id}",
-     *     name="hevinci_favourite_index",
-     *     requirements={"id" = "\d+"}
-     * )
+     * Gets the current user history.
      *
-     * @EXT\Template()
+     * @EXT\Route("/", name="claro_user_favourites")
+     * @EXT\ParamConverter("currentUser", converter="current_user")
+     *
+     * @param User $currentUser
+     *
+     * @return JsonResponse
      */
-    public function indexAction(ResourceNode $node)
+    public function listAction(User $currentUser)
     {
-        $resource = $this->manager->getResourceFromNode($node);
+        $workspaces = $this->manager->getWorkspaces($currentUser);
+        $resources = $this->manager->getResources($currentUser);
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $isFavourite = $this->get('claroline.persistence.object_manager')->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node));
-
-        return array(
-            'isFavourite' => $isFavourite ? true : false,
-            '_resource' => $resource,
-        );
+        return new JsonResponse([
+            'workspaces' => array_map(function (Workspace $workspace) {
+                return $this->serializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
+            }, $workspaces),
+            'resources' => array_map(function (ResourceNode $resource) {
+                return $this->serializer->serialize($resource, [Options::SERIALIZE_MINIMAL]);
+            }, $resources),
+        ]);
     }
 
     /**
-     * @EXT\Route(
-     *     "/add/form/{node}",
-     *     name="hevinci_add_favourite_form",
-     *     requirements={"node" = "\d+"}
-     * )
+     * Creates or deletes favourite resources.
      *
-     * @EXT\Method("POST")
-     * @EXT\Template("HeVinciFavouriteBundle:favourite:form_error.html.twig")
+     * @EXT\Route("/resources/toggle", name="hevinci_favourite_resources_toggle")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * @param User    $user
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
-    public function addFavouriteFormAction(ResourceNode $node)
+    public function toggleResourcesAction(User $user, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $user = $this->getUser();
-        $favourite = $em->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node->getId()));
+        $nodes = $this->decodeIdsString($request, ResourceNode::class);
+        $this->manager->toggleResourceFavourites($user, $nodes);
 
-        if ($favourite) {
-            return array(
-                'nodeId' => $node->getId(),
-                'error' => 'resource_already_in_favourites',
-            );
-        }
-
-        $favourite = new Favourite();
-        $favourite->setResourceNode($node);
-        $favourite->setUser($user);
-        $em->persist($favourite);
-        $em->flush();
-
-        return new JsonResponse();
+        return new JsonResponse(null, 204);
     }
 
     /**
-     * @EXT\Route(
-     *     "/delete/form/{node}",
-     *     name="hevinci_delete_favourite_form",
-     *     requirements={"node" = "\d+"},
-     *     options={"expose"=true}
-     * )
+     * Creates or deletes favourite workspaces.
      *
-     * @EXT\Method("POST")
-     * @EXT\Template("HeVinciFavouriteBundle:favourite:form_error.html.twig")
-     */
-    public function deleteFavouriteFormAction(ResourceNode $node)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $user = $this->getUser();
-        $favourite = $em->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node->getId()));
-
-        if (!$favourite) {
-            return array(
-                'nodeId' => $node->getId(),
-                'error' => 'resource_not_in_favourites.',
-            );
-        }
-
-        $em->remove($favourite);
-        $em->flush();
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/delete/{node}",
-     *     name="hevinci_delete_favourite",
-     *     requirements={"node" = "\d+"},
-     *     options={"expose"=true}
-     * )
+     * @EXT\Route("/workspaces/toggle", name="hevinci_favourite_workspaces_toggle")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
-     * @EXT\Method("GET")
+     * @param User    $user
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
-    public function deleteFavouriteAction(ResourceNode $node)
+    public function toggleWorkspacesAction(User $user, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $nodes = $this->decodeIdsString($request, Workspace::class);
+        $this->manager->toggleWorkspaceFavourites($user, $nodes);
 
-        $user = $this->getUser();
-        $favourite = $em->getRepository('HeVinciFavouriteBundle:Favourite')
-            ->findOneBy(array('user' => $user, 'resourceNode' => $node->getId()));
-
-        if (!$favourite) {
-            throw new \Exception("This favourite doesn't exist !");
-        }
-
-        $em->remove($favourite);
-        $em->flush();
-
-        return new Response();
+        return new JsonResponse(null, 204);
     }
 }

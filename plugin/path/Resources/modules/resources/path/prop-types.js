@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 const Step = {
   propTypes: {
     id: T.string.isRequired,
+    slug: T.string.isRequired,
     title: T.string,
     description: T.string,
     poster: T.shape({
@@ -18,6 +19,7 @@ const Step = {
         type: T.string.isRequired
       })
     }),
+    evaluated: T.bool,
     showResourceHeader: T.bool,
     secondaryResources: T.arrayOf(T.shape({
       // minimal resource
@@ -40,11 +42,14 @@ const Path = {
     id: T.string.isRequired,
     display: T.shape({
       showOverview: T.bool,
-      showSummary: T.bool,
-      openSummary: T.bool,
       numbering: T.oneOf(['none', 'numeric', 'literal', 'custom']),
-      manualProgressionAllowed: T.bool
+      manualProgressionAllowed: T.bool,
+      showScore: T.bool
     }).isRequired,
+    score: T.shape({
+      success: T.number,
+      total: T.number
+    }),
     opening: T.shape({
       secondaryResources: T.oneOf(['_self', '_blank'])
     }),
@@ -53,10 +58,15 @@ const Path = {
     ))
   },
   defaultProps: {
-    steps: [],
+    display: {
+      showOverview: false,
+      numbering: 'none',
+      manualProgressionAllowed: false
+    },
     opening: {
       secondaryResources: '_self'
-    }
+    },
+    steps: []
   }
 }
 

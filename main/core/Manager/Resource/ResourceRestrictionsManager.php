@@ -5,7 +5,6 @@ namespace Claroline\CoreBundle\Manager\Resource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -13,8 +12,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * ResourceRestrictionsManager.
  *
  * It validates access restrictions on ResourceNodes.
- *
- * @DI\Service("claroline.manager.resource_restrictions")
  */
 class ResourceRestrictionsManager
 {
@@ -25,33 +22,27 @@ class ResourceRestrictionsManager
     private $rightsManager;
 
     /** @var AuthorizationCheckerInterface */
-    private $security;
+    private $authorization;
 
     /**
      * ResourceRestrictionsManager constructor.
      *
-     * @DI\InjectParams({
-     *     "session"       = @DI\Inject("session"),
-     *     "rightsManager" = @DI\Inject("claroline.manager.rights_manager"),
-     *     "security"      = @DI\Inject("security.authorization_checker")
-     * })
-     *
      * @param SessionInterface              $session
      * @param RightsManager                 $rightsManager
-     * @param AuthorizationCheckerInterface $security
+     * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
         SessionInterface $session,
         RightsManager $rightsManager,
-        AuthorizationCheckerInterface $security
+        AuthorizationCheckerInterface $authorization
     ) {
         $this->session = $session;
         $this->rightsManager = $rightsManager;
-        $this->security = $security;
+        $this->authorization = $authorization;
     }
 
     /**
-     * Checks access restrictions of a ResourceNodes.
+     * Checks access restrictions of a resource.
      *
      * @param ResourceNode $resourceNode
      * @param Role[]       $userRoles
@@ -72,7 +63,7 @@ class ResourceRestrictionsManager
      * Gets the list of access error for a resource and a user roles.
      *
      * @param ResourceNode $resourceNode
-     * @param array        $userRoles
+     * @param Role[]       $userRoles
      *
      * @return array
      */
@@ -98,6 +89,9 @@ class ResourceRestrictionsManager
                     $resourceNode->getAccessibleFrom()->format('d/m/Y') :
                     null;
                 $errors['ended'] = $this->isEnded($resourceNode);
+                $errors['endDate'] = $resourceNode->getAccessibleUntil() ?
+                    $resourceNode->getAccessibleUntil()->format('d/m/Y') :
+                    null;
             }
 
             if (!empty($resourceNode->getAllowedIps())) {
@@ -123,7 +117,7 @@ class ResourceRestrictionsManager
         $isAdmin = false;
 
         if ($workspace = $resourceNode->getWorkspace()) {
-            $isAdmin = $this->security->isGranted('administrate', $workspace);
+            $isAdmin = $this->authorization->isGranted('administrate', $workspace);
         }
 
         return 0 !== $this->rightsManager->getMaximumRights($userRoles, $resourceNode) || $isAdmin;
@@ -159,9 +153,9 @@ class ResourceRestrictionsManager
      * @param ResourceNode $resourceNode
      *
      * @return bool
+     *
+     * @todo works just with IPv4, should be working with IPv6
      */
-
-    // TODO : works just with IPv4, should be working with IPv6
     public function isIpAuthorized(ResourceNode $resourceNode): bool
     {
         $allowed = $resourceNode->getAllowedIps();

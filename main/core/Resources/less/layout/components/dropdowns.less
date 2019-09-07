@@ -29,9 +29,8 @@
     }
 
     // increases space between icons and text
-    // todo remove me and use `.icon-with-text-*`
-    .fa {
-        margin-right: @icon-dropdown-spacer;
+    .icon-with-text-right {
+        margin-right: 15px;
     }
 
     // removes additional margin when checkboxes/radios are inside dropdown
@@ -43,10 +42,6 @@
     > li {
         .action-subscript {
             float: right; // todo : find a better approach
-
-            .fa {
-                margin: 0;
-            }
         }
     }
 }
@@ -166,5 +161,29 @@
         background-image: none; // Remove CSS gradient
         .reset-filter();
         cursor: @cursor-disabled;
+    }
+}
+
+.dropdown-menu .nav-tabs {
+    padding: 0 5px;
+    border-color: @dropdown-divider-bg;
+    background: @panel-default-heading-bg;
+
+    > li > a {
+        border-radius: 0;
+    }
+}
+
+.dropdown-menu .data-card {
+    border: none;
+    box-shadow: none;
+
+    .data-card-header,
+    .data-card-content {
+        border-radius: 0;
+    }
+
+    + .data-card {
+        border-top: 1px solid @data-card-border;
     }
 }

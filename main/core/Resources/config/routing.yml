@@ -9,57 +9,13 @@ claro_security_logout:
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
 
-claro_index:
-    resource: "@ClarolineCoreBundle/Controller/HomeController.php"
-    type: annotation
-
 claro_redirect:
     resource: "@ClarolineCoreBundle/Controller/RedirectController.php"
     type: annotation
 
-claro_locale:
-    resource: "@ClarolineCoreBundle/Controller/LocaleController.php"
-    type: annotation
-
-claro_content_typeerror:
-    path: /content/typeerror
-    options: { expose: true }
-    defaults:
-        _controller: FrameworkBundle:Template:template
-        template: 'ClarolineCoreBundle:Home:typeerror.html.twig'
-
-claro_content_confirm:
-    path: /content/confirm
-    options: { expose: true }
-    defaults:
-        _controller: FrameworkBundle:Template:template
-        template: 'ClarolineCoreBundle:home:confirm.html.twig'
-
-claro_content_link:
-    path: /content/link
-    options: { expose: true }
-    defaults:
-        _controller: FrameworkBundle:Template:template
-        template: 'ClarolineCoreBundle:home:link.html.twig'
-
 claro_authentication:
     resource: "@ClarolineCoreBundle/Controller/AuthenticationController.php"
     type: annotation
-
-claro_maintenance:
-    resource: "@ClarolineCoreBundle/Controller/MaintenanceController.php"
-    type: annotation
-
-claro_log:
-    resource: "@ClarolineCoreBundle/Controller/Log/LogController.php"
-    prefix: log
-    type: annotation
-
-# new
-claro_user_profile:
-    resource: "@ClarolineCoreBundle/Controller/User/ProfileController.php"
-    type: annotation
-    options: { expose: true }
 
 claro_user_registration:
     resource: "@ClarolineCoreBundle/Controller/User/RegistrationController.php"
@@ -75,44 +31,26 @@ claro_desktop:
     resource: "@ClarolineCoreBundle/Controller/DesktopController.php"
     type: annotation
 
-claro_desktop_tool_properties:
-    resource: "@ClarolineCoreBundle/Controller/Tool/DesktopParametersController.php"
-    prefix: desktop/tool/properties
-    type: annotation
-
 claro_workspace:
     resource: "@ClarolineCoreBundle/Controller/WorkspaceController.php"
-    type: annotation
-
-claro_workspace_tool_properties:
-    resource: "@ClarolineCoreBundle/Controller/Tool/WorkspaceParametersController.php"
-    prefix: workspaces/tool/properties
     type: annotation
 
 claro_admin:
     resource: "@ClarolineCoreBundle/Controller/AdministrationController.php"
     type: annotation
 
-# todo : remove me
-claro_resource_old:
-    resource: "@ClarolineCoreBundle/Controller/ResourceOldController.php"
-    prefix: /resource
-    type: annotation
-    options: { expose: true }
-
 claro_resource:
     resource: "@ClarolineCoreBundle/Controller/ResourceController.php"
+    type: annotation
+
+claro_search:
+    resource: "@ClarolineCoreBundle/Controller/SearchController.php"
     type: annotation
 
 claro_file:
     resource: "@ClarolineCoreBundle/Controller/FileController.php"
     type: annotation
     prefix: file
-
-claro_admin_plugin:
-    resource: "@ClarolineCoreBundle/Controller/Administration/PluginController.php"
-    prefix: admin/plugins
-    type: annotation
 
 claro_admin_resource_icons:
     resource: "@ClarolineCoreBundle/Controller/Administration/IconController.php"

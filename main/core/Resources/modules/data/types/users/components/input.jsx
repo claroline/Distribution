@@ -8,19 +8,20 @@ import {trans} from '#/main/app/intl/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
-import {UserCard} from '#/main/core/user/data/components/user-card'
+import {UserCard} from '#/main/core/user/components/card'
 import {User as UserType} from '#/main/core/user/prop-types'
-import {MODAL_USERS_PICKER} from '#/main/core/modals/users'
+import {MODAL_USERS} from '#/main/core/modals/users'
 
 const UsersButton = props =>
   <Button
     className="btn"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-user-plus"
+    icon="fa fa-fw fa-user"
     label={trans('add_users')}
     primary={true}
-    modal={[MODAL_USERS_PICKER, {
+    disabled={props.disabled}
+    modal={[MODAL_USERS, {
       url: ['apiv2_user_list_registerable'], // maybe not the correct URL
       title: props.title,
       selectAction: (selected) => ({
@@ -33,6 +34,7 @@ const UsersButton = props =>
 
 UsersButton.propTypes = {
   title: T.string,
+  disabled: T.bool,
   onChange: T.func.isRequired
 }
 
@@ -51,6 +53,7 @@ const UsersInput = props => {
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete', {}, 'actions'),
                 dangerous: true,
+                disabled: props.disabled,
                 callback: () => {
                   const newValue = props.value
                   const index = newValue.findIndex(u => u.id === user.id)
@@ -67,6 +70,7 @@ const UsersInput = props => {
 
         <UsersButton
           {...props.picker}
+          disabled={props.disabled}
           onChange={(selected) => {
             const newValue = props.value
             selected.forEach(user => {
@@ -90,6 +94,7 @@ const UsersInput = props => {
       >
         <UsersButton
           {...props.picker}
+          disabled={props.disabled}
           onChange={props.onChange}
         />
       </EmptyPlaceholder>
@@ -103,10 +108,7 @@ implementPropTypes(UsersInput, FormFieldTypes, {
     title: T.string
   })
 }, {
-  value: null,
-  picker: {
-    title: trans('user_selector')
-  }
+  value: null
 })
 
 export {

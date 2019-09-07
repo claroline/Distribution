@@ -3,14 +3,16 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
+import {convertTimestampToString} from '#/main/app/intl/date'
 import {ListData} from '#/main/app/content/list/containers/data'
 
-import {convertTimestampToString} from '#/main/core/logs/utils'
-import {LogConnectWorkspaceCard} from '#/main/core/logs/data/components/log-connect-workspace-card'
+import {selectors as toolSelectors} from  '#/main/core/tool/store'
+import {selectors} from '#/main/core/tools/dashboard/store'
+import {LogConnectCard} from '#/main/core/layout/logs/components/connect-card'
 
 const ConnectionsComponent = (props) =>
   <ListData
-    name="connections.list"
+    name={selectors.STORE_NAME + '.connections.list'}
     fetch={{
       url: ['apiv2_log_connect_workspace_list', {workspace: props.workspaceId}],
       autoload: true
@@ -42,7 +44,7 @@ const ConnectionsComponent = (props) =>
         calculated: (rowData) => rowData.duration !== null ? convertTimestampToString(rowData.duration) : null
       }
     ]}
-    card={LogConnectWorkspaceCard}
+    card={LogConnectCard}
   />
 
 ConnectionsComponent.propTypes = {
@@ -51,7 +53,7 @@ ConnectionsComponent.propTypes = {
 
 const Connections = connect(
   state => ({
-    workspaceId: state.workspace.id
+    workspaceId: toolSelectors.contextData(state).id
   })
 )(ConnectionsComponent)
 

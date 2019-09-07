@@ -1,7 +1,8 @@
 import {trans} from '#/main/app/intl/translation'
 import {URL_BUTTON} from '#/main/app/buttons'
 
-import {WorkspaceCard} from '#/main/core/workspace/data/components/workspace-card'
+import {route} from '#/main/core/workspace/routing'
+import {WorkspaceCard} from '#/main/core/workspace/components/card'
 
 export default {
   name: 'workspaces',
@@ -9,9 +10,7 @@ export default {
   parameters: {
     primaryAction: (workspace) => ({
       type: URL_BUTTON,
-      target: ['claro_workspace_open', {
-        workspaceId: workspace.id
-      }]
+      target: `#${route(workspace)}`
     }),
     definition: [
       {
@@ -43,8 +42,7 @@ export default {
       }, {
         name: 'createdBefore',
         label: trans('created_before'),
-        type: 'date',
-        displayable: false
+        type: 'date'
       }, {
         name: 'registration.selfRegistration',
         label: trans('public_registration'),
@@ -56,6 +54,21 @@ export default {
         type: 'boolean',
         filterable: false,
         sortable: false
+      }, {
+        name: 'archived',
+        label: trans('archived'),
+        type: 'boolean',
+        filterable: true,
+        displayable: false
+      }, {
+        name: 'tags',
+        type: 'tag',
+        label: trans('tags'),
+        displayable: false,
+        sortable: false,
+        options: {
+          objectClass: 'Claroline\\CoreBundle\\Entity\\Workspace\\Workspace'
+        }
       }
     ],
     card: WorkspaceCard

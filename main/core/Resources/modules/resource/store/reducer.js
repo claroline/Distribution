@@ -3,8 +3,11 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 
+import {SECURITY_USER_CHANGE} from '#/main/app/security/store/actions'
 import {
+  RESOURCE_OPEN,
   RESOURCE_LOAD,
+  RESOURCE_LOAD_NODE,
   RESOURCE_SET_LOADED,
   RESOURCE_UPDATE_NODE,
   USER_EVALUATION_UPDATE,
@@ -17,37 +20,19 @@ import {
   RESOURCE_COMMENT_REMOVE
 } from '#/main/core/resource/store/actions'
 
-const reducer = {
+const reducer = combineReducers({
+  slug: makeReducer(null, {
+    [RESOURCE_OPEN]: (state, action) => action.resourceSlug
+  }),
+  nodeLoaded: makeReducer(false, {
+    [SECURITY_USER_CHANGE]: () => false,
+    [RESOURCE_OPEN]: () => false,
+    [RESOURCE_LOAD_NODE]: () => true
+  }),
   loaded: makeReducer(false, {
-    [RESOURCE_SET_LOADED]: () => true
-  }),
-
-  accessErrors: combineReducers({
-    dismissed: makeReducer(false, {
-      [RESOURCE_RESTRICTIONS_DISMISS]: () => true,
-      [RESOURCE_LOAD]: (state, action) => {
-        //+ date check and ips and the hidden flag most likely but I have no example now
-        return action.resourceData.resourceNode.permissions.open &&
-          !action.resourceData.accessErrors.notPublished &&
-          !action.resourceData.accessErrors.deleted &&
-          !action.resourceData.accessErrors.locked &&
-          !action.resourceData.accessErrors.notStarted &&
-          !action.resourceData.accessErrors.ended
-      }
-    }),
-    details: makeReducer({}, {
-      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessErrors || {},
-      [RESOURCE_RESTRICTIONS_ERROR]: (state, action) => action.errors,
-      [RESOURCE_RESTRICTIONS_UNLOCKED]: (state) => {
-        const newState = cloneDeep(state)
-        newState.locked = false
-        return newState
-      }
-    })
-  }),
-
-  serverErrors: makeReducer([], {
-    [RESOURCE_SERVER_ERRORS]: (state, action) => action.errors
+    [SECURITY_USER_CHANGE]: () => false,
+    [RESOURCE_OPEN]: () => false,
+    [RESOURCE_SET_LOADED]: (state, action) => action.loaded
   }),
 
   embedded: makeReducer(false), // this can not be changed at runtime
@@ -62,6 +47,7 @@ const reducer = {
    * Manages the ResourceNode of the resource.
    */
   resourceNode: makeReducer({}, {
+    [RESOURCE_LOAD_NODE]: (state, action) => action.resourceNode,
     [RESOURCE_LOAD]: (state, action) => action.resourceData.resourceNode,
 
     /**
@@ -111,9 +97,36 @@ const reducer = {
     [USER_EVALUATION_UPDATE]: (state, action) => action.userEvaluation
   }),
 
-  lifecycle: makeReducer({})
-}
+  lifecycle: makeReducer({}),
 
+  accessErrors: combineReducers({
+    dismissed: makeReducer(false, {
+      [RESOURCE_RESTRICTIONS_DISMISS]: () => true,
+      [RESOURCE_LOAD]: (state, action) => {
+        //+ date check and ips and the hidden flag most likely but I have no example now
+        return action.resourceData.resourceNode.permissions.open &&
+          !action.resourceData.accessErrors.notPublished &&
+          !action.resourceData.accessErrors.deleted &&
+          !action.resourceData.accessErrors.locked &&
+          !action.resourceData.accessErrors.notStarted &&
+          !action.resourceData.accessErrors.ended
+      }
+    }),
+    details: makeReducer({}, {
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessErrors || {},
+      [RESOURCE_RESTRICTIONS_ERROR]: (state, action) => action.errors,
+      [RESOURCE_RESTRICTIONS_UNLOCKED]: (state) => {
+        const newState = cloneDeep(state)
+        newState.locked = false
+        return newState
+      }
+    })
+  }),
+
+  serverErrors: makeReducer([], {
+    [RESOURCE_SERVER_ERRORS]: (state, action) => action.errors
+  })
+})
 
 export {
   reducer

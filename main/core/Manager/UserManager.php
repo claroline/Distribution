@@ -24,11 +24,8 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\Exception\AddRoleException;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
-use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Security\PlatformRoles;
-use JMS\DiExtraBundle\Annotation as DI;
-use Pagerfanta\Pagerfanta;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -38,9 +35,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-/**
- * @DI\Service("claroline.manager.user_manager")
- */
 class UserManager
 {
     use LoggableTrait;
@@ -53,7 +47,6 @@ class UserManager
     private $mailManager;
     private $objectManager;
     private $organizationManager;
-    private $pagerFactory;
     private $platformConfigHandler;
     private $roleManager;
     private $strictEventDispatcher;
@@ -67,28 +60,11 @@ class UserManager
     /**
      * UserManager Constructor.
      *
-     * @DI\InjectParams({
-     *     "container"              = @DI\Inject("service_container"),
-     *     "groupManager"           = @DI\Inject("claroline.manager.group_manager"),
-     *     "mailManager"            = @DI\Inject("claroline.manager.mail_manager"),
-     *     "objectManager"          = @DI\Inject("claroline.persistence.object_manager"),
-     *     "organizationManager"    = @DI\Inject("claroline.manager.organization.organization_manager"),
-     *     "pagerFactory"           = @DI\Inject("claroline.pager.pager_factory"),
-     *     "platformConfigHandler"  = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "roleManager"            = @DI\Inject("claroline.manager.role_manager"),
-     *     "strictEventDispatcher"  = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
-     *     "translator"             = @DI\Inject("translator"),
-     *     "validator"              = @DI\Inject("validator"),
-     *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager")
-     * })
-     *
      * @param ContainerInterface           $container
      * @param GroupManager                 $groupManager
      * @param MailManager                  $mailManager
      * @param ObjectManager                $objectManager
      * @param OrganizationManager          $organizationManager
-     * @param PagerFactory                 $pagerFactory
      * @param PlatformConfigurationHandler $platformConfigHandler
      * @param RoleManager                  $roleManager
      * @param StrictDispatcher             $strictEventDispatcher
@@ -103,7 +79,6 @@ class UserManager
         MailManager $mailManager,
         ObjectManager $objectManager,
         OrganizationManager $organizationManager,
-        PagerFactory $pagerFactory,
         PlatformConfigurationHandler $platformConfigHandler,
         RoleManager $roleManager,
         StrictDispatcher $strictEventDispatcher,
@@ -117,7 +92,6 @@ class UserManager
         $this->mailManager = $mailManager;
         $this->objectManager = $objectManager;
         $this->organizationManager = $organizationManager;
-        $this->pagerFactory = $pagerFactory;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->roleManager = $roleManager;
         $this->strictEventDispatcher = $strictEventDispatcher;
@@ -639,28 +613,6 @@ class UserManager
         ]);
     }
 
-    /**
-     * @param Workspace[] $workspaces
-     * @param int         $page
-     * @param int         $max
-     * @param bool        $withPager
-     *
-     * @todo use finder instead
-     * @todo REMOVE ME
-     *
-     * @return User[]|Pagerfanta
-     */
-    public function getUsersByWorkspaces(array $workspaces, $page = 1, $max = 20, $withPager = true)
-    {
-        if ($withPager) {
-            $query = $this->userRepo->findUsersByWorkspaces($workspaces, false);
-
-            return $this->pagerFactory->createPager($query, $page, $max);
-        } else {
-            return  $this->userRepo->findUsersByWorkspaces($workspaces);
-        }
-    }
-
     public function countUsersForPlatformRoles($organizations = null)
     {
         $roles = $this->roleManager->getAllPlatformRoles();
@@ -927,15 +879,21 @@ class UserManager
 
     /**
      * Logs the current user.
+     *
+     * @param User $user
      */
     public function logUser(User $user)
     {
-        // TODO : log in an EventListener on user log event instead
-        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserLogin', [$user]);
+        //need the refresh for some reason...
+        /** @var User $user */
+        $user = $this->objectManager->getRepository(User::class)->findOneBy([
+            'username' => $user->getUsername(),
+        ]);
 
-        // TODO : nope, we should let Symfony handles token creation
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->tokenStorage->setToken($token);
+
+        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserLogin', [$user]);
 
         if (null === $user->getInitDate()) {
             $this->setUserInitDate($user);
@@ -964,21 +922,6 @@ class UserManager
             $this->objectManager->persist($user);
             $this->objectManager->flush();
         }
-
-        return $options;
-    }
-
-    public function switchDesktopMode(User $user)
-    {
-        $options = $this->getUserOptions($user);
-        $mode = $options->getDesktopMode();
-
-        if (UserOptions::READ_ONLY_MODE === $mode) {
-            $options->setDesktopMode(UserOptions::EDITION_MODE);
-        } else {
-            $options->setDesktopMode(UserOptions::READ_ONLY_MODE);
-        }
-        $this->persistUserOptions($options);
 
         return $options;
     }

@@ -17,29 +17,36 @@ use Claroline\AppBundle\Controller\AbstractApiController;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Widget\HomeTabSerializer;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
+use Claroline\CoreBundle\Entity\Tab\HomeTabConfig;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\LockManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @EXT\Route("/home")
  */
 class HomeController extends AbstractApiController
 {
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
+    /** @var ObjectManager */
+    private $om;
+    /** @var TranslatorInterface */
+    private $translator;
     /** @var FinderProvider */
     private $finder;
     /** @var Crud */
     private $crud;
     /** @var HomeTabSerializer */
     private $serializer;
-    /** @var ObjectManager */
-    private $om;
     /** @var LockManager */
     private $lockManager;
 
@@ -47,62 +54,87 @@ class HomeController extends AbstractApiController
      * HomeController constructor.
      *
      * @DI\InjectParams({
-     *     "finder"      = @DI\Inject("claroline.api.finder"),
-     *     "lockManager" = @DI\Inject("claroline.manager.lock_manager"),
-     *     "crud"        = @DI\Inject("claroline.api.crud"),
-     *     "serializer"  = @DI\Inject("claroline.serializer.home_tab"),
-     *     "om"          = @DI\Inject("claroline.persistence.object_manager")
+     *     "authorization" = @DI\Inject("security.authorization_checker"),
+     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
+     *     "translator"    = @DI\Inject("translator"),
+     *     "finder"        = @DI\Inject("claroline.api.finder"),
+     *     "lockManager"   = @DI\Inject("claroline.manager.lock_manager"),
+     *     "crud"          = @DI\Inject("claroline.api.crud"),
+     *     "serializer"    = @DI\Inject("claroline.serializer.home_tab")
      * })
      *
-     * @param FinderProvider    $finder
-     * @param Crud              $crud
-     * @param HomeTabSerializer $serializer
-     * @param ObjectManager     $om
+     * @param AuthorizationCheckerInterface $authorization
+     * @param ObjectManager                 $om
+     * @param TranslatorInterface           $translator
+     * @param FinderProvider                $finder
+     * @param Crud                          $crud
+     * @param LockManager                   $lockManager
+     * @param HomeTabSerializer             $serializer
      */
     public function __construct(
+        AuthorizationCheckerInterface $authorization,
+        ObjectManager $om,
+        TranslatorInterface $translator,
         FinderProvider $finder,
         Crud $crud,
         LockManager $lockManager,
-        HomeTabSerializer $serializer,
-        ObjectManager $om
+        HomeTabSerializer $serializer
     ) {
+        $this->authorization = $authorization;
+        $this->om = $om;
+        $this->translator = $translator;
         $this->finder = $finder;
         $this->crud = $crud;
         $this->lockManager = $lockManager;
         $this->serializer = $serializer;
-        $this->om = $om;
     }
 
     /**
-     * @EXT\Route("/workspace/{workspace}", name="apiv2_home_get_workspace", options={"method_prefix"=false})
-     * @EXT\Method("GET")
-     * @ParamConverter("workspace", options={"mapping": {"workspace": "uuid"}})
+     * Get the platform home data.
      *
-     * @param Request $request
-     * @param string  $context
-     * @param string  $contextId
+     * @EXT\Route("/", name="apiv2_home", options={"method_prefix"=false})
+     * @EXT\Method("GET")
      *
      * @return JsonResponse
      */
-    public function getWorkspaceAction(Request $request, Workspace $workspace)
+    public function homeAction()
     {
-        $orderedTabs = [];
+        $tabs = $this->finder->search(
+            HomeTab::class,
+            ['filters' => ['type' => HomeTab::TYPE_HOME]]
+        );
 
-        $tabs = $this->finder->search(HomeTab::class, [
-          'filters' => ['workspace' => $workspace->getUuid()],
-      ]);
-
-        // but why ? finder should never give you an empty row
         $tabs = array_filter($tabs['data'], function ($data) {
             return $data !== [];
         });
+        $orderedTabs = [];
 
         foreach ($tabs as $tab) {
             $orderedTabs[$tab['position']] = $tab;
         }
         ksort($orderedTabs);
 
-        return new JsonResponse(array_values($orderedTabs));
+        if (0 === count($orderedTabs)) {
+            $defaultTab = new HomeTab();
+            $defaultTab->setType(HomeTab::TYPE_HOME);
+            $this->om->persist($defaultTab);
+            $defaultHomeTabConfig = new HomeTabConfig();
+            $defaultHomeTabConfig->setHomeTab($defaultTab);
+            $defaultHomeTabConfig->setName($this->translator->trans('home', [], 'platform'));
+            $defaultHomeTabConfig->setLongTitle($this->translator->trans('home', [], 'platform'));
+            $defaultHomeTabConfig->setLocked(true);
+            $defaultHomeTabConfig->setTabOrder(0);
+            $this->om->persist($defaultHomeTabConfig);
+            $this->om->flush();
+            $orderedTabs[] = $this->serializer->serialize($defaultTab);
+        }
+
+        return new JsonResponse([
+            'editable' => $this->authorization->isGranted('ROLE_ADMIN') ||
+                $this->authorization->isGranted('ROLE_HOME_MANAGER'),
+            'administration' => false,
+            'tabs' => array_values($orderedTabs),
+        ]);
     }
 
     /**
@@ -173,7 +205,7 @@ class HomeController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function adminAction(Request $request, $context)
+    public function adminUpdateAction(Request $request, $context)
     {
         // grab tabs data
         $tabs = $this->decodeRequest($request);
@@ -197,13 +229,97 @@ class HomeController extends AbstractApiController
 
         // retrieve existing tabs for the context to remove deleted ones
         /** @var HomeTab[] $installedTabs */
-        $installedTabs = $this->finder->fetch(HomeTab::class, ['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
+        $installedTabs = $this->finder->fetch(
+            HomeTab::class,
+            ['type' => 'desktop' === $context ? HomeTab::TYPE_ADMIN_DESKTOP : HomeTab::TYPE_ADMIN]
+        );
 
         $this->cleanDatabase($installedTabs, $instanceIds, $containerIds, $ids);
 
         return new JsonResponse(array_values(array_map(function (HomeTab $tab) {
             return $this->serializer->serialize($tab);
         }, $updated)));
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/home/tabs/fetch",
+     *     name="apiv2_home_user_fetch",
+     *     options={"method_prefix"=false}
+     * )
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param User $currentUser
+     *
+     * @return JsonResponse
+     */
+    public function userTabsFetchAction(User $currentUser)
+    {
+        $allTabs = $this->finder->search(HomeTab::class, ['filters' => ['user' => $currentUser->getUuid()]]);
+
+        // Order tabs. We want :
+        //   - Administration tabs to be at first
+        //   - Tabs to be ordered by position
+        // For this, we separate administration tabs and user ones, order them by position
+        // and then concat all tabs with admin in first (I don't have a easier solution to achieve this)
+
+        $adminTabs = [];
+        $userTabs = [];
+
+        foreach ($allTabs['data'] as $tab) {
+            if (!empty($tab)) {
+                // we use the define position for array keys for easier sort
+                if (HomeTab::TYPE_ADMIN_DESKTOP === $tab['type']) {
+                    $adminTabs[$tab['position']] = $tab;
+                } else {
+                    $userTabs[$tab['position']] = $tab;
+                }
+            }
+        }
+
+        // order tabs by position
+        ksort($adminTabs);
+        ksort($userTabs);
+
+        // generate the final list of tabs
+        $orderedTabs = array_merge(array_values($adminTabs), array_values($userTabs));
+
+        // we rewrite tab position because an admin and a user tab may have the same position
+        foreach ($orderedTabs as $index => &$tab) {
+            $tab['position'] = $index;
+        }
+
+        return new JsonResponse($orderedTabs);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/admin/home/tabs/fetch",
+     *     name="apiv2_home_admin_fetch",
+     *     options={"method_prefix"=false}
+     * )
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function adminTabsFetchAction()
+    {
+        if (!$this->authorization->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException();
+        }
+        $tabs = $this->finder->search(HomeTab::class, ['filters' => ['type' => HomeTab::TYPE_ADMIN_DESKTOP]]);
+        $tabs = array_filter($tabs['data'], function ($data) {
+            return $data !== [];
+        });
+        $orderedTabs = [];
+
+        foreach ($tabs as $tab) {
+            $orderedTabs[$tab['position']] = $tab;
+        }
+        ksort($orderedTabs);
+
+        return new JsonResponse(array_values($orderedTabs));
     }
 
     private function cleanDatabase(array $installedTabs, array $instanceIds, array $containerIds, array $ids)
@@ -248,21 +364,5 @@ class HomeController extends AbstractApiController
                 $this->om->refresh($installedTab);
             }
         }
-    }
-
-    /**
-     * @param Request $request
-     * @param string  $class
-     */
-    protected function decodeIdsString(Request $request, $class)
-    {
-        $ids = $request->query->get('ids');
-        if (!$ids) {
-            return [];
-        }
-
-        $property = is_numeric($ids[0]) ? 'id' : 'uuid';
-
-        return $this->om->findList($class, $property, $ids);
     }
 }

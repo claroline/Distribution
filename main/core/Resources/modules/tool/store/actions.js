@@ -1,22 +1,62 @@
-import invariant from 'invariant'
+import isEqual from 'lodash/isEqual'
 
-import {constants} from '#/main/core/tool/constants'
+import {makeActionCreator, makeInstanceActionCreator} from '#/main/app/store/actions'
+import {API_REQUEST} from '#/main/app/api'
+import {actions as menuActions} from '#/main/app/layout/menu/store/actions'
+
+import {selectors} from '#/main/core/tool/store/selectors'
 
 // actions
-export const TOOL_SET_CONTEXT = 'TOOL_SET_CONTEXT'
+export const TOOL_OPEN        = 'TOOL_OPEN'
+export const TOOL_CLOSE       = 'TOOL_CLOSE'
+export const TOOL_LOAD        = 'TOOL_LOAD'
+export const TOOL_SET_LOADED  = 'TOOL_SET_LOADED'
 
 // action creators
 export const actions = {}
 
-actions.setContext = (contextType, contextData = null) => {
-  invariant(contextType, 'contextType is required')
+actions.load = makeInstanceActionCreator(TOOL_LOAD, 'toolData', 'context')
+actions.setLoaded = makeActionCreator(TOOL_SET_LOADED, 'loaded')
 
-  const tools = Object.keys(constants.TOOL_TYPES)
-  invariant(-1 !== tools.indexOf(contextType), `contextType is invalid. Allowed : ${tools.join(', ')}.`)
+actions.open = (name, context, basePath) => (dispatch, getState) => {
+  const prevName = selectors.name(getState())
+  const prevContext = selectors.context(getState())
 
-  return {
-    type: TOOL_SET_CONTEXT,
-    contextType,
-    contextData
+  if (name !== prevName || !isEqual(prevContext, context)) {
+    dispatch({
+      type: TOOL_OPEN,
+      name: name,
+      context: context,
+      basePath: basePath
+    })
+
+    dispatch(actions.setLoaded(false))
+  }
+}
+
+actions.close = makeActionCreator(TOOL_CLOSE)
+
+/**
+ * Fetch a tool.
+ *
+ * @param {string} toolName
+ * @param {object} context
+ */
+actions.fetch = (toolName, context) => (dispatch) => {
+  if (context.url) {
+    dispatch({
+      [API_REQUEST]: {
+        silent: true,
+        url: context.url,
+        success: (response, dispatch) => {
+          dispatch(actions.load(toolName, response, context))
+          dispatch(actions.setLoaded(true))
+          dispatch(menuActions.changeSection('tool'))
+        }
+      }
+    })
+  } else {
+    dispatch(actions.setLoaded(true))
+    dispatch(menuActions.changeSection('tool'))
   }
 }

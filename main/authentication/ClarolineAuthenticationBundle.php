@@ -12,9 +12,8 @@
 namespace Claroline\AuthenticationBundle;
 
 use Claroline\AuthenticationBundle\DependencyInjection\Compiler\OauthConfigPass;
-use Claroline\AuthenticationBundle\DependencyInjection\Compiler\SsoServerPass;
-use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
 use Claroline\CoreBundle\Library\DistributionPluginBundle;
+use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\KernelBundle\Bundle\ConfigurationProviderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,16 +25,7 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
     {
         parent::build($container);
 
-        $container->addCompilerPass(new SsoServerPass());
         $container->addCompilerPass(new OauthConfigPass());
-    }
-
-
-    public function getConfiguration($environment)
-    {
-        $config = new ConfigurationBuilder();
-
-        return $config->addRoutingResource(__DIR__.'/Resources/config/routing.yml');
     }
 
     public function suggestConfigurationFor(Bundle $bundle, $environment)
@@ -43,7 +33,6 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
         $config = new ConfigurationBuilder();
         $bundleClass = get_class($bundle);
         $simpleConfigs = [
-            'BeSimple\SsoAuthBundle\BeSimpleSsoAuthBundle' => 'sso',
             'HWI\Bundle\OAuthBundle\HWIOAuthBundle' => 'hwi_oauth',
         ];
 

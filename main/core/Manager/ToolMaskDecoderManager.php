@@ -14,11 +14,7 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.manager.tool_mask_decoder_manager")
- */
 class ToolMaskDecoderManager
 {
     private $maskRepo;
@@ -26,8 +22,6 @@ class ToolMaskDecoderManager
 
     /**
      * Constructor.
-     *
-     * @DI\InjectParams({"om" = @DI\Inject("claroline.persistence.object_manager")})
      */
     public function __construct(ObjectManager $om)
     {
@@ -127,6 +121,11 @@ class ToolMaskDecoderManager
         return $this->maskRepo->findMaskDecodersByTool($tool, $executeQuery);
     }
 
+    /**
+     * @param bool $executeQuery
+     *
+     * @return ToolMaskDecoder[]
+     */
     public function getAllMaskDecoders($executeQuery = true)
     {
         return $this->maskRepo->findAllMaskDecoders($executeQuery);

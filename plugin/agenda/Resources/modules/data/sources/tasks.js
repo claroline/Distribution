@@ -2,6 +2,7 @@ import {URL_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/app/intl/translation'
 
+import {route} from '#/main/core/workspace/routing'
 import {EventCard} from '#/plugin/agenda/data/components/event-card'
 
 export default {
@@ -9,10 +10,7 @@ export default {
   parameters: {
     primaryAction: (task) => ({
       type: URL_BUTTON,
-      target: ['claro_workspace_open_tool', {
-        workspaceId: task.workspace.id,
-        toolName: 'agenda_'
-      }]
+      target: `#${route(task.workspace, 'agenda')}`
     }),
     definition: [
       {
@@ -27,25 +25,15 @@ export default {
         label: trans('description'),
         displayed: true
       }, {
-        name: 'meta.isTaskDone',
-        alias: 'isTaskDone',
-        type: 'boolean',
-        label: trans('task_done', {}, 'agenda'),
-        displayed: true
-      }, {
-        name: 'allDay',
-        type: 'boolean',
-        label: trans('all_day', {}, 'agenda'),
-        displayed: true
-      }, {
         name: 'start',
         type: 'date',
         label: trans('start_date'),
         displayed: true
       }, {
-        name: 'end',
-        type: 'date',
-        label: trans('end_date'),
+        name: 'meta.done',
+        alias: 'isTaskDone',
+        type: 'boolean',
+        label: trans('task_done', {}, 'agenda'),
         displayed: true
       }, {
         name: 'notDoneYet',
@@ -56,8 +44,8 @@ export default {
         filterable: true,
         sortable: false
       }, {
-        name: 'workspace.code',
-        type: 'string',
+        name: 'workspace',
+        type: 'workspace',
         label: trans('workspace'),
         displayed: true,
         filterable: false,

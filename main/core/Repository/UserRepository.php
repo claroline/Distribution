@@ -17,10 +17,10 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
-use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -30,23 +30,25 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 /**
  * Class UserRepository.
  */
-class UserRepository extends EntityRepository implements UserProviderInterface, UserLoaderInterface
+class UserRepository extends ServiceEntityRepository implements UserProviderInterface, UserLoaderInterface
 {
-    /**
-     * @var PlatformConfigurationHandler
-     */
-    private $platformConfigHandler;
-
-    /**
-     * @param PlatformConfigurationHandler $platformConfigHandler
-     *
-     * @DI\InjectParams({
-     *      "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler")
-     * })
-     */
-    public function setPlatformConfigurationHandler(PlatformConfigurationHandler $platformConfigHandler)
+    public function __construct(RegistryInterface $registry, PlatformConfigurationHandler $platformConfigHandler)
     {
         $this->platformConfigHandler = $platformConfigHandler;
+
+        parent::__construct($registry, User::class);
+    }
+
+    public function search(string $search, int $nbResults)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('(UPPER(u.username) LIKE :search OR UPPER(u.firstName) LIKE :search OR UPPER(u.lastName) LIKE :search)')
+            ->andWhere('u.isEnabled = true AND u.isRemoved = false')
+            ->setFirstResult(0)
+            ->setMaxResults($nbResults)
+            ->setParameter('search', '%'.strtoupper($search).'%')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findOneBy(array $criteria = null, array $orderBy = null)

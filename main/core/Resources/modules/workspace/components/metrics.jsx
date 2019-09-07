@@ -9,8 +9,8 @@ import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
 const WorkspaceMetrics = props =>
-  <div className={classes('row', props.className)}>
-    <div className="col-md-4 col-sm-4 col-xs-4">
+  <div className={classes('row', props.className)} style={props.style}>
+    <div className="col-md-3 col-sm-3 col-xs-3">
       <div className="metric-card">
         <CountGauge
           className="metric-card-gauge"
@@ -25,7 +25,7 @@ const WorkspaceMetrics = props =>
       </div>
     </div>
 
-    <div className="col-md-4 col-sm-4 col-xs-4">
+    <div className="col-md-3 col-sm-3 col-xs-3">
       <div className="metric-card">
         <CountGauge
           className="metric-card-gauge"
@@ -40,7 +40,7 @@ const WorkspaceMetrics = props =>
       </div>
     </div>
 
-    <div className="col-md-4 col-sm-4 col-xs-4">
+    <div className="col-md-3 col-sm-3 col-xs-3">
       <div className="metric-card">
         <CountGauge
           className="metric-card-gauge"
@@ -55,13 +55,30 @@ const WorkspaceMetrics = props =>
         <div className={classes('metric-card-title', `h${props.level}`)}>{trans('storage_used')}</div>
       </div>
     </div>
+
+    <div className="col-md-3 col-sm-3 col-xs-3">
+      <div className="metric-card">
+        <CountGauge
+          className="metric-card-gauge"
+          value={props.nbConnections}
+          total={props.nbConnections}
+          displayValue={(value) => fileSize(value, true)}
+          width={props.width}
+          height={props.height}
+        />
+
+        <div className={classes('metric-card-title', `h${props.level}`)}>{trans('connections')}</div>
+      </div>
+    </div>
   </div>
 
 WorkspaceMetrics.propTypes = {
+  style: T.object,
   className: T.string,
   level: T.number,
   width: T.number,
   height: T.number,
+  nbConnections: T.number,
   workspace: T.shape(
     WorkspaceTypes.propTypes
   ).isRequired

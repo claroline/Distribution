@@ -16,11 +16,8 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Tool\ToolRights;
 use Claroline\CoreBundle\Repository\ToolRightsRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.manager.tool_rights_manager")
- *
  * @todo move me in Tool namespace
  */
 class ToolRightsManager
@@ -36,11 +33,6 @@ class ToolRightsManager
 
     /**
      * ToolRightsManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"          = @DI\Inject("claroline.persistence.object_manager"),
-     *     "maskManager" = @DI\Inject("claroline.manager.tool_mask_decoder_manager")
-     * })
      *
      * @param ObjectManager          $om
      * @param ToolMaskDecoderManager $maskManager
@@ -109,6 +101,12 @@ class ToolRightsManager
         );
     }
 
+    /**
+     * @param array $orderedTools
+     * @param bool  $executeQuery
+     *
+     * @return ToolRights[]|\Doctrine\ORM\Query
+     */
     public function getRightsForOrderedTools(array $orderedTools, $executeQuery = true)
     {
         return $this->toolRightsRepo->findRightsForOrderedTools(

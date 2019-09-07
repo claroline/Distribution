@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Button} from '#/main/app/action/components/button'
@@ -8,8 +8,8 @@ import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {FormField as FormFieldTypes} from '#/main/core/layout/form/prop-types'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {User as UserType} from '#/main/core/user/prop-types'
-import {UserCard} from '#/main/core/user/data/components/user-card'
-import {MODAL_USERS_PICKER} from '#/main/core/modals/users'
+import {UserCard} from '#/main/core/user/components/card'
+import {MODAL_USERS} from '#/main/core/modals/users'
 
 //todo: implement badge picker
 const UserButton = props =>
@@ -18,9 +18,10 @@ const UserButton = props =>
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
     icon="fa fa-fw fa-user"
-    label={trans('select_a_user')}
+    label={trans('add_user')}
     primary={true}
-    modal={[MODAL_USERS_PICKER, {
+    disabled={props.disabled}
+    modal={[MODAL_USERS, {
       url: ['apiv2_user_list_registerable'], // maybe not the correct URL
       title: props.title,
       selectAction: (selected) => ({
@@ -33,55 +34,52 @@ const UserButton = props =>
 
 UserButton.propTypes = {
   title: T.string,
+  disabled: T.bool,
   onChange: T.func.isRequired
 }
 
 const UserInput = props => {
-  const actions = props.disabled ? []: [
-    {
-      name: 'delete',
-      type: CALLBACK_BUTTON,
-      icon: 'fa fa-fw fa-trash-o',
-      label: trans('delete', {}, 'actions'),
-      dangerous: true,
-      callback: () => props.onChange(null)
-    }
-  ]
-
   if (props.value) {
     return(
-      <div>
+      <Fragment>
         <UserCard
           data={props.value}
-          size="sm"
-          orientation="col"
-          actions={actions}
+          size="xs"
+          actions={[
+            {
+              name: 'delete',
+              type: CALLBACK_BUTTON,
+              icon: 'fa fa-fw fa-trash-o',
+              label: trans('delete', {}, 'actions'),
+              dangerous: true,
+              disabled: props.disabled,
+              callback: () => props.onChange(null)
+            }
+          ]}
         />
 
-        {!props.disabled &&
-          <UserButton
-            {...props.picker}
-            onChange={props.onChange}
-          />
-        }
-      </div>
-    )
-  } else {
-    return (
-      <EmptyPlaceholder
-        size="lg"
-        icon="fa fa-user"
-        title={trans('no_user')}
-      >
-        {!props.disabled &&
-          <UserButton
-            {...props.picker}
-            onChange={props.onChange}
-          />
-        }
-      </EmptyPlaceholder>
+        <UserButton
+          {...props.picker}
+          disabled={props.disabled}
+          onChange={props.onChange}
+        />
+      </Fragment>
     )
   }
+
+  return (
+    <EmptyPlaceholder
+      size="lg"
+      icon="fa fa-user"
+      title={trans('no_user')}
+    >
+      <UserButton
+        {...props.picker}
+        disabled={props.disabled}
+        onChange={props.onChange}
+      />
+    </EmptyPlaceholder>
+  )
 }
 
 implementPropTypes(UserInput, FormFieldTypes, {
@@ -90,10 +88,7 @@ implementPropTypes(UserInput, FormFieldTypes, {
     title: T.string
   })
 }, {
-  value: null,
-  picker: {
-    title: trans('user_selector')
-  }
+  value: null
 })
 
 export {

@@ -11,95 +11,137 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
+use Claroline\CoreBundle\Entity\Tool\Tool;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
+use Claroline\CoreBundle\Manager\ToolManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * User desktop.
  *
  * @EXT\Route("/desktop", options={"expose"=true})
- *
- * @DI\Tag("security.secure_service")
- * @SEC\PreAuthorize("hasRole('ROLE_USER')")
  */
 class DesktopController
 {
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
+
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var UrlGeneratorInterface */
-    private $router;
+    /** @var ParametersSerializer */
+    private $parametersSerializer;
 
-    /** @var SessionInterface */
-    private $session;
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /** @var ToolManager */
+    private $toolManager;
 
     /**
      * DesktopController constructor.
      *
      * @DI\InjectParams({
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "router"          = @DI\Inject("router"),
-     *     "session"         = @DI\Inject("session")
+     *     "authorization"         = @DI\Inject("security.authorization_checker"),
+     *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
+     *     "parametersSerializer"  = @DI\Inject("claroline.serializer.parameters"),
+     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
+     *     "toolManager"           = @DI\Inject("claroline.manager.tool_manager")
      * })
      *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param UrlGeneratorInterface    $router
-     * @param SessionInterface         $session
+     * @param AuthorizationCheckerInterface $authorization
+     * @param EventDispatcherInterface      $eventDispatcher
+     * @param ParametersSerializer          $parametersSerializer
+     * @param SerializerProvider            $serializer
+     * @param ToolManager                   $toolManager
      */
     public function __construct(
+        AuthorizationCheckerInterface $authorization,
         EventDispatcherInterface $eventDispatcher,
-        UrlGeneratorInterface $router,
-        SessionInterface $session)
-    {
+        ParametersSerializer $parametersSerializer,
+        SerializerProvider $serializer,
+        ToolManager $toolManager
+    ) {
+        $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
-        $this->router = $router;
-        $this->session = $session;
+        $this->parametersSerializer = $parametersSerializer;
+        $this->serializer = $serializer;
+        $this->toolManager = $toolManager;
     }
 
     /**
      * Opens the desktop.
      *
-     * @EXT\Route("/open", name="claro_desktop_open")
+     * @EXT\Route("/", name="claro_desktop_open")
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
      *
-     * @return Response
+     * @param User $currentUser
+     *
+     * @return JsonResponse
      */
-    public function openAction()
+    public function openAction(User $currentUser = null)
     {
-        return new RedirectResponse(
-            $this->router->generate('claro_desktop_open_tool', [
-                'toolName' => 'home',
-            ])
-        );
+        // TODO : manage anonymous. This will break like this imo but they need to have access to tools opened to them.
+        if (empty($currentUser)) {
+            throw new AccessDeniedException();
+        }
+
+        $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
+
+        if (0 === count($tools)) {
+            throw new AccessDeniedException('no tools');
+        }
+        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
+
+        return new JsonResponse([
+            'userProgression' => null,
+            'tools' => array_values(array_map(function (Tool $orderedTool) {
+                return [
+                    'icon' => $orderedTool->getClass(),
+                    'name' => $orderedTool->getName(),
+                ];
+            }, $tools)),
+            'shortcuts' => isset($parameters['desktop_shortcuts']) ? $parameters['desktop_shortcuts'] : [],
+        ]);
     }
 
     /**
      * Opens a tool.
      *
-     * @EXT\Route("/tool/open/{toolName}", name="claro_desktop_open_tool")
+     * @EXT\Route("/tool/{toolName}", name="claro_desktop_open_tool")
      *
      * @param string $toolName
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function openToolAction($toolName)
     {
+        $tool = $this->toolManager->getToolByName($toolName);
+
+        if (!$tool) {
+            throw new NotFoundHttpException('Tool not found');
+        }
+
+        if (!$this->authorization->isGranted('OPEN', $tool)) {
+            throw new AccessDeniedException();
+        }
+
         /** @var DisplayToolEvent $event */
         $event = $this->eventDispatcher->dispatch('open_tool_desktop_'.$toolName, new DisplayToolEvent());
 
         $this->eventDispatcher->dispatch('log', new LogDesktopToolReadEvent($toolName));
 
-        if ('resource_manager' === $toolName) {
-            $this->session->set('isDesktop', true);
-        }
-
-        return new Response($event->getContent());
+        return new JsonResponse($event->getData());
     }
 }

@@ -68,7 +68,7 @@ class EditorMain extends Component {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete', {}, 'actions'),
-        callback: () => this.props.removeStep(step.id),
+        callback: () => this.props.removeStep(step.id, this.props.path),
         confirm: {
           title: trans('deletion'),
           subtitle: step.title || trans('step', {number: index + 1}, 'quiz'),
@@ -99,7 +99,7 @@ class EditorMain extends Component {
         }}
         cancel={{
           type: LINK_BUTTON,
-          target: '/',
+          target: this.props.path,
           exact: true
         }}
       >
@@ -108,14 +108,17 @@ class EditorMain extends Component {
           errors={this.props.errors}
           steps={this.props.steps.map((step, stepIndex) => ({
             id: step.id,
+            slug: step.slug,
             title: step.title,
             actions: this.getStepActions(step, stepIndex)
           }))}
-          add={this.props.addStep}
+          add={() => this.props.addStep(this.props.path)}
+          path={this.props.path}
         />
 
         <div className="edit-zone user-select-disabled">
           <Routes
+            path={this.props.path}
             routes={[
               {
                 path: '/edit/parameters',
@@ -133,9 +136,9 @@ class EditorMain extends Component {
                   />
                 )
               }, {
-                path: '/edit/:id',
+                path: '/edit/:slug',
                 render: (routeProps) => {
-                  const stepIndex = this.props.steps.findIndex(step => routeProps.match.params.id === step.id)
+                  const stepIndex = this.props.steps.findIndex(step => routeProps.match.params.slug === step.slug)
                   if (-1 !== stepIndex) {
                     const currentStep = this.props.steps[stepIndex]
 
@@ -144,7 +147,7 @@ class EditorMain extends Component {
                         formName={this.props.formName}
                         path={`steps[${stepIndex}]`}
                         numberingType={this.props.numberingType}
-
+                        steps={this.props.steps}
                         index={stepIndex}
                         id={currentStep.id}
                         title={currentStep.title}
@@ -154,11 +157,13 @@ class EditorMain extends Component {
                         errors={get(this.props.errors, `steps[${stepIndex}]`)}
                         actions={this.getStepActions(currentStep, stepIndex)}
                         update={(prop, value) => this.props.update(`steps[${stepIndex}].${prop}`, value)}
+                        moveItem={(itemId, position) => this.props.moveItem(itemId, position)}
+                        copyItem={(itemId, position) => this.props.copyItem(itemId, position)}
                       />
                     )
                   }
 
-                  routeProps.history.push('/edit')
+                  routeProps.history.push(`${this.props.path}/edit`)
 
                   return null
                 }
@@ -176,6 +181,7 @@ class EditorMain extends Component {
 }
 
 EditorMain.propTypes = {
+  path: T.string.isRequired,
   formName: T.string.isRequired,
   validating: T.bool.isRequired,
   pendingChanges: T.bool.isRequired,
@@ -200,7 +206,10 @@ EditorMain.propTypes = {
   addStep: T.func.isRequired,
   copyStep: T.func.isRequired,
   moveStep: T.func.isRequired,
-  removeStep: T.func.isRequired
+  removeStep: T.func.isRequired,
+  moveItem: T.func.isRequired,
+  copyItem: T.func.isRequired
+
 }
 
 export {

@@ -57,6 +57,10 @@ class WorkspaceFinder extends AbstractFinder
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
+        if (!isset($searches['archived'])) {
+            $searches['archived'] = false;
+        }
+
         foreach ($searches as $filterName => $filterValue) {
             //remap some filters...
             if ('meta.personal' === $filterName) {
@@ -165,11 +169,19 @@ class WorkspaceFinder extends AbstractFinder
 
                     return $this->union($byUserSearch, $byGroupSearch, $options, $sortBy);
                     break;
-                    //use this whith the 'user' property
+                    //use this with the 'user' property
                 case 'isManager':
                     if ($filterValue) {
                         $qb->andWhere('r.name like :ROLE_WS_MANAGER');
                         $qb->setParameter('ROLE_WS_MANAGER', 'ROLE_WS_MANAGER%');
+                    }
+                    break;
+                case 'archived':
+                    if (false === $filterValue) {
+                        $qb->andWhere($qb->expr()->orX(
+                            $qb->expr()->isNull('obj.archived'),
+                            $qb->expr()->eq('obj.archived', 0)
+                        ));
                     }
                     break;
                 default:

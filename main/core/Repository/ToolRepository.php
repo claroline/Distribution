@@ -11,21 +11,20 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\PluginManager;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ToolRepository extends EntityRepository implements ContainerAwareInterface
+class ToolRepository extends ServiceEntityRepository
 {
-    private $bundles = [];
-    private $container;
-
-    public function setContainer(ContainerInterface $container = null)
+    public function __construct(RegistryInterface $registry, PluginManager $manager)
     {
-        $this->container = $container;
-        $this->bundles = $this->container->get('claroline.manager.plugin_manager')->getEnabled(true);
+        $this->bundles = $manager->getEnabled(true);
+
+        parent::__construct($registry, Tool::class);
     }
 
     /**
@@ -33,6 +32,7 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
      *
      * @param string[]  $roles
      * @param Workspace $workspace
+     * @param int       $orderedToolType
      *
      * @return Tool[]
      *
@@ -43,13 +43,13 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
         Workspace $workspace,
         $orderedToolType = 0
     ) {
-        if (count($roles) === 0) {
-            return array();
+        if (0 === count($roles)) {
+            return [];
         } else {
             $isAdmin = false;
 
             foreach ($roles as $role) {
-                if ($role === 'ROLE_ADMIN' || $role === 'ROLE_WS_MANAGER_'.$workspace->getGuid()) {
+                if ('ROLE_ADMIN' === $role || 'ROLE_WS_MANAGER_'.$workspace->getUuid() === $role) {
                     $isAdmin = true;
                 }
             }
@@ -118,7 +118,6 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
             LEFT JOIN tool.plugin p
             WHERE user.id = {$user->getId()}
             AND ot.type = :type
-            AND ot.isVisibleInDesktop = true
             AND tool.isDisplayableInDesktop = true
             AND (
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
@@ -154,7 +153,6 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
             WHERE user.id = {$user->getId()}
             AND ot.type = :type
             AND ot.isVisibleInDesktop = true
-            AND tool.isDisplayableInDesktop = true
             AND tool NOT IN (:excludedTools)
             AND (
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
@@ -174,8 +172,9 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
      * Returns the non-visible tools in a user's desktop.
      *
      * @param User $user
+     * @param int  $orderedToolType
      *
-     * @return array[Tool]
+     * @return Tool[]
      */
     public function findDesktopUndisplayedToolsByUser(User $user, $orderedToolType = 0)
     {
@@ -207,7 +206,7 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
     /**
      * Returns the non-visible tools in a user's desktop in admin configuration.
      *
-     * @return array[Tool]
+     * @return Tool[]
      */
     public function findDesktopUndisplayedToolsByTypeForAdmin($orderedToolType = 0)
     {
@@ -240,8 +239,9 @@ class ToolRepository extends EntityRepository implements ContainerAwareInterface
      * Returns the non-visible tools in a workspace.
      *
      * @param Workspace $workspace
+     * @param int       $orderedToolType
      *
-     * @return array[Tool]
+     * @return Tool[]
      */
     public function findUndisplayedToolsByWorkspace(
         Workspace $workspace,

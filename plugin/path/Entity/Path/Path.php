@@ -3,7 +3,6 @@
 namespace Innova\PathBundle\Entity\Path;
 
 use Claroline\AppBundle\Entity\Identifier\Uuid;
-use Claroline\AppBundle\Entity\Parameters\SummaryParameters;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +17,6 @@ use Innova\PathBundle\Entity\Step;
 class Path extends AbstractResource
 {
     use Uuid;
-    use SummaryParameters;
 
     /**
      * JSON structure of the path.
@@ -94,6 +92,29 @@ class Path extends AbstractResource
      * @var string
      */
     private $secondaryResourcesTarget = '_self';
+
+    /**
+     * @ORM\Column(name="score_total", type="float", options={"default" = 100})
+     *
+     * @var float
+     */
+    private $scoreTotal = 100;
+
+    /**
+     * Score to obtain to pass.
+     *
+     * @ORM\Column(name="success_score", type="float", nullable=true)
+     *
+     * @var float
+     */
+    private $successScore = 50;
+
+    /**
+     * @ORM\Column(name="show_score", type="boolean")
+     *
+     * @var bool
+     */
+    private $showScore = false;
 
     /**
      * Path constructor.
@@ -357,5 +378,53 @@ class Path extends AbstractResource
         }
 
         return false;
+    }
+
+    /**
+     * @return float
+     */
+    public function getScoreTotal()
+    {
+        return $this->scoreTotal;
+    }
+
+    /**
+     * @param float $scoreTotal
+     */
+    public function setScoreTotal($scoreTotal)
+    {
+        $this->scoreTotal = $scoreTotal;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSuccessScore()
+    {
+        return $this->successScore;
+    }
+
+    /**
+     * @param float $successScore
+     */
+    public function setSuccessScore($successScore)
+    {
+        $this->successScore = $successScore;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShowScore()
+    {
+        return $this->showScore;
+    }
+
+    /**
+     * @param bool $showScore
+     */
+    public function setShowScore($showScore)
+    {
+        $this->showScore = $showScore;
     }
 }

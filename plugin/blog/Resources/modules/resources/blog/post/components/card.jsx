@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
-import get from 'lodash/get'
 
 // TODO : remove me
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar'
@@ -13,13 +12,13 @@ import {displayDate} from '#/main/app/intl/date'
 import {hasPermission} from '#/main/app/security'
 
 import {HtmlText} from '#/main/core/layout/components/html-text'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {CallbackButton} from '#/main/app/buttons/callback/components/button'
-import {UrlButton} from '#/main/app/buttons/url/components/button'
 import {LinkButton} from '#/main/app/buttons/link/components/button'
+import {route} from '#/main/core/user/routing'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 
@@ -39,9 +38,9 @@ const CardMeta = props =>
       }}
     >
       <span>
-        <UrlButton target={['claro_user_profile', {user: get(props.post.author, 'meta.publicUrl')}]}>
+        <LinkButton target={route(props.post.author || {})}>
           <UserAvatar className="user-picture" picture={props.post.author ? props.post.author.picture : undefined} alt={true} />
-        </UrlButton>
+        </LinkButton>
         <a className="user-name link">{props.post.author.firstName} {props.post.author.lastName}</a>
       </span>
     </li>
@@ -90,7 +89,7 @@ const CardActions = props =>
         tooltip="top"
         label={trans('edit_post_short', {}, 'icap_blog')}
         title={trans('edit_post_short', {}, 'icap_blog')}
-        target={`/${props.post.slug}/edit`}
+        target={`${props.path}/${props.post.slug}/edit`}
       />
     }
 
@@ -136,6 +135,7 @@ const CardActions = props =>
   </ButtonToolbar>
 
 CardActions.propTypes = {
+  path: T.string.isRequired,
   canEdit:T.bool,
   canModerate:T.bool,
   post: T.shape(PostType.propTypes),
@@ -204,7 +204,7 @@ const PostCardComponent = props =>
   <div className="data-card data-card-col">
     <div className="post-header">
       <h2 className="post-title">
-        <LinkButton target={`/${props.data.slug}`}>{props.data.title}</LinkButton>
+        <LinkButton target={`${props.path}/${props.data.slug}`}>{props.data.title}</LinkButton>
       </h2>
 
       <CardMeta
@@ -223,6 +223,7 @@ const PostCardComponent = props =>
         publishPost={props.publishPost}
         pinPost={props.pinPost}
         deletePost={props.deletePost}
+        path={props.path}
       />
     </div>
 
@@ -231,7 +232,7 @@ const PostCardComponent = props =>
         <HtmlText>{`${props.data.content}${(props.data.abstract ? '[...]' : '')}`}</HtmlText>
 
         {props.data.abstract &&
-          <LinkButton target={`/${props.data.slug}`} className="btn btn-block">
+          <LinkButton target={`${props.path}/${props.data.slug}`} className="btn btn-block">
             {trans('read_more', {}, 'icap_blog')}
           </LinkButton>
         }
@@ -248,6 +249,7 @@ const PostCardComponent = props =>
   </div>
 
 PostCardComponent.propTypes = {
+  path: T.string.isRequired,
   blogId: T.string.isRequired,
   canEdit: T.bool,
   size: T.string,
@@ -267,6 +269,7 @@ PostCardComponent.propTypes = {
 const PostCard = withRouter(
   connect(
     (state) => ({
+      path: resourceSelect.path(state),
       blogId: selectors.blog(state).data.id,
       canEdit: hasPermission('edit', resourceSelect.resourceNode(state)),
       canModerate: hasPermission('moderate', resourceSelect.resourceNode(state)),

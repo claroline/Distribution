@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use Claroline\CoreBundle\Manager\MailManager;
+use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -37,8 +38,18 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class UserController extends AbstractCrudController
 {
+    use HasRolesTrait;
+    use HasOrganizationsTrait;
+    use HasGroupsTrait;
+
+    /** @var AuthorizationCheckerInterface */
+    private $authChecker;
+
     /** @var StrictDispatcher */
     private $eventDispatcher;
+
+    /** @var UserManager */
+    private $manager;
 
     /** @var MailManager */
     private $mailManager;
@@ -47,27 +58,62 @@ class UserController extends AbstractCrudController
      * UserController constructor.
      *
      * @DI\InjectParams({
-     *    "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
-     *    "mailManager"     = @DI\Inject("claroline.manager.mail_manager"),
-     *    "authChecker"     = @DI\Inject("security.authorization_checker")
+     *     "authChecker"     = @DI\Inject("security.authorization_checker"),
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "manager"         = @DI\Inject("claroline.manager.user_manager"),
+     *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager")
      * })
      *
-     * @param StrictDispatcher $eventDispatcher
-     * @param MailManager      $mailManager
+     * @param AuthorizationCheckerInterface $authChecker
+     * @param StrictDispatcher              $eventDispatcher
+     * @param MailManager                   $mailManager
+     * @param UserManager                   $manager
      */
     public function __construct(
-      StrictDispatcher $eventDispatcher,
-      MailManager $mailManager,
-      AuthorizationCheckerInterface $authChecker
+        AuthorizationCheckerInterface $authChecker,
+        StrictDispatcher $eventDispatcher,
+        UserManager $manager,
+        MailManager $mailManager
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->mailManager = $mailManager;
         $this->authChecker = $authChecker;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->manager = $manager;
+        $this->mailManager = $mailManager;
     }
 
     public function getName()
     {
         return 'user';
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Finds an object class $class.",
+     *     parameters={
+     *          {"name": "id", "type": {"string", "integer"}, "description": "The object id or uuid or publicUrl"}
+     *     },
+     *     response={"$object"}
+     * )
+     *
+     * @param Request    $request
+     * @param string|int $id
+     * @param string     $class
+     *
+     * @return JsonResponse
+     */
+    public function getAction(Request $request, $id, $class)
+    {
+        $object = $this->find($class, $id);
+
+        if (!$object) {
+            $object = $this->om->getRepository($class)->findOneBy(['publicUrl' => $id]);
+        }
+
+        return $object ?
+            new JsonResponse(
+                $this->serializer->serialize($object, [Options::SERIALIZE_FACET])
+            ) :
+            new JsonResponse("No object found for id {$id} of class {$class}", 404);
     }
 
     /**
@@ -78,7 +124,8 @@ class UserController extends AbstractCrudController
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
-     *     }
+     *     },
+     *     response={"$list"}
      * )
      *
      * @param Request $request
@@ -95,9 +142,29 @@ class UserController extends AbstractCrudController
         return parent::listAction($request, $class);
     }
 
-    use HasRolesTrait;
-    use HasOrganizationsTrait;
-    use HasGroupsTrait;
+    /**
+     * @ApiDoc(
+     *     description="List the objects of class $class.",
+     *     response={"$object"}
+     * )
+     * @Route("/current", name="apiv2_users_current")
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function currentAction(Request $request)
+    {
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        if ('anon.' === $user) {
+            throw new \Exception('No user authentified');
+        }
+
+        return new JsonResponse($this->serializer->serialize($user));
+    }
 
     /**
      * @ApiDoc(
@@ -196,10 +263,6 @@ class UserController extends AbstractCrudController
         //step one: creation the organization if it's here. If it exists, we fetch it.
         $data = $this->decodeRequest($request);
 
-        if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
-            $this->options['create'][] = Options::USER_SELF_LOG;
-        }
-
         $organization = null;
 
         if ($autoOrganization) {
@@ -244,6 +307,10 @@ class UserController extends AbstractCrudController
             $this->crud->replace($user, 'mainOrganization', $organization);
         }
 
+        if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
+            $this->manager->logUser($user, $request);
+        }
+
         return new JsonResponse(
             $this->serializer->serialize($user, $this->options['get']),
             201
@@ -281,7 +348,7 @@ class UserController extends AbstractCrudController
      *    "/list/registerable",
      *    name="apiv2_user_list_registerable"
      * )
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param User    $user
@@ -296,6 +363,19 @@ class UserController extends AbstractCrudController
           ['recursiveOrXOrganization' => array_map(function (Organization $organization) {
               return $organization->getUuid();
           }, $user->getOrganizations())];
+
+        //here we look to the posted search data
+
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['textSearch'])) {
+            $text = $data['textSearch'];
+            $data = array_map(function ($data) {
+                //trim and do other stuff here
+                return $data;
+            }, str_getcsv($text, PHP_EOL));
+            $filters['globalSearch'] = $data;
+        }
 
         return new JsonResponse($this->finder->search(
             User::class,
@@ -564,5 +644,17 @@ class UserController extends AbstractCrudController
             ),
             [Options::SERIALIZE_MINIMAL]
         ));
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultRequirements()
+    {
+        return [
+          'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|csv|current|\/)).*'],
+          'update' => ['id' => '^(?!.*(schema|parameters|find|doc|csv|current|\/)).*'],
+          'exist' => [],
+        ];
     }
 }

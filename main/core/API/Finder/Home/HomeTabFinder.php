@@ -73,12 +73,10 @@ class HomeTabFinder extends AbstractFinder
                             JOIN tab.homeTabConfigs htc
                             JOIN htc.roles role
                             JOIN role.users user
-
                             WHERE (user.uuid = :userId OR user.id = :userId)
                             AND tab.type = :adminDesktop
                             AND htc.locked = true
                           ";
-
                         $subQuery2 =
                           "
                             SELECT tab2 from Claroline\CoreBundle\Entity\Tab\HomeTab tab2
@@ -89,7 +87,6 @@ class HomeTabFinder extends AbstractFinder
                             GROUP BY tab2.id
                             HAVING COUNT(role2.id) = 0
                           ";
-
                         $expr[] = $qb->expr()->orX(
                             $qb->expr()->in('obj', $subQuery),
                             $qb->expr()->in('obj', $subQuery2)
@@ -97,13 +94,12 @@ class HomeTabFinder extends AbstractFinder
                         $qb->setParameter('adminDesktop', HomeTab::TYPE_ADMIN_DESKTOP);
                     } else {
                         $expr[] = $qb->expr()->andX(
-                          $qb->expr()->eq('obj.type', ':adminDesktop')
-                        );
+                            $qb->expr()->eq('obj.type', ':adminDesktop')
+                          );
                         $qb->setParameter('adminDesktop', HomeTab::TYPE_ADMIN_DESKTOP);
                     }
 
                     $expr[] = $qb->expr()->orX(
-                      $qb->expr()->like('u.id', ':userId'),
                       $qb->expr()->like('u.uuid', ':userId')
                     );
 
@@ -149,6 +145,10 @@ class HomeTabFinder extends AbstractFinder
                     $qb->andWhere($qb->expr()->in('_rr.name', ':roleNames'));
                     $qb->setParameter($filterName, $filterValue);
                     $qb->setParameter('roleNames', $roleNames);
+                    break;
+                case 'type':
+                    $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
                     break;
                 default:
                   $this->setDefaults($qb, $filterName, $filterValue);

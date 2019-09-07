@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/app/intl/translation'
 
 import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
-import {actions as modalActions} from '#/main/app/overlay/modal/store'
+import {actions as modalActions} from '#/main/app/overlays/modal/store'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 import {selectors as resourceSelect} from '#/main/core/resource/store'
 import {hasPermission} from '#/main/app/security'
@@ -35,6 +35,7 @@ const AnnouncesList = props =>
         deletable={props.deletable}
         removePost={() => props.removePost(props.aggregateId, post)}
         sendPost={() => props.sendPost(props.aggregateId, post)}
+        path={props.path}
       />
     )}
 
@@ -76,6 +77,7 @@ const AnnouncesList = props =>
   </div>
 
 AnnouncesList.propTypes = {
+  path: T.string.isRequired,
   sortOrder: T.number.isRequired,
   currentPage: T.number.isRequired,
   pages: T.number.isRequired,
@@ -93,6 +95,7 @@ AnnouncesList.propTypes = {
 
 const Announces = connect(
   state => ({
+    path: resourceSelect.path(state),
     sortOrder: selectors.sortOrder(state),
     currentPage: selectors.currentPage(state),
     pages: selectors.pages(state),

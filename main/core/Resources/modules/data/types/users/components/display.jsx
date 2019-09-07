@@ -6,7 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 import {User as UserType} from '#/main/core/user/prop-types'
-import {UserCard} from '#/main/core/user/data/components/user-card'
+import {UserCard} from '#/main/core/user/components/card'
 
 const UsersDisplay = (props) => {
   if (!isEmpty(props.data)) {
@@ -16,6 +16,7 @@ const UsersDisplay = (props) => {
           <UserCard
             key={`user-card-${user.id}`}
             data={user}
+            size="xs"
           />
         )}
       </Fragment>

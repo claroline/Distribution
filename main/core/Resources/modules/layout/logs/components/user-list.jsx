@@ -45,6 +45,10 @@ UserLogList.defaultProps = {
   name: 'userActions'
 }
 
+UserLogList.defaultProps = {
+  name: 'userActions'
+}
+
 export {
   UserLogList
 }

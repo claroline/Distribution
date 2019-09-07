@@ -38,7 +38,6 @@ class WorkspaceManagerTest extends MockeryTestCase
     private $templateDir;
     private $pagerFactory;
     private $homeTabManager;
-    private $workpaceFavouriteRepo;
     private $security;
 
     public function setUp()
@@ -54,7 +53,6 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->resourceNodeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceNodeRepository');
         $this->resourceRightsRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceRightsRepository');
         $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceTypeRepository');
-        $this->workspaceFavouriteRepo = $this->mock('ClarolineCoreBundle\Repository\WorkspaceFavouriteRepository');
         $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\UserRepository');
         $this->roleRepo = $this->mock('Claroline\CoreBundle\Repository\RoleRepository');
         $this->workspaceRepo = $this->mock('Claroline\CoreBundle\Repository\WorkspaceRepository');
@@ -322,55 +320,6 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->assertEquals($workspaces, $this->getManager()->getWorkspacesByUser($user));
     }
 
-    public function testGetNbWorkspaces()
-    {
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('count')
-            ->once()
-            ->andReturn(4);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals(4, $this->getManager()->getNbWorkspaces());
-    }
-
-    public function testGetWorkspacesByRoles()
-    {
-        $roleA = new Role();
-        $roleB = new Role();
-        $roles = [$roleA, $roleB];
-        $workspaces = ['workspaceA', 'workspaceB'];
-
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findByRoles')
-            ->with($roles)
-            ->once()
-            ->andReturn($workspaces);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals($workspaces, $this->getManager()->getOpenableWorkspacesByRoles($roles));
-    }
-
-    public function testGetLatestWorkspacesByUser()
-    {
-        $user = new User();
-        $roleA = new Role();
-        $roleB = new Role();
-        $roles = [$roleA, $roleB];
-        $workspaces = ['workspaceA', 'workspaceB'];
-
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findLatestWorkspacesByUser')
-            ->with($user, $roles, 5)
-            ->once()
-            ->andReturn($workspaces);
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals(
-            $workspaces,
-            $this->getManager()->getLatestWorkspacesByUser($user, $roles, 5)
-        );
-    }
-
     public function testGetWorkspacesWithMostResources()
     {
         $workspaces = ['workspaceA', 'workspaceB'];
@@ -403,22 +352,7 @@ class WorkspaceManagerTest extends MockeryTestCase
         );
     }
 
-    public function testGetOneByGuid()
-    {
-        m::getConfiguration()->allowMockingNonExistentMethods(true);
-        $this->workspaceRepo->shouldReceive('findOneByGuid')
-            ->with(1)
-            ->once()
-            ->andReturn('workspace');
-        m::getConfiguration()->allowMockingNonExistentMethods(false);
-
-        $this->assertEquals(
-            'workspace',
-            $this->getManager()->getOneByGuid(1)
-        );
-    }
-
-    public function testAddUserAction()
+    public function testAddUser()
     {
         $user = new User();
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
@@ -458,7 +392,7 @@ class WorkspaceManagerTest extends MockeryTestCase
 
         $this->assertEquals(
             $user,
-            $this->getManager()->addUserAction($workspace, $user)
+            $this->getManager()->addUser($workspace, $user)
         );
     }
 
@@ -477,8 +411,6 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:Workspace\Workspace')
             ->andReturn($this->workspaceRepo);
         $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:User')
-            ->andReturn($this->userRepo);
-        $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:Workspace\WorkspaceFavourite')
             ->andReturn($this->userRepo);
 
         if (0 === count($mockedMethods)) {

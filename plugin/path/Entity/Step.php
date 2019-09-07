@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Entity\Resource\Activity;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Innova\PathBundle\Entity\Path\Path;
 
 /**
@@ -148,6 +149,19 @@ class Step
      * @ORM\OrderBy({"order" = "ASC"})
      */
     protected $secondaryResources;
+
+    /**
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
+     */
+    private $evaluated = false;
+
+    /**
+     * @Gedmo\Slug(fields={"title"})
+     * @ORM\Column(length=128)
+     */
+    private $slug;
 
     /**
      * Class constructor.
@@ -526,5 +540,31 @@ class Step
         $this->showResourceHeader = $showResourceHeader;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEvaluated()
+    {
+        return $this->evaluated;
+    }
+
+    /**
+     * @param bool $evaluated
+     */
+    public function setEvaluated($evaluated)
+    {
+        $this->evaluated = $evaluated;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function setSlug($slug = null)
+    {
+        $this->slug = $slug;
     }
 }

@@ -16,7 +16,7 @@ import {ModalButton} from '#/main/app/buttons/modal/containers/button'
 import {PopoverButton} from '#/main/app/buttons/popover/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 
-import {MODAL_ROLES_PICKER} from '#/main/core/modals/roles'
+import {MODAL_ROLES} from '#/main/core/modals/roles'
 import {
   getSimpleAccessRule,
   setSimpleAccessRule,
@@ -189,11 +189,13 @@ const AdvancedTab = props => {
       </thead>
 
       <tbody>
-        {props.permissions.map((rolePerm, index) =>
-          <RolePermissions
-            key={rolePerm.name}
+        {props.permissions.map((rolePerm, index) => {
+          const workspaceCode = rolePerm.workspace ? rolePerm.workspace.code : null
+          const displayName = workspaceCode ? rolePerm.translationKey + ' (' + workspaceCode + ')': rolePerm.translationKey
+          return (<RolePermissions
+            key={rolePerm.id}
             name={rolePerm.name}
-            translationKey={rolePerm.translationKey}
+            translationKey={displayName}
             permissions={Object.assign({}, defaultPerms, rolePerm.permissions)}
             deletable={!isStandardRole(rolePerm.name, props.workspace)}
             update={(permissions) => {
@@ -209,7 +211,8 @@ const AdvancedTab = props => {
 
               props.updatePermissions(newPerms)
             }}
-          />
+          />)
+        }
         )}
       </tbody>
 
@@ -219,7 +222,7 @@ const AdvancedTab = props => {
             <ModalButton
               className="btn btn-block"
               size="sm"
-              modal={[MODAL_ROLES_PICKER, {
+              modal={[MODAL_ROLES, {
                 selectAction: (selectedRoles) => ({
                   type: CALLBACK_BUTTON,
                   callback: () => props.updatePermissions([].concat(props.permissions, selectedRoles.map(role => ({

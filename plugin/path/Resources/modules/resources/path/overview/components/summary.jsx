@@ -9,7 +9,7 @@ const SummaryStep = props =>
   <li>
     <LinkButton
       className="summary-link"
-      target={`/play/${props.step.id}`}
+      target={`${props.basePath}/play/${props.step.slug}`}
     >
       {props.step.title}
     </LinkButton>
@@ -17,13 +17,18 @@ const SummaryStep = props =>
     {0 !== props.step.children.length &&
       <ul>
         {props.step.children.map(child =>
-          <SummaryStep key={child.id} step={child} />
+          <SummaryStep
+            key={child.id}
+            basePath={props.basePath}
+            step={child}
+          />
         )}
       </ul>
     }
   </li>
 
 SummaryStep.propTypes = {
+  basePath: T.string.isRequired,
   step: T.shape(
     StepTypes.propTypes
   ).isRequired
@@ -32,11 +37,16 @@ SummaryStep.propTypes = {
 const OverviewSummary = props =>
   <ul className="summary-overview">
     {props.steps.map(step =>
-      <SummaryStep key={step.id} step={step} />
+      <SummaryStep
+        key={step.id}
+        basePath={props.basePath}
+        step={step}
+      />
     )}
   </ul>
 
 OverviewSummary.propTypes = {
+  basePath: T.string.isRequired,
   steps: T.arrayOf(T.shape(
     StepTypes.propTypes
   )).isRequired

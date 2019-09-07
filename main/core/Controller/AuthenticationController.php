@@ -22,7 +22,6 @@ use Claroline\CoreBundle\Library\Security\Authenticator;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -96,51 +95,6 @@ class AuthenticationController
         $this->router = $router;
         $this->ch = $ch;
         $this->dispatcher = $dispatcher;
-    }
-
-    /**
-     * @Route(
-     *     "/login",
-     *     name="claro_security_login",
-     *     options={"expose"=true}
-     * )
-     * @Template()
-     *
-     * Standard Symfony form login controller.
-     *
-     * @see http://symfony.com/doc/current/book/security.html#using-a-traditional-login-form
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function loginAction()
-    {
-        $lastUsername = $this->request->getSession()->get(Security::LAST_USERNAME);
-        $user = $this->userManager->getUserByUsername($lastUsername);
-        $selfRegistrationAllowed = $this->ch->getParameter('allow_self_registration');
-        $showRegisterButton = $this->ch->getParameter('register_button_at_login');
-
-        if ($user && !$user->isAccountNonExpired()) {
-            return [
-                'last_username' => $lastUsername,
-                'error' => false,
-                'is_expired' => true,
-                'selfRegistrationAllowed' => $selfRegistrationAllowed,
-            ];
-        }
-
-        if ($this->request->attributes->has(Security::AUTHENTICATION_ERROR)) {
-            $error = $this->request->attributes->get(Security::AUTHENTICATION_ERROR);
-        } else {
-            $error = $this->request->getSession()->get(Security::AUTHENTICATION_ERROR);
-        }
-
-        return [
-            'last_username' => $lastUsername,
-            'error' => $error,
-            'is_expired' => false,
-            'selfRegistrationAllowed' => $selfRegistrationAllowed,
-            'showRegisterButton' => $showRegisterButton,
-        ];
     }
 
     /**
@@ -332,7 +286,7 @@ class AuthenticationController
      * )
      * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      */
-    public function hideEmailConformationAction(User $user)
+    public function hideEmailConfirmationAction(User $user)
     {
         $this->userManager->hideEmailValidation($user);
 
@@ -365,52 +319,5 @@ class AuthenticationController
         return 'json' === $format ?
             new JsonResponse($content, $status) :
             new XmlResponse($content, $status);
-    }
-
-    /**
-     * Returns a page communicating a hash through a js custom event to its parent
-     * window. As the route is behind the firewall, this controller will act like
-     * an authentication trigger, returning the page with the hash event only if
-     * the authentication succeeded.
-     *
-     * @Route(
-     *     "/trigger-auth/{hash}",
-     *     name="trigger_auth",
-     *     options={"expose"=true}
-     * )
-     * @Method("GET")
-     * @SEC\PreAuthorize("hasRole('ROLE_USER')")
-     * @Template("ClarolineCoreBundle:authentication:authenticated.html.twig")
-     */
-    public function triggerAuthenticationAction($hash)
-    {
-        return ['hash' => $hash];
-    }
-
-    //not routed...
-    public function renderExternalAuthenticationButtonAction()
-    {
-        return $this->renderExternalAuthenticationButton('external_authentication');
-    }
-
-    //not routed...
-    public function renderPrimaryExternalAuthenticationButtonAction()
-    {
-        return $this->renderExternalAuthenticationButton('primary_external_authentication');
-    }
-
-    private function renderExternalAuthenticationButton($action)
-    {
-        $event = $this->dispatcher->dispatch('render_'.$action.'_button', 'RenderAuthenticationButton');
-
-        $eventContent = $event->getContent();
-        $strippedContent = trim(strip_tags(preg_replace('/(<(script|style)\b[^>]*>).*?(<\/\2>)/is', '', $eventContent)));
-        if (!empty($strippedContent)) {
-            $eventContent = '<div class="'.$action.'">'.$eventContent.'</div>';
-        } else {
-            $eventContent = '';
-        }
-
-        return new Response($eventContent);
     }
 }
