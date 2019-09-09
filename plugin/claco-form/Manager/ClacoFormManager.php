@@ -513,7 +513,7 @@ class ClacoFormManager
         $node = $entry->getClacoForm()->getResourceNode();
         $clacoFormName = $node->getName();
         $url = $this->router->generate('claro_index', [], UrlGeneratorInterface::ABSOLUTE_URL).
-            '#/desktop/resources/'.$node->getSlug().'entries/'.$entry->getUuid();
+            '#/desktop/resources/'.$node->getSlug().'/entries/'.$entry->getUuid();
 
         foreach ($oldCategories as $category) {
             if (in_array($category, $currentCategories)) {
