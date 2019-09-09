@@ -4,7 +4,6 @@ namespace Claroline\CoreBundle\API\Serializer\Widget;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Finder\Home\WidgetContainerFinder;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
@@ -26,12 +25,13 @@ class HomeTabSerializer
 {
     use SerializerTrait;
 
-    private $serializer;
+    /** @var ObjectManager */
     private $om;
+    /** @var WidgetContainerFinder */
     private $widgetContainerFinder;
 
     /**
-     * ContactSerializer constructor.
+     * HomeTabSerializer constructor.
      *
      * @param SerializerProvider    $serializer
      * @param ObjectManager         $om
@@ -89,6 +89,7 @@ class HomeTabSerializer
         $poster = null;
 
         if ($homeTab->getPoster()) {
+            /** @var PublicFile $file */
             $file = $this->om
                 ->getRepository(PublicFile::class)
                 ->findOneBy(['url' => $homeTab->getPoster()]);
@@ -198,7 +199,7 @@ class HomeTabSerializer
             foreach ($data['widgets'] as $position => $widgetContainerData) {
                 /* @var WidgetContainer $widgetContainer */
 
-                if (!in_array(Options::REFRESH_UUID, $options)) {
+                if (isset($widgetContainerData['id']) && !in_array(Options::REFRESH_UUID, $options)) {
                     $widgetContainer = $this->findInCollection($homeTab, 'getWidgetContainers', $widgetContainerData['id']) ?? new WidgetContainer();
                 } else {
                     $widgetContainer = new WidgetContainer();

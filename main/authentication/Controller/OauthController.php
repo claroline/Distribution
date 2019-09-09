@@ -13,13 +13,34 @@ namespace Claroline\AuthenticationBundle\Controller;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AuthenticationBundle\Entity\OauthUser;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @EXT\Route("/oauth")
  */
 class OauthController extends AbstractCrudController
 {
+    /** @var PlatformConfigurationHandler */
+    private $configHandler;
+
+    /**
+     * OauthController constructor.
+     *
+     * @DI\InjectParams({
+     *     "configHandler" = @DI\Inject("claroline.config.platform_config_handler")
+     * })
+     *
+     * @param PlatformConfigurationHandler $configHandler
+     */
+    public function __construct(
+        PlatformConfigurationHandler $configHandler
+    ) {
+        $this->configHandler = $configHandler;
+    }
+
     public function getClass()
     {
         return OauthUser::class;
@@ -43,16 +64,11 @@ class OauthController extends AbstractCrudController
         $session = $request->getSession();
         $service = $session->get('claroline.oauth.resource_owner');
         $user = $session->get('claroline.oauth.user');
-        if ($service !== null && $user !== null) {
-            $selfRegistration = $this
-                ->get('claroline.config.platform_config_handler')
-                ->getParameter('allow_self_registration');
-            $this->get('translator')->setLocale($request->getLocale());
-
+        if (null !== $service && null !== $user) {
             return [
                 'service' => $service['name'],
                 'oauthUser' => $user,
-                'selfRegistration' => $selfRegistration,
+                'selfRegistration' => $this->configHandler->getParameter('allow_self_registration'),
             ];
         } else {
             $session->remove('claroline.oauth.resource_owner');
@@ -78,7 +94,7 @@ class OauthController extends AbstractCrudController
         $session = $request->getSession();
         $service = $session->get('claroline.oauth.resource_owner');
         $user = $session->get('claroline.oauth.user');
-        if ($service !== null && $user !== null && $selfRegistration === true) {
+        if (null !== $service && null !== $user && $selfRegistration) {
             $form = $this->get('claroline.oauth.manager')->getRegistrationForm($user);
 
             return ['form' => $form->createView()];
@@ -126,7 +142,7 @@ class OauthController extends AbstractCrudController
         $session = $request->getSession();
         $service = $session->get('claroline.oauth.resource_owner');
         $user = $session->get('claroline.oauth.user');
-        if ($service !== null && $user !== null) {
+        if (null !== $service && null !== $user) {
             $this->get('translator')->setLocale($request->getLocale());
 
             return [];

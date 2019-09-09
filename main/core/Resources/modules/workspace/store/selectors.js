@@ -29,6 +29,11 @@ const tools = createSelector(
   (store) => store.tools
 )
 
+const root = createSelector(
+  [store],
+  (store) => store.root
+)
+
 // all the shortcuts defined in the workspace
 const shortcuts = createSelector(
   [store],
@@ -57,7 +62,7 @@ const defaultOpening = createSelector(
     let defaultTool = null
     if (workspace) {
       if ('resource' === workspace.opening.type) {
-        defaultTool = `resources/${workspace.opening.target.id || ''}`
+        defaultTool = `resources/${workspace.opening.target.slug || ''}`
       } else if ('tool' === workspace.opening.type) {
         defaultTool = workspace.opening.target
       }
@@ -86,7 +91,7 @@ const serverErrors = createSelector(
 
 export const selectors = {
   STORE_NAME,
-
+  root,
   loaded,
   workspace,
   managed,
