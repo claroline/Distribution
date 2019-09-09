@@ -11,6 +11,9 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
+use Claroline\AppBundle\API\Options;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Workspace\WorkspaceOptions;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -26,6 +29,7 @@ class Updater120501 extends Updater
     public function postUpdate()
     {
         $this->updateWorkspaceRedirection();
+        $this->updateWorkspaceResourceRedirection();
     }
 
     public function updateWorkspaceRedirection()
@@ -46,5 +50,40 @@ class Updater120501 extends Updater
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
         }
+    }
+
+    public function updateWorkspaceResourceRedirection()
+    {
+        $this->log('Updating resource redirection');
+        $om = $this->container->get('claroline.persistence.object_manager');
+
+        $options = $om->getRepository(WorkspaceOptions::class)->createQueryBuilder('w')
+          ->where('w.details LIKE :details')
+          ->setParameter('details', '%\"opening_type\":\"resource\"%')
+          ->getQuery()
+          ->getResult();
+
+        $i = 0;
+
+        foreach ($options as $option) {
+            $this->log('Restoring '.$option->getWorkspace()->getCode().' opening parameters.');
+            $details = $option->getDetails();
+            $resource = $om->getRepository(ResourceNode::class)->find($details['workspace_opening_resource']);
+
+            if ($resource) {
+                $this->log('Serialializing resource from workspace '.$option->getWorkspace()->getCode().'. Target is '.$resource->getName());
+                $details['opening_target'] = $this->container->get('claroline.serializer.resource_node')->serialize($resource, [Options::ONLY_INDENTIFIERS]);
+                $option->setDetails($details);
+                $om->persist($option);
+
+                ++$i;
+
+                if (0 === $i % 500) {
+                    $om->flush();
+                }
+            }
+        }
+
+        $om->flush();
     }
 }

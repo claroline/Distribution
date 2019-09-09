@@ -108,6 +108,14 @@ class ResourceNodeSerializer
      */
     public function serialize(ResourceNode $resourceNode, array $options = [])
     {
+        if (in_array(Options::ONLY_INDENTIFIERS, $options)) {
+            return [
+              'autoId' => $resourceNode->getId(),
+              'id' => $resourceNode->getUuid(),
+              'slug' => $resourceNode->getSlug(),
+            ];
+        }
+
         $serializedNode = [
             //also used for the export. It's not pretty.
 

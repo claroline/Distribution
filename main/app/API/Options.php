@@ -107,4 +107,5 @@ final class Options
     const ADMINISTRATION_IMPORT = 'administration_import';
 
     const IGNORE_COLLECTIONS = 'ignore_collections';
+    const ONLY_INDENTIFIERS = 'only_indentifiers';
 }
