@@ -23,6 +23,11 @@ abstract class AbstractCreateAction extends AbstractAction
         $this->crud = $crud;
     }
 
+    public function setCrud(Crud $crud)
+    {
+        $this->crud = $crud;
+    }
+
     public function execute(array $data, &$successData = [])
     {
         $this->crud->create($this->getClass(), $data);

@@ -32,6 +32,26 @@ abstract class AbstractCreateOrUpdateAction extends AbstractAction
         $this->om = $om;
     }
 
+    public function setCrud(Crud $crud)
+    {
+        $this->crud = $crud;
+    }
+
+    public function setSerializer(SerializerProvider $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    public function setTransfer(TransferProvider $transfer)
+    {
+        $this->transfer = $transfer;
+    }
+
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
     public function execute(array $data, &$successData = [])
     {
         //search the object. It'll look for the 1st identifier it finds so be carreful

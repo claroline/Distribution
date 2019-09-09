@@ -28,6 +28,21 @@ abstract class AbstractDeleteAction extends AbstractAction
         $this->om = $om;
     }
 
+    public function setCrud(Crud $crud)
+    {
+        $this->crud = $crud;
+    }
+
+    public function setSerializer(SerializerProvider $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
     public function execute(array $data, &$successData = [])
     {
         $object = $this->om->getObject($data[$this->getAction()[0]], $this->getClass());
