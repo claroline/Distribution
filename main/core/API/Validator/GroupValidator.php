@@ -4,8 +4,6 @@ namespace Claroline\CoreBundle\API\Validator;
 
 use Claroline\AppBundle\API\ValidatorInterface;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation as DI;
-
 
 class GroupValidator implements ValidatorInterface
 {
