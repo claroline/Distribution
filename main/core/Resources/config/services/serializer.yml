@@ -4,6 +4,13 @@ services:
         autoconfigure: true
         public: false
 
+    _instanceof:
+        Claroline\AppBundle\API\Serializer\GenericSerializer:
+            calls:
+                - method: setAnnotationReader
+                  arguments:
+                     - '@annotation_reader'
+
     Claroline\CoreBundle\API\Serializer\ParametersSerializer:
         arguments:
           - '@claroline.api.serializer'
@@ -30,6 +37,7 @@ services:
     Claroline\CoreBundle\API\Serializer\MessageSerializer:
         arguments:
           - '@claroline.serializer.user'
+          - '@claroline.persistence.object_manager'
 
     claroline.serializer.message:
         alias: Claroline\CoreBundle\API\Serializer\MessageSerializer
