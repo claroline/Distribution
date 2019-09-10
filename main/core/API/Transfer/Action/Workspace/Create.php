@@ -8,6 +8,7 @@ use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -58,6 +59,20 @@ class Create extends AbstractAction
                 $organization = $this->om->getRepository(Organization::class)->findOneBy($organizationData);
                 $workspace->addOrganization($organization);
                 $this->om->persist($workspace);
+            }
+        }
+
+        $this->om->flush();
+
+        if (isset($data['managers'])) {
+            foreach ($data['managers'] as $manager) {
+                $user = $this->om->getRepository(User::class)->findOneBy($manager);
+                $role = $workspace->getManagerRole();
+
+                if ($role) {
+                    $user->addRole($role);
+                    $this->om->persist($user);
+                }
             }
         }
 

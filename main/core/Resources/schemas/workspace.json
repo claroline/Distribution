@@ -105,6 +105,28 @@
         }
       }
     },
+    "managers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          },
+          {
+              "type": "null"
+          }
+        ]
+      }
+    },
     "organizations": {
       "type": "array",
       "uniqueItems": true,
