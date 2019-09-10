@@ -21,7 +21,7 @@ const reducer = {
       property: 'publicationDate',
       direction: -1
     }
-  },{
+  }, {
     invalidated: makeReducer(false, {
       [FORM_SUBMIT_SUCCESS+'/' + selectors.STORE_NAME + '.post_edit']: () => true,
       [FORM_SUBMIT_SUCCESS+'/' + selectors.STORE_NAME + '.blog.data.options']: () => true,
