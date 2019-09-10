@@ -197,7 +197,6 @@ services:
         public: true
 
     Claroline\CoreBundle\API\Serializer\User\ProfileSerializer:
-        tags: [claroline.serializer]
         arguments:
             - '@security.token_storage'
             - '@claroline.persistence.object_manager'
