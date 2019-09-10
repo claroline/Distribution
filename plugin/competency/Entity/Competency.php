@@ -210,7 +210,7 @@ class Competency implements \JsonSerializable
     }
 
     /**
-     * @return null|Competency
+     * @return Competency|null
      */
     public function getParent()
     {
